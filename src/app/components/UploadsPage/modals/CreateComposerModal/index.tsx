@@ -40,6 +40,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Checkbox from '@/app/components/Common/Checkbox';
+import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 
 interface DuplicateCheckState {
   loading: boolean;
@@ -907,7 +908,7 @@ const CreateComposerModal = ({
                               )
                             }
                             onClick={handleScrapeUrl}
-                            disabled={scrapingUrl || duplicateCheck.found}
+                            disabled={scrapingUrl}
                           >
                             {scrapingUrl
                               ? t('modal_composer_scraping_extracting')
@@ -1106,7 +1107,7 @@ const CreateComposerModal = ({
                         },
                         ...epochs.map((epoch) => ({
                           value: epoch.id,
-                          label: epoch.name,
+                          label: translateEpochWithHook(epoch.name, t),
                         })),
                       ]}
                       value={formData.epochId}

@@ -138,7 +138,6 @@ export function useEditAssignment(): UseEditAssignmentState &
           throw new Error(result.error || 'Erro ao deletar tarefa');
         }
 
-        console.log('✅ Tarefa deletada com sucesso!');
         return true;
       } catch (error) {
         console.error('❌ Erro ao deletar tarefa:', error);

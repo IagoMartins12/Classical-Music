@@ -236,7 +236,8 @@ export default function AssignmentDetailsPageClient({
                   {assignment.title}
                 </h1>
                 <p className="text-theme-secondary classical-subtitle">
-                  Tarefa de {assignment.student.name}
+                  {t('assignment_by')}
+                  {assignment.student.name}
                 </p>
               </div>
             </div>

@@ -3,8 +3,8 @@
 
 import { useState, useEffect, createContext, useContext } from 'react';
 import { FiAward, FiX, FiStar } from 'react-icons/fi';
-import { Badge } from '../badges/BadgeSystem';
 import { AnimatedItem } from '../../animation/AnimatedComponents';
+import { Badge } from '../../badges/BadgeSystem';
 
 // Context para gerenciar achievement toasts globalmente
 interface AchievementContextType {
@@ -142,7 +142,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
     >
       <div
         className={`
-        bg-theme-elevated border-2 ${achievement.color.border} 
+        bg-theme-elevated border-2 ${achievement?.color?.border} 
         rounded-2xl shadow-2xl p-4 min-w-[320px] max-w-[400px]
         backdrop-blur-sm bg-opacity-95
         shadow-theme-glow
@@ -152,7 +152,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
         <div className="flex items-center space-x-3 mb-3">
           <div
             className={`
-            w-12 h-12 rounded-2xl bg-gradient-to-br ${achievement.color.from} ${achievement.color.to}
+            w-12 h-12 rounded-2xl bg-gradient-to-br ${achievement.color?.from} ${achievement.color?.to}
             flex items-center justify-center shadow-lg
             animate-pulse
           `}
@@ -176,7 +176,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
                 </div>
               )}
             </div>
-            <div className={`font-semibold ${achievement.color.text}`}>
+            <div className={`font-semibold ${achievement.color?.text}`}>
               {achievement.name}
             </div>
           </div>
@@ -237,7 +237,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
         {/* Progress Bar */}
         <div className="w-full bg-theme-secondary rounded-full h-1 overflow-hidden">
           <div
-            className={`h-full bg-gradient-to-r ${achievement.color.from} ${achievement.color.to} 
+            className={`h-full bg-gradient-to-r ${achievement.color?.from} ${achievement.color?.to} 
                        transition-all duration-100 ease-linear`}
             style={{ width: `${progress}%` }}
           />

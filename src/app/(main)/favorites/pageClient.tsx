@@ -1,4 +1,4 @@
-// app/favorites/FavoritesClient.tsx - Com Partituras Favoritadas
+// app/favorites/FavoritesClient.tsx - COM LAYOUT ADAPTATIVO
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -11,8 +11,9 @@ import {
   FiExternalLink,
   FiClock,
   FiBookOpen,
-  FiFileText, // 🆕 Para partituras
-  FiStar, // 🆕 Para rating
+  FiFileText,
+  FiStar,
+  FiBarChart2,
 } from 'react-icons/fi';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import Image from 'next/image';
@@ -21,7 +22,8 @@ import EmptyStateFavorites from '../../components/favorites/EmptyStateFavorites'
 import ViewModeToggle, { ViewMode } from '../../components/ViewModeToggle';
 import FavoriteScoreButton from '../../components/FavoriteScoreButton';
 import MostFavoritedBadge from '../../components/MostFavoritedBadge';
-
+import FavoritesStatsWidget from '@/app/components/StatsWidget/FavoritesStatsWidget';
+import Modal from '../../components/Modal';
 // Importar componentes de animação
 import {
   PageContainer,
@@ -30,12 +32,13 @@ import {
   AnimatedCard,
   SequentialGrid,
 } from '../../components/animation/AnimatedComponents';
+import { useAdaptiveStats } from '@/app/hooks/useMobile';
 
-// 🆕 Atualizar tipo para incluir 'scores'
+// Atualizar tipo para incluir 'scores'
 type FilterTab = 'all' | 'composers' | 'works' | 'scores';
 
 export default function FavoritesClient() {
-  // 🆕 Incluir favoriteScores do store
+  // Incluir favoriteScores do store
   const { favoriteComposers, favoriteWorks, favoriteScores } =
     useFavoritesStore();
 
@@ -44,17 +47,27 @@ export default function FavoritesClient() {
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Stats adaptativo
+  const {
+    isVisible: showStats,
+    toggleVisibility: toggleStats,
+    isMobile,
+    showInline: showStatsInline,
+    isModalOpen: isStatsModalOpen,
+    closeModal: closeStatsModal,
+  } = useAdaptiveStats('favorites');
+
   // Filter control functions
   const clearFilters = () => {
     setSearchQuery('');
     setActiveTab('all');
   };
 
-  // 🆕 Filter logic atualizado para incluir partituras
+  // Filter logic atualizado para incluir partituras
   const filteredData = useMemo(() => {
     let composersFiltered = [...favoriteComposers];
     let worksFiltered = [...favoriteWorks];
-    let scoresFiltered = [...favoriteScores]; // 🆕
+    let scoresFiltered = [...favoriteScores];
 
     // Search filter
     if (searchQuery) {
@@ -73,7 +86,7 @@ export default function FavoritesClient() {
           item.work?.composer.fullName.toLowerCase().includes(query)
       );
 
-      // 🆕 Filtro para partituras
+      // Filtro para partituras
       scoresFiltered = scoresFiltered.filter(
         (item) =>
           item.scoreTitle.toLowerCase().includes(query) ||
@@ -86,11 +99,11 @@ export default function FavoritesClient() {
     return {
       composers: composersFiltered,
       works: worksFiltered,
-      scores: scoresFiltered, // 🆕
+      scores: scoresFiltered,
     };
   }, [favoriteComposers, favoriteWorks, favoriteScores, searchQuery]);
 
-  // 🆕 Statistics atualizadas para incluir partituras
+  // Statistics atualizadas para incluir partituras
   const stats = useMemo(() => {
     const totalItems =
       favoriteComposers.length + favoriteWorks.length + favoriteScores.length;
@@ -99,7 +112,7 @@ export default function FavoritesClient() {
       totalItems,
       composersCount: favoriteComposers.length,
       worksCount: favoriteWorks.length,
-      scoresCount: favoriteScores.length, // 🆕
+      scoresCount: favoriteScores.length,
       avgPerComposer:
         favoriteComposers.length > 0
           ? Math.round((favoriteWorks.length / favoriteComposers.length) * 10) /
@@ -129,76 +142,17 @@ export default function FavoritesClient() {
           </div>
         </AnimatedItem>
 
-        {/* 🆕 Statistics Cards atualizadas */}
-        {/* <AnimatedItem direction="up" springType="gentle">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiHeart className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.totalItems}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                Total de Favoritos
-              </div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiUser className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.composersCount}
-              </div>
-              <div className="text-sm text-theme-tertiary">Compositores</div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiMusic className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.worksCount}
-              </div>
-              <div className="text-sm text-theme-tertiary">Obras</div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-pink rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiFileText className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.scoresCount}
-              </div>
-              <div className="text-sm text-theme-tertiary">Partituras</div>
-            </AnimatedCard>
-          </div>
-        </AnimatedItem> */}
-
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard hover="none" className="classical-card p-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              {/* 🆕 Tabs atualizadas para incluir 'scores' */}
+              {/* Tabs atualizadas para incluir 'scores' */}
               <div className="flex bg-theme-secondary rounded-xl p-1 overflow-x-auto">
                 <button
                   onClick={() => setActiveTab('all')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                     activeTab === 'all'
-                      ? 'bg-brand-primary bg-theme-tertiary text-theme-primary shadow-md'
+                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
                       : 'text-theme-tertiary hover:text-theme-primary'
                   }`}
                 >
@@ -224,7 +178,7 @@ export default function FavoritesClient() {
                 >
                   Obras ({stats.worksCount})
                 </button>
-                {/* 🆕 Nova aba para partituras */}
+                {/* Nova aba para partituras */}
                 <button
                   onClick={() => setActiveTab('scores')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
@@ -237,7 +191,7 @@ export default function FavoritesClient() {
                 </button>
               </div>
 
-              {/* Search and View Mode */}
+              {/* Search, Stats Toggle and View Mode */}
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search */}
                 <div className="relative">
@@ -247,9 +201,33 @@ export default function FavoritesClient() {
                     placeholder="Buscar nos favoritos..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="input-classical w-full sm:w-96"
+                    className="input-classical w-full sm:w-80"
                   />
                 </div>
+
+                {/* Stats Toggle Button */}
+                {favoriteComposers.length +
+                  favoriteWorks.length +
+                  favoriteScores.length !==
+                  0 && (
+                  <button
+                    onClick={toggleStats}
+                    className={`flex items-center space-x-2 px-4 py-3 rounded-lg border transition-all font-medium ${
+                      showStats && !isMobile
+                        ? 'bg-accent-blue text-theme-primary border-accent-blue shadow-md'
+                        : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-accent-blue hover:bg-interactive-hover'
+                    }`}
+                  >
+                    <FiBarChart2 className="w-4 h-4" />
+                    <span className="text-sm">
+                      {isMobile
+                        ? 'Stats'
+                        : showStats
+                        ? 'Esconder Stats'
+                        : 'Ver Estatisticas'}
+                    </span>
+                  </button>
+                )}
 
                 {/* View Mode Toggle */}
                 <ViewModeToggle
@@ -272,282 +250,312 @@ export default function FavoritesClient() {
             />
           </AnimatedItem>
         ) : (
-          <div className="space-y-8">
-            {/* Composers Section */}
-            {(activeTab === 'all' || activeTab === 'composers') && (
-              <>
-                {filteredData.composers.length > 0 ? (
-                  <AnimatedItem
-                    direction="up"
-                    className="mt-4"
-                    springType="gentle"
-                  >
-                    <div className="flex items-center space-x-3 mb-6">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                        <FiUser className="w-5 h-5 text-theme-primary" />
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                          Compositores Favoritos
-                        </h2>
-                        <p className="text-theme-tertiary">
-                          {filteredData.composers.length} de{' '}
-                          {favoriteComposers.length} compositores
-                        </p>
-                      </div>
-                    </div>
-
-                    {viewMode === 'cards' ? (
-                      <SequentialGrid
-                        cols={3}
-                        gap={6}
-                        delayBetweenItems={0.1}
-                        className=""
-                      >
-                        {filteredData.composers.map((favorite) => (
-                          <ComposerFavoriteCard
-                            key={favorite.id}
-                            favorite={favorite}
-                            viewMode={viewMode}
-                          />
-                        ))}
-                      </SequentialGrid>
-                    ) : (
-                      <div className="space-y-4">
-                        {filteredData.composers.map((favorite, index) => (
-                          <AnimatedItem
-                            key={favorite.id}
-                            direction="left"
-                            hover="lift"
-                            style={{
-                              animationDelay: `${index * 0.1}s`,
-                              animationFillMode: 'backwards',
-                            }}
-                          >
-                            <ComposerFavoriteCard
-                              favorite={favorite}
-                              viewMode={viewMode}
-                            />
-                          </AnimatedItem>
-                        ))}
-                      </div>
-                    )}
-                  </AnimatedItem>
-                ) : (
+          <div
+            className={`grid grid-cols-1 ${
+              showStatsInline ? 'lg:grid-cols-3' : 'lg:grid-cols-1'
+            } gap-8`}
+          >
+            {/* Favorites Content */}
+            <div
+              className={showStatsInline ? 'lg:col-span-2' : 'lg:col-span-3'}
+            >
+              <div className="space-y-8">
+                {/* Composers Section */}
+                {(activeTab === 'all' || activeTab === 'composers') && (
                   <>
-                    {activeTab === 'composers' && (
-                      <AnimatedItem direction="scale" springType="bouncy">
-                        {favoriteComposers.length === 0 ? (
-                          <EmptyStateFavorites
-                            emptyState="composers"
-                            filters={false}
-                            onClearFilters={clearFilters}
-                          />
+                    {filteredData.composers.length > 0 ? (
+                      <AnimatedItem
+                        direction="up"
+                        className="mt-4"
+                        springType="gentle"
+                      >
+                        <div className="flex items-center space-x-3 mb-6">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                            <FiUser className="w-5 h-5 text-theme-primary" />
+                          </div>
+                          <div>
+                            <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                              Compositores Favoritos
+                            </h2>
+                            <p className="text-theme-tertiary">
+                              {filteredData.composers.length} de{' '}
+                              {favoriteComposers.length} compositores
+                            </p>
+                          </div>
+                        </div>
+
+                        {viewMode === 'cards' ? (
+                          <SequentialGrid
+                            cols={3}
+                            gap={6}
+                            delayBetweenItems={0.1}
+                            className=""
+                          >
+                            {filteredData.composers.map((favorite) => (
+                              <ComposerFavoriteCard
+                                key={favorite.id}
+                                favorite={favorite}
+                                viewMode={viewMode}
+                              />
+                            ))}
+                          </SequentialGrid>
                         ) : (
-                          <EmptyStateFavorites
-                            emptyState="composers"
-                            filters={true}
-                            onClearFilters={clearFilters}
-                          />
+                          <div className="space-y-4">
+                            {filteredData.composers.map((favorite, index) => (
+                              <AnimatedItem
+                                key={favorite.id}
+                                direction="left"
+                                hover="lift"
+                                style={{
+                                  animationDelay: `${index * 0.1}s`,
+                                  animationFillMode: 'backwards',
+                                }}
+                              >
+                                <ComposerFavoriteCard
+                                  favorite={favorite}
+                                  viewMode={viewMode}
+                                />
+                              </AnimatedItem>
+                            ))}
+                          </div>
                         )}
                       </AnimatedItem>
+                    ) : (
+                      <>
+                        {activeTab === 'composers' && (
+                          <AnimatedItem direction="scale" springType="bouncy">
+                            {favoriteComposers.length === 0 ? (
+                              <EmptyStateFavorites
+                                emptyState="composers"
+                                filters={false}
+                                onClearFilters={clearFilters}
+                              />
+                            ) : (
+                              <EmptyStateFavorites
+                                emptyState="composers"
+                                filters={true}
+                                onClearFilters={clearFilters}
+                              />
+                            )}
+                          </AnimatedItem>
+                        )}
+                      </>
                     )}
                   </>
                 )}
-              </>
-            )}
 
-            {/* Works Section */}
-            {(activeTab === 'all' || activeTab === 'works') && (
-              <>
-                {filteredData.works.length > 0 ? (
-                  <AnimatedItem
-                    direction="up"
-                    className="mt-4"
-                    springType="gentle"
-                  >
-                    <div className="flex items-center space-x-3 mb-6">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                        <FiMusic className="w-5 h-5 text-theme-primary" />
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                          Obras Favoritas
-                        </h2>
-                        <p className="text-theme-tertiary">
-                          {filteredData.works.length} de {favoriteWorks.length}{' '}
-                          obras
-                        </p>
-                      </div>
-                    </div>
-
-                    {viewMode === 'cards' ? (
-                      <SequentialGrid
-                        cols={3}
-                        gap={6}
-                        delayBetweenItems={0.1}
-                        className=""
-                      >
-                        {filteredData.works.map((favorite) => (
-                          <WorkFavoriteCard
-                            key={favorite.id}
-                            favorite={favorite}
-                            viewMode={viewMode}
-                          />
-                        ))}
-                      </SequentialGrid>
-                    ) : (
-                      <div className="space-y-4">
-                        {filteredData.works.map((favorite, index) => (
-                          <AnimatedItem
-                            key={favorite.id}
-                            direction="left"
-                            hover="lift"
-                            style={{
-                              animationDelay: `${index * 0.1}s`,
-                              animationFillMode: 'backwards',
-                            }}
-                          >
-                            <WorkFavoriteCard
-                              favorite={favorite}
-                              viewMode={viewMode}
-                            />
-                          </AnimatedItem>
-                        ))}
-                      </div>
-                    )}
-                  </AnimatedItem>
-                ) : (
+                {/* Works Section */}
+                {(activeTab === 'all' || activeTab === 'works') && (
                   <>
-                    {activeTab === 'works' && (
-                      <AnimatedItem direction="scale" springType="bouncy">
-                        {favoriteWorks.length === 0 ? (
-                          <EmptyStateFavorites
-                            emptyState="works"
-                            filters={false}
-                            onClearFilters={clearFilters}
-                          />
+                    {filteredData.works.length > 0 ? (
+                      <AnimatedItem
+                        direction="up"
+                        className="mt-4"
+                        springType="gentle"
+                      >
+                        <div className="flex items-center space-x-3 mb-6">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                            <FiMusic className="w-5 h-5 text-theme-primary" />
+                          </div>
+                          <div>
+                            <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                              Obras Favoritas
+                            </h2>
+                            <p className="text-theme-tertiary">
+                              {filteredData.works.length} de{' '}
+                              {favoriteWorks.length} obras
+                            </p>
+                          </div>
+                        </div>
+
+                        {viewMode === 'cards' ? (
+                          <SequentialGrid
+                            cols={3}
+                            gap={6}
+                            delayBetweenItems={0.1}
+                            className=""
+                          >
+                            {filteredData.works.map((favorite) => (
+                              <WorkFavoriteCard
+                                key={favorite.id}
+                                favorite={favorite}
+                                viewMode={viewMode}
+                              />
+                            ))}
+                          </SequentialGrid>
                         ) : (
-                          <EmptyStateFavorites
-                            emptyState="works"
-                            filters={true}
-                            onClearFilters={clearFilters}
-                          />
+                          <div className="space-y-4">
+                            {filteredData.works.map((favorite, index) => (
+                              <AnimatedItem
+                                key={favorite.id}
+                                direction="left"
+                                hover="lift"
+                                style={{
+                                  animationDelay: `${index * 0.1}s`,
+                                  animationFillMode: 'backwards',
+                                }}
+                              >
+                                <WorkFavoriteCard
+                                  favorite={favorite}
+                                  viewMode={viewMode}
+                                />
+                              </AnimatedItem>
+                            ))}
+                          </div>
                         )}
                       </AnimatedItem>
+                    ) : (
+                      <>
+                        {activeTab === 'works' && (
+                          <AnimatedItem direction="scale" springType="bouncy">
+                            {favoriteWorks.length === 0 ? (
+                              <EmptyStateFavorites
+                                emptyState="works"
+                                filters={false}
+                                onClearFilters={clearFilters}
+                              />
+                            ) : (
+                              <EmptyStateFavorites
+                                emptyState="works"
+                                filters={true}
+                                onClearFilters={clearFilters}
+                              />
+                            )}
+                          </AnimatedItem>
+                        )}
+                      </>
                     )}
                   </>
                 )}
-              </>
-            )}
 
-            {/* 🆕 Scores Section */}
-            {(activeTab === 'all' || activeTab === 'scores') && (
-              <>
-                {filteredData.scores.length > 0 ? (
-                  <AnimatedItem
-                    direction="up"
-                    className="mt-4"
-                    springType="gentle"
-                  >
-                    <div className="flex items-center space-x-3 mb-6">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                        <FiFileText className="w-5 h-5 text-theme-primary" />
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                          Partituras Favoritas
-                        </h2>
-                        <p className="text-theme-tertiary">
-                          {filteredData.scores.length} de{' '}
-                          {favoriteScores.length} partituras
-                        </p>
-                      </div>
-                    </div>
-
-                    {viewMode === 'cards' ? (
-                      <SequentialGrid
-                        cols={3}
-                        gap={6}
-                        delayBetweenItems={0.1}
-                        className=""
-                      >
-                        {filteredData.scores.map((favorite) => (
-                          <ScoreFavoriteCard
-                            key={favorite.id}
-                            favorite={favorite}
-                            viewMode={viewMode}
-                          />
-                        ))}
-                      </SequentialGrid>
-                    ) : (
-                      <div className="space-y-4">
-                        {filteredData.scores.map((favorite, index) => (
-                          <AnimatedItem
-                            key={favorite.id}
-                            direction="left"
-                            hover="lift"
-                            style={{
-                              animationDelay: `${index * 0.1}s`,
-                              animationFillMode: 'backwards',
-                            }}
-                          >
-                            <ScoreFavoriteCard
-                              favorite={favorite}
-                              viewMode={viewMode}
-                            />
-                          </AnimatedItem>
-                        ))}
-                      </div>
-                    )}
-                  </AnimatedItem>
-                ) : (
+                {/* Scores Section */}
+                {(activeTab === 'all' || activeTab === 'scores') && (
                   <>
-                    {activeTab === 'scores' && (
-                      <AnimatedItem direction="scale" springType="bouncy">
-                        {favoriteScores.length === 0 ? (
-                          <EmptyStateFavorites
-                            emptyState="scores"
-                            filters={false}
-                            onClearFilters={clearFilters}
-                          />
+                    {filteredData.scores.length > 0 ? (
+                      <AnimatedItem
+                        direction="up"
+                        className="mt-4"
+                        springType="gentle"
+                      >
+                        <div className="flex items-center space-x-3 mb-6">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                            <FiFileText className="w-5 h-5 text-theme-primary" />
+                          </div>
+                          <div>
+                            <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                              Partituras Favoritas
+                            </h2>
+                            <p className="text-theme-tertiary">
+                              {filteredData.scores.length} de{' '}
+                              {favoriteScores.length} partituras
+                            </p>
+                          </div>
+                        </div>
+
+                        {viewMode === 'cards' ? (
+                          <SequentialGrid
+                            cols={3}
+                            gap={6}
+                            delayBetweenItems={0.1}
+                            className=""
+                          >
+                            {filteredData.scores.map((favorite) => (
+                              <ScoreFavoriteCard
+                                key={favorite.id}
+                                favorite={favorite}
+                                viewMode={viewMode}
+                              />
+                            ))}
+                          </SequentialGrid>
                         ) : (
-                          <EmptyStateFavorites
-                            emptyState="scores"
-                            filters={true}
-                            onClearFilters={clearFilters}
-                          />
+                          <div className="space-y-4">
+                            {filteredData.scores.map((favorite, index) => (
+                              <AnimatedItem
+                                key={favorite.id}
+                                direction="left"
+                                hover="lift"
+                                style={{
+                                  animationDelay: `${index * 0.1}s`,
+                                  animationFillMode: 'backwards',
+                                }}
+                              >
+                                <ScoreFavoriteCard
+                                  favorite={favorite}
+                                  viewMode={viewMode}
+                                />
+                              </AnimatedItem>
+                            ))}
+                          </div>
                         )}
                       </AnimatedItem>
+                    ) : (
+                      <>
+                        {activeTab === 'scores' && (
+                          <AnimatedItem direction="scale" springType="bouncy">
+                            {favoriteScores.length === 0 ? (
+                              <EmptyStateFavorites
+                                emptyState="scores"
+                                filters={false}
+                                onClearFilters={clearFilters}
+                              />
+                            ) : (
+                              <EmptyStateFavorites
+                                emptyState="scores"
+                                filters={true}
+                                onClearFilters={clearFilters}
+                              />
+                            )}
+                          </AnimatedItem>
+                        )}
+                      </>
                     )}
                   </>
                 )}
-              </>
-            )}
 
-            {/* Estado vazio quando há favoritos mas nenhum passa nos filtros da aba "Todos" */}
-            {activeTab === 'all' &&
-              filteredData.composers.length === 0 &&
-              filteredData.works.length === 0 &&
-              filteredData.scores.length === 0 &&
-              (favoriteComposers.length > 0 ||
-                favoriteWorks.length > 0 ||
-                favoriteScores.length > 0) && (
-                <AnimatedItem
-                  direction="scale"
-                  className="mt-4"
-                  springType="bouncy"
-                >
-                  <EmptyStateFavorites
-                    emptyState="all"
-                    filters={true}
-                    onClearFilters={clearFilters}
-                  />
-                </AnimatedItem>
-              )}
+                {/* Estado vazio quando há favoritos mas nenhum passa nos filtros da aba "Todos" */}
+                {activeTab === 'all' &&
+                  filteredData.composers.length === 0 &&
+                  filteredData.works.length === 0 &&
+                  filteredData.scores.length === 0 &&
+                  (favoriteComposers.length > 0 ||
+                    favoriteWorks.length > 0 ||
+                    favoriteScores.length > 0) && (
+                    <AnimatedItem
+                      direction="scale"
+                      className="mt-4"
+                      springType="bouncy"
+                    >
+                      <EmptyStateFavorites
+                        emptyState="all"
+                        filters={true}
+                        onClearFilters={clearFilters}
+                      />
+                    </AnimatedItem>
+                  )}
+              </div>
+            </div>
+
+            {/* Sidebar com estatísticas - apenas desktop inline */}
+            {showStatsInline && (
+              <div className="lg:col-span-1">
+                <div className="sticky top-6 space-y-6">
+                  <FavoritesStatsWidget />
+                </div>
+              </div>
+            )}
           </div>
         )}
       </AnimatedContainer>
+
+      {/* Stats Modal para Mobile */}
+      <Modal
+        isOpen={isStatsModalOpen}
+        onClose={closeStatsModal}
+        title="Estatísticas dos Favoritos"
+        maxWidth="xl"
+      >
+        <FavoritesStatsWidget />
+      </Modal>
     </PageContainer>
   );
 }
@@ -731,7 +739,7 @@ function WorkFavoriteCard({ favorite, viewMode }: WorkFavoriteCardProps) {
   );
 }
 
-// 🆕 Componente para Score Favorite Card
+// Componente para Score Favorite Card
 interface ScoreFavoriteCardProps {
   favorite: any;
   viewMode: ViewMode;
@@ -752,7 +760,7 @@ function ScoreFavoriteCard({ favorite, viewMode }: ScoreFavoriteCardProps) {
         }`}
       >
         <div className="flex-1 relative">
-          {/* 🆕 Badge de mais favoritada */}
+          {/* Badge de mais favoritada */}
           <MostFavoritedBadge
             workId={favorite.workId}
             scoreId={favorite.scoreId}
@@ -867,7 +875,7 @@ function ScoreFavoriteCard({ favorite, viewMode }: ScoreFavoriteCardProps) {
                 id: favorite.scoreId,
                 title: favorite.scoreTitle,
                 type: favorite.scoreType,
-                downloadUrl: favorite.downloadUrl, // Não temos esse dado aqui
+                downloadUrl: favorite.downloadUrl,
                 fileSize: favorite.fileSize,
                 pageCount: favorite.pageCount,
                 fileFormat: favorite.fileFormat,
@@ -887,20 +895,6 @@ function ScoreFavoriteCard({ favorite, viewMode }: ScoreFavoriteCardProps) {
               <span>Ver Obra</span>
               <FiExternalLink className="w-3 h-3" />
             </Link>
-
-            {/* Link direto para download se disponível */}
-            {/* {favorite.downloadUrl && (
-              <a
-                href={favorite.downloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent-green hover:text-accent-blue text-sm font-medium transition-colors flex items-center space-x-1"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <FiDownload className="w-3 h-3" />
-                <span>Download</span>
-              </a>
-            )} */}
           </div>
         )}
       </div>

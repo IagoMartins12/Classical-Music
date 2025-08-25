@@ -12,6 +12,7 @@ import {
   FiLoader,
 } from 'react-icons/fi';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import Button from '../Common/Button';
 
 interface CascadeInfo {
   works?: { id: string; title: string; scoresCount: number }[];
@@ -350,10 +351,11 @@ export default function ConfirmDeleteUploadModal({
           >
             {t('delete_modal_cancel')}
           </button>
-          <button
+          <Button
+            variant="delete"
             onClick={onConfirm}
+            leftIcon={<FiTrash2 />}
             disabled={isLoading || loadingCascadeInfo}
-            className="px-4 py-2 bg-accent-red text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center space-x-2"
           >
             {isLoading ? (
               <>
@@ -362,7 +364,6 @@ export default function ConfirmDeleteUploadModal({
               </>
             ) : (
               <>
-                <FiTrash2 className="w-4 h-4" />
                 <span>
                   {t('delete_modal_delete_button', {
                     type: getItemTypeLabel(),
@@ -376,7 +377,7 @@ export default function ConfirmDeleteUploadModal({
                 </span>
               </>
             )}
-          </button>
+          </Button>
         </div>
       </AnimatedCard>
     </div>

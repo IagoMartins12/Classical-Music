@@ -74,7 +74,8 @@
     "performed_for_others": "Apresentou para outros",
     "musical_pieces": "Peças Musicais da Tarefa",
     "no_pieces_linked": "Nenhuma peça musical vinculada a esta tarefa.",
-    "with_score": "✓ Com partitura"
+    "with_score": "✓ Com partitura",
+    "assignment_by": "Tarefa de"
   },
   "en": {
     "page_title": "Assignment Details",
@@ -151,6 +152,7 @@
     "performed_for_others": "Performed for others",
     "musical_pieces": "Assignment Musical Pieces",
     "no_pieces_linked": "No musical pieces linked to this assignment.",
-    "with_score": "✓ With score"
+    "with_score": "✓ With score",
+    "assignment_by": "Assignments by"
   }
 }

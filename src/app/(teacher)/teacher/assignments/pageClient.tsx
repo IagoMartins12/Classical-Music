@@ -158,12 +158,6 @@ export default function TeacherAssignmentsPageClient({
     { value: 'progress', label: t('sort_progress') },
   ];
 
-  const priorityOptions = [
-    { value: 'low', label: t('priority_low') },
-    { value: 'medium', label: t('priority_medium') },
-    { value: 'high', label: t('priority_high') },
-  ];
-
   // Filter and sort assignments
   const filteredAndSortedAssignments = useMemo(() => {
     let filtered = [...assignments];
@@ -1608,7 +1602,6 @@ function AssignmentDetailsModal({
   onClose,
   onUpdate,
   actionLoading,
-  t,
 }: AssignmentDetailsModalProps) {
   const [feedback, setFeedback] = useState(assignment.teacherFeedback || '');
   const [rating, setRating] = useState(assignment.teacherRating || 0);
@@ -1650,10 +1643,10 @@ function AssignmentDetailsModal({
   };
 
   const getStatusText = (assignment: TeacherAssignment) => {
-    if (assignment.isOverdue) return t('status_overdue');
-    if (assignment.isCompleted) return t('status_completed');
-    if (assignment.status === 'IN_PROGRESS') return t('status_in_progress');
-    return t('status_pending');
+    if (assignment.isOverdue) return 'Atrasada';
+    if (assignment.isCompleted) return 'Concluída';
+    if (assignment.status === 'IN_PROGRESS') return 'Em Andamento';
+    return 'Pendente';
   };
 
   const saveFeedback = async () => {
@@ -1670,19 +1663,19 @@ function AssignmentDetailsModal({
       isCompleted: true,
       status: 'COMPLETED',
       completedAt: new Date().toISOString(),
-      teacherFeedback: feedback || t('approved_by_teacher'),
+      teacherFeedback: feedback || 'Aprovada pelo professor',
       teacherRating: rating || 5,
     });
   };
 
   const milestoneLabels: Record<string, string> = {
-    learnedLeftHand: t('learned_left_hand'),
-    learnedRightHand: t('learned_right_hand'),
-    playedWithMetronome: t('played_with_metronome'),
-    memorized: t('memorized'),
-    playedAtTempo: t('played_at_tempo'),
-    masteredDynamics: t('mastered_dynamics'),
-    performedForOthers: t('performed_for_others'),
+    learnedLeftHand: 'Aprendeu a mão esquerda',
+    learnedRightHand: 'Aprendeu a mão direita',
+    playedWithMetronome: 'Tocou com metrônomo',
+    memorized: 'Memorizou a peça',
+    playedAtTempo: 'Tocou no andamento original',
+    masteredDynamics: 'Dominou dinâmicas',
+    performedForOthers: 'Apresentou para outros',
   };
 
   const completedMilestones = Object.entries(progressMilestones)
@@ -1730,11 +1723,9 @@ function AssignmentDetailsModal({
                   <div className="flex items-center space-x-2 text-theme-secondary">
                     <FiBookOpen className="w-4 h-4" />
                     <span>
-                      {t(
-                        ASSIGNMENT_TYPES[
-                          assignment.type as keyof typeof ASSIGNMENT_TYPES
-                        ]
-                      ) || assignment.type}
+                      {ASSIGNMENT_TYPES[
+                        assignment.type as keyof typeof ASSIGNMENT_TYPES
+                      ] || assignment.type}
                     </span>
                   </div>
                   {assignment.dueDate && (
@@ -1762,18 +1753,18 @@ function AssignmentDetailsModal({
                       ]
                     }`}
                   >
-                    {t(
+                    {
                       PRIORITY_LABELS[
                         assignment.priority as keyof typeof PRIORITY_LABELS
                       ]
-                    )}
+                    }
                   </span>
 
                   {/* 🆕 Indicadores visuais */}
                   {videoSubmission && (
                     <span className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded text-xs flex items-center space-x-1">
                       <FiVideo className="w-3 h-3" />
-                      <span>{t('video_submission')}</span>
+                      <span>Vídeo</span>
                     </span>
                   )}
 
@@ -1788,11 +1779,7 @@ function AssignmentDetailsModal({
                   {completedMilestones.length > 0 && (
                     <span className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs flex items-center space-x-1">
                       <FiTarget className="w-3 h-3" />
-                      <span>
-                        {t('achievements_count', {
-                          count: completedMilestones.length,
-                        })}
-                      </span>
+                      <span>{completedMilestones.length} conquistas</span>
                     </span>
                   )}
                 </div>
@@ -1807,7 +1794,7 @@ function AssignmentDetailsModal({
               {/* Description */}
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  {t('assignment_details')}
+                  Descrição
                 </label>
                 <div className="text-theme-primary whitespace-pre-wrap p-4 bg-theme-secondary/5 rounded-lg border">
                   {assignment.description}
@@ -1818,7 +1805,7 @@ function AssignmentDetailsModal({
               {assignment.progress !== undefined && (
                 <div>
                   <label className="text-sm font-medium text-theme-tertiary block mb-3">
-                    {t('progress_label')}
+                    Progresso do Aluno
                   </label>
                   <div className="flex items-center space-x-4 mb-3">
                     <div className="flex-1">
@@ -1850,9 +1837,7 @@ function AssignmentDetailsModal({
                       ))}
                       {completedMilestones.length > 6 && (
                         <div className="text-xs text-theme-tertiary">
-                          {t('more_goals', {
-                            count: completedMilestones.length - 6,
-                          })}
+                          +{completedMilestones.length - 6} mais...
                         </div>
                       )}
                     </div>
@@ -1864,7 +1849,7 @@ function AssignmentDetailsModal({
               {videoSubmission && (
                 <div>
                   <label className="text-sm font-medium text-theme-tertiary block mb-3">
-                    {t('video_submission')}
+                    Vídeo da Performance
                   </label>
                   <div className="p-4 bg-theme-elevated rounded-lg">
                     <div className="flex items-center justify-between mb-3">
@@ -1877,13 +1862,8 @@ function AssignmentDetailsModal({
                             {videoSubmission.originalName}
                           </div>
                           <div className="text-xs text-theme-secondary">
-                            {t('file_size', {
-                              size: formatFileSize(videoSubmission.fileSize),
-                            })}{' '}
-                            •{' '}
-                            {t('uploaded_at', {
-                              date: formatDateTime(videoSubmission.uploadedAt),
-                            })}
+                            {formatFileSize(videoSubmission.fileSize)} •{' '}
+                            {formatDateTime(videoSubmission.uploadedAt)}
                           </div>
                         </div>
                       </div>
@@ -1894,7 +1874,7 @@ function AssignmentDetailsModal({
                         className="btn-classical-secondary text-xs px-3 py-1 flex items-center space-x-1"
                       >
                         <FiPlay className="w-3 h-3" />
-                        <span>{t('watch')}</span>
+                        <span>Assistir</span>
                       </a>
                     </div>
 
@@ -1910,6 +1890,151 @@ function AssignmentDetailsModal({
                   </div>
                 </div>
               )}
+
+              {/* Goals resumo */}
+              {(assignment.practiceGoals.length > 0 ||
+                assignment.technicalGoals.length > 0) && (
+                <div>
+                  <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                    Objetivos
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {assignment.practiceGoals.slice(0, 3).map((goal, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center space-x-2 text-sm p-2 bg-accent-blue/5 border border-accent-blue/20 rounded"
+                      >
+                        <FiTarget className="w-3 h-3 text-accent-blue" />
+                        <span className="text-theme-primary truncate">
+                          {goal}
+                        </span>
+                      </div>
+                    ))}
+                    {assignment.technicalGoals.slice(0, 3).map((goal, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center space-x-2 text-sm p-2 bg-accent-green/5 border border-accent-green/20 rounded"
+                      >
+                        <FiMusic className="w-3 h-3 text-accent-green" />
+                        <span className="text-theme-primary truncate">
+                          {goal}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  {assignment.practiceGoals.length +
+                    assignment.technicalGoals.length >
+                    6 && (
+                    <div className="text-xs text-theme-tertiary mt-2">
+                      +
+                      {assignment.practiceGoals.length +
+                        assignment.technicalGoals.length -
+                        6}{' '}
+                      objetivos adicionais
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Submissão do aluno */}
+              {(assignment.studentNotes || assignment.studentRating) && (
+                <div>
+                  <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                    Submissão do Aluno
+                  </label>
+                  <div className="space-y-3">
+                    {assignment.studentNotes && (
+                      <div className="p-3 bg-theme-secondary/5 rounded-lg border">
+                        <div className="text-sm font-medium text-theme-primary mb-1">
+                          Comentários:
+                        </div>
+                        <div className="text-sm text-theme-secondary">
+                          {assignment.studentNotes}
+                        </div>
+                      </div>
+                    )}
+
+                    {assignment.studentRating && (
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm text-theme-tertiary">
+                          Avaliação de dificuldade:
+                        </span>
+                        <div className="flex items-center space-x-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <FiStar
+                              key={star}
+                              className={`w-4 h-4 ${
+                                star <= assignment.studentRating!
+                                  ? 'text-accent-yellow fill-current'
+                                  : 'text-theme-tertiary'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-sm text-theme-primary">
+                          ({assignment.studentRating}/5)
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Teacher Feedback Section */}
+              <div>
+                <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                  Seu Feedback
+                </label>
+                <div className="space-y-4">
+                  <textarea
+                    value={feedback}
+                    onChange={(e) => setFeedback(e.target.value)}
+                    rows={3}
+                    className="input-classical w-full text-sm"
+                    placeholder="Adicione seu feedback sobre o desempenho do aluno..."
+                  />
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <span className="text-sm text-theme-tertiary">
+                        Avaliação:
+                      </span>
+                      <div className="flex items-center space-x-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            onClick={() => setRating(star)}
+                            className="w-5 h-5 text-theme-tertiary hover:text-accent-yellow transition-colors"
+                          >
+                            <FiStar
+                              className={`w-4 h-4 ${
+                                star <= rating
+                                  ? 'text-accent-yellow fill-current'
+                                  : ''
+                              }`}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={saveFeedback}
+                      disabled={
+                        actionLoading === assignment.id || !feedback.trim()
+                      }
+                      className="btn-classical-secondary text-sm flex items-center space-x-1"
+                    >
+                      {actionLoading === assignment.id ? (
+                        <FiRefreshCw className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <FiSave className="w-3 h-3" />
+                      )}
+                      <span>Salvar</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Sidebar */}
@@ -1917,13 +2042,11 @@ function AssignmentDetailsModal({
               {/* Quick Stats */}
               <div className="classical-card-2 p-4">
                 <h3 className="font-bold text-theme-primary mb-3 text-sm">
-                  {t('assignment_info')}
+                  Informações
                 </h3>
                 <div className="space-y-2 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-theme-tertiary">
-                      {t('created_on')}
-                    </span>
+                    <span className="text-theme-tertiary">Criado:</span>
                     <span className="text-theme-primary">
                       {formatDate(assignment.createdAt)}
                     </span>
@@ -1932,7 +2055,7 @@ function AssignmentDetailsModal({
                   {assignment.estimatedTime && (
                     <div className="flex justify-between">
                       <span className="text-theme-tertiary">
-                        {t('estimated_time_label')}
+                        Tempo estimado:
                       </span>
                       <span className="text-theme-primary">
                         {assignment.estimatedTime}min
@@ -1942,9 +2065,7 @@ function AssignmentDetailsModal({
 
                   {assignment.actualTime && (
                     <div className="flex justify-between">
-                      <span className="text-theme-tertiary">
-                        {t('actual_time_label')}
-                      </span>
+                      <span className="text-theme-tertiary">Tempo real:</span>
                       <span className="text-theme-primary">
                         {assignment.actualTime}min
                       </span>
@@ -1953,9 +2074,7 @@ function AssignmentDetailsModal({
 
                   {assignment.completedAt && (
                     <div className="flex justify-between">
-                      <span className="text-theme-tertiary">
-                        {t('completed_on')}
-                      </span>
+                      <span className="text-theme-tertiary">Concluído:</span>
                       <span className="text-theme-primary">
                         {formatDate(assignment.completedAt)}
                       </span>
@@ -1965,9 +2084,7 @@ function AssignmentDetailsModal({
                   {assignment.workScoreIds &&
                     assignment.workScoreIds.length > 0 && (
                       <div className="flex justify-between">
-                        <span className="text-theme-tertiary">
-                          {t('scores_label')}
-                        </span>
+                        <span className="text-theme-tertiary">Partituras:</span>
                         <span className="text-accent-blue">
                           {assignment.workScoreIds.length}
                         </span>
@@ -1976,9 +2093,7 @@ function AssignmentDetailsModal({
 
                   {videoSubmission && (
                     <div className="flex justify-between">
-                      <span className="text-theme-tertiary">
-                        {t('video_label')}
-                      </span>
+                      <span className="text-theme-tertiary">Vídeo:</span>
                       <span className="text-accent-purple">
                         {formatFileSize(videoSubmission.fileSize)}
                       </span>
@@ -1990,7 +2105,7 @@ function AssignmentDetailsModal({
               {/* Quick Actions */}
               <div className="classical-card-2 p-4">
                 <h3 className="font-bold text-theme-primary mb-3 text-sm">
-                  {t('quick_actions')}
+                  Ações Rápidas
                 </h3>
                 <div className="space-y-2">
                   {!assignment.isCompleted && (
@@ -2004,25 +2119,21 @@ function AssignmentDetailsModal({
                       ) : (
                         <FiCheck className="w-3 h-3" />
                       )}
-                      <span>
-                        {actionLoading === assignment.id
-                          ? t('approving')
-                          : t('approve')}
-                      </span>
+                      <span>Aprovar</span>
                     </button>
                   )}
 
                   <Link href={`assignments/${assignment.id}`}>
                     <button className="w-full btn-classical-secondary text-sm flex items-center justify-center space-x-2">
                       <FiEye className="w-3 h-3" />
-                      <span>{t('view_more_details')}</span>
+                      <span>Ver mais detalhes</span>
                     </button>
                   </Link>
 
                   <Link href={`assignments/${assignment.id}/edit`}>
                     <button className="w-full btn-classical-secondary text-sm flex items-center justify-center space-x-2">
                       <FiEdit className="w-3 h-3" />
-                      <span>{t('edit')}</span>
+                      <span>Editar</span>
                     </button>
                   </Link>
 
@@ -2034,7 +2145,7 @@ function AssignmentDetailsModal({
                       className="w-full btn-classical-secondary text-sm flex items-center justify-center space-x-2"
                     >
                       <FiVideo className="w-3 h-3" />
-                      <span>{t('watch_video')}</span>
+                      <span>Assistir Vídeo</span>
                     </a>
                   )}
                 </div>
@@ -2044,7 +2155,7 @@ function AssignmentDetailsModal({
               {completedMilestones.length > 0 && (
                 <div className="classical-card-2 p-4">
                   <h3 className="font-bold text-theme-primary mb-3 text-sm">
-                    {t('achievements_title')}
+                    Conquistas do Aluno
                   </h3>
                   <div className="space-y-1">
                     {completedMilestones.slice(0, 4).map((key) => (
@@ -2060,9 +2171,7 @@ function AssignmentDetailsModal({
                     ))}
                     {completedMilestones.length > 4 && (
                       <div className="text-xs text-theme-tertiary">
-                        {t('more_goals', {
-                          count: completedMilestones.length - 4,
-                        })}
+                        +{completedMilestones.length - 4} mais...
                       </div>
                     )}
                   </div>

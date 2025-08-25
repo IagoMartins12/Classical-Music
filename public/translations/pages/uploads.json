@@ -424,7 +424,7 @@
     "delete_modal_cancel": "Cancelar",
     "delete_modal_deleting": "Deletando...",
     "delete_modal_delete_button": "Deletar {type}",
-    "delete_modal_plus_related": "+ itens relacionados",
+    "delete_modal_plus_related": "+ Itens relacionados",
 
     "item_type_composer": "compositor",
     "item_type_work": "obra",
@@ -435,7 +435,17 @@
     "item_score_singular": "partitura",
     "item_score_plural": "partituras",
     "item_work_singular": "obra",
-    "item_work_plural": "obras"
+    "item_work_plural": "obras",
+
+    "epochs_medieval": "Medieval",
+    "epochs_renascentista": "Renascentista",
+    "epochs_barroco": "Barroco",
+    "epochs_classico": "Clássico",
+    "epochs_romantico": "Romântico",
+    "epochs_modernismo": "Modernismo",
+    "epochs_moderno": "Moderno",
+    "epochs_contemporaneo": "Contemporâneo",
+    "epochs_desconhecido": "Desconhecido"
   },
   "en": {
     "page_title": "My Uploads",
@@ -687,6 +697,16 @@
     "modal_composer_basic_nationality": "Nationality",
     "modal_composer_basic_nationality_placeholder": "Select nationality...",
 
+    "epochs_medieval": "Medieval",
+    "epochs_renascentista": "Renaissance",
+    "epochs_barroco": "Baroque",
+    "epochs_classico": "Classical",
+    "epochs_romantico": "Romantic",
+    "epochs_modernismo": "Modernism",
+    "epochs_moderno": "Modern",
+    "epochs_contemporaneo": "Contemporary",
+    "epochs_desconhecido": "Unknown",
+
     "modal_composer_dates_title": "Dates",
     "modal_composer_dates_birth": "Birth Date",
     "modal_composer_dates_death": "Death Date",
@@ -862,7 +882,7 @@
     "delete_modal_cancel": "Cancel",
     "delete_modal_deleting": "Deleting...",
     "delete_modal_delete_button": "Delete {type}",
-    "delete_modal_plus_related": "+ related items",
+    "delete_modal_plus_related": "+ Related items",
 
     "item_type_composer": "composer",
     "item_type_work": "work",

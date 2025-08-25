@@ -26,6 +26,7 @@ import CreateWorkModal from '../CreateWorkModal';
 import { useToast } from '@/app/hooks/useToast';
 import { useProcessChanges } from '@/app/hooks/useFormChanges';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import Checkbox from '@/app/components/Common/Checkbox';
 
 interface DiscoveredWork {
   id: string;
@@ -544,15 +545,15 @@ const BulkInsertWorksModal = ({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <Button
-                          variant="ghost"
-                          size="sm"
+                          variant="outline"
+                          size="md"
                           onClick={() => toggleSelectAll(true)}
                         >
                           {t('bulk_select_all_new')}
                         </Button>
                         <Button
-                          variant="ghost"
-                          size="sm"
+                          variant="secondary"
+                          size="md"
                           onClick={() => toggleSelectAll(false)}
                         >
                           {t('bulk_unselect_all')}
@@ -585,7 +586,7 @@ const BulkInsertWorksModal = ({
                         }}
                       >
                         <div
-                          className={`border rounded-lg p-4 transition-all ${
+                          className={`classical-card-simple mr-4 rounded-lg p-4 transition-all ${
                             work.alreadyExists
                               ? 'bg-accent-amber/5 border-accent-amber/20'
                               : work.selected
@@ -596,7 +597,7 @@ const BulkInsertWorksModal = ({
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-3 flex-1 min-w-0">
                               {/* Checkbox */}
-                              <input
+                              <Checkbox
                                 type={work.alreadyExists ? 'text' : 'checkbox'}
                                 checked={work.selected}
                                 disabled={work.alreadyExists}
@@ -637,14 +638,6 @@ const BulkInsertWorksModal = ({
                                 </a>
 
                                 <button
-                                  onClick={() => handleEditWork(work)}
-                                  className="text-theme-tertiary hover:text-brand-primary"
-                                  title={t('bulk_edit_work')}
-                                >
-                                  <FiEdit3 className="w-4 h-4" />
-                                </button>
-
-                                <button
                                   onClick={() => removeWork(work.id)}
                                   className="text-theme-tertiary hover:text-accent-red"
                                   title={t('bulk_remove_work')}
@@ -677,7 +670,7 @@ const BulkInsertWorksModal = ({
                     {/* Barra de progresso geral */}
                     <div className="w-full bg-theme-secondary rounded-full h-2 mb-2">
                       <div
-                        className="bg-gray-500 h-2 rounded-full transition-all duration-300"
+                        className="progress-bar h-2 rounded-full transition-all duration-300"
                         style={{
                           width: `${
                             (workProgress.filter(
@@ -705,7 +698,7 @@ const BulkInsertWorksModal = ({
                     {workProgress.map((work) => (
                       <div
                         key={work.tempId}
-                        className={`border rounded-lg p-4 transition-all ${
+                        className={`classical-card-simple rounded-lg p-4 transition-all ${
                           work.status === 'success'
                             ? 'bg-accent-green/5 border-accent-green/20'
                             : work.status === 'error'
@@ -843,11 +836,11 @@ const BulkInsertWorksModal = ({
                     {processResults.map((result) => (
                       <div
                         key={result.tempId}
-                        className={`border rounded-lg p-3 ${
+                        className={`rounded-lg border p-3 ${
                           result.status === 'success'
-                            ? 'bg-accent-green/5 border-green-300'
+                            ? 'bg-accent-green/5 border border-green-300'
                             : result.status === 'error'
-                            ? 'bg-accent-red/5 border-red-300'
+                            ? 'bg-accent-red/5 border border-red-300'
                             : result.status === 'duplicate'
                             ? 'bg-accent-amber/5 border-amber-300'
                             : 'bg-theme-elevated border-theme-secondary'

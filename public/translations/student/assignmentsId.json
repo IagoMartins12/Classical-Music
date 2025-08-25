@@ -84,7 +84,8 @@
     "student_assignment_details_type_listening": "Escuta",
     "student_assignment_details_type_composition": "Composição",
     "student_assignment_details_type_performance": "Performance",
-    "student_assignment_details_type_reading": "Leitura"
+    "student_assignment_details_type_reading": "Leitura",
+    "assignment_by": "Tarefa de"
   },
   "en": {
     "student_assignment_details_error_title": "Error Loading Assignment",
@@ -171,6 +172,7 @@
     "student_assignment_details_type_listening": "Listening",
     "student_assignment_details_type_composition": "Composition",
     "student_assignment_details_type_performance": "Performance",
-    "student_assignment_details_type_reading": "Reading"
+    "student_assignment_details_type_reading": "Reading",
+    "assignment_by": "Assignments by"
   }
 }

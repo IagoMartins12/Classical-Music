@@ -1,4 +1,4 @@
-// app/annotations/AnnotationsPageClient.tsx - VERSÃO CORRIGIDA
+// app/annotations/AnnotationsPageClient.tsx - COM LAYOUT ADAPTATIVO
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
@@ -8,6 +8,7 @@ import {
   FiFilter,
   FiX,
   FiPlus,
+  FiBarChart2,
 } from 'react-icons/fi';
 
 import { useAuth } from '@/app/hooks/useAuth';
@@ -27,6 +28,8 @@ import {
 } from '@/app/stores/useAnnotationsStore';
 import Link from 'next/link';
 import AnnotationsStatsWidget from '@/app/components/StatsWidget/AnnotationsStatsWidget';
+import Modal from '../../components/Modal';
+import { useAdaptiveStats } from '@/app/hooks/useMobile';
 
 type AnnotationCategory =
   | 'TECHNIQUE'
@@ -115,16 +118,26 @@ const AnnotationsPageClient = () => {
 
   const { user } = useAuth();
 
-  // 🔧 CORREÇÃO PRINCIPAL: Acessar o estado diretamente da store
+  // Stats adaptativo
   const {
-    userAnnotations: allUserAnnotations, // Estado direto da store
+    isVisible: showStats,
+    toggleVisibility: toggleStats,
+    isMobile,
+    showInline: showStatsInline,
+    isModalOpen: isStatsModalOpen,
+    closeModal: closeStatsModal,
+  } = useAdaptiveStats('annotations');
+
+  // Store
+  const {
+    userAnnotations: allUserAnnotations,
     fetchUserAnnotations,
     loading,
     setFilters,
     clearFilters,
   } = useAnnotationsStore();
 
-  // 🔧 CORREÇÃO: Buscar anotações do usuário diretamente do estado
+  // Buscar anotações do usuário diretamente do estado
   const userAnnotations = useMemo(() => {
     if (!user?.id) return [];
     return allUserAnnotations[user.id] || [];
@@ -172,15 +185,13 @@ const AnnotationsPageClient = () => {
     setMounted(true);
   }, []);
 
-  // 🔧 MELHORIA: Escutar eventos personalizados de anotações
+  // Escutar eventos personalizados de anotações
   useEffect(() => {
     if (!mounted || !user?.id) return;
 
     const handleAnnotationDeleted = (event: CustomEvent) => {
       console.log('🔄 Evento de anotação deletada detectado:', event.detail);
-      // A store já foi atualizada, mas força uma verificação
       if (event.detail.userId === user.id) {
-        // Opcional: re-fetch se necessário
         console.log(
           '🔄 Anotação do usuário atual deletada, UI deve ser atualizada automaticamente'
         );
@@ -274,62 +285,6 @@ const AnnotationsPageClient = () => {
       highPerformingCount,
     };
   }, [userAnnotations]);
-
-  // Estatísticas para o widget
-  // const widgetStats = useMemo(() => {
-  //   const categoryDistribution = CATEGORY_OPTIONS.slice(1)
-  //     .map((option) => {
-  //       const count = userAnnotations.filter(
-  //         (a) => a.category === option.value
-  //       ).length;
-  //       return {
-  //         category: option.value,
-  //         _count: { category: count },
-  //       };
-  //     })
-  //     .filter((item) => item._count.category > 0);
-
-  //   return {
-  //     categoryDistribution,
-  //     difficultyDistribution: [],
-  //     scopeDistribution: [],
-  //     recentAnnotations: userAnnotations.filter((a) => {
-  //       const createdDate = new Date(a.createdAt);
-  //       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-  //       return createdDate >= thirtyDaysAgo;
-  //     }).length,
-  //   };
-  // }, [userAnnotations]);
-
-  // // Top anotações para o widget
-  // const topAnnotations = useMemo(() => {
-  //   return [...userAnnotations]
-  //     .sort((a, b) => b.helpfulCount - a.helpfulCount)
-  //     .slice(0, 5);
-  // }, [userAnnotations]);
-
-  // // Obras mais anotadas para o widget
-  // const mostAnnotatedWorks = useMemo(() => {
-  //   const worksMap = new Map();
-
-  //   userAnnotations.forEach((annotation) => {
-  //     const workId = annotation.workId;
-  //     if (!worksMap.has(workId)) {
-  //       worksMap.set(workId, {
-  //         id: workId,
-  //         title: annotation.work?.title,
-  //         composer: annotation.work?.composer,
-  //         opOrCatalog: annotation.work?.opOrCatalog,
-  //         annotationsCount: 0,
-  //       });
-  //     }
-  //     worksMap.get(workId).annotationsCount++;
-  //   });
-
-  //   return Array.from(worksMap.values())
-  //     .sort((a, b) => b.annotationsCount - a.annotationsCount)
-  //     .slice(0, 5);
-  // }, [userAnnotations]);
 
   // Filters check
   const hasActiveFilters = useMemo(() => {
@@ -440,7 +395,7 @@ const AnnotationsPageClient = () => {
                   )}
                 </div>
 
-                {/* Search, Filter Button, View Mode */}
+                {/* Search, Filter Button, Stats Toggle, View Mode */}
                 <div className="flex flex-col sm:flex-row gap-3">
                   {/* Search */}
                   <div className="relative">
@@ -450,7 +405,7 @@ const AnnotationsPageClient = () => {
                       placeholder="Buscar anotações, obras ou compositores..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="input-classical w-full sm:w-96"
+                      className="input-classical w-full sm:w-80"
                     />
                   </div>
 
@@ -480,6 +435,25 @@ const AnnotationsPageClient = () => {
                           }
                         </span>
                       )}
+                    </span>
+                  </button>
+
+                  {/* Stats Toggle Button */}
+                  <button
+                    onClick={toggleStats}
+                    className={`flex items-center space-x-2 px-4 py-3 rounded-lg border transition-all font-medium ${
+                      showStats && !isMobile
+                        ? 'bg-accent-purple text-theme-primary border-accent-purple shadow-md'
+                        : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-accent-purple hover:bg-interactive-hover'
+                    }`}
+                  >
+                    <FiBarChart2 className="w-4 h-4" />
+                    <span className="text-sm">
+                      {isMobile
+                        ? 'Stats'
+                        : showStats
+                        ? 'Esconder Stats'
+                        : 'Ver Stats'}
                     </span>
                   </button>
 
@@ -635,9 +609,17 @@ const AnnotationsPageClient = () => {
                 </div>
               </AnimatedItem>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Annotations List (2/3 da largura) */}
-                <div className="lg:col-span-2">
+              <div
+                className={`grid grid-cols-1 ${
+                  showStatsInline ? 'lg:grid-cols-3' : 'lg:grid-cols-1'
+                } gap-8`}
+              >
+                {/* Annotations List */}
+                <div
+                  className={
+                    showStatsInline ? 'lg:col-span-2' : 'lg:col-span-3'
+                  }
+                >
                   <div className="flex items-center space-x-3 mb-6">
                     <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                       <FiMessageSquare className="w-5 h-5 text-theme-primary" />
@@ -675,17 +657,29 @@ const AnnotationsPageClient = () => {
                   </div>
                 </div>
 
-                {/* Sidebar com estatísticas (1/3 da largura) */}
-                <div className="lg:col-span-1">
-                  <div className="sticky top-6 space-y-6">
-                    <AnnotationsStatsWidget />
+                {/* Sidebar com estatísticas - apenas desktop inline */}
+                {showStatsInline && (
+                  <div className="lg:col-span-1">
+                    <div className="sticky top-6 space-y-6">
+                      <AnnotationsStatsWidget />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
           </AnimatedItem>
         </div>
       </AnimatedContainer>
+
+      {/* Stats Modal para Mobile */}
+      <Modal
+        isOpen={isStatsModalOpen}
+        onClose={closeStatsModal}
+        title="Estatísticas das Anotações"
+        maxWidth="xl"
+      >
+        <AnnotationsStatsWidget />
+      </Modal>
 
       {/* Create Modal */}
       <CreateAnnotationModal

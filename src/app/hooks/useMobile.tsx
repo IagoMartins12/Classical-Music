@@ -1,9 +1,79 @@
-// hooks/useMobile.ts
+// hooks/useAdaptiveStats.ts
 'use client';
 
 import { useState, useEffect } from 'react';
 
-// Hook para detectar se é mobile
+interface UseAdaptiveStatsReturn {
+  isVisible: boolean;
+  toggleVisibility: () => void;
+  isMobile: boolean;
+  showInline: boolean; // true = mostrar inline, false = esconder ou modal
+  openModal: () => void;
+  isModalOpen: boolean;
+  closeModal: () => void;
+}
+
+export function useAdaptiveStats(key: string): UseAdaptiveStatsReturn {
+  const [isVisible, setIsVisible] = useState(false); // Padrão escondido
+  const [isMobile, setIsMobile] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Detectar mobile (lg breakpoint = 1024px)
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Carregar estado do localStorage apenas para desktop
+  useEffect(() => {
+    if (!isMobile) {
+      const saved = localStorage.getItem(`stats-visible-${key}`);
+      if (saved !== null) {
+        setIsVisible(saved === 'true');
+      }
+    }
+  }, [key, isMobile]);
+
+  // Salvar estado no localStorage apenas para desktop
+  const toggleVisibility = () => {
+    if (isMobile) {
+      // Mobile: abrir modal
+      setIsModalOpen(true);
+    } else {
+      // Desktop: toggle inline
+      const newValue = !isVisible;
+      setIsVisible(newValue);
+      localStorage.setItem(`stats-visible-${key}`, newValue.toString());
+    }
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // showInline: true apenas para desktop quando visível
+  const showInline = !isMobile && isVisible;
+
+  return {
+    isVisible,
+    toggleVisibility,
+    isMobile,
+    showInline,
+    openModal,
+    isModalOpen,
+    closeModal,
+  };
+}
+
 export const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -24,71 +94,4 @@ export const useIsMobile = () => {
   }, []);
 
   return isMobile;
-};
-
-// Hook para visibilidade de stats com comportamento diferente no mobile
-export const useStatsVisibility = (key: string) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const isMobile = useIsMobile();
-
-  useEffect(() => {
-    const saved = localStorage.getItem(`stats-visible-${key}`);
-
-    // No mobile, padrão é escondido sempre
-    // No desktop, usa o valor salvo ou escondido como padrão
-    if (isMobile) {
-      setIsVisible(false);
-    } else {
-      setIsVisible(saved === 'true');
-    }
-  }, [key, isMobile]);
-
-  const toggleVisibility = () => {
-    const newValue = !isVisible;
-    setIsVisible(newValue);
-    localStorage.setItem(`stats-visible-${key}`, newValue.toString());
-  };
-
-  return { isVisible, toggleVisibility, isMobile };
-};
-
-// Hook para adaptar o comportamento dos stats no mobile
-export const useAdaptiveStats = (key: string) => {
-  const { isVisible, toggleVisibility, isMobile } = useStatsVisibility(key);
-
-  // No mobile, sempre usar modal/fullscreen para stats
-  // No desktop, usar inline expansion
-  const showInModal = isMobile && isVisible;
-  const showInline = !isMobile && isVisible;
-
-  return {
-    isVisible,
-    toggleVisibility,
-    isMobile,
-    showInModal,
-    showInline,
-  };
-};
-
-// Hook para otimizar re-renders de stats
-export const useStatsOptimization = () => {
-  const [isStatsCalculating, setIsStatsCalculating] = useState(false);
-
-  const withStatsCalculation = async <T,>(
-    fn: () => Promise<T> | T
-  ): Promise<T> => {
-    setIsStatsCalculating(true);
-    try {
-      const result = await fn();
-      return result;
-    } finally {
-      // Usar timeout para evitar flicker
-      setTimeout(() => setIsStatsCalculating(false), 100);
-    }
-  };
-
-  return {
-    isStatsCalculating,
-    withStatsCalculation,
-  };
 };

@@ -284,8 +284,6 @@ export function useTeacherAssignments(
           throw new Error('Erro na exclusão da tarefa');
         }
 
-        console.log('✅ [HOOK] Tarefa deletada com sucesso');
-
         // Remove from local state
         setState((prev) => ({
           ...prev,

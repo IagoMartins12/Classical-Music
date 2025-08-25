@@ -452,7 +452,7 @@ export default function StudentAssignmentDetailsPageClient({
                   {assignment.title}
                 </h1>
                 <p className="text-theme-secondary classical-subtitle">
-                  Tarefa de {assignment.lesson.teacher.name}
+                  {t('assignment_by')} {assignment.lesson.teacher.name}
                 </p>
               </div>
             </div>
@@ -891,7 +891,7 @@ export default function StudentAssignmentDetailsPageClient({
                   </h3>
 
                   <div className="space-y-4">
-                    <div className="p-4 bg-accent-blue/5 border border-accent-blue/20 rounded-lg">
+                    <div className="p-4 bg-theme-elevated rounded-lg">
                       <p className="text-theme-primary whitespace-pre-wrap">
                         {assignment.teacherFeedback}
                       </p>
