@@ -66,6 +66,7 @@ export default function AnnotationsStatsWidget({
   const nextAchievements = getNextAnnotationsAchievements(stats);
   const smartCTAs = getAnnotationsSmartCTAs(stats);
 
+  console.log('badges', badges);
   // Auto-detectar achievements
   useEffect(() => {
     if (stats.totalAnnotations > 0) {
@@ -132,9 +133,9 @@ export default function AnnotationsStatsWidget({
   }
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`space-y-4 ${className} mt-4`}>
       {/* Toggle Button */}
-      <AnimatedCard hover="scale" className="classical-card p-4">
+      {/* <AnimatedCard hover="scale" className="classical-card p-4">
         <button
           onClick={handleToggle}
           className="w-full flex items-center justify-between text-theme-primary hover:text-brand-primary transition-colors"
@@ -169,7 +170,7 @@ export default function AnnotationsStatsWidget({
             {isMobile && <FiBarChart2 className="w-5 h-5" />}
           </div>
         </button>
-      </AnimatedCard>
+      </AnimatedCard> */}
 
       {/* Stats Content */}
       {showInline && renderStatsContent()}
@@ -183,7 +184,7 @@ export default function AnnotationsStatsWidget({
     return (
       <>
         {/* Overview Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <AnimatedItem direction="up" delay={0.1}>
             <div className="classical-card p-4 text-center">
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -231,7 +232,7 @@ export default function AnnotationsStatsWidget({
               <div className="text-sm text-theme-tertiary">Média Útil</div>
             </div>
           </AnimatedItem>
-        </div>
+        </div> */}
 
         {/* Próximas Conquistas */}
         {nextAchievements.length > 0 && (
@@ -350,6 +351,7 @@ export default function AnnotationsStatsWidget({
           badges={badges}
           title="Suas Conquistas de Contribuição"
           size="md"
+          maxVisible={6}
         />
 
         {/* Impact Stats */}
@@ -360,7 +362,7 @@ export default function AnnotationsStatsWidget({
               Seu Impacto na Comunidade
             </h4>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-accent-green">
                 {stats.publicAnnotations}
