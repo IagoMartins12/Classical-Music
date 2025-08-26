@@ -6,10 +6,10 @@ import {
   FiSearch,
   FiX,
   FiFileText,
-} from 'react-icons/fi'; // 🆕 Adicionado FiFileText
+} from 'react-icons/fi';
 import { AnimatedContainer } from '../../animation/AnimatedComponents';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
-// 🆕 Atualizado para incluir 'scores'
 interface emptyStatesProps {
   emptyState: 'all' | 'works' | 'composers' | 'scores';
   filters?: boolean;
@@ -21,6 +21,8 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
   filters = false,
   onClearFilters,
 }) => {
+  const { t } = useTranslation({ sections: ['pages/favorites'] });
+
   // Configurações baseadas no tipo de estado vazio e filtros
   const getEmptyStateConfig = () => {
     // Se há filtros ativos, mostra mensagem de "nenhum resultado encontrado"
@@ -28,11 +30,10 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
       return {
         all: {
           icon: FiSearch,
-          title: 'Nenhum resultado encontrado',
-          description:
-            'Não encontramos favoritos que correspondam à sua busca. Tente termos diferentes ou limpe os filtros.',
+          title: t('empty_no_results'),
+          description: t('empty_no_results_description'),
           primaryAction: {
-            label: 'Limpar Filtros',
+            label: t('empty_clear_filters'),
             onClick: onClearFilters,
             icon: FiX,
             href: null,
@@ -41,11 +42,10 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
         },
         composers: {
           icon: FiSearch,
-          title: 'Nenhum compositor encontrado',
-          description:
-            'Não encontramos compositores favoritos que correspondam à sua busca.',
+          title: t('empty_no_composer'),
+          description: t('empty_no_composer_description'),
           primaryAction: {
-            label: 'Limpar Filtros',
+            label: t('empty_clear_filters'),
             onClick: onClearFilters,
             icon: FiX,
           },
@@ -53,24 +53,21 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
         },
         works: {
           icon: FiSearch,
-          title: 'Nenhuma obra encontrada',
-          description:
-            'Não encontramos obras favoritas que correspondam à sua busca.',
+          title: t('empty_no_work'),
+          description: t('empty_no_work_description'),
           primaryAction: {
-            label: 'Limpar Filtros',
+            label: t('empty_clear_filters'),
             onClick: onClearFilters,
             icon: FiX,
           },
           showSecondaryActions: false,
         },
-        // 🆕 Novo estado para partituras com filtros
         scores: {
           icon: FiSearch,
-          title: 'Nenhuma partitura encontrada',
-          description:
-            'Não encontramos partituras favoritas que correspondam à sua busca.',
+          title: t('empty_no_score'),
+          description: t('empty_no_score_description'),
           primaryAction: {
-            label: 'Limpar Filtros',
+            label: t('empty_clear_filters'),
             onClick: onClearFilters,
             icon: FiX,
           },
@@ -83,51 +80,46 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
     return {
       all: {
         icon: FiStar,
-        title: 'Comece sua jornada musical',
-        description:
-          'Descubra e favorite compositores, obras e partituras que inspiram você. Sua coleção pessoal aguarda para ser criada.',
+        title: t('empty_start_journey'),
+        description: t('empty_start_journey_description'),
         showSecondaryActions: true,
-        tip: 'Clique no ícone de coração ❤️ ao lado de qualquer compositor, obra ou partitura para adicioná-los aos seus favoritos.',
+        tip: t('empty_start_journey_tip'),
       },
       composers: {
         icon: FiUser,
-        title: 'Nenhum compositor favorito',
-        description:
-          'Você ainda não favoritou nenhum compositor. Explore nossa coleção e descubra os mestres da música clássica.',
+        title: t('empty_no_favorite_composer'),
+        description: t('empty_no_favorite_composer_description'),
         primaryAction: {
-          label: 'Explorar Compositores',
+          label: t('empty_explore_composers'),
           href: '/composers',
           icon: FiUser,
         },
         showSecondaryActions: false,
-        tip: 'Favorite compositores para acompanhar suas obras e descobrir mais sobre sua vida e legado.',
+        tip: t('empty_favorite_composers_tip'),
       },
       works: {
         icon: FiMusic,
-        title: 'Nenhuma obra favorita',
-        description:
-          'Você ainda não favoritou nenhuma obra. Explore nossa biblioteca e encontre peças que tocam seu coração.',
+        title: t('empty_no_favorite_work'),
+        description: t('empty_no_favorite_work_description'),
         primaryAction: {
-          label: 'Descobrir Obras',
+          label: t('empty_discover_works'),
           href: '/works',
           icon: FiMusic,
         },
         showSecondaryActions: false,
-        tip: 'Favorite obras para criar sua playlist pessoal de música clássica.',
+        tip: t('empty_favorite_works_tip'),
       },
-      // 🆕 Novo estado para partituras sem filtros
       scores: {
         icon: FiFileText,
-        title: 'Nenhuma partitura favorita',
-        description:
-          'Você ainda não favoritou nenhuma partitura. Explore as páginas de obras para encontrar e favoritar as melhores versões de partituras.',
+        title: t('empty_no_favorite_score'),
+        description: t('empty_no_favorite_score_description'),
         primaryAction: {
-          label: 'Descobrir Obras',
+          label: t('empty_discover_works'),
           href: '/works',
           icon: FiMusic,
         },
         showSecondaryActions: false,
-        tip: 'Favorite partituras específicas dentro das páginas de obras para ter acesso rápido às versões que mais gosta.',
+        tip: t('empty_favorite_scores_tip'),
       },
     };
   };
@@ -192,7 +184,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
             </Link>
           )}
 
-          {/* 🆕 Ações secundárias atualizadas para incluir partituras */}
+          {/* Ações secundárias atualizadas para incluir partituras */}
           {config.showSecondaryActions && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Link
@@ -200,7 +192,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
                 className="btn-classical-primary flex items-center justify-center space-x-2 group"
               >
                 <FiUser className="w-4 h-4" />
-                <span>Ver Compositores</span>
+                <span>{t('empty_see_composers')}</span>
                 <svg
                   className="w-4 h-4 transition-transform group-hover:translate-x-1"
                   fill="none"
@@ -221,7 +213,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
                 className="btn-classical-secondary flex items-center justify-center space-x-2 group"
               >
                 <FiMusic className="w-4 h-4" />
-                <span>Descobrir Obras</span>
+                <span>{t('empty_discover_works')}</span>
                 <svg
                   className="w-4 h-4 transition-transform group-hover:translate-x-1"
                   fill="none"
@@ -237,13 +229,13 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
                 </svg>
               </Link>
 
-              {/* 🆕 Novo botão para partituras */}
+              {/* Novo botão para partituras */}
               <Link
                 href="/works"
                 className="btn-classical-primary flex items-center justify-center space-x-2 group"
               >
                 <FiFileText className="w-4 h-4" />
-                <span>Ver Partituras</span>
+                <span>{t('empty_see_scores')}</span>
                 <svg
                   className="w-4 h-4 transition-transform group-hover:translate-x-1"
                   fill="none"
@@ -270,7 +262,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
                 </div>
                 <div className="text-left">
                   <h4 className="font-semibold text-theme-primary text-sm mb-1">
-                    Dica para começar
+                    {t('empty_tip_to_start')}
                   </h4>
                   <p className="text-xs text-theme-secondary">{config.tip}</p>
                 </div>

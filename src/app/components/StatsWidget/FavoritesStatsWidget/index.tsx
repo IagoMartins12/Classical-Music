@@ -29,6 +29,7 @@ import {
 } from '../../badges/FavoritesBadgeSystem';
 import { BadgeGrid } from '../../badges/BadgeSystem';
 import { useAchievementSystem } from '../../../hooks/useAchievements';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface FavoritesStatsWidgetProps {
   className?: string;
@@ -37,6 +38,7 @@ interface FavoritesStatsWidgetProps {
 export default function FavoritesStatsWidget({
   className = '',
 }: FavoritesStatsWidgetProps) {
+  const { t } = useTranslation({ sections: ['pages/favorites'] });
   const { favoriteComposers, favoriteWorks, favoriteScores } =
     useFavoritesStore();
   const { isVisible, toggleVisibility, isMobile, showInline } =
@@ -96,11 +98,13 @@ export default function FavoritesStatsWidget({
             <FiHeart className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl font-bold text-theme-primary mb-2">
-            Monte sua Biblioteca Musical!
+            {t('stats_widget_build_library')}
           </h3>
           <p className="text-theme-secondary mb-6">
-            Você tem apenas {stats.totalFavorites} favoritos. Que tal descobrir
-            mais obras e compositores?
+            {t('stats_widget_few_favorites').replace(
+              '{count}',
+              stats.totalFavorites.toString()
+            )}
           </p>
           <div className="grid grid-cols-2 gap-3">
             <Link
@@ -108,14 +112,14 @@ export default function FavoritesStatsWidget({
               className="btn-classical-secondary flex items-center justify-center space-x-2 py-3"
             >
               <FiUser className="w-4 h-4" />
-              <span>Compositores</span>
+              <span>{t('stats_widget_composers')}</span>
             </Link>
             <Link
               href="/works"
               className="btn-classical-primary flex items-center justify-center space-x-2 py-3"
             >
               <FiMusic className="w-4 h-4" />
-              <span>Explorar Obras</span>
+              <span>{t('stats_widget_explore_works')}</span>
             </Link>
           </div>
         </div>
@@ -125,49 +129,11 @@ export default function FavoritesStatsWidget({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      {/* Toggle Button */}
-      {/* <AnimatedCard hover="scale" className="classical-card p-4">
-        <button
-          onClick={handleToggle}
-          className="w-full flex items-center justify-between text-theme-primary hover:text-brand-primary transition-colors"
-        >
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-              <FiBarChart2 className="w-5 h-5 text-white" />
-            </div>
-            <div className="text-left">
-              <h3 className="font-semibold">Estatísticas dos Favoritos</h3>
-              <p className="text-sm text-theme-tertiary">
-                {isMobile
-                  ? 'Toque para ver detalhes'
-                  : isVisible
-                  ? 'Clique para esconder'
-                  : 'Descubra seus padrões musicais'}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            {(!isVisible || isMobile) && stats.totalFavorites >= 15 && (
-              <span className="px-2 py-1 bg-accent-blue/10 text-accent-blue text-xs rounded-full font-medium">
-                {badges.filter((b) => b.unlocked).length} conquistas
-              </span>
-            )}
-            {!isMobile &&
-              (isVisible ? (
-                <FiEyeOff className="w-5 h-5" />
-              ) : (
-                <FiEye className="w-5 h-5" />
-              ))}
-            {isMobile && <FiBarChart2 className="w-5 h-5" />}
-          </div>
-        </button>
-      </AnimatedCard> */}
-
       {/* Stats Content */}
       {showInline && renderStatsContent()}
 
       {/* Modal para Mobile */}
-      <Modal title="Estatísticas dos Favoritos">{renderStatsContent()}</Modal>
+      <Modal title={t('stats_modal_title')}>{renderStatsContent()}</Modal>
     </div>
   );
 
@@ -180,7 +146,7 @@ export default function FavoritesStatsWidget({
             <div className="flex items-center space-x-3 mb-4">
               <FiTarget className="w-5 h-5 text-accent-blue" />
               <h4 className="font-semibold text-theme-primary">
-                Próximas Conquistas
+                {t('stats_widget_next_achievements')}
               </h4>
             </div>
             <div className="space-y-3">
@@ -234,7 +200,7 @@ export default function FavoritesStatsWidget({
             <div className="flex items-center space-x-3 mb-4">
               <FiZap className="w-5 h-5 text-brand-primary" />
               <h4 className="font-semibold text-theme-primary">
-                Recomendações para Você
+                {t('stats_widget_recommendations')}
               </h4>
             </div>
             <div className="grid grid-cols-1 gap-3">
@@ -289,7 +255,7 @@ export default function FavoritesStatsWidget({
         {/* Badge System */}
         <BadgeGrid
           badges={badges}
-          title="Suas Conquistas de Colecionador"
+          title={t('stats_widget_your_achievements')}
           size="md"
         />
 
@@ -299,7 +265,7 @@ export default function FavoritesStatsWidget({
             <div className="flex items-center space-x-3 mb-4">
               <FiTrendingUp className="w-5 h-5 text-accent-green" />
               <h4 className="font-semibold text-theme-primary">
-                Seu Compositor Favorito
+                {t('stats_widget_favorite_composer')}
               </h4>
             </div>
             <div className="text-center">
@@ -307,8 +273,8 @@ export default function FavoritesStatsWidget({
                 {stats.topComposerName}
               </div>
               <div className="text-theme-secondary">
-                <strong>{stats.topComposerWorks}</strong> obras do seu
-                compositor predileto
+                <strong>{stats.topComposerWorks}</strong>{' '}
+                {t('stats_widget_composer_works')}
               </div>
             </div>
           </AnimatedCard>

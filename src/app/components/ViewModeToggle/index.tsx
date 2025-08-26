@@ -18,7 +18,7 @@ export default function ViewModeToggle({
 }: ViewModeToggleProps) {
   return (
     <div className={`flex items-center space-x-3 ${className}`}>
-      <span className="text-sm text-theme-secondary">Vista:</span>
+      {/* <span className="text-sm text-theme-secondary">Vista:</span> */}
       <div className="bg-theme-secundary border border-theme-primary rounded-lg p-1 flex">
         <button
           onClick={() => onViewModeChange('list')}

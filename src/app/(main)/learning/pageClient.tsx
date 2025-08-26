@@ -38,6 +38,7 @@ import Modal from '../../components/Modal';
 import Link from 'next/link';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
 import Button from '@/app/components/Common/Button';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 type FilterTab = 'all' | 'want-to-learn' | 'learned';
@@ -51,23 +52,26 @@ interface LearningPageClientProps {
   };
 }
 
-const priorityOptions = [
-  { value: 'all', label: 'Todas as prioridades' },
-  { value: '5', label: 'Prioridade Alta (5)' },
-  { value: '4', label: 'Prioridade Média-Alta (4)' },
-  { value: '3', label: 'Prioridade Média (3)' },
-  { value: '2', label: 'Prioridade Baixa-Média (2)' },
-  { value: '1', label: 'Prioridade Baixa (1)' },
-];
-
-const dificultyOptions = [
-  { value: 'all', label: 'Todas as dificuldades' },
-  { value: 'BEGINNER', label: 'Iniciante' },
-  { value: 'INTERMEDIATE', label: 'Intermediário' },
-  { value: 'ADVANCED', label: 'Avançado' },
-];
-
 const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
+  const { t } = useTranslation({ sections: ['pages/learning'] });
+
+  // Priority options with translations
+  const priorityOptions = [
+    { value: 'all', label: t('priority_all') },
+    { value: '5', label: t('priority_high') },
+    { value: '4', label: t('priority_medium_high') },
+    { value: '3', label: t('priority_medium') },
+    { value: '2', label: t('priority_medium_low') },
+    { value: '1', label: t('priority_low') },
+  ];
+
+  const difficultyOptions = [
+    { value: 'all', label: t('difficulty_all') },
+    { value: 'BEGINNER', label: t('difficulty_beginner') },
+    { value: 'INTERMEDIATE', label: t('difficulty_intermediate') },
+    { value: 'ADVANCED', label: t('difficulty_advanced') },
+  ];
+
   // States
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
@@ -330,10 +334,10 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Meu Aprendizado Musical
+              {t('learning_page_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Acompanhe seu progresso e gerencie suas listas de estudo
+              {t('learning_page_subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -354,7 +358,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Todas ({stats.totalItems})
+                    {t('tab_all')} ({stats.totalItems})
                   </button>
                   <button
                     onClick={() => setActiveTab('want-to-learn')}
@@ -364,7 +368,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Quero Aprender ({stats.wantToLearnCount})
+                    {t('tab_want_to_learn')} ({stats.wantToLearnCount})
                   </button>
                   <button
                     onClick={() => setActiveTab('learned')}
@@ -374,7 +378,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Já Aprendi ({stats.learnedCount})
+                    {t('tab_learned')} ({stats.learnedCount})
                   </button>
                 </div>
 
@@ -385,7 +389,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                     <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                     <input
                       type="text"
-                      placeholder="Buscar obras ou compositores..."
+                      placeholder={t('search_placeholder')}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="input-classical w-full sm:w-80"
@@ -405,7 +409,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                   >
                     <FiFilter className="w-4 h-4" />
                     <span className="text-sm">
-                      Filtros
+                      {t('filters_button')}
                       {hasActiveFilters && (
                         <span className="ml-1 px-1.5 py-0.5 bg-accent-blue text-white text-xs rounded-full">
                           {
@@ -428,10 +432,10 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                   >
                     <span className="text-sm">
                       {isMobile
-                        ? 'Estatística'
+                        ? t('stats_button')
                         : showStats
-                        ? 'Esconder Estatística'
-                        : 'Ver Estatística'}
+                        ? t('stats_button_hide')
+                        : t('stats_button_show')}
                     </span>
                   </Button>
 
@@ -450,7 +454,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-sm font-semibold text-theme-primary flex items-center space-x-2">
                         <FiFilter className="w-4 h-4" />
-                        <span>Filtros Avançados</span>
+                        <span>{t('advanced_filters_title')}</span>
                       </h3>
                       <div className="flex items-center space-x-2">
                         {hasActiveFilters && (
@@ -458,7 +462,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                             onClick={clearFilters}
                             className="text-xs text-theme-tertiary hover:text-accent-red transition-colors px-2 py-1 rounded border border-theme-tertiary hover:border-accent-red"
                           >
-                            Limpar tudo
+                            {t('clear_all_filters')}
                           </button>
                         )}
                         <button
@@ -474,10 +478,10 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                       {/* Difficulty Filter */}
                       <div>
                         <label className="block text-xs font-medium text-theme-tertiary mb-2">
-                          Dificuldade
+                          {t('difficulty_label')}
                         </label>
                         <Select
-                          options={dificultyOptions}
+                          options={difficultyOptions}
                           value={difficultyFilter}
                           onChange={(e) =>
                             setDifficultyFilter(
@@ -493,7 +497,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                         activeTab === 'want-to-learn') && (
                         <div>
                           <label className="block text-xs font-medium text-theme-tertiary mb-2">
-                            Prioridade
+                            {t('priority_label')}
                           </label>
                           <Select
                             options={priorityOptions}
@@ -529,19 +533,17 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                 <PiTarget className="w-12 h-12 text-theme-tertiary" />
               </div>
               <h3 className="text-2xl font-bold text-theme-primary mb-4">
-                Sua jornada musical começa aqui!
+                {t('empty_journey_title')}
               </h3>
               <p className="text-theme-tertiary mb-8 max-w-md mx-auto">
-                Você ainda não adicionou nenhuma obra às suas listas de
-                aprendizado. Comece explorando nosso catálogo e adicionando
-                obras que gostaria de estudar.
+                {t('empty_journey_description')}
               </p>
               <Link
                 href={'/works'}
                 className="btn-classical-primary max-w-[250px] flex items-center justify-center space-x-2 group mx-auto"
               >
                 <FiMusic className="w-4 h-4" />
-                <span>Descobrir Obras</span>
+                <span>{t('discover_works_button')}</span>
                 <svg
                   className="w-4 h-4 transition-transform group-hover:translate-x-1"
                   fill="none"
@@ -587,11 +589,12 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                         </div>
                         <div>
                           <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                            Quero Aprender
+                            {t('section_want_to_learn_title')}
                           </h2>
                           <p className="text-theme-tertiary">
-                            {filteredData.wantToLearn.length} de{' '}
-                            {wantToLearn.length} obras
+                            {filteredData.wantToLearn.length}{' '}
+                            {t('section_count_of')} {wantToLearn.length}{' '}
+                            {t('works_count')}
                           </p>
                         </div>
                       </div>
@@ -666,11 +669,12 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                         </div>
                         <div>
                           <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                            Já Aprendi
+                            {t('section_learned_title')}
                           </h2>
                           <p className="text-theme-tertiary">
-                            {filteredData.learned.length} de {learned.length}{' '}
-                            obras
+                            {filteredData.learned.length}{' '}
+                            {t('section_count_of')} {learned.length}{' '}
+                            {t('works_count')}
                           </p>
                         </div>
                       </div>
@@ -757,7 +761,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
       <Modal
         isOpen={isStatsModalOpen}
         onClose={closeStatsModal}
-        title="Estatísticas de Aprendizado"
+        title={t('stats_title')}
         maxWidth="xl"
       >
         <LearningStatsWidget />

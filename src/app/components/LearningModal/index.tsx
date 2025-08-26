@@ -38,10 +38,12 @@ import ScoreSelectionModal from './ScoreSelectionModal';
 import Input from '../Common/Inputs';
 import Select from '../Common/Select';
 import Checkbox from '../Common/Checkbox';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 const LearningModal = () => {
   const { user } = useAuth();
   const pathname = usePathname();
+  const { t } = useTranslation({ sections: ['pages/learning'] });
 
   const {
     toggleWantToLearn,
@@ -76,7 +78,6 @@ const LearningModal = () => {
   const [showScoreSelection, setShowScoreSelection] = useState(false);
   const [showTransferConfirm, setShowTransferConfirm] = useState(false);
 
-  console.log('wokr', workTitle);
   // ✅ NOVO: Determinar contexto (Work page vs Learning page)
   const isInWorkPage =
     pathname?.includes('/work/') || pathname?.includes('/works/');
@@ -172,14 +173,14 @@ const LearningModal = () => {
   // ✅ NOVA FUNÇÃO PARA DOWNLOAD DA PARTITURA
   const handleScoreDownload = () => {
     if (!selectedWorkScore?.downloadUrl) {
-      toast.error('Link de download não disponível');
+      toast.error(t('download_not_available'));
       return;
     }
 
     // Abrir download em nova aba
     window.open(selectedWorkScore.downloadUrl, '_blank');
 
-    toast.success(`Download iniciado: ${selectedWorkScore.title}`, {
+    toast.success(`${t('download_started')} ${selectedWorkScore.title}`, {
       icon: '📄',
       duration: 3000,
     });
@@ -379,32 +380,32 @@ const LearningModal = () => {
     type === 'want-to-learn'
       ? {
           title: isCurrentlyActive
-            ? 'Editar na Lista de Estudos'
-            : 'Adicionar à Lista de Estudos',
+            ? t('edit_study_list_title')
+            : t('add_study_list_title'),
           subtitle: isCurrentlyActive
-            ? 'Atualize seus objetivos e prioridades'
-            : 'Defina seus objetivos e prioridades',
+            ? t('edit_study_subtitle')
+            : t('add_study_subtitle'),
           icon: FiTarget,
           color: 'blue',
           emoji: '🎯',
         }
       : {
           title: isCurrentlyActive
-            ? 'Editar Obra Aprendida'
-            : 'Marcar como Aprendida',
+            ? t('edit_learned_title')
+            : t('mark_learned_title'),
           subtitle: isCurrentlyActive
-            ? 'Atualize sua experiência de aprendizado'
-            : 'Compartilhe sua experiência de aprendizado',
+            ? t('edit_learned_subtitle')
+            : t('mark_learned_subtitle'),
           icon: FiCheckCircle,
           color: 'green',
           emoji: '🎉',
         };
 
   const difficultyOptions = [
-    { value: '', label: 'Selecione a dificuldade' },
-    { value: 'BEGINNER', label: 'Iniciante' },
-    { value: 'INTERMEDIATE', label: 'Intermediário' },
-    { value: 'ADVANCED', label: 'Avançado' },
+    { value: '', label: t('select_difficulty') },
+    { value: 'BEGINNER', label: t('difficulty_beginner') },
+    { value: 'INTERMEDIATE', label: t('difficulty_intermediate') },
+    { value: 'ADVANCED', label: t('difficulty_advanced') },
   ];
 
   // ✅ Handler para fechar (com limpeza)
@@ -430,8 +431,8 @@ const LearningModal = () => {
         withouVerification
         processName={
           type === 'learned'
-            ? 'Adicionar peça ao Já aprendi'
-            : 'Adicionar peça ao Quero aprender'
+            ? t('mark_learned_title')
+            : t('add_study_list_title')
         }
       >
         {/* Header */}
@@ -468,20 +469,26 @@ const LearningModal = () => {
 
         {/* Form Content */}
         <div className="px-6 py-6 space-y-6">
-          {/* Formulários condicionais (mantidos iguais) */}
+          {/* Formulários condicionais */}
           {type === 'want-to-learn' ? (
             <>
               <StarRating
                 value={wantToLearnForm.priority}
                 onChange={(value) => updateWantToLearnForm({ priority: value })}
-                label="Prioridade"
-                labels={['Baixa', 'Baixa-Média', 'Média', 'Média-Alta', 'Alta']}
+                label={t('priority_modal')}
+                labels={[
+                  t('priority_low_label'),
+                  t('priority_medium_low_label'),
+                  t('priority_medium_label'),
+                  t('priority_medium_high_label'),
+                  t('priority_high_label'),
+                ]}
               />
 
               <FormField
-                label="Motivação"
+                label={t('motivation_modal')}
                 icon={FiHeart}
-                description="Por que você quer aprender esta obra?"
+                description={t('motivation_description')}
               >
                 <textarea
                   value={wantToLearnForm.motivation || ''}
@@ -490,15 +497,15 @@ const LearningModal = () => {
                   }
                   className="w-full input-classical-2 resize-none"
                   rows={3}
-                  placeholder="Ex: Quero tocar no recital de fim de ano..."
+                  placeholder={t('motivation_placeholder')}
                 />
               </FormField>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
-                  label="Data Alvo"
+                  label={t('target_date_modal')}
                   icon={FiCalendar}
-                  description="Quando você gostaria de aprender?"
+                  description={t('target_date_description')}
                 >
                   <input
                     type="date"
@@ -511,9 +518,9 @@ const LearningModal = () => {
                 </FormField>
 
                 <FormField
-                  label="Tempo Estimado"
+                  label={t('estimated_time_modal')}
                   icon={FiClock}
-                  description="Horas de estudo previstas"
+                  description={t('estimated_time_description')}
                 >
                   <input
                     type="number"
@@ -527,12 +534,12 @@ const LearningModal = () => {
                       })
                     }
                     className="w-full input-classical-2"
-                    placeholder="Ex: 50"
+                    placeholder={t('estimated_time_placeholder')}
                   />
                 </FormField>
               </div>
 
-              <FormField label="Dificuldade Estimada" icon={FiTrendingUp}>
+              <FormField label={t('difficulty_estimated')} icon={FiTrendingUp}>
                 <Select
                   options={[
                     ...difficultyOptions.map((option) => ({
@@ -552,9 +559,9 @@ const LearningModal = () => {
               </FormField>
 
               <FormField
-                label="Contexto"
+                label={t('context_modal')}
                 icon={FiUsers}
-                description="Onde você pretende tocar esta obra?"
+                description={t('context_description')}
               >
                 <Input
                   type="text"
@@ -563,11 +570,11 @@ const LearningModal = () => {
                     updateWantToLearnForm({ context: e.target.value })
                   }
                   className="w-full input-classical-2"
-                  placeholder="Ex: Recital, aula, estudo pessoal..."
+                  placeholder={t('context_placeholder')}
                 />
               </FormField>
 
-              <FormField label="Notas Pessoais" icon={FiBookOpen}>
+              <FormField label={t('personal_notes')} icon={FiBookOpen}>
                 <textarea
                   value={wantToLearnForm.notes || ''}
                   onChange={(e) =>
@@ -575,7 +582,7 @@ const LearningModal = () => {
                   }
                   className="w-full input-classical-2 resize-none"
                   rows={3}
-                  placeholder="Observações adicionais..."
+                  placeholder={t('personal_notes_placeholder')}
                 />
               </FormField>
             </>
@@ -584,18 +591,18 @@ const LearningModal = () => {
               <StarRating
                 value={learnedForm.mastery}
                 onChange={(value) => updateLearnedForm({ mastery: value })}
-                label="Nível de Maestria"
+                label={t('mastery_level')}
                 labels={[
-                  'Iniciante',
-                  'Básico',
-                  'Intermediário',
-                  'Avançado',
-                  'Expert',
+                  t('mastery_beginner'),
+                  t('mastery_basic'),
+                  t('mastery_intermediate'),
+                  t('mastery_advanced'),
+                  t('mastery_expert'),
                 ]}
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField label="Início dos Estudos" icon={FiCalendar}>
+                <FormField label={t('study_start_modal')} icon={FiCalendar}>
                   <input
                     type="date"
                     value={learnedForm.studyStartDate || ''}
@@ -607,9 +614,9 @@ const LearningModal = () => {
                 </FormField>
 
                 <FormField
-                  label="Duração do Estudo"
+                  label={t('study_duration_modal')}
                   icon={FiClock}
-                  description="Quantos dias levou para aprender"
+                  description={t('study_duration_description')}
                 >
                   <input
                     type="number"
@@ -621,13 +628,13 @@ const LearningModal = () => {
                       })
                     }
                     className="w-full input-classical-2"
-                    placeholder="Ex: 90"
+                    placeholder={t('study_duration_placeholder')}
                   />
                 </FormField>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField label="Dificuldade Real" icon={FiTrendingUp}>
+                <FormField label={t('real_difficulty')} icon={FiTrendingUp}>
                   <Select
                     options={difficultyOptions.map((option) => {
                       return {
@@ -652,22 +659,22 @@ const LearningModal = () => {
                     onChange={(value) =>
                       updateLearnedForm({ enjoyment: value })
                     }
-                    label="Satisfação"
+                    label={t('satisfaction_modal')}
                     labels={[
-                      'Não gostei',
-                      'Pouco',
-                      'Regular',
-                      'Gostei',
-                      'Adorei',
+                      t('satisfaction_dislike'),
+                      t('satisfaction_little'),
+                      t('satisfaction_regular'),
+                      t('satisfaction_like'),
+                      t('satisfaction_love'),
                     ]}
                   />
                 </div>
               </div>
 
               <FormField
-                label="Desafios Técnicos"
+                label={t('technical_challenges_modal')}
                 icon={FiTarget}
-                description="Principais dificuldades encontradas"
+                description={t('technical_challenges_description')}
               >
                 <textarea
                   value={learnedForm.technicalChallenges || ''}
@@ -676,14 +683,14 @@ const LearningModal = () => {
                   }
                   className="w-full input-classical-2 resize-none"
                   rows={2}
-                  placeholder="Ex: Passagens rápidas na mão esquerda, ornamentações..."
+                  placeholder={t('technical_challenges_placeholder')}
                 />
               </FormField>
 
               <FormField
-                label="Insights Musicais"
+                label={t('musical_insights_modal')}
                 icon={FiAward}
-                description="O que você aprendeu musicalmente"
+                description={t('musical_insights_description')}
               >
                 <textarea
                   value={learnedForm.musicalInsights || ''}
@@ -692,7 +699,7 @@ const LearningModal = () => {
                   }
                   className="w-full input-classical-2 resize-none"
                   rows={2}
-                  placeholder="Ex: Compreendi melhor o estilo romântico, expressividade..."
+                  placeholder={t('musical_insights_placeholder')}
                 />
               </FormField>
 
@@ -711,7 +718,7 @@ const LearningModal = () => {
                     htmlFor="wouldRecommend"
                     className="text-sm font-medium text-theme-secondary cursor-pointer"
                   >
-                    Recomendaria para outros
+                    {t('would_recommend')}
                   </label>
                 </div>
 
@@ -729,139 +736,147 @@ const LearningModal = () => {
                     htmlFor="publicPerformance"
                     className="text-sm font-medium text-theme-secondary cursor-pointer"
                   >
-                    Já toquei em público
+                    {t('public_performance_modal')}
                   </label>
                 </div>
               </div>
 
-              <FormField label="Notas Gerais" icon={FiBookOpen}>
+              <FormField label={t('general_notes')} icon={FiBookOpen}>
                 <textarea
                   value={learnedForm.notes || ''}
                   onChange={(e) => updateLearnedForm({ notes: e.target.value })}
                   className="w-full input-classical-2 resize-none"
                   rows={3}
-                  placeholder="Suas impressões gerais sobre o aprendizado desta obra..."
+                  placeholder={t('general_notes_placeholder')}
                 />
               </FormField>
             </>
           )}
-        </div>
 
-        {/* ✅ Seção de Partitura COM BOTÃO DE DOWNLOAD */}
-        <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                <FiFileText className="w-4 h-4 text-theme-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-theme-primary">
-                  Partitura de Estudo
-                </h3>
-                <p className="text-sm text-theme-secondary">
-                  {selectedWorkScore
-                    ? 'Partitura vinculada'
-                    : 'Nenhuma partitura selecionada'}
-                </p>
+          <div className="border-2  border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
+                  <FiFileText className="w-4 h-4 text-theme-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-theme-primary">
+                    {t('study_score_title')}
+                  </h3>
+                  <p className="text-sm text-theme-secondary">
+                    {selectedWorkScore
+                      ? t('score_linked')
+                      : t('no_score_selected')}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          {selectedWorkScore ? (
-            <div className="bg-theme-elevated rounded-xl p-4 border border-theme-primary">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
-                    <FiMusic className="w-5 h-5 text-theme-primary" />
+            {selectedWorkScore ? (
+              <div className="bg-theme-elevated rounded-xl p-4 border border-theme-primary">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
+                      <FiMusic className="w-5 h-5 text-theme-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-theme-primary text-sm">
+                        {selectedWorkScore.title}
+                      </h4>
+                      <p className="text-xs text-theme-tertiary">
+                        {t('source_label')} {selectedWorkScore.source}
+                        {selectedWorkScore.fileSize &&
+                          ` • ${selectedWorkScore.fileSize}`}
+                        {selectedWorkScore.pageCount &&
+                          ` • ${selectedWorkScore.pageCount} ${t(
+                            'pages_label'
+                          )}`}
+                        {selectedWorkScore.type &&
+                          ` • ${selectedWorkScore.type}`}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-theme-primary text-sm">
-                      {selectedWorkScore.title}
-                    </h4>
-                    <p className="text-xs text-theme-tertiary">
-                      Fonte: {selectedWorkScore.source}
-                      {selectedWorkScore.fileSize &&
-                        ` • ${selectedWorkScore.fileSize}`}
-                      {selectedWorkScore.pageCount &&
-                        ` • ${selectedWorkScore.pageCount} páginas`}
-                      {selectedWorkScore.type && ` • ${selectedWorkScore.type}`}
+                  <div className="flex items-center space-x-4">
+                    {/* ✅ BOTÃO DE DOWNLOAD */}
+                    {selectedWorkScore.downloadUrl && (
+                      <button
+                        title={t('download_button')}
+                        onClick={handleScoreDownload}
+                        className="btn-classical-secondary-sm  flex items-center space-x-2 text-accent-purple border-accent-purple/30 hover:bg-accent-purple/10"
+                      >
+                        <FiDownload className="w-5 h-5 text-theme-primary" />
+                      </button>
+                    )}
+
+                    <button
+                      title={
+                        isCurrentlyActive
+                          ? t('change_button')
+                          : t('edit_change_button')
+                      }
+                      onClick={handleAddScore}
+                      className="btn-classical-secondary-sm  flex items-center space-x-2"
+                    >
+                      <FiEdit3 className="w-5 h-5 text-theme-primary" />
+                    </button>
+                    <button
+                      title={t('remove_button')}
+                      onClick={handleRemoveScore}
+                      className="btn-classical-outline-sm  text-accent-red border-accent-red hover:bg-accent-red hover:text-theme-primary"
+                    >
+                      <FiX className="w-5 h-5 text-theme-primary" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Indicador se é sugestão do tipo oposto */}
+                {!isCurrentlyActive &&
+                  oppositeItem?.selectedWorkScore?.id ===
+                    selectedWorkScore.id && (
+                    <div className="mt-3 p-2 bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 bg-accent-green rounded-full flex items-center justify-center">
+                          <span className="text-xs">💡</span>
+                        </div>
+                        <span className="text-sm text-accent-green font-medium">
+                          {t('score_suggestion')} &quot;
+                          {type === 'want-to-learn'
+                            ? t('already_learned')
+                            : t('want_to_learn')}
+                          &quot;
+                        </span>
+                      </div>
+                    </div>
+                  )}
+              </div>
+            ) : (
+              <button
+                onClick={handleAddScore}
+                className="w-full border-2 border-dashed border-theme-secondary hover:border-brand-primary rounded-xl p-4 text-center transition-all duration-300 hover:bg-brand-primary/5 group"
+              >
+                <div className="flex flex-col items-center space-y-2">
+                  <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border-2 border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <FiPlus className="w-6 h-6 text-brand-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-theme-primary">
+                      {isCurrentlyActive
+                        ? t('edit_score_button')
+                        : t('add_score_button')}
+                    </p>
+                    <p className="text-sm text-theme-secondary">
+                      {isInWorkPage
+                        ? t('select_score_description')
+                        : t('choose_score_description')}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-4">
-                  {/* ✅ BOTÃO DE DOWNLOAD */}
-                  {selectedWorkScore.downloadUrl && (
-                    <button
-                      title="Download"
-                      onClick={handleScoreDownload}
-                      className="btn-classical-secondary-sm  flex items-center space-x-2 text-accent-purple border-accent-purple/30 hover:bg-accent-purple/10"
-                    >
-                      <FiDownload className="w-5 h-5 text-theme-primary" />
-                    </button>
-                  )}
-
-                  <button
-                    title={isCurrentlyActive ? 'Trocar' : 'Alterar'}
-                    onClick={handleAddScore}
-                    className="btn-classical-secondary-sm  flex items-center space-x-2"
-                  >
-                    <FiEdit3 className="w-5 h-5 text-theme-primary" />
-                  </button>
-                  <button
-                    title="Remover"
-                    onClick={handleRemoveScore}
-                    className="btn-classical-outline-sm  text-accent-red border-accent-red hover:bg-accent-red hover:text-theme-primary"
-                  >
-                    <FiX className="w-5 h-5 text-theme-primary" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Indicador se é sugestão do tipo oposto */}
-              {!isCurrentlyActive &&
-                oppositeItem?.selectedWorkScore?.id ===
-                  selectedWorkScore.id && (
-                  <div className="mt-3 p-2 bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-4 h-4 bg-accent-green rounded-full flex items-center justify-center">
-                        <span className="text-xs">💡</span>
-                      </div>
-                      <span className="text-sm text-accent-green font-medium">
-                        Sugestão: partitura do &quot;
-                        {type === 'want-to-learn'
-                          ? 'já aprendi'
-                          : 'quero aprender'}
-                        &quot;
-                      </span>
-                    </div>
-                  </div>
-                )}
-            </div>
-          ) : (
-            <button
-              onClick={handleAddScore}
-              className="w-full border-2 border-dashed border-theme-secondary hover:border-brand-primary rounded-xl p-4 text-center transition-all duration-300 hover:bg-brand-primary/5 group"
-            >
-              <div className="flex flex-col items-center space-y-2">
-                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border-2 border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <FiPlus className="w-6 h-6 text-brand-primary" />
-                </div>
-                <div>
-                  <p className="font-semibold text-theme-primary">
-                    {isCurrentlyActive
-                      ? 'Editar Partitura'
-                      : 'Adicionar Partitura'}
-                  </p>
-                  <p className="text-sm text-theme-secondary">
-                    {isInWorkPage
-                      ? 'Selecione uma partitura específica para vincular a este estudo'
-                      : 'Escolha entre as partituras disponíveis para esta obra'}
-                  </p>
-                </div>
-              </div>
-            </button>
-          )}
+              </button>
+            )}
+          </div>
         </div>
+
+        {/* ✅ Seção de Partitura COM BOTÃO DE DOWNLOAD */}
 
         {/* Footer */}
         <div
@@ -880,7 +895,7 @@ const LearningModal = () => {
                 leftIcon={<FiTrash />}
                 onClick={handleRemove}
               >
-                Deletar
+                {t('delete_button')}
               </Button>
 
               {/* ✅ NOVO: Botão de transferência para "quero aprender" */}
@@ -890,7 +905,7 @@ const LearningModal = () => {
                   className="truncate"
                   onClick={handleTransferToLearned}
                 >
-                  Marcar como Aprendida
+                  {t('mark_as_learned')}
                 </Button>
               )}
             </div>
@@ -899,7 +914,7 @@ const LearningModal = () => {
           {/* Botões principais à direita */}
           <div className="flex items-center space-x-3">
             <Button variant="secondary" onClick={handleClose}>
-              {isCurrentlyActive ? 'Voltar' : 'Cancelar'}
+              {isCurrentlyActive ? t('back_button') : t('cancel_button')}
             </Button>
             <Button
               variant="primary"
@@ -907,7 +922,7 @@ const LearningModal = () => {
               isLoading={isSubmitting}
               rightIcon={config.emoji}
             >
-              {isCurrentlyActive ? 'Atualizar' : 'Salvar'}
+              {isCurrentlyActive ? t('update_button') : t('save_button')}
             </Button>
           </div>
         </div>
@@ -966,26 +981,25 @@ const LearningModal = () => {
             </div>
             <div>
               <h3 className="text-lg font-bold text-theme-primary">
-                Transferir para &quot;Já Aprendi&quot;
+                {t('transfer_learned_title')}
               </h3>
               <p className="text-sm text-theme-secondary">
-                Mover esta obra da lista de estudos
+                {t('transfer_learned_subtitle')}
               </p>
             </div>
           </div>
 
           <div className="bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-xl p-4 mb-6">
             <p className="text-theme-primary">
-              <strong>&quot;{workTitle}&quot;</strong> será removida da sua
-              lista de &quot;Quero Aprender&quot; e adicionada em &quot;Já
-              Aprendi&quot; com os dados transferidos.
+              <strong>&quot;{workTitle}&quot;</strong>{' '}
+              {t('transfer_learned_description')}
             </p>
 
             <div className="mt-3 text-sm text-theme-secondary">
               <ul className="space-y-1">
-                <li>• Prioridade → Maestria inicial</li>
-                <li>• Dificuldade e notas mantidas</li>
-                <li>• Partitura vinculada preservada</li>
+                <li>• {t('transfer_priority_mastery')}</li>
+                <li>• {t('transfer_difficulty_notes')}</li>
+                <li>• {t('transfer_score_preserved')}</li>
               </ul>
             </div>
           </div>
@@ -996,7 +1010,7 @@ const LearningModal = () => {
               onClick={() => setShowTransferConfirm(false)}
               disabled={isSubmitting}
             >
-              Cancelar
+              {t('cancel_button')}
             </Button>
             <Button
               variant="primary"
@@ -1004,7 +1018,7 @@ const LearningModal = () => {
               isLoading={isSubmitting}
               rightIcon="🎉"
             >
-              {isSubmitting ? 'Transferindo...' : 'Confirmar Transferência'}
+              {isSubmitting ? t('transferring') : t('confirm_transfer')}
             </Button>
           </div>
         </div>

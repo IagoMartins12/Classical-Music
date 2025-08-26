@@ -17,6 +17,7 @@ import {
 } from '../../badges/LearningBadgeSystem';
 import { BadgeGrid } from '../../badges/BadgeSystem';
 import { useAchievementSystem } from '../../../hooks/useAchievements';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface LearningStatsWidgetProps {
   className?: string;
@@ -118,6 +119,7 @@ const useLearningStats = () => {
 export default function LearningStatsWidget({
   className = '',
 }: LearningStatsWidgetProps) {
+  const { t } = useTranslation({ sections: ['pages/learning'] });
   const stats = useLearningStats();
   const { isVisible, toggleVisibility, isMobile, showInline } =
     useAdaptiveStats('learning');
@@ -173,12 +175,14 @@ export default function LearningStatsWidget({
             <PiTarget className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl font-bold text-theme-primary mb-2">
-            Sua Jornada Musical Começa Aqui!
+            {t('journey_start_title')}
           </h3>
           <p className="text-theme-secondary mb-6">
-            Você tem apenas {stats.totalLearning}{' '}
-            {stats.totalLearning === 1 ? 'obra' : 'obras'} em suas listas. Que
-            tal definir mais metas de estudo?
+            {t('journey_start_description')} {stats.totalLearning}{' '}
+            {stats.totalLearning === 1
+              ? t('journey_start_works')
+              : t('journey_start_works_plural')}{' '}
+            {t('journey_start_suggestion')}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Link
@@ -186,14 +190,14 @@ export default function LearningStatsWidget({
               className="btn-classical-primary flex items-center justify-center space-x-2 py-3"
             >
               <FiMusic className="w-4 h-4" />
-              <span>Encontrar Obras</span>
+              <span>{t('find_works_button')}</span>
             </Link>
             <Link
               href="/composers"
               className="btn-classical-secondary flex items-center justify-center space-x-2 py-3"
             >
               <FiBookOpen className="w-4 h-4" />
-              <span>Explorar Compositores</span>
+              <span>{t('explore_composers_button')}</span>
             </Link>
           </div>
         </div>
@@ -203,49 +207,10 @@ export default function LearningStatsWidget({
 
   return (
     <div className={`space-y-4 ${className} mt-4`}>
-      {/* Toggle Button */}
-      {/* <AnimatedCard hover="scale" className="classical-card p-4">
-        <button
-          onClick={handleToggle}
-          className="w-full flex items-center justify-between text-theme-primary hover:text-brand-primary transition-colors"
-        >
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-              <FiBarChart2 className="w-5 h-5 text-white" />
-            </div>
-            <div className="text-left">
-              <h3 className="font-semibold">Estatísticas de Aprendizado</h3>
-              <p className="text-sm text-theme-tertiary">
-                {isMobile
-                  ? 'Toque para ver detalhes'
-                  : isVisible
-                  ? 'Clique para esconder'
-                  : 'Veja seu progresso musical'}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            {(!isVisible || isMobile) && stats.totalLearning >= 5 && (
-              <span className="px-2 py-1 bg-accent-green/10 text-accent-green text-xs rounded-full font-medium">
-                {badges.filter((b) => b.unlocked).length} conquistas
-              </span>
-            )}
-            {!isMobile &&
-              (isVisible ? (
-                <FiEyeOff className="w-5 h-5" />
-              ) : (
-                <FiEye className="w-5 h-5" />
-              ))}
-            {isMobile && <FiBarChart2 className="w-5 h-5" />}
-          </div>
-        </button>
-      </AnimatedCard> */}
-
-      {/* Stats Content */}
       {showInline && renderStatsContent()}
 
       {/* Modal para Mobile */}
-      <Modal title="Estatísticas de Aprendizado">{renderStatsContent()}</Modal>
+      <Modal title={t('stats_title')}>{renderStatsContent()}</Modal>
     </div>
   );
 
@@ -253,64 +218,13 @@ export default function LearningStatsWidget({
   function renderStatsContent() {
     return (
       <>
-        {/* Overview Cards */}
-        {/* <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <AnimatedItem direction="up" delay={0.1}>
-            <div className="classical-card p-4 text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiTarget className="w-6 h-6 text-white" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.wantToLearnCount}
-              </div>
-              <div className="text-sm text-theme-tertiary">Quero Aprender</div>
-            </div>
-          </AnimatedItem>
-
-          <AnimatedItem direction="up" delay={0.2}>
-            <div className="classical-card p-4 text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCheckCircle className="w-6 h-6 text-white" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.learnedCount}
-              </div>
-              <div className="text-sm text-theme-tertiary">Já Aprendi</div>
-            </div>
-          </AnimatedItem>
-
-          <AnimatedItem direction="up" delay={0.3}>
-            <div className="classical-card p-4 text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiStar className="w-6 h-6 text-white" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.avgMastery.toFixed(1)}
-              </div>
-              <div className="text-sm text-theme-tertiary">Maestria Média</div>
-            </div>
-          </AnimatedItem>
-
-          <AnimatedItem direction="up" delay={0.4}>
-            <div className="classical-card p-4 text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-pink rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiTrendingUp className="w-6 h-6 text-white" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.learnedThisYear}
-              </div>
-              <div className="text-sm text-theme-tertiary">Obras em 2024</div>
-            </div>
-          </AnimatedItem>
-        </div> */}
-
         {/* Próximas Conquistas */}
         {nextAchievements.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <div className="flex items-center space-x-3 mb-4">
               <FiTarget className="w-5 h-5 text-accent-green" />
               <h4 className="font-semibold text-theme-primary">
-                Próximas Conquistas
+                {t('next_achievements')}
               </h4>
             </div>
             <div className="space-y-3">
@@ -364,7 +278,7 @@ export default function LearningStatsWidget({
             <div className="flex items-center space-x-3 mb-4">
               <FiZap className="w-5 h-5 text-brand-primary" />
               <h4 className="font-semibold text-theme-primary">
-                Recomendações para Você
+                {t('recommendations_title')}
               </h4>
             </div>
             <div className="grid grid-cols-1 gap-3">
@@ -420,7 +334,7 @@ export default function LearningStatsWidget({
         {badges.length > 0 && (
           <BadgeGrid
             badges={badges}
-            title="Suas Conquistas de Aprendizado"
+            title={t('achievements_title')}
             size="md"
           />
         )}
@@ -432,24 +346,22 @@ export default function LearningStatsWidget({
             <div className="flex items-center space-x-3 mb-4">
               <FiMusic className="w-5 h-5 text-accent-blue" />
               <h4 className="font-semibold text-theme-primary">
-                Diversidade Musical
+                {t('diversity_title')}
               </h4>
             </div>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-theme-secondary">Compositores</span>
+                <span className="text-theme-secondary">
+                  {t('composers_label')}
+                </span>
                 <span className="font-medium text-theme-primary">
                   {stats.uniqueComposers}
                 </span>
               </div>
-              {/* <div className="flex justify-between">
-                <span className="text-theme-secondary">Épocas</span>
-                <span className="font-medium text-theme-primary">
-                  {stats.uniqueEpochs}
-                </span>
-              </div> */}
               <div className="flex justify-between">
-                <span className="text-theme-secondary">Taxa Completação</span>
+                <span className="text-theme-secondary">
+                  {t('completion_rate')}
+                </span>
                 <span className="font-medium text-accent-green">
                   {stats.completionRate.toFixed(0)}%
                 </span>
@@ -463,18 +375,22 @@ export default function LearningStatsWidget({
               <div className="flex items-center space-x-3 mb-4">
                 <FiUsers className="w-5 h-5 text-accent-purple" />
                 <h4 className="font-semibold text-theme-primary">
-                  Performance
+                  {t('performance_title')}
                 </h4>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-theme-secondary">Performances</span>
+                  <span className="text-theme-secondary">
+                    {t('performances_label')}
+                  </span>
                   <span className="font-medium text-accent-purple">
                     {stats.publicPerformances}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-theme-secondary">Obras Expert</span>
+                  <span className="text-theme-secondary">
+                    {t('expert_works')}
+                  </span>
                   <span className="font-medium text-accent-green">
                     {stats.expertLevelCount}
                   </span>

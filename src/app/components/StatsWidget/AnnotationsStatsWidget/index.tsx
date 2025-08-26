@@ -3,20 +3,12 @@
 
 import { useMemo, useEffect } from 'react';
 import {
-  FiBarChart2,
-  FiEye,
-  FiEyeOff,
   FiMessageSquare,
-  FiThumbsUp,
   FiUsers,
-  FiStar,
   FiTarget,
   FiZap,
-  FiHeart,
   FiBookOpen,
-  FiShield,
 } from 'react-icons/fi';
-import { MdVerified } from 'react-icons/md';
 import Link from 'next/link';
 import { useAnnotationsStore } from '@/app/stores/useAnnotationsStore';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -32,6 +24,7 @@ import {
 } from '../../badges/AnnotationsBadgeSystem';
 import { BadgeGrid } from '../../badges/BadgeSystem';
 import { useAchievementSystem } from '../../../hooks/useAchievements';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface AnnotationsStatsWidgetProps {
   className?: string;
@@ -40,8 +33,9 @@ interface AnnotationsStatsWidgetProps {
 export default function AnnotationsStatsWidget({
   className = '',
 }: AnnotationsStatsWidgetProps) {
+  const { t } = useTranslation({ sections: ['pages/annotations'] });
   const { user } = useAuth();
-  const { userAnnotations, getUserAnnotations } = useAnnotationsStore();
+  const { getUserAnnotations } = useAnnotationsStore();
   const { isVisible, toggleVisibility, isMobile, showInline } =
     useAdaptiveStats('annotations');
   const { openModal, Modal } = useStatsModal('annotations');
@@ -104,12 +98,19 @@ export default function AnnotationsStatsWidget({
             <FiMessageSquare className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl font-bold text-theme-primary mb-2">
-            Compartilhe seu Conhecimento!
+            {t('stats_widget_share_knowledge')}
           </h3>
           <p className="text-theme-secondary mb-6">
-            Você tem apenas {stats.totalAnnotations} anotação
-            {stats.totalAnnotations !== 1 ? 'ões' : ''}. Que tal ajudar outros
-            músicos com suas dicas e insights?
+            {stats.totalAnnotations === 1
+              ? t('stats_widget_few_annotations_singular').replace(
+                  '{count}',
+                  stats.totalAnnotations.toString()
+                )
+              : t('stats_widget_few_annotations_plural').replace(
+                  '{count}',
+                  stats.totalAnnotations.toString()
+                )}
+            . {t('stats_widget_help_others')}
           </p>
           <div className="grid grid-cols-1  gap-3">
             <Link
@@ -117,14 +118,14 @@ export default function AnnotationsStatsWidget({
               className="btn-classical-primary flex items-center justify-center space-x-2 py-3"
             >
               <FiBookOpen className="w-4 h-4" />
-              <span>Explorar Obras</span>
+              <span>{t('stats_widget_explore_works')}</span>
             </Link>
             <Link
               href="/composers"
               className="btn-classical-secondary flex items-center justify-center space-x-2 py-3"
             >
               <FiUsers className="w-4 h-4" />
-              <span>Ver Compositores</span>
+              <span>{t('stats_widget_see_composers')}</span>
             </Link>
           </div>
         </div>
@@ -134,113 +135,24 @@ export default function AnnotationsStatsWidget({
 
   return (
     <div className={`space-y-4 ${className} mt-4`}>
-      {/* Toggle Button */}
-      {/* <AnimatedCard hover="scale" className="classical-card p-4">
-        <button
-          onClick={handleToggle}
-          className="w-full flex items-center justify-between text-theme-primary hover:text-brand-primary transition-colors"
-        >
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-              <FiBarChart2 className="w-5 h-5 text-white" />
-            </div>
-            <div className="text-left">
-              <h3 className="font-semibold">Estatísticas das Anotações</h3>
-              <p className="text-sm text-theme-tertiary">
-                {isMobile
-                  ? 'Toque para ver detalhes'
-                  : isVisible
-                  ? 'Clique para esconder'
-                  : 'Veja seu impacto na comunidade'}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            {(!isVisible || isMobile) && stats.totalAnnotations >= 10 && (
-              <span className="px-2 py-1 bg-accent-purple/10 text-accent-purple text-xs rounded-full font-medium">
-                {badges.filter((b) => b.unlocked).length} conquistas
-              </span>
-            )}
-            {!isMobile &&
-              (isVisible ? (
-                <FiEyeOff className="w-5 h-5" />
-              ) : (
-                <FiEye className="w-5 h-5" />
-              ))}
-            {isMobile && <FiBarChart2 className="w-5 h-5" />}
-          </div>
-        </button>
-      </AnimatedCard> */}
-
       {/* Stats Content */}
       {showInline && renderStatsContent()}
 
       {/* Modal para Mobile */}
-      <Modal title="Estatísticas das Anotações">{renderStatsContent()}</Modal>
+      <Modal title={t('stats_modal_title')}>{renderStatsContent()}</Modal>
     </div>
   );
 
   function renderStatsContent() {
     return (
       <>
-        {/* Overview Cards */}
-        {/* <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <AnimatedItem direction="up" delay={0.1}>
-            <div className="classical-card p-4 text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiMessageSquare className="w-6 h-6 text-white" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.totalAnnotations}
-              </div>
-              <div className="text-sm text-theme-tertiary">Anotações</div>
-            </div>
-          </AnimatedItem>
-
-          <AnimatedItem direction="up" delay={0.2}>
-            <div className="classical-card p-4 text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiThumbsUp className="w-6 h-6 text-white" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.totalHelpfulVotes}
-              </div>
-              <div className="text-sm text-theme-tertiary">Votos Úteis</div>
-            </div>
-          </AnimatedItem>
-
-          <AnimatedItem direction="up" delay={0.3}>
-            <div className="classical-card p-4 text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiEye className="w-6 h-6 text-white" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.totalViews}
-              </div>
-              <div className="text-sm text-theme-tertiary">Visualizações</div>
-            </div>
-          </AnimatedItem>
-
-          <AnimatedItem direction="up" delay={0.4}>
-            <div className="classical-card p-4 text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiStar className="w-6 h-6 text-white" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.avgHelpfulVotes}
-              </div>
-              <div className="text-sm text-theme-tertiary">Média Útil</div>
-            </div>
-          </AnimatedItem>
-        </div> */}
-
         {/* Próximas Conquistas */}
         {nextAchievements.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <div className="flex items-center space-x-3 mb-4">
               <FiTarget className="w-5 h-5 text-accent-purple" />
               <h4 className="font-semibold text-theme-primary">
-                Próximas Conquistas
+                {t('stats_widget_next_achievements')}
               </h4>
             </div>
             <div className="space-y-3">
@@ -294,7 +206,7 @@ export default function AnnotationsStatsWidget({
             <div className="flex items-center space-x-3 mb-4">
               <FiZap className="w-5 h-5 text-brand-primary" />
               <h4 className="font-semibold text-theme-primary">
-                Continue Contribuindo
+                {t('stats_widget_continue_contributing')}
               </h4>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -349,7 +261,7 @@ export default function AnnotationsStatsWidget({
         {/* Badge System */}
         <BadgeGrid
           badges={badges}
-          title="Suas Conquistas de Contribuição"
+          title={t('stats_widget_your_achievements')}
           size="md"
           maxVisible={6}
         />
@@ -359,7 +271,7 @@ export default function AnnotationsStatsWidget({
           <div className="flex items-center space-x-3 mb-4">
             <FiUsers className="w-5 h-5 text-accent-green" />
             <h4 className="font-semibold text-theme-primary">
-              Seu Impacto na Comunidade
+              {t('stats_widget_community_impact')}
             </h4>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -367,25 +279,33 @@ export default function AnnotationsStatsWidget({
               <div className="text-2xl font-bold text-accent-green">
                 {stats.publicAnnotations}
               </div>
-              <div className="text-sm text-theme-secondary">Públicas</div>
+              <div className="text-sm text-theme-secondary">
+                {t('stats_widget_public')}
+              </div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-accent-blue">
                 {stats.verifiedAnnotations}
               </div>
-              <div className="text-sm text-theme-secondary">Verificadas</div>
+              <div className="text-sm text-theme-secondary">
+                {t('stats_widget_verified')}
+              </div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-accent-purple">
                 {stats.helpfulnessRate}%
               </div>
-              <div className="text-sm text-theme-secondary">Taxa Útil</div>
+              <div className="text-sm text-theme-secondary">
+                {t('stats_widget_helpful_rate')}
+              </div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-amber-500">
                 {stats.highPerformingCount}
               </div>
-              <div className="text-sm text-theme-secondary">Top Anotações</div>
+              <div className="text-sm text-theme-secondary">
+                {t('stats_widget_top_annotations')}
+              </div>
             </div>
           </div>
         </AnimatedCard>

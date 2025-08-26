@@ -1,4 +1,4 @@
-// app/annotations/AnnotationsPageClient.tsx - ATUALIZADO COM ACHIEVEMENTS
+// app/annotations/AnnotationsPageClient.tsx - ATUALIZADO COM CARD/LIST LAYOUT
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
@@ -18,6 +18,7 @@ import {
   AnimatedContainer,
   AnimatedItem,
   PageContainer,
+  SequentialGrid,
 } from '../../components/animation/AnimatedComponents';
 import Select from '../../components/Common/Select';
 import UserAnnotationCard from '../../components/Annotations/UserAnnotationCard';
@@ -36,6 +37,8 @@ import {
 } from '../../components/achievement/AchievementToast';
 import { useAutoAchievementDetection } from '../../hooks/useAchievements';
 import { calculateAnnotationsStats } from '../../components/badges/AnnotationsBadgeSystem';
+import Button from '@/app/components/Common/Button';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 type AnnotationCategory =
   | 'TECHNIQUE'
@@ -60,33 +63,6 @@ type AnnotationScope =
 
 type FilterTab = 'all' | 'public' | 'private' | 'verified';
 
-const CATEGORY_OPTIONS = [
-  { value: 'all', label: 'Todas as categorias' },
-  { value: 'TECHNIQUE', label: 'Técnica' },
-  { value: 'INTERPRETATION', label: 'Interpretação' },
-  { value: 'PRACTICE_TIP', label: 'Dicas de Estudo' },
-  { value: 'THEORY', label: 'Teoria' },
-  { value: 'PERFORMANCE', label: 'Performance' },
-  { value: 'HISTORICAL', label: 'Contexto Histórico' },
-  { value: 'GENERAL', label: 'Geral' },
-];
-
-const DIFFICULTY_OPTIONS = [
-  { value: 'all', label: 'Todas as dificuldades' },
-  { value: 'BEGINNER', label: 'Iniciante' },
-  { value: 'INTERMEDIATE', label: 'Intermediário' },
-  { value: 'ADVANCED', label: 'Avançado' },
-  { value: 'ALL_LEVELS', label: 'Todos os níveis' },
-];
-
-const SCOPE_OPTIONS = [
-  { value: 'all', label: 'Todas as abrangências' },
-  { value: 'ENTIRE_WORK', label: 'Obra inteira' },
-  { value: 'MOVEMENT', label: 'Movimento' },
-  { value: 'SECTION', label: 'Seção' },
-  { value: 'SPECIFIC_MEASURE', label: 'Compasso específico' },
-];
-
 // Hook customizado para debounce
 const useDebounce = (value: any, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -105,6 +81,9 @@ const useDebounce = (value: any, delay: number) => {
 };
 
 function AnnotationsPageClientContent() {
+  // Translation hook
+  const { t } = useTranslation({ sections: ['pages/annotations'] });
+
   // States
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
@@ -310,6 +289,34 @@ function AnnotationsPageClientContent() {
     };
   }, [userAnnotations]);
 
+  // Category options with translations
+  const CATEGORY_OPTIONS = [
+    { value: 'all', label: t('category_all') },
+    { value: 'TECHNIQUE', label: t('category_technique') },
+    { value: 'INTERPRETATION', label: t('category_interpretation') },
+    { value: 'PRACTICE_TIP', label: t('category_practice_tip') },
+    { value: 'THEORY', label: t('category_theory') },
+    { value: 'PERFORMANCE', label: t('category_performance') },
+    { value: 'HISTORICAL', label: t('category_historical') },
+    { value: 'GENERAL', label: t('category_general') },
+  ];
+
+  const DIFFICULTY_OPTIONS = [
+    { value: 'all', label: t('difficulty_all') },
+    { value: 'BEGINNER', label: t('difficulty_beginner') },
+    { value: 'INTERMEDIATE', label: t('difficulty_intermediate') },
+    { value: 'ADVANCED', label: t('difficulty_advanced') },
+    { value: 'ALL_LEVELS', label: t('difficulty_all_levels') },
+  ];
+
+  const SCOPE_OPTIONS = [
+    { value: 'all', label: t('scope_all') },
+    { value: 'ENTIRE_WORK', label: t('scope_entire_work') },
+    { value: 'MOVEMENT', label: t('scope_movement') },
+    { value: 'SECTION', label: t('scope_section') },
+    { value: 'SPECIFIC_MEASURE', label: t('scope_specific_measure') },
+  ];
+
   // Filters check
   const hasActiveFilters = useMemo(() => {
     return (
@@ -331,6 +338,9 @@ function AnnotationsPageClientContent() {
       fetchUserAnnotations(user.id, { userId: user.id, sortBy: 'helpful' });
     }
   }, [clearFilters, user?.id, fetchUserAnnotations]);
+
+  // Calcular colunas do grid baseado nas stats
+  const cardGridCols = showStatsInline ? 2 : 3;
 
   if (!mounted) {
     return (
@@ -359,21 +369,11 @@ function AnnotationsPageClientContent() {
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Minhas Anotações Musicais
+              {t('annotations_page_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Organize e compartilhe seu conhecimento musical
+              {t('annotations_page_subtitle')}
             </p>
-
-            {/* Botão de demonstração - REMOVER EM PRODUÇÃO */}
-            {process.env.NODE_ENV === 'development' && (
-              <button
-                onClick={handleDemoAchievement}
-                className="mt-4 px-4 py-2 bg-purple-500 text-white rounded-lg text-sm"
-              >
-                📝 Demo Achievement
-              </button>
-            )}
           </div>
         </AnimatedItem>
 
@@ -393,7 +393,7 @@ function AnnotationsPageClientContent() {
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Todas ({stats.totalAnnotations})
+                    {t('tab_all')} ({stats.totalAnnotations})
                   </button>
                   <button
                     onClick={() => setActiveTab('public')}
@@ -403,7 +403,7 @@ function AnnotationsPageClientContent() {
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Públicas ({stats.publicAnnotations})
+                    {t('tab_public')} ({stats.publicAnnotations})
                   </button>
                   <button
                     onClick={() => setActiveTab('private')}
@@ -413,7 +413,7 @@ function AnnotationsPageClientContent() {
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Privadas ({stats.privateAnnotations})
+                    {t('tab_private')} ({stats.privateAnnotations})
                   </button>
                   {stats.verifiedAnnotations > 0 && (
                     <button
@@ -424,7 +424,7 @@ function AnnotationsPageClientContent() {
                           : 'text-theme-tertiary hover:text-theme-primary'
                       }`}
                     >
-                      Verificadas ({stats.verifiedAnnotations})
+                      {t('tab_verified')} ({stats.verifiedAnnotations})
                     </button>
                   )}
                 </div>
@@ -436,7 +436,7 @@ function AnnotationsPageClientContent() {
                     <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                     <input
                       type="text"
-                      placeholder="Buscar anotações, obras ou compositores..."
+                      placeholder={t('search_placeholder')}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="input-classical w-full sm:w-80"
@@ -456,15 +456,16 @@ function AnnotationsPageClientContent() {
                   >
                     <FiFilter className="w-4 h-4" />
                     <span className="text-sm">
-                      Filtros
+                      {t('filters_button')}
                       {hasActiveFilters && (
                         <span className="ml-1 px-1.5 py-0.5 bg-accent-blue text-white text-xs rounded-full">
                           {
                             [
-                              debouncedSearchQuery && 'busca',
-                              categoryFilter !== 'all' && 'categoria',
-                              difficultyFilter !== 'all' && 'dificuldade',
-                              scopeFilter !== 'all' && 'abrangência',
+                              debouncedSearchQuery && t('filter_search'),
+                              categoryFilter !== 'all' && t('filter_category'),
+                              difficultyFilter !== 'all' &&
+                                t('filter_difficulty'),
+                              scopeFilter !== 'all' && t('filter_scope'),
                             ].filter(Boolean).length
                           }
                         </span>
@@ -473,23 +474,19 @@ function AnnotationsPageClientContent() {
                   </button>
 
                   {/* Stats Toggle Button */}
-                  <button
+                  <Button
+                    variant="outline"
                     onClick={toggleStats}
-                    className={`flex items-center space-x-2 px-4 py-3 rounded-lg border transition-all font-medium ${
-                      showStats && !isMobile
-                        ? 'bg-accent-purple text-theme-primary border-accent-purple shadow-md'
-                        : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-accent-purple hover:bg-interactive-hover'
-                    }`}
+                    leftIcon={<FiBarChart2 className="w-4 h-4" />}
                   >
-                    <FiBarChart2 className="w-4 h-4" />
                     <span className="text-sm">
                       {isMobile
-                        ? 'Estatística'
+                        ? t('stats_button_mobile')
                         : showStats
-                        ? 'Esconder Estatística'
-                        : 'Ver Estatística'}
+                        ? t('stats_button_hide')
+                        : t('stats_button_show')}
                     </span>
-                  </button>
+                  </Button>
 
                   {/* View Mode Toggle */}
                   <ViewModeToggle
@@ -506,7 +503,7 @@ function AnnotationsPageClientContent() {
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-sm font-semibold text-theme-primary flex items-center space-x-2">
                         <FiFilter className="w-4 h-4" />
-                        <span>Filtros Avançados</span>
+                        <span>{t('advanced_filters_title')}</span>
                       </h3>
                       <div className="flex items-center space-x-2">
                         {hasActiveFilters && (
@@ -514,7 +511,7 @@ function AnnotationsPageClientContent() {
                             onClick={handleClearFilters}
                             className="text-xs text-theme-tertiary hover:text-accent-red transition-colors px-2 py-1 rounded border border-theme-tertiary hover:border-accent-red"
                           >
-                            Limpar tudo
+                            {t('clear_all_filters')}
                           </button>
                         )}
                         <button
@@ -530,7 +527,7 @@ function AnnotationsPageClientContent() {
                       {/* Category Filter */}
                       <div>
                         <label className="block text-xs font-medium text-theme-tertiary mb-2">
-                          Categoria
+                          {t('category_label')}
                         </label>
                         <Select
                           options={CATEGORY_OPTIONS}
@@ -547,7 +544,7 @@ function AnnotationsPageClientContent() {
                       {/* Difficulty Filter */}
                       <div>
                         <label className="block text-xs font-medium text-theme-tertiary mb-2">
-                          Dificuldade
+                          {t('difficulty_label')}
                         </label>
                         <Select
                           options={DIFFICULTY_OPTIONS}
@@ -564,7 +561,7 @@ function AnnotationsPageClientContent() {
                       {/* Scope Filter */}
                       <div>
                         <label className="block text-xs font-medium text-theme-tertiary mb-2">
-                          Abrangência
+                          {t('scope_label')}
                         </label>
                         <Select
                           options={SCOPE_OPTIONS}
@@ -603,7 +600,7 @@ function AnnotationsPageClientContent() {
                     ></div>
                   </div>
                   <span className="text-theme-primary font-medium">
-                    Carregando anotações...
+                    {t('loading_annotations')}
                   </span>
                 </div>
               </div>
@@ -619,24 +616,24 @@ function AnnotationsPageClientContent() {
                   </div>
                   <h3 className="text-2xl font-bold text-theme-primary mb-4">
                     {debouncedSearchQuery || hasActiveFilters
-                      ? 'Nenhuma anotação encontrada'
+                      ? t('no_annotations_found')
                       : stats.totalAnnotations === 0
-                      ? 'Você ainda não fez anotações'
-                      : 'Nenhuma anotação nesta categoria'}
+                      ? t('no_annotations_yet')
+                      : t('no_annotations_category')}
                   </h3>
                   <p className="text-theme-tertiary mb-8 max-w-md mx-auto">
                     {debouncedSearchQuery || hasActiveFilters
-                      ? 'Tente ajustar os filtros ou termos de busca.'
+                      ? t('adjust_filters_search')
                       : stats.totalAnnotations === 0
-                      ? 'Comece criando sua primeira anotação musical e compartilhe seu conhecimento!'
-                      : 'Tente ajustar os filtros aplicados.'}
+                      ? t('create_first_annotation')
+                      : t('adjust_filters_applied')}
                   </p>
                   {stats.totalAnnotations === 0 && (
                     <Link
                       href="/works"
                       className="btn-classical-primary flex w-max items-center space-x-2 mx-auto"
                     >
-                      <span>Explorar Obras</span>
+                      <span>{t('explore_works')}</span>
                       <FiPlus className="w-4 h-4" />
                     </Link>
                   )}
@@ -660,35 +657,51 @@ function AnnotationsPageClientContent() {
                     </div>
                     <div>
                       <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                        Suas Anotações
+                        {t('your_annotations')}
                       </h2>
                       <p className="text-theme-tertiary">
-                        {filteredAnnotations.length} de {stats.totalAnnotations}{' '}
-                        anotações
+                        {filteredAnnotations.length} {t('of')}{' '}
+                        {stats.totalAnnotations} {t('annotations_count')}
                       </p>
                     </div>
                   </div>
 
-                  <div
-                    className={viewMode === 'cards' ? 'space-y-4' : 'space-y-4'}
-                  >
-                    {filteredAnnotations.map((annotation, index) => (
-                      <AnimatedItem
-                        key={annotation.id}
-                        direction="left"
-                        hover="lift"
-                        style={{
-                          animationDelay: `${index * 0.1}s`,
-                          animationFillMode: 'backwards',
-                        }}
-                      >
+                  {/* Annotations Grid/List */}
+                  {viewMode === 'cards' ? (
+                    <SequentialGrid
+                      cols={cardGridCols}
+                      gap={6}
+                      delayBetweenItems={0.1}
+                      className=""
+                    >
+                      {filteredAnnotations.map((annotation) => (
                         <UserAnnotationCard
+                          key={annotation.id}
                           annotation={annotation}
                           viewMode={viewMode}
                         />
-                      </AnimatedItem>
-                    ))}
-                  </div>
+                      ))}
+                    </SequentialGrid>
+                  ) : (
+                    <div className="space-y-4">
+                      {filteredAnnotations.map((annotation, index) => (
+                        <AnimatedItem
+                          key={annotation.id}
+                          direction="left"
+                          hover="lift"
+                          style={{
+                            animationDelay: `${index * 0.1}s`,
+                            animationFillMode: 'backwards',
+                          }}
+                        >
+                          <UserAnnotationCard
+                            annotation={annotation}
+                            viewMode={viewMode}
+                          />
+                        </AnimatedItem>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Sidebar com estatísticas - apenas desktop inline */}
@@ -709,7 +722,7 @@ function AnnotationsPageClientContent() {
       <Modal
         isOpen={isStatsModalOpen}
         onClose={closeStatsModal}
-        title="Estatísticas das Anotações"
+        title={t('stats_modal_title')}
         maxWidth="xl"
       >
         <AnnotationsStatsWidget />

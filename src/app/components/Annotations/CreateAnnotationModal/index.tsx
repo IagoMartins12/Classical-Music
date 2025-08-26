@@ -32,17 +32,19 @@ import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Input from '../../Common/Inputs';
+import { useTranslation } from '@/app/hooks/useTranslation';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 interface CreateAnnotationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  workId?: string; // 🔧 NOVO: Agora opcional
-  workTitle?: string; // 🔧 NOVO: Agora opcional
-  composerName?: string; // 🔧 NOVO: Agora opcional
+  workId?: string;
+  workTitle?: string;
+  composerName?: string;
   editingAnnotation?: WorkAnnotation;
 }
 
-// 🔧 Schema de validação atualizado
+// Schema de validação atualizado
 const annotationSchema = z.object({
   workId: z.string().min(1, 'Obra é obrigatória'),
   title: z
@@ -78,73 +80,7 @@ const annotationSchema = z.object({
   isPublic: z.boolean(),
 });
 
-const CATEGORY_OPTIONS = [
-  {
-    value: 'TECHNIQUE',
-    label: 'Técnica',
-    icon: FiTarget,
-    description: 'Dedilhado, articulação, postura',
-  },
-  {
-    value: 'INTERPRETATION',
-    label: 'Interpretação',
-    icon: GiMusicalNotes,
-    description: 'Dinâmica, fraseado, expressão',
-  },
-  {
-    value: 'PRACTICE_TIP',
-    label: 'Dicas de Estudo',
-    icon: FiBookOpen,
-    description: 'Métodos e estratégias de prática',
-  },
-  {
-    value: 'THEORY',
-    label: 'Teoria',
-    icon: FiLayers,
-    description: 'Análise harmônica e formal',
-  },
-  {
-    value: 'PERFORMANCE',
-    label: 'Performance',
-    icon: FiMusic,
-    description: 'Apresentação e palco',
-  },
-  {
-    value: 'HISTORICAL',
-    label: 'Contexto',
-    icon: FiAward,
-    description: 'História e contexto cultural',
-  },
-  {
-    value: 'GENERAL',
-    label: 'Geral',
-    icon: FiMessageSquare,
-    description: 'Comentários gerais',
-  },
-];
-
-export const DIFFICULTY_OPTIONS = [
-  { value: 'ALL_LEVELS', label: 'Todos os níveis' },
-  { value: 'BEGINNER', label: 'Iniciante' },
-  { value: 'INTERMEDIATE', label: 'Intermediário' },
-  { value: 'ADVANCED', label: 'Avançado' },
-];
-
-export const SCOPE_OPTIONS = [
-  { value: 'ENTIRE_WORK', label: 'Obra inteira' },
-  { value: 'MOVEMENT', label: 'Movimento específico' },
-  { value: 'SECTION', label: 'Seção específica' },
-  { value: 'SPECIFIC_MEASURE', label: 'Compasso(s) específico(s)' },
-];
-
-const HAND_OPTIONS = [
-  { value: '', label: 'Não especificado' },
-  { value: 'left', label: 'Mão esquerda' },
-  { value: 'right', label: 'Mão direita' },
-  { value: 'both', label: 'Ambas as mãos' },
-];
-
-// 🔧 NOVO: Interface para obras na busca
+// Interface para obras na busca
 interface WorkSearchResult {
   id: string;
   title: string;
@@ -257,6 +193,107 @@ const SUGGESTED_TAGS_BY_CATEGORY: Record<AnnotationCategory, string[]> = {
   ],
 };
 
+const SUGGESTED_TAGS_BY_CATEGORY_EN: Record<AnnotationCategory, string[]> = {
+  TECHNIQUE: [
+    'fingering',
+    'articulation',
+    'posture',
+    'legato',
+    'staccato',
+    'pedal',
+    'speed',
+    'precision',
+    'relaxation',
+    'strength',
+    'agility',
+    'coordination',
+  ],
+  INTERPRETATION: [
+    'dynamics',
+    'phrasing',
+    'expression',
+    'rubato',
+    'agogic',
+    'character',
+    'style',
+    'crescendo',
+    'diminuendo',
+    'cantabile',
+    'espressivo',
+    'dolce',
+  ],
+  PRACTICE_TIP: [
+    'slow-study',
+    'metronome',
+    'repetition',
+    'isolation',
+    'separate hands',
+    'memorization',
+    'analysis',
+    'scales',
+    'exercises',
+    'warm-up',
+    'concentration',
+    'patience',
+  ],
+  THEORY: [
+    'harmony',
+    'analysis',
+    'cadence',
+    'modulation',
+    'tonality',
+    'form',
+    'structure',
+    'progression',
+    'chord',
+    'counterpoint',
+    'fugue',
+    'variation',
+  ],
+  PERFORMANCE: [
+    'stage',
+    'nervousness',
+    'confidence',
+    'presence',
+    'communication',
+    'audience',
+    'concentration',
+    'breathing',
+    'stage posture',
+    'entrance',
+    'finale',
+    'body language',
+  ],
+  HISTORICAL: [
+    'baroque',
+    'classical',
+    'romantic',
+    'impressionist',
+    'context',
+    'era',
+    'style-period',
+    'influences',
+    'tradition',
+    'school',
+    'manuscript',
+    'edition',
+  ],
+  GENERAL: [
+    'important',
+    'difficulty',
+    'beauty',
+    'curiosity',
+    'attention',
+    'fundamental',
+    'interesting',
+    'useful',
+    'practical',
+    'essential',
+    'recommended',
+    'highlight',
+  ],
+};
+
 export default function CreateAnnotationModal({
   isOpen,
   onClose,
@@ -265,13 +302,14 @@ export default function CreateAnnotationModal({
   composerName = '',
   editingAnnotation,
 }: CreateAnnotationModalProps) {
+  const { t } = useTranslation({ sections: ['pages/annotations'] });
   const { user } = useAuth();
   const { createAnnotation, updateAnnotation, loading } = useAnnotationsStore();
   const isEditing = !!editingAnnotation;
   const isSubmitting =
     loading.create || (isEditing && loading.update.has(editingAnnotation.id));
 
-  // 🔧 NOVO: Estados para busca de obras
+  // Estados para busca de obras
   const [workSearchTerm, setWorkSearchTerm] = useState('');
   const [workSearchResults, setWorkSearchResults] = useState<
     WorkSearchResult[]
@@ -345,7 +383,86 @@ export default function CreateAnnotationModal({
     ['category', 'difficulty', 'scope', 'workId', 'isPublic']
   );
 
-  // 🔧 NOVO: Função para buscar obras
+  // Dynamic options with translations
+  const CATEGORY_OPTIONS = useMemo(
+    () => [
+      {
+        value: 'TECHNIQUE',
+        label: t('category_technique'),
+        icon: FiTarget,
+        description: 'Dedilhado, articulação, postura',
+      },
+      {
+        value: 'INTERPRETATION',
+        label: t('category_interpretation'),
+        icon: GiMusicalNotes,
+        description: 'Dinâmica, fraseado, expressão',
+      },
+      {
+        value: 'PRACTICE_TIP',
+        label: t('category_practice_tip'),
+        icon: FiBookOpen,
+        description: 'Métodos e estratégias de prática',
+      },
+      {
+        value: 'THEORY',
+        label: t('category_theory'),
+        icon: FiLayers,
+        description: 'Análise harmônica e formal',
+      },
+      {
+        value: 'PERFORMANCE',
+        label: t('category_performance'),
+        icon: FiMusic,
+        description: 'Apresentação e palco',
+      },
+      {
+        value: 'HISTORICAL',
+        label: t('category_historical'),
+        icon: FiAward,
+        description: 'História e contexto cultural',
+      },
+      {
+        value: 'GENERAL',
+        label: t('category_general'),
+        icon: FiMessageSquare,
+        description: 'Comentários gerais',
+      },
+    ],
+    [t]
+  );
+
+  const DIFFICULTY_OPTIONS = useMemo(
+    () => [
+      { value: 'ALL_LEVELS', label: t('difficulty_all_levels') },
+      { value: 'BEGINNER', label: t('difficulty_beginner') },
+      { value: 'INTERMEDIATE', label: t('difficulty_intermediate') },
+      { value: 'ADVANCED', label: t('difficulty_advanced') },
+    ],
+    [t]
+  );
+
+  const SCOPE_OPTIONS = useMemo(
+    () => [
+      { value: 'ENTIRE_WORK', label: t('scope_entire_work') },
+      { value: 'MOVEMENT', label: t('scope_movement') },
+      { value: 'SECTION', label: t('scope_section') },
+      { value: 'SPECIFIC_MEASURE', label: t('scope_specific_measure') },
+    ],
+    [t]
+  );
+
+  const HAND_OPTIONS = useMemo(
+    () => [
+      { value: '', label: t('create_modal_hand_not_specified') },
+      { value: 'left', label: t('create_modal_hand_left') },
+      { value: 'right', label: t('create_modal_hand_right') },
+      { value: 'both', label: t('create_modal_hand_both') },
+    ],
+    [t]
+  );
+
+  // Função para buscar obras
   const searchWorks = async (query: string) => {
     if (query.length < 2) {
       setWorkSearchResults([]);
@@ -368,7 +485,7 @@ export default function CreateAnnotationModal({
     }
   };
 
-  // 🔧 NOVO: Effect para busca de obras
+  // Effect para busca de obras
   useEffect(() => {
     const delayedSearch = setTimeout(() => {
       if (workSearchTerm && showWorkSearch) {
@@ -379,7 +496,7 @@ export default function CreateAnnotationModal({
     return () => clearTimeout(delayedSearch);
   }, [workSearchTerm, showWorkSearch]);
 
-  // 🔧 NOVO: Handler para selecionar obra
+  // Handler para selecionar obra
   const handleWorkSelect = (work: WorkSearchResult) => {
     setSelectedWork(work);
     setFormData((prev) => ({ ...prev, workId: work.id }));
@@ -482,7 +599,7 @@ export default function CreateAnnotationModal({
         isPublic: editingAnnotation.isPublic,
       });
 
-      // 🔧 NOVO: Configurar obra selecionada para edição
+      // Configurar obra selecionada para edição
       if (editingAnnotation.work) {
         setSelectedWork({
           id: editingAnnotation.workId,
@@ -512,7 +629,7 @@ export default function CreateAnnotationModal({
         isPublic: true,
       });
 
-      // 🔧 NOVO: Configurar obra selecionada para nova anotação
+      // Configurar obra selecionada para nova anotação
       if (workId && workTitle && composerName) {
         setSelectedWork({
           id: workId,
@@ -566,7 +683,7 @@ export default function CreateAnnotationModal({
       instrument: formData.instrument.trim() || undefined,
       tags: formData.tags.filter((tag) => tag.trim().length > 0),
       isPublic: formData.isPublic,
-      // 🔧 NOVO: Incluir dados da obra
+      // Incluir dados da obra
       work: selectedWork
         ? {
             id: selectedWork.id,
@@ -635,8 +752,13 @@ export default function CreateAnnotationModal({
     }
   };
 
+  const { language } = useLanguageStore();
+  const currentTags =
+    language === 'en'
+      ? SUGGESTED_TAGS_BY_CATEGORY_EN
+      : SUGGESTED_TAGS_BY_CATEGORY;
   // Get suggested tags for current category
-  const suggestedTags = SUGGESTED_TAGS_BY_CATEGORY[formData.category] || [];
+  const suggestedTags = currentTags[formData.category] || [];
   const availableSuggestedTags = suggestedTags.filter(
     (tag) => !formData.tags.includes(tag)
   );
@@ -666,12 +788,14 @@ export default function CreateAnnotationModal({
           </div>
           <div>
             <h2 className="text-xl font-bold text-theme-primary classical-title">
-              {isEditing ? 'Editar Anotação' : 'Nova Anotação Musical'}
+              {isEditing
+                ? t('create_modal_edit_title')
+                : t('create_modal_new_title')}
             </h2>
             <p className="text-sm text-theme-secondary">
               {isEditing
-                ? 'Atualize sua anotação'
-                : 'Compartilhe conhecimento sobre uma obra'}
+                ? t('create_modal_edit_subtitle')
+                : t('create_modal_new_subtitle')}
             </p>
           </div>
         </div>
@@ -698,13 +822,13 @@ export default function CreateAnnotationModal({
             <div className="flex items-center space-x-2 mb-3">
               <FiSearch className="w-4 h-4 text-theme-tertiary" />
               <span className="text-sm font-medium text-theme-primary">
-                Selecionar Obra
+                {t('create_modal_select_work')}
               </span>
             </div>
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Busque por título da obra ou compositor..."
+                placeholder={t('create_modal_search_works')}
                 value={workSearchTerm}
                 onChange={(e) => setWorkSearchTerm(e.target.value)}
                 className="w-full input-classical-2"
@@ -748,7 +872,7 @@ export default function CreateAnnotationModal({
         {/* Title */}
         <div>
           <label className="block text-sm font-medium text-theme-primary mb-2">
-            Título da Anotação *
+            {t('create_modal_annotation_title')} *
           </label>
           <Input
             ref={fieldRefs.title}
@@ -760,14 +884,14 @@ export default function CreateAnnotationModal({
             className={`w-full input-classical-2 ${
               errors.title ? '!border-red-400' : ''
             }`}
-            placeholder="Ex: Dedilhado para arpejos nos compassos 15-20"
+            placeholder={t('create_modal_annotation_title_placeholder')}
             maxLength={100}
           />
           {errors.title && (
             <p className="text-red-500 text-sm mt-1">{errors.title}</p>
           )}
           <p className="text-theme-tertiary text-xs mt-1">
-            {formData.title.length}/100 caracteres
+            {formData.title.length}/100 {t('create_modal_characters')}
           </p>
         </div>
 
@@ -775,7 +899,7 @@ export default function CreateAnnotationModal({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-theme-primary mb-2">
-              Categoria *
+              {t('create_modal_category')} *
             </label>
             <Select
               options={CATEGORY_OPTIONS}
@@ -798,7 +922,7 @@ export default function CreateAnnotationModal({
 
           <div>
             <label className="block text-sm font-medium text-theme-primary mb-2">
-              Nível de Dificuldade
+              {t('create_modal_difficulty_level')}
             </label>
             <Select
               options={DIFFICULTY_OPTIONS}
@@ -817,7 +941,7 @@ export default function CreateAnnotationModal({
         {/* Scope */}
         <div>
           <label className="block text-sm font-medium text-theme-primary mb-2">
-            Abrangência da Anotação
+            {t('create_modal_annotation_scope')}
           </label>
           <Select
             options={SCOPE_OPTIONS}
@@ -837,7 +961,7 @@ export default function CreateAnnotationModal({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-theme-primary mb-2">
-                Compasso Inicial *
+                {t('create_modal_initial_measure')} *
               </label>
               <Input
                 ref={fieldRefs.measureStart}
@@ -853,7 +977,7 @@ export default function CreateAnnotationModal({
                 className={`w-full input-classical-2 ${
                   errors.measureStart ? 'border-accent-red' : ''
                 }`}
-                placeholder="Ex: 15"
+                placeholder={t('create_modal_measure_placeholder')}
               />
               {errors.measureStart && (
                 <p className="text-accent-red text-sm mt-1">
@@ -863,7 +987,7 @@ export default function CreateAnnotationModal({
             </div>
             <div>
               <label className="block text-sm font-medium text-theme-primary mb-2">
-                Compasso Final (opcional)
+                {t('create_modal_final_measure')}
               </label>
               <Input
                 ref={fieldRefs.measureEnd}
@@ -879,7 +1003,7 @@ export default function CreateAnnotationModal({
                 className={`w-full input-classical-2 ${
                   errors.measureEnd ? 'border-accent-red' : ''
                 }`}
-                placeholder="Ex: 20"
+                placeholder={t('create_modal_measure_end_placeholder')}
               />
               {errors.measureEnd && (
                 <p className="text-accent-red text-sm mt-1">
@@ -893,7 +1017,7 @@ export default function CreateAnnotationModal({
         {formData.scope === 'MOVEMENT' && (
           <div>
             <label className="block text-sm font-medium text-theme-primary mb-2">
-              Nome do Movimento *
+              {t('create_modal_movement_name')} *
             </label>
             <Input
               ref={fieldRefs.movement}
@@ -905,7 +1029,7 @@ export default function CreateAnnotationModal({
               className={`w-full input-classical-2 ${
                 errors.movement ? 'border-accent-red' : ''
               }`}
-              placeholder="Ex: Allegro, Andante, Presto"
+              placeholder={t('create_modal_movement_placeholder')}
             />
             {errors.movement && (
               <p className="text-accent-red text-sm mt-1">{errors.movement}</p>
@@ -916,7 +1040,7 @@ export default function CreateAnnotationModal({
         {formData.scope === 'SECTION' && (
           <div>
             <label className="block text-sm font-medium text-theme-primary mb-2">
-              Nome da Seção *
+              {t('create_modal_section_name')} *
             </label>
             <Input
               ref={fieldRefs.section}
@@ -928,7 +1052,7 @@ export default function CreateAnnotationModal({
               className={`w-full input-classical-2 ${
                 errors.section ? 'border-accent-red' : ''
               }`}
-              placeholder="Ex: Exposição, Desenvolvimento, Recapitulação"
+              placeholder={t('create_modal_section_placeholder')}
             />
             {errors.section && (
               <p className="text-accent-red text-sm mt-1">{errors.section}</p>
@@ -940,7 +1064,7 @@ export default function CreateAnnotationModal({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-theme-primary mb-2">
-              Mão Específica
+              {t('create_modal_specific_hand')}
             </label>
             <Select
               options={HAND_OPTIONS}
@@ -954,7 +1078,7 @@ export default function CreateAnnotationModal({
 
           <div>
             <label className="block text-sm font-medium text-theme-primary mb-2">
-              Página da Partitura
+              {t('create_modal_sheet_page')}
             </label>
             <Input
               type="number"
@@ -964,7 +1088,7 @@ export default function CreateAnnotationModal({
                 setFormData((prev) => ({ ...prev, pageNumber: e.target.value }))
               }
               className="w-full input-classical-2"
-              placeholder="Ex: 3"
+              placeholder={t('create_modal_page_placeholder')}
             />
           </div>
         </div>
@@ -972,7 +1096,7 @@ export default function CreateAnnotationModal({
         {/* Content */}
         <div>
           <label className="block text-sm font-medium text-theme-primary mb-2">
-            Conteúdo da Anotação *
+            {t('create_modal_annotation_content')} *
           </label>
           <textarea
             ref={fieldRefs.content}
@@ -984,21 +1108,21 @@ export default function CreateAnnotationModal({
               errors.content ? '!border-red-400' : ''
             }`}
             rows={6}
-            placeholder="Descreva sua dica, observação ou conhecimento sobre esta parte da obra..."
+            placeholder={t('create_modal_content_placeholder')}
             maxLength={2000}
           />
           {errors.content && (
             <p className="text-red-500 text-sm mt-1">{errors.content}</p>
           )}
           <p className="text-theme-tertiary text-xs mt-1">
-            {formData.content.length}/2000 caracteres
+            {formData.content.length}/2000 {t('create_modal_characters')}
           </p>
         </div>
 
         {/* Tags */}
         <div>
           <label className="block text-sm font-medium text-theme-primary mb-2">
-            Tags (opcional)
+            {t('create_modal_tags_optional')}
           </label>
 
           {/* Current Tags */}
@@ -1027,7 +1151,7 @@ export default function CreateAnnotationModal({
               onChange={(e) => setNewTag(e.target.value)}
               onKeyPress={handleKeyPress}
               className="flex-1 input-classical-2"
-              placeholder="Digite uma tag e pressione Enter"
+              placeholder={t('create_modal_tag_placeholder')}
               maxLength={20}
             />
             <button
@@ -1036,7 +1160,7 @@ export default function CreateAnnotationModal({
               className="btn-classical-secondary flex items-center space-x-1"
             >
               <FiTag className="w-4 h-4" />
-              <span>Adicionar</span>
+              <span>{t('create_modal_add_tag')}</span>
             </button>
           </div>
 
@@ -1046,11 +1170,11 @@ export default function CreateAnnotationModal({
               <div className="flex items-center space-x-2 mb-2">
                 <FiPlus className="w-4 h-4 text-theme-tertiary" />
                 <span className="text-sm font-medium text-theme-secondary">
-                  Tags sugeridas para{' '}
-                  {
+                  {t('create_modal_suggested_tags').replace(
+                    '{category}',
                     CATEGORY_OPTIONS.find((c) => c.value === formData.category)
-                      ?.label
-                  }
+                      ?.label || ''
+                  )}
                   :
                 </span>
               </div>
@@ -1073,8 +1197,7 @@ export default function CreateAnnotationModal({
             <p className="text-accent-red text-sm mt-1">{errors.tags}</p>
           )}
           <p className="text-theme-tertiary text-xs">
-            Máximo 10 tags. Use palavras-chave relevantes para facilitar a
-            busca.
+            {t('create_modal_max_tags')}
           </p>
         </div>
 
@@ -1099,7 +1222,9 @@ export default function CreateAnnotationModal({
             <div>
               <div className="flex items-center space-x-2">
                 <span className="font-medium text-theme-primary">
-                  {formData.isPublic ? 'Anotação Pública' : 'Anotação Privada'}
+                  {formData.isPublic
+                    ? t('create_modal_public_annotation')
+                    : t('create_modal_private_annotation')}
                 </span>
                 {formData.isPublic ? (
                   <FiEye className="w-4 h-4 text-accent-green" />
@@ -1109,8 +1234,8 @@ export default function CreateAnnotationModal({
               </div>
               <p className="text-sm text-theme-secondary">
                 {formData.isPublic
-                  ? 'Outros usuários poderão ver e votar nesta anotação'
-                  : 'Apenas você poderá ver esta anotação'}
+                  ? t('create_modal_public_description')
+                  : t('create_modal_private_description')}
               </p>
             </div>
           </button>
@@ -1120,15 +1245,15 @@ export default function CreateAnnotationModal({
       {/* Footer */}
       <div className="px-6 py-4 border-t border-theme-secondary flex items-center justify-end space-x-3">
         <Button variant="secondary" onClick={onClose}>
-          Cancelar
+          {t('create_modal_cancel')}
         </Button>
         <Button
           variant="primary"
           onClick={handleSubmit}
           isLoading={isSubmitting}
-          disabled={!selectedWork} // 🔧 NOVO: Desabilitar se não há obra selecionada
+          disabled={!selectedWork} // Desabilitar se não há obra selecionada
         >
-          {isEditing ? 'Atualizar Anotação' : 'Criar Anotação'}
+          {isEditing ? t('create_modal_update') : t('create_modal_create')}
         </Button>
       </div>
     </Modal>

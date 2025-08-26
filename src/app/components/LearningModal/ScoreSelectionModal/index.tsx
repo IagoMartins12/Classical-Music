@@ -26,6 +26,7 @@ import {
 import Modal from '../../Modal';
 import ScorePreview from '../../WorkDetailsClient/ScorePreview';
 import ScoreCard from '../../WorkDetailsClient/ScoreCard';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 // Interface para dados unificados
 interface MixedScoreData {
@@ -58,45 +59,6 @@ interface MixedScoreGroup {
   groupTitle?: string;
   source: 'WORKSCORE';
 }
-
-// TABS para categorias
-const SCORE_TABS = [
-  {
-    id: 'scores',
-    label: 'Partituras',
-    type: 'scores' as const,
-    icon: FiMusic,
-    gradient: 'from-brand-primary to-brand-secondary',
-  },
-  {
-    id: 'parts',
-    label: 'Partes',
-    type: 'parts' as const,
-    icon: FiFileText,
-    gradient: 'from-accent-blue to-accent-purple',
-  },
-  {
-    id: 'arrangements',
-    label: 'Arranjos',
-    type: 'arrangements' as const,
-    icon: GiMusicalNotes,
-    gradient: 'from-accent-green to-accent-blue',
-  },
-  {
-    id: 'uploads',
-    label: 'Open Atlas',
-    type: 'uploads' as const,
-    icon: FiUpload,
-    gradient: 'from-accent-purple to-accent-red',
-  },
-  {
-    id: 'others',
-    label: 'Outros',
-    type: 'others' as const,
-    icon: FiFileText,
-    gradient: 'from-accent-red to-accent-purple',
-  },
-];
 
 interface ScoreSelectionModalProps {
   isOpen: boolean;
@@ -136,6 +98,47 @@ const ScoreSelectionModal = ({
   onScoreSelected,
   isEditing = false,
 }: ScoreSelectionModalProps) => {
+  const { t } = useTranslation({ sections: ['pages/learning'] });
+
+  // TABS para categorias traduzidas
+  const SCORE_TABS = [
+    {
+      id: 'scores',
+      label: t('scores_tab'),
+      type: 'scores' as const,
+      icon: FiMusic,
+      gradient: 'from-brand-primary to-brand-secondary',
+    },
+    {
+      id: 'parts',
+      label: t('parts_tab'),
+      type: 'parts' as const,
+      icon: FiFileText,
+      gradient: 'from-accent-blue to-accent-purple',
+    },
+    {
+      id: 'arrangements',
+      label: t('arrangements_tab'),
+      type: 'arrangements' as const,
+      icon: GiMusicalNotes,
+      gradient: 'from-accent-green to-accent-blue',
+    },
+    {
+      id: 'uploads',
+      label: t('uploads_tab'),
+      type: 'uploads' as const,
+      icon: FiUpload,
+      gradient: 'from-accent-purple to-accent-red',
+    },
+    {
+      id: 'others',
+      label: t('others_tab'),
+      type: 'others' as const,
+      icon: FiFileText,
+      gradient: 'from-accent-red to-accent-purple',
+    },
+  ];
+
   const [activeTab, setActiveTab] = useState('scores');
   const [selectedScore, setSelectedScore] = useState<MixedScoreData | null>(
     null
@@ -290,9 +293,9 @@ const ScoreSelectionModal = ({
             groupIndex: 0,
             groupTitle: `${
               type === 'uploads'
-                ? 'Open Atlas'
+                ? t('uploads_tab')
                 : type.charAt(0).toUpperCase() + type.slice(1)
-            } (${scores.length} carregadas)`,
+            } (${scores.length} ${t('scores_loaded')})`,
             source: 'WORKSCORE',
             scores: scores.map(
               (ws): MixedScoreData => ({
@@ -337,7 +340,7 @@ const ScoreSelectionModal = ({
       visibleTabs: visible,
       tabStats: stats,
     };
-  }, [stableWorkScores, stablePagination]);
+  }, [stableWorkScores, stablePagination, t]);
 
   // 🔥 RESETAR ESTADO QUANDO MODAL ABRE/FECHA - SEM LOOPS
   useEffect(() => {
@@ -447,8 +450,8 @@ const ScoreSelectionModal = ({
       onScoreSelected(null);
       toast.success(
         isEditing
-          ? 'Partitura removida com sucesso!'
-          : 'Configuração salva sem partitura!',
+          ? t('score_removed_success')
+          : t('configuration_saved_without_score'),
         { icon: isEditing ? '🗑️' : '✅', duration: 3000 }
       );
       onClose();
@@ -478,9 +481,7 @@ const ScoreSelectionModal = ({
 
       onScoreSelected(workScore);
       toast.success(
-        isEditing
-          ? 'Partitura atualizada com sucesso!'
-          : 'Partitura selecionada com sucesso!',
+        isEditing ? t('score_updated_success') : t('score_selected_success'),
         { icon: isEditing ? '✏️' : '🎼', duration: 3000 }
       );
       onClose();
@@ -490,7 +491,7 @@ const ScoreSelectionModal = ({
     } finally {
       setIsConverting(false);
     }
-  }, [selectedScore, onScoreSelected, isEditing, onClose]);
+  }, [selectedScore, onScoreSelected, isEditing, onClose, t]);
 
   const handleLoadMoreForTab = useCallback(
     async (tabType: string) => {
@@ -547,7 +548,9 @@ const ScoreSelectionModal = ({
 
               <div>
                 <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                  {isEditing ? 'Editar Partitura' : 'Selecionar Partitura'}
+                  {isEditing
+                    ? t('edit_score_modal_title')
+                    : t('select_score_modal_title')}
                 </h2>
                 <div className="flex items-center space-x-2">
                   <p className="text-theme-secondary classical-subtitle">
@@ -569,9 +572,9 @@ const ScoreSelectionModal = ({
                   <span className="text-theme-secondary font-medium">
                     {selectedScore
                       ? isEditing
-                        ? 'Nova partitura selecionada'
-                        : 'Partitura selecionada'
-                      : 'Nenhuma partitura selecionada'}
+                        ? t('new_score_selected')
+                        : t('score_selected')
+                      : t('no_score_selected_modal')}
                   </span>
                 </div>
               </div>
@@ -584,7 +587,7 @@ const ScoreSelectionModal = ({
                 {isConverting ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span>Processando...</span>
+                    <span>{t('processing')}</span>
                   </>
                 ) : (
                   <>
@@ -592,11 +595,11 @@ const ScoreSelectionModal = ({
                     <span>
                       {selectedScore
                         ? isEditing
-                          ? 'Atualizar e Voltar'
-                          : 'Confirmar Seleção'
+                          ? t('update_and_back')
+                          : t('confirm_selection')
                         : isEditing
-                        ? 'Remover Partitura'
-                        : 'Prosseguir sem Partitura'}
+                        ? t('remove_score')
+                        : t('continue_without_score')}
                     </span>
                   </>
                 )}
@@ -714,12 +717,14 @@ const ScoreSelectionModal = ({
                   <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
                     <div className="text-center">
                       <h3 className="text-lg font-semibold text-theme-primary mb-2">
-                        Mais partituras disponíveis
+                        {t('more_scores_available')}
                       </h3>
                       <p className="text-theme-secondary text-sm mb-4">
                         {loadingWorkScores
-                          ? 'Carregando mais partituras...'
-                          : `Mostrando ${activeTabStat.loaded} de ${activeTabStat.total} partituras`}
+                          ? t('loading_more_scores')
+                          : `${t('showing_scores')} ${activeTabStat.loaded} ${t(
+                              'of_scores'
+                            )} ${activeTabStat.total} ${t('scores_label')}`}
                       </p>
                     </div>
 
@@ -732,13 +737,13 @@ const ScoreSelectionModal = ({
                         {loadingWorkScores ? (
                           <>
                             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                            <span>Carregando...</span>
+                            <span>{t('loading')}</span>
                           </>
                         ) : (
                           <>
                             <FiMoreHorizontal className="w-4 h-4" />
                             <span>
-                              Carregar Mais (
+                              {t('load_more')} (
                               {Math.min(20, activeTabStat.remaining)})
                             </span>
                           </>
@@ -758,7 +763,7 @@ const ScoreSelectionModal = ({
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-theme-primary">
-                  Preview da Partitura
+                  {t('score_preview')}
                 </h3>
                 <button
                   onClick={() => setSelectedScore(null)}
@@ -779,17 +784,17 @@ const ScoreSelectionModal = ({
           <div className="text-sm text-theme-secondary">
             {currentSelectedScore ? (
               <span>
-                {isEditing ? 'Partitura atual' : 'Partitura vinculada'}:{' '}
+                {isEditing ? t('current_score') : t('linked_score')}:{' '}
                 <strong>{currentSelectedScore.title}</strong>
               </span>
             ) : (
-              <span>Nenhuma partitura vinculada atualmente</span>
+              <span>{t('no_score_linked')}</span>
             )}
           </div>
 
           <div className="flex items-center space-x-3">
             <button onClick={onClose} className="btn-classical-secondary">
-              {isEditing ? 'Manter Atual' : 'Cancelar'}
+              {isEditing ? t('keep_current') : t('cancel_button')}
             </button>
 
             <button
@@ -798,14 +803,14 @@ const ScoreSelectionModal = ({
               className="btn-classical-primary"
             >
               {isConverting
-                ? 'Processando...'
+                ? t('processing')
                 : selectedScore
                 ? isEditing
-                  ? 'Atualizar e Voltar'
-                  : 'Confirmar Seleção'
+                  ? t('update_and_back')
+                  : t('confirm_selection')
                 : isEditing
-                ? 'Remover Partitura'
-                : 'Prosseguir sem Partitura'}
+                ? t('remove_score')
+                : t('continue_without_score')}
             </button>
           </div>
         </div>
@@ -816,12 +821,14 @@ const ScoreSelectionModal = ({
 
 // COMPONENTES AUXILIARES
 function LoadingState() {
+  const { t } = useTranslation({ sections: ['pages/learning'] });
+
   return (
     <div className="flex items-center justify-center py-12">
       <div className="flex items-center space-x-3">
         <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
         <span className="text-theme-primary font-medium">
-          Carregando partituras...
+          {t('loading_scores')}
         </span>
       </div>
     </div>
@@ -835,6 +842,8 @@ function ErrorState({
   error: string;
   onRefetch?: () => void;
 }) {
+  const { t } = useTranslation({ sections: ['pages/learning'] });
+
   return (
     <div className="bg-gradient-to-r from-accent-red/10 to-accent-red/5 border border-accent-red/30 rounded-2xl p-6">
       <div className="text-center">
@@ -846,7 +855,7 @@ function ErrorState({
             className="btn-classical-secondary flex items-center space-x-2"
           >
             <FiRefreshCw className="w-4 h-4" />
-            <span>Tentar novamente</span>
+            <span>{t('try_again')}</span>
           </button>
         )}
       </div>
@@ -855,17 +864,17 @@ function ErrorState({
 }
 
 function EmptyState() {
+  const { t } = useTranslation({ sections: ['pages/learning'] });
+
   return (
     <div className="text-center py-12">
       <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
         <FiBookOpen className="w-8 h-8 text-theme-tertiary" />
       </div>
       <h3 className="text-lg font-semibold text-theme-primary mb-2">
-        Nenhuma partitura encontrada
+        {t('no_scores_found')}
       </h3>
-      <p className="text-theme-secondary">
-        Não foram encontradas partituras desta categoria.
-      </p>
+      <p className="text-theme-secondary">{t('no_scores_category')}</p>
     </div>
   );
 }

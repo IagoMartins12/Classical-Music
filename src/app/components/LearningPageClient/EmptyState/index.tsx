@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { FiCheckCircle, FiSearch, FiTarget } from 'react-icons/fi';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface EmptyStateProps {
   type: 'want-to-learn' | 'learned' | 'search';
@@ -14,34 +15,36 @@ export const EmptyState = ({
   searchQuery,
   hasFilters,
 }: EmptyStateProps) => {
+  const { t } = useTranslation({ sections: ['pages/learning'] });
+
   const config = {
     'want-to-learn': {
       icon: (
         <FiTarget className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
       ),
-      title: hasFilters ? 'Nenhuma obra encontrada' : 'Lista vazia',
+      title: hasFilters ? t('empty_no_works_found') : t('empty_list_empty'),
       description: hasFilters
-        ? 'Tente ajustar os filtros de busca'
-        : 'Adicione obras que você gostaria de estudar',
-      action: 'Explorar Obras',
+        ? t('empty_adjust_filters')
+        : t('empty_add_want_to_learn'),
+      action: t('empty_explore_works'),
     },
     learned: {
       icon: (
         <FiCheckCircle className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
       ),
-      title: hasFilters ? 'Nenhuma obra encontrada' : 'Lista vazia',
+      title: hasFilters ? t('empty_no_works_found') : t('empty_list_empty'),
       description: hasFilters
-        ? 'Tente ajustar os filtros de busca'
-        : 'Marque obras que você já aprendeu',
-      action: 'Explorar Obras',
+        ? t('empty_adjust_filters')
+        : t('empty_add_learned'),
+      action: t('empty_explore_works'),
     },
     search: {
       icon: (
         <FiSearch className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
       ),
-      title: 'Nenhum resultado encontrado',
-      description: `Não encontramos obras para "${searchQuery}"`,
-      action: 'Limpar Filtros',
+      title: t('empty_no_results'),
+      description: `${t('empty_no_results_for')} "${searchQuery}"`,
+      action: t('empty_clear_filters'),
     },
   };
 

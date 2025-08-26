@@ -32,6 +32,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 
 // Importar componentes de animação
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
@@ -59,6 +60,7 @@ const ConfirmDeleteModal = ({
   type: 'want-to-learn' | 'learned';
 }) => {
   const [mounted, setMounted] = useState(false);
+  const { t } = useTranslation({ sections: ['pages/learning'] });
 
   useEffect(() => {
     setMounted(true);
@@ -77,7 +79,9 @@ const ConfirmDeleteModal = ({
   if (!mounted || !isOpen) return null;
 
   const typeText =
-    type === 'want-to-learn' ? 'lista de estudos' : 'lista de obras aprendidas';
+    type === 'want-to-learn'
+      ? t('confirm_removal_study_list')
+      : t('confirm_removal_learned_list');
 
   const modalContent = (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
@@ -96,18 +100,19 @@ const ConfirmDeleteModal = ({
           </div>
           <div>
             <h3 className="text-lg font-bold text-theme-primary">
-              Confirmar Remoção
+              {t('confirm_removal_title')}
             </h3>
             <p className="text-sm text-theme-secondary">
-              Esta ação não pode ser desfeita
+              {t('confirm_removal_subtitle')}
             </p>
           </div>
         </div>
 
         <div className="mb-6">
           <p className="text-theme-secondary">
-            Tem certeza que deseja remover{' '}
-            <strong>&quot;{workTitle}&quot;</strong> da sua {typeText}?
+            {t('confirm_removal_question')}{' '}
+            <strong>&quot;{workTitle}&quot;</strong> {t('confirm_removal_from')}{' '}
+            {typeText}?
           </p>
         </div>
 
@@ -117,7 +122,7 @@ const ConfirmDeleteModal = ({
             disabled={isLoading}
             className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary hover:bg-theme-secondary transition-colors disabled:opacity-50"
           >
-            Cancelar
+            {t('cancel_button')}
           </button>
           <button
             onClick={onConfirm}
@@ -127,12 +132,12 @@ const ConfirmDeleteModal = ({
             {isLoading ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                <span>Removendo...</span>
+                <span>{t('removing_button')}</span>
               </>
             ) : (
               <>
                 <FiTrash2 className="w-4 h-4" />
-                <span>Remover</span>
+                <span>{t('remove_button')}</span>
               </>
             )}
           </button>
@@ -144,13 +149,13 @@ const ConfirmDeleteModal = ({
   return createPortal(modalContent, document.body);
 };
 
-const getDifficultyLabel = (difficulty?: DifficultyLevel) => {
+const getDifficultyLabel = (difficulty: DifficultyLevel, t: any) => {
   const labels = {
-    BEGINNER: 'Iniciante',
-    INTERMEDIATE: 'Intermediário',
-    ADVANCED: 'Avançado',
+    BEGINNER: t('difficulty_beginner'),
+    INTERMEDIATE: t('difficulty_intermediate'),
+    ADVANCED: t('difficulty_advanced'),
   };
-  return difficulty ? labels[difficulty] : 'Não definido';
+  return difficulty ? labels[difficulty] : t('difficulty_not_defined');
 };
 
 const getDifficultyColor = (difficulty?: DifficultyLevel) => {
@@ -170,16 +175,16 @@ const formatDate = (dateString?: string) => {
 };
 
 // ✅ NOVA FUNÇÃO PARA DOWNLOAD DA PARTITURA
-const handleScoreDownload = (item: WantToLearnItem | LearnedItem) => {
+const handleScoreDownload = (item: WantToLearnItem | LearnedItem, t: any) => {
   if (!item.selectedWorkScore?.downloadUrl) {
-    toast.error('Link de download não disponível');
+    toast.error(t('download_not_available'));
     return;
   }
 
   // Abrir download em nova aba
   window.open(item.selectedWorkScore.downloadUrl, '_blank');
 
-  toast.success(`Download iniciado: ${item.selectedWorkScore.title}`, {
+  toast.success(`${t('download_started')} ${item.selectedWorkScore.title}`, {
     icon: '📄',
     duration: 3000,
   });
@@ -195,6 +200,7 @@ export const LearningCard = ({
   const { removeWantToLearn, removeLearned } = useLearningStore();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { t } = useTranslation({ sections: ['pages/learning'] });
 
   const isWantToLearn = type === 'want-to-learn';
   const wantToLearnItem = item as WantToLearnItem;
@@ -248,7 +254,7 @@ export const LearningCard = ({
                     {hasSelectedScore && (
                       <div
                         className="w-5 h-5 bg-accent-purple/20 border border-accent-purple/40 rounded-full flex items-center justify-center"
-                        title="Tem partitura vinculada"
+                        title={t('has_linked_score')}
                       >
                         <FiFileText className="w-3 h-3 text-accent-purple" />
                       </div>
@@ -271,8 +277,10 @@ export const LearningCard = ({
                     className="flex items-center space-x-1"
                     title={
                       isWantToLearn
-                        ? `Prioridade: ${wantToLearnItem.priority}/5`
-                        : `Maestria: ${learnedItem.mastery}/5`
+                        ? `${t('priority_label_card')} ${
+                            wantToLearnItem.priority
+                          }/5`
+                        : `${t('mastery_label_card')} ${learnedItem.mastery}/5`
                     }
                   >
                     {[...Array(5)].map((_, i) => (
@@ -301,7 +309,7 @@ export const LearningCard = ({
                         item.difficulty
                       )}`}
                     >
-                      {getDifficultyLabel(item.difficulty)}
+                      {getDifficultyLabel(item.difficulty, t)}
                     </span>
                   )}
 
@@ -312,7 +320,7 @@ export const LearningCard = ({
                         {wantToLearnItem.targetDate && (
                           <FiCalendar
                             className="w-4 h-4"
-                            title={`Meta: ${formatDate(
+                            title={`${t('target_date')} ${formatDate(
                               wantToLearnItem.targetDate
                             )}`}
                           />
@@ -328,19 +336,21 @@ export const LearningCard = ({
                         {learnedItem.wouldRecommend && (
                           <FiUsers
                             className="w-4 h-4 text-accent-green"
-                            title="Recomenda"
+                            title={t('recommends')}
                           />
                         )}
                         {learnedItem.publicPerformance && (
                           <FiPlay
                             className="w-4 h-4 text-accent-blue"
-                            title="Tocou em público"
+                            title={t('public_performance')}
                           />
                         )}
                         {learnedItem.enjoyment && (
                           <div
                             className="flex items-center space-x-1"
-                            title={`Satisfação: ${learnedItem.enjoyment}/5`}
+                            title={`${t('satisfaction_label')} ${
+                              learnedItem.enjoyment
+                            }/5`}
                           >
                             <FiHeart className="w-4 h-4" />
                             <span>{learnedItem.enjoyment}</span>
@@ -359,10 +369,12 @@ export const LearningCard = ({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleScoreDownload(item);
+                          handleScoreDownload(item, t);
                         }}
                         className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
-                        title={`Download: ${item.selectedWorkScore?.title}`}
+                        title={`${t('download_score')} ${
+                          item.selectedWorkScore?.title
+                        }`}
                       >
                         <FiDownload className="w-4 h-4" />
                       </button>
@@ -372,14 +384,14 @@ export const LearningCard = ({
                   <button
                     onClick={onEdit}
                     className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
-                    title="Editar"
+                    title={t('edit_button')}
                   >
                     <FiEdit3 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setShowDeleteModal(true)}
                     className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
-                    title="Remover"
+                    title={t('remove_button')}
                   >
                     <FiX className="w-4 h-4" />
                   </button>
@@ -387,7 +399,7 @@ export const LearningCard = ({
                     (!isWantToLearn && learnedItem.notes)) && (
                     <div
                       className="w-6 h-6 flex items-center justify-center"
-                      title="Tem anotações"
+                      title={t('has_notes')}
                     >
                       <FiBookOpen className="w-3 h-3 text-accent-purple" />
                     </div>
@@ -426,7 +438,7 @@ export const LearningCard = ({
               {hasSelectedScore && (
                 <div
                   className="w-6 h-6 b rounded-lg flex items-center justify-center"
-                  title="Tem partitura vinculada"
+                  title={t('has_linked_score')}
                 >
                   <FiMusic className="w-3 h-3 text-accent-purple" />
                 </div>
@@ -448,10 +460,12 @@ export const LearningCard = ({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleScoreDownload(item);
+                    handleScoreDownload(item, t);
                   }}
                   className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
-                  title={`Download: ${item.selectedWorkScore?.title}`}
+                  title={`${t('download_score')} ${
+                    item.selectedWorkScore?.title
+                  }`}
                 >
                   <FiDownload className="w-4 h-4" />
                 </button>
@@ -461,14 +475,14 @@ export const LearningCard = ({
             <button
               onClick={onEdit}
               className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
-              title="Editar"
+              title={t('edit_button')}
             >
               <FiEdit3 className="w-4 h-4" />
             </button>
             <button
               onClick={() => setShowDeleteModal(true)}
               className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
-              title="Remover"
+              title={t('remove_button')}
             >
               <FiX className="w-4 h-4" />
             </button>
@@ -490,18 +504,20 @@ export const LearningCard = ({
                   {item.selectedWorkScore.source} •{' '}
                   {item.selectedWorkScore.fileSize}
                   {item.selectedWorkScore.pageCount &&
-                    ` • ${item.selectedWorkScore.pageCount} páginas`}
+                    ` • ${item.selectedWorkScore.pageCount} ${t(
+                      'pages_label'
+                    )}`}
                 </p>
               </div>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleScoreDownload(item);
+                  handleScoreDownload(item, t);
                 }}
                 className="btn-classical-secondary-sm flex items-center space-x-1 text-xs"
               >
                 <FiDownload className="w-3 h-3" />
-                <span>Download</span>
+                <span>{t('download_button')}</span>
               </button>
             </div>
           </div>
@@ -510,7 +526,7 @@ export const LearningCard = ({
         {/* Stars */}
         <div className="flex items-center space-x-2 mb-4">
           <span className="text-sm font-medium text-theme-tertiary">
-            {isWantToLearn ? 'Prioridade:' : 'Maestria:'}
+            {isWantToLearn ? t('priority_label_card') : t('mastery_label_card')}
           </span>
           <div className="flex items-center space-x-1">
             {[...Array(5)].map((_, i) => (
@@ -539,7 +555,7 @@ export const LearningCard = ({
                   item.difficulty
                 )}`}
               >
-                {getDifficultyLabel(item.difficulty)}
+                {getDifficultyLabel(item.difficulty, t)}
               </span>
             </div>
           )}
@@ -549,21 +565,28 @@ export const LearningCard = ({
               {wantToLearnItem.targetDate && (
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
                   <FiCalendar className="w-4 h-4" />
-                  <span>Meta: {formatDate(wantToLearnItem.targetDate)}</span>
+                  <span>
+                    {t('target_date')} {formatDate(wantToLearnItem.targetDate)}
+                  </span>
                 </div>
               )}
 
               {wantToLearnItem.estimatedStudyTime && (
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
                   <FiClock className="w-4 h-4" />
-                  <span>{wantToLearnItem.estimatedStudyTime}h estimadas</span>
+                  <span>
+                    {wantToLearnItem.estimatedStudyTime}
+                    {t('estimated_hours')}
+                  </span>
                 </div>
               )}
 
               {wantToLearnItem.context && (
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
                   <FiUsers className="w-4 h-4" />
-                  <span>Contexto: {wantToLearnItem.context}</span>
+                  <span>
+                    {t('context_label')} {wantToLearnItem.context}
+                  </span>
                 </div>
               )}
 
@@ -572,7 +595,7 @@ export const LearningCard = ({
                   <div className="flex items-center space-x-2 mb-1">
                     <FiHeart className="w-4 h-4 text-accent-blue" />
                     <span className="text-sm font-medium text-theme-secondary">
-                      Motivação
+                      {t('motivation_section')}
                     </span>
                   </div>
                   <p className="text-sm text-theme-tertiary">
@@ -586,7 +609,7 @@ export const LearningCard = ({
                   <div className="flex items-center space-x-2 mb-1">
                     <FiBookOpen className="w-4 h-4 text-accent-purple" />
                     <span className="text-sm font-medium text-theme-secondary">
-                      Anotações
+                      {t('notes_section')}
                     </span>
                   </div>
                   <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
@@ -601,7 +624,7 @@ export const LearningCard = ({
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
                   <FiCalendar className="w-4 h-4" />
                   <span>
-                    Início do estudo: {formatDate(learnedItem.studyStartDate)}
+                    {t('study_start')} {formatDate(learnedItem.studyStartDate)}
                   </span>
                 </div>
               )}
@@ -609,14 +632,18 @@ export const LearningCard = ({
               {learnedItem.studyDuration && (
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
                   <FiClock className="w-4 h-4" />
-                  <span>{learnedItem.studyDuration} dias de estudo</span>
+                  <span>
+                    {learnedItem.studyDuration} {t('study_days')}
+                  </span>
                 </div>
               )}
 
               {learnedItem.enjoyment && (
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
                   <FiHeart className="w-4 h-4" />
-                  <span>Satisfação: {learnedItem.enjoyment}/5</span>
+                  <span>
+                    {t('satisfaction_label')} {learnedItem.enjoyment}/5
+                  </span>
                 </div>
               )}
 
@@ -624,13 +651,13 @@ export const LearningCard = ({
                 {learnedItem.wouldRecommend && (
                   <span className="flex items-center space-x-1 text-accent-green">
                     <FiUsers className="w-4 h-4" />
-                    <span>Recomenda</span>
+                    <span>{t('recommends')}</span>
                   </span>
                 )}
                 {learnedItem.publicPerformance && (
                   <span className="flex items-center space-x-1 text-accent-blue">
                     <FiPlay className="w-4 h-4" />
-                    <span>Tocou em público</span>
+                    <span>{t('public_performance')}</span>
                   </span>
                 )}
               </div>
@@ -640,7 +667,7 @@ export const LearningCard = ({
                   <div className="flex items-center space-x-2 mb-1">
                     <FiTrendingUp className="w-4 h-4 text-accent-red" />
                     <span className="text-sm font-medium text-theme-secondary">
-                      Desafios Técnicos
+                      {t('technical_challenges')}
                     </span>
                   </div>
                   <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
@@ -654,7 +681,7 @@ export const LearningCard = ({
                   <div className="flex items-center space-x-2 mb-1">
                     <FiAward className="w-4 h-4 text-accent-green" />
                     <span className="text-sm font-medium text-theme-secondary">
-                      Insights Musicais
+                      {t('musical_insights')}
                     </span>
                   </div>
                   <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
@@ -668,7 +695,7 @@ export const LearningCard = ({
                   <div className="flex items-center space-x-2 mb-1">
                     <FiBookOpen className="w-4 h-4 text-accent-purple" />
                     <span className="text-sm font-medium text-theme-secondary">
-                      Anotações
+                      {t('notes_section')}
                     </span>
                   </div>
                   <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
@@ -684,8 +711,8 @@ export const LearningCard = ({
         <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-between">
           <span className="text-xs text-theme-tertiary">
             {isWantToLearn
-              ? `Adicionada em ${formatDate(wantToLearnItem.addedAt)}`
-              : `Aprendida em ${formatDate(learnedItem.learnedAt)}`}
+              ? `${t('added_at')} ${formatDate(wantToLearnItem.addedAt)}`
+              : `${t('learned_at')} ${formatDate(learnedItem.learnedAt)}`}
           </span>
           <div className="flex items-center space-x-3">
             <AnimatedItem hover="scale">
@@ -693,7 +720,7 @@ export const LearningCard = ({
                 href={`/works/${item.workId}`}
                 className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
               >
-                Ver Obra →
+                {t('view_work')} →
               </Link>
             </AnimatedItem>
           </div>

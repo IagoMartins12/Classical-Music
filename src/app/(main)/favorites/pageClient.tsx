@@ -34,11 +34,15 @@ import {
 } from '../../components/animation/AnimatedComponents';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
 import Button from '@/app/components/Common/Button';
+import { useTranslation } from '@/app/hooks/useTranslation';
+import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 
 // Atualizar tipo para incluir 'scores'
 type FilterTab = 'all' | 'composers' | 'works' | 'scores';
 
 export default function FavoritesClient() {
+  const { t } = useTranslation({ sections: ['pages/favorites'] });
+
   // Incluir favoriteScores do store
   const { favoriteComposers, favoriteWorks, favoriteScores } =
     useFavoritesStore();
@@ -134,11 +138,10 @@ export default function FavoritesClient() {
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Seus Favoritos
+              {t('favorites_page_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Sua coleção pessoal de música clássica - compositores, obras e
-              partituras que tocam seu coração
+              {t('favorites_page_subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -157,7 +160,7 @@ export default function FavoritesClient() {
                       : 'text-theme-tertiary hover:text-theme-primary'
                   }`}
                 >
-                  Todos ({stats.totalItems})
+                  {t('tab_all')} ({stats.totalItems})
                 </button>
                 <button
                   onClick={() => setActiveTab('composers')}
@@ -167,7 +170,7 @@ export default function FavoritesClient() {
                       : 'text-theme-tertiary hover:text-theme-primary'
                   }`}
                 >
-                  Compositores ({stats.composersCount})
+                  {t('tab_composers')} ({stats.composersCount})
                 </button>
                 <button
                   onClick={() => setActiveTab('works')}
@@ -177,7 +180,7 @@ export default function FavoritesClient() {
                       : 'text-theme-tertiary hover:text-theme-primary'
                   }`}
                 >
-                  Obras ({stats.worksCount})
+                  {t('tab_works')} ({stats.worksCount})
                 </button>
                 {/* Nova aba para partituras */}
                 <button
@@ -188,7 +191,7 @@ export default function FavoritesClient() {
                       : 'text-theme-tertiary hover:text-theme-primary'
                   }`}
                 >
-                  Partituras ({stats.scoresCount})
+                  {t('tab_scores')} ({stats.scoresCount})
                 </button>
               </div>
 
@@ -199,7 +202,7 @@ export default function FavoritesClient() {
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                   <input
                     type="text"
-                    placeholder="Buscar nos favoritos..."
+                    placeholder={t('search_placeholder')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="input-classical w-full sm:w-80"
@@ -218,10 +221,10 @@ export default function FavoritesClient() {
                   >
                     <span className="text-sm">
                       {isMobile
-                        ? 'Estatística'
+                        ? t('stats_button_mobile')
                         : showStats
-                        ? 'Esconder Estatística'
-                        : 'Ver Estatística'}
+                        ? t('stats_button_hide')
+                        : t('stats_button_show')}
                     </span>
                   </Button>
                 )}
@@ -272,11 +275,11 @@ export default function FavoritesClient() {
                           </div>
                           <div>
                             <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                              Compositores Favoritos
+                              {t('composers_favorites_title')}
                             </h2>
                             <p className="text-theme-tertiary">
-                              {filteredData.composers.length} de{' '}
-                              {favoriteComposers.length} compositores
+                              {filteredData.composers.length} {t('of')}{' '}
+                              {favoriteComposers.length} {t('composers_count')}
                             </p>
                           </div>
                         </div>
@@ -293,6 +296,7 @@ export default function FavoritesClient() {
                                 key={favorite.id}
                                 favorite={favorite}
                                 viewMode={viewMode}
+                                t={t}
                               />
                             ))}
                           </SequentialGrid>
@@ -311,6 +315,7 @@ export default function FavoritesClient() {
                                 <ComposerFavoriteCard
                                   favorite={favorite}
                                   viewMode={viewMode}
+                                  t={t}
                                 />
                               </AnimatedItem>
                             ))}
@@ -356,11 +361,11 @@ export default function FavoritesClient() {
                           </div>
                           <div>
                             <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                              Obras Favoritas
+                              {t('works_favorites_title')}
                             </h2>
                             <p className="text-theme-tertiary">
-                              {filteredData.works.length} de{' '}
-                              {favoriteWorks.length} obras
+                              {filteredData.works.length} {t('of')}{' '}
+                              {favoriteWorks.length} {t('works_count')}
                             </p>
                           </div>
                         </div>
@@ -377,6 +382,7 @@ export default function FavoritesClient() {
                                 key={favorite.id}
                                 favorite={favorite}
                                 viewMode={viewMode}
+                                t={t}
                               />
                             ))}
                           </SequentialGrid>
@@ -395,6 +401,7 @@ export default function FavoritesClient() {
                                 <WorkFavoriteCard
                                   favorite={favorite}
                                   viewMode={viewMode}
+                                  t={t}
                                 />
                               </AnimatedItem>
                             ))}
@@ -440,11 +447,11 @@ export default function FavoritesClient() {
                           </div>
                           <div>
                             <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                              Partituras Favoritas
+                              {t('scores_favorites_title')}
                             </h2>
                             <p className="text-theme-tertiary">
-                              {filteredData.scores.length} de{' '}
-                              {favoriteScores.length} partituras
+                              {filteredData.scores.length} {t('of')}{' '}
+                              {favoriteScores.length} {t('scores_count')}
                             </p>
                           </div>
                         </div>
@@ -461,6 +468,7 @@ export default function FavoritesClient() {
                                 key={favorite.id}
                                 favorite={favorite}
                                 viewMode={viewMode}
+                                t={t}
                               />
                             ))}
                           </SequentialGrid>
@@ -479,6 +487,7 @@ export default function FavoritesClient() {
                                 <ScoreFavoriteCard
                                   favorite={favorite}
                                   viewMode={viewMode}
+                                  t={t}
                                 />
                               </AnimatedItem>
                             ))}
@@ -548,7 +557,7 @@ export default function FavoritesClient() {
       <Modal
         isOpen={isStatsModalOpen}
         onClose={closeStatsModal}
-        title="Estatísticas dos Favoritos"
+        title={t('stats_modal_title')}
         maxWidth="xl"
       >
         <FavoritesStatsWidget />
@@ -561,11 +570,13 @@ export default function FavoritesClient() {
 interface ComposerFavoriteCardProps {
   favorite: any;
   viewMode: ViewMode;
+  t: (key: string) => string;
 }
 
 function ComposerFavoriteCard({
   favorite,
   viewMode,
+  t,
 }: ComposerFavoriteCardProps) {
   return (
     <div
@@ -616,7 +627,7 @@ function ComposerFavoriteCard({
                 <span className="inline-flex items-center px-3 justify-center py-1 mt-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium">
                   <FiClock className="w-2.5 h-2.5 mr-1" />
                   {favorite.composer?.epochName &&
-                    `${favorite.composer.epochName}`}
+                    translateEpochWithHook(favorite.composer.epochName, t)}
                 </span>
               </div>
 
@@ -640,7 +651,7 @@ function ComposerFavoriteCard({
               href={`/composer/${favorite.composer?.id}`}
               className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
             >
-              <span>Ver Perfil</span>
+              <span>{t('see_profile')}</span>
               <FiExternalLink className="w-3 h-3" />
             </Link>
           </div>
@@ -654,9 +665,10 @@ function ComposerFavoriteCard({
 interface WorkFavoriteCardProps {
   favorite: any;
   viewMode: ViewMode;
+  t: (key: string) => string;
 }
 
-function WorkFavoriteCard({ favorite, viewMode }: WorkFavoriteCardProps) {
+function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
   return (
     <div
       className={`classical-card p-6 group hover:shadow-theme-glow transition-all ${
@@ -726,7 +738,7 @@ function WorkFavoriteCard({ favorite, viewMode }: WorkFavoriteCardProps) {
               href={`/works/${favorite.work?.id}`}
               className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
             >
-              <span>Ver Obra</span>
+              <span>{t('see_work')}</span>
               <FiExternalLink className="w-3 h-3" />
             </Link>
           </div>
@@ -740,9 +752,10 @@ function WorkFavoriteCard({ favorite, viewMode }: WorkFavoriteCardProps) {
 interface ScoreFavoriteCardProps {
   favorite: any;
   viewMode: ViewMode;
+  t: (key: string) => string;
 }
 
-function ScoreFavoriteCard({ favorite, viewMode }: ScoreFavoriteCardProps) {
+function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
   return (
     <div
       className={`classical-card p-6 group hover:shadow-theme-glow transition-all ${
@@ -821,7 +834,7 @@ function ScoreFavoriteCard({ favorite, viewMode }: ScoreFavoriteCardProps) {
                   <div className="flex items-center space-x-2">
                     <FiStar className="w-3 h-3 text-accent-gold" />
                     <span className="text-sm text-accent-gold font-medium">
-                      {favorite.personalRating}/5 estrelas
+                      {favorite.personalRating}/5 {t('stars')}
                     </span>
                   </div>
                 )}
@@ -858,7 +871,7 @@ function ScoreFavoriteCard({ favorite, viewMode }: ScoreFavoriteCardProps) {
             <div className="text-xs text-theme-tertiary flex items-center space-x-1">
               <FiClock className="w-3 h-3" />
               <span>
-                Favoritada em{' '}
+                {t('favorited_on')}{' '}
                 {new Date(favorite.addedAt).toLocaleDateString('pt-BR')}
               </span>
             </div>
@@ -889,7 +902,7 @@ function ScoreFavoriteCard({ favorite, viewMode }: ScoreFavoriteCardProps) {
               href={`/works/${favorite.workId}`}
               className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
             >
-              <span>Ver Obra</span>
+              <span>{t('see_work')}</span>
               <FiExternalLink className="w-3 h-3" />
             </Link>
           </div>
