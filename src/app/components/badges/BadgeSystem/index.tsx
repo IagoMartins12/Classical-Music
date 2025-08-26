@@ -373,7 +373,7 @@ export function BadgeComponent({
 
   const sizeClasses = {
     sm: 'w-12 h-12 p-2',
-    md: 'w-16 h-16 p-3',
+    md: 'w-14 h-14 p-3',
     lg: 'w-20 h-20 p-4',
   };
 
@@ -416,7 +416,7 @@ export function BadgeComponent({
         {/* Efeito de brilho para badges desbloqueados */}
         {badge.unlocked && (
           <div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent 
+            className="absolutey inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent 
                          -skew-x-12 translate-x-full group-hover:translate-x-[-200%] 
                          transition-transform duration-1000 ease-out"
           />
@@ -444,9 +444,9 @@ export function BadgeComponent({
                      pointer-events-none z-50"
       >
         <div
-          className="bg-theme-inverse text-theme-inverse-text px-3 py-2 rounded-lg 
+          className=" bg-theme-primary text-theme-inverse-text px-3 py-2 rounded-lg 
                        text-sm font-medium shadow-lg border border-theme-primary/20
-                       max-w-48 text-center"
+                       max-w-64 w-32 text-center"
         >
           <div className="font-bold">{badge.name}</div>
           <div className="text-xs opacity-90 mt-1">{badge.description}</div>
@@ -505,7 +505,7 @@ export function BadgeGrid({
 
         <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-4">
           {displayBadges.map((badge, index) => (
-            <AnimatedItem key={badge.id} hover="scale" delay={index * 0.1}>
+            <AnimatedItem key={badge.id} hover="none" delay={index * 0.1}>
               <BadgeComponent badge={badge} size={size} />
             </AnimatedItem>
           ))}

@@ -9,7 +9,6 @@ import {
   FiFilter,
   FiX,
   FiMusic,
-  FiPlus,
   FiBarChart2,
 } from 'react-icons/fi';
 import {
@@ -38,6 +37,7 @@ import LearningStatsWidget from '@/app/components/StatsWidget/LearningStatsWidge
 import Modal from '../../components/Modal';
 import Link from 'next/link';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
+import Button from '@/app/components/Common/Button';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 type FilterTab = 'all' | 'want-to-learn' | 'learned';
@@ -421,23 +421,19 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                   </button>
 
                   {/* Stats Toggle Button */}
-                  <button
+                  <Button
+                    variant="outline"
                     onClick={toggleStats}
-                    className={`flex items-center space-x-2 px-4 py-3 rounded-lg border transition-all font-medium ${
-                      showStats && !isMobile
-                        ? 'bg-accent-green text-theme-primary border-accent-green shadow-md'
-                        : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-accent-green hover:bg-interactive-hover'
-                    }`}
+                    leftIcon={<FiBarChart2 className="w-4 h-4" />}
                   >
-                    <FiBarChart2 className="w-4 h-4" />
                     <span className="text-sm">
                       {isMobile
-                        ? 'Stats'
+                        ? 'Estatística'
                         : showStats
-                        ? 'Esconder Stats'
-                        : 'Ver Stats'}
+                        ? 'Esconder Estatística'
+                        : 'Ver Estatística'}
                     </span>
-                  </button>
+                  </Button>
 
                   {/* View Mode Toggle */}
                   <ViewModeToggle
@@ -609,7 +605,11 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                       ) : (
                         <>
                           {viewMode === 'cards' ? (
-                            <SequentialGrid cols={3} gap={6} className="">
+                            <SequentialGrid
+                              cols={showStats && !isMobile ? 2 : 3}
+                              gap={6}
+                              className=""
+                            >
                               {filteredData.wantToLearn.map((item) => (
                                 <LearningCard
                                   key={item.id}
@@ -687,7 +687,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                         <>
                           {viewMode === 'cards' ? (
                             <SequentialGrid
-                              cols={3}
+                              cols={showStats && !isMobile ? 2 : 3}
                               gap={6}
                               delayBetweenItems={0.1}
                               className=""

@@ -76,6 +76,7 @@ const LearningModal = () => {
   const [showScoreSelection, setShowScoreSelection] = useState(false);
   const [showTransferConfirm, setShowTransferConfirm] = useState(false);
 
+  console.log('wokr', workTitle);
   // ✅ NOVO: Determinar contexto (Work page vs Learning page)
   const isInWorkPage =
     pathname?.includes('/work/') || pathname?.includes('/works/');

@@ -33,6 +33,7 @@ import {
   SequentialGrid,
 } from '../../components/animation/AnimatedComponents';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
+import Button from '@/app/components/Common/Button';
 
 // Atualizar tipo para incluir 'scores'
 type FilterTab = 'all' | 'composers' | 'works' | 'scores';
@@ -210,23 +211,19 @@ export default function FavoritesClient() {
                   favoriteWorks.length +
                   favoriteScores.length !==
                   0 && (
-                  <button
+                  <Button
+                    variant="outline"
                     onClick={toggleStats}
-                    className={`flex items-center space-x-2 px-4 py-3 rounded-lg border transition-all font-medium ${
-                      showStats && !isMobile
-                        ? 'bg-accent-blue text-theme-primary border-accent-blue shadow-md'
-                        : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-accent-blue hover:bg-interactive-hover'
-                    }`}
+                    leftIcon={<FiBarChart2 className="w-4 h-4" />}
                   >
-                    <FiBarChart2 className="w-4 h-4" />
                     <span className="text-sm">
                       {isMobile
-                        ? 'Stats'
+                        ? 'Estatística'
                         : showStats
-                        ? 'Esconder Stats'
-                        : 'Ver Estatisticas'}
+                        ? 'Esconder Estatística'
+                        : 'Ver Estatística'}
                     </span>
-                  </button>
+                  </Button>
                 )}
 
                 {/* View Mode Toggle */}

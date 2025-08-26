@@ -327,6 +327,23 @@ enum SchoolActivityAction {
   LESSON_COMPLETED        // Concluiu aula
   STUDENT_PROFILE_UPDATED // Alterou perfil de aluno
 }
+
+enum AchievementCategory {
+  LEARNING      // Conquistas de aprendizado
+  FAVORITES     // Conquistas de favoritos  
+  ANNOTATIONS   // Conquistas de anotações
+  GENERAL       // Conquistas gerais
+  SOCIAL        // Conquistas sociais
+  MILESTONE     // Conquistas de marco
+}
+
+enum AchievementRarity {
+  COMMON        // Bronze - 10 XP
+  RARE          // Prata - 25 XP  
+  EPIC          // Ouro - 50 XP
+  LEGENDARY     // Diamante - 100 XP
+}
+
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   firstName      String?
@@ -378,7 +395,11 @@ model User {
   generatedReports GeneratedReport[]  @relation("GeneratedReports")
   notifications Notification[] @relation("UserNotifications")
   schoolActivities SchoolActivity[] @relation("UserSchoolActivities")
-
+  achievements        UserAchievement[]     @relation("UserAchievements") 
+  achievementProgress AchievementProgress[] @relation("AchievementProgress")
+  
+  // 🆕 CACHE DE XP (opcional)
+  totalXP Int @default(0) // Cache do XP total do usuário
   // Estatísticas de upload
   totalUploads Int @default(0)
   uploadScore  Int @default(0) // Score baseado na qualidade dos uploads
@@ -2142,3 +2163,78 @@ model SchoolActivity {
   @@map("school_activities")
 }
 
+// Modelo para conquistas do usuário
+model UserAchievement {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Identificação
+  userId  String @db.ObjectId
+  badgeId String // ID único do badge (ex: "first-goal", "collector-bronze")
+  
+  // Informações da conquista
+  name        String
+  description String
+  category    AchievementCategory
+  rarity      AchievementRarity
+  
+  // Progresso e completude
+  progress    Int? // Progresso atual (se aplicável)
+  maxProgress Int? // Progresso máximo (se aplicável)
+  
+  // XP e recompensas
+  xpReward Int @default(0)
+  
+  // Controle de notificação
+  isNew                  Boolean   @default(true) // Se é nova (não vista pelo usuário)
+  notificationShown      Boolean   @default(false) // Se toast foi mostrado
+  notificationShownAt    DateTime? // Quando toast foi mostrado
+  lastViewedAt          DateTime? // Última vez que foi vista
+  
+  // Timestamps
+  unlockedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  
+  // Relações
+  user User @relation("UserAchievements", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Constraints
+  @@unique([userId, badgeId])
+  @@index([userId, category])
+  @@index([userId, rarity]) 
+  @@index([userId, isNew])
+  @@index([category, rarity])
+  @@index([unlockedAt])
+  
+  @@map("user_achievements")
+}
+
+// Modelo para tracking de progresso de conquistas
+model AchievementProgress {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  userId  String @db.ObjectId
+  badgeId String // ID do badge sendo rastreado
+  
+  // Valores de progresso
+  currentValue       Int       @default(0) // Valor atual
+  lastCheckedAt      DateTime  @default(now())
+  lastProgressUpdate DateTime? // Última vez que houve progresso
+  
+  // Metadados para otimização
+  metadata Json? // Dados específicos para o cálculo
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  user User @relation("AchievementProgress", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Constraints
+  @@unique([userId, badgeId])
+  @@index([userId])
+  @@index([badgeId])
+  @@index([lastProgressUpdate])
+  
+  @@map("achievement_progress")
+}

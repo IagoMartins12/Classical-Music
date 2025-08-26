@@ -749,6 +749,7 @@ export default function WorkDetailsClient({
                         workId={work.id}
                         workTitle={work.title}
                         composerName={work.composer.fullName}
+                        epochName={work.epoch?.name}
                         type="want-to-learn"
                         variant="detailed"
                         size="md"
@@ -757,6 +758,7 @@ export default function WorkDetailsClient({
                         workId={work.id}
                         workTitle={work.title}
                         composerName={work.composer.fullName}
+                        epochName={work.epoch?.name}
                         type="learned"
                         variant="detailed"
                         size="md"

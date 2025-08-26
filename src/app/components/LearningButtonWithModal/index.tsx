@@ -27,6 +27,7 @@ import { useTranslation } from '@/app/hooks/useTranslation';
 interface LearningButtonWithModalProps {
   workId: string;
   workTitle: string;
+  epochName?: string;
   composerName: string;
   type: LearningType;
   variant?: 'default' | 'compact' | 'detailed';
@@ -39,6 +40,7 @@ interface LearningButtonWithModalProps {
 const LearningButtonWithModal = ({
   workId,
   workTitle,
+  epochName,
   composerName,
   type,
   variant = 'default',
@@ -300,6 +302,7 @@ const LearningButtonWithModal = ({
     openModal({
       workId,
       workTitle,
+      epochName,
       composerName,
       type,
       isCurrentlyActive: isActive,

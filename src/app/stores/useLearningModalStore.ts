@@ -74,6 +74,7 @@ interface LearningModalState {
   openModal: (params: {
     workId: string;
     workTitle: string;
+    epochName?: string;
     composerName: string;
     type: LearningType;
     isCurrentlyActive?: boolean;
@@ -117,6 +118,7 @@ export const useLearningModalStore = create<LearningModalState>((set, get) => ({
   isInSelectionMode: false,
   workId: null,
   workTitle: null,
+  epochName: null,
   composerName: null,
   type: null,
   isCurrentlyActive: false,

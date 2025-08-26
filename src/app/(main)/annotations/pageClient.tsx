@@ -1,4 +1,4 @@
-// app/annotations/AnnotationsPageClient.tsx - COM LAYOUT ADAPTATIVO
+// app/annotations/AnnotationsPageClient.tsx - ATUALIZADO COM ACHIEVEMENTS
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
@@ -30,6 +30,12 @@ import Link from 'next/link';
 import AnnotationsStatsWidget from '@/app/components/StatsWidget/AnnotationsStatsWidget';
 import Modal from '../../components/Modal';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
+import {
+  useAchievementDemo,
+  useBackendAchievements,
+} from '../../components/achievement/AchievementToast';
+import { useAutoAchievementDetection } from '../../hooks/useAchievements';
+import { calculateAnnotationsStats } from '../../components/badges/AnnotationsBadgeSystem';
 
 type AnnotationCategory =
   | 'TECHNIQUE'
@@ -98,7 +104,7 @@ const useDebounce = (value: any, delay: number) => {
   return debouncedValue;
 };
 
-const AnnotationsPageClient = () => {
+function AnnotationsPageClientContent() {
   // States
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
@@ -117,6 +123,11 @@ const AnnotationsPageClient = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   const { user } = useAuth();
+
+  // Achievement hooks
+  const { detectChanges } = useAutoAchievementDetection();
+  const { handleNewAchievement } = useBackendAchievements();
+  const { triggerDemoAchievement } = useAchievementDemo();
 
   // Stats adaptativo
   const {
@@ -147,6 +158,19 @@ const AnnotationsPageClient = () => {
 
   // Debounced search
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+  // Auto-detectar achievements quando anotações mudarem
+  useEffect(() => {
+    if (mounted && userAnnotations.length > 0) {
+      const stats = calculateAnnotationsStats(userAnnotations, []);
+      detectChanges('annotations', stats);
+    }
+  }, [userAnnotations.length, mounted]);
+
+  // Função de demonstração
+  const handleDemoAchievement = () => {
+    triggerDemoAchievement('LEGENDARY');
+  };
 
   // Função para buscar anotações do usuário
   const fetchUserAnnotationsData = useCallback(async () => {
@@ -190,18 +214,18 @@ const AnnotationsPageClient = () => {
     if (!mounted || !user?.id) return;
 
     const handleAnnotationDeleted = (event: CustomEvent) => {
-      console.log('🔄 Evento de anotação deletada detectado:', event.detail);
+      console.log('Evento de anotação deletada detectado:', event.detail);
       if (event.detail.userId === user.id) {
         console.log(
-          '🔄 Anotação do usuário atual deletada, UI deve ser atualizada automaticamente'
+          'Anotação do usuário atual deletada, UI deve ser atualizada automaticamente'
         );
       }
     };
 
     const handleAnnotationUpdated = (event: CustomEvent) => {
-      console.log('🔄 Evento de anotação atualizada detectado:', event.detail);
+      console.log('Evento de anotação atualizada detectado:', event.detail);
       if (event.detail.userId === user.id) {
-        console.log('🔄 Anotação do usuário atual atualizada');
+        console.log('Anotação do usuário atual atualizada');
       }
     };
 
@@ -340,6 +364,16 @@ const AnnotationsPageClient = () => {
             <p className="text-xl text-theme-secondary classical-subtitle">
               Organize e compartilhe seu conhecimento musical
             </p>
+
+            {/* Botão de demonstração - REMOVER EM PRODUÇÃO */}
+            {process.env.NODE_ENV === 'development' && (
+              <button
+                onClick={handleDemoAchievement}
+                className="mt-4 px-4 py-2 bg-purple-500 text-white rounded-lg text-sm"
+              >
+                📝 Demo Achievement
+              </button>
+            )}
           </div>
         </AnimatedItem>
 
@@ -450,10 +484,10 @@ const AnnotationsPageClient = () => {
                     <FiBarChart2 className="w-4 h-4" />
                     <span className="text-sm">
                       {isMobile
-                        ? 'Stats'
+                        ? 'Estatística'
                         : showStats
-                        ? 'Esconder Stats'
-                        : 'Ver Stats'}
+                        ? 'Esconder Estatística'
+                        : 'Ver Estatística'}
                     </span>
                   </button>
 
@@ -688,6 +722,9 @@ const AnnotationsPageClient = () => {
       />
     </PageContainer>
   );
-};
+}
 
-export default AnnotationsPageClient;
+// Wrapper principal com Achievement Provider
+export default function AnnotationsPageClient() {
+  return <AnnotationsPageClientContent />;
+}

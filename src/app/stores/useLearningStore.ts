@@ -9,6 +9,7 @@ export interface WantToLearnItem {
   priority: number; // 1-5 priority level
   addedAt: string;
 
+  epochName: string;
   // Campos opcionais existentes
   notes?: string;
   targetDate?: string;
@@ -55,6 +56,7 @@ export interface LearnedItem {
   workId: string;
   learnedAt: string;
   mastery: number; // 1-5 mastery level
+  epochName: string;
 
   // Campos opcionais existentes
   studyStartDate?: string;

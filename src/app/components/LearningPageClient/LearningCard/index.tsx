@@ -369,24 +369,20 @@ export const LearningCard = ({
                     </AnimatedItem>
                   )}
 
-                  <AnimatedItem hover="scale">
-                    <button
-                      onClick={onEdit}
-                      className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
-                      title="Editar"
-                    >
-                      <FiEdit3 className="w-4 h-4" />
-                    </button>
-                  </AnimatedItem>
-                  <AnimatedItem hover="scale">
-                    <button
-                      onClick={() => setShowDeleteModal(true)}
-                      className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
-                      title="Remover"
-                    >
-                      <FiX className="w-4 h-4" />
-                    </button>
-                  </AnimatedItem>
+                  <button
+                    onClick={onEdit}
+                    className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
+                    title="Editar"
+                  >
+                    <FiEdit3 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteModal(true)}
+                    className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
+                    title="Remover"
+                  >
+                    <FiX className="w-4 h-4" />
+                  </button>
                   {((isWantToLearn && wantToLearnItem.notes) ||
                     (!isWantToLearn && learnedItem.notes)) && (
                     <div
@@ -462,24 +458,20 @@ export const LearningCard = ({
               </AnimatedItem>
             )}
 
-            <AnimatedItem hover="scale">
-              <button
-                onClick={onEdit}
-                className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
-                title="Editar"
-              >
-                <FiEdit3 className="w-4 h-4" />
-              </button>
-            </AnimatedItem>
-            <AnimatedItem hover="scale">
-              <button
-                onClick={() => setShowDeleteModal(true)}
-                className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
-                title="Remover"
-              >
-                <FiX className="w-4 h-4" />
-              </button>
-            </AnimatedItem>
+            <button
+              onClick={onEdit}
+              className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
+              title="Editar"
+            >
+              <FiEdit3 className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
+              title="Remover"
+            >
+              <FiX className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
