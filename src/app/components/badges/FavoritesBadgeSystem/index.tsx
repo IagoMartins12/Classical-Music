@@ -440,7 +440,7 @@ export function getNextFavoritesAchievements(stats: FavoritesStats) {
 }
 
 // Interface para CTA
-interface SmartCTA {
+export interface SmartCTA {
   id: string;
   title: string;
   description: string;

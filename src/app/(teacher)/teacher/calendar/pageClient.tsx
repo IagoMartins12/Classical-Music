@@ -36,6 +36,7 @@ import { useTeacherCalendar } from '@/app/hooks/useTeacherCalendar';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { MdOutlineCancel } from 'react-icons/md';
 
 interface TeacherCalendarPageClientProps {
   initialData: TeacherCalendarData;
@@ -352,7 +353,7 @@ export default function TeacherCalendarPageClient({
       case 'COMPLETED':
         return 'border-green-400 text-green-400';
       case 'CANCELLED':
-        return ' border-red-400 text-red-400';
+        return ' border-amber-600 text-amber-600';
       case 'NO_SHOW':
         return 'border-yellow-300 text-yellow-300';
       case 'RESCHEDULED':
@@ -550,7 +551,7 @@ export default function TeacherCalendarPageClient({
         </AnimatedItem>
 
         {/* Stats Cards */}
-        <AnimatedItem direction="up" springType="gentle">
+        {/* <AnimatedItem direction="up" springType="gentle">
           <div className="grid grid-cols-2 md:grid-cols-6 gap-6 mb-8">
             <AnimatedCard
               hover="scale"
@@ -631,7 +632,6 @@ export default function TeacherCalendarPageClient({
               </div>
             </AnimatedCard>
 
-            {/* Card para aulas que precisam de atenção */}
             <AnimatedCard
               hover="scale"
               className={`classical-card p-6 text-center ${
@@ -649,7 +649,7 @@ export default function TeacherCalendarPageClient({
               </div>
             </AnimatedCard>
           </div>
-        </AnimatedItem>
+        </AnimatedItem> */}
 
         {/* Alerta para aulas que precisam de atenção */}
         {viewStats.needsAttention > 0 && (
@@ -946,13 +946,13 @@ export default function TeacherCalendarPageClient({
                 }`}
               >
                 {pendingStatusUpdate.newStatus === 'COMPLETED' && (
-                  <FiCheck className="w-6 h-6 text-accent-green" />
+                  <FiCheck className="w-8 h-8 text-theme-primary" />
                 )}
                 {pendingStatusUpdate.newStatus === 'NO_SHOW' && (
-                  <FiUser className="w-6 h-6 text-accent-yellow" />
+                  <FiUser className="w-8 h-8 text-theme-primary" />
                 )}
                 {pendingStatusUpdate.newStatus === 'CANCELLED' && (
-                  <FiX className="w-6 h-6 text-accent-red" />
+                  <MdOutlineCancel className="w-8 h-8 text-theme-primary" />
                 )}
               </div>
               <div>
@@ -967,9 +967,9 @@ export default function TeacherCalendarPageClient({
               </div>
             </div>
 
-            <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4 mb-6">
+            <div className="bg-theme-tertiary rounded-lg p-4 mb-6">
               <div className="flex items-start space-x-3">
-                <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+                <FiInfo className="w-8 h-8 text-accent-blue mt-0.5" />
                 <div className="text-sm">
                   <p className="font-medium text-accent-blue mb-1">
                     {t('status_confirmation')}

@@ -380,7 +380,7 @@ const TeacherHistoryClient = ({
         </AnimatedItem>
 
         {/* Stats Cards */}
-        {stats && Object.keys(stats).length > 0 && (
+        {/* {stats && Object.keys(stats).length > 0 && (
           <AnimatedItem direction="up" springType="gentle">
             <SequentialGrid
               cols={4}
@@ -451,7 +451,7 @@ const TeacherHistoryClient = ({
               </AnimatedCard>
             </SequentialGrid>
           </AnimatedItem>
-        )}
+        )} */}
 
         {/* Filters */}
         <AnimatedItem direction="up" springType="gentle">
@@ -468,7 +468,7 @@ const TeacherHistoryClient = ({
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-theme-secondary hover:bg-theme-tertiary text-theme-primary rounded-lg transition-colors"
+                  className="flex btn-classical-primary items-center space-x-2 "
                 >
                   <FiFilter className="w-4 h-4" />
                   <span>{t('filters_title')}</span>

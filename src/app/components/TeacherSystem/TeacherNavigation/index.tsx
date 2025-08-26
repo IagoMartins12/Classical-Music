@@ -19,6 +19,7 @@ import {
   FiChevronRight,
   FiPlus,
   FiBell,
+  FiActivity,
 } from 'react-icons/fi';
 import { GoBook } from 'react-icons/go';
 
@@ -448,11 +449,11 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                     </Link>
 
                     <Link
-                      href="/works"
+                      href="/teacher/history"
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <GoBook className="w-4 h-4" />
+                      <FiActivity className="w-4 h-4" />
                       <span>{t('profile_menu_see_history')}</span>
                     </Link>
 

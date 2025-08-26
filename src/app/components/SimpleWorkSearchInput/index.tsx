@@ -53,13 +53,6 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  console.log('🔍 [SIMPLE-WORK-SEARCH] Render com sugestões:', {
-    query,
-    selectedWork,
-    userSuggestions: userSuggestions.length,
-    loadingUserSuggestions,
-  });
-
   // 🆕 BUSCA COMBINADA - API + USER SUGGESTIONS
   const performSearch = useCallback(
     async (searchQuery: string) => {

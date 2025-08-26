@@ -1257,7 +1257,7 @@ export default function TeacherLessonDetailsPageClient({
                       {canEditLesson && (
                         <button
                           onClick={() => addArrayField('topics')}
-                          className="text-brand-primary text-sm flex items-center space-x-1"
+                          className="text-brand-primary  text-sm flex items-center space-x-1"
                         >
                           <FiPlus className="w-3 h-3" />
                           <span>{t('btn_add')}</span>
@@ -1274,6 +1274,7 @@ export default function TeacherLessonDetailsPageClient({
                           >
                             <Input
                               type="text"
+                              widhtFull
                               value={topic}
                               onChange={(e) =>
                                 updateArrayField(
@@ -1285,7 +1286,7 @@ export default function TeacherLessonDetailsPageClient({
                               className="input-classical-2 flex-1"
                               placeholder={t('topic_example_placeholder')}
                             />
-                            {editingTopics.length > 1 && (
+                            {editingTopics.length >= 1 && (
                               <button
                                 onClick={() =>
                                   removeArrayField('topics', index)
@@ -1298,8 +1299,9 @@ export default function TeacherLessonDetailsPageClient({
                           </div>
                         ))}
 
-                        <div className="flex items-center space-x-2">
-                          <Input
+                        {/* <div className="flex items-center space-x-2"> */}
+                        {/* <Input
+                            widhtFull
                             type="text"
                             value={newTopic}
                             onChange={(e) => setNewTopic(e.target.value)}
@@ -1314,8 +1316,8 @@ export default function TeacherLessonDetailsPageClient({
                                 setNewTopic('');
                               }
                             }}
-                          />
-                          <button
+                          /> */}
+                        {/* <button
                             onClick={() => {
                               if (newTopic.trim()) {
                                 setEditingTopics([
@@ -1328,8 +1330,8 @@ export default function TeacherLessonDetailsPageClient({
                             className="w-6 h-6 rounded bg-brand-primary/10 hover:bg-brand-primary/20 transition-colors flex items-center justify-center"
                           >
                             <FiPlus className="w-3 h-3 text-brand-primary" />
-                          </button>
-                        </div>
+                          </button> */}
+                        {/* </div> */}
                       </div>
                     ) : (
                       <div className="flex flex-wrap gap-2">
@@ -1376,6 +1378,7 @@ export default function TeacherLessonDetailsPageClient({
                           >
                             <Input
                               type="text"
+                              widhtFull
                               value={technique}
                               onChange={(e) =>
                                 updateArrayField(
@@ -1387,7 +1390,7 @@ export default function TeacherLessonDetailsPageClient({
                               className="input-classical-2 flex-1"
                               placeholder={t('technique_example_placeholder')}
                             />
-                            {editingTechniques.length > 1 && (
+                            {editingTechniques.length >= 1 && (
                               <button
                                 onClick={() =>
                                   removeArrayField('techniques', index)
@@ -1400,9 +1403,10 @@ export default function TeacherLessonDetailsPageClient({
                           </div>
                         ))}
 
-                        <div className="flex items-center space-x-2">
+                        {/* <div className="flex items-center space-x-2">
                           <Input
                             type="text"
+                            widhtFull
                             value={newTechnique}
                             onChange={(e) => setNewTechnique(e.target.value)}
                             placeholder={t('new_technique_placeholder')}
@@ -1416,8 +1420,8 @@ export default function TeacherLessonDetailsPageClient({
                                 setNewTechnique('');
                               }
                             }}
-                          />
-                          <button
+                          /> */}
+                        {/* <button
                             onClick={() => {
                               if (newTechnique.trim()) {
                                 setEditingTechniques([
@@ -1430,8 +1434,8 @@ export default function TeacherLessonDetailsPageClient({
                             className="w-6 h-6 rounded bg-brand-primary/10 hover:bg-brand-primary/20 transition-colors flex items-center justify-center"
                           >
                             <FiPlus className="w-3 h-3 text-brand-primary" />
-                          </button>
-                        </div>
+                          </button> */}
+                        {/* </div> */}
                       </div>
                     ) : (
                       <div className="flex flex-wrap gap-2">

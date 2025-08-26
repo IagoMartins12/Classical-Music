@@ -103,7 +103,9 @@ export async function POST(request: NextRequest) {
     } else {
       mediaData.mediaSource = 'none';
     }
-
+    if (body.parentWorkId === '') {
+      body.parentWorkId = null;
+    }
     // Criar obra
     const work = await prisma.work.create({
       data: {

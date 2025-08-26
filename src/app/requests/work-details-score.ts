@@ -1,44 +1,7 @@
 // app/requests/work-details.ts - Atualizado para incluir workId no cache
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
-
-export interface WorkDetails {
-  id: string;
-  title: string;
-  opOrCatalog?: string;
-  compositionYear?: string;
-  firstPublishDate?: string;
-  tone?: string;
-  mediaDuration?: string;
-  imslpPermlink: string;
-  imslpId: string;
-  videoUrl?: string;
-  workStyle?: string;
-  moviment?: string;
-  dedicateTo?: string;
-  instrumentation?: string;
-  workType: string;
-  movementNumber?: number;
-  createdAt: Date;
-  composer: {
-    id: string;
-    name: string;
-    fullName: string;
-    epochName: string | null;
-  };
-
-  instrument: {
-    id: string;
-    name: string;
-  } | null;
-  epoch: {
-    id: string;
-    name: string;
-  } | null;
-
-  categoryNames: string[];
-  workGenresArr: string[];
-}
+import { WorkDetails } from './work-page-details';
 
 export interface WorkListItem {
   id: string;
@@ -96,6 +59,7 @@ const getCachedWorkData = unstable_cache(
           epochId: true,
           categoryNames: true,
           workGenresArr: true,
+          isVerified: true,
           composer: {
             select: {
               id: true,
@@ -176,6 +140,7 @@ export const getWorkById = async (
       epoch: work.epoch,
       categoryNames: work.categoryNames,
       workGenresArr: work.workGenresArr,
+      isVerified: work.isVerified,
     };
   } catch (error) {
     console.error('Erro ao buscar obra:', error);

@@ -1443,7 +1443,7 @@ const UploadsClient = ({
       {/* Loading Modal Overlay */}
       {loadingFormData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-theme-overlay backdrop-blur-sm">
-          <div className="classical-card p-8 text-center">
+          <div className="classical-card flex flex-col gap-4 items-center justify-center p-8 text-center">
             <LoadingSpinner size="lg" />
             <p className="text-theme-primary font-medium mt-4">
               {t('loading_form_data')}

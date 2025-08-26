@@ -20,12 +20,28 @@ export interface WorkDetails {
   dedicateTo?: string;
   instrumentation?: string;
   workType: string;
-  parentWorkId?: string;
   movementNumber?: number;
   createdAt: Date;
   isVerified: boolean;
   createdBy?: string | null;
+  parentWorkId?: string | null;
 
+  // 🆕 NOVOS CAMPOS PARA RELAÇÕES DE COLEÇÃO
+  parentWork?: {
+    id: string;
+    title: string;
+    composer: {
+      id: string;
+      name: string;
+      fullName: string;
+    };
+  } | null;
+
+  childWorks?: Array<{
+    id: string;
+    title: string;
+    subtitle?: string | null;
+  }>;
   // 🆕 Campos de mídia expandidos com thumbnail
   spotifyTrackId?: string | null;
   spotifyTrackUrl?: string | null;
@@ -138,6 +154,7 @@ const getCachedWorkData = unstable_cache(
           workGenresArr: true,
           isVerified: true,
           createdBy: true,
+          parentWorkId: true,
 
           // 🆕 Campos de mídia expandidos com thumbnail
           spotifyTrackId: true,
@@ -183,6 +200,25 @@ const getCachedWorkData = unstable_cache(
 
       if (!work) return null;
 
+      // Buscar parentWork se existir
+      let parentWork = null;
+      if (work?.parentWorkId) {
+        parentWork = await prisma.work.findUnique({
+          where: { id: work.parentWorkId },
+          select: {
+            id: true,
+            title: true,
+            composer: {
+              select: {
+                id: true,
+                name: true,
+                fullName: true,
+              },
+            },
+          },
+        });
+      }
+
       // Buscar instrument e epoch
       const [instrument, epoch] = await Promise.all([
         work.instrumentId
@@ -201,6 +237,7 @@ const getCachedWorkData = unstable_cache(
 
       return {
         ...work,
+        parentWork,
         instrument,
         epoch,
       };
@@ -216,13 +253,45 @@ const getCachedWorkData = unstable_cache(
   }
 );
 
+// 🆕 NOVA FUNÇÃO para buscar obras filhas
+export const getChildWorks = unstable_cache(
+  async (parentWorkId: string) => {
+    try {
+      const childWorks = await prisma.work.findMany({
+        where: {
+          parentWorkId: parentWorkId,
+        },
+        select: {
+          id: true,
+          title: true,
+          subtitle: true,
+        },
+        orderBy: {
+          title: 'asc',
+        },
+      });
+
+      return childWorks;
+    } catch (error) {
+      console.error('Erro ao buscar obras filhas:', error);
+      return [];
+    }
+  },
+  ['child-works'],
+  {
+    revalidate: 3600, // 1 hora
+    tags: ['child-works'],
+  }
+);
 // Função principal para buscar obra por ID
 export const getWorkById = async (
   workId: string
 ): Promise<WorkDetails | null> => {
   try {
-    const work = await getCachedWorkData(workId);
-
+    const [work, childWorks] = await Promise.all([
+      getCachedWorkData(workId),
+      getChildWorks(workId),
+    ]);
     if (!work) {
       return null;
     }
@@ -253,7 +322,9 @@ export const getWorkById = async (
       workGenresArr: work.workGenresArr,
       isVerified: work.isVerified,
       createdBy: work.createdBy,
-
+      parentWorkId: work.parentWorkId,
+      parentWork: work.parentWork,
+      childWorks: childWorks,
       // 🆕 Campos de mídia expandidos com thumbnail
       spotifyTrackId: work.spotifyTrackId,
       spotifyTrackUrl: work.spotifyTrackUrl,

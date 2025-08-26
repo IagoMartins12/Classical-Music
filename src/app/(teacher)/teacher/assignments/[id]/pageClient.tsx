@@ -216,8 +216,6 @@ export default function AssignmentDetailsPageClient({
 
   const assignment = initialData.assignment;
 
-  console.log('assignment', initialData.assignment);
-
   return (
     <PageContainer showBackground={true}>
       <AnimatedContainer delay={0.1} staggerSpeed="normal">
@@ -500,11 +498,8 @@ export default function AssignmentDetailsPageClient({
                                 {formatFileSize(videoSubmission.fileSize)}
                               </span>
                               <span>
-                                {t('uploaded_at', {
-                                  date: formatDateTime(
-                                    videoSubmission.uploadedAt
-                                  ),
-                                })}
+                                {t('uploaded_at')}{' '}
+                                {formatDateTime(videoSubmission.uploadedAt)}
                               </span>
                             </div>
                           </div>
@@ -530,17 +525,14 @@ export default function AssignmentDetailsPageClient({
                     </div>
 
                     {/* Preview do vídeo */}
-                    <div className="rounded-lg overflow-hidden border border-theme-secondary">
-                      <video
-                        src={videoSubmission.filePath}
-                        controls
-                        className="w-full"
-                        style={{ maxHeight: '400px' }}
-                        poster="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzIxMjEyOSIvPjx0ZXh0IHg9IjIwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTk5OWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5DbGlxdWUgcGFyYSByZXByb2R1emlyPC90ZXh0Pjwvc3ZnPg=="
-                      >
-                        {t('browser_no_support')}
-                      </video>
-                    </div>
+                    <video
+                      src={videoSubmission.filePath}
+                      controls
+                      className="w-full"
+                      style={{ maxHeight: '400px' }}
+                    >
+                      {t('browser_no_support')}
+                    </video>
                   </div>
                 </AnimatedCard>
               </AnimatedItem>

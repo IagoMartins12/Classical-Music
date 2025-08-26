@@ -288,7 +288,7 @@ export default function TeacherNotificationsPageClient({
         </AnimatedItem>
 
         {/* Stats Cards */}
-        <AnimatedItem direction="up" springType="gentle">
+        {/* <AnimatedItem direction="up" springType="gentle">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <AnimatedCard
               hover="scale"
@@ -356,7 +356,7 @@ export default function TeacherNotificationsPageClient({
               </div>
             </AnimatedCard>
           </div>
-        </AnimatedItem>
+        </AnimatedItem> */}
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">

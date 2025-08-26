@@ -528,6 +528,7 @@ export default function EditAssignmentPageClient({
                           className="flex items-center space-x-2"
                         >
                           <Input
+                            widhtFull
                             type="text"
                             value={goal}
                             onChange={(e) =>
@@ -883,9 +884,13 @@ export default function EditAssignmentPageClient({
                         <span className="text-theme-tertiary">
                           {t('created_on')}
                         </span>
-                        <span className="text-theme-primary">
-                          {assignment.createdAt.toLocaleDateString('pt-BR')}
-                        </span>
+                        {assignment.createdAt && (
+                          <span className="text-theme-primary">
+                            {new Date(assignment.createdAt).toLocaleDateString(
+                              'pt-BR'
+                            )}
+                          </span>
+                        )}
                       </div>
                       {assignment.dueDate && (
                         <div className="flex justify-between">
@@ -942,7 +947,7 @@ export default function EditAssignmentPageClient({
                       </div>
                     ))}
 
-                    <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
+                    <div className="mt-3 p-3 bg-theme-elevated rounded-lg">
                       <div className="text-xs text-theme-secondary">
                         <div className="flex justify-between">
                           <span>{t('total_pieces')}</span>
@@ -968,7 +973,10 @@ export default function EditAssignmentPageClient({
                   {t('related_lesson')}
                 </h3>
 
-                <div className="space-y-2">
+                <Link
+                  href={`/teacher/lessons/${assignment.lesson.id}`}
+                  className="space-y-2"
+                >
                   <div className="font-medium text-theme-primary">
                     {assignment.lesson.title}
                   </div>
@@ -978,7 +986,7 @@ export default function EditAssignmentPageClient({
                       'pt-BR'
                     )}
                   </div>
-                </div>
+                </Link>
               </AnimatedCard>
             </AnimatedItem>
 

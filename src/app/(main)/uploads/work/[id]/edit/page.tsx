@@ -35,7 +35,7 @@ export default async function EditWorkPage({ params }: EditWorkPageProps) {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    redirect('/login');
+    redirect('/not-authenticated');
   }
 
   const work = await prisma.work.findUnique({

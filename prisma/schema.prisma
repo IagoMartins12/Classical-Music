@@ -751,6 +751,7 @@ model Work {
   workType        WorkType @default(INDIVIDUAL)
 
   movementNumber Int?
+  parentWorkId    String? @db.ObjectId
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -833,7 +834,8 @@ model Work {
   favoriteBy     FavoriteWork[]
   wantToLearners WantToLearn[]
   learners       Learned[]
-
+  parentWork         Work?                @relation("WorkCollection", fields: [parentWorkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  childWorks         Work[]               @relation("WorkCollection")
   workAnnotations WorkAnnotation[]
 
   annotationsCount        Int       @default(0)
@@ -861,6 +863,8 @@ model Work {
   @@index([workGenresArr])
   @@index([createdBy])
   @@index([isCustom])
+  @@index([parentWorkId]) // 🆕 NOVO ÍNDICE
+  @@index([composerId, parentWorkId]) // 🆕 ÍNDICE COMPOSTO
   // Índices para mídia
   @@index([mediaSource])
   @@index([lastMediaSearch])

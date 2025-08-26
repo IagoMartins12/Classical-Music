@@ -43,6 +43,7 @@ import {
 } from '@/app/utils/locationUtils';
 import { TeacherStatus } from '@prisma/client';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import Input from '@/app/components/Common/Inputs';
 
 interface TeacherProfilePageClientProps {
   initialData: TeacherProfileData | null;
@@ -972,12 +973,13 @@ export default function TeacherProfilePageClient({
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1  gap-6">
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
                         {t('website')}
                       </label>
-                      <input
+                      <Input
+                        widhtFull
                         type="url"
                         value={professionalForm.website}
                         onChange={(e) =>
@@ -1635,7 +1637,7 @@ export default function TeacherProfilePageClient({
 
               {editingSection === 'public' ? (
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
+                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg bg-theme-elevated border-theme-primary/20">
                     <div className="flex items-center space-x-3">
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center ${
@@ -1726,7 +1728,7 @@ export default function TeacherProfilePageClient({
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
+                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg bg-theme-elevated border-theme-primary/20">
                     <div className="flex items-center space-x-3">
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center ${
@@ -1776,7 +1778,7 @@ export default function TeacherProfilePageClient({
                         </div>
                       )}
 
-                      <div className="bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 rounded-lg border border-brand-primary/20 p-4">
+                      <div className="bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 rounded-lg bg-theme-elevated border-brand-primary/20 p-4">
                         <div className="flex items-center space-x-3 mb-2">
                           <FiGlobe className="w-5 h-5 text-brand-primary" />
                           <div className="font-medium text-theme-primary">

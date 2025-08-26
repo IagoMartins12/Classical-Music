@@ -16,6 +16,7 @@ import {
   FiAlertCircle,
   FiSearch,
   FiLock,
+  FiLayers,
 } from 'react-icons/fi';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
@@ -41,6 +42,7 @@ import { FaGraduationCap } from 'react-icons/fa';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Checkbox from '@/app/components/Common/Checkbox';
+import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -97,7 +99,15 @@ const CreateWorkModal = ({
     found: boolean;
     work?: any;
   }>({ loading: false, found: false });
-
+  // 🆕 ESTADO PARA PARENT WORK (COLEÇÃO)
+  const [isPartOfCollection, setIsPartOfCollection] = useState(false);
+  const [parentWorks, setParentWorks] = useState<
+    Array<{
+      id: string;
+      title: string;
+      composer: { id?: string; name: string; fullName: string };
+    }>
+  >([]);
   const [isEditingExternalSource, setIsEditingExternalSource] = useState(false);
   const [includeMedia, setIncludeMedia] = useState(false);
   const [mediaData, setMediaData] = useState({
@@ -230,6 +240,7 @@ const CreateWorkModal = ({
     subtitle: '',
     imslpTags: '',
     difficultyLevel: '',
+    parentWorkId: '', // 🆕 NOVO CAMPO
   });
 
   const [supportData, setSupportData] = useState<{
@@ -248,9 +259,26 @@ const CreateWorkModal = ({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const requiredFields = ['title', 'composerId', 'instrumentId', 'epochId'];
-  const customValidations = workModalValidations;
-
+  const requiredFields = useMemo(() => {
+    const base = ['title', 'composerId', 'instrumentId', 'epochId'];
+    if (isPartOfCollection) {
+      base.push('parentWorkId');
+    }
+    return base;
+  }, [isPartOfCollection]);
+  // const customValidations = workModalValidations;
+  const customValidations = useMemo(
+    () => ({
+      ...workModalValidations,
+      parentWorkId: (value: string) => {
+        if (isPartOfCollection && !value?.trim()) {
+          return 'Selecione uma obra da coleção';
+        }
+        return null;
+      },
+    }),
+    [isPartOfCollection]
+  );
   const { validateForm } = useFormValidation(
     fieldRefs,
     requiredFields,
@@ -286,7 +314,11 @@ const CreateWorkModal = ({
 
   const handleComposerSelect = useCallback(
     (composerId: string) => {
-      setFormData((prev) => ({ ...prev, composerId }));
+      setFormData((prev) => ({
+        ...prev,
+        composerId,
+        parentWorkId: '', // 🆕 Limpar obra da coleção ao trocar compositor
+      }));
       if (errors.composerId) {
         setErrors((prev) => ({ ...prev, composerId: '' }));
       }
@@ -321,10 +353,52 @@ const CreateWorkModal = ({
       subtitle: editingWork.subtitle || '',
       imslpTags: editingWork.imslpTags?.join(', ') || '',
       difficultyLevel: editingWork.difficultyLevel || '',
+      parentWorkId: editingWork.parentWorkId || '', // 🆕 NOVO CAMPO
     };
   }, [editingWork]);
 
   const hasChanges = useSmartFormChanges(formData, originalData, ['workType']);
+  // 🆕 FUNÇÃO PARA CARREGAR OBRAS DO COMPOSITOR (PARA PARENT WORK)
+  const loadParentWorks = useCallback(async (composerId: string) => {
+    if (!composerId) {
+      setParentWorks([]);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/works/search?composer=${composerId}&limit=50`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        // Filtrar apenas obras que podem ser coleções (não obras filhas)
+        const potentialParents = data.works.filter(
+          (work: any) => !work.parentWorkId
+        );
+        setParentWorks(potentialParents || []);
+        console.log(
+          '✅ Parent works carregadas:',
+          potentialParents?.length || 0
+        );
+      }
+    } catch (error) {
+      console.error('❌ Erro ao carregar parent works:', error);
+      setParentWorks([]);
+    }
+  }, []);
+  // 🆕 EFFECT PARA CARREGAR PARENT WORKS QUANDO COMPOSITOR MUDAR
+  useEffect(() => {
+    if (isPartOfCollection && formData.composerId) {
+      loadParentWorks(formData.composerId);
+    } else {
+      setParentWorks([]);
+    }
+  }, [isPartOfCollection, formData.composerId, loadParentWorks]);
+
+  // 🆕 HANDLER PARA PARENT WORK
+  const handleParentWorkSelect = useCallback((parentWorkId: string) => {
+    setFormData((prev) => ({ ...prev, parentWorkId }));
+  }, []);
 
   const handleAudioUpload = async (file: File) => {
     if (!file) return;
@@ -690,6 +764,7 @@ const CreateWorkModal = ({
         subtitle: editingWork.subtitle || '',
         imslpTags: editingWork.imslpTags?.join(', ') || '',
         difficultyLevel: editingWork.difficultyLevel || '',
+        parentWorkId: editingWork.parentWorkId || '', // 🆕 NOVO CAMPO
       });
 
       const hasExistingMedia = !!(
@@ -968,6 +1043,84 @@ const CreateWorkModal = ({
                     />
                   </div>
                 </div>
+              </AnimatedCard>
+
+              {/* 🆕 PARENT WORK (COLEÇÃO) SECTION */}
+              <AnimatedCard className="classical-card-simple p-4" hover="none">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-2">
+                    <FiLayers className="w-4 h-4 text-theme-tertiary" />
+                    <span className="text-sm font-medium text-theme-primary">
+                      Coleção
+                    </span>
+                  </div>
+
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <Checkbox
+                      label="Essa peça faz parte de uma coleção?"
+                      type="checkbox"
+                      checked={isPartOfCollection}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setIsPartOfCollection(checked);
+                        if (!checked) {
+                          setFormData((prev) => ({
+                            ...prev,
+                            parentWorkId: '',
+                          }));
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+
+                {isPartOfCollection && (
+                  <div className="space-y-4 border-t border-theme-secondary pt-4">
+                    {/* Informação sobre compositor */}
+                    <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <FiInfo className="w-4 h-4 text-blue-600" />
+                        <span className="text-sm text-blue-800">
+                          <strong>Importante:</strong> A obra da coleção deve
+                          ser do mesmo compositor (
+                          {formData.composerId
+                            ? composers.find(
+                                (c) => c.id === formData.composerId
+                              )?.fullName || 'compositor selecionado'
+                            : 'selecione um compositor primeiro'}
+                          ).
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Work Search Input para Parent Work */}
+                    {formData.composerId ? (
+                      <div>
+                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                          Obra da Coleção *
+                        </label>
+                        <SimpleWorkSearchInput
+                          selectedWork={formData.parentWorkId}
+                          onWorkSelect={handleParentWorkSelect}
+                          userSuggestions={parentWorks}
+                          placeholder="Digite para buscar a obra da coleção..."
+                          filterByComposer={formData.composerId}
+                          error={
+                            errors.parentWorkId
+                              ? 'Selecione a obra principal.'
+                              : undefined
+                          }
+                        />
+                        <p className="text-xs text-theme-tertiary mt-2">
+                          💡 Busque pela obra principal que contém esta peça
+                          como parte ou movimento.
+                        </p>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                )}
               </AnimatedCard>
 
               {/* Catalog Information */}

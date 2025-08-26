@@ -25,7 +25,8 @@
     "profile_menu_back_to_site": "Voltar ao Site",
     "profile_menu_logout": "Sair",
     "logout_success": "Logout realizado com sucesso!",
-    "logout_error": "Erro ao fazer logout"
+    "logout_error": "Erro ao fazer logout",
+    "profile_menu_history": "Histórico"
   },
   "en": {
     "brand_name": "Opus Atlas",
@@ -53,6 +54,7 @@
     "profile_menu_back_to_site": "Back to Site",
     "profile_menu_logout": "Sign Out",
     "logout_success": "Successfully logged out!",
-    "logout_error": "Error signing out"
+    "logout_error": "Error signing out",
+    "profile_menu_history": "History"
   }
 }

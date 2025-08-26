@@ -59,7 +59,7 @@ export default async function EditComposerPage({
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    redirect('/login');
+    redirect('/not-authenticated');
   }
 
   // Buscar compositor

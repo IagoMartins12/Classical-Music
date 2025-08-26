@@ -477,7 +477,11 @@
     "entity_type_obra": "obra",
     "entity_type_partitura": "partitura",
 
-    "youtube_button_span": "Reproduzir vídeo"
+    "youtube_button_span": "Reproduzir vídeo",
+
+    "work_details_relacoes_colecao": "Coleção",
+    "work_details_parte_de_colecao": "Esta peça faz parte da coleção:",
+    "work_details_possui_obras_relacionadas": "Esta coleção possui as seguintes obras:"
   },
   "en": {
     "breadcrumb_obras": "Works",
@@ -957,6 +961,10 @@
     "entity_type_obra": "work",
     "entity_type_partitura": "score",
 
-    "youtube_button_span": "Play video"
+    "youtube_button_span": "Play video",
+
+    "work_details_relacoes_colecao": "Collection ",
+    "work_details_parte_de_colecao": "This piece is part of the collection:",
+    "work_details_possui_obras_relacionadas": "This collection has the following works:"
   }
 }

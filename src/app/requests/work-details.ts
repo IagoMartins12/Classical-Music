@@ -1,65 +1,7 @@
 // app/requests/work-details.ts - VERSÃO HÍBRIDA ULTRA OTIMIZADA
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
-
-export interface WorkDetails {
-  id: string;
-  title: string;
-  subtitle?: string;
-  opOrCatalog?: string;
-  compositionYear?: string;
-  firstPublishDate?: string;
-  tone?: string;
-  mediaDuration?: string;
-  imslpPermlink: string;
-  imslpId: string;
-  videoUrl?: string;
-  workStyle?: string;
-  moviment?: string;
-  dedicateTo?: string;
-  instrumentation?: string;
-  workType: string;
-  movementNumber?: number;
-  difficultyLevel?: string | null;
-  createdAt: Date;
-  isVerified: boolean;
-
-  // 🆕 CAMPOS DE MÍDIA
-  spotifyTrackId?: string | null;
-  spotifyTrackUrl?: string | null;
-  youtubeVideoId?: string | null;
-  youtubeVideoUrl?: string | null;
-  youtubeTitle?: string | null;
-  videoAulaUrl?: string | null;
-  videoAulaFile?: string | null;
-  videoAulaTitle?: string | null;
-  videoAulaType?: string | null;
-  videoAulaAddedBy?: string | null;
-  videoAulaAddedAt?: Date | null;
-  videoAulaMetadata?: any | null;
-  lastMediaSearch?: Date | null;
-  mediaSearchError?: string | null;
-
-  composer: {
-    id: string;
-    name: string;
-    fullName: string | null;
-    epochName: string | null;
-  };
-
-  instrument: {
-    id: string;
-    name: string;
-  } | null;
-
-  epoch: {
-    id: string;
-    name: string;
-  } | null;
-
-  categoryNames: string[];
-  workGenresArr: string[];
-}
+import { WorkDetails } from './work-page-details';
 
 export interface WorkListItem {
   id: string;

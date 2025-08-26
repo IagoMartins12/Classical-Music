@@ -19,6 +19,9 @@ import {
   FiTag,
   FiCheckCircle,
   FiArrowLeft,
+  FiLayers,
+  FiArrowUp,
+  FiArrowDown,
 } from 'react-icons/fi';
 import { useIMSLPScoresIncremental } from '@/app/hooks/useIMSLPScoresIncremental';
 import { useWorkScores } from '@/app/hooks/useWorkScores';
@@ -853,6 +856,89 @@ export default function WorkDetailsClient({
                       </div>
                     )}
                   </div>
+
+                  {/* 🆕 SEÇÃO DE RELAÇÕES DE COLEÇÃO */}
+                  {(work.parentWork ||
+                    (work.childWorks && work.childWorks.length > 0)) && (
+                    <div className="border-t border-theme-secondary pt-6">
+                      <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                        <FiLayers className="w-5 h-5 text-accent-purple" />
+                        <span>{t('work_details_relacoes_colecao')}</span>
+                      </h3>
+
+                      <div className="space-y-4">
+                        {/* Obra Pai (Se esta obra faz parte de uma coleção) */}
+                        {work.parentWork && (
+                          <div className="p-4 bg-theme-elevated rounded-xl">
+                            <div className="flex items-start space-x-3">
+                              <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
+                                <FiArrowUp className="w-4 h-4 text-theme-primary" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-theme-tertiary mb-1">
+                                  {t('work_details_parte_de_colecao')}
+                                </p>
+                                <Link
+                                  href={`/works/${work.parentWork.id}`}
+                                  className="text-accent-purple hover:text-accent-blue font-semibold transition-colors duration-300 group flex items-center space-x-2"
+                                >
+                                  <span>{work.parentWork.title}</span>
+                                  <FiExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </Link>
+                                <p className="text-xs text-theme-tertiary mt-1">
+                                  {t('work_details_por')}{' '}
+                                  {work.parentWork.composer.fullName}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Obras Filhas (Se esta obra possui partes/movimentos) */}
+                        {work.childWorks && work.childWorks.length > 0 && (
+                          <div className="p-4 bg-theme-elevated rounded-xl">
+                            <div className="flex items-start space-x-3">
+                              <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
+                                <FiArrowDown className="w-4 h-4 text-theme-primary" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-theme-tertiary mb-3">
+                                  {t('work_details_possui_obras_relacionadas')}{' '}
+                                  ({work.childWorks.length})
+                                </p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                  {work.childWorks.map((childWork, index) => (
+                                    <Link
+                                      key={childWork.id}
+                                      href={`/works/${childWork.id}`}
+                                      className="group flex items-center space-x-2 p-2 rounded-lg hover:bg-theme-elevated transition-colors duration-200"
+                                    >
+                                      <div className="w-6 h-6 bg-accent-green/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <span className="text-xs font-bold text-accent-green">
+                                          {index + 1}
+                                        </span>
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <p className="text-theme-primary font-medium text-sm truncate group-hover:text-accent-green transition-colors">
+                                          {childWork.title}
+                                        </p>
+                                        {childWork.subtitle && (
+                                          <p className="text-theme-tertiary text-xs truncate">
+                                            {childWork.subtitle}
+                                          </p>
+                                        )}
+                                      </div>
+                                      <FiExternalLink className="w-3 h-3 text-theme-tertiary  transition-opacity flex-shrink-0" />
+                                    </Link>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Informações Adicionais */}
                   {(work.firstPublishDate ||

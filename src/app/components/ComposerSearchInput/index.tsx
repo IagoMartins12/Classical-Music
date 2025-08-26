@@ -49,6 +49,7 @@ export default function ComposerSearchInput({
         },
         body: JSON.stringify({
           id: composerId,
+          limit: 20,
         }),
       });
 
@@ -266,6 +267,7 @@ export default function ComposerSearchInput({
   const showPopularLabel =
     !searchTerm && popularComposers && popularComposers.length > 0;
 
+  console.log('popular', searchTerm, popularComposers);
   return (
     <div className="relative z-[120]">
       <div className="relative">

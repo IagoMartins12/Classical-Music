@@ -21,7 +21,7 @@ import { useCallback } from 'react';
 import { useAchievementSystem } from '@/app/hooks/useAchievements';
 import { Badge } from '../BadgeSystem';
 import { FaFire } from 'react-icons/fa';
-import { CTAPriority } from '../FavoritesBadgeSystem';
+import { CTAPriority, SmartCTA } from '../FavoritesBadgeSystem';
 
 const RARITY_COLORS = {
   COMMON: {
@@ -473,7 +473,7 @@ export function getNextAnnotationsAchievements(stats: AnnotationsStats) {
 
 // CTAs inteligentes para Annotations
 export function getAnnotationsSmartCTAs(stats: AnnotationsStats) {
-  const ctas = [];
+  const ctas: SmartCTA[] = [];
 
   // CTA: Começar a contribuir se não tem anotações
   if (stats.totalAnnotations === 0) {

@@ -20,7 +20,7 @@ import { useAchievementSystem } from '@/app/hooks/useAchievements';
 import { useCallback } from 'react';
 import { Badge } from '../BadgeSystem';
 import { FaFire } from 'react-icons/fa';
-import { CTAPriority } from '../FavoritesBadgeSystem';
+import { CTAPriority, SmartCTA } from '../FavoritesBadgeSystem';
 
 const RARITY_COLORS = {
   COMMON: {
@@ -470,8 +470,8 @@ export function getNextLearningAchievements(stats: LearningStats) {
 }
 
 // CTAs inteligentes baseados no progresso
-export function getLearningSmartCTAs(stats: LearningStats) {
-  const ctas = [];
+export function getLearningSmartCTAs(stats: LearningStats): SmartCTA[] {
+  const ctas: SmartCTA[] = [];
 
   // CTA: Adicionar mais metas se tem poucas
   if (stats.wantToLearnCount < 5) {

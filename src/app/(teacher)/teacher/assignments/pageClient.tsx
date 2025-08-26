@@ -43,6 +43,7 @@ import Modal from '@/app/components/Modal';
 import Link from 'next/link';
 import Button from '@/app/components/Common/Button';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { useToast } from '@/app/hooks/useToast';
 
 interface TeacherAssignmentsPageClientProps {
   initialData: TeacherAssignmentsData;
@@ -319,16 +320,17 @@ export default function TeacherAssignmentsPageClient({
     }
   }, [createForm, createAssignment]);
 
+  const toast = useToast();
   const updateAssignmentStatus = useCallback(
     async (assignmentId: string, updates: any) => {
       setActionLoading(assignmentId);
       try {
         const success = await updateAssignment(assignmentId, updates);
         if (success) {
-          console.log('Tarefa atualizada com sucesso!');
+          toast.success('Tarefa atualizada com sucesso!');
         }
-      } catch (error) {
-        console.error('Erro ao atualizar tarefa:', error);
+      } catch {
+        toast.error('Erro ao atualizar tarefa');
       } finally {
         setActionLoading(null);
       }
@@ -433,29 +435,6 @@ export default function TeacherAssignmentsPageClient({
                                   <FiEdit className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                                 </button>
                               </Link>
-
-                              {/* Status Actions */}
-                              {!assignment.isCompleted && (
-                                <button
-                                  onClick={() =>
-                                    updateAssignmentStatus(assignment.id, {
-                                      teacherFeedback: t('approved_by_teacher'),
-                                      teacherRating: 5,
-                                      isCompleted: true,
-                                      status: 'COMPLETED',
-                                    })
-                                  }
-                                  disabled={actionLoading === assignment.id}
-                                  className="w-8 h-8 rounded-lg bg-accent-green/10 hover:bg-accent-green/20 transition-colors flex items-center justify-center group"
-                                  title={t('approve_task')}
-                                >
-                                  {actionLoading === assignment.id ? (
-                                    <FiRefreshCw className="w-4 h-4 text-accent-green animate-spin" />
-                                  ) : (
-                                    <FiCheck className="w-4 h-4 text-accent-green" />
-                                  )}
-                                </button>
-                              )}
                             </div>
                           </div>
                         </div>
@@ -822,27 +801,6 @@ export default function TeacherAssignmentsPageClient({
                 </Link>
 
                 {/* Status Actions */}
-                {!assignment.isCompleted && (
-                  <button
-                    onClick={() =>
-                      updateAssignmentStatus(assignment.id, {
-                        teacherFeedback: t('approved_by_teacher'),
-                        teacherRating: 5,
-                        isCompleted: true,
-                        status: 'COMPLETED',
-                      })
-                    }
-                    disabled={actionLoading === assignment.id}
-                    className="w-8 h-8 rounded-lg bg-accent-green/10 hover:bg-accent-green/20 transition-colors flex items-center justify-center group"
-                    title={t('approve_task')}
-                  >
-                    {actionLoading === assignment.id ? (
-                      <FiRefreshCw className="w-4 h-4 text-accent-green animate-spin" />
-                    ) : (
-                      <FiCheck className="w-4 h-4 text-accent-green" />
-                    )}
-                  </button>
-                )}
               </div>
             </div>
           </div>
@@ -925,7 +883,7 @@ export default function TeacherAssignmentsPageClient({
         </AnimatedItem>
 
         {/* Stats Cards */}
-        <AnimatedItem direction="up" springType="gentle">
+        {/* <AnimatedItem direction="up" springType="gentle">
           <SequentialGrid
             cols={5}
             gap={6}
@@ -1007,7 +965,7 @@ export default function TeacherAssignmentsPageClient({
               </div>
             </AnimatedCard>
           </SequentialGrid>
-        </AnimatedItem>
+        </AnimatedItem> */}
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
@@ -1796,7 +1754,7 @@ function AssignmentDetailsModal({
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
                   Descrição
                 </label>
-                <div className="text-theme-primary whitespace-pre-wrap p-4 bg-theme-secondary/5 rounded-lg border">
+                <div className="text-theme-primary whitespace-pre-wrap p-4 bg-theme-tertiary rounded-lg ">
                   {assignment.description}
                 </div>
               </div>
@@ -1820,28 +1778,6 @@ function AssignmentDetailsModal({
                       {assignment.progress}%
                     </span>
                   </div>
-
-                  {/* Conquistas do aluno */}
-                  {completedMilestones.length > 0 && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
-                      {completedMilestones.slice(0, 6).map((key) => (
-                        <div
-                          key={key}
-                          className="flex items-center space-x-2 text-sm p-2 bg-accent-green/5 border border-accent-green/20 rounded"
-                        >
-                          <FiCheckCircle className="w-3 h-3 text-accent-green" />
-                          <span className="text-theme-primary">
-                            {milestoneLabels[key] || key}
-                          </span>
-                        </div>
-                      ))}
-                      {completedMilestones.length > 6 && (
-                        <div className="text-xs text-theme-tertiary">
-                          +{completedMilestones.length - 6} mais...
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
               )}
 
@@ -2076,7 +2012,7 @@ function AssignmentDetailsModal({
                     <div className="flex justify-between">
                       <span className="text-theme-tertiary">Concluído:</span>
                       <span className="text-theme-primary">
-                        {formatDate(assignment.completedAt)}
+                        {formatDateTime(assignment.completedAt)}
                       </span>
                     </div>
                   )}
@@ -2093,9 +2029,11 @@ function AssignmentDetailsModal({
 
                   {videoSubmission && (
                     <div className="flex justify-between">
-                      <span className="text-theme-tertiary">Vídeo:</span>
+                      <span className="text-theme-tertiary">
+                        Vídeo enviado em:
+                      </span>
                       <span className="text-accent-purple">
-                        {formatFileSize(videoSubmission.fileSize)}
+                        {formatDateTime(videoSubmission.uploadedAt)}
                       </span>
                     </div>
                   )}
@@ -2103,11 +2041,11 @@ function AssignmentDetailsModal({
               </div>
 
               {/* Quick Actions */}
-              <div className="classical-card-2 p-4">
+              <div className="classical-card-2  p-4">
                 <h3 className="font-bold text-theme-primary mb-3 text-sm">
                   Ações Rápidas
                 </h3>
-                <div className="space-y-2">
+                <div className=" flex flex-col gap-2">
                   {!assignment.isCompleted && (
                     <button
                       onClick={approveAssignment}

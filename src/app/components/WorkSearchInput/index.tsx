@@ -87,8 +87,6 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   );
   const stablePopularWorks = useMemo(() => popularWorks, [popularWorks]);
 
-  console.log('work selection');
-
   // 🔥 FUNÇÃO PARA CARREGAR OBRAS DO COMPOSITOR - MEMOIZADA E ESTÁVEL
   const loadComposerWorks = useCallback(async (composerId: string) => {
     // Evitar chamadas duplicadas

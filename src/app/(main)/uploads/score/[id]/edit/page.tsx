@@ -43,7 +43,7 @@ export default async function EditScorePage({ params }: EditScorePageProps) {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    redirect('/login');
+    redirect('/not-authenticated');
   }
 
   const score = await prisma.workScore.findUnique({

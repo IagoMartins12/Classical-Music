@@ -33,7 +33,7 @@ interface EpochComposersTranslated {
 }
 
 // ✅ ADICIONADO: Compositores específicos por época (copiado do arquivo original)
-const composersByEpoch = {
+export const composersByEpoch = {
   Medieval: [
     'Guillaume de Machaut',
     'Hildegard von Bingen',

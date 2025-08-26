@@ -63,22 +63,11 @@ export default async function TeacherLayout({
     redirect('/access-denied');
   }
 
-  // 🆕 VERIFICAR SE O TEACHER ESTÁ VERIFICADO
-  console.log('🔍 Verificando status do teacher:', {
-    userId: session.user.id,
-    isTeacher: session.user.isTeacher,
-    teacherVerified: session.user.teacherVerified,
-  });
-
   // Se teacherVerified for false ou null, mostrar tela de verificação
   if (
     session.user.teacherVerified === false ||
     session.user.teacherVerified === null
   ) {
-    console.log(
-      '⚠️ Teacher não verificado, mostrando tela de aguardando aprovação'
-    );
-
     return (
       <TeacherVerificationRequired
         userEmail={session.user.email}
@@ -86,8 +75,6 @@ export default async function TeacherLayout({
       />
     );
   }
-
-  console.log('✅ Teacher verificado, liberando acesso completo');
 
   return (
     <AdsProvider>

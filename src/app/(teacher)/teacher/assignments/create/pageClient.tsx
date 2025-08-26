@@ -1016,9 +1016,10 @@ export default function CreateAssignmentPageClient({
                         </p>
                         <div className="space-y-2">
                           {filteredLessons.slice(0, 3).map((lesson) => (
-                            <div
+                            <Link
+                              href={`/teacher/lessons/${lesson.id}`}
                               key={lesson.id}
-                              className="text-xs p-2 shadow-md rounded flex flex-col justify-center gap-4"
+                              className="text-xs p-2 bg-theme-elevated rounded flex flex-col justify-center gap-4"
                             >
                               <div className="font-medium text-theme-primary">
                                 {lesson.title}
@@ -1029,7 +1030,7 @@ export default function CreateAssignmentPageClient({
                                   lesson.scheduledAt
                                 ).toLocaleDateString('pt-BR')}
                               </div>
-                            </div>
+                            </Link>
                           ))}
                         </div>
                       </div>
@@ -1112,9 +1113,9 @@ export default function CreateAssignmentPageClient({
                     return (
                       <div
                         key={type.value}
-                        className={`p-3 rounded-lg shadow-md transition-all ${
+                        className={`p-3 rounded-lg bg-theme-elevated transition-all ${
                           isSelected
-                            ? 'bg-brand-primary/10 border-brand-primary/30'
+                            ? 'bg-brand-primary/10  border border-theme-primary'
                             : 'bg-theme-secondary/5 border-theme-secondary/20'
                         }`}
                       >
