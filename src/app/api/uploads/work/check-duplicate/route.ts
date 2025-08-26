@@ -13,86 +13,133 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { url, excludeId } = body;
+    const { url, title, composerId, excludeId } = body;
 
-    if (!url) {
-      return NextResponse.json({ error: 'URL é obrigatória' }, { status: 400 });
+    // Pelo menos URL ou título+compositor devem estar presentes
+    if (!url && (!title || !composerId)) {
+      return NextResponse.json(
+        {
+          error: 'URL ou título com compositor são obrigatórios',
+        },
+        { status: 400 }
+      );
     }
 
-    console.log('🔍 Verificando duplicata para URL:', url);
-    const cleanedUrl = cleanImslpUrl(url);
+    console.log('🔍 Verificando duplicatas para:', { url, title, composerId });
 
-    // Extrair ID do IMSLP da URL de forma mais robusta
-    let imslpId = '';
-    if (cleanedUrl.includes('imslp.org')) {
-      const urlParts = cleanedUrl.split('/wiki/');
-      if (urlParts.length > 1) {
-        imslpId = urlParts[1];
+    // Array para coletar diferentes tipos de verificação
+    const duplicateChecks = [];
+
+    // 1. Verificação por URL (se fornecida)
+    if (url) {
+      const cleanedUrl = cleanImslpUrl(url);
+      let imslpId = '';
+
+      if (cleanedUrl.includes('imslp.org')) {
+        const urlParts = cleanedUrl.split('/wiki/');
+        if (urlParts.length > 1) {
+          imslpId = urlParts[1];
+        }
+      } else {
+        imslpId = cleanedUrl;
       }
-    } else {
-      imslpId = cleanedUrl;
-    }
-    console.log('📋 ID extraído:', imslpId);
 
-    // Construir cláusula WHERE para buscar duplicatas
-    const whereClause: any = {
-      OR: [
-        // { imslpId: imslpId },
-        { imslpPermlink: url },
-        // { imslpId: { contains: imslpId } },
-        // Adicionar busca por URL normalizada
-        { imslpPermlink: { contains: imslpId } },
-      ],
-    };
+      const urlWhereClause: any = {
+        OR: [{ imslpPermlink: url }, { imslpPermlink: { contains: imslpId } }],
+      };
 
-    // Excluir a obra que está sendo editada
-    if (excludeId) {
-      whereClause.id = { not: excludeId };
-      console.log('🚫 Excluindo da busca:', excludeId);
+      if (excludeId) {
+        urlWhereClause.id = { not: excludeId };
+      }
+
+      duplicateChecks.push({
+        type: 'url',
+        whereClause: urlWhereClause,
+      });
     }
 
-    const existingWork = await prisma.work.findFirst({
-      where: whereClause,
-      select: {
-        id: true,
-        title: true,
-        subtitle: true,
-        imslpId: true,
-        imslpPermlink: true,
-        opOrCatalog: true,
-        compositionYear: true,
-        composer: {
-          select: {
-            name: true,
-            fullName: true,
+    // 2. Verificação por título + compositor (se fornecidos)
+    if (title && composerId) {
+      const titleWhereClause: any = {
+        AND: [
+          {
+            title: {
+              equals: title.trim(),
+              mode: 'insensitive',
+            },
           },
-        },
-        epoch: {
-          select: {
-            name: true,
-          },
-        },
-        instrument: {
-          select: {
-            name: true,
-          },
-        },
-        createdAt: true,
-      },
-    });
+          { composerId: composerId },
+        ],
+      };
 
-    if (existingWork) {
-      console.log('⚠️ Duplicata encontrada:', existingWork.title);
-      return NextResponse.json({
-        found: true,
-        work: {
-          ...existingWork,
-          composerName:
-            existingWork.composer.fullName || existingWork.composer.name,
-          epochName: existingWork.epoch.name,
-          instrumentName: existingWork.instrument.name,
+      if (excludeId) {
+        titleWhereClause.id = { not: excludeId };
+      }
+
+      duplicateChecks.push({
+        type: 'title_composer',
+        whereClause: titleWhereClause,
+      });
+    }
+
+    // Executar as verificações
+    for (const check of duplicateChecks) {
+      console.log(
+        `🔍 Verificando duplicata por ${check.type}:`,
+        check.whereClause
+      );
+
+      const existingWork = await prisma.work.findFirst({
+        where: check.whereClause,
+        select: {
+          id: true,
+          title: true,
+          subtitle: true,
+          imslpId: true,
+          imslpPermlink: true,
+          opOrCatalog: true,
+          compositionYear: true,
+          composer: {
+            select: {
+              name: true,
+              fullName: true,
+            },
+          },
+          epoch: {
+            select: {
+              name: true,
+            },
+          },
+          instrument: {
+            select: {
+              name: true,
+            },
+          },
+          createdAt: true,
         },
       });
+
+      if (existingWork) {
+        const duplicateType =
+          check.type === 'url' ? 'URL' : 'título e compositor';
+        console.log(
+          `⚠️ Duplicata encontrada por ${duplicateType}:`,
+          existingWork.title
+        );
+
+        return NextResponse.json({
+          found: true,
+          duplicateType: check.type,
+          duplicateReason: duplicateType,
+          work: {
+            ...existingWork,
+            composerName:
+              existingWork.composer.fullName || existingWork.composer.name,
+            epochName: existingWork.epoch?.name,
+            instrumentName: existingWork.instrument?.name,
+          },
+        });
+      }
     }
 
     console.log('✅ Nenhuma duplicata encontrada');

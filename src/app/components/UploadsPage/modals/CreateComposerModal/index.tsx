@@ -1,4 +1,4 @@
-// CreateComposerModal.tsx - TRADUZIDO
+// CreateComposerModal.tsx - TRADUZIDO - Versão Atualizada
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
@@ -74,6 +74,26 @@ interface CreateComposerModalProps {
 }
 
 type DataSource = 'none' | 'imslp' | 'wikipedia';
+
+// Mapeamento para tradução dos roles
+const ROLE_TRANSLATIONS: Record<string, string> = {
+  Compositor: 'Composer',
+  Cantor: 'Singer',
+  Libretista: 'Librettist',
+  Arranjador: 'Arranger',
+  Editor: 'Editor',
+  Escritor: 'Writer',
+  Tradutor: 'Translator',
+  Desconhecido: 'Unknown',
+};
+
+// Função para traduzir role baseado no idioma
+const translateRole = (roleName: string, language: string): string => {
+  if (language === 'en' && ROLE_TRANSLATIONS[roleName]) {
+    return ROLE_TRANSLATIONS[roleName];
+  }
+  return roleName;
+};
 
 const extractDateFromExtendedFormat = (dateString: string): string | null => {
   if (!dateString) return null;
@@ -189,9 +209,8 @@ const CreateComposerModal = ({
   editingComposer,
 }: CreateComposerModalProps) => {
   const router = useRouter();
-  const { t } = useTranslation({ sections: ['pages/uploads'] });
+  const { t, language } = useTranslation({ sections: ['pages/uploads'] });
   const toast = useToast();
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [scrapingUrl, setScrapingUrl] = useState(false);
   const [urlToScrape, setUrlToScrape] = useState('');
@@ -199,12 +218,10 @@ const CreateComposerModal = ({
   const [scrapingResult, setScrapingResult] = useState<any>(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isEditingExternalSource, setIsEditingExternalSource] = useState(false);
-
   const [duplicateCheck, setDuplicateCheck] = useState<DuplicateCheckState>({
     loading: false,
     found: false,
   });
-
   const fieldRefs = {
     name: useRef<HTMLInputElement>(null),
     fullName: useRef<HTMLInputElement>(null),
@@ -291,6 +308,11 @@ const CreateComposerModal = ({
     { value: 'wikipedia', label: 'Wikipedia' },
   ];
 
+  // Papéis secundários filtrados - excluir o papel principal
+  const filteredSecondaryRoles = useMemo(() => {
+    return roles.filter((role) => role.id !== formData.primaryRoleId);
+  }, [roles, formData.primaryRoleId]);
+
   // Populate form when editing
   useEffect(() => {
     if (editingComposer) {
@@ -337,6 +359,18 @@ const CreateComposerModal = ({
       });
     }
   }, [editingComposer]);
+
+  useEffect(() => {
+    if (
+      formData.primaryRoleId &&
+      formData.roles.includes(formData.primaryRoleId)
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        roles: prev.roles.filter((roleId) => roleId !== formData.primaryRoleId),
+      }));
+    }
+  }, [formData.primaryRoleId, formData.roles]);
 
   const hasChanges = useSmartFormChanges(formData, originalData, [
     'primaryRoleId',
@@ -423,6 +457,11 @@ const CreateComposerModal = ({
   };
 
   const handleSecondaryRolesChange = (roleId: string, checked: boolean) => {
+    // Não permitir selecionar o papel principal como secundário
+    if (roleId === formData.primaryRoleId) {
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       roles: checked
@@ -1153,7 +1192,7 @@ const CreateComposerModal = ({
                         },
                         ...roles.map((role) => ({
                           value: role.id,
-                          label: role.name,
+                          label: translateRole(role.name, language || 'pt'),
                         })),
                       ]}
                       value={formData.primaryRoleId}
@@ -1170,7 +1209,7 @@ const CreateComposerModal = ({
                       {t('modal_composer_classification_secondary_roles')}
                     </label>
                     <div className="grid grid-cols-2 md:grid-cols-3  gap-2">
-                      {roles.map((role) => (
+                      {filteredSecondaryRoles.map((role) => (
                         <div
                           key={role.id}
                           className="flex items-center space-x-2"
@@ -1191,7 +1230,7 @@ const CreateComposerModal = ({
                             htmlFor={`role-${role.id}`}
                             className="text-sm text-theme-primary"
                           >
-                            {role.name}
+                            {translateRole(role.name, language || 'pt')}
                           </label>
                         </div>
                       ))}

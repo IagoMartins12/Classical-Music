@@ -4,6 +4,7 @@ import UploadsClient from '@/app/(main)/uploads/pageClient';
 import {
   getEpochsCache,
   getFilterData,
+  getFormDataPage,
   getUserUploads,
 } from '@/app/requests/upload';
 import { Suspense } from 'react';
@@ -35,7 +36,7 @@ export default async function UploadsPageServer({
   // 🆕 Determinar se deve limitar por tipo (apenas na aba "all")
   const limitPerType = type === 'all';
 
-  const [uploadsData, filterData, epochsData] = await Promise.all([
+  const [uploadsData, filterData, epochsData, formData] = await Promise.all([
     getUserUploads({
       userId,
       page,
@@ -49,6 +50,7 @@ export default async function UploadsPageServer({
     }),
     getFilterData(userId), // 🆕 Buscar dados para filtros
     getEpochsCache(),
+    getFormDataPage(), // 🆕 Buscar dados para formulários
   ]);
 
   // Calcular totalPages baseado no tipo selecionado
@@ -64,32 +66,31 @@ export default async function UploadsPageServer({
   }
 
   return (
-    <Suspense fallback={<UploadsPageLoading />}>
-      <UploadsClient
-        uploads={uploadsData.items}
-        composers={uploadsData.composers}
-        works={uploadsData.works}
-        scores={uploadsData.scores}
-        epochs={epochsData} // 🆕 Usar épocas filtradas
-        filterComposers={filterData.composers} // 🆕 Dados para filtros
-        filterWorks={filterData.works} // 🆕 Dados para filtros
-        currentPage={page}
-        totalPages={totalPages}
-        totalCount={uploadsData.totalCount}
-        composerCount={uploadsData.composerCount} // 🆕 Contadores específicos
-        workCount={uploadsData.workCount} // 🆕
-        scoreCount={uploadsData.scoreCount} // 🆕
-        hasMoreComposers={uploadsData.hasMoreComposers} // 🆕 Indicadores "ver mais"
-        hasMoreWorks={uploadsData.hasMoreWorks} // 🆕
-        hasMoreScores={uploadsData.hasMoreScores} // 🆕
-        searchTerm={search}
-        selectedType={type}
-        selectedEpoch={epochId}
-        selectedComposer={composerId || ''} // 🆕 Estado do filtro
-        selectedWork={workId || ''} // 🆕 Estado do filtro
-        isAdmin={isAdmin}
-        userId={userId}
-      />
-    </Suspense>
+    <UploadsClient
+      uploads={uploadsData.items}
+      composers={uploadsData.composers}
+      works={uploadsData.works}
+      scores={uploadsData.scores}
+      epochs={epochsData} // 🆕 Usar épocas filtradas
+      filterComposers={filterData.composers} // 🆕 Dados para filtros
+      filterWorks={filterData.works} // 🆕 Dados para filtros
+      currentPage={page}
+      totalPages={totalPages}
+      totalCount={uploadsData.totalCount}
+      composerCount={uploadsData.composerCount} // 🆕 Contadores específicos
+      workCount={uploadsData.workCount} // 🆕
+      scoreCount={uploadsData.scoreCount} // 🆕
+      hasMoreComposers={uploadsData.hasMoreComposers} // 🆕 Indicadores "ver mais"
+      hasMoreWorks={uploadsData.hasMoreWorks} // 🆕
+      hasMoreScores={uploadsData.hasMoreScores} // 🆕
+      searchTerm={search}
+      selectedType={type}
+      selectedEpoch={epochId}
+      selectedComposer={composerId || ''} // 🆕 Estado do filtro
+      selectedWork={workId || ''} // 🆕 Estado do filtro
+      isAdmin={isAdmin}
+      userId={userId}
+      formData={formData}
+    />
   );
 }

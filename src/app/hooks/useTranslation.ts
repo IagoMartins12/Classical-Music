@@ -88,12 +88,6 @@ export function useTranslation(
           }
           return prev;
         });
-
-        console.log(
-          `✅ Seção "${section}" carregada com ${
-            Object.keys(translationData.ptBr || {}).length
-          } chaves`
-        );
       } catch (err) {
         setError(
           err instanceof Error ? err.message : 'Erro ao carregar tradução'

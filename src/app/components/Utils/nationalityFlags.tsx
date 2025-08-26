@@ -7,9 +7,15 @@ interface NationalityFlag {
   originalName: string; // Nome original em inglês
 }
 
-// Mapeamento completo das 19 principais nacionalidades
+// Mapeamento completo das nacionalidades (incluindo formas masculinas e femininas)
 const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
-  // Alemã/German
+  // Alemão/Alemã/German
+  alemão: {
+    flag: '🇩🇪',
+    countryCode: 'DE',
+    countryName: 'Alemanha',
+    originalName: 'German',
+  },
   alemã: {
     flag: '🇩🇪',
     countryCode: 'DE',
@@ -23,7 +29,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'German',
   },
 
-  // Americana/American
+  // Americano/Americana/American
+  americano: {
+    flag: '🇺🇸',
+    countryCode: 'US',
+    countryName: 'Estados Unidos',
+    originalName: 'American',
+  },
   americana: {
     flag: '🇺🇸',
     countryCode: 'US',
@@ -37,7 +49,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'American',
   },
 
-  // Francesa/French
+  // Francês/Francesa/French
+  francês: {
+    flag: '🇫🇷',
+    countryCode: 'FR',
+    countryName: 'França',
+    originalName: 'French',
+  },
   francesa: {
     flag: '🇫🇷',
     countryCode: 'FR',
@@ -51,7 +69,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'French',
   },
 
-  // Inglesa/English
+  // Inglês/Inglesa/English/British
+  inglês: {
+    flag: '🇬🇧',
+    countryCode: 'GB',
+    countryName: 'Reino Unido',
+    originalName: 'English',
+  },
   inglesa: {
     flag: '🇬🇧',
     countryCode: 'GB',
@@ -63,6 +87,12 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     countryCode: 'GB',
     countryName: 'Reino Unido',
     originalName: 'English',
+  },
+  britânico: {
+    flag: '🇬🇧',
+    countryCode: 'GB',
+    countryName: 'Reino Unido',
+    originalName: 'British',
   },
   britânica: {
     flag: '🇬🇧',
@@ -77,7 +107,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'British',
   },
 
-  // Italiana/Italian
+  // Italiano/Italiana/Italian
+  italiano: {
+    flag: '🇮🇹',
+    countryCode: 'IT',
+    countryName: 'Itália',
+    originalName: 'Italian',
+  },
   italiana: {
     flag: '🇮🇹',
     countryCode: 'IT',
@@ -91,8 +127,20 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'Italian',
   },
 
-  // Austríaca/Austrian
+  // Austríaco/Austríaca/Austrian
+  austríaco: {
+    flag: '🇦🇹',
+    countryCode: 'AT',
+    countryName: 'Áustria',
+    originalName: 'Austrian',
+  },
   austríaca: {
+    flag: '🇦🇹',
+    countryCode: 'AT',
+    countryName: 'Áustria',
+    originalName: 'Austrian',
+  },
+  austriaco: {
     flag: '🇦🇹',
     countryCode: 'AT',
     countryName: 'Áustria',
@@ -111,7 +159,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'Austrian',
   },
 
-  // Russa/Russian
+  // Russo/Russa/Russian
+  russo: {
+    flag: '🇷🇺',
+    countryCode: 'RU',
+    countryName: 'Rússia',
+    originalName: 'Russian',
+  },
   russa: {
     flag: '🇷🇺',
     countryCode: 'RU',
@@ -123,6 +177,12 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     countryCode: 'RU',
     countryName: 'Rússia',
     originalName: 'Russian',
+  },
+  soviético: {
+    flag: '🇷🇺',
+    countryCode: 'RU',
+    countryName: 'União Soviética',
+    originalName: 'Soviet',
   },
   soviética: {
     flag: '🇷🇺',
@@ -137,7 +197,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'Soviet',
   },
 
-  // Brasileira/Brazilian
+  // Brasileiro/Brasileira/Brazilian
+  brasileiro: {
+    flag: '🇧🇷',
+    countryCode: 'BR',
+    countryName: 'Brasil',
+    originalName: 'Brazilian',
+  },
   brasileira: {
     flag: '🇧🇷',
     countryCode: 'BR',
@@ -151,7 +217,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'Brazilian',
   },
 
-  // Polonesa/Polish
+  // Polonês/Polonesa/Polish
+  polonês: {
+    flag: '🇵🇱',
+    countryCode: 'PL',
+    countryName: 'Polônia',
+    originalName: 'Polish',
+  },
   polonesa: {
     flag: '🇵🇱',
     countryCode: 'PL',
@@ -165,7 +237,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'Polish',
   },
 
-  // Espanhola/Spanish
+  // Espanhol/Espanhola/Spanish
+  espanhol: {
+    flag: '🇪🇸',
+    countryCode: 'ES',
+    countryName: 'Espanha',
+    originalName: 'Spanish',
+  },
   espanhola: {
     flag: '🇪🇸',
     countryCode: 'ES',
@@ -193,7 +271,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'Belgian',
   },
 
-  // Dinamarquesa/Danish
+  // Dinamarquês/Dinamarquesa/Danish
+  dinamarquês: {
+    flag: '🇩🇰',
+    countryCode: 'DK',
+    countryName: 'Dinamarca',
+    originalName: 'Danish',
+  },
   dinamarquesa: {
     flag: '🇩🇰',
     countryCode: 'DK',
@@ -207,7 +291,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'Danish',
   },
 
-  // Tcheca/Czech
+  // Tcheco/Tcheca/Czech
+  tcheco: {
+    flag: '🇨🇿',
+    countryCode: 'CZ',
+    countryName: 'República Tcheca',
+    originalName: 'Czech',
+  },
   tcheca: {
     flag: '🇨🇿',
     countryCode: 'CZ',
@@ -219,6 +309,12 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     countryCode: 'CZ',
     countryName: 'República Tcheca',
     originalName: 'Czech',
+  },
+  tchecoslovaco: {
+    flag: '🇨🇿',
+    countryCode: 'CZ',
+    countryName: 'Tchecoslováquia',
+    originalName: 'Czechoslovak',
   },
   tchecoslovaca: {
     flag: '🇨🇿',
@@ -233,7 +329,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'Czechoslovak',
   },
 
-  // Holandesa/Dutch
+  // Holandês/Holandesa/Dutch
+  holandês: {
+    flag: '🇳🇱',
+    countryCode: 'NL',
+    countryName: 'Países Baixos',
+    originalName: 'Dutch',
+  },
   holandesa: {
     flag: '🇳🇱',
     countryCode: 'NL',
@@ -247,8 +349,20 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'Dutch',
   },
 
-  // Húngara/Hungarian
+  // Húngaro/Húngara/Hungarian
+  húngaro: {
+    flag: '🇭🇺',
+    countryCode: 'HU',
+    countryName: 'Hungria',
+    originalName: 'Hungarian',
+  },
   húngara: {
+    flag: '🇭🇺',
+    countryCode: 'HU',
+    countryName: 'Hungria',
+    originalName: 'Hungarian',
+  },
+  hungaro: {
     flag: '🇭🇺',
     countryCode: 'HU',
     countryName: 'Hungria',
@@ -267,7 +381,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'Hungarian',
   },
 
-  // Sueca/Swedish
+  // Sueco/Sueca/Swedish
+  sueco: {
+    flag: '🇸🇪',
+    countryCode: 'SE',
+    countryName: 'Suécia',
+    originalName: 'Swedish',
+  },
   sueca: {
     flag: '🇸🇪',
     countryCode: 'SE',
@@ -281,8 +401,20 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'Swedish',
   },
 
-  // Suíça/Swiss
+  // Suíço/Suíça/Swiss
+  suíço: {
+    flag: '🇨🇭',
+    countryCode: 'CH',
+    countryName: 'Suíça',
+    originalName: 'Swiss',
+  },
   suíça: {
+    flag: '🇨🇭',
+    countryCode: 'CH',
+    countryName: 'Suíça',
+    originalName: 'Swiss',
+  },
+  suico: {
     flag: '🇨🇭',
     countryCode: 'CH',
     countryName: 'Suíça',
@@ -301,7 +433,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'Swiss',
   },
 
-  // Norueguesa/Norwegian
+  // Norueguês/Norueguesa/Norwegian
+  norueguês: {
+    flag: '🇳🇴',
+    countryCode: 'NO',
+    countryName: 'Noruega',
+    originalName: 'Norwegian',
+  },
   norueguesa: {
     flag: '🇳🇴',
     countryCode: 'NO',
@@ -315,7 +453,13 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     originalName: 'Norwegian',
   },
 
-  // Finlandesa/Finnish
+  // Finlandês/Finlandesa/Finnish
+  finlandês: {
+    flag: '🇫🇮',
+    countryCode: 'FI',
+    countryName: 'Finlândia',
+    originalName: 'Finnish',
+  },
   finlandesa: {
     flag: '🇫🇮',
     countryCode: 'FI',
@@ -327,6 +471,26 @@ const NATIONALITY_FLAGS: Record<string, NationalityFlag> = {
     countryCode: 'FI',
     countryName: 'Finlândia',
     originalName: 'Finnish',
+  },
+
+  // Português/Portuguesa/Portuguese
+  português: {
+    flag: '🇵🇹',
+    countryCode: 'PT',
+    countryName: 'Portugal',
+    originalName: 'Portuguese',
+  },
+  portuguesa: {
+    flag: '🇵🇹',
+    countryCode: 'PT',
+    countryName: 'Portugal',
+    originalName: 'Portuguese',
+  },
+  portuguese: {
+    flag: '🇵🇹',
+    countryCode: 'PT',
+    countryName: 'Portugal',
+    originalName: 'Portuguese',
   },
 };
 
@@ -363,28 +527,28 @@ export function getAllNationalities(): string[] {
   return Object.keys(NATIONALITY_FLAGS);
 }
 
-// Função para obter as 19 principais nacionalidades (em português)
+// Função para obter as principais nacionalidades (em português)
 export function getTop19Nationalities(): NationalityFlag[] {
   const mainNationalities = [
-    'alemã',
-    'americana',
-    'francesa',
-    'inglesa',
-    'italiana',
-    'austríaca',
-    'russa',
-    'brasileira',
-    'polonesa',
-    'espanhola',
+    'alemão',
+    'americano',
+    'francês',
+    'inglês',
+    'italiano',
+    'austríaco',
+    'russo',
+    'brasileiro',
+    'polonês',
+    'espanhol',
     'belga',
-    'dinamarquesa',
-    'tcheca',
-    'holandesa',
-    'húngara',
-    'sueca',
-    'suíça',
-    'norueguesa',
-    'finlandesa',
+    'dinamarquês',
+    'tcheco',
+    'holandês',
+    'húngaro',
+    'sueco',
+    'suíço',
+    'norueguês',
+    'finlandês',
   ];
 
   return mainNationalities

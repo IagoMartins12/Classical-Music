@@ -68,7 +68,7 @@ interface BulkInsertWorksModalProps {
     imslpId?: string;
     permLinkImslp?: string;
   };
-  instruments: Array<{ id: string; name: string; category: string }>;
+  instruments: Array<{ id: string; name: string; category?: string | null }>;
   epochs: Array<{ id: string; name: string }>;
 }
 

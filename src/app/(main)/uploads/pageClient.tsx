@@ -66,6 +66,37 @@ interface FilterWork {
   composerName: string;
 }
 
+// 🆕 INTERFACES PARA FORM-DATA
+interface FormDataInstrument {
+  id: string;
+  name: string;
+  category?: string | null;
+}
+
+interface FormDataRole {
+  id: string;
+  name: string;
+}
+
+interface FormDataComposer {
+  id: string;
+  name: string;
+  fullName: string;
+  worksCount: number | null;
+}
+
+interface FormDataWork {
+  id: string;
+  title: string;
+  composer: { id?: string; name: string; fullName: string };
+}
+interface FormDataProps {
+  epochs: Epoch[];
+  instruments: FormDataInstrument[];
+  roles: FormDataRole[];
+  composers: FormDataComposer[];
+  works: FormDataWork[];
+}
 interface UploadsClientProps {
   uploads: UserUpload[];
   composers: any[];
@@ -90,6 +121,8 @@ interface UploadsClientProps {
   selectedWork: string;
   isAdmin: boolean;
   userId: string;
+  // 🆕 PROPS PARA FORM-DATA
+  formData: FormDataProps;
 }
 
 type FilterTab = 'all' | 'composers' | 'works' | 'scores';
@@ -114,6 +147,7 @@ const UploadsClient = ({
   selectedComposer: initialSelectedComposer,
   selectedWork: initialSelectedWork,
   isAdmin,
+  formData,
 }: UploadsClientProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -121,6 +155,8 @@ const UploadsClient = ({
 
   // Estados e hooks permanecem iguais
   const toast = useToast();
+
+  console.log('form data', formData);
 
   const [isPending, startTransition] = useTransition();
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
@@ -152,20 +188,6 @@ const UploadsClient = ({
   const [availableEpochs, setAvailableEpochs] = useState(epochs);
   const [loadingEpochs, setLoadingEpochs] = useState(false);
 
-  const [formData, setFormData] = useState<{
-    epochs: any[];
-    instruments: any[];
-    roles: any[];
-    composers: any[];
-    works: any[];
-  }>({
-    epochs: epochs,
-    instruments: [],
-    roles: [],
-    composers: [],
-    works: [],
-  });
-
   const [loadingFormData, setLoadingFormData] = useState(false);
 
   const memoizedLocalComposers = useMemo(() => {
@@ -173,36 +195,36 @@ const UploadsClient = ({
   }, [filterComposers]);
 
   // Carregar dados do formulário quando necessário
-  useEffect(() => {
-    if (
-      (showCreateModal || showBulkInsertModal) &&
-      formData.roles.length === 0
-    ) {
-      loadFormData();
-    }
-  }, [showCreateModal, showBulkInsertModal]);
+  // useEffect(() => {
+  //   if (
+  //     (showCreateModal || showBulkInsertModal) &&
+  //     formData.roles.length === 0
+  //   ) {
+  //     loadFormData();
+  //   }
+  // }, [showCreateModal, showBulkInsertModal]);
 
-  const loadFormData = async () => {
-    setLoadingFormData(true);
-    try {
-      const response = await fetch('/api/uploads/form-data');
-      if (response.ok) {
-        const data = await response.json();
-        setFormData((prev) => ({
-          ...prev,
-          roles: data.roles || [],
-          instruments: data.instruments || [],
-          composers: data.composers || [],
-          works: data.works || [],
-        }));
-      }
-    } catch (error) {
-      console.error('Erro ao carregar dados do formulário:', error);
-      toast.error('Erro', 'Não foi possível carregar os dados do formulário');
-    } finally {
-      setLoadingFormData(false);
-    }
-  };
+  // const loadFormData = async () => {
+  //   setLoadingFormData(true);
+  //   try {
+  //     const response = await fetch('/api/uploads/form-data');
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setFormData((prev) => ({
+  //         ...prev,
+  //         roles: data.roles || [],
+  //         instruments: data.instruments || [],
+  //         composers: data.composers || [],
+  //         works: data.works || [],
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     console.error('Erro ao carregar dados do formulário:', error);
+  //     toast.error('Erro', 'Não foi possível carregar os dados do formulário');
+  //   } finally {
+  //     setLoadingFormData(false);
+  //   }
+  // };
 
   const loadAvailableEpochs = async (type: string) => {
     setLoadingEpochs(true);

@@ -68,7 +68,7 @@ export default function ComposerDetailsClient({
   const nationalityDisplay = composer.nationality
     ? (() => {
         const flagInfo = getComposerNationalityDisplay(composer.nationality);
-        // Se estiver em inglês, usar o nome original em inglês
+        console.log('composer', composer.nationality);
         const displayName =
           language === 'en'
             ? flagInfo.countryName

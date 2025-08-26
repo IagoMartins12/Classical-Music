@@ -48,7 +48,7 @@ interface CreateWorkModalProps {
   isOpen: boolean;
   onClose: () => void;
   composers: Array<{ id: string; name: string; fullName: string }>;
-  instruments: Array<{ id: string; name: string; category: string }>;
+  instruments: Array<{ id: string; name: string; category?: string | null }>;
   epochs: Array<{ id: string; name: string }>;
   editingWork?: any;
 }
@@ -98,6 +98,8 @@ const CreateWorkModal = ({
     loading: boolean;
     found: boolean;
     work?: any;
+    duplicateType?: 'url' | 'title_composer';
+    duplicateReason?: string;
   }>({ loading: false, found: false });
   // 🆕 ESTADO PARA PARENT WORK (COLEÇÃO)
   const [isPartOfCollection, setIsPartOfCollection] = useState(false);
@@ -243,19 +245,19 @@ const CreateWorkModal = ({
     parentWorkId: '', // 🆕 NOVO CAMPO
   });
 
-  const [supportData, setSupportData] = useState<{
-    epochs: any[];
-    instruments: any[];
-    roles: any[];
-    composers: any[];
-    works: any[];
-  }>({
-    epochs: epochs,
-    instruments: instruments,
-    roles: [],
-    composers: composers,
-    works: [],
-  });
+  // const [supportData, setSupportData] = useState<{
+  //   epochs: any[];
+  //   instruments: any[];
+  //   roles: any[];
+  //   composers: any[];
+  //   works: any[];
+  // }>({
+  //   epochs: epochs,
+  //   instruments: instruments,
+  //   roles: [],
+  //   composers: composers,
+  //   works: [],
+  // });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -465,26 +467,29 @@ const CreateWorkModal = ({
   };
 
   // Load form data
-  const loadFormData = async () => {
-    try {
-      const response = await fetch('/api/uploads/form-data');
-      if (response.ok) {
-        const data = await response.json();
-        setSupportData((prev) => ({
-          ...prev,
-          roles: data.roles || [],
-          instruments: data.instruments || prev.instruments,
-          works: data.works || [],
-        }));
-      }
-    } catch (error) {
-      console.error('Erro ao carregar dados do formulário:', error);
-    }
-  };
+  // const loadFormData = async () => {
+  //   try {
+  //     const response = await fetch('/api/uploads/form-data');
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setSupportData((prev) => ({
+  //         ...prev,
+  //         roles: data.roles || [],
+  //         instruments: data.instruments || prev.instruments,
+  //         works: data.works || [],
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     console.error('Erro ao carregar dados do formulário:', error);
+  //   }
+  // };
 
   // Check for duplicates
   const checkDuplicateByLink = async (url: string) => {
-    if (!url.trim()) return;
+    // Verificar se tem dados suficientes para fazer a verificação
+    if (!url.trim() && (!formData.title.trim() || !formData.composerId)) {
+      return false;
+    }
 
     setDuplicateCheck({ loading: true, found: false });
 
@@ -493,7 +498,9 @@ const CreateWorkModal = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          url: url.trim(),
+          url: url.trim() || undefined,
+          title: formData.title.trim() || undefined,
+          composerId: formData.composerId || undefined,
           excludeId: editingWork?.id,
         }),
       });
@@ -505,6 +512,8 @@ const CreateWorkModal = ({
           loading: false,
           found: true,
           work: data.work,
+          duplicateType: data.duplicateType,
+          duplicateReason: data.duplicateReason,
         });
         return true;
       } else {
@@ -513,6 +522,47 @@ const CreateWorkModal = ({
       }
     } catch (error) {
       console.error('❌ Erro ao verificar duplicata:', error);
+      setDuplicateCheck({ loading: false, found: false });
+      return false;
+    }
+  };
+
+  // Nova função para verificar duplicatas apenas por título + compositor
+  const checkDuplicateByTitle = async () => {
+    if (!formData.title.trim() || !formData.composerId) {
+      return false;
+    }
+
+    setDuplicateCheck({ loading: true, found: false });
+
+    try {
+      const response = await fetch('/api/uploads/work/check-duplicate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: formData.title.trim(),
+          composerId: formData.composerId,
+          excludeId: editingWork?.id,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.found) {
+        setDuplicateCheck({
+          loading: false,
+          found: true,
+          work: data.work,
+          duplicateType: data.duplicateType,
+          duplicateReason: data.duplicateReason,
+        });
+        return true;
+      } else {
+        setDuplicateCheck({ loading: false, found: false });
+        return false;
+      }
+    } catch (error) {
+      console.error('❌ Erro ao verificar duplicata por título:', error);
       setDuplicateCheck({ loading: false, found: false });
       return false;
     }
@@ -534,13 +584,23 @@ const CreateWorkModal = ({
     }
 
     // Check for duplicates if not editing external source
-    if (
-      !isEditingExternalSource &&
-      formData.imslpId &&
-      (await checkDuplicateByLink(formData.imslpId))
-    ) {
-      toast.error('Já existe uma obra com este link do IMSLP.');
-      return;
+    if (!isEditingExternalSource) {
+      // Verificar duplicata por URL se existe
+      if (formData.imslpId && (await checkDuplicateByLink(formData.imslpId))) {
+        toast.error('Já existe uma obra com este link do IMSLP.');
+        return;
+      }
+
+      // Verificar duplicata por título + compositor
+      if (await checkDuplicateByTitle()) {
+        const composerName =
+          composers.find((c) => c.id === formData.composerId)?.fullName ||
+          'compositor selecionado';
+        toast.error(
+          `Já existe uma obra com o título "${formData.title}" do compositor ${composerName}.`
+        );
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -711,7 +771,7 @@ const CreateWorkModal = ({
     }
 
     if (data.primaryInstrument) {
-      const instrument = supportData.instruments.find((i) =>
+      const instrument = instruments.find((i) =>
         i.name.toLowerCase().includes(data.primaryInstrument.toLowerCase())
       );
       if (instrument) {
@@ -725,7 +785,7 @@ const CreateWorkModal = ({
   };
 
   useEffect(() => {
-    loadFormData();
+    // loadFormData();
     if (editingWork) {
       let detectedUrl = '';
 
@@ -881,14 +941,34 @@ const CreateWorkModal = ({
                       <div className="flex items-center space-x-2 mb-2">
                         <FiAlertCircle className="w-4 h-4 text-red-600" />
                         <span className="text-sm font-medium text-red-800">
-                          {t('modal_work_scraping_duplicate_found')}
+                          {duplicateCheck.duplicateType === 'url'
+                            ? 'Duplicata encontrada por URL do IMSLP'
+                            : 'Duplicata encontrada por título e compositor'}
                         </span>
                       </div>
-                      <p className="text-sm text-red-700">
-                        {t('modal_work_scraping_duplicate_message', {
-                          title: duplicateCheck.work?.title,
-                        })}
-                      </p>
+                      <div className="space-y-1">
+                        <p className="text-sm text-red-700">
+                          <strong>Obra existente:</strong>{' '}
+                          {duplicateCheck.work?.title}
+                          {duplicateCheck.work?.subtitle &&
+                            ` - ${duplicateCheck.work.subtitle}`}
+                        </p>
+                        <p className="text-sm text-red-700">
+                          <strong>Compositor:</strong>{' '}
+                          {duplicateCheck.work?.composerName}
+                        </p>
+                        {duplicateCheck.work?.opOrCatalog && (
+                          <p className="text-sm text-red-700">
+                            <strong>Op./Catálogo:</strong>{' '}
+                            {duplicateCheck.work.opOrCatalog}
+                          </p>
+                        )}
+                        <p className="text-sm text-red-600 font-medium mt-2">
+                          {duplicateCheck.duplicateType === 'url'
+                            ? 'Uma obra com este link do IMSLP já existe no sistema.'
+                            : `Uma obra com o título "${duplicateCheck.work?.title}" deste compositor já existe no sistema.`}
+                        </p>
+                      </div>
                     </div>
                   )}
 
@@ -978,7 +1058,7 @@ const CreateWorkModal = ({
                     <ComposerSearchInput
                       selectedComposer={formData.composerId}
                       onComposerSelect={handleComposerSelect}
-                      popularComposers={supportData.composers}
+                      popularComposers={composers}
                     />
                     {errors.composerId && (
                       <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
@@ -996,7 +1076,7 @@ const CreateWorkModal = ({
                       ref={fieldRefs.instrumentId}
                       options={[
                         { value: '', label: 'Selecione um instrumento' },
-                        ...supportData.instruments.map((instrument) => ({
+                        ...instruments.map((instrument) => ({
                           value: instrument.id,
                           label: `${instrument.name}`,
                         })),

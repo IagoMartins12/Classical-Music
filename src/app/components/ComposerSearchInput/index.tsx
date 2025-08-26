@@ -267,7 +267,6 @@ export default function ComposerSearchInput({
   const showPopularLabel =
     !searchTerm && popularComposers && popularComposers.length > 0;
 
-  console.log('popular', searchTerm, popularComposers);
   return (
     <div className="relative z-[120]">
       <div className="relative">
@@ -361,7 +360,7 @@ export default function ComposerSearchInput({
                         )}
                     </div>
 
-                    {composer.worksCount && composer.worksCount > 0 && (
+                    {composer.worksCount && Number(composer.worksCount) > 1 && (
                       <div className="ml-3 flex-shrink-0">
                         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-theme-secondary/20 text-theme-secondary">
                           {composer.worksCount}{' '}

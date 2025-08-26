@@ -9,7 +9,6 @@ import UploadsPageServer from './pageServer';
 import EmailVerificationRequired from '@/app/components/VerificationsProviders/EmailVerificationRequired';
 import { authOptions } from '@/app/libs/auth';
 import { getUserById } from '@/app/actions/auth';
-import { FormPageLoading } from '@/app/wrappers/SuspenseWrapper';
 import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
@@ -59,17 +58,15 @@ export default async function UploadsPage({
   const workId = resolvedSearchParams.work || '';
 
   return (
-    <Suspense fallback={<FormPageLoading />}>
-      <UploadsPageServer
-        page={page}
-        search={search}
-        type={type}
-        epochId={epochId}
-        composerId={composerId}
-        workId={workId}
-        userId={session.user.id}
-        userRole={session.user.role || 0}
-      />
-    </Suspense>
+    <UploadsPageServer
+      page={page}
+      search={search}
+      type={type}
+      epochId={epochId}
+      composerId={composerId}
+      workId={workId}
+      userId={session.user.id}
+      userRole={session.user.role || 0}
+    />
   );
 }

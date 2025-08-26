@@ -2,6 +2,7 @@
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 import { Prisma } from '@prisma/client';
+import { composersByEpoch } from './music-history-translated';
 
 export interface UserUpload {
   id: string;
@@ -765,7 +766,166 @@ export const getFormData = unstable_cache(
     tags: ['form-data'],
   }
 );
+export const getFormDataPage = unstable_cache(
+  async () => {
+    try {
+      const allComposerNames = Object.values(composersByEpoch).flat();
 
+      // Buscar epochs, instruments, roles e compositores
+      const [epochs, instruments, roles, composers] = await Promise.all([
+        prisma.epoch.findMany({
+          select: { id: true, name: true },
+          orderBy: { name: 'asc' },
+        }),
+        prisma.instrument.findMany({
+          select: { id: true, name: true, category: true },
+          orderBy: { name: 'asc' },
+        }),
+        prisma.role.findMany({
+          select: { id: true, name: true },
+          orderBy: { name: 'asc' },
+        }),
+
+        // Buscar compositores da lista
+        prisma.composer.findMany({
+          where: {
+            AND: [
+              {
+                OR: allComposerNames.map((composerName) => ({
+                  OR: [
+                    {
+                      fullName: {
+                        equals: composerName,
+                        mode: 'insensitive',
+                      },
+                    },
+                    {
+                      name: {
+                        equals: composerName,
+                        mode: 'insensitive',
+                      },
+                    },
+                    {
+                      fullName: {
+                        contains: composerName,
+                        mode: 'insensitive',
+                      },
+                    },
+                    {
+                      name: {
+                        contains: composerName,
+                        mode: 'insensitive',
+                      },
+                    },
+                  ],
+                })),
+              },
+            ],
+          },
+          select: {
+            id: true,
+            name: true,
+            fullName: true,
+            epoch: { select: { name: true } },
+            _count: {
+              select: {
+                works: true,
+              },
+            },
+          },
+          take: 50,
+          orderBy: [{ birthDate: 'asc' }, { name: 'asc' }],
+        }),
+      ]);
+
+      // Buscar works aleatórios de forma mais eficiente
+      // Pegar todos os works dos compositores da lista em ordem aleatória
+      const composerIds = composers.map((c) => c.id);
+
+      const allWorks = await prisma.work.findMany({
+        where: {
+          composerId: { in: composerIds },
+        },
+        select: {
+          id: true,
+          title: true,
+          composerId: true,
+          composer: { select: { name: true, fullName: true } },
+          instrument: { select: { name: true } },
+        },
+        orderBy: [
+          { title: 'asc' }, // Usar uma ordem consistente, vamos embaralhar depois
+        ],
+      });
+
+      // Agrupar works por compositor e pegar 4 aleatórios de cada
+      const worksByComposer = new Map();
+      allWorks.forEach((work) => {
+        if (!worksByComposer.has(work.composerId)) {
+          worksByComposer.set(work.composerId, []);
+        }
+        worksByComposer.get(work.composerId).push(work);
+      });
+
+      // Pegar 4 aleatórios de cada compositor
+      const works = [];
+      for (const [composerId, composerWorks] of worksByComposer) {
+        // Embaralhar array
+        const shuffled = [...composerWorks].sort(() => Math.random() - 0.5);
+        // Pegar até 4
+        const selected = shuffled.slice(0, 4);
+        works.push(...selected);
+
+        // Parar se chegou no limite de 50
+        if (works.length >= 50) break;
+      }
+
+      // Garantir que não passe de 50
+      const finalWorks = works.slice(0, 50);
+
+      // Formatar compositores para compatibilidade
+      const formattedComposers = composers.map((composer) => ({
+        id: composer.id,
+        name: composer.name,
+        fullName: composer.fullName,
+        worksCount: composer._count.works > 0 ? composer._count.works : null, // Pode calcular se necessário
+      }));
+
+      // Formatar works para compatibilidade
+      const formattedWorks = finalWorks.map((work) => ({
+        id: work.id,
+        title: work.title,
+        composer: {
+          id: work.composer.id,
+          fullname: work.composer.fullName,
+          name: work.composer.name,
+        },
+      }));
+
+      return {
+        epochs,
+        instruments,
+        roles,
+        composers: formattedComposers,
+        works: formattedWorks,
+      };
+    } catch (error) {
+      console.error('Erro ao buscar dados para a página de formulário:', error);
+      return {
+        epochs: [],
+        instruments: [],
+        roles: [],
+        composers: [],
+        works: [],
+      };
+    }
+  },
+  ['form-data-page'],
+  {
+    revalidate: 3600, // 1 hora
+    tags: ['form-data-page'],
+  }
+);
 export const getEpochsCache = unstable_cache(
   async () => {
     try {
@@ -831,6 +991,7 @@ export async function revalidateUploadsCache(userId?: string) {
   revalidateTag('filter-data'); // 🆕
   revalidateTag('available-epochs'); // 🆕 Novo cache de épocas
   revalidateTag('epochs');
+  revalidateTag('form-data-page'); // 🆕 Adicionar novo cache
 
   if (userId) {
     revalidateTag(`user-uploads-${userId}`);
