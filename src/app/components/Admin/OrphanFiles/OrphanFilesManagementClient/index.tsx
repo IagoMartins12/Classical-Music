@@ -204,11 +204,6 @@ const FilePreview = ({
     if (file.isImage) {
       return (
         <div className="relative">
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-theme-secondary rounded-lg">
-              <LoadingSpinner size="lg" />
-            </div>
-          )}
           <Image
             height={150}
             width={150}
@@ -217,7 +212,6 @@ const FilePreview = ({
             className="max-w-full max-h-96 mx-auto rounded-lg shadow-lg"
             onLoad={handleLoad}
             onError={handleError}
-            style={{ display: isLoading ? 'none' : 'block' }}
           />
         </div>
       );
@@ -289,7 +283,7 @@ const FilePreview = ({
           )}
           <iframe
             src={fileUrl}
-            className="w-full h-96 border border-theme-primary rounded-lg"
+            className="w-full h-[33rem] border border-theme-primary rounded-lg"
             onLoad={handleLoad}
             onError={handleError}
             style={{ display: isLoading ? 'none' : 'block' }}
@@ -1114,13 +1108,6 @@ export default function OrphanFilesManagementClient() {
               <h3 className="text-xl font-bold text-theme-primary">
                 Filtros Avançados
               </h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowFilters(false)}
-              >
-                <FiX className="w-5 h-5" />
-              </Button>
             </div>
 
             <div className="space-y-6">
@@ -1245,7 +1232,6 @@ export default function OrphanFilesManagementClient() {
           isOpen
           maxWidth="2xl"
           onClose={() => setShowFileDetails(null)}
-          confirmOnClose
           withouVerification
         >
           <div className="bg-theme-elevated p-6">
@@ -1253,13 +1239,6 @@ export default function OrphanFilesManagementClient() {
               <h3 className="text-xl font-bold text-theme-primary">
                 Detalhes do Arquivo
               </h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowFileDetails(null)}
-              >
-                <FiX className="w-5 h-5" />
-              </Button>
             </div>
 
             <div className="space-y-4">

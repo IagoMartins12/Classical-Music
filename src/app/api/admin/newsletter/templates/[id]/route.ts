@@ -117,7 +117,6 @@ export async function PATCH(
 
     // Preparar dados de atualização
     const updateData: any = {
-      lastEditedBy: session.user.id,
       lastEditedAt: new Date(),
     };
 

@@ -27,6 +27,7 @@ import { useSelectiveBackup } from '@/app/hooks/admin/useSelectiveBackup';
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
+import Select from '@/app/components/Common/Select';
 
 interface SelectiveBackupSectionProps {
   className?: string;
@@ -159,6 +160,13 @@ export default function SelectiveBackupSection({
     filteredCollections.length > 0 &&
     filteredCollections.every((c) => selectedCollections.includes(c.name));
   const finalCollections = getSelectedCollectionsWithDeps();
+  const categoryOptions = [
+    { value: 'all', label: 'Todas as Categorias' },
+    ...categories.map((category) => ({
+      value: category,
+      label: category,
+    })),
+  ];
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -398,18 +406,11 @@ export default function SelectiveBackupSection({
           confirmOnClose
           withouVerification
         >
-          <div className="bg-theme-elevated p-6 max-h-[80vh] overflow-y-auto">
+          <div className="bg-theme-elevated p-6  overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-theme-primary">
                 Criar Backup Seletivo
               </h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowCreateForm(false)}
-              >
-                <FiX className="w-5 h-5" />
-              </Button>
             </div>
 
             <div className="space-y-6">
@@ -428,7 +429,7 @@ export default function SelectiveBackupSection({
               </div>
 
               {/* Configurações */}
-              <div className="p-4 bg-theme-secondary rounded-xl">
+              <div className="p-4 bg-theme-tertiary rounded-xl">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-medium text-theme-primary">
@@ -470,18 +471,11 @@ export default function SelectiveBackupSection({
                   <label className="block text-sm font-medium text-theme-primary mb-2">
                     Categoria
                   </label>
-                  <select
+                  <Select
+                    options={categoryOptions}
                     value={categoryFilter}
                     onChange={(e) => setCategoryFilter(e.target.value)}
-                    className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
-                  >
-                    <option value="all">Todas as Categorias</option>
-                    {categories.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </div>
               </div>
 
@@ -502,11 +496,11 @@ export default function SelectiveBackupSection({
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-4 bg-theme-secondary rounded-xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-72 overflow-y-auto p-4 bg-theme-secondary rounded-xl">
                   {filteredCollections.map((collection) => (
                     <label
                       key={collection.name}
-                      className="flex items-start space-x-3 p-3 bg-theme-primary hover:bg-theme-tertiary rounded-lg cursor-pointer transition-colors"
+                      className="flex items-start space-x-3 p-3 bg-theme-tertiary hover:bg-theme-tertiary rounded-lg cursor-pointer transition-colors"
                     >
                       <input
                         type="checkbox"

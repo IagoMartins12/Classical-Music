@@ -69,30 +69,6 @@ Opus Atlas - Sua plataforma de música clássica
   }
 }
 
-export async function sendConfirmationEmail(subscriber: any) {
-  // Reutilizar função da API de subscribe
-  const confirmationUrl = `${process.env.NEXTAUTH_URL}/api/newsletter/confirm?token=${subscriber.confirmationToken}`;
-
-  const template = await getEmailTemplate('WELCOME');
-
-  const emailData = {
-    to: subscriber.email,
-    subject: 'Confirme sua inscrição na Opus Atlas',
-    html: replaceTemplateVariables(template.htmlContent, {
-      firstName: subscriber.firstName || 'Música',
-      confirmationUrl,
-      email: subscriber.email,
-    }),
-    text: replaceTemplateVariables(template.textContent, {
-      firstName: subscriber.firstName || 'Música',
-      confirmationUrl,
-      email: subscriber.email,
-    }),
-  };
-
-  await sendEmail(emailData);
-}
-
 export async function getEmailTemplate(type: string) {
   const template = await prisma.newsletterTemplate.findFirst({
     where: {

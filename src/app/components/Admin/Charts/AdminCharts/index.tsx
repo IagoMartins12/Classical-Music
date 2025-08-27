@@ -227,8 +227,6 @@ export const AdminPieChart = ({
   innerRadius = 0,
   showLabels = true,
 }: AdminChartProps & { innerRadius?: number; showLabels?: boolean }) => {
-  console.log('DATA', data);
-
   return (
     <div className="w-full">
       {(title || subtitle) && (

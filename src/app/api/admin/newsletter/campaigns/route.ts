@@ -96,17 +96,18 @@ export async function POST(request: NextRequest) {
       name,
       subject,
       templateId,
-      templateType, // 🆕 NOVO: Tipo do template built-in
+      templateType,
       targetSegments,
       scheduledAt,
       senderName,
       senderEmail,
       replyToEmail,
-      customContent, // 🆕 NOVO: Conteúdo customizado
+      customContent,
+      customSubject,
       status = 'DRAFT',
     } = body;
 
-    // 🆕 VALIDAÇÃO MELHORADA: Aceitar templateType OU templateId
+    // Validação básica
     if (!name || !subject) {
       return NextResponse.json(
         { success: false, error: 'Nome e assunto são obrigatórios' },
@@ -114,7 +115,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 🆕 VALIDAÇÃO DO TEMPLATE
+    // Validação do template
     let finalTemplateId = templateId;
     let useBuiltInTemplate = false;
 
@@ -129,7 +130,7 @@ export async function POST(request: NextRequest) {
       }
       useBuiltInTemplate = true;
 
-      // 🆕 CRIAR UM TEMPLATE TEMPORÁRIO NO BANCO PARA MANTER A RELAÇÃO
+      // Criar um template temporário no banco para manter a relação
       const tempTemplate = await prisma.newsletterTemplate.create({
         data: {
           name: `Built-in: ${builtInTemplate.description}`,
@@ -145,7 +146,7 @@ export async function POST(request: NextRequest) {
       });
       finalTemplateId = tempTemplate.id;
     } else if (templateId) {
-      // Usando template personalizado - verificar se existe
+      // Verificar se template personalizado existe
       const template = await prisma.newsletterTemplate.findUnique({
         where: { id: templateId },
       });
@@ -163,21 +164,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 🆕 CRIAR CAMPANHA COM DADOS CORRETOS
+    // 🆕 CRIAR CAMPANHA COM RELAÇÃO CORRETA
     const campaignData: any = {
       name,
       subject,
-      templateId: finalTemplateId,
       targetSegments: targetSegments || null,
       scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
       senderName: senderName || 'Opus Atlas',
       senderEmail: senderEmail || 'noreply@classicalhub.com',
       replyToEmail: replyToEmail || null,
-      createdBy: session.user.id,
       status: status,
+      // 🆕 CAMPOS ADICIONAIS
+      templateType: useBuiltInTemplate ? templateType : null,
+      useCustomTemplate: !!templateId,
+      customSubject: customSubject || null,
     };
 
-    // 🆕 ADICIONAR CONTEÚDO CUSTOMIZADO SE FORNECIDO
+    // 🆕 USAR RELAÇÃO TEMPLATE EM VEZ DE templateId
+    if (finalTemplateId) {
+      campaignData.template = {
+        connect: { id: finalTemplateId },
+      };
+    }
+
+    // Adicionar conteúdo customizado se fornecido
     if (customContent && templateType === 'CAMPAIGN_CUSTOM') {
       campaignData.customHtmlContent = customContent;
     }
@@ -203,7 +213,7 @@ export async function POST(request: NextRequest) {
         sentAt: campaign.sentAt?.toISOString() || null,
         createdAt: campaign.createdAt.toISOString(),
         updatedAt: campaign.updatedAt.toISOString(),
-        // 🆕 ADICIONAR INFORMAÇÃO SE É TEMPLATE BUILT-IN
+        // Informação adicional
         isBuiltInTemplate: useBuiltInTemplate,
         templateType: useBuiltInTemplate ? templateType : null,
       },

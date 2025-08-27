@@ -1,4 +1,4 @@
-// app/newsletter/unsubscribe/page.tsx
+// app/newsletter/unsubscribe/[token]page.tsx
 'use client';
 
 import React, { useState } from 'react';

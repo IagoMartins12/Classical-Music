@@ -35,6 +35,7 @@ import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import SelectiveBackupSection from '../SelectiveBackupSection';
 import LoadingAdminState from '../../Common/LoadingState';
+import Checkbox from '@/app/components/Common/Checkbox';
 
 interface BackupScheduleFormData {
   name: string;
@@ -275,7 +276,7 @@ export default function BackupManagementClient() {
                 <button
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
                     activeTab === 'general'
-                      ? 'bg-brand-primary text-white shadow-lg'
+                      ? 'bg-theme-tertiary text-white shadow-lg'
                       : 'text-theme-primary hover:bg-theme-primary'
                   }`}
                   onClick={() => setActiveTab('general')}
@@ -286,7 +287,7 @@ export default function BackupManagementClient() {
                 <button
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
                     activeTab === 'selective'
-                      ? 'bg-brand-primary text-white shadow-lg'
+                      ? 'bg-theme-tertiary text-white shadow-lg'
                       : 'text-theme-primary hover:bg-theme-primary'
                   }`}
                   onClick={() => setActiveTab('selective')}
@@ -795,13 +796,6 @@ export default function BackupManagementClient() {
               <h3 className="text-xl font-bold text-theme-primary">
                 Agendar Backup
               </h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowScheduleForm(false)}
-              >
-                <FiX className="w-5 h-5" />
-              </Button>
             </div>
 
             <div className="space-y-6">
@@ -818,7 +812,6 @@ export default function BackupManagementClient() {
                       name: e.target.value,
                     }))
                   }
-                  className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
                   placeholder="Backup Diário do Sistema"
                 />
               </div>
@@ -844,7 +837,6 @@ export default function BackupManagementClient() {
                           | 'monthly',
                       }))
                     }
-                    className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
                   />
                 </div>
 
@@ -861,7 +853,6 @@ export default function BackupManagementClient() {
                         time: e.target.value,
                       }))
                     }
-                    className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
                   />
                 </div>
               </div>
@@ -884,7 +875,6 @@ export default function BackupManagementClient() {
                         dayOfWeek: parseInt(e.target.value),
                       }))
                     }
-                    className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
                   />
                   <p className="text-xs text-theme-tertiary mt-1">
                     Selecione o dia da semana para executar o backup semanal
@@ -908,7 +898,6 @@ export default function BackupManagementClient() {
                         dayOfMonth: parseInt(e.target.value) || 1,
                       }))
                     }
-                    className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
                   />
                   <p className="text-xs text-theme-tertiary mt-1">
                     Selecione o dia do mês (1-28) para executar o backup mensal.
@@ -931,7 +920,6 @@ export default function BackupManagementClient() {
                       retentionDays: parseInt(e.target.value) || 30,
                     }))
                   }
-                  className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
                   min="1"
                   max="365"
                 />
@@ -948,7 +936,7 @@ export default function BackupManagementClient() {
                       key={collection.name}
                       className="flex items-center space-x-2 p-2 bg-theme-secondary rounded-lg cursor-pointer hover:bg-theme-primary"
                     >
-                      <Input
+                      <Checkbox
                         type="checkbox"
                         checked={scheduleForm.collections.includes(
                           collection.name

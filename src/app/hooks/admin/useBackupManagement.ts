@@ -149,7 +149,7 @@ export const useBackupManagement = (): UseBackupManagementReturn => {
       const data = await response.json();
 
       if (data.success) {
-        toast.success('Backup criado com sucesso!', { id: toastId });
+        toast.success('Backup criado com sucesso!', { duration: 500 });
 
         // Aguardar um pouco antes de atualizar a lista
         setTimeout(() => {

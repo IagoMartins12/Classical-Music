@@ -1,8 +1,11 @@
-// app/api/newsletter/subscribe/route.ts - VERSÃO CORRIGIDA
+// app/api/newsletter/subscribe/route.ts - VERSÃO COMPLETA CORRIGIDA
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/libs/prismadb';
-import { createToken, logSecurityEvent } from '@/app/libs/tokenUtils';
-import { createTokenUrl } from '@/app/libs/tokenUtils';
+import {
+  createToken,
+  logSecurityEvent,
+  createTokenUrl,
+} from '@/app/libs/tokenUtils';
 import { sendTemplateEmail } from '@/app/libs/newsletter/email';
 
 export async function POST(request: NextRequest) {
@@ -44,7 +47,7 @@ export async function POST(request: NextRequest) {
       'unknown';
     const userAgent = request.headers.get('user-agent') || 'unknown';
 
-    // 🆕 VERIFICAR SE EMAIL JÁ ESTÁ CADASTRADO
+    // VERIFICAR SE EMAIL JÁ ESTÁ CADASTRADO
     const existingSubscriber = await prisma.newsletterSubscriber.findUnique({
       where: { email: normalizedEmail },
       select: {
@@ -54,7 +57,6 @@ export async function POST(request: NextRequest) {
         firstName: true,
         subscribedAt: true,
         confirmedAt: true,
-        confirmationToken: true,
       },
     });
 
@@ -83,23 +85,39 @@ export async function POST(request: NextRequest) {
             message:
               'Verifique seu email para confirmar a inscrição ou solicite um novo link.',
             canResendConfirmation: true,
-            existingToken: existingSubscriber.confirmationToken,
           });
 
         case 'UNSUBSCRIBED':
           // Permitir reinscrição - atualizar registro existente
           const resubscribeToken = await createToken({
-            userId: undefined, // 🆕 Não tem userId
+            userId: undefined,
             type: 'NEWSLETTER_CONFIRMATION',
             ipAddress: userIP,
             userAgent,
-            anonymousEmail: normalizedEmail, // 🆕 Usar email como identificador
+            anonymousEmail: normalizedEmail,
+            expiresInHours: 48,
           });
 
-          const confirmationUrl = createTokenUrl(
+          // Criar token de unsubscribe
+          const resubscribeUnsubToken = await createToken({
+            userId: undefined,
+            type: 'NEWSLETTER_UNSUBSCRIBE',
+            ipAddress: userIP,
+            userAgent,
+            anonymousEmail: normalizedEmail,
+            expiresInHours: 24 * 365, // 1 ano
+          });
+
+          const resubConfirmationUrl = createTokenUrl(
             process.env.NEXTAUTH_URL || 'http://localhost:3000',
             'newsletter/confirm',
             resubscribeToken
+          );
+
+          const resubUnsubscribeUrl = createTokenUrl(
+            process.env.NEXTAUTH_URL || 'http://localhost:3000',
+            'newsletter/unsubscribe',
+            resubscribeUnsubToken
           );
 
           // Atualizar subscriber existente
@@ -110,7 +128,8 @@ export async function POST(request: NextRequest) {
               firstName: firstName?.trim() || existingSubscriber.firstName,
               subscribedAt: new Date(),
               confirmedAt: null,
-              confirmationToken: resubscribeToken,
+              unsubscribedAt: null,
+              unsubscribeReason: null,
               preferences: interests.length > 0 ? { interests } : undefined,
               frequency,
               sourceUrl,
@@ -125,8 +144,8 @@ export async function POST(request: NextRequest) {
             type: 'WELCOME',
             variables: {
               firstName: firstName || existingSubscriber.firstName || 'Usuário',
-              confirmationUrl,
-              unsubscribeUrl: `${process.env.NEXTAUTH_URL}/newsletter/unsubscribe/${resubscribeToken}`,
+              confirmationUrl: resubConfirmationUrl,
+              unsubscribeUrl: resubUnsubscribeUrl,
             },
           });
 
@@ -178,7 +197,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 🆕 EMAIL NÃO EXISTE - CRIAR NOVA INSCRIÇÃO
+    // EMAIL NÃO EXISTE - CRIAR NOVA INSCRIÇÃO
 
     // Verificar se é usuário registrado
     const existingUser = await prisma.user.findUnique({
@@ -190,19 +209,36 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // 🆕 CRIAR TOKEN DE CONFIRMAÇÃO CORRIGIDO
+    // CRIAR TOKEN DE CONFIRMAÇÃO
     const confirmationToken = await createToken({
-      userId: existingUser?.id, // 🆕 Usar userId se existir
+      userId: existingUser?.id,
       type: 'NEWSLETTER_CONFIRMATION',
       ipAddress: userIP,
       userAgent,
-      anonymousEmail: !existingUser ? normalizedEmail : undefined, // 🆕 Só se não for usuário registrado
+      anonymousEmail: !existingUser ? normalizedEmail : undefined,
+      expiresInHours: 48,
+    });
+
+    // CRIAR TOKEN DE UNSUBSCRIBE
+    const unsubscribeToken = await createToken({
+      userId: existingUser?.id,
+      type: 'NEWSLETTER_UNSUBSCRIBE',
+      ipAddress: userIP,
+      userAgent,
+      anonymousEmail: !existingUser ? normalizedEmail : undefined,
+      expiresInHours: 24 * 365, // 1 ano
     });
 
     const confirmationUrl = createTokenUrl(
       process.env.NEXTAUTH_URL || 'http://localhost:3000',
       'newsletter/confirm',
       confirmationToken
+    );
+
+    const unsubscribeUrl = createTokenUrl(
+      process.env.NEXTAUTH_URL || 'http://localhost:3000',
+      'newsletter/unsubscribe',
+      unsubscribeToken
     );
 
     // Criar novo subscriber
@@ -213,7 +249,6 @@ export async function POST(request: NextRequest) {
         lastName: lastName?.trim() || existingUser?.lastName || null,
         userId: existingUser?.id || null,
         status: 'PENDING',
-        confirmationToken,
         preferences: interests.length > 0 ? { interests } : null,
         frequency,
         sourceUrl,
@@ -229,7 +264,7 @@ export async function POST(request: NextRequest) {
       variables: {
         firstName: firstName || existingUser?.firstName || 'Usuário',
         confirmationUrl,
-        unsubscribeUrl: `${process.env.NEXTAUTH_URL}/newsletter/unsubscribe/${confirmationToken}`,
+        unsubscribeUrl,
       },
     });
 
@@ -279,7 +314,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 🆕 MÉTODO PUT para reenviar confirmação
+// MÉTODO PUT para reenviar confirmação
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
@@ -331,13 +366,24 @@ export async function PUT(request: NextRequest) {
     const userIP = request.headers.get('x-forwarded-for') || 'unknown';
     const userAgent = request.headers.get('user-agent') || 'unknown';
 
-    // 🆕 CRIAR TOKEN CORRIGIDO PARA REENVIO
+    // CRIAR TOKEN DE CONFIRMAÇÃO
     const newConfirmationToken = await createToken({
-      userId: subscriber.userId || undefined, // 🆕 Usar userId se existir
+      userId: subscriber.userId || undefined,
       type: 'NEWSLETTER_CONFIRMATION',
       ipAddress: userIP,
       userAgent,
-      anonymousEmail: !subscriber.userId ? normalizedEmail : undefined, // 🆕 Só se não tiver userId
+      anonymousEmail: !subscriber.userId ? normalizedEmail : undefined,
+      expiresInHours: 48,
+    });
+
+    // CRIAR TOKEN DE UNSUBSCRIBE
+    const newUnsubscribeToken = await createToken({
+      userId: subscriber.userId || undefined,
+      type: 'NEWSLETTER_UNSUBSCRIBE',
+      ipAddress: userIP,
+      userAgent,
+      anonymousEmail: !subscriber.userId ? normalizedEmail : undefined,
+      expiresInHours: 24 * 365, // 1 ano
     });
 
     const confirmationUrl = createTokenUrl(
@@ -346,13 +392,11 @@ export async function PUT(request: NextRequest) {
       newConfirmationToken
     );
 
-    // Atualizar token do subscriber
-    await prisma.newsletterSubscriber.update({
-      where: { id: subscriber.id },
-      data: {
-        confirmationToken: newConfirmationToken,
-      },
-    });
+    const unsubscribeUrl = createTokenUrl(
+      process.env.NEXTAUTH_URL || 'http://localhost:3000',
+      'newsletter/unsubscribe',
+      newUnsubscribeToken
+    );
 
     // Reenviar email
     const emailResult = await sendTemplateEmail(normalizedEmail, {
@@ -360,7 +404,7 @@ export async function PUT(request: NextRequest) {
       variables: {
         firstName: subscriber.firstName || 'Usuário',
         confirmationUrl,
-        unsubscribeUrl: `${process.env.NEXTAUTH_URL}/newsletter/unsubscribe/${newConfirmationToken}`,
+        unsubscribeUrl,
       },
     });
 

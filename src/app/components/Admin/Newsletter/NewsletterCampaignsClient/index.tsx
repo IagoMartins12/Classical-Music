@@ -483,17 +483,6 @@ export default function NewsletterCampaignsClient() {
                               title="Ver estatísticas"
                             />
 
-                            {/* Preview */}
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              leftIcon={<FiEye />}
-                              onClick={() => {
-                                /* Modal de preview - implementar se necessário */
-                              }}
-                              title="Preview"
-                            />
-
                             {/* 🆕 NOVO: Envio de Teste */}
                             {(campaign.status === 'DRAFT' ||
                               campaign.status === 'SCHEDULED') && (
@@ -519,17 +508,6 @@ export default function NewsletterCampaignsClient() {
                                 title="Editar"
                               />
                             )}
-
-                            {/* Duplicar */}
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              leftIcon={<FiCopy />}
-                              onClick={() => {
-                                /* Duplicar campanha - implementar se necessário */
-                              }}
-                              title="Duplicar"
-                            />
 
                             {/* Enviar Real */}
                             {(campaign.status === 'DRAFT' ||

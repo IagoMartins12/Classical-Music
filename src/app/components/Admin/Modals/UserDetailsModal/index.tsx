@@ -71,7 +71,7 @@ export default function UserDetailsModal({
   onClose,
 }: UserDetailsModalProps) {
   const [activeTab, setActiveTab] = useState<
-    'overview' | 'activity' | 'contributions' | 'study'
+    'overview' | 'activity' | 'contributions'
   >('overview');
   const [detailsData, setDetailsData] = useState<UserDetailsData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -194,7 +194,6 @@ export default function UserDetailsModal({
           { id: 'overview', label: 'Visão Geral', icon: FiUser },
           { id: 'activity', label: 'Atividade', icon: FiActivity },
           { id: 'contributions', label: 'Contribuições', icon: FiUpload },
-          { id: 'study', label: 'Estudos', icon: FiTarget },
         ].map((tab) => (
           <button
             key={tab.id}

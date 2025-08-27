@@ -37,6 +37,7 @@ import {
   useSystemMonitoring,
 } from '@/app/hooks/admin/useAdminSystemMonitoring';
 import LoadingAdminState from '../../Common/LoadingState';
+import Modal from '@/app/components/Modal';
 
 export default function SystemPerformance() {
   const {
@@ -475,7 +476,7 @@ export default function SystemPerformance() {
                 </div>
                 <div className="w-full bg-theme-secondary h-3 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-accent-amber to-accent-red rounded-full transition-all duration-1000"
+                    className="h-full bg-theme-elevated rounded-full transition-all duration-1000"
                     style={{ width: `${metrics?.server.cpu.usage || 0}%` }}
                   />
                 </div>
@@ -498,7 +499,7 @@ export default function SystemPerformance() {
                 </div>
                 <div className="w-full bg-theme-secondary h-3 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-accent-blue to-accent-purple rounded-full transition-all duration-1000"
+                    className="h-full bg-theme-elevated rounded-full transition-all duration-1000"
                     style={{
                       width: `${metrics?.server.memory.percentage || 0}%`,
                     }}
@@ -519,7 +520,7 @@ export default function SystemPerformance() {
                 </div>
                 <div className="w-full bg-theme-secondary h-3 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-accent-green to-accent-blue rounded-full transition-all duration-1000"
+                    className="h-full bg-theme-elevated  rounded-full transition-all duration-1000"
                     style={{
                       width: `${metrics?.server.disk.percentage || 0}%`,
                     }}
@@ -921,12 +922,7 @@ export default function SystemPerformance() {
                     {metrics?.application.features.annotations || 0}
                   </span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-primary">Estudos</span>
-                  <span className="font-medium text-accent-green">
-                    {metrics?.application.features.studies || 0}
-                  </span>
-                </div>
+
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-theme-primary">
                     Taxa de Erro
@@ -948,93 +944,80 @@ export default function SystemPerformance() {
 
         {/* Detailed Stats Modal */}
         {showDetailedStats && detailedStats && (
-          <AnimatedItem direction="up" springType="gentle">
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-              <div className="bg-theme-primary rounded-xl p-6 max-w-4xl w-full max-h-[80vh] overflow-y-auto">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-theme-primary">
-                    Estatísticas Detalhadas
-                  </h2>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowDetailedStats(false)}
-                  >
-                    ✕
-                  </Button>
-                </div>
+          <Modal
+            isOpen={showDetailedStats}
+            onClose={() => setShowDetailedStats(false)}
+            maxWidth="4xl"
+          >
+            <div className=" rounded-xl p-6 ">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-theme-primary">
+                  Estatísticas Detalhadas
+                </h2>
+              </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3">
-                      Requests por Status
-                    </h3>
-                    <div className="space-y-2">
-                      {Object.entries(detailedStats.byStatus || {}).map(
-                        ([status, count]) => (
-                          <div key={status} className="flex justify-between">
-                            <span className="text-theme-secondary">
-                              {status}
-                            </span>
-                            <span className="font-medium">
-                              {count as string}
-                            </span>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3">
-                      Top Endpoints
-                    </h3>
-                    <div className="space-y-2">
-                      {Object.entries(detailedStats.byPath || {})
-                        .slice(0, 10)
-                        .map(([path, count]) => (
-                          <div key={path} className="flex justify-between">
-                            <span className="text-theme-secondary truncate">
-                              {path}
-                            </span>
-                            <span className="font-medium">
-                              {count as string}
-                            </span>
-                          </div>
-                        ))}
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">
+                    Requests por Status
+                  </h3>
+                  <div className="space-y-2">
+                    {Object.entries(detailedStats.byStatus || {}).map(
+                      ([status, count]) => (
+                        <div key={status} className="flex justify-between">
+                          <span className="text-theme-secondary">{status}</span>
+                          <span className="font-medium">{count as string}</span>
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
 
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-accent-blue">
-                      {detailedStats.total || 0}
-                    </div>
-                    <div className="text-sm text-theme-tertiary">
-                      Total Requests
-                    </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Top Endpoints</h3>
+                  <div className="space-y-2">
+                    {Object.entries(detailedStats.byPath || {})
+                      .slice(0, 10)
+                      .map(([path, count]) => (
+                        <div key={path} className="flex justify-between">
+                          <span className="text-theme-secondary truncate">
+                            {path}
+                          </span>
+                          <span className="font-medium">{count as string}</span>
+                        </div>
+                      ))}
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-accent-green">
-                      {detailedStats.avgDuration?.toFixed(0) || 0}ms
-                    </div>
-                    <div className="text-sm text-theme-tertiary">
-                      Avg Duration
-                    </div>
+                </div>
+              </div>
+
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-accent-blue">
+                    {detailedStats.total || 0}
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-accent-red">
-                      {detailedStats.slowRequests || 0}
-                    </div>
-                    <div className="text-sm text-theme-tertiary">
-                      Slow Requests
-                    </div>
+                  <div className="text-sm text-theme-tertiary">
+                    Total Requests
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-accent-green">
+                    {detailedStats.avgDuration?.toFixed(0) || 0}ms
+                  </div>
+                  <div className="text-sm text-theme-tertiary">
+                    Avg Duration
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-accent-red">
+                    {detailedStats.slowRequests || 0}
+                  </div>
+                  <div className="text-sm text-theme-tertiary">
+                    Slow Requests
                   </div>
                 </div>
               </div>
             </div>
-          </AnimatedItem>
+          </Modal>
         )}
       </AnimatedContainer>
     </PageContainer>

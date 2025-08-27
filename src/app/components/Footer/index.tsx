@@ -400,23 +400,6 @@ const Footer: React.FC = () => {
                             : 'border-theme-secondary'
                         } rounded-lg text-sm focus:outline-none focus:border-brand-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-1 min-w-0`}
                       />
-
-                      {showAdvanced && (
-                        <input
-                          type="text"
-                          placeholder={t('footer_jsx_input_placeholder_name')}
-                          value={formData.firstName}
-                          onChange={(e) =>
-                            updateField('firstName', e.target.value)
-                          }
-                          disabled={loading}
-                          className={`px-4 py-2 bg-theme-tertiary border ${
-                            formErrors.firstName
-                              ? 'border-accent-red'
-                              : 'border-theme-secondary'
-                          } rounded-lg text-sm focus:outline-none focus:border-brand-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-1 min-w-0`}
-                        />
-                      )}
                     </div>
 
                     {/* 🆕 ERROS DE VALIDAÇÃO */}
@@ -433,12 +416,12 @@ const Footer: React.FC = () => {
                         disabled={loading || !formData.email.trim()}
                       >
                         {loading ? (
-                          <>
+                          <div className="flex gap-2">
                             <FiLoader className="w-4 h-4 animate-spin" />
                             <span>
                               {t('footer_jsx_span_children_0__enviando')}
                             </span>
-                          </>
+                          </div>
                         ) : (
                           <span>
                             {t('footer_jsx_span_children_0__inscrever')}

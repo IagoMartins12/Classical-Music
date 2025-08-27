@@ -24,6 +24,7 @@ import {
   previewTemplate,
   processTemplate,
 } from '@/app/libs/newsletter/emailTemplates';
+import Checkbox from '@/app/components/Common/Checkbox';
 
 interface CreateCampaignModalProps {
   onClose: () => void;
@@ -615,9 +616,14 @@ export default function CreateCampaignModal({
                         name="sendOption"
                         checked={!!form.scheduledAt}
                         onChange={() =>
-                          setForm((prev) => ({ ...prev, status: 'SCHEDULED' }))
+                          setForm((prev) => ({
+                            ...prev,
+                            status: 'SCHEDULED',
+                            scheduledAt:
+                              prev.scheduledAt ||
+                              new Date().toISOString().slice(0, 16), // inicializa se vazio
+                          }))
                         }
-                        className="text-brand-primary"
                       />
                       <span>Agendar envio automático</span>
                     </label>
@@ -663,21 +669,21 @@ export default function CreateCampaignModal({
 
                   <div className="space-y-3">
                     <label className="flex items-center space-x-3">
-                      <input
+                      <Checkbox
                         type="checkbox"
                         className="rounded border-theme-primary text-brand-primary"
                       />
                       <span>Apenas novos subscribers (últimos 30 dias)</span>
                     </label>
                     <label className="flex items-center space-x-3">
-                      <input
+                      <Checkbox
                         type="checkbox"
                         className="rounded border-theme-primary text-brand-primary"
                       />
                       <span>Subscribers com alto engajamento</span>
                     </label>
                     <label className="flex items-center space-x-3">
-                      <input
+                      <Checkbox
                         type="checkbox"
                         className="rounded border-theme-primary text-brand-primary"
                       />

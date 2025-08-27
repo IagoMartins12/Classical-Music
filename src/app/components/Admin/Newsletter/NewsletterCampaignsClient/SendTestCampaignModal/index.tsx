@@ -160,7 +160,11 @@ export default function SendTestCampaignModal({
 
   const renderFormStep = () => {
     if (loading) {
-      return <LoadingAdminState loadingName="lista de teste" />;
+      return (
+        <div className="text-center py-12">
+          <LoadingAdminState loadingName="lista de teste" />;
+        </div>
+      );
     }
 
     if (!testInfo || testInfo.testLists.length === 0) {
@@ -604,7 +608,6 @@ export default function SendTestCampaignModal({
       onClose={step === 'sending' ? () => {} : handleClose}
       maxWidth="3xl"
       showCloseButton={step !== 'sending'}
-      confirmOnClose
       withouVerification
     >
       {renderContent()}

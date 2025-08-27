@@ -23,6 +23,7 @@ import {
   AnimatedItem,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
+import Select from '@/app/components/Common/Select';
 
 interface ActivityItem {
   id: string;
@@ -229,6 +230,16 @@ export default function RecentActivity() {
     fetchActivities();
   };
 
+  const activityRecentsOpcions = [
+    { value: 'all', label: 'Todas as atividades' },
+    { value: 'user_registration', label: 'Registros' },
+    { value: 'upload', label: 'Uploads' },
+    { value: 'annotation', label: 'Anotações' },
+    { value: 'favorite', label: 'Favoritos' },
+    { value: 'moderation', label: 'Moderação' },
+    { value: 'study_session', label: 'Sessões' },
+    { value: 'system', label: 'Sistema' },
+  ];
   return (
     <AnimatedCard className="classical-card p-4 lg:p-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
@@ -238,20 +249,12 @@ export default function RecentActivity() {
         </h2>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
-          <select
+          <Select
+            options={activityRecentsOpcions}
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             className="input-classical-2 text-sm w-full sm:w-auto"
-          >
-            <option value="all">Todas as atividades</option>
-            <option value="user_registration">Registros</option>
-            <option value="upload">Uploads</option>
-            <option value="annotation">Anotações</option>
-            <option value="favorite">Favoritos</option>
-            <option value="moderation">Moderação</option>
-            <option value="study_session">Sessões</option>
-            <option value="system">Sistema</option>
-          </select>
+          />
 
           <Button
             variant="ghost"
@@ -377,9 +380,9 @@ export default function RecentActivity() {
                                 activity.target?.type === 'user'
                                   ? '/admin/users'
                                   : activity.target?.type === 'composer'
-                                  ? '/admin/composers'
+                                  ? '/composer'
                                   : activity.target?.type === 'work'
-                                  ? '/admin/works'
+                                  ? '/works'
                                   : '/admin';
                               router.push(`${path}/${activity.target?.id}`);
                             }}

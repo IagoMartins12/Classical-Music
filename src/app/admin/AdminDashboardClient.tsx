@@ -38,6 +38,7 @@ export default function AdminDashboardClient() {
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
 
+  console.log('stat', stats);
   useEffect(() => {
     setMounted(true);
     setLastUpdated(Date.now());

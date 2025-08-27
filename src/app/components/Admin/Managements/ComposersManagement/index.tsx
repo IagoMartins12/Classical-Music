@@ -78,8 +78,6 @@ export default function ComposersManagement() {
     deleteComposer,
   } = useAdminComposers();
 
-  console.log('ADMIN', stats);
-
   const [filters, setFilters] = useState<ComposerFilters>({
     search: '',
     epoch: 'all',

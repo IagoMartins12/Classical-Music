@@ -76,7 +76,6 @@ export async function PATCH(
       where: { id },
       data: {
         ...body,
-        lastEditedBy: session.user.id,
         lastEditedAt: new Date(),
         updatedAt: new Date(),
       },

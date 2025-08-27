@@ -338,7 +338,7 @@ export default function NewsletterTemplatesClient() {
           </AnimatedCard>
 
           {/* Controls */}
-          <AnimatedCard className="classical-card p-6">
+          <AnimatedCard className="classical-card p-6" hover="none">
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1">
                 {/* Search */}

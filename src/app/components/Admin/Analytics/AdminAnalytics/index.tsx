@@ -192,50 +192,6 @@ export default function AdminAnalytics() {
           </div>
         </AnimatedItem>
 
-        {/* Overview Metrics */}
-        <AnimatedItem direction="up" springType="gentle">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <MetricCard
-              title="Total de Usuários"
-              value={formatNumber(analytics.overview.users.total)}
-              change={{
-                value: analytics.overview.users.growth,
-                isPositive: analytics.overview.users.growth >= 0,
-              }}
-              icon={FiUsers}
-              color="#3B82F6"
-            />
-
-            <MetricCard
-              title="Usuários Ativos"
-              value={formatNumber(analytics.overview.users.active)}
-              change={{
-                value:
-                  (analytics.overview.users.active /
-                    analytics.overview.users.total) *
-                  100,
-                isPositive: true,
-              }}
-              icon={FiActivity}
-              color="#10B981"
-            />
-
-            <MetricCard
-              title="Total de Obras"
-              value={formatNumber(analytics.overview.content.works)}
-              change={{
-                value:
-                  (analytics.overview.content.works /
-                    analytics.overview.content.composers) *
-                  100,
-                isPositive: true,
-              }}
-              icon={FiDatabase}
-              color="#F59E0B"
-            />
-          </div>
-        </AnimatedItem>
-
         {/* Key Insights */}
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard className="classical-card p-6 mb-8">

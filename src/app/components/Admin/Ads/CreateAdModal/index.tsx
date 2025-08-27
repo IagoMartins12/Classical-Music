@@ -15,6 +15,7 @@ import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
+import Checkbox from '@/app/components/Common/Checkbox';
 
 interface CreateAdModalProps {
   showCreateModal: boolean;
@@ -660,18 +661,19 @@ export default function CreateAdModal({
               </label>
               <div className="flex space-x-4">
                 <label className="flex items-center space-x-2">
-                  <Input
+                  <Checkbox
                     type="checkbox"
+                    label="Mobile"
                     checked={formData.showOnMobile}
                     onChange={(e) =>
                       handleInputChange('showOnMobile', e.target.checked)
                     }
                     className="rounded border-theme-primary"
                   />
-                  <span className="text-sm text-theme-primary">Mobile</span>
                 </label>
                 <label className="flex items-center space-x-2">
-                  <Input
+                  <Checkbox
+                    label="Tablet"
                     type="checkbox"
                     checked={formData.showOnTablet}
                     onChange={(e) =>
@@ -679,10 +681,10 @@ export default function CreateAdModal({
                     }
                     className="rounded border-theme-primary"
                   />
-                  <span className="text-sm text-theme-primary">Tablet</span>
                 </label>
                 <label className="flex items-center space-x-2">
-                  <Input
+                  <Checkbox
+                    label="Desktop"
                     type="checkbox"
                     checked={formData.showOnDesktop}
                     onChange={(e) =>
@@ -690,7 +692,6 @@ export default function CreateAdModal({
                     }
                     className="rounded border-theme-primary"
                   />
-                  <span className="text-sm text-theme-primary">Desktop</span>
                 </label>
               </div>
             </div>

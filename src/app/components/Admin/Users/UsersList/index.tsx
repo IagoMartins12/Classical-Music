@@ -173,8 +173,19 @@ export default function UsersList() {
 
   // Filtros ativos
   const activeFiltersCount = useMemo(() => {
+    console.log('local', Object.values(localFilters));
+
     return Object.values(localFilters).filter(
-      (value) => value !== undefined && value !== '' && value !== 'all'
+      (value) =>
+        value !== undefined &&
+        value !== '' &&
+        value !== 'all' &&
+        value !== 'createdAt' &&
+        value !== 'annotationsCount' &&
+        value !== '"uploadsCount"' &&
+        value !== 'createdAt' &&
+        value !== 'asc' &&
+        value !== 'desc'
     ).length;
   }, [localFilters]);
 

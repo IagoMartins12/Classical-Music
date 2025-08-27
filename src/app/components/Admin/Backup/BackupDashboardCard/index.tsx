@@ -34,7 +34,6 @@ export default function BackupDashboardCard({
     isCreatingBackup,
     createBackup,
     refreshBackups,
-
     formatBackupDate,
     getBackupAge,
     lastUpdated,
@@ -123,7 +122,7 @@ export default function BackupDashboardCard({
       ) : (
         <>
           {/* Estatísticas Rápidas */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="text-center p-3 bg-theme-secondary rounded-xl">
               <div className="flex items-center justify-center mb-2">
                 <FiHardDrive className="w-4 h-4 text-accent-blue mr-2" />
@@ -199,7 +198,7 @@ export default function BackupDashboardCard({
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                   <span className="text-sm text-theme-primary">
-                    Armazenamento
+                    Tamanho dos backup:
                   </span>
                 </div>
                 <span className="text-sm font-medium text-theme-primary">

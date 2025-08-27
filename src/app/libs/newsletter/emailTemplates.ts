@@ -546,7 +546,122 @@ Para cancelar: {{unsubscribeUrl}}`,
     variables: ['firstName', 'siteUrl', 'unsubscribeUrl'],
     description: 'Email de boas-vindas para novos usuários',
   },
+  UNSUBSCRIBE_CONFIRMATION: {
+    subject: `Inscrição cancelada - ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
+    htmlContent: getPremiumOpusAtlasLayout(
+      `
+    <div style="text-align: center; margin-bottom: 30px;">
+      <div style="display: inline-block; width: 80px; height: 80px; background: linear-gradient(135deg, #ff9a8b 0%, #a8edea 100%); border-radius: 50%; line-height: 80px; font-size: 32px; margin-bottom: 20px;">
+        👋
+      </div>
+    </div>
 
+    <h2 style="color: #d4af37; margin-bottom: 25px; font-size: 28px; text-align: center;">Inscrição Cancelada</h2>
+
+    <p style="color: #ffffff !important; font-size: 18px; line-height: 1.8; margin-bottom: 25px; text-align: center;">
+      Olá {{firstName}},
+    </p>
+
+    <p style="color: #ffffff !important; font-size: 16px; line-height: 1.6; margin-bottom: 25px; text-align: center;">
+      Sua inscrição na newsletter da ${OPUS_ATLAS_CONFIG.BRAND_NAME} foi <strong style="color: #d4af37;">cancelada com sucesso</strong>. 
+      Você não receberá mais nossos emails sobre música clássica.
+    </p>
+
+    <p style="color: #ffffff !important; font-size: 16px; line-height: 1.6; margin-bottom: 30px; text-align: center;">
+      Sentimos muito em vê-lo partir! Foi um prazer ter você em nossa comunidade de amantes da música clássica. 
+      Esperamos que tenha aproveitado o conteúdo que compartilhamos sobre compositores, obras e descobertas musicais.
+    </p>
+
+    <!-- Seção de convite para retorno -->
+    <div style="background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); border: 2px solid #d4af37; border-radius: 12px; padding: 30px; margin: 40px 0; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); position: relative;">
+      <h3 style="color: #d4af37; font-size: 22px; margin-bottom: 20px; margin-top: 0; text-align: center;">
+        Mudou de ideia?
+      </h3>
+      <p style="color: #ffffff !important; font-size: 15px; line-height: 1.6; margin-bottom: 25px; text-align: center;">
+        Se você cancelou por engano ou mudou de ideia, pode se reinscrever facilmente na nossa newsletter. 
+        Estaremos sempre aqui para recebê-lo de volta!
+      </p>
+      
+      <!-- Botão de reinscrição -->
+      <div style="text-align: center;">
+        <a href="{{resubscribeUrl}}" class="btn-premium">
+          Quero me reinscrever
+        </a>
+      </div>
+    </div>
+
+
+    <!-- Mensagem de agradecimento -->
+    <div style="text-align: center; margin: 40px 0;">
+      <p style="color: #ffffff !important; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+        Obrigado por ter sido parte da nossa comunidade. Desejamos tudo de melhor em sua jornada musical!
+      </p>
+      <p style="color: #b0b0b0; font-size: 14px; font-style: italic;">
+        "A música é a linguagem universal da humanidade" - Longfellow
+      </p>
+    </div>
+
+    <!-- Benefícios que estava recebendo -->
+    <div class="premium-card">
+      <h4 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">O que você estava recebendo:</h4>
+      <div style="color: #ffffff !important; text-align: left;">
+        <div style="margin-bottom: 8px;">📧 Newsletter semanal com conteúdo exclusivo</div>
+        <div style="margin-bottom: 8px;">🎵 Descobertas sobre compositores e obras clássicas</div>
+        <div style="margin-bottom: 8px;">📚 Recursos avançados de estudo musical</div>
+        <div style="margin-bottom: 8px;">🎹 Análises musicais detalhadas</div>
+        <div>💡 Dicas e insights sobre música clássica</div>
+      </div>
+    </div>
+
+    <p style="margin-top: 40px; text-align: center;">
+      <strong style="color: #d4af37;">Harmoniosamente,</strong><br>
+      <span style="color: #ffffff !important;">Equipe ${OPUS_ATLAS_CONFIG.BRAND_NAME}</span>
+    </p>
+    `
+    ),
+    textContent: `INSCRIÇÃO CANCELADA - ${OPUS_ATLAS_CONFIG.BRAND_NAME}
+
+Olá {{firstName}},
+
+Sua inscrição na newsletter da ${OPUS_ATLAS_CONFIG.BRAND_NAME} foi cancelada com sucesso. Você não receberá mais nossos emails sobre música clássica.
+
+Sentimos muito em vê-lo partir! Foi um prazer ter você em nossa comunidade de amantes da música clássica. Esperamos que tenha aproveitado o conteúdo que compartilhamos sobre compositores, obras e descobertas musicais.
+
+MUDOU DE IDEIA?
+===============
+
+Se você cancelou por engano ou mudou de ideia, pode se reinscrever facilmente na nossa newsletter. Estaremos sempre aqui para recebê-lo de volta!
+
+Para se reinscrever, acesse: {{resubscribeUrl}}
+
+{{#if reason}}
+MOTIVO DO CANCELAMENTO: {{reason}}
+{{#if feedback}}
+SEU FEEDBACK: {{feedback}}
+{{/if}}
+{{/if}}
+
+O QUE VOCÊ ESTAVA RECEBENDO:
+📧 Newsletter semanal com conteúdo exclusivo
+🎵 Descobertas sobre compositores e obras clássicas
+📚 Recursos avançados de estudo musical
+🎹 Análises musicais detalhadas
+💡 Dicas e insights sobre música clássica
+
+Obrigado por ter sido parte da nossa comunidade. Desejamos tudo de melhor em sua jornada musical!
+
+"A música é a linguagem universal da humanidade" - Longfellow
+
+Harmoniosamente,
+Equipe ${OPUS_ATLAS_CONFIG.BRAND_NAME}
+
+---
+${OPUS_ATLAS_CONFIG.BRAND_NAME} - Descobrindo a beleza da música clássica
+Este email foi enviado porque você cancelou sua inscrição na nossa newsletter.`,
+    variables: ['firstName', 'reason', 'feedback', 'resubscribeUrl'],
+    description:
+      'Email de confirmação de cancelamento de inscrição com opção de retorno',
+  },
   ACCOUNT_CONFIRMATION: {
     subject: `Confirme sua conta no ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
     htmlContent: getPremiumOpusAtlasLayout(

@@ -1,4 +1,5 @@
 import Button from '@/app/components/Common/Button';
+import Modal from '@/app/components/Modal';
 import { useState } from 'react';
 import { FiBarChart2, FiClock, FiUsers, FiX } from 'react-icons/fi';
 
@@ -39,8 +40,8 @@ export function CampaignStatsModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-theme-primary rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+    <Modal onClose={onClose} isOpen maxWidth="4xl">
+      <div className="bg-theme-elevated">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
           <div>
@@ -49,12 +50,6 @@ export function CampaignStatsModal({
             </h2>
             <p className="text-theme-secondary">{campaign.subject}</p>
           </div>
-          <button
-            onClick={onClose}
-            className="text-theme-tertiary hover:text-theme-primary transition-colors"
-          >
-            <FiX className="w-6 h-6" />
-          </button>
         </div>
 
         {/* Tabs */}
@@ -269,6 +264,6 @@ export function CampaignStatsModal({
           </Button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }

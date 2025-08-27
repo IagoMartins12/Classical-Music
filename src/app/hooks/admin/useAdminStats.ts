@@ -209,16 +209,15 @@ export const useAdminStats = (): UseAdminStatsReturn => {
           // Garantir que todos os campos obrigatórios existem
           const cleanStats: AdminStats = {
             overview: {
-              totalUsers: result.stats.overview?.totalUsers || 0,
-              totalComposers: result.stats.overview?.totalComposers || 0,
-              totalWorks: result.stats.overview?.totalWorks || 0,
-              totalScores: result.stats.overview?.totalScores || 0,
-              totalAnnotations: result.stats.overview?.totalAnnotations || 0,
+              totalUsers: result.stats.overview?.totalUsers,
+              totalComposers: result.stats.overview?.totalComposers,
+              totalWorks: result.stats.overview?.totalWorks,
+              totalScores: result.stats.overview?.totalScores,
+              totalAnnotations: result.stats.overview?.totalAnnotations,
               growthRate: {
-                users: result.stats.overview?.growthRate?.users || 0,
-                works: result.stats.overview?.growthRate?.works || 0,
-                annotations:
-                  result.stats.overview?.growthRate?.annotations || 0,
+                users: result.stats.overview?.growthRate?.users,
+                works: result.stats.overview?.growthRate?.works,
+                annotations: result.stats.overview?.growthRate?.annotations,
               },
             },
             topUsers: {
@@ -232,27 +231,23 @@ export const useAdminStats = (): UseAdminStatsReturn => {
               recentUploads: result.stats.content?.recentUploads || [],
             },
             engagement: {
-              dailyActiveUsers: result.stats.engagement?.dailyActiveUsers || 0,
-              weeklyActiveUsers:
-                result.stats.engagement?.weeklyActiveUsers || 0,
-              monthlyActiveUsers:
-                result.stats.engagement?.monthlyActiveUsers || 0,
-              avgSessionsPerUser:
-                result.stats.engagement?.avgSessionsPerUser || 0,
+              dailyActiveUsers: result.stats.engagement?.dailyActiveUsers,
+              weeklyActiveUsers: result.stats.engagement?.weeklyActiveUsers,
+              monthlyActiveUsers: result.stats.engagement?.monthlyActiveUsers,
+              avgSessionsPerUser: result.stats.engagement?.avgSessionsPerUser,
               avgAnnotationsPerWork:
-                result.stats.engagement?.avgAnnotationsPerWork || 0,
+                result.stats.engagement?.avgAnnotationsPerWork,
               mostStudiedWorks: result.stats.engagement?.mostStudiedWorks || [],
               annotationsTrends:
                 result.stats.engagement?.annotationsTrends || [],
             },
             quality: {
-              uploadApprovalRate: result.stats.quality?.uploadApprovalRate || 0,
-              avgUploadQuality: result.stats.quality?.avgUploadQuality || 0,
+              uploadApprovalRate: result.stats.quality?.uploadApprovalRate,
+              avgUploadQuality: result.stats.quality?.avgUploadQuality,
               verifiedContent: {
-                composers:
-                  result.stats.quality?.verifiedContent?.composers || 0,
-                works: result.stats.quality?.verifiedContent?.works || 0,
-                scores: result.stats.quality?.verifiedContent?.scores || 0,
+                composers: result.stats.quality?.verifiedContent?.composers,
+                works: result.stats.quality?.verifiedContent?.works,
+                scores: result.stats.quality?.verifiedContent?.scores,
               },
               contentCompleteness: {
                 composersWithBio:
@@ -268,24 +263,21 @@ export const useAdminStats = (): UseAdminStatsReturn => {
             },
             trends: {
               last30Days: {
-                newUsers: result.stats.trends?.last30Days?.newUsers || 0,
-                newAnnotations:
-                  result.stats.trends?.last30Days?.newAnnotations || 0,
-                newUploads: result.stats.trends?.last30Days?.newUploads || 0,
-                studyMinutes:
-                  result.stats.trends?.last30Days?.studyMinutes || 0,
+                newUsers: result.stats.trends?.last30Days?.newUsers,
+                newAnnotations: result.stats.trends?.last30Days?.newAnnotations,
+                newUploads: result.stats.trends?.last30Days?.newUploads,
+                studyMinutes: result.stats.trends?.last30Days?.studyMinutes,
               },
               last7Days: {
-                newUsers: result.stats.trends?.last7Days?.newUsers || 0,
-                newAnnotations:
-                  result.stats.trends?.last7Days?.newAnnotations || 0,
-                newUploads: result.stats.trends?.last7Days?.newUploads || 0,
-                studyMinutes: result.stats.trends?.last7Days?.studyMinutes || 0,
+                newUsers: result.stats.trends?.last7Days?.newUsers,
+                newAnnotations: result.stats.trends?.last7Days?.newAnnotations,
+                newUploads: result.stats.trends?.last7Days?.newUploads,
+                studyMinutes: result.stats.trends?.last7Days?.studyMinutes,
               },
               userRetention: {
-                day1: result.stats.trends?.userRetention?.day1 || 0,
-                day7: result.stats.trends?.userRetention?.day7 || 0,
-                day30: result.stats.trends?.userRetention?.day30 || 0,
+                day1: result.stats.trends?.userRetention?.day1,
+                day7: result.stats.trends?.userRetention?.day7,
+                day30: result.stats.trends?.userRetention?.day30,
               },
             },
             moderation: result.stats.moderation || {
@@ -299,6 +291,7 @@ export const useAdminStats = (): UseAdminStatsReturn => {
           // 🔧 FIX: Only update if component is still mounted
           if (mountedRef.current) {
             setStats(cleanStats);
+            console.log('CLEN', cleanStats);
             setLastUpdated(new Date());
           }
         } else {

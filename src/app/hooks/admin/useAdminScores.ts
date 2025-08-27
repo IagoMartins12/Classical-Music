@@ -17,6 +17,7 @@ export interface ScoreItem {
   qualityScore?: number;
   createdAt: Date;
   uploader?: string;
+  workId: string;
 }
 
 interface ScoreStats {

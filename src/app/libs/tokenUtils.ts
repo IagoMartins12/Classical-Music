@@ -11,7 +11,8 @@ export type TokenType =
   | 'TEACHER_INVITATION_DECLINE'
   | 'STUDENT_INVITATION_ACCEPT'
   | 'STUDENT_INVITATION_DECLINE'
-  | 'STUDENT_INVITATION';
+  | 'STUDENT_INVITATION'
+  | 'NEWSLETTER_UNSUBSCRIBE';
 
 interface CreateTokenOptions {
   userId?: string; // 🆕 OPCIONAL agora
@@ -302,6 +303,10 @@ export const TOKEN_CONFIG = {
   STUDENT_INVITATION: {
     expiresInHours: 48,
     description: 'Convite para aluno.',
+  },
+  NEWSLETTER_UNSUBSCRIBE: {
+    expiresInHours: 72,
+    description: 'Cancelamento de newsletter.',
   },
 } as const;
 

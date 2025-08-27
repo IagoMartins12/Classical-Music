@@ -33,6 +33,7 @@ import {
   useTestEmailSending,
 } from '@/app/hooks/admin/useTestEmailLists';
 import LoadingAdminState from '../../Common/LoadingState';
+import Select from '@/app/components/Common/Select';
 
 interface CreateEditModalProps {
   isOpen: boolean;
@@ -40,6 +41,19 @@ interface CreateEditModalProps {
   list?: any;
   onSuccess: () => void;
 }
+const activeOptions = [
+  { value: 'all', label: 'Todas' },
+  { value: 'true', label: 'Ativas' },
+  { value: 'false', label: 'Inativas' },
+];
+const sortOptions = [
+  { value: 'name-asc', label: 'Nome A-Z' },
+  { value: 'name-desc', label: 'Nome Z-A' },
+  { value: 'totalEmails-desc', label: 'Mais Emails' },
+  { value: 'totalEmails-asc', label: 'Menos Emails' },
+  { value: 'timesUsed-desc', label: 'Mais Usadas' },
+  { value: 'createdAt-desc', label: 'Mais Recentes' },
+];
 
 const CreateEditModal: React.FC<CreateEditModalProps> = ({
   isOpen,
@@ -908,7 +922,8 @@ export default function TestEmailListsManager() {
                 </div>
 
                 <div className="flex space-x-3">
-                  <select
+                  <Select
+                    options={activeOptions}
                     value={filterActive.toString()}
                     onChange={(e) =>
                       setFilterActive(
@@ -917,29 +932,16 @@ export default function TestEmailListsManager() {
                           : e.target.value === 'true'
                       )
                     }
-                    className="px-4 py-2 bg-theme-tertiary border border-theme-secondary rounded-lg text-theme-primary focus:outline-none focus:border-brand-primary"
-                  >
-                    <option value="all">Todas</option>
-                    <option value="true">Ativas</option>
-                    <option value="false">Inativas</option>
-                  </select>
-
-                  <select
+                  />
+                  <Select
+                    options={sortOptions}
                     value={`${sortBy}-${sortOrder}`}
                     onChange={(e) => {
                       const [field, order] = e.target.value.split('-');
                       setSortBy(field);
                       setSortOrder(order as 'asc' | 'desc');
                     }}
-                    className="px-4 py-2 bg-theme-tertiary border border-theme-secondary rounded-lg text-theme-primary focus:outline-none focus:border-brand-primary"
-                  >
-                    <option value="name-asc">Nome A-Z</option>
-                    <option value="name-desc">Nome Z-A</option>
-                    <option value="totalEmails-desc">Mais Emails</option>
-                    <option value="totalEmails-asc">Menos Emails</option>
-                    <option value="timesUsed-desc">Mais Usadas</option>
-                    <option value="createdAt-desc">Mais Recentes</option>
-                  </select>
+                  />
                 </div>
               </div>
 

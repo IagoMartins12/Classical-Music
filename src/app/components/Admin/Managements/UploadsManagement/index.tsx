@@ -39,6 +39,7 @@ import { useAdminUploads } from '@/app/hooks/admin/useAdminUploads';
 import { formatNumber } from '../../Utils';
 import { toast } from 'react-hot-toast';
 import LoadingAdminState from '../../Common/LoadingState';
+import Input from '@/app/components/Common/Inputs';
 
 interface UploadFilters {
   search: string;
@@ -382,9 +383,9 @@ export default function UploadsManagement() {
         )}
 
         {/* Recent Activity */}
-        {stats && stats.recentActivity.length > 0 && (
-          <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard className="classical-card p-6 mb-8">
+        {/* {stats && stats.recentActivity.length > 0 && (
+          <AnimatedItem direction="up">
+            <AnimatedCard className="classical-card p-6 mb-8" hover="none">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
                 <FiActivity className="w-5 h-5 text-accent-blue" />
                 <span>Atividade Recente</span>
@@ -431,11 +432,11 @@ export default function UploadsManagement() {
               </div>
             </AnimatedCard>
           </AnimatedItem>
-        )}
+        )} */}
 
         {/* Filters and Controls */}
-        <AnimatedItem direction="up" springType="gentle">
-          <AnimatedCard className="classical-card p-6 mb-8">
+        <AnimatedItem direction="up" hover="none">
+          <AnimatedCard className="classical-card p-6 mb-8" hover="none">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
               <h3 className="text-xl font-bold text-theme-primary">
                 Histórico de Uploads
@@ -473,7 +474,7 @@ export default function UploadsManagement() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="relative">
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-                  <input
+                  <Input
                     type="text"
                     placeholder="Buscar uploads..."
                     value={filters.search}

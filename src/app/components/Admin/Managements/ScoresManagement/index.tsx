@@ -41,6 +41,7 @@ import { toast } from 'react-hot-toast';
 import { useAdminScores } from '@/app/hooks/admin/useAdminScores';
 import Image from 'next/image';
 import LoadingAdminState from '../../Common/LoadingState';
+import Input from '@/app/components/Common/Inputs';
 
 interface ScoreFilters {
   search: string;
@@ -82,19 +83,7 @@ export default function ScoresManagement() {
   const sources = [
     { value: 'all', label: 'Todas as Fontes' },
     { value: 'IMSLP', label: 'IMSLP' },
-    { value: 'Mutopia', label: 'Mutopia' },
     { value: 'User Upload', label: 'Upload de Usuário' },
-    { value: 'Manual', label: 'Manual' },
-    { value: 'API', label: 'API' },
-  ];
-
-  const types = [
-    { value: 'all', label: 'Todos os Tipos' },
-    { value: 'pdf', label: 'PDF' },
-    { value: 'midi', label: 'MIDI' },
-    { value: 'xml', label: 'MusicXML' },
-    { value: 'ly', label: 'LilyPond' },
-    { value: 'mscz', label: 'MuseScore' },
   ];
 
   const handleFilterChange = (key: keyof ScoreFilters, value: string) => {
@@ -422,10 +411,10 @@ export default function ScoresManagement() {
             <div
               className={`space-y-4 mb-6 ${showFilters ? 'block' : 'hidden'}`}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                 <div className="relative">
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-                  <input
+                  <Input
                     type="text"
                     placeholder="Buscar partituras..."
                     value={filters.search}
@@ -441,13 +430,6 @@ export default function ScoresManagement() {
                   value={filters.source}
                   onChange={(e) => handleFilterChange('source', e.target.value)}
                   options={sources}
-                  className="input-classical-2"
-                />
-
-                <Select
-                  value={filters.type}
-                  onChange={(e) => handleFilterChange('type', e.target.value)}
-                  options={types}
                   className="input-classical-2"
                 />
               </div>
@@ -671,7 +653,7 @@ export default function ScoresManagement() {
                         size="sm"
                         leftIcon={<FiEdit />}
                         onClick={() =>
-                          router.push(`/admin/scores/${score.id}/edit`)
+                          router.push(`/uploads/score/${score.id}/edit`)
                         }
                         title="Editar"
                       />
