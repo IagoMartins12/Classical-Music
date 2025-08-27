@@ -123,13 +123,6 @@ export const useModalConfirmation = ({
   // Handler principal
   const requestClose = useCallback(
     (closeCallback?: () => void): boolean => {
-      console.log('🚪 [useModalConfirmation] requestClose called', {
-        enabled,
-        hasBlockingConditions,
-        hasUnsavedChanges,
-        hasOngoingProcess,
-      });
-
       if (!hasBlockingConditions) {
         if (closeCallback) closeCallback();
         return true;
@@ -147,8 +140,6 @@ export const useModalConfirmation = ({
 
   // Forçar fechamento
   const forceClose = useCallback((closeCallback?: () => void): void => {
-    console.log('🔓 [useModalConfirmation] forceClose called');
-
     setShowConfirmation(false);
     setIsConfirming(false);
     setPendingCloseCallback(null);
@@ -158,8 +149,6 @@ export const useModalConfirmation = ({
 
   // Confirmar fechamento
   const handleConfirmClose = useCallback(async () => {
-    console.log('✅ [useModalConfirmation] handleConfirmClose called');
-
     setIsConfirming(true);
 
     try {
@@ -173,11 +162,7 @@ export const useModalConfirmation = ({
 
       setShowConfirmation(false);
       setPendingCloseCallback(null);
-    } catch (error) {
-      console.error(
-        '❌ [useModalConfirmation] Erro ao confirmar fechamento:',
-        error
-      );
+    } catch {
     } finally {
       setIsConfirming(false);
     }
@@ -185,8 +170,6 @@ export const useModalConfirmation = ({
 
   // Cancelar fechamento
   const handleCancelClose = useCallback(() => {
-    console.log('❌ [useModalConfirmation] handleCancelClose called');
-
     setShowConfirmation(false);
     setPendingCloseCallback(null);
 

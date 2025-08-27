@@ -1,9 +1,13 @@
-// app/api/learning/want-to-learn/route.ts - COM REVALIDAÇÃO DE CACHE APRIMORADA
+// app/api/learning/want-to-learn/route.ts - ATUALIZADO COM MILESTONES
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
+import {
+  getMilestonesByInstrument,
+  calculateProgress,
+} from '@/app/utils/progressMilestones';
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,15 +29,15 @@ export async function POST(request: NextRequest) {
       difficulty,
       motivation,
       context,
-      // Campo corrigido com WorkScore
       selectedWorkScoreId,
+      // 🆕 NOVO: Milestones de progresso
+      progressMilestones,
     } = body;
 
     if (!workId || !action) {
       return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 });
     }
 
-    // Validar prioridade (1-5)
     if (priority < 0 || priority > 5) {
       return NextResponse.json(
         { error: 'Prioridade deve ser entre 1 e 5' },
@@ -41,13 +45,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar se a obra existe
-    const workExists = await prisma.work.findUnique({
+    // Verificar se a obra existe e buscar instrumento
+    const work = await prisma.work.findUnique({
       where: { id: workId },
-      select: { id: true },
+      select: {
+        id: true,
+        instrument: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
 
-    if (!workExists) {
+    if (!work) {
       return NextResponse.json(
         { error: 'Obra não encontrada' },
         { status: 404 }
@@ -59,7 +70,7 @@ export async function POST(request: NextRequest) {
       const workScoreExists = await prisma.workScore.findFirst({
         where: {
           id: selectedWorkScoreId,
-          workId: workId, // Garantir que pertence à obra
+          workId: workId,
           isActive: true,
         },
       });
@@ -81,6 +92,21 @@ export async function POST(request: NextRequest) {
         },
       });
 
+      // 🆕 PROCESSAR MILESTONES E CALCULAR PROGRESSO
+      let finalProgressMilestones = null;
+      let calculatedProgress = 0;
+
+      if (progressMilestones) {
+        const instrumentMilestones = getMilestonesByInstrument(
+          work.instrument?.name
+        );
+        calculatedProgress = calculateProgress(
+          progressMilestones,
+          instrumentMilestones
+        );
+        finalProgressMilestones = progressMilestones;
+      }
+
       // Preparar dados para salvar
       const dataToSave: any = {
         userId: session.user.id,
@@ -96,10 +122,13 @@ export async function POST(request: NextRequest) {
       if (difficulty) dataToSave.difficulty = difficulty;
       if (motivation) dataToSave.motivation = motivation;
       if (context) dataToSave.context = context;
-
-      // Adicionar WorkScore se fornecido
       if (selectedWorkScoreId)
         dataToSave.selectedWorkScoreId = selectedWorkScoreId;
+
+      // 🆕 ADICIONAR MILESTONES E PROGRESSO
+      if (finalProgressMilestones)
+        dataToSave.progressMilestones = finalProgressMilestones;
+      if (calculatedProgress > 0) dataToSave.progress = calculatedProgress;
 
       // Adicionar à lista de desejos (upsert para atualizar se já existir)
       const wantToLearnItem = await prisma.wantToLearn.upsert({
@@ -117,6 +146,11 @@ export async function POST(request: NextRequest) {
               id: true,
               title: true,
               opOrCatalog: true,
+              instrument: {
+                select: {
+                  name: true,
+                },
+              },
               composer: {
                 select: {
                   name: true,
@@ -125,7 +159,6 @@ export async function POST(request: NextRequest) {
               },
             },
           },
-          // Incluir dados do WorkScore
           selectedWorkScore: {
             select: {
               id: true,
@@ -149,20 +182,18 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // 🔄 REVALIDAÇÃO DE CACHE AMPLIADA
+      // Revalidação de cache
       revalidateTag(`user-learning-${session.user.id}`);
       revalidateTag(`work-learning-${workId}`);
       revalidateTag('user-learning');
       revalidateTag('learning-stats');
-
-      // ✅ REVALIDAR CACHE DO PERFIL DO ESTUDANTE
       revalidateTag('student-profile-data');
       revalidateTag(`student-profile-${session.user.id}`);
       revalidateTag('student-dashboard-data');
       revalidateTag(`student-dashboard-${session.user.id}`);
 
       console.log(
-        `🔄 Cache revalidated for want-to-learn ADD - User: ${session.user.id}, Work: ${workId}`
+        `✅ [WANT-TO-LEARN] Item criado com progresso ${calculatedProgress}% - User: ${session.user.id}, Work: ${workId}`
       );
 
       return NextResponse.json({
@@ -180,9 +211,11 @@ export async function POST(request: NextRequest) {
           difficulty: wantToLearnItem.difficulty,
           motivation: wantToLearnItem.motivation,
           context: wantToLearnItem.context,
-          // Incluir WorkScore na resposta
           selectedWorkScoreId: wantToLearnItem.selectedWorkScoreId,
           selectedWorkScore: wantToLearnItem.selectedWorkScore,
+          // 🆕 NOVOS CAMPOS
+          progressMilestones: wantToLearnItem.progressMilestones,
+          progress: wantToLearnItem.progress,
           work: wantToLearnItem.work,
         },
       });
@@ -195,20 +228,18 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // 🔄 REVALIDAÇÃO DE CACHE AMPLIADA
+      // Revalidação de cache
       revalidateTag(`user-learning-${session.user.id}`);
       revalidateTag(`work-learning-${workId}`);
       revalidateTag('user-learning');
       revalidateTag('learning-stats');
-
-      // ✅ REVALIDAR CACHE DO PERFIL DO ESTUDANTE
       revalidateTag('student-profile-data');
       revalidateTag(`student-profile-${session.user.id}`);
       revalidateTag('student-dashboard-data');
       revalidateTag(`student-dashboard-${session.user.id}`);
 
       console.log(
-        `🔄 Cache revalidated for want-to-learn REMOVE - User: ${session.user.id}, Work: ${workId}`
+        `✅ [WANT-TO-LEARN] Item removido - User: ${session.user.id}, Work: ${workId}`
       );
 
       return NextResponse.json({
@@ -219,7 +250,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ error: 'Ação inválida' }, { status: 400 });
   } catch (error) {
-    console.error('Erro na API de quero estudar:', error);
+    console.error('❌ [WANT-TO-LEARN] Erro na API:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
@@ -239,19 +270,39 @@ export async function PATCH(request: NextRequest) {
     const {
       workId,
       priority,
-      // Campos adicionais para atualização existentes
       notes,
       targetDate,
       estimatedStudyTime,
       difficulty,
       motivation,
       context,
-      // Campo corrigido com WorkScore
       selectedWorkScoreId,
+      // 🆕 NOVO: Milestones de progresso
+      progressMilestones,
     } = body;
 
     if (!workId) {
       return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 });
+    }
+
+    // Buscar obra e instrumento para processar milestones
+    const work = await prisma.work.findUnique({
+      where: { id: workId },
+      select: {
+        id: true,
+        instrument: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (!work) {
+      return NextResponse.json(
+        { error: 'Obra não encontrada' },
+        { status: 404 }
+      );
     }
 
     // Validar WorkScore se fornecido
@@ -285,7 +336,7 @@ export async function PATCH(request: NextRequest) {
       dataToUpdate.priority = priority;
     }
 
-    // Adicionar campos opcionais se fornecidos
+    // Campos opcionais
     if (notes !== undefined) dataToUpdate.notes = notes;
     if (targetDate !== undefined)
       dataToUpdate.targetDate = targetDate ? new Date(targetDate) : null;
@@ -294,10 +345,22 @@ export async function PATCH(request: NextRequest) {
     if (difficulty !== undefined) dataToUpdate.difficulty = difficulty;
     if (motivation !== undefined) dataToUpdate.motivation = motivation;
     if (context !== undefined) dataToUpdate.context = context;
-
-    // Atualizar WorkScore se fornecido
     if (selectedWorkScoreId !== undefined)
       dataToUpdate.selectedWorkScoreId = selectedWorkScoreId;
+
+    // 🆕 PROCESSAR MILESTONES E RECALCULAR PROGRESSO
+    if (progressMilestones !== undefined) {
+      const instrumentMilestones = getMilestonesByInstrument(
+        work.instrument?.name
+      );
+      const calculatedProgress = calculateProgress(
+        progressMilestones,
+        instrumentMilestones
+      );
+
+      dataToUpdate.progressMilestones = progressMilestones;
+      dataToUpdate.progress = calculatedProgress;
+    }
 
     // Atualizar item
     const updated = await prisma.wantToLearn.updateMany({
@@ -327,6 +390,11 @@ export async function PATCH(request: NextRequest) {
             id: true,
             title: true,
             opOrCatalog: true,
+            instrument: {
+              select: {
+                name: true,
+              },
+            },
             composer: {
               select: {
                 name: true,
@@ -335,7 +403,6 @@ export async function PATCH(request: NextRequest) {
             },
           },
         },
-        // Incluir dados do WorkScore
         selectedWorkScore: {
           select: {
             id: true,
@@ -359,11 +426,10 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    // 🔄 REVALIDAR CACHE
+    // Revalidar cache
     revalidateTag(`user-learning-${session.user.id}`);
     revalidateTag('user-learning');
-
-    // ✅ REVALIDAR CACHE DO PERFIL DO ESTUDANTE
+    revalidateTag('learning-stats');
     revalidateTag('student-profile-data');
     revalidateTag(`student-profile-${session.user.id}`);
     revalidateTag('student-dashboard-data');
@@ -384,15 +450,17 @@ export async function PATCH(request: NextRequest) {
             difficulty: updatedItem.difficulty,
             motivation: updatedItem.motivation,
             context: updatedItem.context,
-            // Incluir WorkScore na resposta
             selectedWorkScoreId: updatedItem.selectedWorkScoreId,
             selectedWorkScore: updatedItem.selectedWorkScore,
+            // 🆕 NOVOS CAMPOS
+            progressMilestones: updatedItem.progressMilestones,
+            progress: updatedItem.progress,
             work: updatedItem.work,
           }
         : null,
     });
   } catch (error) {
-    console.error('Erro ao atualizar item:', error);
+    console.error('❌ [WANT-TO-LEARN] Erro ao atualizar item:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
@@ -400,6 +468,7 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
+// GET method permanece igual, mas incluindo novos campos na resposta
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -412,7 +481,6 @@ export async function GET(request: NextRequest) {
     const workId = searchParams.get('workId');
 
     if (workId) {
-      // Verificar se uma obra específica está na lista de desejos
       const wantToLearnItem = await prisma.wantToLearn.findFirst({
         where: {
           userId: session.user.id,
@@ -424,6 +492,11 @@ export async function GET(request: NextRequest) {
               id: true,
               title: true,
               opOrCatalog: true,
+              instrument: {
+                select: {
+                  name: true,
+                },
+              },
               composer: {
                 select: {
                   name: true,
@@ -432,7 +505,6 @@ export async function GET(request: NextRequest) {
               },
             },
           },
-          // Incluir dados do WorkScore
           selectedWorkScore: {
             select: {
               id: true,
@@ -471,16 +543,18 @@ export async function GET(request: NextRequest) {
               difficulty: wantToLearnItem.difficulty,
               motivation: wantToLearnItem.motivation,
               context: wantToLearnItem.context,
-              // Incluir WorkScore na resposta
               selectedWorkScoreId: wantToLearnItem.selectedWorkScoreId,
               selectedWorkScore: wantToLearnItem.selectedWorkScore,
+              // 🆕 NOVOS CAMPOS
+              progressMilestones: wantToLearnItem.progressMilestones,
+              progress: wantToLearnItem.progress,
               work: wantToLearnItem.work,
             }
           : null,
       });
     }
 
-    // Buscar todos os itens da lista de desejos do usuário
+    // Buscar todos os itens
     const wantToLearnItems = await prisma.wantToLearn.findMany({
       where: {
         userId: session.user.id,
@@ -491,6 +565,11 @@ export async function GET(request: NextRequest) {
             id: true,
             title: true,
             opOrCatalog: true,
+            instrument: {
+              select: {
+                name: true,
+              },
+            },
             composer: {
               select: {
                 name: true,
@@ -499,7 +578,6 @@ export async function GET(request: NextRequest) {
             },
           },
         },
-        // Incluir dados do WorkScore
         selectedWorkScore: {
           select: {
             id: true,
@@ -537,15 +615,17 @@ export async function GET(request: NextRequest) {
         difficulty: item.difficulty,
         motivation: item.motivation,
         context: item.context,
-        // Incluir WorkScore na resposta
         selectedWorkScoreId: item.selectedWorkScoreId,
         selectedWorkScore: item.selectedWorkScore,
+        // 🆕 NOVOS CAMPOS
+        progressMilestones: item.progressMilestones,
+        progress: item.progress,
         work: item.work,
       })),
       count: wantToLearnItems.length,
     });
   } catch (error) {
-    console.error('Erro ao buscar lista de desejos:', error);
+    console.error('❌ [WANT-TO-LEARN] Erro ao buscar itens:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

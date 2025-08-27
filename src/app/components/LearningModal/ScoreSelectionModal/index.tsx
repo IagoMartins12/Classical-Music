@@ -188,12 +188,6 @@ const ScoreSelectionModal = ({
 
   // 🔥 PROCESSAR DADOS COM CONTADORES CORRETOS - MEMOIZADO ULTRA ESTÁVEL
   const { mixedData, visibleTabs, tabStats } = useMemo(() => {
-    console.log('🔄 [SCORE-SELECTION-MODAL] Recalculando mixedData...', {
-      workScoresCount: stableWorkScores.length,
-      totalByType: stablePagination.totalByType,
-      loadedByType: stablePagination.loadedByType,
-    });
-
     const processed = {
       scores: [] as MixedScoreGroup[],
       parts: [] as MixedScoreGroup[],
@@ -345,8 +339,6 @@ const ScoreSelectionModal = ({
   // 🔥 RESETAR ESTADO QUANDO MODAL ABRE/FECHA - SEM LOOPS
   useEffect(() => {
     if (isOpen && !initializedRef.current) {
-      console.log('🔄 [SCORE-SELECTION-MODAL] Inicializando modal...');
-
       if (!isEditing) {
         setSelectedScore(null);
         hasAutoSelectedRef.current = false;
@@ -378,11 +370,6 @@ const ScoreSelectionModal = ({
       return;
     }
 
-    console.log(
-      '🎯 [SCORE-SELECTION-MODAL] Executando auto-seleção única:',
-      currentSelectedScore.title
-    );
-
     const allScores = Object.values(mixedData).flatMap((groups) =>
       groups.flatMap((group) => group.scores)
     );
@@ -394,10 +381,6 @@ const ScoreSelectionModal = ({
     );
 
     if (matchingScore) {
-      console.log(
-        '✅ [SCORE-SELECTION-MODAL] Auto-selecionando:',
-        matchingScore.title
-      );
       setSelectedScore(matchingScore);
       hasAutoSelectedRef.current = true;
 
@@ -424,17 +407,9 @@ const ScoreSelectionModal = ({
   const handleScoreSelect = useCallback(
     (score: MixedScoreData) => {
       if (selectedScore?.id === score.id) {
-        console.log(
-          '❌ [SCORE-SELECTION-MODAL] Desmarcando partitura:',
-          score.title
-        );
         setSelectedScore(null);
         hasAutoSelectedRef.current = false;
       } else {
-        console.log(
-          '✅ [SCORE-SELECTION-MODAL] Selecionando partitura:',
-          score.title
-        );
         setSelectedScore(score);
         hasAutoSelectedRef.current = true;
       }
@@ -444,9 +419,6 @@ const ScoreSelectionModal = ({
 
   const handleConfirmSelection = useCallback(async () => {
     if (!selectedScore) {
-      console.log(
-        '⚪ [SCORE-SELECTION-MODAL] Confirmando sem partitura selecionada'
-      );
       onScoreSelected(null);
       toast.success(
         isEditing
@@ -495,16 +467,9 @@ const ScoreSelectionModal = ({
 
   const handleLoadMoreForTab = useCallback(
     async (tabType: string) => {
-      console.log(
-        `📊 [SCORE-SELECTION-MODAL] Carregando mais para tab: ${tabType}`
-      );
       try {
         await loadMoreForType(tabType);
-        console.log(
-          '✅ [SCORE-SELECTION-MODAL] Load more executado com sucesso'
-        );
-      } catch (error) {
-        console.error('❌ [SCORE-SELECTION-MODAL] Erro no load more:', error);
+      } catch {
         toast.error('Erro ao carregar mais partituras');
       }
     },

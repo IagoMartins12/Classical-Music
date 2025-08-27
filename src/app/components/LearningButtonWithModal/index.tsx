@@ -1,4 +1,4 @@
-// components/LearningButton/LearningButtonWithModal.tsx - COM TRADUÇÕES
+// components/LearningButton/LearningButtonWithModal.tsx - ATUALIZADO COM INSTRUMENTNAME
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -29,6 +29,7 @@ interface LearningButtonWithModalProps {
   workTitle: string;
   epochName?: string;
   composerName: string;
+  instrumentName?: string; // 🆕 NOVO: Prop para nome do instrumento
   type: LearningType;
   variant?: 'default' | 'compact' | 'detailed';
   size?: 'sm' | 'md' | 'lg';
@@ -42,6 +43,7 @@ const LearningButtonWithModal = ({
   workTitle,
   epochName,
   composerName,
+  instrumentName, // 🆕 NOVO: Receber como prop
   type,
   variant = 'default',
   size = 'md',
@@ -187,7 +189,8 @@ const LearningButtonWithModal = ({
   };
 
   const toast = useToast();
-  // Handler para abrir modal usando store global
+
+  // 🆕 Handler para abrir modal com INSTRUMENTNAME
   const handleClick = () => {
     if (disabled || isLoading) {
       return;
@@ -204,6 +207,7 @@ const LearningButtonWithModal = ({
     }
 
     console.log(`🎵 [LEARNING-BUTTON] Abrindo modal para ${type}:`, workTitle);
+    console.log(`🎻 [LEARNING-BUTTON] Instrumento:`, instrumentName);
 
     // Preparar dados iniciais
     let initialWantToLearnData = {};
@@ -298,12 +302,13 @@ const LearningButtonWithModal = ({
       }
     }
 
-    // Abrir modal com dados iniciais
+    // 🆕 Abrir modal com INSTRUMENTNAME
     openModal({
       workId,
       workTitle,
       epochName,
       composerName,
+      instrumentName, // 🆕 NOVO: Passar nome do instrumento
       type,
       isCurrentlyActive: isActive,
       initialWantToLearnData,

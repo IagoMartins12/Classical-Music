@@ -931,7 +931,8 @@ model WantToLearn {
   reminderFrequency  String?
   motivation         String?
   context            String?
-
+  progressMilestones Json? // Milestones de progresso por instrumento
+  progress           Float? @default(0) // Progresso calculado (0-100%)
   // 🔄 RELAÇÃO CORRETA COM WORKSCORE - ATUALIZADA PARA SetNull
   selectedWorkScoreId String?    @db.ObjectId
   selectedWorkScore   WorkScore? @relation("WantToLearnSelectedScore", fields: [selectedWorkScoreId], references: [id], onDelete: SetNull)
@@ -964,6 +965,13 @@ model Learned {
   musicalInsights     String?
   performanceCount    Int              @default(0)
   bestPerformance     String?
+
+   videoUrl        String?   // URL/caminho do vídeo
+  videoFileName   String?   // Nome do arquivo original
+  videoFilePath   String?   // Caminho completo no servidor
+  videoFileSize   Int?      // Tamanho em bytes
+  isVideoPublic   Boolean   @default(false) // Público ou privado
+  videoUploadedAt DateTime? // Data do upload
 
   // 🔄 RELAÇÃO CORRETA COM WORKSCORE - ATUALIZADA PARA SetNull
   selectedWorkScoreId String?    @db.ObjectId

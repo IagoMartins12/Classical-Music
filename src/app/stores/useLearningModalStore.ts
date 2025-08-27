@@ -1,4 +1,4 @@
-// stores/useLearningModalStore.ts - Store global para LearningModal
+// stores/useLearningModalStore.ts - ATUALIZADO COM INSTRUMENTNAME
 import { create } from 'zustand';
 
 export type LearningType = 'want-to-learn' | 'learned';
@@ -57,6 +57,8 @@ interface LearningModalState {
   workId: string | null;
   workTitle: string | null;
   composerName: string | null;
+  instrumentName: string | null; // 🆕 NOVO: Nome do instrumento
+  epochName: string | null;
   type: LearningType | null;
   isCurrentlyActive: boolean;
 
@@ -67,7 +69,7 @@ interface LearningModalState {
   // WorkScore selecionado
   selectedWorkScore: SelectedWorkScore | null;
 
-  // ✅ NOVO: Backup da partitura original (para restaurar se cancelar)
+  // Backup da partitura original (para restaurar se cancelar)
   originalWorkScore: SelectedWorkScore | null;
 
   // Actions
@@ -76,6 +78,7 @@ interface LearningModalState {
     workTitle: string;
     epochName?: string;
     composerName: string;
+    instrumentName?: string; // 🆕 NOVO: Parâmetro do instrumento
     type: LearningType;
     isCurrentlyActive?: boolean;
     initialWantToLearnData?: Partial<WantToLearnFormData>;
@@ -120,12 +123,13 @@ export const useLearningModalStore = create<LearningModalState>((set, get) => ({
   workTitle: null,
   epochName: null,
   composerName: null,
+  instrumentName: null, // 🆕 NOVO: Inicializar como null
   type: null,
   isCurrentlyActive: false,
   wantToLearnForm: { ...defaultWantToLearnForm },
   learnedForm: { ...defaultLearnedForm },
   selectedWorkScore: null,
-  originalWorkScore: null, // ✅ NOVO: Backup da partitura original
+  originalWorkScore: null,
 
   // Abrir modal
   openModal: (params) => {
@@ -136,7 +140,9 @@ export const useLearningModalStore = create<LearningModalState>((set, get) => ({
       isInSelectionMode: false,
       workId: params.workId,
       workTitle: params.workTitle,
+      epochName: params.epochName,
       composerName: params.composerName,
+      instrumentName: params.instrumentName || null, // 🆕 NOVO: Definir instrumentName
       type: params.type,
       isCurrentlyActive: params.isCurrentlyActive || false,
       wantToLearnForm: {
@@ -226,7 +232,7 @@ export const useLearningModalStore = create<LearningModalState>((set, get) => ({
     set({
       isInSelectionMode: true,
       isOpen: false, // Fechar modal temporariamente
-      originalWorkScore: selectedWorkScore, // ✅ Fazer backup da partitura atual
+      originalWorkScore: selectedWorkScore, // Fazer backup da partitura atual
     });
   },
 
@@ -244,7 +250,7 @@ export const useLearningModalStore = create<LearningModalState>((set, get) => ({
     set({
       isInSelectionMode: false,
       isOpen: true, // Reabrir modal
-      originalWorkScore: null, // ✅ NOVO: Limpar backup pois confirmou nova seleção
+      originalWorkScore: null, // Limpar backup pois confirmou nova seleção
     });
   },
 
@@ -257,7 +263,7 @@ export const useLearningModalStore = create<LearningModalState>((set, get) => ({
     set({
       isInSelectionMode: false,
       isOpen: true, // Reabrir modal
-      selectedWorkScore: originalWorkScore, // ✅ NOVO: Restaurar partitura original
+      selectedWorkScore: originalWorkScore, // Restaurar partitura original
       originalWorkScore: null, // Limpar backup
     });
   },
@@ -271,13 +277,15 @@ export const useLearningModalStore = create<LearningModalState>((set, get) => ({
       isInSelectionMode: false,
       workId: null,
       workTitle: null,
+      epochName: null,
       composerName: null,
+      instrumentName: null, // 🆕 NOVO: Limpar instrumentName
       type: null,
       isCurrentlyActive: false,
       wantToLearnForm: { ...defaultWantToLearnForm },
       learnedForm: { ...defaultLearnedForm },
       selectedWorkScore: null,
-      originalWorkScore: null, // ✅ NOVO: Limpar backup
+      originalWorkScore: null,
     });
   },
 
@@ -289,7 +297,7 @@ export const useLearningModalStore = create<LearningModalState>((set, get) => ({
       wantToLearnForm: { ...defaultWantToLearnForm },
       learnedForm: { ...defaultLearnedForm },
       selectedWorkScore: null,
-      originalWorkScore: null, // ✅ NOVO: Limpar backup
+      originalWorkScore: null,
     });
   },
 }));

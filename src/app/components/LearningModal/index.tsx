@@ -1,7 +1,7 @@
-// components/LearningModal/LearningModal.tsx - ATUALIZADO COM IMPORT CORRETO
+// components/LearningModal/LearningModal.tsx - CORRIGIDO
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   FiTarget,
   FiCheckCircle,
@@ -20,6 +20,12 @@ import {
   FiDownload,
   FiTrash,
   FiX,
+  FiPlay,
+  FiVideo,
+  FiUpload,
+  FiRefreshCw,
+  FiAlertCircle,
+  FiCircle,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { useLearningStore } from '@/app/stores/useLearningStore';
@@ -39,8 +45,20 @@ import Input from '../Common/Inputs';
 import Select from '../Common/Select';
 import Checkbox from '../Common/Checkbox';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import {
+  getMilestonesByInstrument,
+  calculateProgress,
+  createDefaultMilestones,
+  type ProgressMilestones,
+} from '@/app/utils/progressMilestones';
+import { useLearnedVideo } from '@/app/hooks/useLearnedVideo';
 
 const LearningModal = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showScoreSelection, setShowScoreSelection] = useState(false);
+  const [showTransferConfirm, setShowTransferConfirm] = useState(false);
+  const [showProgressModal, setShowProgressModal] = useState(false);
+
   const { user } = useAuth();
   const pathname = usePathname();
   const { t } = useTranslation({ sections: ['pages/learning'] });
@@ -56,12 +74,29 @@ const LearningModal = () => {
     addWantToLearn,
   } = useLearningStore();
 
-  // ✅ Store global
+  // Hook de upload de vídeo
+  const {
+    selectedVideo,
+    videoPreviewUrl,
+    isUploading,
+    uploadError,
+    isVideoPublic,
+    selectVideo,
+    removeVideo,
+    setIsVideoPublic,
+    clearError: clearVideoError,
+    uploadVideo,
+    updateVideo,
+    deleteVideo,
+  } = useLearnedVideo();
+
+  // Store global
   const {
     isOpen,
     workId,
     workTitle,
     composerName,
+    instrumentName,
     type,
     isCurrentlyActive,
     wantToLearnForm,
@@ -74,16 +109,17 @@ const LearningModal = () => {
     startScoreSelection,
   } = useLearningModalStore();
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showScoreSelection, setShowScoreSelection] = useState(false);
-  const [showTransferConfirm, setShowTransferConfirm] = useState(false);
+  // Estados para milestones de progresso
+  const [progressMilestones, setProgressMilestones] =
+    useState<ProgressMilestones>({});
+  const [availableMilestones, setAvailableMilestones] = useState<any[]>([]);
 
-  // ✅ NOVO: Determinar contexto (Work page vs Learning page)
+  // Determinar contexto
   const isInWorkPage =
     pathname?.includes('/work/') || pathname?.includes('/works/');
   const isInLearningPage = pathname?.includes('/learning');
 
-  // ✅ Obter item do tipo oposto para sugestão de partitura
+  // Obter item do tipo oposto
   const oppositeItem =
     !isCurrentlyActive && workId
       ? type === 'want-to-learn'
@@ -91,21 +127,61 @@ const LearningModal = () => {
         : getWantToLearnItem(workId)
       : null;
 
-  // ✅ Aplicar dados iniciais quando modal abre (CORRIGIDO)
+  // Inicializar milestones quando modal abre
+  useEffect(() => {
+    if (isOpen && type === 'want-to-learn' && instrumentName) {
+      const milestones = getMilestonesByInstrument(instrumentName);
+      console.log('MILESTONS', { milestones, instrumentName });
+      setAvailableMilestones(milestones);
+
+      if (isCurrentlyActive) {
+        // Edição - usar milestones existentes
+        const currentItem = getWantToLearnItem(workId || '');
+        setProgressMilestones(
+          currentItem?.progressMilestones || createDefaultMilestones(milestones)
+        );
+      } else {
+        // Novo item - milestones vazios
+        setProgressMilestones(createDefaultMilestones(milestones));
+      }
+    }
+  }, [
+    isOpen,
+    type,
+    instrumentName,
+    isCurrentlyActive,
+    workId,
+    getWantToLearnItem,
+  ]);
+
+  // Inicializar configurações de vídeo
+  useEffect(() => {
+    if (isOpen && type === 'learned' && isCurrentlyActive) {
+      const currentItem = getLearnedItem(workId || '');
+      if (currentItem?.isVideoPublic !== undefined) {
+        setIsVideoPublic(currentItem.isVideoPublic);
+      }
+    } else if (isOpen && type === 'learned' && !isCurrentlyActive) {
+      setIsVideoPublic(false); // Default para novo item
+    }
+  }, [
+    isOpen,
+    type,
+    isCurrentlyActive,
+    workId,
+    getLearnedItem,
+    setIsVideoPublic,
+  ]);
+
+  // Aplicar dados iniciais quando modal abre
   useEffect(() => {
     if (isOpen && isCurrentlyActive) {
-      // ✅ NOVO: Buscar dados atuais do item para garantir que temos a partitura
       const currentItem =
         type === 'want-to-learn'
           ? getWantToLearnItem(workId || '')
           : getLearnedItem(workId || '');
 
-      // ✅ Se tem partitura vinculada mas modal não tem, aplicar
       if (currentItem?.selectedWorkScore && !selectedWorkScore) {
-        console.log(
-          '📄 [LEARNING-MODAL] Aplicando partitura do item atual:',
-          currentItem.selectedWorkScore.title
-        );
         setSelectedWorkScore({
           id: currentItem.selectedWorkScore.id,
           sourceId: currentItem.selectedWorkScore.sourceId,
@@ -137,7 +213,7 @@ const LearningModal = () => {
     setSelectedWorkScore,
   ]);
 
-  // ✅ Aplicar sugestão do tipo oposto se não houver WorkScore e não estiver editando
+  // Sugestão do tipo oposto
   useEffect(() => {
     if (
       !isCurrentlyActive &&
@@ -170,71 +246,66 @@ const LearningModal = () => {
     setSelectedWorkScore,
   ]);
 
-  // ✅ NOVA FUNÇÃO PARA DOWNLOAD DA PARTITURA
+  // Calcular progresso atual
+  const currentProgress =
+    type === 'want-to-learn'
+      ? calculateProgress(progressMilestones, availableMilestones)
+      : 0;
+
+  // Handler para toggle de milestone
+  const handleMilestoneToggle = useCallback((milestoneKey: string) => {
+    setProgressMilestones((prev) => ({
+      ...prev,
+      [milestoneKey]: !prev[milestoneKey],
+    }));
+  }, []);
+
+  // Handler para download da partitura
   const handleScoreDownload = () => {
     if (!selectedWorkScore?.downloadUrl) {
       toast.error(t('download_not_available'));
       return;
     }
 
-    // Abrir download em nova aba
     window.open(selectedWorkScore.downloadUrl, '_blank');
-
     toast.success(`${t('download_started')} ${selectedWorkScore.title}`, {
       icon: '📄',
       duration: 3000,
     });
   };
 
-  // ✅ Handler para adicionar partitura (comportamento baseado no contexto)
+  // Handler para adicionar partitura
   const handleAddScore = () => {
     if (!workId || !workTitle || !composerName || !type) return;
 
-    console.log(
-      '🎼 [LEARNING-MODAL] Iniciando seleção de partitura, contexto:',
-      {
-        isInWorkPage,
-        isInLearningPage,
-        workId,
-        isCurrentlyActive, // ✅ NOVO: Para detectar se é edição
-      }
-    );
-
     if (isInWorkPage) {
-      // ✅ Na página Work: ir para seleção inline (comportamento atual)
-      console.log('🎯 [LEARNING-MODAL] Ativando modo seleção inline');
       startScoreSelection();
     } else {
-      // ✅ Na página Learning: abrir ScoreSelectionModal
-      console.log('🎯 [LEARNING-MODAL] Abrindo ScoreSelectionModal');
       setShowScoreSelection(true);
     }
   };
 
-  // ✅ Handler para remover partitura
+  // Handler para remover partitura
   const handleRemoveScore = () => {
-    console.log('🗑️ [LEARNING-MODAL] Removendo partitura selecionada');
     setSelectedWorkScore(null);
   };
 
-  // ✅ Handler para transferir "quero aprender" → "já aprendi"
+  // Handler para transferir "quero aprender" → "já aprendi"
   const handleTransferToLearned = () => {
     if (type !== 'want-to-learn' || !isCurrentlyActive) return;
     setShowTransferConfirm(true);
   };
 
-  // ✅ Confirmar transferência
+  // Confirmar transferência
   const handleConfirmTransfer = async () => {
     if (!user?.id || !workId || type !== 'want-to-learn') return;
 
     setIsSubmitting(true);
     try {
-      // 1. Remover de "quero aprender"
       await removeWantToLearn(workId);
 
-      // 2. Adicionar em "já aprendi" com dados transferidos
       const transferData = {
-        mastery: Math.max(1, wantToLearnForm.priority || 1), // Transferir prioridade como maestria inicial
+        mastery: Math.max(1, wantToLearnForm.priority || 1),
         difficulty: wantToLearnForm.difficulty,
         notes: wantToLearnForm.notes,
         selectedWorkScoreId: selectedWorkScore?.id,
@@ -250,29 +321,96 @@ const LearningModal = () => {
 
       setShowTransferConfirm(false);
       closeModal();
-    } catch (error) {
-      console.error('Erro ao transferir obra:', error);
+    } catch {
       toast.error('Erro ao transferir obra. Tente novamente.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Handle form submission
+  // Handle delete video
+  const handleDeleteVideo = async () => {
+    if (!workId) return;
+
+    const success = await deleteVideo(workId);
+    if (success) {
+      // Atualizar o store para refletir a remoção do vídeo
+      const currentItem = getLearnedItem(workId);
+      if (currentItem) {
+        const updatedItem = {
+          ...currentItem,
+          videoUrl: undefined,
+          videoFileName: undefined,
+          videoFilePath: undefined,
+          videoFileSize: undefined,
+          isVideoPublic: undefined,
+          videoUploadedAt: undefined,
+        };
+        addLearned(updatedItem);
+      }
+    }
+  };
+
+  // ✅ FUNÇÃO AUXILIAR PARA CRIAR LEARNED COM VÍDEO VIA API DIRETA
+  const createLearnedWithVideo = async (
+    workId: string,
+    learnedData: any,
+    videoFile: File
+  ) => {
+    try {
+      const formData = new FormData();
+
+      const dataToSend = {
+        workId,
+        ...learnedData,
+        isVideoPublic,
+        action: 'add',
+      };
+
+      formData.append('data', JSON.stringify(dataToSend));
+      formData.append('videoFile', videoFile);
+
+      const response = await fetch('/api/learning/learned', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success && result.item) {
+        // Atualizar store com item completo (incluindo dados de vídeo)
+        addLearned(result.item);
+        return true;
+      } else {
+        throw new Error(result.error || 'Erro ao criar learned item');
+      }
+    } catch (error) {
+      console.error('Erro ao criar learned com vídeo:', error);
+      throw error;
+    }
+  };
+
+  // ✅ CORREÇÃO: Handle form submission com lógica melhorada
   const handleSubmit = async () => {
     if (!user?.id || !workId || !type) return;
 
     setIsSubmitting(true);
     try {
       if (isCurrentlyActive) {
-        // ATUALIZAR item existente usando PATCH
+        // ATUALIZAR item existente
         if (type === 'want-to-learn') {
+          const dataToUpdate = {
+            ...wantToLearnForm,
+            progressMilestones,
+            selectedWorkScoreId: selectedWorkScore?.id,
+          };
+
           const response = await fetch('/api/learning/want-to-learn', {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               workId,
-              ...wantToLearnForm,
+              ...dataToUpdate,
             }),
           });
 
@@ -289,52 +427,108 @@ const LearningModal = () => {
             throw new Error('Erro ao atualizar');
           }
         } else {
-          const response = await fetch('/api/learning/learned', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              workId,
+          // LEARNED - com possível upload de vídeo
+          if (selectedVideo) {
+            // Com upload de vídeo - usar updateVideo que retorna item atualizado
+            const success = await updateVideo(workId, {
               ...learnedForm,
-            }),
-          });
-
-          if (response.ok) {
-            const result = await response.json();
-            if (result.success && result.item) {
-              addLearned(result.item);
-            }
-            toast.success('Dados da obra aprendida atualizados!', {
-              icon: '✏️',
-              duration: 3000,
+              selectedWorkScoreId: selectedWorkScore?.id,
             });
+
+            if (success) {
+              // ✅ CORREÇÃO: Buscar item atualizado e atualizar store
+              const response = await fetch(
+                `/api/learning/learned?workId=${workId}`
+              );
+              if (response.ok) {
+                const result = await response.json();
+                if (result.item) {
+                  addLearned(result.item);
+                }
+              }
+
+              toast.success('Dados da obra aprendida atualizados ');
+            } else {
+              throw new Error('Erro ao atualizar com vídeo');
+            }
           } else {
-            throw new Error('Erro ao atualizar');
+            // Sem vídeo - JSON normal
+            const response = await fetch('/api/learning/learned', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                workId,
+                ...learnedForm,
+                selectedWorkScoreId: selectedWorkScore?.id,
+                isVideoPublic,
+              }),
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              if (result.success && result.item) {
+                addLearned(result.item);
+              }
+              toast.success('Dados da obra aprendida atualizados!', {
+                icon: '✏️',
+                duration: 3000,
+              });
+            } else {
+              throw new Error('Erro ao atualizar');
+            }
           }
         }
       } else {
-        // ADICIONAR novo item usando toggle
+        // ADICIONAR novo item
         if (type === 'want-to-learn') {
+          const dataToCreate = {
+            ...wantToLearnForm,
+            progressMilestones,
+            selectedWorkScoreId: selectedWorkScore?.id,
+          };
+
           await toggleWantToLearn(
             workId,
             user.id,
             wantToLearnForm.priority,
-            wantToLearnForm
+            dataToCreate
           );
           toast.success('Obra adicionada à sua lista de estudos!', {
             icon: '🎯',
             duration: 3000,
           });
         } else {
-          await toggleLearned(
-            workId,
-            user.id,
-            learnedForm.mastery,
-            learnedForm
-          );
-          toast.success('Parabéns! Obra marcada como aprendida!', {
-            icon: '🎉',
-            duration: 3000,
-          });
+          // ✅ CORREÇÃO: LEARNED - fluxo unificado
+          const learnedData = {
+            ...learnedForm,
+            selectedWorkScoreId: selectedWorkScore?.id,
+          };
+
+          if (selectedVideo) {
+            // ✅ Com vídeo - usar API direta para criar tudo junto
+            await createLearnedWithVideo(workId, learnedData, selectedVideo);
+
+            // Limpar estado do vídeo
+            removeVideo();
+
+            toast.success(
+              '🎉 Parabéns! Obra marcada como aprendida com vídeo!',
+              {
+                duration: 4000,
+              }
+            );
+          } else {
+            // Sem vídeo - método normal
+            await toggleLearned(workId, user.id, learnedForm.mastery, {
+              ...learnedData,
+              isVideoPublic,
+            });
+
+            toast.success('Parabéns! Obra marcada como aprendida!', {
+              icon: '🎉',
+              duration: 3000,
+            });
+          }
         }
       }
 
@@ -368,12 +562,20 @@ const LearningModal = () => {
       }
 
       closeModal();
-    } catch (error) {
-      console.error('Erro ao remover:', error);
+    } catch {
       toast.error('Erro ao remover. Tente novamente.');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Format file size
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   const config =
@@ -408,15 +610,27 @@ const LearningModal = () => {
     { value: 'ADVANCED', label: t('difficulty_advanced') },
   ];
 
-  // ✅ Handler para fechar (com limpeza)
+  // Handler para fechar
   const handleClose = () => {
     closeModal();
   };
 
-  // ✅ Se não tiver dados básicos, não renderizar
+  // Se não tiver dados básicos, não renderizar
   if (!workId || !workTitle || !composerName || !type) {
     return null;
   }
+
+  // Obter item atual para dados de vídeo
+  const currentLearnedItem =
+    type === 'learned' && isCurrentlyActive ? getLearnedItem(workId) : null;
+
+  // ✅ CORREÇÃO: Lógica para mostrar vídeo (priorizar novo vídeo se selecionado)
+  const displayVideo = selectedVideo || currentLearnedItem?.videoUrl;
+  const displayVideoUrl = videoPreviewUrl || currentLearnedItem?.videoUrl;
+  const displayVideoName =
+    selectedVideo?.name || currentLearnedItem?.videoFileName;
+  const displayVideoSize =
+    selectedVideo?.size || currentLearnedItem?.videoFileSize;
 
   return (
     <>
@@ -424,7 +638,7 @@ const LearningModal = () => {
       <Modal
         isOpen={isOpen && !showScoreSelection}
         onClose={handleClose}
-        maxWidth="2xl"
+        maxWidth="3xl"
         showCloseButton={true}
         className="max-h-[90vh] overflow-hidden"
         confirmOnClose
@@ -463,12 +677,17 @@ const LearningModal = () => {
             <div>
               <h3 className="font-semibold text-theme-primary">{workTitle}</h3>
               <p className="text-sm text-theme-secondary">{composerName}</p>
+              {instrumentName && (
+                <p className="text-xs text-theme-tertiary">
+                  Instrumento: {instrumentName}
+                </p>
+              )}
             </div>
           </div>
         </div>
 
         {/* Form Content */}
-        <div className="px-6 py-6 space-y-6">
+        <div className="px-6 py-6 space-y-6 overflow-y-auto">
           {/* Formulários condicionais */}
           {type === 'want-to-learn' ? (
             <>
@@ -541,12 +760,10 @@ const LearningModal = () => {
 
               <FormField label={t('difficulty_estimated')} icon={FiTrendingUp}>
                 <Select
-                  options={[
-                    ...difficultyOptions.map((option) => ({
-                      label: option.label,
-                      value: option.value,
-                    })),
-                  ]}
+                  options={difficultyOptions.map((option) => ({
+                    label: option.label,
+                    value: option.value,
+                  }))}
                   value={wantToLearnForm.difficulty || ''}
                   onChange={(e) =>
                     updateWantToLearnForm({
@@ -636,12 +853,10 @@ const LearningModal = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField label={t('real_difficulty')} icon={FiTrendingUp}>
                   <Select
-                    options={difficultyOptions.map((option) => {
-                      return {
-                        label: option.label,
-                        value: option.value,
-                      };
-                    })}
+                    options={difficultyOptions.map((option) => ({
+                      label: option.label,
+                      value: option.value,
+                    }))}
                     value={learnedForm.difficulty || ''}
                     onChange={(e) =>
                       updateLearnedForm({
@@ -753,7 +968,191 @@ const LearningModal = () => {
             </>
           )}
 
-          <div className="border-2  border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
+          {/* NOVA SEÇÃO: Progresso de Aprendizado */}
+          {availableMilestones.length > 0 && type === 'want-to-learn' && (
+            <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
+                    <FiTarget className="w-4 h-4 text-theme-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-theme-primary">
+                      Progresso de Aprendizado
+                    </h3>
+                    <p className="text-sm text-theme-secondary">
+                      {currentProgress}% completo
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowProgressModal(true)}
+                  className="btn-classical-secondary flex items-center space-x-2"
+                >
+                  <FiEdit3 className="w-4 h-4" />
+                  <span className="text-theme-primary text-sm">
+                    Marcar Progresso
+                  </span>
+                </button>
+              </div>
+
+              {/* Barra de progresso */}
+              <div className="mb-4">
+                <div className="w-full bg-theme-secondary rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all ${
+                      currentProgress >= 100
+                        ? 'bg-green-400'
+                        : currentProgress >= 50
+                        ? 'bg-blue-400'
+                        : 'bg-yellow-400'
+                    }`}
+                    style={{ width: `${currentProgress}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ✅ NOVA SEÇÃO DE VÍDEO - LAYOUT MELHORADO */}
+          {type === 'learned' && (
+            <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
+                    <FiVideo className="w-4 h-4 text-theme-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-theme-primary">
+                      Vídeo da Performance
+                    </h3>
+                    <p className="text-sm text-theme-secondary">
+                      {displayVideo
+                        ? 'Vídeo adicionado'
+                        : 'Nenhum vídeo adicionado'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {displayVideo ? (
+                /* Mostrar vídeo (existente ou novo) */
+                <div className="space-y-4">
+                  {/* Informações do vídeo */}
+                  <div className="bg-theme-elevated rounded-xl px-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center space-x-3">
+                        <div>
+                          <h4 className="font-semibold text-theme-primary text-sm">
+                            {displayVideoName}
+                          </h4>
+                          <p className="text-xs text-theme-tertiary">
+                            {displayVideoSize &&
+                              formatFileSize(displayVideoSize)}
+                            {isVideoPublic ? ' • Público' : ' • Privado'}
+                          </p>
+                        </div>
+                      </div>
+                      {currentLearnedItem?.videoUrl && (
+                        <button
+                          onClick={handleDeleteVideo}
+                          className="text-accent-red hover:text-accent-red/80 text-sm"
+                        >
+                          <FiTrash className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Player de vídeo */}
+                    <div className="mb-4">
+                      <video
+                        src={displayVideoUrl || undefined}
+                        controls
+                        className="w-full max-h-64 rounded-lg"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Opção para substituir vídeo - mais discreta */}
+                  <div className="text-center">
+                    <input
+                      type="file"
+                      id="video-replace"
+                      accept="video/mp4,video/webm,video/mov,video/quicktime"
+                      onChange={(e) => selectVideo(e.target.files?.[0] || null)}
+                      className="hidden"
+                    />
+                    <label
+                      htmlFor="video-replace"
+                      className="text-sm text-theme-tertiary hover:text-brand-primary cursor-pointer underline transition-colors duration-200"
+                    >
+                      Substituir vídeo
+                    </label>
+                  </div>
+                </div>
+              ) : (
+                /* Upload de vídeo inicial */
+                <div>
+                  <input
+                    type="file"
+                    id="video-upload"
+                    accept="video/mp4,video/webm,video/mov,video/quicktime"
+                    onChange={(e) => selectVideo(e.target.files?.[0] || null)}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="video-upload"
+                    className="w-full border-2 border-dashed border-theme-secondary hover:border-brand-primary rounded-xl p-4 text-center transition-all duration-300 hover:bg-brand-primary/5 group cursor-pointer block"
+                  >
+                    <div className="flex flex-col items-center space-y-2">
+                      <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border-2 border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <FiPlus className="w-6 h-6 text-brand-primary" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-theme-primary">
+                          Adicionar Vídeo
+                        </p>
+                        <p className="text-sm text-theme-secondary">
+                          MP4, WebM, MOV até 100MB
+                        </p>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              )}
+
+              {/* Configurações de privacidade */}
+              <div className="mt-4">
+                <div className="flex items-center space-x-3">
+                  <Checkbox
+                    label="Tornar vídeo público (visível para outros usuários)"
+                    type="checkbox"
+                    id="videoPublic"
+                    checked={isVideoPublic}
+                    onChange={(e) => setIsVideoPublic(e.target.checked)}
+                  />
+                </div>
+              </div>
+
+              {/* Error display */}
+              {uploadError && (
+                <div className="mt-4 p-3 border border-red-400 rounded-lg flex items-center space-x-2">
+                  <FiAlertCircle className="w-4 h-4 text-red-400" />
+                  <span className="text-accent-red text-sm">{uploadError}</span>
+                  <button
+                    onClick={clearVideoError}
+                    className="ml-auto text-red-400 hover:text-accent-red/80"
+                  >
+                    <FiX className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Seção de Partitura */}
+          <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
@@ -797,12 +1196,11 @@ const LearningModal = () => {
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
-                    {/* ✅ BOTÃO DE DOWNLOAD */}
                     {selectedWorkScore.downloadUrl && (
                       <button
                         title={t('download_button')}
                         onClick={handleScoreDownload}
-                        className="btn-classical-secondary-sm  flex items-center space-x-2 text-accent-purple border-accent-purple/30 hover:bg-accent-purple/10"
+                        className="btn-classical-secondary-sm flex items-center space-x-2 text-accent-purple border-accent-purple/30 hover:bg-accent-purple/10"
                       >
                         <FiDownload className="w-5 h-5 text-theme-primary" />
                       </button>
@@ -815,21 +1213,20 @@ const LearningModal = () => {
                           : t('edit_change_button')
                       }
                       onClick={handleAddScore}
-                      className="btn-classical-secondary-sm  flex items-center space-x-2"
+                      className="btn-classical-secondary-sm flex items-center space-x-2"
                     >
                       <FiEdit3 className="w-5 h-5 text-theme-primary" />
                     </button>
                     <button
                       title={t('remove_button')}
                       onClick={handleRemoveScore}
-                      className="btn-classical-outline-sm  text-accent-red border-accent-red hover:bg-accent-red hover:text-theme-primary"
+                      className="btn-classical-outline-sm text-accent-red border-accent-red hover:bg-accent-red hover:text-theme-primary"
                     >
                       <FiX className="w-5 h-5 text-theme-primary" />
                     </button>
                   </div>
                 </div>
 
-                {/* Indicador se é sugestão do tipo oposto */}
                 {!isCurrentlyActive &&
                   oppositeItem?.selectedWorkScore?.id ===
                     selectedWorkScore.id && (
@@ -839,11 +1236,11 @@ const LearningModal = () => {
                           <span className="text-xs">💡</span>
                         </div>
                         <span className="text-sm text-accent-green font-medium">
-                          {t('score_suggestion')} &quot;
+                          {t('score_suggestion')} "
                           {type === 'want-to-learn'
                             ? t('already_learned')
                             : t('want_to_learn')}
-                          &quot;
+                          "
                         </span>
                       </div>
                     </div>
@@ -876,19 +1273,17 @@ const LearningModal = () => {
           </div>
         </div>
 
-        {/* ✅ Seção de Partitura COM BOTÃO DE DOWNLOAD */}
-
         {/* Footer */}
         <div
           className={`px-6 py-4 border-t border-theme-secondary flex items-center ${
-            (isCurrentlyActive && !isSubmitting) ||
+            (isCurrentlyActive && !isSubmitting && !isUploading) ||
             (type === 'want-to-learn' && isCurrentlyActive)
               ? 'justify-between'
               : 'justify-end'
           } space-x-3`}
         >
-          {/* ✅ Botões de ação à esquerda */}
-          {isCurrentlyActive && !isSubmitting && (
+          {/* Botões de ação à esquerda */}
+          {isCurrentlyActive && !isSubmitting && !isUploading && (
             <div className="flex items-center space-x-3">
               <Button
                 variant="delete"
@@ -898,7 +1293,6 @@ const LearningModal = () => {
                 {t('delete_button')}
               </Button>
 
-              {/* ✅ NOVO: Botão de transferência para "quero aprender" */}
               {type === 'want-to-learn' && (
                 <Button
                   variant="outline"
@@ -919,16 +1313,23 @@ const LearningModal = () => {
             <Button
               variant="primary"
               onClick={handleSubmit}
-              isLoading={isSubmitting}
+              isLoading={isSubmitting || isUploading}
               rightIcon={config.emoji}
+              disabled={isUploading}
             >
-              {isCurrentlyActive ? t('update_button') : t('save_button')}
+              {isSubmitting || isUploading
+                ? type === 'learned' && selectedVideo
+                  ? 'Enviando...'
+                  : 'Salvando...'
+                : isCurrentlyActive
+                ? t('update_button')
+                : t('save_button')}
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* ✅ Modal de Seleção de Partitura COM DETECÇÃO DE EDIÇÃO */}
+      {/* Modal de Seleção de Partitura */}
       {workId && workTitle && composerName && (
         <ScoreSelectionModal
           isOpen={showScoreSelection}
@@ -937,7 +1338,7 @@ const LearningModal = () => {
           workTitle={workTitle}
           composerName={composerName}
           currentSelectedScore={selectedWorkScore}
-          isEditing={isCurrentlyActive} // ✅ NOVO: Passar se é edição para detectar auto-seleção
+          isEditing={isCurrentlyActive}
           onScoreSelected={(workScore: WorkScore) => {
             if (workScore) {
               setSelectedWorkScore({
@@ -959,7 +1360,6 @@ const LearningModal = () => {
                 notes: workScore.notes,
               });
             } else {
-              // ✅ NOVO: Permitir remover partitura passando null
               setSelectedWorkScore(null);
             }
             setShowScoreSelection(false);
@@ -967,7 +1367,7 @@ const LearningModal = () => {
         />
       )}
 
-      {/* ✅ Modal de Confirmação de Transferência */}
+      {/* Modal de Confirmação de Transferência */}
       <Modal
         isOpen={showTransferConfirm}
         onClose={() => setShowTransferConfirm(false)}
@@ -989,10 +1389,9 @@ const LearningModal = () => {
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-xl p-4 mb-6">
+          <div className="classical-card-simple rounded-xl p-4 mb-6">
             <p className="text-theme-primary">
-              <strong>&quot;{workTitle}&quot;</strong>{' '}
-              {t('transfer_learned_description')}
+              <strong>"{workTitle}"</strong> {t('transfer_learned_description')}
             </p>
 
             <div className="mt-3 text-sm text-theme-secondary">
@@ -1016,13 +1415,120 @@ const LearningModal = () => {
               variant="primary"
               onClick={handleConfirmTransfer}
               isLoading={isSubmitting}
-              rightIcon="🎉"
             >
               {isSubmitting ? t('transferring') : t('confirm_transfer')}
             </Button>
           </div>
         </div>
       </Modal>
+
+      {/* Modal de Progresso/Milestones */}
+      {type === 'want-to-learn' && (
+        <Modal
+          isOpen={showProgressModal}
+          onClose={() => setShowProgressModal(false)}
+          maxWidth="2xl"
+          showCloseButton={true}
+        >
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-theme-primary">
+                  Marcar Progresso de Aprendizado
+                </h3>
+                <p className="text-sm text-theme-secondary">
+                  Acompanhe seu progresso marcando os milestones conquistados
+                </p>
+              </div>
+            </div>
+
+            {/* Barra de progresso */}
+            <div className="mb-6">
+              <div className="flex items-center space-x-4 mb-2">
+                <div className="flex-1">
+                  <div className="w-full bg-theme-secondary rounded-full h-3">
+                    <div
+                      className={`h-3 rounded-full transition-all ${
+                        currentProgress >= 100
+                          ? 'bg-green-400'
+                          : currentProgress >= 50
+                          ? 'bg-blue-400'
+                          : 'bg-yellow-400'
+                      }`}
+                      style={{ width: `${currentProgress}%` }}
+                    />
+                  </div>
+                </div>
+                <span className="text-lg font-bold text-theme-primary">
+                  {currentProgress}%
+                </span>
+              </div>
+              <p className="text-sm text-theme-tertiary">
+                Clique nos milestones para marcar como concluídos
+              </p>
+            </div>
+
+            {/* Lista de milestones */}
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {availableMilestones.map((milestone) => {
+                const Icon = milestone.icon;
+                const isCompleted = progressMilestones[milestone.key];
+
+                return (
+                  <div
+                    key={milestone.key}
+                    className={`flex items-center space-x-3 p-4 rounded-xl transition-all cursor-pointer border-2 ${
+                      isCompleted
+                        ? 'bg-accent-green/5 border-accent-green/30'
+                        : 'border-theme-secondary hover:border-brand-primary/50 hover:bg-brand-primary/5'
+                    }`}
+                    onClick={() => handleMilestoneToggle(milestone.key)}
+                  >
+                    <div className={`flex-shrink-0 ${milestone.color}`}>
+                      {isCompleted ? (
+                        <FiCheckCircle className="w-6 h-6 text-accent-green" />
+                      ) : (
+                        <Icon className="w-6 h-6" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-theme-primary">
+                        {t(milestone.labelKey)}
+                      </div>
+                      <div className="text-sm text-theme-tertiary">
+                        +{milestone.weight}% de progresso
+                      </div>
+                    </div>
+                    <div className="flex-shrink-0">
+                      {isCompleted ? (
+                        <FiCheckCircle className="w-5 h-5 text-accent-green" />
+                      ) : (
+                        <FiCircle className="w-5 h-5 text-theme-tertiary" />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-6 flex justify-end space-x-3">
+              <Button
+                variant="secondary"
+                onClick={() => setShowProgressModal(false)}
+              >
+                {t('cancel_button')}
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => setShowProgressModal(false)}
+                rightIcon="🎯"
+              >
+                Confirmar Progresso
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

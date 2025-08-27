@@ -205,7 +205,38 @@
     "of_scores": "de",
     "scores_label": "partituras",
     "loading": "Carregando...",
-    "load_more": "Carregar Mais"
+    "load_more": "Carregar Mais",
+    "milestone_piano_learned_left_hand": "Aprendeu a mão esquerda",
+    "milestone_piano_learned_right_hand": "Aprendeu a mão direita",
+    "milestone_piano_metronome": "Tocou com metrônomo",
+    "milestone_piano_memorized": "Memorizou a peça",
+    "milestone_piano_tempo": "Tocou no andamento original",
+    "milestone_piano_dynamics": "Dominou dinâmicas",
+    "milestone_piano_performed": "Apresentou para outros",
+
+    "milestone_violin_learned_bowing": "Aprendeu o arco",
+    "milestone_violin_learned_fingering": "Aprendeu o dedilhado",
+    "milestone_violin_intonation": "Afinação correta",
+    "milestone_violin_metronome": "Tocou com metrônomo",
+    "milestone_violin_memorized": "Memorizou a peça",
+    "milestone_violin_tempo": "Tocou no andamento original",
+    "milestone_violin_performed": "Apresentou para outros",
+
+    "milestone_cello_learned_bowing": "Aprendeu o arco",
+    "milestone_cello_learned_fingering": "Aprendeu o dedilhado",
+    "milestone_cello_posture": "Dominou postura e pegada",
+    "milestone_cello_intonation": "Afinação correta",
+    "milestone_cello_metronome": "Tocou com metrônomo",
+    "milestone_cello_memorized": "Memorizou a peça",
+    "milestone_cello_tempo": "Tocou no andamento original",
+    "milestone_cello_performed": "Apresentou para outros",
+
+    "milestone_generic_learned_basics": "Aprendeu o básico",
+    "milestone_generic_metronome": "Tocou com metrônomo",
+    "milestone_generic_memorized": "Memorizou a peça",
+    "milestone_generic_tempo": "Tocou no andamento original",
+    "milestone_generic_expression": "Dominou a expressividade",
+    "milestone_generic_performed": "Apresentou para outros"
   },
   "en": {
     "learning_page_title": "My Musical Learning",
@@ -413,6 +444,37 @@
     "of_scores": "of",
     "scores_label": "scores",
     "loading": "Loading...",
-    "load_more": "Load More"
+    "load_more": "Load More",
+    "milestone_piano_learned_left_hand": "Learned left hand",
+    "milestone_piano_learned_right_hand": "Learned right hand",
+    "milestone_piano_metronome": "Played with metronome",
+    "milestone_piano_memorized": "Memorized the piece",
+    "milestone_piano_tempo": "Played at original tempo",
+    "milestone_piano_dynamics": "Mastered dynamics",
+    "milestone_piano_performed": "Performed for others",
+
+    "milestone_violin_learned_bowing": "Learned bowing",
+    "milestone_violin_learned_fingering": "Learned fingering",
+    "milestone_violin_intonation": "Correct intonation",
+    "milestone_violin_metronome": "Played with metronome",
+    "milestone_violin_memorized": "Memorized the piece",
+    "milestone_violin_tempo": "Played at original tempo",
+    "milestone_violin_performed": "Performed for others",
+
+    "milestone_cello_learned_bowing": "Learned bowing",
+    "milestone_cello_learned_fingering": "Learned fingering",
+    "milestone_cello_posture": "Mastered posture and holding",
+    "milestone_cello_intonation": "Correct intonation",
+    "milestone_cello_metronome": "Played with metronome",
+    "milestone_cello_memorized": "Memorized the piece",
+    "milestone_cello_tempo": "Played at original tempo",
+    "milestone_cello_performed": "Performed for others",
+
+    "milestone_generic_learned_basics": "Learned the basics",
+    "milestone_generic_metronome": "Played with metronome",
+    "milestone_generic_memorized": "Memorized the piece",
+    "milestone_generic_tempo": "Played at original tempo",
+    "milestone_generic_expression": "Mastered expression",
+    "milestone_generic_performed": "Performed for others"
   }
 }

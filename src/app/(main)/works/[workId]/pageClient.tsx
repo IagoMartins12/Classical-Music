@@ -211,11 +211,6 @@ export default function WorkDetailsClient({
   // Handler para seleção de partitura (funciona para ambos os tipos)
   const handleScoreSelectForLearning = async (score: IMSLPScore | any) => {
     if (isSelectionMode || (isInSelectionMode && score?.title)) {
-      console.log(
-        '🎯 [WORK-CLIENT] Selecionando partitura para aprendizado:',
-        score.title
-      );
-
       // Se for IMSLPScore, buscar WorkScore correspondente
       if (score.id && !score.workId) {
         // É IMSLPScore
@@ -228,16 +223,9 @@ export default function WorkDetailsClient({
             const result = await response.json();
             if (result.success && result.workScore) {
               selectFromWorkScore(result.workScore);
-            } else {
-              console.warn(
-                '⚠️ [WORK-CLIENT] WorkScore não encontrado para IMSLPScore:',
-                score.id
-              );
             }
           }
-        } catch (error) {
-          console.error('❌ [WORK-CLIENT] Erro ao buscar WorkScore:', error);
-        }
+        } catch {}
       } else {
         // Já é WorkScore
         selectFromWorkScore(score);
@@ -249,13 +237,11 @@ export default function WorkDetailsClient({
 
   // Handler para confirmar seleção com verificação de mudança
   const handleConfirmSelection = () => {
-    console.log('✅ [WORK-CLIENT] Confirmando seleção de partitura');
     confirmScoreSelection();
   };
 
   // Handler para cancelar seleção
   const handleCancelSelection = () => {
-    console.log('❌ [WORK-CLIENT] Cancelando seleção de partitura');
     cancelScoreSelection();
   };
 
@@ -317,8 +303,6 @@ export default function WorkDetailsClient({
 
   // Callback para quando a mídia for atualizada
   const handleMediaUpdate = (newMediaData: Partial<ProcessedAudioData>) => {
-    console.log('🔄 [WORK-CLIENT] Atualizando dados de mídia:', newMediaData);
-
     setCurrentAudioData((prev) => {
       if (!prev) {
         return {
@@ -403,21 +387,8 @@ export default function WorkDetailsClient({
     return translateGenre(genreName, language);
   };
 
-  console.log('🎵 [WORK-CLIENT] Renderizando:', {
-    workId: work.id,
-    isSelectionMode,
-    isInSelectionMode,
-    activeType,
-    hasImslpLink: !!work.imslpPermlink,
-    totalWorkScores,
-    shouldShowPreview: isSelectionMode || isInSelectionMode,
-  });
-
   // MODO DE SELEÇÃO MELHORADO COM PREVIEW (INCLUINDO QUANDO ESTÁ EDITANDO)
   if (isSelectionMode || isInSelectionMode) {
-    console.log(
-      '🎯 [WORK-CLIENT] Entrando em modo seleção com preview lateral'
-    );
     return (
       <div className="bg-gradient-primary">
         <div className="section-wrap space-y-8 relative z-10">
@@ -447,6 +418,13 @@ export default function WorkDetailsClient({
                 </div>
 
                 <div className="flex items-center space-x-3">
+                  <button
+                    onClick={handleCancelSelection}
+                    className="btn-classical-secondary flex items-center space-x-2"
+                  >
+                    <FiArrowLeft className="w-4 h-4" />
+                    <span>{t('selection_mode_voltar')}</span>
+                  </button>
                   {tempSelectedWorkScore && (
                     <button
                       onClick={handleConfirmSelection}
@@ -456,14 +434,6 @@ export default function WorkDetailsClient({
                       <span>{t('selection_mode_confirmar_selecao')}</span>
                     </button>
                   )}
-
-                  <button
-                    onClick={handleCancelSelection}
-                    className="btn-classical-secondary flex items-center space-x-2"
-                  >
-                    <FiArrowLeft className="w-4 h-4" />
-                    <span>{t('selection_mode_voltar')}</span>
-                  </button>
                 </div>
               </div>
             </div>
@@ -751,6 +721,7 @@ export default function WorkDetailsClient({
                       <LearningButtonWithModal
                         workId={work.id}
                         workTitle={work.title}
+                        instrumentName={work.instrument?.name}
                         composerName={work.composer.fullName}
                         epochName={work.epoch?.name}
                         type="want-to-learn"
@@ -761,6 +732,7 @@ export default function WorkDetailsClient({
                         workId={work.id}
                         workTitle={work.title}
                         composerName={work.composer.fullName}
+                        instrumentName={work.instrument?.name}
                         epochName={work.epoch?.name}
                         type="learned"
                         variant="detailed"

@@ -1,4 +1,4 @@
-// app/learning/LearningPageClient.tsx - COM LAYOUT ADAPTATIVO
+// app/learning/LearningPageClient.tsx - ATUALIZADO COM INSTRUMENTNAME
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -201,7 +201,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
     };
   }, [wantToLearn, learned]);
 
-  // Função para editar usando store global com dados iniciais completos
+  // 🆕 FUNÇÃO PARA EDITAR COM DADOS COMPLETOS INCLUINDO INSTRUMENTNAME
   const handleEditItem = (
     item: WantToLearnItem | LearnedItem,
     type: 'want-to-learn' | 'learned'
@@ -209,6 +209,10 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
     if (!item.work) return;
 
     console.log(`🎵 [LEARNING-PAGE] Editando item:`, item.work.title, item);
+
+    // 🆕 EXTRAIR NOME DO INSTRUMENTO
+    const instrumentName = item.work.instrument?.name;
+    console.log(`🎻 [LEARNING-PAGE] Instrumento detectado:`, instrumentName);
 
     // Preparar dados iniciais COMPLETOS
     let initialWantToLearnData = {};
@@ -300,20 +304,21 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
       }
     }
 
-    // Abrir modal com TODOS os dados iniciais
+    // 🆕 ABRIR MODAL COM INSTRUMENTNAME E TODOS OS DADOS
     console.log('🚀 [LEARNING-PAGE] Abrindo modal com dados:', {
       workId: item.workId,
       type,
       isCurrentlyActive: true,
+      instrumentName, // 🆕 NOVO
       initialWorkScore: initialWorkScore?.title || 'nenhuma',
-      initialWantToLearnData,
-      initialLearnedData,
     });
 
     openModal({
       workId: item.workId,
       workTitle: item.work.title,
+      epochName: item.epochName,
       composerName: item.work.composer.fullName,
+      instrumentName, // 🆕 NOVO: Passar nome do instrumento
       type,
       isCurrentlyActive: true, // SEMPRE TRUE para edição
       initialWantToLearnData,

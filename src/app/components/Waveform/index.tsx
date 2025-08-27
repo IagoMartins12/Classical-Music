@@ -56,8 +56,6 @@ const Waveform: React.FC<WaveformProps> = ({
 
   // Gerar waveform bonito e realista (sempre funciona)
   const generateWaveform = useCallback(() => {
-    console.log('🎵 [WAVEFORM] Gerando waveform visual');
-
     const barCount = Math.min(120, Math.floor(canvasWidth / 6));
     const waveData: number[] = [];
 
@@ -91,8 +89,6 @@ const Waveform: React.FC<WaveformProps> = ({
 
     setWaveformData(waveData);
     setWaveformReady(true);
-
-    console.log(`✅ [WAVEFORM] Waveform gerado com ${waveData.length} barras`);
   }, [canvasWidth]);
 
   // Tentar análise real (mas não travar se falhar)
@@ -103,13 +99,10 @@ const Waveform: React.FC<WaveformProps> = ({
     }
 
     try {
-      console.log('🎵 [WAVEFORM] Tentando análise real...');
-
       // Timeout agressivo de 3 segundos
       const controller = new AbortController();
       const timeoutId = setTimeout(() => {
         controller.abort();
-        console.log('⚠️ [WAVEFORM] Timeout, usando waveform padrão');
         generateWaveform();
       }, 3000);
 
@@ -159,13 +152,11 @@ const Waveform: React.FC<WaveformProps> = ({
         realWaveData.push(amplitude);
       }
 
-      console.log('✅ [WAVEFORM] Análise real concluída!');
       setWaveformData(realWaveData);
       setWaveformReady(true);
 
       await audioContext.close();
     } catch (error) {
-      console.log('🔄 [WAVEFORM] Análise real falhou, usando padrão:', error);
       generateWaveform();
     }
   }, [audioRef, canvasWidth, generateWaveform]);

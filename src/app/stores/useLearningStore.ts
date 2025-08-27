@@ -1,4 +1,4 @@
-// stores/useLearningStore.ts
+// stores/useLearningStore.ts - ATUALIZADO COM CAMPOS FALTANTES
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
@@ -8,8 +8,8 @@ export interface WantToLearnItem {
   workId: string;
   priority: number; // 1-5 priority level
   addedAt: string;
-
   epochName: string;
+
   // Campos opcionais existentes
   notes?: string;
   targetDate?: string;
@@ -17,6 +17,12 @@ export interface WantToLearnItem {
   difficulty?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
   motivation?: string;
   context?: string;
+
+  // 🆕 NOVOS CAMPOS: Milestones de progresso
+  progressMilestones?: {
+    [key: string]: boolean;
+  };
+  progress?: number; // 0-100%
 
   // ✅ RELAÇÃO COM WORKSCORE
   selectedWorkScoreId?: string;
@@ -47,6 +53,10 @@ export interface WantToLearnItem {
       name: string;
       fullName: string;
     };
+    // 🆕 INSTRUMENTO NECESSÁRIO PARA MILESTONES
+    instrument?: {
+      name: string;
+    };
   };
 }
 
@@ -69,6 +79,14 @@ export interface LearnedItem {
   enjoyment?: number;
   technicalChallenges?: string;
   musicalInsights?: string;
+
+  // 🆕 NOVOS CAMPOS: Vídeo da performance
+  videoUrl?: string;
+  videoFileName?: string;
+  videoFilePath?: string;
+  videoFileSize?: number;
+  isVideoPublic?: boolean;
+  videoUploadedAt?: string;
 
   // ✅ RELAÇÃO COM WORKSCORE
   selectedWorkScoreId?: string;
@@ -98,6 +116,10 @@ export interface LearnedItem {
     composer: {
       name: string;
       fullName: string;
+    };
+    // 🆕 INSTRUMENTO NECESSÁRIO PARA MILESTONES
+    instrument?: {
+      name: string;
     };
   };
 }
@@ -156,7 +178,7 @@ interface LearningStore {
   getWantToLearnByPriority: (priority: number) => WantToLearnItem[];
   getLearnedByMastery: (mastery: number) => LearnedItem[];
 
-  // Getters avançados para os novos campos
+  // Getters avançados
   getWantToLearnByDifficulty: (
     difficulty: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED'
   ) => WantToLearnItem[];
@@ -168,6 +190,10 @@ interface LearningStore {
   getRecommendedWorks: () => LearnedItem[];
   getAverageStudyTime: () => number;
   getAverageEnjoyment: () => number;
+
+  // 🆕 NOVOS GETTERS: Para vídeos públicos
+  getLearnedWithPublicVideos: () => LearnedItem[];
+  getLearnedWithVideos: () => LearnedItem[];
 
   // Função para obter item específico
   getWantToLearnItem: (workId: string) => WantToLearnItem | undefined;
@@ -223,6 +249,7 @@ export const useLearningStore = create<LearningStore>()(
               workId,
               priority,
               addedAt: new Date().toISOString(),
+              epochName: '',
               ...additionalData,
             });
           }
@@ -247,6 +274,7 @@ export const useLearningStore = create<LearningStore>()(
                 workId,
                 priority,
                 addedAt: new Date().toISOString(),
+                epochName: '',
                 ...additionalData,
               });
             } else {
@@ -401,6 +429,7 @@ export const useLearningStore = create<LearningStore>()(
               workId,
               mastery,
               learnedAt: new Date().toISOString(),
+              epochName: '',
               ...additionalData,
             });
           }
@@ -425,6 +454,7 @@ export const useLearningStore = create<LearningStore>()(
                 workId,
                 mastery,
                 learnedAt: new Date().toISOString(),
+                epochName: '',
                 ...additionalData,
               });
             } else {
@@ -574,7 +604,7 @@ export const useLearningStore = create<LearningStore>()(
       getLearnedByMastery: (mastery: number) =>
         get().learned.filter((item) => item.mastery === mastery),
 
-      // Getters avançados para os novos campos
+      // Getters avançados
       getWantToLearnByDifficulty: (
         difficulty: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED'
       ) => get().wantToLearn.filter((item) => item.difficulty === difficulty),
@@ -605,6 +635,13 @@ export const useLearningStore = create<LearningStore>()(
               enjoyments.length
           : 0;
       },
+
+      // 🆕 NOVOS GETTERS: Para vídeos
+      getLearnedWithPublicVideos: () =>
+        get().learned.filter(
+          (item) => item.videoUrl && item.isVideoPublic === true
+        ),
+      getLearnedWithVideos: () => get().learned.filter((item) => item.videoUrl),
 
       // Função para obter item específico
       getWantToLearnItem: (workId: string) => {

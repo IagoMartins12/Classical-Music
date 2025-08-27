@@ -851,7 +851,7 @@ export default function IMSLPTabsIncremental({
                 </div>
 
                 {/* Preview Panel com ID para scroll */}
-                {selectedScore && (
+                {selectedScore && !isSelectionMode && (
                   <div
                     id="score-preview"
                     className="lg:sticky lg:top-6 animate-fade-in-up scroll-mt-4"
