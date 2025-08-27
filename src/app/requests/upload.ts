@@ -869,7 +869,7 @@ export const getFormDataPage = unstable_cache(
 
       // Pegar 4 aleatórios de cada compositor
       const works = [];
-      for (const [composerId, composerWorks] of worksByComposer) {
+      for (const [_composerId, composerWorks] of worksByComposer) {
         // Embaralhar array
         const shuffled = [...composerWorks].sort(() => Math.random() - 0.5);
         // Pegar até 4
@@ -897,7 +897,7 @@ export const getFormDataPage = unstable_cache(
         title: work.title,
         composer: {
           id: work.composer.id,
-          fullname: work.composer.fullName,
+          fullName: work.composer.fullName,
           name: work.composer.name,
         },
       }));

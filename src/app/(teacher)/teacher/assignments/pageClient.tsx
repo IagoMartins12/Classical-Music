@@ -31,7 +31,6 @@ import {
   AnimatedCard,
   AnimatedItem,
   PageContainer,
-  SequentialGrid,
 } from '../../../components/animation/AnimatedComponents';
 import { TeacherAssignmentsData, TeacherAssignment } from './pageServer';
 import Image from 'next/image';
@@ -90,7 +89,6 @@ export default function TeacherAssignmentsPageClient({
   const {
     // State do hook
     assignments,
-    stats,
     students,
     pagination,
     loading,

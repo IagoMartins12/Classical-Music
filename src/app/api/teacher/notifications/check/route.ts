@@ -29,10 +29,6 @@ export async function POST(req: NextRequest) {
     const userId = session.user.id;
     const now = new Date();
 
-    console.log(
-      `📬 [TEACHER-CHECK] 🚀 Verificando notificações para ${userId} (includeToast: ${includeToast})`
-    );
-
     // 0. Limpeza automática de notificações antigas/duplicadas
     await cleanupNotifications(prisma, userId);
 
@@ -295,9 +291,6 @@ export async function POST(req: NextRequest) {
 
     // 5. Criar notificações usando TRANSAÇÃO SEGURA
     const createdNotifications = [];
-    console.log(
-      `📬 [TEACHER-CHECK] Tentando criar ${notificationsToCreate.length} notificações`
-    );
 
     for (const notificationData of notificationsToCreate) {
       try {
@@ -308,17 +301,8 @@ export async function POST(req: NextRequest) {
         if (created) {
           createdNotifications.push(created);
         }
-      } catch (error) {
-        console.error(
-          `📬 [TEACHER-CHECK] Erro ao criar notificação ${notificationData.type}:`,
-          error
-        );
-      }
+      } catch {}
     }
-
-    console.log(
-      `📬 [TEACHER-CHECK] ✅ Criadas ${createdNotifications.length} notificações (sem duplicatas)`
-    );
 
     // 6. Buscar notificações existentes
     const rawNotifications = await prisma.notification.findMany({
@@ -363,10 +347,6 @@ export async function POST(req: NextRequest) {
       .filter((n) => n.showInBrowser && !n.browserShown && includeBrowser)
       .slice(0, NOTIFICATION_CONFIG.MAX_BROWSER_NOTIFICATIONS);
 
-    console.log(
-      `📬 [TEACHER-CHECK] Filtradas - Toast: ${toastNotifications.length}, Browser: ${browserNotifications.length}`
-    );
-
     // 8. Contar total não lidas
     const totalUnread = await prisma.notification.count({
       where: {
@@ -393,16 +373,8 @@ export async function POST(req: NextRequest) {
       totalUnread,
     };
 
-    console.log(`📬 [TEACHER-CHECK] ✅ Resposta final:`, {
-      novas: result.newNotifications.length,
-      toast: result.toastNotifications.length,
-      browser: result.browserNotifications.length,
-      naoLidas: result.totalUnread,
-    });
-
     return NextResponse.json(result);
-  } catch (error) {
-    console.error('📬 [TEACHER-CHECK] ❌ Erro geral:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

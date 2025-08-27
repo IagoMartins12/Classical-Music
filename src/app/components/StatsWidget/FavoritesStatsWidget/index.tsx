@@ -3,21 +3,16 @@
 
 import { useMemo, useEffect } from 'react';
 import {
-  FiBarChart2,
-  FiEye,
-  FiEyeOff,
   FiTrendingUp,
   FiMusic,
   FiUser,
-  FiFileText,
   FiTarget,
   FiZap,
   FiHeart,
 } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
 import Link from 'next/link';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
-import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
+import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
 import { useStatsModal } from '../StatsModal';
 import {
@@ -41,22 +36,16 @@ export default function FavoritesStatsWidget({
   const { t } = useTranslation({ sections: ['pages/favorites'] });
   const { favoriteComposers, favoriteWorks, favoriteScores } =
     useFavoritesStore();
-  const { isVisible, toggleVisibility, isMobile, showInline } =
-    useAdaptiveStats('favorites');
-  const { openModal, Modal } = useStatsModal('favorites');
+  const { showInline } = useAdaptiveStats('favorites');
+  const { Modal } = useStatsModal('favorites');
   const { checkFavoritesAchievements } = useFavoritesAchievementDetection();
-  const { achievements, fetchAchievements } = useAchievementSystem();
+  const { fetchAchievements } = useAchievementSystem();
 
   // Calcular estatísticas
   const stats = useMemo(
     () =>
       calculateFavoritesStats(favoriteComposers, favoriteWorks, favoriteScores),
     [favoriteComposers, favoriteWorks, favoriteScores]
-  );
-
-  // Filtrar achievements de favorites
-  const favoritesAchievements = achievements.filter(
-    (a) => a.category === 'FAVORITES'
   );
 
   // Criar badges e CTAs
@@ -80,14 +69,6 @@ export default function FavoritesStatsWidget({
   useEffect(() => {
     fetchAchievements('FAVORITES');
   }, []);
-
-  const handleToggle = () => {
-    if (isMobile && !isVisible) {
-      openModal();
-    } else {
-      toggleVisibility();
-    }
-  };
 
   // Se não tem favoritos suficientes, mostrar CTA
   if (stats.totalFavorites < 5) {

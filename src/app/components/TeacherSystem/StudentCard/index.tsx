@@ -52,7 +52,7 @@ export default function StudentCard({
 }: StudentCardProps) {
   const [isToggling, setIsToggling] = useState(false);
 
-  const { student, relationship, stats, nextLesson } = studentRelationship;
+  const { student, relationship, nextLesson } = studentRelationship;
 
   // Status helpers
   const isActive = relationship.isActive && !relationship.pausedAt;

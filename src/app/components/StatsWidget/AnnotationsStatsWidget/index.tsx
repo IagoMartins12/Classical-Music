@@ -12,7 +12,7 @@ import {
 import Link from 'next/link';
 import { useAnnotationsStore } from '@/app/stores/useAnnotationsStore';
 import { useAuth } from '@/app/hooks/useAuth';
-import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
+import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
 import { useStatsModal } from '../StatsModal';
 import {
@@ -36,23 +36,17 @@ export default function AnnotationsStatsWidget({
   const { t } = useTranslation({ sections: ['pages/annotations'] });
   const { user } = useAuth();
   const { getUserAnnotations } = useAnnotationsStore();
-  const { isVisible, toggleVisibility, isMobile, showInline } =
-    useAdaptiveStats('annotations');
-  const { openModal, Modal } = useStatsModal('annotations');
+  const { showInline } = useAdaptiveStats('annotations');
+  const { Modal } = useStatsModal('annotations');
   const { checkAnnotationsAchievements } = useAnnotationsAchievementDetection();
-  const { achievements, fetchAchievements } = useAchievementSystem();
+  const { fetchAchievements } = useAchievementSystem();
 
   const annotations = user?.id ? getUserAnnotations(user.id) : [];
 
   // Calcular estatísticas
   const stats = useMemo(
-    () => calculateAnnotationsStats(annotations, []),
+    () => calculateAnnotationsStats(annotations),
     [annotations]
-  );
-
-  // Filtrar achievements de annotations
-  const annotationsAchievements = achievements.filter(
-    (a) => a.category === 'ANNOTATIONS'
   );
 
   // Criar badges e CTAs
@@ -60,7 +54,6 @@ export default function AnnotationsStatsWidget({
   const nextAchievements = getNextAnnotationsAchievements(stats);
   const smartCTAs = getAnnotationsSmartCTAs(stats);
 
-  console.log('badges', badges);
   // Auto-detectar achievements
   useEffect(() => {
     if (stats.totalAnnotations > 0) {
@@ -77,14 +70,6 @@ export default function AnnotationsStatsWidget({
   useEffect(() => {
     fetchAchievements('ANNOTATIONS');
   }, []);
-
-  const handleToggle = () => {
-    if (isMobile && !isVisible) {
-      openModal();
-    } else {
-      toggleVisibility();
-    }
-  };
 
   // Se não tem anotações suficientes, mostrar CTA
   if (stats.totalAnnotations < 3) {

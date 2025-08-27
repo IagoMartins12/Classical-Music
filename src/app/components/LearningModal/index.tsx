@@ -20,10 +20,7 @@ import {
   FiDownload,
   FiTrash,
   FiX,
-  FiPlay,
   FiVideo,
-  FiUpload,
-  FiRefreshCw,
   FiAlertCircle,
   FiCircle,
 } from 'react-icons/fi';
@@ -85,7 +82,6 @@ const LearningModal = () => {
     removeVideo,
     setIsVideoPublic,
     clearError: clearVideoError,
-    uploadVideo,
     updateVideo,
     deleteVideo,
   } = useLearnedVideo();
@@ -117,7 +113,6 @@ const LearningModal = () => {
   // Determinar contexto
   const isInWorkPage =
     pathname?.includes('/work/') || pathname?.includes('/works/');
-  const isInLearningPage = pathname?.includes('/learning');
 
   // Obter item do tipo oposto
   const oppositeItem =
@@ -1236,11 +1231,11 @@ const LearningModal = () => {
                           <span className="text-xs">💡</span>
                         </div>
                         <span className="text-sm text-accent-green font-medium">
-                          {t('score_suggestion')} "
+                          {t('score_suggestion')} &quot;
                           {type === 'want-to-learn'
                             ? t('already_learned')
                             : t('want_to_learn')}
-                          "
+                          &quot;
                         </span>
                       </div>
                     </div>
@@ -1391,7 +1386,7 @@ const LearningModal = () => {
 
           <div className="classical-card-simple rounded-xl p-4 mb-6">
             <p className="text-theme-primary">
-              <strong>"{workTitle}"</strong> {t('transfer_learned_description')}
+              <strong>&quot;{workTitle}&quot;</strong> {t('transfer_learned_description')}
             </p>
 
             <div className="mt-3 text-sm text-theme-secondary">

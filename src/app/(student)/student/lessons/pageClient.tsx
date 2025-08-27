@@ -1,4 +1,4 @@
-// app/student/lessons/pageClient.tsx - Client Component para Aulas do Aluno - ATUALIZADO
+// app/student/lessons/pageClient.tsx - Client Component para Aulas do Aluno - ATUALIZADO COM ORDENAÇÃO
 
 'use client';
 
@@ -46,6 +46,13 @@ type TimeFilter =
   | 'upcoming'
   | 'this_week'
   | 'this_month';
+type SortOption =
+  | 'scheduled_asc'
+  | 'scheduled_desc'
+  | 'created_asc'
+  | 'created_desc'
+  | 'status'
+  | 'teacher';
 
 export default function StudentLessonsPageClient({
   initialData,
@@ -65,6 +72,7 @@ export default function StudentLessonsPageClient({
   const [selectedTeacher, setSelectedTeacher] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<LessonFilter>('scheduled'); // Mudança aqui: padrão agora é 'scheduled'
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
+  const [sortBy, setSortBy] = useState<SortOption>('scheduled_asc'); // 🆕 ESTADO DE ORDENAÇÃO
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
@@ -186,22 +194,78 @@ export default function StudentLessonsPageClient({
       });
     }
 
-    // Ordenação: sempre das mais próximas para as mais distantes quando status é 'scheduled'
-    // Para outros status ou com filtros extras, ordem decrescente
+    // 🆕 APLICAR ORDENAÇÃO
     return filtered.sort((a, b) => {
-      if (statusFilter === 'scheduled') {
-        // Status 'scheduled': sempre das mais próximas para as mais distantes (próxima aula primeiro)
-        return (
-          new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime()
-        );
-      } else {
-        // Outros status: das mais recentes para as mais antigas (decrescente)
-        return (
-          new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime()
-        );
+      switch (sortBy) {
+        case 'scheduled_asc':
+          return (
+            new Date(a.scheduledAt).getTime() -
+            new Date(b.scheduledAt).getTime()
+          );
+
+        case 'scheduled_desc':
+          return (
+            new Date(b.scheduledAt).getTime() -
+            new Date(a.scheduledAt).getTime()
+          );
+
+        case 'created_asc':
+          return (
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
+
+        case 'created_desc':
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+
+        case 'status':
+          const statusOrder = { SCHEDULED: 1, COMPLETED: 2, CANCELLED: 3 };
+          const aOrder = statusOrder[a.status as keyof typeof statusOrder] || 4;
+          const bOrder = statusOrder[b.status as keyof typeof statusOrder] || 4;
+          if (aOrder === bOrder) {
+            // Se status igual, ordenar por data agendada (próximas primeiro)
+            return (
+              new Date(a.scheduledAt).getTime() -
+              new Date(b.scheduledAt).getTime()
+            );
+          }
+          return aOrder - bOrder;
+
+        case 'teacher':
+          const teacherCompare = a.teacher.name.localeCompare(b.teacher.name);
+          if (teacherCompare === 0) {
+            // Se professor igual, ordenar por data agendada (próximas primeiro)
+            return (
+              new Date(a.scheduledAt).getTime() -
+              new Date(b.scheduledAt).getTime()
+            );
+          }
+          return teacherCompare;
+
+        default:
+          // Default: próximas aulas primeiro para scheduled, mais recentes primeiro para outros
+          if (statusFilter === 'scheduled') {
+            return (
+              new Date(a.scheduledAt).getTime() -
+              new Date(b.scheduledAt).getTime()
+            );
+          } else {
+            return (
+              new Date(b.scheduledAt).getTime() -
+              new Date(a.scheduledAt).getTime()
+            );
+          }
       }
     });
-  }, [displayLessons, searchTerm, selectedTeacher, statusFilter, timeFilter]);
+  }, [
+    displayLessons,
+    searchTerm,
+    selectedTeacher,
+    statusFilter,
+    timeFilter,
+    sortBy,
+  ]);
 
   // Pagination
   const totalPages = Math.ceil(filteredLessons.length / itemsPerPage);
@@ -663,6 +727,41 @@ export default function StudentLessonsPageClient({
 
               {/* Controls */}
               <div className="flex items-center space-x-4">
+                {/* 🆕 ORDENAÇÃO */}
+                <div className="flex items-center space-x-2">
+                  <Select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    options={[
+                      {
+                        value: 'scheduled_asc',
+                        label: t('student_lessons_sort_scheduled_asc'),
+                      },
+                      {
+                        value: 'scheduled_desc',
+                        label: t('student_lessons_sort_scheduled_desc'),
+                      },
+                      {
+                        value: 'created_desc',
+                        label: t('student_lessons_sort_newest'),
+                      },
+                      {
+                        value: 'created_asc',
+                        label: t('student_lessons_sort_oldest'),
+                      },
+                      {
+                        value: 'status',
+                        label: t('student_lessons_sort_status'),
+                      },
+                      {
+                        value: 'teacher',
+                        label: t('student_lessons_sort_teacher'),
+                      },
+                    ]}
+                    className="input-classical"
+                  />
+                </div>
+
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`btn-classical-secondary flex items-center space-x-2 ${

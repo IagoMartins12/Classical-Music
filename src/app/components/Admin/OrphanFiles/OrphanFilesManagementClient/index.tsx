@@ -17,7 +17,6 @@ import {
   FiHardDrive,
   FiClock,
   FiFilter,
-  FiX,
   FiDatabase,
   FiInfo,
   FiDownload,

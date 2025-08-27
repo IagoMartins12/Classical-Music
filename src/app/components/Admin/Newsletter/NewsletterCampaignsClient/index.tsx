@@ -9,10 +9,8 @@ import {
   FiRefreshCw,
   FiEdit,
   FiTrash2,
-  FiEye,
   FiBarChart2,
   FiCalendar,
-  FiCopy,
   FiMail,
   FiCheckCircle,
 } from 'react-icons/fi';

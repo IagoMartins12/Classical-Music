@@ -17,7 +17,6 @@ import {
   FiFileText,
   FiMusic,
   FiUsers,
-  FiActivity,
   FiTrendingUp,
   FiTarget,
   FiMessageSquare,

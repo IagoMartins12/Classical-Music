@@ -358,12 +358,6 @@ const BulkInsertWorksModal = ({
     }
   };
 
-  // Abrir modal de edição
-  const handleEditWork = (work: DiscoveredWork) => {
-    setEditingWork(work);
-    setShowEditModal(true);
-  };
-
   // Fechar modal e resetar
   const handleClose = () => {
     setCurrentStep('discover');

@@ -1,4 +1,4 @@
-// app/student/assignments/pageClient.tsx - Client Component para Tarefas do Aluno - ATUALIZADO
+// app/student/assignments/pageClient.tsx - Client Component para Tarefas do Aluno - ATUALIZADO COM ORDENAÇÃO
 
 'use client';
 
@@ -50,6 +50,13 @@ type AssignmentFilter =
   | 'completed'
   | 'overdue';
 type TimeFilter = 'all' | 'today' | 'this_week' | 'overdue' | 'upcoming';
+type SortOption =
+  | 'due_date_asc'
+  | 'due_date_desc'
+  | 'created_asc'
+  | 'created_desc'
+  | 'status'
+  | 'priority';
 
 const typeIcons = {
   practice: FiTarget,
@@ -91,6 +98,7 @@ export default function StudentAssignmentsPageClient({
   const [selectedTeacher, setSelectedTeacher] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<AssignmentFilter>('all');
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
+  const [sortBy, setSortBy] = useState<SortOption>('due_date_asc'); // 🆕 ESTADO DE ORDENAÇÃO
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
@@ -191,16 +199,72 @@ export default function StudentAssignmentsPageClient({
       });
     }
 
+    // 🆕 APLICAR ORDENAÇÃO
     return filtered.sort((a, b) => {
-      // Sort by: overdue first, then by due date, then by created date
-      if (a.isOverdue && !b.isOverdue) return -1;
-      if (!a.isOverdue && b.isOverdue) return 1;
+      switch (sortBy) {
+        case 'due_date_asc':
+          if (!a.dueDate && !b.dueDate) return 0;
+          if (!a.dueDate) return 1;
+          if (!b.dueDate) return -1;
+          return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
 
-      if (a.dueDate && b.dueDate) {
-        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+        case 'due_date_desc':
+          if (!a.dueDate && !b.dueDate) return 0;
+          if (!a.dueDate) return 1;
+          if (!b.dueDate) return -1;
+          return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+
+        case 'created_asc':
+          return (
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
+
+        case 'created_desc':
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+
+        case 'status':
+          const statusOrder = { PENDING: 1, IN_PROGRESS: 2, COMPLETED: 3 };
+          const aOrder = statusOrder[a.status as keyof typeof statusOrder] || 4;
+          const bOrder = statusOrder[b.status as keyof typeof statusOrder] || 4;
+          if (aOrder === bOrder) {
+            // Se status igual, ordenar por data de criação (mais recente primeiro)
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          }
+          return aOrder - bOrder;
+
+        case 'priority':
+          const priorityOrder = { high: 1, medium: 2, low: 3 };
+          const aPriority =
+            priorityOrder[a.priority as keyof typeof priorityOrder] || 4;
+          const bPriority =
+            priorityOrder[b.priority as keyof typeof priorityOrder] || 4;
+          if (aPriority === bPriority) {
+            // Se prioridade igual, ordenar por data de criação (mais recente primeiro)
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          }
+          return aPriority - bPriority;
+
+        default:
+          // Default: overdue first, then by due date, then by created date
+          if (a.isOverdue && !b.isOverdue) return -1;
+          if (!a.isOverdue && b.isOverdue) return 1;
+
+          if (a.dueDate && b.dueDate) {
+            return (
+              new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+            );
+          }
+
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
       }
-
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
   }, [
     displayAssignments,
@@ -208,6 +272,7 @@ export default function StudentAssignmentsPageClient({
     selectedTeacher,
     statusFilter,
     timeFilter,
+    sortBy, // 🆕 ADICIONAR sortBy como dependência
     teachersOptions,
   ]);
 
@@ -345,30 +410,30 @@ export default function StudentAssignmentsPageClient({
                 <FiCalendar className="w-4 h-4 mr-2" />
                 {t('student_assignments_due_date')}{' '}
                 {formatDate(assignment.dueDate)}
-                {assignment.daysUntilDue !== null && (
-                  <span
-                    className={`ml-1 font-medium ${
-                      assignment.daysUntilDue && assignment.daysUntilDue < 0
-                        ? 'text-accent-red'
-                        : assignment.daysUntilDue &&
-                          assignment.daysUntilDue <= 2
-                        ? 'text-accent-yellow'
-                        : 'text-theme-secondary'
-                    }`}
-                  >
-                    (
-                    {assignment.daysUntilDue && assignment.daysUntilDue < 0
-                      ? t('student_assignments_days_ago', {
-                          days: Math.abs(assignment.daysUntilDue),
-                        })
-                      : assignment.daysUntilDue === 0
-                      ? t('student_assignments_today')
-                      : t('student_assignments_days_left', {
-                          days: `${assignment.daysUntilDue}`,
-                        })}
-                    )
-                  </span>
-                )}
+                {assignment.daysUntilDue !== null &&
+                  assignment.daysUntilDue !== undefined && (
+                    <span
+                      className={`ml-1 font-medium ${
+                        assignment.daysUntilDue < 0
+                          ? 'text-accent-red'
+                          : assignment.daysUntilDue <= 2
+                          ? 'text-accent-yellow'
+                          : 'text-theme-secondary'
+                      }`}
+                    >
+                      (
+                      {assignment.daysUntilDue < 0
+                        ? t('student_assignments_days_ago', {
+                            days: Math.abs(assignment.daysUntilDue),
+                          })
+                        : assignment.daysUntilDue === 0
+                        ? t('student_assignments_today')
+                        : t('student_assignments_days_left', {
+                            days: assignment.daysUntilDue,
+                          })}
+                      )
+                    </span>
+                  )}
               </div>
             )}
 
@@ -530,30 +595,30 @@ export default function StudentAssignmentsPageClient({
                 <FiCalendar className="w-4 h-4 mr-2" />
                 {t('student_assignments_due_date')}{' '}
                 {formatDate(assignment.dueDate)}
-                {assignment.daysUntilDue !== null && (
-                  <span
-                    className={`ml-1 font-medium ${
-                      assignment.daysUntilDue && assignment.daysUntilDue < 0
-                        ? 'text-accent-red'
-                        : assignment.daysUntilDue &&
-                          assignment.daysUntilDue <= 2
-                        ? 'text-accent-yellow'
-                        : 'text-theme-secondary'
-                    }`}
-                  >
-                    (
-                    {assignment.daysUntilDue && assignment.daysUntilDue < 0
-                      ? t('student_assignments_days_ago', {
-                          days: Math.abs(assignment.daysUntilDue),
-                        })
-                      : assignment.daysUntilDue === 0
-                      ? t('student_assignments_today')
-                      : t('student_assignments_days_left', {
-                          days: assignment.daysUntilDue,
-                        })}
-                    )
-                  </span>
-                )}
+                {assignment.daysUntilDue !== null &&
+                  assignment.daysUntilDue !== undefined && (
+                    <span
+                      className={`ml-1 font-medium ${
+                        assignment.daysUntilDue < 0
+                          ? 'text-accent-red'
+                          : assignment.daysUntilDue <= 2
+                          ? 'text-accent-yellow'
+                          : 'text-theme-secondary'
+                      }`}
+                    >
+                      (
+                      {assignment.daysUntilDue < 0
+                        ? t('student_assignments_days_ago', {
+                            days: Math.abs(assignment.daysUntilDue),
+                          })
+                        : assignment.daysUntilDue === 0
+                        ? t('student_assignments_today')
+                        : t('student_assignments_days_left', {
+                            days: assignment.daysUntilDue,
+                          })}
+                      )
+                    </span>
+                  )}
               </div>
             )}
 
@@ -830,6 +895,41 @@ export default function StudentAssignmentsPageClient({
 
               {/* Controls */}
               <div className="flex items-center space-x-4">
+                {/* 🆕 ORDENAÇÃO */}
+                <div className="flex items-center space-x-2">
+                  <Select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    options={[
+                      {
+                        value: 'due_date_asc',
+                        label: t('student_assignments_sort_due_date_asc'),
+                      },
+                      {
+                        value: 'due_date_desc',
+                        label: t('student_assignments_sort_due_date_desc'),
+                      },
+                      {
+                        value: 'created_desc',
+                        label: t('student_assignments_sort_newest'),
+                      },
+                      {
+                        value: 'created_asc',
+                        label: t('student_assignments_sort_oldest'),
+                      },
+                      {
+                        value: 'status',
+                        label: t('student_assignments_sort_status'),
+                      },
+                      {
+                        value: 'priority',
+                        label: t('student_assignments_sort_priority'),
+                      },
+                    ]}
+                    className="input-classical"
+                  />
+                </div>
+
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`btn-classical-secondary flex items-center space-x-2 ${

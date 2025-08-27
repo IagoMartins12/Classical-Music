@@ -108,7 +108,7 @@ export async function GET() {
 
     // Pegar 4 aleatórios de cada compositor
     const works = [];
-    for (const [composerId, composerWorks] of worksByComposer) {
+    for (const [_composerId, composerWorks] of worksByComposer) {
       // Embaralhar array
       const shuffled = [...composerWorks].sort(() => Math.random() - 0.5);
       // Pegar até 4

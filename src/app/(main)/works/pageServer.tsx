@@ -26,7 +26,6 @@ interface WorksServerProps {
 // 🚀 CACHE SEPARADO PARA FILTROS COM TRADUÇÃO
 const getCachedFiltersTranslated = unstable_cache(
   async (language: string) => {
-    console.log('🔍 Cache miss - Buscando filtros com tradução:', language);
     const filterOptions = await getFilterOptions();
 
     // Traduzir filtros baseado no idioma

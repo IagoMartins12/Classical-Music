@@ -15,7 +15,6 @@ export interface UseLearnedVideoResult {
   removeVideo: () => void;
   setIsVideoPublic: (isPublic: boolean) => void;
   clearError: () => void;
-  uploadVideo: (workId: string, learnedData: any) => Promise<boolean>;
   updateVideo: (workId: string, learnedData: any) => Promise<boolean>;
   deleteVideo: (workId: string) => Promise<boolean>;
 }
@@ -97,20 +96,6 @@ export function useLearnedVideo(): UseLearnedVideoResult {
     setUploadError(null);
   }, []);
 
-  // ✅ CORREÇÃO: Upload de vídeo (REMOVIDO - não será mais usado diretamente)
-  // O upload agora é feito via createLearnedWithVideo() no LearningModal
-  const uploadVideo = useCallback(
-    async (workId: string, learnedData: any): Promise<boolean> => {
-      // ✅ CORREÇÃO: Esta função não é mais necessária pois o fluxo mudou
-      // O LearningModal agora usa createLearnedWithVideo() diretamente
-      console.warn(
-        '⚠️ [LEARNED-VIDEO] uploadVideo() foi chamado mas não deveria ser usado diretamente'
-      );
-      return false;
-    },
-    []
-  );
-
   // Atualizar vídeo (learned item existente)
   const updateVideo = useCallback(
     async (workId: string, learnedData: any): Promise<boolean> => {
@@ -120,7 +105,7 @@ export function useLearnedVideo(): UseLearnedVideoResult {
       try {
         // Preparar FormData se tem vídeo, senão JSON
         let body: FormData | string;
-        let headers: any = {};
+        const headers: any = {};
 
         if (selectedVideo) {
           // Com upload de novo vídeo
@@ -247,7 +232,6 @@ export function useLearnedVideo(): UseLearnedVideoResult {
     removeVideo,
     setIsVideoPublic,
     clearError,
-    uploadVideo,
     updateVideo,
     deleteVideo,
   };

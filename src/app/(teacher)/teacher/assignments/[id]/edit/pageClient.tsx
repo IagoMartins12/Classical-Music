@@ -975,7 +975,7 @@ export default function EditAssignmentPageClient({
 
                 <Link
                   href={`/teacher/lessons/${assignment.lesson.id}`}
-                  className="space-y-2"
+                  className="space-y-2 "
                 >
                   <div className="font-medium text-theme-primary">
                     {assignment.lesson.title}

@@ -15,7 +15,6 @@ import {
   FiUserPlus,
   FiFileText,
   FiUser,
-  FiClock,
   FiMessageSquare,
   FiStar,
   FiRotateCcw,
@@ -30,7 +29,6 @@ import {
   AnimatedItem,
   AnimatedCard,
   LoadingSpinner,
-  SequentialGrid,
 } from '@/app/components/animation/AnimatedComponents';
 import Select from '@/app/components/Common/Select';
 import Link from 'next/link';
@@ -87,7 +85,6 @@ const TeacherHistoryClient = ({
   // Estados de paginação
   const [totalPages, setTotalPages] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
-  const [stats, setStats] = useState<any>({});
 
   // Opções de filtro específicas para professor
   const actionOptions = [
@@ -153,7 +150,6 @@ const TeacherHistoryClient = ({
         setActivities(data.activities || []);
         setTotalPages(data.pagination?.totalPages || 0);
         setTotalCount(data.pagination?.totalCount || 0);
-        setStats(data.stats || {});
       } else {
         throw new Error(data.error || t('error_loading_activities'));
       }

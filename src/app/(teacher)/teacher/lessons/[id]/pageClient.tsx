@@ -126,8 +126,8 @@ export default function TeacherLessonDetailsPageClient({
 
   // Estados para adicionar novos items
   const [newObjective, setNewObjective] = useState('');
-  const [newTopic, setNewTopic] = useState('');
-  const [newTechnique, setNewTechnique] = useState('');
+  // const [newTopic, setNewTopic] = useState('');
+  // const [newTechnique, setNewTechnique] = useState('');
 
   // Estados para modal de delete/apagar
   const [showDeleteModal, setShowDeleteModal] = useState(false);

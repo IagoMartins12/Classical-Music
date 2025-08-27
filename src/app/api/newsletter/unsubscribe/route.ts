@@ -5,8 +5,6 @@ import {
   validateToken,
   markTokenAsUsed,
   logSecurityEvent,
-  createToken,
-  createTokenUrl,
 } from '@/app/libs/tokenUtils';
 import { sendTemplateEmail } from '@/app/libs/newsletter/email';
 

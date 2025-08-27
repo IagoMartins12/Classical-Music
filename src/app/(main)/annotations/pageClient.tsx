@@ -31,12 +31,8 @@ import Link from 'next/link';
 import AnnotationsStatsWidget from '@/app/components/StatsWidget/AnnotationsStatsWidget';
 import Modal from '../../components/Modal';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
-import {
-  useAchievementDemo,
-  useBackendAchievements,
-} from '../../components/achievement/AchievementToast';
+
 import { useAutoAchievementDetection } from '../../hooks/useAchievements';
-import { calculateAnnotationsStats } from '../../components/badges/AnnotationsBadgeSystem';
 import Button from '@/app/components/Common/Button';
 import { useTranslation } from '@/app/hooks/useTranslation';
 
@@ -105,8 +101,6 @@ function AnnotationsPageClientContent() {
 
   // Achievement hooks
   const { detectChanges } = useAutoAchievementDetection();
-  const { handleNewAchievement } = useBackendAchievements();
-  const { triggerDemoAchievement } = useAchievementDemo();
 
   // Stats adaptativo
   const {
@@ -141,15 +135,11 @@ function AnnotationsPageClientContent() {
   // Auto-detectar achievements quando anotações mudarem
   useEffect(() => {
     if (mounted && userAnnotations.length > 0) {
-      const stats = calculateAnnotationsStats(userAnnotations, []);
-      detectChanges('annotations', stats);
+      detectChanges('annotations');
     }
   }, [userAnnotations.length, mounted]);
 
   // Função de demonstração
-  const handleDemoAchievement = () => {
-    triggerDemoAchievement('LEGENDARY');
-  };
 
   // Função para buscar anotações do usuário
   const fetchUserAnnotationsData = useCallback(async () => {

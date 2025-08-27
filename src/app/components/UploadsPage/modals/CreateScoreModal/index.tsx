@@ -529,7 +529,7 @@ const CreateScoreModal = ({
             setThumbnailError(thumbnailResult.error || 'Erro desconhecido');
             toast.info('⚠️ Preview não disponível - usando placeholder');
           }
-        } catch  {
+        } catch {
           setThumbnailError('Erro ao gerar preview');
           toast.error('⚠️ Erro ao gerar preview da partitura');
         } finally {
@@ -556,7 +556,7 @@ const CreateScoreModal = ({
       if (errors.downloadUrl) {
         setErrors((prev) => ({ ...prev, downloadUrl: '' }));
       }
-    } catch  {
+    } catch {
       toast.error('Erro ao fazer upload do arquivo');
       setPdfValidation({
         isValidating: false,

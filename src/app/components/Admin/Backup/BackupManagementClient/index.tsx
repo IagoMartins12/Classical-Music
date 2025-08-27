@@ -17,7 +17,6 @@ import {
   FiSettings,
   FiInfo,
   FiBarChart2,
-  FiX,
   FiTarget,
 } from 'react-icons/fi';
 import {

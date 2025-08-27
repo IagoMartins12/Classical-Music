@@ -25,7 +25,7 @@ export type BadgeCategory =
   | 'social'
   | 'milestone';
 
-export type BadgeRarity = 'common' | 'rare' | 'epic' | 'legendary';
+export type BadgeRarity = 'COMMON' | 'RARE' | 'EPIC' | 'LEGENDARY';
 
 export interface Badge {
   id: string;
@@ -48,25 +48,25 @@ export interface Badge {
 
 // Configuração de cores por raridade
 const RARITY_COLORS = {
-  common: {
+  COMMON: {
     from: 'from-slate-400',
     to: 'to-slate-600',
     border: 'border-slate-400/30',
     text: 'text-slate-600',
   },
-  rare: {
+  RARE: {
     from: 'from-blue-400',
     to: 'to-blue-600',
     border: 'border-blue-400/30',
     text: 'text-blue-600',
   },
-  epic: {
+  EPIC: {
     from: 'from-purple-400',
     to: 'to-purple-600',
     border: 'border-purple-400/30',
     text: 'text-purple-600',
   },
-  legendary: {
+  LEGENDARY: {
     from: 'from-amber-400',
     to: 'to-amber-600',
     border: 'border-amber-400/30',
@@ -94,9 +94,9 @@ export function createFavoritesBadges(stats: {
       description: 'Favoritou sua primeira obra musical',
       icon: FiHeart,
       category: 'milestone',
-      rarity: 'common',
+      rarity: 'COMMON',
       unlocked: stats.totalFavorites >= 1,
-      ...RARITY_COLORS.common,
+      ...RARITY_COLORS.COMMON,
     },
     {
       id: 'collector-bronze',
@@ -104,11 +104,11 @@ export function createFavoritesBadges(stats: {
       description: 'Acumule 10 favoritos',
       icon: FiAward,
       category: 'collection',
-      rarity: 'common',
+      rarity: 'COMMON',
       progress: Math.min(stats.totalFavorites, 10),
       maxProgress: 10,
       unlocked: stats.totalFavorites >= 10,
-      ...RARITY_COLORS.common,
+      ...RARITY_COLORS.COMMON,
     },
     {
       id: 'collector-silver',
@@ -116,11 +116,11 @@ export function createFavoritesBadges(stats: {
       description: 'Acumule 50 favoritos',
       icon: BiTrophy,
       category: 'collection',
-      rarity: 'rare',
+      rarity: 'RARE',
       progress: Math.min(stats.totalFavorites, 50),
       maxProgress: 50,
       unlocked: stats.totalFavorites >= 50,
-      ...RARITY_COLORS.rare,
+      ...RARITY_COLORS.RARE,
     },
     {
       id: 'collector-gold',
@@ -128,11 +128,11 @@ export function createFavoritesBadges(stats: {
       description: 'Acumule 100 favoritos - Você é um verdadeiro conhecedor!',
       icon: BiCrown,
       category: 'collection',
-      rarity: 'epic',
+      rarity: 'EPIC',
       progress: Math.min(stats.totalFavorites, 100),
       maxProgress: 100,
       unlocked: stats.totalFavorites >= 100,
-      ...RARITY_COLORS.epic,
+      ...RARITY_COLORS.EPIC,
     },
 
     // COMPOSER BADGES
@@ -142,11 +142,11 @@ export function createFavoritesBadges(stats: {
       description: 'Favorite 5 obras do mesmo compositor',
       icon: FiStar,
       category: 'expertise',
-      rarity: 'rare',
+      rarity: 'RARE',
       progress: Math.min(stats.topComposerWorks, 5),
       maxProgress: 5,
       unlocked: stats.topComposerWorks >= 5,
-      ...RARITY_COLORS.rare,
+      ...RARITY_COLORS.RARE,
     },
     {
       id: 'epoch-explorer',
@@ -154,11 +154,11 @@ export function createFavoritesBadges(stats: {
       description: 'Explore 4 épocas diferentes',
       icon: FiZap,
       category: 'expertise',
-      rarity: 'rare',
+      rarity: 'RARE',
       progress: Math.min(stats.epochsCount, 4),
       maxProgress: 4,
       unlocked: stats.epochsCount >= 4,
-      ...RARITY_COLORS.rare,
+      ...RARITY_COLORS.RARE,
     },
     {
       id: 'multi-instrument',
@@ -166,11 +166,11 @@ export function createFavoritesBadges(stats: {
       description: 'Favorite obras para 6 instrumentos diferentes',
       icon: GiMusicalNotes,
       category: 'expertise',
-      rarity: 'epic',
+      rarity: 'EPIC',
       progress: Math.min(stats.instrumentsCount, 6),
       maxProgress: 6,
       unlocked: stats.instrumentsCount >= 6,
-      ...RARITY_COLORS.epic,
+      ...RARITY_COLORS.EPIC,
     },
 
     // DEDICATION BADGES
@@ -180,11 +180,11 @@ export function createFavoritesBadges(stats: {
       description: 'Favorite algo por 3 dias seguidos',
       icon: FaFire,
       category: 'dedication',
-      rarity: 'rare',
+      rarity: 'RARE',
       progress: Math.min(stats.streakDays, 3),
       maxProgress: 3,
       unlocked: stats.streakDays >= 3,
-      ...RARITY_COLORS.rare,
+      ...RARITY_COLORS.RARE,
     },
     {
       id: 'music-archaeologist',
@@ -192,11 +192,11 @@ export function createFavoritesBadges(stats: {
       description: 'Descubra 20 obras nos últimos 30 dias',
       icon: FiTrendingUp,
       category: 'dedication',
-      rarity: 'epic',
+      rarity: 'EPIC',
       progress: Math.min(stats.recentDiscoveries, 20),
       maxProgress: 20,
       unlocked: stats.recentDiscoveries >= 20,
-      ...RARITY_COLORS.epic,
+      ...RARITY_COLORS.EPIC,
     },
 
     // LEGENDARY BADGES
@@ -207,11 +207,11 @@ export function createFavoritesBadges(stats: {
         'Alcance 200 favoritos e prove ser um verdadeiro especialista',
       icon: FiShield,
       category: 'milestone',
-      rarity: 'legendary',
+      rarity: 'LEGENDARY',
       progress: Math.min(stats.totalFavorites, 200),
       maxProgress: 200,
       unlocked: stats.totalFavorites >= 200,
-      ...RARITY_COLORS.legendary,
+      ...RARITY_COLORS.LEGENDARY,
     },
   ];
 }
@@ -236,9 +236,9 @@ export function createLearningBadges(stats: {
       description: 'Adicione sua primeira obra para estudar',
       icon: FiTarget,
       category: 'milestone',
-      rarity: 'common',
+      rarity: 'COMMON',
       unlocked: stats.totalLearning >= 1,
-      ...RARITY_COLORS.common,
+      ...RARITY_COLORS.COMMON,
     },
     {
       id: 'dedicated-student',
@@ -246,11 +246,11 @@ export function createLearningBadges(stats: {
       description: 'Tenha 10 obras em sua lista de estudos',
       icon: FiMusic,
       category: 'learning',
-      rarity: 'common',
+      rarity: 'COMMON',
       progress: Math.min(stats.wantToLearnCount, 10),
       maxProgress: 10,
       unlocked: stats.wantToLearnCount >= 10,
-      ...RARITY_COLORS.common,
+      ...RARITY_COLORS.COMMON,
     },
 
     // MASTERY BADGES
@@ -260,9 +260,9 @@ export function createLearningBadges(stats: {
       description: 'Complete sua primeira obra',
       icon: FiAward,
       category: 'learning',
-      rarity: 'common',
+      rarity: 'COMMON',
       unlocked: stats.learnedCount >= 1,
-      ...RARITY_COLORS.common,
+      ...RARITY_COLORS.COMMON,
     },
     {
       id: 'skilled-musician',
@@ -270,11 +270,11 @@ export function createLearningBadges(stats: {
       description: 'Domine 10 obras (maestria 4+)',
       icon: FiStar,
       category: 'expertise',
-      rarity: 'rare',
+      rarity: 'RARE',
       progress: Math.min(stats.expertLevelCount, 10),
       maxProgress: 10,
       unlocked: stats.expertLevelCount >= 10,
-      ...RARITY_COLORS.rare,
+      ...RARITY_COLORS.RARE,
     },
     {
       id: 'perfectionist',
@@ -282,11 +282,11 @@ export function createLearningBadges(stats: {
       description: 'Mantenha maestria média de 4.5+',
       icon: BiCrown,
       category: 'expertise',
-      rarity: 'epic',
+      rarity: 'EPIC',
       progress: Math.min(Math.round(stats.avgMastery * 10), 45),
       maxProgress: 45,
       unlocked: stats.avgMastery >= 4.5,
-      ...RARITY_COLORS.epic,
+      ...RARITY_COLORS.EPIC,
     },
 
     // PERFORMANCE BADGES
@@ -296,9 +296,9 @@ export function createLearningBadges(stats: {
       description: 'Realize sua primeira performance pública',
       icon: FiMusic,
       category: 'social',
-      rarity: 'rare',
+      rarity: 'RARE',
       unlocked: stats.publicPerformances >= 1,
-      ...RARITY_COLORS.rare,
+      ...RARITY_COLORS.RARE,
     },
     {
       id: 'performer',
@@ -306,11 +306,11 @@ export function createLearningBadges(stats: {
       description: 'Realize 5 performances públicas',
       icon: BiTrophy,
       category: 'social',
-      rarity: 'epic',
+      rarity: 'EPIC',
       progress: Math.min(stats.publicPerformances, 5),
       maxProgress: 5,
       unlocked: stats.publicPerformances >= 5,
-      ...RARITY_COLORS.epic,
+      ...RARITY_COLORS.EPIC,
     },
 
     // DEDICATION BADGES
@@ -320,11 +320,11 @@ export function createLearningBadges(stats: {
       description: 'Complete obras por 7 dias seguidos',
       icon: FaFire,
       category: 'dedication',
-      rarity: 'rare',
+      rarity: 'RARE',
       progress: Math.min(stats.currentStreak, 7),
       maxProgress: 7,
       unlocked: stats.currentStreak >= 7,
-      ...RARITY_COLORS.rare,
+      ...RARITY_COLORS.RARE,
     },
     {
       id: 'efficient-learner',
@@ -332,11 +332,11 @@ export function createLearningBadges(stats: {
       description: 'Complete 90% das obras que iniciar',
       icon: FiZap,
       category: 'expertise',
-      rarity: 'epic',
+      rarity: 'EPIC',
       progress: Math.min(Math.round(stats.completionRate), 90),
       maxProgress: 90,
       unlocked: stats.completionRate >= 90,
-      ...RARITY_COLORS.epic,
+      ...RARITY_COLORS.EPIC,
     },
 
     // LEGENDARY BADGE
@@ -346,11 +346,11 @@ export function createLearningBadges(stats: {
       description: 'Domine 50+ obras com maestria 4+ - Elite absoluta!',
       icon: FiShield,
       category: 'milestone',
-      rarity: 'legendary',
+      rarity: 'LEGENDARY',
       progress: Math.min(stats.expertLevelCount, 50),
       maxProgress: 50,
       unlocked: stats.expertLevelCount >= 50,
-      ...RARITY_COLORS.legendary,
+      ...RARITY_COLORS.LEGENDARY,
     },
   ];
 }

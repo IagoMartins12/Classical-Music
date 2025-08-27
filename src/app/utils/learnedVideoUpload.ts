@@ -219,7 +219,7 @@ export async function deleteLearnedVideo(filePath: string): Promise<boolean> {
           fs.rmdirSync(dirPath);
           console.log(`🗑️ [LEARNED-VIDEO] Diretório removido: ${dirPath}`);
         }
-      } catch (dirError) {
+      } catch {
         console.log(
           `⚠️ [LEARNED-VIDEO] Não foi possível remover diretório: ${dirPath}`
         );

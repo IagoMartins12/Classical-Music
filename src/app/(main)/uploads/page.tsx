@@ -3,7 +3,6 @@
 // ================================
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import { Suspense } from 'react';
 
 import UploadsPageServer from './pageServer';
 import EmailVerificationRequired from '@/app/components/VerificationsProviders/EmailVerificationRequired';

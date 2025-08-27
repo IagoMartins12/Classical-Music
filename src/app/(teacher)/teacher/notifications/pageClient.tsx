@@ -41,7 +41,6 @@ type SortType = 'newest' | 'oldest' | 'priority';
 export default function TeacherNotificationsPageClient({
   initialNotifications,
   unreadCount: initialUnreadCount,
-  notificationStats,
   errorMessage,
 }: TeacherNotificationsPageClientProps) {
   const { t } = useTranslation({ sections: ['teacher/notifications'] });

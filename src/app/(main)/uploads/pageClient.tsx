@@ -1,13 +1,7 @@
 // UploadsClient.tsx - TRADUZIDO
 'use client';
 
-import {
-  useState,
-  useTransition,
-  useCallback,
-  useMemo,
-  useEffect,
-} from 'react';
+import { useState, useTransition, useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   FiSearch,
@@ -187,8 +181,6 @@ const UploadsClient = ({
 
   const [availableEpochs, setAvailableEpochs] = useState(epochs);
   const [loadingEpochs, setLoadingEpochs] = useState(false);
-
-  const [loadingFormData, setLoadingFormData] = useState(false);
 
   const memoizedLocalComposers = useMemo(() => {
     return filterComposers;
@@ -1460,18 +1452,6 @@ const UploadsClient = ({
           instruments={formData.instruments}
           epochs={formData.epochs}
         />
-      )}
-
-      {/* Loading Modal Overlay */}
-      {loadingFormData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-theme-overlay backdrop-blur-sm">
-          <div className="classical-card flex flex-col gap-4 items-center justify-center p-8 text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-4">
-              {t('loading_form_data')}
-            </p>
-          </div>
-        </div>
       )}
     </PageContainer>
   );

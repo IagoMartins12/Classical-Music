@@ -7,8 +7,6 @@ import {
   getFormDataPage,
   getUserUploads,
 } from '@/app/requests/upload';
-import { Suspense } from 'react';
-import UploadsPageLoading from './loading';
 
 const ITEMS_PER_PAGE = 24;
 

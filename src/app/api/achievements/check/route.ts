@@ -271,7 +271,6 @@ async function checkAnnotationsAchievements(userId: string) {
 
   const totalAnnotations = annotations.length;
   const totalHelpfulVotes = annotationVotes.length;
-  const publicAnnotations = annotations.filter((a) => a.isPublic).length;
   const verifiedAnnotations = annotations.filter((a) => a.isVerified).length;
 
   // Achievement: Primeira Contribuição

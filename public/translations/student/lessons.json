@@ -46,7 +46,14 @@
     "status_pending": "Status pendente",
     "objectives": "Objetivos",
     "minutes": "minutos",
-    "loading": "Carregando..."
+    "loading": "Carregando...",
+
+    "student_lessons_sort_scheduled_asc": "Agendamento (próximas)",
+    "student_lessons_sort_scheduled_desc": "Agendamento (distantes)",
+    "student_lessons_sort_newest": "Mais recente",
+    "student_lessons_sort_oldest": "Mais antiga",
+    "student_lessons_sort_status": "Por status",
+    "student_lessons_sort_teacher": "Por professor"
   },
   "en": {
     "no_teachers_title": "No Teacher Linked",
@@ -95,6 +102,13 @@
     "status_pending": "Status pending",
     "objectives": "Objectives",
     "minutes": "minutes",
-    "loading": "Loading..."
+    "loading": "Loading...",
+
+    "student_lessons_sort_scheduled_asc": "Scheduled (upcoming)",
+    "student_lessons_sort_scheduled_desc": "Scheduled (distant)",
+    "student_lessons_sort_newest": "Newest",
+    "student_lessons_sort_oldest": "Oldest",
+    "student_lessons_sort_status": "By status",
+    "student_lessons_sort_teacher": "By teacher"
   }
 }

@@ -10,7 +10,6 @@ import {
   FiHeart,
   FiTrendingUp,
   FiAward,
-  FiTarget,
   FiMusic,
 } from 'react-icons/fi';
 import {

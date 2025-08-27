@@ -156,7 +156,7 @@ const Waveform: React.FC<WaveformProps> = ({
       setWaveformReady(true);
 
       await audioContext.close();
-    } catch (error) {
+    } catch {
       generateWaveform();
     }
   }, [audioRef, canvasWidth, generateWaveform]);

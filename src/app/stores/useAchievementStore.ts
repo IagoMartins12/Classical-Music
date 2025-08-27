@@ -14,7 +14,7 @@ export interface UserAchievement {
   name: string;
   description: string;
   category: string;
-  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+  rarity: 'COMMON' | 'RARE' | 'EPIC' | 'LEGENDARY';
 
   // Timestamps
   unlockedAt: string;
@@ -92,10 +92,10 @@ interface AchievementStore {
 // Função para calcular XP baseado na raridade
 const calculateXPByRarity = (rarity: string): number => {
   const xpMap = {
-    common: 10,
-    rare: 25,
-    epic: 50,
-    legendary: 100,
+    COMMON: 10,
+    RARE: 25,
+    EPIC: 50,
+    LEGENDARY: 100,
   };
   return xpMap[rarity as keyof typeof xpMap] || 10;
 };
@@ -377,7 +377,7 @@ export const useAchievementIntegration = (userId?: string) => {
           name: badge.name,
           description: badge.description,
           category: badge.category,
-          rarity: badge.rarity,
+          rarity: badge.rarity as any,
           progress: badge.progress,
           maxProgress: badge.maxProgress,
           badgeId: badge.id,

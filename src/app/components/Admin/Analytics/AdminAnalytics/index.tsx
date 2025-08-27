@@ -29,7 +29,6 @@ import {
   MultiLineChart,
   AdminBarChart,
   AdminPieChart,
-  MetricCard,
 } from '@/app/components/Admin/Charts/AdminCharts';
 import { useAdminAnalytics } from '@/app/hooks/admin/useAdminAnalytics';
 import LoadingAdminState from '../../Common/LoadingState';

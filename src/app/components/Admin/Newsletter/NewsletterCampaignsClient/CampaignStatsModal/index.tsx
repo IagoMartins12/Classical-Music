@@ -1,7 +1,7 @@
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import { useState } from 'react';
-import { FiBarChart2, FiClock, FiUsers, FiX } from 'react-icons/fi';
+import { FiBarChart2, FiClock, FiUsers } from 'react-icons/fi';
 
 // app/admin/newsletter/components/CampaignStatsModal.tsx
 interface CampaignStatsModalProps {

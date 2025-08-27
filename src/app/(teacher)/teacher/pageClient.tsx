@@ -1,4 +1,4 @@
-// app/teacher/pageClient.tsx - Dashboard ATUALIZADO para capturar dados do plano de estudos
+// app/teacher/pageClient.tsx - ATUALIZADO com filtro semanal para próximas aulas
 
 'use client';
 
@@ -8,25 +8,18 @@ import Link from 'next/link';
 import {
   FiUsers,
   FiCalendar,
-  FiPlus,
   FiClock,
-  FiTrendingUp,
   FiXCircle,
   FiEye,
-  FiBarChart2,
   FiChevronRight,
   FiRefreshCw,
   FiUserPlus,
-  FiEdit3,
-  FiTarget,
-  FiUser,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
   AnimatedCard,
   AnimatedItem,
   PageContainer,
-  SequentialGrid,
 } from '../../components/animation/AnimatedComponents';
 import {
   TeacherDashboardData,
@@ -34,7 +27,6 @@ import {
 } from '@/app/requests/teacher-request';
 
 import AddStudentModal from '@/app/components/TeacherSystem/AddStudentModal';
-import StudentInviteStatusBadge from '@/app/components/TeacherSystem/StudentInviteStatusBadge';
 import { useToast } from '@/app/hooks/useToast';
 import { useTeacherData } from '@/app/hooks/lessonsSystem/useTeacherData';
 import RefreshIndicator from '@/app/components/Common/RefreshIndicator';
@@ -72,7 +64,6 @@ export interface StudentSearchResult {
   hasStudentProfile: boolean;
 }
 
-// 🆕 INTERFACE PARA O PLANO DE ESTUDOS
 interface StudyPlanData {
   maxLessonsPerWeek: number;
   lessonDuration: number;
@@ -87,6 +78,49 @@ interface StudyPlanData {
   teacherNotes?: string;
 }
 
+// 🆕 FUNÇÃO PARA FILTRAR AULAS DESTA SEMANA
+function filterLessonsThisWeek(lessons: any[]): any[] {
+  const now = new Date();
+
+  // Calcular início da semana (domingo)
+  const startOfWeek = new Date(now);
+  const dayOfWeek = startOfWeek.getDay(); // 0 = domingo
+  startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek);
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  // Calcular fim da semana (sábado)
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
+
+  console.log('🗓️ [WEEKLY-FILTER] Filtrando aulas desta semana:', {
+    startOfWeek: startOfWeek.toISOString(),
+    endOfWeek: endOfWeek.toISOString(),
+    totalLessons: lessons.length,
+  });
+
+  const filteredLessons = lessons.filter((lesson) => {
+    const lessonDate = new Date(lesson.scheduledAt);
+    const isThisWeek = lessonDate >= startOfWeek && lessonDate <= endOfWeek;
+
+    if (isThisWeek) {
+      console.log('✅ [WEEKLY-FILTER] Aula incluída:', {
+        title: lesson.title || 'Sem título',
+        date: lessonDate.toISOString(),
+        student: lesson.student?.name || 'Sem aluno',
+      });
+    }
+
+    return isThisWeek;
+  });
+
+  console.log(
+    `📊 [WEEKLY-FILTER] ${filteredLessons.length} de ${lessons.length} aulas desta semana`
+  );
+
+  return filteredLessons;
+}
+
 export default function TeacherPageClient({
   initialDashboardData,
   initialStudentsData,
@@ -94,7 +128,6 @@ export default function TeacherPageClient({
   teacherProfile,
   errorMessage,
 }: TeacherPageClientProps) {
-  // ===== USAR O HOOK PERSONALIZADO =====
   const {
     data: { dashboard: dashboardData, students: studentsData },
     refreshing,
@@ -111,78 +144,31 @@ export default function TeacherPageClient({
 
   const { t } = useTranslation({ sections: ['teacher/home'] });
 
-  // Estados para UI e busca
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<StudentSearchResult[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [showAddStudent, setShowAddStudent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(errorMessage);
-  const [resendingInvites, setResendingInvites] = useState<Set<string>>(
-    new Set()
-  );
 
   const toast = useToast();
-
-  // Combinar erros
   const currentError = error || dataError;
-
-  const handleResendInvite = async (
-    studentId: string,
-    studentEmail?: string | null
-  ) => {
-    setResendingInvites((prev) => new Set(prev).add(studentId));
-
-    if (!studentEmail) {
-      toast.error('Estudante não possui email.');
-      return;
-    }
-    try {
-      const response = await fetch(
-        `/api/teacher/students/${studentId}/resend-invite`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-
-      if (response.ok) {
-        toast.success(`Novo convite enviado para ${studentEmail}`);
-      } else {
-        throw new Error('Erro ao enviar convite');
-      }
-    } catch (error) {
-      toast.error('Erro ao reenviar convite');
-      console.error('Erro:', error);
-    } finally {
-      setResendingInvites((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(studentId);
-        return newSet;
-      });
-    }
-  };
-
-  // Usar dados do estado local ao invés de props diretas
-  const stats = dashboardData?.dashboard?.stats || {
-    totalStudents: 0,
-    activeStudents: 0,
-    lessonsThisWeek: 0,
-    completionRate: 0,
-    avgLessonsPerWeek: 0,
-  };
 
   useEffect(() => {
     refreshData(false);
   }, []);
 
   const todayLessons = dashboardData?.dashboard?.todayLessons || [];
-  const upcomingLessons =
-    dashboardData?.dashboard?.upcomingLessons?.slice(0, 5) || [];
+
+  // 🆕 APLICAR FILTRO SEMANAL NAS PRÓXIMAS AULAS
+  const allUpcomingLessons = dashboardData?.dashboard?.upcomingLessons || [];
+  const upcomingLessonsThisWeek = filterLessonsThisWeek(
+    allUpcomingLessons
+  ).slice(0, 5);
+
   const activeStudents =
     studentsData?.students?.filter((s) => s.relationship.isActive) || [];
 
-  // Function to search students
   const searchStudents = useCallback(async (email: string) => {
     if (email.length < 3) {
       setSearchResults([]);
@@ -216,12 +202,9 @@ export default function TeacherPageClient({
     }
   }, []);
 
-  // Handle search input change with debounce
   const handleSearchChange = useCallback(
     (value: string) => {
       setSearchQuery(value);
-
-      // Simple debounce
       const timeoutId = setTimeout(() => {
         if (value.trim()) {
           searchStudents(value.trim());
@@ -235,7 +218,6 @@ export default function TeacherPageClient({
     [searchStudents]
   );
 
-  // 🆕 FUNÇÃO ATUALIZADA PARA RECEBER PLANO DE ESTUDOS
   const addStudent = useCallback(
     async (studentUserId: string, studyPlan?: StudyPlanData) => {
       setLoading(true);
@@ -257,7 +239,6 @@ export default function TeacherPageClient({
             : null,
         });
 
-        // 🔥 USAR DADOS DO PLANO DE ESTUDOS OU VALORES PADRÃO
         const payload = {
           studentUserId,
           maxLessonsPerWeek: studyPlan?.maxLessonsPerWeek || 1,
@@ -267,7 +248,6 @@ export default function TeacherPageClient({
           learningPlan: studyPlan?.learningPlan || '',
           currentFocus: studyPlan?.currentFocus || [],
           teacherNotes: studyPlan?.teacherNotes || '',
-          // 🆕 CAMPOS ADICIONAIS DO PLANO
           studyGoals: studyPlan?.studyGoals || '',
           practiceFrequency: studyPlan?.practiceFrequency || '',
           homeworkExpectation: studyPlan?.homeworkExpectation || '',
@@ -299,13 +279,9 @@ export default function TeacherPageClient({
           });
 
           toast.success(data.message || 'Aluno adicionado com sucesso!');
-
-          // Fechar modal
           setShowAddStudent(false);
           setSearchQuery('');
           setSearchResults([]);
-
-          // Atualizar dados sem reload
           await refreshData(false);
         } else {
           throw new Error(data.error || 'Erro desconhecido');
@@ -325,7 +301,6 @@ export default function TeacherPageClient({
     [refreshData, toast, clearError]
   );
 
-  // Format time
   const formatTime = (date: Date | string) => {
     return new Date(date).toLocaleTimeString('pt-BR', {
       hour: '2-digit',
@@ -333,7 +308,6 @@ export default function TeacherPageClient({
     });
   };
 
-  // Format date
   const formatDate = (date: Date | string) => {
     return new Date(date).toLocaleDateString('pt-BR', {
       day: '2-digit',
@@ -347,7 +321,6 @@ export default function TeacherPageClient({
     setSearchResults([]);
   };
 
-  // Render error state
   if (currentError && !dashboardData) {
     return (
       <PageContainer showBackground={true}>
@@ -398,7 +371,6 @@ export default function TeacherPageClient({
   return (
     <PageContainer showBackground={true}>
       <AnimatedContainer delay={0.1} staggerSpeed="normal">
-        {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
@@ -414,7 +386,6 @@ export default function TeacherPageClient({
                 {t('welcome_message', { name: teacherProfile.name })}
               </p>
 
-              {/* ===== INDICADOR DE ATUALIZAÇÃO MELHORADO ===== */}
               <RefreshIndicator
                 isRefreshing={refreshing}
                 onRefresh={refreshData}
@@ -427,230 +398,8 @@ export default function TeacherPageClient({
           </div>
         </AnimatedItem>
 
-        {/* Stats Cards */}
-        {/* <AnimatedItem direction="up" springType="gentle">
-          <SequentialGrid
-            cols={4}
-            gap={6}
-            delayBetweenItems={0.1}
-            className="mb-8"
-          >
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiUsers className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.totalStudents}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_total_students')}
-              </div>
-              <div className="text-xs text-accent-green mt-1">
-                {stats.activeStudents} {t('stats_active')}
-              </div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCalendar className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.lessonsThisWeek}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_lessons_this_week')}
-              </div>
-              <div className="text-xs text-accent-blue mt-1">
-                {todayLessons.length} {t('stats_today')}
-              </div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiTrendingUp className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.completionRate.toFixed(2)}%
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_completion_rate')}
-              </div>
-              <div className="text-xs text-accent-green mt-1">
-                {t('stats_vs_last_month')}
-              </div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiBarChart2 className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.avgLessonsPerWeek}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_lessons_per_week')}
-              </div>
-              <div className="text-xs text-theme-tertiary mt-1">
-                {t('stats_weekly_average')}
-              </div>
-            </AnimatedCard>
-          </SequentialGrid>
-        </AnimatedItem> */}
-
-        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - 2/3 */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Quick Actions */}
-            {/* <AnimatedItem direction="up" springType="gentle">
-              <AnimatedCard hover="lift" className="classical-card p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                      <FiTarget className="w-5 h-5 text-theme-primary" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold text-theme-primary classical-title">
-                        {t('quick_actions_title')}
-                      </h2>
-                      <p className="text-theme-tertiary text-sm">
-                        {t('quick_actions_subtitle')}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <button
-                    onClick={() => setShowAddStudent(true)}
-                    className="classical-card-2 p-4 text-left hover:border-brand-primary transition-all group"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <FiUserPlus className="w-4 h-4 text-theme-primary" />
-                      </div>
-                      <div>
-                        <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          {t('add_student_title')}
-                        </div>
-                        <div className="text-sm text-theme-tertiary">
-                          {t('add_student_description')}
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-
-                  <Link
-                    href="/teacher/lessons/create"
-                    className="classical-card-2 p-4 text-left hover:border-brand-primary transition-all group"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <FiPlus className="w-4 h-4 text-theme-primary" />
-                      </div>
-                      <div>
-                        <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          {t('create_lesson_title')}
-                        </div>
-                        <div className="text-sm text-theme-tertiary">
-                          {t('create_lesson_description')}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-
-                  <Link
-                    href="/teacher/calendar"
-                    className="classical-card-2 p-4 text-left hover:border-brand-primary transition-all group"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <FiCalendar className="w-4 h-4 text-theme-primary" />
-                      </div>
-                      <div>
-                        <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          {t('view_calendar_title')}
-                        </div>
-                        <div className="text-sm text-theme-tertiary">
-                          {t('view_calendar_description')}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-
-                  <Link
-                    href="/teacher/assignments"
-                    className="classical-card-2 p-4 text-left hover:border-brand-primary transition-all group"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <FiEdit3 className="w-4 h-4 text-theme-primary" />
-                      </div>
-                      <div>
-                        <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          {t('manage_assignments_title')}
-                        </div>
-                        <div className="text-sm text-theme-tertiary">
-                          {t('manage_assignments_description')}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-
-                  <Link
-                    href="/teacher/profile"
-                    className="classical-card-2 p-4 text-left hover:border-brand-primary transition-all group"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <FiUser className="w-4 h-4 text-theme-primary" />
-                      </div>
-                      <div>
-                        <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          {t('view_profile_title')}
-                        </div>
-                        <div className="text-sm text-theme-tertiary">
-                          {t('view_profile_description')}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-
-                  <Link
-                    href="/teacher/reviews"
-                    className="classical-card-2 p-4 text-left hover:border-brand-primary transition-all group"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <FiBarChart2 className="w-4 h-4 text-theme-primary" />
-                      </div>
-                      <div>
-                        <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          {t('reviews_title')}
-                        </div>
-                        <div className="text-sm text-theme-tertiary">
-                          {t('reviews_description')}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              </AnimatedCard>
-            </AnimatedItem> */}
-
-            {/* Students Section */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-6">
@@ -689,7 +438,6 @@ export default function TeacherPageClient({
                     >
                       <div className="classical-card-2 p-4 group">
                         <div className="flex items-center gap-4">
-                          {/* Avatar */}
                           <div className="relative w-12 h-12">
                             {studentRel.student.image ? (
                               <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all">
@@ -708,7 +456,6 @@ export default function TeacherPageClient({
                             )}
                           </div>
 
-                          {/* Info */}
                           <div className="flex-1">
                             <h3 className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
                               {studentRel.student.name}
@@ -726,30 +473,6 @@ export default function TeacherPageClient({
                             </div>
                           </div>
 
-                          {/* <div className="mt-2">
-                            <StudentInviteStatusBadge
-                              status={studentRel.relationship.inviteStatus}
-                              acceptedAt={
-                                studentRel.relationship.inviteAcceptedAt
-                              }
-                              declinedAt={
-                                studentRel.relationship.inviteDeclinedAt
-                              }
-                              studentEmail={studentRel.student.email}
-                              onResendInvite={() =>
-                                handleResendInvite(
-                                  studentRel.student.id,
-                                  studentRel.student.email
-                                )
-                              }
-                              isResending={resendingInvites.has(
-                                studentRel.student.id
-                              )}
-                              compact={true}
-                            />
-                          </div> */}
-
-                          {/* Status Badge */}
                           <div className="flex items-center space-x-2">
                             <span className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
                               {t('status_active')}
@@ -763,27 +486,6 @@ export default function TeacherPageClient({
                           </div>
                         </div>
 
-                        {/* Stats */}
-                        {/* <div className="mt-4 pt-4 border-t border-theme-secondary grid grid-cols-2 gap-4">
-                          <div className="text-center">
-                            <div className="text-lg font-bold text-brand-primary">
-                              {studentRel.stats.totalLessons}
-                            </div>
-                            <div className="text-xs text-theme-tertiary">
-                              {t('total_lessons')}
-                            </div>
-                          </div>
-                          <div className="text-center">
-                            <div className="text-lg font-bold text-accent-green">
-                              {studentRel.stats.completionRate.toFixed(2)}%
-                            </div>
-                            <div className="text-xs text-theme-tertiary">
-                              {t('completion_rate')}
-                            </div>
-                          </div>
-                        </div> */}
-
-                        {/* Next Lesson */}
                         {studentRel.nextLesson && (
                           <div className="mt-3 p-3 bg-theme-elevated rounded-lg ">
                             <div className="flex items-center justify-between">
@@ -834,9 +536,7 @@ export default function TeacherPageClient({
             </AnimatedItem>
           </div>
 
-          {/* Right Column - 1/3 */}
           <div className="lg:col-span-1 space-y-6">
-            {/* Today's Schedule */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center space-x-3 mb-4">
@@ -855,28 +555,30 @@ export default function TeacherPageClient({
 
                 <div className="space-y-3">
                   {todayLessons.slice(0, 4).map((lesson) => (
-                    <div key={lesson.id} className="classical-card-2 p-3">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-2 h-12 bg-brand-primary rounded-full"></div>
-                        <div className="flex-1">
-                          <div className="font-medium text-theme-primary text-sm">
-                            {formatTime(lesson.scheduledAt)}
+                    <Link
+                      href={`/teacher/lessons/${lesson.id}`}
+                      key={lesson.id}
+                    >
+                      <div className="classical-card-2 p-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-2 h-12 bg-brand-primary rounded-full"></div>
+                          <div className="flex-1">
+                            <div className="font-medium text-theme-primary text-sm">
+                              {formatTime(lesson.scheduledAt)}
+                            </div>
+                            <div className="text-xs text-theme-tertiary">
+                              {lesson.student?.name}
+                            </div>
+                            <div className="text-xs text-accent-blue">
+                              {lesson.duration}min
+                            </div>
                           </div>
-                          <div className="text-xs text-theme-tertiary">
-                            {lesson.student?.name}
-                          </div>
-                          <div className="text-xs text-accent-blue">
-                            {lesson.duration}min
+                          <div className="w-6 h-6 rounded hover:bg-interactive-hover transition-colors flex items-center justify-center">
+                            <FiEye className="w-3 h-3 text-theme-tertiary" />
                           </div>
                         </div>
-                        <Link
-                          href={`/teacher/lessons/${lesson.id}`}
-                          className="w-6 h-6 rounded bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
-                        >
-                          <FiEye className="w-3 h-3 text-theme-tertiary" />
-                        </Link>
                       </div>
-                    </div>
+                    </Link>
                   ))}
 
                   {todayLessons.length === 0 && (
@@ -900,7 +602,7 @@ export default function TeacherPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* Upcoming Lessons */}
+            {/* 🆕 SEÇÃO ATUALIZADA - PRÓXIMAS AULAS DESTA SEMANA */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center space-x-3 mb-4">
@@ -912,51 +614,67 @@ export default function TeacherPageClient({
                       {t('upcoming_lessons')}
                     </h3>
                     <p className="text-xs text-theme-tertiary">
-                      {t('this_week')}
+                      {t('this_week')} ({upcomingLessonsThisWeek.length}{' '}
+                      {upcomingLessonsThisWeek.length === 1 ? 'aula' : 'aulas'})
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  {upcomingLessons.map((lesson) => (
-                    <div
+                  {upcomingLessonsThisWeek.map((lesson) => (
+                    <Link
+                      href={`/teacher/lessons/${lesson.id}`}
                       key={lesson.id}
-                      className="flex items-center justify-between py-2 border-b border-theme-secondary last:border-0"
                     >
-                      <div>
-                        <div className="text-sm font-medium text-theme-primary">
-                          {lesson.student?.name}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          {formatDate(lesson.scheduledAt)} •{' '}
-                          {formatTime(lesson.scheduledAt)}
+                      <div className="classical-card-2 p-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-2 h-12 bg-brand-primary rounded-full"></div>
+                          <div className="flex-1">
+                            <div className="font-medium text-theme-primary text-sm">
+                              {formatTime(lesson.scheduledAt)}
+                            </div>
+                            <div className="text-xs text-theme-tertiary">
+                              {lesson.student?.name}
+                            </div>
+                            <div className="text-xs text-accent-blue">
+                              {lesson.duration}min
+                            </div>
+                          </div>
+                          <div className="w-6 h-6 rounded hover:bg-interactive-hover transition-colors flex items-center justify-center">
+                            <FiEye className="w-3 h-3 text-theme-tertiary" />
+                          </div>
                         </div>
                       </div>
-                      <div className="text-xs text-accent-blue font-medium">
-                        {lesson.duration}min
-                      </div>
-                    </div>
+                    </Link>
                   ))}
 
-                  {upcomingLessons.length === 0 && (
+                  {upcomingLessonsThisWeek.length === 0 && (
                     <div className="text-center py-4">
                       <p className="text-sm text-theme-tertiary">
-                        {t('no_lessons_scheduled')}
+                        Nenhuma aula agendada para esta semana
                       </p>
                     </div>
                   )}
                 </div>
+
+                {upcomingLessonsThisWeek.length > 0 && (
+                  <Link
+                    href="/teacher/calendar"
+                    className="mt-4 block text-center text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
+                  >
+                    Ver agenda completa
+                  </Link>
+                )}
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* Recent Activity */}
             <RecentActivities userId={teacherProfile.id} userType="teacher" />
           </div>
         </div>
       </AnimatedContainer>
 
       <AddStudentModal
-        addStudent={addStudent} // 🔥 Função que agora recebe studyPlan
+        addStudent={addStudent}
         handleSearchChange={handleSearchChange}
         isOpen={showAddStudent}
         loading={loading}

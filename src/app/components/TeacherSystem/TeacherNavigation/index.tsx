@@ -21,8 +21,6 @@ import {
   FiBell,
   FiActivity,
 } from 'react-icons/fi';
-import { GoBook } from 'react-icons/go';
-
 import { GiGrandPiano } from 'react-icons/gi';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';

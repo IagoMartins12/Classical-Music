@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // app/api/achievements/[badgeId]/viewed/route.ts
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { badgeId: string } }
+  { params }: { params: Promise<{ badgeId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -14,7 +14,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    const badgeId = params.badgeId;
+    const { badgeId } = await params;
 
     // Marcar como visualizado
     const updated = await prisma.userAchievement.updateMany({

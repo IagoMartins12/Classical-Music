@@ -121,16 +121,10 @@ export default function LearningStatsWidget({
 }: LearningStatsWidgetProps) {
   const { t } = useTranslation({ sections: ['pages/learning'] });
   const stats = useLearningStats();
-  const { isVisible, toggleVisibility, isMobile, showInline } =
-    useAdaptiveStats('learning');
-  const { openModal, Modal } = useStatsModal('learning');
+  const { showInline } = useAdaptiveStats('learning');
+  const { Modal } = useStatsModal('learning');
   const { checkLearningAchievements } = useLearningAchievementDetection();
-  const { achievements, fetchAchievements } = useAchievementSystem();
-
-  // Filtrar achievements de learning
-  const learningAchievements = achievements.filter(
-    (a) => a.category === 'LEARNING'
-  );
+  const { fetchAchievements } = useAchievementSystem();
 
   // Criar badges baseado nas stats
   const badges = createLearningBadges(stats);
@@ -153,15 +147,6 @@ export default function LearningStatsWidget({
   useEffect(() => {
     fetchAchievements('LEARNING');
   }, []);
-
-  // Handler para mobile - abre modal em vez de expandir inline
-  const handleToggle = () => {
-    if (isMobile && !isVisible) {
-      openModal();
-    } else {
-      toggleVisibility();
-    }
-  };
 
   // Se não tem itens suficientes, mostrar CTA
   if (stats.totalLearning < 3) {
@@ -228,7 +213,7 @@ export default function LearningStatsWidget({
               </h4>
             </div>
             <div className="space-y-3">
-              {nextAchievements.slice(0, 2).map((badge, index) => {
+              {nextAchievements.slice(0, 2).map((badge) => {
                 const Icon = badge.icon;
                 const progressPercent = badge.maxProgress
                   ? ((badge.progress || 0) / badge.maxProgress) * 100
@@ -282,7 +267,7 @@ export default function LearningStatsWidget({
               </h4>
             </div>
             <div className="grid grid-cols-1 gap-3">
-              {smartCTAs.map((cta, index) => (
+              {smartCTAs.map((cta) => (
                 <Link
                   key={cta.id}
                   href={cta.url}

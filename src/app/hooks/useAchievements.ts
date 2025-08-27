@@ -1,7 +1,7 @@
 // hooks/useAchievements.ts - Hook principal para gerenciar achievements
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useAchievements } from '../components/achievement/AchievementToast';
 
 // Tipos para rarity
@@ -167,23 +167,14 @@ export function useAchievementSystem() {
 export function useLearningAchievements() {
   const { checkNewAchievements } = useAchievementSystem();
 
-  const checkLearningProgress = useCallback(
-    async (
-      wantToLearnCount: number,
-      learnedCount: number,
-      avgMastery: number,
-      publicPerformances: number,
-      streakDays: number
-    ) => {
-      // Debounce para evitar chamadas excessivas
-      const timeoutId = setTimeout(async () => {
-        await checkNewAchievements('LEARNING');
-      }, 2000);
+  const checkLearningProgress = useCallback(async () => {
+    // Debounce para evitar chamadas excessivas
+    const timeoutId = setTimeout(async () => {
+      await checkNewAchievements('LEARNING');
+    }, 2000);
 
-      return () => clearTimeout(timeoutId);
-    },
-    [checkNewAchievements]
-  );
+    return () => clearTimeout(timeoutId);
+  }, [checkNewAchievements]);
 
   return { checkLearningProgress };
 }
@@ -192,22 +183,13 @@ export function useLearningAchievements() {
 export function useFavoritesAchievements() {
   const { checkNewAchievements } = useAchievementSystem();
 
-  const checkFavoritesProgress = useCallback(
-    async (
-      totalFavorites: number,
-      composersCount: number,
-      worksCount: number,
-      scoresCount: number,
-      epochsCount: number
-    ) => {
-      const timeoutId = setTimeout(async () => {
-        await checkNewAchievements('FAVORITES');
-      }, 2000);
+  const checkFavoritesProgress = useCallback(async () => {
+    const timeoutId = setTimeout(async () => {
+      await checkNewAchievements('FAVORITES');
+    }, 2000);
 
-      return () => clearTimeout(timeoutId);
-    },
-    [checkNewAchievements]
-  );
+    return () => clearTimeout(timeoutId);
+  }, [checkNewAchievements]);
 
   return { checkFavoritesProgress };
 }
@@ -216,21 +198,13 @@ export function useFavoritesAchievements() {
 export function useAnnotationsAchievements() {
   const { checkNewAchievements } = useAchievementSystem();
 
-  const checkAnnotationsProgress = useCallback(
-    async (
-      totalAnnotations: number,
-      totalHelpfulVotes: number,
-      verifiedAnnotations: number,
-      categoriesUsed: number
-    ) => {
-      const timeoutId = setTimeout(async () => {
-        await checkNewAchievements('ANNOTATIONS');
-      }, 2000);
+  const checkAnnotationsProgress = useCallback(async () => {
+    const timeoutId = setTimeout(async () => {
+      await checkNewAchievements('ANNOTATIONS');
+    }, 2000);
 
-      return () => clearTimeout(timeoutId);
-    },
-    [checkNewAchievements]
-  );
+    return () => clearTimeout(timeoutId);
+  }, [checkNewAchievements]);
 
   return { checkAnnotationsProgress };
 }
@@ -266,33 +240,16 @@ export function useAutoAchievementDetection() {
 
   // Auto-detectar mudanças nos dados e verificar achievements
   const detectChanges = useCallback(
-    (type: 'learning' | 'favorites' | 'annotations', stats: any) => {
+    (type: 'learning' | 'favorites' | 'annotations') => {
       switch (type) {
         case 'learning':
-          return checkLearningProgress(
-            stats.wantToLearnCount || 0,
-            stats.learnedCount || 0,
-            stats.avgMastery || 0,
-            stats.publicPerformances || 0,
-            stats.currentStreak || 0
-          );
+          return checkLearningProgress();
 
         case 'favorites':
-          return checkFavoritesProgress(
-            stats.totalFavorites || 0,
-            stats.composersCount || 0,
-            stats.worksCount || 0,
-            stats.scoresCount || 0,
-            stats.epochsCount || 0
-          );
+          return checkFavoritesProgress();
 
         case 'annotations':
-          return checkAnnotationsProgress(
-            stats.totalAnnotations || 0,
-            stats.totalHelpfulVotes || 0,
-            stats.verifiedAnnotations || 0,
-            stats.categoriesUsed || 0
-          );
+          return checkAnnotationsProgress();
       }
     },
     [checkLearningProgress, checkFavoritesProgress, checkAnnotationsProgress]

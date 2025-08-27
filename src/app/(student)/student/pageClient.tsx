@@ -639,20 +639,22 @@ export default function StudentPageClient({
                     </h3>
                     <div className="space-y-2">
                       {studyProgress.currentWorks.slice(0, 4).map((work) => (
-                        <div key={work.workId} className="classical-card-2 p-3">
-                          <div className="font-medium text-theme-primary text-sm">
-                            {work.title}
-                          </div>
-                          <div className="text-xs text-theme-tertiary">
-                            {work.composer}
-                          </div>
-                          {work.selectedScore && (
-                            <div className="text-xs text-accent-blue mt-1">
-                              {work.selectedScore.title} (
-                              {work.selectedScore.type})
+                        <Link href={`/work/${work.workId}`} key={work.workId}>
+                          <div className="classical-card-2 p-3">
+                            <div className="font-medium text-theme-primary text-sm">
+                              {work.title}
                             </div>
-                          )}
-                        </div>
+                            <div className="text-xs text-theme-tertiary">
+                              {work.composer}
+                            </div>
+                            {work.selectedScore && (
+                              <div className="text-xs text-accent-blue mt-1">
+                                {work.selectedScore.title} (
+                                {work.selectedScore.type})
+                              </div>
+                            )}
+                          </div>
+                        </Link>
                       ))}
                       {studyProgress.currentWorks.length === 0 && (
                         <p className="text-sm text-theme-tertiary py-4">
@@ -674,26 +676,28 @@ export default function StudentPageClient({
                     </h3>
                     <div className="space-y-2">
                       {studyProgress.learnedWorks.slice(0, 4).map((work) => (
-                        <div key={work.workId} className="classical-card-2 p-3">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <div className="font-medium text-theme-primary text-sm">
-                                {work.title}
+                        <Link href={`/work/${work.workId}`} key={work.workId}>
+                          <div
+                            key={work.workId}
+                            className="classical-card-2 p-3"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex-1">
+                                <div className="font-medium text-theme-primary text-sm">
+                                  {work.title}
+                                </div>
+                                <div className="text-xs text-theme-tertiary">
+                                  {work.composer}
+                                </div>
                               </div>
-                              <div className="text-xs text-theme-tertiary">
-                                {work.composer}
+                              <div className="flex items-center space-x-1">
+                                {work.wouldRecommend && (
+                                  <FiHeart className="w-3 h-3 text-accent-red" />
+                                )}
                               </div>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                              <div className="text-xs text-accent-green font-medium">
-                                {work.mastery}%
-                              </div>
-                              {work.wouldRecommend && (
-                                <FiHeart className="w-3 h-3 text-accent-red" />
-                              )}
                             </div>
                           </div>
-                        </div>
+                        </Link>
                       ))}
                       {studyProgress.learnedWorks.length === 0 && (
                         <p className="text-sm text-theme-tertiary py-4">
