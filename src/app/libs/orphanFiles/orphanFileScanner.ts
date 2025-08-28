@@ -1,7 +1,12 @@
-// app/libs/orphanFiles/orphanFileScanner.ts
+// app/libs/orphanFiles/orphanFileScanner.ts - VERSÃO CORRIGIDA
 import fs from 'fs/promises';
 import path from 'path';
 import prisma from '@/app/libs/prismadb';
+import {
+  CloudinaryOrphanScanner,
+  CloudinaryOrphanFile,
+  CloudinaryOrphanScanResult,
+} from './cloudinaryOrphanScanner';
 
 export interface OrphanFile {
   path: string;
@@ -29,6 +34,10 @@ export interface OrphanScanResult {
   scanDuration: number;
   scannedDirectories: string[];
   errors: string[];
+
+  // Dados do Cloudinary
+  cloudinaryData?: CloudinaryOrphanScanResult;
+  includesCloudinary: boolean;
 }
 
 export type OrphanFileCategory =
@@ -38,8 +47,10 @@ export type OrphanFileCategory =
   | 'advertisements'
   | 'works'
   | 'general'
-  | 'unknown';
+  | 'unknown'
+  | 'cloudinary';
 
+// 🔧 INTERFACE CORRIGIDA PARA OPÇÕES
 interface ScanOptions {
   categories?: OrphanFileCategory[];
   includeTemp?: boolean;
@@ -47,6 +58,7 @@ interface ScanOptions {
   maxSize?: number;
   extensions?: string[];
   olderThan?: Date;
+  includesCloudinary?: boolean; // 🔧 CORRIGIDO: includesCloudinary em vez de includeCloudinary
 }
 
 // Configuração dos diretórios por categoria
@@ -58,6 +70,7 @@ const UPLOAD_DIRECTORIES: Record<OrphanFileCategory, string[]> = {
   works: ['uploads/works'],
   general: ['uploads/image', 'uploads/score'],
   unknown: ['uploads'],
+  cloudinary: [], // Cloudinary não tem diretórios físicos
 };
 
 // Extensões por tipo
@@ -69,27 +82,195 @@ const FILE_TYPES = {
 };
 
 /**
- * Scanner principal de arquivos órfãos
+ * Scanner principal de arquivos órfãos - VERSÃO HÍBRIDA
  */
 export class OrphanFileScanner {
   private uploadsRoot: string;
   private allReferencedFiles: Set<string>;
+  private cloudinaryScanner: CloudinaryOrphanScanner;
 
   constructor() {
     this.uploadsRoot = path.join(process.cwd(), 'public', 'uploads');
     this.allReferencedFiles = new Set();
+    this.cloudinaryScanner = new CloudinaryOrphanScanner();
   }
 
   /**
-   * Escaneamento completo por categoria
+   * Escaneamento completo híbrido (local + Cloudinary)
+   */
+  async scanAll(options: ScanOptions = {}): Promise<OrphanScanResult> {
+    const startTime = Date.now();
+    const includesCloudinary = options.includesCloudinary !== false; // Default true
+
+    console.log(
+      `🔍 Iniciando scan ${
+        includesCloudinary ? 'híbrido' : 'local'
+      } de arquivos órfãos`
+    );
+
+    try {
+      // 1. Scan local (arquivos físicos)
+      const localResult = await this.scanLocalFiles(options);
+
+      // 2. Scan Cloudinary (se habilitado)
+      let cloudinaryData: CloudinaryOrphanScanResult | undefined;
+      if (includesCloudinary) {
+        try {
+          console.log('☁️ Iniciando scan do Cloudinary...');
+          cloudinaryData = await this.cloudinaryScanner.scanCloudinaryOrphans();
+          console.log(
+            `☁️ Cloudinary: ${cloudinaryData.orphanFiles.length} órfãos encontrados`
+          );
+        } catch (cloudinaryError) {
+          console.error('❌ Erro no scan do Cloudinary:', cloudinaryError);
+          localResult.errors.push(`Erro no Cloudinary: ${cloudinaryError}`);
+        }
+      }
+
+      // 3. Consolidar resultado
+      const result: OrphanScanResult = {
+        ...localResult,
+        cloudinaryData,
+        includesCloudinary,
+        scanDuration: Date.now() - startTime,
+      };
+
+      const totalOrphans =
+        localResult.orphanFiles.length +
+        (cloudinaryData?.orphanFiles.length || 0);
+      console.log(
+        `✅ Scan ${
+          includesCloudinary ? 'híbrido' : 'local'
+        } concluído: ${totalOrphans} órfãos encontrados`
+      );
+
+      return result;
+    } catch (error) {
+      console.error('❌ Erro durante scan:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Scan por categoria específica
    */
   async scanByCategory(
     category: OrphanFileCategory,
     options: ScanOptions = {}
   ): Promise<OrphanScanResult> {
+    if (category === 'cloudinary') {
+      // Scan apenas do Cloudinary
+      const startTime = Date.now();
+
+      try {
+        const cloudinaryData =
+          await this.cloudinaryScanner.scanCloudinaryOrphans();
+
+        return {
+          totalFiles: cloudinaryData.totalFiles,
+          orphanFiles: [], // Arquivos locais vazios
+          totalSize: 0, // Tamanho local zero
+          formattedTotalSize: '0 B',
+          categories: {
+            profiles: 0,
+            composers: 0,
+            scores: 0,
+            advertisements: 0,
+            works: 0,
+            general: 0,
+            unknown: 0,
+            cloudinary: cloudinaryData.orphanFiles.length,
+          },
+          scanDuration: Date.now() - startTime,
+          scannedDirectories: ['Cloudinary'],
+          errors: [],
+          cloudinaryData,
+          includesCloudinary: true,
+        };
+      } catch (error) {
+        throw new Error(`Erro ao escanear Cloudinary: ${error}`);
+      }
+    }
+
+    // Scan local normal
+    return this.scanLocalByCategory(category, options);
+  }
+
+  /**
+   * Scan local de arquivos (método original adaptado)
+   */
+  private async scanLocalFiles(
+    options: ScanOptions
+  ): Promise<Omit<OrphanScanResult, 'cloudinaryData' | 'includesCloudinary'>> {
+    // Carregar todas as referências do banco de dados
+    await this.loadAllDatabaseReferences();
+
+    // Escanear todos os diretórios locais
+    const allFiles: OrphanFile[] = [];
+    const scannedDirectories: string[] = [];
+    const errors: string[] = [];
+
+    // Escanear cada categoria (exceto cloudinary)
+    for (const [category, directories] of Object.entries(UPLOAD_DIRECTORIES)) {
+      if (category === 'cloudinary') continue;
+
+      if (
+        options.categories &&
+        !options.categories.includes(category as OrphanFileCategory)
+      ) {
+        continue;
+      }
+
+      for (const dir of directories) {
+        const fullPath = path.join(
+          this.uploadsRoot,
+          dir.replace('uploads/', '')
+        );
+
+        try {
+          await fs.access(fullPath);
+          const files = await this.scanDirectory(
+            fullPath,
+            category as OrphanFileCategory,
+            options
+          );
+          allFiles.push(...files);
+          scannedDirectories.push(dir);
+        } catch (error) {
+          errors.push(`Erro ao escanear ${dir}: ${error}`);
+        }
+      }
+    }
+
+    // Filtrar órfãos
+    const orphanFiles = this.filterOrphanFiles(allFiles);
+
+    // Calcular estatísticas
+    const totalSize = orphanFiles.reduce((sum, file) => sum + file.size, 0);
+    const categories = this.categorizeFiles(orphanFiles);
+
+    return {
+      totalFiles: allFiles.length,
+      orphanFiles,
+      totalSize,
+      formattedTotalSize: this.formatBytes(totalSize),
+      categories,
+      scanDuration: 0, // Será calculado no método pai
+      scannedDirectories,
+      errors,
+    };
+  }
+
+  /**
+   * Scan local por categoria específica
+   */
+  private async scanLocalByCategory(
+    category: OrphanFileCategory,
+    options: ScanOptions
+  ): Promise<OrphanScanResult> {
     const startTime = Date.now();
 
-    console.log(`🔍 Iniciando scan de arquivos órfãos: ${category}`);
+    console.log(`🔍 Iniciando scan local de arquivos órfãos: ${category}`);
 
     try {
       // Carregar todas as referências do banco
@@ -125,84 +306,18 @@ export class OrphanFileScanner {
       const totalSize = orphanFiles.reduce((sum, file) => sum + file.size, 0);
       const categories = this.categorizeFiles(orphanFiles);
 
-      const result: OrphanScanResult = {
-        totalFiles: allFiles.length,
-        orphanFiles,
-        totalSize,
-        formattedTotalSize: this.formatBytes(totalSize),
-        categories,
-        scanDuration: Date.now() - startTime,
-        scannedDirectories,
-        errors,
-      };
-
-      console.log(
-        `✅ Scan concluído: ${orphanFiles.length} órfãos encontrados em ${result.scanDuration}ms`
-      );
-
-      return result;
-    } catch (error) {
-      console.error('❌ Erro durante scan:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Escaneamento geral de todos os tipos
-   */
-  async scanAll(options: ScanOptions = {}): Promise<OrphanScanResult> {
-    const startTime = Date.now();
-
-    console.log('🔍 Iniciando scan completo de arquivos órfãos');
-
-    try {
-      // Carregar todas as referências do banco
-      await this.loadAllDatabaseReferences();
-
-      // Escanear todos os diretórios
-      const allFiles: OrphanFile[] = [];
-      const scannedDirectories: string[] = [];
-      const errors: string[] = [];
-
-      // Escanear cada categoria
-      for (const [category, directories] of Object.entries(
-        UPLOAD_DIRECTORIES
-      )) {
-        if (
-          options.categories &&
-          !options.categories.includes(category as OrphanFileCategory)
-        ) {
-          continue;
-        }
-
-        for (const dir of directories) {
-          const fullPath = path.join(
-            this.uploadsRoot,
-            dir.replace('uploads/', '')
-          );
-
-          try {
-            await fs.access(fullPath);
-            const files = await this.scanDirectory(
-              fullPath,
-              category as OrphanFileCategory,
-              options
-            );
-            allFiles.push(...files);
-            scannedDirectories.push(dir);
-          } catch (error) {
-            errors.push(`Erro ao escanear ${dir}: ${error}`);
-          }
+      // 🔧 SCAN DO CLOUDINARY SE HABILITADO
+      let cloudinaryData: CloudinaryOrphanScanResult | undefined;
+      if (options.includesCloudinary) {
+        try {
+          console.log('☁️ Incluindo scan do Cloudinary...');
+          cloudinaryData = await this.cloudinaryScanner.scanCloudinaryOrphans();
+        } catch (cloudinaryError) {
+          console.error('❌ Erro no scan do Cloudinary:', cloudinaryError);
+          errors.push(`Erro no Cloudinary: ${cloudinaryError}`);
         }
       }
 
-      // Filtrar órfãos
-      const orphanFiles = this.filterOrphanFiles(allFiles);
-
-      // Calcular estatísticas
-      const totalSize = orphanFiles.reduce((sum, file) => sum + file.size, 0);
-      const categories = this.categorizeFiles(orphanFiles);
-
       const result: OrphanScanResult = {
         totalFiles: allFiles.length,
         orphanFiles,
@@ -212,23 +327,69 @@ export class OrphanFileScanner {
         scanDuration: Date.now() - startTime,
         scannedDirectories,
         errors,
+        cloudinaryData,
+        includesCloudinary: options.includesCloudinary || false,
       };
 
+      const totalOrphans =
+        orphanFiles.length + (cloudinaryData?.orphanFiles.length || 0);
       console.log(
-        `✅ Scan completo concluído: ${orphanFiles.length} órfãos de ${allFiles.length} arquivos`
+        `✅ Scan local concluído: ${totalOrphans} órfãos encontrados em ${result.scanDuration}ms`
       );
-
       return result;
     } catch (error) {
-      console.error('❌ Erro durante scan completo:', error);
+      console.error('❌ Erro durante scan local:', error);
       throw error;
     }
   }
 
   /**
-   * Remover arquivos órfãos selecionados
+   * Método para remover arquivos híbridos
    */
-  async removeOrphanFiles(filePaths: string[]): Promise<{
+  async removeOrphanFiles(
+    filePaths: string[],
+    cloudinaryPublicIds?: string[]
+  ): Promise<{
+    localResult?: {
+      removed: string[];
+      failed: Array<{ path: string; error: string }>;
+      totalSizeFreed: number;
+    };
+    cloudinaryResult?: {
+      removed: string[];
+      failed: Array<{ publicId: string; error: string }>;
+      totalSizeFreed: number;
+    };
+    totalSizeFreed: number;
+  }> {
+    const results: any = {};
+    let totalSizeFreed = 0;
+
+    // Remover arquivos locais
+    if (filePaths && filePaths.length > 0) {
+      results.localResult = await this.removeLocalOrphanFiles(filePaths);
+      totalSizeFreed += results.localResult.totalSizeFreed;
+    }
+
+    // Remover arquivos do Cloudinary
+    if (cloudinaryPublicIds && cloudinaryPublicIds.length > 0) {
+      results.cloudinaryResult =
+        await this.cloudinaryScanner.removeCloudinaryOrphans(
+          cloudinaryPublicIds
+        );
+      totalSizeFreed += results.cloudinaryResult.totalSizeFreed;
+    }
+
+    return {
+      ...results,
+      totalSizeFreed,
+    };
+  }
+
+  /**
+   * Remover arquivos locais
+   */
+  private async removeLocalOrphanFiles(filePaths: string[]): Promise<{
     removed: string[];
     failed: Array<{ path: string; error: string }>;
     totalSizeFreed: number;
@@ -250,7 +411,7 @@ export class OrphanFileScanner {
         removed.push(filePath);
         totalSizeFreed += stats.size;
 
-        console.log(`🗑️ Arquivo removido: ${filePath}`);
+        console.log(`🗑️ Arquivo local removido: ${filePath}`);
       } catch (error) {
         failed.push({
           path: filePath,
@@ -267,7 +428,7 @@ export class OrphanFileScanner {
    * Carregar todas as referências do banco de dados
    */
   private async loadAllDatabaseReferences(): Promise<void> {
-    console.log('📚 Carregando referências do banco de dados...');
+    console.log('📚 Carregando referências locais do banco de dados...');
 
     try {
       // Users
@@ -343,10 +504,10 @@ export class OrphanFileScanner {
       });
 
       console.log(
-        `📚 Carregadas ${this.allReferencedFiles.size} referências do banco`
+        `📚 Carregadas ${this.allReferencedFiles.size} referências locais do banco`
       );
     } catch (error) {
-      console.error('❌ Erro ao carregar referências:', error);
+      console.error('❌ Erro ao carregar referências locais:', error);
       throw error;
     }
   }
@@ -357,7 +518,7 @@ export class OrphanFileScanner {
   private async loadDatabaseReferences(
     category: OrphanFileCategory
   ): Promise<void> {
-    console.log(`📚 Carregando referências para categoria: ${category}`);
+    console.log(`📚 Carregando referências locais para categoria: ${category}`);
 
     try {
       switch (category) {
@@ -452,9 +613,7 @@ export class OrphanFileScanner {
     }
   }
 
-  /**
-   * Escanear diretório recursivamente
-   */
+  // Métodos auxiliares originais mantidos...
   private async scanDirectory(
     dirPath: string,
     category: OrphanFileCategory,
@@ -469,7 +628,6 @@ export class OrphanFileScanner {
         const fullPath = path.join(dirPath, entry.name);
 
         if (entry.isDirectory()) {
-          // Recursivo para subdiretórios
           const subFiles = await this.scanDirectory(
             fullPath,
             category,
@@ -479,7 +637,6 @@ export class OrphanFileScanner {
         } else if (entry.isFile()) {
           const file = await this.createOrphanFile(fullPath, category);
 
-          // Aplicar filtros
           if (this.matchesFilters(file, options)) {
             files.push(file);
           }
@@ -492,9 +649,6 @@ export class OrphanFileScanner {
     return files;
   }
 
-  /**
-   * Criar objeto OrphanFile a partir de um arquivo
-   */
   private async createOrphanFile(
     filePath: string,
     category: OrphanFileCategory
@@ -525,9 +679,6 @@ export class OrphanFileScanner {
     };
   }
 
-  /**
-   * Verificar se arquivo atende aos filtros
-   */
   private matchesFilters(file: OrphanFile, options: ScanOptions): boolean {
     if (options.minSize && file.size < options.minSize) return false;
     if (options.maxSize && file.size > options.maxSize) return false;
@@ -535,28 +686,21 @@ export class OrphanFileScanner {
       return false;
     if (options.olderThan && file.lastModified > options.olderThan)
       return false;
-
     return true;
   }
 
-  /**
-   * Filtrar arquivos órfãos
-   */
   private filterOrphanFiles(allFiles: OrphanFile[]): OrphanFile[] {
     return allFiles.filter((file) => {
       const isReferenced = this.allReferencedFiles.has(file.relativePath);
 
       if (!isReferenced) {
-        console.log(`🔍 Órfão encontrado: ${file.relativePath}`);
+        console.log(`🔍 Órfão local encontrado: ${file.relativePath}`);
       }
 
       return !isReferenced;
     });
   }
 
-  /**
-   * Categorizar arquivos por tipo
-   */
   private categorizeFiles(
     files: OrphanFile[]
   ): Record<OrphanFileCategory, number> {
@@ -568,6 +712,7 @@ export class OrphanFileScanner {
       works: 0,
       general: 0,
       unknown: 0,
+      cloudinary: 0,
     };
 
     files.forEach((file) => {
@@ -577,9 +722,6 @@ export class OrphanFileScanner {
     return categories;
   }
 
-  /**
-   * Adicionar referência normalizada
-   */
   private addReference(url: string): void {
     if (!url) return;
 
@@ -601,21 +743,16 @@ export class OrphanFileScanner {
     this.allReferencedFiles.add(cleanUrl);
   }
 
-  /**
-   * Formatar bytes em formato legível
-   */
   private formatBytes(bytes: number): string {
     if (bytes === 0) return '0 B';
-
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 }
 
-// Função utilitária para uso direto
+// Funções utilitárias atualizadas
 export async function scanOrphanFiles(
   category?: OrphanFileCategory,
   options?: ScanOptions
@@ -629,8 +766,10 @@ export async function scanOrphanFiles(
   }
 }
 
-// Função para remover arquivos
-export async function removeOrphanFiles(filePaths: string[]) {
+export async function removeOrphanFiles(
+  filePaths: string[],
+  cloudinaryPublicIds?: string[]
+) {
   const scanner = new OrphanFileScanner();
-  return scanner.removeOrphanFiles(filePaths);
+  return scanner.removeOrphanFiles(filePaths, cloudinaryPublicIds);
 }
