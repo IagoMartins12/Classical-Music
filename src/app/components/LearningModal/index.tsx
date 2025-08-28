@@ -506,12 +506,7 @@ const LearningModal = () => {
             // Limpar estado do vídeo
             removeVideo();
 
-            toast.success(
-              '🎉 Parabéns! Obra marcada como aprendida com vídeo!',
-              {
-                duration: 4000,
-              }
-            );
+            toast.success('🎉 Parabéns! Obra marcada como aprendida!');
           } else {
             // Sem vídeo - método normal
             await toggleLearned(workId, user.id, learnedForm.mastery, {
@@ -519,10 +514,7 @@ const LearningModal = () => {
               isVideoPublic,
             });
 
-            toast.success('Parabéns! Obra marcada como aprendida!', {
-              icon: '🎉',
-              duration: 3000,
-            });
+            toast.success('🎉 Parabéns! Obra marcada como aprendida!');
           }
         }
       }
@@ -1386,7 +1378,8 @@ const LearningModal = () => {
 
           <div className="classical-card-simple rounded-xl p-4 mb-6">
             <p className="text-theme-primary">
-              <strong>&quot;{workTitle}&quot;</strong> {t('transfer_learned_description')}
+              <strong>&quot;{workTitle}&quot;</strong>{' '}
+              {t('transfer_learned_description')}
             </p>
 
             <div className="mt-3 text-sm text-theme-secondary">

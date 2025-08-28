@@ -367,8 +367,6 @@ export async function POST(request: NextRequest) {
       isVerified: false,
       lastVerified: new Date(),
       lastAccessed: new Date(),
-      accessCount: 0,
-      priority: body.priority || 0,
     };
 
     // Criar partitura

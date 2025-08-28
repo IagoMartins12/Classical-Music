@@ -1,6 +1,6 @@
 // app/requests/uploads.ts - ATUALIZADO COM LIMITAÇÃO POR CATEGORIA
 import prisma from '@/app/libs/prismadb';
-import { unstable_cache } from 'next/cache';
+import { revalidatePath, unstable_cache } from 'next/cache';
 import { Prisma } from '@prisma/client';
 import { composersByEpoch } from './music-history-translated';
 
@@ -992,7 +992,7 @@ export async function revalidateUploadsCache(userId?: string) {
   revalidateTag('available-epochs'); // 🆕 Novo cache de épocas
   revalidateTag('epochs');
   revalidateTag('form-data-page'); // 🆕 Adicionar novo cache
-
+  revalidatePath('/uploads');
   if (userId) {
     revalidateTag(`user-uploads-${userId}`);
   }

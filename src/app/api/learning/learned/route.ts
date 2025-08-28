@@ -452,7 +452,7 @@ export async function PATCH(request: NextRequest) {
     // 1. Se solicitou deletar vídeo existente
     if (deleteVideo) {
       const videoData = extractLearnedVideoData(existingItem);
-      if (videoData) {
+      if (videoData && videoData.filePath) {
         await deleteLearnedVideo(videoData.filePath);
         console.log(`🗑️ [LEARNED] Vídeo existente removido`);
       }
@@ -470,7 +470,7 @@ export async function PATCH(request: NextRequest) {
     if (videoFile) {
       // Deletar vídeo anterior se existe
       const videoData = extractLearnedVideoData(existingItem);
-      if (videoData) {
+      if (videoData && videoData.filePath) {
         await deleteLearnedVideo(videoData.filePath);
         console.log(`🗑️ [LEARNED] Vídeo anterior substituído`);
       }

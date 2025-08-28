@@ -265,6 +265,10 @@ const EditWorkClient = ({
                           </Button>
                         )}
                       </div>
+
+                      <Link href={`/works/${work.id}`} className="ml-2">
+                        <Button variant="primary">Ver obra</Button>
+                      </Link>
                     </div>
 
                     {/* Difficulty Level Badge */}

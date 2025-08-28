@@ -679,15 +679,16 @@ export default function WorkDetailsClient({
                           showLabel={false}
                         />
                         {/* Admin verification button */}
-                        {isAdmin && (
-                          <EditButton
-                            entityId={work.id}
-                            variant="minimal"
-                            entityType="work"
-                            size="lg"
-                            showLabel={false}
-                          />
-                        )}
+                        {isAdmin ||
+                          (canEditMedia && (
+                            <EditButton
+                              entityId={work.id}
+                              variant="minimal"
+                              entityType="work"
+                              size="lg"
+                              showLabel={false}
+                            />
+                          ))}
                         {isAdmin && (
                           <VerificationButton
                             entityType="work"

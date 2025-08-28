@@ -450,6 +450,7 @@ const CreateWorkModal = ({
         body: formDataUpload,
       });
 
+      console.log('response', { response, workId });
       const data = await response.json();
 
       if (!response.ok) {
@@ -605,6 +606,9 @@ const CreateWorkModal = ({
 
     setIsSubmitting(true);
 
+    const composerFullName =
+      composers.find((c) => c.id === formData.composerId)?.fullName ||
+      composers.find((c) => c.id === formData.composerId)?.name;
     try {
       const submitData = {
         ...formData,
@@ -625,9 +629,7 @@ const CreateWorkModal = ({
             ? extractYouTubeVideoId(mediaData.youtubeUrl)
             : null,
           youtubeTitle: mediaData.youtubeUrl
-            ? `${formData.title} - ${
-                composers.find((c) => c.id === formData.composerId)?.fullName
-              }`
+            ? `${formData.title} - ${composerFullName}`
             : null,
           ...(mediaData.hasVideoAula && {
             videoAulaUrl: mediaData.videoAulaUrl || null,
@@ -1667,13 +1669,15 @@ const CreateWorkModal = ({
                   type="submit"
                   variant="primary"
                   leftIcon={
-                    isSubmitting ? (
+                    isSubmitting || uploadingAudio || uploadingVideoAula ? (
                       <FiLoader className="animate-spin" />
                     ) : (
                       <FiSave />
                     )
                   }
-                  disabled={isSubmitting}
+                  disabled={
+                    isSubmitting || uploadingAudio || uploadingVideoAula
+                  }
                 >
                   {isSubmitting
                     ? t('form_saving')

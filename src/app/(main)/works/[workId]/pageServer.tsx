@@ -74,6 +74,11 @@ export default async function WorkDetailsServer({
     // 🆕 VERIFICAR PERMISSÕES COMPLETAS
     const isAdmin = session?.user?.role === 2;
     const isOwner = work.createdBy === session?.user?.id;
+    console.log('isOWNER', {
+      isOwner,
+      work: work.createdBy,
+      session: session?.user.id,
+    });
     const canEditMedia = isAdmin || isOwner;
 
     // const canEditVideoAula =

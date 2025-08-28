@@ -142,15 +142,6 @@ export function useLearnedVideo(): UseLearnedVideoResult {
         const result = await response.json();
 
         if (response.ok && result.success) {
-          const message = selectedVideo
-            ? 'Vídeo atualizado com sucesso!'
-            : 'Configurações do vídeo atualizadas!';
-
-          toast.success(message, {
-            icon: selectedVideo ? '🎥' : '⚙️',
-            duration: 3000,
-          });
-
           // Limpar estado se foi upload de novo vídeo
           if (selectedVideo) {
             removeVideo();

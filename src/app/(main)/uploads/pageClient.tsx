@@ -150,8 +150,6 @@ const UploadsClient = ({
   // Estados e hooks permanecem iguais
   const toast = useToast();
 
-  console.log('form data', formData);
-
   const [isPending, startTransition] = useTransition();
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [selectedType, setSelectedType] = useState<FilterTab>(

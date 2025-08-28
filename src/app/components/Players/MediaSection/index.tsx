@@ -91,7 +91,11 @@ const MediaSection: React.FC<MediaSectionProps> = ({
   const toast = useToast();
 
   // VERIFICAR SE JÁ FOI FEITA ALGUMA BUSCA (SERVIDOR OU SESSÃO ATUAL)
-  const hasSearchBeenMade = !!work.lastMediaSearch || hasSearchedInSession;
+  const hasSearchBeenMade =
+    !!work.lastMediaSearch ||
+    hasSearchedInSession ||
+    !work.youtubeVideoUrl ||
+    !work.spotifyTrackId;
 
   // VERIFICAR SE É ADMIN (role 2 ou isAdmin como fallback)
   const isAdminUser = userRole === 2 || isAdmin;

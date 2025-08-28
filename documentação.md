@@ -2,9 +2,9 @@ Documentação Técnica Completa - Opus Atlas
 Números e Estatísticas do Sistema
 Quantidades Gerais
 
-Páginas totais: 112 páginas
-Rotas de API: 124 rotas
-Tabelas do banco: 41 tabelas
+Páginas totais: 115 páginas
+Rotas de API: 163 rotas
+Tabelas do banco: 43 tabelas
 Sistemas principais: 28 sistemas
 Mini-sistemas: 47 mini-sistemas
 Tipos de usuário: 4 (Casual, Estudante, Profissional, Professor)

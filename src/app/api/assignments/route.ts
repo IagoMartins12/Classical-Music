@@ -1,5 +1,4 @@
-// app/api/assignments/route.ts - ATUALIZADO COM CRIAÇÃO DE NOTIFICAÇÕES E LOGGING DE ATIVIDADES
-
+// app/api/assignments/route.ts - ATUALIZADO PARA CLOUDINARY
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -10,13 +9,164 @@ import {
   createTeacherActivityLogger,
   createStudentActivityLogger,
 } from '@/app/utils/schoolActivities';
+// ✅ NOVA IMPORTAÇÃO: Funções do Cloudinary
 import {
-  uploadAssignmentVideo,
-  deleteAssignmentVideo,
-  extractVideoSubmission,
-  createVideoSubmission,
-  updateSubmissionsWithVideo,
-} from '@/app/utils/assignmentVideoUpload';
+  uploadAssignmentVideo as uploadAssignmentVideoCloudinary,
+  deleteFromCloudinary,
+} from '@/app/libs/cloudinary';
+
+// ✅ INTERFACES ATUALIZADAS
+interface VideoUploadResult {
+  success: boolean;
+  cloudinaryUrl?: string;
+  publicId?: string;
+  filename?: string;
+  originalName?: string;
+  fileSize?: number;
+  mimeType?: string;
+  thumbnailUrl?: string;
+  duration?: number;
+  format?: string;
+  error?: string;
+}
+
+interface VideoSubmission {
+  filename: string;
+  originalName: string;
+  filePath: string; // ✅ Manter nome original - vai conter URL do Cloudinary
+  fileSize: number;
+  uploadedAt: string;
+  mimeType: string;
+  // ✅ Campos extras do Cloudinary
+  cloudinaryUrl?: string;
+  cloudinaryPublicId?: string;
+  thumbnailUrl?: string;
+  duration?: number;
+  format?: string;
+}
+
+// ✅ FUNÇÕES ATUALIZADAS PARA CLOUDINARY
+async function uploadAssignmentVideo(
+  assignmentId: string,
+  file: File
+): Promise<VideoUploadResult> {
+  try {
+    console.log(`🎥 [CLOUDINARY] Upload assignment video para ${assignmentId}`);
+
+    // Usar função do Cloudinary
+    const uploadResult = await uploadAssignmentVideoCloudinary(
+      file,
+      assignmentId
+    );
+
+    if (!uploadResult.success) {
+      return {
+        success: false,
+        error: uploadResult.error,
+      };
+    }
+
+    return {
+      success: true,
+      cloudinaryUrl: uploadResult.secureUrl!,
+      publicId: uploadResult.publicId!,
+      filename: file.name,
+      originalName: file.name,
+      fileSize: uploadResult.fileSize!,
+      mimeType: file.type,
+      duration: uploadResult.duration,
+      format: uploadResult.format,
+    };
+  } catch (error) {
+    console.error('❌ [CLOUDINARY] Erro no upload assignment:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro interno no upload',
+    };
+  }
+}
+
+async function deleteAssignmentVideo(publicId: string): Promise<boolean> {
+  try {
+    if (!publicId) return true;
+
+    const success = await deleteFromCloudinary(publicId, 'video');
+
+    if (success) {
+      console.log(`🗑️ [CLOUDINARY] Vídeo assignment deletado: ${publicId}`);
+    } else {
+      console.warn(`⚠️ [CLOUDINARY] Falha ao deletar: ${publicId}`);
+    }
+
+    return success;
+  } catch (error) {
+    console.error('❌ [CLOUDINARY] Erro ao deletar vídeo assignment:', error);
+    return false;
+  }
+}
+
+function extractVideoSubmission(submissions: any): VideoSubmission | null {
+  try {
+    if (!submissions || typeof submissions !== 'object') {
+      return null;
+    }
+
+    const videoSubmission = submissions.videoSubmission;
+
+    if (!videoSubmission) {
+      return null;
+    }
+
+    return {
+      filename: videoSubmission.filename || 'video.mp4',
+      originalName: videoSubmission.originalName || 'video.mp4',
+      filePath: videoSubmission.filePath || '', // URL do Cloudinary
+      fileSize: videoSubmission.fileSize || 0,
+      uploadedAt: videoSubmission.uploadedAt || new Date().toISOString(),
+      mimeType: videoSubmission.mimeType || 'video/mp4',
+      // ✅ Campos do Cloudinary
+      cloudinaryUrl: videoSubmission.cloudinaryUrl,
+      cloudinaryPublicId: videoSubmission.cloudinaryPublicId,
+      thumbnailUrl: videoSubmission.thumbnailUrl,
+      duration: videoSubmission.duration,
+      format: videoSubmission.format,
+    };
+  } catch (error) {
+    console.error('❌ [CLOUDINARY] Erro ao extrair submission:', error);
+    return null;
+  }
+}
+
+function createVideoSubmission(
+  uploadResult: VideoUploadResult
+): VideoSubmission {
+  return {
+    filename: uploadResult.filename!,
+    originalName: uploadResult.originalName!,
+    filePath: uploadResult.cloudinaryUrl!, // ✅ URL do Cloudinary no campo original
+    fileSize: uploadResult.fileSize!,
+    uploadedAt: new Date().toISOString(),
+    mimeType: uploadResult.mimeType!,
+    // ✅ Campos extras do Cloudinary
+    cloudinaryUrl: uploadResult.cloudinaryUrl,
+    cloudinaryPublicId: uploadResult.publicId,
+    thumbnailUrl: uploadResult.thumbnailUrl,
+    duration: uploadResult.duration,
+    format: uploadResult.format,
+  };
+}
+
+function updateSubmissionsWithVideo(
+  currentSubmissions: any,
+  videoSubmission: VideoSubmission
+): any {
+  const submissions = currentSubmissions || {};
+
+  return {
+    ...submissions,
+    videoSubmission,
+  };
+}
 
 // Função auxiliar para revalidar cache do professor e aluno (MANTIDA)
 async function revalidateTeacherAndStudentData(
@@ -345,7 +495,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// 🆕 POST - Criar novo assignment (COM NOTIFICAÇÃO E LOGGING)
+// POST - Criar novo assignment (SEM MUDANÇAS)
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -481,7 +631,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // 🆕 CRIAR NOTIFICAÇÃO: NEW_ASSIGNMENT_CREATED
+    // Criar notificação: NEW_ASSIGNMENT_CREATED
     const teacherName =
       `${assignment.lesson.teacher.user.firstName} ${assignment.lesson.teacher.user.lastName}`.trim();
 
@@ -503,7 +653,7 @@ export async function POST(request: NextRequest) {
       // Não falhar a criação do assignment por causa da notificação
     }
 
-    // 🆕 LOGGING DE ATIVIDADE: ASSIGNMENT_CREATED
+    // Logging de atividade: ASSIGNMENT_CREATED
     try {
       const activityLogger = createTeacherActivityLogger(session.user.id);
 
@@ -551,7 +701,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 🆕 PATCH - Atualizar assignment (COM NOTIFICAÇÕES E LOGGING)
+// ✅ PATCH - Atualizar assignment (ATUALIZADO PARA CLOUDINARY)
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -563,7 +713,7 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Acesso negado' }, { status: 403 });
     }
 
-    // 🆕 PROCESSAR FORMDATA PARA UPLOAD DE VÍDEO
+    // ✅ CORREÇÃO: Detectar tipo de requisição
     const contentType = request.headers.get('content-type');
     let body: any;
     let videoFile: File | null = null;
@@ -571,12 +721,8 @@ export async function PATCH(request: NextRequest) {
     if (contentType?.includes('multipart/form-data')) {
       // FormData com possível arquivo de vídeo
       const formData = await request.formData();
-
-      // Extrair dados JSON
       const jsonData = formData.get('data') as string;
       body = JSON.parse(jsonData);
-
-      // Extrair arquivo de vídeo
       videoFile = formData.get('videoFile') as File | null;
 
       console.log(
@@ -680,7 +826,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    // 🆕 DETECTAR MUDANÇAS PARA NOTIFICAÇÕES E LOGGING (antes da atualização)
+    // Detectar mudanças para notificações e logging (antes da atualização)
     const oldData = {
       worksIds: assignment.worksIds,
       workScoreIds: assignment.workScoreIds,
@@ -738,16 +884,16 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
-    // 🆕 PROCESSAR UPLOAD DE VÍDEO (apenas para alunos)
+    // ✅ PROCESSAR UPLOAD DE VÍDEO PARA CLOUDINARY (apenas para alunos)
     let videoUploadResult = null;
     let hasNewVideo = false;
 
     if (videoFile && session.user.role === 0) {
       console.log(
-        `🎥 [ASSIGNMENTS] Processando upload de vídeo para assignment ${assignmentId}`
+        `🎥 [CLOUDINARY] Processando upload de vídeo para assignment ${assignmentId}`
       );
 
-      // 1. Upload do novo vídeo
+      // 1. Upload do novo vídeo para Cloudinary
       videoUploadResult = await uploadAssignmentVideo(assignmentId, videoFile);
 
       if (!videoUploadResult.success) {
@@ -761,9 +907,9 @@ export async function PATCH(request: NextRequest) {
       const currentVideoSubmission = extractVideoSubmission(
         assignment.submissions
       );
-      if (currentVideoSubmission?.filePath) {
-        await deleteAssignmentVideo(currentVideoSubmission.filePath);
-        console.log(`🗑️ [ASSIGNMENTS] Vídeo anterior removido`);
+      if (currentVideoSubmission?.cloudinaryPublicId) {
+        await deleteAssignmentVideo(currentVideoSubmission.cloudinaryPublicId);
+        console.log(`🗑️ [CLOUDINARY] Vídeo anterior removido do Cloudinary`);
       }
 
       // 3. Atualizar submissions com novo vídeo
@@ -777,7 +923,7 @@ export async function PATCH(request: NextRequest) {
       hasNewVideo = true;
 
       console.log(
-        `✅ [ASSIGNMENTS] Vídeo processado com sucesso: ${videoUploadResult.filename}`
+        `✅ [CLOUDINARY] Vídeo processado com sucesso: ${videoUploadResult.filename}`
       );
     }
 
@@ -821,7 +967,7 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    // 🆕 CRIAR NOTIFICAÇÕES BASEADAS NAS MUDANÇAS
+    // Criar notificações baseadas nas mudanças
     const teacherUserId = assignment.lesson.teacher.userId;
     const studentUserId = assignment.student.userId;
     const teacherName =
@@ -831,7 +977,7 @@ export async function PATCH(request: NextRequest) {
 
     try {
       if (session.user.role === 1) {
-        // 📬 NOTIFICAÇÕES PARA ESTUDANTE (ações do professor)
+        // Notificações para estudante (ações do professor)
 
         // 1. Professor deu feedback
         if (filteredUpdateData.teacherFeedback && !oldData.teacherFeedback) {
@@ -874,7 +1020,7 @@ export async function PATCH(request: NextRequest) {
           );
         }
       } else {
-        // 📬 NOTIFICAÇÕES PARA PROFESSOR (ações do aluno)
+        // Notificações para professor (ações do aluno)
 
         // 1. Aluno enviou submissão
         if (
@@ -893,7 +1039,7 @@ export async function PATCH(request: NextRequest) {
           );
         }
 
-        // 🆕 2. Aluno enviou vídeo (nova notificação específica)
+        // 2. Aluno enviou vídeo (nova notificação específica)
         if (hasNewVideo) {
           await NotificationFactory.studentSubmittedVideo(
             teacherUserId,
@@ -927,10 +1073,10 @@ export async function PATCH(request: NextRequest) {
       // Não falhar a atualização por causa das notificações
     }
 
-    // 🆕 LOGGING DE ATIVIDADES
+    // Logging de atividades
     try {
       if (session.user.role === 1) {
-        // 📝 ATIVIDADES DO PROFESSOR
+        // Atividades do professor
         const activityLogger = createTeacherActivityLogger(session.user.id);
 
         // 1. Professor deu feedback
@@ -972,7 +1118,7 @@ export async function PATCH(request: NextRequest) {
           }
         }
       } else {
-        // 📝 ATIVIDADES DO ALUNO
+        // Atividades do aluno
         const activityLogger = createStudentActivityLogger(session.user.id);
 
         // 1. Aluno enviou submissão (vídeo/arquivo)
@@ -1021,11 +1167,12 @@ export async function PATCH(request: NextRequest) {
     await revalidateTeacherAndStudentData(teacherUserId, studentUserId);
 
     console.log(
-      `✅ [ASSIGNMENTS] Assignment ${assignmentId} atualizado, notificações e atividades registradas`,
+      `✅ [ASSIGNMENTS] Assignment ${assignmentId} atualizado com Cloudinary`,
       {
         videoUploaded: hasNewVideo,
         notificationsSent: true,
         activitiesLogged: true,
+        cloudinaryUrl: videoUploadResult?.cloudinaryUrl,
       }
     );
 
@@ -1046,7 +1193,7 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// DELETE - Deletar assignment (SEM MUDANÇAS)
+// DELETE - Deletar assignment (ATUALIZADO PARA CLOUDINARY)
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -1099,6 +1246,26 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
+    // ✅ Deletar vídeos do Cloudinary se existirem
+    try {
+      const videoSubmission = extractVideoSubmission(assignment.submissions);
+      if (videoSubmission?.cloudinaryPublicId) {
+        const deleted = await deleteAssignmentVideo(
+          videoSubmission.cloudinaryPublicId
+        );
+        if (deleted) {
+          console.log(
+            `🗑️ [CLOUDINARY] Vídeo do assignment deletado do Cloudinary`
+          );
+        }
+      }
+    } catch (deleteError) {
+      console.warn(
+        '⚠️ [CLOUDINARY] Erro ao deletar vídeo - continuando:',
+        deleteError
+      );
+    }
+
     // Guardar studentUserId antes de deletar
     const studentUserId = assignment.student.userId;
 
@@ -1111,7 +1278,7 @@ export async function DELETE(request: NextRequest) {
     await revalidateTeacherAndStudentData(session.user.id, studentUserId);
 
     console.log(
-      `✅ [ASSIGNMENTS] Assignment ${assignmentId} deletado e cache revalidado`
+      `✅ [ASSIGNMENTS] Assignment ${assignmentId} deletado (incluindo Cloudinary) e cache revalidado`
     );
 
     return NextResponse.json({

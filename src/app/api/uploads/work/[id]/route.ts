@@ -2,6 +2,7 @@ import { cleanupWorkMediaServer } from '@/app/hooks/useWorkCleanup';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateUploadsCache } from '@/app/requests/upload';
+import { revalidateWorkCache } from '@/app/requests/work-page-details';
 import { logWorkUpdate } from '@/app/utils/historyUtils';
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
@@ -62,7 +63,9 @@ export async function PUT(
         { status: 400 }
       );
     }
-
+    if (body.parentWorkId === '') {
+      body.parentWorkId = null;
+    }
     // Verificar se já existe obra com mesmo imslpId (exceto a atual)
     if (body.imslpId && body.imslpId !== currentWork.imslpId) {
       const existingWork = await prisma.work.findFirst({
@@ -286,7 +289,7 @@ export async function PUT(
 
     // Invalidar cache
     await revalidateUploadsCache(userId);
-
+    await revalidateWorkCache(updatedWork.id);
     console.log(
       `✅ [WORK-UPDATE] Obra "${updatedWork.title}" atualizada${
         hasMediaChanges ? ' (incluindo mídia)' : ''
@@ -321,6 +324,7 @@ export async function DELETE(
 
     const { id } = await params;
 
+    console.log('ID', id);
     // Verificar se obra existe e permissões
     const work = await prisma.work.findUnique({
       where: { id: id },
@@ -347,6 +351,7 @@ export async function DELETE(
     // Verificar permissões
     const isAdmin = session.user.role >= 2; // Apenas super admin pode deletar
     const isOwner = work.createdBy === session.user.id;
+    console.log('{ID}', { work, isAdmin, isOwner });
 
     if (!isAdmin && !isOwner) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
