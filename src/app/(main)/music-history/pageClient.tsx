@@ -56,7 +56,7 @@ export function MusicHistoryPageClient({ epochs, composersTimeline }: Props) {
       'Renascentista',
       'Barroco',
       'Clássico',
-      'Rômantico',
+      'Romântico',
       'Moderno',
     ];
 

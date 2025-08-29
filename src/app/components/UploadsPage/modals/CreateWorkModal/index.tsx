@@ -36,7 +36,7 @@ import {
   VALID_PORTUGUESE_WORKGENRES,
 } from '@/app/utils/valid-categories-and-genres';
 import { useToast } from '@/app/hooks/useToast';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import { SiInstagram, SiSpotify, SiTiktok, SiYoutube } from 'react-icons/si';
 import { FaGraduationCap } from 'react-icons/fa';
 import { useAuth } from '@/app/hooks/useAuth';

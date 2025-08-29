@@ -5,7 +5,7 @@ import { FiAward } from 'react-icons/fi';
 import SectionTitle from '../Utils/SectionTitle';
 import ListComposers from '../Lists/ListComposers';
 import { pageComposersInterface } from '../PopularComposers';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 const EssentialComposers: React.FC<pageComposersInterface> = ({
   composersData,

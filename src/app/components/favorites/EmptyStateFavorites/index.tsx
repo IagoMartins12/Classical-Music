@@ -8,7 +8,7 @@ import {
   FiFileText,
 } from 'react-icons/fi';
 import { AnimatedContainer } from '../../animation/AnimatedComponents';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface emptyStatesProps {
   emptyState: 'all' | 'works' | 'composers' | 'scores';

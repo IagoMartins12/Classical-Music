@@ -8,10 +8,11 @@ import { FiUser, FiCalendar } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
+import { useTranslation } from '@/app/context/TranslationContext';
+import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
-  // const [imageLoaded, setImageLoaded] = useState(false);
-
+  const { t } = useTranslation({ sections: ['pages/home'] });
   return (
     <div className="group cursor-pointer select-none h-full">
       <Link href={`/composer/${item.id}`}>
@@ -65,7 +66,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
               <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0">
                 <span className="inline-flex items-center px-3 py-1 bg-brand-primary/20 backdrop-blur-md border border-brand-primary/30 rounded-full text-xs font-medium text-white">
                   <FiCalendar className="w-3 h-3 mr-1" />
-                  {item.epochName}
+                  {translateEpochWithHook(item.epochName, t)}
                 </span>
               </div>
             )}

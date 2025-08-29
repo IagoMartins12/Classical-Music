@@ -34,7 +34,7 @@ import { useAdaptiveStats } from '@/app/hooks/useMobile';
 
 import { useAutoAchievementDetection } from '../../hooks/useAchievements';
 import Button from '@/app/components/Common/Button';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 type AnnotationCategory =
   | 'TECHNIQUE'
@@ -76,7 +76,7 @@ const useDebounce = (value: any, delay: number) => {
   return debouncedValue;
 };
 
-function AnnotationsPageClientContent() {
+export default function AnnotationsPageClient() {
   // Translation hook
   const { t } = useTranslation({ sections: ['pages/annotations'] });
 
@@ -725,9 +725,4 @@ function AnnotationsPageClientContent() {
       />
     </PageContainer>
   );
-}
-
-// Wrapper principal com Achievement Provider
-export default function AnnotationsPageClient() {
-  return <AnnotationsPageClientContent />;
 }

@@ -24,7 +24,7 @@ import Modal from '@/app/components/Modal';
 import CreateWorkModal from '../CreateWorkModal';
 import { useToast } from '@/app/hooks/useToast';
 import { useProcessChanges } from '@/app/hooks/useFormChanges';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import Checkbox from '@/app/components/Common/Checkbox';
 
 interface DiscoveredWork {

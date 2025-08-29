@@ -1,11 +1,11 @@
 'use client';
 
+import { useTranslation } from '@/app/context/TranslationContext';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTranslation } from '@/app/hooks/useTranslation';
 
 const HeroMainPage = () => {
-  const { t } = useTranslation({ sections: ['components/heroMainPage'] });
+  const { t } = useTranslation({ sections: ['pages/home'] });
 
   return (
     <div className="section-wrap flex flex-col lg:flex-row gap-6">

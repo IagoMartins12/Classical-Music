@@ -43,7 +43,7 @@ import {
   generateAndUploadTempThumbnail,
 } from '@/app/utils/pdfUtils';
 import { useToast } from '@/app/hooks/useToast';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import GroupingSuggestions from '../../GroupingSuggestions';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 

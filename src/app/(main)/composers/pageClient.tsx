@@ -4,7 +4,6 @@
 import { useState, useTransition, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useNavigate } from '@/app/hooks/useNavigate';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import { FiSearch, FiClock } from 'react-icons/fi';
 import ComposerCard from '../../components/ComposersClient/ComposerCard';
 import ComposerCardList from '../../components/ComposersClient/ComposerCardList';
@@ -12,7 +11,6 @@ import PaginationControls from '../../components/PaginationControls';
 import { FaRegUser } from 'react-icons/fa';
 import AnimatedMusicalNotes2 from '../../components/AnimatedMusicalNotes2';
 import ViewModeToggle from '../../components/ViewModeToggle';
-
 // Importar componentes de animação - INCLUINDO SEQUENCIAL
 import {
   PageContainer,
@@ -23,6 +21,7 @@ import {
 } from '../../components/animation/AnimatedComponents';
 import Select from '../../components/Common/Select';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 export interface ComposerImslp {
   epochName: string;

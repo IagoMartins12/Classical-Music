@@ -37,7 +37,7 @@ import {
 import CreateAnnotationModal from '@/app/components/Annotations/CreateAnnotationModal';
 import Image from 'next/image';
 import ConfirmDeleteModal from '../DeleteAnnotationModal';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 interface UserAnnotationCardProps {

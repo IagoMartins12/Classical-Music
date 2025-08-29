@@ -37,7 +37,7 @@ import {
 } from '@/app/utils/formUtils';
 
 import { useToast } from '@/app/hooks/useToast';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';

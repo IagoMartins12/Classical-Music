@@ -4,7 +4,7 @@
 import { FiTrendingUp } from 'react-icons/fi';
 import SectionTitle from '../Utils/SectionTitle';
 import Carousel from '../Carousel/Carousel';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 export interface composerHomeProps {
   epochName: string;
@@ -26,7 +26,7 @@ const PopularComposers: React.FC<pageComposersInterface> = ({
   composersData,
 }) => {
   const { t } = useTranslation({
-    sections: ['common/common'],
+    sections: ['pages/home'],
   });
 
   return (

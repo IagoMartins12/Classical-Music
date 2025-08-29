@@ -7,6 +7,11 @@ import {
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import WorkDetailsClient from '@/app/(main)/works/[workId]/pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 interface WorkDetailsServerProps {
   workId: string;
@@ -87,14 +92,22 @@ export default async function WorkDetailsServer({
     // 🆕 PROCESSAR DADOS DE ÁUDIO DE FORMA ESTRUTURADA
     const audioData: ProcessedAudioData = processAudioData(work, mediaStats);
 
+    // Carregar traduções
+    const language = await getServerLanguageStatic();
+    const { translations } = await loadPageTranslationsWithCommon(language, [
+      'pages/workId',
+    ]);
+
     return (
-      <WorkDetailsClient
-        work={work}
-        audioData={audioData} // 🆕 Dados de áudio processados
-        isAdmin={isAdmin}
-        canEditMedia={canEditMedia}
-        learningData={{ wantToLearn: [], learned: [] }}
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <WorkDetailsClient
+          work={work}
+          audioData={audioData} // 🆕 Dados de áudio processados
+          isAdmin={isAdmin}
+          canEditMedia={canEditMedia}
+          learningData={{ wantToLearn: [], learned: [] }}
+        />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error(`❌ [SERVER] Erro ao carregar obra ${workId}:`, error);

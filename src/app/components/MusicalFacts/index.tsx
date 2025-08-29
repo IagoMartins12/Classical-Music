@@ -7,7 +7,6 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import SectionTitle from '../Utils/SectionTitle';
 
 import Select from '../Common/Select';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import {
   categories,
@@ -15,6 +14,7 @@ import {
   getRandomFacts,
 } from '@/app/requests/utils';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface MusicalFact {
   id: string;

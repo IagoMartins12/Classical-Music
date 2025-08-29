@@ -1,12 +1,14 @@
 'use client';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useRegisterModal } from '@/app/stores/authStore';
+import { Language } from '@/app/stores/useLanguageStore';
 import { FiMusic, FiUsers } from 'react-icons/fi';
 
 interface buttonProps {
+  language: Language;
   action: 'login' | 'register';
 }
-const AboutUsButton: React.FC<buttonProps> = ({ action }) => {
+const AboutUsButton: React.FC<buttonProps> = ({ action, language }) => {
   const { open: openRegisterModal } = useRegisterModal();
 
   const { isAuthenticated } = useAuth();
@@ -21,7 +23,7 @@ const AboutUsButton: React.FC<buttonProps> = ({ action }) => {
         }}
       >
         <FiMusic className="w-5 h-5" />
-        <span>Comece Agora</span>
+        <span>{language === 'pt' ? 'Comece Agora' : 'Start now'}</span>
       </button>
     );
   }
@@ -36,7 +38,9 @@ const AboutUsButton: React.FC<buttonProps> = ({ action }) => {
         }}
       >
         <FiUsers className="w-5 h-5" />
-        <span>Criar Conta Gratuita</span>
+        <span>
+          {language === 'pt' ? 'Criar Conta Gratuita' : 'Create Free Account'}
+        </span>
       </button>
     );
   }

@@ -14,7 +14,7 @@ import {
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiScrollQuill, GiGrandPiano } from 'react-icons/gi';
 import { HistoryComposerCard } from '../cards/HistoryComposerCard';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface Composer {
   id: string;
@@ -55,7 +55,7 @@ const epochColors = {
   Renascentista: 'from-accent-green to-accent-blue',
   Barroco: 'from-accent-purple to-accent-red',
   Clássico: 'from-accent-blue to-accent-purple',
-  Rômantico: 'from-accent-red to-accent-purple',
+  Romântico: 'from-accent-red to-accent-purple',
   Moderno: 'from-theme-tertiary to-theme-secondary',
 };
 
@@ -64,7 +64,7 @@ const epochIcons = {
   Renascentista: GiMusicalNotes,
   Barroco: GiGrandPiano,
   Clássico: FiMusic,
-  Rômantico: FiUsers,
+  Romântico: FiUsers,
   Moderno: FiSettings,
 };
 

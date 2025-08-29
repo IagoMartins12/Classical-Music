@@ -7,7 +7,11 @@ import {
   translateGenres,
 } from '@/app/utils/translations/instrumentsGenresTranslation';
 import { translateEpochStatic } from '@/app/utils/translations/epochTranslationComposer';
-import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 interface WorksServerProps {
   searchParams: {
@@ -122,7 +126,9 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
 
     // Detectar idioma no servidor
     const language = await getServerLanguageStatic();
-
+    const { translations } = await loadPageTranslationsWithCommon(language, [
+      'pages/works',
+    ]);
     // 🚀 ESTRATÉGIA 1: Detectar tipo de query
     const hasFilters = hasComplexFilters(searchParams);
     const cacheKey = generateCacheKey(searchParams);
@@ -198,12 +204,14 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
     });
 
     return (
-      <WorksClient
-        worksData={worksData}
-        currentPage={page}
-        searchParams={searchParams}
-        filterOptions={filterOptions}
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <WorksClient
+          worksData={worksData}
+          currentPage={page}
+          searchParams={searchParams}
+          filterOptions={filterOptions}
+        />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error('💥 Erro crítico no WorksServer:', error);

@@ -1,0 +1,132 @@
+{
+  "ptBr": {
+    "about_hero_badge": "Bem-vindo ao Opus Atlas",
+    "about_hero_title_1": "Sua jornada pela",
+    "about_hero_title_2": "música clássica",
+    "about_hero_description": "Descubra, aprenda e domine o universo da música clássica com a plataforma mais completa para estudantes, professores e entusiastas musicais.",
+    "about_hero_explore_btn": "Explore a Enciclopédia",
+
+    "about_mission_badge": "Nossa Missão",
+    "about_mission_title": "Transformando o aprendizado da música clássica",
+    "about_mission_paragraph_1": "Nascemos da paixão pela música clássica e da percepção de que faltava uma plataforma verdadeiramente completa para o estudo e apreciação deste universo musical rico e complexo.",
+    "about_mission_paragraph_2": "O Opus Atlas foi criado para ser mais que uma simples enciclopédia. Somos um ecossistema educacional que combina conhecimento histórico com ferramentas práticas de estudo, criando uma experiência única para músicos de todos os níveis.",
+    "about_mission_highlight_title": "Democratizando a Música Clássica",
+    "about_mission_highlight_description": "Acreditamos que todos devem ter acesso às maravilhas da música clássica, independentemente de seu background musical ou econômico.",
+
+    "about_stats_composers": "10000+",
+    "about_stats_composers_label": "Compositores",
+    "about_stats_works": "200000+",
+    "about_stats_works_label": "Peças",
+    "about_stats_resources_title": "Recursos Disponíveis",
+    "about_stats_resource_1": "Biografias detalhadas",
+    "about_stats_resource_2": "Partituras e áudios",
+    "about_stats_resource_3": "Sistema professor-aluno",
+    "about_stats_resource_4": "Comunidade ativa",
+
+    "about_features_badge": "Funcionalidades",
+    "about_features_title": "Tudo que você precisa em um só lugar",
+    "about_features_description": "Uma plataforma completa que combina conhecimento enciclopédico com ferramentas práticas para elevar sua experiência musical.",
+
+    "about_feature_0_title": "Enciclopédia Completa",
+    "about_feature_0_description": "Explore compositores, peças e períodos históricos da música clássica com informações detalhadas e curadas por especialistas.",
+
+    "about_feature_1_title": "Sistema de Partituras",
+    "about_feature_1_description": "Integração automática com IMSLP, uploads da comunidade e scraper inteligente que busca partituras automaticamente para você.",
+
+    "about_feature_2_title": "Ensino Personalizado",
+    "about_feature_2_description": "Sistema completo professor-aluno com agendamento de aulas, tarefas personalizadas e acompanhamento individual do progresso.",
+
+    "about_feature_3_title": "Comunidade e Anotações",
+    "about_feature_3_description": "Sistema colaborativo de anotações públicas e privadas onde você pode compartilhar conhecimento e aprender com outros músicos.",
+
+    "about_feature_4_title": "Listas de Estudo",
+    "about_feature_4_description": "Organize suas metas com 'Quero Aprender' e 'Já Aprendi', acompanhe seu progresso e conquiste medalhas pelo seu desenvolvimento.",
+
+    "about_feature_5_title": "Contribuições da Comunidade",
+    "about_feature_5_description": "Faça upload de compositores, obras e partituras. Contribua para o crescimento da plataforma através do nosso sistema de moderação colaborativo.",
+
+    "about_values_badge": "Nossos Valores",
+    "about_values_title": "Princípios que nos guiam",
+
+    "about_value_0_title": "Paixão pela Música",
+    "about_value_0_description": "Acreditamos que a música clássica tem o poder de transformar vidas e conectar pessoas através dos séculos.",
+
+    "about_value_1_title": "Acessibilidade",
+    "about_value_1_description": "Democratizamos o acesso ao conhecimento musical, tornando a música clássica acessível para todos.",
+
+    "about_value_2_title": "Excelência",
+    "about_value_2_description": "Comprometemo-nos com a qualidade e precisão das informações, oferecendo conteúdo confiável e bem curado.",
+
+    "about_cta_title": "Pronto para começar sua jornada?",
+    "about_cta_description": "Junte-se a milhares de músicos que já descobriram uma nova forma de estudar e apreciar a música clássica. Comece gratuitamente hoje mesmo.",
+    "about_cta_explore_btn": "Explorar Sem Cadastro",
+    "about_cta_stat_1": "10.000+ usuários",
+    "about_cta_stat_2": "Avaliação 4.9/5",
+    "about_cta_stat_3": "Totalmente gratuito"
+  },
+  "en": {
+    "about_hero_badge": "Welcome to Opus Atlas",
+    "about_hero_title_1": "Your journey through",
+    "about_hero_title_2": "classical music",
+    "about_hero_description": "Discover, learn and master the universe of classical music with the most complete platform for students, teachers and music enthusiasts.",
+    "about_hero_explore_btn": "Explore the Encyclopedia",
+
+    "about_mission_badge": "Our Mission",
+    "about_mission_title": "Transforming classical music learning",
+    "about_mission_paragraph_1": "We were born from a passion for classical music and the perception that there was a lack of a truly complete platform for the study and appreciation of this rich and complex musical universe.",
+    "about_mission_paragraph_2": "Opus Atlas was created to be more than a simple encyclopedia. We are an educational ecosystem that combines historical knowledge with practical study tools, creating a unique experience for musicians of all levels.",
+    "about_mission_highlight_title": "Democratizing Classical Music",
+    "about_mission_highlight_description": "We believe everyone should have access to the wonders of classical music, regardless of their musical or economic background.",
+
+    "about_stats_composers": "10000+",
+    "about_stats_composers_label": "Composers",
+    "about_stats_works": "200000+",
+    "about_stats_works_label": "Works",
+    "about_stats_resources_title": "Available Resources",
+    "about_stats_resource_1": "Detailed biographies",
+    "about_stats_resource_2": "Scores and audios",
+    "about_stats_resource_3": "Teacher-student system",
+    "about_stats_resource_4": "Active community",
+
+    "about_features_badge": "Features",
+    "about_features_title": "Everything you need in one place",
+    "about_features_description": "A complete platform that combines encyclopedic knowledge with practical tools to elevate your musical experience.",
+
+    "about_feature_0_title": "Complete Encyclopedia",
+    "about_feature_0_description": "Explore composers, pieces and historical periods of classical music with detailed information curated by experts.",
+
+    "about_feature_1_title": "Score System",
+    "about_feature_1_description": "Automatic integration with IMSLP, community uploads and intelligent scraper that automatically searches for scores for you.",
+
+    "about_feature_2_title": "Personalized Teaching",
+    "about_feature_2_description": "Complete teacher-student system with class scheduling, personalized tasks and individual progress tracking.",
+
+    "about_feature_3_title": "Community and Annotations",
+    "about_feature_3_description": "Collaborative system of public and private annotations where you can share knowledge and learn from other musicians.",
+
+    "about_feature_4_title": "Study Lists",
+    "about_feature_4_description": "Organize your goals with 'Want to Learn' and 'Already Learned', track your progress and earn medals for your development.",
+
+    "about_feature_5_title": "Community Contributions",
+    "about_feature_5_description": "Upload composers, works and scores. Contribute to the platform's growth through our collaborative moderation system.",
+
+    "about_values_badge": "Our Values",
+    "about_values_title": "Principles that guide us",
+
+    "about_value_0_title": "Passion for Music",
+    "about_value_0_description": "We believe that classical music has the power to transform lives and connect people across centuries.",
+
+    "about_value_1_title": "Accessibility",
+    "about_value_1_description": "We democratize access to musical knowledge, making classical music accessible to everyone.",
+
+    "about_value_2_title": "Excellence",
+    "about_value_2_description": "We are committed to the quality and accuracy of information, offering reliable and well-curated content.",
+
+    "about_cta_title": "Ready to start your journey?",
+    "about_cta_description": "Join thousands of musicians who have already discovered a new way to study and appreciate classical music. Start for free today.",
+    "about_cta_explore_btn": "Explore Without Registration",
+    "about_cta_stat_1": "10,000+ users",
+    "about_cta_stat_2": "4.9/5 rating",
+    "about_cta_stat_3": "Completely free"
+  }
+}

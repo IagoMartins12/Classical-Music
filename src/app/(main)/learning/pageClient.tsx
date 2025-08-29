@@ -38,7 +38,7 @@ import Modal from '../../components/Modal';
 import Link from 'next/link';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
 import Button from '@/app/components/Common/Button';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 type FilterTab = 'all' | 'want-to-learn' | 'learned';

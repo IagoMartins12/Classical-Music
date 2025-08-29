@@ -32,7 +32,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 
 // Importar componentes de animação
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
@@ -183,11 +183,6 @@ const handleScoreDownload = (item: WantToLearnItem | LearnedItem, t: any) => {
 
   // Abrir download em nova aba
   window.open(item.selectedWorkScore.downloadUrl, '_blank');
-
-  toast.success(`${t('download_started')} ${item.selectedWorkScore.title}`, {
-    icon: '📄',
-    duration: 3000,
-  });
 };
 
 export const LearningCard = ({
@@ -364,20 +359,18 @@ export const LearningCard = ({
                 {/* Action buttons */}
                 <div className="flex items-center flex-col sm:flex-row gap-4 sm:gap-0 space-x-2">
                   {/* ✅ BOTÃO DE DOWNLOAD DA PARTITURA */}
-                  {hasSelectedScore && (
+                  {hasSelectedScore && item.selectedWorkScore?.downloadUrl && (
                     <AnimatedItem hover="scale">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleScoreDownload(item, t);
-                        }}
-                        className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
+                      <a
+                        href={item.selectedWorkScore?.downloadUrl}
+                        target="_blank"
+                        className="w-8 h-8 cursor-pointer bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
                         title={`${t('download_score')} ${
                           item.selectedWorkScore?.title
                         }`}
                       >
                         <FiDownload className="w-4 h-4" />
-                      </button>
+                      </a>
                     </AnimatedItem>
                   )}
 

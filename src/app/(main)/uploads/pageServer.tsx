@@ -1,12 +1,17 @@
 // app/uploads/pageServer.tsx - ATUALIZADO COM NOVOS FILTROS E LIMITAÇÃO
 
 import UploadsClient from '@/app/(main)/uploads/pageClient';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 import {
   getEpochsCache,
   getFilterData,
   getFormDataPage,
   getUserUploads,
 } from '@/app/requests/upload';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
 
 const ITEMS_PER_PAGE = 24;
 
@@ -33,6 +38,11 @@ export default async function UploadsPageServer({
 
   // 🆕 Determinar se deve limitar por tipo (apenas na aba "all")
   const limitPerType = type === 'all';
+
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'pages/uploads',
+  ]);
 
   const [uploadsData, filterData, epochsData, formData] = await Promise.all([
     getUserUploads({
@@ -64,31 +74,33 @@ export default async function UploadsPageServer({
   }
 
   return (
-    <UploadsClient
-      uploads={uploadsData.items}
-      composers={uploadsData.composers}
-      works={uploadsData.works}
-      scores={uploadsData.scores}
-      epochs={epochsData} // 🆕 Usar épocas filtradas
-      filterComposers={filterData.composers} // 🆕 Dados para filtros
-      filterWorks={filterData.works} // 🆕 Dados para filtros
-      currentPage={page}
-      totalPages={totalPages}
-      totalCount={uploadsData.totalCount}
-      composerCount={uploadsData.composerCount} // 🆕 Contadores específicos
-      workCount={uploadsData.workCount} // 🆕
-      scoreCount={uploadsData.scoreCount} // 🆕
-      hasMoreComposers={uploadsData.hasMoreComposers} // 🆕 Indicadores "ver mais"
-      hasMoreWorks={uploadsData.hasMoreWorks} // 🆕
-      hasMoreScores={uploadsData.hasMoreScores} // 🆕
-      searchTerm={search}
-      selectedType={type}
-      selectedEpoch={epochId}
-      selectedComposer={composerId || ''} // 🆕 Estado do filtro
-      selectedWork={workId || ''} // 🆕 Estado do filtro
-      isAdmin={isAdmin}
-      userId={userId}
-      formData={formData}
-    />
+    <TranslationProvider language={language} translations={translations}>
+      <UploadsClient
+        uploads={uploadsData.items}
+        composers={uploadsData.composers}
+        works={uploadsData.works}
+        scores={uploadsData.scores}
+        epochs={epochsData} // 🆕 Usar épocas filtradas
+        filterComposers={filterData.composers} // 🆕 Dados para filtros
+        filterWorks={filterData.works} // 🆕 Dados para filtros
+        currentPage={page}
+        totalPages={totalPages}
+        totalCount={uploadsData.totalCount}
+        composerCount={uploadsData.composerCount} // 🆕 Contadores específicos
+        workCount={uploadsData.workCount} // 🆕
+        scoreCount={uploadsData.scoreCount} // 🆕
+        hasMoreComposers={uploadsData.hasMoreComposers} // 🆕 Indicadores "ver mais"
+        hasMoreWorks={uploadsData.hasMoreWorks} // 🆕
+        hasMoreScores={uploadsData.hasMoreScores} // 🆕
+        searchTerm={search}
+        selectedType={type}
+        selectedEpoch={epochId}
+        selectedComposer={composerId || ''} // 🆕 Estado do filtro
+        selectedWork={workId || ''} // 🆕 Estado do filtro
+        isAdmin={isAdmin}
+        userId={userId}
+        formData={formData}
+      />
+    </TranslationProvider>
   );
 }

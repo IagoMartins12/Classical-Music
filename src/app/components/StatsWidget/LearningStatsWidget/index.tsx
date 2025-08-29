@@ -17,7 +17,7 @@ import {
 } from '../../badges/LearningBadgeSystem';
 import { BadgeGrid } from '../../badges/BadgeSystem';
 import { useAchievementSystem } from '../../../hooks/useAchievements';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface LearningStatsWidgetProps {
   className?: string;
@@ -227,7 +227,7 @@ export default function LearningStatsWidget({
                     <div
                       className={`w-12 h-12 rounded-xl bg-gradient-to-br ${badge.color?.from} ${badge.color?.to} flex items-center justify-center`}
                     >
-                      <Icon className="w-6 h-6 text-white" />
+                      <Icon className="w-6 h-6 text-theme-primary" />
                     </div>
                     <div className="flex-1">
                       <div className="font-medium text-theme-primary">
@@ -263,7 +263,7 @@ export default function LearningStatsWidget({
             <div className="flex items-center space-x-3 mb-4">
               <FiZap className="w-5 h-5 text-brand-primary" />
               <h4 className="font-semibold text-theme-primary">
-                {t('recommendations_title')}
+                {t('stats_widget_recommendations')}
               </h4>
             </div>
             <div className="grid grid-cols-1 gap-3">
@@ -271,27 +271,21 @@ export default function LearningStatsWidget({
                 <Link
                   key={cta.id}
                   href={cta.url}
-                  className={`p-4 rounded-xl border-2 transition-all hover:scale-105 ${
+                  className={`p-4 rounded-xl transition-all text-theme-primary hover:scale-105 ${
                     cta.priority === 'high'
-                      ? 'bg-gradient-to-r from-brand-primary to-brand-secondary text-white border-transparent'
+                      ? 'bg-theme-tertiary'
                       : 'bg-theme-elevated border-theme-primary hover:border-brand-primary'
                   }`}
                 >
                   <div className="font-medium mb-1">{cta.title}</div>
-                  <div
-                    className={`text-sm mb-3 ${
-                      cta.priority === 'high'
-                        ? 'text-white/90'
-                        : 'text-theme-secondary'
-                    }`}
-                  >
+                  <div className={`text-sm mb-3 text-theme-primary`}>
                     {cta.description}
                   </div>
                   <div
                     className={`text-sm font-medium flex items-center space-x-1 ${
                       cta.priority === 'high'
-                        ? 'text-white'
-                        : 'text-brand-primary'
+                        ? 'text-brand-primary'
+                        : 'text-theme-primary'
                     }`}
                   >
                     <span>{cta.action}</span>

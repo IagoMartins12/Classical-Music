@@ -1,4 +1,5 @@
 // DetailedMusicHistory.tsx - Versão completa em TypeScript
+import { useTranslation } from '@/app/context/TranslationContext';
 import React, { useState, useCallback, memo, JSX } from 'react';
 import {
   FiGlobe,
@@ -18,7 +19,6 @@ import {
   GiGrandPiano,
   GiViolin,
 } from 'react-icons/gi';
-import { useTranslation } from '@/app/hooks/useTranslation';
 
 // Interfaces TypeScript
 interface AccordionSectionProps {

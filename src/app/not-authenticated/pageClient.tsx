@@ -26,7 +26,7 @@ import { useLoginModal, useRegisterModal } from '../stores/authStore';
 import { useAuth } from '../hooks/useAuth';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '../context/TranslationContext';
 
 interface SuggestionCard {
   title: string;

@@ -17,7 +17,7 @@ import {
 } from 'react-icons/fi';
 import { UserUpload } from '@/app/requests/upload';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface UploadScoreCardProps {
   item: UserUpload;

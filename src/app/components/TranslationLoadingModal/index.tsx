@@ -21,7 +21,6 @@ export function TranslationLoadingModal({
   const [currentStep, setCurrentStep] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
-  const [shouldAccelerate, setShouldAccelerate] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   // Garantir que está montado no cliente
@@ -59,54 +58,51 @@ export function TranslationLoadingModal({
       setHasStarted(true);
       setProgress(0);
       setCurrentStep(0);
-      setShouldAccelerate(false);
-    } else if (hasStarted) {
-      // ✅ Se isOpen vira false, acelerar para finalizar
-      setShouldAccelerate(true);
     }
-  }, [isOpen, hasStarted]);
+  }, [isOpen]);
 
-  // ✅ Lógica de progresso melhorada com timing controlado
+  // ✅ Lógica de progresso MUITO mais rápida (2-3 segundos total)
   useEffect(() => {
     if (!isVisible || !hasStarted) return;
 
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
-          // ✅ Modal completou - fechar após delay
+          // ✅ Modal completou - fechar após pequeno delay
           setTimeout(() => {
             setIsVisible(false);
             setHasStarted(false);
             onComplete?.();
-          }, 500);
+          }, 200); // Delay menor
           return 100;
         }
 
-        // ✅ Velocidade baseada no estado
+        // ✅ Progresso muito mais rápido - completa em ~2.5 segundos
         let increment;
-        if (shouldAccelerate) {
-          // Se tradução já acabou, acelerar para finalizar
-          increment = 25; // Muito rápido
-        } else if (prev < 30) {
-          increment = 8; // Início moderado
-        } else if (prev < 70) {
-          increment = 6; // Meio mais lento
+        if (prev < 25) {
+          increment = 15; // Primeiro quarto: muito rápido
+        } else if (prev < 50) {
+          increment = 12; // Segundo quarto: rápido
+        } else if (prev < 75) {
+          increment = 10; // Terceiro quarto: moderado
         } else {
-          increment = 4; // Final mais devagar
+          increment = 8; // Último quarto: um pouco mais devagar para dar sensação de finalização
         }
 
         const newProgress = Math.min(prev + increment, 100);
 
         // Atualizar step baseado no progresso
         const newStep = Math.floor((newProgress / 100) * (steps.length - 1));
-        setCurrentStep(newStep);
+        if (newStep !== currentStep) {
+          setCurrentStep(newStep);
+        }
 
         return newProgress;
       });
-    }, 300); // Intervalo menor quando acelerando
+    }, 150); // ✅ Intervalo menor = mais rápido (era 300ms, agora 150ms)
 
     return () => clearInterval(interval);
-  }, [isVisible, hasStarted, shouldAccelerate, steps.length, onComplete]);
+  }, [isVisible, hasStarted, currentStep, steps.length, onComplete]);
 
   // ✅ Portal para renderizar no body
   if (!mounted || !isVisible) return null;
@@ -153,7 +149,7 @@ export function TranslationLoadingModal({
 
               {/* Ícone central */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-12 h-12  rounded-xl flex items-center justify-center shadow-theme-glow group-hover:scale-110 transition-transform duration-500">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
                   <CurrentIcon className="w-6 h-6 text-theme-primary animate-pulse" />
                 </div>
               </div>
@@ -231,11 +227,11 @@ export function TranslationLoadingModal({
 
             <div className="w-full h-2 bg-theme-elevated rounded-full overflow-hidden">
               <div
-                className="h-full bg-brand-gradient rounded-full transition-all duration-300 ease-out relative overflow-hidden"
+                className="h-full bg-brand-gradient rounded-full transition-all duration-200 ease-out relative overflow-hidden"
                 style={{ width: `${progress}%` }}
               >
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 animate-shimmer" />
+                {/* Shimmer effect mais rápido */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 animate-shimmer-fast" />
               </div>
             </div>
           </div>
@@ -245,7 +241,7 @@ export function TranslationLoadingModal({
             {steps.map((_, index) => (
               <div
                 key={index}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                className={`w-2 h-2 rounded-full transition-all duration-200 ${
                   index <= currentStep
                     ? 'bg-brand-primary shadow-theme-glow'
                     : 'bg-theme-secondary'
@@ -270,7 +266,7 @@ export function TranslationLoadingModal({
 
       {/* CSS personalizado para animações */}
       <style jsx>{`
-        @keyframes shimmer {
+        @keyframes shimmer-fast {
           0% {
             transform: translateX(-100%) skewX(-12deg);
           }
@@ -279,8 +275,8 @@ export function TranslationLoadingModal({
           }
         }
 
-        .animate-shimmer {
-          animation: shimmer 1.5s infinite;
+        .animate-shimmer-fast {
+          animation: shimmer-fast 1s infinite;
         }
 
         @keyframes fade-in {
@@ -308,7 +304,7 @@ export function TranslationLoadingModal({
         }
 
         .animate-fade-in-up {
-          animation: fade-in-up 0.5s ease-out;
+          animation: fade-in-up 0.4s ease-out;
         }
       `}</style>
     </Modal>

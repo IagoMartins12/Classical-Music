@@ -28,6 +28,7 @@ import AdminHeader from './components/Admin/AdminHeader';
 import AdminSidebar from './components/Admin/AdminSidebar';
 import Footer from './components/Footer';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { useClientMetadata } from './hooks/useClientMetadata';
 
 type AreaType = 'main' | 'teacher' | 'student' | 'admin';
 
@@ -36,7 +37,29 @@ export default function NotFound() {
   const { data: session } = useSession();
   const [currentArea, setCurrentArea] = useState<AreaType>('main');
   const [showAdminSidebar, setShowAdminSidebar] = useState(false);
-  const { t } = useTranslation({ sections: ['pages/not-found'] });
+  const { t, language } = useTranslation({ sections: ['pages/not-found'] });
+
+  const metadataContent = {
+    pt: {
+      title: 'Página não encontrada - Opus Atlas | Erro 404',
+      description:
+        'A página que você está procurando não foi encontrada em nossa enciclopédia musical. Explore compositores, obras e partituras de música clássica.',
+    },
+    en: {
+      title: 'Page not found - Opus Atlas | Error 404',
+      description:
+        'The page you are looking for was not found in our musical encyclopedia. Explore composers, works and classical music sheet music.',
+    },
+  };
+
+  const metadata = metadataContent[language] || metadataContent.pt;
+
+  // Usar o hook de metadata client-side
+  useClientMetadata({
+    title: metadata.title,
+    description: metadata.description,
+    noIndex: true, // Não indexar páginas 404
+  });
 
   // Detectar área atual baseada na URL
   useEffect(() => {

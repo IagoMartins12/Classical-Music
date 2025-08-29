@@ -1332,7 +1332,7 @@ class WorkScraper {
         renaissance: 'Renascentista',
         baroque: 'Barroco',
         classical: 'Clássico',
-        romantic: 'Rômantico',
+        romantic: 'Romântico',
         'early 20th century': 'Modernismo',
         modern: 'Contemporâneo',
       };

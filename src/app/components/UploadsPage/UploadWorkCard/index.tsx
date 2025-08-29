@@ -16,7 +16,7 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import { UserUpload } from '@/app/requests/upload';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import Link from 'next/link';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface UploadWorkCardProps {
   item: UserUpload;

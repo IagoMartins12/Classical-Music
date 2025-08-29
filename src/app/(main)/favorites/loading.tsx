@@ -72,26 +72,6 @@ export default function FavoritesLoading() {
           </div>
         </div>
 
-        {/* Statistics Cards Skeleton */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {[
-            { icon: <FiHeart className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiUser className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiMusic className="w-6 h-6 text-theme-inverse/20" /> },
-          ].map((item, index) => (
-            <div
-              key={index}
-              className="classical-card p-6 text-center animate-pulse"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-xl mx-auto mb-4 flex items-center justify-center">
-                {item.icon}
-              </div>
-              <div className="h-8 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2"></div>
-              <div className="h-4 bg-theme-elevated rounded"></div>
-            </div>
-          ))}
-        </div> */}
-
         {/* Controls Skeleton */}
         <div className="classical-card p-6">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -189,7 +169,7 @@ function ComposerCardSkeleton() {
         {/* Portrait */}
         <div className="relative w-16 h-16">
           <div className="w-full h-full bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-full border-3 border-brand-primary/20 flex items-center justify-center">
-            <FiUser className="w-8 h-8 text-theme-inverse/20" />
+            <FiUser className="w-8 h-8 text-theme-primary" />
           </div>
         </div>
 

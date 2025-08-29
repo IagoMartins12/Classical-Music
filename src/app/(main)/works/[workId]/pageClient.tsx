@@ -52,14 +52,13 @@ import { WorkDetails } from '@/app/requests/work-page-details';
 import LearningModal from '../../../components/LearningModal';
 import ScorePreview from '../../../components/WorkDetailsClient/ScorePreview';
 import VideoAulaSection from '../../../components/Players/VideoAulaSection';
-import { useTranslation } from '@/app/hooks/useTranslation';
-
 import { translateGenre } from '@/app/utils/translations/instrumentsGenresTranslation';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import { translateWorkTypeWithHook } from '@/app/utils/translations/workTypeTranslation';
 import { translateToneWithHook } from '@/app/utils/translations/toneTranslation';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { translateCategoryStatic } from '@/app/utils/translations/categoryTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 // Interface para dados de áudio processados (mantida igual)
 interface ProcessedAudioData {

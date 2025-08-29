@@ -255,19 +255,6 @@ const LearningModal = () => {
     }));
   }, []);
 
-  // Handler para download da partitura
-  const handleScoreDownload = () => {
-    if (!selectedWorkScore?.downloadUrl) {
-      toast.error(t('download_not_available'));
-      return;
-    }
-
-    window.open(selectedWorkScore.downloadUrl, '_blank');
-    toast.success(`${t('download_started')} ${selectedWorkScore.title}`, {
-      icon: '📄',
-      duration: 3000,
-    });
-  };
 
   // Handler para adicionar partitura
   const handleAddScore = () => {
@@ -1184,13 +1171,14 @@ const LearningModal = () => {
                   </div>
                   <div className="flex items-center space-x-4">
                     {selectedWorkScore.downloadUrl && (
-                      <button
+                      <a
+                        href={selectedWorkScore.downloadUrl}
+                        target="_blank"
                         title={t('download_button')}
-                        onClick={handleScoreDownload}
                         className="btn-classical-secondary-sm flex items-center space-x-2 text-accent-purple border-accent-purple/30 hover:bg-accent-purple/10"
                       >
                         <FiDownload className="w-5 h-5 text-theme-primary" />
-                      </button>
+                      </a>
                     )}
 
                     <button

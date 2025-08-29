@@ -1,16 +1,57 @@
-// app/uploads/moderation/page.tsx
-import { Metadata } from 'next';
+// app/uploads/moderation/page.tsx - Moderação (admin only)
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
 import ModerationClient from '@/app/(main)/moderation/pageClient';
-import { Suspense } from 'react';
-import LoadingAdminState from '@/app/components/Admin/Common/LoadingState';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
-export const metadata: Metadata = {
-  title: 'Moderação de Uploads | Classical Music App',
-  description: 'Gerencie reports e moderações de uploads',
-};
+export async function generateMetadata() {
+  const language = await getServerLanguageStatic();
+
+  const content = {
+    pt: {
+      title: 'Moderação de Uploads - Opus Atlas | Painel Administrativo',
+      description:
+        'Painel de moderação para gerencie reports, aprovações e moderação de uploads de conteúdo musical. Área restrita para moderadores.',
+      ogTitle: 'Painel de Moderação - Opus Atlas',
+      ogDescription:
+        'Ferramenta administrativa para moderação de conteúdo musical',
+    },
+    en: {
+      title: 'Upload Moderation - Opus Atlas | Administrative Panel',
+      description:
+        'Moderation panel to manage reports, approvals and moderation of musical content uploads. Restricted area for moderators.',
+      ogTitle: 'Moderation Panel - Opus Atlas',
+      ogDescription: 'Administrative tool for musical content moderation',
+    },
+  };
+
+  const t = content[language];
+
+  return {
+    title: t.title,
+    description: t.description,
+    robots: {
+      index: false,
+      follow: false,
+      googleBot: {
+        index: false,
+        follow: false,
+      },
+    },
+    openGraph: {
+      title: t.ogTitle,
+      description: t.ogDescription,
+      type: 'website',
+      locale: language === 'pt' ? 'pt_BR' : 'en_US',
+      siteName: 'Opus Atlas',
+    },
+  };
+}
 
 export default async function ModerationPage({
   searchParams,
@@ -30,15 +71,14 @@ export default async function ModerationPage({
   const page = Number(resolvedSearchParams.page) || 1;
   const status = resolvedSearchParams.status || 'pending';
 
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'pages/moderation',
+  ]);
+
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-gradient-primary">
-          <LoadingAdminState loadingName="analytics" />
-        </div>
-      }
-    >
+    <TranslationProvider language={language} translations={translations}>
       <ModerationClient page={page} status={status} />
-    </Suspense>
+    </TranslationProvider>
   );
 }

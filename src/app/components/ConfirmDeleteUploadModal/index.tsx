@@ -11,7 +11,7 @@ import {
   FiInfo,
   FiLoader,
 } from 'react-icons/fi';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '../Common/Button';
 
 interface CascadeInfo {

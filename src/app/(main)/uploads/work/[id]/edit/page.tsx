@@ -1,7 +1,13 @@
+// app/uploads/work/[id]/edit/page.tsx - Editar obra específica
 import EditWorkClient from '@/app/(main)/uploads/work/[id]/edit/pageClient';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { getFormData } from '@/app/requests/upload';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
 import { getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation';
 
@@ -15,23 +21,53 @@ interface EditWorkPageProps {
 
 export async function generateMetadata({ params }: EditWorkPageProps) {
   const resolvedParams = await params;
+  const language = await getServerLanguageStatic();
 
   const work = await prisma.work.findUnique({
     where: { id: resolvedParams.id },
     select: { title: true, composer: { select: { name: true } } },
   });
 
+  const content = {
+    pt: {
+      title: `Editar "${work?.title || 'Obra'}" - Opus Atlas`,
+      description: `Editar informações da obra "${work?.title || ''}" de ${
+        work?.composer.name || ''
+      }. Atualize detalhes, classificações e metadados.`,
+    },
+    en: {
+      title: `Edit "${work?.title || 'Work'}" - Opus Atlas`,
+      description: `Edit information for the work "${work?.title || ''}" by ${
+        work?.composer.name || ''
+      }. Update details, classifications and metadata.`,
+    },
+  };
+
+  const t = content[language];
+
   return {
-    title: `Editar ${work?.title || 'Obra'} | Classical Music App`,
-    description: `Editar informações da obra ${work?.title || ''} de ${
-      work?.composer.name || ''
-    }`,
+    title: t.title,
+    description: t.description,
+    robots: {
+      index: false,
+      follow: false,
+      googleBot: {
+        index: false,
+        follow: false,
+      },
+    },
+    openGraph: {
+      title: t.title,
+      description: t.description,
+      type: 'website',
+      locale: language === 'pt' ? 'pt_BR' : 'en_US',
+      siteName: 'Opus Atlas',
+    },
   };
 }
 
 export default async function EditWorkPage({ params }: EditWorkPageProps) {
   const resolvedParams = await params;
-
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
@@ -40,7 +76,6 @@ export default async function EditWorkPage({ params }: EditWorkPageProps) {
 
   const work = await prisma.work.findUnique({
     where: { id: resolvedParams.id },
-
     include: {
       composer: {
         select: { id: true, name: true, fullName: true, portraitUrl: true },
@@ -58,7 +93,7 @@ export default async function EditWorkPage({ params }: EditWorkPageProps) {
   const isOwner = work.createdBy === session.user.id;
 
   if (!isAdmin && !isOwner) {
-    redirect('/');
+    redirect('/access-denied');
   }
 
   const [formData, composers, instruments] = await Promise.all([
@@ -74,14 +109,21 @@ export default async function EditWorkPage({ params }: EditWorkPageProps) {
     }),
   ]);
 
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'pages/uploads',
+  ]);
+
   return (
-    <EditWorkClient
-      work={work}
-      composers={composers}
-      instruments={instruments}
-      epochs={formData.epochs}
-      isAdmin={isAdmin}
-      userId={session.user.id}
-    />
+    <TranslationProvider language={language} translations={translations}>
+      <EditWorkClient
+        work={work}
+        composers={composers}
+        instruments={instruments}
+        epochs={formData.epochs}
+        isAdmin={isAdmin}
+        userId={session.user.id}
+      />
+    </TranslationProvider>
   );
 }

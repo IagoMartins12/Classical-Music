@@ -1,7 +1,10 @@
-// app/work/[workId]/page.tsx - Página otimizada com cache inteligente
+// app/work/[workId]/page.tsx - Obra específica com SEO ULTRA otimizado
 import { notFound } from 'next/navigation';
 import WorkDetailsServer from './pageServer';
 import { getWorkById } from '@/app/requests/work-page-details';
+import {
+  getServerLanguageStatic,
+} from '@/app/utils/translations/serverTranslations';
 
 interface WorkParams {
   workId: string;
@@ -11,84 +14,138 @@ interface WorkDetailsPageProps {
   params: Promise<WorkParams>;
 }
 
-// 🚀 Gerar metadata dinâmica otimizada para SEO
+// 🚀 Metadata SUPER otimizada para obras específicas
 export async function generateMetadata({ params }: WorkDetailsPageProps) {
   const resolvedParams = await params;
+  const language = await getServerLanguageStatic();
 
   try {
     const work = await getWorkById(resolvedParams.workId);
 
     if (!work) {
-      return {
-        title: 'Obra não encontrada - Opus Atlas',
-        description:
-          'A obra solicitada não foi encontrada em nossa enciclopédia.',
+      const notFoundContent = {
+        pt: {
+          title: 'Obra não encontrada - Opus Atlas | Partituras Clássicas',
+          description:
+            'A obra solicitada não foi encontrada em nossa enciclopédia de música clássica. Explore outras partituras gratuitas de Bach, Chopin, Beethoven e Mozart.',
+        },
+        en: {
+          title: 'Work not found - Opus Atlas | Classical Scores',
+          description:
+            'The requested work was not found in our classical music encyclopedia. Explore other free sheet music from Bach, Chopin, Beethoven and Mozart.',
+        },
       };
+
+      return notFoundContent[language];
     }
 
-    const title = `${work.title} - ${work.composer.name} | Opus Atlas`;
-    const description = `${work.title} de ${work.composer.fullName}${
-      work.opOrCatalog ? ` (${work.opOrCatalog})` : ''
-    }. ${work.tone ? `Tom: ${work.tone}. ` : ''}${
-      work.compositionYear ? `Composta em ${work.compositionYear}. ` : ''
-    }${work.instrument ? `Para ${work.instrument.name}. ` : ''}${
-      work.epoch ? `Período ${work.epoch.name}. ` : ''
-    }Explore partituras, análises e recursos para estudo.`;
+    const content = {
+      pt: {
+        titleTemplate: `${work.title} - ${work.composer.name} | Partitura Gratuita`,
+        description: `${work.title} de ${work.composer.fullName}${
+          work.opOrCatalog ? ` (${work.opOrCatalog})` : ''
+        }. ${work.tone ? `Tom: ${work.tone}. ` : ''}${
+          work.compositionYear ? `Composta em ${work.compositionYear}. ` : ''
+        }${work.instrument ? `Para ${work.instrument.name}. ` : ''}${
+          work.epoch ? `Período ${work.epoch.name}. ` : ''
+        }Partitura gratuita, análise musical e guia de estudo completo.`,
+        keywords: [
+          `${work.title} partitura`,
+          `${work.composer.name} ${work.title}`,
+          `${work.composer.fullName} partituras`,
+          `${work.title} ${work.instrument?.name || 'piano'}`,
+          `${work.composer.name} partituras gratuitas`,
+          `${work.title} PDF`,
+          `estudar ${work.title}`,
+          `como tocar ${work.title}`,
+          `análise ${work.title}`,
+          `${work.epoch?.name || 'música clássica'}`,
+          `${work.instrument?.name || 'piano'} clássico`,
+          'partitura IMSLP',
+          'música clássica gratuita',
+          'download partitura',
+          'estudo musical',
+          'conservatório',
+          'educação musical',
+          ...(work.categoryNames || []),
+          ...(work.workGenresArr || []),
+        ].filter(Boolean),
+        ogTitle: `${work.title} - ${work.composer.name} | Partitura Gratuita`,
+        ogDescription: `Estude ${work.title} de ${work.composer.fullName}. Partitura gratuita, análise musical e recursos educacionais completos.`,
+      },
+      en: {
+        titleTemplate: `${work.title} - ${work.composer.name} | Free Sheet Music`,
+        description: `${work.title} by ${work.composer.fullName}${
+          work.opOrCatalog ? ` (${work.opOrCatalog})` : ''
+        }. ${work.tone ? `Key: ${work.tone}. ` : ''}${
+          work.compositionYear ? `Composed in ${work.compositionYear}. ` : ''
+        }${work.instrument ? `For ${work.instrument.name}. ` : ''}${
+          work.epoch ? `${work.epoch.name} period. ` : ''
+        }Free sheet music, musical analysis and complete study guide.`,
+        keywords: [
+          `${work.title} sheet music`,
+          `${work.composer.name} ${work.title}`,
+          `${work.composer.fullName} scores`,
+          `${work.title} ${work.instrument?.name || 'piano'}`,
+          `${work.composer.name} free sheet music`,
+          `${work.title} PDF`,
+          `study ${work.title}`,
+          `how to play ${work.title}`,
+          `${work.title} analysis`,
+          `${work.epoch?.name || 'classical music'}`,
+          `${work.instrument?.name || 'piano'} classical`,
+          'IMSLP sheet music',
+          'free classical music',
+          'sheet music download',
+          'musical study',
+          'conservatory',
+          'music education',
+          ...(work.categoryNames || []),
+          ...(work.workGenresArr || []),
+        ].filter(Boolean),
+        ogTitle: `${work.title} - ${work.composer.name} | Free Sheet Music`,
+        ogDescription: `Study ${work.title} by ${work.composer.fullName}. Free sheet music, musical analysis and complete educational resources.`,
+      },
+    };
 
-    // 🆕 Palavras-chave otimizadas para SEO
-    const keywords = [
-      work.title,
-      work.composer.name,
-      work.composer.fullName,
-      work.instrument?.name,
-      work.epoch?.name,
-      'partitura',
-      'música clássica',
-      'IMSLP',
-      'estudo musical',
-      'Opus Atlas',
-      ...(work.categoryNames || []),
-      ...(work.workGenresArr || []),
-    ]
-      .filter(Boolean)
-      .join(', ');
+    const t = content[language];
+
+    // Limitar description para SEO
+    const description =
+      t.description.length > 160
+        ? t.description.substring(0, 157) + '...'
+        : t.description;
 
     return {
-      title,
-      description:
-        description.length > 160
-          ? description.substring(0, 157) + '...'
-          : description,
-      keywords,
+      title: t.titleTemplate,
+      description,
+      keywords: t.keywords,
       authors: [{ name: 'Opus Atlas' }],
       creator: 'Opus Atlas',
       publisher: 'Opus Atlas',
       openGraph: {
-        title: `${work.title} - ${work.composer.name}`,
-        description: `Obra de ${work.composer.fullName}${
-          work.opOrCatalog ? ` - ${work.opOrCatalog}` : ''
-        }. Explore partituras e recursos para estudo na Opus Atlas.`,
+        title: t.ogTitle,
+        description: t.ogDescription,
         type: 'music.song',
-        siteName: 'Opus Atlas - Enciclopédia de Música Clássica',
-        locale: 'pt_BR',
+        siteName: 'Opus Atlas',
+        locale: language === 'pt' ? 'pt_BR' : 'en_US',
+        url: `https://opusatlas.com/work/${work.id}`,
         images: [
           {
-            url: '/images/classical-hub-og.png', // Imagem padrão
+            url: '/images/og/classical-work.jpg',
             width: 1200,
             height: 630,
-            alt: `${work.title} - ${work.composer.name} | Opus Atlas`,
+            alt: `${work.title} - ${work.composer.name} | Partitura`,
           },
         ],
       },
       twitter: {
         card: 'summary_large_image',
-        title,
+        title: t.titleTemplate,
         description: description.substring(0, 200),
-        site: '@ClassicalHub',
-        creator: '@ClassicalHub',
       },
       alternates: {
-        canonical: `/work/${work.id}`,
+        canonical: `https://opusatlas.com/work/${work.id}`,
       },
       robots: {
         index: true,
@@ -101,7 +158,7 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
           'max-snippet': -1,
         },
       },
-      // 🆕 Schema.org structured data para SEO avançado
+      // Schema.org estruturado
       other: {
         'application/ld+json': JSON.stringify({
           '@context': 'https://schema.org',
@@ -110,33 +167,26 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
           composer: {
             '@type': 'Person',
             name: work.composer.fullName,
-            birthDate: work.composer.epochName, // Aproximação
           },
           dateCreated: work.compositionYear,
           genre: work.epoch?.name,
           instrument: work.instrument?.name,
           description: description,
-          url: `https://classicalhub.com/work/${work.id}`,
+          url: `https://opusatlas.com/work/${work.id}`,
           mainEntityOfPage: {
             '@type': 'WebPage',
-            '@id': `https://classicalhub.com/work/${work.id}`,
+            '@id': `https://opusatlas.com/work/${work.id}`,
           },
           isPartOf: {
             '@type': 'WebSite',
             name: 'Opus Atlas',
-            url: 'https://classicalhub.com',
+            url: 'https://opusatlas.com',
           },
           musicArrangement: work.opOrCatalog,
-          workExample: {
-            '@type': 'MusicRecording',
-            name: work.title,
-            url: work.videoUrl || work.imslpPermlink,
-          },
-          // 🆕 Informações sobre partituras disponíveis
           associatedMedia: {
             '@type': 'MediaObject',
-            name: `Partituras de ${work.title}`,
-            description: 'Partituras gratuitas disponíveis via IMSLP',
+            name: `${work.title} - Partitura Gratuita`,
+            description: 'Partitura gratuita disponível via IMSLP',
             url: work.imslpPermlink,
             encodingFormat: 'application/pdf',
           },
@@ -145,23 +195,32 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
     };
   } catch (error) {
     console.error('Erro ao gerar metadata:', error);
-    return {
-      title: 'Obra não encontrada - Opus Atlas',
-      description:
-        'A obra solicitada não foi encontrada em nossa enciclopédia.',
+
+    const errorContent = {
+      pt: {
+        title: 'Erro - Opus Atlas | Enciclopédia Musical',
+        description:
+          'Erro ao carregar obra. Explore nossa coleção de partituras de Bach, Chopin, Beethoven e Mozart.',
+      },
+      en: {
+        title: 'Error - Opus Atlas | Musical Encyclopedia',
+        description:
+          'Error loading work. Explore our collection of sheet music from Bach, Chopin, Beethoven and Mozart.',
+      },
     };
+
+    return errorContent[language];
   }
 }
 
-// 🆕 Cache otimizado da página com estratégia inteligente
-export const revalidate = 3600; // 1 hora para dados básicos
+export const revalidate = 3600;
 
 export default async function WorkDetailsPage({
   params,
 }: WorkDetailsPageProps) {
   const resolvedParams = await params;
 
-  // Verificação otimizada de ID (ObjectId do MongoDB)
+  // Verificação otimizada de ID
   if (
     !resolvedParams.workId ||
     resolvedParams.workId.length !== 24 ||

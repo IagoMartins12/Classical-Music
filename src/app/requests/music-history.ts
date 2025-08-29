@@ -77,7 +77,7 @@ const composersByEpoch = {
     'Muzio Clementi',
     'Michael Haydn',
   ],
-  Rômantico: [
+  Romântico: [
     'Frédéric Chopin',
     'Robert Schumann',
     'Hector Berlioz',
@@ -202,8 +202,8 @@ const epochsHistoricalData: Record<string, Omit<EpochData, 'id'>> = {
     musicalForms: ['Sinfonia', 'Sonata', 'Concerto', 'Quarteto de cordas'],
     instruments: ['Piano forte', 'Orquestra clássica', 'Clarinete', 'Trompa'],
   },
-  Rômantico: {
-    name: 'Rômantico',
+  Romântico: {
+    name: 'Romântico',
     period: '1820-1900',
     description:
       'O romantismo expandiu a expressão emocional na música, com harmonias mais complexas, formas mais livres e a busca pela originalidade artística.',
@@ -266,7 +266,7 @@ const epochChronologicalOrder = [
   'Renascentista',
   'Barroco',
   'Clássico',
-  'Rômantico',
+  'Romântico',
   'Modernismo',
 ];
 

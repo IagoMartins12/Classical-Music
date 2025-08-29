@@ -1,0 +1,50 @@
+{
+  "ptBr": {
+    "page_title": "Gêneros Musicais",
+    "page_subtitle": "Explore todos os {count} gêneros de música clássica disponíveis",
+
+    "back_button": "Voltar",
+    "expand_all": "Expandir Todas",
+    "collapse_all": "Colapsar Todas",
+
+    "search_placeholder": "Buscar gêneros (ex: sonata, concerto, sinfonia...)",
+    "clear_search": "Limpar Busca",
+
+    "results_found": "{count} gêneros encontrados para",
+    "results_showing_all": "Mostrando todos os {count} gêneros disponíveis",
+
+    "section_letter_title": "Letra {letter}",
+    "section_count_singular": "{count} gênero",
+    "section_count_plural": "{count} gêneros",
+
+    "empty_title": "Nenhum gênero encontrado",
+    "empty_subtitle": "Não encontramos gêneros que correspondam à sua busca por \"{searchTerm}\".",
+
+    "view_mode_cards": "Cards",
+    "view_mode_list": "Lista"
+  },
+  "en": {
+    "page_title": "Musical Genres",
+    "page_subtitle": "Explore all {count} available classical music genres",
+
+    "back_button": "Back",
+    "expand_all": "Expand All",
+    "collapse_all": "Collapse All",
+
+    "search_placeholder": "Search genres (ex: sonata, concerto, symphony...)",
+    "clear_search": "Clear Search",
+
+    "results_found": "{count} genres found for",
+    "results_showing_all": "Showing all {count} available genres",
+
+    "section_letter_title": "Letter {letter}",
+    "section_count_singular": "{count} genre",
+    "section_count_plural": "{count} genres",
+
+    "empty_title": "No genres found",
+    "empty_subtitle": "We couldn't find genres matching your search for \"{searchTerm}\".",
+
+    "view_mode_cards": "Cards",
+    "view_mode_list": "List"
+  }
+}

@@ -7,8 +7,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import SectionTitle from '../Utils/SectionTitle';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface Composer {
   id: string;

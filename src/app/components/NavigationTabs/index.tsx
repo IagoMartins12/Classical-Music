@@ -1,9 +1,9 @@
 // NavigationTabs.tsx - Premium version with theme system
 'use client';
 
+import { useTranslation } from '@/app/context/TranslationContext';
 import { FiBookOpen, FiClock } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
-import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface Props {
   activeTab: 'history' | 'timeline';

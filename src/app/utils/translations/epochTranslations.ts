@@ -11,7 +11,8 @@ export const EPOCH_TRANSLATION_MAP: Record<string, { pt: string; en: string }> =
     Renascentista: { pt: 'Renascentista', en: 'Renaissance' },
     Barroco: { pt: 'Barroco', en: 'Baroque' },
     Clássico: { pt: 'Clássico', en: 'Classical' },
-    Rômantico: { pt: 'Rômantico', en: 'Romantic' },
+    Rômantico: { pt: 'Romântico', en: 'Romantic' },
+    Romântico: { pt: 'Romântico', en: 'Romantic' },
     Modernismo: { pt: 'Modernismo', en: 'Modernism' },
     Moderno: { pt: 'Moderno', en: 'Modern' }, // Alias para Modernismo
   };

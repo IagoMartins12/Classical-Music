@@ -36,9 +36,9 @@ import {
   SequentialGrid,
 } from '../../components/animation/AnimatedComponents';
 import { useComposerName } from '@/app/hooks/useComposerName';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import Select from '../../components/Common/Select';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface WorksClientProps {
   worksData: WorksListResponse;

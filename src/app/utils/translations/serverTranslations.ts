@@ -241,10 +241,9 @@ export async function loadPageTranslations(
 
 // Seções comuns que muitas páginas usam
 export const COMMON_TRANSLATION_SECTIONS = [
-  'common',
-  'navigation',
-  'auth',
-  'errors',
+  'navbar',
+  'components/auth-modals',
+  'pages/error',
 ];
 
 /**

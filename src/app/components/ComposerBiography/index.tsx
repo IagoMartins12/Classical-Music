@@ -1,7 +1,7 @@
-// ComposerBiography.tsx - Premium version with translation system
+// ComposerBiography.tsx - ATUALIZADO com hook de controle de idioma
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import {
   FiRefreshCw,
   FiAlertCircle,
@@ -11,21 +11,19 @@ import {
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { useTranslation } from '@/app/hooks/useTranslation';
-import { useBiographyGenerator } from '@/app/hooks/useBiographyGenerator';
 import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
+import { useBiographyWithLanguage } from '@/app/hooks/useBiographyWithLanguage';
 
 interface ComposerBiographyProps {
   composerId: string;
-  composerName: string;
   initialBio?: string;
 }
 
 export default function ComposerBiography({
   composerId,
-  composerName,
   initialBio,
 }: ComposerBiographyProps) {
-  const [displayBio, setDisplayBio] = useState(initialBio || '');
+  // ✅ Usar o novo hook que controla mudanças de idioma
   const {
     biography,
     isGenerating,
@@ -34,70 +32,34 @@ export default function ComposerBiography({
     metadata,
     generateBiography,
     clearError,
-  } = useBiographyGenerator();
+    refreshBiography, // ✅ Nova função de refresh
+  } = useBiographyWithLanguage(composerId, initialBio);
 
   const { t } = useTranslation({ sections: ['pages/composerId'] });
   const { language } = useLanguageWithRefresh();
 
-  console.log('composerName', composerName);
-  // Usar refs para controlar se já tentamos gerar e evitar loops
-  const hasTriedGeneration = useRef(false);
-  const lastComposerId = useRef(composerId);
-  const lastLanguage = useRef(language);
+  // Estado local para controlar a biografia exibida
+  const [displayBio, setDisplayBio] = useState(initialBio || '');
 
-  // Reset quando trocar de compositor ou idioma
-  useEffect(() => {
-    if (
-      lastComposerId.current !== composerId ||
-      lastLanguage.current !== language
-    ) {
-      hasTriedGeneration.current = false;
-      lastComposerId.current = composerId;
-      lastLanguage.current = language;
-      setDisplayBio(initialBio || '');
-      clearError();
-    }
-  }, [composerId, language, initialBio, clearError]);
-
-  // Verificar se precisa gerar biografia automaticamente
-  useEffect(() => {
-    const shouldGenerateBio = !initialBio || initialBio.trim().length < 50;
-
-    if (
-      shouldGenerateBio &&
-      !isGenerating &&
-      !biography &&
-      !hasTriedGeneration.current &&
-      !error
-    ) {
-      hasTriedGeneration.current = true;
-      console.log(
-        `Iniciando geração automática para compositor: ${composerId} (${language})`
-      );
-      generateBiography(composerId);
-    }
-  }, [
-    composerId,
-    language,
-    initialBio,
-    isGenerating,
-    biography,
-    generateBiography,
-    error,
-  ]);
-
-  // Atualizar biografia quando gerada/traduzida
+  // ✅ Atualizar biografia quando o hook retornar nova biografia
   useEffect(() => {
     if (biography) {
       setDisplayBio(biography);
+    } else if (!biography && !isGenerating && !error) {
+      // Se não tem biografia e não está gerando nem com erro, manter inicial
+      setDisplayBio(initialBio || '');
     }
-  }, [biography]);
+  }, [biography, initialBio, isGenerating, error]);
 
   // Função para tentar novamente manualmente
   const handleRetry = () => {
-    hasTriedGeneration.current = false;
     clearError();
-    generateBiography(composerId);
+    generateBiography();
+  };
+
+  // Função para forçar refresh manual (botão opcional)
+  const handleManualRefresh = () => {
+    refreshBiography();
   };
 
   // Renderizar estado de loading
@@ -138,7 +100,7 @@ export default function ComposerBiography({
   }
 
   // Mostrar erro apenas se não conseguiu gerar E não tem biografia
-  if (error) {
+  if (error && !displayBio) {
     return (
       <div className="rounded-2xl p-6 flex justify-center shadow-theme-medium">
         <div className="flex flex-col gap-4 items-center space-x-4">
@@ -155,13 +117,15 @@ export default function ComposerBiography({
             <p className="text-accent-red/80 text-sm mb-4 leading-relaxed">
               {error}
             </p>
-            <button
-              onClick={handleRetry}
-              className="btn-classical-secondary flex items-center space-x-2 group"
-            >
-              <FiRefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
-              <span>{t('try_again')}</span>
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleRetry}
+                className="btn-classical-secondary flex items-center space-x-2 group"
+              >
+                <FiRefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+                <span>{t('try_again')}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -170,7 +134,7 @@ export default function ComposerBiography({
 
   return (
     <div className="max-w-none relative">
-      {/* Badge de informações sobre a biografia */}
+      {/* ✅ Badge de informações sobre a biografia com refresh manual */}
       {(metadata?.isGenerated || metadata?.isTranslated) && (
         <div className="flex items-center justify-between mb-6 p-3 bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-xl">
           <div className="flex items-center space-x-2">
@@ -190,12 +154,20 @@ export default function ComposerBiography({
               {metadata?.isFromCache && ' (cached)'}
             </span>
           </div>
-          {metadata?.isTranslated && (
-            <FiGlobe className="w-4 h-4 text-accent-green" />
-          )}
-          {metadata?.isGenerated && (
-            <FiZap className="w-4 h-4 text-accent-green" />
-          )}
+
+          {/* ✅ Botão de refresh manual opcional */}
+          <button
+            onClick={handleManualRefresh}
+            disabled={isGenerating}
+            className="ml-2 p-1 rounded-md hover:bg-accent-green/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Refresh biography"
+          >
+            <FiRefreshCw
+              className={`w-3 h-3 text-accent-green ${
+                isGenerating ? 'animate-spin' : 'hover:rotate-180'
+              } transition-transform duration-500`}
+            />
+          </button>
         </div>
       )}
 
@@ -207,6 +179,26 @@ export default function ComposerBiography({
             <span className="text-accent-orange text-sm font-medium">
               {warning}
             </span>
+          </div>
+        </div>
+      )}
+
+      {/* ✅ Mostrar erro como warning se tiver biografia para fallback */}
+      {error && displayBio && (
+        <div className="mb-6 p-3 bg-gradient-to-r from-accent-orange/10 to-accent-red/10 border border-accent-orange/30 rounded-xl">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <FiAlertCircle className="w-4 h-4 text-accent-orange" />
+              <span className="text-accent-orange text-sm font-medium">
+                Translation error - showing previous version
+              </span>
+            </div>
+            <button
+              onClick={handleRetry}
+              className="text-xs px-2 py-1 bg-accent-orange/20 text-accent-orange rounded hover:bg-accent-orange/30 transition-colors"
+            >
+              Try again
+            </button>
           </div>
         </div>
       )}

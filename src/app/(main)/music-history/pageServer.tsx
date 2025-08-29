@@ -1,11 +1,15 @@
 // main/music-history/pageServer.tsx
 import { MusicHistoryPageClient } from '@/app/(main)/music-history/pageClient';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 import {
   getComposersByEpochTranslated,
   getComposersTimelineTranslated,
   getEpochsHistoricalDataTranslated,
 } from '@/app/requests/music-history-translated';
-import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
 
 export async function MusicHistoryPageServer() {
   try {
@@ -31,12 +35,16 @@ export async function MusicHistoryPageServer() {
         historicalData: historicalData || epoch.historicalData, // Usa o que já vem traduzido
       };
     });
-
+    const { translations } = await loadPageTranslationsWithCommon(language, [
+      'pages/music-history',
+    ]);
     return (
-      <MusicHistoryPageClient
-        epochs={enrichedEpochs} // ✅ Dados já traduzidos
-        composersTimeline={composersTimeline} // ✅ Dados já traduzidos
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <MusicHistoryPageClient
+          epochs={enrichedEpochs} // ✅ Dados já traduzidos
+          composersTimeline={composersTimeline} // ✅ Dados já traduzidos
+        />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error('Erro ao carregar dados da história musical:', error);

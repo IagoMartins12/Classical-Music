@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import { FiX, FiRefreshCw } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface EmailVerificationBannerProps {
   onDismiss?: () => void;

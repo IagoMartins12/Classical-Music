@@ -76,7 +76,7 @@ export class AIBiographyGenerator {
               content: prompt,
             },
           ],
-          max_tokens: 600, // Reduzido para economizar
+          max_tokens: 1200, // Reduzido para economizar
           temperature: 0.7,
         }),
       });
@@ -159,7 +159,7 @@ export class AIBiographyGenerator {
             content: prompt,
           },
         ],
-        max_tokens: 600,
+        max_tokens: 1200,
         temperature: 0.7,
       };
 

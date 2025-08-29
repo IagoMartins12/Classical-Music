@@ -9,6 +9,8 @@ import { FiCalendar } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '@/app/components/FavoriteButton';
 import VerificationBadge from '@/app/components/Verification/VerificationBadge';
+import { useTranslation } from '@/app/context/TranslationContext';
+import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 
 interface listComposersCardsProps {
   composer: composerHomeProps;
@@ -20,6 +22,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
   isActive,
 }) => {
   // const [imageLoaded, setImageLoaded] = useState(false);
+  const { t } = useTranslation({ sections: ['pages/home'] });
 
   return (
     <div className="group cursor-pointer select-none h-full">
@@ -39,11 +42,6 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
         >
           {/* Image Container */}
           <div className="aspect-square relative overflow-hidden">
-            {/* Loading Skeleton */}
-            {/* {!imageLoaded && (
-              <div className="absolute inset-0 loading-skeleton"></div>
-            )} */}
-
             {/* Portrait Image */}
             <LazyImage
               src={composer.portraitUrl}
@@ -75,7 +73,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
               <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0">
                 <span className="inline-flex items-center px-2 py-1 bg-brand-primary/20 backdrop-blur-md border border-brand-primary/30 rounded-full text-xs font-medium text-white">
                   <FiCalendar className="w-2.5 h-2.5 mr-1" />
-                  {composer.epochName}
+                  {translateEpochWithHook(composer.epochName, t)}
                 </span>
               </div>
             )}
@@ -106,7 +104,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
                 <div className="flex items-center space-x-1.5">
                   <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
                   <span className="text-xs text-theme-tertiary font-medium">
-                    Ver obras
+                    {t('see_works')}
                   </span>
                 </div>
 

@@ -21,6 +21,7 @@ import Navbar from './components/Navbar';
 import AdminHeader from './components/Admin/AdminHeader';
 import AdminSidebar from './components/Admin/AdminSidebar';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { useClientMetadata } from './hooks/useClientMetadata';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -34,7 +35,30 @@ export default function Error({ error, reset }: ErrorProps) {
   const { data: session } = useSession();
   const [currentArea, setCurrentArea] = useState<AreaType>('main');
   const [showAdminSidebar, setShowAdminSidebar] = useState(false);
-  const { t } = useTranslation({ sections: ['pages/error'] });
+  const { t, language } = useTranslation({ sections: ['pages/error'] });
+
+  // Configurar metadata dinâmica baseada no idioma
+  const metadataContent = {
+    pt: {
+      title: 'Erro na aplicação - Opus Atlas | Algo deu errado',
+      description:
+        'Ocorreu um erro inesperado em nossa plataforma musical. Nossa equipe foi notificada e está trabalhando para resolver o problema.',
+    },
+    en: {
+      title: 'Application error - Opus Atlas | Something went wrong',
+      description:
+        'An unexpected error occurred on our musical platform. Our team has been notified and is working to resolve the issue.',
+    },
+  };
+
+  const metadata = metadataContent[language] || metadataContent.pt;
+
+  // Usar o hook de metadata client-side
+  useClientMetadata({
+    title: metadata.title,
+    description: metadata.description,
+    noIndex: true, // Não indexar páginas de erro
+  });
 
   useEffect(() => {
     console.error('Erro na aplicação:', error);

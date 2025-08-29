@@ -13,9 +13,10 @@ import {
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../FavoriteButton';
 import VerificationBadge from '../Verification/VerificationBadge';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
+import { useTranslation } from '@/app/context/TranslationContext';
+import { useComposerBiography } from '@/app/hooks/useComposerBiography';
 
 interface FeaturedComposerProps {
   composer: {
@@ -49,7 +50,12 @@ interface FeaturedComposerProps {
 const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
   const { t } = useTranslation({ sections: ['pages/home'] });
   const { language } = useLanguageStore();
-
+  // ✅ USAR O NOVO HOOK ao invés da biografia do banco diretamente
+  const { biography } = useComposerBiography(
+    composer.id,
+    composer.fullName || composer.name,
+    composer.bio // Fallback para a biografia do banco se não tiver no cache
+  );
   const formatDates = () => {
     if (!composer.birthDate && !composer.deathDate) return null;
 
@@ -65,7 +71,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
     return `${birth} - ${death}`;
   };
 
-  const formatBio = (bio: string) => {
+  const formatBio = (bio?: string | null) => {
     if (!bio) return '';
     return bio.length > 200 ? `${bio.substring(0, 200)}...` : bio;
   };
@@ -202,7 +208,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                     {t('featured_composer_biography')}
                   </h4>
                   <p className="text-theme-secondary leading-relaxed text-lg">
-                    {formatBio(composer.bio)}
+                    {formatBio(biography)}
                   </p>
                 </div>
               )}

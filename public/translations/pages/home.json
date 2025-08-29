@@ -1,5 +1,21 @@
 {
   "ptBr": {
+    "heroMainPage_image_alt_partitura": "Período clássico da música - Instrumentos históricos e partituras antigas",
+    "heroMainPage_link_musica": "História da Música Clássica",
+    "heroMainPage_link_explorar_história_completa": "Explorar História Completa",
+    "heroMainPage_image_alt_classico": "Instrumentos clássicos - Violino, piano e outros instrumentos históricos",
+    "heroMainPage_link_instrumentação_clássica": "Instrumentação Clássica",
+    "heroMainPage_link_musica_1": "Conheça a evolução dos instrumentos musicais e como cada um contribuiu para o desenvolvimento da música clássica ao longo dos séculos.",
+    "heroMainPage_link_descobrir_mais": "Descobrir mais",
+    "heroMainPage_image_alt_partitura_1": "Ambiente de estudo musical - Partituras, metrônomo e instrumentos musicais",
+    "heroMainPage_link_nossa_missão": "Nossa Missão",
+    "heroMainPage_link_conheça_nossa_história": "Conheça nossa história",
+    "heroMainPage_banner_1": "Embarque em uma jornada fascinante através dos séculos, desde o canto gregoriano medieval até as inovações contemporâneas. Descubra como cada período histórico moldou a música que conhecemos e amamos hoje.",
+    "heroMainPage_banner_3": "Democratizar o acesso à música clássica através de uma plataforma completa que combina conhecimento histórico com ferramentas práticas de estudo.",
+
+    "popular_composers": "Compositores Populares",
+    "master_composers": "Os grandes mestres mais explorados pela comunidade",
+
     "recent_additions_title": "Últimas Adições",
     "recent_additions_subtitle": "Novos compositores e obras recém-adicionados à nossa enciclopédia",
     "recent_additions_link_text": "Ver todas as adições",
@@ -53,6 +69,9 @@
     "epochs_moderno": "Moderno",
     "epochs_contemporaneo": "Contemporâneo",
     "epochs_desconhecido": "Desconhecido",
+    "epochs_teory": "Teoria",
+    "epochs_future": "Futuro",
+    "epochs_impressionism": "Impressionismo",
 
     "loading": "Carregando...",
     "loading_more_composers": "Carregar Mais Compositores",
@@ -61,9 +80,26 @@
     "all_composers_show": "Todos os Compositores Exibidos!",
     "composers_explored": "Você explorou todos os ",
     "collection_composers": "compositores desta coleção.",
-    "see_all_composers": "Ver Todos os Compositores "
+    "see_all_composers": "Ver Todos os Compositores ",
+    "see_works": "Ver Obras"
   },
   "en": {
+    "heroMainPage_image_alt_partitura": "Classic music period - historical instruments and old scores",
+    "heroMainPage_link_musica": "History of Classical Music",
+    "heroMainPage_link_explorar_história_completa": "Explore Full History",
+    "heroMainPage_image_alt_classico": "Classic instruments - violin, piano and other historical instruments",
+    "heroMainPage_link_instrumentação_clássica": "Classic instrumentation",
+    "heroMainPage_link_musica_1": "Know the evolution of musical instruments and how each contributed to the development of classical music over the centuries.",
+    "heroMainPage_link_descobrir_mais": "Find out",
+    "heroMainPage_image_alt_partitura_1": "MUSICAL STUDY ENVIRONMENT - SHOCKS, METONOMES AND MUSICAL INSTRUMENTS",
+    "heroMainPage_link_nossa_missão": "Our mission",
+    "heroMainPage_link_conheça_nossa_história": "Know our story",
+    "heroMainPage_banner_1": "Embark on a fascinating journey through the centuries, from medieval Gregorian chant to contemporary innovations. Discover how each historical period shaped the music we know and love today.",
+    "heroMainPage_banner_3": "Democratize access to classical music through a comprehensive platform that combines historical knowledge with practical study tools.",
+
+    "popular_composers": "Popular Composers",
+    "master_composers": "The most explored great masters by the community",
+
     "recent_additions_title": "Recent Additions",
     "recent_additions_subtitle": "New composers and works recently added to our encyclopedia",
     "recent_additions_link_text": "View all additions",
@@ -117,7 +153,9 @@
     "epochs_moderno": "Modern",
     "epochs_contemporaneo": "Contemporary",
     "epochs_desconhecido": "Unknown",
-
+    "epochs_teory": "Theory",
+    "epochs_future": "Future",
+    "epochs_impressionism": "Impressionism",
     "loading": "Loading...",
     "loading_more_composers": "Show more composers",
     "more": "More",
@@ -125,6 +163,7 @@
     "all_composers_show": "All Composers Featured!",
     "composers_explored": "You explored all the ",
     "collection_composers": "composers of this collection.",
-    "see_all_composers": "See all composers "
+    "see_all_composers": "See all composers ",
+    "see_works": "See Works"
   }
 }

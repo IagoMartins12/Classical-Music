@@ -1,10 +1,5 @@
 'use client';
 
-// 3. components/LanguageToggle.tsx - ATUALIZADO com Modal e Portal
-// ===================================================================
-
-'use client';
-
 import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
 import React from 'react';
 import { FiGlobe } from 'react-icons/fi';

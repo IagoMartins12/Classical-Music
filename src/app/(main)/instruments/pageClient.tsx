@@ -27,7 +27,7 @@ import Link from 'next/link';
 import FloatingIcons from '../../components/FloatingIcons';
 import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';
 import Image from 'next/image';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface Composer {
   id: string;
@@ -416,13 +416,6 @@ export function InstrumentsPageClient({
                                     {t(
                                       'instruments_jsx_span_children_0__obras_minuscula'
                                     )}{' '}
-                                    •{' '}
-                                    <span className="text-brand-primary">
-                                      {
-                                        instrument.topComposers[0].composer
-                                          .epochName
-                                      }
-                                    </span>
                                   </div>
                                 </div>
                               </div>
@@ -809,11 +802,6 @@ export function InstrumentsPageClient({
                                         <div className="text-theme-primary text-sm font-medium classical-subtitle">
                                           {work.composer.fullName}
                                         </div>
-                                        {work.composer.epochName && (
-                                          <div className="text-brand-primary text-xs">
-                                            {work.composer.epochName}
-                                          </div>
-                                        )}
                                       </div>
                                     </Link>
                                     <Link

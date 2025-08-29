@@ -396,7 +396,7 @@ export function BadgeComponent({
         rounded-2xl 
         ${
           badge.unlocked
-            ? `bg-gradient-to-br ${badge.color?.from} ${badge.color?.to} shadow-lg ${badge.color?.border}`
+            ? `bg-gradient-to-br border-color-primary shadow-lg ${badge.color?.border}`
             : 'bg-theme-secondary border-2 border-theme-primary/20'
         }
         border-2
@@ -408,7 +408,7 @@ export function BadgeComponent({
         <Icon
           className={`
           ${iconSizes[size]} 
-          ${badge.unlocked ? 'text-white' : 'text-theme-tertiary'}
+          ${badge.unlocked ? 'text-brand-primary' : 'text-theme-primary'}
           drop-shadow-sm
         `}
         />

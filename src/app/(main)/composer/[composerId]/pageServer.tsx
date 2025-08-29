@@ -8,6 +8,11 @@ import {
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import ComposerDetailsClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 interface ComposerDetailsServerProps {
   composerId: string;
@@ -17,6 +22,10 @@ export default async function ComposerDetailsServer({
   composerId,
 }: ComposerDetailsServerProps) {
   const session = await getServerSession(authOptions);
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'pages/composerId',
+  ]);
 
   try {
     // OTIMIZAÇÃO: Carregar dados do compositor, obras iniciais e opções de filtro em paralelo
@@ -32,12 +41,14 @@ export default async function ComposerDetailsServer({
     const isAdmin = session?.user.role === 2;
 
     return (
-      <ComposerDetailsClient
-        composer={composer}
-        initialWorksData={initialWorksData}
-        filterOptions={filterOptions}
-        isAdmin={isAdmin}
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <ComposerDetailsClient
+          composer={composer}
+          initialWorksData={initialWorksData}
+          filterOptions={filterOptions}
+          isAdmin={isAdmin}
+        />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error('Erro ao carregar compositor:', error);

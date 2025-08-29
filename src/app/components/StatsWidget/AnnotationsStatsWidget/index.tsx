@@ -24,7 +24,7 @@ import {
 } from '../../badges/AnnotationsBadgeSystem';
 import { BadgeGrid } from '../../badges/BadgeSystem';
 import { useAchievementSystem } from '../../../hooks/useAchievements';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface AnnotationsStatsWidgetProps {
   className?: string;
@@ -155,7 +155,7 @@ export default function AnnotationsStatsWidget({
                     <div
                       className={`w-12 h-12 rounded-xl bg-gradient-to-br ${badge.color?.from} ${badge.color?.to} flex items-center justify-center`}
                     >
-                      <Icon className="w-6 h-6 text-white" />
+                      <Icon className="w-6 h-6 text-theme-primary" />
                     </div>
                     <div className="flex-1">
                       <div className="font-medium text-theme-primary">

@@ -1,9 +1,9 @@
 // HeroSection.tsx - Premium version with theme system
 'use client';
 
+import { useTranslation } from '@/app/context/TranslationContext';
 import AnimatedMusicalNotes from '../AnimatedMusicalNotes';
 import FloatingIcons from '../FloatingIcons';
-import { useTranslation } from '@/app/hooks/useTranslation';
 
 export function HeroSection() {
   const { t } = useTranslation({ sections: ['pages/music-history'] });

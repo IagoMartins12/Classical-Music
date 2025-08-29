@@ -12,7 +12,7 @@ import Select from '../../Common/Select';
 import { getEpochs, getFamousComposers } from '@/app/actions/auth';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface MusicalPreferencesSectionProps {
   user: User;

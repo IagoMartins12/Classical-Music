@@ -32,7 +32,7 @@ import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Input from '../../Common/Inputs';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 interface CreateAnnotationModalProps {

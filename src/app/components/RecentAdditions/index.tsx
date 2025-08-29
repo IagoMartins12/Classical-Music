@@ -6,7 +6,7 @@ import { FiPlus } from 'react-icons/fi';
 import SectionTitle from '../Utils/SectionTitle';
 import RecentComposerCard from './RecentComposerCard';
 import RecentWorkCard, { RecentWorkProps } from './RecentWorkCard';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 export interface RecentComposerProps {
   name: string;

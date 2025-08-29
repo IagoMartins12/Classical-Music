@@ -1,11 +1,15 @@
 // app/main/composers/pageServer.tsx
 import ComposersClient from '@/app/(main)/composers/pageClient';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 import {
   getComposersCountTranslated,
   getComposersWithPaginationTranslated,
   getEpochsCacheTranslated,
 } from '@/app/requests/composers-translated';
-import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
 
 const ITEMS_PER_PAGE = 30;
 
@@ -45,17 +49,21 @@ export default async function ComposersPageServer({
       id: epoch.id,
       name: epoch.name, // Nome original para filtros funcionarem
     }));
-
+    const { translations } = await loadPageTranslationsWithCommon(language, [
+      'pages/composers',
+    ]);
     return (
-      <ComposersClient
-        composers={composersData} // ✅ Dados já vêm com épocas traduzidas
-        epochs={epochs} // ✅ Épocas com nomes originais para filtro funcionar
-        currentPage={page}
-        totalPages={totalPages}
-        totalCount={totalCount}
-        searchTerm={search}
-        selectedEpoch={epochId}
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <ComposersClient
+          composers={composersData} // ✅ Dados já vêm com épocas traduzidas
+          epochs={epochs} // ✅ Épocas com nomes originais para filtro funcionar
+          currentPage={page}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          searchTerm={search}
+          selectedEpoch={epochId}
+        />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error('Erro ao carregar dados dos compositores:', error);

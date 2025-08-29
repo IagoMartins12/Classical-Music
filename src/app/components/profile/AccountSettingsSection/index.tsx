@@ -30,7 +30,7 @@ import {
 } from '@/app/utils/accountValidation';
 import DeleteAccountModal from '../../DeleteAccountModal';
 import EmailVerificationBanner2 from '../../EmailVerification/EmailVerificationBanner2';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface AccountSettingsSectionProps {
   user: User;

@@ -22,7 +22,7 @@ import Input from '../Common/Inputs';
 import { AnimatedCard } from '../animation/AnimatedComponents';
 import { BiBookContent, BiBookOpen } from 'react-icons/bi';
 import { CascadeInfo } from '@/app/hooks/useAccountManagement';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface DeleteAccountModalProps {
   isOpen: boolean;

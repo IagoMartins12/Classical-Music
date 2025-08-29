@@ -36,9 +36,9 @@ import ReportButton from '../../../components/Report/ReportButton';
 import VerificationModal from '../../../components/Verification/VerificationModal';
 import VerificationButton from '../../../components/Verification/VerificationButton';
 import EditButton from '../../../components/Common/EditButton';
-import { useTranslation } from '@/app/hooks/useTranslation';
-import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
+import { useTranslation } from '@/app/context/TranslationContext';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
@@ -58,7 +58,7 @@ export default function ComposerDetailsClient({
   const [isVerified, setIsVerified] = useState(composer.isVerified || false);
 
   const { t } = useTranslation({ sections: ['pages/composerId'] });
-  const { language } = useLanguageWithRefresh();
+  const { language } = useLanguageStore();
 
   const handleVerificationChange = (verified: boolean) => {
     setIsVerified(verified);
@@ -652,7 +652,6 @@ export default function ComposerDetailsClient({
             <AnimatedItem direction="up" springType="gentle">
               <ComposerBiography
                 composerId={composer.id}
-                composerName={composer.fullName || composer.name}
                 initialBio={composer.bio}
               />
             </AnimatedItem>

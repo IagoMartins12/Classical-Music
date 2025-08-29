@@ -37,11 +37,11 @@ import CreateComposerModal from '../../components/UploadsPage/modals/CreateCompo
 import BulkInsertWorksModal from '../../components/UploadsPage/modals/BulkInsertWorksModal';
 
 import { useToast } from '@/app/hooks/useToast';
-import { useTranslation } from '@/app/hooks/useTranslation';
 
 import UploadComposerCard from '../../components/UploadsPage/UploadComposerCard';
 import UploadWorkCard from '../../components/UploadsPage/UploadWorkCard';
 import UploadScoreCard from '../../components/UploadsPage/UploadScoreCard';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface Epoch {
   id: string;

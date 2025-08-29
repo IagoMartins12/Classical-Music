@@ -32,7 +32,7 @@ import {
   canProceedWithPhone,
   usePhoneValidation,
 } from '@/app/utils/phones_and_location/phoneValidation';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface PersonalInfoSectionProps {
   user: User;

@@ -32,6 +32,7 @@ import AdminHeader from '../components/Admin/AdminHeader';
 import AdminSidebar from '../components/Admin/AdminSidebar';
 import Image from 'next/image';
 import { LuPiano } from 'react-icons/lu';
+import { useTranslation } from '../context/TranslationContext';
 
 interface SuggestionCard {
   title: string;
@@ -48,6 +49,7 @@ export default function AccessDenied() {
   const { data: session } = useSession();
   const [currentArea, setCurrentArea] = useState<AreaType>('main');
   const [showAdminSidebar, setShowAdminSidebar] = useState(false);
+  const { t } = useTranslation({ sections: ['pages/access-denied'] });
 
   // Detectar área atual baseada na URL
   useEffect(() => {
@@ -126,46 +128,19 @@ export default function AccessDenied() {
   const getAreaTitle = () => {
     switch (currentArea) {
       case 'teacher':
-        return 'Área do Professor';
+        return t('acess_denied_area_title_teacher');
       case 'student':
-        return 'Área do Estudante';
+        return t('acess_denied_area_title_student');
       case 'admin':
-        return 'Painel Administrativo';
+        return t('acess_denied_area_title_admin');
       default:
-        return 'esta pagina.';
+        return t('acess_denied_area_title_main');
     }
   };
 
   const getContextualTitle = () => {
     if (!session?.user) {
-      return `Acesso Restrito`;
-    }
-
-    const userRole = session.user.role;
-
-    switch (currentArea) {
-      case 'teacher':
-        if (userRole === 0) return 'Área Restrita para Professores';
-        if (userRole === 2) return 'Área Específica para Professores';
-        return 'Acesso Restrito';
-
-      case 'student':
-        if (userRole === 1) return 'Área Restrita para Estudantes';
-        if (userRole === 2) return 'Área Específica para Estudantes';
-        return 'Acesso Restrito';
-
-      case 'admin':
-        if (userRole < 2) return 'Área Administrativa Restrita';
-        return 'Acesso Negado';
-
-      default:
-        return `Acesso Restrito `;
-    }
-  };
-
-  const getContextualDescription = () => {
-    if (!session?.user) {
-      return `Você precisa estar logado para acessar ${getAreaTitle()}`;
+      return t('acess_denied_contextual_title_no_session');
     }
 
     const userRole = session.user.role;
@@ -173,25 +148,60 @@ export default function AccessDenied() {
     switch (currentArea) {
       case 'teacher':
         if (userRole === 0)
-          return 'Esta seção é exclusiva para professores cadastrados na plataforma';
+          return t('acess_denied_contextual_title_teacher_student');
         if (userRole === 2)
-          return 'Esta é uma área específica para professores, não para administradores';
-        return 'Você não tem permissão para acessar a área de professores';
+          return t('acess_denied_contextual_title_teacher_admin');
+        return t('acess_denied_contextual_title_teacher_default');
 
       case 'student':
         if (userRole === 1)
-          return 'Esta seção é exclusiva para estudantes da plataforma';
+          return t('acess_denied_contextual_title_student_teacher');
         if (userRole === 2)
-          return 'Esta é uma área específica para estudantes, não para administradores';
-        return 'Você não tem permissão para acessar a área de estudantes';
+          return t('acess_denied_contextual_title_student_admin');
+        return t('acess_denied_contextual_title_student_default');
+
+      case 'admin':
+        if (userRole < 2) return t('acess_denied_contextual_title_admin_user');
+        return t('acess_denied_contextual_title_admin_default');
+
+      default:
+        return t('acess_denied_contextual_title_default');
+    }
+  };
+
+  const getContextualDescription = () => {
+    if (!session?.user) {
+      return `${t(
+        'acess_denied_contextual_description_no_session'
+      )} ${getAreaTitle()}`;
+    }
+
+    const userRole = session.user.role;
+
+    switch (currentArea) {
+      case 'teacher':
+        if (userRole === 0)
+          return t('acess_denied_contextual_description_teacher_student');
+        if (userRole === 2)
+          return t('acess_denied_contextual_description_teacher_admin');
+        return t('acess_denied_contextual_description_teacher_default');
+
+      case 'student':
+        if (userRole === 1)
+          return t('acess_denied_contextual_description_student_teacher');
+        if (userRole === 2)
+          return t('acess_denied_contextual_description_student_admin');
+        return t('acess_denied_contextual_description_student_default');
 
       case 'admin':
         if (userRole < 2)
-          return 'Esta área é restrita apenas para administradores do sistema';
-        return 'Você não tem as permissões necessárias para esta área administrativa';
+          return t('acess_denied_contextual_description_admin_user');
+        return t('acess_denied_contextual_description_admin_default');
 
       default:
-        return `Você não tem permissão para acessar ${getAreaTitle()}`;
+        return `${t(
+          'acess_denied_contextual_description_default'
+        )} ${getAreaTitle()}`;
     }
   };
 
@@ -199,22 +209,22 @@ export default function AccessDenied() {
     if (!session?.user) {
       return [
         {
-          title: 'Fazer Login',
-          description: 'Entre com sua conta existente',
+          title: t('acess_denied_suggestion_fazer_login'),
+          description: t('acess_denied_suggestion_fazer_login_desc'),
           href: '/api/auth/signin',
           icon: FiUser,
           color: 'from-brand-primary to-brand-secondary',
         },
         {
-          title: 'Explorar Enciclopédia',
-          description: 'Navegue pelo conteúdo público',
+          title: t('acess_denied_suggestion_explorar_enciclopedia'),
+          description: t('acess_denied_suggestion_explorar_enciclopedia_desc'),
           href: '/composers',
           icon: FiBookOpen,
           color: 'from-accent-blue to-accent-purple',
         },
         {
-          title: 'Página Inicial',
-          description: 'Voltar ao início',
+          title: t('acess_denied_suggestion_pagina_inicial'),
+          description: t('acess_denied_suggestion_pagina_inicial_desc'),
           href: '/',
           icon: FiHome,
           color: 'from-accent-green to-accent-blue',
@@ -229,8 +239,8 @@ export default function AccessDenied() {
     switch (userRole) {
       case 0: // Estudante
         suggestions.push({
-          title: 'Explorar peças ',
-          description: 'Navegue pelo nosso conteúdo de peças',
+          title: t('acess_denied_suggestion_explorar_pecas'),
+          description: t('acess_denied_suggestion_explorar_pecas_desc'),
           href: '/student',
           icon: LuPiano,
           color: 'from-accent-green to-accent-blue',
@@ -238,8 +248,10 @@ export default function AccessDenied() {
 
         if (currentArea === 'teacher') {
           suggestions.push({
-            title: 'Solicitar Acesso Como Professor',
-            description: 'Entre em contato para se tornar professor',
+            title: t('acess_denied_suggestion_solicitar_acesso_professor'),
+            description: t(
+              'acess_denied_suggestion_solicitar_acesso_professor_desc'
+            ),
             href: '/contact',
             icon: FiMail,
             color: 'from-accent-purple to-accent-red',
@@ -249,8 +261,8 @@ export default function AccessDenied() {
 
       case 1: // Professor
         suggestions.push({
-          title: 'Área do Professor',
-          description: 'Acesse sua área de ensino',
+          title: t('acess_denied_suggestion_area_professor'),
+          description: t('acess_denied_suggestion_area_professor_desc'),
           href: '/teacher',
           icon: FiUsers,
           color: 'from-brand-primary to-brand-secondary',
@@ -258,8 +270,10 @@ export default function AccessDenied() {
 
         if (currentArea === 'admin') {
           suggestions.push({
-            title: 'Solicitar Acesso Administrativo',
-            description: 'Entre em contato para permissões de admin',
+            title: t('acess_denied_suggestion_solicitar_acesso_admin'),
+            description: t(
+              'acess_denied_suggestion_solicitar_acesso_admin_desc'
+            ),
             href: '/contact',
             icon: FiMail,
             color: 'from-accent-red to-accent-purple',
@@ -269,8 +283,8 @@ export default function AccessDenied() {
 
       case 2: // Admin
         suggestions.push({
-          title: 'Painel Administrativo',
-          description: 'Acesse o painel de controle',
+          title: t('acess_denied_suggestion_painel_admin'),
+          description: t('acess_denied_suggestion_painel_admin_desc'),
           href: '/admin',
           icon: FiSettings,
           color: 'from-accent-red to-accent-purple',
@@ -280,8 +294,8 @@ export default function AccessDenied() {
 
     // Sugestões comuns
     suggestions.push({
-      title: 'Explorar Enciclopédia',
-      description: 'Navegue pelo conteúdo público',
+      title: t('acess_denied_suggestion_explorar_enciclopedia'),
+      description: t('acess_denied_suggestion_explorar_enciclopedia_desc'),
       href: '/composers',
       icon: FiBookOpen,
       color: 'from-accent-blue to-accent-purple',
@@ -289,8 +303,8 @@ export default function AccessDenied() {
 
     if (currentArea !== 'main') {
       suggestions.push({
-        title: 'Página Inicial',
-        description: 'Voltar ao início',
+        title: t('acess_denied_suggestion_pagina_inicial'),
+        description: t('acess_denied_suggestion_pagina_inicial_desc'),
         href: '/',
         icon: FiHome,
         color: 'from-accent-green to-accent-blue',
@@ -315,7 +329,7 @@ export default function AccessDenied() {
       return session.user.email.split('@')[0];
     }
 
-    return 'Usuário';
+    return t('acess_denied_user_default');
   };
 
   const getRoleLabel = () => {
@@ -323,11 +337,11 @@ export default function AccessDenied() {
 
     switch (session.user.role) {
       case 1:
-        return 'Professor';
+        return t('acess_denied_role_teacher');
       case 2:
-        return 'Administrador';
+        return t('acess_denied_role_admin');
       default:
-        return 'Usuário';
+        return t('acess_denied_role_user');
     }
   };
 
@@ -379,7 +393,7 @@ export default function AccessDenied() {
                     <GiGrandPiano className="w-12 h-12 mr-4 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
                     <div className="text-left">
                       <span className="text-2xl font-bold text-gradient-brand classical-title">
-                        Opus Atlas
+                        {t('acess_denied_jsx_span_children_0__opus_atlas')}
                       </span>
                     </div>
                   </Link>
@@ -488,7 +502,10 @@ export default function AccessDenied() {
                   className="btn-classical-primary flex items-center space-x-3 group text-lg px-8 py-4"
                 >
                   <FiHome className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                  <span>Voltar ao {getAreaTitle()}</span>
+                  <span>
+                    {t('acess_denied_jsx_span_children_0__voltar')}{' '}
+                    {getAreaTitle()}
+                  </span>
                 </Link>
               </AnimatedItem>
 
@@ -499,7 +516,7 @@ export default function AccessDenied() {
                     className="btn-classical-secondary flex items-center space-x-3 group text-lg px-8 py-4"
                   >
                     <FiCompass className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
-                    <span>Página Inicial</span>
+                    <span>{t('acess_denied_jsx_span_children_0__page')}</span>
                   </Link>
                 </AnimatedItem>
               )}
@@ -515,7 +532,7 @@ export default function AccessDenied() {
                   <FiMail className="w-5 h-5 text-accent-blue" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title">
-                  Precisa de Ajuda?
+                  {t('acess_denied_jsx_h3_children_0__precisa_ajuda')}
                 </h3>
               </div>
 
@@ -524,13 +541,17 @@ export default function AccessDenied() {
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
-                      Verifique suas permissões
+                      {t(
+                        'acess_denied_jsx_span_children_0__verifique_suas_permissões'
+                      )}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
-                      Entre em contato conosco
+                      {t(
+                        'acess_denied_jsx_span_children_0__entre_contato_conosco'
+                      )}
                     </span>
                   </div>
                 </div>
@@ -538,13 +559,17 @@ export default function AccessDenied() {
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
-                      Explore a enciclopédia
+                      {t(
+                        'acess_denied_jsx_span_children_0__explore_enciclopédia'
+                      )}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
-                      Solicite acesso adequado
+                      {t(
+                        'acess_denied_jsx_span_children_0__solicite_acesso_adequado'
+                      )}
                     </span>
                   </div>
                 </div>
@@ -555,7 +580,9 @@ export default function AccessDenied() {
                   href="/contact"
                   className="text-brand-primary hover:text-brand-secondary transition-colors font-medium"
                 >
-                  Entre em contato para solicitar acesso →
+                  {t(
+                    'acess_denied_jsx_link_children_0__entre_contato_solicitar'
+                  )}
                 </Link>
               </div>
             </AnimatedCard>
@@ -564,11 +591,11 @@ export default function AccessDenied() {
             <AnimatedItem direction="up" springType="gentle">
               <div className="p-6 classical-card-simple max-w-2xl mx-auto">
                 <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
-                  &quot;A música é a arte mais direta, ela entra pelo ouvido e
-                  vai ao coração.&quot;
+                  &quot;{t('acess_denied_jsx_blockquote_children_0__music')}
+                  &quot;
                 </blockquote>
                 <cite className="text-brand-primary font-semibold">
-                  — Magdalena Martínez
+                  {t('acess_denied_jsx_cite_children_0__magdalena_martínez')}
                 </cite>
               </div>
             </AnimatedItem>

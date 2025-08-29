@@ -5,6 +5,10 @@ import { Language } from '@/app/stores/useLanguageStore';
 const EPOCH_TRANSLATION_MAP: Record<string, string> = {
   Medieval: 'epochs_medieval',
   Renascentista: 'epochs_renascentista',
+  Renascimento: 'epochs_renascentista',
+  Impressionismo: 'epochs_impressionism',
+  Teoria: 'epochs_teory',
+  Futuro: 'epochs_future',
   Barroco: 'epochs_barroco',
   Clássico: 'epochs_classico',
   Romântico: 'epochs_romantico',

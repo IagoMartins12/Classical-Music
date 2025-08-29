@@ -1,6 +1,7 @@
 // HistoryComposerCard.tsx - Premium version with theme system
 'use client';
 
+import { useComposerBiography } from '@/app/hooks/useComposerBiography';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiUser, FiCalendar, FiExternalLink } from 'react-icons/fi';
@@ -52,6 +53,11 @@ export function HistoryComposerCard({ composer }: Props) {
     return null;
   };
   const lifespan = getLifespan();
+  const { biography } = useComposerBiography(
+    composer.id,
+    composer.fullName || composer.name,
+    composer.bio // Fallback para a biografia do banco se não tiver no cache
+  );
 
   return (
     <Link
@@ -98,11 +104,11 @@ export function HistoryComposerCard({ composer }: Props) {
         </div>
 
         {/* Bio snippet */}
-        {composer.bio && (
+        {biography && (
           <p className="text-theme-secondary text-xs leading-relaxed line-clamp-2 group-hover:text-theme-primary transition-colors duration-300">
-            {composer.bio.length > 80
-              ? `${composer.bio.substring(0, 80)}...`
-              : composer.bio}
+            {biography.length > 150
+              ? `${biography.substring(0, 150)}...`
+              : biography}
           </p>
         )}
 

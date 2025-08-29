@@ -34,8 +34,8 @@ import {
 } from '../../components/animation/AnimatedComponents';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
 import Button from '@/app/components/Common/Button';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 // Atualizar tipo para incluir 'scores'
 type FilterTab = 'all' | 'composers' | 'works' | 'scores';

@@ -7,7 +7,7 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import ListComposersCards from '../Cards/ListComposersCard';
 import { composerHomeProps } from '../../PopularComposers';
 import { useNavigate } from '@/app/hooks/useNavigate';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface listComposersProps {
   composers: composerHomeProps[];
@@ -23,7 +23,6 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
 
   const handleLoadMore = async () => {
     setIsLoading(true);
-    // Simular loading para melhor UX
     await new Promise((resolve) => setTimeout(resolve, 300));
     setVisibleCount((prev) => prev + 12);
     setIsLoading(false);
@@ -108,8 +107,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
 
             {/* Progress info */}
             <p className="text-theme-tertiary text-sm">
-              Mais {t('more')}
-              {composers.length - visibleCount} compositores disponíveis{' '}
+              {t('more')} {composers.length - visibleCount}{' '}
               {t('composers_avaliable')}
             </p>
           </div>
@@ -123,7 +121,6 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
                 </div>
               </div>
               <h4 className="text-lg font-bold text-theme-primary classical-title mb-2">
-                Todos os Compositores Exibidos!
                 {t('all_composers_show')}
               </h4>
               <p className="text-theme-secondary text-sm mb-4">

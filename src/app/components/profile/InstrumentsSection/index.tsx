@@ -15,7 +15,7 @@ import {
   updateUserInstruments,
 } from '@/app/actions/profile';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface Instrument {
   id: string;
@@ -354,7 +354,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="w-10 h-10 bg-brand-gradient rounded-full flex items-center justify-center">
-                    <GiMusicalNotes className="w-5 h-5 text-theme-inverse" />
+                    <GiMusicalNotes className="w-5 h-5 text-theme-primary" />
                   </div>
 
                   <div>

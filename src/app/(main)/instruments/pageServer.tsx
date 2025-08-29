@@ -9,7 +9,11 @@ import {
   WorksPreferences,
 } from '@/app/requests/instruments-history-translated';
 import { InstrumentsPageClient } from './pageClient';
-import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 export const dynamic = 'force-dynamic';
 
 // 🎼 CONFIGURAÇÃO DE COMPOSITORES DESTAQUE
@@ -248,12 +252,14 @@ export async function InstrumentsPageServer() {
         topComposers: topComposers?.topComposers || [],
       };
     });
+    const { translations } = await loadPageTranslationsWithCommon(language, [
+      'pages/instruments',
+    ]);
 
     return (
-      <InstrumentsPageClient
-        instruments={enrichedInstruments}
-        // instrumentsStats={instrumentsStats}
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <InstrumentsPageClient instruments={enrichedInstruments} />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error('Erro ao carregar dados dos instrumentos:', error);

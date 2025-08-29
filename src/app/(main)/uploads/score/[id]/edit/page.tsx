@@ -1,7 +1,12 @@
-// app/uploads/score/[id]/page.tsx
+// app/uploads/score/[id]/page.tsx - Editar partitura específica
 import EditScoreClient from '@/app/(main)/uploads/score/[id]/edit/pageClient';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
 import { getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation';
 
@@ -15,6 +20,7 @@ interface EditScorePageProps {
 
 export async function generateMetadata({ params }: EditScorePageProps) {
   const resolvedParams = await params;
+  const language = await getServerLanguageStatic();
 
   const score = await prisma.workScore.findUnique({
     where: { id: resolvedParams.id },
@@ -29,17 +35,50 @@ export async function generateMetadata({ params }: EditScorePageProps) {
     },
   });
 
+  const content = {
+    pt: {
+      title: `Editar Partitura "${score?.title || 'Partitura'}" - Opus Atlas`,
+      description: `Editar informações da partitura "${
+        score?.title || ''
+      }" da obra "${score?.work.title || ''}" de ${
+        score?.work.composer.name || ''
+      }.`,
+    },
+    en: {
+      title: `Edit Score "${score?.title || 'Score'}" - Opus Atlas`,
+      description: `Edit information for score "${
+        score?.title || ''
+      }" from work "${score?.work.title || ''}" by ${
+        score?.work.composer.name || ''
+      }.`,
+    },
+  };
+
+  const t = content[language];
+
   return {
-    title: `Editar ${score?.title || 'Partitura'} | Classical Music App`,
-    description: `Editar informações da partitura ${
-      score?.title || ''
-    } da obra ${score?.work.title || ''} de ${score?.work.composer.name || ''}`,
+    title: t.title,
+    description: t.description,
+    robots: {
+      index: false,
+      follow: false,
+      googleBot: {
+        index: false,
+        follow: false,
+      },
+    },
+    openGraph: {
+      title: t.title,
+      description: t.description,
+      type: 'website',
+      locale: language === 'pt' ? 'pt_BR' : 'en_US',
+      siteName: 'Opus Atlas',
+    },
   };
 }
 
 export default async function EditScorePage({ params }: EditScorePageProps) {
   const resolvedParams = await params;
-
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
@@ -55,7 +94,7 @@ export default async function EditScorePage({ params }: EditScorePageProps) {
           title: true,
           composer: {
             select: {
-              id: true, // ✅ IMPORTANTE: Incluir o ID do composer
+              id: true,
               name: true,
               fullName: true,
             },
@@ -73,17 +112,16 @@ export default async function EditScorePage({ params }: EditScorePageProps) {
   const isOwner = score.uploader === session.user.id;
 
   if (!isAdmin && !isOwner) {
-    redirect('/');
+    redirect('/access-denied');
   }
 
-  // ✅ CORRIGIDO: Buscar obras para o modal de edição incluindo o ID do composer
   const works = await prisma.work.findMany({
     select: {
       id: true,
       title: true,
       composer: {
         select: {
-          id: true, // ✅ IMPORTANTE: Incluir o ID do composer
+          id: true,
           name: true,
           fullName: true,
         },
@@ -95,12 +133,19 @@ export default async function EditScorePage({ params }: EditScorePageProps) {
     orderBy: { title: 'asc' },
   });
 
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'pages/uploads',
+  ]);
+
   return (
-    <EditScoreClient
-      score={score}
-      works={works}
-      isAdmin={isAdmin}
-      userId={session.user.id}
-    />
+    <TranslationProvider language={language} translations={translations}>
+      <EditScoreClient
+        score={score}
+        works={works}
+        isAdmin={isAdmin}
+        userId={session.user.id}
+      />
+    </TranslationProvider>
   );
 }

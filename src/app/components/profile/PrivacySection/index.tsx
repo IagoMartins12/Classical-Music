@@ -9,7 +9,7 @@ import Button from '../../Common/Button';
 import { updatePrivacySettings } from '@/app/actions/profile';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface PrivacySectionProps {
   user: User;

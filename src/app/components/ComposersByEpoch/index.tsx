@@ -6,8 +6,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import SectionTitle from '../Utils/SectionTitle';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
+import { useTranslation } from '@/app/context/TranslationContext';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 interface Epoch {
   id: string;
@@ -27,35 +28,59 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
     const epochData = {
       Medieval: {
         image: '/epochs/medieval.jpg',
-        description: 'Século V - XV',
+        description: {
+          ptBR: 'Século V - XV',
+          en: '5th - 15th Century',
+        },
       },
       Renascentista: {
         image: '/epochs/renaissance.webp',
-        description: 'Século XV - XVI',
+        description: {
+          ptBR: 'Século XV - XVI',
+          en: '15th - 16th Century',
+        },
       },
       Barroco: {
         image: '/epochs/baroque.jpeg',
-        description: '1600 - 1750',
+        description: {
+          ptBR: '1600 - 1750',
+          en: '1600 - 1750y',
+        },
       },
       Clássico: {
         image: '/epochs/classical.jpg',
-        description: '1750 - 1820',
+        description: {
+          ptBR: '1750 - 1820',
+          en: '1750 - 1820',
+        },
       },
       Romântico: {
         image: '/epochs/romantic.jpeg',
-        description: '1820 - 1910',
+        description: {
+          ptBR: '1820 - 1910',
+          en: '1820 - 1910',
+        },
       },
       Modernismo: {
         image: '/epochs/modern.jpg',
-        description: '1910 - 1945',
+        description: {
+          ptBR: '1910 - 1945',
+          en: '1910 - 1945',
+        },
       },
       Contemporâneo: {
         image: '/epochs/contemporary.jpg',
-        description: '1945 - presente',
+        description: {
+          ptBR: '1945 - presente',
+          en: '1945 - present',
+        },
       },
       Todos: {
         image: '/epochs/all.png',
-        description: 'Todos os periodos musicais',
+        description: {
+          ptBR: 'Todos os periodos musicais',
+          en: 'All Musical periods',
+        },
       },
     };
 
@@ -73,6 +98,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
 
   const epochData = getEpochData(epoch.name);
 
+  const { language } = useLanguageStore();
   return (
     <div
       className="group cursor-pointer select-none"
@@ -126,7 +152,9 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
           {translateEpochWithHook(epoch.name, t)}
         </h4>
         <p className="text-sm text-theme-secondary mb-3">
-          {epochData.description}
+          {language === 'pt'
+            ? epochData.description.ptBR
+            : epochData.description.en}
         </p>
       </div>
 
@@ -145,7 +173,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
                 ? `/composers?epoch=${epoch.id}`
                 : `/composers`
             }
-            className="group/btn flex items-center justify-between w-full px-4 py-3 bg-theme-elevated/90 backdrop-blur-md border border-theme-primary/30 rounded-xl text-theme-primary font-medium hover:bg-interactive-hover hover:border-brand-primary hover:text-brand-primary transition-all duration-300 shadow-theme-sm"
+            className="group/btn flex items-center justify-between w-full px-4 py-3 bg-theme-tertiary rounded-xl text-theme-primary font-medium hover:bg-interactive-hover hover:border-brand-primary hover:text-brand-primary transition-all duration-300 shadow-theme-sm"
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
@@ -180,7 +208,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
             href={
               epoch.name !== 'Todos' ? `/works?epoch=${epoch.id}` : `/works`
             }
-            className="group/btn flex items-center justify-between w-full px-4 py-3 bg-theme-elevated/90 backdrop-blur-md border border-theme-primary/30 rounded-xl text-theme-primary font-medium hover:bg-interactive-hover hover:border-brand-primary hover:text-brand-primary transition-all duration-300 shadow-theme-sm"
+            className="group/btn flex items-center justify-between w-full px-4 py-3 bg-theme-tertiary rounded-xl text-theme-primary font-medium hover:bg-interactive-hover hover:border-brand-primary hover:text-brand-primary transition-all duration-300 shadow-theme-sm"
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
@@ -215,7 +243,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
 
       {/* Dica de interação */}
       {!isExpanded && (
-        <div className="mt-3 text-center">
+        <div className=" text-center">
           <span className="text-xs text-theme-tertiary font-medium opacity-60">
             {t('composers_by_epoch_click_navigate')}
           </span>

@@ -4,6 +4,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation'; // Adicione esta importação
 import {
   FiMenu,
   FiX,
@@ -34,8 +35,8 @@ import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useRouter } from 'next/navigation';
 import { FaGraduationCap } from 'react-icons/fa';
 import { LanguageDropdown, LanguageToggle } from '../LanguageToggle';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import { useIsMobile } from '@/app/hooks/useMobile';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface NavItem {
   label: string;
@@ -52,6 +53,10 @@ const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
+
+  // Adicione esta linha para pegar o path atual
+  const pathname = usePathname();
+
   const { logout: authLogout } = useAuthStore();
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const { reset } = useLearningStore();
@@ -91,15 +96,40 @@ const Navbar: React.FC = () => {
   const profileRef = useRef<HTMLDivElement>(null);
   const submenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Função para verificar se um path está ativo
+  const isPathActive = (href: string, submenuPaths?: string[]): boolean => {
+    // Verifica o path principal
+    if (pathname === href) return true;
+
+    // Para o caso de '/works', também verificar '/genres' que está no submenu
+    if (submenuPaths) {
+      return submenuPaths.some((path) => pathname === path);
+    }
+
+    return false;
+  };
+
+  // Modifique o optionsArr para usar a detecção automática de path ativo
   const optionsArr: NavItem[] = [
-    { label: t('navbar_historia'), href: '/music-history' },
-
-    { label: t('navbar_instrumentos'), href: '/instruments' },
-    { label: t('navbar_compositores'), href: '/composers' },
-
+    {
+      label: t('navbar_historia'),
+      href: '/music-history',
+      active: isPathActive('/music-history'),
+    },
+    {
+      label: t('navbar_instrumentos'),
+      href: '/instruments',
+      active: isPathActive('/instruments'),
+    },
+    {
+      label: t('navbar_compositores'),
+      href: '/composers',
+      active: isPathActive('/composers'),
+    },
     {
       label: t('navbar_obras'),
       href: '/works',
+      active: isPathActive('/works', ['/works', '/genres']), // Verifica tanto /works quanto /genres
       submenu: [
         {
           label: t('navbar_todas_as_obras'),
@@ -113,10 +143,10 @@ const Navbar: React.FC = () => {
         },
       ],
     },
-
     {
       label: t('navbar_quem_somos'),
       href: '/about-us',
+      active: isPathActive('/about-us'),
     },
   ];
 
@@ -229,6 +259,7 @@ const Navbar: React.FC = () => {
                         after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 
                         after:bg-brand-gradient after:transition-all after:duration-300
                         hover:after:w-full hover:after:left-0
+                        ${active ? 'after:w-full after:left-0' : ''}
                       `}
                     >
                       <span>{label}</span>
@@ -247,10 +278,26 @@ const Navbar: React.FC = () => {
                             <Link
                               key={item.label}
                               href={item.href}
-                              className="block p-3 rounded-lg hover:bg-interactive-hover transition-colors group"
+                              className={`
+                                block p-3 rounded-lg transition-colors group
+                                ${
+                                  pathname === item.href
+                                    ? 'bg-interactive-active text-brand-primary'
+                                    : 'hover:bg-interactive-hover'
+                                }
+                              `}
                               onClick={() => setActiveSubmenu(null)}
                             >
-                              <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors">
+                              <div
+                                className={`
+                                font-medium transition-colors
+                                ${
+                                  pathname === item.href
+                                    ? 'text-brand-primary'
+                                    : 'text-theme-primary group-hover:text-brand-primary'
+                                }
+                              `}
+                              >
                                 {item.label}
                               </div>
                               {item.description && (
@@ -277,6 +324,7 @@ const Navbar: React.FC = () => {
                       after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 
                       after:bg-brand-gradient after:transition-all after:duration-300
                       hover:after:w-full hover:after:left-0
+                      ${active ? 'after:w-full after:left-0' : ''}
                     `}
                   >
                     {label}
@@ -356,7 +404,14 @@ const Navbar: React.FC = () => {
                       {user.onboardingCompleted && (
                         <Link
                           href="/profile"
-                          className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                          className={`
+                            flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
+                            ${
+                              pathname === '/profile'
+                                ? 'text-brand-primary bg-interactive-active'
+                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                            }
+                          `}
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FiUser className="w-4 h-4" />
@@ -366,7 +421,14 @@ const Navbar: React.FC = () => {
 
                       <Link
                         href="/favorites"
-                        className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                        className={`
+                          flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
+                          ${
+                            pathname === '/favorites'
+                              ? 'text-brand-primary bg-interactive-active'
+                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                          }
+                        `}
                         onClick={() => setIsProfileOpen(false)}
                       >
                         <FiHeart className="w-4 h-4" />
@@ -375,7 +437,14 @@ const Navbar: React.FC = () => {
 
                       <Link
                         href="/learning"
-                        className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                        className={`
+                          flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
+                          ${
+                            pathname === '/learning'
+                              ? 'text-brand-primary bg-interactive-active'
+                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                          }
+                        `}
                         onClick={() => setIsProfileOpen(false)}
                       >
                         <FiBookOpen className="w-4 h-4" />
@@ -384,7 +453,14 @@ const Navbar: React.FC = () => {
 
                       <Link
                         href="/annotations"
-                        className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                        className={`
+                          flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
+                          ${
+                            pathname === '/annotations'
+                              ? 'text-brand-primary bg-interactive-active'
+                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                          }
+                        `}
                         onClick={() => setIsProfileOpen(false)}
                       >
                         <FiFile className="w-4 h-4" />
@@ -393,7 +469,14 @@ const Navbar: React.FC = () => {
 
                       <Link
                         href="/uploads"
-                        className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                        className={`
+                          flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
+                          ${
+                            pathname === '/uploads'
+                              ? 'text-brand-primary bg-interactive-active'
+                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                          }
+                        `}
                         onClick={() => setIsProfileOpen(false)}
                       >
                         <FiUpload className="w-4 h-4" />
@@ -403,7 +486,14 @@ const Navbar: React.FC = () => {
                       {user.role === 1 && (
                         <Link
                           href="/teacher"
-                          className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                          className={`
+                            flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
+                            ${
+                              pathname === '/teacher'
+                                ? 'text-brand-primary bg-interactive-active'
+                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                            }
+                          `}
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FaGraduationCap className="w-4 h-4" />
@@ -414,7 +504,14 @@ const Navbar: React.FC = () => {
                       {(user.isStudent || user.studentInviteStatus) && (
                         <Link
                           href="/student"
-                          className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                          className={`
+                            flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
+                            ${
+                              pathname === '/student'
+                                ? 'text-brand-primary bg-interactive-active'
+                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                            }
+                          `}
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FaGraduationCap className="w-4 h-4" />
@@ -424,7 +521,14 @@ const Navbar: React.FC = () => {
                       {user.role === 2 && (
                         <Link
                           href="/moderation"
-                          className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                          className={`
+                            flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
+                            ${
+                              pathname === '/moderation'
+                                ? 'text-brand-primary bg-interactive-active'
+                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                            }
+                          `}
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FiShield className="w-4 h-4" />
@@ -434,7 +538,14 @@ const Navbar: React.FC = () => {
                       {user.role === 2 && (
                         <Link
                           href="/admin"
-                          className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                          className={`
+                            flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
+                            ${
+                              pathname === '/admin'
+                                ? 'text-brand-primary bg-interactive-active'
+                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                            }
+                          `}
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FiSettings className="w-4 h-4" />
@@ -531,7 +642,14 @@ const Navbar: React.FC = () => {
                           <Link
                             key={item.label}
                             href={item.href}
-                            className="block px-4 py-2 text-sm rounded-lg text-theme-tertiary hover:text-brand-primary hover:bg-interactive-hover transition-all"
+                            className={`
+                              block px-4 py-2 text-sm rounded-lg transition-all
+                              ${
+                                pathname === item.href
+                                  ? 'text-brand-primary bg-interactive-active'
+                                  : 'text-theme-tertiary hover:text-brand-primary hover:bg-interactive-hover'
+                              }
+                            `}
                             onClick={() => setIsMenuOpen(false)}
                           >
                             {item.label}

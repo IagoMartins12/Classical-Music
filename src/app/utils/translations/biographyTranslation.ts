@@ -80,9 +80,8 @@ async function respectRateLimit(): Promise<void> {
 
   lastRequestTime = Date.now();
 }
-
 /**
- * Traduz biografia usando Google Translate (mesmo método do script)
+ * Traduz biografia usando Google Translate (VERSÃO OTIMIZADA - UMA ÚNICA REQUISIÇÃO)
  */
 export async function translateBiographyWithGoogle(
   text: string
@@ -90,45 +89,41 @@ export async function translateBiographyWithGoogle(
   try {
     await respectRateLimit();
 
-    // Adicionar contexto musical para melhor tradução
-    const contextualText = `[MUSIC BIOGRAPHY] ${text}`;
+    // ✅ MAPEAR ESTRUTURA DO TEXTO ORIGINAL
+    const originalParagraphs = text
+      .split('\n\n')
+      .filter((p) => p.trim().length > 0);
 
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=pt&tl=en&dt=t&q=${encodeURIComponent(
-      contextualText
-    )}`;
+    console.log(
+      `Mapeando ${originalParagraphs.length} parágrafos para preservar estrutura`
+    );
 
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+    // Se tem apenas 1 parágrafo, traduzir direto sem complicação
+    if (originalParagraphs.length <= 1) {
+      return await translateSingleRequest(text);
     }
 
-    const data = await response.json();
+    // ✅ INSERIR MARCADORES ÚNICOS ENTRE PARÁGRAFOS para preservar quebras
+    const markedText = originalParagraphs.join(' |PARAGRAPH_BREAK| ');
 
-    if (data && data[0] && data[0][0] && data[0][0][0]) {
-      let result = data[0][0][0];
+    console.log('Texto com marcadores criado, fazendo tradução única...');
 
-      // Remover marcador de contexto
-      result = result.replace(/^\[MUSIC BIOGRAPHY\]\s*/i, '');
+    // Fazer uma única tradução com marcadores
+    const translatedText = await translateSingleRequest(markedText);
 
-      // Correções específicas para contexto musical
-      result = result
-        .replace(/\bIa\b/g, 'AI')
-        .replace(/Brazilian crying/gi, 'Brazilian Choro')
-        .replace(/compass/gi, 'measure')
-        .replace(/\bcomposer\b/gi, 'composer')
-        .replace(/\bmusical work/gi, 'musical composition')
-        .replace(/\bmusical works/gi, 'musical compositions');
+    // ✅ RECONSTRUIR PARÁGRAFOS baseado nos marcadores
+    const reconstructed = reconstructFromMarkers(
+      translatedText,
+      originalParagraphs.length
+    );
 
-      return result;
-    }
+    console.log(
+      `Estrutura reconstruída com ${
+        reconstructed.split('\n\n').length
+      } parágrafos`
+    );
 
-    throw new Error('Resposta inválida do Google Translate');
+    return reconstructed;
   } catch (error) {
     console.warn(
       `Erro na tradução: ${
@@ -139,6 +134,268 @@ export async function translateBiographyWithGoogle(
   }
 }
 
+/**
+ * ✅ FUNÇÃO AUXILIAR: Faz uma única tradução
+ */
+async function translateSingleRequest(text: string): Promise<string> {
+  const contextualText = `[MUSIC BIOGRAPHY] ${text}`;
+
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=pt&tl=en&dt=t&q=${encodeURIComponent(
+    contextualText
+  )}`;
+
+  const response = await fetch(url, {
+    headers: {
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  if (data && data[0] && Array.isArray(data[0])) {
+    let result = '';
+
+    // Concatenar todos os segmentos da tradução
+    for (const segment of data[0]) {
+      if (segment && segment[0] && typeof segment[0] === 'string') {
+        result += segment[0];
+      }
+    }
+
+    if (!result.trim()) {
+      throw new Error('Tradução vazia após concatenar segmentos');
+    }
+
+    // Remover marcador de contexto
+    result = result.replace(/^\[MUSIC BIOGRAPHY\]\s*/i, '');
+
+    return applyMusicalCorrections(result);
+  }
+
+  throw new Error('Resposta inválida do Google Translate');
+}
+
+/**
+ * ✅ FUNÇÃO AUXILIAR: Reconstrói parágrafos a partir dos marcadores
+ */
+function reconstructFromMarkers(
+  translatedText: string,
+  expectedParagraphs: number
+): string {
+  // Limpar texto
+  const cleanText = translatedText.replace(/\s+/g, ' ').trim();
+
+  // ✅ BUSCAR PELOS MARCADORES (podem ter variações na tradução)
+  const markerVariations = [
+    '|PARAGRAPH_BREAK|',
+    '| PARAGRAPH_BREAK |',
+    '| Paragraph_Break |', // ✅ ADICIONADO: Variação encontrada
+    '|Paragraph_Break|',
+    '|paragraph_break|',
+    '| paragraph_break |',
+    '|PARAGRAPH BREAK|',
+    '| PARAGRAPH BREAK |',
+    'PARAGRAPH_BREAK',
+    'paragraph break',
+    'PARAGRAPH BREAK',
+    'Paragraph_Break', // ✅ ADICIONADO
+  ];
+
+  let paragraphs: string[] = [];
+  let foundMarkers = false;
+
+  // Tentar encontrar marcadores
+  for (const marker of markerVariations) {
+    if (cleanText.includes(marker)) {
+      paragraphs = cleanText
+        .split(marker)
+        .map((p) => p.trim())
+        .filter((p) => p.length > 0);
+
+      foundMarkers = true;
+      console.log(
+        `Encontrados ${paragraphs.length} parágrafos usando marcador: ${marker}`
+      );
+      break;
+    }
+  }
+
+  // ✅ FALLBACK: Se não encontrou marcadores, dividir por sentenças
+  if (!foundMarkers || paragraphs.length < 2) {
+    console.log(
+      'Marcadores não encontrados, usando método de divisão inteligente...'
+    );
+    paragraphs = intelligentSplit(cleanText, expectedParagraphs);
+  }
+
+  // ✅ AJUSTAR NÚMERO DE PARÁGRAFOS se necessário
+  if (paragraphs.length !== expectedParagraphs) {
+    console.log(
+      `Ajustando de ${paragraphs.length} para ${expectedParagraphs} parágrafos`
+    );
+    paragraphs = adjustParagraphCount(paragraphs, expectedParagraphs);
+  }
+
+  // Juntar com quebras duplas
+  return paragraphs.filter((p) => p.trim().length > 0).join('\n\n');
+}
+
+/**
+ * ✅ FUNÇÃO AUXILIAR: Divisão inteligente baseada em sentenças
+ */
+function intelligentSplit(text: string, targetCount: number): string[] {
+  // Dividir em sentenças
+  const sentences = text
+    .split(/(?<=[.!?])\s+(?=[A-Z])/)
+    .filter((s) => s.trim().length > 0);
+
+  if (sentences.length < targetCount) {
+    // Se tem menos sentenças que parágrafos desejados, retornar como está
+    return sentences;
+  }
+
+  // Distribuir sentenças proporcionalmente
+  const sentencesPerParagraph = Math.max(
+    1,
+    Math.floor(sentences.length / targetCount)
+  );
+  const paragraphs: string[] = [];
+
+  for (let i = 0; i < targetCount; i++) {
+    const start = i * sentencesPerParagraph;
+    let end = start + sentencesPerParagraph;
+
+    // Último parágrafo pega todas as sentenças restantes
+    if (i === targetCount - 1) {
+      end = sentences.length;
+    }
+
+    const paragraphSentences = sentences.slice(start, end);
+    if (paragraphSentences.length > 0) {
+      paragraphs.push(paragraphSentences.join(' ').trim());
+    }
+  }
+
+  return paragraphs.filter((p) => p.length > 0);
+}
+
+/**
+ * ✅ FUNÇÃO AUXILIAR: Ajusta o número de parágrafos
+ */
+function adjustParagraphCount(
+  paragraphs: string[],
+  targetCount: number
+): string[] {
+  if (paragraphs.length === targetCount) {
+    return paragraphs;
+  }
+
+  if (paragraphs.length > targetCount) {
+    // Tem mais parágrafos que o esperado - combinar os últimos
+    const result = paragraphs.slice(0, targetCount - 1);
+    const combined = paragraphs.slice(targetCount - 1).join(' ');
+    result.push(combined);
+    return result;
+  }
+
+  if (paragraphs.length < targetCount) {
+    // Tem menos parágrafos - dividir o maior
+    const result = [...paragraphs];
+
+    while (result.length < targetCount) {
+      // Encontrar o parágrafo mais longo para dividir
+      let longestIndex = 0;
+      let longestLength = 0;
+
+      for (let i = 0; i < result.length; i++) {
+        if (result[i].length > longestLength) {
+          longestLength = result[i].length;
+          longestIndex = i;
+        }
+      }
+
+      // Dividir o parágrafo mais longo no meio
+      const longest = result[longestIndex];
+      const sentences = longest.split(/(?<=[.!?])\s+(?=[A-Z])/);
+
+      if (sentences.length >= 2) {
+        const mid = Math.floor(sentences.length / 2);
+        const firstHalf = sentences.slice(0, mid).join(' ');
+        const secondHalf = sentences.slice(mid).join(' ');
+
+        result[longestIndex] = firstHalf;
+        result.splice(longestIndex + 1, 0, secondHalf);
+      } else {
+        // Se não consegue dividir por sentenças, dividir por palavras
+        const words = longest.split(' ');
+        const mid = Math.floor(words.length / 2);
+        const firstHalf = words.slice(0, mid).join(' ');
+        const secondHalf = words.slice(mid).join(' ');
+
+        result[longestIndex] = firstHalf;
+        result.splice(longestIndex + 1, 0, secondHalf);
+      }
+    }
+
+    return result;
+  }
+
+  return paragraphs;
+}
+
+/**
+ * ✅ FUNÇÃO AUXILIAR: Aplica correções específicas para contexto musical
+ */
+function applyMusicalCorrections(text: string): string {
+  return (
+    text
+      // Correções específicas para contexto musical
+      .replace(/\bIa\b/g, 'AI')
+      .replace(/Brazilian crying/gi, 'Brazilian Choro')
+      .replace(/compass/gi, 'measure')
+      .replace(/\bmusical work/gi, 'musical composition')
+      .replace(/\bmusical works/gi, 'musical compositions')
+      .replace(/songwriters?/gi, 'composer')
+      .replace(/coral/gi, 'choral')
+      .replace(/singing/gi, 'cantata')
+      .replace(/Merment/gi, 'Lament')
+
+      // Correções de termos musicais comuns
+      .replace(/\bconcerts\b/gi, 'concertos')
+      .replace(/\bAscap\b/gi, 'ASCAP')
+
+      // Correções de datas e informações biográficas
+      .replace(/\bborn in\s+(\d+)/gi, 'born in $1')
+      .replace(/\bdied in\s+(\d+)/gi, 'died in $1')
+      .replace(/\bhe was\s+a/gi, 'he was a')
+      .replace(/\bshe was\s+a/gi, 'she was a')
+
+      // Correções de pronomes para mulheres compositoras
+      .replace(/\b(Abbott|Jane)\s+began\s+his\b/gi, '$1 began her')
+      .replace(
+        /\bhe\s+continued\s+his\s+studies/gi,
+        'she continued her studies'
+      )
+      .replace(
+        /\bhis\s+formation\s+was\s+influenced/gi,
+        'her formation was influenced'
+      )
+      .replace(
+        /\bAbel\s+began\s+her\s+musical\s+formation/gi,
+        'Abel began his musical formation'
+      )
+
+      // Limpar espaços múltiplos
+      .replace(/[ \t]{2,}/g, ' ')
+      .replace(/^\s+|\s+$/gm, '')
+      .trim()
+  );
+}
 /**
  * Busca biografia traduzida no cache
  */
