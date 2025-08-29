@@ -33,6 +33,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Select from '@/app/components/Common/Select';
 import { formatChangesForDisplay } from '@/app/utils/historyUtils';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface HistoryRecord {
   id: string;
@@ -68,6 +69,7 @@ const HistoryClient = ({
   isAdmin,
 }: HistoryClientProps) => {
   const router = useRouter();
+  const { t } = useTranslation({ sections: ['pages/uploads'] });
 
   const [history, setHistory] = useState<HistoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -79,22 +81,21 @@ const HistoryClient = ({
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   const typeOptions = [
-    { value: 'all', label: 'Todos os tipos' },
-    { value: 'composer', label: 'Compositores' },
-    { value: 'work', label: 'Obras' },
-    { value: 'score', label: 'Partituras' },
+    { value: 'all', label: t('history_type_all') },
+    { value: 'composer', label: t('history_type_composer') },
+    { value: 'work', label: t('history_type_work') },
+    { value: 'score', label: t('history_type_score') },
   ];
 
   const actionOptions = [
-    { value: 'all', label: 'Todas as ações' },
-    { value: 'create', label: 'Criação' },
-    { value: 'update', label: 'Atualização' },
-    { value: 'delete', label: 'Exclusão' },
+    { value: 'all', label: t('history_action_all') },
+    { value: 'create', label: t('history_action_create') },
+    { value: 'update', label: t('history_action_update') },
+    { value: 'delete', label: t('history_action_delete') },
   ];
 
   useEffect(() => {
     fetchHistory();
-    // fetchStats();
   }, [page, type, action, userId]);
 
   const fetchHistory = async () => {
@@ -120,20 +121,6 @@ const HistoryClient = ({
       setLoading(false);
     }
   };
-
-  // const fetchStats = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       `/api/uploads/history/stats?userId=${userId}`
-  //     );
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setStats(data);
-  //     }
-  //   } catch (error) {
-  //     console.error('Erro ao carregar estatísticas:', error);
-  //   }
-  // };
 
   const updateFilters = () => {
     const params = new URLSearchParams();
@@ -174,7 +161,7 @@ const HistoryClient = ({
   };
 
   const getActionIcon = (action: string, changes?: any) => {
-    // 🆕 Ícone especial para bulk import
+    // Ícone especial para bulk import
     if (changes?.bulkImport) {
       return <FiDatabase className="w-4 h-4 text-purple-600" />;
     }
@@ -192,44 +179,40 @@ const HistoryClient = ({
   };
 
   const getActionLabel = (action: string, changes?: any) => {
-    // 🆕 Label especial para bulk import
+    // Label especial para bulk import
     if (changes?.bulkImport) {
-      return 'Importou em lote';
+      return t('history_action_bulk_import');
     }
 
     switch (action) {
       case 'create':
-        return 'Criou';
+        return t('history_action_created');
       case 'update':
-        return 'Atualizou';
+        return t('history_action_updated');
       case 'delete':
-        return 'Excluiu';
+        return t('history_action_deleted');
       default:
-        return 'Modificou';
+        return t('history_action_modified');
     }
   };
 
   const getEntityLabel = (entityType: string, changes?: any) => {
-    // 🆕 Label especial para bulk import
+    // Label especial para bulk import
     if (changes?.bulkImport) {
       const count = changes.bulkImport.successfulWorks;
-      return `${count} obra${count !== 1 ? 's' : ''}`;
+      return count === 1
+        ? t('history_entity_works_singular').replace(
+            '{count}',
+            count.toString()
+          )
+        : t('history_entity_works_plural').replace('{count}', count.toString());
     }
 
-    switch (entityType) {
-      case 'composer':
-        return 'compositor';
-      case 'work':
-        return 'obra';
-      case 'score':
-        return 'partitura';
-      default:
-        return 'item';
-    }
+    return t(`history_entity_${entityType}`) || entityType;
   };
 
   const getActionColor = (action: string, changes?: any) => {
-    // 🆕 Cor especial para bulk import
+    // Cor especial para bulk import
     if (changes?.bulkImport) {
       return 'bg-purple-50 text-purple-700 border-purple-200';
     }
@@ -247,7 +230,7 @@ const HistoryClient = ({
   };
 
   const getTimelineDotColor = (action: string, changes?: any) => {
-    // 🆕 Cor especial para bulk import
+    // Cor especial para bulk import
     if (changes?.bulkImport) {
       return 'from-purple-400 to-purple-600';
     }
@@ -265,7 +248,7 @@ const HistoryClient = ({
   };
 
   const getCardBorderColor = (action: string, changes?: any) => {
-    // 🆕 Cor especial para bulk import
+    // Cor especial para bulk import
     if (changes?.bulkImport) {
       return 'border-l-4 border-l-purple-500';
     }
@@ -285,14 +268,14 @@ const HistoryClient = ({
   const formatChanges = (changes: any, action: string) => {
     if (!changes || typeof changes !== 'object') return null;
 
-    // 🆕 FORMATAÇÃO ESPECIAL PARA BULK IMPORT
+    // FORMATAÇÃO ESPECIAL PARA BULK IMPORT
     if (changes.bulkImport) {
       const bulk = changes.bulkImport;
       return (
         <div className="mt-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
           <h5 className="text-sm font-medium text-purple-700 mb-3 flex items-center">
             <FiDatabase className="w-4 h-4 mr-1" />
-            Importação em Lote do IMSLP
+            {t('history_bulk_import_title')}
           </h5>
 
           {/* Estatísticas */}
@@ -301,38 +284,49 @@ const HistoryClient = ({
               <div className="text-lg font-bold text-green-600">
                 {bulk.successfulWorks}
               </div>
-              <div className="text-xs text-green-700">Sucesso</div>
+              <div className="text-xs text-green-700">
+                {t('history_bulk_stats_success')}
+              </div>
             </div>
             <div className="text-center p-2 bg-white rounded">
               <div className="text-lg font-bold text-red-600">
                 {bulk.failedWorks}
               </div>
-              <div className="text-xs text-red-700">Erros</div>
+              <div className="text-xs text-red-700">
+                {t('history_bulk_stats_errors')}
+              </div>
             </div>
             <div className="text-center p-2 bg-white rounded">
               <div className="text-lg font-bold text-yellow-600">
                 {bulk.duplicateWorks}
               </div>
-              <div className="text-xs text-yellow-700">Duplicatas</div>
+              <div className="text-xs text-yellow-700">
+                {t('history_bulk_stats_duplicates')}
+              </div>
             </div>
             <div className="text-center p-2 bg-white rounded">
               <div className="text-lg font-bold text-purple-600">
                 {bulk.totalWorks}
               </div>
-              <div className="text-xs text-purple-700">Total</div>
+              <div className="text-xs text-purple-700">
+                {t('history_bulk_stats_total')}
+              </div>
             </div>
           </div>
 
           {/* Compositor */}
           <div className="text-sm text-purple-700 mb-2">
-            <span className="font-medium">Compositor:</span> {bulk.composerName}
+            <span className="font-medium">
+              {t('history_bulk_composer_label')}
+            </span>{' '}
+            {bulk.composerName}
           </div>
 
           {/* Lista de obras criadas (primeiras 5) */}
           {bulk.worksCreated && bulk.worksCreated.length > 0 && (
             <div>
               <div className="text-xs font-medium text-purple-700 mb-1">
-                Obras importadas com sucesso:
+                {t('history_bulk_works_created')}
               </div>
               <div className="space-y-1">
                 {bulk.worksCreated
@@ -348,7 +342,10 @@ const HistoryClient = ({
                   ))}
                 {bulk.worksCreated.length > 5 && (
                   <div className="text-xs text-purple-600">
-                    +{bulk.worksCreated.length - 5} obras adicionais
+                    {t('history_bulk_additional_works').replace(
+                      '{count}',
+                      (bulk.worksCreated.length - 5).toString()
+                    )}
                   </div>
                 )}
               </div>
@@ -363,7 +360,7 @@ const HistoryClient = ({
         <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
           <h5 className="text-sm font-medium text-green-700 mb-2 flex items-center">
             <FiPlus className="w-4 h-4 mr-1" />
-            Item criado com:
+            {t('history_changes_created_title')}
           </h5>
           <div className="space-y-1">
             {Object.entries(changes.created)
@@ -384,7 +381,7 @@ const HistoryClient = ({
         <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
           <h5 className="text-sm font-medium text-red-700 mb-2 flex items-center">
             <FiTrash2 className="w-4 h-4 mr-1" />
-            Item excluído:
+            {t('history_changes_deleted_title')}
           </h5>
           <div className="space-y-1">
             {Object.entries(changes.deleted)
@@ -415,7 +412,7 @@ const HistoryClient = ({
         <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <h5 className="text-sm font-medium text-blue-700 mb-2 flex items-center">
             <FiEdit className="w-4 h-4 mr-1" />
-            Alterações:
+            {t('history_changes_updated_title')}
           </h5>
           <div className="space-y-2">
             {changesList.slice(0, 5).map(([key, change]: [string, any]) => (
@@ -425,11 +422,15 @@ const HistoryClient = ({
                 </div>
                 <div className="pl-2 border-l-2 border-blue-300">
                   <div className="text-red-600 flex items-center">
-                    <span className="w-8 text-xs">De:</span>
+                    <span className="w-8 text-xs">
+                      {t('history_changes_from')}
+                    </span>
                     <span>{formatValue(change.from)}</span>
                   </div>
                   <div className="text-green-600 flex items-center">
-                    <span className="w-8 text-xs">Para:</span>
+                    <span className="w-8 text-xs">
+                      {t('history_changes_to')}
+                    </span>
                     <span>{formatValue(change.to)}</span>
                   </div>
                 </div>
@@ -437,7 +438,10 @@ const HistoryClient = ({
             ))}
             {changesList.length > 5 && (
               <div className="text-xs text-blue-600">
-                +{changesList.length - 5} alterações adicionais
+                {t('history_changes_additional').replace(
+                  '{count}',
+                  (changesList.length - 5).toString()
+                )}
               </div>
             )}
           </div>
@@ -449,45 +453,24 @@ const HistoryClient = ({
   };
 
   const formatFieldName = (field: string): string => {
-    const fieldMap: Record<string, string> = {
-      title: 'Título',
-      name: 'Nome',
-      fullName: 'Nome Completo',
-      bio: 'Biografia',
-      portraitUrl: 'Foto',
-      birthDate: 'Data de Nascimento',
-      deathDate: 'Data de Morte',
-      nationality: 'Nacionalidade',
-      epochName: 'Época',
-      instrumentName: 'Instrumento',
-      composerName: 'Compositor',
-      opOrCatalog: 'Op./Catálogo',
-      compositionYear: 'Ano de Composição',
-      tone: 'Tonalidade',
-      workStyle: 'Estilo',
-      categoryNames: 'Categorias',
-      workGenresArr: 'Gêneros',
-      fileSize: 'Tamanho do Arquivo',
-      pageCount: 'Número de Páginas',
-      downloadUrl: 'URL de Download',
-      fileFormat: 'Formato',
-      type: 'Tipo',
-      notes: 'Notas',
-      editor: 'Editor',
-      publisher: 'Editora',
-      copyright: 'Copyright',
-    };
+    // Primeiro tenta buscar na tradução, se não encontrar usa o mapa padrão
+    const translationKey = `history_field_${field}`;
+    const translated = t(translationKey);
 
-    return fieldMap[field] || field.charAt(0).toUpperCase() + field.slice(1);
+    if (translated !== translationKey) {
+      return translated;
+    }
+
+    return field.charAt(0).toUpperCase() + field.slice(1);
   };
 
   const formatValue = (value: any): string => {
     if (value === null || value === undefined) {
-      return 'vazio';
+      return t('history_field_empty');
     }
 
     if (Array.isArray(value)) {
-      return value.length > 0 ? value.join(', ') : 'vazio';
+      return value.length > 0 ? value.join(', ') : t('history_field_empty');
     }
 
     if (typeof value === 'string' && value.length > 50) {
@@ -519,10 +502,10 @@ const HistoryClient = ({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Histórico de Uploads
+              {t('history_page_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Acompanhe todas as alterações nos seus uploads
+              {t('history_page_subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -535,10 +518,13 @@ const HistoryClient = ({
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-theme-primary">
-                    Filtros
+                    {t('history_filters_title')}
                   </h3>
                   <p className="text-sm text-theme-tertiary">
-                    {totalCount} registros encontrados
+                    {t('history_records_found').replace(
+                      '{count}',
+                      totalCount.toString()
+                    )}
                   </p>
                 </div>
                 <button
@@ -546,7 +532,7 @@ const HistoryClient = ({
                   className="flex items-center space-x-2 px-4 py-2 bg-theme-secondary hover:bg-theme-tertiary text-theme-primary rounded-lg transition-colors"
                 >
                   <FiFilter className="w-4 h-4" />
-                  <span>Filtros</span>
+                  <span>{t('history_filters_button')}</span>
                   {showFilters ? (
                     <FiChevronUp className="w-4 h-4" />
                   ) : (
@@ -561,7 +547,7 @@ const HistoryClient = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-theme-secondary">
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Tipo de Item
+                        {t('history_filter_type_label')}
                       </label>
                       <Select
                         options={typeOptions}
@@ -573,7 +559,7 @@ const HistoryClient = ({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Ação
+                        {t('history_filter_action_label')}
                       </label>
                       <Select
                         options={actionOptions}
@@ -589,13 +575,13 @@ const HistoryClient = ({
                       onClick={updateFilters}
                       className="btn-classical-primary"
                     >
-                      Aplicar Filtros
+                      {t('history_apply_filters')}
                     </button>
                     <button
                       onClick={clearFilters}
                       className="btn-classical-secondary"
                     >
-                      Limpar
+                      {t('history_clear_filters')}
                     </button>
                   </div>
                 </AnimatedItem>
@@ -611,10 +597,10 @@ const HistoryClient = ({
               <div className="classical-card p-12 text-center">
                 <FiClock className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
-                  Nenhum registro encontrado
+                  {t('history_no_records_title')}
                 </h3>
                 <p className="text-theme-secondary">
-                  Não há registros no histórico com os filtros aplicados.
+                  {t('history_no_records_subtitle')}
                 </p>
               </div>
             ) : (
@@ -713,14 +699,18 @@ const HistoryClient = ({
 
                             {isAdmin && record.user && (
                               <div className="text-sm text-theme-secondary">
-                                <span className="font-medium">Usuário:</span>{' '}
+                                <span className="font-medium">
+                                  {t('history_user_label')}
+                                </span>{' '}
                                 {record.user.firstName || record.user.email}
                               </div>
                             )}
 
                             {record.reason && (
                               <div className="text-sm text-theme-secondary">
-                                <span className="font-medium">Motivo:</span>{' '}
+                                <span className="font-medium">
+                                  {t('history_reason_label')}
+                                </span>{' '}
                                 {record.reason}
                               </div>
                             )}
@@ -740,7 +730,10 @@ const HistoryClient = ({
                                   {record.ipAddress && (
                                     <div className="flex items-center space-x-2">
                                       <FiMapPin className="w-3 h-3" />
-                                      <span>IP: {record.ipAddress}</span>
+                                      <span>
+                                        {t('history_ip_label')}{' '}
+                                        {record.ipAddress}
+                                      </span>
                                     </div>
                                   )}
 

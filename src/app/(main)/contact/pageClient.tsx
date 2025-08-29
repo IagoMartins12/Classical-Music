@@ -32,6 +32,7 @@ import { useContactForm } from '@/app/hooks/useContactForm';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
+import Checkbox from '@/app/components/Common/Checkbox';
 
 interface ContactOption {
   icon: React.ComponentType<{ className?: string }>;
@@ -434,13 +435,11 @@ export default function ContactPageClient() {
 
                   {/* Newsletter Subscription Option */}
                   <div className="flex items-start space-x-3 p-4 bg-theme-secondary rounded-lg">
-                    <Input
-                      type="checkbox"
+                    <Checkbox
                       name="subscribeNewsletter"
                       checked={formData.subscribeNewsletter}
                       onChange={handleInputChange}
                       disabled={loading || success}
-                      className="mt-1 rounded border-theme-primary text-brand-primary focus:ring-brand-primary disabled:opacity-50"
                     />
                     <div>
                       <label className="font-medium text-theme-primary cursor-pointer">

@@ -191,7 +191,6 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
 
                       <Checkbox
                         label={t('instruments_step_primary_label')}
-                        type="checkbox"
                         checked={instrument.isPrimary}
                         onChange={(e) =>
                           updateInstrument(instrument.id, {

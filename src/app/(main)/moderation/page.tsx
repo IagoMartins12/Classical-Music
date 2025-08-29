@@ -73,7 +73,7 @@ export default async function ModerationPage({
 
   const language = await getServerLanguageStatic();
   const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pages/moderation',
+    'pages/uploads',
   ]);
 
   return (

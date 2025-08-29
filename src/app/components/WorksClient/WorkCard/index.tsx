@@ -14,7 +14,7 @@ import {
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface workCardProps {
   work: WorkListItem;

@@ -30,6 +30,7 @@ import {
 import Button from '../../../../../components/Common/Button';
 import CreateScoreModal from '../../../../../components/UploadsPage/modals/CreateScoreModal';
 import { useToast } from '@/app/hooks/useToast';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface EditScoreClientProps {
   score: any;
@@ -45,35 +46,23 @@ const EditScoreClient = ({
   userId,
 }: EditScoreClientProps) => {
   const router = useRouter();
+  const { t } = useTranslation({ sections: ['pages/uploads'] });
   const [showEditModal, setShowEditModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   const toast = useToast();
   const formatFileSize = (size?: string) => {
-    if (!size) return 'Não informado';
+    if (!size) return t('score_info_not_available');
     return size;
   };
 
   const getScoreTypeLabel = (type: string) => {
-    const labels = {
-      SCORES: 'Partituras',
-      PARTS: 'Partes',
-      ARRANGEMENTS: 'Arranjos',
-      LIBRETTOS: 'Libretos',
-      OTHERS: 'Outros',
-      SOURCES: 'Fontes',
-    };
-    return labels[type as keyof typeof labels] || type;
+    return t(`score_types_${type}`) || type;
   };
 
   const getSourceLabel = (source: string) => {
-    const labels = {
-      IMSLP: 'IMSLP',
-      CUSTOM: 'Personalizada',
-      UPLOAD: 'Upload',
-    };
-    return labels[source as keyof typeof labels] || source;
+    return t(`score_info_source_${source.toLowerCase()}`) || source;
   };
 
   const getSourceColor = (source: string) => {
@@ -89,9 +78,7 @@ const EditScoreClient = ({
   };
 
   const handleDelete = async () => {
-    if (
-      !confirm(`Tem certeza que deseja excluir a partitura "${score.title}"?`)
-    ) {
+    if (!confirm(t('delete_confirm_score').replace('{title}', score.title))) {
       return;
     }
 
@@ -135,7 +122,7 @@ const EditScoreClient = ({
               href="/uploads"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
-              Uploads
+              {t('breadcrumb_uploads')}
             </Link>
             <svg
               className="w-4 h-4"
@@ -154,7 +141,7 @@ const EditScoreClient = ({
               href="/uploads"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
-              Partituras
+              {t('breadcrumb_scores')}
             </Link>
             <svg
               className="w-4 h-4"
@@ -170,7 +157,7 @@ const EditScoreClient = ({
               />
             </svg>
             <span className="text-theme-primary font-medium">
-              Editar {score.title}
+              {t('breadcrumb_edit').replace('{name}', score.title)}
             </span>
           </nav>
         </AnimatedItem>
@@ -199,7 +186,7 @@ const EditScoreClient = ({
                           </div>
                           <div>
                             <h1 className="text-3xl md:text-4xl font-bold text-gradient-brand classical-title leading-tight">
-                              Editar Partitura
+                              {t('edit_score_title')}
                             </h1>
                           </div>
                         </div>
@@ -209,7 +196,7 @@ const EditScoreClient = ({
                         </h1>
 
                         <div className="flex items-center space-x-2 text-xl text-theme-secondary mt-3">
-                          <span>Da obra</span>
+                          <span>{t('score_info_work_title')}</span>
                           <Link
                             href={`/works/${score.work.id}`}
                             className="text-brand-primary hover:text-brand-secondary font-semibold transition-colors duration-300 classical-subtitle"
@@ -218,7 +205,7 @@ const EditScoreClient = ({
                           </Link>
                         </div>
                         <div className="flex items-center space-x-2 text-lg text-theme-tertiary mt-2">
-                          <span>por</span>
+                          <span>{t('score_info_by_composer')}</span>
                           <Link
                             href={`/composer/${score.work.composer.id}`}
                             className="text-brand-primary hover:text-brand-secondary font-medium transition-colors duration-300"
@@ -236,7 +223,7 @@ const EditScoreClient = ({
                           leftIcon={<FiSave />}
                           onClick={() => setShowEditModal(true)}
                         >
-                          Editar
+                          {t('edit_button')}
                         </Button>
 
                         {(isAdmin || score.uploadedBy === userId) && (
@@ -252,7 +239,9 @@ const EditScoreClient = ({
                             onClick={handleDelete}
                             disabled={isDeleting}
                           >
-                            {isDeleting ? 'Excluindo...' : 'Excluir'}
+                            {isDeleting
+                              ? t('deleting_button')
+                              : t('delete_button')}
                           </Button>
                         )}
                       </div>
@@ -267,7 +256,8 @@ const EditScoreClient = ({
                       >
                         <FiTag className="w-4 h-4 text-theme-primary" />
                         <span className="text-theme-primary font-semibold text-sm">
-                          Fonte: {getSourceLabel(score.source)}
+                          {t('score_info_source')}:{' '}
+                          {getSourceLabel(score.source)}
                         </span>
                       </div>
                     </div>
@@ -282,7 +272,7 @@ const EditScoreClient = ({
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
-                          Tipo
+                          {t('score_info_type')}
                         </p>
                         <p className="text-theme-primary font-semibold">
                           {getScoreTypeLabel(score.type)}
@@ -297,7 +287,7 @@ const EditScoreClient = ({
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
-                          Formato
+                          {t('score_info_format')}
                         </p>
                         <p className="text-theme-primary font-semibold">
                           {score.fileFormat || 'PDF'}
@@ -313,7 +303,7 @@ const EditScoreClient = ({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Tamanho
+                            {t('score_info_size')}
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {formatFileSize(score.fileSize)}
@@ -330,7 +320,7 @@ const EditScoreClient = ({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Páginas
+                            {t('score_info_pages')}
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {score.pageCount}
@@ -347,7 +337,7 @@ const EditScoreClient = ({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Grupo
+                            {t('score_info_group')}
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {score.groupTitle}
@@ -364,7 +354,7 @@ const EditScoreClient = ({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Enviado por
+                            {t('score_info_uploaded_by')}
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {score.uploader}
@@ -379,13 +369,13 @@ const EditScoreClient = ({
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                         <FiFileText className="w-5 h-5 text-accent-blue" />
-                        <span>Informações de Publicação</span>
+                        <span>{t('score_info_publication_info')}</span>
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         {score.editor && (
                           <div className="flex items-center space-x-2">
                             <span className="font-medium text-theme-tertiary">
-                              Editor:
+                              {t('score_info_editor')}:
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {score.editor}
@@ -395,7 +385,7 @@ const EditScoreClient = ({
                         {score.publisher && (
                           <div className="flex items-center space-x-2">
                             <span className="font-medium text-theme-tertiary">
-                              Editora:
+                              {t('score_info_publisher')}:
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {score.publisher}
@@ -405,7 +395,7 @@ const EditScoreClient = ({
                         {score.copyright && (
                           <div className="md:col-span-2 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
                             <span className="font-medium text-theme-tertiary block mb-1">
-                              Copyright:
+                              {t('score_info_copyright')}:
                             </span>
                             <span className="text-theme-primary whitespace-pre-line">
                               {score.copyright}
@@ -421,7 +411,7 @@ const EditScoreClient = ({
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                         <FiInfo className="w-5 h-5 text-accent-green" />
-                        <span>Notas</span>
+                        <span>{t('score_info_notes')}</span>
                       </h3>
                       <div className="p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
                         <p className="text-theme-primary whitespace-pre-line">
@@ -436,7 +426,7 @@ const EditScoreClient = ({
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                         <FiExternalLink className="w-5 h-5 text-accent-blue" />
-                        <span>Arquivo</span>
+                        <span>{t('score_info_file')}</span>
                       </h3>
                       <a
                         href={score.downloadUrl}
@@ -445,7 +435,7 @@ const EditScoreClient = ({
                         className="btn-classical-primary flex items-center space-x-2 group/btn w-fit"
                       >
                         <FiDownload className="w-4 h-4" />
-                        <span>Download da Partitura</span>
+                        <span>{t('score_info_download')}</span>
                         <svg
                           className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
                           fill="none"
@@ -474,7 +464,7 @@ const EditScoreClient = ({
                           <FiImage className="w-4 h-4 text-theme-primary" />
                         </div>
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                          Miniatura
+                          {t('score_info_thumbnail')}
                         </h3>
                       </div>
 
@@ -506,7 +496,7 @@ const EditScoreClient = ({
                         <FiMusic className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                        Obra
+                        {t('score_info_work')}
                       </h3>
                     </div>
 
@@ -536,14 +526,14 @@ const EditScoreClient = ({
                         <FiInfo className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                        Detalhes Técnicos
+                        {t('score_info_technical_details')}
                       </h3>
                     </div>
                     <div className="space-y-3 text-sm">
                       {score.groupIndex !== null && (
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-theme-tertiary">
-                            Índice:
+                            {t('score_info_index')}:
                           </span>
                           <span className="text-theme-primary font-semibold">
                             #{score.groupIndex}
@@ -553,7 +543,7 @@ const EditScoreClient = ({
                       {score.uploadDate && (
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-theme-tertiary">
-                            Upload:
+                            {t('score_info_upload_date')}:
                           </span>
                           <span className="text-theme-primary font-semibold text-xs">
                             {score.uploadDate}
@@ -562,7 +552,7 @@ const EditScoreClient = ({
                       )}
                       <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
                         <span className="font-medium text-theme-tertiary">
-                          Catalogado em:
+                          {t('work_info_cataloged_on')}:
                         </span>
                         <span className="text-theme-primary font-semibold text-xs">
                           {new Date(score.createdAt).toLocaleDateString(

@@ -19,6 +19,7 @@ import {
   FiMessageSquare,
 } from 'react-icons/fi';
 import Modal from '@/app/components/Modal';
+import Checkbox from '../../Common/Checkbox';
 
 interface ShareReportModalProps {
   isOpen: boolean;
@@ -311,8 +312,7 @@ export default function ShareReportModal({
                       </div>
                     </div>
 
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       checked={isSelected}
                       onChange={() =>
                         handleSectionToggle(
@@ -343,8 +343,7 @@ export default function ShareReportModal({
                 </div>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={shareData.allowComments}
                   onChange={(e) =>
                     setShareData((prev) => ({

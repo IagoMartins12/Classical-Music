@@ -32,6 +32,7 @@ import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 import LoadingAdminState from '../../Common/LoadingState';
+import Checkbox from '@/app/components/Common/Checkbox';
 
 interface FilterState {
   status: string;
@@ -407,8 +408,7 @@ export default function NewsletterSubscribersClient() {
                 <thead>
                   <tr className="border-b border-theme-primary">
                     <th className="text-left py-3 px-2">
-                      <Input
-                        type="checkbox"
+                      <Checkbox
                         checked={
                           selectedSubscribers.length === subscribers.length &&
                           subscribers.length > 0
@@ -458,8 +458,7 @@ export default function NewsletterSubscribersClient() {
                         className="border-b border-theme-secondary hover:bg-theme-secondary/50"
                       >
                         <td className="py-3 px-2">
-                          <Input
-                            type="checkbox"
+                          <Checkbox
                             checked={selectedSubscribers.includes(
                               subscriber.id
                             )}

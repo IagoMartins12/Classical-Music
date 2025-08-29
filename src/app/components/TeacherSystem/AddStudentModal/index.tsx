@@ -19,6 +19,7 @@ import { StudentSearchResult } from '@/app/(teacher)/teacher/pageClient';
 import { Dispatch, SetStateAction, useState } from 'react';
 import Button from '../../Common/Button';
 import { FaChevronLeft } from 'react-icons/fa';
+import Checkbox from '../../Common/Checkbox';
 
 interface AddStudentModalProps {
   onClose: () => void;
@@ -468,8 +469,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                 : 'border-theme-secondary hover:border-theme-primary'
                             }`}
                           >
-                            <input
-                              type="checkbox"
+                            <Checkbox
+                              label={day.label}
                               checked={studyPlan.preferredDays.includes(
                                 day.value
                               )}
@@ -481,7 +482,6 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                               }
                               className="sr-only"
                             />
-                            <span className="text-sm">{day.label}</span>
                           </label>
                         ))}
                       </div>

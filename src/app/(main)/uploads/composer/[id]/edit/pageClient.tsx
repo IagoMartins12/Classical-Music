@@ -27,6 +27,7 @@ import Button from '../../../../../components/Common/Button';
 import CreateComposerModal from '../../../../../components/UploadsPage/modals/CreateComposerModal';
 import { getComposerNationalityDisplay } from '../../../../../components/Utils/nationalityFlags';
 import { useToast } from '@/app/hooks/useToast';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface EditComposerClientProps {
   composer: any;
@@ -44,6 +45,7 @@ const EditComposerClient = ({
   userId,
 }: EditComposerClientProps) => {
   const router = useRouter();
+  const { t } = useTranslation({ sections: ['pages/uploads'] });
   const [showEditModal, setShowEditModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -131,9 +133,10 @@ const EditComposerClient = ({
   const handleDelete = async () => {
     if (
       !confirm(
-        `Tem certeza que deseja excluir o compositor "${
+        t('delete_confirm_composer').replace(
+          '{name}',
           composer.fullName || composer.name
-        }"?`
+        )
       )
     ) {
       return;
@@ -179,7 +182,7 @@ const EditComposerClient = ({
               href="/uploads"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
-              Uploads
+              {t('breadcrumb_uploads')}
             </Link>
             <svg
               className="w-4 h-4"
@@ -198,7 +201,7 @@ const EditComposerClient = ({
               href="/uploads"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
-              Compositores
+              {t('breadcrumb_composers')}
             </Link>
             <svg
               className="w-4 h-4"
@@ -214,7 +217,7 @@ const EditComposerClient = ({
               />
             </svg>
             <span className="text-theme-primary font-medium">
-              Editar {composer.name}
+              {t('breadcrumb_edit').replace('{name}', composer.name)}
             </span>
           </nav>
         </AnimatedItem>
@@ -240,7 +243,7 @@ const EditComposerClient = ({
                             </div>
                             <div>
                               <h1 className="text-3xl md:text-4xl font-bold text-gradient-brand classical-title leading-tight">
-                                Editar Compositor
+                                {t('edit_composer_title')}
                               </h1>
                               <p className="text-theme-secondary text-lg">
                                 {composer.fullName || composer.name}
@@ -256,7 +259,7 @@ const EditComposerClient = ({
                             leftIcon={<FiSave />}
                             onClick={() => setShowEditModal(true)}
                           >
-                            Editar
+                            {t('edit_button')}
                           </Button>
 
                           {(isAdmin || composer.createdBy === userId) && (
@@ -272,7 +275,9 @@ const EditComposerClient = ({
                               onClick={handleDelete}
                               disabled={isDeleting}
                             >
-                              {isDeleting ? 'Excluindo...' : 'Excluir'}
+                              {isDeleting
+                                ? t('deleting_button')
+                                : t('delete_button')}
                             </Button>
                           )}
                         </div>
@@ -290,7 +295,7 @@ const EditComposerClient = ({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Nome
+                            {t('composer_info_name')}
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {composer.name}
@@ -307,7 +312,7 @@ const EditComposerClient = ({
                             </div>
                             <div>
                               <p className="text-sm font-medium text-theme-tertiary">
-                                Nome Completo
+                                {t('composer_info_full_name')}
                               </p>
                               <p className="text-theme-primary font-semibold">
                                 {composer.fullName}
@@ -324,7 +329,7 @@ const EditComposerClient = ({
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
-                              Nascimento
+                              {t('composer_info_birth')}
                             </p>
                             <p className="text-theme-primary font-semibold">
                               {formatDate(composer.birthDate)}
@@ -341,7 +346,7 @@ const EditComposerClient = ({
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
-                              Falecimento
+                              {t('composer_info_death')}
                             </p>
                             <p className="text-theme-primary font-semibold">
                               {formatDate(composer.deathDate)}
@@ -357,7 +362,7 @@ const EditComposerClient = ({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Época
+                            {t('composer_info_epoch')}
                           </p>
                           <p className="text-brand-primary font-semibold">
                             {composer.epoch.name}
@@ -372,7 +377,7 @@ const EditComposerClient = ({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Papel Principal
+                            {t('composer_info_primary_role')}
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {composer.primaryRole.name}
@@ -388,7 +393,7 @@ const EditComposerClient = ({
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
-                              Nacionalidade
+                              {t('composer_info_nationality')}
                             </p>
                             <p className="text-theme-primary font-semibold">
                               {nationalityDisplay.countryName}
@@ -405,7 +410,7 @@ const EditComposerClient = ({
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
-                              Instrumentos
+                              {t('composer_info_instruments')}
                             </p>
                             <p className="text-theme-primary font-semibold">
                               {composer.instruments}
@@ -422,7 +427,7 @@ const EditComposerClient = ({
                       <div className="border-t border-theme-secondary pt-6">
                         <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                           <FiExternalLink className="w-5 h-5 text-accent-blue" />
-                          <span>Links Externos</span>
+                          <span>{t('composer_info_external_links')}</span>
                         </h3>
                         <div className="flex flex-wrap gap-3">
                           {composer.wikipediaLink && (
@@ -433,7 +438,7 @@ const EditComposerClient = ({
                               className="btn-classical-primary flex items-center space-x-2 group/btn"
                             >
                               <FiExternalLink className="w-4 h-4" />
-                              <span>Wikipedia</span>
+                              <span>{t('composer_info_wikipedia')}</span>
                               <svg
                                 className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
                                 fill="none"
@@ -458,7 +463,7 @@ const EditComposerClient = ({
                               className="btn-classical-secondary flex items-center space-x-2 group/btn"
                             >
                               <FiBookOpen className="w-4 h-4" />
-                              <span>IMSLP</span>
+                              <span>{t('composer_info_imslp')}</span>
                               <svg
                                 className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
                                 fill="none"
@@ -504,7 +509,7 @@ const EditComposerClient = ({
                       <div className="w-64 h-80 bg-gradient-card border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <div className="text-center text-theme-tertiary">
                           <FiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                          <p className="text-sm">Sem imagem disponível</p>
+                          <p className="text-sm">{t('composer_no_image')}</p>
                         </div>
                       </div>
                     )}
@@ -524,7 +529,7 @@ const EditComposerClient = ({
                   </div>
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                      Biografia
+                      {t('composer_info_biography')}
                     </h2>
                   </div>
                   <div className="relative group">

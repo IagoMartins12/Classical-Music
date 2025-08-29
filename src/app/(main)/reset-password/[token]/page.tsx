@@ -67,7 +67,7 @@ export async function generateMetadata({
 export default async function DeclineTeacherInvitePage() {
   const language = await getServerLanguageStatic();
   const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pages/forget-password',
+    'pages/reset-password',
   ]);
 
   return (

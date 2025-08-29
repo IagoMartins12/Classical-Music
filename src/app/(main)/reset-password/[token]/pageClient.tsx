@@ -21,6 +21,7 @@ import {
   usePasswordReset,
   useResetPasswordForm,
 } from '@/app/hooks/usePasswordReset';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface ResetPageState {
   step: 'validating' | 'form' | 'success' | 'error';
@@ -33,10 +34,11 @@ interface ResetPageState {
   errorCode?: string;
 }
 
-export default function ResetPasswordPageClient() {
+export default function ResetPasswordPage() {
   const params = useParams();
   const router = useRouter();
   const token = params.token as string;
+  const { t } = useTranslation({ sections: ['pages/reset-password'] });
 
   const [pageState, setPageState] = useState<ResetPageState>({
     step: 'validating',
@@ -125,11 +127,20 @@ export default function ResetPasswordPageClient() {
     minutesLeft: number
   ): { text: string; color: string } => {
     if (minutesLeft > 30) {
-      return { text: `${minutesLeft} minutos`, color: 'text-accent-green' };
+      return {
+        text: t('time_minutes').replace('{count}', minutesLeft.toString()),
+        color: 'text-accent-green',
+      };
     } else if (minutesLeft > 10) {
-      return { text: `${minutesLeft} minutos`, color: 'text-accent-amber' };
+      return {
+        text: t('time_minutes').replace('{count}', minutesLeft.toString()),
+        color: 'text-accent-amber',
+      };
     } else {
-      return { text: `${minutesLeft} minutos`, color: 'text-accent-red' };
+      return {
+        text: t('time_minutes').replace('{count}', minutesLeft.toString()),
+        color: 'text-accent-red',
+      };
     }
   };
 
@@ -139,11 +150,9 @@ export default function ResetPasswordPageClient() {
         <FiLoader className="w-10 h-10 text-white animate-spin" />
       </div>
       <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-        Validando link...
+        {t('validating_title')}
       </h1>
-      <p className="text-theme-secondary text-lg">
-        Verificando a validade do seu link de reset
-      </p>
+      <p className="text-theme-secondary text-lg">{t('validating_subtitle')}</p>
     </div>
   );
 
@@ -161,10 +170,13 @@ export default function ResetPasswordPageClient() {
             <FiLock className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-theme-primary classical-title mb-2">
-            Nova Senha
+            {t('form_title')}
           </h1>
           <p className="text-theme-secondary">
-            Crie uma senha segura para {pageState.tokenData?.firstName}
+            {t('form_subtitle').replace(
+              '{firstName}',
+              pageState.tokenData?.firstName || ''
+            )}
           </p>
         </div>
 
@@ -173,7 +185,9 @@ export default function ResetPasswordPageClient() {
           <div className="bg-theme-secondary rounded-xl p-4 mb-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-theme-tertiary">Reset para:</p>
+                <p className="text-sm text-theme-tertiary">
+                  {t('reset_for_label')}
+                </p>
                 <p className="font-medium text-theme-primary">
                   {pageState.tokenData.email}
                 </p>
@@ -186,7 +200,9 @@ export default function ResetPasswordPageClient() {
                       {timeLeft.text}
                     </span>
                   </div>
-                  <p className="text-xs text-theme-tertiary">restantes</p>
+                  <p className="text-xs text-theme-tertiary">
+                    {t('time_remaining_label')}
+                  </p>
                 </div>
               )}
             </div>
@@ -207,7 +223,7 @@ export default function ResetPasswordPageClient() {
           {/* Nova Senha */}
           <div>
             <Input
-              label="Nova Senha"
+              label={t('password_label')}
               type={showPassword ? 'text' : 'password'}
               name="password"
               value={formData.password}
@@ -226,7 +242,7 @@ export default function ResetPasswordPageClient() {
                   )}
                 </button>
               }
-              placeholder="Digite sua nova senha"
+              placeholder={t('password_placeholder')}
               disabled={loading}
               autoComplete="new-password"
             />
@@ -235,7 +251,9 @@ export default function ResetPasswordPageClient() {
             {formData.password && (
               <div className="mt-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-theme-tertiary">Força da senha:</span>
+                  <span className="text-theme-tertiary">
+                    {t('password_strength_label')}
+                  </span>
                   <span
                     className={`font-medium ${getPasswordStrengthColor(
                       passwordStrength.score
@@ -275,7 +293,7 @@ export default function ResetPasswordPageClient() {
           {/* Confirmar Senha */}
           <div>
             <Input
-              label="Confirmar Nova Senha"
+              label={t('confirm_password_label')}
               type={showConfirmPassword ? 'text' : 'password'}
               name="confirmPassword"
               value={formData.confirmPassword}
@@ -294,13 +312,13 @@ export default function ResetPasswordPageClient() {
                   )}
                 </button>
               }
-              placeholder="Confirme sua nova senha"
+              placeholder={t('confirm_password_placeholder')}
               disabled={loading}
               autoComplete="new-password"
               error={
                 formData.confirmPassword &&
                 formData.password !== formData.confirmPassword
-                  ? 'Senhas não coincidem'
+                  ? t('passwords_no_match')
                   : undefined
               }
             />
@@ -309,13 +327,13 @@ export default function ResetPasswordPageClient() {
           {/* Dicas de Segurança */}
           <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
             <h4 className="text-sm font-medium text-accent-blue mb-2">
-              💡 Dicas para uma senha segura:
+              {t('security_tips_title')}
             </h4>
             <ul className="text-xs text-accent-blue opacity-80 space-y-1">
-              <li>• Use pelo menos 8 caracteres</li>
-              <li>• Combine letras maiúsculas e minúsculas</li>
-              <li>• Inclua números e símbolos especiais</li>
-              <li>• Evite informações pessoais óbvias</li>
+              <li>{t('security_tip_1')}</li>
+              <li>{t('security_tip_2')}</li>
+              <li>{t('security_tip_3')}</li>
+              <li>{t('security_tip_4')}</li>
             </ul>
           </div>
 
@@ -328,7 +346,7 @@ export default function ResetPasswordPageClient() {
             disabled={!passwordStrength.valid || !formValidation.valid}
             className="w-full"
           >
-            {loading ? 'Alterando Senha...' : 'Alterar Senha'}
+            {loading ? t('submit_button_loading') : t('submit_button')}
           </Button>
         </form>
 
@@ -338,7 +356,7 @@ export default function ResetPasswordPageClient() {
             href="/"
             className="text-sm text-theme-tertiary hover:text-brand-primary transition-colors"
           >
-            Voltar ao login
+            {t('back_to_login_link')}
           </Link>
         </div>
       </>
@@ -351,19 +369,18 @@ export default function ResetPasswordPageClient() {
         <FiCheckCircle className="w-10 h-10 text-white" />
       </div>
       <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-        🎉 Senha Alterada!
+        {t('success_title')}
       </h1>
       <p className="text-theme-secondary text-lg mb-6">
-        Sua senha foi alterada com sucesso. Você já pode fazer login com sua
-        nova senha.
+        {t('success_subtitle')}
       </p>
 
       <div className="bg-accent-green bg-opacity-10 border border-accent-green rounded-xl p-6 mb-8">
         <h3 className="text-xl font-semibold text-accent-green mb-2">
-          ✅ Tudo Pronto!
+          {t('success_all_done')}
         </h3>
         <p className="text-accent-green opacity-80">
-          Por segurança, você será redirecionado para a página de login.
+          {t('success_description')}
         </p>
       </div>
 
@@ -375,16 +392,16 @@ export default function ResetPasswordPageClient() {
           onClick={() => router.push('/?login=true')}
           className="animate-pulse"
         >
-          Fazer Login
+          {t('login_button')}
         </Button>
 
         <Button variant="ghost" size="lg" onClick={() => router.push('/')}>
-          Ir para o Site
+          {t('go_to_site_button')}
         </Button>
       </div>
 
       <div className="mt-8 text-sm text-theme-tertiary">
-        Redirecionando para o login em alguns segundos...
+        {t('success_redirect_message')}
       </div>
     </div>
   );
@@ -395,7 +412,7 @@ export default function ResetPasswordPageClient() {
         <FiAlertCircle className="w-10 h-10 text-white" />
       </div>
       <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-        ❌ Link Inválido
+        {t('error_title')}
       </h1>
       <p className="text-theme-secondary text-lg mb-6">
         {getErrorMessage(pageState.errorCode)}
@@ -419,11 +436,11 @@ export default function ResetPasswordPageClient() {
           size="lg"
           onClick={() => router.push('/?forgot-password=true')}
         >
-          Solicitar Novo Reset
+          {t('request_new_reset_button')}
         </Button>
 
         <Button variant="ghost" size="lg" onClick={() => router.push('/')}>
-          Voltar ao Login
+          {t('back_to_login_button')}
         </Button>
       </div>
     </div>
@@ -443,6 +460,52 @@ export default function ResetPasswordPageClient() {
         return renderValidatingStep();
     }
   };
+
+  // Funções auxiliares para mensagens de erro
+  function getErrorMessage(errorCode?: string): string {
+    switch (errorCode) {
+      case 'EXPIRED_TOKEN':
+        return t('error_expired_token_message');
+      case 'USED_TOKEN':
+        return t('error_used_token_message');
+      case 'INVALID_TOKEN':
+        return t('error_invalid_token_message');
+      case 'NO_TOKEN':
+        return t('error_no_token_message');
+      default:
+        return t('error_subtitle');
+    }
+  }
+
+  function getErrorTitle(errorCode?: string): string {
+    switch (errorCode) {
+      case 'EXPIRED_TOKEN':
+        return t('error_expired_token_title');
+      case 'USED_TOKEN':
+        return t('error_used_token_title');
+      case 'INVALID_TOKEN':
+        return t('error_invalid_token_title');
+      case 'NO_TOKEN':
+        return t('error_no_token_title');
+      default:
+        return t('error_default_title');
+    }
+  }
+
+  function getErrorDescription(errorCode?: string): string {
+    switch (errorCode) {
+      case 'EXPIRED_TOKEN':
+        return t('error_expired_token_description');
+      case 'USED_TOKEN':
+        return t('error_used_token_description');
+      case 'INVALID_TOKEN':
+        return t('error_invalid_token_description');
+      case 'NO_TOKEN':
+        return t('error_no_token_description');
+      default:
+        return t('error_default_description');
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-theme-primary via-theme-secondary to-theme-tertiary flex items-center justify-center p-4">
@@ -474,12 +537,12 @@ export default function ResetPasswordPageClient() {
           {/* Footer */}
           <div className="mt-12 pt-8 border-t border-theme-secondary text-center">
             <p className="text-sm text-theme-tertiary">
-              Precisa de ajuda?{' '}
+              {t('need_help')}{' '}
               <Link
                 href="/support"
                 className="text-brand-primary hover:underline"
               >
-                Entre em contato
+                {t('contact_support')}
               </Link>
             </p>
           </div>
@@ -487,50 +550,4 @@ export default function ResetPasswordPageClient() {
       </div>
     </div>
   );
-}
-
-// Funções auxiliares para mensagens de erro
-function getErrorMessage(errorCode?: string): string {
-  switch (errorCode) {
-    case 'EXPIRED_TOKEN':
-      return 'Este link de reset expirou.';
-    case 'USED_TOKEN':
-      return 'Este link de reset já foi utilizado.';
-    case 'INVALID_TOKEN':
-      return 'Link de reset inválido ou corrompido.';
-    case 'NO_TOKEN':
-      return 'Nenhum token de reset fornecido.';
-    default:
-      return 'Não foi possível processar o reset de senha.';
-  }
-}
-
-function getErrorTitle(errorCode?: string): string {
-  switch (errorCode) {
-    case 'EXPIRED_TOKEN':
-      return 'Token Expirado';
-    case 'USED_TOKEN':
-      return 'Link Já Utilizado';
-    case 'INVALID_TOKEN':
-      return 'Token Inválido';
-    case 'NO_TOKEN':
-      return 'Token Não Fornecido';
-    default:
-      return 'Erro no Reset';
-  }
-}
-
-function getErrorDescription(errorCode?: string): string {
-  switch (errorCode) {
-    case 'EXPIRED_TOKEN':
-      return 'Links de reset são válidos por apenas 1 hora por motivos de segurança.';
-    case 'USED_TOKEN':
-      return 'Para sua segurança, cada link de reset pode ser usado apenas uma vez.';
-    case 'INVALID_TOKEN':
-      return 'Verifique se copiou o link completo do email.';
-    case 'NO_TOKEN':
-      return 'Acesse o link completo enviado por email.';
-    default:
-      return 'Solicite um novo link de reset para continuar.';
-  }
 }

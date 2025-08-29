@@ -19,9 +19,11 @@ import {
   AnimatedItem,
   FloatingElement,
 } from '../../../../components/animation/AnimatedComponents';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 export default function NewsletterSuccessContent() {
   const searchParams = useSearchParams();
+  const { t } = useTranslation({ sections: ['pages/newsletter'] });
   const [type, setType] = useState('confirmed');
   const [mounted, setMounted] = useState(false);
 
@@ -38,22 +40,20 @@ export default function NewsletterSuccessContent() {
       case 'confirmed':
         return {
           icon: <FiCheckCircle className="w-16 h-16 text-accent-green" />,
-          title: 'Email Confirmado!',
-          subtitle: 'Sua inscrição foi ativada com sucesso',
-          message:
-            'Agora você receberá nossa newsletter com as melhores novidades sobre música clássica, novos compositores, obras e dicas de estudo.',
-          buttonText: 'Explorar a Plataforma',
+          title: t('success_confirmed_title'),
+          subtitle: t('success_confirmed_subtitle'),
+          message: t('success_confirmed_message'),
+          buttonText: t('success_confirmed_button'),
           buttonHref: '/composers',
         };
 
       case 'subscribed':
         return {
           icon: <FiMail className="w-16 h-16 text-accent-blue" />,
-          title: 'Inscrição Realizada!',
-          subtitle: 'Verifique seu email para confirmar',
-          message:
-            'Enviamos um email de confirmação. Clique no link para ativar sua inscrição e começar a receber nossa newsletter.',
-          buttonText: 'Verificar Email',
+          title: t('success_subscribed_title'),
+          subtitle: t('success_subscribed_subtitle'),
+          message: t('success_subscribed_message'),
+          buttonText: t('success_subscribed_button'),
           buttonHref: '#',
           showResend: true,
         };
@@ -61,21 +61,20 @@ export default function NewsletterSuccessContent() {
       case 'already_unsubscribed':
         return {
           icon: <FiMail className="w-16 h-16 text-accent-amber" />,
-          title: 'Já Cancelado',
-          subtitle: 'Esta inscrição já foi cancelada anteriormente',
-          message:
-            'Se deseja receber nossa newsletter novamente, você pode se inscrever na página inicial.',
-          buttonText: 'Voltar ao Início',
+          title: t('success_already_unsubscribed_title'),
+          subtitle: t('success_already_unsubscribed_subtitle'),
+          message: t('success_already_unsubscribed_message'),
+          buttonText: t('success_already_unsubscribed_button'),
           buttonHref: '/',
         };
 
       default:
         return {
           icon: <FiCheckCircle className="w-16 h-16 text-accent-green" />,
-          title: 'Sucesso!',
-          subtitle: 'Operação realizada com sucesso',
-          message: 'Sua solicitação foi processada.',
-          buttonText: 'Voltar ao Início',
+          title: t('success_default_title'),
+          subtitle: t('success_default_subtitle'),
+          message: t('success_default_message'),
+          buttonText: t('success_default_button'),
           buttonHref: '/',
         };
     }
@@ -87,7 +86,7 @@ export default function NewsletterSuccessContent() {
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="animate-pulse">Carregando...</div>
+          <div className="animate-pulse">{t('success_loading')}</div>
         </div>
       </PageContainer>
     );
@@ -146,7 +145,7 @@ export default function NewsletterSuccessContent() {
                         }}
                         className="text-brand-primary hover:text-brand-secondary font-medium"
                       >
-                        Não recebeu o email? Reenviar
+                        {t('success_subscribed_resend')}
                       </button>
                     </div>
                   )}
@@ -163,10 +162,10 @@ export default function NewsletterSuccessContent() {
                     >
                       <FiMusic className="w-8 h-8 text-brand-primary mb-3 mx-auto group-hover:scale-110 transition-transform" />
                       <h3 className="font-semibold text-theme-primary mb-2">
-                        Explorar Compositores
+                        {t('success_explore_composers_title')}
                       </h3>
                       <p className="text-sm text-theme-secondary">
-                        Descubra grandes mestres da música clássica
+                        {t('success_explore_composers_description')}
                       </p>
                     </Link>
 
@@ -176,10 +175,10 @@ export default function NewsletterSuccessContent() {
                     >
                       <GiGrandPiano className="w-8 h-8 text-accent-purple mb-3 mx-auto group-hover:scale-110 transition-transform" />
                       <h3 className="font-semibold text-theme-primary mb-2">
-                        Obras Clássicas
+                        {t('success_works_title')}
                       </h3>
                       <p className="text-sm text-theme-secondary">
-                        Explore nossa coleção de partituras
+                        {t('success_works_description')}
                       </p>
                     </Link>
 
@@ -189,10 +188,10 @@ export default function NewsletterSuccessContent() {
                     >
                       <FiHome className="w-8 h-8 text-accent-blue mb-3 mx-auto group-hover:scale-110 transition-transform" />
                       <h3 className="font-semibold text-theme-primary mb-2">
-                        Página Inicial
+                        {t('success_home_title')}
                       </h3>
                       <p className="text-sm text-theme-secondary">
-                        Voltar para a página principal
+                        {t('success_home_description')}
                       </p>
                     </Link>
                   </div>

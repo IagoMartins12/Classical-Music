@@ -88,9 +88,9 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
           />
           <div className="absolute -bottom-1 -right-1">
             {language === 'pt' ? (
-              <FlagBR className="w-3 h-3" />
+              <div className="flex items-center justify-center text-xs">🇧🇷</div>
             ) : (
-              <FlagUS className="w-3 h-3" />
+              <div className="flex items-center justify-center text-xs">🇺🇸</div>
             )}
           </div>
         </div>
@@ -98,9 +98,9 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
     }
 
     return language === 'pt' ? (
-      <FlagBR className={getIconSize()} />
+      <div className="flex items-center justify-center">🇧🇷</div>
     ) : (
-      <FlagUS className={getIconSize()} />
+      <div className="flex items-center justify-center">🇺🇸</div>
     );
   };
 
@@ -147,10 +147,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
           <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300" />
 
           {/* Flag/Globe container */}
-          <div className="relative flex items-center justify-center">
-            {getCurrentFlag()}
-          </div>
-
+          {getCurrentFlag()}
           {/* Subtle animation indicator */}
           <div className="absolute -top-1 -right-1 w-2 h-2 bg-accent-green rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
         </button>
@@ -170,12 +167,12 @@ export const LanguageDropdown: React.FC<{
     {
       code: 'pt' as const,
       name: 'Português',
-      flag: <FlagBR className="w-4 h-4" />,
+      flag: '🇧🇷',
     },
     {
       code: 'en' as const,
       name: 'English',
-      flag: <FlagUS className="w-4 h-4" />,
+      flag: '🇧🇷',
     },
   ];
 

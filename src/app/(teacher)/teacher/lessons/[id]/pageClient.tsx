@@ -45,6 +45,7 @@ import WorkSelectionSection, {
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
 import { translateNivel } from '@/app/utils';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import Checkbox from '@/app/components/Common/Checkbox';
 
 interface TeacherLessonDetailsPageClientProps {
   lessonData: LessonDetailsData | null;
@@ -2075,35 +2076,24 @@ export default function TeacherLessonDetailsPageClient({
               {lesson.isRecurring && (
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3">
-                    <input
-                      type="checkbox"
+                    <Checkbox
+                      label={t('delete_all_recurring')}
                       id="deleteAll"
                       checked={deleteRecurringSeries}
                       onChange={(e) =>
                         setDeleteRecurringSeries(e.target.checked)
                       }
-                      className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-brand-primary"
                     />
-                    <label htmlFor="deleteAll" className="text-theme-primary">
-                      {t('delete_all_recurring')}
-                    </label>
                   </div>
 
                   {deleteRecurringSeries && (
-                    <div className="flex items-center space-x-3 ml-7">
-                      <input
-                        type="checkbox"
+                    <div className="flex items-center space-x-3 ">
+                      <Checkbox
+                        label={t('delete_future_only')}
                         id="futureOnly"
                         checked={deleteFutureOnly}
                         onChange={(e) => setDeleteFutureOnly(e.target.checked)}
-                        className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-brand-primary"
                       />
-                      <label
-                        htmlFor="futureOnly"
-                        className="text-theme-secondary text-sm"
-                      >
-                        {t('delete_future_only')}
-                      </label>
                     </div>
                   )}
                 </div>

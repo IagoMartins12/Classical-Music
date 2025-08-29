@@ -38,6 +38,7 @@ import {
 } from '@/app/hooks/admin/useAdminSystemMonitoring';
 import LoadingAdminState from '../../Common/LoadingState';
 import Modal from '@/app/components/Modal';
+import Checkbox from '@/app/components/Common/Checkbox';
 
 export default function SystemPerformance() {
   const {
@@ -223,8 +224,7 @@ export default function SystemPerformance() {
               />
 
               <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
+                <Checkbox
                   id="autoRefresh"
                   checked={autoRefresh}
                   onChange={(e) => setAutoRefresh(e.target.checked)}

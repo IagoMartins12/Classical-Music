@@ -31,6 +31,7 @@ import {
 import Button from '../../../../../components/Common/Button';
 import CreateWorkModal from '../../../../../components/UploadsPage/modals/CreateWorkModal';
 import { useToast } from '@/app/hooks/useToast';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface EditWorkClientProps {
   work: any;
@@ -50,11 +51,11 @@ const EditWorkClient = ({
   userId,
 }: EditWorkClientProps) => {
   const router = useRouter();
+  const { t } = useTranslation({ sections: ['pages/uploads'] });
   const [showEditModal, setShowEditModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  console.log('teste', { work, composers });
   const formatDuration = (duration?: string) => {
     if (!duration) return null;
     return duration;
@@ -63,26 +64,12 @@ const EditWorkClient = ({
   const toast = useToast();
 
   const getWorkTypeLabel = (type: string) => {
-    const labels = {
-      INDIVIDUAL: 'Obra Individual',
-      COMPLETE_WORK: 'Obra Completa',
-      ARRANGEMENT: 'Arranjo',
-      COLLECTION: 'Coleção de peças',
-      COLLABORATION: 'Colaboração',
-      COMPOSITION: 'Composição Original',
-      COLLECTED_WORKS: 'Coleção de peças',
-      COLLECTIONS_WITH: 'Coleção com outros',
-    };
-    return labels[type as keyof typeof labels] || type;
+    return t(`work_types_${type}`) || type;
   };
 
   const getDifficultyLabel = (level?: string) => {
-    const labels = {
-      BEGINNER: 'Iniciante',
-      INTERMEDIATE: 'Intermediário',
-      ADVANCED: 'Avançado',
-    };
-    return level ? labels[level as keyof typeof labels] || level : null;
+    if (!level) return null;
+    return t(`work_difficulty_${level.toLowerCase()}`) || level;
   };
 
   const getDifficultyColor = (level?: string) => {
@@ -98,7 +85,7 @@ const EditWorkClient = ({
   };
 
   const handleDelete = async () => {
-    if (!confirm(`Tem certeza que deseja excluir a obra "${work.title}"?`)) {
+    if (!confirm(t('delete_confirm_work').replace('{title}', work.title))) {
       return;
     }
 
@@ -142,7 +129,7 @@ const EditWorkClient = ({
               href="/uploads"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
-              Uploads
+              {t('breadcrumb_uploads')}
             </Link>
             <svg
               className="w-4 h-4"
@@ -161,7 +148,7 @@ const EditWorkClient = ({
               href="/uploads"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
-              Obras
+              {t('breadcrumb_works')}
             </Link>
             <svg
               className="w-4 h-4"
@@ -177,7 +164,7 @@ const EditWorkClient = ({
               />
             </svg>
             <span className="text-theme-primary font-medium">
-              Editar {work.title}
+              {t('breadcrumb_edit').replace('{name}', work.title)}
             </span>
           </nav>
         </AnimatedItem>
@@ -206,7 +193,7 @@ const EditWorkClient = ({
                           </div>
                           <div>
                             <h1 className="text-3xl md:text-4xl font-bold text-gradient-brand classical-title leading-tight">
-                              Editar Obra
+                              {t('edit_work_title')}
                             </h1>
                           </div>
                         </div>
@@ -223,7 +210,7 @@ const EditWorkClient = ({
                         )}
 
                         <div className="flex items-center space-x-2 text-xl text-theme-secondary mt-3">
-                          <span>por</span>
+                          <span>{t('score_info_by_composer')}</span>
                           <Link
                             href={`/composer/${work.composer.id}`}
                             className="text-brand-primary hover:text-brand-secondary font-semibold transition-colors duration-300 classical-subtitle"
@@ -245,7 +232,7 @@ const EditWorkClient = ({
                           leftIcon={<FiSave />}
                           onClick={() => setShowEditModal(true)}
                         >
-                          Editar
+                          {t('edit_button')}
                         </Button>
 
                         {(isAdmin || work.createdBy === userId) && (
@@ -261,14 +248,18 @@ const EditWorkClient = ({
                             onClick={handleDelete}
                             disabled={isDeleting}
                           >
-                            {isDeleting ? 'Excluindo...' : 'Excluir'}
+                            {isDeleting
+                              ? t('deleting_button')
+                              : t('delete_button')}
                           </Button>
                         )}
-                      </div>
 
-                      <Link href={`/works/${work.id}`} className="ml-2">
-                        <Button variant="primary">Ver obra</Button>
-                      </Link>
+                        <Link href={`/works/${work.id}`} className="ml-2">
+                          <Button variant="primary">
+                            {t('view_work_button')}
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
 
                     {/* Difficulty Level Badge */}
@@ -281,7 +272,8 @@ const EditWorkClient = ({
                         >
                           <FiTarget className="w-4 h-4 text-theme-primary" />
                           <span className="text-theme-primary font-semibold text-sm">
-                            Nível: {getDifficultyLabel(work.difficultyLevel)}
+                            {t('work_difficulty_level')}:{' '}
+                            {getDifficultyLabel(work.difficultyLevel)}
                           </span>
                         </div>
                       </div>
@@ -298,7 +290,7 @@ const EditWorkClient = ({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Ano de Composição
+                            {t('work_info_composition_year')}
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {work.compositionYear}
@@ -315,7 +307,7 @@ const EditWorkClient = ({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Duração
+                            {t('work_info_duration')}
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {formatDuration(work.mediaDuration)}
@@ -332,7 +324,7 @@ const EditWorkClient = ({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Tom
+                            {t('work_info_tone')}
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {work.tone}
@@ -349,7 +341,7 @@ const EditWorkClient = ({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Indicação de Tempo
+                            {t('work_info_tempo_marking')}
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {work.tempoMarking}
@@ -365,7 +357,7 @@ const EditWorkClient = ({
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
-                          Instrumento
+                          {t('work_info_instrument')}
                         </p>
                         <p className="text-theme-primary font-semibold">
                           {work.instrument.name}
@@ -380,7 +372,7 @@ const EditWorkClient = ({
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
-                          Época/Estilo
+                          {t('work_info_epoch')}
                         </p>
                         <p className="text-brand-primary font-semibold">
                           {work.epoch.name}
@@ -395,7 +387,7 @@ const EditWorkClient = ({
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
-                          Tipo
+                          {t('work_info_type')}
                         </p>
                         <p className="text-theme-primary font-semibold">
                           {getWorkTypeLabel(work.workType)}
@@ -412,13 +404,13 @@ const EditWorkClient = ({
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                         <FiBookOpen className="w-5 h-5 text-accent-blue" />
-                        <span>Informações Adicionais</span>
+                        <span>{t('work_info_additional_info')}</span>
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         {work.firstPublishDate && (
                           <div className="flex items-center space-x-2">
                             <span className="font-medium text-theme-tertiary">
-                              Primeira Publicação:
+                              {t('work_info_first_publication')}:
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {work.firstPublishDate}
@@ -428,7 +420,7 @@ const EditWorkClient = ({
                         {work.dedicateTo && (
                           <div className="flex items-center space-x-2">
                             <span className="font-medium text-theme-tertiary">
-                              Dedicada a:
+                              {t('work_info_dedicated_to')}:
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {work.dedicateTo}
@@ -438,7 +430,7 @@ const EditWorkClient = ({
                         {work.workStyle && (
                           <div className="flex items-center space-x-2">
                             <span className="font-medium text-theme-tertiary">
-                              Estilo:
+                              {t('work_info_style')}:
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {work.workStyle}
@@ -448,7 +440,7 @@ const EditWorkClient = ({
                         {work.instrumentation && (
                           <div className="md:col-span-2 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
                             <span className="font-medium text-theme-tertiary block mb-1">
-                              Instrumentação:
+                              {t('work_info_instrumentation')}:
                             </span>
                             <span className="text-theme-primary whitespace-pre-line">
                               {work.instrumentation}
@@ -465,13 +457,13 @@ const EditWorkClient = ({
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                         <FiTag className="w-5 h-5 text-accent-green" />
-                        <span>Categorias e Gêneros</span>
+                        <span>{t('work_info_categories_genres')}</span>
                       </h3>
                       <div className="space-y-4">
                         {work.categoryNames?.length > 0 && (
                           <div>
                             <span className="text-sm font-medium text-theme-tertiary block mb-3">
-                              Categorias:
+                              {t('work_info_categories')}:
                             </span>
                             <div className="flex flex-wrap gap-2">
                               {work.categoryNames.map(
@@ -491,7 +483,7 @@ const EditWorkClient = ({
                         {work.workGenresArr?.length > 0 && (
                           <div>
                             <span className="text-sm font-medium text-theme-tertiary block mb-3">
-                              Tipos de Obra:
+                              {t('work_info_work_types')}:
                             </span>
                             <div className="flex flex-wrap gap-2">
                               {work.workGenresArr.map(
@@ -516,7 +508,7 @@ const EditWorkClient = ({
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                         <FiExternalLink className="w-5 h-5 text-accent-blue" />
-                        <span>Link Externo</span>
+                        <span>{t('work_info_external_link')}</span>
                       </h3>
                       <a
                         href={work.imslpPermlink}
@@ -525,7 +517,7 @@ const EditWorkClient = ({
                         className="btn-classical-primary flex items-center space-x-2 group/btn w-fit"
                       >
                         <FiBookOpen className="w-4 h-4" />
-                        <span>Ver no IMSLP</span>
+                        <span>{t('work_info_view_imslp')}</span>
                         <svg
                           className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
                           fill="none"
@@ -553,7 +545,7 @@ const EditWorkClient = ({
                         <FiUser className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                        Compositor
+                        {t('work_info_composer')}
                       </h3>
                     </div>
 
@@ -596,14 +588,14 @@ const EditWorkClient = ({
                         <FiBookOpen className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                        Detalhes Técnicos
+                        {t('work_info_technical_details')}
                       </h3>
                     </div>
                     <div className="space-y-3 text-sm">
                       {work.movementNumber && (
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-theme-tertiary">
-                            Movimento:
+                            {t('work_info_movement')}:
                           </span>
                           <span className="text-theme-primary font-semibold">
                             #{work.movementNumber}
@@ -612,7 +604,7 @@ const EditWorkClient = ({
                       )}
                       <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
                         <span className="font-medium text-theme-tertiary">
-                          Catalogado em:
+                          {t('work_info_cataloged_on')}:
                         </span>
                         <span className="text-theme-primary font-semibold text-xs">
                           {new Date(work.createdAt).toLocaleDateString('pt-BR')}

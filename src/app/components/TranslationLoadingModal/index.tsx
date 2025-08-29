@@ -178,33 +178,13 @@ export function TranslationLoadingModal({
           {/* Subtítulo com bandeiras */}
           <div className="flex items-center justify-center space-x-3 mb-6">
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 relative overflow-hidden rounded border border-theme-secondary">
-                {currentLanguage === 'pt' ? (
-                  // Bandeira do Brasil
-                  <div className="absolute inset-0">
-                    <div className="absolute inset-0 bg-green-500" />
-                    <div
-                      className="absolute inset-0 bg-yellow-400"
-                      style={{ top: '30%', bottom: '30%' }}
-                    />
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-blue-600 rounded-full" />
-                  </div>
-                ) : (
-                  // Bandeira dos EUA
-                  <div className="absolute inset-0">
-                    {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-                      <div
-                        key={i}
-                        className={`absolute left-0 right-0 h-1/7 ${
-                          i % 2 === 0 ? 'bg-red-600' : 'bg-white'
-                        }`}
-                        style={{ top: `${(i / 7) * 100}%` }}
-                      />
-                    ))}
-                    <div className="absolute top-0 left-0 bg-blue-800 w-2/5 h-2/5" />
-                  </div>
-                )}
-              </div>
+              {currentLanguage === 'pt' ? (
+                // Bandeira do Brasil
+                <span>🇧🇷</span>
+              ) : (
+                // Bandeira dos EUA
+                <span>🇺🇸</span>
+              )}
               <span className="text-theme-secondary text-sm font-medium">
                 {currentLanguage === 'pt'
                   ? 'English → Português'

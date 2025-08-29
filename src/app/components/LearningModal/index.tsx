@@ -255,7 +255,6 @@ const LearningModal = () => {
     }));
   }, []);
 
-
   // Handler para adicionar partitura
   const handleAddScore = () => {
     if (!workId || !workTitle || !composerName || !type) return;
@@ -895,7 +894,6 @@ const LearningModal = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center space-x-3">
                   <Checkbox
-                    type="checkbox"
                     id="wouldRecommend"
                     checked={learnedForm.wouldRecommend}
                     onChange={(e) =>
@@ -913,7 +911,6 @@ const LearningModal = () => {
 
                 <div className="flex items-center space-x-3">
                   <Checkbox
-                    type="checkbox"
                     id="publicPerformance"
                     checked={learnedForm.publicPerformance}
                     onChange={(e) =>
@@ -1101,7 +1098,6 @@ const LearningModal = () => {
                 <div className="flex items-center space-x-3">
                   <Checkbox
                     label="Tornar vídeo público (visível para outros usuários)"
-                    type="checkbox"
                     id="videoPublic"
                     checked={isVideoPublic}
                     onChange={(e) => setIsVideoPublic(e.target.checked)}

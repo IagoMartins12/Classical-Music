@@ -34,7 +34,8 @@ import { REPORT_REASONS } from '@/app/utils/reportHelpers';
 import BulkReportActions from '../../components/Report/BulkReportActions';
 import ReportPriorityBadge from '../../components/Report/ReportPriorityBadge';
 import { useToast } from '@/app/hooks/useToast';
-import Input from '../../components/Common/Inputs';
+import Checkbox from '@/app/components/Common/Checkbox';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface ModerationClientProps {
   page: number;
@@ -48,6 +49,7 @@ const ModerationClient = ({
   isAdmin = false,
 }: ModerationClientProps) => {
   const router = useRouter();
+  const { t } = useTranslation({ sections: ['pages/uploads'] });
 
   const [moderations, setModerations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -185,7 +187,7 @@ const ModerationClient = ({
   };
 
   const getEntityTitle = (moderation: any) => {
-    if (!moderation.entityDetails) return 'Item não encontrado';
+    if (!moderation.entityDetails) return t('moderation_entity_not_found');
 
     const title = (() => {
       switch (moderation.entityType) {
@@ -198,7 +200,7 @@ const ModerationClient = ({
         case 'score':
           return moderation.entityDetails.title;
         default:
-          return 'Item desconhecido';
+          return t('moderation_entity_unknown');
       }
     })();
 
@@ -210,15 +212,19 @@ const ModerationClient = ({
 
     switch (moderation.entityType) {
       case 'composer':
-        return 'Compositor';
+        return t('moderation_entity_composer');
       case 'work':
-        return `Obra de ${
-          moderation.entityDetails.composer?.name || 'compositor desconhecido'
-        }`;
+        return t('moderation_entity_work_of').replace(
+          '{composer}',
+          moderation.entityDetails.composer?.name ||
+            t('moderation_entity_unknown_composer')
+        );
       case 'score':
-        return `Partitura de ${
-          moderation.entityDetails.work?.title || 'obra desconhecida'
-        }`;
+        return t('moderation_entity_score_of').replace(
+          '{work}',
+          moderation.entityDetails.work?.title ||
+            t('moderation_entity_unknown_work')
+        );
       default:
         return '';
     }
@@ -256,10 +262,10 @@ const ModerationClient = ({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Moderação de Reports
+              {t('moderation_page_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Gerencie reports e mantenha a qualidade do conteúdo
+              {t('moderation_page_subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -283,9 +289,7 @@ const ModerationClient = ({
                       : 'text-theme-tertiary hover:text-theme-primary'
                   }`}
                 >
-                  {statusOption === 'pending' && 'Pendentes'}
-                  {statusOption === 'approved' && 'Aprovadas'}
-                  {statusOption === 'rejected' && 'Rejeitadas'}
+                  {t(`moderation_status_${statusOption}`)}
                   {statusOption === 'pending' && (
                     <span className="ml-2 px-2 py-1 bg-accent-red text-white text-xs rounded-full">
                       {moderations.length}
@@ -304,20 +308,25 @@ const ModerationClient = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <label className="flex items-center space-x-2 cursor-pointer">
-                    <Input
-                      type="checkbox"
+                    <Checkbox
                       checked={selectAll}
                       onChange={(e) => handleSelectAll(e.target.checked)}
                       className="rounded border-theme-primary"
                     />
                     <span className="text-sm font-medium text-theme-primary">
-                      Selecionar todos ({moderations.length})
+                      {t('moderation_select_all').replace(
+                        '{count}',
+                        moderations.length.toString()
+                      )}
                     </span>
                   </label>
 
                   {selectedReports.length > 0 && (
                     <span className="text-sm text-theme-secondary">
-                      {selectedReports.length} selecionado(s)
+                      {t('moderation_selected_count').replace(
+                        '{count}',
+                        selectedReports.length.toString()
+                      )}
                     </span>
                   )}
                 </div>
@@ -329,7 +338,7 @@ const ModerationClient = ({
                     leftIcon={<FiEye />}
                     onClick={() => router.push('/admin/report')}
                   >
-                    Dashboard
+                    {t('moderation_dashboard_button')}
                   </Button>
                 </div>
               </div>
@@ -344,10 +353,13 @@ const ModerationClient = ({
               <div className="classical-card p-12 text-center">
                 <FiShield className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
-                  Nenhuma moderação encontrada
+                  {t('moderation_no_records_title')}
                 </h3>
                 <p className="text-theme-secondary">
-                  Não há moderações com status &quot;{status}&quot; no momento.
+                  {t('moderation_no_records_subtitle').replace(
+                    '{status}',
+                    status
+                  )}
                 </p>
               </div>
             ) : (
@@ -366,8 +378,7 @@ const ModerationClient = ({
                         {/* Checkbox para seleção múltipla */}
                         {status === 'pending' && (
                           <div className="pt-1">
-                            <input
-                              type="checkbox"
+                            <Checkbox
                               checked={selectedReports.includes(moderation.id)}
                               onChange={(e) =>
                                 handleSelectReport(
@@ -446,7 +457,7 @@ const ModerationClient = ({
                           {moderation.moderationNotes && (
                             <div className="mt-2 p-2 bg-theme-secondary rounded-lg">
                               <p className="text-sm text-theme-primary">
-                                <strong>Notas da moderação:</strong>{' '}
+                                <strong>{t('moderation_notes_label')}</strong>{' '}
                                 {moderation.moderationNotes}
                               </p>
                             </div>
@@ -461,9 +472,9 @@ const ModerationClient = ({
                           size="sm"
                           leftIcon={<FiEye />}
                           onClick={() => showHistory(moderation)}
-                          title="Ver histórico"
+                          title={t('moderation_view_history_button')}
                         >
-                          Ver histórico
+                          {t('moderation_view_history_button')}
                         </Button>
 
                         {moderation.status === 'pending' && (
@@ -477,7 +488,7 @@ const ModerationClient = ({
                               }
                               disabled={processingId === moderation.id}
                             >
-                              Aprovar
+                              {t('moderation_approve_button')}
                             </Button>
                             <Button
                               variant="secondary"
@@ -488,7 +499,7 @@ const ModerationClient = ({
                               }
                               disabled={processingId === moderation.id}
                             >
-                              Rejeitar
+                              {t('moderation_reject_button')}
                             </Button>
                             <Button
                               variant="delete"
@@ -497,7 +508,7 @@ const ModerationClient = ({
                               onClick={() => openModerationModal(moderation)}
                               disabled={processingId === moderation.id}
                             >
-                              Deletar
+                              {t('moderation_delete_button')}
                             </Button>
                           </>
                         )}
@@ -512,7 +523,7 @@ const ModerationClient = ({
                               if (url) window.open(url, '_blank');
                             }}
                           >
-                            Ver Item
+                            {t('moderation_view_item_button')}
                           </Button>
                         )}
                       </div>
@@ -574,25 +585,26 @@ const ModerationClient = ({
                 </div>
 
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
-                  Confirmar Exclusão
+                  {t('moderation_delete_title')}
                 </h3>
 
                 <p className="text-theme-secondary mb-6">
-                  Tem certeza que deseja deletar &quot;
-                  {getEntityTitle(selectedModeration)}&quot;? Esta ação não pode
-                  ser desfeita.
+                  {t('moderation_delete_subtitle').replace(
+                    '{title}',
+                    getEntityTitle(selectedModeration)
+                  )}
                 </p>
 
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    Notas da moderação (opcional)
+                    {t('moderation_delete_notes_label')}
                   </label>
                   <textarea
                     value={moderationNotes}
                     onChange={(e) => setModerationNotes(e.target.value)}
                     rows={3}
                     className="input-classical-2 w-full resize-none"
-                    placeholder="Explique o motivo da exclusão..."
+                    placeholder={t('moderation_delete_notes_placeholder')}
                   />
                 </div>
 
@@ -605,7 +617,7 @@ const ModerationClient = ({
                       setModerationNotes('');
                     }}
                   >
-                    Cancelar
+                    {t('moderation_delete_cancel')}
                   </Button>
 
                   <Button
@@ -615,7 +627,7 @@ const ModerationClient = ({
                     }
                     disabled={processingId === selectedModeration.id}
                   >
-                    Confirmar Exclusão
+                    {t('moderation_delete_confirm')}
                   </Button>
                 </div>
               </div>

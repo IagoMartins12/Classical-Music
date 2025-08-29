@@ -4,7 +4,7 @@ import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
 import Image from 'next/image';
 import { LuDownload, LuFileText, LuStar, LuZoomIn, LuX } from 'react-icons/lu';
 import { FiBookOpen, FiTarget, FiExternalLink } from 'react-icons/fi';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface ScorePreviewProps {
   score: IMSLPScore & {

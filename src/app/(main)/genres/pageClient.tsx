@@ -14,6 +14,7 @@ import {
 } from 'react-icons/fi';
 import AnimatedMusicalNotes2 from '../../components/AnimatedMusicalNotes2';
 import ViewModeToggle from '../../components/ViewModeToggle';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface Genre {
   id: string;
@@ -26,6 +27,8 @@ interface GenresClientProps {
 
 export default function GenresClient({ genres }: GenresClientProps) {
   const router = useRouter();
+  const { t } = useTranslation({ sections: ['pages/genres'] });
+
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(
@@ -134,11 +137,10 @@ export default function GenresClient({ genres }: GenresClientProps) {
             </div>
 
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Gêneros Musicais
+              {t('page_title')}
             </h1>
             <p className="text-xl text-theme-secondary max-w-3xl mx-auto classical-subtitle">
-              Explore todos os {genres.length} gêneros de música clássica
-              disponíveis
+              {t('page_subtitle').replace('{count}', genres.length.toString())}
             </p>
           </div>
         </div>
@@ -151,7 +153,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
               className="btn-classical-secondary flex items-center space-x-2"
             >
               <FiArrowLeft className="w-4 h-4" />
-              <span className="">Voltar</span>
+              <span className="">{t('back_button')}</span>
             </button>
 
             <div className="flex items-center space-x-4">
@@ -164,12 +166,12 @@ export default function GenresClient({ genres }: GenresClientProps) {
                   {areAllSectionsCollapsed() ? (
                     <>
                       <FiChevronDown className="w-4 h-4" />
-                      <span>Expandir Todas</span>
+                      <span>{t('expand_all')}</span>
                     </>
                   ) : (
                     <>
                       <FiChevronUp className="w-4 h-4" />
-                      <span>Colapsar Todas</span>
+                      <span>{t('collapse_all')}</span>
                     </>
                   )}
                 </button>
@@ -182,7 +184,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
             <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
             <input
               type="text"
-              placeholder="Buscar gêneros (ex: sonata, concerto, sinfonia...)"
+              placeholder={t('search_placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="input-classical pl-12 pr-12 w-full"
@@ -205,20 +207,21 @@ export default function GenresClient({ genres }: GenresClientProps) {
                   <span className="font-medium text-theme-primary">
                     {filteredGenres.length}
                   </span>{' '}
-                  gêneros encontrados para &quot;
+                  {t('results_found').replace(
+                    '{count}',
+                    filteredGenres.length.toString()
+                  )}{' '}
+                  &quot;
                   <span className="font-medium text-theme-primary">
                     {searchTerm}
                   </span>
                   &quot;
                 </>
               ) : (
-                <>
-                  Mostrando todos os{' '}
-                  <span className="font-medium text-theme-primary">
-                    {genres.length}
-                  </span>{' '}
-                  gêneros disponíveis
-                </>
+                t('results_showing_all').replace(
+                  '{count}',
+                  genres.length.toString()
+                )
               )}
             </div>
 
@@ -247,11 +250,18 @@ export default function GenresClient({ genres }: GenresClientProps) {
                   </div>
                   <div className="flex-1">
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Letra {letter}
+                      {t('section_letter_title').replace('{letter}', letter)}
                     </h2>
                     <p className="text-theme-secondary text-sm">
-                      {genresInGroup.length} gênero
-                      {genresInGroup.length !== 1 ? 's' : ''}
+                      {genresInGroup.length === 1
+                        ? t('section_count_singular').replace(
+                            '{count}',
+                            genresInGroup.length.toString()
+                          )
+                        : t('section_count_plural').replace(
+                            '{count}',
+                            genresInGroup.length.toString()
+                          )}
                     </p>
                   </div>
                   <div className="ml-4 transition-transform duration-300 group-hover:scale-110">
@@ -359,14 +369,13 @@ export default function GenresClient({ genres }: GenresClientProps) {
               <FiTag className="w-8 h-8 text-theme-tertiary" />
             </div>
             <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
-              Nenhum gênero encontrado
+              {t('empty_title')}
             </h3>
             <p className="text-theme-secondary mb-6">
-              Não encontramos gêneros que correspondam à sua busca por &quot;
-              <strong>{searchTerm}</strong>&quot;.
+              {t('empty_subtitle').replace('{searchTerm}', searchTerm)}
             </p>
             <button onClick={clearSearch} className="btn-classical-primary">
-              Limpar Busca
+              {t('clear_search')}
             </button>
           </div>
         )}

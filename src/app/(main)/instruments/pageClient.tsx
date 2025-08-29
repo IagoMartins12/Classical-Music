@@ -205,22 +205,18 @@ export function InstrumentsPageClient({
         </section>
 
         {/* Main Content */}
-        <div className="section-wrap space-y-12">
-          {instruments.map((instrument, index) => {
+        <div className="section-wrap space-y-12 ">
+          {instruments.map((instrument) => {
             const Icon = getIcon(instrument.historicalData.iconName);
             const isInstrumentOpen = isInstrumentExpanded(instrument.id);
 
             return (
               <div
                 key={instrument.id}
-                className="classical-card group relative overflow-hidden animate-fade-in-up"
-                style={{
-                  animationDelay: `${index * 0.1}s`,
-                }}
+                className="classical-card group relative overflow-hidden  animate-fade-in-up"
               >
-                {/* Instrument Header - Always Visible */}
                 <div
-                  className="flex items-center justify-between p-8 cursor-pointer transition-all duration-300 hover:bg-interactive-hover relative z-10"
+                  className="flex items-center justify-between px-8 py-6 cursor-pointer transition-all duration-300 hover:bg-interactive-hover relative z-10"
                   onClick={() => toggleInstrument(instrument.id)}
                 >
                   <div className="flex items-center space-x-6">
@@ -228,7 +224,7 @@ export function InstrumentsPageClient({
                       <Icon className="w-10 h-10 text-theme-primary" />
                     </div>
                     <div className="flex-1">
-                      <h2 className="text-4xl text-theme-primary classical-title mb-2 group-hover:text-brand-primary transition-colors duration-300">
+                      <h2 className="text-3xl text-theme-primary classical-title mb-2 group-hover:text-brand-primary transition-colors duration-300">
                         {instrument.historicalData.name}
                       </h2>
                       <p className="text-theme-secondary text-lg classical-subtitle mb-1">

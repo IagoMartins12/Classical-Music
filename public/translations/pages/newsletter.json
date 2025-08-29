@@ -1,0 +1,128 @@
+{
+  "ptBr": {
+    "success_confirmed_title": "Email Confirmado!",
+    "success_confirmed_subtitle": "Sua inscrição foi ativada com sucesso",
+    "success_confirmed_message": "Agora você receberá nossa newsletter com as melhores novidades sobre música clássica, novos compositores, obras e dicas de estudo.",
+    "success_confirmed_button": "Explorar a Plataforma",
+
+    "success_subscribed_title": "Inscrição Realizada!",
+    "success_subscribed_subtitle": "Verifique seu email para confirmar",
+    "success_subscribed_message": "Enviamos um email de confirmação. Clique no link para ativar sua inscrição e começar a receber nossa newsletter.",
+    "success_subscribed_button": "Verificar Email",
+    "success_subscribed_resend": "Não recebeu o email? Reenviar",
+
+    "success_already_unsubscribed_title": "Já Cancelado",
+    "success_already_unsubscribed_subtitle": "Esta inscrição já foi cancelada anteriormente",
+    "success_already_unsubscribed_message": "Se deseja receber nossa newsletter novamente, você pode se inscrever na página inicial.",
+    "success_already_unsubscribed_button": "Voltar ao Início",
+
+    "success_default_title": "Sucesso!",
+    "success_default_subtitle": "Operação realizada com sucesso",
+    "success_default_message": "Sua solicitação foi processada.",
+    "success_default_button": "Voltar ao Início",
+
+    "success_loading": "Carregando...",
+
+    "success_explore_composers_title": "Explorar Compositores",
+    "success_explore_composers_description": "Descubra grandes mestres da música clássica",
+    "success_works_title": "Obras Clássicas",
+    "success_works_description": "Explore nossa coleção de partituras",
+    "success_home_title": "Página Inicial",
+    "success_home_description": "Voltar para a página principal",
+
+    "unsubscribe_page_title": "Cancelar Inscrição",
+    "unsubscribe_page_subtitle": "Sentimos muito em vê-lo partir. Tem certeza que deseja cancelar sua inscrição?",
+
+    "unsubscribe_before_title": "Antes de cancelar...",
+    "unsubscribe_before_message": "Nossa newsletter inclui descobertas musicais, novos compositores, partituras exclusivas e dicas de estudo. Tem certeza que deseja cancelar?",
+    "unsubscribe_with_feedback_button": "Sim, cancelar (com feedback)",
+    "unsubscribe_quick_button": "Cancelar rapidamente",
+    "unsubscribe_quick_button_loading": "Cancelando...",
+    "unsubscribe_keep_button": "Voltar (manter inscrição)",
+
+    "unsubscribe_feedback_title": "Nos ajude a melhorar",
+    "unsubscribe_feedback_subtitle": "Por que está cancelando a inscrição?",
+    "unsubscribe_reason_label": "Motivo (opcional)",
+    "unsubscribe_feedback_label": "Feedback adicional (opcional)",
+    "unsubscribe_feedback_placeholder": "Como podemos melhorar nossa newsletter?",
+    "unsubscribe_confirm_button": "Confirmar Cancelamento",
+    "unsubscribe_back_button": "Voltar",
+
+    "unsubscribe_completed_title": "Inscrição Cancelada",
+    "unsubscribe_completed_message": "Sua inscrição foi cancelada com sucesso. Sentimos muito em vê-lo partir!",
+    "unsubscribe_completed_button": "Voltar ao Início",
+
+    "unsubscribe_reason_too_frequent": "Emails muito frequentes",
+    "unsubscribe_reason_not_relevant": "Conteúdo não relevante",
+    "unsubscribe_reason_never_signed": "Nunca me inscrevi",
+    "unsubscribe_reason_technical_issues": "Problemas técnicos",
+    "unsubscribe_reason_changed_email": "Mudei de email",
+    "unsubscribe_reason_other": "Outro motivo",
+
+    "error_unsubscribe_default": "Erro ao cancelar inscrição",
+    "error_general": "Erro ao cancelar inscrição"
+  },
+  "en": {
+    "success_confirmed_title": "Email Confirmed!",
+    "success_confirmed_subtitle": "Your subscription has been successfully activated",
+    "success_confirmed_message": "You will now receive our newsletter with the latest news about classical music, new composers, works, and study tips.",
+    "success_confirmed_button": "Explore the Platform",
+
+    "success_subscribed_title": "Subscription Complete!",
+    "success_subscribed_subtitle": "Check your email to confirm",
+    "success_subscribed_message": "We've sent a confirmation email. Click the link to activate your subscription and start receiving our newsletter.",
+    "success_subscribed_button": "Check Email",
+    "success_subscribed_resend": "Didn't receive the email? Resend",
+
+    "success_already_unsubscribed_title": "Already Unsubscribed",
+    "success_already_unsubscribed_subtitle": "This subscription was already cancelled previously",
+    "success_already_unsubscribed_message": "If you want to receive our newsletter again, you can subscribe on the home page.",
+    "success_already_unsubscribed_button": "Back to Home",
+
+    "success_default_title": "Success!",
+    "success_default_subtitle": "Operation completed successfully",
+    "success_default_message": "Your request has been processed.",
+    "success_default_button": "Back to Home",
+
+    "success_loading": "Loading...",
+
+    "success_explore_composers_title": "Explore Composers",
+    "success_explore_composers_description": "Discover great masters of classical music",
+    "success_works_title": "Classical Works",
+    "success_works_description": "Explore our collection of sheet music",
+    "success_home_title": "Home Page",
+    "success_home_description": "Return to the main page",
+
+    "unsubscribe_page_title": "Unsubscribe",
+    "unsubscribe_page_subtitle": "We're sorry to see you go. Are you sure you want to unsubscribe?",
+
+    "unsubscribe_before_title": "Before unsubscribing...",
+    "unsubscribe_before_message": "Our newsletter includes musical discoveries, new composers, exclusive sheet music, and study tips. Are you sure you want to unsubscribe?",
+    "unsubscribe_with_feedback_button": "Yes, unsubscribe (with feedback)",
+    "unsubscribe_quick_button": "Quick unsubscribe",
+    "unsubscribe_quick_button_loading": "Unsubscribing...",
+    "unsubscribe_keep_button": "Go back (keep subscription)",
+
+    "unsubscribe_feedback_title": "Help us improve",
+    "unsubscribe_feedback_subtitle": "Why are you unsubscribing?",
+    "unsubscribe_reason_label": "Reason (optional)",
+    "unsubscribe_feedback_label": "Additional feedback (optional)",
+    "unsubscribe_feedback_placeholder": "How can we improve our newsletter?",
+    "unsubscribe_confirm_button": "Confirm Unsubscription",
+    "unsubscribe_back_button": "Back",
+
+    "unsubscribe_completed_title": "Unsubscribed",
+    "unsubscribe_completed_message": "Your subscription has been successfully cancelled. We're sorry to see you go!",
+    "unsubscribe_completed_button": "Back to Home",
+
+    "unsubscribe_reason_too_frequent": "Emails too frequent",
+    "unsubscribe_reason_not_relevant": "Content not relevant",
+    "unsubscribe_reason_never_signed": "Never signed up",
+    "unsubscribe_reason_technical_issues": "Technical issues",
+    "unsubscribe_reason_changed_email": "Changed email",
+    "unsubscribe_reason_other": "Other reason",
+
+    "error_unsubscribe_default": "Error unsubscribing",
+    "error_general": "Error unsubscribing"
+  }
+}

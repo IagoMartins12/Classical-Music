@@ -34,6 +34,7 @@ import {
 } from '@/app/hooks/admin/useTestEmailLists';
 import LoadingAdminState from '../../Common/LoadingState';
 import Select from '@/app/components/Common/Select';
+import Checkbox from '@/app/components/Common/Checkbox';
 
 interface CreateEditModalProps {
   isOpen: boolean;
@@ -981,8 +982,7 @@ export default function TestEmailListsManager() {
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-theme-secondary">
                 <div className="flex items-center space-x-4">
                   <label className="flex items-center">
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       checked={
                         selectedLists.length === filteredLists.length &&
                         filteredLists.length > 0
@@ -1022,11 +1022,9 @@ export default function TestEmailListsManager() {
                     <div className="flex items-start justify-between">
                       <div className="flex items-start space-x-4 flex-1">
                         {/* Checkbox */}
-                        <input
-                          type="checkbox"
+                        <Checkbox
                           checked={selectedLists.includes(list.id)}
                           onChange={() => selectList(list.id)}
-                          className="mt-1"
                         />
 
                         {/* Color Indicator */}

@@ -2,24 +2,65 @@
 // app/newsletter/success/page.tsx - CORRIGIDO
 // ================================
 import React, { Suspense } from 'react';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
+import UnsubscribePageClient from './pageClient';
 import NewsletterSuccessContent from './pageClient';
 
-export default function NewsletterSuccessPage() {
-  return (
-    <Suspense fallback={<NewsletterSuccessPageLoading />}>
-      <NewsletterSuccessContent />
-    </Suspense>
-  );
+export async function generateMetadata() {
+  const language = await getServerLanguageStatic();
+
+  const content = {
+    pt: {
+      title: 'Confirmar inscrição - Opus Atlas | Newsletter',
+      description: 'Confirmar inscrição da newsletter do Open Atlas',
+    },
+    en: {
+      title: 'Subscribe - Opus Atlas | Newsletter',
+      description: 'Subscribe from the Open Atlas newsletter',
+    },
+  };
+
+  const t = content[language];
+
+  return {
+    title: t.title,
+    description: t.description,
+    robots: {
+      index: false,
+      follow: false,
+      googleBot: {
+        index: false,
+        follow: false,
+      },
+    },
+    openGraph: {
+      title: t.title,
+      description: t.description,
+      type: 'website',
+      locale: language === 'pt' ? 'pt_BR' : 'en_US',
+      siteName: 'Opus Atlas',
+    },
+    twitter: {
+      card: 'summary',
+      title: t.title,
+      description: t.description,
+    },
+  };
 }
 
-// Componente de loading específico
-function NewsletterSuccessPageLoading() {
+export default async function NewsletterSuccessPage() {
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'pages/newsletter',
+  ]);
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-theme-background">
-      <div className="classical-card p-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary mx-auto mb-4"></div>
-        <p className="text-theme-secondary">Carregando confirmação...</p>
-      </div>
-    </div>
+    <TranslationProvider language={language} translations={translations}>
+      <NewsletterSuccessContent />
+    </TranslationProvider>
   );
 }

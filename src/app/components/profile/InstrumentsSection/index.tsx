@@ -16,6 +16,7 @@ import {
 } from '@/app/actions/profile';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useTranslation } from '@/app/context/TranslationContext';
+import Checkbox from '../../Common/Checkbox';
 
 interface Instrument {
   id: string;
@@ -388,8 +389,8 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                         />
 
                         <label className="flex items-center space-x-2 text-sm">
-                          <input
-                            type="checkbox"
+                          <Checkbox
+                            label={t('instruments_primary')}
                             checked={instrument.isPrimary}
                             onChange={(e) =>
                               handleUpdateInstrument(instrument.id, {
@@ -398,12 +399,10 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                             }
                             className="rounded"
                           />
-                          <span>{t('instruments_primary')}</span>
                         </label>
 
                         <label className="flex items-center space-x-2 text-sm">
-                          <input
-                            type="checkbox"
+                          <Checkbox
                             checked={instrument.isLearning}
                             onChange={(e) =>
                               handleUpdateInstrument(instrument.id, {
@@ -411,8 +410,8 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                               })
                             }
                             className="rounded"
+                            label={t('instruments_learning')}
                           />
-                          <span>{t('instruments_learning')}</span>
                         </label>
                       </div>
                     ) : (
@@ -504,8 +503,8 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
 
               <div className="flex items-center space-x-6">
                 <label className="flex items-center space-x-2 text-sm">
-                  <input
-                    type="checkbox"
+                  <Checkbox
+                    label={t('instruments_primary_checkbox')}
                     checked={newInstrument.isPrimary}
                     onChange={(e) =>
                       setNewInstrument((prev) => ({
@@ -515,12 +514,11 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                     }
                     className="rounded"
                   />
-                  <span>{t('instruments_primary_checkbox')}</span>
                 </label>
 
                 <label className="flex items-center space-x-2 text-sm">
-                  <input
-                    type="checkbox"
+                  <Checkbox
+                    label={t('instruments_learning_checkbox')}
                     checked={newInstrument.isLearning}
                     onChange={(e) =>
                       setNewInstrument((prev) => ({
@@ -530,7 +528,6 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                     }
                     className="rounded"
                   />
-                  <span>{t('instruments_learning_checkbox')}</span>
                 </label>
               </div>
 
