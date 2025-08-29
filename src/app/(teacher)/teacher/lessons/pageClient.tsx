@@ -113,17 +113,31 @@ export default function TeacherLessonsPageClient({
     })),
   ];
 
-  // Filter lessons com ordenação cronológica melhorada
+  // Filter lessons com prioridade para aulas que precisam de atenção
   const filteredLessons = useMemo(() => {
-    let filtered = [...lessons];
+    const filtered = [...lessons];
     const now = new Date();
 
-    // Status filter
+    // Primeiro, identificar aulas que precisam de atenção (sempre mostradas)
+    const lessonsNeedingAttention = filtered.filter((lesson) => {
+      const lessonTime = new Date(lesson.scheduledAt);
+      return lessonTime < now && lesson.status === 'SCHEDULED';
+    });
+
+    // Resto das aulas para aplicar filtros
+    let regularLessons = filtered.filter((lesson) => {
+      const lessonTime = new Date(lesson.scheduledAt);
+      return !(lessonTime < now && lesson.status === 'SCHEDULED');
+    });
+
+    // Status filter (apenas para aulas regulares)
     if (statusFilter !== 'all') {
-      filtered = filtered.filter((lesson) => lesson.status === statusFilter);
+      regularLessons = regularLessons.filter(
+        (lesson) => lesson.status === statusFilter
+      );
     }
 
-    // Time filter
+    // Time filter (apenas para aulas regulares)
     if (timeFilter !== 'all') {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -133,7 +147,7 @@ export default function TeacherLessonsPageClient({
 
       const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
 
-      filtered = filtered.filter((lesson) => {
+      regularLessons = regularLessons.filter((lesson) => {
         const lessonDate = new Date(lesson.scheduledAt);
 
         switch (timeFilter) {
@@ -151,29 +165,42 @@ export default function TeacherLessonsPageClient({
       });
     }
 
-    // Student filter
+    // Student filter (aplicar para ambas as listas)
     if (selectedStudent !== 'all') {
-      filtered = filtered.filter(
+      regularLessons = regularLessons.filter(
         (lesson) => lesson.student.id === selectedStudent
       );
+      // Também filtrar aulas que precisam de atenção se for um estudante específico
+      const filteredAttentionLessons = lessonsNeedingAttention.filter(
+        (lesson) => lesson.student.id === selectedStudent
+      );
+      // Atualizar a lista de aulas que precisam de atenção
+      lessonsNeedingAttention.length = 0;
+      lessonsNeedingAttention.push(...filteredAttentionLessons);
     }
 
-    // Search filter
+    // Search filter (aplicar para ambas as listas)
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (lesson) =>
-          lesson.title.toLowerCase().includes(query) ||
-          lesson.student.name.toLowerCase().includes(query) ||
-          lesson.description?.toLowerCase().includes(query) ||
-          lesson.location?.toLowerCase().includes(query)
-      );
+      const searchFilter = (lesson: any) =>
+        lesson.title.toLowerCase().includes(query) ||
+        lesson.student.name.toLowerCase().includes(query) ||
+        lesson.description?.toLowerCase().includes(query) ||
+        lesson.location?.toLowerCase().includes(query);
+
+      regularLessons = regularLessons.filter(searchFilter);
+
+      // Também filtrar aulas que precisam de atenção
+      const filteredAttentionLessons =
+        lessonsNeedingAttention.filter(searchFilter);
+      lessonsNeedingAttention.length = 0;
+      lessonsNeedingAttention.push(...filteredAttentionLessons);
     }
 
-    // Ordenação cronológica: Mais próximas primeiro, mas separando passadas das futuras
+    // Ordenação cronológica para aulas regulares
     const now_timestamp = now.getTime();
 
-    return filtered.sort((a, b) => {
+    const sortedRegular = regularLessons.sort((a, b) => {
       const aTime = new Date(a.scheduledAt).getTime();
       const bTime = new Date(b.scheduledAt).getTime();
 
@@ -192,6 +219,16 @@ export default function TeacherLessonsPageClient({
         return bTime - aTime;
       }
     });
+
+    // Ordenar aulas que precisam de atenção por data (mais antigas primeiro)
+    const sortedAttention = lessonsNeedingAttention.sort((a, b) => {
+      return (
+        new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime()
+      );
+    });
+
+    // Retornar aulas que precisam de atenção primeiro, depois as regulares
+    return [...sortedAttention, ...sortedRegular];
   }, [lessons, statusFilter, timeFilter, selectedStudent, searchQuery]);
 
   // Função para verificar se aula passou e precisa de atenção
@@ -422,12 +459,19 @@ export default function TeacherLessonsPageClient({
                         <>
                           {/* BACKDROP PARA FECHAR AO CLICAR FORA */}
                           <div
-                            className="fixed inset-0 z-[9998]"
+                            className="fixed inset-0 z-[999998]"
                             onClick={() => setShowQuickActions(null)}
                           />
 
-                          {/* Menu com z-index máximo */}
-                          <div className="absolute right-0 top-10 bg-theme-elevated border border-theme-secondary rounded-lg shadow-xl py-2 z-[9999] min-w-48 isolate">
+                          {/* Menu com posicionamento próximo ao botão */}
+                          <div
+                            className="absolute right-0 top-10 bg-theme-elevated border border-theme-secondary rounded-lg shadow-xl py-2 min-w-48"
+                            style={{
+                              zIndex: 999999,
+                              maxHeight: '90vh',
+                              overflowY: 'auto',
+                            }}
+                          >
                             <Link
                               href={`/teacher/lessons/${lesson.id}`}
                               className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-theme-primary"
@@ -695,12 +739,26 @@ export default function TeacherLessonsPageClient({
 
                     {/* Quick Actions Menu */}
                     {showQuickActions === lesson.id && (
-                      <>
+                      <div
+                        className="fixed inset-0 z-[999999]"
+                        style={{ zIndex: 999999 }}
+                      >
                         <div
-                          className="fixed inset-0 z-[9998]"
+                          className="absolute inset-0"
                           onClick={() => setShowQuickActions(null)}
                         />
-                        <div className="absolute right-0 top-10 bg-theme-elevated border border-theme-secondary rounded-lg shadow-xl py-2 z-[9999] min-w-48">
+                        <div
+                          className="absolute bg-theme-elevated border border-theme-secondary rounded-lg shadow-xl py-2 min-w-48"
+                          style={{
+                            position: 'fixed',
+                            right: '4rem',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            zIndex: 1000000,
+                            maxHeight: '90vh',
+                            overflowY: 'auto',
+                          }}
+                        >
                           <Link
                             href={`/teacher/lessons/${lesson.id}`}
                             className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-theme-primary"
@@ -749,7 +807,7 @@ export default function TeacherLessonsPageClient({
                             </>
                           )}
                         </div>
-                      </>
+                      </div>
                     )}
                   </div>
                 </div>

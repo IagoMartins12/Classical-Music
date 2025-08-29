@@ -8,7 +8,6 @@ import {
 } from '@/app/libs/orphanFiles/orphanFileScanner';
 import {
   CloudinaryOrphanScanner,
-  CloudinaryFileCategory,
 } from '@/app/libs/orphanFiles/cloudinaryOrphanScanner';
 
 export async function GET(request: NextRequest) {

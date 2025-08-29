@@ -8,8 +8,8 @@ import {
   ComposerPreferences,
   WorksPreferences,
 } from '@/app/requests/instruments-history-translated';
-import { getServerLanguage } from '@/app/utils/translations/serverTranslation';
 import { InstrumentsPageClient } from './pageClient';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 export const dynamic = 'force-dynamic';
 
 // 🎼 CONFIGURAÇÃO DE COMPOSITORES DESTAQUE
@@ -221,7 +221,7 @@ const worksPreferences: WorksPreferences = {
 // 🚀 IMPLEMENTAÇÃO NO SERVIDOR
 export async function InstrumentsPageServer() {
   try {
-    const language = await getServerLanguage();
+    const language = await getServerLanguageStatic();
 
     const [instrumentsWithWorks, instrumentsStats, topComposersByInstrument] =
       await Promise.all([

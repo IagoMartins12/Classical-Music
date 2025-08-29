@@ -3,8 +3,6 @@
 
 import { useState } from 'react';
 import {
-  FiPlay,
-  FiPause,
   FiMaximize2,
   FiMinimize2,
   FiDownload,
@@ -12,7 +10,6 @@ import {
   FiEye,
   FiUser,
   FiCalendar,
-  FiFileText,
   FiX,
   FiMusic,
   FiStar,
@@ -104,7 +101,6 @@ export default function LearnedVideoViewer({
   onUpdateNotes,
 }: LearnedVideoViewerProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [editingNotes, setEditingNotes] = useState(false);
   const [notes, setNotes] = useState(learned.notes || '');
@@ -329,8 +325,6 @@ export default function LearnedVideoViewer({
                 className={`w-full ${
                   isFullscreen ? 'max-h-screen' : 'max-h-96'
                 } bg-black`}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
               >
                 Seu navegador não suporta reprodução de vídeo.
               </video>

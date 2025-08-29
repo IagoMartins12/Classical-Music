@@ -2,12 +2,12 @@
 import { unstable_cache } from 'next/cache';
 import { getWorks, getFilterOptions } from '@/app/requests/work-details';
 import WorksClient from '@/app/(main)/works/pageClient';
-import { getServerLanguage } from '@/app/utils/translations/serverTranslation';
 import {
   translateInstruments,
   translateGenres,
 } from '@/app/utils/translations/instrumentsGenresTranslation';
 import { translateEpochStatic } from '@/app/utils/translations/epochTranslationComposer';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 interface WorksServerProps {
   searchParams: {
@@ -121,7 +121,7 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
     const page = parseInt(searchParams.page || '1');
 
     // Detectar idioma no servidor
-    const language = await getServerLanguage();
+    const language = await getServerLanguageStatic();
 
     // 🚀 ESTRATÉGIA 1: Detectar tipo de query
     const hasFilters = hasComplexFilters(searchParams);

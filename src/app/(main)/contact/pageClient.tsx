@@ -31,7 +31,7 @@ import AnimatedMusicalNotes from '@/app/components/AnimatedMusicalNotes';
 import { useContactForm } from '@/app/hooks/useContactForm';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface ContactOption {
   icon: React.ComponentType<{ className?: string }>;

@@ -25,6 +25,7 @@ import {
   FiEdit,
   FiVideo,
   FiSave,
+  FiAlertTriangle,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -157,53 +158,85 @@ export default function TeacherAssignmentsPageClient({
     { value: 'progress', label: t('sort_progress') },
   ];
 
-  // Filter and sort assignments
+  // Filter and sort assignments com prioridade para tarefas que precisam de atenção
   const filteredAndSortedAssignments = useMemo(() => {
-    let filtered = [...assignments];
+    const filtered = [...assignments];
     const now = new Date();
     const today = now.toDateString();
 
-    // Apply search
+    // Primeiro, identificar tarefas que precisam de atenção (sempre mostradas)
+    const assignmentsNeedingAttention = filtered.filter((assignment) => {
+      if (!assignment.dueDate || assignment.isCompleted) return false;
+      const dueDate = new Date(assignment.dueDate);
+      return dueDate < now && !assignment.isCompleted;
+    });
+
+    console.log('assignmentsNeedingAttention', assignmentsNeedingAttention);
+    // Resto das tarefas para aplicar filtros
+    let regularAssignments = filtered.filter((assignment) => {
+      if (!assignment.dueDate || assignment.isCompleted) return true;
+      const dueDate = new Date(assignment.dueDate);
+      return !(dueDate < now && !assignment.isCompleted);
+    });
+
+    // Apply search (para ambas as listas)
     if (searchTerm) {
-      filtered = filtered.filter(
-        (assignment) =>
-          assignment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          assignment.description
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          assignment.student.name
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
-      );
+      const searchFilter = (assignment: TeacherAssignment) =>
+        assignment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        assignment.description
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        assignment.student.name
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+
+      regularAssignments = regularAssignments.filter(searchFilter);
+
+      // Também filtrar tarefas que precisam de atenção
+      const filteredAttentionAssignments =
+        assignmentsNeedingAttention.filter(searchFilter);
+      assignmentsNeedingAttention.length = 0;
+      assignmentsNeedingAttention.push(...filteredAttentionAssignments);
     }
 
-    // Apply student filter
+    // Apply student filter (para ambas as listas)
     if (selectedStudent !== 'all') {
-      filtered = filtered.filter(
+      regularAssignments = regularAssignments.filter(
         (assignment) => assignment.student.id === selectedStudent
       );
+
+      // Também filtrar tarefas que precisam de atenção se for um estudante específico
+      const filteredAttentionAssignments = assignmentsNeedingAttention.filter(
+        (assignment) => assignment.student.id === selectedStudent
+      );
+      assignmentsNeedingAttention.length = 0;
+      assignmentsNeedingAttention.push(...filteredAttentionAssignments);
     }
 
-    // Apply status filter
+    // Apply status filter (apenas para tarefas regulares)
     switch (filter) {
       case 'pending':
-        filtered = filtered.filter(
+        regularAssignments = regularAssignments.filter(
           (assignment) => assignment.status === 'PENDING'
         );
         break;
       case 'in_progress':
-        filtered = filtered.filter(
+        regularAssignments = regularAssignments.filter(
           (assignment) => assignment.status === 'IN_PROGRESS'
         );
         break;
       case 'completed':
-        filtered = filtered.filter((assignment) => assignment.isCompleted);
+        regularAssignments = regularAssignments.filter(
+          (assignment) => assignment.isCompleted
+        );
         break;
       case 'overdue':
-        filtered = filtered.filter((assignment) => assignment.isOverdue);
+        regularAssignments = regularAssignments.filter(
+          (assignment) => assignment.isOverdue
+        );
         break;
       case 'today':
-        filtered = filtered.filter(
+        regularAssignments = regularAssignments.filter(
           (assignment) =>
             assignment.dueDate &&
             new Date(assignment.dueDate).toDateString() === today
@@ -213,8 +246,8 @@ export default function TeacherAssignmentsPageClient({
         break;
     }
 
-    // Apply sorting
-    filtered.sort((a, b) => {
+    // Apply sorting para tarefas regulares
+    const sortedRegular = regularAssignments.sort((a, b) => {
       switch (sortBy) {
         case 'due_date':
           if (!a.dueDate && !b.dueDate) return 0;
@@ -240,13 +273,42 @@ export default function TeacherAssignmentsPageClient({
       }
     });
 
-    return filtered;
+    // Ordenar tarefas que precisam de atenção por prazo (mais atrasadas primeiro)
+    const sortedAttention = assignmentsNeedingAttention.sort((a, b) => {
+      if (!a.dueDate && !b.dueDate) return 0;
+      if (!a.dueDate) return 1;
+      if (!b.dueDate) return -1;
+      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+    });
+
+    // Retornar tarefas que precisam de atenção primeiro, depois as regulares
+    return [...sortedAttention, ...sortedRegular];
   }, [assignments, searchTerm, filter, selectedStudent, sortBy]);
 
   // 🆕 CHECK IF ASSIGNMENT HAS WORK SCORES
   const hasWorkScores = useCallback((assignment: TeacherAssignment) => {
     return assignment.workScoreIds && assignment.workScoreIds.length > 0;
   }, []);
+
+  // 🆕 Função para verificar se tarefa precisa de atenção
+  const getAssignmentStatusInfo = useCallback(
+    (assignment: TeacherAssignment) => {
+      const now = new Date();
+      const dueDate = assignment.dueDate ? new Date(assignment.dueDate) : null;
+      const hasPassedDueDate = dueDate ? dueDate < now : false;
+      const needsAttention = hasPassedDueDate && !assignment.isCompleted;
+
+      return {
+        hasPassedDueDate,
+        needsAttention,
+        isPastDue: hasPassedDueDate,
+        isDueToday: dueDate
+          ? dueDate.toDateString() === now.toDateString()
+          : false,
+      };
+    },
+    []
+  );
 
   // Helper functions
   const formatDueDate = (dueDate: Date | string) => {
@@ -326,6 +388,13 @@ export default function TeacherAssignmentsPageClient({
         const success = await updateAssignment(assignmentId, updates);
         if (success) {
           toast.success('Tarefa atualizada com sucesso!');
+
+          // 🆕 Se esta é a tarefa selecionada no modal, atualize-a também
+          if (selectedAssignment && selectedAssignment.id === assignmentId) {
+            setSelectedAssignment((prev) =>
+              prev ? { ...prev, ...updates } : null
+            );
+          }
         }
       } catch {
         toast.error('Erro ao atualizar tarefa');
@@ -333,22 +402,32 @@ export default function TeacherAssignmentsPageClient({
         setActionLoading(null);
       }
     },
-    [updateAssignment]
+    [updateAssignment, selectedAssignment, toast]
   );
 
   // 🆕 RENDER ASSIGNMENT CARD COMPONENT
   const renderAssignmentCard = useCallback(
     (assignment: TeacherAssignment, index: number) => {
       const hasScores = hasWorkScores(assignment);
+      const statusInfo = getAssignmentStatusInfo(assignment);
 
       return (
         <AnimatedCard
           key={assignment.id}
           hover="lift"
-          className="classical-card"
+          className={`classical-card ${
+            statusInfo.needsAttention ? ' border !border-red-400' : ''
+          }`}
           delay={index * 0.05}
         >
-          <div className="p-6">
+          {/* Indicativo de atenção necessária */}
+          {statusInfo.needsAttention && (
+            <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
+              <FiAlertTriangle className="w-3 h-3 text-red-600" />
+            </div>
+          )}
+
+          <div className="p-6 relative">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-start space-x-4">
@@ -570,6 +649,16 @@ export default function TeacherAssignmentsPageClient({
                         </div>
                       )}
                     </div>
+
+                    {/* Alerta para tarefas que precisam de atenção */}
+                    {statusInfo.needsAttention && (
+                      <div className="flex items-center justify-center space-x-1 mt-3 text-accent-red">
+                        <FiAlertTriangle className="w-4 h-4 text-red-600" />
+                        <span className="font-semibold text-red-600">
+                          {t('needs_status_update')}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -580,12 +669,11 @@ export default function TeacherAssignmentsPageClient({
     },
     [
       hasWorkScores,
+      getAssignmentStatusInfo,
       getStatusColor,
       getStatusText,
       getStatusIcon,
       formatDueDate,
-      updateAssignmentStatus,
-      actionLoading,
       t,
     ]
   );
@@ -593,14 +681,25 @@ export default function TeacherAssignmentsPageClient({
   // 🆕 RENDER ASSIGNMENT LIST ITEM COMPONENT
   const renderAssignmentListItem = useCallback(
     (assignment: TeacherAssignment, index: number) => {
+      const statusInfo = getAssignmentStatusInfo(assignment);
+
       return (
         <AnimatedCard
           key={assignment.id}
           hover="lift"
-          className="classical-card"
+          className={`classical-card ${
+            statusInfo.needsAttention ? ' border !border-red-400' : ''
+          }`}
           delay={index * 0.05}
         >
-          <div className="p-6">
+          {/* Indicativo de atenção necessária */}
+          {statusInfo.needsAttention && (
+            <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
+              <FiAlertTriangle className="w-3 h-3 text-red-600" />
+            </div>
+          )}
+
+          <div className="p-6 relative">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-start space-x-4">
@@ -776,6 +875,16 @@ export default function TeacherAssignmentsPageClient({
                         </div>
                       )}
                     </div>
+
+                    {/* Alerta para tarefas que precisam de atenção */}
+                    {statusInfo.needsAttention && (
+                      <div className="flex items-center justify-center space-x-1 mt-3 text-accent-red">
+                        <FiAlertTriangle className="w-4 h-4 text-red-600" />
+                        <span className="font-semibold text-red-600">
+                          {t('needs_status_update')}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -806,11 +915,11 @@ export default function TeacherAssignmentsPageClient({
       );
     },
     [
-      hasWorkScores,
+      getAssignmentStatusInfo,
       getStatusColor,
       getStatusText,
-      updateAssignmentStatus,
-      actionLoading,
+      getStatusIcon,
+      formatDueDate,
       t,
     ]
   );
@@ -879,91 +988,6 @@ export default function TeacherAssignmentsPageClient({
             </p>
           </div>
         </AnimatedItem>
-
-        {/* Stats Cards */}
-        {/* <AnimatedItem direction="up" springType="gentle">
-          <SequentialGrid
-            cols={5}
-            gap={6}
-            delayBetweenItems={0.1}
-            className="mb-8"
-          >
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiClipboard className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.total}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_total')}
-              </div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiClock className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.pending}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_pending')}
-              </div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiPlay className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.inProgress}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_in_progress')}
-              </div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCheckCircle className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.completed}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_completed')}
-              </div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiAlertCircle className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.overdue}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_overdue')}
-              </div>
-            </AnimatedCard>
-          </SequentialGrid>
-        </AnimatedItem> */}
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">

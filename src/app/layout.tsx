@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { ClientThemeWrapper } from './components/ClientThemeWrapper';
 import AuthProvider from './providers/AuthProvider';
-import { getServerLanguage } from './utils/translations/serverTranslation';
+import { getServerLanguageStatic } from './utils/translations/serverTranslations';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -13,7 +13,7 @@ const inter = Inter({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const lang = await getServerLanguage();
+  const lang = await getServerLanguageStatic();
 
   const content = {
     pt: {

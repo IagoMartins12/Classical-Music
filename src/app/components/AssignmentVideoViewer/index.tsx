@@ -3,8 +3,6 @@
 
 import { useState } from 'react';
 import {
-  FiPlay,
-  FiPause,
   FiMaximize2,
   FiMinimize2,
   FiDownload,
@@ -74,11 +72,9 @@ export default function AssignmentVideoViewer({
   assignment,
   isOpen,
   onClose,
-  userRole,
   canDownload = true,
 }: AssignmentVideoViewerProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
   const videoSubmission = assignment.submissions?.videoSubmission;
@@ -205,8 +201,6 @@ export default function AssignmentVideoViewer({
               className={`w-full ${
                 isFullscreen ? 'max-h-screen' : 'max-h-96'
               } bg-black`}
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
             >
               Seu navegador não suporta reprodução de vídeo.
             </video>

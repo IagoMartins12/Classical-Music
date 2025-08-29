@@ -163,11 +163,12 @@ export default function CreateAssignmentPageClient({
     if (formData.dueDate.trim()) {
       const dueDate = new Date(formData.dueDate);
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // Começar do início do dia
 
-      if (isNaN(dueDate.getTime())) {
-        newErrors.dueDate = t('validation_invalid_due_date');
-      } else if (dueDate < today) {
+      // normalizar para só pegar a parte de data
+      const dueDateStr = dueDate.toISOString().slice(0, 10);
+      const todayStr = today.toISOString().slice(0, 10);
+
+      if (dueDateStr < todayStr) {
         newErrors.dueDate = t('validation_due_date_past');
       }
     }

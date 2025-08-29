@@ -4,7 +4,6 @@ import path from 'path';
 import prisma from '@/app/libs/prismadb';
 import {
   CloudinaryOrphanScanner,
-  CloudinaryOrphanFile,
   CloudinaryOrphanScanResult,
 } from './cloudinaryOrphanScanner';
 

@@ -23,7 +23,6 @@ import { GiMusicalNotes, GiGrandPiano, GiScrollQuill } from 'react-icons/gi';
 import { LuComputer } from 'react-icons/lu';
 import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';
 import Link from 'next/link';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import {
   PageContainer,
   AnimatedContainer,
@@ -32,6 +31,7 @@ import {
   SequentialGrid,
   FloatingElement,
 } from '../../components/animation/AnimatedComponents';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface SupportCategory {
   id: string;

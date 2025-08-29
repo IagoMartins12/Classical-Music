@@ -32,7 +32,7 @@ import {
   FloatingElement,
 } from '../../components/animation/AnimatedComponents';
 import Input from '@/app/components/Common/Inputs';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface FAQItem {
   id: string;

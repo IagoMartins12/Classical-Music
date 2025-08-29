@@ -10,6 +10,7 @@ import {
   FiCheck,
   FiPlus,
   FiInfo,
+  FiLock,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 
@@ -27,6 +28,7 @@ interface ScoreGroup {
   }>;
   source: 'IMSLP' | 'CUSTOM' | 'UPLOAD';
   isUserUploaded: boolean;
+  uploadedBy?: string;
 }
 
 interface GroupSuggestion {
@@ -34,6 +36,7 @@ interface GroupSuggestion {
   suggestedIndex: number;
   reason: string;
   confidence: 'high' | 'medium' | 'low';
+  source: 'IMSLP' | 'USER_UPLOADED';
 }
 
 interface GroupingSuggestionsProps {
@@ -51,14 +54,12 @@ export default function GroupingSuggestions({
   currentGroupTitle,
   visible,
 }: GroupingSuggestionsProps) {
-  const [groups, setGroups] = useState<ScoreGroup[]>([]);
+  const [imslpGroups, setImslpGroups] = useState<ScoreGroup[]>([]);
   const [userGroups, setUserGroups] = useState<ScoreGroup[]>([]);
   const [suggestions, setSuggestions] = useState<GroupSuggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasExistingScores, setHasExistingScores] = useState(false);
-  // const [selectedSuggestion, setSelectedSuggestion] =
-  //   useState<GroupSuggestion | null>(null);
 
   // Carregar grupos existentes quando workId muda
   useEffect(() => {
@@ -83,18 +84,18 @@ export default function GroupingSuggestions({
       const data = await response.json();
 
       if (data.success) {
-        setGroups(data.groups || []);
-        setUserGroups(data.userGroups || []);
+        setImslpGroups(data.groups || []); // Grupos IMSLP (apenas referência)
+        setUserGroups(data.userGroups || []); // Grupos do usuário (editáveis)
         setSuggestions(data.suggestions || []);
         setHasExistingScores(data.hasExistingScores || false);
 
-        // Auto-selecionar primeira sugestão de alta confiança
+        // Auto-selecionar primeira sugestão de alta confiança para USER_UPLOADED
         const highConfidenceSuggestion = data.suggestions?.find(
-          (s: GroupSuggestion) => s.confidence === 'high'
+          (s: GroupSuggestion) =>
+            s.confidence === 'high' && s.source === 'USER_UPLOADED'
         );
 
         if (highConfidenceSuggestion && !currentGroupTitle) {
-          // setSelectedSuggestion(highConfidenceSuggestion);
           onGroupSelect(
             highConfidenceSuggestion.suggestedIndex,
             highConfidenceSuggestion.suggestedTitle
@@ -102,7 +103,7 @@ export default function GroupingSuggestions({
         }
 
         console.log(`✅ [GROUPING] Grupos carregados:`, {
-          total: data.groups?.length || 0,
+          imslp: data.groups?.length || 0,
           user: data.userGroups?.length || 0,
           suggestions: data.suggestions?.length || 0,
         });
@@ -115,49 +116,13 @@ export default function GroupingSuggestions({
     }
   };
 
-  const handleGroupSelect = (group: ScoreGroup) => {
+  const handleUserGroupSelect = (group: ScoreGroup) => {
     console.log(
-      `🎯 [GROUPING] Selecionando grupo existente:`,
+      `🎯 [GROUPING] Selecionando grupo do usuário:`,
       group.groupTitle
     );
     onGroupSelect(group.groupIndex, group.groupTitle);
-    // setSelectedSuggestion(null);
   };
-
-  // const handleSuggestionSelect = (suggestion: GroupSuggestion) => {
-  //   console.log(
-  //     `💡 [GROUPING] Selecionando sugestão:`,
-  //     suggestion.suggestedTitle
-  //   );
-  //   setSelectedSuggestion(suggestion);
-  //   onGroupSelect(suggestion.suggestedIndex, suggestion.suggestedTitle);
-  // };
-
-  // const getConfidenceColor = (confidence: string) => {
-  //   switch (confidence) {
-  //     case 'high':
-  //       return 'from-accent-green to-accent-blue';
-  //     case 'medium':
-  //       return 'from-accent-blue to-accent-purple';
-  //     case 'low':
-  //       return 'from-accent-purple to-accent-red';
-  //     default:
-  //       return 'from-theme-primary to-theme-secondary';
-  //   }
-  // };
-
-  // const getConfidenceIcon = (confidence: string) => {
-  //   switch (confidence) {
-  //     case 'high':
-  //       return FiTarget;
-  //     case 'medium':
-  //       return FiTrendingUp;
-  //     case 'low':
-  //       return FiInfo;
-  //     default:
-  //       return FiInfo;
-  //   }
-  // };
 
   const getSourceIcon = (source: string) => {
     switch (source) {
@@ -202,13 +167,13 @@ export default function GroupingSuggestions({
     <div className="space-y-4">
       {hasExistingScores && (
         <>
-          {/* Grupos do Usuário */}
+          {/* Grupos do Usuário (EDITÁVEIS) */}
           {userGroups.length > 0 && (
             <div>
               <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-                <FiUsers className="w-4 h-4 text-accent-purple" />
-                <span>Seus Grupos Existentes para esta partitura</span>
-                <span className="px-2 py-0.5 bg-accent-purple/20 text-accent-purple rounded-full text-xs">
+                <FiUsers className="w-4 h-4 text-accent-green" />
+                <span>Seus Grupos Existentes</span>
+                <span className="px-2 py-0.5 bg-accent-green/20 text-accent-green rounded-full text-xs">
                   {userGroups.length}
                 </span>
               </h4>
@@ -223,13 +188,13 @@ export default function GroupingSuggestions({
                   return (
                     <button
                       key={`${group.groupIndex}-${group.groupTitle}`}
-                      onClick={() => handleGroupSelect(group)}
+                      onClick={() => handleUserGroupSelect(group)}
                       className={`
                         p-3 rounded-lg border-2 transition-all duration-200 text-left
                         ${
                           isSelected
-                            ? 'border-accent-purple bg-accent-purple/10 text-accent-purple'
-                            : 'border-theme-secondary bg-theme-elevated hover:border-accent-purple hover:bg-accent-purple/5'
+                            ? 'border-accent-green bg-accent-green/10 text-accent-green'
+                            : 'border-theme-secondary bg-theme-elevated hover:border-accent-green hover:bg-accent-green/5'
                         }
                       `}
                     >
@@ -240,7 +205,7 @@ export default function GroupingSuggestions({
                             w-8 h-8 rounded-lg flex items-center justify-center
                             ${
                               isSelected
-                                ? 'bg-accent-purple text-theme-primary'
+                                ? 'bg-accent-green text-theme-primary'
                                 : 'bg-theme-secondary text-theme-tertiary'
                             }
                           `}
@@ -254,13 +219,13 @@ export default function GroupingSuggestions({
                             <p className="text-xs text-theme-tertiary">
                               {group.scoresCount} partitura
                               {group.scoresCount !== 1 ? 's' : ''} • Índice{' '}
-                              {group.groupIndex}
+                              {group.groupIndex} • Editável
                             </p>
                           </div>
                         </div>
 
                         {isSelected && (
-                          <FiCheck className="w-5 h-5 text-accent-purple" />
+                          <FiCheck className="w-5 h-5 text-accent-green" />
                         )}
                       </div>
                     </button>
@@ -270,159 +235,69 @@ export default function GroupingSuggestions({
             </div>
           )}
 
-          {/* Outros Grupos (IMSLP/Geral) */}
-          {groups.filter((g) => !g.isUserUploaded).length > 0 && (
+          {/* Grupos IMSLP (APENAS REFERÊNCIA) */}
+          {imslpGroups.length > 0 && (
             <div>
               <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
                 <GiMusicalNotes className="w-4 h-4 text-accent-blue" />
-                <span>Grupos Disponíveis (IMSLP)</span>
+                <span>Grupos Existentes (IMSLP)</span>
+                <span className="px-2 py-0.5 bg-theme-tertiary/20 text-theme-tertiary rounded-full text-xs">
+                  Apenas referência
+                </span>
               </h4>
 
               <div className="grid grid-cols-1 gap-2 mb-4">
-                {groups
-                  .filter((g) => !g.isUserUploaded)
-                  .slice(0, 3)
-                  .map((group) => {
-                    const Icon = getSourceIcon(group.source);
-                    const isSelected =
-                      parseInt(currentGroupIndex) === group.groupIndex &&
-                      currentGroupTitle === group.groupTitle;
+                {imslpGroups.slice(0, 3).map((group) => {
+                  const Icon = getSourceIcon(group.source);
 
-                    return (
-                      <button
-                        key={`${group.groupIndex}-${group.groupTitle}`}
-                        onClick={() => handleGroupSelect(group)}
-                        className={`
-                        p-3 rounded-lg border-2 transition-all duration-200 text-left
-                        ${
-                          isSelected
-                            ? 'border-accent-blue bg-accent-blue/10 text-accent-blue'
-                            : 'border-theme-secondary bg-theme-elevated hover:border-accent-blue hover:bg-accent-blue/5'
-                        }
-                      `}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div
-                              className={`
-                            w-8 h-8 rounded-lg flex items-center justify-center
-                            ${
-                              isSelected
-                                ? 'bg-accent-blue text-theme-primary'
-                                : 'bg-theme-secondary text-theme-tertiary'
-                            }
-                          `}
-                            >
-                              <Icon className="w-4 h-4" />
-                            </div>
-                            <div>
-                              <h5 className="font-medium text-sm">
-                                {group.groupTitle}
-                              </h5>
-                              <p className="text-xs text-theme-tertiary">
-                                {group.scoresCount} partitura
-                                {group.scoresCount !== 1 ? 's' : ''} • Índice{' '}
-                                {group.groupIndex}
-                              </p>
-                            </div>
+                  return (
+                    <div
+                      key={`${group.groupIndex}-${group.groupTitle}`}
+                      className="p-3 rounded-lg border-2 border-theme-secondary bg-theme-elevated opacity-75 cursor-not-allowed"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-theme-secondary text-theme-tertiary">
+                            <Icon className="w-4 h-4" />
                           </div>
-
-                          {isSelected && (
-                            <FiCheck className="w-5 h-5 text-accent-blue" />
-                          )}
+                          <div>
+                            <h5 className="font-medium text-sm text-theme-tertiary">
+                              {group.groupTitle}
+                            </h5>
+                            <p className="text-xs text-theme-tertiary">
+                              {group.scoresCount} partitura
+                              {group.scoresCount !== 1 ? 's' : ''} • Índice{' '}
+                              {group.groupIndex}
+                            </p>
+                          </div>
                         </div>
-                      </button>
-                    );
-                  })}
+
+                        <FiLock className="w-4 h-4 text-theme-tertiary" />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                <div className="flex items-start space-x-2">
+                  <FiInfo className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="text-xs text-blue-800">
+                    <p className="font-medium mb-1">
+                      💡 Grupos IMSLP são apenas referência
+                    </p>
+                    <p>
+                      Você não pode adicionar suas partituras aos grupos do
+                      IMSLP. Suas partituras ficam organizadas em grupos
+                      separados.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           )}
         </>
       )}
-
-      {/* { Sugestões Inteligentes */}
-      {/* {suggestions.length > 0 && (
-        <div>
-          <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-            <FiTarget className="w-4 h-4 text-accent-green" />
-            <span>Sugestões Inteligentes</span>
-          </h4>
-
-          <div className="grid grid-cols-1 gap-2">
-            {suggestions.map((suggestion, index) => {
-              const ConfidenceIcon = getConfidenceIcon(suggestion.confidence);
-              const isSelected =
-                selectedSuggestion?.suggestedTitle ===
-                suggestion.suggestedTitle;
-
-              return (
-                <button
-                  key={index}
-                  onClick={() => handleSuggestionSelect(suggestion)}
-                  className={`
-                    p-3 rounded-lg border-2 transition-all duration-200 text-left
-                    ${
-                      isSelected
-                        ? 'border-accent-green bg-accent-green/10 text-accent-green'
-                        : 'border-theme-secondary bg-theme-elevated hover:border-accent-green hover:bg-accent-green/5'
-                    }
-                  `}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div
-                        className={`
-                        w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br ${getConfidenceColor(
-                          suggestion.confidence
-                        )}
-                        ${isSelected ? 'shadow-theme-glow' : ''}
-                      `}
-                      >
-                        <ConfidenceIcon className="w-4 h-4 text-theme-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <h5 className="font-medium text-sm">
-                          {suggestion.suggestedTitle}
-                        </h5>
-                        <p className="text-xs text-theme-tertiary">
-                          {suggestion.reason} • Índice{' '}
-                          {suggestion.suggestedIndex}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <span
-                        className={`
-                        px-2 py-1 rounded-full text-xs font-medium
-                        ${
-                          suggestion.confidence === 'high'
-                            ? 'bg-accent-green/20 text-accent-green'
-                            : suggestion.confidence === 'medium'
-                            ? 'bg-accent-blue/20 text-accent-blue'
-                            : 'bg-accent-purple/20 text-accent-purple'
-                        }
-                      `}
-                      >
-                        {suggestion.confidence === 'high'
-                          ? 'Alta'
-                          : suggestion.confidence === 'medium'
-                          ? 'Média'
-                          : 'Baixa'}
-                        % confiança
-                      </span>
-
-                      {isSelected && (
-                        <FiCheck className="w-5 h-5 text-accent-green" />
-                      )}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )} */}
 
       {/* Opção para Novo Grupo */}
       <div>
@@ -437,11 +312,12 @@ export default function GroupingSuggestions({
             const nextIndex =
               Math.max(
                 0,
-                ...groups.map((g) => g.groupIndex),
-                ...suggestions.map((s) => s.suggestedIndex)
+                ...userGroups.map((g) => g.groupIndex),
+                ...suggestions
+                  .filter((s) => s.source === 'USER_UPLOADED')
+                  .map((s) => s.suggestedIndex)
               ) + 1;
             onGroupSelect(nextIndex, '');
-            // setSelectedSuggestion(null);
           }}
           className="w-full p-3 rounded-lg border-2 border-dashed border-brand-primary text-brand-primary hover:bg-brand-primary/5 transition-all duration-200 text-left"
         >
@@ -461,24 +337,31 @@ export default function GroupingSuggestions({
         </button>
       </div>
 
-      {/* Info Helper */}
-      {hasExistingScores && (
-        <div className="bg-theme-secondary/10 rounded-lg p-3 border border-theme-primary/20">
-          <div className="flex items-start space-x-2">
-            <FiInfo className="w-4 h-4 text-theme-tertiary mt-0.5 flex-shrink-0" />
-            <div className="text-xs text-theme-tertiary">
-              <p className="font-medium mb-1">
-                💡 Como funciona o agrupamento:
+      {/* Info Helper Atualizado */}
+      <div className="bg-theme-secondary/10 rounded-lg p-3 border border-theme-primary/20">
+        <div className="flex items-start space-x-2">
+          <FiInfo className="w-4 h-4 text-theme-tertiary mt-0.5 flex-shrink-0" />
+          <div className="text-xs text-theme-tertiary">
+            <p className="font-medium mb-1">
+              💡 Como funciona o novo agrupamento:
+            </p>
+            <div className="space-y-1">
+              <p>
+                • <strong>Grupos IMSLP:</strong> Apenas referência, você não
+                pode editá-los
               </p>
               <p>
-                Partituras do mesmo grupo ficam organizadas juntas, seguindo o
-                padrão do IMSLP. Por exemplo: &quot;Partitura Completa&quot;
-                (índice 0) e &quot;Partes Individuais&quot; (índice 1).
+                • <strong>Seus grupos:</strong> Apenas você pode adicionar
+                partituras aos seus grupos
+              </p>
+              <p>
+                • <strong>Outros usuários:</strong> Cada usuário tem seus
+                próprios grupos
               </p>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

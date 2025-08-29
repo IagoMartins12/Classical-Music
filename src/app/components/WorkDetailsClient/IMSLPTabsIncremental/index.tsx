@@ -1,4 +1,4 @@
-// components/IMSLPTabsIncremental.tsx - REFATORADO COM BADGES E AUTO SCROLL E TRADUÇÕES
+// components/IMSLPTabsIncremental.tsx - VERSÃO COMPLETA CORRIGIDA
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
@@ -25,8 +25,11 @@ import {
 } from '../../animation/AnimatedComponents';
 import { useScoreFavorites } from '@/app/hooks/useScoreFavorites';
 import ScorePreview from '../ScorePreview';
-import { getTabStatistics, TabStatistics } from '@/app/utils/type-utils';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import {
+  getCombinedTabStatistics,
+  TabStatistics,
+} from '@/app/utils/type-utils';
 
 // ✅ INTERFACE UNIFICADA SIMPLIFICADA
 interface MixedScoreData {
@@ -203,7 +206,8 @@ const ScoreCardWithBadge = React.memo(
 );
 ScoreCardWithBadge.displayName = 'ScoreCardWithBadge';
 
-// ✅ PROCESSAMENTO DE DADOS MEMOIZADO
+// ✅ PROCESSAMENTO DE DADOS MEMOIZADO - VERSÃO CORRIGIDA COMPLETA
+// Hook useProcessedData CORRIGIDO - COM DEDUPLICAÇÃO E ORDENAÇÃO
 const useProcessedData = (imslpData: any, workScores: WorkScore[]) => {
   return useMemo(() => {
     const processed = {
@@ -215,7 +219,8 @@ const useProcessedData = (imslpData: any, workScores: WorkScore[]) => {
       sources: [] as MixedScoreGroup[],
     };
 
-    const counts = {
+    // ✅ CONTAR IMSLP E WORKSCORE SEPARADAMENTE
+    const imslpCounts = {
       scores: 0,
       parts: 0,
       arrangements: 0,
@@ -224,70 +229,36 @@ const useProcessedData = (imslpData: any, workScores: WorkScore[]) => {
       sources: 0,
     };
 
-    // ✅ 1. Processar dados IMSLP
-    if (imslpData) {
-      (Object.entries(imslpData.scoresByType) as [string, any[]][]).forEach(
-        ([type, groups]) => {
-          if (groups && groups.length > 0) {
-            const processedGroups = groups.map((group: any) => ({
-              groupIndex: group.groupIndex,
-              groupTitle: `${group.groupTitle || 'IMSLP'} (IMSLP)`,
-              source: 'IMSLP' as const,
-              scores: group.scores.map(
-                (score: any): MixedScoreData => ({
-                  id: score.id,
-                  title: score.title,
-                  downloadUrl: score.downloadUrl,
-                  fileSize: score.fileSize,
-                  pageCount: score.pageCount,
-                  thumbnailUrl: score.thumbnailUrl,
-                  type: score.type,
-                  source: 'IMSLP',
-                  editor: score.editor,
-                  publisher: score.publisher,
-                  copyright: score.copyright,
-                  uploadDate: score.uploadDate,
-                  uploader: score.uploader,
-                  notes: score.notes,
-                  rating: score.rating,
-                  ratingsCount: score.ratingsCount,
-                  downloadCount: score.downloadCount,
-                  groupIndex: score.groupIndex,
-                })
-              ),
-            }));
+    const workScoreCounts = {
+      scores: 0,
+      parts: 0,
+      arrangements: 0,
+      librettos: 0,
+      others: 0,
+      sources: 0,
+    };
 
-            // Mapear para tabs corretas
-            const targetTab = type as keyof typeof processed;
-            if (targetTab in processed) {
-              processed[targetTab].push(...processedGroups);
-              counts[targetTab] += processedGroups.reduce(
-                (sum: number, g: MixedScoreGroup) => sum + g.scores.length,
-                0
-              );
-            }
-          }
-        }
-      );
-    }
+    // 🔄 PRIMEIRO: Processar WorkScores (UPLOAD/CUSTOM) para ter prioridade
+    console.log('🔄 [DEDUP] ETAPA 1: Processando WorkScores primeiro...');
 
-    // ✅ 2. Processar WorkScores e integrar nas tabs apropriadas
+    const deduplicationMap = new Map<string, string>(); // sourceId -> fonte que deve ter prioridade
+
     if (workScores && workScores.length > 0) {
       const workScoresByType: { [key: string]: WorkScore[] } = {};
 
       workScores.forEach((ws) => {
         let targetType = 'others';
 
-        // Mapear tipo do WorkScore para tab apropriada
-        if (ws.type.toLowerCase().includes('score')) {
+        const wsType = ws.type.toLowerCase();
+        if (wsType.includes('score')) {
           targetType = 'scores';
-        } else if (ws.type.toLowerCase().includes('part')) {
+        } else if (wsType.includes('part')) {
           targetType = 'parts';
-        } else if (ws.type.toLowerCase().includes('arrangement')) {
+        } else if (wsType.includes('arrangement')) {
           targetType = 'arrangements';
-        } else if (ws.type.toLowerCase().includes('libretto')) {
+        } else if (wsType.includes('libretto')) {
           targetType = 'librettos';
-        } else if (ws.type.toLowerCase().includes('source')) {
+        } else if (wsType.includes('source')) {
           targetType = 'sources';
         }
 
@@ -295,13 +266,21 @@ const useProcessedData = (imslpData: any, workScores: WorkScore[]) => {
           workScoresByType[targetType] = [];
         }
         workScoresByType[targetType].push(ws);
+
+        // 🔑 REGISTRAR NO MAPA DE DEDUPLICAÇÃO (WorkScore tem prioridade)
+        if (ws.sourceId) {
+          deduplicationMap.set(ws.sourceId, 'WORKSCORE');
+          console.log(
+            `🔑 [DEDUP] Registrado ${ws.sourceId} como WORKSCORE (prioridade)`
+          );
+        }
       });
 
-      // Adicionar WorkScores às tabs apropriadas
+      // Adicionar WorkScores às tabs (PRIMEIRO = aparece em cima)
       Object.entries(workScoresByType).forEach(([type, scores]) => {
         if (scores.length > 0) {
           const group: MixedScoreGroup = {
-            groupIndex: 999, // Sempre por último
+            groupIndex: 0, // 🔄 MUDANÇA: Índice 0 para aparecer primeiro
             groupTitle: `Open Atlas (${scores.length})`,
             source: 'WORKSCORE',
             scores: scores.map(
@@ -333,27 +312,179 @@ const useProcessedData = (imslpData: any, workScores: WorkScore[]) => {
 
           const targetTab = type as keyof typeof processed;
           if (targetTab in processed) {
-            processed[targetTab].push(group);
-            counts[targetTab] += scores.length;
+            // 🔄 INSERIR NO INÍCIO (prioridade)
+            processed[targetTab].unshift(group);
+            workScoreCounts[targetTab] += scores.length;
+
+            console.log(
+              `📊 [TABS-COUNT] WorkScores ${type}: +${scores.length} scores (PRIMEIRO)`
+            );
           }
         }
       });
     }
 
-    // Determinar tabs visíveis
+    // 🔄 SEGUNDO: Processar dados IMSLP (com deduplicação)
+    console.log('🔄 [DEDUP] ETAPA 2: Processando IMSLP com deduplicação...');
+
+    if (imslpData) {
+      (Object.entries(imslpData.scoresByType) as [string, any[]][]).forEach(
+        ([type, groups]) => {
+          if (groups && groups.length > 0) {
+            const processedGroups = groups
+              .map((group: any) => ({
+                groupIndex: group.groupIndex + 1000, // 🔄 MUDANÇA: Índice alto para aparecer depois
+                groupTitle: `${group.groupTitle || 'IMSLP'} (IMSLP)`,
+                source: 'IMSLP' as const,
+                scores: group.scores
+                  .filter((score: any) => {
+                    // 🔑 FILTRAR DUPLICATAS: Se já existe no mapa, não incluir
+                    if (score.id && deduplicationMap.has(score.id)) {
+                      console.log(
+                        `🚫 [DEDUP] Removendo duplicata IMSLP: ${
+                          score.id
+                        } (já existe como ${deduplicationMap.get(score.id)})`
+                      );
+                      return false;
+                    }
+                    return true;
+                  })
+                  .map(
+                    (score: any): MixedScoreData => ({
+                      id: score.id,
+                      title: score.title,
+                      downloadUrl: score.downloadUrl,
+                      fileSize: score.fileSize,
+                      pageCount: score.pageCount,
+                      thumbnailUrl: score.thumbnailUrl,
+                      type: score.type,
+                      source: 'IMSLP',
+                      editor: score.editor,
+                      publisher: score.publisher,
+                      copyright: score.copyright,
+                      uploadDate: score.uploadDate,
+                      uploader: score.uploader,
+                      notes: score.notes,
+                      rating: score.rating,
+                      ratingsCount: score.ratingsCount,
+                      downloadCount: score.downloadCount,
+                      groupIndex: score.groupIndex,
+                    })
+                  ),
+              }))
+              .filter((group: any) => group.scores.length > 0); // 🔑 REMOVER GRUPOS VAZIOS
+
+            const targetTab = type as keyof typeof processed;
+            if (targetTab in processed) {
+              // 🔄 ADICIONAR NO FINAL (após WorkScores)
+              processed[targetTab].push(...processedGroups);
+              const imslpScoreCount = processedGroups.reduce(
+                (sum: number, g: MixedScoreGroup) => sum + g.scores.length,
+                0
+              );
+              imslpCounts[targetTab] += imslpScoreCount;
+
+              console.log(
+                `📊 [TABS-COUNT] IMSLP ${type}: +${imslpScoreCount} scores (após deduplicação)`
+              );
+            }
+          }
+        }
+      );
+    }
+
+    // 🔄 TERCEIRO: Reordenar grupos dentro de cada tab para garantir ordem correta
+    Object.keys(processed).forEach((tabKey) => {
+      const tab = tabKey as keyof typeof processed;
+      processed[tab].sort((a, b) => {
+        // WorkScores (groupIndex 0) sempre primeiro
+        // IMSLP (groupIndex 1000+) sempre depois
+        if (a.source === 'WORKSCORE' && b.source === 'IMSLP') return -1;
+        if (a.source === 'IMSLP' && b.source === 'WORKSCORE') return 1;
+        return a.groupIndex - b.groupIndex;
+      });
+    });
+
+    // ✅ 3. COMBINAR COUNTS TOTAIS (SEM DUPLICATAS)
+    const totalCounts = {
+      scores: imslpCounts.scores + workScoreCounts.scores,
+      parts: imslpCounts.parts + workScoreCounts.parts,
+      arrangements: imslpCounts.arrangements + workScoreCounts.arrangements,
+      librettos: imslpCounts.librettos + workScoreCounts.librettos,
+      others: imslpCounts.others + workScoreCounts.others,
+      sources: imslpCounts.sources + workScoreCounts.sources,
+    };
+
+    console.log(`📊 [TABS-COUNT] Contagem final (SEM DUPLICATAS):`, {
+      imslp: imslpCounts,
+      workScore: workScoreCounts,
+      total: totalCounts,
+      duplicatasRemovidas: deduplicationMap.size,
+    });
+
+    // ✅ 4. DETERMINAR TABS VISÍVEIS
     const visibleTabs = TABS.filter(
-      (tab) => counts[tab.type as keyof typeof counts] > 0
+      (tab) => totalCounts[tab.type as keyof typeof totalCounts] > 0
     );
 
-    // Tab ativa padrão
     const activeTabDefault =
       visibleTabs.length > 0 ? visibleTabs[0].id : 'scores';
+
+    console.log(
+      `📊 [TABS-COUNT] Tabs visíveis (ordenadas): ${visibleTabs
+        .map(
+          (t) => `${t.id}(${totalCounts[t.type as keyof typeof totalCounts]})`
+        )
+        .join(', ')}`
+    );
+
+    // ✅ 5. CRIAR FUNÇÃO getTabStats LOCAL USANDO getCombinedTabStatistics
+    const getLocalTabStats = (tabType: string): TabStatistics => {
+      const imslpDataForStats = {
+        loaded: imslpCounts,
+        total: imslpData?.totalCounts || imslpCounts,
+      };
+
+      const stats = getCombinedTabStatistics(
+        tabType,
+        imslpDataForStats,
+        workScoreCounts
+      );
+
+      console.log(`📊 [TAB-STATS] ${tabType}:`, {
+        loaded: stats.loaded,
+        total: stats.total,
+        hasMore: stats.hasMore,
+        remaining: stats.remaining,
+        breakdown: {
+          imslp: {
+            loaded: imslpCounts[tabType as keyof typeof imslpCounts],
+            total:
+              imslpDataForStats.total[
+                tabType as keyof typeof imslpDataForStats.total
+              ] || 0,
+          },
+          workScore: {
+            loaded: workScoreCounts[tabType as keyof typeof workScoreCounts],
+          },
+        },
+      });
+
+      return stats;
+    };
 
     return {
       mixedData: processed,
       visibleTabs,
       activeTabDefault,
-      counts,
+      counts: totalCounts,
+      imslpCounts,
+      workScoreCounts,
+      getTabStats: getLocalTabStats,
+      deduplicationStats: {
+        duplicatesRemoved: deduplicationMap.size,
+        deduplicationMap: Object.fromEntries(deduplicationMap),
+      },
     };
   }, [imslpData, workScores]);
 };
@@ -362,7 +493,6 @@ const useProcessedData = (imslpData: any, workScores: WorkScore[]) => {
 const useAutoScrollToPreview = (selectedScore: MixedScoreData | null) => {
   useEffect(() => {
     if (selectedScore) {
-      // Aguarda um frame para garantir que o elemento foi renderizado
       requestAnimationFrame(() => {
         const previewElement = document.getElementById('score-preview');
         if (previewElement) {
@@ -397,7 +527,7 @@ export default function IMSLPTabsIncremental({
   workId,
   totalAvailable = 0,
   currentLoaded = 0,
-  getTabStats,
+  getTabStats, // ✅ Props externa (pode ser undefined)
   isSelectionMode = false,
   tempSelectedWorkScore,
   isScoreMostFavorited,
@@ -407,44 +537,46 @@ export default function IMSLPTabsIncremental({
     null
   );
 
-  // ✅ AUTO SCROLL HOOK
   useAutoScrollToPreview(selectedScore);
 
-  // ✅ PROCESSAR DADOS COM HOOK CUSTOMIZADO
-  const { mixedData, visibleTabs, activeTabDefault } = useProcessedData(
-    imslpData,
-    workScores
-  );
+  // ✅ USAR FUNÇÃO LOCAL OU EXTERNA
+  const {
+    mixedData,
+    visibleTabs,
+    activeTabDefault,
+    getTabStats: localGetTabStats,
+  } = useProcessedData(imslpData, workScores);
+
+  // ✅ PRIORIZAR FUNÇÃO LOCAL SOBRE EXTERNA
+  const finalGetTabStats = localGetTabStats || getTabStats;
 
   const [activeTab, setActiveTab] = useState<string>(() => {
     if (!imslpData && (!workScores || workScores.length === 0)) return 'scores';
-    const firstTabWithContent = visibleTabs.find(
-      (tab) => mixedData[tab.type as keyof typeof mixedData]?.length > 0
-    );
-    return firstTabWithContent?.id || activeTabDefault;
+    return activeTabDefault;
   });
 
-  // ✅ DADOS DA TAB ATIVA MEMOIZADOS
   const activeTabData = useMemo(
     () => mixedData[activeTab as keyof typeof mixedData] || [],
     [mixedData, activeTab]
   );
 
-  // ✅ ESTATÍSTICAS DA TAB MEMOIZADAS
+  // ✅ USAR FUNÇÃO CORRETA PARA ESTATÍSTICAS
   const activeTabStats: TabStatistics = useMemo(() => {
-    return getTabStats
-      ? getTabStats(activeTab)
-      : getTabStatistics(
-          activeTab,
-          imslpData?.loadedCounts || {},
-          imslpData?.totalCounts || {}
-        );
-  }, [getTabStats, activeTab, imslpData?.loadedCounts, imslpData?.totalCounts]);
+    if (finalGetTabStats) {
+      return finalGetTabStats(activeTab);
+    }
+    // Fallback básico
+    return {
+      loaded: 0,
+      total: 0,
+      remaining: 0,
+      hasMore: false,
+      progress: 100,
+    };
+  }, [finalGetTabStats, activeTab]);
 
-  // ✅ HOOK PARA FAVORITOS OTIMIZADO
   const { getScoreStats } = useScoreFavorites(workId || '');
 
-  // ✅ CALLBACKS OTIMIZADOS
   const handleScoreSelect = useCallback(
     (score: MixedScoreData) => {
       if (selectedScore?.id === score.id) {
@@ -574,7 +706,6 @@ export default function IMSLPTabsIncremental({
     getTabLabelTranslated,
   ]);
 
-  // ✅ ESTADOS DE CARREGAMENTO
   const isLoading = imslpLoading || workScoresLoading;
   const hasError = imslpError || workScoresError;
 
@@ -634,13 +765,16 @@ export default function IMSLPTabsIncremental({
                 {visibleTabs.map((tab, index) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
-                  const tabStats: TabStatistics = getTabStats
-                    ? getTabStats(tab.id)
-                    : getTabStatistics(
-                        tab.id,
-                        imslpData?.loadedCounts || {},
-                        imslpData?.totalCounts || {}
-                      );
+                  // ✅ USAR FUNÇÃO CORRETA AQUI TAMBÉM
+                  const tabStats: TabStatistics = finalGetTabStats
+                    ? finalGetTabStats(tab.id)
+                    : {
+                        loaded: 0,
+                        total: 0,
+                        remaining: 0,
+                        hasMore: false,
+                        progress: 100,
+                      };
 
                   return (
                     <AnimatedItem
@@ -679,10 +813,7 @@ export default function IMSLPTabsIncremental({
                                 : 'bg-theme-elevated text-theme-tertiary border border-theme-secondary'
                             }`}
                           >
-                            {tabStats.loaded}/
-                            {tabStats.total < tabStats.loaded
-                              ? tabStats.loaded
-                              : tabStats.total}
+                            {tabStats.loaded}/{tabStats.total}
                           </span>
 
                           {tabStats.hasMore ? (

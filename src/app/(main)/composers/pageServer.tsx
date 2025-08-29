@@ -5,7 +5,7 @@ import {
   getComposersWithPaginationTranslated,
   getEpochsCacheTranslated,
 } from '@/app/requests/composers-translated';
-import { getServerLanguage } from '@/app/utils/translations/serverTranslation';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 const ITEMS_PER_PAGE = 30;
 
@@ -20,7 +20,7 @@ export default async function ComposersPageServer({
 }) {
   try {
     // Detectar idioma no servidor
-    const language = await getServerLanguage();
+    const language = await getServerLanguageStatic();
 
     // Executar requests com idioma - todas as funções já retornam dados traduzidos
     const [composersData, epochsData, totalCount] = await Promise.all([

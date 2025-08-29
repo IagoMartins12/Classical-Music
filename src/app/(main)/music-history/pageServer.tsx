@@ -5,12 +5,12 @@ import {
   getComposersTimelineTranslated,
   getEpochsHistoricalDataTranslated,
 } from '@/app/requests/music-history-translated';
-import { getServerLanguage } from '@/app/utils/translations/serverTranslation';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 export async function MusicHistoryPageServer() {
   try {
     // Detectar idioma no servidor
-    const language = await getServerLanguage();
+    const language = await getServerLanguageStatic();
 
     // Executar requests com idioma - todas as funções já retornam dados traduzidos
     const [epochsWithComposers, epochsHistoricalData, composersTimeline] =

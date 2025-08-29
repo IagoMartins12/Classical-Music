@@ -31,7 +31,7 @@ import {
   FloatingElement,
 } from '../../components/animation/AnimatedComponents';
 import { BiCookie } from 'react-icons/bi';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface PrivacySection {
   id: string;

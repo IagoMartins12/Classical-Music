@@ -1,4 +1,4 @@
-// app/api/work-scores/groups/route.ts - API para buscar grupos existentes de uma obra
+// app/api/work-scores/groups/route.ts - API corrigida com agrupamento por usuário
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -18,6 +18,7 @@ interface ScoreGroup {
   }>;
   source: 'IMSLP' | 'CUSTOM' | 'UPLOAD';
   isUserUploaded: boolean;
+  uploadedBy?: string; // Para identificar o dono
 }
 
 interface GroupSuggestion {
@@ -25,6 +26,7 @@ interface GroupSuggestion {
   suggestedIndex: number;
   reason: string;
   confidence: 'high' | 'medium' | 'low';
+  source: 'IMSLP' | 'USER_UPLOADED';
 }
 
 export async function GET(request: NextRequest) {
@@ -47,10 +49,10 @@ export async function GET(request: NextRequest) {
     }
 
     console.log(
-      `🔍 [GROUPS-API] Buscando grupos existentes para obra: ${workId}`
+      `🔍 [GROUPS-API] Buscando grupos existentes para obra: ${workId}, usuário: ${userId}`
     );
 
-    // 1️⃣ Buscar todas as partituras desta obra (incluindo do usuário)
+    // 1️⃣ Buscar todas as partituras desta obra
     const allWorkScores = await prisma.workScore.findMany({
       where: {
         workId,
@@ -87,82 +89,113 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // 2️⃣ Agrupar por groupIndex e groupTitle
-    const groupsMap = new Map<string, ScoreGroup>();
+    // 2️⃣ Separar por fonte E por usuário
+    const imslpScores = allWorkScores.filter(
+      (score) => score.source === 'IMSLP'
+    );
+    const currentUserScores = allWorkScores.filter(
+      (score) =>
+        (score.source === 'CUSTOM' || score.source === 'UPLOAD') &&
+        score.uploadedBy === userId
+    );
+    const otherUsersScores = allWorkScores.filter(
+      (score) =>
+        (score.source === 'CUSTOM' || score.source === 'UPLOAD') &&
+        score.uploadedBy !== userId
+    );
 
-    for (const score of allWorkScores) {
-      const groupKey = `${score.groupIndex || 0}-${
-        score.groupTitle || 'Sem Grupo'
-      }`;
-      const isUserUploaded = score.uploadedBy === userId;
+    console.log(
+      `📊 [GROUPS-API] Separação: ${imslpScores.length} IMSLP, ${currentUserScores.length} do usuário atual, ${otherUsersScores.length} de outros usuários`
+    );
 
-      if (!groupsMap.has(groupKey)) {
-        groupsMap.set(groupKey, {
-          groupIndex: score.groupIndex || 0,
-          groupTitle: score.groupTitle || 'Sem Grupo',
-          scoresCount: 0,
-          scores: [],
+    // 3️⃣ Função para criar grupos por fonte/usuário
+    const createGroupsFromScores = (
+      scores: typeof allWorkScores,
+      isUserUploaded: boolean,
+      uploadedBy?: string
+    ): ScoreGroup[] => {
+      const groupsMap = new Map<string, ScoreGroup>();
+
+      for (const score of scores) {
+        const groupKey = `${score.groupIndex || 0}-${
+          score.groupTitle || 'Sem Grupo'
+        }`;
+
+        if (!groupsMap.has(groupKey)) {
+          groupsMap.set(groupKey, {
+            groupIndex: score.groupIndex || 0,
+            groupTitle: score.groupTitle || 'Sem Grupo',
+            scoresCount: 0,
+            scores: [],
+            source: score.source,
+            isUserUploaded,
+            uploadedBy,
+          });
+        }
+
+        const group = groupsMap.get(groupKey)!;
+        group.scoresCount++;
+        group.scores.push({
+          id: score.id,
+          title: score.title,
           source: score.source,
-          isUserUploaded,
+          fileFormat: score.fileFormat,
+          fileSize: score.fileSize,
+          pageCount: score.pageCount,
         });
       }
 
-      const group = groupsMap.get(groupKey)!;
-      group.scoresCount++;
-      group.scores.push({
-        id: score.id,
-        title: score.title,
-        source: score.source,
-        fileFormat: score.fileFormat,
-        fileSize: score.fileSize,
-        pageCount: score.pageCount,
-      });
+      return Array.from(groupsMap.values());
+    };
 
-      // Se tem pelo menos uma partitura do usuário, marcar como user uploaded
-      if (isUserUploaded) {
-        group.isUserUploaded = true;
+    // 4️⃣ Criar grupos separados por fonte/usuário
+    const imslpGroups = createGroupsFromScores(imslpScores, false);
+    const userGroups = createGroupsFromScores(currentUserScores, true, userId);
+
+    // Grupos de outros usuários (apenas para referência, não para seleção)
+    const otherUsersGroupsMap = new Map<string, ScoreGroup[]>();
+    for (const score of otherUsersScores) {
+      const userKey = score.uploadedBy || 'unknown';
+      if (!otherUsersGroupsMap.has(userKey)) {
+        otherUsersGroupsMap.set(userKey, []);
       }
+      // Não incluir na resposta, apenas para estatísticas
     }
 
-    const allGroups = Array.from(groupsMap.values());
-    const userGroups = allGroups.filter((group) => group.isUserUploaded);
-
-    console.log(
-      `📊 [GROUPS-API] Grupos encontrados: ${allGroups.length} total, ${userGroups.length} do usuário`
-    );
-
-    // 3️⃣ Gerar sugestões inteligentes baseadas nos padrões IMSLP
+    // 5️⃣ Gerar sugestões inteligentes baseadas nos grupos disponíveis para o usuário
     const suggestions: GroupSuggestion[] = [];
+    const allUserAccessibleGroups = [...imslpGroups, ...userGroups];
 
-    // 🧠 Análise inteligente dos grupos existentes
-    const hasCompleteScore = allGroups.some(
+    // 🧠 Análise inteligente dos grupos que o usuário pode acessar
+    const hasCompleteScore = allUserAccessibleGroups.some(
       (g) =>
         g.groupTitle.toLowerCase().includes('complete') ||
         g.groupTitle.toLowerCase().includes('completa') ||
         g.groupTitle.toLowerCase().includes('full')
     );
 
-    const hasIndividualParts = allGroups.some(
+    const hasIndividualParts = allUserAccessibleGroups.some(
       (g) =>
         g.groupTitle.toLowerCase().includes('individual') ||
         g.groupTitle.toLowerCase().includes('separate') ||
         g.groupTitle.toLowerCase().includes('parts')
     );
 
-    const hasArrangements = allGroups.some(
+    const hasArrangements = allUserAccessibleGroups.some(
       (g) =>
         g.groupTitle.toLowerCase().includes('arrangement') ||
         g.groupTitle.toLowerCase().includes('arranjo')
     );
 
-    // 🎯 Sugestões baseadas no padrão IMSLP
+    // 🎯 Sugestões baseadas no padrão IMSLP (apenas para grupos do usuário)
     if (hasCompleteScore && !hasIndividualParts) {
       suggestions.push({
         suggestedTitle: 'Partes Individuais',
-        suggestedIndex: 1,
+        suggestedIndex: Math.max(...userGroups.map((g) => g.groupIndex), 0) + 1,
         reason:
           'Já existe uma partitura completa, esta pode ser uma parte individual',
         confidence: 'high',
+        source: 'USER_UPLOADED',
       });
     }
 
@@ -173,39 +206,54 @@ export async function GET(request: NextRequest) {
         reason:
           'Existem partes individuais, esta pode ser a partitura completa',
         confidence: 'high',
+        source: 'USER_UPLOADED',
       });
     }
 
-    if (!hasArrangements && allGroups.length > 0) {
+    if (!hasArrangements && allUserAccessibleGroups.length > 0) {
+      const maxIndex = Math.max(
+        ...allUserAccessibleGroups.map((g) => g.groupIndex),
+        0
+      );
       suggestions.push({
         suggestedTitle: 'Arranjos',
-        suggestedIndex: Math.max(...allGroups.map((g) => g.groupIndex)) + 1,
+        suggestedIndex: maxIndex + 1,
         reason: 'Criar nova seção para arranjos',
         confidence: 'medium',
+        source: 'USER_UPLOADED',
       });
     }
 
-    // Sugestão padrão se não há grupos
-    if (allGroups.length === 0) {
+    // Sugestão padrão se não há grupos do usuário
+    if (userGroups.length === 0) {
       suggestions.push({
         suggestedTitle: 'Partitura Completa',
         suggestedIndex: 0,
-        reason: 'Primeira partitura desta obra',
+        reason: 'Primeira partitura sua para esta obra',
         confidence: 'high',
+        source: 'USER_UPLOADED',
       });
     }
 
+    console.log(
+      `✅ [GROUPS-API] Processamento concluído: ${imslpGroups.length} grupos IMSLP, ${userGroups.length} grupos do usuário`
+    );
+
     return NextResponse.json({
       success: true,
-      groups: allGroups,
-      userGroups,
+      groups: imslpGroups, // Apenas grupos IMSLP (para referência)
+      userGroups, // Apenas grupos do usuário atual (editáveis)
       suggestions,
-      hasExistingScores: allGroups.length > 0,
+      hasExistingScores: allWorkScores.length > 0,
       stats: {
-        totalGroups: allGroups.length,
+        totalGroups: imslpGroups.length + userGroups.length,
+        imslpGroups: imslpGroups.length,
         userGroups: userGroups.length,
+        otherUsersGroups: otherUsersGroupsMap.size,
         totalScores: allWorkScores.length,
-        userScores: allWorkScores.filter((s) => s.uploadedBy === userId).length,
+        userScores: currentUserScores.length,
+        imslpScores: imslpScores.length,
+        otherUsersScores: otherUsersScores.length,
       },
     });
   } catch (error) {

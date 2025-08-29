@@ -1747,7 +1747,8 @@ model Teacher {
   students TeacherStudent[] @relation("TeacherStudents")
   lessons  Lesson[]         @relation("TeacherLessons")
   reviews  TeacherReview[]  @relation("TeacherReviews")
-
+  sharedReports SharedProgressReport[] @relation("TeacherSharedReports")
+  
   // Índices otimizados
   @@index([status, isVerified])
   @@index([isPublicProfile])
@@ -1810,7 +1811,8 @@ model Student {
   lessons     Lesson[]         @relation("StudentLessons")
   reviews     TeacherReview[]  @relation("StudentReviews")
   assignments Assignment[]     @relation("StudentAssignments")
-
+  sharedReports SharedProgressReport[] @relation("StudentSharedReports")
+  reportComments SharedReportComment[] @relation("StudentReportComments")
   // Índices otimizados
   @@index([status, lastActiveAt])
   @@index([level, mainInstrument])
@@ -2251,4 +2253,80 @@ model AchievementProgress {
   @@index([lastProgressUpdate])
   
   @@map("achievement_progress")
+}
+
+model SharedProgressReport {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Identificação
+  teacherId String @db.ObjectId
+  studentId String @db.ObjectId
+  
+  // Dados do relatório
+  title String // Título personalizado pelo professor
+  description String? // Descrição opcional
+  
+  // Período do relatório
+  periodStart DateTime
+  periodEnd DateTime
+  periodLabel String
+  
+  // Dados selecionados pelo professor (JSON com as seções escolhidas)
+  selectedSections Json // { overview: true, evolution: true, preferences: false, ... }
+  
+  // Dados do relatório (snapshot dos dados no momento da criação)
+  reportData Json // Dados completos do relatório
+  
+  // Configurações de visibilidade
+  isPublic Boolean @default(false) // Se pode ser acessado sem login
+  allowComments Boolean @default(false) // Se aluno pode comentar
+  
+  // Mensagem personalizada do professor
+  teacherMessage String?
+  
+  // Status e controle
+  isActive Boolean @default(true)
+  viewCount Int @default(0)
+  lastViewedAt DateTime?
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expiresAt DateTime? // Data de expiração (opcional)
+  
+  // Relações
+  teacher Teacher @relation("TeacherSharedReports", fields: [teacherId], references: [id], onDelete: Cascade)
+  student Student @relation("StudentSharedReports", fields: [studentId], references: [id], onDelete: Cascade) 
+  
+  // Comentários do aluno (se permitido)
+  studentComments SharedReportComment[]
+  
+  // Índices
+  @@index([teacherId, studentId])
+  @@index([createdAt, isActive])
+  @@index([isPublic, isActive])
+  @@map("shared_progress_reports")
+}
+
+model SharedReportComment {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  reportId String @db.ObjectId
+  studentId String @db.ObjectId
+  
+  content String
+  section String? // Seção específica do relatório que está comentando
+  
+  isRead Boolean @default(false) // Se o professor leu
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  report SharedProgressReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  student Student @relation("StudentReportComments", fields: [studentId], references: [id], onDelete: Cascade)
+  
+  @@index([reportId, createdAt])
+  @@index([studentId, createdAt])
+  @@map("shared_report_comments")
 }

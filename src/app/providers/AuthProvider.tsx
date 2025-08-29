@@ -249,8 +249,8 @@ const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   return (
     <SessionProvider
-      refetchInterval={5 * 60} // 5 minutos
-      refetchOnWindowFocus={true}
+      // refetchInterval={5 * 60} // 5 minutos
+      // refetchOnWindowFocus={true}
       refetchWhenOffline={false}
     >
       <HydratedContent>{children}</HydratedContent>

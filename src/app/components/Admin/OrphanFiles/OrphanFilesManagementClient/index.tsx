@@ -16,13 +16,11 @@ import {
   FiAlertTriangle,
   FiHardDrive,
   FiClock,
-  FiFilter,
   FiDatabase,
   FiInfo,
   FiFolder,
   FiUsers,
   FiUser,
-  FiBookOpen,
   FiPlay,
   FiGrid,
   FiEye,
@@ -304,6 +302,7 @@ export default function OrphanFilesManagementClient() {
     OrphanFile | CloudinaryOrphanFile | null
   >(null);
 
+  console.log('show', showFileDetails, showFilePreview);
   // Função de scan
   const handleScan = async () => {
     const options: any = {

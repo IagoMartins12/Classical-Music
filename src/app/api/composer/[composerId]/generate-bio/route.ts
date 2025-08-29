@@ -4,12 +4,12 @@ import {
   updateComposerBio,
 } from '@/app/requests/composer-details';
 import { AIBiographyGenerator } from '@/app/libs/ai-bio-generator';
-import { getServerLanguage } from '@/app/utils/translations/serverTranslation';
 import {
   cacheBiography,
   getCachedBiography,
   translateAndCacheBiography,
 } from '@/app/utils/translations/biographyTranslation';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 // Cache para controle de processamento concurrent
 const processCache = new Map<
@@ -41,7 +41,7 @@ export async function POST(
     }
 
     // Detectar idioma preferido
-    const requestedLanguage = await getServerLanguage();
+    const requestedLanguage = await getServerLanguageStatic();
 
     const cacheKey = `bio_${composerId}_${requestedLanguage}`;
 

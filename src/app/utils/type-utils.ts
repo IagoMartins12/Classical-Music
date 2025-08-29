@@ -1,4 +1,4 @@
-// app/libs/type-utils.ts - Utilitários corrigidos para tipagem adequada
+// app/libs/type-utils.ts - Utilitários corrigidos para nova lógica de contagem
 
 /**
  * Soma valores de um objeto de contadores de forma type-safe
@@ -25,7 +25,7 @@ export function sumTotalCounts(totalCounts: Record<string, number>): number {
 }
 
 /**
- * Verifica se há mais partituras para carregar
+ * Verifica se há mais partituras para carregar (apenas IMSLP)
  */
 export function hasMoreScores(
   loadedCounts: Record<string, number>,
@@ -37,7 +37,7 @@ export function hasMoreScores(
 }
 
 /**
- * Verifica se uma tab específica tem mais partituras para carregar
+ * Verifica se uma tab específica tem mais partituras IMSLP para carregar
  */
 export function hasMoreScoresForTab(
   tabType: string,
@@ -79,36 +79,92 @@ export function calculateTabProgress(
 }
 
 /**
- * Interface para estatísticas de tab
+ * Interface para estatísticas de tab corrigida
  */
 export interface TabStatistics {
-  loaded: number;
-  total: number;
-  remaining: number; // 🆕 Adicionada propriedade missing
-  hasMore: boolean;
-  progress: number;
+  loaded: number; // Total carregado (IMSLP + WorkScores)
+  total: number; // Total disponível (IMSLP total + WorkScores carregados)
+  remaining: number; // Quantos ainda podem ser carregados (só IMSLP tem "remaining")
+  hasMore: boolean; // Se há mais para carregar (só IMSLP)
+  progress?: number; // Progresso opcional
 }
 
 /**
- * Obtém estatísticas de uma tab específica
+ * Interface para contagens separadas
+ */
+export interface SeparatedCounts {
+  imslp: {
+    loaded: Record<string, number>;
+    total: Record<string, number>;
+  };
+  workScore: Record<string, number>;
+}
+
+/**
+ * Obtém estatísticas de uma tab específica - VERSÃO CORRIGIDA
  */
 export function getTabStatistics(
   tabType: string,
   loadedCounts: Record<string, number>,
-  totalCounts: Record<string, number>
+  totalCounts: Record<string, number>,
+  workScoreCounts?: Record<string, number>
 ): TabStatistics {
-  const loaded = loadedCounts[tabType] || 0;
-  const total = totalCounts[tabType] || 0;
-  const remaining = Math.max(0, total - loaded);
-  const hasMore = loaded < total;
-  const progress = total > 0 ? Math.round((loaded / total) * 100) : 100;
+  // Contagem IMSLP
+  const imslpLoaded = loadedCounts[tabType] || 0;
+  const imslpTotal = totalCounts[tabType] || 0;
+
+  // Contagem WorkScore (sempre = loaded, não há "total" separado)
+  const workScoreCount = workScoreCounts?.[tabType] || 0;
+
+  // Totais combinados
+  const totalLoaded = imslpLoaded + workScoreCount;
+  const totalAvailable = imslpTotal + workScoreCount;
+
+  // Apenas IMSLP pode ter "remaining"
+  const remaining = Math.max(0, imslpTotal - imslpLoaded);
+  const hasMore = remaining > 0;
+
+  const progress =
+    totalAvailable > 0 ? Math.round((totalLoaded / totalAvailable) * 100) : 100;
 
   return {
-    loaded,
-    total,
-    remaining, // 🆕 Incluída propriedade remaining
+    loaded: totalLoaded,
+    total: totalAvailable,
+    remaining,
     hasMore,
     progress,
+  };
+}
+
+/**
+ * NOVA: Obtém estatísticas combinadas de IMSLP + WorkScores
+ */
+export function getCombinedTabStatistics(
+  tabType: string,
+  imslpCounts: {
+    loaded: Record<string, number>;
+    total: Record<string, number>;
+  },
+  workScoreCounts: Record<string, number>
+): TabStatistics {
+  const imslpLoaded = imslpCounts.loaded[tabType] || 0;
+  const imslpTotal = imslpCounts.total[tabType] || 0;
+  const workScoreCount = workScoreCounts[tabType] || 0;
+
+  const totalLoaded = imslpLoaded + workScoreCount;
+  const totalAvailable = imslpTotal + workScoreCount;
+  const remaining = Math.max(0, imslpTotal - imslpLoaded);
+  const hasMore = remaining > 0;
+
+  return {
+    loaded: totalLoaded,
+    total: totalAvailable,
+    remaining,
+    hasMore,
+    progress:
+      totalAvailable > 0
+        ? Math.round((totalLoaded / totalAvailable) * 100)
+        : 100,
   };
 }
 
@@ -188,4 +244,80 @@ export function hasMoreInAnyCounts(
   totalCounts: ScoreCounts
 ): boolean {
   return sumScoreCounts(loadedCounts) < sumScoreCounts(totalCounts);
+}
+
+/**
+ * NOVA: Combina contadores IMSLP + WorkScore
+ */
+export function combineScoreCounts(
+  imslpCounts: ScoreCounts,
+  workScoreCounts: ScoreCounts
+): ScoreCounts {
+  return {
+    scores: imslpCounts.scores + workScoreCounts.scores,
+    parts: imslpCounts.parts + workScoreCounts.parts,
+    arrangements: imslpCounts.arrangements + workScoreCounts.arrangements,
+    librettos: imslpCounts.librettos + workScoreCounts.librettos,
+    others: imslpCounts.others + workScoreCounts.others,
+    sources: imslpCounts.sources + workScoreCounts.sources,
+  };
+}
+
+/**
+ * NOVA: Converte Record<string, number> para ScoreCounts
+ */
+export function recordToScoreCounts(
+  record: Record<string, number>
+): ScoreCounts {
+  return {
+    scores: record.scores || 0,
+    parts: record.parts || 0,
+    arrangements: record.arrangements || 0,
+    librettos: record.librettos || 0,
+    others: record.others || 0,
+    sources: record.sources || 0,
+  };
+}
+
+/**
+ * NOVA: Converte ScoreCounts para Record<string, number>
+ */
+export function scoreCountsToRecord(
+  counts: ScoreCounts
+): Record<string, number> {
+  return {
+    scores: counts.scores,
+    parts: counts.parts,
+    arrangements: counts.arrangements,
+    librettos: counts.librettos,
+    others: counts.others,
+    sources: counts.sources,
+  };
+}
+
+/**
+ * NOVA: Cria estatísticas vazias
+ */
+export function createEmptyTabStatistics(): TabStatistics {
+  return {
+    loaded: 0,
+    total: 0,
+    remaining: 0,
+    hasMore: false,
+    progress: 100,
+  };
+}
+
+/**
+ * NOVA: Valida se TabStatistics está consistente
+ */
+export function validateTabStatistics(stats: TabStatistics): boolean {
+  return (
+    stats.loaded >= 0 &&
+    stats.total >= 0 &&
+    stats.loaded <= stats.total &&
+    stats.remaining >= 0 &&
+    stats.remaining === Math.max(0, stats.total - stats.loaded) &&
+    stats.hasMore === stats.remaining > 0
+  );
 }

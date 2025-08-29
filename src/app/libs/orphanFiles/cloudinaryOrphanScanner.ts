@@ -375,7 +375,7 @@ export class CloudinaryOrphanScanner {
         if (publicId) {
           this.allReferencedPublicIds.add(publicId);
         }
-      } catch (error) {
+      } catch {
         console.warn(
           `⚠️ [CLOUDINARY-SCAN] Erro ao extrair publicId de: ${urlOrPublicId}`
         );
@@ -566,7 +566,7 @@ export class CloudinaryOrphanScanner {
             resource_type: resourceType,
           });
           fileSize = resourceInfo.bytes;
-        } catch (infoError) {
+        } catch  {
           console.warn(
             `⚠️ [CLOUDINARY-DELETE] Não conseguiu obter info de ${publicId}`
           );

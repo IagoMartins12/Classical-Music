@@ -28,7 +28,7 @@ import {
   FloatingElement,
 } from '../../components/animation/AnimatedComponents';
 import { FaBalanceScale } from 'react-icons/fa';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface CopyrightSection {
   id: string;
