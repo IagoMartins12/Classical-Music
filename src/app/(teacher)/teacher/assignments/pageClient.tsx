@@ -42,8 +42,8 @@ import { useTeacherAssignments } from '@/app/hooks/lessonsSystem/useTeacherAssig
 import Modal from '@/app/components/Modal';
 import Link from 'next/link';
 import Button from '@/app/components/Common/Button';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import { useToast } from '@/app/hooks/useToast';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface TeacherAssignmentsPageClientProps {
   initialData: TeacherAssignmentsData;

@@ -5,6 +5,11 @@ import {
   getStudentProfileForPageServer,
 } from '@/app/requests/student-requests';
 import StudentPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface StudentDashboardData {
   dashboard: {
@@ -152,33 +157,32 @@ export default async function StudentPageServer({
   userImage,
   userRole,
 }: StudentPageServerProps) {
-  console.log(`👨‍🎓 [STUDENT-PAGE-SERVER] Loading for user ${userId}`);
-
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'student/home',
+  ]);
   try {
-    // VERIFICAÇÃO CRÍTICA: Aluno deve ter pelo menos 1 professor ativo
-    console.log('🔍 Verificando se aluno tem professores vinculados...');
     // ✅ CORRIGIDO: Passando userId para checkStudentHasTeachers
     const teacherCheck = await checkStudentHasTeachers(userId);
 
     if (!teacherCheck.hasTeachers) {
-      // Aluno não tem professores - mostrar página especial
       return (
-        <StudentPageClient
-          initialDashboardData={null}
-          studentProfile={{
-            id: userId,
-            name: userName,
-            email: userEmail,
-            image: userImage,
-            role: userRole,
-          }}
-          errorMessage="no_teachers"
-        />
+        <TranslationProvider language={language} translations={translations}>
+          <StudentPageClient
+            initialDashboardData={null}
+            studentProfile={{
+              id: userId,
+              name: userName,
+              email: userEmail,
+              image: userImage,
+              role: userRole,
+            }}
+            errorMessage="no_teachers"
+          />
+        </TranslationProvider>
       );
     }
 
-    // OTIMIZAÇÃO: Buscar dados do dashboard
-    console.log('📊 Carregando dashboard do aluno...');
     // ✅ CORRIGIDO: Usando a função que recebe userId
     const dashboardData = await getStudentDashboardForPageServer(userId);
 
@@ -192,38 +196,38 @@ export default async function StudentPageServer({
       timestamp: new Date().toISOString(),
     };
 
-    console.log('DATA', { studentDashboardData, teacherCheck });
-    console.log(`✅ [STUDENT-PAGE-SERVER] Data loaded successfully.`);
-
     return (
-      <StudentPageClient
-        initialDashboardData={studentDashboardData}
-        studentProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-        teachersInfo={teacherCheck.teachers}
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <StudentPageClient
+          initialDashboardData={studentDashboardData}
+          studentProfile={{
+            id: userId,
+            name: userName,
+            email: userEmail,
+            image: userImage,
+            role: userRole,
+          }}
+          teachersInfo={teacherCheck.teachers}
+        />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error('❌ [STUDENT-PAGE-SERVER] Critical error:', error);
 
-    // Fallback com dados vazios para não quebrar a UI
     return (
-      <StudentPageClient
-        initialDashboardData={null}
-        studentProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-        errorMessage="Erro ao carregar dados. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <StudentPageClient
+          initialDashboardData={null}
+          studentProfile={{
+            id: userId,
+            name: userName,
+            email: userEmail,
+            image: userImage,
+            role: userRole,
+          }}
+          errorMessage="Erro ao carregar dados. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }

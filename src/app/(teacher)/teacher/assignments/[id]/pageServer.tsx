@@ -2,6 +2,11 @@
 
 import { getTeacherAssignmentDetailsData } from '@/app/requests/teacher-request';
 import AssignmentDetailsPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface AssignmentDetailsData {
   assignment: {
@@ -73,9 +78,10 @@ export default async function AssignmentDetailsPageServer({
   userId: string;
   userRole: number;
 }) {
-  console.log(
-    `📋👁️ [ASSIGNMENT-DETAILS-PAGE-SERVER] Loading assignment ${assignmentId} for user ${userId}`
-  );
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'teacher/assignmentsId',
+  ]);
 
   try {
     // Buscar detalhes da tarefa diretamente do banco
@@ -152,20 +158,26 @@ export default async function AssignmentDetailsPageServer({
       `✅ [ASSIGNMENT-DETAILS-PAGE-SERVER] Assignment loaded successfully - ${assignment.title}`
     );
 
-    return <AssignmentDetailsPageClient initialData={assignmentDetailsData} />;
+    return (
+      <TranslationProvider language={language} translations={translations}>
+        <AssignmentDetailsPageClient initialData={assignmentDetailsData} />
+      </TranslationProvider>
+    );
   } catch (error) {
     console.error('❌ [ASSIGNMENT-DETAILS-PAGE-SERVER] Critical error:', error);
 
     // Fallback com erro
     return (
-      <AssignmentDetailsPageClient
-        initialData={null}
-        errorMessage={
-          error instanceof Error
-            ? error.message
-            : 'Erro ao carregar dados da tarefa'
-        }
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <AssignmentDetailsPageClient
+          initialData={null}
+          errorMessage={
+            error instanceof Error
+              ? error.message
+              : 'Erro ao carregar dados da tarefa'
+          }
+        />
+      </TranslationProvider>
     );
   }
 }

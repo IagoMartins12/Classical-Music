@@ -39,7 +39,7 @@ import WorkSelectionSection, {
   LessonWork,
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
 import { translateNivel } from '@/app/utils';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface CreateLessonPageClientProps {
   initialData: CreateLessonData;

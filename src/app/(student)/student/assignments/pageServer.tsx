@@ -5,6 +5,11 @@ import {
   getStudentProfileForPageServer,
 } from '@/app/requests/student-requests';
 import StudentAssignmentsPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface StudentAssignmentsData {
   assignments: Array<{
@@ -74,10 +79,10 @@ interface StudentAssignmentsPageServerProps {
 export default async function StudentAssignmentsPageServer({
   userId,
 }: StudentAssignmentsPageServerProps) {
-  console.log(
-    `📋 [STUDENT-ASSIGNMENTS-PAGE-SERVER] Loading for user ${userId}`
-  );
-
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'student/assignments',
+  ]);
   try {
     // Buscar perfil do aluno para verificar professores vinculados
     console.log('🔍 Verificando perfil do aluno...');
@@ -95,10 +100,12 @@ export default async function StudentAssignmentsPageServer({
     if (activeTeachers.length === 0) {
       // Aluno não tem professores - mostrar página especial
       return (
-        <StudentAssignmentsPageClient
-          initialData={null}
-          errorMessage="no_teachers"
-        />
+        <TranslationProvider language={language} translations={translations}>
+          <StudentAssignmentsPageClient
+            initialData={null}
+            errorMessage="no_teachers"
+          />
+        </TranslationProvider>
       );
     }
 
@@ -134,7 +141,9 @@ export default async function StudentAssignmentsPageServer({
     );
 
     return (
-      <StudentAssignmentsPageClient initialData={studentAssignmentsData} />
+      <TranslationProvider language={language} translations={translations}>
+        <StudentAssignmentsPageClient initialData={studentAssignmentsData} />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error(
@@ -144,10 +153,12 @@ export default async function StudentAssignmentsPageServer({
 
     // Fallback com dados vazios
     return (
-      <StudentAssignmentsPageClient
-        initialData={null}
-        errorMessage="Erro ao carregar tarefas. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <StudentAssignmentsPageClient
+          initialData={null}
+          errorMessage="Erro ao carregar tarefas. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }

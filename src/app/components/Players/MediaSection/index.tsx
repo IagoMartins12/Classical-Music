@@ -23,7 +23,7 @@ import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import { useToast } from '@/app/hooks/useToast';
 import { WorkDetails } from '@/app/requests/work-page-details';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface MediaData {
   spotify: {

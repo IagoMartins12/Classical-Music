@@ -57,7 +57,7 @@ import {
   PeriodOption,
 } from '@/app/types/teacherProgressReport';
 import Select from '@/app/components/Common/Select';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import ShareReportModal, {
   ShareReportData,
 } from '@/app/components/TeacherSystem/ShareReportModal';

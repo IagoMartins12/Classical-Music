@@ -36,7 +36,7 @@ import {
 import Select from '@/app/components/Common/Select';
 import Link from 'next/link';
 import { useToast } from '@/app/hooks/useToast';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface Activity {
   id: string;

@@ -22,7 +22,7 @@ import { useTeacherStudents } from '@/app/hooks/lessonsSystem/useTeacherStudents
 import { TeacherStudentsServerData } from './pageServer';
 import StudentCard from '@/app/components/TeacherSystem/StudentCard';
 import AddStudentModal from '@/app/components/TeacherSystem/AddStudentModal';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface TeacherStudentsPageClientProps {
   initialData: TeacherStudentsServerData;

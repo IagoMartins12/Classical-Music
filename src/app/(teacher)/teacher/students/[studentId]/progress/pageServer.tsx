@@ -2,6 +2,11 @@
 
 import { notFound } from 'next/navigation';
 import TeacherProgressPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 interface TeacherProgressPageServerProps {
   studentId: string;
@@ -18,9 +23,10 @@ export default async function TeacherProgressPageServer({
   customStartDate,
   customEndDate,
 }: TeacherProgressPageServerProps) {
-  console.log(
-    `📊 [TEACHER-PROGRESS-PAGE-SERVER] Loading progress report for student ${studentId} by teacher ${userId}`
-  );
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'teacher/progress',
+  ]);
 
   try {
     // Build query parameters for the API call
@@ -59,12 +65,14 @@ export default async function TeacherProgressPageServer({
 
     if (!response.ok) {
       return (
-        <TeacherProgressPageClient
-          studentId={studentId}
-          initialData={null}
-          errorMessage={`Erro ao carregar relatório: ${response.status}`}
-          initialPeriod={initialPeriod as any}
-        />
+        <TranslationProvider language={language} translations={translations}>
+          <TeacherProgressPageClient
+            studentId={studentId}
+            initialData={null}
+            errorMessage={`Erro ao carregar relatório: ${response.status}`}
+            initialPeriod={initialPeriod as any}
+          />
+        </TranslationProvider>
       );
     }
 
@@ -76,12 +84,14 @@ export default async function TeacherProgressPageServer({
         data.error
       );
       return (
-        <TeacherProgressPageClient
-          studentId={studentId}
-          initialData={null}
-          errorMessage={data.error}
-          initialPeriod={initialPeriod as any}
-        />
+        <TranslationProvider language={language} translations={translations}>
+          <TeacherProgressPageClient
+            studentId={studentId}
+            initialData={null}
+            errorMessage={data.error}
+            initialPeriod={initialPeriod as any}
+          />
+        </TranslationProvider>
       );
     }
 
@@ -90,11 +100,13 @@ export default async function TeacherProgressPageServer({
     );
 
     return (
-      <TeacherProgressPageClient
-        studentId={studentId}
-        initialData={data.report}
-        initialPeriod={initialPeriod as any}
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherProgressPageClient
+          studentId={studentId}
+          initialData={data.report}
+          initialPeriod={initialPeriod as any}
+        />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error(

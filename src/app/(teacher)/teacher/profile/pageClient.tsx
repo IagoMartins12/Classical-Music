@@ -42,8 +42,8 @@ import {
   convertLocationDataToDatabase,
 } from '@/app/utils/locationUtils';
 import { TeacherStatus } from '@prisma/client';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import Input from '@/app/components/Common/Inputs';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface TeacherProfilePageClientProps {
   initialData: TeacherProfileData | null;

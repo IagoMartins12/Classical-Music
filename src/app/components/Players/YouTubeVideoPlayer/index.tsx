@@ -1,10 +1,10 @@
 'use client';
 
+import { useTranslation } from '@/app/context/TranslationContext';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { FiPlay, FiExternalLink, FiCalendar, FiUser } from 'react-icons/fi';
 import { SiYoutube } from 'react-icons/si';
-import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface YouTubePlayerProps {
   video: {

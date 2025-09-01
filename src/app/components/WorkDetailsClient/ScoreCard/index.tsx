@@ -5,7 +5,7 @@ import Image from 'next/image';
 import FavoriteScoreButton from '../../FavoriteScoreButton';
 import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
 import { WorkScore } from '@prisma/client';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface ScoreCardProps {
   score: WorkScore;

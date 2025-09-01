@@ -34,7 +34,7 @@ import Link from 'next/link';
 import { useAssignmentDetails } from '@/app/hooks/lessonsSystem/useAssignmentDetails';
 import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSection';
 import Modal from '@/app/components/Modal';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface AssignmentDetailsPageClientProps {
   initialData: AssignmentDetailsData | null;

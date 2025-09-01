@@ -21,7 +21,7 @@ import {
   AnnotationScope,
 } from '@/app/stores/useAnnotationsStore';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface AnnotationFiltersProps {
   filters: Filters;

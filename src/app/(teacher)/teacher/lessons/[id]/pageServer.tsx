@@ -3,6 +3,11 @@
 import { notFound } from 'next/navigation';
 import { getTeacherLessonDetailsData } from '@/app/requests/teacher-request';
 import TeacherLessonDetailsPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface LessonDetailsData {
   id: string;
@@ -120,7 +125,6 @@ export interface LessonDetailsData {
 export default async function TeacherLessonDetailsPageServer({
   lessonId,
   userId,
-
   userRole,
 }: {
   lessonId: string;
@@ -128,9 +132,10 @@ export default async function TeacherLessonDetailsPageServer({
 
   userRole: number;
 }) {
-  console.log(
-    `📖 [TEACHER-LESSON-DETAILS-PAGE-SERVER] Loading lesson ${lessonId} for user ${userId}`
-  );
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'teacher/lessonsId',
+  ]);
 
   try {
     // Buscar dados detalhados da aula
@@ -153,7 +158,11 @@ export default async function TeacherLessonDetailsPageServer({
       `✅ [TEACHER-LESSON-DETAILS-PAGE-SERVER] Lesson data loaded successfully`
     );
 
-    return <TeacherLessonDetailsPageClient lessonData={lessonData} />;
+    return (
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherLessonDetailsPageClient lessonData={lessonData} />
+      </TranslationProvider>
+    );
   } catch (error) {
     console.error(
       '❌ [TEACHER-LESSON-DETAILS-PAGE-SERVER] Critical error:',
@@ -170,10 +179,12 @@ export default async function TeacherLessonDetailsPageServer({
 
     // Para outros erros, mostrar página de erro
     return (
-      <TeacherLessonDetailsPageClient
-        lessonData={null}
-        errorMessage="Erro ao carregar dados da aula. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherLessonDetailsPageClient
+          lessonData={null}
+          errorMessage="Erro ao carregar dados da aula. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }

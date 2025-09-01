@@ -33,7 +33,7 @@ import {
 import toast from 'react-hot-toast';
 import { useLoginModal } from '@/app/stores/authStore';
 import Input from '../../Common/Inputs';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface AnnotationsSectionProps {
   workId: string;

@@ -1270,7 +1270,6 @@ export default function WorkDetailsClient({
             />
           </AnimatedCard>
 
-          {/* Seções mantidas iguais... */}
           <AnnotationsSection
             workId={work.id}
             workTitle={work.title}

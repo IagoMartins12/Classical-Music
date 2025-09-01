@@ -5,6 +5,11 @@ import {
   getStudentProfileForPageServer,
 } from '@/app/requests/student-requests';
 import StudentCalendarPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface StudentCalendarData {
   events: Array<{
@@ -152,26 +157,26 @@ async function fetchStudentCalendar(
 export default async function StudentCalendarPageServer({
   userId,
 }: StudentCalendarPageServerProps) {
-  console.log(`📅 [STUDENT-CALENDAR-PAGE-SERVER] Loading for user ${userId}`);
-
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'student/calendar',
+  ]);
   try {
-    // VERIFICAÇÃO CRÍTICA: Aluno deve ter pelo menos 1 professor ativo
-    console.log('🔍 Verificando se aluno tem professores vinculados...');
     // ✅ CORRIGIDO: Passando userId para checkStudentHasTeachers
     const teacherCheck = await checkStudentHasTeachers(userId);
 
     if (!teacherCheck.hasTeachers) {
       // Aluno não tem professores - mostrar página especial
       return (
-        <StudentCalendarPageClient
-          initialData={null}
-          errorMessage="no_teachers"
-        />
+        <TranslationProvider language={language} translations={translations}>
+          <StudentCalendarPageClient
+            initialData={null}
+            errorMessage="no_teachers"
+          />
+        </TranslationProvider>
       );
     }
 
-    // OTIMIZAÇÃO: Buscar dados do calendário
-    console.log('📅 Carregando calendário do aluno...');
     // ✅ CORRIGIDO: Passando userId para fetchStudentCalendar
     const calendarData = await fetchStudentCalendar(userId);
 
@@ -182,16 +187,22 @@ export default async function StudentCalendarPageServer({
 
     console.log(`✅ [STUDENT-CALENDAR-PAGE-SERVER] Data loaded successfully`);
 
-    return <StudentCalendarPageClient initialData={calendarData} />;
+    return (
+      <TranslationProvider language={language} translations={translations}>
+        <StudentCalendarPageClient initialData={calendarData} />;
+      </TranslationProvider>
+    );
   } catch (error) {
     console.error('❌ [STUDENT-CALENDAR-PAGE-SERVER] Critical error:', error);
 
     // Fallback com dados vazios para não quebrar a UI
     return (
-      <StudentCalendarPageClient
-        initialData={null}
-        errorMessage="Erro ao carregar dados do calendário. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <StudentCalendarPageClient
+          initialData={null}
+          errorMessage="Erro ao carregar dados do calendário. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }

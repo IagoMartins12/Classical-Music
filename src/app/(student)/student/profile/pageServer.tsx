@@ -3,6 +3,11 @@
 import { getStudentProfileForPageServer } from '@/app/requests/student-requests';
 import StudentProfilePageClient from './pageClient';
 import prisma from '@/app/libs/prismadb';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface StudentProfileData {
   profile: {
@@ -139,11 +144,12 @@ export default async function StudentProfilePageServer({
   userImage?: string | null;
   userRole: number;
 }) {
-  console.log(`👨‍🎓 [STUDENT-PROFILE-PAGE-SERVER] Loading for user ${userId}`);
-
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'student/profile',
+  ]);
   try {
     // Buscar perfil do aluno
-    console.log('🔍 Carregando perfil do aluno...');
     const profileData = await getStudentProfileForPageServer(userId);
 
     if (!profileData || !profileData.profile) {
@@ -269,38 +275,38 @@ export default async function StudentProfilePageServer({
       isNew: profileData.isNew,
     };
 
-    console.log(
-      `✅ [STUDENT-PROFILE-PAGE-SERVER] Data loaded successfully - ${profileData.profile.teachers.length} teachers, ${wantToLearnData.length} want-to-learn, ${learnedData.length} learned, ${annotationsData.length} annotations`
-    );
-
     return (
-      <StudentProfilePageClient
-        initialData={studentProfileData}
-        userProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <StudentProfilePageClient
+          initialData={studentProfileData}
+          userProfile={{
+            id: userId,
+            name: userName,
+            email: userEmail,
+            image: userImage,
+            role: userRole,
+          }}
+        />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error('❌ [STUDENT-PROFILE-PAGE-SERVER] Critical error:', error);
 
     // Fallback com dados mínimos
     return (
-      <StudentProfilePageClient
-        initialData={null}
-        userProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-        errorMessage="Erro ao carregar perfil. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <StudentProfilePageClient
+          initialData={null}
+          userProfile={{
+            id: userId,
+            name: userName,
+            email: userEmail,
+            image: userImage,
+            role: userRole,
+          }}
+          errorMessage="Erro ao carregar perfil. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }

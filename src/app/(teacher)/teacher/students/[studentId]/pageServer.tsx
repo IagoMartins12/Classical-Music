@@ -3,6 +3,11 @@
 import { notFound } from 'next/navigation';
 import TeacherStudentDetailPageClient from './pageClient';
 import { getTeacherStudentDetailData } from '@/app/requests/teacher-request';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface StudentDetailData {
   student: {
@@ -93,9 +98,10 @@ export default async function TeacherStudentDetailPageServer({
   studentId: string;
   userId: string;
 }) {
-  console.log(
-    `👨‍🎓 [TEACHER-STUDENT-DETAIL-PAGE-SERVER] Loading student ${studentId} for teacher ${userId}`
-  );
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'teacher/studentId',
+  ]);
 
   try {
     // 🚀 Buscar dados detalhados do aluno direto do banco
@@ -112,7 +118,11 @@ export default async function TeacherStudentDetailPageServer({
       `✅ [TEACHER-STUDENT-DETAIL-PAGE-SERVER] Data loaded successfully`
     );
 
-    return <TeacherStudentDetailPageClient studentData={studentData} />;
+    return (
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherStudentDetailPageClient studentData={studentData} />
+      </TranslationProvider>
+    );
   } catch (error) {
     console.error(
       '❌ [TEACHER-STUDENT-DETAIL-PAGE-SERVER] Critical error:',

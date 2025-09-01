@@ -36,7 +36,7 @@ import { useStudentAssignments } from '@/app/hooks/lessonsSystem/useStudentAssig
 import Select from '@/app/components/Common/Select';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useRouter } from 'next/navigation';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface StudentAssignmentsPageClientProps {
   initialData: StudentAssignmentsData | null;

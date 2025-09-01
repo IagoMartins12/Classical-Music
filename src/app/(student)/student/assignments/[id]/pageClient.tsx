@@ -40,7 +40,7 @@ import { useStudentAssignments } from '@/app/hooks/lessonsSystem/useStudentAssig
 import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSection';
 import Modal from '@/app/components/Modal';
 import { useAssignmentVideo } from '@/app/hooks/lessonsSystem/useAssignmentVideo';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface StudentAssignmentDetailsPageClientProps {
   initialData: StudentAssignmentDetailsData | null;

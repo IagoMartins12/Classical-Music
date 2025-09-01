@@ -31,7 +31,7 @@ import Link from 'next/link';
 import { useStudentLessons } from '@/app/hooks/lessonsSystem/useStudentLessons';
 import Select from '@/app/components/Common/Select';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface StudentLessonsPageClientProps {
   initialData: StudentLessonsData | null;

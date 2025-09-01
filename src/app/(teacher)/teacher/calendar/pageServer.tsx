@@ -3,6 +3,11 @@ import {
   getTeacherStudentsData,
 } from '@/app/requests/teacher-request';
 import TeacherCalendarPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface CalendarEvent {
   id: string;
@@ -84,7 +89,10 @@ export default async function TeacherCalendarPageServer({
 }: {
   userId: string;
 }) {
-  console.log(`📅 [TEACHER-CALENDAR-PAGE-SERVER] Loading for user ${userId}`);
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'teacher/calendar',
+  ]);
 
   try {
     // Calcular período do calendário (próximos 2 meses)
@@ -135,7 +143,11 @@ export default async function TeacherCalendarPageServer({
 
     console.log(`✅ [TEACHER-CALENDAR-PAGE-SERVER] Data loaded successfully`);
 
-    return <TeacherCalendarPageClient initialData={teacherCalendarData} />;
+    return (
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherCalendarPageClient initialData={teacherCalendarData} />;
+      </TranslationProvider>
+    );
   } catch (error) {
     console.error('❌ [TEACHER-CALENDAR-PAGE-SERVER] Critical error:', error);
 
@@ -145,15 +157,17 @@ export default async function TeacherCalendarPageServer({
     const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
     return (
-      <TeacherCalendarPageClient
-        initialData={{
-          events: [],
-          period: { start: startDate, end: endDate, view: 'month' },
-          metadata: { totalEvents: 0, lessonCount: 0 },
-          students: [],
-        }}
-        errorMessage="Erro ao carregar dados do calendário. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherCalendarPageClient
+          initialData={{
+            events: [],
+            period: { start: startDate, end: endDate, view: 'month' },
+            metadata: { totalEvents: 0, lessonCount: 0 },
+            students: [],
+          }}
+          errorMessage="Erro ao carregar dados do calendário. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }

@@ -43,7 +43,7 @@ import { StudentDetailData } from './pageServer';
 import { translateNivel } from '@/app/utils';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface TeacherStudentDetailPageClientProps {
   studentData: StudentDetailData;

@@ -22,7 +22,7 @@ import {
 import { useAuth } from '@/app/hooks/useAuth';
 import { useToast } from '@/app/hooks/useToast';
 import { useLoginModal } from '@/app/stores/authStore';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface LearningButtonWithModalProps {
   workId: string;

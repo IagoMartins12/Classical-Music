@@ -2,6 +2,11 @@
 
 import { getStudentLessonForPageServer } from '@/app/requests/student-requests';
 import StudentLessonDetailPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface StudentLessonDetail {
   id: string;
@@ -122,22 +127,23 @@ export default async function StudentLessonDetailPageServer({
   lessonId,
   userId,
 }: StudentLessonDetailPageServerProps) {
-  console.log(
-    `📖 [STUDENT-LESSON-DETAIL-PAGE-SERVER] Loading lesson ${lessonId} for user ${userId}`
-  );
-
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'student/lessonsId',
+  ]);
   try {
     // Buscar detalhes da aula
-    console.log('🔍 Carregando detalhes da aula...');
     const lessonData = await getStudentLessonForPageServer(userId, lessonId);
 
     if (!lessonData) {
       // Aula não encontrada ou sem permissão
       return (
-        <StudentLessonDetailPageClient
-          initialData={null}
-          errorMessage="Aula não encontrada ou você não tem permissão para visualizá-la."
-        />
+        <TranslationProvider language={language} translations={translations}>
+          <StudentLessonDetailPageClient
+            initialData={null}
+            errorMessage="Aula não encontrada ou você não tem permissão para visualizá-la."
+          />
+        </TranslationProvider>
       );
     }
 
@@ -149,7 +155,11 @@ export default async function StudentLessonDetailPageServer({
       `✅ [STUDENT-LESSON-DETAIL-PAGE-SERVER] Lesson data loaded successfully`
     );
 
-    return <StudentLessonDetailPageClient initialData={studentLessonDetail} />;
+    return (
+      <TranslationProvider language={language} translations={translations}>
+        <StudentLessonDetailPageClient initialData={studentLessonDetail} />;
+      </TranslationProvider>
+    );
   } catch (error) {
     console.error(
       '❌ [STUDENT-LESSON-DETAIL-PAGE-SERVER] Critical error:',
@@ -158,10 +168,12 @@ export default async function StudentLessonDetailPageServer({
 
     // Fallback com erro
     return (
-      <StudentLessonDetailPageClient
-        initialData={null}
-        errorMessage="Erro ao carregar detalhes da aula. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <StudentLessonDetailPageClient
+          initialData={null}
+          errorMessage="Erro ao carregar detalhes da aula. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }

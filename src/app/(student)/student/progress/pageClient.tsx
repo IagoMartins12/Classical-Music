@@ -54,7 +54,7 @@ import Select from '@/app/components/Common/Select';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaFire } from 'react-icons/fa';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface StudentProgressPageClientProps {
   initialData: StudentProgressResponse | null;

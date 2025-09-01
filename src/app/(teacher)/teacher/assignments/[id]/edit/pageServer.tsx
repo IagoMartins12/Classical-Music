@@ -2,6 +2,11 @@
 
 import { getTeacherAssignmentEditData } from '@/app/requests/teacher-request';
 import EditAssignmentPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface EditAssignmentData {
   assignment: {
@@ -81,9 +86,10 @@ export default async function EditAssignmentPageServer({
   assignmentId: string;
   userId: string;
 }) {
-  console.log(
-    `📋✏️ [EDIT-ASSIGNMENT-PAGE-SERVER] Loading for assignment ${assignmentId} - user ${userId}`
-  );
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'teacher/assignmentsEdit',
+  ]);
 
   try {
     // Buscar dados da tarefa diretamente do banco
@@ -191,18 +197,24 @@ export default async function EditAssignmentPageServer({
       }, Scores: ${assignment.workScoreIds?.length || 0}`
     );
 
-    return <EditAssignmentPageClient initialData={editAssignmentData} />;
+    return (
+      <TranslationProvider language={language} translations={translations}>
+        <EditAssignmentPageClient initialData={editAssignmentData} />;
+      </TranslationProvider>
+    );
   } catch (error) {
     console.error('❌ [EDIT-ASSIGNMENT-PAGE-SERVER] Critical error:', error);
 
     // Fallback com mensagem de erro
     return (
-      <EditAssignmentPageClient
-        initialData={null}
-        errorMessage={
-          error instanceof Error ? error.message : 'Erro ao carregar tarefa'
-        }
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <EditAssignmentPageClient
+          initialData={null}
+          errorMessage={
+            error instanceof Error ? error.message : 'Erro ao carregar tarefa'
+          }
+        />
+      </TranslationProvider>
     );
   }
 }

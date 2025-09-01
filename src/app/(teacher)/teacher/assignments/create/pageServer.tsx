@@ -5,6 +5,11 @@ import {
   getTeacherLessonsData,
 } from '@/app/requests/teacher-request';
 import CreateAssignmentPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface CreateAssignmentData {
   students: Array<{
@@ -48,10 +53,10 @@ export default async function CreateAssignmentPageServer({
 }: {
   userId: string;
 }) {
-  console.log(
-    `📋➕ [CREATE-ASSIGNMENT-PAGE-SERVER] Loading for user ${userId}`
-  );
-
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'teacher/assignmentsCreate',
+  ]);
   try {
     // Buscar dados em paralelo
     const [studentsData, lessonsData] = await Promise.all([
@@ -151,37 +156,47 @@ export default async function CreateAssignmentPageServer({
       `✅ [CREATE-ASSIGNMENT-PAGE-SERVER] Data loaded successfully - ${students.length} students, ${recentLessons.length} recent lessons`
     );
 
-    return <CreateAssignmentPageClient initialData={createAssignmentData} />;
+    return (
+      <TranslationProvider language={language} translations={translations}>
+        <CreateAssignmentPageClient initialData={createAssignmentData} />
+      </TranslationProvider>
+    );
   } catch (error) {
     console.error('❌ [CREATE-ASSIGNMENT-PAGE-SERVER] Critical error:', error);
 
     // Fallback com dados vazios
     return (
-      <CreateAssignmentPageClient
-        initialData={{
-          students: [],
-          recentLessons: [],
-          assignmentTypes: [
-            {
-              value: 'practice',
-              label: 'Prática',
-              description: 'Exercícios de prática',
-            },
-            { value: 'theory', label: 'Teoria', description: 'Estudo teórico' },
-            {
-              value: 'listening',
-              label: 'Escuta',
-              description: 'Exercícios auditivos',
-            },
-          ],
-          priorityLevels: [
-            { value: 'low', label: 'Baixa', color: 'text-accent-green' },
-            { value: 'medium', label: 'Média', color: 'text-accent-yellow' },
-            { value: 'high', label: 'Alta', color: 'text-accent-red' },
-          ],
-        }}
-        errorMessage="Erro ao carregar dados. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <CreateAssignmentPageClient
+          initialData={{
+            students: [],
+            recentLessons: [],
+            assignmentTypes: [
+              {
+                value: 'practice',
+                label: 'Prática',
+                description: 'Exercícios de prática',
+              },
+              {
+                value: 'theory',
+                label: 'Teoria',
+                description: 'Estudo teórico',
+              },
+              {
+                value: 'listening',
+                label: 'Escuta',
+                description: 'Exercícios auditivos',
+              },
+            ],
+            priorityLevels: [
+              { value: 'low', label: 'Baixa', color: 'text-accent-green' },
+              { value: 'medium', label: 'Média', color: 'text-accent-yellow' },
+              { value: 'high', label: 'Alta', color: 'text-accent-red' },
+            ],
+          }}
+          errorMessage="Erro ao carregar dados. Tente recarregar a página."
+        />{' '}
+      </TranslationProvider>
     );
   }
 }

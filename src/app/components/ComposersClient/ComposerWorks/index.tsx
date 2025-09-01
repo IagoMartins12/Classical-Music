@@ -42,7 +42,7 @@ import {
 } from '../../animation/AnimatedComponents';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import Select from '../../Common/Select';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
 import {
   translateInstrument,

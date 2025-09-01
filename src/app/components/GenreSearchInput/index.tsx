@@ -11,7 +11,7 @@ import {
 } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { searchGenresAction } from '@/app/actions/genre-actions';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import {
   translateGenre,
   matchesGenreSearch,

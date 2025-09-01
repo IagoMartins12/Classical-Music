@@ -7,7 +7,7 @@ import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Modal from '../../Modal';
 import { useToast } from '@/app/hooks/useToast';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface ReportModalProps {
   isOpen: boolean;

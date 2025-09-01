@@ -5,6 +5,11 @@ import {
   getStudentProfileForPageServer,
 } from '@/app/requests/student-requests';
 import StudentLessonsPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface StudentLessonsData {
   lessons: Array<{
@@ -61,7 +66,10 @@ interface StudentLessonsPageServerProps {
 export default async function StudentLessonsPageServer({
   userId,
 }: StudentLessonsPageServerProps) {
-  console.log(`📚 [STUDENT-LESSONS-PAGE-SERVER] Loading for user ${userId}`);
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'student/lessons',
+  ]);
 
   try {
     // Buscar perfil do aluno para verificar professores vinculados
@@ -80,10 +88,12 @@ export default async function StudentLessonsPageServer({
     if (activeTeachers.length === 0) {
       // Aluno não tem professores - mostrar página especial
       return (
-        <StudentLessonsPageClient
-          initialData={null}
-          errorMessage="no_teachers"
-        />
+        <TranslationProvider language={language} translations={translations}>
+          <StudentLessonsPageClient
+            initialData={null}
+            errorMessage="no_teachers"
+          />
+        </TranslationProvider>
       );
     }
 
@@ -125,16 +135,22 @@ export default async function StudentLessonsPageServer({
       `✅ [STUDENT-LESSONS-PAGE-SERVER] Data loaded successfully - ${lessonsData.lessons.length} aulas`
     );
 
-    return <StudentLessonsPageClient initialData={studentLessonsData} />;
+    return (
+      <TranslationProvider language={language} translations={translations}>
+        <StudentLessonsPageClient initialData={studentLessonsData} />;{' '}
+      </TranslationProvider>
+    );
   } catch (error) {
     console.error('❌ [STUDENT-LESSONS-PAGE-SERVER] Critical error:', error);
 
     // Fallback com dados vazios
     return (
-      <StudentLessonsPageClient
-        initialData={null}
-        errorMessage="Erro ao carregar aulas. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <StudentLessonsPageClient
+          initialData={null}
+          errorMessage="Erro ao carregar aulas. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }

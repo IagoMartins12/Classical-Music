@@ -32,7 +32,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Select from '@/app/components/Common/Select';
 import Link from 'next/link';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface Activity {
   id: string;

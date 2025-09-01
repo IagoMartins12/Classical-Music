@@ -2,6 +2,11 @@
 
 import { getTeacherStudentsData } from '@/app/requests/teacher-request';
 import CreateLessonPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface CreateLessonData {
   students: Array<{
@@ -38,7 +43,10 @@ export default async function CreateLessonPageServer({
 }: {
   userId: string;
 }) {
-  console.log(`📅➕ [CREATE-LESSON-PAGE-SERVER] Loading for user ${userId}`);
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'teacher/lessonsCreate',
+  ]);
 
   try {
     // Buscar alunos ativos do professor
@@ -96,30 +104,34 @@ export default async function CreateLessonPageServer({
       `✅ [CREATE-LESSON-PAGE-SERVER] Data loaded successfully - ${students.length} students`
     );
 
-    return <CreateLessonPageClient initialData={createLessonData} />;
+    return (
+      <TranslationProvider language={language} translations={translations}>
+        <CreateLessonPageClient initialData={createLessonData} />
+      </TranslationProvider>
+    );
   } catch (error) {
-    console.error('❌ [CREATE-LESSON-PAGE-SERVER] Critical error:', error);
-
     // Fallback com dados vazios
     return (
-      <CreateLessonPageClient
-        initialData={{
-          students: [],
-          defaultSettings: {
-            defaultDuration: 60,
-            timezone: 'America/Sao_Paulo',
-            availableDays: [
-              'monday',
-              'tuesday',
-              'wednesday',
-              'thursday',
-              'friday',
-            ],
-            availableTimes: ['09:00', '14:00', '16:00', '18:00'],
-          },
-        }}
-        errorMessage="Erro ao carregar dados. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <CreateLessonPageClient
+          initialData={{
+            students: [],
+            defaultSettings: {
+              defaultDuration: 60,
+              timezone: 'America/Sao_Paulo',
+              availableDays: [
+                'monday',
+                'tuesday',
+                'wednesday',
+                'thursday',
+                'friday',
+              ],
+              availableTimes: ['09:00', '14:00', '16:00', '18:00'],
+            },
+          }}
+          errorMessage="Erro ao carregar dados. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }

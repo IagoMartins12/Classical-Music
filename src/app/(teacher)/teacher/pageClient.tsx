@@ -32,7 +32,7 @@ import { useTeacherData } from '@/app/hooks/lessonsSystem/useTeacherData';
 import RefreshIndicator from '@/app/components/Common/RefreshIndicator';
 import { translateNivel } from '@/app/utils';
 import RecentActivities from '@/app/components/TeacherSystem/RecentActivities';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface TeacherProfile {
   id: string;

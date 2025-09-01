@@ -37,7 +37,7 @@ import Select from '@/app/components/Common/Select';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useTeacherLessons } from '@/app/hooks/lessonsSystem/useTeacherLessons';
 import { translateNivel } from '@/app/utils';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface TeacherLessonsPageClientProps {
   initialData: TeacherLessonsData;

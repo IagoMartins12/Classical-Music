@@ -25,11 +25,11 @@ import {
 } from '../../animation/AnimatedComponents';
 import { useScoreFavorites } from '@/app/hooks/useScoreFavorites';
 import ScorePreview from '../ScorePreview';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import {
   getCombinedTabStatistics,
   TabStatistics,
 } from '@/app/utils/type-utils';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 // ✅ INTERFACE UNIFICADA SIMPLIFICADA
 interface MixedScoreData {

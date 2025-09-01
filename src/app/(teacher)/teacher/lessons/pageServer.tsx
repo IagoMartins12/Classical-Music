@@ -5,6 +5,11 @@ import {
   getTeacherLessonsData,
 } from '@/app/requests/teacher-request';
 import TeacherLessonsPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface LessonData {
   id: string;
@@ -100,8 +105,10 @@ export default async function TeacherLessonsPageServer({
 }: {
   userId: string;
 }) {
-  console.log(`📚 [TEACHER-LESSONS-PAGE-SERVER] Loading for user ${userId}`);
-
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'teacher/lesson',
+  ]);
   try {
     // Buscar dados em paralelo
     const [lessonsData, studentsData] = await Promise.all([
@@ -143,37 +150,43 @@ export default async function TeacherLessonsPageServer({
       `✅ [TEACHER-LESSONS-PAGE-SERVER] Data loaded successfully - ${lessonsData.lessons.length} lessons, ${students.length} students`
     );
 
-    return <TeacherLessonsPageClient initialData={teacherLessonsData} />;
+    return (
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherLessonsPageClient initialData={teacherLessonsData} />
+      </TranslationProvider>
+    );
   } catch (error) {
     console.error('❌ [TEACHER-LESSONS-PAGE-SERVER] Critical error:', error);
 
     // Fallback com dados vazios
     return (
-      <TeacherLessonsPageClient
-        initialData={{
-          lessons: [],
-          stats: {
-            total: 0,
-            scheduled: 0,
-            completed: 0,
-            cancelled: 0,
-            noShow: 0,
-            today: 0,
-            thisWeek: 0,
-            thisMonth: 0,
-            averageDuration: 60,
-            completionRate: 0,
-          },
-          pagination: {
-            offset: 0,
-            limit: 20,
-            total: 0,
-            hasMore: false,
-          },
-          students: [],
-        }}
-        errorMessage="Erro ao carregar dados das aulas. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherLessonsPageClient
+          initialData={{
+            lessons: [],
+            stats: {
+              total: 0,
+              scheduled: 0,
+              completed: 0,
+              cancelled: 0,
+              noShow: 0,
+              today: 0,
+              thisWeek: 0,
+              thisMonth: 0,
+              averageDuration: 60,
+              completionRate: 0,
+            },
+            pagination: {
+              offset: 0,
+              limit: 20,
+              total: 0,
+              hasMore: false,
+            },
+            students: [],
+          }}
+          errorMessage="Erro ao carregar dados das aulas. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }

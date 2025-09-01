@@ -35,7 +35,7 @@ import Image from 'next/image';
 import Modal from '@/app/components/Modal';
 import { useToast } from '@/app/hooks/useToast';
 import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSection';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface StudentLessonDetailPageClientProps {
   initialData: StudentLessonDetail | null;

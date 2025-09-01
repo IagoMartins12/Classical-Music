@@ -2,6 +2,11 @@
 
 import { getStudentAssignmentDetailsData } from '@/app/requests/student-requests';
 import StudentAssignmentDetailsPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface StudentAssignmentDetailsData {
   assignment: {
@@ -82,10 +87,10 @@ export default async function StudentAssignmentDetailsPageServer({
   userId,
   userRole,
 }: StudentAssignmentDetailsPageServerProps) {
-  console.log(
-    `📋👨‍🎓 [STUDENT-ASSIGNMENT-DETAILS-PAGE-SERVER] Loading assignment ${assignmentId} for user ${userId}`
-  );
-
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'student/assignmentsId',
+  ]);
   try {
     // Buscar detalhes da tarefa diretamente do banco (perspectiva do aluno)
     const assignmentData = await getStudentAssignmentDetailsData(
@@ -172,7 +177,11 @@ export default async function StudentAssignmentDetailsPageServer({
     );
 
     return (
-      <StudentAssignmentDetailsPageClient initialData={assignmentDetailsData} />
+      <TranslationProvider language={language} translations={translations}>
+        <StudentAssignmentDetailsPageClient
+          initialData={assignmentDetailsData}
+        />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error(
@@ -182,14 +191,16 @@ export default async function StudentAssignmentDetailsPageServer({
 
     // Fallback com erro
     return (
-      <StudentAssignmentDetailsPageClient
-        initialData={null}
-        errorMessage={
-          error instanceof Error
-            ? error.message
-            : 'Erro ao carregar dados da tarefa'
-        }
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <StudentAssignmentDetailsPageClient
+          initialData={null}
+          errorMessage={
+            error instanceof Error
+              ? error.message
+              : 'Erro ao carregar dados da tarefa'
+          }
+        />
+      </TranslationProvider>
     );
   }
 }

@@ -10,7 +10,7 @@ import {
   FiZap,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
 import { useBiographyWithLanguage } from '@/app/hooks/useBiographyWithLanguage';
 

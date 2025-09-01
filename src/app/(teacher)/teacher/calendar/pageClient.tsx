@@ -35,8 +35,8 @@ import Image from 'next/image';
 import { useTeacherCalendar } from '@/app/hooks/useTeacherCalendar';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import { MdOutlineCancel } from 'react-icons/md';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface TeacherCalendarPageClientProps {
   initialData: TeacherCalendarData;

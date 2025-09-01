@@ -2,6 +2,11 @@
 
 import { getStudentProgressData } from '@/app/requests/student-progress-requests';
 import StudentProgressPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 interface StudentProgressPageServerProps {
   userId: string;
@@ -10,8 +15,10 @@ interface StudentProgressPageServerProps {
 export default async function StudentProgressPageServer({
   userId,
 }: StudentProgressPageServerProps) {
-  console.log(`📊 [STUDENT-PROGRESS-PAGE-SERVER] Loading for user ${userId}`);
-
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'student/progress',
+  ]);
   try {
     // Buscar dados de progresso (período padrão: 6 meses)
     console.log('📈 Loading student progress data...');
@@ -25,16 +32,22 @@ export default async function StudentProgressPageServer({
       `✅ [STUDENT-PROGRESS-PAGE-SERVER] Data loaded successfully - ${progressData.stats.completedLessons} lessons, ${progressData.stats.learnedWorks} works`
     );
 
-    return <StudentProgressPageClient initialData={progressData} />;
+    return (
+      <TranslationProvider language={language} translations={translations}>
+        <StudentProgressPageClient initialData={progressData} />
+      </TranslationProvider>
+    );
   } catch (error) {
     console.error('❌ [STUDENT-PROGRESS-PAGE-SERVER] Critical error:', error);
 
     // Fallback para erro crítico
     return (
-      <StudentProgressPageClient
-        initialData={null}
-        errorMessage="Erro ao carregar dados de progresso. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <StudentProgressPageClient
+          initialData={null}
+          errorMessage="Erro ao carregar dados de progresso. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }

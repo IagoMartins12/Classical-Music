@@ -1,7 +1,12 @@
 // app/teacher/students/pageServer.tsx - Server Component para Gestão de Alunos
 
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
 import TeacherStudentsPageClient from './pageClient';
 import { getTeacherStudentsData } from '@/app/requests/teacher-request';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface TeacherStudentsServerData {
   students: Array<{
@@ -65,7 +70,10 @@ export default async function TeacherStudentsPageServer({
 }: {
   userId: string;
 }) {
-  console.log(`📋 [TEACHER-STUDENTS-PAGE-SERVER] Loading for user ${userId}`);
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'teacher/students',
+  ]);
 
   try {
     // 🚀 Buscar dados iniciais direto do banco
@@ -83,20 +91,26 @@ export default async function TeacherStudentsPageServer({
 
     console.log(`✅ [TEACHER-STUDENTS-PAGE-SERVER] Data loaded successfully`);
 
-    return <TeacherStudentsPageClient initialData={serverData} />;
+    return (
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherStudentsPageClient initialData={serverData} />
+      </TranslationProvider>
+    );
   } catch (error) {
     console.error('❌ [TEACHER-STUDENTS-PAGE-SERVER] Critical error:', error);
 
     // Fallback com dados vazios
     return (
-      <TeacherStudentsPageClient
-        initialData={{
-          students: [],
-          pagination: { offset: 0, limit: 100, total: 0, hasMore: false },
-          summary: { total: 0, active: 0, inactive: 0 },
-        }}
-        errorMessage="Erro ao carregar dados dos alunos. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherStudentsPageClient
+          initialData={{
+            students: [],
+            pagination: { offset: 0, limit: 100, total: 0, hasMore: false },
+            summary: { total: 0, active: 0, inactive: 0 },
+          }}
+          errorMessage="Erro ao carregar dados dos alunos. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }

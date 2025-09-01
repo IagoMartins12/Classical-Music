@@ -31,7 +31,7 @@ import {
 import { StudentDashboardData } from './pageServer';
 import { useStudentDashboard } from '@/app/hooks/lessonsSystem/useStudentDashboard';
 import RecentActivities from '@/app/components/TeacherSystem/RecentActivities';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface StudentProfile {
   id: string;

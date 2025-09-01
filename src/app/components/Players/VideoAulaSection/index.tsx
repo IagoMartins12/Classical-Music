@@ -25,7 +25,7 @@ import Input from '../../Common/Inputs';
 import Select from '../../Common/Select';
 import Image from 'next/image';
 import { useToast } from '@/app/hooks/useToast';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface VideoAulaSectionProps {
   work: {

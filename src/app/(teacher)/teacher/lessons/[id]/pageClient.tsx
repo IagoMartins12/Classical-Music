@@ -44,8 +44,8 @@ import WorkSelectionSection, {
   LessonWork,
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
 import { translateNivel } from '@/app/utils';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import Checkbox from '@/app/components/Common/Checkbox';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface TeacherLessonDetailsPageClientProps {
   lessonData: LessonDetailsData | null;

@@ -13,7 +13,7 @@ import {
   FiDatabase,
 } from 'react-icons/fi';
 import { SiYoutube } from 'react-icons/si';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 // Importar componente Waveform e tipos
 import Waveform from '../../Waveform';

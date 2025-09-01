@@ -5,6 +5,11 @@ import {
   getTeacherAssignmentsData,
 } from '@/app/requests/teacher-request';
 import TeacherAssignmentsPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export interface TeacherAssignment {
   id: string;
@@ -92,9 +97,10 @@ export default async function TeacherAssignmentsPageServer({
 }: {
   userId: string;
 }) {
-  console.log(
-    `📋 [TEACHER-ASSIGNMENTS-PAGE-SERVER] Loading for user ${userId}`
-  );
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'teacher/assignments',
+  ]);
 
   try {
     // Buscar dados em paralelo
@@ -129,7 +135,9 @@ export default async function TeacherAssignmentsPageServer({
     );
 
     return (
-      <TeacherAssignmentsPageClient initialData={teacherAssignmentsData} />
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherAssignmentsPageClient initialData={teacherAssignmentsData} />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error(
@@ -139,28 +147,30 @@ export default async function TeacherAssignmentsPageServer({
 
     // Fallback com dados vazios
     return (
-      <TeacherAssignmentsPageClient
-        initialData={{
-          assignments: [],
-          stats: {
-            total: 0,
-            pending: 0,
-            inProgress: 0,
-            completed: 0,
-            overdue: 0,
-            completionRate: 0,
-            averageTime: 0,
-          },
-          students: [],
-          pagination: {
-            offset: 0,
-            limit: 50,
-            total: 0,
-            hasMore: false,
-          },
-        }}
-        errorMessage="Erro ao carregar dados das tarefas. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherAssignmentsPageClient
+          initialData={{
+            assignments: [],
+            stats: {
+              total: 0,
+              pending: 0,
+              inProgress: 0,
+              completed: 0,
+              overdue: 0,
+              completionRate: 0,
+              averageTime: 0,
+            },
+            students: [],
+            pagination: {
+              offset: 0,
+              limit: 50,
+              total: 0,
+              hasMore: false,
+            },
+          }}
+          errorMessage="Erro ao carregar dados das tarefas. Tente recarregar a página."
+        />{' '}
+      </TranslationProvider>
     );
   }
 }

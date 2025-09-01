@@ -31,7 +31,7 @@ import { useEditAssignment } from '@/app/hooks/lessonsSystem/useEditAssignment';
 import WorkSelectionSection, {
   LessonWork,
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface EditAssignmentPageClientProps {
   initialData: EditAssignmentData | null;

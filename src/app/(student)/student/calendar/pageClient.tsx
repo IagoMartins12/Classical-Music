@@ -29,7 +29,7 @@ import Image from 'next/image';
 import Select from '@/app/components/Common/Select';
 import { useStudentCalendar } from '@/app/hooks/lessonsSystem/useStudentCalendar';
 import Modal from '@/app/components/Modal';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface StudentCalendarPageClientProps {
   initialData: StudentCalendarData | null;

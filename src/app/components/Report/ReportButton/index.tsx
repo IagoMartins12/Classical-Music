@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { FiFlag } from 'react-icons/fi';
 import ReportModal from '../ReportModal';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface ReportButtonProps {
   entityType: 'composer' | 'work' | 'score';

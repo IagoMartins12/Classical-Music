@@ -2,6 +2,11 @@
 import prisma from '@/app/libs/prismadb';
 import TeacherNotificationsPageClient from './pageClient';
 import { NotificationData } from '@/app/types/notification';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 interface TeacherNotificationsPageServerProps {
   userId: string;
@@ -10,6 +15,11 @@ interface TeacherNotificationsPageServerProps {
 export default async function TeacherNotificationsPageServer({
   userId,
 }: TeacherNotificationsPageServerProps) {
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'teacher/notifications',
+  ]);
+
   try {
     const now = new Date();
 
@@ -52,22 +62,26 @@ export default async function TeacherNotificationsPageServer({
     );
 
     return (
-      <TeacherNotificationsPageClient
-        initialNotifications={notifications as NotificationData[]}
-        unreadCount={unreadCount}
-        notificationStats={notificationStats}
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherNotificationsPageClient
+          initialNotifications={notifications as NotificationData[]}
+          unreadCount={unreadCount}
+          notificationStats={notificationStats}
+        />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error('❌ [TEACHER-NOTIFICATIONS-SERVER] Error:', error);
 
     return (
-      <TeacherNotificationsPageClient
-        initialNotifications={[]}
-        unreadCount={0}
-        notificationStats={[]}
-        errorMessage="Erro ao carregar notificações. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherNotificationsPageClient
+          initialNotifications={[]}
+          unreadCount={0}
+          notificationStats={[]}
+          errorMessage="Erro ao carregar notificações. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }

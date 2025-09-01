@@ -5,6 +5,11 @@ import {
   getTeacherStudentsData,
 } from '@/app/requests/teacher-request';
 import TeacherPageClient from './pageClient';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export default async function TeacherPageServer({
   userId,
@@ -19,6 +24,11 @@ export default async function TeacherPageServer({
   userImage?: string | null;
   userRole: number;
 }) {
+  const language = await getServerLanguageStatic();
+  const { translations } = await loadPageTranslationsWithCommon(language, [
+    'teacher/home',
+  ]);
+
   try {
     // Buscar dados iniciais em paralelo - DIRETO DO BANCO
     const [dashboardData, studentsData, calendarData, teacherProfile] =
@@ -44,37 +54,41 @@ export default async function TeacherPageServer({
     console.log(`✅ [TEACHER-PAGE-SERVER] Data loaded successfully`);
 
     return (
-      <TeacherPageClient
-        initialDashboardData={dashboardData}
-        initialStudentsData={studentsData}
-        initialCalendarData={calendarData}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherPageClient
+          initialDashboardData={dashboardData}
+          initialStudentsData={studentsData}
+          initialCalendarData={calendarData}
+          teacherProfile={{
+            id: userId,
+            name: userName,
+            email: userEmail,
+            image: userImage,
+            role: userRole,
+          }}
+        />
+      </TranslationProvider>
     );
   } catch (error) {
     console.error('❌ [TEACHER-PAGE-SERVER] Critical error:', error);
 
     // Fallback com dados vazios para não quebrar a UI
     return (
-      <TeacherPageClient
-        initialDashboardData={null}
-        initialStudentsData={null}
-        initialCalendarData={null}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-        errorMessage="Erro ao carregar dados. Tente recarregar a página."
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <TeacherPageClient
+          initialDashboardData={null}
+          initialStudentsData={null}
+          initialCalendarData={null}
+          teacherProfile={{
+            id: userId,
+            name: userName,
+            email: userEmail,
+            image: userImage,
+            role: userRole,
+          }}
+          errorMessage="Erro ao carregar dados. Tente recarregar a página."
+        />
+      </TranslationProvider>
     );
   }
 }
