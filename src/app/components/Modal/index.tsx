@@ -12,6 +12,7 @@ import { createPortal } from 'react-dom';
 import { FiX } from 'react-icons/fi';
 import ConfirmationModal from './ConfirmationModal';
 import { useModalConfirmation } from '@/app/hooks/useModalConfirmation';
+import { useIsMobile } from '@/app/hooks/useMobile';
 
 interface ModalProps {
   isOpen: boolean;
@@ -56,8 +57,18 @@ const Modal = forwardRef<ModalRef, ModalProps>(
     },
     ref
   ) => {
+    const isMobile = useIsMobile();
     const modalRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
+    const isLargeModal = [
+      'lg',
+      'xl',
+      '2xl',
+      '3xl',
+      '4xl',
+      '5xl',
+      '6xl',
+    ].includes(maxWidth);
 
     // 🎯 SÓ USA CONFIRMAÇÃO SE HABILITADA
     const {
@@ -150,26 +161,42 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       <>
         {/* Modal Principal */}
         <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 ">
-          <div
-            className="fixed inset-0 modal-overlay animate-fade-in"
-            onClick={handleClose}
-          />
+          {/* Overlay - só mostra se não for modal grande em mobile */}
+          {!isLargeModal && (
+            <div
+              className="fixed inset-0 modal-overlay animate-fade-in"
+              onClick={handleClose}
+            />
+          )}
 
+          {/* Overlay para desktop em modals grandes */}
+          {isLargeModal && (
+            <div
+              className="fixed inset-0 modal-overlay animate-fade-in hidden sm:block"
+              onClick={handleClose}
+            />
+          )}
           <div
             ref={modalRef}
             className={`
-          relative w-full ${maxWidthClasses[maxWidth]} 
-          modal-content !overflow-hidden classical-card animate-fade-in-scale
-          shadow-theme-large border-theme-accent max-h-[90vh]
-          ${className}
-        `}
+              relative animate-fade-in-scale
+              classical-card shadow-theme-large border-theme-accent
+              modal-content no-border !overflow-hidden classical-card animate-fade-in-scale
+            
+              ${
+                isLargeModal
+                  ? `w-full h-full sm:w-auto sm:h-auto sm:${maxWidthClasses[maxWidth]} sm:max-h-[90vh] sm:rounded-lg`
+                  : `w-full ${maxWidthClasses[maxWidth]} max-h-[90vh]`
+              }
+              ${className}
+            `}
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? 'modal-title' : undefined}
           >
             {/* Header */}
             {(title || showCloseButton) && (
-              <div className="flex items-center justify-between p-6 pb-4 border-b border-theme-secondary">
+              <div className="flex items-center justify-between p-0 sm:p-6 pb-4 border-b border-theme-secondary">
                 {title && (
                   <h2
                     id="modal-title"
@@ -197,7 +224,11 @@ const Modal = forwardRef<ModalRef, ModalProps>(
             overflow-y-auto  classical-scrollbar pt-4  flex-1
             ${title || showCloseButton ? 'px-6 pb-6' : 'p-6'}
           `}
-              style={{ maxHeight: 'calc(90vh - 100px)' }}
+              style={{
+                maxHeight: isMobile
+                  ? 'calc(98vh - 50px)'
+                  : 'calc(90vh - 100px)',
+              }}
             >
               {children}
             </div>

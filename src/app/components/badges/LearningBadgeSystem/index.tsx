@@ -1,4 +1,4 @@
-// components/badges/LearningBadgeSystem.tsx - Sistema específico para Learning
+// components/badges/LearningBadgeSystem.tsx - Sistema específico para Learning com TRADUÇÃO
 'use client';
 
 import {
@@ -21,6 +21,7 @@ import { useCallback } from 'react';
 import { Badge } from '../BadgeSystem';
 import { FaFire } from 'react-icons/fa';
 import { CTAPriority, SmartCTA } from '../FavoritesBadgeSystem';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 const RARITY_COLORS = {
   COMMON: {
@@ -87,13 +88,271 @@ interface LearningStats {
   achievedDeadlines?: number;
 }
 
+// Função para traduzir badges baseado na linguagem
+const getBadgeTranslations = (lang: 'pt' | 'en') => {
+  if (lang === 'en') {
+    return {
+      // ============ MILESTONE & INÍCIO ============
+      firstGoal: {
+        name: 'First Goal',
+        description: 'You took the first step in your musical journey!',
+      },
+      dedicatedStudent: {
+        name: 'Dedicated Student',
+        description: 'You have 10 works on your study list. What dedication!',
+      },
+      dreamLibrary: {
+        name: 'Dream Library',
+        description:
+          'Your study list has 25 works. Your musical dreams are big!',
+      },
+      goalCollector: {
+        name: 'Goal Collector',
+        description:
+          'With 50 works on the list, you plan to conquer the musical world!',
+      },
+
+      // ============ MAESTRIA & COMPLETION ============
+      firstCompletion: {
+        name: 'First Achievement',
+        description: 'Congratulations! You completed your first musical work.',
+      },
+      persistentLearner: {
+        name: 'Persistent Learner',
+        description: 'With 5 works mastered, you show true persistence!',
+      },
+      experiencedMusician: {
+        name: 'Experienced Musician',
+        description:
+          'With 15 works mastered, you are already an experienced musician!',
+      },
+      virtuoso: {
+        name: 'Virtuoso',
+        description: 'You mastered 30 works! Your talent is unquestionable.',
+      },
+      musicalLegend: {
+        name: 'Musical Legend',
+        description: 'With 50+ works mastered, you entered history!',
+      },
+
+      // ============ QUALIDADE & PERFORMANCE ============
+      qualitySeeker: {
+        name: 'Excellence Seeker',
+        description:
+          'You maintain an average mastery of 4+. Quality above all!',
+      },
+      perfectionist: {
+        name: 'Perfectionist',
+        description: 'Average mastery of 4.5+! You are a true perfectionist.',
+      },
+      expertMaster: {
+        name: 'Expert Master',
+        description:
+          'You have 10+ works with maximum mastery (4+). Impressive!',
+      },
+
+      // Performance Badges
+      stageDebut: {
+        name: 'Stage Debut',
+        description:
+          'You performed your first public performance! What courage!',
+      },
+      experiencedPerformer: {
+        name: 'Experienced Performer',
+        description:
+          'With 5 public performances, you are already an experienced artist!',
+      },
+      concertArtist: {
+        name: 'Concert Artist',
+        description: '10+ performances! You are a true renowned artist.',
+      },
+
+      // ============ EFICIÊNCIA & CONSISTÊNCIA ============
+      efficientLearner: {
+        name: 'Efficient Learner',
+        description:
+          'You complete 80% of the works you start. What efficiency!',
+      },
+      learningMachine: {
+        name: 'Learning Machine',
+        description: '90%+ completion rate! You are unstoppable.',
+      },
+
+      // Consistency Badges
+      weeklyStreak: {
+        name: 'Weekly Streak',
+        description: 'You practiced consistently for a whole week!',
+      },
+      monthlyProductive: {
+        name: 'Productive Month',
+        description: 'You completed 5 works in 30 days. What productivity!',
+      },
+      unstoppableDedication: {
+        name: 'Unstoppable Dedication',
+        description: 'A streak of 30+ days! Your dedication is inspiring.',
+      },
+
+      // ============ DIVERSIDADE & EXPLORAÇÃO ============
+      musicalExplorer: {
+        name: 'Musical Explorer',
+        description: 'You studied works by 3 different composers!',
+      },
+      timeTraveler: {
+        name: 'Time Traveler',
+        description: 'You explored 4 different musical epochs!',
+      },
+      multiInstrumental: {
+        name: 'Multi-Instrumental',
+        description: 'You study for 3+ different instruments!',
+      },
+      universalScholar: {
+        name: 'Universal Scholar',
+        description: 'You master 6+ different musical epochs!',
+      },
+      diversityMaster: {
+        name: 'Diversity Master',
+        description: 'You studied works by 10+ different composers!',
+      },
+    };
+  }
+
+  // Portuguese (default)
+  return {
+    // ============ MILESTONE & INÍCIO ============
+    firstGoal: {
+      name: 'Primeiro Objetivo',
+      description: 'Você deu o primeiro passo na sua jornada musical!',
+    },
+    dedicatedStudent: {
+      name: 'Estudante Dedicado',
+      description: 'Você tem 10 obras em sua lista de estudos. Que dedicação!',
+    },
+    dreamLibrary: {
+      name: 'Biblioteca de Sonhos',
+      description:
+        'Sua lista de estudos tem 25 obras. Seus sonhos musicais são grandes!',
+    },
+    goalCollector: {
+      name: 'Colecionador de Metas',
+      description:
+        'Com 50 obras na lista, você planeja conquistar o mundo musical!',
+    },
+
+    // ============ MAESTRIA & COMPLETION ============
+    firstCompletion: {
+      name: 'Primeira Conquista',
+      description: 'Parabéns! Você completou sua primeira obra musical.',
+    },
+    persistentLearner: {
+      name: 'Aprendiz Persistente',
+      description:
+        'Com 5 obras dominadas, você mostra verdadeira persistência!',
+    },
+    experiencedMusician: {
+      name: 'Músico Experiente',
+      description: 'Com 15 obras dominadas, você já é um músico experiente!',
+    },
+    virtuoso: {
+      name: 'Virtuoso',
+      description: 'Você dominou 30 obras! Seu talento é inquestionável.',
+    },
+    musicalLegend: {
+      name: 'Lenda Musical',
+      description: 'Com 50+ obras dominadas, você entrou para a história!',
+    },
+
+    // ============ QUALIDADE & PERFORMANCE ============
+    qualitySeeker: {
+      name: 'Buscador da Excelência',
+      description:
+        'Você mantém uma maestria média de 4+. Qualidade acima de tudo!',
+    },
+    perfectionist: {
+      name: 'Perfeccionista',
+      description:
+        'Maestria média de 4.5+! Você é um verdadeiro perfeccionista.',
+    },
+    expertMaster: {
+      name: 'Mestre Expert',
+      description:
+        'Você tem 10+ obras com maestria máxima (4+). Impressionante!',
+    },
+
+    // Performance Badges
+    stageDebut: {
+      name: 'Estreia no Palco',
+      description:
+        'Você realizou sua primeira performance pública! Que coragem!',
+    },
+    experiencedPerformer: {
+      name: 'Performer Experiente',
+      description:
+        'Com 5 performances públicas, você já é um artista experiente!',
+    },
+    concertArtist: {
+      name: 'Artista Conceituado',
+      description:
+        '10+ performances! Você é um verdadeiro artista conceituado.',
+    },
+
+    // ============ EFICIÊNCIA & CONSISTÊNCIA ============
+    efficientLearner: {
+      name: 'Aprendiz Eficiente',
+      description: 'Você completa 80% das obras que inicia. Que eficiência!',
+    },
+    learningMachine: {
+      name: 'Máquina de Aprender',
+      description: '90%+ de taxa de conclusão! Você é imparável.',
+    },
+
+    // Consistency Badges
+    weeklyStreak: {
+      name: 'Streak Semanal',
+      description: 'Você praticou consistentemente por uma semana inteira!',
+    },
+    monthlyProductive: {
+      name: 'Mês Produtivo',
+      description: 'Você completou 5 obras em 30 dias. Que produtividade!',
+    },
+    unstoppableDedication: {
+      name: 'Dedicação Inabalável',
+      description: 'Um streak de 30+ dias! Sua dedicação é inspiradora.',
+    },
+
+    // ============ DIVERSIDADE & EXPLORAÇÃO ============
+    musicalExplorer: {
+      name: 'Explorador Musical',
+      description: 'Você estudou obras de 3 compositores diferentes!',
+    },
+    timeTraveler: {
+      name: 'Viajante do Tempo',
+      description: 'Você explorou 4 épocas musicais diferentes!',
+    },
+    multiInstrumental: {
+      name: 'Multi-Instrumental',
+      description: 'Você estuda para 3+ instrumentos diferentes!',
+    },
+    universalScholar: {
+      name: 'Conhecedor Universal',
+      description: 'Você domina 6+ épocas musicais diferentes!',
+    },
+    diversityMaster: {
+      name: 'Mestre da Diversidade',
+      description: 'Você estudou obras de 10+ compositores diferentes!',
+    },
+  };
+};
+
 export function createLearningBadges(stats: LearningStats): Badge[] {
+  const { language } = useLanguageStore();
+  const t = getBadgeTranslations(language);
+
   return [
     // ============ MILESTONE & INÍCIO ============
     {
       id: 'first-goal',
-      name: 'Primeiro Objetivo',
-      description: 'Você deu o primeiro passo na sua jornada musical!',
+      name: t.firstGoal.name,
+      description: t.firstGoal.description,
       icon: PiTarget,
       category: 'milestone',
       rarity: 'COMMON',
@@ -102,8 +361,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'dedicated-student',
-      name: 'Estudante Dedicado',
-      description: 'Você tem 10 obras em sua lista de estudos. Que dedicação!',
+      name: t.dedicatedStudent.name,
+      description: t.dedicatedStudent.description,
       icon: FiBookOpen,
       category: 'learning',
       rarity: 'COMMON',
@@ -114,9 +373,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'dream-library',
-      name: 'Biblioteca de Sonhos',
-      description:
-        'Sua lista de estudos tem 25 obras. Seus sonhos musicais são grandes!',
+      name: t.dreamLibrary.name,
+      description: t.dreamLibrary.description,
       icon: FiMusic,
       category: 'learning',
       rarity: 'RARE',
@@ -127,9 +385,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'goal-collector',
-      name: 'Colecionador de Metas',
-      description:
-        'Com 50 obras na lista, você planeja conquistar o mundo musical!',
+      name: t.goalCollector.name,
+      description: t.goalCollector.description,
       icon: FiTarget,
       category: 'learning',
       rarity: 'EPIC',
@@ -142,8 +399,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     // ============ MAESTRIA & COMPLETION ============
     {
       id: 'first-completion',
-      name: 'Primeira Conquista',
-      description: 'Parabéns! Você completou sua primeira obra musical.',
+      name: t.firstCompletion.name,
+      description: t.firstCompletion.description,
       icon: FiCheckCircle,
       category: 'learning',
       rarity: 'COMMON',
@@ -152,9 +409,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'persistent-learner',
-      name: 'Aprendiz Persistente',
-      description:
-        'Com 5 obras dominadas, você mostra verdadeira persistência!',
+      name: t.persistentLearner.name,
+      description: t.persistentLearner.description,
       icon: FiAward,
       category: 'learning',
       rarity: 'COMMON',
@@ -165,8 +421,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'experienced-musician',
-      name: 'Músico Experiente',
-      description: 'Com 15 obras dominadas, você já é um músico experiente!',
+      name: t.experiencedMusician.name,
+      description: t.experiencedMusician.description,
       icon: BiTrophy,
       category: 'expertise',
       rarity: 'RARE',
@@ -177,8 +433,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'virtuoso',
-      name: 'Virtuoso',
-      description: 'Você dominou 30 obras! Seu talento é inquestionável.',
+      name: t.virtuoso.name,
+      description: t.virtuoso.description,
       icon: BiCrown,
       category: 'expertise',
       rarity: 'EPIC',
@@ -189,8 +445,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'musical-legend',
-      name: 'Lenda Musical',
-      description: 'Com 50+ obras dominadas, você entrou para a história!',
+      name: t.musicalLegend.name,
+      description: t.musicalLegend.description,
       icon: FiShield,
       category: 'milestone',
       rarity: 'LEGENDARY',
@@ -203,9 +459,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     // ============ QUALIDADE & PERFORMANCE ============
     {
       id: 'quality-seeker',
-      name: 'Buscador da Excelência',
-      description:
-        'Você mantém uma maestria média de 4+. Qualidade acima de tudo!',
+      name: t.qualitySeeker.name,
+      description: t.qualitySeeker.description,
       icon: FiStar,
       category: 'expertise',
       rarity: 'RARE',
@@ -216,9 +471,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'perfectionist',
-      name: 'Perfeccionista',
-      description:
-        'Maestria média de 4.5+! Você é um verdadeiro perfeccionista.',
+      name: t.perfectionist.name,
+      description: t.perfectionist.description,
       icon: BiCrown,
       category: 'expertise',
       rarity: 'EPIC',
@@ -229,9 +483,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'expert-master',
-      name: 'Mestre Expert',
-      description:
-        'Você tem 10+ obras com maestria máxima (4+). Impressionante!',
+      name: t.expertMaster.name,
+      description: t.expertMaster.description,
       icon: FiAward,
       category: 'expertise',
       rarity: 'EPIC',
@@ -244,9 +497,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     // Performance Badges
     {
       id: 'stage-debut',
-      name: 'Estreia no Palco',
-      description:
-        'Você realizou sua primeira performance pública! Que coragem!',
+      name: t.stageDebut.name,
+      description: t.stageDebut.description,
       icon: FiUsers,
       category: 'social',
       rarity: 'RARE',
@@ -255,9 +507,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'experienced-performer',
-      name: 'Performer Experiente',
-      description:
-        'Com 5 performances públicas, você já é um artista experiente!',
+      name: t.experiencedPerformer.name,
+      description: t.experiencedPerformer.description,
       icon: BiTrophy,
       category: 'social',
       rarity: 'EPIC',
@@ -268,9 +519,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'concert-artist',
-      name: 'Artista Conceituado',
-      description:
-        '10+ performances! Você é um verdadeiro artista conceituado.',
+      name: t.concertArtist.name,
+      description: t.concertArtist.description,
       icon: FiAward,
       category: 'social',
       rarity: 'LEGENDARY',
@@ -283,8 +533,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     // ============ EFICIÊNCIA & CONSISTÊNCIA ============
     {
       id: 'efficient-learner',
-      name: 'Aprendiz Eficiente',
-      description: 'Você completa 80% das obras que inicia. Que eficiência!',
+      name: t.efficientLearner.name,
+      description: t.efficientLearner.description,
       icon: FiZap,
       category: 'expertise',
       rarity: 'RARE',
@@ -295,8 +545,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'learning-machine',
-      name: 'Máquina de Aprender',
-      description: '90%+ de taxa de conclusão! Você é imparável.',
+      name: t.learningMachine.name,
+      description: t.learningMachine.description,
       icon: FiTrendingUp,
       category: 'expertise',
       rarity: 'EPIC',
@@ -309,8 +559,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     // Consistency Badges
     {
       id: 'weekly-streak',
-      name: 'Streak Semanal',
-      description: 'Você praticou consistentemente por uma semana inteira!',
+      name: t.weeklyStreak.name,
+      description: t.weeklyStreak.description,
       icon: FaFire,
       category: 'dedication',
       rarity: 'RARE',
@@ -321,8 +571,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'monthly-productive',
-      name: 'Mês Produtivo',
-      description: 'Você completou 5 obras em 30 dias. Que produtividade!',
+      name: t.monthlyProductive.name,
+      description: t.monthlyProductive.description,
       icon: FiClock,
       category: 'dedication',
       rarity: 'EPIC',
@@ -333,8 +583,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'unstoppable-dedication',
-      name: 'Dedicação Inabalável',
-      description: 'Um streak de 30+ dias! Sua dedicação é inspiradora.',
+      name: t.unstoppableDedication.name,
+      description: t.unstoppableDedication.description,
       icon: FiShield,
       category: 'dedication',
       rarity: 'LEGENDARY',
@@ -347,8 +597,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     // ============ DIVERSIDADE & EXPLORAÇÃO ============
     {
       id: 'musical-explorer',
-      name: 'Explorador Musical',
-      description: 'Você estudou obras de 3 compositores diferentes!',
+      name: t.musicalExplorer.name,
+      description: t.musicalExplorer.description,
       icon: FiZap,
       category: 'expertise',
       rarity: 'COMMON',
@@ -359,8 +609,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'time-traveler',
-      name: 'Viajante do Tempo',
-      description: 'Você explorou 4 épocas musicais diferentes!',
+      name: t.timeTraveler.name,
+      description: t.timeTraveler.description,
       icon: FiClock,
       category: 'expertise',
       rarity: 'RARE',
@@ -371,8 +621,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'multi-instrumental',
-      name: 'Multi-Instrumental',
-      description: 'Você estuda para 3+ instrumentos diferentes!',
+      name: t.multiInstrumental.name,
+      description: t.multiInstrumental.description,
       icon: FiMusic,
       category: 'expertise',
       rarity: 'RARE',
@@ -383,8 +633,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'universal-scholar',
-      name: 'Conhecedor Universal',
-      description: 'Você domina 6+ épocas musicais diferentes!',
+      name: t.universalScholar.name,
+      description: t.universalScholar.description,
       icon: FiBookOpen,
       category: 'expertise',
       rarity: 'EPIC',
@@ -395,8 +645,8 @@ export function createLearningBadges(stats: LearningStats): Badge[] {
     },
     {
       id: 'diversity-master',
-      name: 'Mestre da Diversidade',
-      description: 'Você estudou obras de 10+ compositores diferentes!',
+      name: t.diversityMaster.name,
+      description: t.diversityMaster.description,
       icon: FiShield,
       category: 'expertise',
       rarity: 'LEGENDARY',
@@ -457,17 +707,80 @@ export function getNextLearningAchievements(stats: LearningStats) {
   return sorted.slice(0, 3); // Top 3 próximos achievements
 }
 
+// CTA translations
+const getCTATranslations = (lang: 'pt' | 'en') => {
+  if (lang === 'en') {
+    return {
+      addGoals: {
+        title: 'Set More Goals',
+        description: 'Add more works to your study list',
+        action: 'Explore Works',
+      },
+      improveMastery: {
+        title: 'Focus on Quality',
+        description: 'Dedicate more time to fully master each work',
+        action: 'View Study Tips',
+      },
+      firstPerformance: {
+        title: 'How about a Recital?',
+        description: 'You already master several works. Time to perform!',
+        action: 'Performance Tips',
+      },
+      diversify: {
+        title: 'Explore New Horizons',
+        description: 'Diversify by studying different composers and epochs',
+        action: 'Discover Composers',
+      },
+      improveCompletion: {
+        title: 'Focus on Current Goals',
+        description: 'Finish the works you started before adding new ones',
+        action: 'View Current List',
+      },
+    };
+  }
+
+  return {
+    addGoals: {
+      title: 'Defina Mais Metas',
+      description: 'Adicione mais obras à sua lista de estudos',
+      action: 'Explorar Obras',
+    },
+    improveMastery: {
+      title: 'Foque na Qualidade',
+      description: 'Dedique mais tempo para dominar completamente cada obra',
+      action: 'Ver Dicas de Estudo',
+    },
+    firstPerformance: {
+      title: 'Que tal um Recital?',
+      description: 'Você já domina várias obras. Hora de se apresentar!',
+      action: 'Dicas de Performance',
+    },
+    diversify: {
+      title: 'Explore Novos Horizontes',
+      description: 'Diversifique estudando diferentes compositores e épocas',
+      action: 'Descobrir Compositores',
+    },
+    improveCompletion: {
+      title: 'Foque nas Metas Atuais',
+      description: 'Termine as obras que já começou antes de adicionar novas',
+      action: 'Ver Lista Atual',
+    },
+  };
+};
+
 // CTAs inteligentes baseados no progresso
 export function getLearningSmartCTAs(stats: LearningStats): SmartCTA[] {
+  const { language } = useLanguageStore();
+  const ctaTexts = getCTATranslations(language);
   const ctas: SmartCTA[] = [];
 
   // CTA: Adicionar mais metas se tem poucas
   if (stats.wantToLearnCount < 5) {
     ctas.push({
       id: 'add-goals',
-      title: 'Defina Mais Metas',
-      description: 'Adicione mais obras à sua lista de estudos',
-      action: 'Explorar Obras',
+      title: ctaTexts.addGoals.title,
+      description: ctaTexts.addGoals.description,
+      action: ctaTexts.addGoals.action,
       url: '/works',
       priority: 'high',
     });
@@ -477,9 +790,9 @@ export function getLearningSmartCTAs(stats: LearningStats): SmartCTA[] {
   if (stats.avgMastery < 3 && stats.learnedCount > 0) {
     ctas.push({
       id: 'improve-mastery',
-      title: 'Foque na Qualidade',
-      description: 'Dedique mais tempo para dominar completamente cada obra',
-      action: 'Ver Dicas de Estudo',
+      title: ctaTexts.improveMastery.title,
+      description: ctaTexts.improveMastery.description,
+      action: ctaTexts.improveMastery.action,
       url: '/learning/tips',
       priority: 'medium',
     });
@@ -489,9 +802,9 @@ export function getLearningSmartCTAs(stats: LearningStats): SmartCTA[] {
   if (stats.expertLevelCount >= 3 && stats.publicPerformances === 0) {
     ctas.push({
       id: 'first-performance',
-      title: 'Que tal um Recital?',
-      description: 'Você já domina várias obras. Hora de se apresentar!',
-      action: 'Dicas de Performance',
+      title: ctaTexts.firstPerformance.title,
+      description: ctaTexts.firstPerformance.description,
+      action: ctaTexts.firstPerformance.action,
       url: '/learning/performance-tips',
       priority: 'high',
     });
@@ -501,9 +814,9 @@ export function getLearningSmartCTAs(stats: LearningStats): SmartCTA[] {
   if (stats.uniqueComposers <= 2 && stats.learnedCount >= 3) {
     ctas.push({
       id: 'diversify',
-      title: 'Explore Novos Horizontes',
-      description: 'Diversifique estudando diferentes compositores e épocas',
-      action: 'Descobrir Compositores',
+      title: ctaTexts.diversify.title,
+      description: ctaTexts.diversify.description,
+      action: ctaTexts.diversify.action,
       url: '/composers',
       priority: 'medium',
     });
@@ -513,9 +826,9 @@ export function getLearningSmartCTAs(stats: LearningStats): SmartCTA[] {
   if (stats.completionRate < 70 && stats.totalLearning >= 5) {
     ctas.push({
       id: 'improve-completion',
-      title: 'Foque nas Metas Atuais',
-      description: 'Termine as obras que já começou antes de adicionar novas',
-      action: 'Ver Lista Atual',
+      title: ctaTexts.improveCompletion.title,
+      description: ctaTexts.improveCompletion.description,
+      action: ctaTexts.improveCompletion.action,
       url: '/learning?tab=want-to-learn',
       priority: 'high',
     });

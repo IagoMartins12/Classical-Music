@@ -11,41 +11,6 @@ interface LanguageToggleProps {
   className?: string;
 }
 
-// Componentes de bandeira (mantém os mesmos)
-const FlagBR: React.FC<{ className?: string }> = ({
-  className = 'w-5 h-5',
-}) => (
-  <div
-    className={`${className} relative overflow-hidden rounded border border-theme-secondary`}
-  >
-    <div className="absolute inset-0 bg-green-500" />
-    <div
-      className="absolute inset-0 bg-yellow-400"
-      style={{ top: '30%', bottom: '30%' }}
-    />
-    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-blue-600 rounded-full" />
-  </div>
-);
-
-const FlagUS: React.FC<{ className?: string }> = ({
-  className = 'w-5 h-5',
-}) => (
-  <div
-    className={`${className} relative overflow-hidden rounded border border-theme-secondary`}
-  >
-    {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-      <div
-        key={i}
-        className={`absolute left-0 right-0 h-1/7 ${
-          i % 2 === 0 ? 'bg-red-600' : 'bg-white'
-        }`}
-        style={{ top: `${(i / 7) * 100}%` }}
-      />
-    ))}
-    <div className="absolute top-0 left-0 bg-blue-800 w-2/5 h-2/5" />
-  </div>
-);
-
 export const LanguageToggle: React.FC<LanguageToggleProps> = ({
   variant = 'default',
   showLabel = false,
@@ -67,7 +32,19 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
     }
   };
 
-  const getIconSize = () => {
+  const getFlagSize = () => {
+    switch (variant) {
+      case 'compact':
+      case 'navbar':
+        return 'text-sm'; // ~14px
+      case 'globe':
+        return 'text-base'; // ~16px
+      default:
+        return 'text-lg'; // ~18px
+    }
+  };
+
+  const getGlobeIconSize = () => {
     switch (variant) {
       case 'compact':
       case 'navbar':
@@ -84,23 +61,64 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
       return (
         <div className="relative flex items-center justify-center">
           <FiGlobe
-            className={`${getIconSize()} text-brand-primary transition-all duration-300`}
+            className={`${getGlobeIconSize()} text-brand-primary transition-all duration-300`}
           />
-          <div className="absolute -bottom-1 -right-1">
-            {language === 'pt' ? (
-              <div className="flex items-center justify-center text-xs">🇧🇷</div>
-            ) : (
-              <div className="flex items-center justify-center text-xs">🇺🇸</div>
-            )}
+          <div className="absolute -bottom-0.5 -right-0.5 flex items-center justify-center w-3 h-3 bg-theme-elevated rounded-full border border-theme-secondary">
+            <span className="text-xs leading-none">
+              {language === 'pt' ? '🇧🇷' : '🇺🇸'}
+            </span>
           </div>
         </div>
       );
     }
 
-    return language === 'pt' ? (
-      <div className="flex items-center justify-center">🇧🇷</div>
-    ) : (
-      <div className="flex items-center justify-center">🇺🇸</div>
+    // Usar a mesma estrutura do ThemeToggle com container centralizado
+    return (
+      <div className="relative flex items-center justify-center">
+        {/* Bandeira PT */}
+        <span
+          className={`
+            ${getFlagSize()}
+            absolute
+            transition-all duration-500
+            ${
+              language === 'pt'
+                ? 'opacity-100 rotate-0 scale-100'
+                : 'opacity-0 rotate-180 scale-50'
+            }
+          `}
+          style={{
+            lineHeight: '1',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          🇧🇷
+        </span>
+
+        {/* Bandeira US */}
+        <span
+          className={`
+            ${getFlagSize()}
+            absolute
+            transition-all duration-500
+            ${
+              language === 'en'
+                ? 'opacity-100 rotate-0 scale-100'
+                : 'opacity-0 -rotate-180 scale-50'
+            }
+          `}
+          style={{
+            lineHeight: '1',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          🇺🇸
+        </span>
+      </div>
     );
   };
 
@@ -110,11 +128,11 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
 
   return (
     <>
-      {/* ✅ Modal de tradução com Portal e callback */}
+      {/* Modal de tradução */}
       <TranslationLoadingModal
         isOpen={isTranslating}
         currentLanguage={language}
-        onComplete={onModalComplete} // ✅ Callback para finalizar
+        onComplete={onModalComplete}
       />
 
       {/* Toggle button */}
@@ -130,12 +148,22 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
           disabled={isTranslating}
           className={`
             ${getVariantClasses()}
-            relative bg-theme-elevated border border-theme-primary rounded-xl 
-            hover:border-theme-accent hover:bg-interactive-hover 
-            active:scale-95 transition-all duration-300 group 
-            disabled:opacity-50 disabled:cursor-not-allowed 
-            focus:outline-none focus:ring-2 focus:ring-brand-primary/50 
-            focus:ring-offset-2 focus:ring-offset-bg-primary
+            relative
+            bg-theme-elevated
+            border border-theme-primary
+            rounded-xl
+            hover:border-theme-accent
+            hover:bg-interactive-hover
+            active:scale-95
+            transition-all duration-300
+            group
+            disabled:opacity-50
+            disabled:cursor-not-allowed
+            focus:outline-none
+            focus:ring-2
+            focus:ring-brand-primary/50
+            focus:ring-offset-2
+            focus:ring-offset-bg-primary
             ${isTranslating ? 'animate-pulse cursor-wait' : ''}
           `}
           aria-label={`Alterar para ${
@@ -146,8 +174,16 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
           {/* Background gradient effect */}
           <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300" />
 
-          {/* Flag/Globe container */}
+          {/* Flag container - mesma estrutura do ThemeToggle */}
           {getCurrentFlag()}
+
+          {/* Loading indicator */}
+          {isTranslating && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
+            </div>
+          )}
+
           {/* Subtle animation indicator */}
           <div className="absolute -top-1 -right-1 w-2 h-2 bg-accent-green rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
         </button>
@@ -172,7 +208,7 @@ export const LanguageDropdown: React.FC<{
     {
       code: 'en' as const,
       name: 'English',
-      flag: '🇧🇷',
+      flag: '🇺🇸',
     },
   ];
 

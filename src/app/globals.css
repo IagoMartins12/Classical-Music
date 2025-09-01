@@ -691,11 +691,24 @@ body {
     padding: 0.625rem 1.25rem;
     font-size: 0.875rem;
   }
+
+  .modal-content {
+    max-height: 100;
+  }
 }
 
 @media (max-width: 640px) {
   .section-wrap {
     padding: 1.5rem 1rem;
+  }
+
+  .modal-content {
+    max-height: 100%;
+    border: none;
+  }
+
+  .modal-content.no-border {
+    border-radius: 0px;
   }
 }
 

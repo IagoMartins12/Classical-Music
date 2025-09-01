@@ -1,4 +1,4 @@
-// components/badges/AnnotationsBadgeSystem.tsx - Sistema específico para Annotations
+// components/badges/AnnotationsBadgeSystem.tsx - Sistema específico para Annotations com TRADUÇÃO
 'use client';
 
 import {
@@ -22,6 +22,7 @@ import { useAchievementSystem } from '@/app/hooks/useAchievements';
 import { Badge } from '../BadgeSystem';
 import { FaFire } from 'react-icons/fa';
 import { CTAPriority, SmartCTA } from '../FavoritesBadgeSystem';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 const RARITY_COLORS = {
   COMMON: {
@@ -95,13 +96,285 @@ interface AnnotationsStats {
   practiceAnnotations: number;
 }
 
+// Função para traduzir badges baseado na linguagem
+const getBadgeTranslations = (lang: 'pt' | 'en') => {
+  if (lang === 'en') {
+    return {
+      // ============ CONTRIBUIÇÃO BÁSICA ============
+      firstContribution: {
+        name: 'First Contribution',
+        description: 'Thank you for sharing your musical knowledge!',
+      },
+      collaborator: {
+        name: 'Collaborator',
+        description: 'You created 5 annotations. Your knowledge is growing!',
+      },
+      activeContributor: {
+        name: 'Active Contributor',
+        description:
+          'With 15 annotations, you are a valuable community collaborator!',
+      },
+      musicalWriter: {
+        name: 'Musical Writer',
+        description: '30 annotations! You are building a knowledge library!',
+      },
+      prolificAuthor: {
+        name: 'Prolific Author',
+        description: '50+ annotations! You are a true music scholar!',
+      },
+
+      // ============ QUALIDADE & UTILIDADE ============
+      firstHelpful: {
+        name: 'First Help',
+        description:
+          'Your annotation was marked as helpful for the first time!',
+      },
+      helpfulContent: {
+        name: 'Helpful Content',
+        description:
+          '10 helpful votes! Your annotations are helping other musicians.',
+      },
+      helpfulExpert: {
+        name: 'Helpful Expert',
+        description:
+          '50 helpful votes! Your knowledge is impacting the community!',
+      },
+      knowledgeGuru: {
+        name: 'Knowledge Guru',
+        description:
+          '100+ helpful votes! You are a reference in the community!',
+      },
+      musicalOracle: {
+        name: 'Musical Oracle',
+        description: '200+ helpful votes! Your wisdom is legendary!',
+      },
+
+      // ============ EXPERTISE & VERIFICAÇÃO ============
+      verifiedAnnotation: {
+        name: 'Verified Annotation',
+        description: 'Your first annotation was verified by an expert!',
+      },
+      verifiedScholar: {
+        name: 'Verified Scholar',
+        description: 'You have 5+ annotations verified by experts!',
+      },
+      musicalAuthority: {
+        name: 'Musical Authority',
+        description:
+          '10+ verified annotations! You are a recognized authority!',
+      },
+
+      // ============ DIVERSIDADE & ABRANGÊNCIA ============
+      categoryExplorer: {
+        name: 'Category Explorer',
+        description: 'You used 4+ different annotation categories!',
+      },
+      categoryMaster: {
+        name: 'Category Master',
+        description: 'You master all 7 annotation categories!',
+      },
+      multiLevelTeacher: {
+        name: 'Multi-Level Teacher',
+        description:
+          'You create annotations for 3+ different difficulty levels!',
+      },
+      universalTeacher: {
+        name: 'Universal Teacher',
+        description: 'You teach for all levels! What versatility!',
+      },
+
+      // ============ IMPACTO & POPULARIDADE ============
+      popularAnnotation: {
+        name: 'Popular Annotation',
+        description: 'One of your annotations received 25+ helpful votes!',
+      },
+      viralContent: {
+        name: 'Viral Content',
+        description:
+          'An annotation with 50+ helpful votes! You created a phenomenon!',
+      },
+      musicalPhenomenon: {
+        name: 'Musical Phenomenon',
+        description: 'An annotation with 100+ helpful votes! You made history!',
+      },
+
+      // ============ CONSISTÊNCIA & DEDICAÇÃO ============
+      consistentContributor: {
+        name: 'Consistent Contributor',
+        description: 'You created 5+ annotations in the last 30 days!',
+      },
+      dedicatedWriter: {
+        name: 'Dedicated Writer',
+        description: 'You annotated for 10+ consecutive days!',
+      },
+      annotationsLegend: {
+        name: 'Annotations Legend',
+        description:
+          '100+ annotations and 500+ helpful votes! You are a legend!',
+      },
+
+      // ============ ESPECIALIZAÇÃO POR ÁREA ============
+      techniqueSpecialist: {
+        name: 'Technique Specialist',
+        description: 'You are an expert in technical annotations!',
+      },
+      interpretationMaster: {
+        name: 'Interpretation Master',
+        description: 'Your annotations about interpretation are valuable!',
+      },
+      theoryGuru: {
+        name: 'Theory Guru',
+        description: 'You master theoretical annotations!',
+      },
+      practiceCoach: {
+        name: 'Practice Coach',
+        description: 'Your practice tips are pure gold!',
+      },
+    };
+  }
+
+  // Portuguese (default)
+  return {
+    // ============ CONTRIBUIÇÃO BÁSICA ============
+    firstContribution: {
+      name: 'Primeira Contribuição',
+      description: 'Obrigado por compartilhar seu conhecimento musical!',
+    },
+    collaborator: {
+      name: 'Colaborador',
+      description: 'Você criou 5 anotações. Seu conhecimento está crescendo!',
+    },
+    activeContributor: {
+      name: 'Contribuidor Ativo',
+      description:
+        'Com 15 anotações, você é um colaborador valioso da comunidade!',
+    },
+    musicalWriter: {
+      name: 'Escritor Musical',
+      description:
+        '30 anotações! Você está construindo uma biblioteca de conhecimento!',
+    },
+    prolificAuthor: {
+      name: 'Autor Prolífico',
+      description: '50+ anotações! Você é um verdadeiro estudioso da música!',
+    },
+
+    // ============ QUALIDADE & UTILIDADE ============
+    firstHelpful: {
+      name: 'Primeira Ajuda',
+      description: 'Sua anotação foi marcada como útil pela primeira vez!',
+    },
+    helpfulContent: {
+      name: 'Conteúdo Útil',
+      description:
+        '10 votos úteis! Suas anotações estão ajudando outros músicos.',
+    },
+    helpfulExpert: {
+      name: 'Expert Útil',
+      description:
+        '50 votos úteis! Seu conhecimento está impactando a comunidade!',
+    },
+    knowledgeGuru: {
+      name: 'Guru do Conhecimento',
+      description: '100+ votos úteis! Você é uma referência na comunidade!',
+    },
+    musicalOracle: {
+      name: 'Oráculo Musical',
+      description: '200+ votos úteis! Sua sabedoria é lendária!',
+    },
+
+    // ============ EXPERTISE & VERIFICAÇÃO ============
+    verifiedAnnotation: {
+      name: 'Anotação Verificada',
+      description: 'Sua primeira anotação foi verificada por um especialista!',
+    },
+    verifiedScholar: {
+      name: 'Estudioso Verificado',
+      description: 'Você tem 5+ anotações verificadas por especialistas!',
+    },
+    musicalAuthority: {
+      name: 'Autoridade Musical',
+      description:
+        '10+ anotações verificadas! Você é uma autoridade reconhecida!',
+    },
+
+    // ============ DIVERSIDADE & ABRANGÊNCIA ============
+    categoryExplorer: {
+      name: 'Explorador de Categorias',
+      description: 'Você usou 4+ categorias diferentes de anotação!',
+    },
+    categoryMaster: {
+      name: 'Mestre das Categorias',
+      description: 'Você domina todas as 7 categorias de anotação!',
+    },
+    multiLevelTeacher: {
+      name: 'Professor Multi-Nível',
+      description:
+        'Você cria anotações para 3+ níveis de dificuldade diferentes!',
+    },
+    universalTeacher: {
+      name: 'Professor Universal',
+      description: 'Você ensina para todos os níveis! Que versatilidade!',
+    },
+
+    // ============ IMPACTO & POPULARIDADE ============
+    popularAnnotation: {
+      name: 'Anotação Popular',
+      description: 'Uma de suas anotações recebeu 25+ votos úteis!',
+    },
+    viralContent: {
+      name: 'Conteúdo Viral',
+      description: 'Uma anotação com 50+ votos úteis! Você criou um fenômeno!',
+    },
+    musicalPhenomenon: {
+      name: 'Fenômeno Musical',
+      description: 'Uma anotação com 100+ votos úteis! Você fez história!',
+    },
+
+    // ============ CONSISTÊNCIA & DEDICAÇÃO ============
+    consistentContributor: {
+      name: 'Contribuidor Consistente',
+      description: 'Você criou 5+ anotações nos últimos 30 dias!',
+    },
+    dedicatedWriter: {
+      name: 'Escritor Dedicado',
+      description: 'Você anotou por 10+ dias seguidos!',
+    },
+    annotationsLegend: {
+      name: 'Lenda das Anotações',
+      description: '100+ anotações e 500+ votos úteis! Você é uma lenda!',
+    },
+
+    // ============ ESPECIALIZAÇÃO POR ÁREA ============
+    techniqueSpecialist: {
+      name: 'Especialista em Técnica',
+      description: 'Você é expert em anotações técnicas!',
+    },
+    interpretationMaster: {
+      name: 'Mestre da Interpretação',
+      description: 'Suas anotações sobre interpretação são valiosas!',
+    },
+    theoryGuru: {
+      name: 'Guru da Teoria',
+      description: 'Você domina as anotações teóricas!',
+    },
+    practiceCoach: {
+      name: 'Coach de Prática',
+      description: 'Suas dicas de estudo são ouro puro!',
+    },
+  };
+};
+
 export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
+  const { language } = useLanguageStore();
+  const t = getBadgeTranslations(language);
+
   return [
     // ============ CONTRIBUIÇÃO BÁSICA ============
     {
       id: 'first-contribution',
-      name: 'Primeira Contribuição',
-      description: 'Obrigado por compartilhar seu conhecimento musical!',
+      name: t.firstContribution.name,
+      description: t.firstContribution.description,
       icon: FiMessageSquare,
       category: 'milestone',
       rarity: 'COMMON',
@@ -110,8 +383,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'collaborator',
-      name: 'Colaborador',
-      description: 'Você criou 5 anotações. Seu conhecimento está crescendo!',
+      name: t.collaborator.name,
+      description: t.collaborator.description,
       icon: FiUsers,
       category: 'social',
       rarity: 'COMMON',
@@ -122,9 +395,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'active-contributor',
-      name: 'Contribuidor Ativo',
-      description:
-        'Com 15 anotações, você é um colaborador valioso da comunidade!',
+      name: t.activeContributor.name,
+      description: t.activeContributor.description,
       icon: FiBookOpen,
       category: 'social',
       rarity: 'RARE',
@@ -135,9 +407,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'musical-writer',
-      name: 'Escritor Musical',
-      description:
-        '30 anotações! Você está construindo uma biblioteca de conhecimento!',
+      name: t.musicalWriter.name,
+      description: t.musicalWriter.description,
       icon: FiBookOpen,
       category: 'social',
       rarity: 'EPIC',
@@ -148,8 +419,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'prolific-author',
-      name: 'Autor Prolífico',
-      description: '50+ anotações! Você é um verdadeiro estudioso da música!',
+      name: t.prolificAuthor.name,
+      description: t.prolificAuthor.description,
       icon: BiTrophy,
       category: 'social',
       rarity: 'LEGENDARY',
@@ -162,8 +433,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     // ============ QUALIDADE & UTILIDADE ============
     {
       id: 'first-helpful',
-      name: 'Primeira Ajuda',
-      description: 'Sua anotação foi marcada como útil pela primeira vez!',
+      name: t.firstHelpful.name,
+      description: t.firstHelpful.description,
       icon: FiThumbsUp,
       category: 'social',
       rarity: 'COMMON',
@@ -172,9 +443,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'helpful-content',
-      name: 'Conteúdo Útil',
-      description:
-        '10 votos úteis! Suas anotações estão ajudando outros músicos.',
+      name: t.helpfulContent.name,
+      description: t.helpfulContent.description,
       icon: FiHeart,
       category: 'social',
       rarity: 'COMMON',
@@ -185,9 +455,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'helpful-expert',
-      name: 'Expert Útil',
-      description:
-        '50 votos úteis! Seu conhecimento está impactando a comunidade!',
+      name: t.helpfulExpert.name,
+      description: t.helpfulExpert.description,
       icon: FiAward,
       category: 'expertise',
       rarity: 'RARE',
@@ -198,8 +467,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'knowledge-guru',
-      name: 'Guru do Conhecimento',
-      description: '100+ votos úteis! Você é uma referência na comunidade!',
+      name: t.knowledgeGuru.name,
+      description: t.knowledgeGuru.description,
       icon: BiCrown,
       category: 'expertise',
       rarity: 'EPIC',
@@ -210,8 +479,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'musical-oracle',
-      name: 'Oráculo Musical',
-      description: '200+ votos úteis! Sua sabedoria é lendária!',
+      name: t.musicalOracle.name,
+      description: t.musicalOracle.description,
       icon: FiShield,
       category: 'expertise',
       rarity: 'LEGENDARY',
@@ -224,8 +493,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     // ============ EXPERTISE & VERIFICAÇÃO ============
     {
       id: 'verified-annotation',
-      name: 'Anotação Verificada',
-      description: 'Sua primeira anotação foi verificada por um especialista!',
+      name: t.verifiedAnnotation.name,
+      description: t.verifiedAnnotation.description,
       icon: MdVerified,
       category: 'expertise',
       rarity: 'RARE',
@@ -234,8 +503,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'verified-scholar',
-      name: 'Estudioso Verificado',
-      description: 'Você tem 5+ anotações verificadas por especialistas!',
+      name: t.verifiedScholar.name,
+      description: t.verifiedScholar.description,
       icon: MdVerified,
       category: 'expertise',
       rarity: 'EPIC',
@@ -246,9 +515,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'musical-authority',
-      name: 'Autoridade Musical',
-      description:
-        '10+ anotações verificadas! Você é uma autoridade reconhecida!',
+      name: t.musicalAuthority.name,
+      description: t.musicalAuthority.description,
       icon: FiShield,
       category: 'expertise',
       rarity: 'LEGENDARY',
@@ -261,8 +529,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     // ============ DIVERSIDADE & ABRANGÊNCIA ============
     {
       id: 'category-explorer',
-      name: 'Explorador de Categorias',
-      description: 'Você usou 4+ categorias diferentes de anotação!',
+      name: t.categoryExplorer.name,
+      description: t.categoryExplorer.description,
       icon: FiZap,
       category: 'expertise',
       rarity: 'RARE',
@@ -273,8 +541,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'category-master',
-      name: 'Mestre das Categorias',
-      description: 'Você domina todas as 7 categorias de anotação!',
+      name: t.categoryMaster.name,
+      description: t.categoryMaster.description,
       icon: FiTarget,
       category: 'expertise',
       rarity: 'EPIC',
@@ -285,9 +553,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'multi-level-teacher',
-      name: 'Professor Multi-Nível',
-      description:
-        'Você cria anotações para 3+ níveis de dificuldade diferentes!',
+      name: t.multiLevelTeacher.name,
+      description: t.multiLevelTeacher.description,
       icon: FiUsers,
       category: 'social',
       rarity: 'RARE',
@@ -298,8 +565,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'universal-teacher',
-      name: 'Professor Universal',
-      description: 'Você ensina para todos os níveis! Que versatilidade!',
+      name: t.universalTeacher.name,
+      description: t.universalTeacher.description,
       icon: FiBookOpen,
       category: 'social',
       rarity: 'EPIC',
@@ -312,8 +579,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     // ============ IMPACTO & POPULARIDADE ============
     {
       id: 'popular-annotation',
-      name: 'Anotação Popular',
-      description: 'Uma de suas anotações recebeu 25+ votos úteis!',
+      name: t.popularAnnotation.name,
+      description: t.popularAnnotation.description,
       icon: FiTrendingUp,
       category: 'social',
       rarity: 'EPIC',
@@ -322,8 +589,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'viral-content',
-      name: 'Conteúdo Viral',
-      description: 'Uma anotação com 50+ votos úteis! Você criou um fenômeno!',
+      name: t.viralContent.name,
+      description: t.viralContent.description,
       icon: FaFire,
       category: 'social',
       rarity: 'LEGENDARY',
@@ -332,8 +599,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'musical-phenomenon',
-      name: 'Fenômeno Musical',
-      description: 'Uma anotação com 100+ votos úteis! Você fez história!',
+      name: t.musicalPhenomenon.name,
+      description: t.musicalPhenomenon.description,
       icon: FiShield,
       category: 'milestone',
       rarity: 'LEGENDARY',
@@ -344,8 +611,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     // ============ CONSISTÊNCIA & DEDICAÇÃO ============
     {
       id: 'consistent-contributor',
-      name: 'Contribuidor Consistente',
-      description: 'Você criou 5+ anotações nos últimos 30 dias!',
+      name: t.consistentContributor.name,
+      description: t.consistentContributor.description,
       icon: FiClock,
       category: 'dedication',
       rarity: 'RARE',
@@ -356,8 +623,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'dedicated-writer',
-      name: 'Escritor Dedicado',
-      description: 'Você anotou por 10+ dias seguidos!',
+      name: t.dedicatedWriter.name,
+      description: t.dedicatedWriter.description,
       icon: FaFire,
       category: 'dedication',
       rarity: 'EPIC',
@@ -368,8 +635,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'annotations-legend',
-      name: 'Lenda das Anotações',
-      description: '100+ anotações e 500+ votos úteis! Você é uma lenda!',
+      name: t.annotationsLegend.name,
+      description: t.annotationsLegend.description,
       icon: FiShield,
       category: 'milestone',
       rarity: 'LEGENDARY',
@@ -380,8 +647,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     // ============ ESPECIALIZAÇÃO POR ÁREA ============
     {
       id: 'technique-specialist',
-      name: 'Especialista em Técnica',
-      description: 'Você é expert em anotações técnicas!',
+      name: t.techniqueSpecialist.name,
+      description: t.techniqueSpecialist.description,
       icon: FiTarget,
       category: 'expertise',
       rarity: 'RARE',
@@ -390,8 +657,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'interpretation-master',
-      name: 'Mestre da Interpretação',
-      description: 'Suas anotações sobre interpretação são valiosas!',
+      name: t.interpretationMaster.name,
+      description: t.interpretationMaster.description,
       icon: FiStar,
       category: 'expertise',
       rarity: 'RARE',
@@ -400,8 +667,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'theory-guru',
-      name: 'Guru da Teoria',
-      description: 'Você domina as anotações teóricas!',
+      name: t.theoryGuru.name,
+      description: t.theoryGuru.description,
       icon: FiBookOpen,
       category: 'expertise',
       rarity: 'EPIC',
@@ -410,8 +677,8 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
     },
     {
       id: 'practice-coach',
-      name: 'Coach de Prática',
-      description: 'Suas dicas de estudo são ouro puro!',
+      name: t.practiceCoach.name,
+      description: t.practiceCoach.description,
       icon: FiTarget,
       category: 'social',
       rarity: 'EPIC',
@@ -471,17 +738,81 @@ export function getNextAnnotationsAchievements(stats: AnnotationsStats) {
   return sorted.slice(0, 3);
 }
 
+// CTA translations
+const getCTATranslations = (lang: 'pt' | 'en') => {
+  if (lang === 'en') {
+    return {
+      startContributing: {
+        title: 'Share your Knowledge',
+        description: 'Create your first annotation and help other musicians',
+        action: 'Explore Works',
+      },
+      makePublic: {
+        title: 'Share with Community',
+        description: 'Make your annotations public to help more musicians',
+        action: 'View Annotations',
+      },
+      diversifyCategories: {
+        title: 'Explore New Categories',
+        description:
+          'Try annotating about technique, interpretation and theory',
+        action: 'Learn About Categories',
+      },
+      improveQuality: {
+        title: 'Improve Quality',
+        description: 'Focus on more detailed and helpful annotations',
+        action: 'Annotation Tips',
+      },
+      beMoreActive: {
+        title: 'Stay Active',
+        description: 'Keep contributing regularly to the community',
+        action: 'Find Works',
+      },
+    };
+  }
+
+  return {
+    startContributing: {
+      title: 'Compartilhe seu Conhecimento',
+      description: 'Crie sua primeira anotação e ajude outros músicos',
+      action: 'Explorar Obras',
+    },
+    makePublic: {
+      title: 'Compartilhe com a Comunidade',
+      description: 'Torne suas anotações públicas para ajudar mais músicos',
+      action: 'Ver Anotações',
+    },
+    diversifyCategories: {
+      title: 'Explore Novas Categorias',
+      description: 'Experimente anotar sobre técnica, interpretação e teoria',
+      action: 'Aprender Sobre Categorias',
+    },
+    improveQuality: {
+      title: 'Melhore a Qualidade',
+      description: 'Foque em anotações mais detalhadas e úteis',
+      action: 'Dicas de Anotação',
+    },
+    beMoreActive: {
+      title: 'Mantenha-se Ativo',
+      description: 'Continue contribuindo regularmente com a comunidade',
+      action: 'Encontrar Obras',
+    },
+  };
+};
+
 // CTAs inteligentes para Annotations
 export function getAnnotationsSmartCTAs(stats: AnnotationsStats) {
+  const { language } = useLanguageStore();
+  const ctaTexts = getCTATranslations(language);
   const ctas: SmartCTA[] = [];
 
   // CTA: Começar a contribuir se não tem anotações
   if (stats.totalAnnotations === 0) {
     ctas.push({
       id: 'start-contributing',
-      title: 'Compartilhe seu Conhecimento',
-      description: 'Crie sua primeira anotação e ajude outros músicos',
-      action: 'Explorar Obras',
+      title: ctaTexts.startContributing.title,
+      description: ctaTexts.startContributing.description,
+      action: ctaTexts.startContributing.action,
       url: '/works',
       priority: 'high',
     });
@@ -494,9 +825,9 @@ export function getAnnotationsSmartCTAs(stats: AnnotationsStats) {
   ) {
     ctas.push({
       id: 'make-public',
-      title: 'Compartilhe com a Comunidade',
-      description: 'Torne suas anotações públicas para ajudar mais músicos',
-      action: 'Ver Anotações',
+      title: ctaTexts.makePublic.title,
+      description: ctaTexts.makePublic.description,
+      action: ctaTexts.makePublic.action,
       url: '/annotations?tab=private',
       priority: 'medium',
     });
@@ -506,9 +837,9 @@ export function getAnnotationsSmartCTAs(stats: AnnotationsStats) {
   if (stats.totalAnnotations >= 5 && stats.categoriesUsed < 4) {
     ctas.push({
       id: 'diversify-categories',
-      title: 'Explore Novas Categorias',
-      description: 'Experimente anotar sobre técnica, interpretação e teoria',
-      action: 'Aprender Sobre Categorias',
+      title: ctaTexts.diversifyCategories.title,
+      description: ctaTexts.diversifyCategories.description,
+      action: ctaTexts.diversifyCategories.action,
       url: '/help/annotation-categories',
       priority: 'medium',
     });
@@ -518,9 +849,9 @@ export function getAnnotationsSmartCTAs(stats: AnnotationsStats) {
   if (stats.totalAnnotations >= 5 && stats.helpfulnessRate < 50) {
     ctas.push({
       id: 'improve-quality',
-      title: 'Melhore a Qualidade',
-      description: 'Foque em anotações mais detalhadas e úteis',
-      action: 'Dicas de Anotação',
+      title: ctaTexts.improveQuality.title,
+      description: ctaTexts.improveQuality.description,
+      action: ctaTexts.improveQuality.action,
       url: '/help/annotation-tips',
       priority: 'high',
     });
@@ -530,9 +861,9 @@ export function getAnnotationsSmartCTAs(stats: AnnotationsStats) {
   if (stats.totalAnnotations >= 10 && stats.recentAnnotations < 2) {
     ctas.push({
       id: 'be-more-active',
-      title: 'Mantenha-se Ativo',
-      description: 'Continue contribuindo regularmente com a comunidade',
-      action: 'Encontrar Obras',
+      title: ctaTexts.beMoreActive.title,
+      description: ctaTexts.beMoreActive.description,
+      action: ctaTexts.beMoreActive.action,
       url: '/works',
       priority: 'medium',
     });
