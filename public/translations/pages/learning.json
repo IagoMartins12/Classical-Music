@@ -207,6 +207,30 @@
     "scores_label": "partituras",
     "loading": "Carregando...",
     "load_more": "Carregar Mais",
+
+    "learning_progress_title": "Progresso de Aprendizado",
+    "mark_progress_button": "Marcar Progresso",
+    "progress_complete": "% completo",
+    "mark_learning_progress_title": "Marcar Progresso de Aprendizado",
+    "mark_learning_progress_subtitle": "Acompanhe seu progresso marcando os milestones conquistados",
+    "click_milestones_instruction": "Clique nos milestones para marcar como concluídos",
+    "progress_percentage": "% de progresso",
+    "confirm_progress_button": "Confirmar Progresso",
+
+    "performance_video_title": "Vídeo da Performance",
+    "video_added": "Vídeo adicionado",
+    "no_video_added": "Nenhum vídeo adicionado",
+    "public_label": "Público",
+    "private_label": "Privado",
+    "replace_video": "Substituir vídeo",
+    "add_video_title": "Adicionar Vídeo",
+    "video_formats_info": "MP4, WebM, MOV até 100MB",
+    "make_video_public": "Tornar vídeo público (visível para outros usuários)",
+
+    "uploading_status": "Enviando...",
+    "saving_status": "Salvando...",
+    "processing_video": "Processando vídeo...",
+
     "milestone_piano_learned_left_hand": "Aprendeu a mão esquerda",
     "milestone_piano_learned_right_hand": "Aprendeu a mão direita",
     "milestone_piano_metronome": "Tocou com metrônomo",
@@ -239,6 +263,7 @@
     "milestone_generic_expression": "Dominou a expressividade",
     "milestone_generic_performed": "Apresentou para outros"
   },
+
   "en": {
     "learning_page_title": "My Musical Learning",
     "learning_page_subtitle": "Track your progress and manage your study lists",
@@ -447,6 +472,30 @@
     "scores_label": "scores",
     "loading": "Loading...",
     "load_more": "Load More",
+
+    "learning_progress_title": "Learning Progress",
+    "mark_progress_button": "Mark Progress",
+    "progress_complete": "% complete",
+    "mark_learning_progress_title": "Mark Learning Progress",
+    "mark_learning_progress_subtitle": "Track your progress by marking achieved milestones",
+    "click_milestones_instruction": "Click on milestones to mark as completed",
+    "progress_percentage": "% progress",
+    "confirm_progress_button": "Confirm Progress",
+
+    "performance_video_title": "Performance Video",
+    "video_added": "Video added",
+    "no_video_added": "No video added",
+    "public_label": "Public",
+    "private_label": "Private",
+    "replace_video": "Replace video",
+    "add_video_title": "Add Video",
+    "video_formats_info": "MP4, WebM, MOV up to 100MB",
+    "make_video_public": "Make video public (visible to other users)",
+
+    "uploading_status": "Uploading...",
+    "saving_status": "Saving...",
+    "processing_video": "Processing video...",
+
     "milestone_piano_learned_left_hand": "Learned left hand",
     "milestone_piano_learned_right_hand": "Learned right hand",
     "milestone_piano_metronome": "Played with metronome",

@@ -202,12 +202,12 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
       }`}
     >
       <div
-        className={`bg-theme-elevated border-2 ${config.border} rounded-2xl shadow-2xl p-5 min-w-[350px] max-w-[420px] backdrop-blur-sm bg-opacity-98 shadow-theme-glow relative overflow-hidden`}
+        className={`bg-theme-elevated border-2 ${config?.border} rounded-2xl shadow-2xl p-5 min-w-[350px] max-w-[420px] backdrop-blur-sm bg-opacity-98 shadow-theme-glow relative overflow-hidden`}
       >
         {/* Header */}
         <div className="flex items-center space-x-4 mb-4 relative z-10">
           <div
-            className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center shadow-lg relative`}
+            className={`w-14 h-14 rounded-2xl bg-gradient-to-br $ flex items-center justify-center shadow-lg relative`}
           >
             <Icon className="w-7 h-7 text-white drop-shadow-sm" />
           </div>
@@ -249,7 +249,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
         {/* Footer com raridade e XP */}
         <div className="flex items-center justify-between mb-3 relative z-10">
           <span
-            className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r ${config.gradient} text-white shadow-md`}
+            className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r $ text-white shadow-md`}
           >
             {config.label}
           </span>
@@ -262,7 +262,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
         {/* Progress Bar */}
         <div className="w-full bg-theme-secondary rounded-full h-1.5 overflow-hidden relative z-10">
           <div
-            className={`h-full bg-gradient-to-r ${config.gradient} transition-all duration-100 ease-linear`}
+            className={`h-full bg-gradient-to-r $ transition-all duration-100 ease-linear`}
             style={{ width: `${progress}%` }}
           />
         </div>

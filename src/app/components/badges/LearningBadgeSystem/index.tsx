@@ -21,7 +21,7 @@ import { useCallback } from 'react';
 import { Badge } from '../BadgeSystem';
 import { FaFire } from 'react-icons/fa';
 import { CTAPriority, SmartCTA } from '../FavoritesBadgeSystem';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
+import { Language } from '@/app/stores/useLanguageStore';
 
 const RARITY_COLORS = {
   COMMON: {
@@ -343,8 +343,10 @@ const getBadgeTranslations = (lang: 'pt' | 'en') => {
   };
 };
 
-export function createLearningBadges(stats: LearningStats): Badge[] {
-  const { language } = useLanguageStore();
+export function createLearningBadges(
+  stats: LearningStats,
+  language: Language
+): Badge[] {
   const t = getBadgeTranslations(language);
 
   return [
@@ -688,8 +690,11 @@ export function useLearningAchievementDetection() {
 }
 
 // Função para calcular próximos achievements (para CTAs)
-export function getNextLearningAchievements(stats: LearningStats) {
-  const badges = createLearningBadges(stats);
+export function getNextLearningAchievements(
+  stats: LearningStats,
+  language: Language
+) {
+  const badges = createLearningBadges(stats, language);
   const locked = badges.filter((b) => !b.unlocked);
 
   // Ordenar por proximidade (baseado em progresso)
@@ -769,8 +774,10 @@ const getCTATranslations = (lang: 'pt' | 'en') => {
 };
 
 // CTAs inteligentes baseados no progresso
-export function getLearningSmartCTAs(stats: LearningStats): SmartCTA[] {
-  const { language } = useLanguageStore();
+export function getLearningSmartCTAs(
+  stats: LearningStats,
+  language: Language
+): SmartCTA[] {
   const ctaTexts = getCTATranslations(language);
   const ctas: SmartCTA[] = [];
 

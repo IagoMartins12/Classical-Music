@@ -31,7 +31,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
           className={`
             relative overflow-hidden rounded-2xl h-full
             classical-card
-            transition-all duration-700 ease-out
+            transition-all duration-700 ease-out !p-0 md:p-4
             ${
               isActive
                 ? 'opacity-100 scale-100 group-hover:scale-105 group-hover:-translate-y-3'

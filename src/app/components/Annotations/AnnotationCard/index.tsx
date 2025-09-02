@@ -1,4 +1,4 @@
-// components/Annotations/AnnotationCard.tsx - VERSÃO COM DEBUG
+// components/Annotations/AnnotationCard.tsx - VERSÃO CORRIGIDA
 'use client';
 
 import { useState } from 'react';
@@ -22,7 +22,7 @@ import {
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { formatDistanceToNow } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { ptBR, enUS } from 'date-fns/locale';
 import { toast } from 'react-hot-toast';
 import {
   useAnnotationsStore,
@@ -33,6 +33,8 @@ import CreateAnnotationModal from '../CreateAnnotationModal';
 import { MdVerified } from 'react-icons/md';
 import Image from 'next/image';
 import ConfirmDeleteModal from '../DeleteAnnotationModal';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface AnnotationCardProps {
   annotation: WorkAnnotation;
@@ -41,65 +43,6 @@ interface AnnotationCardProps {
   showWorkInfo?: boolean;
 }
 
-const CATEGORY_CONFIG = {
-  TECHNIQUE: {
-    label: 'Técnica',
-    icon: FiTarget,
-    color: 'from-accent-red to-accent-purple',
-    bgColor: 'bg-accent-red/10 border-accent-red/30 text-accent-red',
-  },
-  INTERPRETATION: {
-    label: 'Interpretação',
-    icon: GiMusicalNotes,
-    color: 'from-accent-blue to-accent-purple',
-    bgColor: 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue',
-  },
-  PRACTICE_TIP: {
-    label: 'Dicas de Estudo',
-    icon: FiBookOpen,
-    color: 'from-accent-green to-accent-blue',
-    bgColor: 'bg-accent-green/10 border-accent-green/30 text-accent-green',
-  },
-  THEORY: {
-    label: 'Teoria',
-    icon: FiLayers,
-    color: 'from-accent-purple to-accent-blue',
-    bgColor: 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple',
-  },
-  PERFORMANCE: {
-    label: 'Performance',
-    icon: FiMusic,
-    color: 'from-brand-primary to-brand-secondary',
-    bgColor: 'bg-brand-primary/10 border-brand-primary/30 text-brand-primary',
-  },
-  HISTORICAL: {
-    label: 'Contexto',
-    icon: FiAward,
-    color: 'from-accent-purple to-accent-red',
-    bgColor: 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple',
-  },
-  GENERAL: {
-    label: 'Geral',
-    icon: FiMessageSquare,
-    color: 'from-theme-primary to-theme-secondary',
-    bgColor: 'bg-theme-primary/10 border-theme-primary/30 text-theme-primary',
-  },
-};
-
-const DIFFICULTY_COLORS = {
-  BEGINNER: 'bg-accent-green/10 border-accent-green/30 text-accent-green',
-  INTERMEDIATE: 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue',
-  ADVANCED: 'bg-accent-red/10 border-accent-red/30 text-accent-red',
-  ALL_LEVELS: 'bg-theme-primary/10 border-theme-primary/30 text-theme-primary',
-};
-
-const DIFFICULTY_LABELS = {
-  BEGINNER: 'Iniciante',
-  INTERMEDIATE: 'Intermediário',
-  ADVANCED: 'Avançado',
-  ALL_LEVELS: 'Todos os níveis',
-};
-
 export default function AnnotationCard({
   annotation,
   workTitle,
@@ -107,6 +50,8 @@ export default function AnnotationCard({
   showWorkInfo = false,
 }: AnnotationCardProps) {
   const { user } = useAuth();
+  const { t } = useTranslation({ sections: ['pages/annotations'] });
+  const { language } = useLanguageStore();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -120,25 +65,87 @@ export default function AnnotationCard({
   const isDeleting = loading.update.has(annotation.id);
   const isOptimistic = annotation.isOptimistic;
 
-  // 🔧 CORREÇÃO: Verificar se pode votar - nunca permitir voto em anotação própria
+  // Verificar se pode votar - nunca permitir voto em anotação própria
   const canVote =
     user &&
     !isOwner &&
     annotation.isPublic &&
     !isOptimistic &&
-    annotation.userId !== user.id; // 🔧 Verificação dupla para garantir
+    annotation.userId !== user.id;
+
+  // Configurações de categoria traduzidas usando o JSON
+  const CATEGORY_CONFIG = {
+    TECHNIQUE: {
+      label: t('category_technique'),
+      icon: FiTarget,
+      color: 'from-accent-red to-accent-purple',
+      bgColor: 'bg-accent-red/10 border-accent-red/30 text-accent-red',
+    },
+    INTERPRETATION: {
+      label: t('category_interpretation'),
+      icon: GiMusicalNotes,
+      color: 'from-accent-blue to-accent-purple',
+      bgColor: 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue',
+    },
+    PRACTICE_TIP: {
+      label: t('category_practice_tip'),
+      icon: FiBookOpen,
+      color: 'from-accent-green to-accent-blue',
+      bgColor: 'bg-accent-green/10 border-accent-green/30 text-accent-green',
+    },
+    THEORY: {
+      label: t('category_theory'),
+      icon: FiLayers,
+      color: 'from-accent-purple to-accent-blue',
+      bgColor: 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple',
+    },
+    PERFORMANCE: {
+      label: t('category_performance'),
+      icon: FiMusic,
+      color: 'from-brand-primary to-brand-secondary',
+      bgColor: 'bg-brand-primary/10 border-brand-primary/30 text-brand-primary',
+    },
+    HISTORICAL: {
+      label: t('category_historical'),
+      icon: FiAward,
+      color: 'from-accent-purple to-accent-red',
+      bgColor: 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple',
+    },
+    GENERAL: {
+      label: t('category_general'),
+      icon: FiMessageSquare,
+      color: 'from-theme-primary to-theme-secondary',
+      bgColor: 'bg-theme-primary/10 border-theme-primary/30 text-theme-primary',
+    },
+  };
+
+  const DIFFICULTY_COLORS = {
+    BEGINNER: 'bg-accent-green/10 border-accent-green/30 text-accent-green',
+    INTERMEDIATE: 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue',
+    ADVANCED: 'bg-accent-red/10 border-accent-red/30 text-accent-red',
+    ALL_LEVELS:
+      'bg-theme-primary/10 border-theme-primary/30 text-theme-primary',
+  };
+
+  const DIFFICULTY_LABELS = {
+    BEGINNER: t('difficulty_beginner'),
+    INTERMEDIATE: t('difficulty_intermediate'),
+    ADVANCED: t('difficulty_advanced'),
+    ALL_LEVELS: t('difficulty_all_levels'),
+  };
 
   const categoryConfig = CATEGORY_CONFIG[annotation.category];
   const CategoryIcon = categoryConfig.icon;
+  const locale = language === 'en' ? enUS : ptBR;
 
   const handleVote = async (isHelpful: boolean) => {
     if (!canVote) {
       if (!user) {
-        toast.error('Faça login para votar');
+        toast.error(t('toast_login_to_vote'));
       } else if (isOwner) {
-        toast.error('Não é possível votar na própria anotação');
+        toast.error(t('toast_cannot_vote_own'));
       } else if (!annotation.isPublic) {
-        toast.error('Não é possível votar em anotação privada');
+        toast.error(t('toast_cannot_vote_private'));
       }
       return;
     }
@@ -147,7 +154,9 @@ export default function AnnotationCard({
       const success = await voteAnnotation(annotation.id, isHelpful);
       if (success) {
         toast.success(
-          isHelpful ? 'Voto útil registrado!' : 'Voto registrado!',
+          isHelpful
+            ? t('toast_helpful_vote_registered')
+            : t('toast_vote_registered'),
           {
             icon: isHelpful ? '👍' : '👎',
           }
@@ -162,12 +171,12 @@ export default function AnnotationCard({
   const handleDeleteConfirm = async () => {
     const success = await deleteAnnotation(annotation.id);
     if (success) {
-      toast.success('Anotação deletada com sucesso!', {
+      toast.success(t('toast_annotation_deleted'), {
         icon: '🗑️',
       });
       setShowDeleteModal(false);
     } else {
-      toast.error('Erro ao deletar anotação');
+      toast.error(t('toast_annotation_delete_error'));
     }
   };
 
@@ -178,9 +187,13 @@ export default function AnnotationCard({
         annotation.measureEnd &&
         annotation.measureStart !== annotation.measureEnd
       ) {
-        return `Compassos ${annotation.measureStart}-${annotation.measureEnd}`;
+        return `${t('user_annotation_card_measures')} ${
+          annotation.measureStart
+        }-${annotation.measureEnd}`;
       } else if (annotation.measureStart) {
-        return `Compasso ${annotation.measureStart}`;
+        return `${t('user_annotation_card_measure')} ${
+          annotation.measureStart
+        }`;
       }
     } else if (annotation.scope === 'SECTION' && annotation.section) {
       return annotation.section;
@@ -197,6 +210,32 @@ export default function AnnotationCard({
       ? annotation.content
       : annotation.content.substring(0, 300) + '...';
 
+  const getUserTypeLabel = (userType?: string) => {
+    switch (userType) {
+      case 'TEACHER':
+        return t('annotation_card_teacher');
+      case 'PROFESSIONAL':
+        return t('annotation_card_professional');
+      case 'MUSIC_STUDENT':
+        return t('annotation_card_music_student');
+      default:
+        return t('annotation_card_user');
+    }
+  };
+
+  const getHandLabel = (hand: string) => {
+    switch (hand) {
+      case 'left':
+        return t('annotation_card_left_hand');
+      case 'right':
+        return t('annotation_card_right_hand');
+      case 'both':
+        return t('annotation_card_both_hands');
+      default:
+        return hand;
+    }
+  };
+
   return (
     <>
       <div
@@ -210,13 +249,16 @@ export default function AnnotationCard({
             <div className="flex items-center space-x-3 bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30">
               <FiLoader className="w-4 h-4 animate-spin text-brand-primary" />
               <span className="text-sm font-medium text-theme-primary">
-                {isOptimistic ? 'Salvando...' : 'Atualizando...'}
+                {isOptimistic
+                  ? t('annotation_card_saving')
+                  : t('annotation_card_updating')}
+                ...
               </span>
             </div>
           </div>
         )}
 
-        <div className="p-6">
+        <div className="p-0 md:p-6">
           {/* Header */}
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-start space-x-3 flex-1">
@@ -230,7 +272,7 @@ export default function AnnotationCard({
                     alt={
                       annotation.user.firstName ||
                       annotation.user.username ||
-                      'Usuário'
+                      t('annotation_card_anonymous_user')
                     }
                     className="w-10 h-10 rounded-xl object-cover border-2 border-theme-primary/20"
                   />
@@ -250,35 +292,32 @@ export default function AnnotationCard({
                   {annotation.isVerified && (
                     <div className="flex items-center space-x-1 text-accent-green">
                       <MdVerified className="w-4 h-4" />
-                      <span className="text-xs font-medium">Verificado</span>
+                      <span className="text-xs font-medium">
+                        {t('annotation_card_verified')}
+                      </span>
                     </div>
                   )}
                   {/* Indicador de anotação otimística */}
                   {isOptimistic && (
                     <div className="flex items-center space-x-1 text-accent-blue">
                       <FiLoader className="w-3 h-3 animate-spin" />
-                      <span className="text-xs font-medium">Salvando</span>
+                      <span className="text-xs font-medium">
+                        {t('annotation_card_saving')}
+                      </span>
                     </div>
                   )}
                 </div>
 
-                <div className="flex items-center space-x-4 text-sm text-theme-secondary">
+                <div className="flex flex-col md:flex-row items-start md:items-center space-x-4 text-sm text-theme-secondary">
                   <div className="flex items-center space-x-1">
                     <span className="font-medium">
                       {annotation.user.firstName ||
                         annotation.user.username ||
-                        'Usuário Anônimo'}
+                        t('annotation_card_anonymous_user')}
                     </span>
                     {annotation.user.userType && (
                       <span className="text-theme-tertiary">
-                        •{' '}
-                        {annotation.user.userType === 'TEACHER'
-                          ? 'Professor'
-                          : annotation.user.userType === 'PROFESSIONAL'
-                          ? 'Profissional'
-                          : annotation.user.userType === 'MUSIC_STUDENT'
-                          ? 'Estudante'
-                          : 'Usuário'}
+                        • {getUserTypeLabel(annotation.user.userType)}
                       </span>
                     )}
                   </div>
@@ -287,7 +326,7 @@ export default function AnnotationCard({
                     <span>
                       {formatDistanceToNow(new Date(annotation.createdAt), {
                         addSuffix: true,
-                        locale: ptBR,
+                        locale: locale,
                       })}
                     </span>
                   </div>
@@ -301,7 +340,7 @@ export default function AnnotationCard({
                 <button
                   onClick={() => setShowActions(!showActions)}
                   disabled={isUpdating}
-                  className={`w-8 h-8 rounded-lg bg-theme-elevated border border-theme-primary/30 flex items-center justify-center text-theme-tertiary hover:text-theme-primary hover:border-brand-primary/50 transition-all opacity-0 group-hover:opacity-100 ${
+                  className={`w-8 h-8 rounded-lg bg-theme-elevated border border-theme-primary/30 flex items-center justify-center text-theme-tertiary hover:text-theme-primary hover:border-brand-primary/50 transition-all  ${
                     isUpdating ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -318,7 +357,7 @@ export default function AnnotationCard({
                       className="w-full cursor-pointer px-4 py-2 text-left text-sm text-theme-primary hover:bg-interactive-hover flex items-center space-x-2 transition-colors"
                     >
                       <FiEdit3 className="w-3 h-3" />
-                      <span>Editar</span>
+                      <span>{t('annotation_card_edit')}</span>
                     </button>
                     <button
                       onClick={() => {
@@ -328,7 +367,7 @@ export default function AnnotationCard({
                       className="w-full cursor-pointer  px-4 py-2 text-left text-sm text-accent-red hover:bg-accent-red/10 flex items-center space-x-2 transition-colors"
                     >
                       <FiTrash2 className="w-3 h-3" />
-                      <span>Deletar</span>
+                      <span>{t('annotation_card_delete')}</span>
                     </button>
                   </div>
                 )}
@@ -353,11 +392,11 @@ export default function AnnotationCard({
               {DIFFICULTY_LABELS[annotation.difficulty]}
             </span>
 
-            {/* 🆕 Badge para anotação privada */}
+            {/* Badge para anotação privada */}
             {!annotation.isPublic && (
               <span className="px-3 py-1 rounded-full text-xs font-medium border bg-accent-red/10 border-red-400 text-accent-red flex items-center space-x-1">
                 <FiEye className="w-3 h-3" />
-                <span>Anotação Privada</span>
+                <span>{t('annotation_card_private_annotation')}</span>
               </span>
             )}
 
@@ -370,17 +409,13 @@ export default function AnnotationCard({
 
             {annotation.hand && (
               <span className="px-3 py-1 rounded-full text-xs font-medium border bg-accent-blue/10 border-accent-blue/30 text-accent-blue">
-                {annotation.hand === 'left'
-                  ? 'Mão Esquerda'
-                  : annotation.hand === 'right'
-                  ? 'Mão Direita'
-                  : 'Ambas as Mãos'}
+                {getHandLabel(annotation.hand)}
               </span>
             )}
 
             {annotation.pageNumber && (
               <span className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary">
-                Página {annotation.pageNumber}
+                {t('user_annotation_card_page')} {annotation.pageNumber}
               </span>
             )}
           </div>
@@ -394,7 +429,7 @@ export default function AnnotationCard({
                   {annotation.work.title}
                 </span>
                 <span className="text-theme-tertiary">
-                  por {annotation.work.composer.fullName}
+                  {t('annotation_card_by')} {annotation.work.composer.fullName}
                 </span>
               </div>
             </div>
@@ -411,7 +446,9 @@ export default function AnnotationCard({
                 onClick={() => setShowMore(!showMore)}
                 className="mt-2 text-sm text-brand-primary hover:text-brand-secondary font-medium transition-colors"
               >
-                {showMore ? 'Ver menos' : 'Ver mais'}
+                {showMore
+                  ? t('annotation_card_see_less')
+                  : t('annotation_card_see_more')}
               </button>
             )}
           </div>
@@ -432,7 +469,7 @@ export default function AnnotationCard({
 
           {/* Footer */}
           <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
-            {/* Vote buttons - 🔧 CORRIGIDO: Só mostrar se pode votar */}
+            {/* Vote buttons - Só mostrar se pode votar */}
             {canVote ? (
               <div className="flex items-center space-x-4">
                 <button
@@ -485,7 +522,7 @@ export default function AnnotationCard({
                         : 'text-theme-primary'
                     }`}
                   >
-                    Não útil
+                    {t('annotation_card_not_useful')}
                   </span>
                 </button>
               </div>
@@ -497,12 +534,12 @@ export default function AnnotationCard({
                 </div>
                 {!user && (
                   <div className="text-xs text-theme-tertiary">
-                    Faça login para votar
+                    {t('annotation_card_login_to_vote')}
                   </div>
                 )}
                 {isOwner && (
                   <div className="text-xs text-theme-tertiary">
-                    Sua anotação
+                    {t('annotation_card_your_annotation')}
                   </div>
                 )}
               </div>

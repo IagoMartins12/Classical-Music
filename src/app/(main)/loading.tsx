@@ -368,7 +368,7 @@ export default function HomeLoading() {
             </div>
             <div>
               <div className="h-8 w-60 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
-              <div className="h-4 w-96 bg-theme-elevated rounded"></div>
+              <div className="h-4 w-32 md:w-96 max-w-full max-w-full bg-theme-elevated rounded"></div>
             </div>
           </div>
 

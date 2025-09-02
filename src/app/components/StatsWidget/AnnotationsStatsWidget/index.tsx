@@ -25,6 +25,7 @@ import {
 import { BadgeGrid } from '../../badges/BadgeSystem';
 import { useAchievementSystem } from '../../../hooks/useAchievements';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 interface AnnotationsStatsWidgetProps {
   className?: string;
@@ -34,6 +35,7 @@ export default function AnnotationsStatsWidget({
   className = '',
 }: AnnotationsStatsWidgetProps) {
   const { t } = useTranslation({ sections: ['pages/annotations'] });
+  const { language } = useLanguageStore();
   const { user } = useAuth();
   const { getUserAnnotations } = useAnnotationsStore();
   const { showInline } = useAdaptiveStats('annotations');
@@ -50,9 +52,9 @@ export default function AnnotationsStatsWidget({
   );
 
   // Criar badges e CTAs
-  const badges = createAnnotationsBadges(stats);
-  const nextAchievements = getNextAnnotationsAchievements(stats);
-  const smartCTAs = getAnnotationsSmartCTAs(stats);
+  const badges = createAnnotationsBadges(stats, language);
+  const nextAchievements = getNextAnnotationsAchievements(stats, language);
+  const smartCTAs = getAnnotationsSmartCTAs(stats, language);
 
   // Auto-detectar achievements
   useEffect(() => {

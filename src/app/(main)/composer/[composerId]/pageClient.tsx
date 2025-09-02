@@ -39,6 +39,7 @@ import EditButton from '../../../components/Common/EditButton';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
+import { translateRole } from '@/app/components/UploadsPage/modals/CreateComposerModal';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
@@ -108,6 +109,9 @@ export default function ComposerDetailsClient({
       .split(',')
       .map((instrument) => {
         const trimmed = instrument.trim().toLowerCase();
+        if (language == 'en') {
+          return instrument.trim();
+        }
         return INSTRUMENT_MAPPING[trimmed] || instrument.trim();
       })
       .join(', ');
@@ -260,14 +264,14 @@ export default function ComposerDetailsClient({
         >
           {/* Header Principal */}
           <AnimatedCard hover="lift" className="classical-card relative z-50">
-            <div className="p-8 relative z-10">
+            <div className=" p-2 md:p-8 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Informações do Compositor */}
                 <div className="lg:col-span-2 space-y-6 order-2 md:order-1 lg:order-1">
                   {/* Nome e título */}
                   <AnimatedItem direction="up" springType="bouncy">
                     <div className="space-y-3">
-                      <div className="flex items-start justify-between">
+                      <div className="flex flex-col-reverse md:flex-row items-start justify-between">
                         <div className="flex-1 ">
                           <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
                             {composer.name}
@@ -288,7 +292,7 @@ export default function ComposerDetailsClient({
                           )}
                         </div>
                         {/* Ações */}
-                        <div className="flex items-center space-x-3 pt-2 b">
+                        <div className="flex items-center self-end space-x-3 pt-2 b">
                           <FavoriteButton
                             id={composer.id}
                             type="composer"
@@ -438,7 +442,10 @@ export default function ComposerDetailsClient({
                               {t('primary_role_label')}
                             </p>
                             <p className="text-theme-primary font-semibold">
-                              {composer.primaryRoleName}
+                              {translateRole(
+                                composer.primaryRoleName,
+                                language
+                              )}
                             </p>
                           </div>
                         </div>
@@ -599,7 +606,8 @@ export default function ComposerDetailsClient({
                       <div className="w-4 h-4 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
                         <FiMusic className="w-3 h-3 text-theme-primary" />
                       </div>
-                      {role}
+
+                      {translateRole(role, language)}
                     </span>
                   </AnimatedItem>
                 ))}

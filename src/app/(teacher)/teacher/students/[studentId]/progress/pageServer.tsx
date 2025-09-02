@@ -10,7 +10,6 @@ import { TranslationProvider } from '@/app/context/TranslationContext';
 
 interface TeacherProgressPageServerProps {
   studentId: string;
-  userId: string;
   initialPeriod: string;
   customStartDate?: string;
   customEndDate?: string;
@@ -18,7 +17,6 @@ interface TeacherProgressPageServerProps {
 
 export default async function TeacherProgressPageServer({
   studentId,
-  userId,
   initialPeriod,
   customStartDate,
   customEndDate,

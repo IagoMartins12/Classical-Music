@@ -828,7 +828,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         </div>
 
         <div className="classical-card-2 p-4 border border-accent-red bg-accent-red bg-opacity-5">
-          <div className="flex items-center gap-4 justify-between mb-4">
+          <div className="flex flex-col md:flex-row items-center gap-4 justify-between mb-4">
             <div>
               <h4 className="font-medium text-theme-primary mb-1">
                 {t('account_delete_permanent')}

@@ -1,0 +1,82 @@
+{
+  "ptBr": {
+    "page_title": "Verificação de Email Necessária",
+    "page_subtitle": "Para fazer uploads de compositores e partituras, você precisa confirmar seu email.",
+
+    "greeting_with_name": "Olá, {userName}!",
+    "greeting_without_name": "Confirmação Pendente",
+
+    "user_email_label": "Seu Email:",
+    "security_message": "Por motivos de segurança, apenas usuários com email confirmado podem fazer uploads de conteúdo musical. Isso nos ajuda a manter a qualidade e autenticidade do acervo.",
+
+    "email_sent_success": "Email de confirmação enviado com sucesso!",
+    "email_sent_instructions": "Verifique sua caixa de entrada e spam. O link é válido por 24 horas.",
+
+    "button_resend_email": "Reenviar Email",
+    "button_send_email": "Enviar Email de Confirmação",
+    "button_already_confirmed": "Já Confirmei",
+    "button_verifying": "Verificando...",
+    "button_back_home": "Voltar ao Início",
+
+    "current_permissions_title": "O que você pode fazer agora",
+    "current_permission_explore": "Explorar compositores e obras",
+    "current_permission_discover": "Descobrir partituras gratuitas",
+    "current_permission_favorites": "Criar listas de favoritos",
+    "current_permission_profile": "Personalizar seu perfil",
+
+    "after_verification_title": "Após a confirmação",
+    "after_verification_composers": "Adicionar novos compositores",
+    "after_verification_scores": "Fazer upload de partituras",
+    "after_verification_works": "Contribuir com obras musicais",
+    "after_verification_full_access": "Acesso completo ao sistema",
+
+    "help_title": "Precisa de ajuda?",
+    "help_check_spam": "Verifique sua pasta de spam/lixo eletrônico",
+    "help_wait_minutes": "O email pode levar alguns minutos para chegar",
+    "help_same_browser": "Use o mesmo navegador onde fez o registro",
+    "help_contact_support": "Entre em contato conosco se o problema persistir",
+
+    "quote_text": "A música é a arte mais direta, ela entra pelos ouvidos e vai ao coração.",
+    "quote_author": "Magdalena Tagliaferro"
+  },
+  "en": {
+    "page_title": "Email Verification Required",
+    "page_subtitle": "To upload composers and sheet music, you need to confirm your email.",
+
+    "greeting_with_name": "Hello, {userName}!",
+    "greeting_without_name": "Confirmation Pending",
+
+    "user_email_label": "Your Email:",
+    "security_message": "For security reasons, only users with confirmed email can upload musical content. This helps us maintain the quality and authenticity of the collection.",
+
+    "email_sent_success": "Confirmation email sent successfully!",
+    "email_sent_instructions": "Check your inbox and spam folder. The link is valid for 24 hours.",
+
+    "button_resend_email": "Resend Email",
+    "button_send_email": "Send Confirmation Email",
+    "button_already_confirmed": "Already Confirmed",
+    "button_verifying": "Verifying...",
+    "button_back_home": "Back to Home",
+
+    "current_permissions_title": "What you can do now",
+    "current_permission_explore": "Explore composers and works",
+    "current_permission_discover": "Discover free sheet music",
+    "current_permission_favorites": "Create favorite lists",
+    "current_permission_profile": "Customize your profile",
+
+    "after_verification_title": "After confirmation",
+    "after_verification_composers": "Add new composers",
+    "after_verification_scores": "Upload sheet music",
+    "after_verification_works": "Contribute musical works",
+    "after_verification_full_access": "Full system access",
+
+    "help_title": "Need help?",
+    "help_check_spam": "Check your spam/junk folder",
+    "help_wait_minutes": "The email may take a few minutes to arrive",
+    "help_same_browser": "Use the same browser where you registered",
+    "help_contact_support": "Contact us if the problem persists",
+
+    "quote_text": "Music is the most direct art, it enters through the ears and goes to the heart.",
+    "quote_author": "Magdalena Tagliaferro"
+  }
+}

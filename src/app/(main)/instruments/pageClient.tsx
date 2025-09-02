@@ -216,7 +216,7 @@ export function InstrumentsPageClient({
                 className="classical-card group relative overflow-hidden  animate-fade-in-up"
               >
                 <div
-                  className="flex items-center justify-between px-8 py-6 cursor-pointer transition-all duration-300 hover:bg-interactive-hover relative z-10"
+                  className="flex items-center justify-between  px-0 py-2 md:px-8 md:py-6 cursor-pointer transition-all duration-300 hover:bg-interactive-hover relative z-10"
                   onClick={() => toggleInstrument(instrument.id)}
                 >
                   <div className="flex items-center space-x-6">
@@ -227,7 +227,7 @@ export function InstrumentsPageClient({
                       <h2 className="text-3xl text-theme-primary classical-title mb-2 group-hover:text-brand-primary transition-colors duration-300">
                         {instrument.historicalData.name}
                       </h2>
-                      <p className="text-theme-secondary text-lg classical-subtitle mb-1">
+                      <p className="text-theme-secondary text-md md:text-lg classical-subtitle mb-1">
                         {instrument.historicalData.category} •{' '}
                         {instrument.historicalData.origin}
                       </p>
@@ -238,7 +238,7 @@ export function InstrumentsPageClient({
                   </div>
 
                   <div className="flex items-center space-x-6">
-                    <div className="text-center">
+                    <div className="text-center hidden md:block">
                       <div className="text-2xl font-bold text-brand-primary classical-title">
                         {instrument.stats.totalWorks}
                       </div>
@@ -265,11 +265,11 @@ export function InstrumentsPageClient({
                       : 'max-h-0 opacity-0'
                   }`}
                 >
-                  <div className="px-8 py-8 space-y-8">
+                  <div className="py-4 px-2 md:p-8 space-y-8">
                     {/* Brief Description */}
                     <div className="classical-card-2 p-6 relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-theme-secondary text-lg leading-relaxed classical-body">
+                        <p className="text-theme-secondary text-md md:text-lg leading-relaxed classical-body">
                           {instrument.historicalData.description}
                         </p>
                       </div>

@@ -9,7 +9,7 @@ import {
   GiTeacher,
   GiMicrophone,
 } from 'react-icons/gi';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 const UserTypeStep: React.FC = () => {
   const { data, updateData } = useOnboardingModal();

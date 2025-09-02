@@ -70,7 +70,7 @@ export default function ComposerDetailsLoading() {
             <GiMusicalNotes />
           </div>
 
-          <div className="p-8 relative z-10 animate-shimmer">
+          <div className="p-0 md:p-8 relative z-10 animate-shimmer">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Informações do Compositor */}
               <div className="lg:col-span-2 space-y-6">

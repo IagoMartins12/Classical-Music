@@ -551,7 +551,7 @@ const WorksClient = memo(
       return (
         <AnimatedCard
           hover="none"
-          className="bg-theme-secundary px-4  rounded-2xl overflow-hidden"
+          className="bg-theme-secundary px-0 md:px-4  rounded-2xl overflow-hidden"
         >
           <div className="divide-y divide-theme-secondary flex flex-col gap-4 py-4">
             {worksData.works.map((work, index) => (
@@ -598,9 +598,9 @@ const WorksClient = memo(
           </div>
 
           {/* Search and Filters Section */}
-          <AnimatedCard
-            hover="none"
-            className={`classical-card p-6 transition-all duration-500 relative z-[200] ${
+          <AnimatedItem
+            direction="up"
+            className={`classical-card mx-0 md:mx-4 sm:p-0 !p-6 transition-all duration-500 ${
               isPending ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -791,7 +791,7 @@ const WorksClient = memo(
               isPending={isPending}
               t={t}
             />
-          </AnimatedCard>
+          </AnimatedItem>
 
           {/* Results Section */}
           <div className="relative mt-4 pt-4 z-[50]">

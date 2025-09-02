@@ -1,0 +1,66 @@
+{
+  "ptBr": {
+    "unsaved_changes_title": "Descartar alterações?",
+    "unsaved_changes_message": "Você tem alterações não salvas. Se fechar agora, todas as alterações serão perdidas.",
+    "unsaved_changes_confirm": "Descartar e Fechar",
+    "unsaved_changes_cancel": "Continuar Editando",
+
+    "ongoing_process_title": "Interromper processo?",
+    "ongoing_process_message": "O processo de {processName} está em andamento. Se fechar agora, o processo será interrompido e o progresso será perdido.",
+    "ongoing_process_message_generic": "Um processo está em andamento. Se fechar agora, o processo será interrompido.",
+    "ongoing_process_confirm": "Interromper e Fechar",
+    "ongoing_process_cancel": "Continuar Processo",
+
+    "danger_title": "Ação perigosa",
+    "danger_message": "Esta ação não pode ser desfeita. Tem certeza que deseja continuar?",
+    "danger_confirm": "Confirmar",
+    "danger_cancel": "Cancelar",
+
+    "custom_title": "Confirmar ação",
+    "custom_message": "Tem certeza que deseja continuar?",
+    "custom_confirm": "Confirmar",
+    "custom_cancel": "Cancelar",
+
+    "process_active_title": "Processo Ativo",
+    "process_active_description": "O processo de {processName} será interrompido permanentemente.",
+    "process_active_description_generic": "O processo atual será interrompido permanentemente.",
+
+    "changes_detected_title": "Alterações Detectadas",
+    "changes_detected_description": "Salve suas alterações antes de fechar para não perdê-las.",
+
+    "possible_changes_title": "Possíveis Alterações Detectadas",
+    "possible_changes_description": "Salve suas alterações antes de fechar para não perdê-las."
+  },
+  "en": {
+    "unsaved_changes_title": "Discard changes?",
+    "unsaved_changes_message": "You have unsaved changes. If you close now, all changes will be lost.",
+    "unsaved_changes_confirm": "Discard and Close",
+    "unsaved_changes_cancel": "Continue Editing",
+
+    "ongoing_process_title": "Interrupt process?",
+    "ongoing_process_message": "The {processName} process is ongoing. If you close now, the process will be interrupted and progress will be lost.",
+    "ongoing_process_message_generic": "A process is ongoing. If you close now, the process will be interrupted.",
+    "ongoing_process_confirm": "Interrupt and Close",
+    "ongoing_process_cancel": "Continue Process",
+
+    "danger_title": "Dangerous action",
+    "danger_message": "This action cannot be undone. Are you sure you want to continue?",
+    "danger_confirm": "Confirm",
+    "danger_cancel": "Cancel",
+
+    "custom_title": "Confirm action",
+    "custom_message": "Are you sure you want to continue?",
+    "custom_confirm": "Confirm",
+    "custom_cancel": "Cancel",
+
+    "process_active_title": "Active Process",
+    "process_active_description": "The {processName} process will be permanently interrupted.",
+    "process_active_description_generic": "The current process will be permanently interrupted.",
+
+    "changes_detected_title": "Changes Detected",
+    "changes_detected_description": "Save your changes before closing to avoid losing them.",
+
+    "possible_changes_title": "Possible Changes Detected",
+    "possible_changes_description": "Save your changes before closing to avoid losing them."
+  }
+}

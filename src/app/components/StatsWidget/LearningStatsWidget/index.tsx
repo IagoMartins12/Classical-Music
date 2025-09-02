@@ -18,6 +18,7 @@ import {
 import { BadgeGrid } from '../../badges/BadgeSystem';
 import { useAchievementSystem } from '../../../hooks/useAchievements';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 interface LearningStatsWidgetProps {
   className?: string;
@@ -120,6 +121,7 @@ export default function LearningStatsWidget({
   className = '',
 }: LearningStatsWidgetProps) {
   const { t } = useTranslation({ sections: ['pages/learning'] });
+  const { language } = useLanguageStore();
   const stats = useLearningStats();
   const { showInline } = useAdaptiveStats('learning');
   const { Modal } = useStatsModal('learning');
@@ -127,9 +129,9 @@ export default function LearningStatsWidget({
   const { fetchAchievements } = useAchievementSystem();
 
   // Criar badges baseado nas stats
-  const badges = createLearningBadges(stats);
-  const nextAchievements = getNextLearningAchievements(stats);
-  const smartCTAs = getLearningSmartCTAs(stats);
+  const badges = createLearningBadges(stats, language);
+  const nextAchievements = getNextLearningAchievements(stats, language);
+  const smartCTAs = getLearningSmartCTAs(stats, language);
 
   // Auto-detectar achievements quando stats mudarem
   useEffect(() => {

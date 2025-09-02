@@ -572,7 +572,7 @@ export default function SupportPage(): JSX.Element {
       {!selectedCategory && (
         <section className="py-8">
           <AnimatedContainer delay={0.1} staggerSpeed="fast">
-            <div className="section-wrap">
+            <div className="">
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-12">
                   <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
@@ -627,7 +627,7 @@ export default function SupportPage(): JSX.Element {
       {selectedCategory && (
         <section className="py-8">
           <AnimatedContainer delay={0.1} staggerSpeed="fast">
-            <div className="section-wrap">
+            <div className="">
               <div className="max-w-4xl mx-auto">
                 {(() => {
                   const category = supportCategories.find(
@@ -664,7 +664,7 @@ export default function SupportPage(): JSX.Element {
                             <div className="classical-card overflow-hidden">
                               <button
                                 onClick={() => toggleSolution(solution.id)}
-                                className="w-full p-6 text-left focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-inset hover:bg-theme-elevated/50 transition-colors cursor-pointer"
+                                className="w-full p-2 pb-6 md:p-6 text-left focus:outline-none hover:bg-theme-elevated/50 transition-colors cursor-pointer"
                               >
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center space-x-4">
@@ -678,7 +678,7 @@ export default function SupportPage(): JSX.Element {
                                         <h4 className="text-lg font-semibold classical-title text-theme-primary">
                                           {solution.problem}
                                         </h4>
-                                        <span className="text-sm text-brand-primary font-medium">
+                                        <span className="text-sm text-brand-primary hidden md:block font-medium">
                                           {expandedSolution === solution.id
                                             ? t(
                                                 'support_jsx_span_children_0__fechar'
@@ -748,7 +748,7 @@ export default function SupportPage(): JSX.Element {
 
                               {expandedSolution === solution.id &&
                                 solution.steps && (
-                                  <div className="px-6 pb-6 border-t border-theme-secondary/20">
+                                  <div className="px-0 md:px-6 pb-6 border-t border-theme-secondary/20">
                                     <div className="pt-4">
                                       <div className="border-brand-primary/20 pl-4">
                                         <h5 className="font-semibold classical-title text-theme-primary mb-4 flex items-center">

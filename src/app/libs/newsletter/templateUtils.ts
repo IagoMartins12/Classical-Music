@@ -1,9 +1,10 @@
 // app/libs/newsletter/templateUtils.ts
 import {
-  getEmailTemplate,
+  getEmailTemplateSync,
   processTemplate,
-  validateTemplateVariables,
+  validateTemplateVariablesSync,
 } from './emailTemplates';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 // Tipos de template
 export type TemplateType =
@@ -76,7 +77,7 @@ export class TemplateService {
 
     try {
       // Validar variáveis necessárias
-      const validation = validateTemplateVariables(template.type, data);
+      const validation = validateTemplateVariablesSync(template.type, data);
       if (!validation.valid) {
         console.warn('Variáveis faltando para template:', validation.missing);
       }
@@ -115,15 +116,16 @@ export class TemplateService {
     data: TemplateRenderData
   ): Promise<RenderedTemplate> {
     const startTime = Date.now();
+    const language = await getServerLanguageStatic();
 
     try {
-      const template = getEmailTemplate(templateType);
+      const template = getEmailTemplateSync(templateType, language);
       if (!template) {
         throw new Error(`Template built-in não encontrado: ${templateType}`);
       }
 
       // Validar variáveis necessárias
-      const validation = validateTemplateVariables(templateType, data);
+      const validation = validateTemplateVariablesSync(templateType, data);
       if (!validation.valid) {
         console.warn('Variáveis faltando para template:', validation.missing);
       }

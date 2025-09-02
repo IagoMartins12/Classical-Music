@@ -5,7 +5,7 @@ import { useOnboardingModal } from '@/app/stores/authStore';
 import React from 'react';
 import { FiCheck, FiArrowRight } from 'react-icons/fi';
 import { GiGrandPiano, GiMusicalNotes } from 'react-icons/gi';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '../../Common/Button';
 
 interface CompletionStepProps {

@@ -22,7 +22,7 @@ import {
   canProceedWithPhone,
   usePhoneValidation,
 } from '@/app/utils/phones_and_location/phoneValidation';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface OnboardingOptions {
   instruments: Array<{ id: string; name: string; category: string | null }>;
@@ -240,19 +240,6 @@ const OnboardingModal: React.FC = () => {
   };
 
   const renderStep = () => {
-    if (isLoadingOptions) {
-      return (
-        <div className="flex items-center justify-center py-20">
-          <div className="text-center">
-            <div className="animate-spin w-8 h-8 border-3 border-brand-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-theme-secondary">
-              {t('onboarding_modal_loading_options')}
-            </p>
-          </div>
-        </div>
-      );
-    }
-
     if (!options) {
       return (
         <div className="text-center py-20">
@@ -388,14 +375,15 @@ const OnboardingModal: React.FC = () => {
               </Button>
             )}
 
-            <Button
+            {/* <Button
               variant="outline"
               onClick={handleSkip}
               disabled={isLoading}
               title={t('onboarding_modal_continue_later_tooltip')}
+              className="max-w-3/12"
             >
               {t('onboarding_modal_continue_later')}
-            </Button>
+            </Button> */}
           </div>
 
           <div className="flex items-center space-x-3">

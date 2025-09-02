@@ -128,7 +128,7 @@ export default async function CopyrightPageRoute() {
 
   return (
     <TranslationProvider language={language} translations={translations}>
-      <CopyrightPage />;
+      <CopyrightPage />
     </TranslationProvider>
   );
 }

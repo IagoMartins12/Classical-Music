@@ -118,7 +118,7 @@ export default async function PrivacyPageRoute() {
 
   return (
     <TranslationProvider language={language} translations={translations}>
-      <PrivacyPage />;
+      <PrivacyPage />
     </TranslationProvider>
   );
 }

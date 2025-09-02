@@ -5,7 +5,7 @@ import React from 'react';
 import { FiUser, FiArrowRight, FiX } from 'react-icons/fi';
 import { useOnboardingModal, usePromptModal } from '@/app/stores/authStore';
 import { useUser } from '@/app/hooks/userStore';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '../../Common/Button';
 
 const OnboardingPrompt = () => {
@@ -27,9 +27,9 @@ const OnboardingPrompt = () => {
     <div
       className={`classical-card ${
         isOpen && !isOnboardingModalOpen
-          ? 'fixed bottom-1 right-0 z-50'
+          ? 'fixed bottom-0  right-0 z-50'
           : 'hidden'
-      } p-4 border-accent-amber bg-accent-amber bg-opacity-5 `}
+      } p-4 border-accent-amber !rounded-b-none bg-accent-amber bg-opacity-5 `}
     >
       <div className="flex items-start space-x-3">
         <div className="w-10 h-10 bg-accent-amber bg-opacity-20 rounded-full flex items-center justify-center flex-shrink-0">

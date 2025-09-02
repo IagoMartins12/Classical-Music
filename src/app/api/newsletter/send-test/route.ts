@@ -6,9 +6,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { logSecurityEvent } from '@/app/libs/tokenUtils';
 import {
   emailTemplates,
-  getEmailTemplate,
+  getEmailTemplateSync,
 } from '@/app/libs/newsletter/emailTemplates';
 import { sendBulkEmail, sendTemplateEmail } from '@/app/libs/newsletter/email';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,9 +48,10 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    const language = await getServerLanguageStatic();
 
     // Verificar se template existe
-    const template = getEmailTemplate(templateType);
+    const template = getEmailTemplateSync(templateType, language);
 
     if (!template) {
       return NextResponse.json(
@@ -249,13 +251,14 @@ export async function GET() {
         { status: 403 }
       );
     }
+    const language = await getServerLanguageStatic();
 
     // Mapear templates disponíveis
     const availableTemplates = Object.entries(emailTemplates).map(
       ([key, template]) => ({
         type: key,
         name: getTemplateName(key),
-        subject: template.subject,
+        subject: template[language].subject,
         description: getTemplateDescription(key),
       })
     );

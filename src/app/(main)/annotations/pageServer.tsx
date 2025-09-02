@@ -23,7 +23,7 @@ export default async function AnnotationsPageServer() {
   return (
     <TranslationProvider language={language} translations={translations}>
       <AchievementProvider>
-        <AnnotationsPageClient />;
+        <AnnotationsPageClient />
       </AchievementProvider>
     </TranslationProvider>
   );

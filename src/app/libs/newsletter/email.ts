@@ -1,6 +1,7 @@
 // app/libs/email.ts - VERSÃO ATUALIZADA com customHtmlContent
 import nodemailer from 'nodemailer';
 import { emailTemplates, processTemplate } from './emailTemplates';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 // Configurações de email baseadas em variáveis de ambiente
 const EMAIL_CONFIG = {
@@ -212,17 +213,18 @@ export async function sendTemplateEmail(
         };
       }
 
+      const language = await getServerLanguageStatic();
       // Processar template com variáveis
       htmlContent = processTemplate(
-        template.htmlContent,
+        template[language].htmlContent,
         templateData.variables
       );
       textContent = processTemplate(
-        template.textContent,
+        template[language].textContent,
         templateData.variables
       );
       subject = processTemplate(
-        templateData.customSubject || template.subject,
+        templateData.customSubject || template[language].subject,
         templateData.variables
       );
     }

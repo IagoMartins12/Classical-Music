@@ -1,4 +1,4 @@
-// components/StatsWidget/FavoritesStatsWidget.tsx - ATUALIZADO
+// components/StatsWidget/FavoritesStatsWidget.tsx - CORRIGIDO
 'use client';
 
 import { useMemo, useEffect } from 'react';
@@ -25,15 +25,20 @@ import {
 import { BadgeGrid } from '../../badges/BadgeSystem';
 import { useAchievementSystem } from '../../../hooks/useAchievements';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 interface FavoritesStatsWidgetProps {
   className?: string;
+  // ✨ NOVA PROP para controlar renderização
+  forceRender?: boolean; // Quando true, sempre renderiza o conteúdo independente do showInline
 }
 
 export default function FavoritesStatsWidget({
   className = '',
+  forceRender = false, // ✨ Default false para manter comportamento atual
 }: FavoritesStatsWidgetProps) {
   const { t } = useTranslation({ sections: ['pages/favorites'] });
+  const { language } = useLanguageStore();
   const { favoriteComposers, favoriteWorks, favoriteScores } =
     useFavoritesStore();
   const { showInline } = useAdaptiveStats('favorites');
@@ -49,9 +54,9 @@ export default function FavoritesStatsWidget({
   );
 
   // Criar badges e CTAs
-  const badges = createFavoritesBadges(stats);
-  const nextAchievements = getNextFavoritesAchievements(stats);
-  const smartCTAs = getFavoritesSmartCTAs(stats);
+  const badges = createFavoritesBadges(stats, language);
+  const nextAchievements = getNextFavoritesAchievements(stats, language);
+  const smartCTAs = getFavoritesSmartCTAs(stats, language);
 
   // Auto-detectar achievements
   useEffect(() => {
@@ -70,10 +75,16 @@ export default function FavoritesStatsWidget({
     fetchAchievements('FAVORITES');
   }, []);
 
+  // ✨ LÓGICA CORRIGIDA: detecta se deve renderizar o conteúdo
+  const shouldRenderContent = forceRender || showInline;
+
   // Se não tem favoritos suficientes, mostrar CTA
   if (stats.totalFavorites < 5) {
     return (
-      <AnimatedCard hover="lift" className={`classical-card p-6 ${className}`}>
+      <AnimatedCard
+        hover="lift"
+        className={`classical-card p-6 ${className} mt-4`}
+      >
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
             <FiHeart className="w-8 h-8 text-white" />
@@ -110,11 +121,13 @@ export default function FavoritesStatsWidget({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      {/* Stats Content */}
-      {showInline && renderStatsContent()}
+      {/* ✨ RENDERIZAÇÃO CORRIGIDA */}
+      {shouldRenderContent && renderStatsContent()}
 
-      {/* Modal para Mobile */}
-      <Modal title={t('stats_modal_title')}>{renderStatsContent()}</Modal>
+      {/* Modal interno - só aparece quando não está forceRender (ou seja, uso normal) */}
+      {!forceRender && (
+        <Modal title={t('stats_modal_title')}>{renderStatsContent()}</Modal>
+      )}
     </div>
   );
 

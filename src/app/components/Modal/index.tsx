@@ -31,6 +31,8 @@ interface ModalProps {
   isProcessing?: boolean; // Tem processo rodando
   processName?: string; // Nome do processo
   withouVerification?: boolean;
+  setPr?: boolean;
+  middlePosition?: boolean;
 }
 
 export interface ModalRef {
@@ -54,6 +56,8 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       isProcessing = false,
       withouVerification = false,
       processName,
+      setPr,
+      middlePosition,
     },
     ref
   ) => {
@@ -172,24 +176,22 @@ const Modal = forwardRef<ModalRef, ModalProps>(
           {/* Overlay para desktop em modals grandes */}
           {isLargeModal && (
             <div
-              className="fixed inset-0 modal-overlay animate-fade-in hidden sm:block"
+              className="fixed inset-0 modal-overlay animate-fade-in"
               onClick={handleClose}
             />
           )}
           <div
             ref={modalRef}
             className={`
-              relative animate-fade-in-scale
-              classical-card shadow-theme-large border-theme-accent
-              modal-content no-border !overflow-hidden classical-card animate-fade-in-scale
-            
-              ${
-                isLargeModal
-                  ? `w-full h-full sm:w-auto sm:h-auto sm:${maxWidthClasses[maxWidth]} sm:max-h-[90vh] sm:rounded-lg`
-                  : `w-full ${maxWidthClasses[maxWidth]} max-h-[90vh]`
-              }
-              ${className}
-            `}
+          relative ${
+            isLargeModal && !middlePosition
+              ? 'w-full '
+              : 'w-11/12 mx-auto !rounded-2xl'
+          } ${maxWidthClasses[maxWidth]} ${setPr && '!pr-[0.25rem]'}
+          modal-content no-border !overflow-hidden classical-card animate-fade-in-scale
+          shadow-theme-large border-theme-accent max-h-[90vh]
+           md:p-auto
+          ${className}`}
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? 'modal-title' : undefined}
@@ -221,8 +223,8 @@ const Modal = forwardRef<ModalRef, ModalProps>(
             <div
               ref={contentRef}
               className={`
-            overflow-y-auto  classical-scrollbar pt-4  flex-1
-            ${title || showCloseButton ? 'px-6 pb-6' : 'p-6'}
+            overflow-y-auto overflow-x-hidden classical-scrollbar pt-4  flex-1
+            ${title || showCloseButton ? 'p-4 md:p-6' : 'p-0 md:p-6'}
           `}
               style={{
                 maxHeight: isMobile

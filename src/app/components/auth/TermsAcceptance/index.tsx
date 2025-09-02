@@ -9,7 +9,7 @@ import {
   FiFileText,
   FiAlertCircle,
 } from 'react-icons/fi';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import Modal from '../../Modal';
 
 interface TermsAcceptanceProps {
@@ -297,6 +297,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
         title={privacyContent.title}
         maxWidth="3xl"
         showCloseButton={true}
+        setPr
       >
         <div className="flex items-center space-x-3 mb-6">
           {privacyContent.icon}
@@ -319,6 +320,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
         title={termsContent.title}
         maxWidth="3xl"
         showCloseButton={true}
+        setPr
       >
         <div className="flex items-center space-x-3 mb-6">
           {termsContent.icon}

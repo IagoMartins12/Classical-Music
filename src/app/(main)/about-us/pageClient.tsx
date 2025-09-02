@@ -193,10 +193,6 @@ export default function AboutPage() {
                   hover="lift"
                   className="classical-card p-8 relative overflow-hidden"
                 >
-                  <div className="absolute top-4 right-4 text-6xl text-brand-primary/5">
-                    <GiScrollQuill />
-                  </div>
-
                   <div className="relative z-10">
                     <div className="grid grid-cols-2 gap-6">
                       <div className="text-center">

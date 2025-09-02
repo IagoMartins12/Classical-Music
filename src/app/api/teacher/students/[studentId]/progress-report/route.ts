@@ -29,6 +29,26 @@ const PERFORMANCE_LIMITS = {
   MAX_MONTHS_EVOLUTION: 12,
   CACHE_TTL: 5 * 60 * 1000, // 5 minutos
 } as const;
+interface AttendanceTrend {
+  month: string;
+  attendanceRate: number;
+  punctualityRate: number;
+  improvement: number;
+}
+
+interface AbsenceReason {
+  reason: string;
+  count: number;
+  percentage: number;
+  trend: 'stable';
+}
+
+interface TimePattern {
+  assignmentType: string;
+  estimatedTime: number;
+  actualTime: number;
+  efficiency: number;
+}
 
 // 🚀 CACHE SIMPLES EM MEMÓRIA (para otimizar consultas repetidas)
 const reportCache = new Map<string, { data: any; timestamp: number }>();
@@ -581,9 +601,7 @@ async function generateEvolutionOptimized(
     const avgEngagement = monthLessons
       .filter((l) => l.engagement)
       .reduce((sum, l, _, arr) => sum + (l.engagement || 0) / arr.length, 0);
-    const onTimeCount = monthLessons.filter(
-      (l) => l.punctuality === 'on_time'
-    ).length;
+
     const noShowCount = monthLessons.filter(
       (l) => l.status === 'NO_SHOW'
     ).length;
@@ -1203,7 +1221,8 @@ function determineLearningStyleOptimized(
   const auditoryKeywords = ['escuta', 'ouvido', 'ritmo', 'melodia'];
   const kinestheticKeywords = ['prática', 'movimento', 'técnica', 'dedilhado'];
 
-  let scores = { visual: 0, auditory: 0, kinesthetic: 0 };
+  console.log('TOPIC', { topTechniques, topTopics });
+  const scores = { visual: 0, auditory: 0, kinesthetic: 0 };
 
   // 🚀 PROCESSAR APENAS UMA AMOSTRA DOS DADOS
   const sampleSize = Math.min(50, lessonsData.length);
@@ -1444,27 +1463,35 @@ function getCompletionTrendsOptimized(
   return trends;
 }
 
-function getTimePatternsOptimized(assignments: any[]) {
+function getTimePatternsOptimized(assignments: any[]): TimePattern[] {
   const patterns = assignments.reduce((acc: any, assignment) => {
     const type = assignment.type || 'practice';
     if (!acc[type]) {
-      acc[type] = { estimatedTimes: [], actualTimes: [] };
+      acc[type] = {
+        estimatedTimes: [] as number[],
+        actualTimes: [] as number[],
+      };
     }
 
     if (assignment.estimatedTime)
-      acc[type].estimatedTimes.push(assignment.estimatedTime);
+      acc[type].estimatedTimes.push(assignment.estimatedTime as number);
     if (assignment.actualTime)
-      acc[type].actualTimes.push(assignment.actualTime);
+      acc[type].actualTimes.push(assignment.actualTime as number);
     return acc;
   }, {});
 
   return Object.entries(patterns).map(([type, data]: [string, any]) => {
+    const estimatedTimes = data.estimatedTimes as number[];
+    const actualTimes = data.actualTimes as number[];
+
     const avgEstimated =
-      data.estimatedTimes.reduce((a: number, b: number) => a + b, 0) /
-        data.estimatedTimes.length || 0;
+      estimatedTimes.length > 0
+        ? estimatedTimes.reduce((a, b) => a + b, 0) / estimatedTimes.length
+        : 0;
     const avgActual =
-      data.actualTimes.reduce((a: number, b: number) => a + b, 0) /
-        data.actualTimes.length || 0;
+      actualTimes.length > 0
+        ? actualTimes.reduce((a, b) => a + b, 0) / actualTimes.length
+        : 0;
 
     return {
       assignmentType: type,
@@ -1616,24 +1643,24 @@ async function generateAttendanceDetailedOptimized(
     (l) => l.status === 'CANCELLED' || l.status === 'NO_SHOW'
   );
 
-  const absenceReasonsMap = cancelledLessons.reduce((acc: any, lesson) => {
-    const reason =
-      lesson.status === 'NO_SHOW' ? 'Falta sem aviso' : 'Cancelamento';
-    acc[reason] = (acc[reason] || 0) + 1;
-    return acc;
-  }, {});
+  const absenceReasonsMap: Record<string, number> = cancelledLessons.reduce(
+    (acc: Record<string, number>, lesson) => {
+      const reason =
+        lesson.status === 'NO_SHOW' ? 'Falta sem aviso' : 'Cancelamento';
+      acc[reason] = (acc[reason] || 0) + 1;
+      return acc;
+    },
+    {}
+  );
 
   const totalAbsences =
-    Object.values(absenceReasonsMap).reduce(
-      (a: number, b: number) => a + b,
-      0
-    ) || 1;
+    Object.values(absenceReasonsMap).reduce((a, b) => a + b, 0) || 1;
 
-  const absenceReasons = Object.entries(absenceReasonsMap).map(
-    ([reason, count]: [string, number]) => ({
+  const absenceReasons: AbsenceReason[] = Object.entries(absenceReasonsMap).map(
+    ([reason, count]: [string, unknown]) => ({
       reason,
-      count,
-      percentage: Math.round((count / totalAbsences) * 100),
+      count: count as number,
+      percentage: Math.round(((count as number) / totalAbsences) * 100),
       trend: 'stable' as const,
     })
   );
@@ -1650,9 +1677,10 @@ async function generateAttendanceDetailedOptimized(
     timeAnalysis: getAttendanceTimeAnalysisOptimized(lessonsData),
   };
 }
-
-function getAttendanceImprovementTrendOptimized(lessonsData: any[]) {
-  const trends = [];
+function getAttendanceImprovementTrendOptimized(
+  lessonsData: any[]
+): AttendanceTrend[] {
+  const trends: AttendanceTrend[] = [];
   const months = Math.min(6, 12);
 
   for (let i = months - 1; i >= 0; i--) {

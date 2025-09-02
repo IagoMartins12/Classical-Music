@@ -21,7 +21,7 @@ import { useAchievementSystem } from '@/app/hooks/useAchievements';
 import { useCallback } from 'react';
 import { Badge } from '../BadgeSystem';
 import { FaFire } from 'react-icons/fa';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
+import { Language } from '@/app/stores/useLanguageStore';
 
 const RARITY_COLORS = {
   COMMON: {
@@ -330,8 +330,10 @@ const getBadgeTranslations = (lang: 'pt' | 'en', topComposerName?: string) => {
   };
 };
 
-export function createFavoritesBadges(stats: FavoritesStats): Badge[] {
-  const { language } = useLanguageStore();
+export function createFavoritesBadges(
+  stats: FavoritesStats,
+  language: Language
+): Badge[] {
   const t = getBadgeTranslations(language, stats.topComposerName);
 
   return [
@@ -649,8 +651,11 @@ export function useFavoritesAchievementDetection() {
 }
 
 // Próximos achievements para CTAs
-export function getNextFavoritesAchievements(stats: FavoritesStats) {
-  const badges = createFavoritesBadges(stats);
+export function getNextFavoritesAchievements(
+  stats: FavoritesStats,
+  language: Language
+) {
+  const badges = createFavoritesBadges(stats, language);
   const locked = badges.filter((b) => !b.unlocked);
 
   // Ordenar por proximidade baseado em progresso
@@ -743,8 +748,10 @@ const getCTATranslations = (lang: 'pt' | 'en') => {
 };
 
 // CTAs inteligentes para Favorites
-export function getFavoritesSmartCTAs(stats: FavoritesStats): SmartCTA[] {
-  const { language } = useLanguageStore();
+export function getFavoritesSmartCTAs(
+  stats: FavoritesStats,
+  language: Language
+): SmartCTA[] {
   const ctaTexts = getCTATranslations(language);
   const ctas: SmartCTA[] = [];
 

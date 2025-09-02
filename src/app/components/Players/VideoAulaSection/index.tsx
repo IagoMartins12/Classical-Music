@@ -807,12 +807,13 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
     work.title,
   ]);
 
+  if (!hasVideoAula && !canEditMedia) return <></>;
   // ✅ ESTADO VAZIO - SEM VIDEO AULA
   if (!hasVideoAula) {
     return (
       <AnimatedCard hover="lift" className="classical-card overflow-hidden">
         {/* Header */}
-        <div className="p-6 border-b border-theme-secondary bg-gradient-to-r from-blue-900/10 to-purple-800/10">
+        <div className="p-2 pb-6 md:p-6 border-b border-theme-secondary ">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
@@ -843,8 +844,8 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
 
         {/* ✅ MODO DE EDIÇÃO PARA ESTADO VAZIO */}
         {showEditMode && canEditMedia ? (
-          <div className="p-6">
-            <div className="bg-purple-900/20 border border-purple-700/30 rounded-xl p-4">
+          <div className="p-0 md:p-6">
+            <div className="rounded-xl p-4">
               <h3 className="text-lg font-semibold text-theme-primary mb-4">
                 {t('video_aula_adicionar')}
               </h3>
@@ -980,7 +981,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
           </div>
         ) : (
           /* ✅ ESTADO VAZIO - CONTEÚDO PRINCIPAL */
-          <div className="p-6">
+          <div className="p-0 md:p-6">
             <div className="text-center py-12">
               <div className="w-24 h-24 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <FaGraduationCap className="w-12 h-12 text-theme-primary" />

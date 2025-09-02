@@ -22,7 +22,6 @@ import { useAchievementSystem } from '@/app/hooks/useAchievements';
 import { Badge } from '../BadgeSystem';
 import { FaFire } from 'react-icons/fa';
 import { CTAPriority, SmartCTA } from '../FavoritesBadgeSystem';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 const RARITY_COLORS = {
   COMMON: {
@@ -365,8 +364,11 @@ const getBadgeTranslations = (lang: 'pt' | 'en') => {
   };
 };
 
-export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
-  const { language } = useLanguageStore();
+// CORREÇÃO: Recebe language como parâmetro
+export function createAnnotationsBadges(
+  stats: AnnotationsStats,
+  language: 'pt' | 'en' = 'pt'
+): Badge[] {
   const t = getBadgeTranslations(language);
 
   return [
@@ -604,7 +606,7 @@ export function createAnnotationsBadges(stats: AnnotationsStats): Badge[] {
       icon: FiShield,
       category: 'milestone',
       rarity: 'LEGENDARY',
-      unlocked: stats.totalHelpfulVotes >= 100, // Simplificação
+      unlocked: stats.totalHelpfulVotes >= 100,
       ...RARITY_COLORS.LEGENDARY,
     },
 
@@ -719,9 +721,12 @@ export function useAnnotationsAchievementDetection() {
   return { checkAnnotationsAchievements };
 }
 
-// Próximos achievements para CTAs
-export function getNextAnnotationsAchievements(stats: AnnotationsStats) {
-  const badges = createAnnotationsBadges(stats);
+// Próximos achievements para CTAs - CORREÇÃO: Recebe language como parâmetro
+export function getNextAnnotationsAchievements(
+  stats: AnnotationsStats,
+  language: 'pt' | 'en' = 'pt'
+) {
+  const badges = createAnnotationsBadges(stats, language);
   const locked = badges.filter((b) => !b.unlocked);
 
   const sorted = locked.sort((a, b) => {
@@ -800,9 +805,11 @@ const getCTATranslations = (lang: 'pt' | 'en') => {
   };
 };
 
-// CTAs inteligentes para Annotations
-export function getAnnotationsSmartCTAs(stats: AnnotationsStats) {
-  const { language } = useLanguageStore();
+// CTAs inteligentes para Annotations - CORREÇÃO: Recebe language como parâmetro
+export function getAnnotationsSmartCTAs(
+  stats: AnnotationsStats,
+  language: 'pt' | 'en' = 'pt'
+) {
   const ctaTexts = getCTATranslations(language);
   const ctas: SmartCTA[] = [];
 

@@ -155,7 +155,7 @@ const ScoreCard = ({
 
         {/* Informações */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-4 mb-2">
+          <div className="flex items-center md:items-start justify-between gap-4 mb-2">
             <div className="flex-1">
               <h4 className="font-semibold text-theme-primary text-base leading-tight classical-title mb-2 group-hover:text-brand-primary transition-colors duration-300">
                 {score.title}
@@ -186,24 +186,28 @@ const ScoreCard = ({
                   href={score.downloadUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-brand-gradient text-theme-primary px-4 py-2 rounded-xl text-sm font-medium hover:scale-105 hover:shadow-theme-glow transition-all duration-300 group/download"
+                  className="flex items-center gap-2 bg-brand-gradient text-theme-primary px-0 md:px-4 py-2 rounded-xl text-sm font-medium hover:scale-105 hover:shadow-theme-glow transition-all duration-300 group/download"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <FiDownload className="w-3 h-3 group-hover/download:animate-bounce" />
-                  <span>{t('score_card_download')}</span>
-                  <svg
-                    className="w-3 h-3 transition-transform group-hover/download:translate-x-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
+                  <FiDownload className="w-3  hidden md:block h-3 group-hover/download:animate-bounce" />
+                  <span className="text-xs md:text-md">
+                    {t('score_card_download')}
+                  </span>
+                  <div className="">
+                    <svg
+                      className="w-3 h-3 transition-transform group-hover/download:translate-x-0.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </div>
                 </a>
               )}
             </div>

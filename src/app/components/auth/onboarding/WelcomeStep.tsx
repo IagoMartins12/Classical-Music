@@ -4,7 +4,7 @@
 import React from 'react';
 import { GiGrandPiano, GiMusicalNotes, GiViolin } from 'react-icons/gi';
 import { FiHeart, FiBook, FiUsers } from 'react-icons/fi';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 const WelcomeStep: React.FC = () => {
   const { t } = useTranslation({ sections: ['components/onboarding'] });

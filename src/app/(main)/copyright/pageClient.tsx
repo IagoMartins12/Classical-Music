@@ -200,7 +200,7 @@ export default function CopyrightPage() {
       <section className="relative overflow-hidden py-16">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-accent-purple/5 to-accent-blue/5"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="relative section-wrap">
+          <div className="relative  ">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
@@ -246,8 +246,8 @@ export default function CopyrightPage() {
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="">
             <div className="max-w-4xl mx-auto">
-              <AnimatedCard hover="lift" className="classical-card p-8">
-                <div className="flex items-start space-x-4">
+              <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
+                <div className=" flex flex-col md:flex-row items-start space-x-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center flex-shrink-0">
                     <FaBalanceScale className="w-8 h-8 text-theme-primary" />
                   </div>
@@ -269,7 +269,7 @@ export default function CopyrightPage() {
       {/* Public Domain Examples */}
       <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="section-wrap">
+          <div className=" ">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold classical-title text-theme-primary mb-4">
@@ -280,7 +280,7 @@ export default function CopyrightPage() {
                 </p>
               </div>
 
-              <AnimatedCard hover="lift" className="classical-card p-8">
+              <AnimatedCard hover="lift" className="classical-card">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {publicDomainExamples.map((example, index) => (
                     <div
@@ -324,8 +324,8 @@ export default function CopyrightPage() {
                   springType="gentle"
                   delay={index * 0.1}
                 >
-                  <div className="classical-card p-8">
-                    <div className="flex items-start space-x-6">
+                  <div className="classical-card !p-8 md:p-8">
+                    <div className="flex flex-col md:flex-row items-start space-x-6">
                       <div className="w-14 h-14 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center flex-shrink-0">
                         <section.icon className="w-7 h-7 text-theme-primary" />
                       </div>
@@ -358,7 +358,7 @@ export default function CopyrightPage() {
       {/* Report Process */}
       <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="section-wrap">
+          <div className=" ">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold classical-title text-theme-primary mb-4">
@@ -369,10 +369,13 @@ export default function CopyrightPage() {
                 </p>
               </div>
 
-              <AnimatedCard hover="lift" className="classical-card p-8">
+              <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className="space-y-6">
                   {reportSteps.map((step, index) => (
-                    <div key={index} className="flex items-start space-x-4">
+                    <div
+                      key={index}
+                      className=" flex flex-col md:flex-row items-start space-x-4"
+                    >
                       <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                         {step.step}
                       </div>
@@ -398,8 +401,8 @@ export default function CopyrightPage() {
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="">
             <div className="max-w-4xl mx-auto">
-              <AnimatedCard hover="lift" className="classical-card p-8">
-                <div className="flex items-start space-x-4">
+              <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
+                <div className=" flex flex-col md:flex-row items-start space-x-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-xl flex items-center justify-center flex-shrink-0">
                     <FiAlertCircle className="w-6 h-6 text-theme-primary" />
                   </div>
@@ -454,7 +457,7 @@ export default function CopyrightPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/10 via-accent-purple/5 to-accent-blue/10"></div>
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="relative section-wrap">
+          <div className="relative  ">
             <div className="max-w-4xl mx-auto">
               <AnimatedCard
                 hover="lift"

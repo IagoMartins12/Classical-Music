@@ -3,7 +3,8 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
-import { getEmailTemplate } from '@/app/libs/newsletter/emailTemplates';
+import { getEmailTemplateSync } from '@/app/libs/newsletter/emailTemplates';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 export async function GET(request: NextRequest) {
   try {
@@ -115,13 +116,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const language = await getServerLanguageStatic();
+
     // Validação do template
     let finalTemplateId = templateId;
     let useBuiltInTemplate = false;
 
     if (!templateId && templateType) {
       // Usando template built-in
-      const builtInTemplate = getEmailTemplate(templateType);
+      const builtInTemplate = getEmailTemplateSync(templateType, language);
       if (!builtInTemplate) {
         return NextResponse.json(
           { success: false, error: 'Template built-in não encontrado' },

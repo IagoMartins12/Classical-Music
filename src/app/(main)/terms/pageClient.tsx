@@ -136,7 +136,7 @@ export default function TermsPage() {
   const lastUpdated = t('terms_last_updated');
 
   return (
-    <PageContainer showBackground={true} className=" section-wrap">
+    <PageContainer showBackground={true}>
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-accent-purple/5 to-accent-blue/5"></div>
@@ -187,16 +187,16 @@ export default function TermsPage() {
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="">
             <div className="max-w-4xl mx-auto">
-              <AnimatedCard hover="lift" className="classical-card p-8">
-                <div className="flex items-start space-x-4">
+              <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
+                <div className="flex flex-col md:flex-row items-start space-x-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center flex-shrink-0">
                     <FaBalanceScale className="w-8 h-8 text-theme-primary" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold classical-title text-theme-primary mb-4">
+                    <h2 className="text-xl md:text-2xl font-bold classical-title text-theme-primary mb-4">
                       {t('terms_jsx_h2_children_0__welcome')}
                     </h2>
-                    <p className="text-lg text-theme-secondary classical-body leading-relaxed">
+                    <p className="text-md md:text-lg text-theme-secondary classical-body leading-relaxed">
                       {t('terms_jsx_p_children_0__create')}
                     </p>
                   </div>
@@ -219,14 +219,14 @@ export default function TermsPage() {
                   springType="gentle"
                   delay={index * 0.1}
                 >
-                  <div className="classical-card p-8">
-                    <div className="flex items-start space-x-6">
+                  <div className="classical-card !p-8 md:p-8">
+                    <div className="flex flex-col md:flex-row items-start space-x-4">
                       <div className="w-14 h-14 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center flex-shrink-0">
                         <section.icon className="w-7 h-7 text-theme-primary" />
                       </div>
 
                       <div className="flex-grow">
-                        <h3 className="text-2xl font-bold classical-title text-theme-primary mb-6">
+                        <h3 className="text-xl md:text-2xl classical-title text-theme-primary mb-6">
                           {section.title}
                         </h3>
 
@@ -255,8 +255,8 @@ export default function TermsPage() {
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="">
             <div className="max-w-4xl mx-auto">
-              <AnimatedCard hover="lift" className="classical-card p-8">
-                <div className="flex items-start space-x-4">
+              <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
+                <div className="flex items-start flex-col md:flex-row space-x-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-xl flex items-center justify-center flex-shrink-0">
                     <FiAlertCircle className="w-6 h-6 text-theme-primary" />
                   </div>

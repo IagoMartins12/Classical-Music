@@ -34,7 +34,7 @@ import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useRouter } from 'next/navigation';
 import { FaGraduationCap } from 'react-icons/fa';
-import { LanguageDropdown, LanguageToggle } from '../LanguageToggle';
+import { LanguageToggle } from '../LanguageToggle';
 import { useIsMobile } from '@/app/hooks/useMobile';
 import { useTranslation } from '@/app/context/TranslationContext';
 
@@ -708,12 +708,14 @@ const Navbar: React.FC = () => {
                   </li>
                 </>
               )}
-              <LanguageDropdown className="hidden sm:block" />
+              <div className="flex items-center justify-center gap-4 sm:hidden">
+                <LanguageToggle className="" />
 
-              <ThemeToggle
-                variant="navbar"
-                className=" flex items-center justify-center  sm:hidden"
-              />
+                <ThemeToggle
+                  variant="default"
+                  className=" flex items-center justify-center  sm:hidden"
+                />
+              </div>
             </ul>
           </div>
         </div>

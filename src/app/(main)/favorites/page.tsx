@@ -79,7 +79,7 @@ export default async function FavoritesPage() {
   return (
     <TranslationProvider language={language} translations={translations}>
       <AchievementProvider>
-        <FavoritesClient />;
+        <FavoritesClient />
       </AchievementProvider>
     </TranslationProvider>
   );

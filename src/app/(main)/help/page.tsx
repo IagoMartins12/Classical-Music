@@ -127,7 +127,7 @@ export default async function HelpPageRoute() {
 
   return (
     <TranslationProvider language={language} translations={translations}>
-      <HelpPage />;
+      <HelpPage />
     </TranslationProvider>
   );
 }

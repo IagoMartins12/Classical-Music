@@ -19,7 +19,7 @@ import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import {
   getAllEmailTemplates,
   extractVariables,
-  previewTemplate,
+  previewTemplateSync,
 } from '@/app/libs/newsletter/emailTemplates';
 
 interface CreateEditTemplateModalProps {
@@ -182,7 +182,7 @@ export default function CreateEditTemplateModal({
       Object.keys(builtInTemplates.find((t) => t.type === form.type) || {})
         .length > 0
     ) {
-      const preview = previewTemplate(form.type);
+      const preview = previewTemplateSync(form.type);
       if (preview) {
         setPreviewData(preview);
         setShowPreview(true);

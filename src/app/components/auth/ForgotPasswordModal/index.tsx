@@ -12,7 +12,7 @@ import {
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import Modal from '../../Modal';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 
 interface ForgotPasswordModalProps {
   isOpen: boolean;
@@ -405,6 +405,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       onClose={handleClose}
       maxWidth="lg"
       showCloseButton={true}
+      middlePosition
     >
       {renderContent()}
     </Modal>

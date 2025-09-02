@@ -5,7 +5,7 @@ import { useOnboardingModal } from '@/app/stores/authStore';
 import React, { useState, useEffect } from 'react';
 import { FiSearch, FiHeart, FiLoader } from 'react-icons/fi';
 import Image from 'next/image';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import Select from '../../Common/Select';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import Input from '../../Common/Inputs';

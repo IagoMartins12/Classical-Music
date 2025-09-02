@@ -173,7 +173,7 @@ export default function PrivacyPage() {
   const lastUpdated = t('privacy_last_updated');
 
   return (
-    <PageContainer showBackground={true} className="section-wrap">
+    <PageContainer showBackground={true}>
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-accent-purple/5 to-accent-blue/5"></div>
@@ -224,8 +224,8 @@ export default function PrivacyPage() {
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="">
             <div className="max-w-4xl mx-auto">
-              <AnimatedCard hover="lift" className="classical-card p-8">
-                <div className="flex items-start space-x-4">
+              <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
+                <div className="flex items-start flex-col md:flex-row space-x-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center flex-shrink-0">
                     <GiShield className="w-8 h-8 text-theme-primary" />
                   </div>
@@ -306,8 +306,8 @@ export default function PrivacyPage() {
                   springType="gentle"
                   delay={index * 0.1}
                 >
-                  <div className="classical-card p-8">
-                    <div className="flex items-start space-x-6">
+                  <div className="classical-card !p-8 md:p-8">
+                    <div className="flex items-start flex-col md:flex-row space-x-6">
                       <div className="w-14 h-14 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center flex-shrink-0">
                         <section.icon className="w-7 h-7 text-theme-primary" />
                       </div>
@@ -342,8 +342,8 @@ export default function PrivacyPage() {
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="">
             <div className="max-w-4xl mx-auto">
-              <AnimatedCard hover="lift" className="classical-card p-8">
-                <div className="flex items-start space-x-4">
+              <AnimatedCard hover="lift" className="classical-card !p-8">
+                <div className="flex items-start flex-col md:flex-row space-x-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center flex-shrink-0">
                     <FiCheck className="w-6 h-6 text-theme-primary" />
                   </div>

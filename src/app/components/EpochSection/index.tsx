@@ -139,7 +139,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   {t('epoch_jsx_h3_children_0__sobre_periodo')}
                 </h3>
               </div>
-              <p className="text-theme-secondary text-lg leading-relaxed classical-body">
+              <p className="text-theme-secondary text-md sm:text-lg leading-relaxed classical-body">
                 {epoch.historicalData.description}
               </p>
             </div>
@@ -151,7 +151,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
           <div className="classical-card overflow-hidden group">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="w-full p-6 text-left flex items-center justify-between hover:bg-interactive-hover transition-all duration-300 group/button"
+              className="w-full p-2 sm:p-6 text-left flex items-center justify-between hover:bg-interactive-hover transition-all duration-300 group/button"
             >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">

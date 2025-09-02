@@ -108,15 +108,15 @@ export function ComposerTimelineCard({
           {/* Lifespan */}
           <div className="flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-xl">
             <div className="flex items-center text-theme-secondary">
-              <div className="w-6 h-6 bg-accent-blue/20 border border-accent-blue/30 rounded-lg flex items-center justify-center mr-2">
-                <FiCalendar className="w-3 h-3 text-accent-blue" />
+              <div className="w-6 h-6 border-theme-primary rounded-lg flex items-center justify-center mr-2">
+                <FiCalendar className="w-4 h-4 text-accent-blue" />
               </div>
               <span className="font-medium text-sm">
                 {getLifespan(composer)}
               </span>
             </div>
             {getLifespanDuration(composer) && (
-              <span className="text-xs text-theme-tertiary bg-theme-elevated border border-theme-secondary px-2 py-1 rounded-full">
+              <span className="text-xs text-theme-secondary bg-theme-elevated border border-theme-secondary px-2 py-1 rounded-full">
                 {getLifespanDuration(composer)}{' '}
                 {t('timeline_jsx_span_children_0__anos')}
               </span>

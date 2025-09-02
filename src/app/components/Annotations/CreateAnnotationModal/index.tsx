@@ -1,4 +1,4 @@
-// app/annotations/components/CreateAnnotationModal.tsx - VERSÃO COM SELEÇÃO DE OBRA
+// app/annotations/components/CreateAnnotationModal.tsx - VERSÃO CORRIGIDA
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
@@ -32,8 +32,8 @@ import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Input from '../../Common/Inputs';
-import { useTranslation } from '@/app/context/TranslationContext';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface CreateAnnotationModalProps {
   isOpen: boolean;
@@ -44,43 +44,6 @@ interface CreateAnnotationModalProps {
   editingAnnotation?: WorkAnnotation;
 }
 
-// Schema de validação atualizado
-const annotationSchema = z.object({
-  workId: z.string().min(1, 'Obra é obrigatória'),
-  title: z
-    .string()
-    .min(1, 'Título é obrigatório')
-    .min(3, 'Título deve ter pelo menos 3 caracteres')
-    .max(100, 'Título deve ter no máximo 100 caracteres'),
-  content: z
-    .string()
-    .min(1, 'Conteúdo é obrigatório')
-    .min(10, 'Conteúdo deve ter pelo menos 10 caracteres')
-    .max(2000, 'Conteúdo deve ter no máximo 2000 caracteres'),
-  category: z.enum([
-    'TECHNIQUE',
-    'INTERPRETATION',
-    'PRACTICE_TIP',
-    'THEORY',
-    'PERFORMANCE',
-    'HISTORICAL',
-    'GENERAL',
-  ]),
-  difficulty: z.enum(['ALL_LEVELS', 'BEGINNER', 'INTERMEDIATE', 'ADVANCED']),
-  scope: z.enum(['ENTIRE_WORK', 'MOVEMENT', 'SECTION', 'SPECIFIC_MEASURE']),
-  measureStart: z.string().optional(),
-  measureEnd: z.string().optional(),
-  movement: z.string().optional(),
-  section: z.string().optional(),
-  pageNumber: z.string().optional(),
-  hand: z.string().optional(),
-  voice: z.string().optional(),
-  instrument: z.string().optional(),
-  tags: z.array(z.string()).max(10, 'Máximo 10 tags permitidas'),
-  isPublic: z.boolean(),
-});
-
-// Interface para obras na busca
 interface WorkSearchResult {
   id: string;
   title: string;
@@ -123,7 +86,7 @@ const SUGGESTED_TAGS_BY_CATEGORY: Record<AnnotationCategory, string[]> = {
   ],
   PRACTICE_TIP: [
     'estudo-lento',
-    'metrônomo',
+    'metrônome',
     'repetição',
     'isolamento',
     'mãos-separadas',
@@ -304,10 +267,61 @@ export default function CreateAnnotationModal({
 }: CreateAnnotationModalProps) {
   const { t } = useTranslation({ sections: ['pages/annotations'] });
   const { user } = useAuth();
+  const { language } = useLanguageStore();
   const { createAnnotation, updateAnnotation, loading } = useAnnotationsStore();
   const isEditing = !!editingAnnotation;
   const isSubmitting =
     loading.create || (isEditing && loading.update.has(editingAnnotation.id));
+
+  // Schema de validação usando as keys do JSON
+  const annotationSchema = useMemo(
+    () =>
+      z.object({
+        workId: z.string().min(1, t('validation_work_required')),
+        title: z
+          .string()
+          .min(1, t('validation_title_required'))
+          .min(3, t('validation_title_min_length'))
+          .max(100, t('validation_title_max_length')),
+        content: z
+          .string()
+          .min(1, t('validation_content_required'))
+          .min(10, t('validation_content_min_length'))
+          .max(2000, t('validation_content_max_length')),
+        category: z.enum([
+          'TECHNIQUE',
+          'INTERPRETATION',
+          'PRACTICE_TIP',
+          'THEORY',
+          'PERFORMANCE',
+          'HISTORICAL',
+          'GENERAL',
+        ]),
+        difficulty: z.enum([
+          'ALL_LEVELS',
+          'BEGINNER',
+          'INTERMEDIATE',
+          'ADVANCED',
+        ]),
+        scope: z.enum([
+          'ENTIRE_WORK',
+          'MOVEMENT',
+          'SECTION',
+          'SPECIFIC_MEASURE',
+        ]),
+        measureStart: z.string().optional(),
+        measureEnd: z.string().optional(),
+        movement: z.string().optional(),
+        section: z.string().optional(),
+        pageNumber: z.string().optional(),
+        hand: z.string().optional(),
+        voice: z.string().optional(),
+        instrument: z.string().optional(),
+        tags: z.array(z.string()).max(10, t('validation_max_tags')),
+        isPublic: z.boolean(),
+      }),
+    [t]
+  );
 
   // Estados para busca de obras
   const [workSearchTerm, setWorkSearchTerm] = useState('');
@@ -377,11 +391,13 @@ export default function CreateAnnotationModal({
   const [newTag, setNewTag] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const hasChanges = useSmartFormChanges(
-    formData,
-    originalData, // Se null = modo criação, se preenchido = modo edição
-    ['category', 'difficulty', 'scope', 'workId', 'isPublic']
-  );
+  const hasChanges = useSmartFormChanges(formData, originalData, [
+    'category',
+    'difficulty',
+    'scope',
+    'workId',
+    'isPublic',
+  ]);
 
   // Dynamic options with translations
   const CATEGORY_OPTIONS = useMemo(
@@ -485,7 +501,6 @@ export default function CreateAnnotationModal({
     }
   };
 
-  // Effect para busca de obras
   useEffect(() => {
     const delayedSearch = setTimeout(() => {
       if (workSearchTerm && showWorkSearch) {
@@ -496,7 +511,6 @@ export default function CreateAnnotationModal({
     return () => clearTimeout(delayedSearch);
   }, [workSearchTerm, showWorkSearch]);
 
-  // Handler para selecionar obra
   const handleWorkSelect = (work: WorkSearchResult) => {
     setSelectedWork(work);
     setFormData((prev) => ({ ...prev, workId: work.id }));
@@ -505,7 +519,6 @@ export default function CreateAnnotationModal({
     setWorkSearchResults([]);
   };
 
-  // Função para scroll automático para o primeiro erro
   const scrollToFirstError = (errorFields: string[]) => {
     if (errorFields.length > 0) {
       const firstErrorField = errorFields[0] as keyof typeof fieldRefs;
@@ -524,7 +537,7 @@ export default function CreateAnnotationModal({
     }
   };
 
-  // Validação com Zod + validações condicionais
+  // Validação usando as traduções do JSON
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
@@ -543,9 +556,9 @@ export default function CreateAnnotationModal({
     // Validações condicionais específicas
     if (formData.scope === 'SPECIFIC_MEASURE') {
       if (!formData.measureStart.trim()) {
-        newErrors.measureStart = 'Compasso inicial é obrigatório';
+        newErrors.measureStart = t('validation_measure_start_required');
       } else if (parseInt(formData.measureStart) < 1) {
-        newErrors.measureStart = 'Compasso deve ser maior que 0';
+        newErrors.measureStart = t('validation_measure_start_invalid');
       }
 
       if (
@@ -553,16 +566,16 @@ export default function CreateAnnotationModal({
         formData.measureStart &&
         parseInt(formData.measureEnd) < parseInt(formData.measureStart)
       ) {
-        newErrors.measureEnd = 'Compasso final deve ser maior que o inicial';
+        newErrors.measureEnd = t('validation_measure_end_invalid');
       }
     }
 
     if (formData.scope === 'MOVEMENT' && !formData.movement.trim()) {
-      newErrors.movement = 'Nome do movimento é obrigatório';
+      newErrors.movement = t('validation_movement_required');
     }
 
     if (formData.scope === 'SECTION' && !formData.section.trim()) {
-      newErrors.section = 'Nome da seção é obrigatório';
+      newErrors.section = t('validation_section_required');
     }
 
     setErrors(newErrors);
@@ -599,7 +612,6 @@ export default function CreateAnnotationModal({
         isPublic: editingAnnotation.isPublic,
       });
 
-      // Configurar obra selecionada para edição
       if (editingAnnotation.work) {
         setSelectedWork({
           id: editingAnnotation.workId,
@@ -609,7 +621,6 @@ export default function CreateAnnotationModal({
         setShowWorkSearch(false);
       }
     } else {
-      // Reset form for new annotation
       setFormData({
         workId: workId,
         title: '',
@@ -629,7 +640,6 @@ export default function CreateAnnotationModal({
         isPublic: true,
       });
 
-      // Configurar obra selecionada para nova anotação
       if (workId && workTitle && composerName) {
         setSelectedWork({
           id: workId,
@@ -649,13 +659,14 @@ export default function CreateAnnotationModal({
     setNewTag('');
   }, [isEditing, editingAnnotation, isOpen, workId, workTitle, composerName]);
 
+  // Handle submit usando traduções do JSON
   const handleSubmit = async () => {
     if (!validateForm()) {
       return;
     }
 
     if (!user?.id) {
-      toast.error('Você precisa estar logado para criar anotações');
+      toast.error(t('toast_login_required_annotations'));
       return;
     }
 
@@ -683,7 +694,6 @@ export default function CreateAnnotationModal({
       instrument: formData.instrument.trim() || undefined,
       tags: formData.tags.filter((tag) => tag.trim().length > 0),
       isPublic: formData.isPublic,
-      // Incluir dados da obra
       work: selectedWork
         ? {
             id: selectedWork.id,
@@ -701,22 +711,20 @@ export default function CreateAnnotationModal({
         result = await createAnnotation(submitData);
       }
 
-      console.log('RESULT', isEditing);
-
       if (result) {
         toast.success(
           isEditing
-            ? 'Anotação atualizada com sucesso!'
-            : 'Anotação criada com sucesso!',
+            ? t('toast_annotation_updated')
+            : t('toast_annotation_created'),
           { icon: isEditing ? '✏️' : '🎵' }
         );
         onClose();
       } else {
-        toast.error('Erro ao salvar anotação. Tente novamente.');
+        toast.error(t('toast_annotation_save_error'));
       }
     } catch (error) {
       console.error('Erro ao salvar anotação:', error);
-      toast.error('Erro ao salvar anotação. Tente novamente.');
+      toast.error(t('toast_annotation_save_error'));
     }
   };
 
@@ -752,12 +760,11 @@ export default function CreateAnnotationModal({
     }
   };
 
-  const { language } = useLanguageStore();
   const currentTags =
     language === 'en'
       ? SUGGESTED_TAGS_BY_CATEGORY_EN
       : SUGGESTED_TAGS_BY_CATEGORY;
-  // Get suggested tags for current category
+
   const suggestedTags = currentTags[formData.category] || [];
   const availableSuggestedTags = suggestedTags.filter(
     (tag) => !formData.tags.includes(tag)
@@ -775,13 +782,13 @@ export default function CreateAnnotationModal({
       maxWidth="2xl"
       showCloseButton={true}
       className="max-h-[90vh] overflow-hidden"
-      confirmOnClose={true} // Ativa confirmação
-      hasChanges={hasChanges} // Detecta mudanças
-      isProcessing={isSubmitting} // Detecta processo
+      confirmOnClose={true}
+      hasChanges={hasChanges}
+      isProcessing={isSubmitting}
       processName="Criação de anotação."
     >
       {/* Header */}
-      <div className="px-6 py-4 border-b border-theme-secondary">
+      <div className="px-0 md:px-6 py-4 border-b border-theme-secondary">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-green to-accent-blue flex items-center justify-center shadow-theme-glow">
             <FiMessageSquare className="w-5 h-5 text-theme-primary" />
@@ -802,7 +809,7 @@ export default function CreateAnnotationModal({
       </div>
 
       {/* Work Info/Selection */}
-      <div className="px-6 py-4 bg-theme-elevated/50 border-b border-theme-secondary">
+      <div className="px-0 md:px-6 py-4 bg-theme-elevated/50 border-b border-theme-secondary">
         {selectedWork ? (
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -868,7 +875,7 @@ export default function CreateAnnotationModal({
       </div>
 
       {/* Form Content - Scrollable */}
-      <div className="px-6 py-6 space-y-6 overflow-y-auto">
+      <div className="px-0 py-6 md:p-6 space-y-6 overflow-y-auto">
         {/* Title */}
         <div>
           <label className="block text-sm font-medium text-theme-primary mb-2">
@@ -1145,7 +1152,7 @@ export default function CreateAnnotationModal({
 
           {/* Add Tag Input */}
           <div className="flex space-x-2 mb-3">
-            <input
+            <Input
               type="text"
               value={newTag}
               onChange={(e) => setNewTag(e.target.value)}
@@ -1153,6 +1160,7 @@ export default function CreateAnnotationModal({
               className="flex-1 input-classical-2"
               placeholder={t('create_modal_tag_placeholder')}
               maxLength={20}
+              widhtFull
             />
             <button
               onClick={() => addTag()}
@@ -1232,7 +1240,7 @@ export default function CreateAnnotationModal({
                   <FiEyeOff className="w-4 h-4 text-accent-red" />
                 )}
               </div>
-              <p className="text-sm text-theme-secondary">
+              <p className="text-sm text-start text-theme-secondary">
                 {formData.isPublic
                   ? t('create_modal_public_description')
                   : t('create_modal_private_description')}
@@ -1251,7 +1259,7 @@ export default function CreateAnnotationModal({
           variant="primary"
           onClick={handleSubmit}
           isLoading={isSubmitting}
-          disabled={!selectedWork} // Desabilitar se não há obra selecionada
+          disabled={!selectedWork}
         >
           {isEditing ? t('create_modal_update') : t('create_modal_create')}
         </Button>

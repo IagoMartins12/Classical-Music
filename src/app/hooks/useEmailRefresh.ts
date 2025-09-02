@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useToast } from './useToast';
+import { useLanguageStore } from '../stores/useLanguageStore';
 
 interface UseEmailRefreshReturn {
   isRefreshing: boolean;
@@ -16,21 +17,24 @@ export function useEmailRefresh(): UseEmailRefreshReturn {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { update } = useSession();
 
+  const { language } = useLanguageStore();
   const refreshEmailStatus = async () => {
     if (isRefreshing) return;
 
     setIsRefreshing(true);
 
     try {
-      console.log('🔄 Verificando status do email...');
-
+      const messageSucessfull =
+        language === 'pt'
+          ? 'Email confirmado com sucesso!'
+          : 'Email confirmed successfully!';
       // Método 1: Forçar atualização da sessão NextAuth (principal)
       const updatedSession = await update();
 
       if (updatedSession?.user?.emailVerified) {
         // Email foi confirmado via sessão!
         console.log('✅ Email confirmado via sessão');
-        toast.success('Email confirmado com sucesso!');
+        toast.success(messageSucessfull);
 
         setTimeout(() => {
           window.location.reload();
@@ -52,10 +56,11 @@ export function useEmailRefresh(): UseEmailRefreshReturn {
         const { emailVerified } = await apiResponse.json();
 
         if (emailVerified) {
-          console.log(
-            '✅ Email confirmado via API - forçando refresh da sessão'
-          );
-          toast.success('Email confirmado! Atualizando...');
+          const messageSucessfull =
+            language === 'pt'
+              ? 'Email confirmado! Atualizando...'
+              : 'Email confirmed! Updating...';
+          toast.success(messageSucessfull);
 
           // Forçar mais uma atualização da sessão
           await update();
@@ -67,14 +72,19 @@ export function useEmailRefresh(): UseEmailRefreshReturn {
         }
       }
 
+      const errorMensage =
+        language === 'pt'
+          ? 'Email ainda não foi confirmado. Verifique sua caixa de entrada e tente novamente.'
+          : 'Email has not been confirmed yet. Please check your inbox and try again.';
       // Email ainda não foi confirmado por nenhum método
-      toast.error(
-        'Email ainda não foi confirmado. Verifique sua caixa de entrada e tente novamente.'
-      );
+      toast.error(errorMensage);
       console.log('❌ Email ainda não confirmado por nenhum método');
     } catch (error) {
-      console.error('❌ Erro ao verificar status do email:', error);
-      toast.error('Erro ao verificar confirmação. Tente novamente.');
+      const errorMensage =
+        language === 'pt'
+          ? 'Erro ao verificar confirmação. Tente novamente.'
+          : 'Error checking confirmation. Please try again.';
+      toast.error(errorMensage);
     } finally {
       setIsRefreshing(false);
     }

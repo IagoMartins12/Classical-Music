@@ -1,6 +1,5 @@
 // app/(teacher)/teacher/students/[studentId]/progress/page.tsx - Página de Relatório de Progresso
 import { Metadata } from 'next';
-import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 import TeacherProgressPageServer from './pageServer';
 import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
@@ -76,8 +75,6 @@ export default async function TeacherProgressPage({
   const paramsResolved = await params;
   const searchParamsResolved = await searchParams;
 
-  const session = await getRequiredServerSession();
-
   // Extract query parameters
   const period = (searchParamsResolved.period as string) || '6months';
   const startDate = searchParamsResolved.startDate as string;
@@ -86,7 +83,6 @@ export default async function TeacherProgressPage({
   return (
     <TeacherProgressPageServer
       studentId={paramsResolved.studentId}
-      userId={session.user.id}
       initialPeriod={period}
       customStartDate={startDate}
       customEndDate={endDate}

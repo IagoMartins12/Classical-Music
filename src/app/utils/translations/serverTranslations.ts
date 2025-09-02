@@ -244,6 +244,7 @@ export const COMMON_TRANSLATION_SECTIONS = [
   'navbar',
   'components/auth-modals',
   'pages/error',
+  'components/onboarding',
 ];
 
 /**

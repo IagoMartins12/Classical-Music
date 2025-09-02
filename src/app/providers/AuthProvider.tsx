@@ -132,50 +132,6 @@ const StoreManager: React.FC = () => {
   return null;
 };
 
-// Monitor de sincronização com performance melhorada
-const AuthMonitor: React.FC = () => {
-  const { user: sessionUser } = useAuth();
-  const { user: storeUser } = useUserStore();
-  const { hasProgress } = useOnboardingModal();
-
-  const { getProgressSummary } = useOnboardingPersistence();
-
-  useEffect(() => {
-    if (process.env.NODE_ENV !== 'development') return;
-
-    const logAuthState = () => {
-      if (sessionUser && storeUser) {
-        // const syncData = {
-        //   session: {
-        //     id: sessionUser.id,
-        //     onboardingCompleted: sessionUser.onboardingCompleted,
-        //     userType: sessionUser.userType,
-        //   },
-        //   store: {
-        //     id: storeUser.id,
-        //     onboardingCompleted: storeUser.onboardingCompleted,
-        //     userType: storeUser.userType,
-        //   },
-        //   synced: {
-        //     id: sessionUser.id === storeUser.id,
-        //     onboarding:
-        //       sessionUser.onboardingCompleted === storeUser.onboardingCompleted,
-        //   },
-        //   onboardingProgress: hasProgress
-        //     ? getProgressSummary()
-        //     : 'Nenhum progresso',
-        // };
-      }
-    };
-
-    // Debounce para evitar logs excessivos
-    const timer = setTimeout(logAuthState, 1000);
-    return () => clearTimeout(timer);
-  }, [sessionUser, storeUser, hasProgress, getProgressSummary]);
-
-  return null;
-};
-
 // Componente para lidar com casos de erro de persistência
 const PersistenceErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -223,7 +179,6 @@ const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
     <PersistenceErrorBoundary>
       {/* Gerenciadores */}
       <StoreManager />
-      {process.env.NODE_ENV === 'development' && <AuthMonitor />}
 
       {/* Modais de autenticação */}
       <LoginModal />

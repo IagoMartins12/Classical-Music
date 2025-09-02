@@ -131,7 +131,7 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
     <div className="classical-card overflow-hidden">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full p-6 text-left focus:outline-none hover:bg-theme-elevated/50 transition-colors cursor-pointer"
+        className="w-full p-4 md:p-6 text-left focus:outline-none hover:bg-theme-elevated/50 transition-colors cursor-pointer"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -143,8 +143,16 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
                 <h4 className="text-lg font-semibold classical-title text-theme-primary">
                   {guide.title}
                 </h4>
-                <span className="text-sm text-brand-primary font-medium">
+                <span className="text-sm text-brand-primary hidden md:flex font-medium">
                   {isExpanded ? t('help_guide_close') : t('help_guide_open')}
+                </span>
+
+                <span className="text-sm text-brand-primary block md:hidden font-medium">
+                  {isExpanded ? (
+                    <FiArrowRight className="w-5 h-5 text-brand-primary rotate-90 transition-transform duration-300" />
+                  ) : (
+                    <FiArrowRight className="w-5 h-5 text-brand-primary transition-transform duration-300" />
+                  )}
                 </span>
               </div>
               <p className="text-theme-secondary text-sm mt-1 classical-body">
@@ -163,7 +171,7 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
                 >
                   {t(`help_difficulty_${guide.difficulty}`)}
                 </span>
-                <span className="text-xs text-theme-tertiary">
+                <span className="text-xs hidden md:flex text-theme-tertiary">
                   {guide.type === 'article'
                     ? `📄 ${t('help_type_article')}`
                     : `🎯 ${t('help_type_interactive')}`}
@@ -171,7 +179,7 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
               </div>
             </div>
           </div>
-          <div className="flex-shrink-0 ml-4">
+          <div className="flex-shrink-0 ml-4 hidden md:flex">
             <div className="flex flex-col items-center space-y-1">
               {isExpanded ? (
                 <FiArrowRight className="w-5 h-5 text-brand-primary rotate-90 transition-transform duration-300" />
@@ -546,7 +554,7 @@ export default function HelpPage(): JSX.Element {
       return (
         <section className="py-8">
           <AnimatedContainer delay={0.1} staggerSpeed="fast">
-            <div className="section-wrap">
+            <div>
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-12">
                   <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
@@ -605,7 +613,7 @@ export default function HelpPage(): JSX.Element {
     return (
       <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
-          <div className="section-wrap">
+          <div>
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-8">
                 <button
@@ -646,7 +654,7 @@ export default function HelpPage(): JSX.Element {
       <section className="relative overflow-hidden py-16">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-accent-purple/5 to-accent-blue/5"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="relative section-wrap">
+          <div className="relative">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
@@ -733,7 +741,7 @@ export default function HelpPage(): JSX.Element {
         <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/10 via-accent-purple/5 to-accent-blue/10"></div>
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="relative section-wrap">
+          <div className="relative">
             <AnimatedCard
               hover="lift"
               className="classical-card p-12 text-center max-w-4xl mx-auto"

@@ -240,9 +240,9 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
             {t('preferences_edit')}
           </Button>
         ) : (
-          <div className="flex space-x-2">
+          <div className="flex flex-col md-flex-row gap-2 ">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               onClick={handleCancel}
               leftIcon={<FiX />}

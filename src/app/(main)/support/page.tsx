@@ -121,7 +121,7 @@ export default async function SupportPageRoute() {
 
   return (
     <TranslationProvider language={language} translations={translations}>
-      <SupportPage />;
+      <SupportPage />
     </TranslationProvider>
   );
 }

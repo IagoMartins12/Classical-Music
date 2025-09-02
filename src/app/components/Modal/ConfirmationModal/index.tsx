@@ -1,4 +1,4 @@
-// components/ui/ConfirmationModal.tsx - MODAL DE CONFIRMAÇÃO CUSTOMIZADO
+// components/ui/ConfirmationModal.tsx - MODAL DE CONFIRMAÇÃO CUSTOMIZADO TRADUZIDO
 'use client';
 
 import React from 'react';
@@ -6,6 +6,7 @@ import { FiAlertTriangle, FiX, FiSave, FiTrash2 } from 'react-icons/fi';
 import Modal from '..';
 import Button from '../../Common/Button';
 import { ConfirmationConfig } from '@/app/hooks/useModalConfirmation';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -22,16 +23,19 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onCancel,
   isLoading = false,
 }) => {
-  // 🎯 CONFIGURAÇÕES PADRÃO BASEADAS NO TIPO
+  const { t } = useTranslation({
+    sections: ['components/confimationModal'],
+  });
+
+  // 🎯 CONFIGURAÇÕES PADRÃO BASEADAS NO TIPO - AGORA TRADUZIDAS
   const getDefaultConfig = (type: ConfirmationConfig['type']) => {
     switch (type) {
       case 'unsaved-changes':
         return {
-          title: 'Descartar alterações?',
-          message:
-            'Você tem alterações não salvas. Se fechar agora, todas as alterações serão perdidas.',
-          confirmLabel: 'Descartar e Fechar',
-          cancelLabel: 'Continuar Editando',
+          title: t('unsaved_changes_title'),
+          message: t('unsaved_changes_message'),
+          confirmLabel: t('unsaved_changes_confirm'),
+          cancelLabel: t('unsaved_changes_cancel'),
           icon: (
             <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center">
               <FiAlertTriangle className="w-6 h-6 text-white" />
@@ -42,12 +46,15 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
       case 'ongoing-process':
         return {
-          title: 'Interromper processo?',
+          title: t('ongoing_process_title'),
           message: config.processName
-            ? `O processo de ${config.processName} está em andamento. Se fechar agora, o processo será interrompido e o progresso será perdido.`
-            : 'Um processo está em andamento. Se fechar agora, o processo será interrompido.',
-          confirmLabel: 'Interromper e Fechar',
-          cancelLabel: 'Continuar Processo',
+            ? t('ongoing_process_message').replace(
+                '{processName}',
+                config.processName
+              )
+            : t('ongoing_process_message_generic'),
+          confirmLabel: t('ongoing_process_confirm'),
+          cancelLabel: t('ongoing_process_cancel'),
           icon: (
             <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-full flex items-center justify-center">
               <FiX className="w-6 h-6 text-white" />
@@ -58,11 +65,10 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
       case 'danger':
         return {
-          title: 'Ação perigosa',
-          message:
-            'Esta ação não pode ser desfeita. Tem certeza que deseja continuar?',
-          confirmLabel: 'Confirmar',
-          cancelLabel: 'Cancelar',
+          title: t('danger_title'),
+          message: t('danger_message'),
+          confirmLabel: t('danger_confirm'),
+          cancelLabel: t('danger_cancel'),
           icon: (
             <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-full flex items-center justify-center">
               <FiTrash2 className="w-6 h-6 text-white" />
@@ -74,10 +80,10 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       case 'custom':
       default:
         return {
-          title: 'Confirmar ação',
-          message: 'Tem certeza que deseja continuar?',
-          confirmLabel: 'Confirmar',
-          cancelLabel: 'Cancelar',
+          title: t('custom_title'),
+          message: t('custom_message'),
+          confirmLabel: t('custom_confirm'),
+          cancelLabel: t('custom_cancel'),
           icon: (
             <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
               <FiAlertTriangle className="w-6 h-6 text-white" />
@@ -100,7 +106,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       preventBodyScroll={true}
       className="!max-h-auto"
     >
-      <div className="p-6">
+      <div className="p-4 md:p-6">
         {/* Icon e Header */}
         <div className="flex flex-col items-center text-center mb-6">
           {finalConfig.icon}
@@ -123,16 +129,18 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               </div>
               <div>
                 <h4 className="font-medium text-accent-red mb-1">
-                  Processo Ativo
+                  {t('process_active_title')}
                 </h4>
                 <p className="text-sm text-accent-red/80">
                   {config.processName ? (
                     <>
-                      O processo de <strong>{config.processName}</strong> será
-                      interrompido permanentemente.
+                      {t('process_active_description').replace(
+                        '{processName}',
+                        config.processName
+                      )}
                     </>
                   ) : (
-                    'O processo atual será interrompido permanentemente.'
+                    t('process_active_description_generic')
                   )}
                 </p>
               </div>
@@ -147,10 +155,10 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               <FiSave className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
               <div>
                 <h4 className="font-medium text-accent-amber mb-1">
-                  Alterações Detectadas
+                  {t('changes_detected_title')}
                 </h4>
                 <p className="text-sm text-accent-amber/80">
-                  Salve suas alterações antes de fechar para não perdê-las.
+                  {t('changes_detected_description')}
                 </p>
               </div>
             </div>
@@ -163,15 +171,16 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               <FiSave className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
               <div>
                 <h4 className="font-medium text-accent-amber mb-1">
-                  Possíveis Alterações Detectadas
+                  {t('possible_changes_title')}
                 </h4>
                 <p className="text-sm text-accent-amber/80">
-                  Salve suas alterações antes de fechar para não perdê-las.
+                  {t('possible_changes_description')}
                 </p>
               </div>
             </div>
           </div>
         )}
+
         {/* Botões */}
         <div className="flex items-center justify-end space-x-3">
           <Button

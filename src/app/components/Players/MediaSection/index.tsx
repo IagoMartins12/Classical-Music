@@ -602,7 +602,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
   return (
     <AnimatedCard hover="lift" className="classical-card overflow-hidden">
       {/* Header da Seção */}
-      <div className="p-8 pb-6">
+      <div className="p-2 md:p-8 pb-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
@@ -840,7 +840,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       )}
 
       {/* CONTEÚDO PRINCIPAL COM NOVA LÓGICA */}
-      <div className="px-8 pb-8">
+      <div className="px-2 pb-2 md:px-8 md:pb-8">
         {/* ESTADO: Nenhuma busca foi feita e não tem mídia */}
         {shouldShowLoadButton && (
           <AnimatedItem direction="up" delay={0.1}>

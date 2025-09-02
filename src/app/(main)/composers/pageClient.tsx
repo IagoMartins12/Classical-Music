@@ -194,8 +194,8 @@ export default function ComposersClient({
         {/* Filters Section */}
         <AnimatedItem
           direction="up"
-          className={`classical-card mx-4 !p-6 transition-all duration-500 ${
-            isPending ? 'opacity-50' : ''
+          className={`classical-card mx-0 md:mx-4 sm:p-0 !p-6 transition-all duration-500 ${
+            isPending ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >
           <div className="flex items-center mb-6">
@@ -279,7 +279,7 @@ export default function ComposersClient({
           </div>
 
           {/* Filter Status and View Toggle */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-4 border-t border-theme-secondary">
+          <div className="flex md:items-center justify-between gap-4 pt-4 border-t border-theme-secondary">
             <div className="flex items-center space-x-4 justify-between">
               <div className="text-theme-secondary text-sm">
                 <span className="font-medium text-theme-primary">
@@ -347,7 +347,7 @@ export default function ComposersClient({
           {composers.length > 0 ? (
             viewMode === 'cards' ? (
               // 🎬 ANIMAÇÃO SEQUENCIAL - Cards aparecem um por vez!
-              <SequentialGrid cols={4} gap={6} className="px-4">
+              <SequentialGrid cols={4} gap={6} className="px-0 md:px-4">
                 {composers.map((composer) => (
                   <div
                     key={composer.id}

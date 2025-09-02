@@ -44,12 +44,12 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
         className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-theme-glow"
       >
         {/* Header Section */}
-        <div className="relative p-6 pb-4 border-b border-theme-secondary">
+        <div className="relative p-2 md:p-6 pb-0 md:pb-4 border-b border-theme-secondary">
           {/* Background pattern */}
           <div className="absolute inset-0 opacity-5 music-note-background"></div>
 
           {/* Floating action buttons */}
-          <div className="absolute top-4 right-4 z-50 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <div className="absolute top-4 right-4 z-50 flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
             <FavoriteButton
               id={work.id}
               type="work"
@@ -99,7 +99,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
         </div>
 
         {/* Content Section */}
-        <div className="p-6 flex-1 w-full flex flex-col">
+        <div className="p-4 md:p-6 flex-1 w-full flex flex-col">
           {/* Work Details */}
           <div className="space-y-3 mb-4 flex-1">
             {/* Instrument */}

@@ -109,7 +109,7 @@ export default async function CreateLessonPageServer({
         <CreateLessonPageClient initialData={createLessonData} />
       </TranslationProvider>
     );
-  } catch (error) {
+  } catch {
     // Fallback com dados vazios
     return (
       <TranslationProvider language={language} translations={translations}>

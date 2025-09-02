@@ -23,7 +23,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       case 'compact':
         return 'w-10 h-10 p-2';
       case 'navbar':
-        return 'w-9 h-9 p-1.5';
+        return 'w-10 h-10 p-1.5';
       default:
         return 'w-12 h-12 p-2.5';
     }

@@ -445,10 +445,12 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                   </Button>
 
                   {/* View Mode Toggle */}
-                  <ViewModeToggle
-                    viewMode={viewMode}
-                    onViewModeChange={setViewMode}
-                  />
+                  <div className="hidden md:block">
+                    <ViewModeToggle
+                      viewMode={viewMode}
+                      onViewModeChange={setViewMode}
+                    />
+                  </div>
                 </div>
               </div>
 

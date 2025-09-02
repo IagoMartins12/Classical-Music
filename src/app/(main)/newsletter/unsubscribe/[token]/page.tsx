@@ -1,7 +1,7 @@
 // ================================
 // app/newsletter/success/page.tsx - CORRIGIDO
 // ================================
-import React, { Suspense } from 'react';
+import React from 'react';
 import {
   getServerLanguageStatic,
   loadPageTranslationsWithCommon,

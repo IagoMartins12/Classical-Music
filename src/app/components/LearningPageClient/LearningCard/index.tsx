@@ -33,6 +33,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 // Importar componentes de animação
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
@@ -197,6 +198,7 @@ export const LearningCard = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const { t } = useTranslation({ sections: ['pages/learning'] });
 
+  const { language } = useLanguageStore();
   const isWantToLearn = type === 'want-to-learn';
   const wantToLearnItem = item as WantToLearnItem;
   const learnedItem = item as LearnedItem;
@@ -210,22 +212,33 @@ export const LearningCard = ({
     setIsDeleting(true);
     try {
       if (type === 'want-to-learn') {
+        const message =
+          language === 'pt'
+            ? 'Obra removida da sua lista de estudos!'
+            : 'Work removed from your study list!';
         await removeWantToLearn(item.workId);
-        toast.success('Obra removida da sua lista de estudos!', {
+        toast.success(message, {
           icon: '🗑️',
           duration: 3000,
         });
       } else {
+        const message =
+          language === 'pt'
+            ? 'Obra removida da sua lista de aprendidas!'
+            : 'Work removed from your learned list!';
         await removeLearned(item.workId);
-        toast.success('Obra removida da lista de aprendidas!', {
+        toast.success(message, {
           icon: '🗑️',
           duration: 3000,
         });
       }
       setShowDeleteModal(false);
     } catch (error) {
-      console.error('Erro ao remover:', error);
-      toast.error('Erro ao remover. Tente novamente.');
+      const message =
+        language === 'pt'
+          ? 'Erro ao remover. Tente novamente.'
+          : 'Work removed from your learned list!';
+      toast.error('Error removing. Please try again.');
     } finally {
       setIsDeleting(false);
     }

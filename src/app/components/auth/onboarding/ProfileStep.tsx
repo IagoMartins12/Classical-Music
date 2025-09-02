@@ -8,7 +8,7 @@ import { User } from 'next-auth';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import LocationSelector, { LocationData } from '../../Common/LocationSelector';
 import ProfileImageUpload from '../../ProfileImageUpload';
 import InternationalPhoneInput from '../../Common/InternationalPhoneInput';
@@ -235,7 +235,7 @@ const ProfileStep: React.FC = () => {
       <div className="mt-8 space-y-4">
         <div className="classical-card-2 p-4 max-w-lg mx-auto">
           <p className="text-sm text-theme-secondary">
-            {t('profile_step_tip_title')} <strong>Dica:</strong>{' '}
+            <strong>{t('profile_step_tip_title')}</strong>{' '}
             {t('profile_step_tip_text')}
           </p>
         </div>

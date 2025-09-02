@@ -1,13 +1,12 @@
 // ================================
 // app/newsletter/success/page.tsx - CORRIGIDO
 // ================================
-import React, { Suspense } from 'react';
+import React from 'react';
 import {
   getServerLanguageStatic,
   loadPageTranslationsWithCommon,
 } from '@/app/utils/translations/serverTranslations';
 import { TranslationProvider } from '@/app/context/TranslationContext';
-import UnsubscribePageClient from './pageClient';
 import NewsletterSuccessContent from './pageClient';
 
 export async function generateMetadata() {

@@ -49,6 +49,7 @@ import {
   type ProgressMilestones,
 } from '@/app/utils/progressMilestones';
 import { useLearnedVideo } from '@/app/hooks/useLearnedVideo';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 const LearningModal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -207,6 +208,84 @@ const LearningModal = () => {
     getLearnedItem,
     setSelectedWorkScore,
   ]);
+  const useModalTranslations = () => {
+    const messages = {
+      pt: {
+        // Mensagens de sucesso - handleSubmit
+        wantToLearnUpdated: 'Obra atualizada na sua lista de estudos!',
+        learnedDataUpdated: 'Dados da obra aprendida atualizados!',
+        learnedDataUpdatedWithVideo: 'Dados da obra aprendida atualizados',
+        wantToLearnAdded: 'Obra adicionada à sua lista de estudos!',
+        congratsLearned: '🎉 Parabéns! Obra marcada como aprendida!',
+
+        // Mensagens de erro - handleSubmit
+        saveError: 'Erro ao salvar. Tente novamente.',
+        updateError: 'Erro ao atualizar',
+        updateVideoError: 'Erro ao atualizar com vídeo',
+
+        // Mensagens de transferência - handleConfirmTransfer
+        transferSuccess: '🎉 Parabéns! Obra transferida para "Já Aprendi"!',
+        transferError: 'Erro ao transferir obra. Tente novamente.',
+        transferring: 'Transferindo...',
+
+        // Mensagens de remoção - handleRemove
+        wantToLearnRemoved: 'Obra removida da sua lista de estudos!',
+        learnedRemoved: 'Obra removida da lista de aprendidas!',
+        removeError: 'Erro ao remover. Tente novamente.',
+
+        // Mensagens de vídeo - handleDeleteVideo
+        videoDeleteSuccess: 'Vídeo removido com sucesso!',
+        videoDeleteError: 'Erro ao remover vídeo. Tente novamente.',
+
+        // Status messages
+        uploadingStatus: 'Enviando vídeo...',
+        savingStatus: 'Salvando...',
+
+        // Console errors
+        saveErrorConsole: 'Erro ao salvar:',
+      },
+
+      en: {
+        // Success messages - handleSubmit
+        wantToLearnUpdated: 'Work updated in your study list!',
+        learnedDataUpdated: 'Learned work data updated!',
+        learnedDataUpdatedWithVideo: 'Learned work data updated',
+        wantToLearnAdded: 'Work added to your study list!',
+        congratsLearned: '🎉 Congratulations! Work marked as learned!',
+
+        // Error messages - handleSubmit
+        saveError: 'Error saving. Please try again.',
+        updateError: 'Error updating',
+        updateVideoError: 'Error updating with video',
+
+        // Transfer messages - handleConfirmTransfer
+        transferSuccess:
+          '🎉 Congratulations! Work transferred to "Already Learned"!',
+        transferError: 'Error transferring work. Please try again.',
+        transferring: 'Transferring...',
+
+        // Removal messages - handleRemove
+        wantToLearnRemoved: 'Work removed from your study list!',
+        learnedRemoved: 'Work removed from learned list!',
+        removeError: 'Error removing. Please try again.',
+
+        // Video messages - handleDeleteVideo
+        videoDeleteSuccess: 'Video deleted successfully!',
+        videoDeleteError: 'Error deleting video. Please try again.',
+
+        // Status messages
+        uploadingStatus: 'Uploading video...',
+        savingStatus: 'Saving...',
+
+        // Console errors
+        saveErrorConsole: 'Error saving:',
+      },
+    };
+
+    const t = messages[language] || messages.pt;
+
+    return { t, language };
+  };
 
   // Sugestão do tipo oposto
   useEffect(() => {
@@ -282,6 +361,8 @@ const LearningModal = () => {
     if (!user?.id || !workId || type !== 'want-to-learn') return;
 
     setIsSubmitting(true);
+    const { t } = useModalTranslations();
+
     try {
       await removeWantToLearn(workId);
 
@@ -296,26 +377,25 @@ const LearningModal = () => {
 
       await toggleLearned(workId, user.id, transferData.mastery, transferData);
 
-      toast.success('🎉 Parabéns! Obra transferida para "Já Aprendi"!', {
+      toast.success(t.transferSuccess, {
         duration: 4000,
       });
 
       setShowTransferConfirm(false);
       closeModal();
     } catch {
-      toast.error('Erro ao transferir obra. Tente novamente.');
+      toast.error(t.transferError);
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  // Handle delete video
   const handleDeleteVideo = async () => {
     if (!workId) return;
 
+    const { t } = useModalTranslations();
+
     const success = await deleteVideo(workId);
     if (success) {
-      // Atualizar o store para refletir a remoção do vídeo
       const currentItem = getLearnedItem(workId);
       if (currentItem) {
         const updatedItem = {
@@ -329,6 +409,13 @@ const LearningModal = () => {
         };
         addLearned(updatedItem);
       }
+
+      toast.success(t.videoDeleteSuccess, {
+        icon: '🗑️',
+        duration: 3000,
+      });
+    } else {
+      toast.error(t.videoDeleteError);
     }
   };
 
@@ -358,9 +445,13 @@ const LearningModal = () => {
 
       const result = await response.json();
 
-      if (response.ok && result.success && result.item) {
+      if (response.ok && result.success && result.item && user?.id) {
         // Atualizar store com item completo (incluindo dados de vídeo)
-        addLearned(result.item);
+        await toggleLearned(workId, user.id, learnedForm.mastery, {
+          ...learnedData,
+          isVideoPublic,
+        });
+        // addLearned(result.item);
         return true;
       } else {
         throw new Error(result.error || 'Erro ao criar learned item');
@@ -370,12 +461,15 @@ const LearningModal = () => {
       throw error;
     }
   };
+  const { language } = useLanguageStore();
 
   // ✅ CORREÇÃO: Handle form submission com lógica melhorada
   const handleSubmit = async () => {
     if (!user?.id || !workId || !type) return;
 
     setIsSubmitting(true);
+    const { t } = useModalTranslations();
+
     try {
       if (isCurrentlyActive) {
         // ATUALIZAR item existente
@@ -400,24 +494,22 @@ const LearningModal = () => {
             if (result.success && result.item) {
               addWantToLearn(result.item);
             }
-            toast.success('Obra atualizada na sua lista de estudos!', {
+            toast.success(t.wantToLearnUpdated, {
               icon: '✏️',
               duration: 3000,
             });
           } else {
-            throw new Error('Erro ao atualizar');
+            throw new Error(t.updateError);
           }
         } else {
           // LEARNED - com possível upload de vídeo
           if (selectedVideo) {
-            // Com upload de vídeo - usar updateVideo que retorna item atualizado
             const success = await updateVideo(workId, {
               ...learnedForm,
               selectedWorkScoreId: selectedWorkScore?.id,
             });
 
             if (success) {
-              // ✅ CORREÇÃO: Buscar item atualizado e atualizar store
               const response = await fetch(
                 `/api/learning/learned?workId=${workId}`
               );
@@ -428,12 +520,11 @@ const LearningModal = () => {
                 }
               }
 
-              toast.success('Dados da obra aprendida atualizados ');
+              toast.success(t.learnedDataUpdatedWithVideo);
             } else {
-              throw new Error('Erro ao atualizar com vídeo');
+              throw new Error(t.updateVideoError);
             }
           } else {
-            // Sem vídeo - JSON normal
             const response = await fetch('/api/learning/learned', {
               method: 'PATCH',
               headers: { 'Content-Type': 'application/json' },
@@ -450,12 +541,12 @@ const LearningModal = () => {
               if (result.success && result.item) {
                 addLearned(result.item);
               }
-              toast.success('Dados da obra aprendida atualizados!', {
+              toast.success(t.learnedDataUpdated, {
                 icon: '✏️',
                 duration: 3000,
               });
             } else {
-              throw new Error('Erro ao atualizar');
+              throw new Error(t.updateError);
             }
           }
         }
@@ -474,41 +565,34 @@ const LearningModal = () => {
             wantToLearnForm.priority,
             dataToCreate
           );
-          toast.success('Obra adicionada à sua lista de estudos!', {
+          toast.success(t.wantToLearnAdded, {
             icon: '🎯',
             duration: 3000,
           });
         } else {
-          // ✅ CORREÇÃO: LEARNED - fluxo unificado
           const learnedData = {
             ...learnedForm,
             selectedWorkScoreId: selectedWorkScore?.id,
           };
 
           if (selectedVideo) {
-            // ✅ Com vídeo - usar API direta para criar tudo junto
             await createLearnedWithVideo(workId, learnedData, selectedVideo);
-
-            // Limpar estado do vídeo
             removeVideo();
-
-            toast.success('🎉 Parabéns! Obra marcada como aprendida!');
+            toast.success(t.congratsLearned);
           } else {
-            // Sem vídeo - método normal
             await toggleLearned(workId, user.id, learnedForm.mastery, {
               ...learnedData,
               isVideoPublic,
             });
-
-            toast.success('🎉 Parabéns! Obra marcada como aprendida!');
+            toast.success(t.congratsLearned);
           }
         }
       }
 
       closeModal();
     } catch (error) {
-      console.error('Erro ao salvar:', error);
-      toast.error('Erro ao salvar. Tente novamente.');
+      console.error(t.saveErrorConsole, error);
+      toast.error(t.saveError);
     } finally {
       setIsSubmitting(false);
     }
@@ -519,16 +603,18 @@ const LearningModal = () => {
     if (!user?.id || !workId || !type) return;
 
     setIsSubmitting(true);
+    const { t } = useModalTranslations();
+
     try {
       if (type === 'want-to-learn') {
         await removeWantToLearn(workId);
-        toast.success('Obra removida da sua lista de estudos!', {
+        toast.success(t.wantToLearnRemoved, {
           icon: '🗑️',
           duration: 3000,
         });
       } else {
         await removeLearned(workId);
-        toast.success('Obra removida da lista de aprendidas!', {
+        toast.success(t.learnedRemoved, {
           icon: '🗑️',
           duration: 3000,
         });
@@ -536,7 +622,7 @@ const LearningModal = () => {
 
       closeModal();
     } catch {
-      toast.error('Erro ao remover. Tente novamente.');
+      toast.error(t.removeError);
     } finally {
       setIsSubmitting(false);
     }
@@ -623,7 +709,7 @@ const LearningModal = () => {
         }
       >
         {/* Header */}
-        <div className="px-6 py-4">
+        <div className="px-0 md:px-6 py-4">
           <div className="flex items-center space-x-3">
             <div
               className={`w-10 h-10 rounded-xl bg-gradient-to-br ${
@@ -644,7 +730,7 @@ const LearningModal = () => {
         </div>
 
         {/* Work Info */}
-        <div className="px-6 py-4 classical-card !rounded-2xl !shadow-none !border-none !transform-none border-b border-theme-secondary">
+        <div className="px-0 md:px-6 py-4 classical-card !rounded-2xl !shadow-none !border-none !transform-none border-b border-theme-secondary">
           <div className="flex items-center space-x-3">
             <FiMusic className="w-5 h-5 text-theme-tertiary" />
             <div>
@@ -660,7 +746,7 @@ const LearningModal = () => {
         </div>
 
         {/* Form Content */}
-        <div className="px-6 py-6 space-y-6 overflow-y-auto">
+        <div className="px-0 md:px-6 py-6 space-y-6 overflow-y-auto">
           {/* Formulários condicionais */}
           {type === 'want-to-learn' ? (
             <>
@@ -949,10 +1035,11 @@ const LearningModal = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-theme-primary">
-                      Progresso de Aprendizado
+                      {t('learning_progress_title')}
                     </h3>
                     <p className="text-sm text-theme-secondary">
-                      {currentProgress}% completo
+                      {currentProgress}
+                      {t('progress_complete')}
                     </p>
                   </div>
                 </div>
@@ -963,7 +1050,7 @@ const LearningModal = () => {
                 >
                   <FiEdit3 className="w-4 h-4" />
                   <span className="text-theme-primary text-sm">
-                    Marcar Progresso
+                    {t('mark_progress_button')}
                   </span>
                 </button>
               </div>
@@ -996,12 +1083,10 @@ const LearningModal = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-theme-primary">
-                      Vídeo da Performance
+                      {t('performance_video_title')}
                     </h3>
                     <p className="text-sm text-theme-secondary">
-                      {displayVideo
-                        ? 'Vídeo adicionado'
-                        : 'Nenhum vídeo adicionado'}
+                      {displayVideo ? t('video_added') : t('no_video_added')}
                     </p>
                   </div>
                 </div>
@@ -1021,7 +1106,9 @@ const LearningModal = () => {
                           <p className="text-xs text-theme-tertiary">
                             {displayVideoSize &&
                               formatFileSize(displayVideoSize)}
-                            {isVideoPublic ? ' • Público' : ' • Privado'}
+                            {isVideoPublic
+                              ? ` • ${t('public_label')}`
+                              : ` • ${t('private_label')}`}
                           </p>
                         </div>
                       </div>
@@ -1058,7 +1145,7 @@ const LearningModal = () => {
                       htmlFor="video-replace"
                       className="text-sm text-theme-tertiary hover:text-brand-primary cursor-pointer underline transition-colors duration-200"
                     >
-                      Substituir vídeo
+                      {t('replace_video')}
                     </label>
                   </div>
                 </div>
@@ -1082,10 +1169,10 @@ const LearningModal = () => {
                       </div>
                       <div>
                         <p className="font-semibold text-theme-primary">
-                          Adicionar Vídeo
+                          {t('add_video_title')}
                         </p>
                         <p className="text-sm text-theme-secondary">
-                          MP4, WebM, MOV até 100MB
+                          {t('video_formats_info')}
                         </p>
                       </div>
                     </div>
@@ -1097,7 +1184,7 @@ const LearningModal = () => {
               <div className="mt-4">
                 <div className="flex items-center space-x-3">
                   <Checkbox
-                    label="Tornar vídeo público (visível para outros usuários)"
+                    label={t('make_video_public')}
                     id="videoPublic"
                     checked={isVideoPublic}
                     onChange={(e) => setIsVideoPublic(e.target.checked)}
@@ -1201,12 +1288,12 @@ const LearningModal = () => {
                 {!isCurrentlyActive &&
                   oppositeItem?.selectedWorkScore?.id ===
                     selectedWorkScore.id && (
-                    <div className="mt-3 p-2 bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-lg">
+                    <div className="mt-3  rounded-lg">
                       <div className="flex items-center space-x-2">
                         <div className="w-4 h-4 bg-accent-green rounded-full flex items-center justify-center">
                           <span className="text-xs">💡</span>
                         </div>
-                        <span className="text-sm text-accent-green font-medium">
+                        <span className="text-xs md:text-sm text-green-400 font-medium">
                           {t('score_suggestion')} &quot;
                           {type === 'want-to-learn'
                             ? t('already_learned')
@@ -1245,57 +1332,102 @@ const LearningModal = () => {
         </div>
 
         {/* Footer */}
-        <div
-          className={`px-6 py-4 border-t border-theme-secondary flex items-center ${
-            (isCurrentlyActive && !isSubmitting && !isUploading) ||
-            (type === 'want-to-learn' && isCurrentlyActive)
-              ? 'justify-between'
-              : 'justify-end'
-          } space-x-3`}
-        >
-          {/* Botões de ação à esquerda */}
-          {isCurrentlyActive && !isSubmitting && !isUploading && (
-            <div className="flex items-center space-x-3">
-              <Button
-                variant="delete"
-                leftIcon={<FiTrash />}
-                onClick={handleRemove}
-              >
-                {t('delete_button')}
-              </Button>
-
-              {type === 'want-to-learn' && (
-                <Button
-                  variant="outline"
-                  className="truncate"
-                  onClick={handleTransferToLearned}
-                >
-                  {t('mark_as_learned')}
-                </Button>
-              )}
-            </div>
-          )}
-
-          {/* Botões principais à direita */}
-          <div className="flex items-center space-x-3">
-            <Button variant="secondary" onClick={handleClose}>
-              {isCurrentlyActive ? t('back_button') : t('cancel_button')}
-            </Button>
+        <div className="px-0 md:px-6 py-4 border-t border-theme-secondary">
+          {/* Mobile Layout - Stack vertical */}
+          <div className="block md:hidden space-y-3">
+            {/* Botão Principal - Sempre em destaque */}
             <Button
               variant="primary"
               onClick={handleSubmit}
               isLoading={isSubmitting || isUploading}
               rightIcon={config.emoji}
               disabled={isUploading}
+              className="w-full"
             >
               {isSubmitting || isUploading
                 ? type === 'learned' && selectedVideo
-                  ? 'Enviando...'
-                  : 'Salvando...'
+                  ? t('uploading_status')
+                  : t('saving_status')
                 : isCurrentlyActive
                 ? t('update_button')
                 : t('save_button')}
             </Button>
+
+            {/* Botões Secundários - Quando editando */}
+            {isCurrentlyActive && !isSubmitting && !isUploading && (
+              <div className="flex flex-col space-y-2">
+                {type === 'want-to-learn' && (
+                  <Button
+                    variant="outline"
+                    onClick={handleTransferToLearned}
+                    className="w-full"
+                  >
+                    {t('mark_as_learned')}
+                  </Button>
+                )}
+
+                <Button
+                  variant="delete"
+                  leftIcon={<FiTrash />}
+                  onClick={handleRemove}
+                  className="w-full"
+                >
+                  {t('delete_button')}
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Layout - Horizontal */}
+          <div
+            className={`hidden md:flex items-center ${
+              (isCurrentlyActive && !isSubmitting && !isUploading) ||
+              (type === 'want-to-learn' && isCurrentlyActive)
+                ? 'justify-between'
+                : 'justify-end'
+            } space-x-3`}
+          >
+            {/* Botões de ação à esquerda */}
+            {isCurrentlyActive && !isSubmitting && !isUploading && (
+              <div className="flex items-center space-x-3">
+                <Button
+                  variant="delete"
+                  leftIcon={<FiTrash />}
+                  onClick={handleRemove}
+                >
+                  {t('delete_button')}
+                </Button>
+
+                {type === 'want-to-learn' && (
+                  <Button
+                    variant="outline"
+                    className="truncate"
+                    onClick={handleTransferToLearned}
+                  >
+                    {t('mark_as_learned')}
+                  </Button>
+                )}
+              </div>
+            )}
+
+            {/* Botão principal à direita */}
+            <div className="flex items-center space-x-3">
+              <Button
+                variant="primary"
+                onClick={handleSubmit}
+                isLoading={isSubmitting || isUploading}
+                rightIcon={config.emoji}
+                disabled={isUploading}
+              >
+                {isSubmitting || isUploading
+                  ? type === 'learned' && selectedVideo
+                    ? t('uploading_status')
+                    : t('saving_status')
+                  : isCurrentlyActive
+                  ? t('update_button')
+                  : t('save_button')}
+              </Button>
+            </div>
           </div>
         </div>
       </Modal>
@@ -1345,7 +1477,7 @@ const LearningModal = () => {
         maxWidth="md"
         showCloseButton={true}
       >
-        <div className="p-6">
+        <div className="p-4 px-0 md:p-6">
           <div className="flex items-center space-x-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-brand-primary rounded-xl flex items-center justify-center">
               <FiArrowRight className="w-6 h-6 text-theme-primary" />
@@ -1375,7 +1507,7 @@ const LearningModal = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-end space-x-3">
+          <div className="flex items-center justify-between ">
             <Button
               variant="secondary"
               onClick={() => setShowTransferConfirm(false)}
@@ -1399,17 +1531,16 @@ const LearningModal = () => {
         <Modal
           isOpen={showProgressModal}
           onClose={() => setShowProgressModal(false)}
-          maxWidth="2xl"
-          showCloseButton={true}
+          maxWidth="lg"
         >
-          <div className="p-6">
+          <div className="p-2 md:p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h3 className="text-xl font-bold text-theme-primary">
-                  Marcar Progresso de Aprendizado
+                  {t('mark_learning_progress_title')}
                 </h3>
                 <p className="text-sm text-theme-secondary">
-                  Acompanhe seu progresso marcando os milestones conquistados
+                  {t('mark_learning_progress_subtitle')}
                 </p>
               </div>
             </div>
@@ -1436,12 +1567,12 @@ const LearningModal = () => {
                 </span>
               </div>
               <p className="text-sm text-theme-tertiary">
-                Clique nos milestones para marcar como concluídos
+                {t('click_milestones_instruction')}
               </p>
             </div>
 
             {/* Lista de milestones */}
-            <div className="space-y-3 max-h-96 overflow-y-auto">
+            <div className="space-y-3 max-h-96 pr-4 classical-scrollbar md:pr-2 overflow-y-auto">
               {availableMilestones.map((milestone) => {
                 const Icon = milestone.icon;
                 const isCompleted = progressMilestones[milestone.key];
@@ -1451,7 +1582,7 @@ const LearningModal = () => {
                     key={milestone.key}
                     className={`flex items-center space-x-3 p-4 rounded-xl transition-all cursor-pointer border-2 ${
                       isCompleted
-                        ? 'bg-accent-green/5 border-accent-green/30'
+                        ? 'border-color-primary '
                         : 'border-theme-secondary hover:border-brand-primary/50 hover:bg-brand-primary/5'
                     }`}
                     onClick={() => handleMilestoneToggle(milestone.key)}
@@ -1468,12 +1599,13 @@ const LearningModal = () => {
                         {t(milestone.labelKey)}
                       </div>
                       <div className="text-sm text-theme-tertiary">
-                        +{milestone.weight}% de progresso
+                        +{milestone.weight}
+                        {t('progress_percentage')}
                       </div>
                     </div>
                     <div className="flex-shrink-0">
                       {isCompleted ? (
-                        <FiCheckCircle className="w-5 h-5 text-accent-green" />
+                        <FiCheckCircle className="w-5 h-5 text-brand-primary" />
                       ) : (
                         <FiCircle className="w-5 h-5 text-theme-tertiary" />
                       )}
@@ -1495,7 +1627,7 @@ const LearningModal = () => {
                 onClick={() => setShowProgressModal(false)}
                 rightIcon="🎯"
               >
-                Confirmar Progresso
+                {t('confirm_progress_button')}
               </Button>
             </div>
           </div>

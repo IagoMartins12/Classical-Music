@@ -730,10 +730,10 @@ export default function IMSLPTabsIncremental({
   return (
     <AnimatedCard hover="none" className="classical-card overflow-hidden">
       <AnimatedContainer delay={0.1} staggerSpeed="normal">
-        <div className="classical-card overflow-hidden animate-fade-in-up">
+        <div className="overflow-hidden animate-fade-in-up">
           {/* Header */}
           <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
-            <div className="p-6">
+            <div className="p-2 md:p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
@@ -761,7 +761,10 @@ export default function IMSLPTabsIncremental({
 
             {/* Tabs Navigation */}
             {visibleTabs.length > 0 && (
-              <nav className="flex scrollbar-hide px-6" aria-label="Tabs">
+              <nav
+                className="flex scrollbar-hide px-0 md:px-6"
+                aria-label="Tabs"
+              >
                 {visibleTabs.map((tab, index) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
@@ -838,7 +841,7 @@ export default function IMSLPTabsIncremental({
           </div>
 
           {/* Tab Content */}
-          <div className="p-8">
+          <div className="p-0 py-4 md:p-8">
             {activeTabData.length > 0 ? (
               <div className="grid grid-cols-1 gap-8">
                 <div className="space-y-6">

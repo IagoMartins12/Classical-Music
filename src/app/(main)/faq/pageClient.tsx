@@ -341,7 +341,7 @@ export default function FAQPage(): JSX.Element {
               </AnimatedCard>
 
               {/* Category Filters */}
-              <div className="flex flex-wrap gap-3 justify-center mb-8">
+              <div className="flex flex-wrap gap-3 justify-center">
                 {categories.map((category) => (
                   <button
                     key={category}
@@ -389,7 +389,7 @@ export default function FAQPage(): JSX.Element {
                     <div className="classical-card overflow-hidden">
                       <button
                         onClick={() => toggleExpanded(item.id)}
-                        className="w-full p-6 text-left focus:outline-none"
+                        className="w-full p-2 md:p-6 text-left focus:outline-none"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4">
@@ -416,8 +416,8 @@ export default function FAQPage(): JSX.Element {
                       </button>
 
                       {expandedItems.has(item.id) && (
-                        <div className="px-6 pb-6">
-                          <div className="pl-16">
+                        <div className="px-6 pb-6 pt-4 md:pt-0">
+                          <div className="pl-0 md:pl-16">
                             <div className="border-l-2 border-brand-primary/20 pl-4">
                               <p className="text-theme-secondary leading-relaxed">
                                 {item.answer}
@@ -438,59 +438,56 @@ export default function FAQPage(): JSX.Element {
       {/* Contact Section */}
       <section className=" relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/10 via-accent-purple/5 to-accent-blue/10"></div>
-
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="relative section-wrap">
-            <AnimatedCard
-              hover="lift"
-              className="classical-card p-12 text-center max-w-4xl mx-auto"
-            >
-              <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
-                <FiMessageCircle className="w-10 h-10 text-theme-primary" />
+          <AnimatedCard
+            hover="lift"
+            className="classical-card p-12 text-center max-w-4xl mx-auto"
+          >
+            <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
+              <FiMessageCircle className="w-10 h-10 text-theme-primary" />
+            </div>
+
+            <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">
+              {t('faq_jsx_h2_children_0__nao_encontrou_resposta')}
+            </h2>
+
+            <p className="text-xl text-theme-secondary mb-12 classical-body">
+              {t('faq_jsx_p_children_0__nossa_equipe_sempre')}
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <Link
+                href="/contact"
+                className="btn-classical-primary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
+              >
+                <FiMail className="w-5 h-5" />
+                <span>{t('faq_jsx_link_children_0__entre_contato')}</span>
+              </Link>
+
+              <Link
+                href="/help"
+                className="btn-classical-secondary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
+              >
+                <FiBookOpen className="w-5 h-5" />
+                <span>{t('faq_jsx_link_children_0__central_ajuda')}</span>
+              </Link>
+            </div>
+
+            <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
+              <div className="flex items-center space-x-2 text-theme-tertiary">
+                <FiHelpCircle className="w-4 h-4" />
+                <span className="text-sm">
+                  {t('faq_jsx_span_children_0__resposta_24h')}
+                </span>
               </div>
-
-              <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">
-                {t('faq_jsx_h2_children_0__nao_encontrou_resposta')}
-              </h2>
-
-              <p className="text-xl text-theme-secondary mb-12 classical-body">
-                {t('faq_jsx_p_children_0__nossa_equipe_sempre')}
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                <Link
-                  href="/contact"
-                  className="btn-classical-primary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
-                >
-                  <FiMail className="w-5 h-5" />
-                  <span>{t('faq_jsx_link_children_0__entre_contato')}</span>
-                </Link>
-
-                <Link
-                  href="/help"
-                  className="btn-classical-secondary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
-                >
-                  <FiBookOpen className="w-5 h-5" />
-                  <span>{t('faq_jsx_link_children_0__central_ajuda')}</span>
-                </Link>
+              <div className="flex items-center space-x-2 text-theme-tertiary">
+                <FiUser className="w-4 h-4" />
+                <span className="text-sm">
+                  {t('faq_jsx_span_children_0__suporte_especializado')}
+                </span>
               </div>
-
-              <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
-                <div className="flex items-center space-x-2 text-theme-tertiary">
-                  <FiHelpCircle className="w-4 h-4" />
-                  <span className="text-sm">
-                    {t('faq_jsx_span_children_0__resposta_24h')}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2 text-theme-tertiary">
-                  <FiUser className="w-4 h-4" />
-                  <span className="text-sm">
-                    {t('faq_jsx_span_children_0__suporte_especializado')}
-                  </span>
-                </div>
-              </div>
-            </AnimatedCard>
-          </div>
+            </div>
+          </AnimatedCard>
         </AnimatedContainer>
       </section>
 

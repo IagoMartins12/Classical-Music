@@ -88,7 +88,7 @@ const ROLE_TRANSLATIONS: Record<string, string> = {
 };
 
 // Função para traduzir role baseado no idioma
-const translateRole = (roleName: string, language: string): string => {
+export const translateRole = (roleName: string, language: string): string => {
   if (language === 'en' && ROLE_TRANSLATIONS[roleName]) {
     return ROLE_TRANSLATIONS[roleName];
   }

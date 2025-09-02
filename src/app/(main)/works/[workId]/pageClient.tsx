@@ -393,20 +393,20 @@ export default function WorkDetailsClient({
         <div className="section-wrap space-y-8 relative z-10">
           {/* Header do modo seleção MELHORADO */}
           <AnimatedItem direction="down" springType="gentle">
-            <div className="bg-gradient-to-r from-accent-blue/10 to-brand-primary/10 border-2 border-accent-blue/30 rounded-2xl p-6 mb-6">
+            <div className="bg-theme-elevated rounded-2xl p-4 md:p-6 mb-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-brand-primary rounded-2xl flex items-center justify-center">
+                  <div className="w-12 h-12 hidden md:flex bg-gradient-to-br from-accent-blue to-brand-primary rounded-2xl  items-center justify-center">
                     <FiTarget className="w-6 h-6 text-theme-primary" />
                   </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-theme-primary classical-title">
+                  <div className="flex flex-col gap-2">
+                    <h2 className="text-lg md:text-xl font-bold text-theme-primary classical-title">
                       {t('selection_mode_selecionar_partitura')}{' '}
                       {activeType === 'want-to-learn'
                         ? t('selection_mode_quero_aprender')
                         : t('selection_mode_ja_aprendi')}
                     </h2>
-                    <p className="text-theme-secondary">
+                    <p className="text-sm md:text-md text-theme-secondary">
                       {tempSelectedWorkScore
                         ? `${t('selection_mode_partitura_selecionada')} ${
                             tempSelectedWorkScore.title
@@ -416,10 +416,10 @@ export default function WorkDetailsClient({
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-3">
+                <div className="flex flex-col md:flex-row gap-4 md:gap-3 items-center ">
                   <button
                     onClick={handleCancelSelection}
-                    className="btn-classical-secondary flex items-center space-x-2"
+                    className="btn-classical-secondary w-full justify-center flex items-center space-x-2"
                   >
                     <FiArrowLeft className="w-4 h-4" />
                     <span>{t('selection_mode_voltar')}</span>
@@ -427,7 +427,7 @@ export default function WorkDetailsClient({
                   {tempSelectedWorkScore && (
                     <button
                       onClick={handleConfirmSelection}
-                      className="btn-classical-primary flex items-center space-x-2"
+                      className="btn-classical-primary w-full justify-center flex items-center space-x-2"
                     >
                       <FiCheckCircle className="w-4 h-4" />
                       <span>{t('selection_mode_confirmar_selecao')}</span>
@@ -549,23 +549,26 @@ export default function WorkDetailsClient({
           <nav className="flex items-center space-x-2 text-sm text-theme-tertiary mb-6 pt-4">
             <Link
               href="/works"
-              className="hover:text-brand-primary transition-colors duration-300 font-medium"
+              className="hover:text-brand-primary hidden md:block transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_obras')}
             </Link>
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
+            <div className="hidden md:block ">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </div>
+
             <Link
               href={`/composer/${work.composer.id}`}
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
@@ -609,13 +612,13 @@ export default function WorkDetailsClient({
               </div>
             </div>
 
-            <div className="p-8 relative z-10">
+            <div className="p-4 md:p-8 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {/* Informações Principais */}
                 <div className="lg:col-span-3 space-y-6">
                   {/* Título e Compositor */}
                   <div className="space-y-4">
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between mb-0 md:mb-auto">
                       <div className="flex-1">
                         <div className="flex items-center  gap-4">
                           <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
@@ -654,7 +657,7 @@ export default function WorkDetailsClient({
                       </div>
 
                       {/* Action buttons */}
-                      <div className="flex items-center space-x-3 ml-4">
+                      <div className="flex items-center flex-col md:flex-row gap-2 md:gap-3  space-x-3 ml-4">
                         <FavoriteButton
                           id={work.id}
                           type="work"
@@ -662,12 +665,14 @@ export default function WorkDetailsClient({
                           size="lg"
                           itemName={work.title}
                           showToast={true}
+                          className="m-0 md:m-auto"
                         />
                         <ShareButton
                           title={`${work.title} - Peça`}
                           description={`Veja partituras dessa maravilhosa peça.`}
                           variant="default"
                           size="lg"
+                          className="m-0 md:m-auto"
                         />
                         <ReportButton
                           entityType="work"
@@ -703,7 +708,7 @@ export default function WorkDetailsClient({
                     {work.difficultyLevel && (
                       <div className="flex items-center space-x-3">
                         <div
-                          className={`px-4 py-2 bg-gradient-to-r ${getDifficultyColor(
+                          className={`px-0 md:px-4 py-2 bg-gradient-to-r ${getDifficultyColor(
                             work.difficultyLevel
                           )} rounded-full flex items-center space-x-2 shadow-lg`}
                         >
@@ -1194,43 +1199,12 @@ export default function WorkDetailsClient({
                           {new Date(work.createdAt).toLocaleDateString('pt-BR')}
                         </span>
                       </div>
-
-                      {/* Cache Status (só para dev/debug) */}
-                      {process.env.NODE_ENV === 'development' && (
-                        <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
-                          <span className="font-medium text-theme-tertiary">
-                            {t('work_details_cache_status')}
-                          </span>
-                          <span
-                            className={`text-xs font-semibold ${
-                              fromCache
-                                ? 'text-accent-green'
-                                : 'text-accent-blue'
-                            }`}
-                          >
-                            {fromCache ? '💾 Cache' : '🕷️ Scraping'}
-                          </span>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </AnimatedCard>
-
-          {/* Seção de Multimídia */}
-          <MediaSection
-            work={workForMediaSection}
-            canEditMedia={canEditMedia}
-            onMediaUpdate={handleMediaUpdate}
-            isAdmin={isAdmin}
-          />
-
-          <VideoAulaSection
-            work={workForVideoAulaSection}
-            canEditMedia={canEditMedia}
-          />
 
           {/* Seção de Partituras SEMPRE VISÍVEL */}
           <AnimatedCard hover="none">
@@ -1269,6 +1243,19 @@ export default function WorkDetailsClient({
               getTabStats={getTabStats}
             />
           </AnimatedCard>
+
+          {/* Seção de Multimídia */}
+          <MediaSection
+            work={workForMediaSection}
+            canEditMedia={canEditMedia}
+            onMediaUpdate={handleMediaUpdate}
+            isAdmin={isAdmin}
+          />
+
+          <VideoAulaSection
+            work={workForVideoAulaSection}
+            canEditMedia={canEditMedia}
+          />
 
           <AnnotationsSection
             workId={work.id}

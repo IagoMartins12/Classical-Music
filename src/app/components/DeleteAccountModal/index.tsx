@@ -23,6 +23,7 @@ import { AnimatedCard } from '../animation/AnimatedComponents';
 import { BiBookContent, BiBookOpen } from 'react-icons/bi';
 import { CascadeInfo } from '@/app/hooks/useAccountManagement';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { useIsMobile } from '@/app/hooks/useMobile';
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -53,6 +54,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   const [currentStep, setCurrentStep] = useState<
     'warning' | 'cascade' | 'confirm'
   >('warning');
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setMounted(true);
@@ -158,15 +160,24 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   ];
 
   const modalContent = (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
-        onClick={!isLoading ? handleClose : undefined}
-      />
+    <div
+      className={`fixed inset-0 z-[9999] flex items-center justify-center ${
+        isMobile ? 'p-0' : 'p-4'
+      }`}
+    >
+      {!isMobile && (
+        <div
+          className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+          onClick={!isLoading ? handleClose : undefined}
+        />
+      )}
 
       <AnimatedCard
         hover="none"
-        className="relative bg-theme-primary rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-theme-secondary"
+        className={`relative bg-theme-primary rounded-xl shadow-2xl 
+          ${
+            isMobile ? 'w-full h-full' : 'max-w-2xl w-full max-h-[90vh]'
+          } overflow-y-auto border border-theme-secondary`}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-secondary bg-accent-red/5">
@@ -457,7 +468,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-6 border-t border-theme-secondary bg-theme-secondary/30">
+        <div className="flex flex-col-reverse md:flex-row gap-4 items-center justify-between p-6 border-t border-theme-secondary bg-theme-secondary/30">
           <div className="flex items-center space-x-2">
             {/* Step indicator */}
             <div className="flex space-x-2">
@@ -508,12 +519,11 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             {/* Action button */}
             {currentStep === 'confirm' ? (
               <Button
-                variant="primary"
+                variant="delete"
                 size="sm"
                 onClick={handleConfirm}
                 isLoading={isLoading}
                 disabled={!canProceed}
-                className="bg-accent-red hover:bg-red-600 border-accent-red"
                 leftIcon={<FiTrash2 />}
               >
                 {isLoading

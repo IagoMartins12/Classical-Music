@@ -31,7 +31,6 @@ import Link from 'next/link';
 import AnnotationsStatsWidget from '@/app/components/StatsWidget/AnnotationsStatsWidget';
 import Modal from '../../components/Modal';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
-
 import { useAutoAchievementDetection } from '../../hooks/useAchievements';
 import Button from '@/app/components/Common/Button';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -436,7 +435,7 @@ export default function AnnotationsPageClient() {
                   {/* Filter Button */}
                   <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className={`flex items-center space-x-2 px-4 py-3 rounded-lg border transition-all font-medium ${
+                    className={`flex items-center justify-center space-x-2 px-4 py-3 rounded-lg border transition-all font-medium ${
                       showFilters
                         ? 'bg-brand-primary text-theme-primary border-brand-primary shadow-md'
                         : hasActiveFilters
@@ -479,10 +478,12 @@ export default function AnnotationsPageClient() {
                   </Button>
 
                   {/* View Mode Toggle */}
-                  <ViewModeToggle
-                    viewMode={viewMode}
-                    onViewModeChange={setViewMode}
-                  />
+                  <div className="hidden md:block">
+                    <ViewModeToggle
+                      viewMode={viewMode}
+                      onViewModeChange={setViewMode}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -600,7 +601,7 @@ export default function AnnotationsPageClient() {
                 springType="bouncy"
                 className="mt-8 classical-card"
               >
-                <div className="text-center py-16">
+                <div className="text-center py-8 md:py-16">
                   <div className="w-24 h-24 bg-gradient-to-br from-theme-secondary to-theme-primary rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                     <FiMessageSquare className="w-12 h-12 text-theme-tertiary" />
                   </div>

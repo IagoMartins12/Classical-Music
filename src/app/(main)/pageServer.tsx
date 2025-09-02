@@ -75,14 +75,17 @@ export default async function EnhancedHomePage() {
             works={randomDiscoveries.works}
           />
         )}
-        {/* Últimas adições (novo) */}
-        {recentComposers.composers.length > 0 &&
-          recentComposers.works.length > 0 && (
-            <RecentAdditions
-              composers={recentComposers.composers}
-              works={recentComposers.works}
-            />
-          )}
+
+        <div className="hidden md:block">
+          {/* Últimas adições (novo) */}
+          {recentComposers.composers.length > 0 &&
+            recentComposers.works.length > 0 && (
+              <RecentAdditions
+                composers={recentComposers.composers}
+                works={recentComposers.works}
+              />
+            )}
+        </div>
 
         {/* Curiosidades musicais (novo) */}
         {musicalFacts.length > 0 && <MusicalFacts facts={musicalFacts} />}

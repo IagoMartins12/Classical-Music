@@ -208,7 +208,7 @@ export default function ComposerBiography({
         {/* Decoração de fundo */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gradient opacity-5 rounded-full blur-3xl"></div>
 
-        <div className="relative z-10 whitespace-pre-line text-theme-secondary leading-relaxed text-base classical-body">
+        <div className="relative z-10 break-all whitespace-pre-line text-theme-secondary leading-relaxed text-base classical-body">
           {displayBio.split('\n').map((paragraph, index) => (
             <p key={index} className="mb-4 animate-fade-in-up">
               {paragraph}

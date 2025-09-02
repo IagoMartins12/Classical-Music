@@ -27,6 +27,7 @@ import Modal from '../../Modal';
 import ScorePreview from '../../WorkDetailsClient/ScorePreview';
 import ScoreCard from '../../WorkDetailsClient/ScoreCard';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import Button from '../../Common/Button';
 
 // Interface para dados unificados
 interface MixedScoreData {
@@ -497,8 +498,8 @@ const ScoreSelectionModal = ({
     >
       {/* Header */}
       <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
-        <div className="p-6">
-          <div className="flex items-center justify-between">
+        <div className="p-2 md:p-6">
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
                 onClick={onClose}
@@ -529,12 +530,7 @@ const ScoreSelectionModal = ({
             <div className="flex items-center space-x-3">
               <div className="bg-theme-elevated/50 border border-brand-primary/30 rounded-xl px-4 py-2">
                 <div className="flex items-center space-x-2 text-sm">
-                  <div
-                    className={`w-2 h-2 rounded-full animate-pulse ${
-                      selectedScore ? 'bg-accent-green' : 'bg-theme-tertiary'
-                    }`}
-                  ></div>
-                  <span className="text-theme-secondary font-medium">
+                  <span className="text-theme-secondary text-center font-medium">
                     {selectedScore
                       ? isEditing
                         ? t('new_score_selected')
@@ -544,10 +540,10 @@ const ScoreSelectionModal = ({
                 </div>
               </div>
 
-              <button
+              <Button
                 onClick={handleConfirmSelection}
                 disabled={isConverting}
-                className="btn-classical-primary flex items-center space-x-2"
+                className="btn-classical-primary SW"
               >
                 {isConverting ? (
                   <>
@@ -556,7 +552,6 @@ const ScoreSelectionModal = ({
                   </>
                 ) : (
                   <>
-                    <FiCheckCircle className="w-4 h-4" />
                     <span>
                       {selectedScore
                         ? isEditing
@@ -568,14 +563,14 @@ const ScoreSelectionModal = ({
                     </span>
                   </>
                 )}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
 
         {/* Tabs Navigation */}
         {visibleTabs.length > 0 && (
-          <nav className="flex scrollbar-hide px-6" aria-label="Tabs">
+          <nav className="flex scrollbar-hide px-0 md:px-6" aria-label="Tabs">
             {visibleTabs.map((tab, index) => {
               const isActive = activeTab === tab.id;
               const tabStat = tabStats[tab.type as keyof typeof tabStats];
@@ -638,7 +633,7 @@ const ScoreSelectionModal = ({
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Scores List */}
         <div className="flex-1 overflow-y-auto">
           <div className="p-6">
@@ -717,18 +712,43 @@ const ScoreSelectionModal = ({
                     </div>
                   </div>
                 )}
+
+                {/* Preview Panel Mobile - Abaixo dos cards */}
+                {selectedScore && (
+                  <div
+                    id="score-preview-mobile"
+                    className="lg:hidden animate-fade-in-up scroll-mt-4 border-t border-theme-secondary pt-6"
+                  >
+                    <div className="classical-card bg-theme-elevated p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+                          <FiBookOpen className="w-5 h-5 text-accent-blue" />
+                          <span>{t('score_preview')}</span>
+                        </h3>
+                        <button
+                          onClick={() => setSelectedScore(null)}
+                          className="w-8 h-8 bg-theme-primary border border-theme-secondary hover:border-accent-red rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-accent-red/10"
+                        >
+                          <FiX className="w-4 h-4 text-theme-primary hover:text-accent-red" />
+                        </button>
+                      </div>
+                      <ScorePreview score={selectedScore as any} />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
         </div>
 
-        {/* Preview Panel Condicional */}
+        {/* Preview Panel Desktop - Lateral (apenas em lg+) */}
         {selectedScore && (
-          <div className="w-96 border-l border-theme-secondary bg-theme-elevated overflow-y-auto">
+          <div className="hidden lg:block w-96 max-w-full border-l border-theme-secondary bg-theme-elevated overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-theme-primary">
-                  {t('score_preview')}
+                <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+                  <FiBookOpen className="w-5 h-5 text-accent-blue" />
+                  <span>{t('score_preview')}</span>
                 </h3>
                 <button
                   onClick={() => setSelectedScore(null)}

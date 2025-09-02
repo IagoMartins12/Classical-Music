@@ -153,7 +153,7 @@ export default function MostFavoritedBadge({
   return (
     <div className={baseClasses} title={`${config.label} pela comunidade`}>
       <div className="flex items-center space-x-1.5">
-        <div className={`bg-gradient-to-r ${config.gradient} rounded-full p-1`}>
+        <div className={`bg-gradient-to-r $ rounded-full p-1`}>
           <Icon className={`${sizeConfig.icon} text-white`} />
         </div>
         {showText && (
@@ -330,7 +330,7 @@ export default function MostFavoritedBadge({
 //   return (
 //     <div className={baseClasses} title={`${config.label} pela comunidade`}>
 //       <div className="flex items-center space-x-1.5">
-//         <div className={`bg-gradient-to-r ${config.gradient} rounded-full p-1`}>
+//         <div className={`bg-gradient-to-r $ rounded-full p-1`}>
 //           <Icon className={`${sizeConfig.icon} text-white`} />
 //         </div>
 //         {showText && (

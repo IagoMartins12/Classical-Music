@@ -149,9 +149,9 @@ export default function FavoritesClient() {
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard hover="none" className="classical-card p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between  gap-4">
               {/* Tabs atualizadas para incluir 'scores' */}
-              <div className="flex bg-theme-secondary rounded-xl p-1 overflow-x-auto">
+              <div className="flex classical-scrollbar-mini  bg-theme-secondary rounded-xl p-1 overflow-x-auto">
                 <button
                   onClick={() => setActiveTab('all')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
@@ -230,10 +230,12 @@ export default function FavoritesClient() {
                 )}
 
                 {/* View Mode Toggle */}
-                <ViewModeToggle
-                  viewMode={viewMode}
-                  onViewModeChange={setViewMode}
-                />
+                <div className="hidden md:block">
+                  <ViewModeToggle
+                    viewMode={viewMode}
+                    onViewModeChange={setViewMode}
+                  />
+                </div>
               </div>
             </div>
           </AnimatedCard>
@@ -560,7 +562,7 @@ export default function FavoritesClient() {
         title={t('stats_modal_title')}
         maxWidth="xl"
       >
-        <FavoritesStatsWidget />
+        <FavoritesStatsWidget className="h-full w-full" forceRender />
       </Modal>
     </PageContainer>
   );
@@ -631,7 +633,7 @@ function ComposerFavoriteCard({
                 </span>
               </div>
 
-              <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+              <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                 <FavoriteButton
                   id={favorite.composer.id}
                   type="composer"
@@ -707,7 +709,7 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
                   )}
                 </div>
 
-                <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                   <FavoriteButton
                     id={favorite.work.id}
                     type="work"

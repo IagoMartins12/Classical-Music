@@ -1,11 +1,15 @@
 // app/uploads/page.tsx - Meus uploads otimizado
 import { getServerSession } from 'next-auth';
-import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
+import {
+  getServerLanguageStatic,
+  loadPageTranslationsWithCommon,
+} from '@/app/utils/translations/serverTranslations';
 import UploadsPageServer from './pageServer';
 import EmailVerificationRequired from '@/app/components/VerificationsProviders/EmailVerificationRequired';
 import { authOptions } from '@/app/libs/auth';
 import { getUserById } from '@/app/actions/auth';
 import { redirect } from 'next/navigation';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export async function generateMetadata() {
   const language = await getServerLanguageStatic();
@@ -81,11 +85,20 @@ export default async function UploadsPage({
   }
 
   if (!userData.emailVerified && userData.email) {
+    const language = await getServerLanguageStatic();
+    const { translations } = await loadPageTranslationsWithCommon(language, [
+      'components/email-verification',
+    ]);
+
+    console.log('trans', translations);
+
     return (
-      <EmailVerificationRequired
-        userEmail={userData.email}
-        userName={userData.firstName || undefined}
-      />
+      <TranslationProvider language={language} translations={translations}>
+        <EmailVerificationRequired
+          userEmail={userData.email}
+          userName={userData.firstName || undefined}
+        />
+      </TranslationProvider>
     );
   }
 

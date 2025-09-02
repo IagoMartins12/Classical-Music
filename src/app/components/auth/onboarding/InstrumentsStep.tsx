@@ -5,7 +5,7 @@ import { useOnboardingModal } from '@/app/stores/authStore';
 import React from 'react';
 import { FiPlus, FiX } from 'react-icons/fi';
 
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import { translateInstrument } from '@/app/utils/translations/instrumentsGenresTranslation';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import Select from '../../Common/Select';
@@ -140,8 +140,8 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                 key={instrument.id}
                 className="classical-card-2 p-4 flex items-center justify-between"
               >
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-2">
+                <div className="flex-1 flex flex-col gap-4">
+                  <div className="flex items-center flex-col sm:flex-row space-x-3 mb-2">
                     {isNotMusicStudent ? (
                       <span className=" py-1 text-end bg-brand-primary  text-theme-primary classical-subtitle rounded-full">
                         {t('instruments_step_instrument_label')}{' '}
@@ -174,8 +174,8 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                   </div>
 
                   {!isNotMusicStudent && (
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center justify-center gap-4">
+                    <div className="flex items-center flex-col sm:flex-row  space-x-4">
+                      <div className="flex items-center justify-center gap-4 flex-col sm:flex-row">
                         <span>{t('instruments_step_select_level')}</span>
                         <Select
                           value={instrument.level}
@@ -186,6 +186,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                           }
                           options={EXPERIENCE_LEVELS}
                           className="text-sm"
+                          containerClassName="w-full sm-w-auto"
                         />
                       </div>
 
@@ -197,7 +198,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                             isPrimary: e.target.checked,
                           })
                         }
-                        className="rounded"
+                        className="mt-4 sm:mt-0"
                       />
                     </div>
                   )}
@@ -216,7 +217,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
       )}
 
       {/* Available Instruments */}
-      <div className="grid grid-cols-1 py-1 px-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto overflow-x-hidden classical-scrollbar">
+      <div className="grid grid-cols-2 py-1 px-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto overflow-x-hidden classical-scrollbar">
         {translatedInstruments.map((instrument) => (
           <button
             key={instrument.id}

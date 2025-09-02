@@ -38,7 +38,7 @@ export default function VerificationBadge({
   if (variant === 'icon') {
     return (
       <div
-        className={`${sizeClasses[size]}${className}`}
+        className={`${sizeClasses[size]}${className} self-end mb-2`}
         title={t('verification_badge_verificado')}
       >
         <MdVerified className={`${iconSizeClasses[size]}`} />
@@ -60,7 +60,6 @@ export default function VerificationBadge({
   }
 
   if (variant === 'text') {
-
     const verifiedText =
       title === 'Compositor'
         ? t('verification_badge_compositor_verificado')
@@ -71,7 +70,9 @@ export default function VerificationBadge({
         className={`inline-flex items-center space-x-1 text-accent-blue ${className}`}
       >
         <MdVerified className={`${iconSizeClasses[size]}`} />
-        <span className="text-sm font-medium">{verifiedText}</span>
+        <span className="hidden md:block md:text-sm font-medium">
+          {verifiedText}
+        </span>
       </div>
     );
   }

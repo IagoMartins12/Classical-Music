@@ -309,9 +309,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
             {t('instruments_edit')}
           </Button>
         ) : (
-          <div className="flex space-x-2">
+          <div className="flex flex-col md:flex-row gap-2">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               onClick={handleCancel}
               leftIcon={<FiX />}
@@ -369,14 +369,14 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                         </span>
                       )}
                       {instrument.isPrimary && (
-                        <div className="px-2 py-1 text-xs  classical-card text-theme-primary rounded-full">
+                        <div className="!px-3 !py-1 text-xs  classical-card text-theme-primary rounded-full">
                           {t('instruments_primary')}
                         </div>
                       )}
                     </div>
 
                     {isEditing ? (
-                      <div className="flex items-center space-x-4 mt-2">
+                      <div className="flex flex-col md:flex-row items-start gap-4 md:items-center mt-4 md:mt-2">
                         <Select
                           value={instrument.level}
                           onChange={(e) =>

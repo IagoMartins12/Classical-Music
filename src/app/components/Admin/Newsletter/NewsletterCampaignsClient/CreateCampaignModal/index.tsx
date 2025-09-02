@@ -21,7 +21,7 @@ import Modal from '@/app/components/Modal';
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import {
   getAllEmailTemplates,
-  previewTemplate,
+  previewTemplateSync,
   processTemplate,
 } from '@/app/libs/newsletter/emailTemplates';
 import Checkbox from '@/app/components/Common/Checkbox';
@@ -188,7 +188,7 @@ export default function CreateCampaignModal({
       }
     } else {
       // Preview de template built-in
-      preview = previewTemplate(form.templateType);
+      preview = previewTemplateSync(form.templateType);
     }
 
     if (preview) {

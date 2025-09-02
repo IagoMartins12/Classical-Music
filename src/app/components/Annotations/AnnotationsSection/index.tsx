@@ -270,17 +270,17 @@ export default function AnnotationsSection({
       <AnimatedContainer delay={0.1} staggerSpeed="fast">
         {/* Header */}
         <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
-          <div className="p-6">
+          <div className="p-2 md:p-6">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
                   <FiMessageSquare className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                  <h2 className="text-lg md:text-2xl font-bold text-theme-primary classical-title">
                     {t('annotations_titulo')}
                   </h2>
-                  <p className="text-theme-secondary classical-subtitle">
+                  <p className="text-theme-secondary text-md md:text-lg classical-subtitle">
                     {t('annotations_subtitulo')}
                   </p>
                 </div>
@@ -295,7 +295,7 @@ export default function AnnotationsSection({
                   }
                   setShowCreateModal(true);
                 }}
-                className="btn-classical-primary flex items-center space-x-2"
+                className="btn-classical-primary hidden md:flex items-center space-x-2"
               >
                 <FiPlus className="w-4 h-4" />
                 <span>{t('annotations_nova_anotacao')}</span>
@@ -304,6 +304,21 @@ export default function AnnotationsSection({
 
             {/* ✅ Barra de busca e filtros COM TRADUÇÕES */}
             <div className="space-y-4">
+              <button
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    toast.error(t('annotations_login_required'));
+                    open();
+                    return;
+                  }
+                  setShowCreateModal(true);
+                }}
+                className="btn-classical-primary w-full text-center justify-center flex md:hidden items-center space-x-2"
+              >
+                <FiPlus className="w-4 h-4" />
+                <span>{t('annotations_nova_anotacao')}</span>
+              </button>
+
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 relative">
                   <Input
@@ -486,7 +501,7 @@ export default function AnnotationsSection({
         )}
 
         {/* Conteúdo */}
-        <div className="p-6">
+        <div className="p-2 md:p-6">
           {isLoading && displayedAnnotations.length === 0 ? (
             <div className="flex items-center justify-center py-12">
               <div className="flex items-center space-x-3">

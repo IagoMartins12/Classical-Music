@@ -63,7 +63,7 @@ const AccordionSection = memo<AccordionSectionProps>(
       <div className="mb-6 classical-card overflow-hidden hover:shadow-theme-glow transition-all duration-200 will-change-transform">
         {/* Header - Always Visible */}
         <div
-          className="p-6 cursor-pointer select-none group"
+          className="p-2 sm:p-6 cursor-pointer select-none group"
           onClick={handleToggle}
         >
           <div className="flex items-center justify-between">
@@ -81,7 +81,7 @@ const AccordionSection = memo<AccordionSectionProps>(
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-theme-tertiary text-sm font-medium">
+              <span className="text-theme-tertiary text-sm font-medium hidden sm:block">
                 {isExpanded
                   ? t('detailed_jsx_span_children_0__recolher')
                   : t('detailed_jsx_span_children_0__expandir')}
@@ -101,14 +101,14 @@ const AccordionSection = memo<AccordionSectionProps>(
         <div
           className={`transition-all duration-300 ease-out overflow-hidden will-change-auto ${
             isExpanded
-              ? 'max-h-screen opacity-100 transform scale-y-100'
+              ? 'max-h-[200vh] opacity-100 transform scale-y-100'
               : 'max-h-0 opacity-0 transform scale-y-95'
           }`}
           style={{
             transformOrigin: 'top',
           }}
         >
-          <div className="px-6 pb-6 border-t border-theme-secondary">
+          <div className="px-4 md:px-6 pb-6 border-t border-theme-secondary">
             <div className="pt-6 transform transition-transform duration-200">
               {children}
             </div>
@@ -160,7 +160,7 @@ const TimelineOverview = memo<SectionProps>(({ isExpanded, onToggle }) => {
         {eras.map((era, index) => (
           <div
             key={index}
-            className="classical-card-simple p-6 group hover:scale-102 transition-all duration-200 will-change-transform"
+            className="classical-card-simple p-4 md:p-6 group hover:scale-102 transition-all duration-200 will-change-transform"
           >
             <div
               className={`w-8 h-8 bg-gradient-to-br ${era.gradient} rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-200`}
@@ -892,7 +892,7 @@ export function DetailedMusicHistory(): JSX.Element {
     <div className="w-full bg-gradient-primary py-4 md:py-20 lg:py-20 relative overflow-hidden">
       {/* Background Pattern Otimizado */}
       <div className="absolute inset-0 pointer-events-none opacity-5 will-change-auto">
-        <div className="absolute top-40 left-40 w-96 h-96 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-40 left-40 w-32 md:w-96 max-w-full h-96 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>
         <div
           className="absolute bottom-60 right-60 w-64 h-64 bg-accent-purple/30 rounded-full blur-2xl animate-pulse"
           style={{ animationDelay: '1s' }}

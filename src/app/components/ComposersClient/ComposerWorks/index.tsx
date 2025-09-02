@@ -500,7 +500,7 @@ export default function ComposerWorks({
         <AnimatedItem
           direction="up"
           springType="smooth"
-          className="p-8 border-b border-theme-secondary bg-gradient-to-r from-theme-elevated to-interactive-hover"
+          className="p-0 pb-4 md:p-8 border-b border-theme-secondary bg-gradient-to-r from-theme-elevated to-interactive-hover"
         >
           <div className="flex items-center space-x-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
@@ -630,10 +630,12 @@ export default function ComposerWorks({
               </div>
             </button>
 
-            <ViewModeToggle
-              viewMode={viewMode}
-              onViewModeChange={setViewMode}
-            />
+            <div className="hidden md:block">
+              <ViewModeToggle
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+              />
+            </div>
           </div>
 
           {/* Filtros expandidos */}
@@ -815,7 +817,7 @@ export default function ComposerWorks({
         </AnimatedItem>
 
         {/* Lista de obras */}
-        <div className="p-8">
+        <div className="p-0 pt-4 md:p-8">
           {loading ? (
             <AnimatedContainer delay={0.1} staggerSpeed="fast">
               {Array.from({ length: 6 }).map((_, index) => (

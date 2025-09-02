@@ -82,7 +82,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
         {/* Background Pattern */}
         <div className="absolute inset-0 music-note-background opacity-5"></div>
 
-        <div className="relative p-8 lg:p-12">
+        <div className="relative py-4 md:p-8 lg:p-12">
           {/* Header */}
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 bg-brand-gradient rounded-2xl flex items-center justify-center">

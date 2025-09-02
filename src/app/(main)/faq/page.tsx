@@ -126,7 +126,7 @@ export default async function FAQPageRoute() {
 
   return (
     <TranslationProvider language={language} translations={translations}>
-      <FAQPage />;
+      <FAQPage />
     </TranslationProvider>
   );
 }

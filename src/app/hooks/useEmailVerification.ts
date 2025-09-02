@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { resendAccountConfirmation } from '@/app/actions/auth';
+import { useLanguageStore } from '../stores/useLanguageStore';
 
 interface UseEmailVerificationProps {
   userEmail?: string | null;
@@ -26,6 +27,7 @@ export function useEmailVerification({
   const [isSending, setIsSending] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
+  const { language } = useLanguageStore();
   const resendEmail = async () => {
     if (!userEmail || isSending) return;
 
@@ -34,9 +36,13 @@ export function useEmailVerification({
     try {
       const result = await resendAccountConfirmation(userEmail);
 
+      const message =
+        language === 'pt'
+          ? 'Email de confirmação enviado!'
+          : 'Confirmation email sent!';
       if (result.success) {
         setEmailSent(true);
-        toast.success('Email de confirmação enviado!');
+        toast.success(message);
         onSuccess?.();
       } else {
         toast.error(result.message);

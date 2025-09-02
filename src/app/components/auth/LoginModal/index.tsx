@@ -13,7 +13,7 @@ import { useLoginModal } from '@/app/stores/authStore';
 import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
-import { useTranslation } from '@/app/hooks/useTranslation';
+import { useTranslation } from '@/app/context/TranslationContext';
 import ForgotPasswordModal from '../ForgotPasswordModal';
 
 const LoginModal: React.FC = () => {
@@ -268,6 +268,7 @@ const LoginModal: React.FC = () => {
         onClose={handleClose}
         maxWidth="lg"
         showCloseButton={true}
+        setPr
       >
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">

@@ -16,7 +16,7 @@ import {
   FiAlertCircle,
   FiLoader,
 } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano, GiScrollQuill } from 'react-icons/gi';
+import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 import { BiBug } from 'react-icons/bi';
 import Link from 'next/link';
 import {
@@ -275,7 +275,7 @@ export default function ContactPageClient() {
                   key={index}
                   hover="lift"
                   clickable
-                  className={`classical-card p-6 cursor-pointer group transition-all duration-300 ${
+                  className={`classical-card !p-6 cursor-pointer group transition-all duration-300 ${
                     selectedCategory === option.category
                       ? 'ring-2 ring-brand-primary bg-brand-primary/5'
                       : ''
@@ -320,7 +320,7 @@ export default function ContactPageClient() {
           <div className="">
             <div className="grid lg:grid-cols-2 gap-12">
               {/* Contact Form */}
-              <AnimatedCard hover="lift" className="classical-card p-8">
+              <AnimatedCard hover="lift" className="classical-card !p-8">
                 <h3 className="text-2xl font-bold classical-title text-theme-primary mb-6">
                   {t('contact_jsx_h3_children_0__envie_sua_mensagem')}
                 </h3>
@@ -488,7 +488,7 @@ export default function ContactPageClient() {
 
               {/* Contact Info */}
               <div className="space-y-8">
-                <AnimatedCard hover="lift" className="classical-card p-8">
+                <AnimatedCard hover="lift" className="classical-card !p-8">
                   <h3 className="text-2xl font-bold classical-title text-theme-primary mb-6">
                     {t('contact_jsx_h3_children_0__informações_contato')}
                   </h3>
@@ -538,7 +538,7 @@ export default function ContactPageClient() {
                   </div>
                 </AnimatedCard>
 
-                <AnimatedCard hover="lift" className="classical-card p-8">
+                <AnimatedCard hover="lift" className="classical-card !p-8">
                   <h3 className="text-xl font-bold classical-title text-theme-primary mb-6">
                     {t('contact_jsx_h3_children_0__horário_atendimento')}
                   </h3>
@@ -580,7 +580,7 @@ export default function ContactPageClient() {
                   </div>
                 </AnimatedCard>
 
-                <AnimatedCard hover="lift" className="classical-card p-8">
+                <AnimatedCard hover="lift" className="classical-card !p-8">
                   <h3 className="text-xl font-bold classical-title text-theme-primary mb-6">
                     {t('contact_jsx_h3_children_0__outros_canais')}
                   </h3>
@@ -641,12 +641,6 @@ export default function ContactPageClient() {
         delay={1}
       >
         <FiMail />
-      </FloatingElement>
-      <FloatingElement
-        className="bottom-1/3 left-24 text-4xl text-brand-secondary/5"
-        delay={3}
-      >
-        <GiScrollQuill />
       </FloatingElement>
     </PageContainer>
   );

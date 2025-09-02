@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { FiAlertTriangle, FiTrash2 } from 'react-icons/fi';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 export default function ConfirmDeleteModal({
   isOpen,
@@ -16,6 +17,7 @@ export default function ConfirmDeleteModal({
   isLoading: boolean;
   annotationTitle: string;
 }) {
+  const { t } = useTranslation({ sections: ['pages/annotations'] });
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -51,17 +53,17 @@ export default function ConfirmDeleteModal({
           </div>
           <div>
             <h3 className="text-lg font-bold text-theme-primary">
-              Confirmar Exclusão
+              {t('delete_modal_confirm_deletion')}
             </h3>
             <p className="text-sm text-theme-secondary">
-              Esta ação não pode ser desfeita
+              {t('delete_modal_cannot_be_undone')}
             </p>
           </div>
         </div>
 
         <div className="mb-6">
           <p className="text-theme-secondary">
-            Tem certeza que deseja deletar a anotação{' '}
+            {t('delete_modal_confirm_question')}{' '}
             <strong>&quot;{annotationTitle}&quot;</strong>?
           </p>
         </div>
@@ -72,7 +74,7 @@ export default function ConfirmDeleteModal({
             disabled={isLoading}
             className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary hover:bg-theme-secondary transition-colors disabled:opacity-50"
           >
-            Cancelar
+            {t('delete_modal_cancel')}
           </button>
           <button
             onClick={onConfirm}
@@ -82,12 +84,12 @@ export default function ConfirmDeleteModal({
             {isLoading ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                <span>Deletando...</span>
+                <span>{t('delete_modal_deleting')}</span>
               </>
             ) : (
               <>
                 <FiTrash2 className="w-4 h-4" />
-                <span>Deletar</span>
+                <span>{t('delete_modal_delete')}</span>
               </>
             )}
           </button>

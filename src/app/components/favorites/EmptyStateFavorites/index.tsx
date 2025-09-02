@@ -257,8 +257,8 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
           {config.tip && (
             <div className="mt-8 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
               <div className="flex items-start space-x-3">
-                <div className="w-6 h-6 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center mt-0.5">
-                  <FiStar className="w-3 h-3 text-white" />
+                <div className="w-10 h-8 md:w-6 md:h-6 rounded-lg flex items-center justify-center mt-0.5">
+                  <FiStar className="w-5 h-5text-theme-primary" />
                 </div>
                 <div className="text-left">
                   <h4 className="font-semibold text-theme-primary text-sm mb-1">
