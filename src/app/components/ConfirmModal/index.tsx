@@ -125,10 +125,10 @@ export default function ConfirmModal({
             <div
               className={`
                 w-12 h-12 rounded-xl flex items-center justify-center
-                ${config.bgColor} ${config.borderColor} border
+                ${config?.bgColor} ${config?.borderColor} border
               `}
             >
-              <Icon className={`w-6 h-6 ${config.color}`} />
+              <Icon className={`w-6 h-6 ${config?.color}`} />
             </div>
             <div>
               <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
@@ -160,7 +160,7 @@ export default function ConfirmModal({
             </Button>
 
             <Button
-              variant={config.buttonVariant}
+              variant={config?.buttonVariant}
               onClick={handleConfirm}
               disabled={isLoadingState}
               leftIcon={

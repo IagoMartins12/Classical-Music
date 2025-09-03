@@ -43,6 +43,9 @@ import { useAuth } from '@/app/hooks/useAuth';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Checkbox from '@/app/components/Common/Checkbox';
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
+import { translateEpochName } from '@/app/utils/translations/epochTranslations';
+import { translateInstrument } from '@/app/utils/translations/instrumentsGenresTranslation';
+import { translateToneStatic } from '@/app/utils/translations/toneTranslation';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -89,7 +92,7 @@ const CreateWorkModal = ({
   editingWork,
 }: CreateWorkModalProps) => {
   const router = useRouter();
-  const { t } = useTranslation({ sections: ['pages/uploads'] });
+  const { t, language } = useTranslation({ sections: ['pages/uploads'] });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [scrapingUrl, setScrapingUrl] = useState(false);
   const [urlToScrape, setUrlToScrape] = useState('');
@@ -151,65 +154,81 @@ const CreateWorkModal = ({
     { value: 'INTERMEDIATE', label: t('difficulty_INTERMEDIATE') },
     { value: 'ADVANCED', label: t('difficulty_ADVANCED') },
   ];
+  const getTonalityOptions = (language: string) => {
+    const selectLabel =
+      language === 'en' ? 'Select a tonality' : 'Selecione uma tonalidade';
 
-  const tonalityOptions = [
-    { value: '', label: 'Selecione uma tonalidade' },
+    // Lista base das tonalidades em português (como estão armazenadas no banco)
+    const baseTonalities = [
+      // Tonalidades Maiores
+      'Do maior',
+      'Do# maior',
+      'Reb maior',
+      'Re maior',
+      'Re# maior',
+      'Mib maior',
+      'Mi maior',
+      'Fa maior',
+      'Fa# maior',
+      'Solb maior',
+      'Sol maior',
+      'Sol# maior',
+      'Lab maior',
+      'La maior',
+      'La# maior',
+      'Sib maior',
+      'Si maior',
 
-    // Tonalidades Maiores
-    { value: 'Do maior', label: 'Dó maior' },
-    { value: 'Do# maior', label: 'Dó# maior' },
-    { value: 'Reb maior', label: 'Réb maior' },
-    { value: 'Re maior', label: 'Ré maior' },
-    { value: 'Re# maior', label: 'Ré# maior' },
-    { value: 'Mib maior', label: 'Mib maior' },
-    { value: 'Mi maior', label: 'Mi maior' },
-    { value: 'Fa maior', label: 'Fá maior' },
-    { value: 'Fa# maior', label: 'Fá# maior' },
-    { value: 'Solb maior', label: 'Solb maior' },
-    { value: 'Sol maior', label: 'Sol maior' },
-    { value: 'Sol# maior', label: 'Sol# maior' },
-    { value: 'Lab maior', label: 'Láb maior' },
-    { value: 'La maior', label: 'Lá maior' },
-    { value: 'La# maior', label: 'Lá# maior' },
-    { value: 'Sib maior', label: 'Sib maior' },
-    { value: 'Si maior', label: 'Si maior' },
+      // Tonalidades Menores
+      'Do menor',
+      'Do# menor',
+      'Reb menor',
+      'Re menor',
+      'Re# menor',
+      'Mib menor',
+      'Mi menor',
+      'Fa menor',
+      'Fa# menor',
+      'Solb menor',
+      'Sol menor',
+      'Sol# menor',
+      'Lab menor',
+      'La menor',
+      'La# menor',
+      'Sib menor',
+      'Si menor',
 
-    // Tonalidades Menores
-    { value: 'Do menor', label: 'Dó menor' },
-    { value: 'Do# menor', label: 'Dó# menor' },
-    { value: 'Reb menor', label: 'Réb menor' },
-    { value: 'Re menor', label: 'Ré menor' },
-    { value: 'Re# menor', label: 'Ré# menor' },
-    { value: 'Mib menor', label: 'Mib menor' },
-    { value: 'Mi menor', label: 'Mi menor' },
-    { value: 'Fa menor', label: 'Fá menor' },
-    { value: 'Fa# menor', label: 'Fá# menor' },
-    { value: 'Solb menor', label: 'Solb menor' },
-    { value: 'Sol menor', label: 'Sol menor' },
-    { value: 'Sol# menor', label: 'Sol# menor' },
-    { value: 'Lab menor', label: 'Láb menor' },
-    { value: 'La menor', label: 'Lá menor' },
-    { value: 'La# menor', label: 'Lá# menor' },
-    { value: 'Sib menor', label: 'Sib menor' },
-    { value: 'Si menor', label: 'Si menor' },
+      // Modos
+      'Dórico',
+      'Frígio',
+      'Lídio',
+      'Mixolídio',
+      'Eólio',
+      'Lócrio',
 
-    // Modos
-    { value: 'Dorico', label: 'Dórico' },
-    { value: 'Frigio', label: 'Frígio' },
-    { value: 'Lidio', label: 'Lídio' },
-    { value: 'Mixolidio', label: 'Mixolídio' },
-    { value: 'Eolio', label: 'Eólio' },
-    { value: 'Locrio', label: 'Lócrio' },
+      // Outras categorias
+      'Atonal',
+      'Politonal',
+      'Modal',
+      'Cromática',
+      'Dodecafônica',
+      'Pentatônica',
+      'Não especificada',
+    ];
 
-    // Outras categorias
-    { value: 'Atonal', label: 'Atonal' },
-    { value: 'Politonal', label: 'Politonal' },
-    { value: 'Modal', label: 'Modal' },
-    { value: 'Cromática', label: 'Cromática' },
-    { value: 'Dodecafônica', label: 'Dodecafônica' },
-    { value: 'Pentatônica', label: 'Pentatônica' },
-    { value: 'Não especificada', label: 'Não especificada' },
-  ];
+    return [
+      { value: '', label: selectLabel },
+      ...baseTonalities.map((tonality) => ({
+        value: tonality, // Manter valor original para salvar no banco
+        label: translateToneStatic(tonality, language as 'pt' | 'en'),
+      })),
+    ];
+  };
+
+  const tonalityOptions = useMemo(
+    () => getTonalityOptions(language || 'pt'),
+    [language]
+  );
 
   const fieldRefs = {
     title: useRef<HTMLInputElement>(null),
@@ -284,6 +303,7 @@ const CreateWorkModal = ({
   const { validateForm } = useFormValidation(
     fieldRefs,
     requiredFields,
+    t,
     customValidations
   );
 
@@ -421,14 +441,17 @@ const CreateWorkModal = ({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erro no upload');
+        throw new Error(data.error || t('toast_work_upload_error'));
       }
 
       setMediaData((prev) => ({ ...prev, audioFile: file }));
-      toast.success('Áudio enviado com sucesso!');
+      toast.success(t('toast_success'), t('toast_work_audio_upload_success'));
     } catch (error) {
       console.error('Erro no upload de áudio:', error);
-      toast.error(error instanceof Error ? error.message : 'Erro no upload');
+      toast.error(
+        t('toast_error'),
+        error instanceof Error ? error.message : t('toast_work_upload_error')
+      );
     } finally {
       setUploadingAudio(false);
     }
@@ -450,18 +473,23 @@ const CreateWorkModal = ({
         body: formDataUpload,
       });
 
-      console.log('response', { response, workId });
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erro no upload');
+        throw new Error(data.error || t('toast_work_upload_error'));
       }
 
       setMediaData((prev) => ({ ...prev, videoAulaFile: file }));
-      toast.success('Video aula enviado com sucesso!');
+      toast.success(
+        t('toast_success'),
+        t('toast_work_video_lesson_upload_success')
+      );
     } catch (error) {
       console.error('Erro no upload de video aula:', error);
-      toast.error(error instanceof Error ? error.message : 'Erro no upload');
+      toast.error(
+        t('toast_error'),
+        error instanceof Error ? error.message : t('toast_work_upload_error')
+      );
     } finally {
       setUploadingVideoAula(false);
     }
@@ -588,7 +616,7 @@ const CreateWorkModal = ({
     if (!isEditingExternalSource) {
       // Verificar duplicata por URL se existe
       if (formData.imslpId && (await checkDuplicateByLink(formData.imslpId))) {
-        toast.error('Já existe uma obra com este link do IMSLP.');
+        toast.error(t('toast_error'), t('toast_work_duplicate_imslp'));
         return;
       }
 
@@ -598,7 +626,11 @@ const CreateWorkModal = ({
           composers.find((c) => c.id === formData.composerId)?.fullName ||
           'compositor selecionado';
         toast.error(
-          `Já existe uma obra com o título "${formData.title}" do compositor ${composerName}.`
+          t('toast_error'),
+          t('toast_work_duplicate_title_composer', {
+            title: formData.title,
+            composer: composerName,
+          })
         );
         return;
       }
@@ -609,6 +641,7 @@ const CreateWorkModal = ({
     const composerFullName =
       composers.find((c) => c.id === formData.composerId)?.fullName ||
       composers.find((c) => c.id === formData.composerId)?.name;
+
     try {
       const submitData = {
         ...formData,
@@ -661,14 +694,18 @@ const CreateWorkModal = ({
       if (response.ok) {
         router.refresh();
         onClose();
-        toast.success(data.message || 'Obra salva com sucesso!');
+        toast.success(
+          editingWork ? t('toast_work_updated') : t('toast_work_created'),
+          data.message || t('toast_work_save_success')
+        );
       } else {
-        throw new Error(data.error || 'Erro ao salvar obra');
+        throw new Error(data.error || t('toast_work_save_error'));
       }
     } catch (error) {
       console.error('Erro ao salvar obra:', error);
       toast.error(
-        error instanceof Error ? error.message : 'Erro ao salvar obra'
+        t('toast_error'),
+        error instanceof Error ? error.message : t('toast_work_save_error')
       );
     } finally {
       setIsSubmitting(false);
@@ -677,14 +714,12 @@ const CreateWorkModal = ({
 
   const handleScrapeUrl = async () => {
     if (!urlToScrape.trim()) {
-      toast.error('Digite uma URL para fazer scraping');
+      toast.error(t('toast_error'), t('toast_work_url_required'));
       return;
     }
 
     if (!urlToScrape.includes('imslp.org/wiki/')) {
-      toast.error(
-        'Por favor, insira um link válido do IMSLP (deve conter "imslp.org/wiki/")'
-      );
+      toast.error(t('toast_error'), t('toast_work_invalid_imslp_url'));
       return;
     }
 
@@ -692,7 +727,10 @@ const CreateWorkModal = ({
 
     const isDuplicate = await checkDuplicateByLink(cleanedUrl);
     if (isDuplicate) {
-      toast.error('Já existe uma obra com este link do IMSLP.');
+      toast.error(
+        t('toast_work_duplicate_found'),
+        t('toast_work_duplicate_imslp')
+      );
       return;
     }
 
@@ -715,13 +753,15 @@ const CreateWorkModal = ({
       if (response.ok) {
         setScrapingResult(data);
         await fillFromScrapingResult(data.data);
+        toast.success(t('toast_success'), t('toast_work_scraping_success'));
       } else {
-        throw new Error(data.error || 'Erro ao fazer scraping');
+        throw new Error(data.error || t('toast_work_scraping_error'));
       }
     } catch (error) {
       console.error('❌ Erro ao fazer scraping:', error);
       toast.error(
-        error instanceof Error ? error.message : 'Erro ao fazer scraping'
+        t('toast_error'),
+        error instanceof Error ? error.message : t('toast_work_scraping_error')
       );
     } finally {
       setScrapingUrl(false);
@@ -873,11 +913,12 @@ const CreateWorkModal = ({
       hasChanges={hasChanges}
       isProcessing={isSubmitting || duplicateCheck.loading}
       processName="criação de peça"
+      setPr
     >
       <AnimatedItem direction="scale" springType="bouncy" className="w-full">
         <div>
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
+          <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
                 <FiMusic className="w-5 h-5 text-theme-primary" />
@@ -1077,10 +1118,19 @@ const CreateWorkModal = ({
                     <Select
                       ref={fieldRefs.instrumentId}
                       options={[
-                        { value: '', label: 'Selecione um instrumento' },
+                        {
+                          value: '',
+                          label:
+                            language === 'pt'
+                              ? 'Selecione um instrumento'
+                              : 'Select an instrument',
+                        },
                         ...instruments.map((instrument) => ({
                           value: instrument.id,
-                          label: `${instrument.name}`,
+                          label: `${translateInstrument(
+                            instrument.name,
+                            language
+                          )}`,
                         })),
                       ]}
                       value={formData.instrumentId}
@@ -1098,10 +1148,16 @@ const CreateWorkModal = ({
                     <Select
                       ref={fieldRefs.epochId}
                       options={[
-                        { value: '', label: 'Selecione uma época' },
+                        {
+                          value: '',
+                          label:
+                            language === 'pt'
+                              ? 'Selecione uma época'
+                              : 'Select an epoch',
+                        },
                         ...epochs.map((epoch) => ({
                           value: epoch.id,
-                          label: epoch.name,
+                          label: translateEpochName(epoch.name, language),
                         })),
                       ]}
                       value={formData.epochId}
@@ -1129,7 +1185,7 @@ const CreateWorkModal = ({
 
               {/* 🆕 PARENT WORK (COLEÇÃO) SECTION */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0 mb-4">
                   <div className="flex items-center space-x-2">
                     <FiLayers className="w-4 h-4 text-theme-tertiary" />
                     <span className="text-sm font-medium text-theme-primary">
@@ -1250,7 +1306,7 @@ const CreateWorkModal = ({
                       onChange={(e) =>
                         handleInputChange('tone', e.target.value)
                       }
-                      placeholder="Selecione uma tonalidade"
+                      placeholder={t('tonality_select_placeholder')}
                     />
                   </div>
 

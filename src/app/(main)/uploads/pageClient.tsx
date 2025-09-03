@@ -735,10 +735,53 @@ const UploadsClient = ({
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
-          <AnimatedCard hover="none" className="classical-card p-6">
+          <AnimatedCard hover="none" className="classical-card  p-6">
+            {/* Tabs */}
+            <div className="flex bg-theme-secondary classical-scrollbar-mini rounded-xl p-1 overflow-x-auto mb-4">
+              <button
+                onClick={() => handleTabChange('all')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                  selectedType === 'all'
+                    ? 'bg-brand-primary bg-theme-tertiary text-theme-primary shadow-md'
+                    : 'text-theme-tertiary hover:text-theme-primary'
+                }`}
+              >
+                {t('tabs_all')} ({stats.totalCount})
+              </button>
+              <button
+                onClick={() => handleTabChange('composers')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                  selectedType === 'composers'
+                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                    : 'text-theme-tertiary hover:text-theme-primary'
+                }`}
+              >
+                {t('tabs_composers')} ({stats.composerCount})
+              </button>
+              <button
+                onClick={() => handleTabChange('works')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                  selectedType === 'works'
+                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                    : 'text-theme-tertiary hover:text-theme-primary'
+                }`}
+              >
+                {t('tabs_works')} ({stats.workCount})
+              </button>
+              <button
+                onClick={() => handleTabChange('scores')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                  selectedType === 'scores'
+                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                    : 'text-theme-tertiary hover:text-theme-primary'
+                }`}
+              >
+                {t('tabs_scores')} ({stats.scoreCount})
+              </button>
+            </div>
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               {/* Create Buttons */}
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-col md:flex-row flex-wrap gap-2">
                 <Button
                   variant="primary"
                   size="md"
@@ -783,7 +826,7 @@ const UploadsClient = ({
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className={`flex items-center space-x-2 px-4 py-3 rounded-lg  transition-all font-medium ${
+                    className={`flex items-center space-x-2 px-4 py-3 rounded-lg w-full justify-center transition-all font-medium ${
                       showFilters
                         ? 'bg-brand-primary text-theme-primary border-theme-primary border-2 border-brand-primary shadow-md'
                         : hasActiveFilters
@@ -817,51 +860,6 @@ const UploadsClient = ({
                 </div>
               </div>
             </div>
-
-            {/* Tabs */}
-            <div className="flex bg-theme-secondary rounded-xl p-1 overflow-x-auto mt-4">
-              <button
-                onClick={() => handleTabChange('all')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                  selectedType === 'all'
-                    ? 'bg-brand-primary bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary hover:text-theme-primary'
-                }`}
-              >
-                {t('tabs_all')} ({stats.totalCount})
-              </button>
-              <button
-                onClick={() => handleTabChange('composers')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                  selectedType === 'composers'
-                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary hover:text-theme-primary'
-                }`}
-              >
-                {t('tabs_composers')} ({stats.composerCount})
-              </button>
-              <button
-                onClick={() => handleTabChange('works')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                  selectedType === 'works'
-                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary hover:text-theme-primary'
-                }`}
-              >
-                {t('tabs_works')} ({stats.workCount})
-              </button>
-              <button
-                onClick={() => handleTabChange('scores')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                  selectedType === 'scores'
-                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary hover:text-theme-primary'
-                }`}
-              >
-                {t('tabs_scores')} ({stats.scoreCount})
-              </button>
-            </div>
-
             {/* Expanded Filters */}
             {showFilters && (
               <AnimatedItem direction="scale" springType="gentle">
@@ -906,7 +904,7 @@ const UploadsClient = ({
 
         {/* Filter Status */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+          <div className="flex justify-between gap-4 my-4">
             <div className="flex items-center space-x-4">
               <div className="text-theme-secondary text-sm">
                 <span className="font-medium text-theme-primary">
@@ -1378,9 +1376,9 @@ const UploadsClient = ({
           {isPending && (
             <AnimatedItem
               direction="scale"
-              className="absolute inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl"
+              className="absolute bottom-0 top-0 right-0 left-0 inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl"
             >
-              <div className="classical-card p-8 text-center">
+              <div className="classical-card flex flex-col items-center justify-center p-8 text-center">
                 <LoadingSpinner size="lg" />
                 <p className="text-theme-primary font-medium mt-4">
                   {t('loading_uploads')}

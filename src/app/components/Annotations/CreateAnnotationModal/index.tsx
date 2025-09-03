@@ -772,6 +772,7 @@ export default function CreateAnnotationModal({
 
   return (
     <Modal
+      setPr
       isOpen={isOpen}
       onClose={() => {
         if (isEditing && originalData) {

@@ -76,7 +76,7 @@ export class AIBiographyGenerator {
               content: prompt,
             },
           ],
-          max_tokens: 1200, // Reduzido para economizar
+          max_tokens: 2000, // Reduzido para economizar
           temperature: 0.7,
         }),
       });
@@ -138,107 +138,102 @@ export class AIBiographyGenerator {
 
       const prompt = this.createPrompt(request);
 
-      // Modelos disponíveis no Groq (atualizados)
+      // Modelos disponíveis no Groq (ATUALIZADOS para setembro 2025)
       const availableModels = [
-        'llama3-8b-8192',
-        'llama3-70b-8192',
-        'mixtral-8x7b-32768',
-        'gemma-7b-it',
+        // Modelos de produção (recomendados)
+        'llama-3.3-70b-versatile', // Substituto do llama3-70b-8192
+        'llama-3.1-8b-instant', // Substituto do llama3-8b-8192
+        'gemma2-9b-it',
+
+        // Modelos preview (opcionais, podem ser descontinuados)
+        'qwen/qwen3-32b',
+        'moonshotai/kimi-k2-instruct',
+        'deepseek-r1-distill-llama-70b',
       ];
 
-      const requestBody = {
-        model: availableModels[0], // Usar o primeiro modelo disponível
-        messages: [
-          {
-            role: 'system',
-            content:
-              'Você é um especialista em música clássica. Crie biografias precisas e informativas de compositores clássicos em português.',
-          },
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-        max_tokens: 1200,
-        temperature: 0.7,
-      };
+      let lastError: any = null;
 
-      console.log(
-        'Enviando request para Groq:',
-        JSON.stringify(requestBody, null, 2)
-      );
+      // Tentar cada modelo até encontrar um que funcione
+      for (const model of availableModels) {
+        try {
+          const requestBody = {
+            model: model,
+            messages: [
+              {
+                role: 'system',
+                content:
+                  'Você é um especialista em música clássica. Crie biografias precisas e informativas de compositores clássicos em português.',
+              },
+              {
+                role: 'user',
+                content: prompt,
+              },
+            ],
+            max_tokens: 2500,
+            temperature: 0.7,
+          };
 
-      const response = await fetch(this.API_ENDPOINTS.groq, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
+          console.log(`Tentando modelo: ${model}`);
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+          const response = await fetch(this.API_ENDPOINTS.groq, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
 
-        let errorMessage = `Groq API error: ${response.status}`;
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            lastError = errorData;
 
-        if (response.status === 400) {
-          errorMessage += ' - Bad request';
-          if (errorData.error?.message?.includes('decommissioned')) {
-            // Tentar com outro modelo
-            for (const model of availableModels.slice(1)) {
-              try {
-                const retryResponse = await fetch(this.API_ENDPOINTS.groq, {
-                  method: 'POST',
-                  headers: {
-                    Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    ...requestBody,
-                    model,
-                  }),
-                });
-
-                if (retryResponse.ok) {
-                  const retryData = await retryResponse.json();
-                  const biography =
-                    retryData.choices?.[0]?.message?.content?.trim();
-
-                  if (biography) {
-                    return { biography, success: true };
-                  }
-                }
-              } catch (retryError) {
-                console.log(
-                  `Modelo ${model} também falhou, tentando próximo...`,
-                  retryError
-                );
-              }
+            // Se o modelo foi descontinuado, tenta o próximo
+            if (
+              response.status === 400 &&
+              errorData.error?.message?.includes('decommissioned')
+            ) {
+              console.log(
+                `Modelo ${model} foi descontinuado, tentando próximo...`
+              );
+              continue;
             }
+
+            // Outros erros, tenta próximo modelo
+            console.log(
+              `Modelo ${model} falhou (${response.status}), tentando próximo...`
+            );
+            continue;
           }
-        }
 
-        if (errorData.error?.message) {
-          errorMessage += `: ${errorData.error.message}`;
-        }
+          const data = await response.json();
+          const biography = data.choices?.[0]?.message?.content?.trim();
 
-        console.error('Groq API error details:', errorData);
-        throw new Error(errorMessage);
+          if (biography) {
+            console.log(`Sucesso com modelo: ${model}`);
+            return {
+              biography,
+              success: true,
+            };
+          }
+
+          console.log(
+            `Modelo ${model} retornou biografia vazia, tentando próximo...`
+          );
+        } catch (modelError) {
+          console.log(`Erro com modelo ${model}:`, modelError);
+          lastError = modelError;
+          continue;
+        }
       }
 
-      const data = await response.json();
-      const biography = data.choices?.[0]?.message?.content?.trim();
+      // Se chegou até aqui, todos os modelos falharam
+      const errorMessage =
+        lastError?.error?.message ||
+        lastError?.message ||
+        'Todos os modelos do Groq falharam';
 
-      if (!biography) {
-        console.error('Resposta vazia do Groq:', data);
-        throw new Error('Biografia vazia retornada pela API');
-      }
-
-      return {
-        biography,
-        success: true,
-      };
+      throw new Error(`Groq API error: ${errorMessage}`);
     } catch (error) {
       console.error('Erro ao gerar biografia com Groq:', error);
       return {
@@ -322,14 +317,13 @@ export class AIBiographyGenerator {
     6. Curiosidades ou aspectos interessantes da vida pessoal
     
     Escreva em português brasileiro, de forma clara e envolvente.
-    Quero que me de entre 700 a 1200 caracteres (a depender da quantidade de informações disponiveis), no maximo. 
-    Faça com que a análise seja concluida antes dos 1200 caracteres.
+    Quero que Faça uma biografia rica e detalhada. 
+    Faça com que a análise seja concluida antes dos 2500 caracteres.
     Aja num contexto historico, não deixe parecer que é uma IA. 
     Evite especulações e foque em fatos históricos verificáveis.
     NÃO fale 'Em resumo' no final, para dar mais veracidade a bio.
     Se possivel, aplique um leia mais em: (e coloque um link da wikipedia da pessoa. Se nao tiver link da wikipedia, nao coloque nada)
-    Caso tenha um erro no cargo da pessoa (por exemplo, falar que é um compositor mas acabar sendo escritor, me retorne um 'Sem biografia disponivel')
-    A biografia deve ter entre 250-500 palavras.`;
+    Caso tenha um erro no cargo da pessoa ou caso nao ache informações sobre a pessoa, me retorne um 'Sem Biografia disponivel APENAS ISSO`;
 
     return prompt;
   }

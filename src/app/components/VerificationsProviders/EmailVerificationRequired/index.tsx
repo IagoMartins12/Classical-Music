@@ -20,10 +20,7 @@ import {
 import AnimatedMusicalNotes from '../../AnimatedMusicalNotes';
 import Button from '../../Common/Button';
 import { useEmailVerification } from '@/app/hooks/useEmailVerification';
-import {
-  useEmailRefresh,
-  useEmailRefreshSimple,
-} from '@/app/hooks/useEmailRefresh';
+import { useEmailRefresh } from '@/app/hooks/useEmailRefresh';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface EmailVerificationRequiredProps {

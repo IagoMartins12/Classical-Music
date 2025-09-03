@@ -299,6 +299,7 @@ const CreateComposerModal = ({
   const { validateForm } = useFormValidation(
     fieldRefs,
     requiredFields,
+    t,
     customValidations
   );
 
@@ -492,17 +493,22 @@ const CreateComposerModal = ({
           ...prev,
           portraitUrl: result.imageUrl,
         }));
-        toast.success('Sucesso', 'Imagem carregada com sucesso!');
+        toast.success(
+          t('toast_success'),
+          t('toast_composer_image_upload_success')
+        );
       } else {
-        throw new Error(result.message || 'Erro ao fazer upload');
+        throw new Error(
+          result.message || t('toast_composer_image_upload_error_message')
+        );
       }
     } catch (error) {
       console.error('Erro no upload:', error);
       toast.error(
-        'Erro no Upload',
+        t('toast_composer_image_upload_error'),
         error instanceof Error
           ? error.message
-          : 'Erro ao fazer upload da imagem'
+          : t('toast_composer_image_upload_error_message')
       );
     } finally {
       setIsUploadingImage(false);
@@ -521,7 +527,6 @@ const CreateComposerModal = ({
     setErrors(validationErrors);
     return isValid;
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -535,8 +540,8 @@ const CreateComposerModal = ({
         (await checkDuplicateByLink(formData.permLinkImslp, 'imslp'))
       ) {
         toast.error(
-          'Duplicata Encontrada',
-          'Já existe um compositor com este link do IMSLP.'
+          t('toast_composer_duplicate_found'),
+          t('toast_composer_duplicate_imslp')
         );
         return;
       }
@@ -546,8 +551,8 @@ const CreateComposerModal = ({
         (await checkDuplicateByLink(formData.imslpId, 'imslp'))
       ) {
         toast.error(
-          'Duplicata Encontrada',
-          'Já existe um compositor com este ID do IMSLP.'
+          t('toast_composer_duplicate_found'),
+          t('toast_composer_duplicate_imslp')
         );
         return;
       }
@@ -557,8 +562,8 @@ const CreateComposerModal = ({
         (await checkDuplicateByLink(formData.wikipediaLink, 'wikipedia'))
       ) {
         toast.error(
-          'Duplicata Encontrada',
-          'Já existe um compositor com este link da Wikipedia.'
+          t('toast_composer_duplicate_found'),
+          t('toast_composer_duplicate_wikipedia')
         );
         return;
       }
@@ -595,17 +600,21 @@ const CreateComposerModal = ({
         router.refresh();
         onClose();
         toast.success(
-          editingComposer ? 'Compositor Atualizado' : 'Compositor Criado',
-          data.message || 'Compositor salvo com sucesso!'
+          editingComposer
+            ? t('toast_composer_updated')
+            : t('toast_composer_created'),
+          data.message || t('toast_composer_save_success')
         );
       } else {
-        throw new Error(data.error || 'Erro ao salvar compositor');
+        throw new Error(data.error || t('toast_composer_save_error_message'));
       }
     } catch (error) {
       console.error('Erro ao salvar compositor:', error);
       toast.error(
-        'Erro ao Salvar',
-        error instanceof Error ? error.message : 'Erro ao salvar compositor'
+        t('toast_composer_save_error'),
+        error instanceof Error
+          ? error.message
+          : t('toast_composer_save_error_message')
       );
     } finally {
       setIsSubmitting(false);
@@ -614,14 +623,17 @@ const CreateComposerModal = ({
 
   const handleScrapeUrl = async () => {
     if (!urlToScrape.trim()) {
-      toast.warning('URL Necessária', 'Digite uma URL para fazer scraping');
+      toast.warning(
+        t('toast_composer_url_required'),
+        t('toast_composer_url_required_message')
+      );
       return;
     }
 
     if (dataSource === 'none') {
       toast.warning(
-        'Tipo de Fonte',
-        'Selecione o tipo de fonte (IMSLP ou Wikipedia)'
+        t('toast_composer_source_type_required'),
+        t('toast_composer_source_type_required_message')
       );
       return;
     }
@@ -630,15 +642,18 @@ const CreateComposerModal = ({
     if (isDuplicate) {
       const reasonText =
         duplicateCheck.reason === 'nome'
-          ? t('modal_composer_scraping_duplicate_reason_name')
+          ? t('toast_composer_duplicate_reason_name', {
+              name: `${duplicateCheck.composer?.fullName}`,
+            })
           : duplicateCheck.reason === 'link do IMSLP'
-          ? t('modal_composer_scraping_duplicate_reason_imslp')
-          : t('modal_composer_scraping_duplicate_reason_wikipedia');
+          ? t('toast_composer_duplicate_reason_imslp', {
+              name: `${duplicateCheck.composer?.fullName}`,
+            })
+          : t('toast_composer_duplicate_reason_wikipedia', {
+              name: `${duplicateCheck.composer?.fullName}`,
+            });
 
-      toast.error(
-        'Compositor Já Existe',
-        `Já existe um compositor com esse ${reasonText}: ${duplicateCheck.composer?.fullName}`
-      );
+      toast.error(t('toast_composer_duplicate_found'), reasonText);
       return;
     }
 
@@ -663,17 +678,23 @@ const CreateComposerModal = ({
         setScrapingResult(data);
         fillFromScrapingResult(data.data);
         toast.success(
-          'Dados Extraídos',
-          `Informações extraídas com ${data.data.dataCompleteness}% de completude`
+          t('toast_composer_data_extracted'),
+          t('toast_composer_data_extracted_message', {
+            completeness: data.data.dataCompleteness,
+          })
         );
       } else {
-        throw new Error(data.error || 'Erro ao fazer scraping');
+        throw new Error(
+          data.error || t('toast_composer_scraping_error_message')
+        );
       }
     } catch (error) {
       console.error('Erro ao fazer scraping:', error);
       toast.error(
-        'Erro no Scraping',
-        error instanceof Error ? error.message : 'Erro ao fazer scraping'
+        t('toast_composer_scraping_error'),
+        error instanceof Error
+          ? error.message
+          : t('toast_composer_scraping_error_message')
       );
     } finally {
       setScrapingUrl(false);
@@ -768,11 +789,12 @@ const CreateComposerModal = ({
       hasChanges={hasChanges}
       isProcessing={isSubmitting}
       processName="criação do compositor"
+      setPr
     >
       <AnimatedItem direction="scale" springType="bouncy" className="w-full">
         <div>
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
+          <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                 <FiUser className="w-5 h-5 text-theme-primary" />
@@ -1130,29 +1152,15 @@ const CreateComposerModal = ({
                   <span>{t('modal_composer_classification_title')}</span>
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 space-y-4 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_composer_classification_epoch')} *
-                    </label>
-                    <Select
-                      ref={fieldRefs.epochId}
-                      options={[
-                        {
-                          value: '',
-                          label: t(
-                            'modal_composer_classification_epoch_placeholder'
-                          ),
-                        },
-                        ...epochs.map((epoch) => ({
-                          value: epoch.id,
-                          label: translateEpochWithHook(epoch.name, t),
-                        })),
-                      ]}
-                      value={formData.epochId}
-                      onChange={(e) => {
-                        const selectedValue = e.target.value;
-                        const selectedOption = [
+                <div className=" space-y-6 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                        {t('modal_composer_classification_epoch')} *
+                      </label>
+                      <Select
+                        ref={fieldRefs.epochId}
+                        options={[
                           {
                             value: '',
                             label: t(
@@ -1161,54 +1169,70 @@ const CreateComposerModal = ({
                           },
                           ...epochs.map((epoch) => ({
                             value: epoch.id,
-                            label: epoch.name,
+                            label: translateEpochWithHook(epoch.name, t),
                           })),
-                        ].find((opt) => opt.value === selectedValue);
+                        ]}
+                        value={formData.epochId}
+                        onChange={(e) => {
+                          const selectedValue = e.target.value;
+                          const selectedOption = [
+                            {
+                              value: '',
+                              label: t(
+                                'modal_composer_classification_epoch_placeholder'
+                              ),
+                            },
+                            ...epochs.map((epoch) => ({
+                              value: epoch.id,
+                              label: epoch.name,
+                            })),
+                          ].find((opt) => opt.value === selectedValue);
 
-                        const selectedLabel = selectedOption?.label;
+                          const selectedLabel = selectedOption?.label;
 
-                        handleInputChange('epochId', selectedValue);
-                        handleInputChange(
-                          'epochName',
-                          selectedLabel ?? 'Desconhecido'
-                        );
-                      }}
-                      error={errors.epochId}
-                    />
+                          handleInputChange('epochId', selectedValue);
+                          handleInputChange(
+                            'epochName',
+                            selectedLabel ?? 'Desconhecido'
+                          );
+                        }}
+                        error={errors.epochId}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                        {t('modal_composer_classification_primary_role')} *
+                      </label>
+                      <Select
+                        ref={fieldRefs.primaryRoleId}
+                        options={[
+                          {
+                            value: '',
+                            label: t(
+                              'modal_composer_classification_primary_role_placeholder'
+                            ),
+                          },
+                          ...roles.map((role) => ({
+                            value: role.id,
+                            label: translateRole(role.name, language || 'pt'),
+                          })),
+                        ]}
+                        value={formData.primaryRoleId}
+                        onChange={(e) =>
+                          handleInputChange('primaryRoleId', e.target.value)
+                        }
+                        defaultValue={'Compositor'}
+                        error={errors.primaryRoleId}
+                      />
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_composer_classification_primary_role')} *
-                    </label>
-                    <Select
-                      ref={fieldRefs.primaryRoleId}
-                      options={[
-                        {
-                          value: '',
-                          label: t(
-                            'modal_composer_classification_primary_role_placeholder'
-                          ),
-                        },
-                        ...roles.map((role) => ({
-                          value: role.id,
-                          label: translateRole(role.name, language || 'pt'),
-                        })),
-                      ]}
-                      value={formData.primaryRoleId}
-                      onChange={(e) =>
-                        handleInputChange('primaryRoleId', e.target.value)
-                      }
-                      defaultValue={'Compositor'}
-                      error={errors.primaryRoleId}
-                    />
-                  </div>
-
-                  <div className="md:col-span-2 space-x-4">
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                  <div className="md:col-span-2 s">
+                    <label className="block text-sm font-medium text-theme-tertiary mb-4">
                       {t('modal_composer_classification_secondary_roles')}
                     </label>
-                    <div className="grid grid-cols-2 md:grid-cols-3  gap-2">
+                    <div className="flex flex-wrap gap-6">
                       {filteredSecondaryRoles.map((role) => (
                         <div
                           key={role.id}

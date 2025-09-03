@@ -56,7 +56,6 @@ const OnboardingModal: React.FC = () => {
   const { t } = useTranslation({ sections: ['components/onboarding'] });
 
   const [options, setOptions] = useState<OnboardingOptions | null>(null);
-  const [isLoadingOptions, setIsLoadingOptions] = useState(false);
 
   // 🆕 Estado para erros de validação
   const [validationErrors, setValidationErrors] = useState<{
@@ -106,7 +105,6 @@ const OnboardingModal: React.FC = () => {
   }, [data.phone, phoneValidation.showError, phoneValidation.error]);
 
   const loadOptions = async () => {
-    setIsLoadingOptions(true);
     try {
       const result = await getOnboardingOptions();
       if (result.success && result.data) {
@@ -117,8 +115,6 @@ const OnboardingModal: React.FC = () => {
     } catch (error) {
       console.error('Error loading onboarding options:', error);
       toast.error(t('onboarding_modal_error_loading'));
-    } finally {
-      setIsLoadingOptions(false);
     }
   };
 
@@ -170,11 +166,11 @@ const OnboardingModal: React.FC = () => {
     }
   };
 
-  const handleSkip = () => {
-    console.log('⏭️ Pulando onboarding (salvando progresso)');
-    close();
-    toast.success(t('onboarding_modal_progress_saved'));
-  };
+  // const handleSkip = () => {
+  //   console.log('⏭️ Pulando onboarding (salvando progresso)');
+  //   close();
+  //   toast.success(t('onboarding_modal_progress_saved'));
+  // };
 
   const handleClose = () => {
     console.log('❌ Fechando onboarding');

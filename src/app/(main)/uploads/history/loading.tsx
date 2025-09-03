@@ -128,7 +128,7 @@ function HistoryRecordSkeleton({ index }: { index: number }) {
     <div className="relative flex items-start space-x-4 pb-6">
       {/* Timeline Dot */}
       <div
-        className={`relative z-10 w-12 h-12 bg-gradient-to-br ${actionType.gradient}/20 rounded-full flex items-center justify-center shadow-lg`}
+        className={`relative  z-10 w-12 h-12 bg-gradient-to-br ${actionType.gradient}/20 rounded-full flex items-center justify-center shadow-lg`}
       >
         {actionType.icon}
       </div>

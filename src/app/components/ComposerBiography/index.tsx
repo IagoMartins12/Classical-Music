@@ -81,7 +81,7 @@ export default function ComposerBiography({
         </div>
 
         {/* Indicadores de progresso */}
-        <div className="flex items-center justify-center space-x-6 pt-4">
+        {/* <div className="flex items-center justify-center space-x-6 pt-4">
           <div className="flex items-center space-x-2 text-accent-green">
             <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
             <span className="text-xs">
@@ -94,7 +94,7 @@ export default function ComposerBiography({
               <span className="text-xs">Translating...</span>
             </div>
           )}
-        </div>
+        </div> */}
       </div>
     );
   }
@@ -102,22 +102,20 @@ export default function ComposerBiography({
   // Mostrar erro apenas se não conseguiu gerar E não tem biografia
   if (error && !displayBio) {
     return (
-      <div className="rounded-2xl p-6 flex justify-center shadow-theme-medium">
-        <div className="flex flex-col gap-4 items-center space-x-4">
+      <div className="rounded-2xl p-6 flex justify-center">
+        <div className="flex flex-col gap-4 justify-center items-center space-x-4">
           <div className="w-10 h-10 bg-accent-red/20 border border-accent-red/40 rounded-xl flex items-center justify-center flex-shrink-0">
             <FiAlertCircle className="w-5 h-5 text-accent-red" />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 items-center justify-center">
             <div className="flex items-center space-x-2 mb-2">
               <FiX className="w-4 h-4 text-accent-red" />
               <p className="text-accent-red font-semibold">
                 {t('error_generating_bio')}
               </p>
             </div>
-            <p className="text-accent-red/80 text-sm mb-4 leading-relaxed">
-              {error}
-            </p>
-            <div className="flex gap-2">
+
+            <div className="flex justify-center mt-4 gap-2">
               <button
                 onClick={handleRetry}
                 className="btn-classical-secondary flex items-center space-x-2 group"
@@ -135,7 +133,7 @@ export default function ComposerBiography({
   return (
     <div className="max-w-none relative">
       {/* ✅ Badge de informações sobre a biografia com refresh manual */}
-      {(metadata?.isGenerated || metadata?.isTranslated) && (
+      {/* {(metadata?.isGenerated || metadata?.isTranslated) && (
         <div className="flex items-center justify-between mb-6 p-3 bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-xl">
           <div className="flex items-center space-x-2">
             <div className="w-6 h-6 bg-accent-green/20 border border-accent-green/40 rounded-lg flex items-center justify-center">
@@ -155,7 +153,6 @@ export default function ComposerBiography({
             </span>
           </div>
 
-          {/* ✅ Botão de refresh manual opcional */}
           <button
             onClick={handleManualRefresh}
             disabled={isGenerating}
@@ -169,7 +166,7 @@ export default function ComposerBiography({
             />
           </button>
         </div>
-      )}
+      )} */}
 
       {/* Warning se houver fallback */}
       {warning && (

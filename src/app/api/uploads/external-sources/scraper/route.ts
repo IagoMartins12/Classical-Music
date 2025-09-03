@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { findNationalityByText } from '@/app/data/nationalities';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 interface ScrapedComposerData {
   name: string;
@@ -37,23 +38,30 @@ export async function POST(request: NextRequest) {
     // Determinar o tipo de fonte baseado na URL
     const isIMSLP = url.includes('imslp.org');
     const isWikipedia = url.includes('wikipedia.org');
+    const language = await getServerLanguageStatic();
 
     // Validação melhorada
     if (source === 'imslp' && !isIMSLP) {
+      const message =
+        language === 'pt'
+          ? 'Por favor, insira um link válido do IMSLP. Exemplo: https://imslp.org/wiki/Category:Compositor,_Nome'
+          : 'Please insert a valid IMSLP link. Example: https://imslp.org/wiki/Category:Composer,_Name';
       return NextResponse.json(
         {
-          error:
-            'Por favor, insira um link válido do IMSLP. Exemplo: https://imslp.org/wiki/Category:Compositor,_Nome',
+          error: message,
         },
         { status: 400 }
       );
     }
 
     if (source === 'wikipedia' && !isWikipedia) {
+      const message =
+        language === 'pt'
+          ? 'Por favor, insira um link válido da Wikipedia. Exemplo: https://wikipedia.org/wiki/Nome_do_Compositor'
+          : 'Please insert a valid Wikipedia link. Example: https://en.wikipedia.org/wiki/Composer_Name';
       return NextResponse.json(
         {
-          error:
-            'Por favor, insira um link válido da Wikipedia. Exemplo: https://en.wikipedia.org/wiki/Nome_do_Compositor',
+          error: message,
         },
         { status: 400 }
       );

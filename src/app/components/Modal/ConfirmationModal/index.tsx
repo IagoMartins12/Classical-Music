@@ -121,7 +121,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         </div>
 
         {/* Informações adicionais para processo em andamento */}
-        {config.type === 'ongoing-process' && (
+        {config?.type === 'ongoing-process' && (
           <div className="bg-accent-red/10 border border-accent-red/20 rounded-lg p-4 mb-6">
             <div className="flex items-start space-x-3">
               <div className="w-5 h-5 bg-accent-red rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -132,7 +132,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                   {t('process_active_title')}
                 </h4>
                 <p className="text-sm text-accent-red/80">
-                  {config.processName ? (
+                  {config?.processName ? (
                     <>
                       {t('process_active_description').replace(
                         '{processName}',
@@ -149,7 +149,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         )}
 
         {/* Informações adicionais para alterações não salvas */}
-        {config.type === 'unsaved-changes' && (
+        {config?.type === 'unsaved-changes' && (
           <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4 mb-6">
             <div className="flex items-start space-x-3">
               <FiSave className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
@@ -165,7 +165,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           </div>
         )}
 
-        {config.type === 'general-no-verification' && (
+        {config?.type === 'general-no-verification' && (
           <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4 mb-6">
             <div className="flex items-start space-x-3">
               <FiSave className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />

@@ -233,12 +233,12 @@ export const LearningCard = ({
         });
       }
       setShowDeleteModal(false);
-    } catch (error) {
+    } catch {
       const message =
         language === 'pt'
           ? 'Erro ao remover. Tente novamente.'
-          : 'Work removed from your learned list!';
-      toast.error('Error removing. Please try again.');
+          : 'Error removing. Please try again.';
+      toast.error(message);
     } finally {
       setIsDeleting(false);
     }

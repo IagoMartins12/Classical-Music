@@ -620,7 +620,7 @@ const HistoryClient = ({
                     <div className="relative flex items-start space-x-4 pb-6">
                       {/* Timeline Dot with Action-specific Colors */}
                       <div
-                        className={`relative z-10 w-12 h-12 bg-gradient-to-br ${getTimelineDotColor(
+                        className={`relative hidden md:flex  z-10 w-12 h-12 bg-gradient-to-br ${getTimelineDotColor(
                           record.action,
                           record.changes
                         )} rounded-full flex items-center justify-center shadow-lg`}
@@ -718,7 +718,7 @@ const HistoryClient = ({
                             {/* Basic changes summary */}
                             {record.changes &&
                               !expandedItems.has(record.id) && (
-                                <div className="text-xs text-theme-tertiary">
+                                <div className="text-xs text-theme-tertiary break-words">
                                   {formatChangesForDisplay(record.changes)}
                                 </div>
                               )}

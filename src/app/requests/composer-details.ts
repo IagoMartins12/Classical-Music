@@ -7,6 +7,7 @@ export interface ComposerDetails {
   name: string;
   fullName: string;
 
+  videoUrl?: string;
   // 🆕 New name properties
   alternativeNames?: string;
 
@@ -368,7 +369,7 @@ const getCachedComposerData = unstable_cache(
 
           // 🆕 New name properties
           alternativeNames: true,
-
+          videoUrl: true,
           // Enhanced date properties
           birthDate: true,
           deathDate: true,
@@ -451,6 +452,7 @@ const getCachedComposerData = unstable_cache(
         // Enhanced date properties
         birthDate: composer.birthDate || undefined,
         deathDate: composer.deathDate || undefined,
+        videoUrl: composer.videoUrl || undefined,
 
         portraitUrl: composer.portraitUrl || undefined,
         permLinkImslp: composer.permLinkImslp || undefined,

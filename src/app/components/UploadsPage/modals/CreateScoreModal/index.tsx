@@ -222,33 +222,34 @@ const CreateScoreModal = ({
   };
 
   const requiredFields = ['workId', 'title', 'downloadUrl'];
+  // Função de validação personalizada para upload mode
   const customValidations = {
     ...scoreModalValidations,
     uploadMode: () => {
       if (!editingScore && !uploadMode) {
-        return t('modal_score_upload_mode_error');
+        return t('toast_score_upload_mode_required');
       }
       return null;
     },
     downloadUrl: (value: any) => {
       if (!editingScore && !value?.trim()) {
         if (!uploadMode) {
-          return 'Escolha um modo de upload primeiro';
+          return t('toast_score_upload_mode_required');
         }
         if (uploadMode === 'url') {
-          return 'URL do arquivo é obrigatória';
+          return t('toast_score_url_required');
         }
         if (uploadMode === 'file' && !selectedFile) {
-          return 'Faça upload de um arquivo';
+          return t('toast_score_file_required');
         }
       }
       return null;
     },
   };
-
   const { validateForm } = useFormValidation(
     fieldRefs,
     requiredFields,
+    t,
     customValidations
   );
 
@@ -467,7 +468,6 @@ const CreateScoreModal = ({
   };
 
   const toast = useToast();
-
   const handleFileUpload = async (file: File) => {
     setUploadingFile(true);
     setThumbnailError(null);
@@ -477,7 +477,10 @@ const CreateScoreModal = ({
       const validation = await validateUploadedFile(file);
 
       if (!validation.isValid) {
-        toast.error(validation.error || 'Arquivo inválido');
+        toast.error(
+          t('toast_error'),
+          validation.error || t('toast_score_file_invalid')
+        );
         return;
       }
 
@@ -485,7 +488,7 @@ const CreateScoreModal = ({
       setIsLargePDF(isLarge);
 
       if (isLarge) {
-        toast.info('📄 PDF grande detectado - processo pode ser mais lento');
+        toast.info(t('toast_info'), t('toast_score_pdf_large_detected'));
       }
 
       const tempId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -501,7 +504,7 @@ const CreateScoreModal = ({
       });
 
       if (!response.ok) {
-        throw new Error('Erro no upload do arquivo');
+        throw new Error(t('toast_score_file_upload_error'));
       }
 
       const data = await response.json();
@@ -524,14 +527,17 @@ const CreateScoreModal = ({
             setGeneratedThumbnail(thumbnailUrl);
             setThumbnailGenerated(true);
 
-            toast.success(t('modal_score_file_preview_success'));
+            toast.success(
+              t('toast_success'),
+              t('modal_score_file_preview_success')
+            );
           } else {
             setThumbnailError(thumbnailResult.error || 'Erro desconhecido');
-            toast.info('⚠️ Preview não disponível - usando placeholder');
+            toast.info(t('toast_info'), t('toast_score_preview_not_available'));
           }
         } catch {
           setThumbnailError('Erro ao gerar preview');
-          toast.error('⚠️ Erro ao gerar preview da partitura');
+          toast.error(t('toast_error'), t('toast_score_preview_error'));
         } finally {
           setGeneratingThumbnail(false);
         }
@@ -558,7 +564,7 @@ const CreateScoreModal = ({
       }
     } catch {
       console.error('❌ Erro no upload:');
-      toast.error('Erro ao fazer upload do arquivo');
+      toast.error(t('toast_error'), t('toast_score_file_upload_error'));
       setPdfValidation({
         isValidating: false,
         isValid: false,
@@ -624,14 +630,18 @@ const CreateScoreModal = ({
       if (response.ok) {
         router.refresh();
         onClose();
-        toast.success(data.message || 'Partitura salva com sucesso!');
+        toast.success(
+          editingScore ? t('toast_score_updated') : t('toast_score_created'),
+          data.message || t('toast_score_save_success')
+        );
       } else {
-        throw new Error(data.error || 'Erro ao salvar partitura');
+        throw new Error(data.error || t('toast_score_save_error'));
       }
     } catch (error) {
       console.error('Erro ao salvar partitura:', error);
       toast.error(
-        error instanceof Error ? error.message : 'Erro ao salvar partitura'
+        t('toast_error'),
+        error instanceof Error ? error.message : t('toast_score_save_error')
       );
     } finally {
       setIsSubmitting(false);
@@ -668,11 +678,12 @@ const CreateScoreModal = ({
       hasChanges={hasChanges}
       isProcessing={isSubmitting}
       processName="criação de partitura"
+      setPr
     >
       <AnimatedItem direction="scale" springType="bouncy" className="w-full">
         <div>
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
+          <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                 <FiFile className="w-5 h-5 text-theme-primary" />
@@ -690,13 +701,10 @@ const CreateScoreModal = ({
                 </p>
               </div>
             </div>
-            <div className="px-3 py-1 bg-accent-purple/20 text-accent-purple rounded-full text-xs font-medium">
-              {t('modal_score_badge_custom')}
-            </div>
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="px-0 py-4 md:p-6">
             <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               {/* Upload Mode Selection */}
               {!editingScore && (

@@ -1,4 +1,4 @@
-// app/utils/formUtils.ts - VERSÃO MELHORADA
+// app/utils/formUtils.ts - VERSÃO TRADUZIDA
 
 export interface FormFieldRef {
   current:
@@ -67,11 +67,13 @@ export const scrollToFirstError = (
  * @param formData - Dados do formulário
  * @param requiredFields - Array com os nomes dos campos obrigatórios
  * @param customValidations - Objeto com validações customizadas
+ * @param t - Função de tradução
  * @returns Objeto com os erros encontrados
  */
 export const validateRequiredFields = (
   formData: Record<string, any>,
   requiredFields: string[],
+  t: (key: string, params?: any) => string,
   customValidations?: Record<string, (value: any) => string | null>
 ): Record<string, string> => {
   const errors: Record<string, string> = {};
@@ -80,7 +82,9 @@ export const validateRequiredFields = (
   requiredFields.forEach((field) => {
     const value = formData[field];
     if (!value || (typeof value === 'string' && !value.trim())) {
-      errors[field] = `${getFieldLabel(field)} é obrigatório`;
+      errors[field] = t('form_field_required', {
+        field: getFieldLabel(field, t),
+      });
     }
   });
 
@@ -101,40 +105,53 @@ export const validateRequiredFields = (
 };
 
 /**
- * Função para obter o label amigável de um campo
+ * Função para obter o label amigável de um campo - TRADUZIDA
  * @param fieldName - Nome do campo
+ * @param t - Função de tradução
  * @returns Label amigável
  */
-export const getFieldLabel = (fieldName: string): string => {
-  const labels: Record<string, string> = {
-    name: 'Nome',
-    fullName: 'Nome completo',
-    title: 'Título',
-    epochId: 'Época',
-    primaryRoleId: 'Papel principal',
-    composerId: 'Compositor',
-    instrumentId: 'Instrumento',
-    birthDate: 'Data de nascimento',
-    deathDate: 'Data de morte',
-    nationality: 'Nacionalidade',
-    content: 'Conteúdo',
-    description: 'Descrição',
-    category: 'Categoria',
-    difficulty: 'Dificuldade',
-    scope: 'Abrangência',
-    workId: 'Obra',
-    measureStart: 'Compasso inicial',
-    measureEnd: 'Compasso final',
-    movement: 'Movimento',
-    section: 'Seção',
-    email: 'E-mail',
-    password: 'Senha',
-    confirmPassword: 'Confirmar senha',
-    downloadUrl: 'URL do arquivo',
-    uploadMode: 'Modo de upload',
-  };
+export const getFieldLabel = (
+  fieldName: string,
+  t: (key: string) => string
+): string => {
+  const labelKey = `form_field_label_${fieldName}`;
 
-  return labels[fieldName] || fieldName;
+  // Tentar buscar a tradução específica, se não encontrar, usar o nome do campo
+  try {
+    return t(labelKey);
+  } catch {
+    // Fallback para labels hardcoded se a tradução não existir
+    const fallbackLabels: Record<string, string> = {
+      name: 'Nome',
+      fullName: 'Nome completo',
+      title: 'Título',
+      epochId: 'Época',
+      primaryRoleId: 'Papel principal',
+      composerId: 'Compositor',
+      instrumentId: 'Instrumento',
+      birthDate: 'Data de nascimento',
+      deathDate: 'Data de morte',
+      nationality: 'Nacionalidade',
+      content: 'Conteúdo',
+      description: 'Descrição',
+      category: 'Categoria',
+      difficulty: 'Dificuldade',
+      scope: 'Abrangência',
+      workId: 'Obra',
+      measureStart: 'Compasso inicial',
+      measureEnd: 'Compasso final',
+      movement: 'Movimento',
+      section: 'Seção',
+      email: 'E-mail',
+      password: 'Senha',
+      confirmPassword: 'Confirmar senha',
+      downloadUrl: 'URL do arquivo',
+      uploadMode: 'Modo de upload',
+      parentWorkId: 'Obra da Coleção',
+    };
+
+    return fallbackLabels[fieldName] || fieldName;
+  }
 };
 
 /**
@@ -367,20 +384,23 @@ export const isValidUrl = (url: string): boolean => {
 };
 
 /**
- * Hook personalizado para gerenciar validação de formulário - MELHORADO
+ * Hook personalizado para gerenciar validação de formulário - TRADUZIDO
  * @param fieldRefs - Referências dos campos
  * @param requiredFields - Campos obrigatórios
  * @param customValidations - Validações customizadas
+ * @param t - Função de tradução
  */
 export const useFormValidation = (
   fieldRefs: FormFieldRefs,
   requiredFields: string[],
+  t: (key: string, params?: any) => string,
   customValidations?: Record<string, (value: any) => string | null>
 ) => {
   const validateForm = (formData: Record<string, any>) => {
     const errors = validateRequiredFields(
       formData,
       requiredFields,
+      t,
       customValidations
     );
 
@@ -440,11 +460,13 @@ export const calculateDataCompleteness = (
  * Função para formatar data para exibição
  * @param dateString - String da data (pode ser yyyy-mm-dd ou dd/mm/yyyy)
  * @param format - Formato de saída
+ * @param t - Função de tradução
  * @returns Data formatada
  */
 export const formatDate = (
   dateString: string,
-  format: 'short' | 'long' | 'relative' = 'short'
+  format: 'short' | 'long' | 'relative' = 'short',
+  t?: (key: string, params?: any) => string
 ): string => {
   if (!dateString) return '';
 
@@ -477,16 +499,26 @@ export const formatDate = (
       });
 
     case 'relative':
+      if (!t) return date.toLocaleDateString('pt-BR');
+
       const now = new Date();
       const diffTime = Math.abs(now.getTime() - date.getTime());
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-      if (diffDays === 0) return 'Hoje';
-      if (diffDays === 1) return 'Ontem';
-      if (diffDays < 7) return `${diffDays} dias atrás`;
-      if (diffDays < 30) return `${Math.floor(diffDays / 7)} semanas atrás`;
-      if (diffDays < 365) return `${Math.floor(diffDays / 30)} meses atrás`;
-      return `${Math.floor(diffDays / 365)} anos atrás`;
+      if (diffDays === 0) return t('date_relative_today');
+      if (diffDays === 1) return t('date_relative_yesterday');
+      if (diffDays < 7) return t('date_relative_days_ago', { days: diffDays });
+      if (diffDays < 30)
+        return t('date_relative_weeks_ago', {
+          weeks: Math.floor(diffDays / 7),
+        });
+      if (diffDays < 365)
+        return t('date_relative_months_ago', {
+          months: Math.floor(diffDays / 30),
+        });
+      return t('date_relative_years_ago', {
+        years: Math.floor(diffDays / 365),
+      });
 
     default:
       return date.toLocaleDateString('pt-BR');
@@ -531,11 +563,117 @@ export const isValidDateRange = (
   return death > birth;
 };
 
-// 🆕 VALIDAÇÕES CUSTOMIZADAS PARA MODALS
+// 🆕 VALIDAÇÕES CUSTOMIZADAS PARA MODALS - TRADUZIDAS
 
 /**
- * Validações customizadas para Score ModalisValidDateR
+ * Função para criar validações customizadas para Score Modal - TRADUZIDA
  */
+export const getScoreModalValidations = (
+  t: (key: string, params?: any) => string
+) => ({
+  workId: (value: any) => {
+    if (!value || !value.trim()) {
+      return t('form_validation_work_required');
+    }
+    return null;
+  },
+  title: (value: any) => {
+    if (!value || !value.trim()) {
+      return t('form_validation_title_required');
+    }
+    if (value.length < 3) {
+      return t('form_validation_title_min_length', { min: 3 });
+    }
+    return null;
+  },
+  downloadUrl: (value: any) => {
+    if (!value || !value.trim()) {
+      return t('form_validation_file_url_required');
+    }
+    return null;
+  },
+  uploadMode: (value: any, formData?: any) => {
+    if (!value && !formData?.editingScore) {
+      return t('form_validation_upload_mode_required');
+    }
+    return null;
+  },
+});
+
+/**
+ * Função para criar validações customizadas para Composer Modal - TRADUZIDA
+ */
+export const getComposerModalValidations = (
+  t: (key: string, params?: any) => string
+) => ({
+  name: (value: any) => {
+    if (!value || !value.trim()) {
+      return t('form_validation_name_required');
+    }
+    if (value.length < 2) {
+      return t('form_validation_name_min_length', { min: 2 });
+    }
+    return null;
+  },
+  fullName: (value: any) => {
+    if (!value || !value.trim()) {
+      return t('form_validation_full_name_required');
+    }
+    if (value.length < 3) {
+      return t('form_validation_full_name_min_length', { min: 3 });
+    }
+    return null;
+  },
+  epochId: (value: any) => {
+    if (!value || !value.trim()) {
+      return t('form_validation_epoch_required');
+    }
+    return null;
+  },
+  primaryRoleId: (value: any) => {
+    if (!value || !value.trim()) {
+      return t('form_validation_primary_role_required');
+    }
+    return null;
+  },
+});
+
+/**
+ * Função para criar validações customizadas para Work Modal - TRADUZIDA
+ */
+export const getWorkModalValidations = (
+  t: (key: string, params?: any) => string
+) => ({
+  title: (value: any) => {
+    if (!value || !value.trim()) {
+      return t('form_validation_title_required');
+    }
+    if (value.length < 3) {
+      return t('form_validation_title_min_length', { min: 3 });
+    }
+    return null;
+  },
+  composerId: (value: any) => {
+    if (!value || !value.trim()) {
+      return t('form_validation_composer_required');
+    }
+    return null;
+  },
+  instrumentId: (value: any) => {
+    if (!value || !value.trim()) {
+      return t('form_validation_instrument_required');
+    }
+    return null;
+  },
+  epochId: (value: any) => {
+    if (!value || !value.trim()) {
+      return t('form_validation_epoch_required');
+    }
+    return null;
+  },
+});
+
+// Mantendo as validações antigas para compatibilidade
 export const scoreModalValidations = {
   workId: (value: any) => {
     if (!value || !value.trim()) {
@@ -566,9 +704,6 @@ export const scoreModalValidations = {
   },
 };
 
-/**
- * Validações customizadas para Composer Modal
- */
 export const composerModalValidations = {
   name: (value: any) => {
     if (!value || !value.trim()) {
@@ -602,9 +737,6 @@ export const composerModalValidations = {
   },
 };
 
-/**
- * Validações customizadas para Work Modal
- */
 export const workModalValidations = {
   title: (value: any) => {
     if (!value || !value.trim()) {

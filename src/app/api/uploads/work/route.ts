@@ -5,6 +5,7 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateUploadsCache } from '@/app/requests/upload';
 import { logWorkCreate } from '@/app/utils/historyUtils';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 export async function POST(request: NextRequest) {
   try {
@@ -170,12 +171,14 @@ export async function POST(request: NextRequest) {
     // Invalidar cache
     await revalidateUploadsCache(userId);
 
-    console.log(
-      `✅ [WORK-CREATE] Obra "${work.title}" criada com mídia por ${session.user.email}`
-    );
+    const language = await getServerLanguageStatic();
+    const message =
+      language === 'pt'
+        ? 'Compositor criada com sucesso!'
+        : 'Work created successfully!';
 
     return NextResponse.json({
-      message: 'Obra criada com sucesso!',
+      message,
       work,
     });
   } catch (error) {

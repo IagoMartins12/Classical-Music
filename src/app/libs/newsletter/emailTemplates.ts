@@ -108,7 +108,7 @@ function getPremiumOpusAtlasLayout(
     <meta name="supported-color-schemes" content="light dark">
     <meta name="format-detection" content="telephone=no">
     <meta name="x-apple-disable-message-reformatting">
-    <title>{{subject}} - ${config.BRAND_NAME}</title>
+    <title>{{subject}} - ${config?.BRAND_NAME}</title>
     
     <!--[if mso]>
     <noscript>
@@ -423,11 +423,11 @@ function getPremiumOpusAtlasLayout(
             </p>
             
             <p style="margin-top: 15px; font-size: 12px; color: #888 !important; -webkit-text-fill-color: #888 !important;">
-                <a href="{{siteUrl}}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">${config.SITE_URL.replace(
+                <a href="{{siteUrl}}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">${config?.SITE_URL.replace(
                   'https://',
                   ''
                 )}</a><br>
-                ${config.LOCATION} | <a href="mailto:${
+                ${config?.LOCATION} | <a href="mailto:${
     config.CONTACT_EMAIL
   }" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">${
     config.CONTACT_EMAIL
@@ -2064,10 +2064,10 @@ export function previewTemplateSync(
     firstName: language === 'pt' ? 'João' : 'John',
     email: language === 'pt' ? 'joao@exemplo.com' : 'john@example.com',
     siteUrl: config.SITE_URL,
-    unsubscribeUrl: `${config.SITE_URL}/unsubscribe?token=sample`,
-    preferencesUrl: `${config.SITE_URL}/preferences?token=sample`,
-    confirmationUrl: `${config.SITE_URL}/confirm?token=sample`,
-    resetUrl: `${config.SITE_URL}/reset?token=sample`,
+    unsubscribeUrl: `${config?.SITE_URL}/unsubscribe?token=sample`,
+    preferencesUrl: `${config?.SITE_URL}/preferences?token=sample`,
+    confirmationUrl: `${config?.SITE_URL}/confirm?token=sample`,
+    resetUrl: `${config?.SITE_URL}/reset?token=sample`,
     requestDate: new Date().toLocaleDateString(
       language === 'pt' ? 'pt-BR' : 'en-US'
     ),
@@ -2083,12 +2083,12 @@ export function previewTemplateSync(
       language === 'pt'
         ? 'Um dos maiores compositores brasileiros.'
         : 'One of the greatest German composers.',
-    composerUrl: `${config.SITE_URL}/composer/sample`,
+    composerUrl: `${config?.SITE_URL}/composer/sample`,
     oldEmail: 'old@example.com',
     newEmail: 'new@example.com',
-    acceptUrl: `${config.SITE_URL}/accept?token=sample`,
-    declineUrl: `${config.SITE_URL}/decline?token=sample`,
-    resubscribeUrl: `${config.SITE_URL}/resubscribe?token=sample`,
+    acceptUrl: `${config?.SITE_URL}/accept?token=sample`,
+    declineUrl: `${config?.SITE_URL}/decline?token=sample`,
+    resubscribeUrl: `${config?.SITE_URL}/resubscribe?token=sample`,
     accountAge: 365,
     composersCount: 50,
     customSubject:

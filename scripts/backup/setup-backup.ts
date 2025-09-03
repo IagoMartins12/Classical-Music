@@ -39,8 +39,8 @@ async function setupBackupSystem(config: SetupConfig): Promise<void> {
     await runInitialTest();
 
     console.log('✅ Sistema de backup configurado com sucesso!');
-    console.log(`📁 Localização dos backups: ${config.backupLocation}`);
-    console.log(`🗓️  Retenção: ${config.retentionDays} dias`);
+    console.log(`📁 Localização dos backups: ${config?.backupLocation}`);
+    console.log(`🗓️  Retenção: ${config?.retentionDays} dias`);
     console.log(
       `⏰ Agendamento automático: ${
         config.autoSchedule ? 'Ativado' : 'Desativado'
@@ -107,13 +107,13 @@ async function setupEnvironment(config: SetupConfig): Promise<void> {
 
   const envContent = `
 # Configuração do Sistema de Backup
-BACKUP_LOCATION="${config.backupLocation}"
-BACKUP_RETENTION_DAYS=${config.retentionDays}
-BACKUP_AUTO_SCHEDULE=${config.autoSchedule}
-BACKUP_REMOTE_ENABLED=${config.remoteBackup}
+BACKUP_LOCATION="${config?.backupLocation}"
+BACKUP_RETENTION_DAYS=${config?.retentionDays}
+BACKUP_AUTO_SCHEDULE=${config?.autoSchedule}
+BACKUP_REMOTE_ENABLED=${config?.remoteBackup}
 ${
   config.notificationEmail
-    ? `BACKUP_NOTIFICATION_EMAIL="${config.notificationEmail}"`
+    ? `BACKUP_NOTIFICATION_EMAIL="${config?.notificationEmail}"`
     : ''
 }
 BACKUP_LOG_LEVEL="info"

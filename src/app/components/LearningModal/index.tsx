@@ -59,7 +59,7 @@ const LearningModal = () => {
 
   const { user } = useAuth();
   const pathname = usePathname();
-  const { t } = useTranslation({ sections: ['pages/learning'] });
+  const { t, language } = useTranslation({ sections: ['pages/learning'] });
 
   const {
     toggleWantToLearn,
@@ -105,6 +105,85 @@ const LearningModal = () => {
     setSelectedWorkScore,
     startScoreSelection,
   } = useLearningModalStore();
+
+  const useModalTranslations = () => {
+    const messages = {
+      pt: {
+        // Mensagens de sucesso - handleSubmit
+        wantToLearnUpdated: 'Obra atualizada na sua lista de estudos!',
+        learnedDataUpdated: 'Dados da obra aprendida atualizados!',
+        learnedDataUpdatedWithVideo: 'Dados da obra aprendida atualizados',
+        wantToLearnAdded: 'Obra adicionada à sua lista de estudos!',
+        congratsLearned: '🎉 Parabéns! Obra marcada como aprendida!',
+
+        // Mensagens de erro - handleSubmit
+        saveError: 'Erro ao salvar. Tente novamente.',
+        updateError: 'Erro ao atualizar',
+        updateVideoError: 'Erro ao atualizar com vídeo',
+
+        // Mensagens de transferência - handleConfirmTransfer
+        transferSuccess: '🎉 Parabéns! Obra transferida para "Já Aprendi"!',
+        transferError: 'Erro ao transferir obra. Tente novamente.',
+        transferring: 'Transferindo...',
+
+        // Mensagens de remoção - handleRemove
+        wantToLearnRemoved: 'Obra removida da sua lista de estudos!',
+        learnedRemoved: 'Obra removida da lista de aprendidas!',
+        removeError: 'Erro ao remover. Tente novamente.',
+
+        // Mensagens de vídeo - handleDeleteVideo
+        videoDeleteSuccess: 'Vídeo removido com sucesso!',
+        videoDeleteError: 'Erro ao remover vídeo. Tente novamente.',
+
+        // Status messages
+        uploadingStatus: 'Enviando vídeo...',
+        savingStatus: 'Salvando...',
+
+        // Console errors
+        saveErrorConsole: 'Erro ao salvar:',
+      },
+
+      en: {
+        // Success messages - handleSubmit
+        wantToLearnUpdated: 'Work updated in your study list!',
+        learnedDataUpdated: 'Learned work data updated!',
+        learnedDataUpdatedWithVideo: 'Learned work data updated',
+        wantToLearnAdded: 'Work added to your study list!',
+        congratsLearned: '🎉 Congratulations! Work marked as learned!',
+
+        // Error messages - handleSubmit
+        saveError: 'Error saving. Please try again.',
+        updateError: 'Error updating',
+        updateVideoError: 'Error updating with video',
+
+        // Transfer messages - handleConfirmTransfer
+        transferSuccess:
+          '🎉 Congratulations! Work transferred to "Already Learned"!',
+        transferError: 'Error transferring work. Please try again.',
+        transferring: 'Transferring...',
+
+        // Removal messages - handleRemove
+        wantToLearnRemoved: 'Work removed from your study list!',
+        learnedRemoved: 'Work removed from learned list!',
+        removeError: 'Error removing. Please try again.',
+
+        // Video messages - handleDeleteVideo
+        videoDeleteSuccess: 'Video deleted successfully!',
+        videoDeleteError: 'Error deleting video. Please try again.',
+
+        // Status messages
+        uploadingStatus: 'Uploading video...',
+        savingStatus: 'Saving...',
+
+        // Console errors
+        saveErrorConsole: 'Error saving:',
+      },
+    };
+
+    const t = messages[language] || messages.pt;
+
+    return { t, language };
+  };
 
   // Estados para milestones de progresso
   const [progressMilestones, setProgressMilestones] =
@@ -208,84 +287,6 @@ const LearningModal = () => {
     getLearnedItem,
     setSelectedWorkScore,
   ]);
-  const useModalTranslations = () => {
-    const messages = {
-      pt: {
-        // Mensagens de sucesso - handleSubmit
-        wantToLearnUpdated: 'Obra atualizada na sua lista de estudos!',
-        learnedDataUpdated: 'Dados da obra aprendida atualizados!',
-        learnedDataUpdatedWithVideo: 'Dados da obra aprendida atualizados',
-        wantToLearnAdded: 'Obra adicionada à sua lista de estudos!',
-        congratsLearned: '🎉 Parabéns! Obra marcada como aprendida!',
-
-        // Mensagens de erro - handleSubmit
-        saveError: 'Erro ao salvar. Tente novamente.',
-        updateError: 'Erro ao atualizar',
-        updateVideoError: 'Erro ao atualizar com vídeo',
-
-        // Mensagens de transferência - handleConfirmTransfer
-        transferSuccess: '🎉 Parabéns! Obra transferida para "Já Aprendi"!',
-        transferError: 'Erro ao transferir obra. Tente novamente.',
-        transferring: 'Transferindo...',
-
-        // Mensagens de remoção - handleRemove
-        wantToLearnRemoved: 'Obra removida da sua lista de estudos!',
-        learnedRemoved: 'Obra removida da lista de aprendidas!',
-        removeError: 'Erro ao remover. Tente novamente.',
-
-        // Mensagens de vídeo - handleDeleteVideo
-        videoDeleteSuccess: 'Vídeo removido com sucesso!',
-        videoDeleteError: 'Erro ao remover vídeo. Tente novamente.',
-
-        // Status messages
-        uploadingStatus: 'Enviando vídeo...',
-        savingStatus: 'Salvando...',
-
-        // Console errors
-        saveErrorConsole: 'Erro ao salvar:',
-      },
-
-      en: {
-        // Success messages - handleSubmit
-        wantToLearnUpdated: 'Work updated in your study list!',
-        learnedDataUpdated: 'Learned work data updated!',
-        learnedDataUpdatedWithVideo: 'Learned work data updated',
-        wantToLearnAdded: 'Work added to your study list!',
-        congratsLearned: '🎉 Congratulations! Work marked as learned!',
-
-        // Error messages - handleSubmit
-        saveError: 'Error saving. Please try again.',
-        updateError: 'Error updating',
-        updateVideoError: 'Error updating with video',
-
-        // Transfer messages - handleConfirmTransfer
-        transferSuccess:
-          '🎉 Congratulations! Work transferred to "Already Learned"!',
-        transferError: 'Error transferring work. Please try again.',
-        transferring: 'Transferring...',
-
-        // Removal messages - handleRemove
-        wantToLearnRemoved: 'Work removed from your study list!',
-        learnedRemoved: 'Work removed from learned list!',
-        removeError: 'Error removing. Please try again.',
-
-        // Video messages - handleDeleteVideo
-        videoDeleteSuccess: 'Video deleted successfully!',
-        videoDeleteError: 'Error deleting video. Please try again.',
-
-        // Status messages
-        uploadingStatus: 'Uploading video...',
-        savingStatus: 'Saving...',
-
-        // Console errors
-        saveErrorConsole: 'Error saving:',
-      },
-    };
-
-    const t = messages[language] || messages.pt;
-
-    return { t, language };
-  };
 
   // Sugestão do tipo oposto
   useEffect(() => {
@@ -344,6 +345,7 @@ const LearningModal = () => {
       setShowScoreSelection(true);
     }
   };
+  const modalTranslation = useModalTranslations();
 
   // Handler para remover partitura
   const handleRemoveScore = () => {
@@ -361,7 +363,6 @@ const LearningModal = () => {
     if (!user?.id || !workId || type !== 'want-to-learn') return;
 
     setIsSubmitting(true);
-    const { t } = useModalTranslations();
 
     try {
       await removeWantToLearn(workId);
@@ -377,22 +378,20 @@ const LearningModal = () => {
 
       await toggleLearned(workId, user.id, transferData.mastery, transferData);
 
-      toast.success(t.transferSuccess, {
+      toast.success(modalTranslation.t.transferSuccess, {
         duration: 4000,
       });
 
       setShowTransferConfirm(false);
       closeModal();
     } catch {
-      toast.error(t.transferError);
+      toast.error(modalTranslation.t.transferError);
     } finally {
       setIsSubmitting(false);
     }
   };
   const handleDeleteVideo = async () => {
     if (!workId) return;
-
-    const { t } = useModalTranslations();
 
     const success = await deleteVideo(workId);
     if (success) {
@@ -410,12 +409,12 @@ const LearningModal = () => {
         addLearned(updatedItem);
       }
 
-      toast.success(t.videoDeleteSuccess, {
+      toast.success(modalTranslation.t.videoDeleteSuccess, {
         icon: '🗑️',
         duration: 3000,
       });
     } else {
-      toast.error(t.videoDeleteError);
+      toast.error(modalTranslation.t.videoDeleteError);
     }
   };
 
@@ -461,14 +460,12 @@ const LearningModal = () => {
       throw error;
     }
   };
-  const { language } = useLanguageStore();
 
   // ✅ CORREÇÃO: Handle form submission com lógica melhorada
   const handleSubmit = async () => {
     if (!user?.id || !workId || !type) return;
 
     setIsSubmitting(true);
-    const { t } = useModalTranslations();
 
     try {
       if (isCurrentlyActive) {
@@ -494,12 +491,12 @@ const LearningModal = () => {
             if (result.success && result.item) {
               addWantToLearn(result.item);
             }
-            toast.success(t.wantToLearnUpdated, {
+            toast.success(modalTranslation.t.wantToLearnUpdated, {
               icon: '✏️',
               duration: 3000,
             });
           } else {
-            throw new Error(t.updateError);
+            throw new Error(modalTranslation.t.updateError);
           }
         } else {
           // LEARNED - com possível upload de vídeo
@@ -520,9 +517,9 @@ const LearningModal = () => {
                 }
               }
 
-              toast.success(t.learnedDataUpdatedWithVideo);
+              toast.success(modalTranslation.t.learnedDataUpdatedWithVideo);
             } else {
-              throw new Error(t.updateVideoError);
+              throw new Error(modalTranslation.t.updateVideoError);
             }
           } else {
             const response = await fetch('/api/learning/learned', {
@@ -541,12 +538,12 @@ const LearningModal = () => {
               if (result.success && result.item) {
                 addLearned(result.item);
               }
-              toast.success(t.learnedDataUpdated, {
+              toast.success(modalTranslation.t.learnedDataUpdated, {
                 icon: '✏️',
                 duration: 3000,
               });
             } else {
-              throw new Error(t.updateError);
+              throw new Error(modalTranslation.t.updateError);
             }
           }
         }
@@ -565,7 +562,7 @@ const LearningModal = () => {
             wantToLearnForm.priority,
             dataToCreate
           );
-          toast.success(t.wantToLearnAdded, {
+          toast.success(modalTranslation.t.wantToLearnAdded, {
             icon: '🎯',
             duration: 3000,
           });
@@ -578,21 +575,21 @@ const LearningModal = () => {
           if (selectedVideo) {
             await createLearnedWithVideo(workId, learnedData, selectedVideo);
             removeVideo();
-            toast.success(t.congratsLearned);
+            toast.success(modalTranslation.t.congratsLearned);
           } else {
             await toggleLearned(workId, user.id, learnedForm.mastery, {
               ...learnedData,
               isVideoPublic,
             });
-            toast.success(t.congratsLearned);
+            toast.success(modalTranslation.t.congratsLearned);
           }
         }
       }
 
       closeModal();
     } catch (error) {
-      console.error(t.saveErrorConsole, error);
-      toast.error(t.saveError);
+      console.error(modalTranslation.t.saveErrorConsole, error);
+      toast.error(modalTranslation.t.saveError);
     } finally {
       setIsSubmitting(false);
     }
@@ -603,18 +600,17 @@ const LearningModal = () => {
     if (!user?.id || !workId || !type) return;
 
     setIsSubmitting(true);
-    const { t } = useModalTranslations();
 
     try {
       if (type === 'want-to-learn') {
         await removeWantToLearn(workId);
-        toast.success(t.wantToLearnRemoved, {
+        toast.success(modalTranslation.t.wantToLearnRemoved, {
           icon: '🗑️',
           duration: 3000,
         });
       } else {
         await removeLearned(workId);
-        toast.success(t.learnedRemoved, {
+        toast.success(modalTranslation.t.learnedRemoved, {
           icon: '🗑️',
           duration: 3000,
         });
@@ -622,7 +618,7 @@ const LearningModal = () => {
 
       closeModal();
     } catch {
-      toast.error(t.removeError);
+      toast.error(modalTranslation.t.removeError);
     } finally {
       setIsSubmitting(false);
     }
@@ -702,6 +698,7 @@ const LearningModal = () => {
         className="max-h-[90vh] overflow-hidden"
         confirmOnClose
         withouVerification
+        setPr
         processName={
           type === 'learned'
             ? t('mark_learned_title')
@@ -722,9 +719,9 @@ const LearningModal = () => {
             </div>
             <div>
               <h2 className="text-xl font-bold text-theme-primary classical-title">
-                {config.title}
+                {config?.title}
               </h2>
-              <p className="text-sm text-theme-secondary">{config.subtitle}</p>
+              <p className="text-sm text-theme-secondary">{config?.subtitle}</p>
             </div>
           </div>
         </div>
@@ -1340,7 +1337,7 @@ const LearningModal = () => {
               variant="primary"
               onClick={handleSubmit}
               isLoading={isSubmitting || isUploading}
-              rightIcon={config.emoji}
+              rightIcon={config?.emoji}
               disabled={isUploading}
               className="w-full"
             >
@@ -1416,7 +1413,7 @@ const LearningModal = () => {
                 variant="primary"
                 onClick={handleSubmit}
                 isLoading={isSubmitting || isUploading}
-                rightIcon={config.emoji}
+                rightIcon={config?.emoji}
                 disabled={isUploading}
               >
                 {isSubmitting || isUploading
@@ -1532,6 +1529,7 @@ const LearningModal = () => {
           isOpen={showProgressModal}
           onClose={() => setShowProgressModal(false)}
           maxWidth="lg"
+          setPr
         >
           <div className="p-2 md:p-6">
             <div className="flex items-center justify-between mb-6">

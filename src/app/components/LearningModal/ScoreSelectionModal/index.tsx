@@ -5,7 +5,6 @@ import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   FiMusic,
   FiArrowLeft,
-  FiCheckCircle,
   FiX,
   FiBookOpen,
   FiUpload,
@@ -495,6 +494,7 @@ const ScoreSelectionModal = ({
       maxWidth="6xl"
       showCloseButton={false}
       className="max-h-[95vh] overflow-hidden"
+      setPr
     >
       {/* Header */}
       <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">

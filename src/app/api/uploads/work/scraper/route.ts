@@ -17,6 +17,7 @@ import {
   mapStyleToEpoch,
   VALID_CATEGORIES,
 } from '@/app/utils/valid-categories-and-genres';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 interface ScrapedWorkData {
   title: string;
@@ -66,17 +67,21 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const { url } = body;
-
+    const language = await getServerLanguageStatic();
     if (!url) {
-      return NextResponse.json({ error: 'URL é obrigatório' }, { status: 400 });
+      const message =
+        language === 'pt' ? 'URL é obrigatório' : 'URL is required';
+      return NextResponse.json({ error: message }, { status: 400 });
     }
 
     // Verificar se é uma URL válida do IMSLP
     if (!url.includes('imslp.org')) {
-      return NextResponse.json(
-        { error: 'Por favor, insira um link válido do IMSLP' },
-        { status: 400 }
-      );
+      const message =
+        language === 'pt'
+          ? 'Por favor, insira um link válido do IMSLP'
+          : 'Please enter a valid IMSLP link';
+
+      return NextResponse.json({ error: message }, { status: 400 });
     }
 
     console.log('🌐 Iniciando scraping da URL:', url);

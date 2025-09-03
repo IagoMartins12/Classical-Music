@@ -103,7 +103,7 @@ export default function CreateBackupModal({
               </label>
               <Input
                 type="text"
-                value={config.name}
+                value={config?.name}
                 onChange={(e) =>
                   setConfig((prev) => ({ ...prev, name: e.target.value }))
                 }
@@ -117,7 +117,7 @@ export default function CreateBackupModal({
                 Tipo de Backup
               </label>
               <Select
-                value={config.type}
+                value={config?.type}
                 onChange={(e) =>
                   setConfig((prev) => ({
                     ...prev,
@@ -148,7 +148,7 @@ export default function CreateBackupModal({
               <label className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-all cursor-pointer">
                 <Input
                   type="checkbox"
-                  checked={config.includeDatabase}
+                  checked={config?.includeDatabase}
                   onChange={(e) =>
                     setConfig((prev) => ({
                       ...prev,
@@ -169,7 +169,7 @@ export default function CreateBackupModal({
               <label className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-all cursor-pointer">
                 <Input
                   type="checkbox"
-                  checked={config.includeFiles}
+                  checked={config?.includeFiles}
                   onChange={(e) =>
                     setConfig((prev) => ({
                       ...prev,
@@ -197,7 +197,7 @@ export default function CreateBackupModal({
               <label className="flex items-center space-x-3">
                 <Input
                   type="checkbox"
-                  checked={config.compression}
+                  checked={config?.compression}
                   onChange={(e) =>
                     setConfig((prev) => ({
                       ...prev,
@@ -212,7 +212,7 @@ export default function CreateBackupModal({
               <label className="flex items-center space-x-3">
                 <Input
                   type="checkbox"
-                  checked={config.encryption}
+                  checked={config?.encryption}
                   onChange={(e) =>
                     setConfig((prev) => ({
                       ...prev,
@@ -231,7 +231,7 @@ export default function CreateBackupModal({
               </label>
               <Input
                 type="number"
-                value={config.retentionDays}
+                value={config?.retentionDays}
                 onChange={(e) =>
                   setConfig((prev) => ({
                     ...prev,
@@ -256,7 +256,7 @@ export default function CreateBackupModal({
                 Frequência
               </label>
               <Select
-                value={config.scheduleType}
+                value={config?.scheduleType}
                 onChange={(e) =>
                   setConfig((prev) => ({
                     ...prev,
@@ -273,14 +273,14 @@ export default function CreateBackupModal({
               />
             </div>
 
-            {config.scheduleType !== 'once' && (
+            {config?.scheduleType !== 'once' && (
               <div>
                 <label className="block text-sm font-medium text-theme-primary mb-2">
                   Horário
                 </label>
                 <Input
                   type="time"
-                  value={config.scheduleTime || '03:00'}
+                  value={config?.scheduleTime || '03:00'}
                   onChange={(e) =>
                     setConfig((prev) => ({
                       ...prev,

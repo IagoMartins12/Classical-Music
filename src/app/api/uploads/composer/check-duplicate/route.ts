@@ -15,8 +15,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { url, source, excludeId, fullName } = body;
 
-    console.log('🔍 Verificação de duplicata:', { url, source, fullName });
-
     if (!url || !source) {
       return NextResponse.json(
         { error: 'URL e fonte são obrigatórios' },
@@ -29,7 +27,6 @@ export async function POST(request: NextRequest) {
     // 1. Verificação por URL baseada na fonte
     if (source === 'imslp') {
       const imslpId = extractImslpId(url);
-      console.log('📊 IMSLP ID extraído:', imslpId);
 
       whereConditions.push(
         { imslpId: url },

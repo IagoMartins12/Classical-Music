@@ -161,7 +161,7 @@ const UploadScoreCard = ({
               </a>
             )}
 
-            <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="flex items-center space-x-1 duration-300">
               <button
                 onClick={onEdit}
                 className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center"

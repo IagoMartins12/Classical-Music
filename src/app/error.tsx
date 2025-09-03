@@ -228,7 +228,7 @@ export default function Error({ error, reset }: ErrorProps) {
               <AnimatedItem hover="scale" springType="bouncy">
                 <button
                   onClick={reset}
-                  className="btn-classical-primary flex items-center space-x-3 group text-lg px-8 py-4"
+                  className="btn-classical-primary w-full justify-center flex items-center space-x-3 group text-lg px-8 py-4"
                 >
                   <FiRefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
                   <span>
@@ -240,7 +240,7 @@ export default function Error({ error, reset }: ErrorProps) {
               <AnimatedItem hover="scale" springType="bouncy">
                 <Link
                   href={getHomeLink()}
-                  className="btn-classical-secondary flex items-center space-x-3 group text-lg px-8 py-4"
+                  className="btn-classical-secondary justify-center flex items-center space-x-3 group text-lg px-8 py-4"
                 >
                   <FiHome className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                   <span>

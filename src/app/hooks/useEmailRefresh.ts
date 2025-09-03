@@ -79,7 +79,7 @@ export function useEmailRefresh(): UseEmailRefreshReturn {
       // Email ainda não foi confirmado por nenhum método
       toast.error(errorMensage);
       console.log('❌ Email ainda não confirmado por nenhum método');
-    } catch (error) {
+    } catch {
       const errorMensage =
         language === 'pt'
           ? 'Erro ao verificar confirmação. Tente novamente.'

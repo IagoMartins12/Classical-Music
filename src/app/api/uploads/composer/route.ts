@@ -5,6 +5,7 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateUploadsCache } from '@/app/requests/upload';
 import { logComposerCreate } from '@/app/utils/historyUtils';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,8 +45,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    console.log('BODY', body);
 
     // 🆕 DADOS PARA CRIAÇÃO INCLUINDO NOVOS CAMPOS
     const createData = {
@@ -104,9 +103,13 @@ export async function POST(request: NextRequest) {
 
     // Invalidar cache
     await revalidateUploadsCache(userId);
-
+    const language = await getServerLanguageStatic();
+    const message =
+      language === 'pt'
+        ? 'Compositor criado com sucesso!'
+        : 'Composer created successfully!';
     return NextResponse.json({
-      message: 'Compositor criado com sucesso!',
+      message: message,
       composer,
     });
   } catch (error) {

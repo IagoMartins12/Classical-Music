@@ -121,7 +121,7 @@ const BulkInsertWorksModal = ({
       if (!response.ok) {
         const error = await response.json();
         throw new Error(
-          error.details || error.error || 'Erro ao descobrir obras'
+          error.details || error.error || t('toast_bulk_discover_error')
         );
       }
 
@@ -130,11 +130,14 @@ const BulkInsertWorksModal = ({
       updateStats(data.works || []);
       setCurrentStep('select');
 
-      console.log(`✅ Descobertas ${data.works?.length || 0} obras`);
+      console.log(
+        t('toast_bulk_works_discovered', { count: data.works?.length || 0 })
+      );
     } catch (error) {
       console.error('❌ Erro ao descobrir obras:', error);
       toast.error(
-        error instanceof Error ? error.message : 'Erro ao descobrir obras'
+        t('toast_error'),
+        error instanceof Error ? error.message : t('toast_bulk_discover_error')
       );
     } finally {
       setIsDiscovering(false);
@@ -185,7 +188,7 @@ const BulkInsertWorksModal = ({
     );
 
     if (selectedWorks.length === 0) {
-      toast.error('Nenhuma obra nova foi selecionada para processamento.');
+      toast.error(t('toast_error'), t('toast_bulk_no_works_selected'));
       return;
     }
 
@@ -267,7 +270,7 @@ const BulkInsertWorksModal = ({
               tempId: work.id,
               title: work.title,
               status: 'error',
-              message: data.error || 'Erro desconhecido',
+              message: data.error || t('toast_bulk_import_error'),
               details: data.details,
             };
 
@@ -353,7 +356,8 @@ const BulkInsertWorksModal = ({
     } catch (error) {
       console.error('❌ Erro no processamento:', error);
       toast.error(
-        error instanceof Error ? error.message : 'Erro no processamento'
+        t('toast_error'),
+        error instanceof Error ? error.message : t('toast_bulk_import_error')
       );
     }
   };

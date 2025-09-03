@@ -195,7 +195,6 @@ export default function WorkDetailsClient({
     loadMore,
     loadMoreForTab,
     loadAll,
-    fromCache,
     setSelectedScore,
     getTabStats,
   } = useIMSLPScoresIncremental(work.imslpPermlink || '', {

@@ -182,9 +182,9 @@ const LearningButtonWithModal = ({
     `;
 
     if (isActive) {
-      return `${baseClasses} bg-gradient-to-r ${config.colors.active} shadow-lg`;
+      return `${baseClasses} bg-gradient-to-r ${config?.colors.active} shadow-lg`;
     } else {
-      return `${baseClasses} bg-theme-elevated/80 ${config.colors.inactive}`;
+      return `${baseClasses} bg-theme-elevated/80 ${config?.colors.inactive}`;
     }
   };
 

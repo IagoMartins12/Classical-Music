@@ -8,6 +8,7 @@ import {
   filterNationalities,
   type Nationality,
 } from '@/app/data/nationalities';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 interface NationalitySelectProps {
   value: string;
@@ -92,7 +93,16 @@ export default function NationalitySelect({
   };
 
   const displayValue = searchTerm || value || '';
+  const { language } = useLanguageStore();
+  const getMessage = (search?: string) => {
+    if (search) {
+      if (language === 'en') return `Results for "${search}"`;
+      return `Resultado para "${search}"`;
+    }
 
+    if (language === 'en') return 'Select a nationality';
+    return 'Selecione uma nacionalidade';
+  };
   return (
     <div ref={containerRef} className={`relative ${className}`}>
       {/* Input */}
@@ -149,9 +159,7 @@ export default function NationalitySelect({
           <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
             <FiSearch className="w-4 h-4 text-brand-primary" />
             <span className="text-sm font-medium text-theme-secondary">
-              {searchTerm
-                ? `Resultados para "${searchTerm}"`
-                : 'Selecione uma nacionalidade'}
+              {searchTerm ? getMessage(searchTerm) : getMessage()}
             </span>
           </div>
 

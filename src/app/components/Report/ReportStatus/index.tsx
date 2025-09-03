@@ -51,11 +51,11 @@ export default function ReportStatus({
 
   return (
     <div
-      className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full border text-xs font-medium ${config.color} ${className}`}
-      title={`${reportCount} report(s) - ${config.label}`}
+      className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full border text-xs font-medium ${config?.color} ${className}`}
+      title={`${reportCount} report(s) - ${config?.label}`}
     >
-      {config.icon}
-      <span>{config.label}</span>
+      {config?.icon}
+      <span>{config?.label}</span>
       {reportCount > 1 && (
         <span className="ml-1 px-1 py-0.5 bg-current text-white rounded-full text-xs">
           {reportCount}

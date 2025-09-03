@@ -12,6 +12,7 @@ import {
   sanitizeWorkTitle,
   generateScoreDirectory,
 } from '@/app/utils/pdfUtils';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 /**
  * Move arquivos da pasta temporária para a pasta definitiva - NOVA ESTRUTURA
@@ -491,8 +492,14 @@ export async function POST(request: NextRequest) {
     // Invalidar cache
     await revalidateUploadsCache(userId);
 
+    const language = await getServerLanguageStatic();
+    const message =
+      language === 'pt'
+        ? 'Partitura criada com sucesso!'
+        : 'Work sheet created successfully!';
+
     return NextResponse.json({
-      message: 'Partitura criada com sucesso!',
+      message,
       score: {
         ...score,
         // 🔧 RETORNAR URLs DEFINITIVAS

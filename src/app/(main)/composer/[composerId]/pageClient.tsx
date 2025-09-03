@@ -1,4 +1,4 @@
-// app/composer/[composerId]/ComposerDetailsClient.tsx - Com sistema de animações e traduções
+// app/composer/[composerId]/ComposerDetailsClient.tsx - Com sistema de animações, traduções e vídeo
 'use client';
 
 import { useState } from 'react';
@@ -22,6 +22,7 @@ import {
 } from 'react-icons/fi';
 import ComposerBiography from '../../../components/ComposerBiography';
 import ComposerWorks from '../../../components/ComposersClient/ComposerWorks';
+import ComposerVideo from '../../../components/ComposerVideo';
 import FavoriteButton from '../../../components/FavoriteButton';
 import ShareButton from '../../../components/ShareButton';
 import {
@@ -58,6 +59,7 @@ export default function ComposerDetailsClient({
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [isVerified, setIsVerified] = useState(composer.isVerified || false);
 
+  console.log('COMPOSER', composer);
   const { t } = useTranslation({ sections: ['pages/composerId'] });
   const { language } = useLanguageStore();
 
@@ -664,6 +666,14 @@ export default function ComposerDetailsClient({
               />
             </AnimatedItem>
           </AnimatedCard>
+
+          {/* Vídeo do Compositor - Nova seção */}
+          {composer.videoUrl && (
+            <ComposerVideo
+              videoUrl={composer.videoUrl}
+              composerName={composer.fullName || composer.name}
+            />
+          )}
 
           {/* Obras do Compositor */}
           <AnimatedCard hover="none" className="">

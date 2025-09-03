@@ -404,7 +404,7 @@ export default function AnnotationsSection({
                         disabled={count === 0}
                         className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center space-x-2 ${
                           communityFilters.category === category && count > 0
-                            ? `bg-gradient-to-r ${config.color} text-theme-primary shadow-theme-glow`
+                            ? `bg-gradient-to-r ${config?.color} text-theme-primary shadow-theme-glow`
                             : count === 0
                             ? 'bg-theme-elevated border border-theme-primary/20 text-theme-tertiary opacity-50 cursor-not-allowed'
                             : 'bg-theme-elevated border border-theme-primary/30 text-theme-secondary hover:border-brand-primary/50 hover:scale-105'
@@ -412,7 +412,7 @@ export default function AnnotationsSection({
                       >
                         <Icon className="w-3 h-3" />
                         <span>
-                          {config.label} ({count})
+                          {config?.label} ({count})
                         </span>
                       </button>
                     </AnimatedItem>

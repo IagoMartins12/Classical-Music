@@ -140,34 +140,34 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
 
         {/* Título e Descrição */}
         <h3 className="text-2xl font-bold text-theme-primary mb-4 classical-title">
-          {config.title}
+          {config?.title}
         </h3>
 
         <p className="text-theme-secondary mb-8 classical-body">
-          {config.description}
+          {config?.description}
         </p>
 
         {/* Ações */}
         <div className="space-y-4">
           {/* Ação principal personalizada (filtros) */}
-          {config.primaryAction && config.primaryAction.onClick && (
+          {config?.primaryAction && config.primaryAction.onClick && (
             <button
-              onClick={config.primaryAction.onClick}
+              onClick={config?.primaryAction.onClick}
               className="btn-classical-primary flex items-center justify-center space-x-2 group mx-auto"
             >
               <config.primaryAction.icon className="w-4 h-4" />
-              <span>{config.primaryAction.label}</span>
+              <span>{config?.primaryAction.label}</span>
             </button>
           )}
 
           {/* Ação principal com link */}
-          {config.primaryAction && config.primaryAction.href && (
+          {config?.primaryAction && config.primaryAction.href && (
             <Link
-              href={config.primaryAction.href}
+              href={config?.primaryAction.href}
               className="btn-classical-primary flex items-center justify-center space-x-2 group mx-auto"
             >
               <config.primaryAction.icon className="w-4 h-4" />
-              <span>{config.primaryAction.label}</span>
+              <span>{config?.primaryAction.label}</span>
               <svg
                 className="w-4 h-4 transition-transform group-hover:translate-x-1"
                 fill="none"
@@ -185,7 +185,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
           )}
 
           {/* Ações secundárias atualizadas para incluir partituras */}
-          {config.showSecondaryActions && (
+          {config?.showSecondaryActions && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Link
                 href="/composers"
@@ -254,7 +254,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
           )}
 
           {/* Dica */}
-          {config.tip && (
+          {config?.tip && (
             <div className="mt-8 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
               <div className="flex items-start space-x-3">
                 <div className="w-10 h-8 md:w-6 md:h-6 rounded-lg flex items-center justify-center mt-0.5">
@@ -264,7 +264,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
                   <h4 className="font-semibold text-theme-primary text-sm mb-1">
                     {t('empty_tip_to_start')}
                   </h4>
-                  <p className="text-xs text-theme-secondary">{config.tip}</p>
+                  <p className="text-xs text-theme-secondary">{config?.tip}</p>
                 </div>
               </div>
             </div>

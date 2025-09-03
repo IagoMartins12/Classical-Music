@@ -74,9 +74,9 @@ const UploadComposerCard = ({
   if (viewMode === 'list') {
     return (
       <div className="classical-card group relative p-4 hover:shadow-theme-glow transition-all duration-300">
-        <div className="flex items-center justify-between w-full">
+        <div className="flex flex-col-reverse md:flex-row gap-2 items-center justify-between w-full">
           {/* Left section - Portrait and basic info */}
-          <div className="flex items-center space-x-4 flex-1 min-w-0">
+          <div className="flex items-center self-start md:self-auto space-x-4 flex-1 min-w-0">
             {/* Portrait */}
             <div className="relative w-12 h-12 flex-shrink-0">
               {!imageLoaded && !imageError && portraitUrl && (
@@ -124,7 +124,7 @@ const UploadComposerCard = ({
                 )}
               </Link>
 
-              <div className="flex items-center space-x-4 mt-1">
+              <div className="flex flex-wrap items-start md:items-center space-x-4 mt-1">
                 {/* Period */}
                 {item.epochName && (
                   <span className="inline-flex items-center text-xs text-brand-primary font-medium">
@@ -141,16 +141,9 @@ const UploadComposerCard = ({
                   </span>
                 )}
 
-                {/* Status badges */}
-                {item.isIMSLP && (
-                  <span className="text-xs font-medium text-accent-blue px-2 py-1 bg-accent-blue/10 rounded-full">
-                    IMSLP
-                  </span>
-                )}
-
                 {/* Badge para compositor com obras importáveis */}
                 {item.isIMSLP && (
-                  <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
+                  <span className="text-xs font-medium text-accent-green md:px-2 md:py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
                     <FiMusic className="w-3 h-3" />
                     <span>{t('card_works_badge')}</span>
                   </span>
@@ -166,13 +159,13 @@ const UploadComposerCard = ({
           </div>
 
           {/* Right section - Actions */}
-          <div className="flex items-center space-x-2 flex-shrink-0">
+          <div className="flex items-center self-end md:self-auto space-x-2 flex-shrink-0">
             {hasExternalLinks && (
               <a
                 href={`https://imslp.org/wiki/${item.imslpId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-2 py-1 bg-accent-green/10 border border-accent-green/20 text-accent-green rounded-md text-xs font-medium hover:bg-accent-green/20 hover:scale-105 transition-all duration-300"
+                className="items-center hidden md:inline-flex  px-2 py-1 bg-accent-green/10 border border-accent-green/20 text-accent-green rounded-md text-xs font-medium hover:bg-accent-green/20 hover:scale-105 transition-all duration-300"
                 onClick={(e) => e.stopPropagation()}
               >
                 IMSLP
@@ -180,7 +173,7 @@ const UploadComposerCard = ({
               </a>
             )}
 
-            <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="flex items-center space-x-1  transition-opacity duration-300">
               {/* Botão de Bulk Insert de Obras */}
               {item.isIMSLP && onBulkInsertWorks && (
                 <button
@@ -261,7 +254,7 @@ const UploadComposerCard = ({
           </Link>
 
           {/* Floating action buttons */}
-          <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-100 md: transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
             {/* Botão de Bulk Insert de Obras */}
             {item.isIMSLP && onBulkInsertWorks && (
               <button
@@ -392,7 +385,7 @@ const UploadComposerCard = ({
         </div>
 
         {/* Floating mini indicator */}
-        <div className="absolute -top-1 -right-1 w-3 h-3 bg-brand-gradient rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100 shadow-brand-glow"></div>
+        <div className="absolute -top-1 -right-1 w-3 h-3 bg-brand-gradient rounded-full  transition-all duration-300 scale-50 group-hover:scale-100 shadow-brand-glow"></div>
       </div>
 
       {/* Modal de confirmação de delete */}

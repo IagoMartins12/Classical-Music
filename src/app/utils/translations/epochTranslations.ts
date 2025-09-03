@@ -15,6 +15,7 @@ export const EPOCH_TRANSLATION_MAP: Record<string, { pt: string; en: string }> =
     Romântico: { pt: 'Romântico', en: 'Romantic' },
     Modernismo: { pt: 'Modernismo', en: 'Modernism' },
     Moderno: { pt: 'Moderno', en: 'Modern' }, // Alias para Modernismo
+    Contemporâneo: { pt: 'Contemporâneo', en: 'Contemporary' }, // Alias para Modernismo
   };
 
 // Função para traduzir nome da época

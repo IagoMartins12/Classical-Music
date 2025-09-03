@@ -119,9 +119,9 @@ export default function MostFavoritedBadge({
   const baseClasses = `
     ${positions[position]} 
     ${sizeConfig.container}
-    bg-gradient-to-r ${config.bgGradient}
-    border ${config.borderColor}
-    ${config.textColor}
+    bg-gradient-to-r ${config?.bgGradient}
+    border ${config?.borderColor}
+    ${config?.textColor}
     rounded-full
     font-medium
     shadow-lg
@@ -139,7 +139,7 @@ export default function MostFavoritedBadge({
         title="Partitura mais favoritada pela comunidade"
       >
         <div className="flex items-center space-x-1">
-          <span className={sizeConfig.emoji}>{config.emoji}</span>
+          <span className={sizeConfig.emoji}>{config?.emoji}</span>
           {showText && (
             <span className={`${sizeConfig.text} font-bold hidden sm:inline`}>
               Favorita da comunidade
@@ -151,7 +151,7 @@ export default function MostFavoritedBadge({
   }
 
   return (
-    <div className={baseClasses} title={`${config.label} pela comunidade`}>
+    <div className={baseClasses} title={`${config?.label} pela comunidade`}>
       <div className="flex items-center space-x-1.5">
         <div className={`bg-gradient-to-r $ rounded-full p-1`}>
           <Icon className={`${sizeConfig.icon} text-white`} />
@@ -294,9 +294,9 @@ export default function MostFavoritedBadge({
 //   const baseClasses = `
 //     ${positions[position]}
 //     ${sizeConfig.container}
-//     bg-gradient-to-r ${config.bgGradient}
-//     border ${config.borderColor}
-//     ${config.textColor}
+//     bg-gradient-to-r ${config?.bgGradient}
+//     border ${config?.borderColor}
+//     ${config?.textColor}
 //     rounded-full
 //     font-medium
 //     shadow-lg
@@ -315,7 +315,7 @@ export default function MostFavoritedBadge({
 //         title="Partitura mais favoritada pela comunidade"
 //       >
 //         <div className="flex items-center space-x-1">
-//           <span className={sizeConfig.emoji}>{config.emoji}</span>
+//           <span className={sizeConfig.emoji}>{config?.emoji}</span>
 //           {showText && (
 //             <span className={`${sizeConfig.text} font-bold hidden sm:inline`}>
 //               Favorita da comunidade
@@ -328,7 +328,7 @@ export default function MostFavoritedBadge({
 
 //   // Layout padrão para outras variantes
 //   return (
-//     <div className={baseClasses} title={`${config.label} pela comunidade`}>
+//     <div className={baseClasses} title={`${config?.label} pela comunidade`}>
 //       <div className="flex items-center space-x-1.5">
 //         <div className={`bg-gradient-to-r $ rounded-full p-1`}>
 //           <Icon className={`${sizeConfig.icon} text-white`} />

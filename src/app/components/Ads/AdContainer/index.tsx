@@ -255,9 +255,9 @@ export default function AdContainer({
 
   return (
     <div
-      className={`ads-premium-wrapper ${config.containerClass} ${className}`}
+      className={`ads-premium-wrapper ${config?.containerClass} ${className}`}
       data-placement={placement}
-      data-priority={config.priority}
+      data-priority={config?.priority}
       data-context={contextualData.context}
     >
       <AdDisplay
@@ -265,10 +265,10 @@ export default function AdContainer({
         targetType={targetType}
         instrumentId={selectedInstrumentId}
         userLevel={userLevel}
-        maxAds={config.maxAds}
-        showTitle={config.showTitle}
-        showAdvertiserName={config.showAdvertiserName}
-        className={config.className}
+        maxAds={config?.maxAds}
+        showTitle={config?.showTitle}
+        showAdvertiserName={config?.showAdvertiserName}
+        className={config?.className}
       />
 
       {/* Estilos específicos para cada container */}

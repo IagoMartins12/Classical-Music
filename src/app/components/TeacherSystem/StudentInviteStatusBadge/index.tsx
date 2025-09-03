@@ -100,13 +100,13 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
     return (
       <div className="flex items-center gap-2">
         <div
-          className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium border ${config.color}`}
+          className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium border ${config?.color}`}
         >
           <IconComponent className="w-3 h-3" />
-          <span>{config.shortText}</span>
+          <span>{config?.shortText}</span>
         </div>
 
-        {config.actionable && onResendInvite && (
+        {config?.actionable && onResendInvite && (
           <button
             onClick={onResendInvite}
             disabled={isResending}
@@ -125,17 +125,19 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
   }
 
   return (
-    <div className={`rounded-lg border p-4 ${config.color} ${config.bgColor}`}>
+    <div
+      className={`rounded-lg border p-4 ${config?.color} ${config?.bgColor}`}
+    >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div
-            className={`w-8 h-8 rounded-full bg-white flex items-center justify-center ${config.iconColor}`}
+            className={`w-8 h-8 rounded-full bg-white flex items-center justify-center ${config?.iconColor}`}
           >
             <IconComponent className="w-4 h-4" />
           </div>
           <div>
-            <div className="font-medium text-sm">{config.text}</div>
-            <div className="text-xs opacity-75 mt-1">{config.description}</div>
+            <div className="font-medium text-sm">{config?.text}</div>
+            <div className="text-xs opacity-75 mt-1">{config?.description}</div>
             {studentEmail && status === 'PENDING' && (
               <div className="text-xs opacity-60 mt-1 font-mono">
                 Enviado para: {studentEmail}
@@ -144,7 +146,7 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
           </div>
         </div>
 
-        {config.actionable && onResendInvite && (
+        {config?.actionable && onResendInvite && (
           <button
             onClick={onResendInvite}
             disabled={isResending}

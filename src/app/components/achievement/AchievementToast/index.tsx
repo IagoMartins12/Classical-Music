@@ -251,7 +251,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
           <span
             className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r $ text-white shadow-md`}
           >
-            {config.label}
+            {config?.label}
           </span>
 
           <div className="text-sm font-bold text-theme-primary">
