@@ -43,7 +43,6 @@ import {
 import VerificationBadge from '../../Verification/VerificationBadge';
 import Select from '../../Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
 import {
   translateInstrument,
   translateGenre,
@@ -150,8 +149,7 @@ export default function ComposerWorks({
   initialHasMore,
   filterOptions,
 }: ComposerWorksProps) {
-  const { t } = useTranslation({ sections: ['pages/composerId'] });
-  const { language } = useLanguageWithRefresh();
+  const { t, language } = useTranslation({ sections: ['pages/composerId'] });
 
   // Função para traduzir opções de filtros
   const getTranslatedInstruments = () => {

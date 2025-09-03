@@ -7,6 +7,7 @@ interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   containerClassName?: string;
+  bgCheckbox?: string;
 }
 
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
@@ -16,6 +17,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       error,
       className = '',
       containerClassName = '',
+      bgCheckbox,
       id,
       checked,
       onChange,
@@ -62,8 +64,9 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           {/* CHECKBOX VISUAL - Versão com forced state para debug */}
           <div
             className={`
-              w-5 h-5 rounded border-1 border-transparent bg-theme-tertiary transition-all duration-200
+              w-5 h-5 rounded border-1 border-transparent  transition-all duration-200
               flex items-center justify-center
+              ${bgCheckbox ? `${bgCheckbox} ` : 'bg-theme-tertiary'}
               ${isChecked ? 'bg-brand-primary   ' : ''}
             `}
           >

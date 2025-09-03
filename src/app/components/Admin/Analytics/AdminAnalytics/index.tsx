@@ -59,10 +59,30 @@ export default function AdminAnalytics() {
       ['Total de Obras', analytics.overview.content.works],
       ['Total de Partituras', analytics.overview.content.scores],
       ['Total de Anotações', analytics.overview.content.annotations],
+
+      // ===== MÉTRICAS DE ENGAJAMENTO ATUALIZADAS =====
       [
         'Tempo Médio de Sessão',
         `${analytics.overview.engagement.avgSessionTime} min`,
       ],
+      ['Anotações por Dia', analytics.overview.engagement.annotationsPerDay],
+      [
+        'Média de Anotações por Usuário',
+        analytics.overview.engagement.avgAnnotationsPerUser.toFixed(1),
+      ],
+      [
+        'Percentual de Usuários Ativos',
+        `${analytics.overview.engagement.activePercentage}%`,
+      ],
+
+      // Métricas de sistema
+      ['Uploads Recentes', analytics.overview.system.uploads],
+      [
+        'Itens Pendentes de Moderação',
+        analytics.overview.system.pendingModeration,
+      ],
+      ['Taxa de Erro', `${analytics.overview.system.errorRate}%`],
+      ['Performance do Sistema', `${analytics.overview.system.performance}%`],
     ];
 
     const csvContent = csvData.map((row) => row.join(',')).join('\n');
@@ -224,7 +244,129 @@ export default function AdminAnalytics() {
             </div>
           </AnimatedCard>
         </AnimatedItem>
+        {analytics && analytics.charts && (
+          <AnimatedItem direction="up" springType="gentle">
+            <AnimatedCard className="classical-card p-6 mb-8">
+              <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                <FiActivity className="w-5 h-5 text-accent-green" />
+                <span>Visão Geral do Engajamento</span>
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 bg-theme-secondary rounded-xl">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-theme-primary">
+                      Tempo Médio de Sessão
+                    </span>
+                    <span className="text-xs font-medium text-accent-blue">
+                      {analytics.charts.engagementMetrics.find(
+                        (m) => m.metric === 'Tempo Médio de Sessão'
+                      )?.trend ?? 0 > 0
+                        ? '+'
+                        : ''}
+                      {analytics.charts.engagementMetrics
+                        .find((m) => m.metric === 'Tempo Médio de Sessão')
+                        ?.trend.toFixed(1)}
+                      %
+                    </span>
+                  </div>
+                  <div className="text-2xl font-bold text-theme-primary">
+                    {analytics.overview.engagement.avgSessionTime} min
+                  </div>
+                </div>
 
+                <div className="p-4 bg-theme-secondary rounded-xl">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-theme-primary">
+                      Anotações/Dia
+                    </span>
+                    <span
+                      className={`text-xs font-medium ${
+                        analytics.charts.engagementMetrics.find(
+                          (m) => m.metric === 'Anotações/Dia'
+                        )?.trend ?? 0 > 0
+                          ? 'text-accent-green'
+                          : 'text-accent-red'
+                      }`}
+                    >
+                      {analytics.charts.engagementMetrics.find(
+                        (m) => m.metric === 'Anotações/Dia'
+                      )?.trend ?? 0 > 0
+                        ? '+'
+                        : ''}
+                      {analytics.charts.engagementMetrics
+                        .find((m) => m.metric === 'Anotações/Dia')
+                        ?.trend.toFixed(1)}
+                      %
+                    </span>
+                  </div>
+                  <div className="text-2xl font-bold text-theme-primary">
+                    {analytics.overview.engagement.annotationsPerDay}
+                  </div>
+                </div>
+
+                <div className="p-4 bg-theme-secondary rounded-xl">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-theme-primary">
+                      % Usuários Ativos
+                    </span>
+                    <span
+                      className={`text-xs font-medium ${
+                        analytics.charts.engagementMetrics.find(
+                          (m) => m.metric === '% Usuários Ativos'
+                        )?.trend ?? 0 > 0
+                          ? 'text-accent-green'
+                          : 'text-accent-red'
+                      }`}
+                    >
+                      {analytics.charts.engagementMetrics.find(
+                        (m) => m.metric === '% Usuários Ativos'
+                      )?.trend ?? 0 > 0
+                        ? '+'
+                        : ''}
+                      {analytics.charts.engagementMetrics
+                        .find((m) => m.metric === '% Usuários Ativos')
+                        ?.trend.toFixed(1)}
+                      %
+                    </span>
+                  </div>
+                  <div className="text-2xl font-bold text-theme-primary">
+                    {analytics.overview.engagement.activePercentage}%
+                  </div>
+                </div>
+
+                <div className="p-4 bg-theme-secondary rounded-xl">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-theme-primary">
+                      Anotações/Usuário
+                    </span>
+                    <span
+                      className={`text-xs font-medium ${
+                        analytics.charts.engagementMetrics.find(
+                          (m) => m.metric === 'Anotações/Usuário'
+                        )?.trend ?? 0 > 0
+                          ? 'text-accent-green'
+                          : 'text-accent-red'
+                      }`}
+                    >
+                      {analytics.charts.engagementMetrics.find(
+                        (m) => m.metric === 'Anotações/Usuário'
+                      )?.trend ?? 0 > 0
+                        ? '+'
+                        : ''}
+                      {analytics.charts.engagementMetrics
+                        .find((m) => m.metric === 'Anotações/Usuário')
+                        ?.trend.toFixed(1)}
+                      %
+                    </span>
+                  </div>
+                  <div className="text-2xl font-bold text-theme-primary">
+                    {analytics.overview.engagement.avgAnnotationsPerUser}
+                  </div>
+                </div>
+              </div>
+            </AnimatedCard>
+          </AnimatedItem>
+        )}
         {/* Charts Section */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
           {/* User Growth Trend */}

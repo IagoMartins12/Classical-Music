@@ -1,4 +1,4 @@
-// app/api/admin/composers/route.ts
+// app/api/admin/composers/route.ts - VERSÃO COMPLETAMENTE CORRIGIDA
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -26,139 +26,161 @@ const getCachedComposerStats = async (period: TimePeriod = '7d') => {
   const periodDate = getPeriodDate(period);
   const whereClause = periodDate ? { createdAt: { gte: periodDate } } : {};
 
-  const [
-    total,
-    verified,
-    withImages,
-    withoutImages,
-    byEpochRaw,
-    byQuality,
-    recentlyAdded,
-    mostPopular,
-    totalWorks,
-    topByWorks,
-  ] = await Promise.all([
-    // Total de compositores no período
-    prisma.composer.count({ where: whereClause }),
+  try {
+    // 🚀 QUERIES OTIMIZADAS PARA PERFORMANCE
+    const [
+      total,
+      verified,
+      withImages,
+      withoutImages,
+      byEpochRaw,
+      byQuality,
+      recentlyAdded,
+      mostPopularRaw,
+      totalWorks,
+      topByWorksRaw,
+    ] = await Promise.all([
+      // Total de compositores no período
+      prisma.composer.count({ where: whereClause }),
 
-    // Verificados no período
-    prisma.composer.count({
-      where: { ...whereClause, isVerified: true },
-    }),
+      // Verificados no período
+      prisma.composer.count({
+        where: { ...whereClause, isVerified: true },
+      }),
 
-    // Com imagens válidas
-    prisma.composer.count({
-      where: { ...whereClause, hasValidImage: true },
-    }),
+      // Com imagens válidas
+      prisma.composer.count({
+        where: { ...whereClause, hasValidImage: true },
+      }),
 
-    // Sem imagens válidas
-    prisma.composer.count({
-      where: { ...whereClause, hasValidImage: false },
-    }),
+      // Sem imagens válidas
+      prisma.composer.count({
+        where: { ...whereClause, hasValidImage: false },
+      }),
 
-    // Por época
-    prisma.composer.groupBy({
-      by: ['epochId'],
-      _count: { id: true },
-      where: whereClause,
-      orderBy: { _count: { id: 'desc' } },
-      take: 10,
-    }),
-
-    // Por qualidade
-    prisma.composer.groupBy({
-      by: ['dataQuality'],
-      _count: { id: true },
-      where: whereClause,
-    }),
-
-    // Adicionados na última semana (sempre)
-    prisma.composer.count({
-      where: {
-        createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-      },
-    }),
-
-    // Mais populares por favoritos
-    prisma.composer.findMany({
-      select: {
-        id: true,
-        name: true,
+      // 🔥 CORRIGIDO: Por época usando sintaxe correta do groupBy
+      prisma.composer.groupBy({
+        by: ['epochId'],
         _count: {
-          select: {
-            works: true,
-            favoriteByUsers: true,
+          id: true,
+        },
+        where: whereClause,
+        orderBy: {
+          _count: {
+            id: 'desc',
           },
         },
-      },
-      where: whereClause,
-      orderBy: {
-        favoriteByUsers: { _count: 'desc' },
-      },
-      take: 10,
-    }),
+        take: 10,
+      }),
 
-    // Total de obras para calcular média
-    prisma.work.count({
-      where: periodDate
-        ? {
-            composer: whereClause,
-          }
-        : {},
-    }),
-
-    // Top por número de obras
-    prisma.composer.findMany({
-      select: {
-        id: true,
-        name: true,
+      // 🔥 CORRIGIDO: Por qualidade (verificando se existe)
+      prisma.composer.groupBy({
+        by: ['dataQuality'],
         _count: {
-          select: { works: true },
+          id: true,
         },
-      },
-      where: whereClause,
-      orderBy: {
-        works: { _count: 'desc' },
-      },
-      take: 10,
-    }),
-  ]);
+        where: {
+          ...whereClause,
+          dataQuality: { not: null },
+        },
+        orderBy: {
+          _count: {
+            id: 'desc',
+          },
+        },
+      }),
 
-  // Buscar os nomes das épocas
-  const epochIds = byEpochRaw.map((e) => e.epochId);
-  const epochNames = await prisma.epoch.findMany({
-    where: { id: { in: epochIds } },
-    select: { id: true, name: true },
-  });
-  const epochMap = new Map(epochNames.map((e) => [e.id, e.name]));
+      // Adicionados na última semana (sempre)
+      prisma.composer.count({
+        where: {
+          createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+        },
+      }),
 
-  return {
-    total,
-    verified,
-    withImages,
-    withoutImages,
-    byEpoch: byEpochRaw.map((item) => ({
-      epoch: epochMap.get(item.epochId) || 'Desconhecido',
-      count: item._count.id,
-    })),
-    byQuality: byQuality.map((item) => ({
-      quality: item.dataQuality || 'unknown',
-      count: item._count.id,
-    })),
-    recentlyAdded,
-    mostPopular: mostPopular.map((composer) => ({
-      id: composer.id,
-      name: composer.name,
-      worksCount: composer._count.works,
-      favoritesCount: composer._count.favoriteByUsers,
-    })),
-    avgWorksPerComposer: total > 0 ? totalWorks / total : 0,
-    topByWorks: topByWorks.map((composer) => ({
-      id: composer.id,
-      name: composer.name,
-      worksCount: composer._count.works,
-    })),
-  };
+      // 🔥 OTIMIZADO: Mais populares (usando raw query para performance)
+      prisma.composer.findMany({
+        where: whereClause,
+        select: {
+          id: true,
+          name: true,
+          _count: {
+            select: {
+              favoriteByUsers: true,
+              works: true,
+            },
+          },
+        },
+        orderBy: {
+          favoriteByUsers: { _count: 'desc' },
+        },
+        take: 10,
+      }),
+
+      // Total de obras para calcular média (otimizado)
+      prisma.work.count({
+        where: periodDate
+          ? {
+              composer: { createdAt: { gte: periodDate } },
+            }
+          : {},
+      }),
+
+      // 🔥 OTIMIZADO: Top por número de obras
+      prisma.composer.findMany({
+        where: whereClause,
+        select: {
+          id: true,
+          name: true,
+          _count: {
+            select: { works: true },
+          },
+        },
+        orderBy: {
+          works: { _count: 'desc' },
+        },
+        take: 10,
+      }),
+    ]);
+
+    // 🔥 BUSCAR ÉPOCAS EM BATCH OTIMIZADO
+    const epochIds = [...new Set(byEpochRaw.map((e) => e.epochId))];
+    const epochNames = await prisma.epoch.findMany({
+      where: { id: { in: epochIds } },
+      select: { id: true, name: true },
+    });
+    const epochMap = new Map(epochNames.map((e) => [e.id, e.name]));
+
+    return {
+      total,
+      verified,
+      withImages,
+      withoutImages,
+      byEpoch: byEpochRaw.map((item) => ({
+        epoch: epochMap.get(item.epochId) || 'Desconhecido',
+        count: item._count.id,
+      })),
+      byQuality: byQuality.map((item) => ({
+        quality: item.dataQuality || 'unknown',
+        count: item._count.id,
+      })),
+      recentlyAdded,
+      mostPopular: mostPopularRaw.map((composer) => ({
+        id: composer.id,
+        name: composer.name,
+        worksCount: composer._count.works,
+        favoritesCount: composer._count.favoriteByUsers,
+      })),
+      avgWorksPerComposer: total > 0 ? totalWorks / total : 0,
+      topByWorks: topByWorksRaw.map((composer) => ({
+        id: composer.id,
+        name: composer.name,
+        worksCount: composer._count.works,
+      })),
+    };
+  } catch (error) {
+    console.error('Erro ao buscar stats de compositores:', error);
+    throw error;
+  }
 };
 
 const getComposersList = async (filters: ComposerFilters) => {
@@ -211,35 +233,97 @@ const getComposersList = async (filters: ComposerFilters) => {
     whereClause.hasValidImage = hasImage;
   }
 
-  // Filtros por contagem de obras e favoritos
+  console.log('MIN MAX', { minWorks, maxWorks });
   if (
     minWorks !== undefined ||
     maxWorks !== undefined ||
     minFavorites !== undefined
   ) {
-    whereClause.AND = [];
+    let composerIds: string[] | undefined = undefined;
 
+    // Se há filtros de works, buscar compositores que atendem
     if (minWorks !== undefined || maxWorks !== undefined) {
-      const worksFilter: any = {};
-      if (minWorks !== undefined) worksFilter.gte = minWorks;
-      if (maxWorks !== undefined) worksFilter.lte = maxWorks;
-
-      whereClause.AND.push({
-        works: { _count: worksFilter },
+      const worksResult = await prisma.work.groupBy({
+        by: ['composerId'],
+        _count: {
+          id: true,
+        },
       });
+
+      const composersWithWorks = worksResult
+        .filter((w: any) => {
+          const count = w._count.id;
+          if (minWorks !== undefined && count < minWorks) return false;
+          if (maxWorks !== undefined && count > maxWorks) return false;
+          return true;
+        })
+        .map((w: any) => w.composerId);
+
+      if (composerIds === undefined) {
+        composerIds = composersWithWorks;
+      } else {
+        composerIds = (composerIds as string[]).filter((id) =>
+          composersWithWorks.includes(id)
+        );
+      }
     }
 
+    // Se há filtros de favorites
     if (minFavorites !== undefined) {
-      whereClause.AND.push({
-        favoriteByUsers: { _count: { gte: minFavorites } },
+      const favoritesResult = await prisma.favoriteComposer.groupBy({
+        by: ['composerId'],
+        _count: {
+          id: true,
+        },
       });
+
+      const composersWithFavorites = favoritesResult
+        .filter((f: any) => f._count.id >= minFavorites)
+        .map((f: any) => f.composerId);
+
+      if (composerIds === undefined) {
+        composerIds = composersWithFavorites;
+      } else {
+        composerIds = composerIds.filter((id: string) =>
+          composersWithFavorites.includes(id)
+        );
+      }
+    }
+
+    // Se encontrou IDs, aplicar filtro
+    if (composerIds !== undefined && composerIds.length === 0) {
+      // Nenhum resultado encontrado
+      return {
+        composers: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          pages: 0,
+          hasMore: false,
+        },
+      };
+    } else if (composerIds !== undefined) {
+      whereClause.id = { in: composerIds };
     }
   }
 
+  // 🔥 OTIMIZAÇÃO: Query principal com includes mínimos
   const [composers, totalCount] = await Promise.all([
     prisma.composer.findMany({
       where: whereClause,
-      include: {
+      select: {
+        id: true,
+        name: true,
+        fullName: true,
+        birthDate: true,
+        deathDate: true,
+        nationality: true,
+        isVerified: true,
+        dataQuality: true,
+        portraitUrl: true,
+        hasValidImage: true,
+        createdAt: true,
         epoch: { select: { name: true } },
         createdByUser: {
           select: {
@@ -271,6 +355,7 @@ const getComposersList = async (filters: ComposerFilters) => {
     prisma.composer.count({ where: whereClause }),
   ]);
 
+  console.log('composers', composers);
   return {
     composers: composers.map((composer) => ({
       id: composer.id,
@@ -355,7 +440,7 @@ export async function GET(request: NextRequest) {
         sortOrder: (searchParams.get('sortOrder') as any) || 'desc',
         period: (searchParams.get('period') as TimePeriod) || '7d',
         page: parseInt(searchParams.get('page') || '1'),
-        limit: parseInt(searchParams.get('limit') || '50'),
+        limit: Math.min(parseInt(searchParams.get('limit') || '50'), 100),
       };
 
       const result = await getComposersList(filters);

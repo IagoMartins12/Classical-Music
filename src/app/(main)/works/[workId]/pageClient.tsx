@@ -53,7 +53,6 @@ import LearningModal from '../../../components/LearningModal';
 import ScorePreview from '../../../components/WorkDetailsClient/ScorePreview';
 import VideoAulaSection from '../../../components/Players/VideoAulaSection';
 import { translateGenre } from '@/app/utils/translations/instrumentsGenresTranslation';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import { translateWorkTypeWithHook } from '@/app/utils/translations/workTypeTranslation';
 import { translateToneWithHook } from '@/app/utils/translations/toneTranslation';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
@@ -116,10 +115,7 @@ export default function WorkDetailsClient({
   learningData = { wantToLearn: [], learned: [] },
 }: WorkDetailsClientProps) {
   // ✅ Hook de traduções
-  const { t } = useTranslation({ sections: ['pages/workId'] });
-
-  // ✅ Hook de idioma para traduções estáticas
-  const { language } = useLanguageStore();
+  const { t, language } = useTranslation({ sections: ['pages/workId'] });
 
   // Estados seguros para SSR
   const [mounted, setMounted] = useState(false);

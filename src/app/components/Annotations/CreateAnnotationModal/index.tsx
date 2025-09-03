@@ -32,7 +32,6 @@ import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Input from '../../Common/Inputs';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface CreateAnnotationModalProps {
@@ -265,9 +264,8 @@ export default function CreateAnnotationModal({
   composerName = '',
   editingAnnotation,
 }: CreateAnnotationModalProps) {
-  const { t } = useTranslation({ sections: ['pages/annotations'] });
+  const { t, language } = useTranslation({ sections: ['pages/annotations'] });
   const { user } = useAuth();
-  const { language } = useLanguageStore();
   const { createAnnotation, updateAnnotation, loading } = useAnnotationsStore();
   const isEditing = !!editingAnnotation;
   const isSubmitting =

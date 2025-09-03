@@ -14,7 +14,6 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../FavoriteButton';
 import VerificationBadge from '../Verification/VerificationBadge';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useComposerBiography } from '@/app/hooks/useComposerBiography';
 
@@ -48,8 +47,7 @@ interface FeaturedComposerProps {
 }
 
 const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
-  const { t } = useTranslation({ sections: ['pages/home'] });
-  const { language } = useLanguageStore();
+  const { t, language } = useTranslation({ sections: ['pages/home'] });
   // ✅ USAR O NOVO HOOK ao invés da biografia do banco diretamente
   const { biography } = useComposerBiography(
     composer.id,

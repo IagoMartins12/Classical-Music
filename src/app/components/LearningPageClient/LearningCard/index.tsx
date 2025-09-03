@@ -33,7 +33,6 @@ import { useAuth } from '@/app/hooks/useAuth';
 // Importar componentes de animação
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
@@ -196,9 +195,8 @@ export const LearningCard = ({
   const { removeWantToLearn, removeLearned } = useLearningStore();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const { t } = useTranslation({ sections: ['pages/learning'] });
+  const { t, language } = useTranslation({ sections: ['pages/learning'] });
 
-  const { language } = useLanguageStore();
   const isWantToLearn = type === 'want-to-learn';
   const wantToLearnItem = item as WantToLearnItem;
   const learnedItem = item as LearnedItem;

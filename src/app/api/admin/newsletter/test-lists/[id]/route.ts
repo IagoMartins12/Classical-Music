@@ -297,6 +297,8 @@ export async function PATCH(
             color: existingList.color,
             isActive: existingList.isActive,
             totalEmails: existingList.totalEmails,
+            timesUsed: 0, // 🔧 CORREÇÃO: Nova lista começa com 0 usos
+            // 🔧 CORREÇÃO: Não definir lastUsed para nova lista
           },
         });
 
@@ -307,10 +309,9 @@ export async function PATCH(
             ...duplicatedList,
             createdAt: duplicatedList.createdAt.toISOString(),
             updatedAt: duplicatedList.updatedAt.toISOString(),
-            lastUsed: null,
+            lastUsed: null, // 🔧 CORREÇÃO: Garantir que é null
           },
         });
-
       case 'toggle-status':
         // Alterar status ativo/inativo
         const toggledList = await prisma.testEmailList.update({

@@ -187,7 +187,7 @@ enum TokenType {
   EMAIL_CONFIRMATION
   PASSWORD_RESET
   NEWSLETTER_CONFIRMATION
-  NEWSLETTER_UNSUBSCRIBE 
+  NEWSLETTER_UNSUBSCRIBE
   EMAIL_CHANGE
   TEACHER_INVITATION_ACCEPT
   TEACHER_INVITATION_DECLINE
@@ -250,43 +250,43 @@ enum AssignmentStatus {
 
 enum NotificationType {
   // NOTIFICAÇÕES AUTOMÁTICAS (mantidas no check/route.ts)
-  LESSON_STARTING_SOON     // 30min antes da aula
-  LESSON_TOMORROW          // 24h antes da aula
-  ASSIGNMENT_DUE_SOON     // 2h antes do vencimento
+  LESSON_STARTING_SOON // 30min antes da aula
+  LESSON_TOMORROW // 24h antes da aula
+  ASSIGNMENT_DUE_SOON // 2h antes do vencimento
   ASSIGNMENT_DUE_TOMORROW // 24h antes do vencimento
-  ASSIGNMENT_OVERDUE      // Tarefa já atrasada
-  LESSON_STATUS_PENDING    // Aula passou sem status atualizado
-  
+  ASSIGNMENT_OVERDUE // Tarefa já atrasada
+  LESSON_STATUS_PENDING // Aula passou sem status atualizado
+
   // NOTIFICAÇÕES PARA ESTUDANTES (eventos reais)
-  TEACHER_GAVE_FEEDBACK     // Professor deu feedback na tarefa
+  TEACHER_GAVE_FEEDBACK // Professor deu feedback na tarefa
   LESSON_CANCELLED_BY_TEACHER // Professor cancelou aula
   LESSON_RESCHEDULED_BY_TEACHER // Professor reagendou aula
-  LESSON_MARKED_NO_SHOW     // Professor marcou falta
-  NEW_ASSIGNMENT_CREATED    // Professor criou nova tarefa
+  LESSON_MARKED_NO_SHOW // Professor marcou falta
+  NEW_ASSIGNMENT_CREATED // Professor criou nova tarefa
   ASSIGNMENT_UPDATED_BY_TEACHER // Professor alterou tarefa
-  NEW_LESSON_SCHEDULED      // Nova aula agendada (só PAI ou solo)
-  
+  NEW_LESSON_SCHEDULED // Nova aula agendada (só PAI ou solo)
+
   // 🆕 NOVA: Parabéns por aceitar ser aluno
-  WELCOME_NEW_STUDENT       // Parabéns por aceitar ser aluno de um professor
-  
+  WELCOME_NEW_STUDENT // Parabéns por aceitar ser aluno de um professor
+
   // NOTIFICAÇÕES PARA PROFESSORES (eventos reais)
   STUDENT_SUBMITTED_ASSIGNMENT // Aluno enviou submissão
   STUDENT_COMPLETED_ASSIGNMENT // Aluno completou tarefa
   STUDENT_GAVE_LESSON_FEEDBACK // Aluno deu feedback na aula
-  STUDENT_INFORMED_ABSENCE     // Aluno informou ausência
+  STUDENT_INFORMED_ABSENCE // Aluno informou ausência
   STUDENT_REQUESTED_RESCHEDULE // Aluno solicitou reagendamento
-  
+
   // 🆕 NOVAS: Para professores
-  WELCOME_NEW_TEACHER       // Parabéns por se tornar professor
-  STUDENT_DECLINED_INVITE   // Aluno declinou convite para ser aluno
+  WELCOME_NEW_TEACHER // Parabéns por se tornar professor
+  STUDENT_DECLINED_INVITE // Aluno declinou convite para ser aluno
   STUDENT_ACCEPTED_INVITE
   // NOTIFICAÇÕES ANTIGAS (manter para compatibilidade)
   LESSON_NO_SHOW
-  ASSIGNMENT_FEEDBACK_NEEDED  // 🗑️ SERÁ REMOVIDA do check/route.ts
+  ASSIGNMENT_FEEDBACK_NEEDED // 🗑️ SERÁ REMOVIDA do check/route.ts
   ASSIGNMENT_COMPLETED
   STUDENT_INVITE_PENDING
   STUDENT_MULTIPLE_LATE
-  NEW_STUDENT_FEEDBACK        // 🗑️ SERÁ REMOVIDA do check/route.ts
+  NEW_STUDENT_FEEDBACK // 🗑️ SERÁ REMOVIDA do check/route.ts
   WEEKLY_REPORT_AVAILABLE
   PRACTICE_REMINDER
   SYSTEM_MAINTENANCE
@@ -294,10 +294,10 @@ enum NotificationType {
 }
 
 enum NotificationPriority {
-  LOW       // Azul - informativo
-  MEDIUM    // Amarelo - importante 
-  HIGH      // Vermelho - urgente
-  CRITICAL  // Vermelho piscando - crítico
+  LOW // Azul - informativo
+  MEDIUM // Amarelo - importante 
+  HIGH // Vermelho - urgente
+  CRITICAL // Vermelho piscando - crítico
 }
 
 enum NotificationStatus {
@@ -309,41 +309,41 @@ enum NotificationStatus {
 
 enum SchoolActivityAction {
   // AÇÕES DO PROFESSOR
-  STUDENT_ADDED             // Cadastrou novo aluno
-  LESSON_CREATED           // Criou nova aula
-  LESSON_UPDATED           // Editou aula existente
-  LESSON_STATUS_CHANGED    // Alterou status da aula (cancelou, deu falta, remarcou)
-  ASSIGNMENT_CREATED       // Criou nova tarefa
-  ASSIGNMENT_UPDATED       // Editou tarefa
+  STUDENT_ADDED // Cadastrou novo aluno
+  LESSON_CREATED // Criou nova aula
+  LESSON_UPDATED // Editou aula existente
+  LESSON_STATUS_CHANGED // Alterou status da aula (cancelou, deu falta, remarcou)
+  ASSIGNMENT_CREATED // Criou nova tarefa
+  ASSIGNMENT_UPDATED // Editou tarefa
   ASSIGNMENT_FEEDBACK_GIVEN // Deu feedback e concluiu tarefa
-  LESSON_NOTES_ADDED       // Adicionou anotações na aula
-  TEACHER_PROFILE_UPDATED  // Alterou dados do perfil de professor
-  USER_PROFILE_UPDATED     // Alterou dados do perfil de usuário
+  LESSON_NOTES_ADDED // Adicionou anotações na aula
+  TEACHER_PROFILE_UPDATED // Alterou dados do perfil de professor
+  USER_PROFILE_UPDATED // Alterou dados do perfil de usuário
 
   // AÇÕES DO ALUNO
-  ASSIGNMENT_SUBMISSION    // Enviou video/arquivo na tarefa
-  ASSIGNMENT_COMPLETED    // Completou tarefa
-  LESSON_FEEDBACK_GIVEN   // Deu feedback de aula
+  ASSIGNMENT_SUBMISSION // Enviou video/arquivo na tarefa
+  ASSIGNMENT_COMPLETED // Completou tarefa
+  LESSON_FEEDBACK_GIVEN // Deu feedback de aula
   LESSON_RESCHEDULE_REQUESTED // Solicitou reagendamento
-  LESSON_ABSENCE_INFORMED  // Informou ausência
-  LESSON_COMPLETED        // Concluiu aula
+  LESSON_ABSENCE_INFORMED // Informou ausência
+  LESSON_COMPLETED // Concluiu aula
   STUDENT_PROFILE_UPDATED // Alterou perfil de aluno
 }
 
 enum AchievementCategory {
-  LEARNING      // Conquistas de aprendizado
-  FAVORITES     // Conquistas de favoritos  
-  ANNOTATIONS   // Conquistas de anotações
-  GENERAL       // Conquistas gerais
-  SOCIAL        // Conquistas sociais
-  MILESTONE     // Conquistas de marco
+  LEARNING // Conquistas de aprendizado
+  FAVORITES // Conquistas de favoritos  
+  ANNOTATIONS // Conquistas de anotações
+  GENERAL // Conquistas gerais
+  SOCIAL // Conquistas sociais
+  MILESTONE // Conquistas de marco
 }
 
 enum AchievementRarity {
-  COMMON        // Bronze - 10 XP
-  RARE          // Prata - 25 XP  
-  EPIC          // Ouro - 50 XP
-  LEGENDARY     // Diamante - 100 XP
+  COMMON // Bronze - 10 XP
+  RARE // Prata - 25 XP  
+  EPIC // Ouro - 50 XP
+  LEGENDARY // Diamante - 100 XP
 }
 
 model User {
@@ -391,17 +391,17 @@ model User {
   totalAnnotationsCount   Int @default(0) // Cache total de anotações
 
   // 🔄 RELAÇÕES DE MODERAÇÃO - ATUALIZADAS COM CASCADE
-  reportedUploads  UploadModeration[] @relation("ReportedUploads")
-  moderatedUploads UploadModeration[] @relation("ModeratedUploads")
-  uploadHistory    UploadHistory[]
-  generatedReports GeneratedReport[]  @relation("GeneratedReports")
-  notifications Notification[] @relation("UserNotifications")
-  schoolActivities SchoolActivity[] @relation("UserSchoolActivities")
-  achievements        UserAchievement[]     @relation("UserAchievements") 
+  reportedUploads     UploadModeration[]    @relation("ReportedUploads")
+  moderatedUploads    UploadModeration[]    @relation("ModeratedUploads")
+  uploadHistory       UploadHistory[]
+  generatedReports    GeneratedReport[]     @relation("GeneratedReports")
+  notifications       Notification[]        @relation("UserNotifications")
+  schoolActivities    SchoolActivity[]      @relation("UserSchoolActivities")
+  achievements        UserAchievement[]     @relation("UserAchievements")
   achievementProgress AchievementProgress[] @relation("AchievementProgress")
-  
+
   // 🆕 CACHE DE XP (opcional)
-  totalXP Int @default(0) // Cache do XP total do usuário
+  totalXP      Int @default(0) // Cache do XP total do usuário
   // Estatísticas de upload
   totalUploads Int @default(0)
   uploadScore  Int @default(0) // Score baseado na qualidade dos uploads
@@ -501,7 +501,7 @@ model WorkScore {
 
   // Dados customizados (para partituras não-IMSLP)
   isCustom   Boolean @default(false)
-  uploadedBy String? // ID do usuário que fez upload
+  uploadedBy String? @db.ObjectId // ID do usuário que fez upload
   customData Json? // Dados extras específicos
 
   // Cache e controle
@@ -536,6 +536,13 @@ model WorkScore {
   @@index([dataQuality])
   @@index([verificationStatus])
   @@index([qualityScore])
+  // ÍNDICES CRÍTICOS PARA PERFORMANCE
+  @@index([workId, isActive, createdAt]) // Para contagens de scores ativos
+  @@index([isActive, workId]) // Para verificação rápida de existência
+  @@index([workId, isActive, type]) // Para contagem por tipo
+  @@index([processingStatus, isActive]) // Para manutenção
+  // PARA JOINS COM WORK
+  @@index([workId, isActive, source]) // Source filtering otimizado
   @@map("work_scores")
 }
 
@@ -605,11 +612,11 @@ model Composer {
   birthDate String? // Ex: "31 de janeiro de 1797", "1797", "January 31, 1797"
   deathDate String? // Ex: "28 de novembro de 1828", "1828", "November 28, 1828"
 
-  portraitUrl String?
-  epochId     String  @db.ObjectId
-  epochName   String?
-  bio         String?
-  videoUrl    String?
+  portraitUrl   String?
+  epochId       String  @db.ObjectId
+  epochName     String?
+  bio           String?
+  videoUrl      String?
   // Dados IMSLP
   permLinkImslp String?
   imslpId       String?
@@ -686,6 +693,16 @@ model Composer {
   @@index([isCustom])
   @@index([verificationStatus])
   @@index([dataQuality])
+  @@index([epochId, isVerified]) // Para filtros combinados
+  @@index([createdAt, epochId]) // Para stats por período + época
+  @@index([createdAt, isVerified]) // Para stats por período + verificação
+  @@index([hasValidImage, epochId]) // Para filtros combinados
+  @@index([dataQuality, epochId]) // Para filtros de qualidade + época
+  @@index([createdAt, dataQuality]) // Para stats por período + qualidade
+  // ÍNDICES COMPOSTOS PARA ORDENAÇÃO OTIMIZADA
+  @@index([epochId, createdAt]) // Ordenação por época + data
+  @@index([isVerified, createdAt]) // Ordenação por verificação + data
+  @@index([createdBy, createdAt]) // Para auditoria ordenada
 }
 
 model Epoch {
@@ -719,7 +736,8 @@ model Instrument {
 
   advertisements Advertisement[]
 
-  @@index([category])
+  @@index([category]) // Para filtros por categoria
+  @@index([category, name]) // Para filtros por categoria
 }
 
 model WorkGenre {
@@ -753,7 +771,7 @@ model Work {
   workType        WorkType @default(INDIVIDUAL)
 
   movementNumber Int?
-  parentWorkId    String? @db.ObjectId
+  parentWorkId   String? @db.ObjectId
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -832,12 +850,12 @@ model Work {
   favoriteScores     FavoriteScore[]
   scoreFavoriteStats ScoreFavoriteStats[]
 
-  annotations    Annotation[]
-  favoriteBy     FavoriteWork[]
-  wantToLearners WantToLearn[]
-  learners       Learned[]
-  parentWork         Work?                @relation("WorkCollection", fields: [parentWorkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  childWorks         Work[]               @relation("WorkCollection")
+  annotations     Annotation[]
+  favoriteBy      FavoriteWork[]
+  wantToLearners  WantToLearn[]
+  learners        Learned[]
+  parentWork      Work?            @relation("WorkCollection", fields: [parentWorkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  childWorks      Work[]           @relation("WorkCollection")
   workAnnotations WorkAnnotation[]
 
   annotationsCount        Int       @default(0)
@@ -885,6 +903,14 @@ model Work {
   @@index([instrumentId, difficultyLevel])
   @@index([instrumentId, imslpDifficultyLevel])
   @@index([composerId, difficultyLevel])
+  @@index([createdAt, epochId, instrumentId]) // Triple para stats detalhadas
+  @@index([composerId, epochId, instrumentId]) // Para filtros compostos
+  @@index([difficultyLevel, epochId]) // Dificuldade + época
+  @@index([difficultyLevel, instrumentId]) // Dificuldade + instrumento
+  @@index([workType, epochId]) // Tipo + época
+  @@index([workType, instrumentId]) // Tipo + instrumento
+  // ÍNDICES PARA VERIFICAÇÃO DE PARTITURAS
+  @@index([id, createdAt]) // Para junções com WorkScore
 }
 
 model UserInstrument {
@@ -923,19 +949,19 @@ model WantToLearn {
   priority Int      @default(0)
   addedAt  DateTime @default(now())
 
-  notes              String?
-  targetDate         DateTime?
-  estimatedStudyTime Int?
-  difficulty         DifficultyLevel?
-  reminder           Boolean          @default(false)
-  reminderFrequency  String?
-  motivation         String?
-  context            String?
-  progressMilestones Json? // Milestones de progresso por instrumento
-  progress           Float? @default(0) // Progresso calculado (0-100%)
+  notes               String?
+  targetDate          DateTime?
+  estimatedStudyTime  Int?
+  difficulty          DifficultyLevel?
+  reminder            Boolean          @default(false)
+  reminderFrequency   String?
+  motivation          String?
+  context             String?
+  progressMilestones  Json? // Milestones de progresso por instrumento
+  progress            Float?           @default(0) // Progresso calculado (0-100%)
   // 🔄 RELAÇÃO CORRETA COM WORKSCORE - ATUALIZADA PARA SetNull
-  selectedWorkScoreId String?    @db.ObjectId
-  selectedWorkScore   WorkScore? @relation("WantToLearnSelectedScore", fields: [selectedWorkScoreId], references: [id], onDelete: SetNull)
+  selectedWorkScoreId String?          @db.ObjectId
+  selectedWorkScore   WorkScore?       @relation("WantToLearnSelectedScore", fields: [selectedWorkScoreId], references: [id], onDelete: SetNull)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
@@ -944,6 +970,9 @@ model WantToLearn {
   @@index([userId, priority])
   @@index([targetDate])
   @@index([selectedWorkScoreId])
+  @@index([workId]) // Para groupBy por obra (counts)
+  @@index([userId]) // Para groupBy por usuário
+  @@index([workId, addedAt]) // Para trending analysis
 }
 
 model Learned {
@@ -966,10 +995,10 @@ model Learned {
   performanceCount    Int              @default(0)
   bestPerformance     String?
 
-   videoUrl        String?   // URL/caminho do vídeo
-  videoFileName   String?   // Nome do arquivo original
-  videoFilePath   String?   // Caminho completo no servidor
-  videoFileSize   Int?      // Tamanho em bytes
+  videoUrl        String? // URL/caminho do vídeo
+  videoFileName   String? // Nome do arquivo original
+  videoFilePath   String? // Caminho completo no servidor
+  videoFileSize   Int? // Tamanho em bytes
   isVideoPublic   Boolean   @default(false) // Público ou privado
   videoUploadedAt DateTime? // Data do upload
 
@@ -985,6 +1014,10 @@ model Learned {
   @@index([learnedAt])
   @@index([lastPracticed])
   @@index([selectedWorkScoreId])
+  @@index([workId]) // Para groupBy por obra (counts)
+  @@index([userId]) // Para groupBy por usuário
+  @@index([workId, learnedAt]) // Para análise temporal
+  @@index([learnedAt, workId]) // Para stats recentes
 }
 
 model FavoriteWork {
@@ -996,6 +1029,7 @@ model FavoriteWork {
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
 
   @@unique([userId, workId])
+  @@index([userId]) // Para groupBy por usuário
 }
 
 model FavoriteComposer {
@@ -1067,6 +1101,9 @@ model WorkAnnotation {
   @@index([isPublic, helpfulCount])
   @@index([tags])
   @@index([isVerified, isPublic])
+  @@index([workId, isPublic]) // Para contagem de anotações públicas
+  @@index([userId, isPublic]) // Para stats de usuário
+  @@index([workId, isPublic, createdAt]) // Para anotações recentes
   @@map("work_annotations")
 }
 
@@ -1743,12 +1780,11 @@ model Teacher {
   updatedAt DateTime @updatedAt
 
   // Relações
-  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  students TeacherStudent[] @relation("TeacherStudents")
-  lessons  Lesson[]         @relation("TeacherLessons")
-  reviews  TeacherReview[]  @relation("TeacherReviews")
+  user          User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  students      TeacherStudent[]       @relation("TeacherStudents")
+  lessons       Lesson[]               @relation("TeacherLessons")
   sharedReports SharedProgressReport[] @relation("TeacherSharedReports")
-  
+
   // Índices otimizados
   @@index([status, isVerified])
   @@index([isPublicProfile])
@@ -1772,10 +1808,10 @@ model Student {
   musicalBackground String? // Experiência anterior
 
   // Configurações de privacidade e relatórios
-  allowPublicProgress Boolean @default(false) // Se professor pode ver progresso público
-  allowProgressShare  Boolean @default(true) // Se permite compartilhar progresso
+  allowPublicProgress  Boolean @default(false) // Se professor pode ver progresso público
+  allowProgressShare   Boolean @default(true) // Se permite compartilhar progresso
   allowWhatsappMensage Boolean @default(false)
-  profileVisibility   String  @default("teacher_only") // "public", "teacher_only", "private"
+  profileVisibility    String  @default("teacher_only") // "public", "teacher_only", "private"
 
   // Informações de estudo
   practiceTime     Int? // Tempo de prática semanal (minutos)
@@ -1806,13 +1842,13 @@ model Student {
   updatedAt DateTime @updatedAt
 
   // Relações
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  teachers    TeacherStudent[] @relation("StudentTeachers")
-  lessons     Lesson[]         @relation("StudentLessons")
-  reviews     TeacherReview[]  @relation("StudentReviews")
-  assignments Assignment[]     @relation("StudentAssignments")
-  sharedReports SharedProgressReport[] @relation("StudentSharedReports")
-  reportComments SharedReportComment[] @relation("StudentReportComments")
+  user           User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teachers       TeacherStudent[]       @relation("StudentTeachers")
+  lessons        Lesson[]               @relation("StudentLessons")
+  assignments    Assignment[]           @relation("StudentAssignments")
+  sharedReports  SharedProgressReport[] @relation("StudentSharedReports")
+  reportComments SharedReportComment[]  @relation("StudentReportComments")
+
   // Índices otimizados
   @@index([status, lastActiveAt])
   @@index([level, mainInstrument])
@@ -1985,7 +2021,7 @@ model Assignment {
   workScoreIds String[] @default([]) @db.ObjectId // Partituras para estudar
   worksIds     String[] @default([]) @db.ObjectId // Partituras para estudar
 
-  exercises  String[] @default([]) // Exercícios específicos
+  exercises String[] @default([]) // Exercícios específicos
 
   // Metas específicas
   practiceGoals  String[] @default([]) // Metas de prática
@@ -2031,98 +2067,58 @@ model Assignment {
   @@map("assignments")
 }
 
-// SISTEMA DE AVALIAÇÕES MELHORADO
-model TeacherReview {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  teacherId String @db.ObjectId
-  studentId String @db.ObjectId
 
-  // Avaliação básica
-  rating   Int // 1-5 estrelas
-  comment  String?
-  isPublic Boolean @default(true)
-
-  // Avaliações específicas
-  teachingQuality Int? // 1-5
-  communication   Int? // 1-5  
-  punctuality     Int? // 1-5
-  preparation     Int? // 1-5
-  patience        Int? // 1-5
-  motivation      Int? // 1-5
-
-  // Informações contextuais
-  relationshipDuration String? // "1 mês", "6 meses", "2 anos"
-  lessonsCount         Int? // Quantas aulas teve
-  wouldRecommend       Boolean @default(true)
-
-  // Moderação
-  isModerated    Boolean   @default(false)
-  moderatedBy    String?   @db.ObjectId
-  moderatedAt    DateTime?
-  moderationNote String?
-
-  // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relações
-  teacher Teacher @relation("TeacherReviews", fields: [teacherId], references: [id], onDelete: Cascade)
-  student Student @relation("StudentReviews", fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@unique([teacherId, studentId]) // Um aluno só pode avaliar um professor uma vez
-  @@index([teacherId, isPublic])
-  @@index([rating, createdAt])
-  @@index([isModerated])
-  @@map("teacher_reviews")
-}
 
 model Notification {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @db.ObjectId
-  type      NotificationType
-  priority  NotificationPriority @default(MEDIUM)
-  status    NotificationStatus   @default(UNREAD)
-  
+  id       String               @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String               @db.ObjectId
+  type     NotificationType
+  priority NotificationPriority @default(MEDIUM)
+  status   NotificationStatus   @default(UNREAD)
+
   // Conteúdo da notificação
-  title       String
-  message     String
-  actionText  String? // Texto do botão (ex: "Ver Aula", "Marcar como Feito")
-  actionUrl   String? // URL para onde levar o usuário
-  
+  title      String
+  message    String
+  actionText String? // Texto do botão (ex: "Ver Aula", "Marcar como Feito")
+  actionUrl  String? // URL para onde levar o usuário
+
   // Dados relacionados (para construir links dinâmicos)
   relatedEntityType String? // "lesson", "assignment", "student", etc.
   relatedEntityId   String? @db.ObjectId
-  
+
   // 🆕 CAMPO PARA PREVENÇÃO DE DUPLICATAS
   uniqueHash String? // Hash único baseado em tipo + entidade + metadata específicos
-  
+
   // Metadados adicionais
   metadata Json? // Dados extras específicos por tipo
-  
+
   // Configurações de exibição
-  showInToast   Boolean @default(true)  // Mostrar como toast
+  showInToast   Boolean @default(true) // Mostrar como toast
   showInBrowser Boolean @default(false) // Mostrar como notificação browser
-  showInPage    Boolean @default(true)  // Mostrar na página de notificações
-  
+  showInPage    Boolean @default(true) // Mostrar na página de notificações
+
   // Controle de repetição (REMOVIDO cooldown)
   lastShownAt DateTime? // Última vez que foi mostrada como toast
-  
+
   // Agendamento
   scheduledFor DateTime? // Quando deve ser mostrada (para agendamentos futuros)
   expiresAt    DateTime? // Data de expiração (auto-cleanup)
-  
+
   // Controle de entrega
-  toastShown    Boolean @default(false) // Toast já foi mostrado
-  browserShown  Boolean @default(false) // Notificação browser já foi mostrada
-  
+  toastShown   Boolean @default(false) // Toast já foi mostrado
+  browserShown Boolean @default(false) // Notificação browser já foi mostrada
+
   // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   readAt    DateTime? // Quando foi marcada como lida
-  
+
   // Relações
   user User @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
-  
+
+  // 🆕 CONSTRAINT OPCIONAL PARA HASH ÚNICO (se quiser garantir a nível de DB)
+  // @@unique([uniqueHash], name: "unique_notification_hash")
+
   // 🆕 ÍNDICES OTIMIZADOS PARA PREVENÇÃO DE DUPLICATAS
   @@index([userId, status, createdAt])
   @@index([userId, type, status])
@@ -2132,15 +2128,10 @@ model Notification {
   @@index([priority, status, createdAt])
   @@index([showInToast, toastShown])
   @@index([showInBrowser, browserShown])
-  
   // 🆕 ÍNDICES PARA PREVENÇÃO DE DUPLICATAS
   @@index([userId, type, relatedEntityId, status]) // Principal para verificar duplicatas
   @@index([uniqueHash]) // Para verificação rápida por hash
   @@index([userId, type, relatedEntityId, expiresAt]) // Para verificação com expiração
-  
-  // 🆕 CONSTRAINT OPCIONAL PARA HASH ÚNICO (se quiser garantir a nível de DB)
-  // @@unique([uniqueHash], name: "unique_notification_hash")
-  
   @@map("notifications")
 }
 
@@ -2148,159 +2139,156 @@ model SchoolActivity {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   userId   String @db.ObjectId // Quem fez a ação
   userType String // "teacher" ou "student"
-  
+
   // Informações da ação
-  action      SchoolActivityAction
-  entityType  String  // "lesson", "assignment", "profile", "student", etc.
-  entityId    String? @db.ObjectId // ID da entidade relacionada
-  entityName  String? // Nome/título da entidade para facilitar exibição
-  
+  action     SchoolActivityAction
+  entityType String // "lesson", "assignment", "profile", "student", etc.
+  entityId   String?              @db.ObjectId // ID da entidade relacionada
+  entityName String? // Nome/título da entidade para facilitar exibição
+
   // Descrição e detalhes
-  title       String  // Título amigável da ação
+  title       String // Título amigável da ação
   description String? // Descrição detalhada
-  
+
   // Dados das mudanças (para updates)
   changes  Json? // Mudanças específicas (oldValue, newValue)
   metadata Json? // Dados extras (IDs relacionados, contexto, etc.)
-  
+
   // Timestamps
   createdAt DateTime @default(now())
-  
+
   // Relações
   user User @relation("UserSchoolActivities", fields: [userId], references: [id], onDelete: Cascade)
-  
+
   // Índices otimizados
   @@index([userId, createdAt]) // Principal para buscar atividades por usuário
   @@index([userType, action, createdAt]) // Para filtros por tipo
   @@index([entityType, entityId]) // Para buscar por entidade
   @@index([createdAt]) // Para limpeza/manutenção
   @@index([userId, action, createdAt]) // Para filtros específicos
-  
   @@map("school_activities")
 }
 
 // Modelo para conquistas do usuário
 model UserAchievement {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  
+
   // Identificação
   userId  String @db.ObjectId
   badgeId String // ID único do badge (ex: "first-goal", "collector-bronze")
-  
+
   // Informações da conquista
   name        String
   description String
   category    AchievementCategory
   rarity      AchievementRarity
-  
+
   // Progresso e completude
   progress    Int? // Progresso atual (se aplicável)
   maxProgress Int? // Progresso máximo (se aplicável)
-  
+
   // XP e recompensas
   xpReward Int @default(0)
-  
+
   // Controle de notificação
-  isNew                  Boolean   @default(true) // Se é nova (não vista pelo usuário)
-  notificationShown      Boolean   @default(false) // Se toast foi mostrado
-  notificationShownAt    DateTime? // Quando toast foi mostrado
-  lastViewedAt          DateTime? // Última vez que foi vista
-  
+  isNew               Boolean   @default(true) // Se é nova (não vista pelo usuário)
+  notificationShown   Boolean   @default(false) // Se toast foi mostrado
+  notificationShownAt DateTime? // Quando toast foi mostrado
+  lastViewedAt        DateTime? // Última vez que foi vista
+
   // Timestamps
   unlockedAt DateTime @default(now())
   createdAt  DateTime @default(now())
-  
+
   // Relações
   user User @relation("UserAchievements", fields: [userId], references: [id], onDelete: Cascade)
-  
+
   // Constraints
   @@unique([userId, badgeId])
   @@index([userId, category])
-  @@index([userId, rarity]) 
+  @@index([userId, rarity])
   @@index([userId, isNew])
   @@index([category, rarity])
   @@index([unlockedAt])
-  
   @@map("user_achievements")
 }
 
 // Modelo para tracking de progresso de conquistas
 model AchievementProgress {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  
+
   userId  String @db.ObjectId
   badgeId String // ID do badge sendo rastreado
-  
+
   // Valores de progresso
   currentValue       Int       @default(0) // Valor atual
   lastCheckedAt      DateTime  @default(now())
   lastProgressUpdate DateTime? // Última vez que houve progresso
-  
+
   // Metadados para otimização
   metadata Json? // Dados específicos para o cálculo
-  
+
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relações
   user User @relation("AchievementProgress", fields: [userId], references: [id], onDelete: Cascade)
-  
+
   // Constraints
   @@unique([userId, badgeId])
   @@index([userId])
   @@index([badgeId])
   @@index([lastProgressUpdate])
-  
   @@map("achievement_progress")
 }
 
 model SharedProgressReport {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  
+
   // Identificação
   teacherId String @db.ObjectId
   studentId String @db.ObjectId
-  
+
   // Dados do relatório
-  title String // Título personalizado pelo professor
+  title       String // Título personalizado pelo professor
   description String? // Descrição opcional
-  
+
   // Período do relatório
   periodStart DateTime
-  periodEnd DateTime
+  periodEnd   DateTime
   periodLabel String
-  
+
   // Dados selecionados pelo professor (JSON com as seções escolhidas)
   selectedSections Json // { overview: true, evolution: true, preferences: false, ... }
-  
+
   // Dados do relatório (snapshot dos dados no momento da criação)
   reportData Json // Dados completos do relatório
-  
+
   // Configurações de visibilidade
-  isPublic Boolean @default(false) // Se pode ser acessado sem login
+  isPublic      Boolean @default(false) // Se pode ser acessado sem login
   allowComments Boolean @default(false) // Se aluno pode comentar
-  
+
   // Mensagem personalizada do professor
   teacherMessage String?
-  
+
   // Status e controle
-  isActive Boolean @default(true)
-  viewCount Int @default(0)
+  isActive     Boolean   @default(true)
+  viewCount    Int       @default(0)
   lastViewedAt DateTime?
-  
+
   // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   expiresAt DateTime? // Data de expiração (opcional)
-  
+
   // Relações
   teacher Teacher @relation("TeacherSharedReports", fields: [teacherId], references: [id], onDelete: Cascade)
-  student Student @relation("StudentSharedReports", fields: [studentId], references: [id], onDelete: Cascade) 
-  
+  student Student @relation("StudentSharedReports", fields: [studentId], references: [id], onDelete: Cascade)
+
   // Comentários do aluno (se permitido)
   studentComments SharedReportComment[]
-  
+
   // Índices
   @@index([teacherId, studentId])
   @@index([createdAt, isActive])
@@ -2310,22 +2298,22 @@ model SharedProgressReport {
 
 model SharedReportComment {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  
-  reportId String @db.ObjectId
+
+  reportId  String @db.ObjectId
   studentId String @db.ObjectId
-  
+
   content String
   section String? // Seção específica do relatório que está comentando
-  
+
   isRead Boolean @default(false) // Se o professor leu
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relações
-  report SharedProgressReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
-  student Student @relation("StudentReportComments", fields: [studentId], references: [id], onDelete: Cascade)
-  
+  report  SharedProgressReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  student Student              @relation("StudentReportComments", fields: [studentId], references: [id], onDelete: Cascade)
+
   @@index([reportId, createdAt])
   @@index([studentId, createdAt])
   @@map("shared_report_comments")

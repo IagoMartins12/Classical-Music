@@ -17,6 +17,8 @@ interface AnalyticsOverview {
   engagement: {
     avgSessionTime: number;
     annotationsPerDay: number;
+    avgAnnotationsPerUser: number;
+    activePercentage: number;
   };
   system: {
     uploads: number;

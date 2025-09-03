@@ -37,19 +37,6 @@ interface SystemStats {
     averageCompletionRate: number;
   };
 
-  reviews: {
-    totalReviews: number;
-    publicReviews: number;
-    averageRating: number;
-    ratingDistribution: {
-      5: number;
-      4: number;
-      3: number;
-      2: number;
-      1: number;
-    };
-  };
-
   growth: {
     newTeachersThisMonth: number;
     newStudentsThisMonth: number;
@@ -94,7 +81,6 @@ interface SystemStats {
     };
     satisfaction: {
       averageTeacherRating: number;
-      wouldRecommendRate: number; // % que recomendaria
     };
   };
 }
@@ -200,25 +186,6 @@ const getCachedSystemStats = unstable_cache(
       totalAssignments > 0
         ? (completedAssignments / totalAssignments) * 100
         : 0;
-
-    // 4. ESTATÍSTICAS DE REVIEWS
-    const [totalReviews, publicReviews, reviewsData] = await Promise.all([
-      prisma.teacherReview.count(),
-      prisma.teacherReview.count({ where: { isPublic: true } }),
-      prisma.teacherReview.findMany({
-        select: { rating: true, wouldRecommend: true },
-      }),
-    ]);
-
-    const averageRating =
-      reviewsData.length > 0
-        ? reviewsData.reduce((sum, r) => sum + r.rating, 0) / reviewsData.length
-        : 0;
-
-    const ratingDistribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-    reviewsData.forEach((review) => {
-      ratingDistribution[review.rating as keyof typeof ratingDistribution]++;
-    });
 
     // 5. CRESCIMENTO
     const [
@@ -364,14 +331,6 @@ const getCachedSystemStats = unstable_cache(
           lessonDurations.length
         : 0;
 
-    const wouldRecommendCount = reviewsData.filter(
-      (r) => r.wouldRecommend
-    ).length;
-    const wouldRecommendRate =
-      reviewsData.length > 0
-        ? (wouldRecommendCount / reviewsData.length) * 100
-        : 0;
-
     const averageTeacherRating = await prisma.teacher.aggregate({
       _avg: { averageRating: true },
     });
@@ -406,13 +365,6 @@ const getCachedSystemStats = unstable_cache(
         pendingAssignments,
         overdueAssignments,
         averageCompletionRate: Math.round(averageCompletionRate * 10) / 10,
-      },
-
-      reviews: {
-        totalReviews,
-        publicReviews,
-        averageRating: Math.round(averageRating * 10) / 10,
-        ratingDistribution,
       },
 
       growth: {
@@ -454,7 +406,6 @@ const getCachedSystemStats = unstable_cache(
           averageTeacherRating:
             Math.round((averageTeacherRating._avg.averageRating || 0) * 10) /
             10,
-          wouldRecommendRate: Math.round(wouldRecommendRate * 10) / 10,
         },
       },
     };

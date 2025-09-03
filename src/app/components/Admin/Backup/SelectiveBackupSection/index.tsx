@@ -28,6 +28,7 @@ import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
+import Checkbox from '@/app/components/Common/Checkbox';
 
 interface SelectiveBackupSectionProps {
   className?: string;
@@ -502,11 +503,12 @@ export default function SelectiveBackupSection({
                       key={collection.name}
                       className="flex items-start space-x-3 p-3 bg-theme-tertiary hover:bg-theme-tertiary rounded-lg cursor-pointer transition-colors"
                     >
-                      <input
+                      <Checkbox
                         type="checkbox"
                         checked={selectedCollections.includes(collection.name)}
                         onChange={() => handleCollectionToggle(collection.name)}
                         className="mt-1 rounded text-brand-primary"
+                        bgCheckbox="bg-theme-elevated"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center space-x-2">

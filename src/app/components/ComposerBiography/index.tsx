@@ -2,16 +2,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-  FiRefreshCw,
-  FiAlertCircle,
-  FiX,
-  FiGlobe,
-  FiZap,
-} from 'react-icons/fi';
+import { FiRefreshCw, FiAlertCircle, FiX } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
 import { useBiographyWithLanguage } from '@/app/hooks/useBiographyWithLanguage';
 
 interface ComposerBiographyProps {
@@ -29,14 +22,11 @@ export default function ComposerBiography({
     isGenerating,
     error,
     warning,
-    metadata,
     generateBiography,
     clearError,
-    refreshBiography, // ✅ Nova função de refresh
   } = useBiographyWithLanguage(composerId, initialBio);
 
   const { t } = useTranslation({ sections: ['pages/composerId'] });
-  const { language } = useLanguageWithRefresh();
 
   // Estado local para controlar a biografia exibida
   const [displayBio, setDisplayBio] = useState(initialBio || '');
@@ -55,11 +45,6 @@ export default function ComposerBiography({
   const handleRetry = () => {
     clearError();
     generateBiography();
-  };
-
-  // Função para forçar refresh manual (botão opcional)
-  const handleManualRefresh = () => {
-    refreshBiography();
   };
 
   // Renderizar estado de loading

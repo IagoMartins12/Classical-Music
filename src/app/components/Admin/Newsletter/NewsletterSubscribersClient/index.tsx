@@ -7,7 +7,6 @@ import {
   FiSearch,
   FiFilter,
   FiDownload,
-  FiMail,
   FiRefreshCw,
   FiEdit,
   FiTrash2,
@@ -15,6 +14,7 @@ import {
   FiCheckCircle,
   FiClock,
   FiXCircle,
+  FiSend,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -33,6 +33,12 @@ import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 import LoadingAdminState from '../../Common/LoadingState';
 import Checkbox from '@/app/components/Common/Checkbox';
+// 🆕 IMPORTAR OS NOVOS MODAIS
+import {
+  SubscriberDetailsModal,
+  EditSubscriberModal,
+  SendEmailModal,
+} from '@/app/components/Admin/Newsletter/SubscriberModals';
 
 interface FilterState {
   status: string;
@@ -87,6 +93,12 @@ export default function NewsletterSubscribersClient() {
     engagement: '',
   });
 
+  // 🆕 ESTADOS PARA OS MODAIS
+  const [selectedSubscriber, setSelectedSubscriber] = useState<any>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showSendEmailModal, setShowSendEmailModal] = useState(false);
+
   useEffect(() => {
     fetchSubscribers(1, filters);
   }, [filters]);
@@ -139,6 +151,60 @@ export default function NewsletterSubscribersClient() {
       await exportSubscribers(filters);
     } catch (error: any) {
       console.error('Erro no export:', error);
+    }
+  };
+
+  // 🆕 HANDLERS PARA OS MODAIS
+  const handleViewDetails = (subscriber: any) => {
+    setSelectedSubscriber(subscriber);
+    setShowDetailsModal(true);
+  };
+
+  const handleEditSubscriber = (subscriber: any) => {
+    setSelectedSubscriber(subscriber);
+    setShowEditModal(true);
+  };
+
+  const handleSendEmail = (subscriber: any) => {
+    setSelectedSubscriber(subscriber);
+    setShowSendEmailModal(true);
+  };
+
+  // 🆕 HANDLER PARA SALVAR EDIÇÕES
+  const handleSaveSubscriber = async (subscriberId: string, data: any) => {
+    try {
+      await updateSubscriber(subscriberId, data);
+      // Refresh da lista
+      fetchSubscribers(pagination?.page || 1, filters);
+    } catch (error: any) {
+      console.error('Erro ao salvar subscriber:', error);
+      throw error;
+    }
+  };
+
+  // 🆕 HANDLER PARA ENVIAR EMAIL
+  const handleSendIndividualEmail = async (
+    subscriberId: string,
+    emailData: any
+  ) => {
+    try {
+      // Implementar chamada para API de envio de email individual
+      const response = await fetch('/api/admin/newsletter/send-individual', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subscriberId,
+          ...emailData,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Erro ao enviar email');
+
+      alert('Email enviado com sucesso!');
+    } catch (error: any) {
+      console.error('Erro ao enviar email:', error);
+      alert('Erro ao enviar email. Tente novamente.');
+      throw error;
     }
   };
 
@@ -542,32 +608,28 @@ export default function NewsletterSubscribersClient() {
                         </td>
                         <td className="py-3 px-2">
                           <div className="flex items-center space-x-1">
+                            {/* 🆕 BOTÕES ATUALIZADOS COM HANDLERS */}
                             <Button
                               variant="ghost"
                               size="sm"
                               leftIcon={<FiEye />}
-                              onClick={() => {
-                                /* Modal de detalhes */
-                              }}
+                              onClick={() => handleViewDetails(subscriber)}
                               title="Ver detalhes"
                             />
                             <Button
                               variant="ghost"
                               size="sm"
                               leftIcon={<FiEdit />}
-                              onClick={() => {
-                                /* Modal de edição */
-                              }}
+                              onClick={() => handleEditSubscriber(subscriber)}
                               title="Editar"
                             />
                             <Button
                               variant="ghost"
                               size="sm"
-                              leftIcon={<FiMail />}
-                              onClick={() => {
-                                /* Enviar email individual */
-                              }}
+                              leftIcon={<FiSend />}
+                              onClick={() => handleSendEmail(subscriber)}
                               title="Enviar email"
+                              className="text-accent-blue hover:text-accent-blue"
                             />
                             <Button
                               variant="ghost"
@@ -646,6 +708,36 @@ export default function NewsletterSubscribersClient() {
           </AnimatedCard>
         </AnimatedContainer>
       </div>
+
+      {/* 🆕 MODAIS */}
+      <SubscriberDetailsModal
+        isOpen={showDetailsModal}
+        onClose={() => {
+          setShowDetailsModal(false);
+          setSelectedSubscriber(null);
+        }}
+        subscriber={selectedSubscriber}
+      />
+
+      <EditSubscriberModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setSelectedSubscriber(null);
+        }}
+        subscriber={selectedSubscriber}
+        onSave={handleSaveSubscriber}
+      />
+
+      <SendEmailModal
+        isOpen={showSendEmailModal}
+        onClose={() => {
+          setShowSendEmailModal(false);
+          setSelectedSubscriber(null);
+        }}
+        subscriber={selectedSubscriber}
+        onSend={handleSendIndividualEmail}
+      />
     </PageContainer>
   );
 }

@@ -35,11 +35,9 @@ import {
 } from '../../components/animation/AnimatedComponents';
 import AboutUsButton from '@/app/components/AboutUsButton';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 export default function AboutPage() {
-  const { t } = useTranslation({ sections: ['pages/about-us'] });
-  const { language } = useLanguageStore();
+  const { t, language } = useTranslation({ sections: ['pages/about-us'] });
   const features = [
     {
       icon: GiMusicalNotes,

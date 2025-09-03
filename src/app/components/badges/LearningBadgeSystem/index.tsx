@@ -21,7 +21,7 @@ import { useCallback } from 'react';
 import { Badge } from '../BadgeSystem';
 import { FaFire } from 'react-icons/fa';
 import { CTAPriority, SmartCTA } from '../FavoritesBadgeSystem';
-import { Language } from '@/app/stores/useLanguageStore';
+import { Language } from '@/app/utils/translations/serverTranslations';
 
 const RARITY_COLORS = {
   COMMON: {

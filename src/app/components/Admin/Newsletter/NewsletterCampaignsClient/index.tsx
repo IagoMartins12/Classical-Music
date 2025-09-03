@@ -13,6 +13,8 @@ import {
   FiCalendar,
   FiMail,
   FiCheckCircle,
+  FiPlay,
+  FiPause,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -29,6 +31,7 @@ import { CampaignStatsModal } from './CampaignStatsModal';
 import { FaFlask } from 'react-icons/fa';
 import SendTestCampaignModal from './SendTestCampaignModal';
 import LoadingAdminState from '../../Common/LoadingState';
+import EditCampaignModal from '../EditCampaignModal';
 
 interface FilterState {
   status: string;
@@ -68,8 +71,9 @@ export default function NewsletterCampaignsClient() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
   const [showStatsModal, setShowStatsModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false); // 🆕 ESTADO PARA MODAL DE EDIÇÃO
 
-  // 🆕 NOVOS ESTADOS para teste
+  // Estados existentes para teste
   const [showTestModal, setShowTestModal] = useState(false);
   const [selectedCampaignForTest, setSelectedCampaignForTest] =
     useState<any>(null);
@@ -119,17 +123,49 @@ export default function NewsletterCampaignsClient() {
     }
   };
 
-  // 🆕 NOVA FUNÇÃO para abrir modal de teste
+  // 🆕 FUNÇÃO PARA ABRIR MODAL DE EDIÇÃO
+  const handleEditCampaign = (campaign: any) => {
+    setSelectedCampaign(campaign);
+    setShowEditModal(true);
+  };
+
+  // 🆕 FUNÇÃO PARA SUCESSO DA EDIÇÃO
+  const handleEditSuccess = () => {
+    fetchCampaigns(campaignsPagination?.page || 1, filters);
+  };
+
+  // Função existente para abrir modal de teste
   const handleSendTest = (campaign: any) => {
     setSelectedCampaignForTest(campaign);
     setShowTestModal(true);
   };
 
-  // 🆕 NOVA FUNÇÃO para sucesso do teste
+  // Função existente para sucesso do teste
   const handleTestSuccess = (result: any) => {
     console.log('Teste enviado com sucesso:', result);
-    // Opcional: mostrar notificação de sucesso
-    // Pode adicionar toast/notification aqui
+  };
+
+  // 🆕 FUNÇÃO PARA PAUSAR/RETOMAR CAMPANHA
+  const handleToggleCampaign = async (campaign: any) => {
+    const action = campaign.status === 'PAUSED' ? 'retomar' : 'pausar';
+    const newStatus = campaign.status === 'PAUSED' ? 'SCHEDULED' : 'PAUSED';
+
+    if (
+      confirm(`Tem certeza que deseja ${action} a campanha "${campaign.name}"?`)
+    ) {
+      try {
+        // Implementar chamada para atualizar status da campanha
+        await fetch(`/api/admin/newsletter/campaigns/${campaign.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus }),
+        });
+
+        fetchCampaigns(campaignsPagination?.page || 1, filters);
+      } catch (error: any) {
+        console.error('Erro ao alterar status da campanha:', error);
+      }
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -173,6 +209,18 @@ export default function NewsletterCampaignsClient() {
     }
   };
 
+  // 🆕 FUNÇÃO PARA DETERMINAR SE PODE EDITAR
+  const canEdit = (campaign: any) => {
+    return ['DRAFT', 'SCHEDULED', 'PAUSED', 'CANCELLED', 'FAILED'].includes(
+      campaign.status
+    );
+  };
+
+  // 🆕 FUNÇÃO PARA DETERMINAR SE PODE PAUSAR/RETOMAR
+  const canTogglePause = (campaign: any) => {
+    return ['SCHEDULED', 'PAUSED'].includes(campaign.status);
+  };
+
   if (campaignsLoading && campaigns.length === 0) {
     return (
       <PageContainer showBackground={true}>
@@ -206,7 +254,7 @@ export default function NewsletterCampaignsClient() {
             </div>
           </AnimatedItem>
 
-          {/* 🆕 Stats Cards Atualizadas */}
+          {/* Stats Cards Atualizadas */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6">
             {/* Total */}
             <AnimatedCard className="classical-card p-6">
@@ -253,7 +301,7 @@ export default function NewsletterCampaignsClient() {
               </div>
             </AnimatedCard>
 
-            {/* 🆕 Prontas para Teste */}
+            {/* Prontas para Teste */}
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -395,7 +443,9 @@ export default function NewsletterCampaignsClient() {
                               {campaign.subject}
                             </p>
                             <div className="flex items-center space-x-2 text-xs text-theme-tertiary mt-1">
-                              <span>{campaign.template.name}</span>
+                              <span>
+                                {campaign.template?.name || 'Sem template'}
+                              </span>
                               <span>•</span>
                               <span>por Admin</span>
                             </div>
@@ -466,7 +516,7 @@ export default function NewsletterCampaignsClient() {
                           </div>
                         </td>
 
-                        {/* 🆕 AÇÕES ATUALIZADAS COM BOTÃO DE TESTE */}
+                        {/* 🆕 AÇÕES ATUALIZADAS COM BOTÃO DE EDIÇÃO */}
                         <td className="py-3 px-2">
                           <div className="flex items-center space-x-1">
                             {/* Estatísticas */}
@@ -481,7 +531,19 @@ export default function NewsletterCampaignsClient() {
                               title="Ver estatísticas"
                             />
 
-                            {/* 🆕 NOVO: Envio de Teste */}
+                            {/* 🆕 EDITAR (apenas para campanhas editáveis) */}
+                            {canEdit(campaign) && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                leftIcon={<FiEdit />}
+                                onClick={() => handleEditCampaign(campaign)}
+                                title="Editar campanha"
+                                className="text-accent-blue hover:text-accent-blue"
+                              />
+                            )}
+
+                            {/* Envio de Teste */}
                             {(campaign.status === 'DRAFT' ||
                               campaign.status === 'SCHEDULED') && (
                               <Button
@@ -494,16 +556,25 @@ export default function NewsletterCampaignsClient() {
                               />
                             )}
 
-                            {/* Editar */}
-                            {campaign.status === 'DRAFT' && (
+                            {/* 🆕 PAUSAR/RETOMAR */}
+                            {canTogglePause(campaign) && (
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                leftIcon={<FiEdit />}
-                                onClick={() => {
-                                  /* Modal de edição - implementar se necessário */
-                                }}
-                                title="Editar"
+                                leftIcon={
+                                  campaign.status === 'PAUSED' ? (
+                                    <FiPlay />
+                                  ) : (
+                                    <FiPause />
+                                  )
+                                }
+                                onClick={() => handleToggleCampaign(campaign)}
+                                title={
+                                  campaign.status === 'PAUSED'
+                                    ? 'Retomar'
+                                    : 'Pausar'
+                                }
+                                className="text-accent-amber hover:text-accent-amber"
                               />
                             )}
 
@@ -606,7 +677,7 @@ export default function NewsletterCampaignsClient() {
         </AnimatedContainer>
       </div>
 
-      {/* Modals Existentes */}
+      {/* Modais Existentes */}
       {showCreateModal && (
         <CreateCampaignModal
           onClose={() => setShowCreateModal(false)}
@@ -627,7 +698,20 @@ export default function NewsletterCampaignsClient() {
         />
       )}
 
-      {/* 🆕 NOVO: Modal de Envio de Teste */}
+      {/* 🆕 MODAL DE EDIÇÃO */}
+      {showEditModal && selectedCampaign && (
+        <EditCampaignModal
+          isOpen={showEditModal}
+          onClose={() => {
+            setShowEditModal(false);
+            setSelectedCampaign(null);
+          }}
+          campaign={selectedCampaign}
+          onSuccess={handleEditSuccess}
+        />
+      )}
+
+      {/* Modal de Envio de Teste */}
       {showTestModal && selectedCampaignForTest && (
         <SendTestCampaignModal
           isOpen={showTestModal}

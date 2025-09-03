@@ -39,7 +39,6 @@ import VerificationButton from '../../../components/Verification/VerificationBut
 import EditButton from '../../../components/Common/EditButton';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import { translateRole } from '@/app/components/UploadsPage/modals/CreateComposerModal';
 
 interface ComposerDetailsClientProps {
@@ -59,9 +58,7 @@ export default function ComposerDetailsClient({
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [isVerified, setIsVerified] = useState(composer.isVerified || false);
 
-  console.log('COMPOSER', composer);
-  const { t } = useTranslation({ sections: ['pages/composerId'] });
-  const { language } = useLanguageStore();
+  const { t, language } = useTranslation({ sections: ['pages/composerId'] });
 
   const handleVerificationChange = (verified: boolean) => {
     setIsVerified(verified);

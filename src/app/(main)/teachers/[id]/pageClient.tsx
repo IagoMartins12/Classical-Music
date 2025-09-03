@@ -22,7 +22,6 @@ import {
   FiTrendingUp,
   FiTarget,
   FiBookOpen,
-  FiThumbsUp,
   FiShare2,
   FiFlag,
 } from 'react-icons/fi';
@@ -30,7 +29,6 @@ import {
   AnimatedContainer,
   AnimatedCard,
   AnimatedItem,
-  SequentialGrid,
 } from '../../../components/animation/AnimatedComponents';
 
 interface PublicTeacherDetailsPageClientProps {
@@ -41,7 +39,6 @@ export default function PublicTeacherDetailsPageClient({
   teacher,
 }: PublicTeacherDetailsPageClientProps) {
   const [imageError, setImageError] = useState(false);
-  const [showAllReviews, setShowAllReviews] = useState(false);
   const [showFullBio, setShowFullBio] = useState(false);
 
   // Handle WhatsApp contact
@@ -90,10 +87,6 @@ export default function PublicTeacherDetailsPageClient({
       navigator.clipboard.writeText(window.location.href);
     }
   }, [teacher.name]);
-
-  const reviewsToShow = showAllReviews
-    ? teacher.studentTestimonials
-    : teacher.studentTestimonials.slice(0, 6);
 
   const bioToShow = showFullBio
     ? teacher.fullBio
@@ -557,126 +550,6 @@ export default function PublicTeacherDetailsPageClient({
               )}
             </div>
           </AnimatedCard>
-
-          {/* Avaliações dos Alunos */}
-          {teacher.studentTestimonials.length > 0 && (
-            <AnimatedCard hover="lift" className="classical-card">
-              <div className="p-8">
-                <AnimatedItem direction="up" springType="bouncy">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-2xl flex items-center justify-center">
-                        <FiThumbsUp className="w-6 h-6 text-theme-primary" />
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                          Avaliações dos Alunos
-                        </h2>
-                        <p className="text-theme-secondary classical-subtitle">
-                          {teacher.totalReviews} avaliação
-                          {teacher.totalReviews !== 1 ? 'ões' : ''}
-                          {teacher.averageRating && (
-                            <span className="ml-2">
-                              • Média {teacher.averageRating.toFixed(1)} ⭐
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Breakdown de Ratings */}
-                    {teacher.averageRating && (
-                      <div className="text-right">
-                        <div className="flex items-center space-x-1">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <FiStar
-                              key={i}
-                              className={`w-5 h-5 ${
-                                i < Math.floor(teacher.averageRating!)
-                                  ? 'text-accent-yellow'
-                                  : 'text-theme-tertiary'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </AnimatedItem>
-
-                {/* Grid de Avaliações */}
-                <SequentialGrid cols={2} gap={6} delayBetweenItems={0.1}>
-                  {reviewsToShow.map((review) => (
-                    <AnimatedItem
-                      key={review.id}
-                      hover="lift"
-                      springType="bouncy"
-                    >
-                      <div className="bg-gradient-to-br from-theme-elevated to-interactive-hover p-6 rounded-xl border border-theme-primary">
-                        <div className="flex items-start justify-between mb-4">
-                          <div>
-                            <div className="flex items-center space-x-2 mb-1">
-                              <div className="flex items-center space-x-1">
-                                {Array.from({ length: review.rating }).map(
-                                  (_, i) => (
-                                    <FiStar
-                                      key={i}
-                                      className="w-4 h-4 text-accent-yellow"
-                                    />
-                                  )
-                                )}
-                              </div>
-                              <span className="text-sm font-medium text-theme-primary">
-                                {review.studentName}
-                              </span>
-                            </div>
-                            {review.relationshipDuration && (
-                              <p className="text-xs text-theme-tertiary">
-                                Aluno há {review.relationshipDuration}
-                              </p>
-                            )}
-                          </div>
-                          <div className="text-xs text-theme-tertiary">
-                            {new Date(review.createdAt).toLocaleDateString(
-                              'pt-BR'
-                            )}
-                          </div>
-                        </div>
-
-                        <p className="text-theme-secondary mb-3 leading-relaxed">
-                          &quot;{review.comment}&quot;
-                        </p>
-
-                        {review.wouldRecommend && (
-                          <div className="flex items-center space-x-2 text-accent-green">
-                            <FiThumbsUp className="w-4 h-4" />
-                            <span className="text-sm font-medium">
-                              Recomenda este professor
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </AnimatedItem>
-                  ))}
-                </SequentialGrid>
-
-                {teacher.studentTestimonials.length > 6 && (
-                  <AnimatedItem direction="up" springType="gentle">
-                    <div className="text-center mt-6">
-                      <button
-                        onClick={() => setShowAllReviews(!showAllReviews)}
-                        className="btn-classical-secondary"
-                      >
-                        {showAllReviews
-                          ? 'Ver menos avaliações'
-                          : `Ver todas as ${teacher.studentTestimonials.length} avaliações`}
-                      </button>
-                    </div>
-                  </AnimatedItem>
-                )}
-              </div>
-            </AnimatedCard>
-          )}
 
           {/* Informações de Contato */}
           <AnimatedCard hover="lift" className="classical-card">

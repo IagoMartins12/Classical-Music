@@ -49,7 +49,6 @@ import {
   type ProgressMilestones,
 } from '@/app/utils/progressMilestones';
 import { useLearnedVideo } from '@/app/hooks/useLearnedVideo';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 const LearningModal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -39,16 +39,6 @@ export interface PublicTeacher {
   completionRate?: number;
   teachingSince: Date;
   yearsExperience: number;
-
-  // Preview data
-  recentReviews: Array<{
-    id: string;
-    rating: number;
-    comment?: string;
-    studentName: string;
-    createdAt: Date;
-    wouldRecommend: boolean;
-  }>;
 }
 
 export interface TeacherFilters {
@@ -80,20 +70,6 @@ export interface TeacherDetailedProfile extends PublicTeacher {
   // Extended details
   fullBio: string;
   teachingPhilosophy?: string;
-  studentTestimonials: Array<{
-    id: string;
-    rating: number;
-    comment: string;
-    studentName: string;
-    relationshipDuration?: string;
-    lessonsCount?: number;
-    wouldRecommend: boolean;
-    teachingQuality?: number;
-    communication?: number;
-    punctuality?: number;
-    patience?: number;
-    createdAt: Date;
-  }>;
 
   // Extended stats
   monthlyStats: Array<{
@@ -101,7 +77,6 @@ export interface TeacherDetailedProfile extends PublicTeacher {
     year: number;
     newStudents: number;
     completedLessons: number;
-    avgRating: number;
   }>;
 
   // Rating breakdown
@@ -250,26 +225,6 @@ export const getPublicTeachers = unstable_cache(
                 createdAt: true,
               },
             },
-            reviews: {
-              where: {
-                isPublic: true,
-                isModerated: false,
-              },
-              include: {
-                student: {
-                  include: {
-                    user: {
-                      select: {
-                        firstName: true,
-                        lastName: true,
-                      },
-                    },
-                  },
-                },
-              },
-              orderBy: { createdAt: 'desc' },
-              take: 3,
-            },
           },
           orderBy,
           take: limit,
@@ -324,16 +279,6 @@ export const getPublicTeachers = unstable_cache(
           completionRate: teacher.completionRate || undefined,
           teachingSince: teacher.createdAt,
           yearsExperience: Math.max(1, yearsExperience),
-
-          // Recent reviews (anonymized)
-          recentReviews: teacher.reviews.map((review) => ({
-            id: review.id,
-            rating: review.rating,
-            comment: review.comment || undefined,
-            studentName: `${review.student.user.firstName?.charAt(0)}***`,
-            createdAt: review.createdAt,
-            wouldRecommend: review.wouldRecommend,
-          })),
         };
       });
 
@@ -528,25 +473,6 @@ export const getPublicTeacherDetails = unstable_cache(
               createdAt: true,
             },
           },
-          reviews: {
-            where: {
-              isPublic: true,
-              isModerated: false,
-            },
-            include: {
-              student: {
-                include: {
-                  user: {
-                    select: {
-                      firstName: true,
-                      lastName: true,
-                    },
-                  },
-                },
-              },
-            },
-            orderBy: { createdAt: 'desc' },
-          },
         },
       });
 
@@ -564,9 +490,6 @@ export const getPublicTeacherDetails = unstable_cache(
 
       // Calculate rating breakdown
       const ratingBreakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-      teacher.reviews.forEach((review) => {
-        ratingBreakdown[review.rating as keyof typeof ratingBreakdown]++;
-      });
 
       // Get monthly stats for last 6 months
       const monthlyStats = [];
@@ -581,36 +504,26 @@ export const getPublicTeacherDetails = unstable_cache(
         monthEnd.setDate(0);
         monthEnd.setHours(23, 59, 59, 999);
 
-        const [newStudents, completedLessons, monthReviews] = await Promise.all(
-          [
-            prisma.teacherStudent.count({
-              where: {
-                teacherId: teacher.id,
-              },
-            }),
-            prisma.lesson.count({
-              where: {
-                teacherId: teacher.id,
-                status: 'COMPLETED',
-                scheduledAt: { gte: monthStart, lte: monthEnd },
-              },
-            }),
-            prisma.teacherReview.aggregate({
-              where: {
-                teacherId: teacher.id,
-                createdAt: { gte: monthStart, lte: monthEnd },
-              },
-              _avg: { rating: true },
-            }),
-          ]
-        );
+        const [newStudents, completedLessons] = await Promise.all([
+          prisma.teacherStudent.count({
+            where: {
+              teacherId: teacher.id,
+            },
+          }),
+          prisma.lesson.count({
+            where: {
+              teacherId: teacher.id,
+              status: 'COMPLETED',
+              scheduledAt: { gte: monthStart, lte: monthEnd },
+            },
+          }),
+        ]);
 
         monthlyStats.push({
           month: monthStart.toLocaleDateString('pt-BR', { month: 'short' }),
           year: monthStart.getFullYear(),
           newStudents,
           completedLessons,
-          avgRating: monthReviews._avg.rating || 0,
         });
       }
 
@@ -653,22 +566,6 @@ export const getPublicTeacherDetails = unstable_cache(
         teachingSince: teacher.createdAt,
         yearsExperience: Math.max(1, yearsExperience),
 
-        // Extended details
-        studentTestimonials: teacher.reviews.map((review) => ({
-          id: review.id,
-          rating: review.rating,
-          comment: review.comment || '',
-          studentName: `${review.student.user.firstName?.charAt(0)}***`,
-          relationshipDuration: review.relationshipDuration || undefined,
-          lessonsCount: review.lessonsCount || undefined,
-          wouldRecommend: review.wouldRecommend,
-          teachingQuality: review.teachingQuality || undefined,
-          communication: review.communication || undefined,
-          punctuality: review.punctuality || undefined,
-          patience: review.patience || undefined,
-          createdAt: review.createdAt,
-        })),
-
         monthlyStats,
         ratingBreakdown,
 
@@ -682,16 +579,6 @@ export const getPublicTeacherDetails = unstable_cache(
           maxStudentsPerWeek: teacher.maxStudentsPerWeek,
           defaultLessonDuration: teacher.defaultLessonDuration,
         },
-
-        // Recent reviews for preview
-        recentReviews: teacher.reviews.slice(0, 3).map((review) => ({
-          id: review.id,
-          rating: review.rating,
-          comment: review.comment || undefined,
-          studentName: `${review.student.user.firstName?.charAt(0)}***`,
-          createdAt: review.createdAt,
-          wouldRecommend: review.wouldRecommend,
-        })),
       };
 
       console.log(

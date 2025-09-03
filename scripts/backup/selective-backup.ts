@@ -7,17 +7,29 @@ const prisma = new PrismaClient();
 
 // Lista de todos os models do seu schema na ordem correta para backup seletivo
 const COLLECTION_DEPENDENCIES: { [key: string]: string[] } = {
-  // Tabelas independentes primeiro
+  // ==========================================
+  // TABELAS INDEPENDENTES (PRIMEIRA CAMADA)
+  // ==========================================
   user: [],
   epoch: [],
   role: [],
   instrument: [],
   workGenre: [],
 
-  // Tabelas com dependências
+  // ==========================================
+  // SEGUNDA CAMADA - DEPENDEM DAS BÁSICAS
+  // ==========================================
   composer: ['epoch', 'role', 'user'],
+
+  // ==========================================
+  // TERCEIRA CAMADA - CONTEÚDO PRINCIPAL
+  // ==========================================
   work: ['composer', 'epoch', 'instrument', 'user'],
   workScore: ['work'],
+
+  // ==========================================
+  // DADOS DO USUÁRIO E RELACIONAMENTOS
+  // ==========================================
   userInstrument: ['user', 'instrument'],
   annotation: ['user', 'work'],
   workAnnotation: ['user', 'work'],
@@ -26,24 +38,70 @@ const COLLECTION_DEPENDENCIES: { [key: string]: string[] } = {
   favoriteScore: ['user', 'work'],
   wantToLearn: ['user', 'work'],
   learned: ['user', 'work'],
-  scoreBookmark: ['user', 'work'],
+
+  // ==========================================
+  // SISTEMA PROFESSOR-ALUNO (🆕 ADICIONADO)
+  // ==========================================
+  teacher: ['user'], // Professor depende de User
+  student: ['user'], // Aluno depende de User
+  teacherStudent: ['teacher', 'student'], // Relacionamento professor-aluno
+  lesson: ['teacher', 'student'], // Aulas dependem de professor e aluno
+  assignment: ['lesson', 'student'], // Tarefas dependem de aula e aluno
+
+  // ==========================================
+  // RELATÓRIOS COMPARTILHADOS (🆕 ADICIONADO)
+  // ==========================================
+  sharedProgressReport: ['teacher', 'student'], // Relatórios compartilhados
+  sharedReportComment: ['sharedProgressReport', 'student'], // Comentários nos relatórios
+
+  // ==========================================
+  // NOTIFICAÇÕES E ATIVIDADES (🆕 ADICIONADO)
+  // ==========================================
+  notification: ['user'], // Notificações pertencem a usuários
+  schoolActivity: ['user'], // Atividades pertencem a usuários
+
+  // ==========================================
+  // SISTEMA DE CONQUISTAS (🆕 ADICIONADO)
+  // ==========================================
+  userAchievement: ['user'], // Conquistas dos usuários
+  achievementProgress: ['user'], // Progresso das conquistas
+
+  // ==========================================
+  // INTERAÇÕES E VOTOS
+  // ==========================================
   annotationHelpfulVote: ['user', 'workAnnotation'],
   scoreFavoriteStats: ['work'],
+
+  // ==========================================
+  // SISTEMA DE CONTROLE E MODERAÇÃO
+  // ==========================================
   uploadHistory: ['user'],
   uploadModeration: ['user'],
   generatedReport: ['user'],
-  advertisement: ['user', 'instrument'],
-  adStats: ['advertisement', 'user'],
-  newsletterSubscriber: ['user'],
-  newsletterTemplate: [],
-  newsletterCampaign: ['newsletterTemplate'],
-  newsletterCampaignSend: ['newsletterCampaign', 'newsletterSubscriber'],
-  newsletterEmailEvent: ['newsletterSubscriber', 'newsletterCampaign'],
-  testEmailList: [],
-  templateFragment: [],
-  userToken: ['user'],
-  account: ['user'],
-  session: ['user'],
+
+  // ==========================================
+  // SISTEMA DE PUBLICIDADE
+  // ==========================================
+  advertisement: ['user', 'instrument'], // Anúncios podem ter targeting por instrumento
+  adStats: ['advertisement', 'user'], // Estatísticas dos anúncios
+
+  // ==========================================
+  // SISTEMA DE NEWSLETTER
+  // ==========================================
+  newsletterSubscriber: ['user'], // Inscritos podem estar linkados a usuários
+  newsletterTemplate: [], // Templates são independentes
+  newsletterCampaign: ['newsletterTemplate'], // Campanhas usam templates
+  newsletterCampaignSend: ['newsletterCampaign', 'newsletterSubscriber'], // Envios ligam campanha com inscrito
+  newsletterEmailEvent: ['newsletterSubscriber', 'newsletterCampaign'], // Eventos de email
+  testEmailList: [], // Listas de teste são independentes
+  templateFragment: [], // Fragmentos são independentes
+
+  // ==========================================
+  // SISTEMA DE AUTENTICAÇÃO (🆕 ADICIONADO)
+  // ==========================================
+  account: ['user'], // Contas OAuth dos usuários
+  session: ['user'], // Sessões dos usuários
+  userToken: ['user'], // Tokens de confirmação/reset
 };
 
 interface SelectiveBackupOptions {

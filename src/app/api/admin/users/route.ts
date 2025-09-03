@@ -1,4 +1,3 @@
-// app/api/admin/users/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -6,6 +5,8 @@ import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 import { sendTemplateEmail } from '@/app/libs/newsletter/email';
 import { createToken } from '@/app/libs/tokenUtils';
+import { getPeriodDate } from '@/app/utils/adminUtils';
+import type { TimePeriod } from '@/app/components/Admin/Common/PeriodSelector';
 
 export interface UserListFilters {
   search?: string;
@@ -20,6 +21,7 @@ export interface UserListFilters {
   hasAnnotations?: boolean;
   hasModerations?: boolean;
   role?: number;
+  period?: TimePeriod;
 }
 
 interface UserAnalytics {
@@ -28,11 +30,16 @@ interface UserAnalytics {
     today: number;
     thisWeek: number;
     thisMonth: number;
+    period: number;
+    growthRate: number;
   };
   newUsers: {
     today: number;
     thisWeek: number;
     thisMonth: number;
+    period: number;
+    recentlyAdded: number;
+    growthRate: number;
   };
   userTypes: Array<{
     type: string;
@@ -57,6 +64,10 @@ interface UserAnalytics {
     averageAnnotationsPerUser: number;
     averageUploadsPerUser: number;
   };
+  retentionRate: number;
+  retentionGrowth: number;
+  activityRate: number;
+  contributorsPercentage: number;
 }
 
 const exportUsersToCSV = async (filters: UserListFilters) => {
@@ -71,11 +82,10 @@ const exportUsersToCSV = async (filters: UserListFilters) => {
       'Tipo de Usuário',
       'Nível de Experiência',
       'Role',
-      'Tempo de Estudo (min)',
       'Anotações',
       'Uploads',
       'Score Upload',
-      'Moderações Feitas', // ✅ NOVA COLUNA
+      'Moderações Feitas',
       'Data de Cadastro',
       'Última Atividade',
       'Perfil Público',
@@ -93,7 +103,7 @@ const exportUsersToCSV = async (filters: UserListFilters) => {
       user.annotationsCount.toString(),
       user.uploadsCount.toString(),
       user.uploadScore.toString(),
-      user.moderationsCount?.toString() || '0', // ✅ INCLUIR NO CSV
+      user.moderationsCount?.toString() || '0',
       user.createdAt.toISOString(),
       user.lastActive.toISOString(),
       user.isProfilePublic ? 'Sim' : 'Não',
@@ -116,163 +126,276 @@ const exportUsersToCSV = async (filters: UserListFilters) => {
   }
 };
 
-// Cache das estatísticas de usuários por 5 minutos
-const getCachedUserAnalytics = unstable_cache(
-  async (): Promise<UserAnalytics> => {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const thisWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const thisMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+// Cache das estatísticas de usuários com período
+const getCachedUserAnalytics = (period: TimePeriod) =>
+  unstable_cache(
+    async (): Promise<UserAnalytics> => {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const thisWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const thisMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      const periodStart = getPeriodDate(period);
 
-    // Buscar dados básicos em paralelo para performance
-    const [
-      totalUsers,
-      activeUsersToday,
-      activeUsersWeek,
-      activeUsersMonth,
-      newUsersToday,
-      newUsersWeek,
-      newUsersMonth,
-    ] = await Promise.all([
-      prisma.user.count(),
-      prisma.user.count({
-        where: { updatedAt: { gte: today } },
-      }),
-      prisma.user.count({
-        where: { updatedAt: { gte: thisWeek } },
-      }),
-      prisma.user.count({
-        where: { updatedAt: { gte: thisMonth } },
-      }),
-      prisma.user.count({
-        where: { createdAt: { gte: today } },
-      }),
-      prisma.user.count({
-        where: { createdAt: { gte: thisWeek } },
-      }),
-      prisma.user.count({
-        where: { createdAt: { gte: thisMonth } },
-      }),
-    ]);
+      // Data para comparação de crescimento (período anterior)
+      const periodLength = periodStart
+        ? now.getTime() - periodStart.getTime()
+        : 30 * 24 * 60 * 60 * 1000;
+      const previousPeriodStart = new Date(now.getTime() - 2 * periodLength);
+      const previousPeriodEnd = periodStart || thisMonth;
 
-    // Tipos de usuários com tratamento de valores nulos
-    const userTypeData = await prisma.user.groupBy({
-      by: ['userType'],
-      _count: { id: true },
-    });
-
-    const userTypes = userTypeData.map((item) => ({
-      type: item.userType || 'CASUAL_USER',
-      count: item._count.id,
-      percentage: totalUsers > 0 ? (item._count.id / totalUsers) * 100 : 0,
-    }));
-
-    // Top contribuidores - apenas usuários com atividade real
-    const topContributors = await prisma.user.findMany({
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        email: true,
-        totalUploads: true,
-        uploadScore: true,
-        totalAnnotationsCount: true,
-        role: true,
-      },
-      where: {
-        OR: [{ totalUploads: { gt: 0 } }, { totalAnnotationsCount: { gt: 0 } }],
-      },
-      orderBy: [{ uploadScore: 'desc' }, { totalAnnotationsCount: 'desc' }],
-      take: 10,
-    });
-
-    // Crescimento de usuários (últimos 14 dias para ter dados mais estáveis)
-    const userGrowth = await Promise.all(
-      Array.from({ length: 14 }, async (_, i) => {
-        const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-        const nextDay = new Date(date.getTime() + 24 * 60 * 60 * 1000);
-
-        const [newUsers, activeUsers, totalUsersUpToDate] = await Promise.all([
-          prisma.user.count({
-            where: {
-              createdAt: {
-                gte: date,
-                lt: nextDay,
-              },
+      // Buscar dados básicos em paralelo para performance
+      const [
+        totalUsers,
+        activeUsersToday,
+        activeUsersWeek,
+        activeUsersMonth,
+        activeUsersPeriod,
+        newUsersToday,
+        newUsersWeek,
+        newUsersMonth,
+        newUsersPeriod,
+        newUsersPreviousPeriod,
+        activeUsersPreviousPeriod,
+      ] = await Promise.all([
+        prisma.user.count(),
+        prisma.user.count({
+          where: { updatedAt: { gte: today } },
+        }),
+        prisma.user.count({
+          where: { updatedAt: { gte: thisWeek } },
+        }),
+        prisma.user.count({
+          where: { updatedAt: { gte: thisMonth } },
+        }),
+        periodStart
+          ? prisma.user.count({
+              where: { updatedAt: { gte: periodStart } },
+            })
+          : prisma.user.count({
+              where: { updatedAt: { gte: thisMonth } },
+            }),
+        prisma.user.count({
+          where: { createdAt: { gte: today } },
+        }),
+        prisma.user.count({
+          where: { createdAt: { gte: thisWeek } },
+        }),
+        prisma.user.count({
+          where: { createdAt: { gte: thisMonth } },
+        }),
+        periodStart
+          ? prisma.user.count({
+              where: { createdAt: { gte: periodStart } },
+            })
+          : prisma.user.count({
+              where: { createdAt: { gte: thisMonth } },
+            }),
+        // Período anterior para comparação de crescimento
+        prisma.user.count({
+          where: {
+            createdAt: {
+              gte: previousPeriodStart,
+              lt: previousPeriodEnd,
             },
-          }),
-          prisma.user.count({
-            where: {
-              updatedAt: {
-                gte: date,
-                lt: nextDay,
-              },
+          },
+        }),
+        prisma.user.count({
+          where: {
+            updatedAt: {
+              gte: previousPeriodStart,
+              lt: previousPeriodEnd,
             },
-          }),
-          prisma.user.count({
-            where: {
-              createdAt: { lte: date },
-            },
-          }),
-        ]);
+          },
+        }),
+      ]);
 
-        return {
-          date: date.toISOString().split('T')[0],
-          newUsers,
-          activeUsers,
-          totalUsers: totalUsersUpToDate,
-        };
-      })
-    );
+      // Calcular taxas de crescimento
+      const newUsersGrowthRate =
+        newUsersPreviousPeriod > 0
+          ? ((newUsersPeriod - newUsersPreviousPeriod) /
+              newUsersPreviousPeriod) *
+            100
+          : 0;
 
-    // Métricas de engajamento reais
-    const [avgAnnotationsPerUser, avgUploadsPerUser] = await Promise.all([
-      prisma.user.aggregate({
-        _avg: { totalAnnotationsCount: true },
-      }),
-      prisma.user.aggregate({
-        _avg: { totalUploads: true },
-      }),
-    ]);
+      const activeUsersGrowthRate =
+        activeUsersPreviousPeriod > 0
+          ? ((activeUsersPeriod - activeUsersPreviousPeriod) /
+              activeUsersPreviousPeriod) *
+            100
+          : 0;
 
-    return {
-      totalUsers,
-      activeUsers: {
-        today: activeUsersToday,
-        thisWeek: activeUsersWeek,
-        thisMonth: activeUsersMonth,
-      },
-      newUsers: {
-        today: newUsersToday,
-        thisWeek: newUsersWeek,
-        thisMonth: newUsersMonth,
-      },
-      userTypes,
-      topContributors: topContributors.map((user) => ({
-        id: user.id,
-        name:
-          `${user.firstName || ''} ${user.lastName || ''}`.trim() ||
-          user.email ||
-          'Usuário',
-        email: user.email || '',
-        totalUploads: user.totalUploads,
-        uploadScore: user.uploadScore,
-        annotationsCount: user.totalAnnotationsCount,
-      })),
-      userGrowth: userGrowth.reverse(),
-      engagementMetrics: {
-        averageAnnotationsPerUser:
-          avgAnnotationsPerUser._avg.totalAnnotationsCount || 0,
-        averageUploadsPerUser: avgUploadsPerUser._avg.totalUploads || 0,
-      },
-    };
-  },
-  ['admin-user-analytics'],
-  { revalidate: 300 } // 5 minutos
-);
+      // Tipos de usuários com tratamento de valores nulos
+      const userTypeData = await prisma.user.groupBy({
+        by: ['userType'],
+        _count: { id: true },
+        where: periodStart ? { createdAt: { gte: periodStart } } : {},
+      });
+
+      const userTypes = userTypeData.map((item) => ({
+        type: item.userType || 'CASUAL_USER',
+        count: item._count.id,
+        percentage: totalUsers > 0 ? (item._count.id / totalUsers) * 100 : 0,
+      }));
+
+      // Top contribuidores no período
+      const topContributors = await prisma.user.findMany({
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          totalUploads: true,
+          uploadScore: true,
+          totalAnnotationsCount: true,
+        },
+        where: {
+          OR: [
+            { totalUploads: { gt: 0 } },
+            { totalAnnotationsCount: { gt: 0 } },
+          ],
+          ...(periodStart && { createdAt: { gte: periodStart } }),
+        },
+        orderBy: [{ uploadScore: 'desc' }, { totalAnnotationsCount: 'desc' }],
+        take: 10,
+      });
+
+      // Crescimento de usuários baseado no período selecionado
+      const timelineDays =
+        period === '7d'
+          ? 7
+          : period === '30d'
+          ? 30
+          : period === '3m'
+          ? 90
+          : period === '6m'
+          ? 180
+          : period === '1y'
+          ? 365
+          : 30;
+      const groupByDays = timelineDays > 90 ? 7 : timelineDays > 30 ? 3 : 1; // Agrupar por semana se > 90 dias
+
+      const userGrowth = await Promise.all(
+        Array.from({ length: Math.min(timelineDays, 30) }, async (_, i) => {
+          const date = new Date(
+            now.getTime() - i * groupByDays * 24 * 60 * 60 * 1000
+          );
+          const nextDate = new Date(
+            date.getTime() + groupByDays * 24 * 60 * 60 * 1000
+          );
+
+          const [newUsers, activeUsers, totalUsersUpToDate] = await Promise.all(
+            [
+              prisma.user.count({
+                where: {
+                  createdAt: {
+                    gte: date,
+                    lt: nextDate,
+                  },
+                },
+              }),
+              prisma.user.count({
+                where: {
+                  updatedAt: {
+                    gte: date,
+                    lt: nextDate,
+                  },
+                },
+              }),
+              prisma.user.count({
+                where: {
+                  createdAt: { lte: date },
+                },
+              }),
+            ]
+          );
+
+          return {
+            date: date.toISOString().split('T')[0],
+            newUsers,
+            activeUsers,
+            totalUsers: totalUsersUpToDate,
+          };
+        })
+      );
+
+      // Métricas de engajamento e retenção
+      const [
+        avgAnnotationsPerUser,
+        avgUploadsPerUser,
+        usersWithUploads,
+      ] = await Promise.all([
+        prisma.user.aggregate({
+          _avg: { totalAnnotationsCount: true },
+          where: periodStart ? { createdAt: { gte: periodStart } } : {},
+        }),
+        prisma.user.aggregate({
+          _avg: { totalUploads: true },
+          where: periodStart ? { createdAt: { gte: periodStart } } : {},
+        }),
+        prisma.user.count({
+          where: {
+            totalUploads: { gt: 0 },
+            ...(periodStart && { createdAt: { gte: periodStart } }),
+          },
+        }),
+     
+      ]);
+
+      // Calcular métricas derivadas
+      const totalPeriodUsers = periodStart ? newUsersPeriod : totalUsers;
+      const retentionRate =
+        totalPeriodUsers > 0 ? (activeUsersPeriod / totalPeriodUsers) * 100 : 0;
+      const activityRate =
+        totalUsers > 0 ? (activeUsersPeriod / totalUsers) * 100 : 0;
+      const contributorsPercentage =
+        totalUsers > 0 ? (usersWithUploads / totalUsers) * 100 : 0;
+
+      return {
+        totalUsers,
+        activeUsers: {
+          today: activeUsersToday,
+          thisWeek: activeUsersWeek,
+          thisMonth: activeUsersMonth,
+          period: activeUsersPeriod,
+          growthRate: activeUsersGrowthRate,
+        },
+        newUsers: {
+          today: newUsersToday,
+          thisWeek: newUsersWeek,
+          thisMonth: newUsersMonth,
+          period: newUsersPeriod,
+          recentlyAdded: newUsersPeriod,
+          growthRate: newUsersGrowthRate,
+        },
+        userTypes,
+        topContributors: topContributors.map((user) => ({
+          id: user.id,
+          name:
+            `${user.firstName || ''} ${user.lastName || ''}`.trim() ||
+            user.email ||
+            'Usuário',
+          email: user.email || '',
+          totalUploads: user.totalUploads,
+          uploadScore: user.uploadScore,
+          annotationsCount: user.totalAnnotationsCount,
+        })),
+        userGrowth: userGrowth.reverse(),
+        engagementMetrics: {
+          averageAnnotationsPerUser:
+            avgAnnotationsPerUser._avg.totalAnnotationsCount || 0,
+          averageUploadsPerUser: avgUploadsPerUser._avg.totalUploads || 0,
+        },
+        retentionRate,
+        retentionGrowth: 0, // Poderia calcular crescimento da retenção se necessário
+        activityRate,
+        contributorsPercentage,
+      };
+    },
+    [`admin-user-analytics-${period}`],
+    { revalidate: 300 } // 5 minutos
+  );
 
 // Buscar lista de usuários com filtros otimizada
-// Buscar lista de usuários com filtros otimizada - ATUALIZADA
 const getUsersList = async (filters: UserListFilters) => {
   const {
     search,
@@ -286,12 +409,19 @@ const getUsersList = async (filters: UserListFilters) => {
     hasUploads,
     hasAnnotations,
     hasModerations,
+    period = '30d',
   } = filters;
 
   const skip = (page - 1) * limit;
-
-  // Construir WHERE clause de forma mais eficiente
   const whereClause: any = {};
+
+  // Aplicar filtro de período se especificado
+  if (period !== 'all') {
+    const periodStart = getPeriodDate(period);
+    if (periodStart) {
+      whereClause.createdAt = { gte: periodStart };
+    }
+  }
 
   if (search) {
     whereClause.OR = [
@@ -369,9 +499,8 @@ const getUsersList = async (filters: UserListFilters) => {
         profilePublic: true,
         onboardingCompleted: true,
         role: true,
-        isTeacher: true, // 🆕 INCLUIR isTeacher
+        isTeacher: true,
 
-        // 🆕 INCLUIR TEACHER PROFILE
         teacherProfile: {
           select: {
             id: true,
@@ -417,10 +546,9 @@ const getUsersList = async (filters: UserListFilters) => {
       isProfilePublic: user.profilePublic,
       onboardingCompleted: user.onboardingCompleted,
       role: user.role,
-      isTeacher: user.isTeacher, // 🆕 INCLUIR isTeacher
+      isTeacher: user.isTeacher,
       moderationsCount: user._count?.reportedUploads || 0,
 
-      // 🆕 INCLUIR TEACHER PROFILE SE EXISTIR
       teacherProfile: user.teacherProfile
         ? {
             id: user.teacherProfile.id,
@@ -456,14 +584,16 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const action = searchParams.get('action') || 'list';
+    const period = (searchParams.get('period') as TimePeriod) || '30d';
 
     if (action === 'analytics') {
       try {
-        const analytics = await getCachedUserAnalytics();
+        const analytics = await getCachedUserAnalytics(period)();
 
         return NextResponse.json({
           success: true,
           analytics,
+          period,
           timestamp: new Date().toISOString(),
         });
       } catch (error) {
@@ -491,6 +621,7 @@ export async function GET(request: NextRequest) {
           hasUploads: searchParams.get('hasUploads') === 'true',
           hasAnnotations: searchParams.get('hasAnnotations') === 'true',
           hasModerations: searchParams.get('hasModerations') === 'true',
+          period,
         };
 
         const csvContent = await exportUsersToCSV(filters);
@@ -499,7 +630,7 @@ export async function GET(request: NextRequest) {
         headers.set('Content-Type', 'text/csv; charset=utf-8');
         headers.set(
           'Content-Disposition',
-          `attachment; filename="usuarios-${
+          `attachment; filename="usuarios-${period}-${
             new Date().toISOString().split('T')[0]
           }.csv"`
         );
@@ -531,6 +662,7 @@ export async function GET(request: NextRequest) {
           hasUploads: searchParams.get('hasUploads') === 'true',
           hasAnnotations: searchParams.get('hasAnnotations') === 'true',
           hasModerations: searchParams.get('hasModerations') === 'true',
+          period,
         };
 
         const result = await getUsersList(filters);
@@ -539,6 +671,7 @@ export async function GET(request: NextRequest) {
           success: true,
           ...result,
           filters,
+          period,
           timestamp: new Date().toISOString(),
         });
       } catch (error) {
@@ -565,7 +698,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Endpoint para atualizar dados do usuário (admin only)
+// Endpoint para atualizar dados do usuário (admin only) - mantém a mesma lógica
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -627,13 +760,12 @@ export async function PATCH(request: NextRequest) {
     const newRole = updateData.role;
     const currentRole = currentUser.role || 0;
 
-    // 🆕 NOVO: Variável para controlar envio de email
     let shouldSendTeacherInvite = false;
 
     // Se o role está sendo alterado para 1 (professor) e não tinha esse role antes
     if (newRole === 1 && currentRole !== 1) {
       updateData.isTeacher = true;
-      shouldSendTeacherInvite = true; // 🆕 NOVO: Marcar para enviar email
+      shouldSendTeacherInvite = true;
 
       // Verificar se já existe um Teacher profile
       if (!currentUser.teacherProfile) {
@@ -658,8 +790,8 @@ export async function PATCH(request: NextRequest) {
             teachingMethod: null,
             ageGroups: [],
             skillLevels: [],
-            status: 'PENDING', // 🔄 IMPORTANTE: Fica PENDING até aceitar o convite
-            isVerified: false, // 🔄 IMPORTANTE: Não verificado até aceitar
+            status: 'PENDING',
+            isVerified: false,
             allowProgressReports: true,
             reportPreferences: null,
           },
@@ -706,7 +838,7 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    // 🆕 NOVO: Enviar email de convite para professor
+    // Enviar email de convite para professor se necessário
     if (shouldSendTeacherInvite && updatedUser.email) {
       try {
         // Criar token para aceitar/recusar convite
@@ -762,11 +894,10 @@ export async function PATCH(request: NextRequest) {
           '❌ [ADMIN-USERS] Erro ao enviar email de convite:',
           emailError
         );
-        // Não falhar a operação por causa do email, mas logar o erro
       }
     }
 
-    // Log da ação admin (existente)
+    // Log da ação admin
     await prisma.uploadHistory.create({
       data: {
         userId: session.user.id,

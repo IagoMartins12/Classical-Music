@@ -707,39 +707,6 @@ function TeacherCard({
             </div>
           )}
 
-          {/* Recent Reviews */}
-          {teacher.recentReviews.length > 0 && (
-            <div className="mb-4">
-              <div className="text-xs font-medium text-theme-tertiary mb-2">
-                Avaliações recentes:
-              </div>
-              <div className="space-y-2">
-                {teacher.recentReviews.slice(0, 2).map((review) => (
-                  <div key={review.id} className="text-xs">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <div className="flex items-center space-x-1">
-                        {Array.from({ length: review.rating }).map((_, i) => (
-                          <FiStar
-                            key={i}
-                            className="w-3 h-3 text-accent-yellow"
-                          />
-                        ))}
-                      </div>
-                      <span className="text-theme-tertiary">
-                        {review.studentName}
-                      </span>
-                    </div>
-                    {review.comment && (
-                      <p className="text-theme-secondary line-clamp-2">
-                        &quot;{review.comment}&quot;
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Actions */}
           <div className="mt-auto space-y-3">
             {/* View Profile */}

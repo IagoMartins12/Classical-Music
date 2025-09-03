@@ -1,4 +1,4 @@
-// app/api/admin/works/route.ts
+// app/api/admin/works/route.ts - VERSÃO COMPLETAMENTE CORRIGIDA
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -36,12 +36,12 @@ interface WorkFilters {
 interface WorkStats {
   total: number;
   byEpoch: Array<{
-    epoch: string;
-    count: number;
+    name: string;
+    value: number;
   }>;
   byInstrument: Array<{
-    instrument: string;
-    count: number;
+    name: string;
+    value: number;
   }>;
   byDifficulty: Array<{
     difficulty: string;
@@ -85,207 +85,253 @@ const getCachedWorkStats = async (
   const whereClause = periodDate ? { createdAt: { gte: periodDate } } : {};
   const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-  const [
-    total,
-    byEpoch,
-    byInstrument,
-    byDifficulty,
-    totalScores,
-    totalFavorites,
-    mostPopular,
-    mostWantedToLearn,
-    mostLearned,
-    recentlyAdded,
-    withoutScores,
-    topByScores,
-  ] = await Promise.all([
-    // Total de obras no período
-    prisma.work.count({ where: whereClause }),
+  try {
+    // 🚀 QUERIES OTIMIZADAS COM BATCHING
+    const [
+      total,
+      byEpochRaw,
+      byInstrumentRaw,
+      byDifficultyRaw,
+      totalScores,
+      totalFavorites,
+      mostPopularRaw,
+      mostWantedToLearnRaw,
+      mostLearnedRaw,
+      recentlyAdded,
+      withoutScores,
+      topByScoresRaw,
+    ] = await Promise.all([
+      // Total de obras no período
+      prisma.work.count({ where: whereClause }),
 
-    // Por época
-    prisma.work.groupBy({
-      by: ['epochId'],
-      _count: { id: true },
-      where: whereClause,
-      orderBy: { _count: { id: 'desc' } },
-      take: 10,
-    }),
-
-    // Por instrumento
-    prisma.work.groupBy({
-      by: ['instrumentId'],
-      _count: { id: true },
-      where: whereClause,
-      orderBy: { _count: { id: 'desc' } },
-      take: 10,
-    }),
-
-    // Por dificuldade
-    prisma.work.groupBy({
-      by: ['difficultyLevel'],
-      _count: { id: true },
-      where: whereClause,
-    }),
-
-    // Total de partituras ativas
-    prisma.workScore.count({
-      where: {
-        isActive: true,
-        work: whereClause,
-      },
-    }),
-
-    // Total de favoritos
-    prisma.favoriteWork.count({
-      where: {
-        work: whereClause,
-      },
-    }),
-
-    // Mais populares por favoritos
-    prisma.work.findMany({
-      select: {
-        id: true,
-        title: true,
-        composer: { select: { name: true } },
+      // 🔥 CORRIGIDO: Por época com sintaxe correta
+      prisma.work.groupBy({
+        by: ['epochId'],
         _count: {
-          select: {
-            favoriteBy: true,
-            workAnnotations: { where: { isPublic: true } },
+          id: true,
+        },
+        where: whereClause,
+        orderBy: {
+          _count: {
+            id: 'desc',
           },
         },
-      },
-      where: whereClause,
-      orderBy: {
-        favoriteBy: { _count: 'desc' },
-      },
-      take: 10,
-    }),
+        take: 10,
+      }),
 
-    // Mais queridas para aprender
-    prisma.work.findMany({
-      select: {
-        id: true,
-        title: true,
-        composer: { select: { name: true } },
+      // 🔥 CORRIGIDO: Por instrumento com sintaxe correta
+      prisma.work.groupBy({
+        by: ['instrumentId'],
         _count: {
-          select: {
-            wantToLearners: true,
+          id: true,
+        },
+        where: whereClause,
+        orderBy: {
+          _count: {
+            id: 'desc',
           },
         },
-      },
-      where: whereClause,
-      orderBy: {
-        wantToLearners: { _count: 'desc' },
-      },
-      take: 10,
-    }),
+        take: 10,
+      }),
 
-    // Mais aprendidas
-    prisma.work.findMany({
-      select: {
-        id: true,
-        title: true,
-        composer: { select: { name: true } },
+      // 🔥 CORRIGIDO: Por dificuldade (garantindo não-nulos)
+      prisma.work.groupBy({
+        by: ['difficultyLevel'],
         _count: {
-          select: {
-            learners: true,
+          id: true,
+        },
+        where: {
+          ...whereClause,
+          difficultyLevel: { not: null },
+        },
+        orderBy: {
+          _count: {
+            id: 'desc',
           },
         },
-      },
-      where: whereClause,
-      orderBy: {
-        learners: { _count: 'desc' },
-      },
-      take: 10,
-    }),
+      }),
 
-    // Adicionadas na última semana (sempre)
-    prisma.work.count({
-      where: { createdAt: { gte: lastWeek } },
-    }),
+      // 🔥 OTIMIZADO: Total de partituras ativas (usando agregação simples)
+      prisma.workScore.count({
+        where: {
+          isActive: true,
+          ...(periodDate
+            ? {
+                work: { createdAt: { gte: periodDate } },
+              }
+            : {}),
+        },
+      }),
 
-    // Obras sem partituras
-    prisma.work.count({
-      where: {
-        ...whereClause,
-        cachedScores: { none: { isActive: true } },
-      },
-    }),
+      // 🔥 OTIMIZADO: Total de favoritos
+      prisma.favoriteWork.count({
+        where: periodDate
+          ? {
+              work: { createdAt: { gte: periodDate } },
+            }
+          : {},
+      }),
 
-    // Top por número de partituras
-    prisma.work.findMany({
-      select: {
-        id: true,
-        title: true,
-        composer: { select: { name: true } },
-        _count: {
-          select: {
-            cachedScores: { where: { isActive: true } },
+      // 🔥 OTIMIZADO: Mais populares por favoritos (usando select otimizado)
+      prisma.work.findMany({
+        where: whereClause,
+        select: {
+          id: true,
+          title: true,
+          composer: { select: { name: true } },
+          _count: {
+            select: {
+              favoriteBy: true,
+              workAnnotations: { where: { isPublic: true } },
+            },
           },
         },
-      },
-      where: whereClause,
-      orderBy: {
-        cachedScores: { _count: 'desc' },
-      },
-      take: 10,
-    }),
-  ]);
+        orderBy: {
+          favoriteBy: { _count: 'desc' },
+        },
+        take: 10,
+      }),
 
-  // Buscar nomes das épocas e instrumentos
-  const [epochs, instruments] = await Promise.all([
-    prisma.epoch.findMany({ select: { id: true, name: true } }),
-    prisma.instrument.findMany({ select: { id: true, name: true } }),
-  ]);
+      // 🔥 OTIMIZADO: Mais queridas para aprender
+      prisma.work.findMany({
+        where: whereClause,
+        select: {
+          id: true,
+          title: true,
+          composer: { select: { name: true } },
+          _count: {
+            select: {
+              wantToLearners: true,
+            },
+          },
+        },
+        orderBy: {
+          wantToLearners: { _count: 'desc' },
+        },
+        take: 10,
+      }),
 
-  const epochMap = new Map(epochs.map((e) => [e.id, e.name]));
-  const instrumentMap = new Map(instruments.map((i) => [i.id, i.name]));
+      // 🔥 OTIMIZADO: Mais aprendidas
+      prisma.work.findMany({
+        where: whereClause,
+        select: {
+          id: true,
+          title: true,
+          composer: { select: { name: true } },
+          _count: {
+            select: {
+              learners: true,
+            },
+          },
+        },
+        orderBy: {
+          learners: { _count: 'desc' },
+        },
+        take: 10,
+      }),
 
-  return {
-    total,
-    byEpoch: byEpoch.map((item) => ({
-      epoch: epochMap.get(item.epochId) || 'Desconhecido',
-      count: item._count.id,
-    })),
-    byInstrument: byInstrument.map((item) => ({
-      instrument: instrumentMap.get(item.instrumentId) || 'Desconhecido',
-      count: item._count.id,
-    })),
-    byDifficulty: byDifficulty.map((item) => ({
-      difficulty: item.difficultyLevel || 'Não definido',
-      count: item._count.id,
-    })),
-    avgScoresPerWork: total > 0 ? totalScores / total : 0,
-    avgFavoritesPerWork: total > 0 ? totalFavorites / total : 0,
-    mostPopular: mostPopular.map((work) => ({
-      id: work.id,
-      title: work.title,
-      composer: work.composer.name,
-      favoritesCount: work._count.favoriteBy,
-      annotationsCount: work._count.workAnnotations,
-    })),
-    mostWantedToLearn: mostWantedToLearn.map((work) => ({
-      id: work.id,
-      title: work.title,
-      composer: work.composer.name,
-      wantToLearnCount: work._count.wantToLearners,
-    })),
-    mostLearned: mostLearned.map((work) => ({
-      id: work.id,
-      title: work.title,
-      composer: work.composer.name,
-      learnedCount: work._count.learners,
-    })),
-    recentlyAdded,
-    withoutScores,
-    topByScores: topByScores.map((work) => ({
-      id: work.id,
-      title: work.title,
-      composer: work.composer.name,
-      scoresCount: work._count.cachedScores,
-    })),
-  };
+      // Adicionadas na última semana (sempre)
+      prisma.work.count({
+        where: { createdAt: { gte: lastWeek } },
+      }),
+
+      // 🔥 OTIMIZADO: Obras sem partituras ativas (usando NOT EXISTS)
+      prisma.work.count({
+        where: {
+          ...whereClause,
+          cachedScores: { none: { isActive: true } },
+        },
+      }),
+
+      // 🔥 OTIMIZADO: Top por número de partituras
+      prisma.work.findMany({
+        where: whereClause,
+        select: {
+          id: true,
+          title: true,
+          composer: { select: { name: true } },
+          _count: {
+            select: {
+              cachedScores: { where: { isActive: true } },
+            },
+          },
+        },
+        orderBy: {
+          cachedScores: { _count: 'desc' },
+        },
+        take: 10,
+      }),
+    ]);
+
+    // 🔥 BUSCAR NOMES EM BATCH OTIMIZADO
+    const epochIds = [...new Set(byEpochRaw.map((e) => e.epochId))];
+    const instrumentIds = [
+      ...new Set(byInstrumentRaw.map((i) => i.instrumentId)),
+    ];
+
+    const [epochs, instruments] = await Promise.all([
+      prisma.epoch.findMany({
+        where: { id: { in: epochIds } },
+        select: { id: true, name: true },
+      }),
+      prisma.instrument.findMany({
+        where: { id: { in: instrumentIds } },
+        select: { id: true, name: true },
+      }),
+    ]);
+
+    const epochMap = new Map(epochs.map((e) => [e.id, e.name]));
+    const instrumentMap = new Map(instruments.map((i) => [i.id, i.name]));
+
+    return {
+      total,
+      // ✅ CORREÇÃO: Formato correto para gráficos (name/value)
+      byEpoch: byEpochRaw.map((item) => ({
+        name: epochMap.get(item.epochId) || 'Desconhecido',
+        value: item._count.id,
+      })),
+      byInstrument: byInstrumentRaw.map((item) => ({
+        name: instrumentMap.get(item.instrumentId) || 'Desconhecido',
+        value: item._count.id,
+      })),
+      byDifficulty: byDifficultyRaw.map((item) => ({
+        difficulty: item.difficultyLevel || 'Não definido',
+        count: item._count.id,
+      })),
+      avgScoresPerWork: total > 0 ? totalScores / total : 0,
+      avgFavoritesPerWork: total > 0 ? totalFavorites / total : 0,
+      mostPopular: mostPopularRaw.map((work) => ({
+        id: work.id,
+        title: work.title,
+        composer: work.composer.name,
+        favoritesCount: work._count.favoriteBy,
+        annotationsCount: work._count.workAnnotations,
+      })),
+      mostWantedToLearn: mostWantedToLearnRaw.map((work) => ({
+        id: work.id,
+        title: work.title,
+        composer: work.composer.name,
+        wantToLearnCount: work._count.wantToLearners,
+      })),
+      mostLearned: mostLearnedRaw.map((work) => ({
+        id: work.id,
+        title: work.title,
+        composer: work.composer.name,
+        learnedCount: work._count.learners,
+      })),
+      recentlyAdded,
+      withoutScores,
+      topByScores: topByScoresRaw.map((work) => ({
+        id: work.id,
+        title: work.title,
+        composer: work.composer.name,
+        scoresCount: work._count.cachedScores,
+      })),
+    };
+  } catch (error) {
+    console.error('Erro ao buscar stats de works:', error);
+    throw error;
+  }
 };
 
 const getWorksList = async (filters: WorkFilters) => {
@@ -347,7 +393,7 @@ const getWorksList = async (filters: WorkFilters) => {
     whereClause.difficultyLevel = difficultyLevel;
   }
 
-  // Filtros por contagens
+  // ✅ CORREÇÃO: Filtros de contagem com tipagem robusta (igual ao composers)
   if (
     minFavorites !== undefined ||
     minWantToLearn !== undefined ||
@@ -356,56 +402,184 @@ const getWorksList = async (filters: WorkFilters) => {
     maxScores !== undefined ||
     hasScores !== undefined
   ) {
-    whereClause.AND = [];
+    const filterResults: string[][] = []; // Array de arrays de IDs
 
+    // Filtro de favoritos
     if (minFavorites !== undefined) {
-      whereClause.AND.push({
-        favoriteBy: { _count: { gte: minFavorites } },
-      });
-    }
+      console.log('🔍 Buscando obras com mín', minFavorites, 'favoritos');
 
-    if (minWantToLearn !== undefined) {
-      whereClause.AND.push({
-        wantToLearners: { _count: { gte: minWantToLearn } },
-      });
-    }
-
-    if (minLearned !== undefined) {
-      whereClause.AND.push({
-        learners: { _count: { gte: minLearned } },
-      });
-    }
-
-    if (minScores !== undefined || maxScores !== undefined) {
-      const scoresFilter: any = {};
-      if (minScores !== undefined) scoresFilter.gte = minScores;
-      if (maxScores !== undefined) scoresFilter.lte = maxScores;
-
-      whereClause.AND.push({
-        cachedScores: {
-          _count: scoresFilter,
-          where: { isActive: true },
+      const favoritesResult = await prisma.favoriteWork.groupBy({
+        by: ['workId'],
+        _count: {
+          id: true,
         },
       });
+
+      const worksWithFavorites: string[] = favoritesResult
+        .filter((f: any) => f._count.id >= minFavorites)
+        .map((f: any) => f.workId);
+
+      console.log(
+        '❤️ Obras com favoritos suficientes:',
+        worksWithFavorites.length
+      );
+      filterResults.push(worksWithFavorites);
     }
 
+    // Filtro de want to learn
+    if (minWantToLearn !== undefined) {
+      console.log('🔍 Buscando obras com mín', minWantToLearn, 'want to learn');
+
+      const wantToLearnResult = await prisma.wantToLearn.groupBy({
+        by: ['workId'],
+        _count: {
+          id: true,
+        },
+      });
+
+      const worksWantedToLearn: string[] = wantToLearnResult
+        .filter((w: any) => w._count.id >= minWantToLearn)
+        .map((w: any) => w.workId);
+
+      console.log(
+        '📚 Obras queridas para aprender:',
+        worksWantedToLearn.length
+      );
+      filterResults.push(worksWantedToLearn);
+    }
+
+    // Filtro de learned
+    if (minLearned !== undefined) {
+      console.log('🔍 Buscando obras com mín', minLearned, 'learned');
+
+      const learnedResult = await prisma.learned.groupBy({
+        by: ['workId'],
+        _count: {
+          id: true,
+        },
+      });
+
+      const worksLearned: string[] = learnedResult
+        .filter((l: any) => l._count.id >= minLearned)
+        .map((l: any) => l.workId);
+
+      console.log('🎓 Obras aprendidas:', worksLearned.length);
+      filterResults.push(worksLearned);
+    }
+
+    // Filtro de scores
+    if (minScores !== undefined || maxScores !== undefined) {
+      console.log(
+        '🔍 Buscando obras com scores entre',
+        minScores,
+        'e',
+        maxScores
+      );
+
+      const scoresResult = await prisma.workScore.groupBy({
+        by: ['workId'],
+        _count: {
+          id: true,
+        },
+        where: {
+          isActive: true,
+        },
+      });
+
+      const worksWithScores: string[] = scoresResult
+        .filter((s: any) => {
+          const count = s._count.id;
+          let isValid = true;
+
+          if (minScores !== undefined && count < minScores) {
+            isValid = false;
+          }
+          if (maxScores !== undefined && count > maxScores) {
+            isValid = false;
+          }
+
+          return isValid;
+        })
+        .map((s: any) => s.workId);
+
+      console.log('🎼 Obras com scores no intervalo:', worksWithScores.length);
+      filterResults.push(worksWithScores);
+    }
+
+    // Filtro de hasScores (boolean)
     if (hasScores !== undefined) {
       if (hasScores) {
-        whereClause.AND.push({
-          cachedScores: { some: { isActive: true } },
+        // Tem partituras
+        console.log('🔍 Buscando obras COM partituras');
+
+        const worksWithScoresResult = await prisma.workScore.findMany({
+          where: { isActive: true },
+          select: { workId: true },
+          distinct: ['workId'],
         });
+
+        const worksWithActiveScores: string[] = worksWithScoresResult.map(
+          (s: any) => s.workId
+        );
+
+        console.log(
+          '✅ Obras com partituras ativas:',
+          worksWithActiveScores.length
+        );
+        filterResults.push(worksWithActiveScores);
       } else {
-        whereClause.AND.push({
-          cachedScores: { none: { isActive: true } },
-        });
+        // Não tem partituras - usar whereClause diretamente
+        console.log('🔍 Buscando obras SEM partituras');
+        whereClause.cachedScores = { none: { isActive: true } };
+      }
+    }
+
+    // Calcular interseção de todos os filtros
+    if (filterResults.length > 0) {
+      let finalWorkIds: string[] = filterResults[0];
+
+      for (let i = 1; i < filterResults.length; i++) {
+        finalWorkIds = finalWorkIds.filter((id: string) =>
+          filterResults[i].includes(id)
+        );
+        console.log(`🔗 Após interseção ${i}:`, finalWorkIds.length);
+      }
+
+      if (finalWorkIds.length === 0) {
+        console.log('❌ Nenhuma obra atende aos critérios');
+        return {
+          works: [],
+          pagination: {
+            page,
+            limit,
+            total: 0,
+            pages: 0,
+            hasMore: false,
+          },
+        };
+      } else {
+        console.log(
+          '✅ Aplicando filtro final com',
+          finalWorkIds.length,
+          'obras'
+        );
+        whereClause.id = { in: finalWorkIds };
       }
     }
   }
 
+  // ✅ CORREÇÃO: Query otimizada sem uso incorreto de _count no where
   const [works, totalCount] = await Promise.all([
     prisma.work.findMany({
       where: whereClause,
-      include: {
+      select: {
+        id: true,
+        title: true,
+        opOrCatalog: true,
+        compositionYear: true,
+        workType: true,
+        difficultyLevel: true,
+        createdAt: true,
         composer: { select: { name: true } },
         epoch: { select: { name: true } },
         instrument: { select: { name: true } },
@@ -537,7 +711,7 @@ export async function GET(request: NextRequest) {
         sortOrder: (searchParams.get('sortOrder') as any) || 'desc',
         period: (searchParams.get('period') as TimePeriod) || '7d',
         page: parseInt(searchParams.get('page') || '1'),
-        limit: parseInt(searchParams.get('limit') || '50'),
+        limit: Math.min(parseInt(searchParams.get('limit') || '50'), 100),
       };
 
       const result = await getWorksList(filters);
@@ -560,4 +734,164 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Endpoints UPDATE e DELETE permanecem similares...
+// Endpoints UPDATE e DELETE para Works
+export async function PATCH(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id || session.user.role !== 2) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const workId = searchParams.get('id');
+
+    if (!workId) {
+      return NextResponse.json({ error: 'Work ID required' }, { status: 400 });
+    }
+
+    const body = await request.json();
+    const {
+      title,
+      difficultyLevel,
+      workType,
+      videoUrl,
+      instrumentation,
+      dataQuality,
+      isVerified,
+      verificationNotes,
+    } = body;
+
+    const updateData: any = {};
+
+    if (title) updateData.title = title;
+    if (difficultyLevel) updateData.difficultyLevel = difficultyLevel;
+    if (workType) updateData.workType = workType;
+    if (videoUrl !== undefined) updateData.videoUrl = videoUrl;
+    if (instrumentation) updateData.instrumentation = instrumentation;
+    if (dataQuality) updateData.dataQuality = dataQuality;
+
+    if (isVerified !== undefined) {
+      updateData.isVerified = isVerified;
+      if (isVerified) {
+        updateData.verifiedBy = session.user.id;
+        updateData.verifiedAt = new Date();
+        updateData.verificationNotes = verificationNotes;
+      }
+    }
+
+    // Adicionar campos de auditoria
+    updateData.lastEditedBy = session.user.id;
+    updateData.lastEditedAt = new Date();
+
+    const updatedWork = await prisma.work.update({
+      where: { id: workId },
+      data: updateData,
+      include: {
+        composer: { select: { name: true } },
+        epoch: { select: { name: true } },
+        instrument: { select: { name: true } },
+      },
+    });
+
+    // Log da ação
+    await prisma.uploadHistory.create({
+      data: {
+        userId: session.user.id,
+        entityType: 'work',
+        entityId: workId,
+        action: 'update',
+        changes: updateData,
+        reason: 'Admin update',
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      work: updatedWork,
+      message: 'Obra atualizada com sucesso',
+    });
+  } catch (error) {
+    console.error('Erro ao atualizar obra:', error);
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id || session.user.role !== 2) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const workId = searchParams.get('id');
+
+    if (!workId) {
+      return NextResponse.json({ error: 'Work ID required' }, { status: 400 });
+    }
+
+    // Verificar se há dados relacionados importantes
+    const [favoritesCount, wantToLearnCount, learnedCount, annotationsCount] =
+      await Promise.all([
+        prisma.favoriteWork.count({ where: { workId } }),
+        prisma.wantToLearn.count({ where: { workId } }),
+        prisma.learned.count({ where: { workId } }),
+        prisma.workAnnotation.count({ where: { workId, isPublic: true } }),
+      ]);
+
+    const totalRelated =
+      favoritesCount + wantToLearnCount + learnedCount + annotationsCount;
+
+    if (totalRelated > 0) {
+      return NextResponse.json(
+        {
+          error: `Não é possível deletar obra com dados relacionados: ${favoritesCount} favoritos, ${wantToLearnCount} querem aprender, ${learnedCount} aprenderam, ${annotationsCount} anotações públicas`,
+        },
+        { status: 400 }
+      );
+    }
+
+    // Buscar nome da obra para o log
+    const work = await prisma.work.findUnique({
+      where: { id: workId },
+      select: { title: true, composer: { select: { name: true } } },
+    });
+
+    // Deletar a obra (CASCADE vai cuidar das relações)
+    await prisma.work.delete({
+      where: { id: workId },
+    });
+
+    // Log da ação
+    await prisma.uploadHistory.create({
+      data: {
+        userId: session.user.id,
+        entityType: 'work',
+        entityId: workId,
+        action: 'delete',
+        reason: 'Admin deletion',
+        changes: {
+          deletedWork: work
+            ? `${work.composer.name} - ${work.title}`
+            : `Work ID: ${workId}`,
+        },
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Obra deletada com sucesso',
+    });
+  } catch (error) {
+    console.error('Erro ao deletar obra:', error);
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    );
+  }
+}

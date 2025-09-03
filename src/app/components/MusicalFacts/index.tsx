@@ -7,7 +7,6 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import SectionTitle from '../Utils/SectionTitle';
 
 import Select from '../Common/Select';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import {
   categories,
   getFactsByCategory,
@@ -15,6 +14,7 @@ import {
 } from '@/app/requests/utils';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Language } from '@/app/utils/translations/serverTranslations';
 
 interface MusicalFact {
   id: string;
@@ -36,7 +36,15 @@ interface MusicalFactsProps {
   initialCount?: number;
 }
 
-const FactCard = ({ fact, index }: { fact: MusicalFact; index: number }) => {
+const FactCard = ({
+  fact,
+  index,
+  language,
+}: {
+  fact: MusicalFact;
+  index: number;
+  language: Language;
+}) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
 
   // Definir estilos por tipo de curiosidade
@@ -110,7 +118,6 @@ const FactCard = ({ fact, index }: { fact: MusicalFact; index: number }) => {
 
   const style = getFactStyle(fact.category);
 
-  const { language } = useLanguageStore();
   // Animação escalonada baseada no índice
   const animationDelay = `${index * 100}ms`;
 
@@ -184,8 +191,7 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
   const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
   const [loadedCount, setLoadedCount] = React.useState(initialCount);
   const [mounted, setMounted] = React.useState(false);
-  const { t } = useTranslation({ sections: ['pages/home'] });
-  const { language } = useLanguageStore();
+  const { t, language } = useTranslation({ sections: ['pages/home'] });
 
   // Garantir que o componente está montado no cliente
   React.useEffect(() => {
@@ -351,6 +357,7 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
               key={`${fact.id}-${selectedCategory}-${language}`}
               fact={fact}
               index={index}
+              language={language}
             />
           ))}
         </div>

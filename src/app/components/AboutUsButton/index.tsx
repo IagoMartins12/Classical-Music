@@ -1,7 +1,7 @@
 'use client';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useRegisterModal } from '@/app/stores/authStore';
-import { Language } from '@/app/stores/useLanguageStore';
+import { Language } from '@/app/utils/translations/serverTranslations';
 import { FiMusic, FiUsers } from 'react-icons/fi';
 
 interface buttonProps {

@@ -47,6 +47,8 @@ import Image from 'next/image';
 import { getPeriodLabel } from '@/app/utils/adminUtils';
 import PeriodSelector from '../../Common/PeriodSelector';
 import LoadingAdminState from '../../Common/LoadingState';
+import { mapStatsToChartData } from '@/app/utils/admin/adminDebug';
+import { AdminDebugPanel } from '@/app/utils/admin/AdminDebugPanel';
 
 interface ComposerFilters {
   search: string;
@@ -322,6 +324,7 @@ export default function ComposersManagement() {
         ) : null}
 
         {/* Charts */}
+        {/* Charts - SEÇÃO CORRIGIDA */}
         {statsLoading ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <ChartSkeleton title="Compositores por Época" />
@@ -329,12 +332,10 @@ export default function ComposersManagement() {
           </div>
         ) : stats ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            {/* 🔧 GRÁFICO POR ÉPOCA CORRIGIDO */}
             <AnimatedCard className="classical-card p-6">
               <AdminPieChart
-                data={stats.byEpoch.map((item) => ({
-                  name: item.epoch,
-                  value: item.count,
-                }))}
+                data={mapStatsToChartData(stats, 'byEpoch', 'count')}
                 title="Compositores por Época"
                 subtitle={`Distribuição ${getPeriodLabel(period)}`}
                 height={300}
@@ -342,12 +343,10 @@ export default function ComposersManagement() {
               />
             </AnimatedCard>
 
+            {/* 🔧 GRÁFICO DE QUALIDADE CORRIGIDO */}
             <AnimatedCard className="classical-card p-6">
               <AdminPieChart
-                data={stats.byQuality.map((item) => ({
-                  name: getQualityLabel(item.quality),
-                  value: item.count,
-                }))}
+                data={mapStatsToChartData(stats, 'byQuality', 'count')}
                 title="Qualidade dos Dados"
                 subtitle={`Distribuição ${getPeriodLabel(period)}`}
                 height={300}
@@ -356,6 +355,8 @@ export default function ComposersManagement() {
             </AnimatedCard>
           </div>
         ) : null}
+
+        <AdminDebugPanel stats={stats} filters={filters} />
 
         {/* Top Performers */}
         {statsLoading ? (

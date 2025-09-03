@@ -24,12 +24,43 @@ interface SelectiveBackupInfo {
 
 // Lista de collections disponíveis com suas dependências
 const AVAILABLE_COLLECTIONS = [
+  // ==========================================
+  // 📊 SISTEMA BASE
+  // ==========================================
   {
     name: 'user',
     displayName: 'Usuários',
     dependencies: [],
     description: 'Contas de usuários do sistema',
   },
+  {
+    name: 'epoch',
+    displayName: 'Épocas Musicais',
+    dependencies: [],
+    description: 'Períodos musicais (Barroco, Clássico, etc.)',
+  },
+  {
+    name: 'role',
+    displayName: 'Funções',
+    dependencies: [],
+    description: 'Funções dos compositores (Compositor, Pianista, etc.)',
+  },
+  {
+    name: 'instrument',
+    displayName: 'Instrumentos',
+    dependencies: [],
+    description: 'Instrumentos musicais disponíveis',
+  },
+  {
+    name: 'workGenre',
+    displayName: 'Gêneros Musicais',
+    dependencies: [],
+    description: 'Gêneros das obras musicais',
+  },
+
+  // ==========================================
+  // 🎼 CONTEÚDO MUSICAL
+  // ==========================================
   {
     name: 'composer',
     displayName: 'Compositores',
@@ -38,7 +69,7 @@ const AVAILABLE_COLLECTIONS = [
   },
   {
     name: 'work',
-    displayName: 'Obras',
+    displayName: 'Obras Musicais',
     dependencies: ['composer', 'epoch', 'instrument', 'user'],
     description: 'Obras musicais cadastradas',
   },
@@ -46,38 +77,144 @@ const AVAILABLE_COLLECTIONS = [
     name: 'workScore',
     displayName: 'Partituras',
     dependencies: ['work'],
-    description: 'Partituras das obras',
+    description: 'Partituras das obras musicais',
+  },
+
+  // ==========================================
+  // 👤 DADOS DOS USUÁRIOS
+  // ==========================================
+  {
+    name: 'userInstrument',
+    displayName: 'Instrumentos dos Usuários',
+    dependencies: ['user', 'instrument'],
+    description: 'Relação usuários-instrumentos',
   },
   {
-    name: 'epoch',
-    displayName: 'Épocas',
-    dependencies: [],
-    description: 'Períodos musicais',
+    name: 'account',
+    displayName: 'Contas OAuth',
+    dependencies: ['user'],
+    description: 'Contas de login social (Google, etc.)',
   },
   {
-    name: 'role',
-    displayName: 'Funções',
-    dependencies: [],
-    description: 'Funções dos compositores',
+    name: 'session',
+    displayName: 'Sessões',
+    dependencies: ['user'],
+    description: 'Sessões ativas dos usuários',
   },
   {
-    name: 'instrument',
-    displayName: 'Instrumentos',
-    dependencies: [],
-    description: 'Instrumentos musicais',
+    name: 'userToken',
+    displayName: 'Tokens de Usuários',
+    dependencies: ['user'],
+    description: 'Tokens de confirmação e reset de senha',
   },
+
+  // ==========================================
+  // 🏫 SISTEMA PROFESSOR-ALUNO (🆕)
+  // ==========================================
+  {
+    name: 'teacher',
+    displayName: 'Professores',
+    dependencies: ['user'],
+    description: 'Dados dos professores cadastrados',
+  },
+  {
+    name: 'student',
+    displayName: 'Alunos',
+    dependencies: ['user'],
+    description: 'Dados dos alunos cadastrados',
+  },
+  {
+    name: 'teacherStudent',
+    displayName: 'Relações Professor-Aluno',
+    dependencies: ['teacher', 'student'],
+    description: 'Relacionamentos entre professores e alunos',
+  },
+  {
+    name: 'lesson',
+    displayName: 'Aulas',
+    dependencies: ['teacher', 'student'],
+    description: 'Aulas agendadas e realizadas',
+  },
+  {
+    name: 'assignment',
+    displayName: 'Tarefas',
+    dependencies: ['lesson', 'student'],
+    description: 'Tarefas e trabalhos dos alunos',
+  },
+
+  // ==========================================
+  // 📋 RELATÓRIOS COMPARTILHADOS (🆕)
+  // ==========================================
+  {
+    name: 'sharedProgressReport',
+    displayName: 'Relatórios Compartilhados',
+    dependencies: ['teacher', 'student'],
+    description: 'Relatórios de progresso compartilhados',
+  },
+  {
+    name: 'sharedReportComment',
+    displayName: 'Comentários nos Relatórios',
+    dependencies: ['sharedProgressReport', 'student'],
+    description: 'Comentários dos alunos nos relatórios',
+  },
+
+  // ==========================================
+  // 🔔 NOTIFICAÇÕES E ATIVIDADES (🆕)
+  // ==========================================
+  {
+    name: 'notification',
+    displayName: 'Notificações',
+    dependencies: ['user'],
+    description: 'Sistema de notificações do usuário',
+  },
+  {
+    name: 'schoolActivity',
+    displayName: 'Atividades Escolares',
+    dependencies: ['user'],
+    description: 'Log de atividades do sistema escolar',
+  },
+
+  // ==========================================
+  // 🏆 SISTEMA DE CONQUISTAS (🆕)
+  // ==========================================
+  {
+    name: 'userAchievement',
+    displayName: 'Conquistas dos Usuários',
+    dependencies: ['user'],
+    description: 'Conquistas desbloqueadas pelos usuários',
+  },
+  {
+    name: 'achievementProgress',
+    displayName: 'Progresso das Conquistas',
+    dependencies: ['user'],
+    description: 'Progresso para desbloquear conquistas',
+  },
+
+  // ==========================================
+  // 💭 INTERAÇÕES E ANOTAÇÕES
+  // ==========================================
   {
     name: 'annotation',
-    displayName: 'Anotações',
+    displayName: 'Anotações Pessoais',
     dependencies: ['user', 'work'],
-    description: 'Anotações dos usuários',
+    description: 'Anotações privadas dos usuários',
   },
   {
     name: 'workAnnotation',
-    displayName: 'Anotações de Obras',
+    displayName: 'Anotações Públicas',
     dependencies: ['user', 'work'],
-    description: 'Anotações específicas das obras',
+    description: 'Anotações públicas nas obras',
   },
+  {
+    name: 'annotationHelpfulVote',
+    displayName: 'Votos nas Anotações',
+    dependencies: ['user', 'workAnnotation'],
+    description: 'Votos de utilidade nas anotações',
+  },
+
+  // ==========================================
+  // ❤️ FAVORITOS E LISTAS
+  // ==========================================
   {
     name: 'favoriteWork',
     displayName: 'Obras Favoritas',
@@ -96,12 +233,11 @@ const AVAILABLE_COLLECTIONS = [
     dependencies: ['user', 'work'],
     description: 'Partituras marcadas como favoritas',
   },
-
   {
-    name: 'userInstrument',
-    displayName: 'Instrumentos dos Usuários',
-    dependencies: ['user', 'instrument'],
-    description: 'Relação usuários-instrumentos',
+    name: 'scoreFavoriteStats',
+    displayName: 'Estatísticas de Favoritos',
+    dependencies: ['work'],
+    description: 'Estatísticas de partituras favoritas',
   },
   {
     name: 'wantToLearn',
@@ -115,20 +251,91 @@ const AVAILABLE_COLLECTIONS = [
     dependencies: ['user', 'work'],
     description: 'Obras que usuários já aprenderam',
   },
+
+  // ==========================================
+  // 🔧 CONTROLE E MODERAÇÃO
+  // ==========================================
   {
-    name: 'newsletterSubscriber',
-    displayName: 'Assinantes Newsletter',
+    name: 'uploadHistory',
+    displayName: 'Histórico de Uploads',
     dependencies: ['user'],
-    description: 'Assinantes da newsletter',
+    description: 'Histórico de uploads de conteúdo',
   },
+  {
+    name: 'uploadModeration',
+    displayName: 'Moderação de Uploads',
+    dependencies: ['user'],
+    description: 'Sistema de moderação de conteúdo',
+  },
+  {
+    name: 'generatedReport',
+    displayName: 'Relatórios Gerados',
+    dependencies: ['user'],
+    description: 'Relatórios administrativos gerados',
+  },
+
+  // ==========================================
+  // 📢 SISTEMA DE PUBLICIDADE
+  // ==========================================
   {
     name: 'advertisement',
     displayName: 'Publicidades',
     dependencies: ['user', 'instrument'],
-    description: 'Anúncios do sistema',
+    description: 'Anúncios e publicidades do sistema',
+  },
+  {
+    name: 'adStats',
+    displayName: 'Estatísticas de Anúncios',
+    dependencies: ['advertisement', 'user'],
+    description: 'Métricas e estatísticas dos anúncios',
+  },
+
+  // ==========================================
+  // 📧 SISTEMA DE NEWSLETTER
+  // ==========================================
+  {
+    name: 'newsletterSubscriber',
+    displayName: 'Assinantes da Newsletter',
+    dependencies: ['user'],
+    description: 'Inscritos na newsletter do sistema',
+  },
+  {
+    name: 'newsletterTemplate',
+    displayName: 'Templates de Email',
+    dependencies: [],
+    description: 'Templates para emails da newsletter',
+  },
+  {
+    name: 'newsletterCampaign',
+    displayName: 'Campanhas de Email',
+    dependencies: ['newsletterTemplate'],
+    description: 'Campanhas de marketing por email',
+  },
+  {
+    name: 'newsletterCampaignSend',
+    displayName: 'Envios de Campanha',
+    dependencies: ['newsletterCampaign', 'newsletterSubscriber'],
+    description: 'Registros de envios de campanhas',
+  },
+  {
+    name: 'newsletterEmailEvent',
+    displayName: 'Eventos de Email',
+    dependencies: ['newsletterSubscriber', 'newsletterCampaign'],
+    description: 'Eventos dos emails (abrir, clicar, etc.)',
+  },
+  {
+    name: 'testEmailList',
+    displayName: 'Listas de Teste',
+    dependencies: [],
+    description: 'Listas de emails para testes',
+  },
+  {
+    name: 'templateFragment',
+    displayName: 'Fragmentos de Template',
+    dependencies: [],
+    description: 'Fragmentos reutilizáveis de templates',
   },
 ];
-
 // Função para obter informações de um backup seletivo
 async function getSelectiveBackupInfo(
   backupDir: string

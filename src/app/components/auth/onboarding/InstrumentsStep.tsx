@@ -7,7 +7,6 @@ import { FiPlus, FiX } from 'react-icons/fi';
 
 import { useTranslation } from '@/app/context/TranslationContext';
 import { translateInstrument } from '@/app/utils/translations/instrumentsGenresTranslation';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import Select from '../../Common/Select';
 import Checkbox from '../../Common/Checkbox';
 
@@ -31,8 +30,9 @@ interface InstrumentsStepProps {
 
 const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
   const { data, updateData } = useOnboardingModal();
-  const { t } = useTranslation({ sections: ['components/onboarding'] });
-  const { language } = useLanguageStore();
+  const { t, language } = useTranslation({
+    sections: ['components/onboarding'],
+  });
 
   const EXPERIENCE_LEVELS = [
     { value: 'BEGINNER', label: t('instruments_step_level_beginner') },

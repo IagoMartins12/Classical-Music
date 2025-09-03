@@ -17,7 +17,7 @@ const MODELS_ORDER = [
   'user',
   'account',
   'session',
-  'userToken', // 🆕 Tokens de confirmação/reset
+  'userToken',
 
   // Compositores (dependem de epoch e role)
   'composer',
@@ -42,24 +42,43 @@ const MODELS_ORDER = [
   'workAnnotation',
   'annotationHelpfulVote',
 
+  // 🆕 SISTEMA PROFESSOR-ALUNO (ORDEM IMPORTANTE!)
+  'teacher', // Dados dos professores
+  'student', // Dados dos alunos
+  'teacherStudent', // Relacionamento professor-aluno
+  'lesson', // Aulas (depende de teacher + student)
+  'assignment', // Tarefas (depende de lesson + student)
+
+  // 🆕 RELATÓRIOS COMPARTILHADOS
+  'sharedProgressReport', // Relatórios compartilhados
+  'sharedReportComment', // Comentários dos relatórios
+
+  // 🆕 SISTEMA DE NOTIFICAÇÕES E ATIVIDADES
+  'notification', // Notificações do sistema
+  'schoolActivity', // Log de atividades escolares
+
+  // 🆕 SISTEMA DE CONQUISTAS
+  'userAchievement', // Conquistas desbloqueadas
+  'achievementProgress', // Progresso das conquistas
+
   // Histórico e moderação
   'uploadHistory',
   'uploadModeration',
-  'generatedReport', // 🆕 Relatórios gerados
+  'generatedReport',
 
   // Sistema de publicidade
-  'advertisement', // 🆕 Publicidades (depende de user e instrument)
-  'adStats', // 🆕 Estatísticas de ads
+  'advertisement',
+  'adStats',
 
   // Sistema de newsletter
-  'newsletterSubscriber', // 🆕 Inscritos na newsletter
-  'testEmailList', // 🆕 Listas de teste de email
-  'templateFragment', // 🆕 Fragmentos reutilizáveis
-  'newsletterTemplate', // 🆕 Templates de email
-  'newsletterCampaign', // 🆕 Campanhas de email
-  'newsletterCampaignSend', // 🆕 Envios por campanha
-  'newsletterEmailEvent', // 🆕 Eventos de email
-  'templateUsageLog', // 🆕 Log de uso de templates
+  'newsletterSubscriber',
+  'testEmailList',
+  'templateFragment',
+  'newsletterTemplate',
+  'newsletterCampaign',
+  'newsletterCampaignSend',
+  'newsletterEmailEvent',
+  // ❌ REMOVIDO: 'templateUsageLog', // Esta tabela não existe no schema
 ];
 
 interface BackupData {

@@ -33,7 +33,6 @@ import CreateAnnotationModal from '../CreateAnnotationModal';
 import { MdVerified } from 'react-icons/md';
 import Image from 'next/image';
 import ConfirmDeleteModal from '../DeleteAnnotationModal';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface AnnotationCardProps {
@@ -50,8 +49,7 @@ export default function AnnotationCard({
   showWorkInfo = false,
 }: AnnotationCardProps) {
   const { user } = useAuth();
-  const { t } = useTranslation({ sections: ['pages/annotations'] });
-  const { language } = useLanguageStore();
+  const { t, language } = useTranslation({ sections: ['pages/annotations'] });
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showMore, setShowMore] = useState(false);

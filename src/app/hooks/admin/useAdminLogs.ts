@@ -172,7 +172,7 @@ export function useAdminLogs() {
       if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
       if (filters.dateTo) params.set('dateTo', filters.dateTo);
 
-      const response = await fetch(`/api/admin/logs/stats?${params}`);
+      const response = await fetch(`/api/admin/logs?${params}`);
       if (!response.ok) {
         throw new Error(`Erro ao buscar estatísticas: ${response.statusText}`);
       }

@@ -38,7 +38,6 @@ import CreateAnnotationModal from '@/app/components/Annotations/CreateAnnotation
 import Image from 'next/image';
 import ConfirmDeleteModal from '../DeleteAnnotationModal';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 interface UserAnnotationCardProps {
   annotation: WorkAnnotation;
@@ -50,14 +49,13 @@ export default function UserAnnotationCard({
   annotation,
   viewMode,
 }: UserAnnotationCardProps) {
-  const { t } = useTranslation({ sections: ['pages/annotations'] });
+  const { t, language } = useTranslation({ sections: ['pages/annotations'] });
   const { user } = useAuth();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [showActions, setShowActions] = useState(false);
 
-  const { language } = useLanguageStore();
   // Usar o store para operações de CRUD
   const { deleteAnnotation, loading, getAnnotationById } =
     useAnnotationsStore();

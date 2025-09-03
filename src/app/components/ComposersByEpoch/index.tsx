@@ -8,7 +8,6 @@ import { useState } from 'react';
 import SectionTitle from '../Utils/SectionTitle';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 interface Epoch {
   id: string;
@@ -21,7 +20,7 @@ interface ComposersByEpochProps {
 
 const EpochCard = ({ epoch }: { epoch: Epoch }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { t } = useTranslation({ sections: ['pages/home'] });
+  const { t, language } = useTranslation({ sections: ['pages/home'] });
 
   // Definir imagens e estilos específicos para cada período
   const getEpochData = (epochName: string) => {
@@ -98,7 +97,6 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
 
   const epochData = getEpochData(epoch.name);
 
-  const { language } = useLanguageStore();
   return (
     <div
       className="group cursor-pointer select-none"

@@ -85,7 +85,6 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     if (!videoUrl) {
@@ -123,10 +122,6 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
     setHasError(false);
   };
 
-  const handlePlayClick = () => {
-    setIsPlaying(true);
-  };
-
   // Não renderizar se não há URL, está carregando, tem erro ou videoInfo inválido
   if (
     !videoUrl ||
@@ -144,7 +139,6 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
       case 'vimeo':
         return (
           <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden shadow-theme-glow">
-            // Actual video iframe
             <iframe
               src={videoInfo.embedUrl}
               title={`${t('video_about')} ${composerName}`}

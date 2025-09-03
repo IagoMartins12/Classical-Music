@@ -1,7 +1,7 @@
-// app/components/Admin/Scores/ScoresManagement.tsx
+// app/components/Admin/Scores/ScoresManagement.tsx - COM DEBUG
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FiFileText,
@@ -22,6 +22,7 @@ import {
   FiHardDrive,
   FiTrendingUp,
   FiTarget,
+  FiAlertCircle,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -78,12 +79,14 @@ export default function ScoresManagement() {
   const [selectedScores, setSelectedScores] = useState<Set<string>>(new Set());
   const [refreshing, setRefreshing] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [showDebug, setShowDebug] = useState(false); // 🆕 Debug mode
 
   // Opções para filtros
   const sources = [
     { value: 'all', label: 'Todas as Fontes' },
     { value: 'IMSLP', label: 'IMSLP' },
-    { value: 'User Upload', label: 'Upload de Usuário' },
+    { value: 'CUSTOM', label: 'Personalizada' },
+    { value: 'UPLOAD', label: 'Upload de Usuário' },
   ];
 
   const handleFilterChange = (key: keyof ScoreFilters, value: string) => {
@@ -114,6 +117,28 @@ export default function ScoresManagement() {
   const handleRefresh = async () => {
     setRefreshing(true);
     await Promise.all([refreshStats(), fetchScores()]);
+    setRefreshing(false);
+  };
+
+  // 🆕 Função para forçar recálculo das estatísticas
+  const handleRecalculateStats = async () => {
+    setRefreshing(true);
+    try {
+      const response = await fetch(
+        '/api/admin/scores?action=recalculate-stats'
+      );
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success('Estatísticas recalculadas com sucesso!');
+        await refreshStats();
+      } else {
+        toast.error('Erro ao recalcular estatísticas');
+      }
+    } catch (error) {
+      console.error('Erro ao recalcular:', error);
+      toast.error('Erro ao recalcular estatísticas');
+    }
     setRefreshing(false);
   };
 
@@ -155,11 +180,11 @@ export default function ScoresManagement() {
     switch (source) {
       case 'IMSLP':
         return 'text-accent-blue bg-accent-blue/10';
-      case 'Mutopia':
+      case 'CUSTOM':
         return 'text-accent-green bg-accent-green/10';
-      case 'User Upload':
+      case 'UPLOAD':
         return 'text-accent-purple bg-accent-purple/10';
-      case 'Manual':
+      case 'MANUAL':
         return 'text-accent-amber bg-accent-amber/10';
       default:
         return 'text-theme-tertiary bg-theme-secondary';
@@ -221,6 +246,22 @@ export default function ScoresManagement() {
     );
   };
 
+  // 🆕 Log das estatísticas para debug
+  useEffect(() => {
+    if (stats) {
+      console.log('📊 [DEBUG] Estatísticas recebidas:', {
+        total: stats.total,
+        active: stats.active,
+        bySource: stats.bySource,
+        byType: stats.byType,
+        totalSize: stats.totalSize,
+        averagePerWork: stats.averagePerWork,
+        mostAccessed: stats.mostAccessed?.length,
+        recentlyAdded: stats.recentlyAdded,
+      });
+    }
+  }, [stats]);
+
   if (loading && !scores.length) {
     return (
       <PageContainer showBackground={true}>
@@ -246,8 +287,77 @@ export default function ScoresManagement() {
             <p className="text-xl text-theme-secondary classical-subtitle">
               Administre o catálogo de partituras da plataforma
             </p>
+            {/* 🆕 Botão de Debug */}
+            <div className="mt-4 flex items-center justify-center space-x-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                leftIcon={<FiAlertCircle />}
+                onClick={() => setShowDebug(!showDebug)}
+              >
+                {showDebug ? 'Ocultar' : 'Debug'}
+              </Button>
+            </div>
           </div>
         </AnimatedItem>
+
+        {/* 🆕 Painel de Debug */}
+        {showDebug && stats && (
+          <AnimatedItem direction="up" springType="gentle">
+            <AnimatedCard className="classical-card p-6 mb-8 border-2 border-accent-amber/30">
+              <h3 className="text-lg font-bold text-accent-amber mb-4 flex items-center space-x-2">
+                <FiAlertCircle className="w-5 h-5" />
+                <span>Debug das Estatísticas</span>
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <h4 className="font-semibold text-theme-primary mb-2">
+                    Dados Brutos:
+                  </h4>
+                  <pre className="bg-theme-secondary p-3 rounded text-xs overflow-auto">
+                    {JSON.stringify(
+                      {
+                        total: stats.total,
+                        active: stats.active,
+                        totalSize: stats.totalSize,
+                        averagePerWork: stats.averagePerWork,
+                        bySourceLength: stats.bySource?.length || 0,
+                        byTypeLength: stats.byType?.length || 0,
+                      },
+                      null,
+                      2
+                    )}
+                  </pre>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-theme-primary mb-2">
+                    Por Fonte:
+                  </h4>
+                  <pre className="bg-theme-secondary p-3 rounded text-xs overflow-auto">
+                    {JSON.stringify(stats.bySource, null, 2)}
+                  </pre>
+                  <h4 className="font-semibold text-theme-primary mb-2 mt-4">
+                    Por Tipo:
+                  </h4>
+                  <pre className="bg-theme-secondary p-3 rounded text-xs overflow-auto">
+                    {JSON.stringify(stats.byType, null, 2)}
+                  </pre>
+                </div>
+              </div>
+              <div className="mt-4">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  leftIcon={<FiRefreshCw />}
+                  onClick={handleRecalculateStats}
+                  disabled={refreshing}
+                >
+                  Forçar Recálculo
+                </Button>
+              </div>
+            </AnimatedCard>
+          </AnimatedItem>
+        )}
 
         {/* Stats Overview */}
         {stats && (
@@ -259,6 +369,7 @@ export default function ScoresManagement() {
                 change={{ value: stats.recentlyAdded, isPositive: true }}
                 icon={FiFileText}
                 color="#F59E0B"
+                subtitle="Todas as partituras cadastradas"
               />
 
               <MetricCard
@@ -271,6 +382,11 @@ export default function ScoresManagement() {
                 }}
                 icon={FiCheckCircle}
                 color="#10B981"
+                subtitle={`${
+                  stats.total > 0
+                    ? Math.round((stats.active / stats.total) * 100)
+                    : 0
+                }% do total`}
               />
 
               <MetricCard
@@ -279,6 +395,7 @@ export default function ScoresManagement() {
                 change={{ value: 8.3, isPositive: true }}
                 icon={FiHardDrive}
                 color="#8B5CF6"
+                subtitle="Baseado em arquivos reais"
               />
 
               <MetricCard
@@ -287,6 +404,7 @@ export default function ScoresManagement() {
                 change={{ value: 12.4, isPositive: true }}
                 icon={FiTrendingUp}
                 color="#3B82F6"
+                subtitle="Média de partituras por obra"
               />
             </div>
           </AnimatedItem>
@@ -296,32 +414,67 @@ export default function ScoresManagement() {
         {stats && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <AnimatedCard className="classical-card p-6">
-              <AdminPieChart
-                data={stats.bySource}
-                title="Partituras por Fonte"
-                subtitle="Distribuição por origem das partituras"
-                height={300}
-                innerRadius={60}
-              />
+              {/* 🔧 VALIDAÇÃO DE DADOS ANTES DE RENDERIZAR */}
+              {stats.bySource && stats.bySource.length > 0 ? (
+                <AdminPieChart
+                  data={stats.bySource.map((item) => ({
+                    name: item.source || 'Desconhecida',
+                    value: item.count || 0,
+                  }))}
+                  title="Partituras por Fonte"
+                  subtitle={`${stats.bySource.length} fontes diferentes`}
+                  height={300}
+                  innerRadius={60}
+                />
+              ) : (
+                <div className="text-center p-8 text-theme-tertiary">
+                  <FiAlertCircle className="w-8 h-8 mx-auto mb-2" />
+                  <p>Nenhum dado de fonte disponível</p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleRecalculateStats}
+                    className="mt-2"
+                  >
+                    Recalcular
+                  </Button>
+                </div>
+              )}
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6">
-              <AdminBarChart
-                data={stats.byType.map((item) => ({
-                  name: item.type.toUpperCase(),
-                  value: item.count,
-                }))}
-                title="Partituras por Tipo"
-                subtitle="Distribuição por formato de arquivo"
-                color="#F59E0B"
-                height={300}
-              />
+              {/* 🔧 VALIDAÇÃO DE DADOS ANTES DE RENDERIZAR */}
+              {stats.byType && stats.byType.length > 0 ? (
+                <AdminBarChart
+                  data={stats.byType.map((item) => ({
+                    name: (item.type || 'Desconhecido').toUpperCase(),
+                    value: item.count || 0,
+                  }))}
+                  title="Partituras por Tipo"
+                  subtitle={`${stats.byType.length} tipos diferentes`}
+                  color="#F59E0B"
+                  height={300}
+                />
+              ) : (
+                <div className="text-center p-8 text-theme-tertiary">
+                  <FiAlertCircle className="w-8 h-8 mx-auto mb-2" />
+                  <p>Nenhum dado de tipo disponível</p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleRecalculateStats}
+                    className="mt-2"
+                  >
+                    Recalcular
+                  </Button>
+                </div>
+              )}
             </AnimatedCard>
           </div>
         )}
 
         {/* Most Accessed */}
-        {stats && stats.mostAccessed.length > 0 && (
+        {stats && stats.mostAccessed && stats.mostAccessed.length > 0 && (
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mb-8">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">

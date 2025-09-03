@@ -16,7 +16,6 @@ import {
   translateGenre,
   matchesGenreSearch,
 } from '@/app/utils/translations/instrumentsGenresTranslation';
-import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 interface Genre {
   id: string;
@@ -38,8 +37,7 @@ export default function GenreSearchInput({
   initialGenres,
   isDisabled,
 }: GenreSearchInputProps) {
-  const { t } = useTranslation({ sections: ['pages/works'] });
-  const { language } = useLanguageStore();
+  const { t, language } = useTranslation({ sections: ['pages/works'] });
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');

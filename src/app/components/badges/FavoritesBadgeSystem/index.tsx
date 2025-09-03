@@ -21,7 +21,7 @@ import { useAchievementSystem } from '@/app/hooks/useAchievements';
 import { useCallback } from 'react';
 import { Badge } from '../BadgeSystem';
 import { FaFire } from 'react-icons/fa';
-import { Language } from '@/app/stores/useLanguageStore';
+import { Language } from '@/app/utils/translations/serverTranslations';
 
 const RARITY_COLORS = {
   COMMON: {
