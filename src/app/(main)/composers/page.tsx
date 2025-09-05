@@ -100,7 +100,7 @@ export async function generateMetadata({ searchParams }: ComposersPageProps) {
       description,
       type: 'website',
       locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      url: 'https://opusatlas.com/composers',
+      url: 'https://opusatlas.com.br/composers',
       siteName: 'Opus Atlas',
     },
     twitter: {
@@ -109,7 +109,7 @@ export async function generateMetadata({ searchParams }: ComposersPageProps) {
       description,
     },
     alternates: {
-      canonical: 'https://opusatlas.com/composers',
+      canonical: 'https://opusatlas.com.br/composers',
     },
     robots: {
       index: true,

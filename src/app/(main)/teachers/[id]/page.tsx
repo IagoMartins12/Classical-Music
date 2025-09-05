@@ -89,7 +89,7 @@ export async function generateMetadata({
       description: t.ogDescription,
       type: 'profile',
       locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      url: `https://opusatlas.com/teachers/${resolvedParams.id}`,
+      url: `https://opusatlas.com.br/teachers/${resolvedParams.id}`,
       siteName: 'Opus Atlas',
       images: [
         {
@@ -120,7 +120,7 @@ export async function generateMetadata({
       },
     },
     alternates: {
-      canonical: `https://opusatlas.com/teachers/${resolvedParams.id}`,
+      canonical: `https://opusatlas.com.br/teachers/${resolvedParams.id}`,
     },
   };
 }

@@ -76,7 +76,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url:
         language === 'pt'
           ? 'https://opusatlas.com.br/privacy'
-          : 'https://opusatlas.com/en/privacy',
+          : 'https://opusatlas.com.br/privacy',
       siteName: 'Opus Atlas',
     },
     twitter: {
@@ -99,10 +99,10 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical:
         language === 'pt'
           ? 'https://opusatlas.com.br/privacy'
-          : 'https://opusatlas.com/en/privacy',
+          : 'https://opusatlas.com.br/privacy',
       languages: {
         'pt-BR': 'https://opusatlas.com.br/privacy',
-        'en-US': 'https://opusatlas.com/en/privacy',
+        'en-US': 'https://opusatlas.com.br/privacy',
       },
     },
   };

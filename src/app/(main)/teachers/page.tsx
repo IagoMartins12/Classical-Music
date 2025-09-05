@@ -101,7 +101,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url:
         language === 'pt'
           ? 'https://opusatlas.com.br/teachers'
-          : 'https://opusatlas.com/en/teachers',
+          : 'https://opusatlas.com.br/teachers',
       siteName: 'Opus Atlas',
     },
     twitter: {
@@ -124,10 +124,10 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical:
         language === 'pt'
           ? 'https://opusatlas.com.br/teachers'
-          : 'https://opusatlas.com/en/teachers',
+          : 'https://opusatlas.com.br/teachers',
       languages: {
         'pt-BR': 'https://opusatlas.com.br/teachers',
-        'en-US': 'https://opusatlas.com/en/teachers',
+        'en-US': 'https://opusatlas.com.br/teachers',
       },
     },
   };

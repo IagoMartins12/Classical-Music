@@ -127,6 +127,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
   const [progress, setProgress] = useState(100);
   const Icon = achievement.icon;
 
+  console.log('ANCHIVE', achievement);
   // XP baseado na raridade se não fornecido
   const xpReward =
     achievement.xpReward ||
@@ -209,7 +210,13 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
           <div
             className={`w-14 h-14 rounded-2xl bg-gradient-to-br $ flex items-center justify-center shadow-lg relative`}
           >
-            <Icon className="w-7 h-7 text-white drop-shadow-sm" />
+            {config ? (
+              <config.icon className="w-7 h-7 text-theme-primary " />
+            ) : Icon ? (
+              <Icon className="w-7 h-7 text-theme-primary " />
+            ) : (
+              <FiAward className="w-7 h-7 text-theme-primary " />
+            )}
           </div>
 
           <div className="flex-1">
@@ -249,7 +256,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
         {/* Footer com raridade e XP */}
         <div className="flex items-center justify-between mb-3 relative z-10">
           <span
-            className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r $ text-white shadow-md`}
+            className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r $ text-theme-primary shadow-md`}
           >
             {config?.label}
           </span>
@@ -262,7 +269,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
         {/* Progress Bar */}
         <div className="w-full bg-theme-secondary rounded-full h-1.5 overflow-hidden relative z-10">
           <div
-            className={`h-full bg-gradient-to-r $ transition-all duration-100 ease-linear`}
+            className={`h-full progress-bar transition-all duration-100 ease-linear`}
             style={{ width: `${progress}%` }}
           />
         </div>

@@ -59,7 +59,7 @@ export async function generateMetadata({
       description: t.description,
     },
     alternates: {
-      canonical: `https://opusatlas.com/confirm-student-invite/${resolvedParams.token}`,
+      canonical: `https://opusatlas.com.br/confirm-student-invite/${resolvedParams.token}`,
     },
   };
 }

@@ -97,11 +97,11 @@ export async function generateMetadata(): Promise<Metadata> {
       url:
         language === 'pt'
           ? 'https://opusatlas.com.br/instruments'
-          : 'https://opusatlas.com/en/instruments',
+          : 'https://opusatlas.com.br/instruments',
       siteName: 'Opus Atlas',
       images: [
         {
-          url: '/images/og/classical-instruments.jpg',
+          url: '/logo-opus-atlas.jpeg',
           width: 1200,
           height: 630,
           alt:
@@ -115,7 +115,8 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: t.ogTitle,
       description: t.ogDescription,
-      images: ['/images/twitter/instruments-history.jpg'],
+
+      images: ['/logo-opus-atlas.jpeg'],
     },
     robots: {
       index: true,
@@ -132,10 +133,10 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical:
         language === 'pt'
           ? 'https://opusatlas.com.br/instruments'
-          : 'https://opusatlas.com/en/instruments',
+          : 'https://opusatlas.com.br/instruments',
       languages: {
         'pt-BR': 'https://opusatlas.com.br/instruments',
-        'en-US': 'https://opusatlas.com/en/instruments',
+        'en-US': 'https://opusatlas.com.br/instruments',
       },
     },
   };

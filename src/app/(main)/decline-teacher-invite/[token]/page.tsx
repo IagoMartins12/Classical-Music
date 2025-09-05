@@ -59,7 +59,7 @@ export async function generateMetadata({
       description: t.description,
     },
     alternates: {
-      canonical: `https://opusatlas.com/decline-teacher-invite/${resolvedParams.token}`,
+      canonical: `https://opusatlas.com.br/decline-teacher-invite/${resolvedParams.token}`,
     },
   };
 }

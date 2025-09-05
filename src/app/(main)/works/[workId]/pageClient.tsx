@@ -663,8 +663,18 @@ export default function WorkDetailsClient({
                           className="m-0 md:m-auto"
                         />
                         <ShareButton
-                          title={`${work.title} - Peça`}
-                          description={`Veja partituras dessa maravilhosa peça.`}
+                          title={`${work.title} - Obra musical`}
+                          description={`Descubra "${work.title}"${
+                            work.subtitle ? ` (${work.subtitle})` : ''
+                          }, composta por ${work.composer.fullName}${
+                            work.epoch?.name
+                              ? ` no período ${work.epoch?.name}`
+                              : ''
+                          }. Explore partituras, gravações, vídeos e mais detalhes sobre essa obra ${
+                            work.instrument
+                              ? `para ${work.instrument.name}`
+                              : 'erudita'
+                          }.`}
                           variant="default"
                           size="lg"
                           className="m-0 md:m-auto"

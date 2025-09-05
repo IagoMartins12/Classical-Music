@@ -212,7 +212,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const t = content[language];
   const baseUrl =
-    language === 'pt' ? 'https://opusatlas.com.br' : 'https://opusatlas.com/en';
+    language === 'pt' ? 'https://opusatlas.com.br' : 'https://opusatlas.com';
 
   return {
     title: {
@@ -302,7 +302,7 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: baseUrl,
       languages: {
         'pt-BR': 'https://opusatlas.com.br',
-        'en-US': 'https://opusatlas.com/en',
+        'en-US': 'https://opusatlas.com',
         'x-default': 'https://opusatlas.com.br',
       },
     },

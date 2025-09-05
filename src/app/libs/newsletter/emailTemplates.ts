@@ -80,7 +80,7 @@ const OPUS_ATLAS_CONFIG = {
     FROM_EMAIL: 'noreply@opusatlas.com',
     CONTACT_EMAIL: 'contact@opusatlas.com',
     SUPPORT_EMAIL: 'support@opusatlas.com',
-    SITE_URL: 'https://opusatlas.com/en',
+    SITE_URL: 'https://opusatlas.com',
     BRAND_NAME: 'Opus Atlas',
     TAGLINE: 'Classical music at your fingertips',
     DESCRIPTION: 'The complete classical music platform',

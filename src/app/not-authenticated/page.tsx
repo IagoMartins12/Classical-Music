@@ -51,10 +51,10 @@ export async function generateMetadata() {
       canonical:
         language === 'pt'
           ? 'https://opusatlas.com.br/not-authenticated'
-          : 'https://opusatlas.com/en/not-authenticated',
+          : 'https://opusatlas.com.br/not-authenticated',
       languages: {
         'pt-BR': 'https://opusatlas.com.br/not-authenticated',
-        'en-US': 'https://opusatlas.com/en/not-authenticated',
+        'en-US': 'https://opusatlas.com.br/not-authenticated',
       },
     },
   };

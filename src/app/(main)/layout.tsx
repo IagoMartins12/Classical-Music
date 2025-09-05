@@ -55,8 +55,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: t.description,
       type: 'website',
       locale: lang === 'pt' ? 'pt_BR' : 'en_US',
-      url:
-        lang === 'pt' ? 'https://opusatlas.com.br' : 'https://opusatlas.com/en',
+      url: lang === 'pt' ? 'https://opusatlas.com.br' : 'https://opusatlas.com',
     },
     twitter: {
       card: 'summary_large_image',
@@ -69,10 +68,10 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     alternates: {
       canonical:
-        lang === 'pt' ? 'https://opusatlas.com.br' : 'https://opusatlas.com/en',
+        lang === 'pt' ? 'https://opusatlas.com.br' : 'https://opusatlas.com',
       languages: {
         'pt-BR': 'https://opusatlas.com.br',
-        'en-US': 'https://opusatlas.com/en',
+        'en-US': 'https://opusatlas.com',
       },
     },
   };

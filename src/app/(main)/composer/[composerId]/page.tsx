@@ -127,7 +127,7 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
         description: t.ogDescription,
         type: 'profile',
         locale: language === 'pt' ? 'pt_BR' : 'en_US',
-        url: `https://opusatlas.com/composer/${composer.id}`,
+        url: `https://opusatlas.com.br/composer/${composer.id}`,
         siteName: 'Opus Atlas',
         images: composer.portraitUrl
           ? [
@@ -140,10 +140,10 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
             ]
           : [
               {
-                url: '/images/og/classical-composer.jpg',
+                url: '/logo-opus-atlas.jpeg',
                 width: 1200,
                 height: 630,
-                alt: `${composer.fullName} - Compositor`,
+                alt: 'Opus Atlas - Classical Music Encyclopedia',
               },
             ],
       },
@@ -153,7 +153,7 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
         description: t.description.substring(0, 200),
       },
       alternates: {
-        canonical: `https://opusatlas.com/composer/${composer.id}`,
+        canonical: `https://opusatlas.com.br/composer/${composer.id}`,
       },
       robots: {
         index: true,
@@ -171,7 +171,7 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
         'application/ld+json': JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'Person',
-          '@id': `https://opusatlas.com/composer/${composer.id}`,
+          '@id': `https://opusatlas.com.br/composer/${composer.id}`,
           name: composer.fullName,
           alternateName: composer.name,
           description: composer.bio || t.description,
@@ -180,12 +180,12 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
           nationality: composer.nationality,
           jobTitle: 'Composer',
           genre: composer.epochName,
-          url: `https://opusatlas.com/composer/${composer.id}`,
+          url: `https://opusatlas.com.br/composer/${composer.id}`,
           image: composer.portraitUrl,
           sameAs: composer.wikipediaLink ? [composer.wikipediaLink] : undefined,
           mainEntityOfPage: {
             '@type': 'WebPage',
-            '@id': `https://opusatlas.com/composer/${composer.id}`,
+            '@id': `https://opusatlas.com.br/composer/${composer.id}`,
           },
         }),
       },

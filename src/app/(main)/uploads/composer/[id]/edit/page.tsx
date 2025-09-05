@@ -75,7 +75,9 @@ export async function generateMetadata({ params }: EditComposerPageProps) {
         type: 'website',
         locale: language === 'pt' ? 'pt_BR' : 'en_US',
         siteName: 'Opus Atlas',
-        images: composer.portraitUrl ? [composer.portraitUrl] : undefined,
+        images: composer.portraitUrl
+          ? [composer.portraitUrl]
+          : '/logo-opus-atlas.jpeg',
       },
     };
   } catch (error) {

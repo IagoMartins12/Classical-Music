@@ -79,6 +79,7 @@ export interface WorkDetails {
     name: string;
     fullName: string;
     epochName: string | null;
+    portraitUrl?: string | null;
   };
 
   instrument: {
@@ -193,6 +194,7 @@ const getCachedWorkData = unstable_cache(
               name: true,
               fullName: true,
               epochName: true,
+              portraitUrl: true,
             },
           },
         },

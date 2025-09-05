@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: ConfirmAccountPageProps) {
       description: t.description,
     },
     alternates: {
-      canonical: `https://opusatlas.com/confirm-account/${resolvedParams.token}`,
+      canonical: `https://opusatlas.com.br/confirm-account/${resolvedParams.token}`,
     },
   };
 }

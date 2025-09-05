@@ -303,7 +303,7 @@ export function generateStaticMetadata(pageKey: string, additionalData?: any) {
         'music education',
       ],
       locale: 'en_US',
-      url: 'https://opusatlas.com/en',
+      url: 'https://opusatlas.com',
     },
   };
 

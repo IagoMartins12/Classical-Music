@@ -149,7 +149,7 @@ export async function generateMetadata({ searchParams }: WorksPageProps) {
       description,
       type: 'website',
       locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      url: 'https://opusatlas.com/works',
+      url: 'https://opusatlas.com.br/works',
       siteName: 'Opus Atlas',
     },
     twitter: {
@@ -158,7 +158,7 @@ export async function generateMetadata({ searchParams }: WorksPageProps) {
       description,
     },
     alternates: {
-      canonical: 'https://opusatlas.com/works',
+      canonical: 'https://opusatlas.com.br/works',
     },
     robots: {
       index: true,

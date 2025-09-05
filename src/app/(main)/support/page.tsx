@@ -79,7 +79,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url:
         language === 'pt'
           ? 'https://opusatlas.com.br/support'
-          : 'https://opusatlas.com/en/support',
+          : 'https://opusatlas.com.br/support',
       siteName: 'Opus Atlas',
     },
     twitter: {
@@ -102,10 +102,10 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical:
         language === 'pt'
           ? 'https://opusatlas.com.br/support'
-          : 'https://opusatlas.com/en/support',
+          : 'https://opusatlas.com.br/support',
       languages: {
         'pt-BR': 'https://opusatlas.com.br/support',
-        'en-US': 'https://opusatlas.com/en/support',
+        'en-US': 'https://opusatlas.com.br/support',
       },
     },
   };

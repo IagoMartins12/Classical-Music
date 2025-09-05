@@ -97,7 +97,7 @@ export async function generateMetadata() {
       url:
         language === 'pt'
           ? 'https://opusatlas.com.br/music-history'
-          : 'https://opusatlas.com/en/music-history',
+          : 'https://opusatlas.com.br/music-history',
       siteName: 'Opus Atlas',
       images: [
         {
@@ -131,10 +131,10 @@ export async function generateMetadata() {
       canonical:
         language === 'pt'
           ? 'https://opusatlas.com.br/music-history'
-          : 'https://opusatlas.com/en/music-history',
+          : 'https://opusatlas.com.br/music-history',
       languages: {
         'pt-BR': 'https://opusatlas.com.br/music-history',
-        'en-US': 'https://opusatlas.com/en/music-history',
+        'en-US': 'https://opusatlas.com.br/music-history',
       },
     },
   };

@@ -17,15 +17,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const content = {
     pt: {
-      // title: 'Opus Atlas - Enciclopédia de Música Clássica',
-      // description:
-      //   'Explore, aprenda e pratique música clássica com nossa enciclopédia interativa. Descubra compositores, obras e desenvolva suas habilidades musicais.',
-      notFoundTitle: 'Página não encontrada - Opus Atlas',
-      notFoundDescription:
-        'A página solicitada não foi encontrada em nossa enciclopédia musical.',
-      errorTitle: 'Erro - Opus Atlas',
-      errorDescription:
-        'Ocorreu um erro inesperado. Nossa equipe foi notificada.',
+      title: 'Opus Atlas - Enciclopédia de Música Clássica',
+      description:
+        'Explore, aprenda e pratique música clássica com nossa enciclopédia interativa. Descubra compositores, obras e desenvolva suas habilidades musicais.',
       keywords: [
         'música clássica',
         'compositores',
@@ -36,15 +30,9 @@ export async function generateMetadata(): Promise<Metadata> {
       ],
     },
     en: {
-      // title: 'Opus Atlas - Classical Music Encyclopedia',
-      // description:
-      //   'Explore, learn, and practice classical music with our interactive encyclopedia. Discover composers, works, and improve your musical skills.',
-      notFoundTitle: 'Page not found - Opus Atlas',
-      notFoundDescription:
-        'The requested page was not found in our musical encyclopedia.',
-      errorTitle: 'Error - Opus Atlas',
-      errorDescription:
-        'An unexpected error occurred. Our team has been notified.',
+      title: 'Opus Atlas - Classical Music Encyclopedia',
+      description:
+        'Explore, learn, and practice classical music with our interactive encyclopedia. Discover composers, works, and improve your musical skills.',
       keywords: [
         'classical music',
         'composers',
@@ -59,45 +47,47 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = content[lang] || content.pt;
 
   return {
-    // title: {
-    //   template: `%s | Opus Atlas`,
-    //   default: t.title,
-    // },
-    // description: t.description,
-
+    title: {
+      template: `%s | Opus Atlas`,
+      default: t.title,
+    },
+    description: t.description,
     keywords: t.keywords,
     authors: [{ name: 'Opus Atlas Team' }],
     creator: 'Opus Atlas',
     openGraph: {
-      // title: t.title,
-      // description: t.description,
       type: 'website',
       locale: lang === 'pt' ? 'pt_BR' : 'en_US',
       url:
         lang === 'pt' ? 'https://opusatlas.com.br' : 'https://opusatlas.com/en',
+      siteName: 'Opus Atlas',
+      images: [
+        {
+          url: '/logo-opus-atlas.jpeg',
+          width: 1200,
+          height: 630,
+          alt: 'Opus Atlas - Classical Music Encyclopedia',
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
-      // title: t.title,
-      // description: t.description,
+      images: ['/logo-opus-atlas.jpeg'],
+      title: t.title,
+      description: t.description,
     },
+
     robots: {
       index: true,
       follow: true,
     },
     alternates: {
       canonical:
-        lang === 'pt' ? 'https://opusatlas.com.br' : 'https://opusatlas.com/en',
+        lang === 'pt' ? 'https://opusatlas.com.br' : 'https://opusatlas.com',
       languages: {
         'pt-BR': 'https://opusatlas.com.br',
-        'en-US': 'https://opusatlas.com/en',
+        'en-US': 'https://opusatlas.com',
       },
-    }, // Adicionar metadata customizado para páginas especiais
-    other: {
-      'not-found-title': t.notFoundTitle,
-      'not-found-description': t.notFoundDescription,
-      'error-title': t.errorTitle,
-      'error-description': t.errorDescription,
     },
   };
 }
@@ -107,7 +97,6 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
 };
-
 export default function RootLayout({
   children,
 }: {

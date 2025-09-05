@@ -86,7 +86,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url:
         language === 'pt'
           ? 'https://opusatlas.com.br/copyright'
-          : 'https://opusatlas.com/en/copyright',
+          : 'https://opusatlas.com.br/copyright',
       siteName: 'Opus Atlas',
     },
     twitter: {
@@ -109,10 +109,10 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical:
         language === 'pt'
           ? 'https://opusatlas.com.br/copyright'
-          : 'https://opusatlas.com/en/copyright',
+          : 'https://opusatlas.com.br/copyright',
       languages: {
         'pt-BR': 'https://opusatlas.com.br/copyright',
-        'en-US': 'https://opusatlas.com/en/copyright',
+        'en-US': 'https://opusatlas.com.br/copyright',
       },
     },
   };

@@ -2,9 +2,7 @@
 import { notFound } from 'next/navigation';
 import WorkDetailsServer from './pageServer';
 import { getWorkById } from '@/app/requests/work-page-details';
-import {
-  getServerLanguageStatic,
-} from '@/app/utils/translations/serverTranslations';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 interface WorkParams {
   workId: string;
@@ -129,23 +127,33 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
         type: 'music.song',
         siteName: 'Opus Atlas',
         locale: language === 'pt' ? 'pt_BR' : 'en_US',
-        url: `https://opusatlas.com/work/${work.id}`,
-        images: [
-          {
-            url: '/images/og/classical-work.jpg',
-            width: 1200,
-            height: 630,
-            alt: `${work.title} - ${work.composer.name} | Partitura`,
-          },
-        ],
+        url: `https://opusatlas.com.br/work/${work.id}`,
+        images: work.composer.portraitUrl
+          ? [
+              {
+                url: work.composer.portraitUrl,
+                width: 1200,
+                height: 630,
+                alt: `${work.title} - ${work.composer.name}`,
+              },
+            ]
+          : [
+              {
+                url: '/logo-opus-atlas.jpeg',
+                width: 1200,
+                height: 630,
+                alt: 'Opus Atlas - Logo',
+              },
+            ],
       },
       twitter: {
         card: 'summary_large_image',
         title: t.titleTemplate,
         description: description.substring(0, 200),
+        images: [work.composer.portraitUrl || '/logo-opus-atlas.jpeg'],
       },
       alternates: {
-        canonical: `https://opusatlas.com/work/${work.id}`,
+        canonical: `https://opusatlas.com.br/work/${work.id}`,
       },
       robots: {
         index: true,
@@ -172,10 +180,10 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
           genre: work.epoch?.name,
           instrument: work.instrument?.name,
           description: description,
-          url: `https://opusatlas.com/work/${work.id}`,
+          url: `https://opusatlas.com.br/work/${work.id}`,
           mainEntityOfPage: {
             '@type': 'WebPage',
-            '@id': `https://opusatlas.com/work/${work.id}`,
+            '@id': `https://opusatlas.com.br/work/${work.id}`,
           },
           isPartOf: {
             '@type': 'WebSite',

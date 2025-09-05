@@ -51,10 +51,10 @@ export async function generateMetadata() {
       canonical:
         language === 'pt'
           ? 'https://opusatlas.com.br/access-denied'
-          : 'https://opusatlas.com/en/access-denied',
+          : 'https://opusatlas.com.br/access-denied',
       languages: {
         'pt-BR': 'https://opusatlas.com.br/access-denied',
-        'en-US': 'https://opusatlas.com/en/access-denied',
+        'en-US': 'https://opusatlas.com.br/access-denied',
       },
     },
   };

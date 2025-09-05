@@ -102,7 +102,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url:
         language === 'pt'
           ? 'https://opusatlas.com.br/genres'
-          : 'https://opusatlas.com/en/genres',
+          : 'https://opusatlas.com.br/genres',
       siteName: 'Opus Atlas',
     },
     twitter: {
@@ -125,10 +125,10 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical:
         language === 'pt'
           ? 'https://opusatlas.com.br/genres'
-          : 'https://opusatlas.com/en/genres',
+          : 'https://opusatlas.com.br/genres',
       languages: {
         'pt-BR': 'https://opusatlas.com.br/genres',
-        'en-US': 'https://opusatlas.com/en/genres',
+        'en-US': 'https://opusatlas.com.br/genres',
       },
     },
   };
