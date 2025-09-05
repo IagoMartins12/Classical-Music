@@ -106,7 +106,7 @@ const AudioWaveform: React.FC<AudioWaveformProps> = ({
     const height: number = canvas.height;
 
     // Obter dados de frequência
-    analyser.getByteFrequencyData(dataArray);
+    analyser.getByteFrequencyData(dataArray as Uint8Array<ArrayBuffer>);
 
     // Limpar canvas
     ctx.fillStyle = 'rgba(17, 24, 39, 0.3)'; // bg-gray-900 com transparência

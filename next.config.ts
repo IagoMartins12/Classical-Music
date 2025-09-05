@@ -1,14 +1,19 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // Disable static optimization completely
+  output: 'standalone',
+
+
+  // Force dynamic rendering for all pages
+  trailingSlash: false,
+
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '**',
       },
-      // new URL('https://imslp.org/images/**'),
-      // new URL('https://**.imslp.org/images/**'),
     ],
   },
 
