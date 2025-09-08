@@ -5,6 +5,7 @@ import './globals.css';
 import { ClientThemeWrapper } from './components/ClientThemeWrapper';
 import AuthProvider from './providers/AuthProvider';
 import { getServerLanguageStatic } from './utils/translations/serverTranslations';
+import Script from 'next/script';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -98,6 +99,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
 };
 export const dynamic = 'force-dynamic';
+
 export default function RootLayout({
   children,
 }: {
@@ -122,6 +124,13 @@ export default function RootLayout({
         <ClientThemeWrapper>
           <AuthProvider>{children}</AuthProvider>
         </ClientThemeWrapper>
+
+        {/* Umami Analytics - Movido para o body */}
+        <Script
+          src="https://monitor.opusatlas.com.br/analytics/script.js"
+          data-website-id="f3475284-e507-4e7e-af4a-3a1ecd932652"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

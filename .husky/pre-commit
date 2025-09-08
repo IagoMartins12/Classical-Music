@@ -1,13 +1,15 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
+cat > .husky/pre-commit << 'EOF'
 echo "🔍 Running pre-commit checks..."
 
-# Executar lint-staged
 npm run lint-staged
 
-# Verificar tipos TypeScript
 echo "🔍 Type checking..."
 npm run type-check
 
+echo "🔍 Checking for vulnerabilities..."
+npm audit --audit-level=high
+
 echo "✅ Pre-commit checks passed!"
+EOF
+
+chmod +x .husky/pre-commit
