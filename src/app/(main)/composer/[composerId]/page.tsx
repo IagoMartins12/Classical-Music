@@ -48,8 +48,8 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
     const deathYear = composer.deathDate
       ? `-${composer.deathDate})`
       : birthYear
-      ? ')'
-      : '';
+        ? ')'
+        : '';
     const years = birthYear + deathYear;
 
     const content = {
@@ -140,7 +140,7 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
             ]
           : [
               {
-                url: '/logo-opus-atlas.jpeg',
+                url: '/https://opusatlas.com.br/logo-opus-atlas.jpeg',
                 width: 1200,
                 height: 630,
                 alt: 'Opus Atlas - Classical Music Encyclopedia',

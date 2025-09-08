@@ -322,7 +322,7 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="hidden lg:block w-64 bg-theme-elevated border-r border-theme-primary h-[calc(100vh-80px)] overflow-y-auto">
+    <aside className="block w-full md:w-64 bg-theme-elevated border-r border-theme-primary h-[calc(100vh-80px)] overflow-y-auto">
       <div className="p-4 lg:p-6">
         {/* Sidebar Header */}
         <div className="mb-6 lg:mb-8">
