@@ -133,9 +133,7 @@ export const useBackupManagement = (): UseBackupManagementReturn => {
     setIsCreatingBackup(true);
     setError(null);
 
-    const toastId = toast.loading('Iniciando backup...', {
-      duration: Infinity,
-    });
+    const toastId = toast.loading('Iniciando backup...');
 
     try {
       const response = await fetch('/api/admin/backup', {
@@ -360,11 +358,14 @@ export const useBackupManagement = (): UseBackupManagementReturn => {
 
   // Auto-refresh geral a cada 2 minutos
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!loading && !isCreatingBackup && !isRestoringBackup) {
-        fetchBackups();
-      }
-    }, 2 * 60 * 1000); // 2 minutos
+    const interval = setInterval(
+      () => {
+        if (!loading && !isCreatingBackup && !isRestoringBackup) {
+          fetchBackups();
+        }
+      },
+      2 * 60 * 1000
+    ); // 2 minutos
 
     return () => clearInterval(interval);
   }, [loading, isCreatingBackup, isRestoringBackup, fetchBackups]);

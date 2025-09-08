@@ -64,7 +64,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
   const visiblePages = getVisiblePages();
 
   return (
-    <div className="classical-card p-6">
+    <div className="classical-card p-6 mt-4">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         {/* Page info */}
         <div className="flex items-center space-x-2 text-theme-secondary text-sm">
