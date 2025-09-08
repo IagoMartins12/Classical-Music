@@ -127,7 +127,7 @@ export default function RootLayout({
 
         {/* Umami Analytics - Movido para o body */}
         <Script
-          src="https://monitor.opusatlas.com.br/analytics/script.js"
+          src="https://analytics.opusatlas.com.br/analytics"
           data-website-id="f3475284-e507-4e7e-af4a-3a1ecd932652"
           strategy="afterInteractive"
         />

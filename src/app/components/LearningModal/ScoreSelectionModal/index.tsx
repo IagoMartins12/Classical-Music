@@ -558,8 +558,8 @@ const ScoreSelectionModal = ({
                           ? t('update_and_back')
                           : t('confirm_selection')
                         : isEditing
-                        ? t('remove_score')
-                        : t('continue_without_score')}
+                          ? t('remove_score')
+                          : t('continue_without_score')}
                     </span>
                   </>
                 )}
@@ -570,7 +570,10 @@ const ScoreSelectionModal = ({
 
         {/* Tabs Navigation */}
         {visibleTabs.length > 0 && (
-          <nav className="flex scrollbar-hide px-0 md:px-6" aria-label="Tabs">
+          <nav
+            className="flex overflow-x-scroll classical-scrollbar-mini px-0 md:px-6"
+            aria-label="Tabs"
+          >
             {visibleTabs.map((tab, index) => {
               const isActive = activeTab === tab.id;
               const tabStat = tabStats[tab.type as keyof typeof tabStats];
@@ -580,10 +583,10 @@ const ScoreSelectionModal = ({
                 <AnimatedItem key={tab.id} hover="scale" springType="bouncy">
                   <button
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-3 px-6 py-4 cursor-pointer text-sm font-medium border-b-2 transition-all duration-300 whitespace-nowrap flex-shrink-0 animate-fade-in-up relative ${
+                    className={`flex items-center gap-3 px-6 py-4 cursor-pointer text-sm font-medium  transition-all duration-300 whitespace-nowrap flex-shrink-0 animate-fade-in-up relative ${
                       isActive
-                        ? 'border-brand-primary text-brand-primary bg-gradient-to-t from-brand-primary/10 to-transparent'
-                        : 'border-transparent text-theme-tertiary hover:text-theme-primary hover:border-theme-primary hover:bg-interactive-hover'
+                        ? 'border-0 md:border-b-2 border-brand-primary text-brand-primary bg-gradient-to-t from-brand-primary/10 to-transparent'
+                        : 'border-b-2 border-transparent text-theme-tertiary hover:text-theme-primary hover:border-theme-primary hover:bg-interactive-hover'
                     }`}
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
@@ -790,12 +793,12 @@ const ScoreSelectionModal = ({
               {isConverting
                 ? t('processing')
                 : selectedScore
-                ? isEditing
-                  ? t('update_and_back')
-                  : t('confirm_selection')
-                : isEditing
-                ? t('remove_score')
-                : t('continue_without_score')}
+                  ? isEditing
+                    ? t('update_and_back')
+                    : t('confirm_selection')
+                  : isEditing
+                    ? t('remove_score')
+                    : t('continue_without_score')}
             </button>
           </div>
         </div>

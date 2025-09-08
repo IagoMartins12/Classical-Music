@@ -1003,7 +1003,7 @@ export default function WorkDetailsClient({
                               <span className="text-sm font-medium text-theme-tertiary block mb-3">
                                 {t('work_details_categorias')}
                               </span>
-                              <div className="flex flex-wrap gap-2">
+                              <div className="flex flex-wrap gap-2 gap-y-5">
                                 {work.categoryNames.map(
                                   (categoryName, index) => (
                                     <AnimatedItem
@@ -1034,7 +1034,7 @@ export default function WorkDetailsClient({
                                 <span className="text-sm font-medium text-theme-tertiary block mb-3">
                                   {t('work_details_tipos_obra')}
                                 </span>
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-2 gap-y-5">
                                   {work.workGenresArr.map(
                                     (workGenre, index) => (
                                       <AnimatedItem

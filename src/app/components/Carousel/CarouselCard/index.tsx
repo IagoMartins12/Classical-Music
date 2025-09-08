@@ -78,7 +78,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
           </div>
 
           {/* Content Section */}
-          <div className="p-6 relative">
+          <div className="p-4 pb-0 md:p-6 relative">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5 music-note-background"></div>
 
