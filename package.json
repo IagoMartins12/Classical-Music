@@ -3,14 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prepare": "husky",
+    "type-check": "tsc --noEmit",
     "dev": "next dev --turbopack",
     "build": "next build",
+    "lint-staged": "lint-staged",
     "start": "next start",
     "lint": "next lint",
-    "migrate": "tsx scripts/migrate.ts",
-    "fix-works": "tsx scripts/fix-famous-work-subtitle.ts",
-    "fix-works:execute": "tsx scripts/fix-famous-work-subtitle.ts execute",
-    "fix-works:diagnose": "tsx scripts/fix-famous-work-subtitle.ts diagnose",
     "// === SCRIPTS DE LIMPEZA DE ARQUIVOS ===": "",
     "orphan-files:scan": "npx tsx scripts/orphan-files/orphan-cleanup.ts scan",
     "orphan-files:scan-scores": "npx tsx scripts/orphan-files/orphan-cleanup.ts scan-category scores",
@@ -54,25 +53,8 @@
     "// === DIAGNOSTIC SCRIPTS ===": "",
     "backup:diagnose": "tsx scripts/backup/diagnose-backup.ts",
     "backup:monitor": "tsx scripts/backup/backup-monitor.ts",
-    "// === SETUP AND INITIALIZATION SCRIPTS ===": "",
-    "backup:init": "tsx scripts/backup/init-backup-system.ts",
-    "backup:setup": "tsx scripts/backup/init-backup-system.ts --initial-backup",
-    "backup:setup:quick": "tsx scripts/backup/init-backup-system.ts --max-backups 10 --retention 60 --initial-backup",
-    "// === UTILITY SCRIPTS ===": "",
     "backup:utils": "tsx scripts/backup/backup-utils.ts",
     "backup:custom": "tsx scripts/backup/backup-utils.ts custom-backup",
-    "// === BACKUP SHORTCUTS ===": "",
-    "backup:quick:users": "npm run backup:selective:users",
-    "backup:quick:content": "npm run backup:selective:content",
-    "backup:quick:all-selective": "npm run backup:selective:system && npm run backup:selective:content && npm run backup:selective:interactions",
-    "// === DEVELOPMENT AND TESTING SCRIPTS ===": "",
-    "backup:test": "tsx scripts/backup/selective-backup.ts restore --dry-run",
-    "backup:test:selective": "tsx scripts/backup/selective-backup.ts backup user --dry-run",
-    "backup:dev": "tsx scripts/backup/backup.ts backup && tsx scripts/backup/backup-utils.ts health",
-    "backup:dev:selective": "tsx scripts/backup/selective-backup.ts backup user work --with-dependencies --name=\"Test Backup\" && tsx scripts/backup/backup-utils.ts health",
-    "// === RESTORE SHORTCUTS ===": "",
-    "backup:restore:latest": "tsx scripts/backup/backup.ts list && echo 'Use: npm run backup:restore <path>'",
-    "backup:restore:selective:latest": "tsx scripts/backup/selective-backup.ts list && echo 'Use: npm run backup:selective:restore <path>'",
     "vercel-build": "prisma generate && next build",
     "difficulty-scraper": "tsx scripts/difficulty-scraper.ts",
     "difficulty:analyze": "npm run difficulty-scraper start",
@@ -136,11 +118,23 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
     "eslint-plugin-unused-imports": "^4.1.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.6",
     "mime-types": "^3.0.1",
     "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
     "terser-webpack-plugin": "^5.3.14",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }

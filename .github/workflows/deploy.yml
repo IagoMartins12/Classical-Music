@@ -39,31 +39,6 @@ jobs:
           NEXTAUTH_SECRET: 'build-secret-temp'
           NEXTAUTH_URL: 'http://localhost:3000'
           SKIP_ENV_VALIDATION: 'true'
-
-  deploy-dev:
-    needs: build-and-test
-    if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy to Development
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            cd /opt/opus-atlas/app-source/Classical-Music
-            git checkout dev
-            git pull origin dev
-            docker-compose build --no-cache app-dev
-            docker-compose up -d app-dev
-
-      - name: Health check DEV
-        run: |
-          sleep 30
-          curl -u "opusatlas:DevOpusAtlas2024!" -f https://dev.opusatlas.com.br/nginx-health || exit 1
-
   deploy-prod:
     needs: build-and-test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
