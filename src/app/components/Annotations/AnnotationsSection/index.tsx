@@ -406,8 +406,8 @@ export default function AnnotationsSection({
                           communityFilters.category === category && count > 0
                             ? `bg-gradient-to-r ${config?.color} text-theme-primary shadow-theme-glow`
                             : count === 0
-                            ? 'bg-theme-elevated border border-theme-primary/20 text-theme-tertiary opacity-50 cursor-not-allowed'
-                            : 'bg-theme-elevated border border-theme-primary/30 text-theme-secondary hover:border-brand-primary/50 hover:scale-105'
+                              ? 'bg-theme-elevated border border-theme-primary/20 text-theme-tertiary opacity-50 cursor-not-allowed'
+                              : 'bg-theme-elevated border border-theme-primary/30 text-theme-secondary hover:border-brand-primary/50 hover:scale-105'
                         }`}
                       >
                         <Icon className="w-3 h-3" />

@@ -528,21 +528,21 @@ export default function UsersList() {
                                 user.userType === 'TEACHER'
                                   ? 'bg-accent-purple/20 text-accent-purple'
                                   : user.userType === 'PROFESSIONAL'
-                                  ? 'bg-accent-green/20 text-accent-green'
-                                  : user.userType === 'MUSIC_STUDENT'
-                                  ? 'bg-accent-blue/20 text-accent-blue'
-                                  : 'bg-theme-secondary text-theme-tertiary'
+                                    ? 'bg-accent-green/20 text-accent-green'
+                                    : user.userType === 'MUSIC_STUDENT'
+                                      ? 'bg-accent-blue/20 text-accent-blue'
+                                      : 'bg-theme-secondary text-theme-tertiary'
                               }`}
                             >
                               {user.userType === 'MUSIC_STUDENT'
                                 ? 'Estudante'
                                 : user.userType === 'CASUAL_USER'
-                                ? 'Casual'
-                                : user.userType === 'PROFESSIONAL'
-                                ? 'Profissional'
-                                : user.userType === 'TEACHER'
-                                ? 'Professor'
-                                : user.userType}
+                                  ? 'Casual'
+                                  : user.userType === 'PROFESSIONAL'
+                                    ? 'Profissional'
+                                    : user.userType === 'TEACHER'
+                                      ? 'Professor'
+                                      : user.userType}
                             </span>
                           )}
 
@@ -553,8 +553,8 @@ export default function UsersList() {
                                 user.teacherProfile.status === 'ACTIVE'
                                   ? 'bg-accent-green/20 text-accent-green'
                                   : user.teacherProfile.status === 'PENDING'
-                                  ? 'bg-accent-yellow/20 text-accent-yellow'
-                                  : 'bg-theme-secondary text-theme-tertiary'
+                                    ? 'bg-accent-yellow/20 text-accent-yellow'
+                                    : 'bg-theme-secondary text-theme-tertiary'
                               }`}
                             >
                               {user.teacherProfile.status === 'ACTIVE' &&

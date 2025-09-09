@@ -512,13 +512,13 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         customAudio: editData.removeCustomAudio
           ? null
           : updateData.customAudioFile
-          ? {
-              url: updateData.customAudioFile,
-              file: updateData.customAudioFile,
-              title: `${work.title} - ${t('media_audio_personalizado')}`,
-              isPersistent: true,
-            }
-          : prev.customAudio,
+            ? {
+                url: updateData.customAudioFile,
+                file: updateData.customAudioFile,
+                title: `${work.title} - ${t('media_audio_personalizado')}`,
+                isPersistent: true,
+              }
+            : prev.customAudio,
       }));
 
       // Notificar o parent sobre a atualização
@@ -546,17 +546,17 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           customAudio: editData.removeCustomAudio
             ? null
             : updateData.customAudioFile
-            ? {
-                url: updateData.customAudioFile,
-                file: updateData.customAudioFile,
-                source: 'upload',
-                metadata: updateData.customAudioMetadata,
-                isUpload: true,
-                isAlternativeSource: false,
-                isPersistent: true,
-                title: `${work.title} - ${t('media_audio_personalizado')}`,
-              }
-            : null,
+              ? {
+                  url: updateData.customAudioFile,
+                  file: updateData.customAudioFile,
+                  source: 'upload',
+                  metadata: updateData.customAudioMetadata,
+                  isUpload: true,
+                  isAlternativeSource: false,
+                  isPersistent: true,
+                  title: `${work.title} - ${t('media_audio_personalizado')}`,
+                }
+              : null,
         });
       }
 
@@ -649,8 +649,8 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 {isSearching
                   ? t('media_buscando')
                   : hasSearchBeenMade
-                  ? t('media_buscar_novamente')
-                  : t('media_carregar')}
+                    ? t('media_buscar_novamente')
+                    : t('media_carregar')}
               </Button>
             )}
           </div>

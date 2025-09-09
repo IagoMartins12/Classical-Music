@@ -941,8 +941,8 @@ export default function TeacherCalendarPageClient({
                   pendingStatusUpdate.newStatus === 'COMPLETED'
                     ? 'bg-accent-green/10'
                     : pendingStatusUpdate.newStatus === 'NO_SHOW'
-                    ? 'bg-accent-yellow/10'
-                    : 'bg-accent-red/10'
+                      ? 'bg-accent-yellow/10'
+                      : 'bg-accent-red/10'
                 }`}
               >
                 {pendingStatusUpdate.newStatus === 'COMPLETED' && (
@@ -1001,8 +1001,8 @@ export default function TeacherCalendarPageClient({
                   pendingStatusUpdate.newStatus === 'CANCELLED'
                     ? 'bg-accent-red border-accent-red hover:bg-accent-red/90'
                     : pendingStatusUpdate.newStatus === 'COMPLETED'
-                    ? 'bg-accent-green border-accent-green hover:bg-accent-green/90'
-                    : 'bg-accent-yellow border-accent-yellow hover:bg-accent-yellow/90'
+                      ? 'bg-accent-green border-accent-green hover:bg-accent-green/90'
+                      : 'bg-accent-yellow border-accent-yellow hover:bg-accent-yellow/90'
                 }`}
               >
                 {updatingStatus ? (
@@ -1024,10 +1024,10 @@ export default function TeacherCalendarPageClient({
                   {updatingStatus
                     ? t('updating')
                     : pendingStatusUpdate.newStatus === 'COMPLETED'
-                    ? t('confirm_completed')
-                    : pendingStatusUpdate.newStatus === 'NO_SHOW'
-                    ? t('confirm_no_show')
-                    : t('confirm_cancelled')}
+                      ? t('confirm_completed')
+                      : pendingStatusUpdate.newStatus === 'NO_SHOW'
+                        ? t('confirm_no_show')
+                        : t('confirm_cancelled')}
                 </span>
               </button>
             </div>
@@ -1140,8 +1140,8 @@ function MonthView({
                 isToday
                   ? 'bg-brand-primary/5 border-brand-primary/30'
                   : isCurrentMonth
-                  ? 'bg-theme-elevated/50'
-                  : 'bg-theme-secondary/20 opacity-60'
+                    ? 'bg-theme-elevated/50'
+                    : 'bg-theme-secondary/20 opacity-60'
               } ${hasAttentionEvents ? 'ring-1 ring-accent-red/40' : ''}`}
             >
               <div
@@ -1149,8 +1149,8 @@ function MonthView({
                   isToday
                     ? 'text-brand-primary'
                     : isCurrentMonth
-                    ? 'text-theme-primary'
-                    : 'text-theme-tertiary'
+                      ? 'text-theme-primary'
+                      : 'text-theme-tertiary'
                 }`}
               >
                 <span>{day.getDate()}</span>
@@ -1488,14 +1488,14 @@ function EventDetailsModal({
                   {event.status === 'SCHEDULED'
                     ? t('event_status_scheduled')
                     : event.status === 'COMPLETED'
-                    ? t('event_status_completed')
-                    : event.status === 'CANCELLED'
-                    ? t('event_status_cancelled')
-                    : event.status === 'NO_SHOW'
-                    ? t('event_status_no_show')
-                    : event.status === 'RESCHEDULED'
-                    ? t('event_status_rescheduled')
-                    : event.status}
+                      ? t('event_status_completed')
+                      : event.status === 'CANCELLED'
+                        ? t('event_status_cancelled')
+                        : event.status === 'NO_SHOW'
+                          ? t('event_status_no_show')
+                          : event.status === 'RESCHEDULED'
+                            ? t('event_status_rescheduled')
+                            : event.status}
                 </span>
                 {event.details?.isRecurring && (
                   <span className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm">
@@ -1886,10 +1886,10 @@ function DayEventsModal({
                           {event.status === 'SCHEDULED'
                             ? t('event_status_scheduled')
                             : event.status === 'COMPLETED'
-                            ? t('event_status_completed')
-                            : event.status === 'CANCELLED'
-                            ? t('event_status_cancelled')
-                            : event.status}
+                              ? t('event_status_completed')
+                              : event.status === 'CANCELLED'
+                                ? t('event_status_cancelled')
+                                : event.status}
                         </span>
                         {statusInfo.needsAttention && (
                           <span className="px-2 py-1 bg-accent-red/20 text-accent-red rounded-full text-xs flex items-center space-x-1">

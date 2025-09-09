@@ -567,8 +567,8 @@ export default function OrphanFilesManagementClient() {
                           scanType === 'hybrid'
                             ? 'Híbrido'
                             : scanType === 'cloudinary'
-                            ? 'Cloudinary'
-                            : 'Local'
+                              ? 'Cloudinary'
+                              : 'Local'
                         }`}
                   </Button>
                 </div>

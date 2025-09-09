@@ -223,8 +223,8 @@ export default function FavoritesClient() {
                       {isMobile
                         ? t('stats_button_mobile')
                         : showStats
-                        ? t('stats_button_hide')
-                        : t('stats_button_show')}
+                          ? t('stats_button_hide')
+                          : t('stats_button_show')}
                     </span>
                   </Button>
                 )}

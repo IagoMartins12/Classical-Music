@@ -216,8 +216,8 @@ export default function EditAssignmentPageClient({
     (field: string, index: number, value: string) => {
       setFormData((prev) => ({
         ...prev,
-        [field]: (prev[field as keyof typeof prev] as string[]).map((item, i) =>
-          i === index ? value : item
+        [field]: (prev[field as keyof typeof prev] as string[]).map(
+          (item, i) => (i === index ? value : item)
         ),
       }));
     },
@@ -867,17 +867,17 @@ export default function EditAssignmentPageClient({
                             assignment.isCompleted
                               ? 'text-accent-green'
                               : assignment.status === 'OVERDUE'
-                              ? 'text-accent-red'
-                              : 'text-accent-blue'
+                                ? 'text-accent-red'
+                                : 'text-accent-blue'
                           }`}
                         >
                           {assignment.isCompleted
                             ? t('completed')
                             : assignment.status === 'OVERDUE'
-                            ? t('overdue')
-                            : assignment.status === 'IN_PROGRESS'
-                            ? t('in_progress')
-                            : t('pending')}
+                              ? t('overdue')
+                              : assignment.status === 'IN_PROGRESS'
+                                ? t('in_progress')
+                                : t('pending')}
                         </span>
                       </div>
                       <div className="flex justify-between">

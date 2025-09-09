@@ -156,10 +156,10 @@ const UploadsClient = ({
     initialSelectedType === 'composer'
       ? 'composers'
       : initialSelectedType === 'work'
-      ? 'works'
-      : initialSelectedType === 'score'
-      ? 'scores'
-      : 'all'
+        ? 'works'
+        : initialSelectedType === 'score'
+          ? 'scores'
+          : 'all'
   );
   const [selectedEpoch, setSelectedEpoch] = useState(initialSelectedEpoch);
   const [selectedComposer, setSelectedComposer] = useState(
@@ -223,10 +223,10 @@ const UploadsClient = ({
         type === 'composers'
           ? 'composer'
           : type === 'works'
-          ? 'work'
-          : type === 'scores'
-          ? 'score'
-          : 'all';
+            ? 'work'
+            : type === 'scores'
+              ? 'score'
+              : 'all';
 
       const response = await fetch(
         `/api/uploads/available-epochs?type=${typeParam}`
@@ -383,10 +383,10 @@ const UploadsClient = ({
         tab === 'composers'
           ? 'composer'
           : tab === 'works'
-          ? 'work'
-          : tab === 'scores'
-          ? 'score'
-          : 'all';
+            ? 'work'
+            : tab === 'scores'
+              ? 'score'
+              : 'all';
 
       loadAvailableEpochs(tab);
 
@@ -830,8 +830,8 @@ const UploadsClient = ({
                       showFilters
                         ? 'bg-brand-primary text-theme-primary border-theme-primary border-2 border-brand-primary shadow-md'
                         : hasActiveFilters
-                        ? 'text-accent-blue border-accent-blue/30 shadow-sm'
-                        : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
+                          ? 'text-accent-blue border-accent-blue/30 shadow-sm'
+                          : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
                     }`}
                   >
                     <FiFilter className="w-4 h-4" />
@@ -871,10 +871,10 @@ const UploadsClient = ({
                         {selectedType === 'all'
                           ? t('filters_general')
                           : selectedType === 'composers'
-                          ? t('filters_composers')
-                          : selectedType === 'works'
-                          ? t('filters_works')
-                          : t('filters_scores')}
+                            ? t('filters_composers')
+                            : selectedType === 'works'
+                              ? t('filters_works')
+                              : t('filters_scores')}
                       </span>
                     </h3>
                     <div className="flex items-center space-x-2">
@@ -913,10 +913,10 @@ const UploadsClient = ({
                 {selectedType === 'all'
                   ? t('results_items')
                   : selectedType === 'composers'
-                  ? t('results_composers')
-                  : selectedType === 'works'
-                  ? t('results_works')
-                  : t('results_scores')}
+                    ? t('results_composers')
+                    : selectedType === 'works'
+                      ? t('results_works')
+                      : t('results_scores')}
                 {searchTerm && (
                   <span className="text-brand-primary">
                     {' '}

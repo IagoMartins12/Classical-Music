@@ -241,8 +241,8 @@ export default function UserEditModal({
                           ? getRoleColor(option.value).includes('accent-red')
                             ? 'bg-accent-red/20'
                             : getRoleColor(option.value).includes('accent-blue')
-                            ? 'bg-accent-blue/20'
-                            : 'bg-theme-secondary'
+                              ? 'bg-accent-blue/20'
+                              : 'bg-theme-secondary'
                           : 'bg-theme-secondary'
                       }`}
                     >

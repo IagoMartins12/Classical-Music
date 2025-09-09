@@ -94,8 +94,8 @@ export default function SelectiveBackupDashboardCard({
               isCreatingBackup
                 ? 'bg-accent-amber animate-pulse'
                 : error
-                ? 'bg-accent-red'
-                : 'bg-accent-green'
+                  ? 'bg-accent-red'
+                  : 'bg-accent-green'
             }`}
           ></div>
           <span

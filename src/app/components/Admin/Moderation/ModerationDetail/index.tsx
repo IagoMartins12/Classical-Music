@@ -223,10 +223,10 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                       {item.priority === 'urgent'
                         ? 'URGENTE'
                         : item.priority === 'high'
-                        ? 'ALTA'
-                        : item.priority === 'normal'
-                        ? 'NORMAL'
-                        : 'BAIXA'}{' '}
+                          ? 'ALTA'
+                          : item.priority === 'normal'
+                            ? 'NORMAL'
+                            : 'BAIXA'}{' '}
                       PRIORIDADE
                     </span>
                     <span>•</span>

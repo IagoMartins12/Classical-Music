@@ -707,8 +707,8 @@ function MonthView({
                 isToday
                   ? 'bg-brand-primary/5 border-brand-primary/30'
                   : isCurrentMonth
-                  ? 'bg-theme-elevated/50'
-                  : 'bg-theme-secondary/20 opacity-60'
+                    ? 'bg-theme-elevated/50'
+                    : 'bg-theme-secondary/20 opacity-60'
               }`}
             >
               <div
@@ -716,8 +716,8 @@ function MonthView({
                   isToday
                     ? 'text-brand-primary'
                     : isCurrentMonth
-                    ? 'text-theme-primary'
-                    : 'text-theme-tertiary'
+                      ? 'text-theme-primary'
+                      : 'text-theme-tertiary'
                 }`}
               >
                 {day.getDate()}

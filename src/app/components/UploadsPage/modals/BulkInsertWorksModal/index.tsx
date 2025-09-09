@@ -389,12 +389,12 @@ const BulkInsertWorksModal = ({
           isDiscovering
             ? 'Descoberta de obras'
             : currentStep === 'process'
-            ? 'Processamento de obra'
-            : currentStep === 'results'
-            ? 'Resultados de obras'
-            : currentStep === 'select'
-            ? 'Seleção de obras'
-            : 'process'
+              ? 'Processamento de obra'
+              : currentStep === 'results'
+                ? 'Resultados de obras'
+                : currentStep === 'select'
+                  ? 'Seleção de obras'
+                  : 'process'
         }
       >
         <AnimatedItem direction="scale" springType="bouncy" className="w-full">
@@ -425,14 +425,14 @@ const BulkInsertWorksModal = ({
                         currentStep === step
                           ? 'bg-gray-400'
                           : index <
-                            [
-                              'discover',
-                              'select',
-                              'process',
-                              'results',
-                            ].indexOf(currentStep)
-                          ? 'bg-green-400'
-                          : 'bg-theme-secondary'
+                              [
+                                'discover',
+                                'select',
+                                'process',
+                                'results',
+                              ].indexOf(currentStep)
+                            ? 'bg-green-400'
+                            : 'bg-theme-secondary'
                       }`}
                     />
                   )
@@ -587,8 +587,8 @@ const BulkInsertWorksModal = ({
                             work.alreadyExists
                               ? 'bg-accent-amber/5 border-accent-amber/20'
                               : work.selected
-                              ? 'bg-brand-primary/5 border-brand-primary/30'
-                              : 'bg-theme-elevated border-theme-secondary hover:border-theme-primary'
+                                ? 'bg-brand-primary/5 border-brand-primary/30'
+                                : 'bg-theme-elevated border-theme-secondary hover:border-theme-primary'
                           }`}
                         >
                           <div className="flex items-center justify-between">
@@ -699,10 +699,10 @@ const BulkInsertWorksModal = ({
                           work.status === 'success'
                             ? 'bg-accent-green/5 border-accent-green/20'
                             : work.status === 'error'
-                            ? 'bg-accent-red/5 border-accent-red/20'
-                            : work.status === 'processing'
-                            ? 'bg-brand-primary/5 border-brand-primary/30'
-                            : 'bg-theme-elevated border-theme-secondary'
+                              ? 'bg-accent-red/5 border-accent-red/20'
+                              : work.status === 'processing'
+                                ? 'bg-brand-primary/5 border-brand-primary/30'
+                                : 'bg-theme-elevated border-theme-secondary'
                         }`}
                       >
                         <div className="flex items-center space-x-3">
@@ -738,10 +738,10 @@ const BulkInsertWorksModal = ({
                                 work.status === 'success'
                                   ? 'text-accent-green'
                                   : work.status === 'error'
-                                  ? 'text-accent-red'
-                                  : work.status === 'processing'
-                                  ? 'text-brand-primary'
-                                  : 'text-theme-tertiary'
+                                    ? 'text-accent-red'
+                                    : work.status === 'processing'
+                                      ? 'text-brand-primary'
+                                      : 'text-theme-tertiary'
                               }`}
                             >
                               {work.message}
@@ -837,10 +837,10 @@ const BulkInsertWorksModal = ({
                           result.status === 'success'
                             ? 'bg-accent-green/5 border border-green-300'
                             : result.status === 'error'
-                            ? 'bg-accent-red/5 border border-red-300'
-                            : result.status === 'duplicate'
-                            ? 'bg-accent-amber/5 border-amber-300'
-                            : 'bg-theme-elevated border-theme-secondary'
+                              ? 'bg-accent-red/5 border border-red-300'
+                              : result.status === 'duplicate'
+                                ? 'bg-accent-amber/5 border-amber-300'
+                                : 'bg-theme-elevated border-theme-secondary'
                         }`}
                       >
                         <div className="flex items-center space-x-3">

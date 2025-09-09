@@ -74,13 +74,32 @@ const Navbar: React.FC = () => {
 
   const { t } = useTranslation({ sections: ['navbar'] });
 
-  const toggleMobileMenu = () => {
-    setIsMenuOpen((prev) => !prev);
-    // Reset to main view when closing
+  // Refs para detectar cliques fora dos menus
+  const profileRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileButtonRef = useRef<HTMLButtonElement>(null);
+  const submenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const openMobileMenu = () => {
+    setIsMenuOpen(true);
+    setMobileView('main');
+    setActiveSubmenuItems([]);
+    setSubmenuTitle('');
+  };
+
+  const closeMobileMenu = () => {
+    setIsMenuOpen(false);
+    setMobileView('main');
+    setActiveSubmenuItems([]);
+    setSubmenuTitle('');
+  };
+
+  const handleMobileButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (isMenuOpen) {
-      setMobileView('main');
-      setActiveSubmenuItems([]);
-      setSubmenuTitle('');
+      closeMobileMenu();
+    } else {
+      openMobileMenu();
     }
   };
 
@@ -118,16 +137,12 @@ const Navbar: React.FC = () => {
       await signOut({ redirect: false });
       toast.success('Logout realizado com sucesso!');
       setIsProfileOpen(false);
-      setIsMenuOpen(false);
-      setMobileView('main');
+      closeMobileMenu();
       refresh();
     } catch {
       toast.error('Erro ao fazer logout');
     }
   };
-
-  const profileRef = useRef<HTMLDivElement>(null);
-  const submenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Função para verificar se um path está ativo
   const isPathActive = (href: string, submenuPaths?: string[]): boolean => {
@@ -228,33 +243,68 @@ const Navbar: React.FC = () => {
   };
 
   const handleMobileNavClick = () => {
-    setIsMenuOpen(false);
-    setMobileView('main');
+    closeMobileMenu();
   };
 
+  // Effect para fechar menus ao clicar fora
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: Event) => {
+      const target = event.target as Node;
+
+      // Fechar menu de perfil se clicar fora
       if (
         profileRef.current &&
-        !profileRef.current.contains(event.target as Node)
+        !profileRef.current.contains(target) &&
+        isProfileOpen
       ) {
         setIsProfileOpen(false);
       }
+
+      // Fechar menu mobile se clicar fora (mas não no botão do menu)
+      if (
+        mobileMenuRef.current &&
+        mobileButtonRef.current &&
+        !mobileMenuRef.current.contains(target) &&
+        !mobileButtonRef.current.contains(target) &&
+        isMenuOpen
+      ) {
+        closeMobileMenu();
+      }
     };
 
-    if (isProfileOpen) {
+    // Adicionar listener apenas se algum menu estiver aberto
+    if (isProfileOpen || isMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
       if (submenuTimeoutRef.current) {
         clearTimeout(submenuTimeoutRef.current);
       }
     };
-  }, [isProfileOpen]);
+  }, [isProfileOpen, isMenuOpen]);
+
+  // Effect adicional para fechar menu com tecla ESC
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (isMenuOpen) {
+          closeMobileMenu();
+        }
+        if (isProfileOpen) setIsProfileOpen(false);
+        if (activeSubmenu) setActiveSubmenu(null);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKey);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [isMenuOpen, isProfileOpen, activeSubmenu]);
 
   return (
     <nav className="navbar-classical sticky top-0 z-50">
@@ -410,7 +460,7 @@ const Navbar: React.FC = () => {
 
                 {/* Desktop Profile Dropdown */}
                 {isProfileOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-64 bg-theme-tertiary rounded-2xl z-20 p-2">
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-theme-tertiary rounded-2xl z-20 p-2 shadow-xl border border-theme-secondary">
                     {/* User Info */}
                     <div className="px-3 py-2 border-b border-theme-secondary mb-2">
                       <p className="font-medium text-theme-primary">
@@ -614,12 +664,15 @@ const Navbar: React.FC = () => {
 
             {/* Mobile Menu Button */}
             <button
-              onClick={toggleMobileMenu}
+              ref={mobileButtonRef}
+              onClick={handleMobileButtonClick}
               className="lg:hidden p-2 text-theme-secondary hover:text-brand-primary transition-colors"
               aria-controls="mobile-menu"
               aria-expanded={isMenuOpen}
             >
-              <span className="sr-only">{t('navbar_abrir')}</span>
+              <span className="sr-only">
+                {isMenuOpen ? t('navbar_fechar') : t('navbar_abrir')}
+              </span>
               {isMenuOpen ? (
                 <FiX className="w-6 h-6" />
               ) : (
@@ -631,6 +684,7 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Navigation */}
         <div
+          ref={mobileMenuRef}
           className={`
             lg:hidden overflow-hidden transition-all duration-500 ease-in-out
             ${isMenuOpen ? 'max-h-auto opacity-100 mt-4' : 'max-h-0 opacity-0'}
@@ -697,39 +751,38 @@ const Navbar: React.FC = () => {
                   {isAuthenticated && user ? (
                     <>
                       <hr className="my-4 border-theme-secondary" />
-                      <li>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3 px-4 py-3 flex-1">
-                            {user.image ? (
-                              <Image
-                                src={user.image}
-                                width={32}
-                                height={32}
-                                alt={getUserDisplayName()}
-                                className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
-                              />
-                            ) : (
-                              <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary text-sm font-semibold">
-                                {getUserInitials()}
-                              </div>
-                            )}
-                            <div>
-                              <p className="font-medium text-theme-primary text-sm">
-                                {getUserDisplayName()}
-                              </p>
-                              <p className="text-xs text-theme-tertiary">
-                                Perfil
-                              </p>
+
+                      <div
+                        className="flex items-center justify-between"
+                        onClick={goToProfileView}
+                      >
+                        <div className="flex items-center space-x-3 px-4 py-3 flex-1">
+                          {user.image ? (
+                            <Image
+                              src={user.image}
+                              width={32}
+                              height={32}
+                              alt={getUserDisplayName()}
+                              className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary text-sm font-semibold">
+                              {getUserInitials()}
                             </div>
+                          )}
+                          <div>
+                            <p className="font-medium text-theme-primary text-sm">
+                              {getUserDisplayName()}
+                            </p>
+                            <p className="text-xs text-theme-tertiary">
+                              Perfil
+                            </p>
                           </div>
-                          <button
-                            onClick={goToProfileView}
-                            className="p-2 text-theme-tertiary hover:text-brand-primary transition-colors"
-                          >
-                            <FiChevronRight className="w-5 h-5" />
-                          </button>
                         </div>
-                      </li>
+                        <div className="p-2 text-theme-tertiary hover:text-brand-primary transition-colors">
+                          <FiChevronRight className="w-5 h-5" />
+                        </div>
+                      </div>
                     </>
                   ) : (
                     /* Guest Actions */
@@ -739,7 +792,7 @@ const Navbar: React.FC = () => {
                         <button
                           onClick={() => {
                             openLogin();
-                            setIsMenuOpen(false);
+                            closeMobileMenu();
                           }}
                           className="block w-full px-4 py-3 text-left rounded-lg font-medium text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover transition-all"
                         >
@@ -750,7 +803,7 @@ const Navbar: React.FC = () => {
                         <button
                           onClick={() => {
                             openRegister();
-                            setIsMenuOpen(false);
+                            closeMobileMenu();
                           }}
                           className="block w-full px-4 py-3 text-left rounded-lg font-medium text-brand-primary bg-brand-primary bg-opacity-10 hover:bg-opacity-20 transition-all"
                         >
@@ -837,7 +890,7 @@ const Navbar: React.FC = () => {
                       <button
                         onClick={() => {
                           open();
-                          setIsMenuOpen(false);
+                          closeMobileMenu();
                         }}
                         className="w-full mb-4 text-center py-3 px-4 bg-brand-primary bg-opacity-10 text-brand-primary rounded-lg font-medium hover:bg-opacity-20 transition-all"
                       >

@@ -337,8 +337,8 @@ export default function WorkSelectionSection({
               {selectedWorks.length === 0
                 ? 'Nenhuma peça'
                 : selectedWorks.length === 1
-                ? '1 peça vinculada'
-                : `${selectedWorks.length} peças vinculadas`}
+                  ? '1 peça vinculada'
+                  : `${selectedWorks.length} peças vinculadas`}
             </div>
           </div>
         </div>

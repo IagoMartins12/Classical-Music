@@ -342,8 +342,8 @@ export default function LogsAudit() {
                           {activity.status === 'success'
                             ? 'Sucesso'
                             : activity.status === 'warning'
-                            ? 'Aviso'
-                            : 'Erro'}
+                              ? 'Aviso'
+                              : 'Erro'}
                         </span>
                       )}
                       {activity.target && (
@@ -676,8 +676,8 @@ export default function LogsAudit() {
                       stats.overview.errorRate < 5
                         ? 'text-accent-green'
                         : stats.overview.errorRate < 15
-                        ? 'text-accent-amber'
-                        : 'text-accent-red'
+                          ? 'text-accent-amber'
+                          : 'text-accent-red'
                     }`}
                   >
                     {stats.overview.errorRate.toFixed(1)}%

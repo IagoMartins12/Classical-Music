@@ -673,16 +673,14 @@ export default function ComposerDetailsClient({
           )}
 
           {/* Obras do Compositor */}
-          <AnimatedCard hover="none" className="">
-            <ComposerWorks
-              composerId={composer.id}
-              composerName={composer.name}
-              initialWorks={initialWorksData.works}
-              initialTotalCount={initialWorksData.totalCount}
-              initialHasMore={initialWorksData.hasMore}
-              filterOptions={filterOptions}
-            />
-          </AnimatedCard>
+          <ComposerWorks
+            composerId={composer.id}
+            composerName={composer.name}
+            initialWorks={initialWorksData.works}
+            initialTotalCount={initialWorksData.totalCount}
+            initialHasMore={initialWorksData.hasMore}
+            filterOptions={filterOptions}
+          />
         </AnimatedContainer>
       </div>
       {isAdmin && (

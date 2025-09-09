@@ -705,12 +705,12 @@ export default function SupportPage(): JSX.Element {
                                                 'support_jsx_span_children_0__alta'
                                               )
                                             : solution.priority === 'medium'
-                                            ? t(
-                                                'support_jsx_span_children_0__média'
-                                              )
-                                            : t(
-                                                'support_jsx_span_children_0__baixa'
-                                              )}
+                                              ? t(
+                                                  'support_jsx_span_children_0__média'
+                                                )
+                                              : t(
+                                                  'support_jsx_span_children_0__baixa'
+                                                )}
                                         </span>
                                         {solution.steps && (
                                           <span className="text-xs text-theme-tertiary">

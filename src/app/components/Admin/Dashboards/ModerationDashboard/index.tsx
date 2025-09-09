@@ -75,8 +75,6 @@ interface ModerationStats {
   }>;
 }
 
-
-
 export default function ModerationDashboard() {
   const router = useRouter();
   const [moderationItems, setModerationItems] = useState<ModerationItem[]>([]);
@@ -470,10 +468,10 @@ export default function ModerationDashboard() {
                                 {item.status === 'pending'
                                   ? 'Pendente'
                                   : item.status === 'approved'
-                                  ? 'Aprovado'
-                                  : item.status === 'rejected'
-                                  ? 'Rejeitado'
-                                  : 'Reportado'}
+                                    ? 'Aprovado'
+                                    : item.status === 'rejected'
+                                      ? 'Rejeitado'
+                                      : 'Reportado'}
                               </span>
 
                               <span
@@ -484,10 +482,10 @@ export default function ModerationDashboard() {
                                 {item.priority === 'urgent'
                                   ? 'URGENTE'
                                   : item.priority === 'high'
-                                  ? 'ALTA'
-                                  : item.priority === 'normal'
-                                  ? 'NORMAL'
-                                  : 'BAIXA'}
+                                    ? 'ALTA'
+                                    : item.priority === 'normal'
+                                      ? 'NORMAL'
+                                      : 'BAIXA'}
                               </span>
 
                               {item.reportCount > 0 && (

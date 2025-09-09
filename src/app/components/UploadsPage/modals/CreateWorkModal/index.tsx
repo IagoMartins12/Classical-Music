@@ -1648,8 +1648,8 @@ const CreateWorkModal = ({
                                   mediaData.videoAulaSource === 'youtube'
                                     ? 'https://www.youtube.com/watch?v=...'
                                     : mediaData.videoAulaSource === 'instagram'
-                                    ? 'https://www.instagram.com/reel/...'
-                                    : 'https://...'
+                                      ? 'https://www.instagram.com/reel/...'
+                                      : 'https://...'
                                 }
                                 leftIcon={
                                   mediaData.videoAulaSource === 'youtube' ? (
@@ -1738,8 +1738,8 @@ const CreateWorkModal = ({
                   {isSubmitting
                     ? t('form_saving')
                     : editingWork
-                    ? t('form_update') + ' Obra'
-                    : t('form_create') + ' Obra'}
+                      ? t('form_update') + ' Obra'
+                      : t('form_create') + ' Obra'}
                 </Button>
               </div>
             </form>

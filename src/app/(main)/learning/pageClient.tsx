@@ -408,8 +408,8 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                       showFilters
                         ? 'bg-brand-primary text-theme-primary border-brand-primary shadow-md'
                         : hasActiveFilters
-                        ? 'bg-accent-blue/10 text-accent-blue border-accent-blue/30 shadow-sm'
-                        : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
+                          ? 'bg-accent-blue/10 text-accent-blue border-accent-blue/30 shadow-sm'
+                          : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
                     }`}
                   >
                     <FiFilter className="w-4 h-4" />
@@ -439,8 +439,8 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                       {isMobile
                         ? t('stats_button')
                         : showStats
-                        ? t('stats_button_hide')
-                        : t('stats_button_show')}
+                          ? t('stats_button_hide')
+                          : t('stats_button_show')}
                     </span>
                   </Button>
 

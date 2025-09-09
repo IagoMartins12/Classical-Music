@@ -192,8 +192,8 @@ export default function SystemPerformance() {
                   {healthStatus === 'healthy'
                     ? 'Saudável'
                     : healthStatus === 'warning'
-                    ? 'Atenção'
-                    : 'Crítico'}
+                      ? 'Atenção'
+                      : 'Crítico'}
                 </span>
               </div>
 
@@ -732,10 +732,10 @@ export default function SystemPerformance() {
                           log.level === 'error'
                             ? 'bg-accent-red'
                             : log.level === 'warn'
-                            ? 'bg-accent-amber'
-                            : log.level === 'info'
-                            ? 'bg-accent-blue'
-                            : 'bg-theme-tertiary'
+                              ? 'bg-accent-amber'
+                              : log.level === 'info'
+                                ? 'bg-accent-blue'
+                                : 'bg-theme-tertiary'
                         }`}
                       />
                       <div className="flex-1 min-w-0">

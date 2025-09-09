@@ -351,8 +351,8 @@ export default function StudentAssignmentsPageClient({
         assignment.priority === 'high'
           ? t('student_assignments_priority_high')
           : assignment.priority === 'medium'
-          ? t('student_assignments_priority_medium')
-          : t('student_assignments_priority_low');
+            ? t('student_assignments_priority_medium')
+            : t('student_assignments_priority_low');
 
       return (
         <AnimatedCard
@@ -417,8 +417,8 @@ export default function StudentAssignmentsPageClient({
                         assignment.daysUntilDue < 0
                           ? 'text-accent-red'
                           : assignment.daysUntilDue <= 2
-                          ? 'text-accent-yellow'
-                          : 'text-theme-secondary'
+                            ? 'text-accent-yellow'
+                            : 'text-theme-secondary'
                       }`}
                     >
                       (
@@ -427,10 +427,10 @@ export default function StudentAssignmentsPageClient({
                             days: Math.abs(assignment.daysUntilDue),
                           })
                         : assignment.daysUntilDue === 0
-                        ? t('student_assignments_today')
-                        : t('student_assignments_days_left', {
-                            days: assignment.daysUntilDue,
-                          })}
+                          ? t('student_assignments_today')
+                          : t('student_assignments_days_left', {
+                              days: assignment.daysUntilDue,
+                            })}
                       )
                     </span>
                   )}
@@ -475,8 +475,8 @@ export default function StudentAssignmentsPageClient({
                       assignment.progress >= 100
                         ? 'bg-green-400'
                         : assignment.progress >= 50
-                        ? 'bg-blue-400'
-                        : 'bg-yellow-400'
+                          ? 'bg-blue-400'
+                          : 'bg-yellow-400'
                     }`}
                     style={{
                       width: `${Math.min(assignment.progress, 100)}%`,
@@ -545,8 +545,8 @@ export default function StudentAssignmentsPageClient({
         assignment.priority === 'high'
           ? t('student_assignments_priority_high')
           : assignment.priority === 'medium'
-          ? t('student_assignments_priority_medium')
-          : t('student_assignments_priority_low');
+            ? t('student_assignments_priority_medium')
+            : t('student_assignments_priority_low');
 
       return (
         <AnimatedCard
@@ -602,8 +602,8 @@ export default function StudentAssignmentsPageClient({
                         assignment.daysUntilDue < 0
                           ? 'text-accent-red'
                           : assignment.daysUntilDue <= 2
-                          ? 'text-accent-yellow'
-                          : 'text-theme-secondary'
+                            ? 'text-accent-yellow'
+                            : 'text-theme-secondary'
                       }`}
                     >
                       (
@@ -612,10 +612,10 @@ export default function StudentAssignmentsPageClient({
                             days: Math.abs(assignment.daysUntilDue),
                           })
                         : assignment.daysUntilDue === 0
-                        ? t('student_assignments_today')
-                        : t('student_assignments_days_left', {
-                            days: assignment.daysUntilDue,
-                          })}
+                          ? t('student_assignments_today')
+                          : t('student_assignments_days_left', {
+                              days: assignment.daysUntilDue,
+                            })}
                       )
                     </span>
                   )}
@@ -649,8 +649,8 @@ export default function StudentAssignmentsPageClient({
                       assignment.progress >= 100
                         ? 'bg-green-400'
                         : assignment.progress >= 50
-                        ? 'bg-blue-400'
-                        : 'bg-yellow-400'
+                          ? 'bg-blue-400'
+                          : 'bg-yellow-400'
                     }`}
                     style={{
                       width: `${Math.min(assignment.progress, 100)}%`,

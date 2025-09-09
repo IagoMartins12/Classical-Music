@@ -1570,10 +1570,10 @@ export default function TeacherProfilePageClient({
                         {data?.timezone === 'America/Sao_Paulo'
                           ? t('timezone_sao_paulo')
                           : data?.timezone === 'America/Rio_Branco'
-                          ? t('timezone_rio_branco')
-                          : data?.timezone === 'America/Manaus'
-                          ? t('timezone_manaus')
-                          : data?.timezone}
+                            ? t('timezone_rio_branco')
+                            : data?.timezone === 'America/Manaus'
+                              ? t('timezone_manaus')
+                              : data?.timezone}
                       </div>
                     </div>
                   </div>

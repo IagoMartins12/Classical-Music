@@ -369,28 +369,28 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
         </defs>
         <rect width="${width}" height="${height}" fill="url(#instagramGradient)"/>
         <circle cx="${width / 2}" cy="${
-      height / 2 - 50
-    }" r="40" fill="white" opacity="0.9"/>
+          height / 2 - 50
+        }" r="40" fill="white" opacity="0.9"/>
         <path d="${width / 2 - 10} ${height / 2 - 65} L${width / 2 + 10} ${
-      height / 2 - 45
-    } L${width / 2 - 10} ${height / 2 - 25} V${
-      height / 2 - 65
-    }Z" fill="#833ab4"/>
+          height / 2 - 45
+        } L${width / 2 - 10} ${height / 2 - 25} V${
+          height / 2 - 65
+        }Z" fill="#833ab4"/>
         <text x="${width / 2}" y="${
-      height / 2 + 20
-    }" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">${
-      isReel ? t('video_aula_instagram_reel') : 'Instagram'
-    }</text>
+          height / 2 + 20
+        }" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">${
+          isReel ? t('video_aula_instagram_reel') : 'Instagram'
+        }</text>
         <text x="${width / 2}" y="${
-      height / 2 + 45
-    }" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14">${
-      work.title
-    }</text>
+          height / 2 + 45
+        }" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14">${
+          work.title
+        }</text>
         <text x="${width / 2}" y="${
-      height / 2 + 65
-    }" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" opacity="0.8">${t(
-      'video_aula_clique_abrir'
-    )}</text>
+          height / 2 + 65
+        }" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" opacity="0.8">${t(
+          'video_aula_clique_abrir'
+        )}</text>
       </svg>
     `;
 
@@ -903,10 +903,10 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                       editData.videoAulaSource === 'youtube'
                         ? 'https://www.youtube.com/watch?v=...'
                         : editData.videoAulaSource === 'instagram'
-                        ? 'https://www.instagram.com/reel/...'
-                        : editData.videoAulaSource === 'tiktok'
-                        ? 'https://www.tiktok.com/@user/video/...'
-                        : 'https://...'
+                          ? 'https://www.instagram.com/reel/...'
+                          : editData.videoAulaSource === 'tiktok'
+                            ? 'https://www.tiktok.com/@user/video/...'
+                            : 'https://...'
                     }
                     leftIcon={
                       editData.videoAulaSource === 'youtube' ? (
@@ -1150,10 +1150,10 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     editData.videoAulaSource === 'youtube'
                       ? 'https://www.youtube.com/watch?v=...'
                       : editData.videoAulaSource === 'instagram'
-                      ? 'https://www.instagram.com/reel/...'
-                      : editData.videoAulaSource === 'tiktok'
-                      ? 'https://www.tiktok.com/@user/video/...'
-                      : 'https://...'
+                        ? 'https://www.instagram.com/reel/...'
+                        : editData.videoAulaSource === 'tiktok'
+                          ? 'https://www.tiktok.com/@user/video/...'
+                          : 'https://...'
                   }
                   leftIcon={
                     editData.videoAulaSource === 'youtube' ? (

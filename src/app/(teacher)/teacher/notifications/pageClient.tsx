@@ -386,12 +386,12 @@ export default function TeacherNotificationsPageClient({
                       {filterType === 'all'
                         ? t('filter_all')
                         : filterType === 'unread'
-                        ? t('filter_unread')
-                        : filterType === 'lessons'
-                        ? t('filter_lessons')
-                        : filterType === 'assignments'
-                        ? t('filter_assignments')
-                        : t('filter_students')}
+                          ? t('filter_unread')
+                          : filterType === 'lessons'
+                            ? t('filter_lessons')
+                            : filterType === 'assignments'
+                              ? t('filter_assignments')
+                              : t('filter_students')}
                     </span>
                   </button>
                 ))}
@@ -503,8 +503,8 @@ export default function TeacherNotificationsPageClient({
                                     notification.priority === 'CRITICAL'
                                       ? 'bg-accent-red/10 text-accent-red'
                                       : notification.priority === 'MEDIUM'
-                                      ? 'bg-accent-amber/10 text-accent-amber'
-                                      : 'bg-accent-blue/10 text-accent-blue'
+                                        ? 'bg-accent-amber/10 text-accent-amber'
+                                        : 'bg-accent-blue/10 text-accent-blue'
                                   }`}
                                 >
                                   {getPriorityLabel(notification.priority)}

@@ -646,12 +646,12 @@ const CreateComposerModal = ({
               name: `${duplicateCheck.composer?.fullName}`,
             })
           : duplicateCheck.reason === 'link do IMSLP'
-          ? t('toast_composer_duplicate_reason_imslp', {
-              name: `${duplicateCheck.composer?.fullName}`,
-            })
-          : t('toast_composer_duplicate_reason_wikipedia', {
-              name: `${duplicateCheck.composer?.fullName}`,
-            });
+            ? t('toast_composer_duplicate_reason_imslp', {
+                name: `${duplicateCheck.composer?.fullName}`,
+              })
+            : t('toast_composer_duplicate_reason_wikipedia', {
+                name: `${duplicateCheck.composer?.fullName}`,
+              });
 
       toast.error(t('toast_composer_duplicate_found'), reasonText);
       return;
@@ -898,13 +898,13 @@ const CreateComposerModal = ({
                                           'modal_composer_scraping_duplicate_reason_name'
                                         )
                                       : duplicateCheck.reason ===
-                                        'link do IMSLP'
-                                      ? t(
-                                          'modal_composer_scraping_duplicate_reason_imslp'
-                                        )
-                                      : t(
-                                          'modal_composer_scraping_duplicate_reason_wikipedia'
-                                        ),
+                                          'link do IMSLP'
+                                        ? t(
+                                            'modal_composer_scraping_duplicate_reason_imslp'
+                                          )
+                                        : t(
+                                            'modal_composer_scraping_duplicate_reason_wikipedia'
+                                          ),
                                 })}
                               </strong>
                             </p>
@@ -1418,8 +1418,8 @@ const CreateComposerModal = ({
                   {isSubmitting
                     ? t('form_saving')
                     : editingComposer
-                    ? t('form_update') + ' Compositor'
-                    : t('form_create') + ' Compositor'}
+                      ? t('form_update') + ' Compositor'
+                      : t('form_create') + ' Compositor'}
                 </Button>
               </div>
             </form>

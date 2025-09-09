@@ -232,8 +232,8 @@ export default function AdvancedInsightsAnalytics() {
                     insights.summary.healthScore >= 80
                       ? 'text-accent-green'
                       : insights.summary.healthScore >= 60
-                      ? 'text-accent-amber'
-                      : 'text-accent-red'
+                        ? 'text-accent-amber'
+                        : 'text-accent-red'
                   }`}
                 >
                   {insights.summary.healthScore}/100
@@ -245,8 +245,8 @@ export default function AdvancedInsightsAnalytics() {
                       insights.summary.healthScore >= 80
                         ? 'bg-gradient-to-r from-accent-green to-accent-blue'
                         : insights.summary.healthScore >= 60
-                        ? 'bg-gradient-to-r from-accent-amber to-accent-green'
-                        : 'bg-gradient-to-r from-accent-red to-accent-amber'
+                          ? 'bg-gradient-to-r from-accent-amber to-accent-green'
+                          : 'bg-gradient-to-r from-accent-red to-accent-amber'
                     }`}
                     style={{ width: `${insights.summary.healthScore}%` }}
                   />
@@ -259,15 +259,15 @@ export default function AdvancedInsightsAnalytics() {
                     insights.summary.trendDirection === 'positive'
                       ? 'text-accent-green'
                       : insights.summary.trendDirection === 'negative'
-                      ? 'text-accent-red'
-                      : 'text-theme-tertiary'
+                        ? 'text-accent-red'
+                        : 'text-theme-tertiary'
                   }`}
                 >
                   {insights.summary.trendDirection === 'positive'
                     ? '📈 Crescendo'
                     : insights.summary.trendDirection === 'negative'
-                    ? '📉 Atenção'
-                    : '➡️ Estável'}
+                      ? '📉 Atenção'
+                      : '➡️ Estável'}
                 </div>
                 <div className="text-sm text-theme-tertiary">
                   Tendência Geral
@@ -577,8 +577,8 @@ export default function AdvancedInsightsAnalytics() {
                         item.priority === 'high'
                           ? 'bg-accent-red/10 border-accent-red'
                           : item.priority === 'medium'
-                          ? 'bg-accent-amber/10 border-accent-amber'
-                          : 'bg-accent-green/10 border-accent-green'
+                            ? 'bg-accent-amber/10 border-accent-amber'
+                            : 'bg-accent-green/10 border-accent-green'
                       }`}
                     >
                       <div className="flex items-start justify-between">
@@ -589,15 +589,15 @@ export default function AdvancedInsightsAnalytics() {
                                 item.priority === 'high'
                                   ? 'bg-accent-red text-white'
                                   : item.priority === 'medium'
-                                  ? 'bg-accent-amber text-white'
-                                  : 'bg-accent-green text-white'
+                                    ? 'bg-accent-amber text-white'
+                                    : 'bg-accent-green text-white'
                               }`}
                             >
                               {item.priority === 'high'
                                 ? '🔥 URGENTE'
                                 : item.priority === 'medium'
-                                ? '⚡ IMPORTANTE'
-                                : '📋 NORMAL'}
+                                  ? '⚡ IMPORTANTE'
+                                  : '📋 NORMAL'}
                             </span>
                             <span className="text-xs text-theme-tertiary">
                               ⏱️ {item.timeframe}
@@ -751,8 +751,8 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
                   insights.riskAssessment.churnRiskUsers.length > 10
                     ? 'text-accent-red'
                     : insights.riskAssessment.churnRiskUsers.length > 5
-                    ? 'text-accent-amber'
-                    : 'text-accent-green'
+                      ? 'text-accent-amber'
+                      : 'text-accent-green'
                 }`}
               >
                 {insights.riskAssessment.churnRiskUsers.length}
@@ -860,8 +860,8 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
                       indicator.status === 'healthy'
                         ? 'bg-accent-green'
                         : indicator.status === 'warning'
-                        ? 'bg-accent-amber'
-                        : 'bg-accent-red'
+                          ? 'bg-accent-amber'
+                          : 'bg-accent-red'
                     }`}
                   />
                 </div>
@@ -1345,8 +1345,8 @@ function UserJourneySection({
                           stage.completionRate >= 70
                             ? 'bg-accent-green text-white'
                             : stage.completionRate >= 40
-                            ? 'bg-accent-amber text-white'
-                            : 'bg-accent-red text-white'
+                              ? 'bg-accent-amber text-white'
+                              : 'bg-accent-red text-white'
                         }`}
                       >
                         {stage.completionRate}%
@@ -1429,8 +1429,8 @@ function UserJourneySection({
                       funnel.conversionRate >= 50
                         ? 'text-accent-green'
                         : funnel.conversionRate >= 25
-                        ? 'text-accent-amber'
-                        : 'text-accent-red'
+                          ? 'text-accent-amber'
+                          : 'text-accent-red'
                     }`}
                   >
                     {funnel.conversionRate}%
@@ -1447,8 +1447,8 @@ function UserJourneySection({
                     funnel.conversionRate >= 50
                       ? 'bg-green-300'
                       : funnel.conversionRate >= 25
-                      ? 'bg-amber-400'
-                      : 'bg-red-400'
+                        ? 'bg-amber-400'
+                        : 'bg-red-400'
                   }`}
                   style={{ width: `${funnel.conversionRate}%` }}
                 />
@@ -1679,8 +1679,8 @@ function RiskAssessmentSection({
                       indicator.status === 'healthy'
                         ? 'bg-accent-green'
                         : indicator.status === 'warning'
-                        ? 'bg-accent-amber'
-                        : 'bg-accent-red'
+                          ? 'bg-accent-amber'
+                          : 'bg-accent-red'
                     }`}
                   />
                 </div>
@@ -1691,8 +1691,8 @@ function RiskAssessmentSection({
                       indicator.status === 'healthy'
                         ? 'text-accent-green'
                         : indicator.status === 'warning'
-                        ? 'text-accent-amber'
-                        : 'text-accent-red'
+                          ? 'text-accent-amber'
+                          : 'text-accent-red'
                     }`}
                   >
                     {formatNumber(indicator.currentValue)}
@@ -1709,15 +1709,15 @@ function RiskAssessmentSection({
                       indicator.trend === 'improving'
                         ? 'text-accent-green'
                         : indicator.trend === 'declining'
-                        ? 'text-accent-red'
-                        : 'text-theme-tertiary'
+                          ? 'text-accent-red'
+                          : 'text-theme-tertiary'
                     }`}
                   >
                     {indicator.trend === 'improving'
                       ? '📈'
                       : indicator.trend === 'declining'
-                      ? '📉'
-                      : '➡️'}
+                        ? '📉'
+                        : '➡️'}
                   </span>
                   <span className="text-theme-tertiary capitalize">
                     {indicator.trend}
@@ -1854,15 +1854,15 @@ function GrowthOpportunitiesSection({
                       opportunity.effort === 'low'
                         ? 'text-accent-green'
                         : opportunity.effort === 'medium'
-                        ? 'text-accent-amber'
-                        : 'text-accent-red'
+                          ? 'text-accent-amber'
+                          : 'text-accent-red'
                     }`}
                   >
                     {opportunity.effort === 'low'
                       ? '🟢 Baixo'
                       : opportunity.effort === 'medium'
-                      ? '🟡 Médio'
-                      : '🔴 Alto'}
+                        ? '🟡 Médio'
+                        : '🔴 Alto'}
                   </span>
                 </div>
               </div>
@@ -2071,8 +2071,8 @@ function BehaviorPatternsSection({
                     {pattern.impact === 'high'
                       ? 'Alto'
                       : pattern.impact === 'medium'
-                      ? 'Médio'
-                      : 'Baixo'}
+                        ? 'Médio'
+                        : 'Baixo'}
                   </span>
                   <span className="px-2 py-1 rounded-full text-xs font-medium bg-theme-secondary text-theme-tertiary">
                     {pattern.confidence}% confiança
@@ -2269,16 +2269,16 @@ function ContentPerformanceSection({
                       rec.effort === 'high'
                         ? 'bg-accent-red/20 text-accent-red'
                         : rec.effort === 'medium'
-                        ? 'bg-accent-amber/20 text-accent-amber'
-                        : 'bg-accent-green/20 text-accent-green'
+                          ? 'bg-accent-amber/20 text-accent-amber'
+                          : 'bg-accent-green/20 text-accent-green'
                     }`}
                   >
                     Esforço:{' '}
                     {rec.effort === 'high'
                       ? 'Alto'
                       : rec.effort === 'medium'
-                      ? 'Médio'
-                      : 'Baixo'}
+                        ? 'Médio'
+                        : 'Baixo'}
                   </span>
                 </div>
               </div>
@@ -2329,8 +2329,8 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
               anomaly.severity === 'critical'
                 ? FiAlertTriangle
                 : anomaly.severity === 'warning'
-                ? FiInfo
-                : FiCheckCircle;
+                  ? FiInfo
+                  : FiCheckCircle;
             const SeverityIcon = severityIcon;
 
             return (
@@ -2355,8 +2355,8 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                         {anomaly.type === 'spike'
                           ? '📈 Pico Anômalo'
                           : anomaly.type === 'drop'
-                          ? '📉 Queda Anômala'
-                          : '🔍 Comportamento Incomum'}{' '}
+                            ? '📉 Queda Anômala'
+                            : '🔍 Comportamento Incomum'}{' '}
                         - {anomaly.metric}
                       </h3>
                       <span className="text-sm text-theme-tertiary">
@@ -2396,15 +2396,15 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                             anomaly.severity === 'critical'
                               ? 'text-accent-red'
                               : anomaly.severity === 'warning'
-                              ? 'text-accent-amber'
-                              : 'text-accent-blue'
+                                ? 'text-accent-amber'
+                                : 'text-accent-blue'
                           }`}
                         >
                           {anomaly.severity === 'critical'
                             ? '🚨 Crítico'
                             : anomaly.severity === 'warning'
-                            ? '⚠️ Atenção'
-                            : 'ℹ️ Info'}
+                              ? '⚠️ Atenção'
+                              : 'ℹ️ Info'}
                         </div>
                         <div className="text-xs text-theme-tertiary">
                           Severidade

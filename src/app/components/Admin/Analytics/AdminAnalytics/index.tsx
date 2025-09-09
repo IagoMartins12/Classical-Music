@@ -258,9 +258,9 @@ export default function AdminAnalytics() {
                       Tempo Médio de Sessão
                     </span>
                     <span className="text-xs font-medium text-accent-blue">
-                      {analytics.charts.engagementMetrics.find(
+                      {(analytics.charts.engagementMetrics.find(
                         (m) => m.metric === 'Tempo Médio de Sessão'
-                      )?.trend ?? 0 > 0
+                      )?.trend ?? 0 > 0)
                         ? '+'
                         : ''}
                       {analytics.charts.engagementMetrics
@@ -281,16 +281,16 @@ export default function AdminAnalytics() {
                     </span>
                     <span
                       className={`text-xs font-medium ${
-                        analytics.charts.engagementMetrics.find(
+                        (analytics.charts.engagementMetrics.find(
                           (m) => m.metric === 'Anotações/Dia'
-                        )?.trend ?? 0 > 0
+                        )?.trend ?? 0 > 0)
                           ? 'text-accent-green'
                           : 'text-accent-red'
                       }`}
                     >
-                      {analytics.charts.engagementMetrics.find(
+                      {(analytics.charts.engagementMetrics.find(
                         (m) => m.metric === 'Anotações/Dia'
-                      )?.trend ?? 0 > 0
+                      )?.trend ?? 0 > 0)
                         ? '+'
                         : ''}
                       {analytics.charts.engagementMetrics
@@ -311,16 +311,16 @@ export default function AdminAnalytics() {
                     </span>
                     <span
                       className={`text-xs font-medium ${
-                        analytics.charts.engagementMetrics.find(
+                        (analytics.charts.engagementMetrics.find(
                           (m) => m.metric === '% Usuários Ativos'
-                        )?.trend ?? 0 > 0
+                        )?.trend ?? 0 > 0)
                           ? 'text-accent-green'
                           : 'text-accent-red'
                       }`}
                     >
-                      {analytics.charts.engagementMetrics.find(
+                      {(analytics.charts.engagementMetrics.find(
                         (m) => m.metric === '% Usuários Ativos'
-                      )?.trend ?? 0 > 0
+                      )?.trend ?? 0 > 0)
                         ? '+'
                         : ''}
                       {analytics.charts.engagementMetrics
@@ -341,16 +341,16 @@ export default function AdminAnalytics() {
                     </span>
                     <span
                       className={`text-xs font-medium ${
-                        analytics.charts.engagementMetrics.find(
+                        (analytics.charts.engagementMetrics.find(
                           (m) => m.metric === 'Anotações/Usuário'
-                        )?.trend ?? 0 > 0
+                        )?.trend ?? 0 > 0)
                           ? 'text-accent-green'
                           : 'text-accent-red'
                       }`}
                     >
-                      {analytics.charts.engagementMetrics.find(
+                      {(analytics.charts.engagementMetrics.find(
                         (m) => m.metric === 'Anotações/Usuário'
-                      )?.trend ?? 0 > 0
+                      )?.trend ?? 0 > 0)
                         ? '+'
                         : ''}
                       {analytics.charts.engagementMetrics

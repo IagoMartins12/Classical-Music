@@ -227,8 +227,8 @@ export default function AdsManagementClient() {
       return ad.targetUserLevel === 'ALL'
         ? 'Todos os usuários'
         : ad.targetUserLevel === 'TEACHER'
-        ? 'Professores'
-        : 'Estudantes';
+          ? 'Professores'
+          : 'Estudantes';
     }
     return 'Geral';
   };

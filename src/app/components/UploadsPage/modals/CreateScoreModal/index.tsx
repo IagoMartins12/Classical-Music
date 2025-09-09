@@ -1342,8 +1342,8 @@ const CreateScoreModal = ({
                   {isSubmitting
                     ? t('form_saving')
                     : editingScore
-                    ? t('form_update') + ' Partitura'
-                    : t('form_create') + ' Partitura'}
+                      ? t('form_update') + ' Partitura'
+                      : t('form_create') + ' Partitura'}
                 </Button>
               </div>
             </form>
