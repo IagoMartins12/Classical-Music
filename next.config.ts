@@ -4,7 +4,6 @@ const nextConfig: NextConfig = {
   // Disable static optimization completely
   output: 'standalone',
 
-
   // Force dynamic rendering for all pages
   trailingSlash: false,
 
@@ -12,7 +11,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'opusatlas.com.br',
+        pathname: '/uploads/**',
       },
     ],
   },
