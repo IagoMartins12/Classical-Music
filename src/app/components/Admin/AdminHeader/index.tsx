@@ -99,7 +99,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                   <div className="font-bold text-base lg:text-lg">
                     Painel Administrativo
                   </div>
-                  <div className="text-xs text-theme-tertiary">Open Atlas</div>
+                  <div className="text-xs text-theme-tertiary">Opus Atlas</div>
                 </div>
               </Link>
 

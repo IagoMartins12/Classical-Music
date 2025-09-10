@@ -317,7 +317,7 @@ const useProcessedData = (imslpData: any, workScores: WorkScore[]) => {
         if (scores.length > 0) {
           const group: MixedScoreGroup = {
             groupIndex: 0, // 🔄 MUDANÇA: Índice 0 para aparecer primeiro
-            groupTitle: `Open Atlas (${scores.length})`,
+            groupTitle: `Opus Atlas (${scores.length})`,
             source: 'WORKSCORE',
             scores: scores.map(
               (ws): MixedScoreData => ({

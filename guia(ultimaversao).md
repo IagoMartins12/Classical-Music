@@ -1465,7 +1465,7 @@ source ~/.bashrc
 
 ## 💾 BACKUP AUTOMÁTICO (USANDO SISTEMA INTEGRADO)
 
-Seu projeto **Open Atlas** já possui um sistema de backup muito avançado! Vamos configurá-lo na VPS.
+Seu projeto **Opus Atlas** já possui um sistema de backup muito avançado! Vamos configurá-lo na VPS.
 
 ### Passo 1: Inicializar Sistema de Backup
 
@@ -2075,7 +2075,7 @@ cd ~/app/prod && git branch -a
 
 ---
 
-**🎊 PARABÉNS!** Sua infraestrutura **Open Atlas** está completa e pronta para produção! Esta arquitetura suporta crescimento e é facilmente escalável conforme sua aplicação evoluir.
+**🎊 PARABÉNS!** Sua infraestrutura **Opus Atlas** está completa e pronta para produção! Esta arquitetura suporta crescimento e é facilmente escalável conforme sua aplicação evoluir.
 
 **🔥 Destaque Especial**: Seu projeto já possui um sistema de backup muito avançado com funcionalidades como backup seletivo, monitoramento automático e restore granular - muito superior ao que normalmente vemos em projetos!
 
