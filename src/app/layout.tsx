@@ -137,6 +137,10 @@ export default function RootLayout({
           media="(prefers-color-scheme: dark)"
           content="#0a0a0a"
         />
+        <meta
+          name="google-site-verification"
+          content="XC9v3XyFFCT6IhoCOH1NuuhJBju232tXhlZDCcNEiFU"
+        />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <ClientThemeWrapper>

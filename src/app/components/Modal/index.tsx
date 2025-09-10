@@ -224,7 +224,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
               ref={contentRef}
               className={`
             overflow-y-auto overflow-x-hidden classical-scrollbar pt-4  flex-1
-            ${title || showCloseButton ? 'p-2 md:p-6' : 'p-2 md:p-6'}
+            ${title || showCloseButton ? 'px-2 pb-2 md:px-6 md:pb-6' : 'p-2 md:p-6'}
           `}
               style={{
                 maxHeight: isMobile

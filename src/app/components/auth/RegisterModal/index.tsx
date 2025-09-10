@@ -781,7 +781,7 @@ const RegisterModal: React.FC = () => {
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      maxWidth="lg"
+      maxWidth="xl"
       showCloseButton={true}
       setPr
     >

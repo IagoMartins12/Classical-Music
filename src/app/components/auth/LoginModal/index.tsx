@@ -13,8 +13,8 @@ import { useLoginModal } from '@/app/stores/authStore';
 import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
-import { useTranslation } from '@/app/context/TranslationContext';
 import ForgotPasswordModal from '../ForgotPasswordModal';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 const LoginModal: React.FC = () => {
   const { isOpen, close, switchToRegister } = useLoginModal();
@@ -266,7 +266,7 @@ const LoginModal: React.FC = () => {
       <Modal
         isOpen={isOpen}
         onClose={handleClose}
-        maxWidth="lg"
+        maxWidth="xl"
         showCloseButton={true}
         setPr
       >

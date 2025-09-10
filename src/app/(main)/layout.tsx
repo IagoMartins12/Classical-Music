@@ -102,6 +102,9 @@ export async function generateMetadata(): Promise<Metadata> {
         'en-US': 'https://opusatlas.com',
       },
     },
+    verification: {
+      google: 'XC9v3XyFFCT6IhoCOH1QaahKLju232tXhlZDCcNEiFU',
+    },
   };
 }
 
