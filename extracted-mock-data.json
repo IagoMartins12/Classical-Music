@@ -1,0 +1,1154 @@
+{
+  "epochs": [
+    {
+      "id": "685d59e11e3db0c5aaa8942d",
+      "name": "Barroco"
+    },
+    {
+      "id": "685d59eb1e3db0c5aaa89435",
+      "name": "Clássico"
+    },
+    {
+      "id": "685d5a061e3db0c5aaa89443",
+      "name": "Contemporâneo"
+    },
+    {
+      "id": "685d59bc1e3db0c5aaa8941b",
+      "name": "Medieval"
+    },
+    {
+      "id": "685d59ff1e3db0c5aaa8943f",
+      "name": "Modernismo"
+    },
+    {
+      "id": "685d59d81e3db0c5aaa89425",
+      "name": "Renascentista"
+    },
+    {
+      "id": "685d59f31e3db0c5aaa89439",
+      "name": "Romântico"
+    }
+  ],
+  "instruments": [
+    {
+      "id": "686025dc0b6936a3c6cf449d",
+      "name": "A Cappella",
+      "category": null
+    },
+    {
+      "id": "6861f08c2d0344907e76d148",
+      "name": "Acompanhamento",
+      "category": null
+    },
+    {
+      "id": "68628e89ba5984680e211ed5",
+      "name": "Acordeão",
+      "category": null
+    },
+    {
+      "id": "6860ac4b0b6936a3c6cf5fe1",
+      "name": "Ad Libitum",
+      "category": null
+    },
+    {
+      "id": "686014e550400eeeb5a5af0f",
+      "name": "Alaúde",
+      "category": null
+    },
+    {
+      "id": "686056580b6936a3c6cf4eae",
+      "name": "Baixo Contínuo",
+      "category": null
+    },
+    {
+      "id": "6860111c50400eeeb5a5ae44",
+      "name": "Banda",
+      "category": null
+    },
+    {
+      "id": "6860a4270b6936a3c6cf5e46",
+      "name": "Bandolim",
+      "category": null
+    },
+    {
+      "id": "6860a4470b6936a3c6cf5e4c",
+      "name": "Banjo",
+      "category": null
+    },
+    {
+      "id": "6861121f0b6936a3c6cf7395",
+      "name": "Barítono",
+      "category": null
+    },
+    {
+      "id": "6870036159d318b995a72cb7",
+      "name": "Bateria",
+      "category": null
+    },
+    {
+      "id": "687049b92b5a360ec93b00b5",
+      "name": "Caixa",
+      "category": null
+    },
+    {
+      "id": "686613d8e541852612dfe909",
+      "name": "Carrilhão",
+      "category": null
+    },
+    {
+      "id": "6860c1de0b6936a3c6cf6428",
+      "name": "Celesta",
+      "category": null
+    },
+    {
+      "id": "686011a550400eeeb5a5ae5d",
+      "name": "Clarinete",
+      "category": null
+    },
+    {
+      "id": "688777fac0d2e7bac18d3f55",
+      "name": "Clavicórdio",
+      "category": null
+    },
+    {
+      "id": "6862c30446987f0edf47f8c8",
+      "name": "Concertina",
+      "category": null
+    },
+    {
+      "id": "6862c5c946987f0edf47f960",
+      "name": "Conjunto",
+      "category": null
+    },
+    {
+      "id": "686014f850400eeeb5a5af13",
+      "name": "Contrabaixo",
+      "category": null
+    },
+    {
+      "id": "686030e60b6936a3c6cf46fd",
+      "name": "Contralto",
+      "category": null
+    }
+  ],
+  "roles": [
+    {
+      "id": "685d59571e3db0c5aaa893fa",
+      "name": "Arranjador"
+    },
+    {
+      "id": "685d59241e3db0c5aaa893e8",
+      "name": "Cantor"
+    },
+    {
+      "id": "685d591c1e3db0c5aaa893e4",
+      "name": "Compositor"
+    },
+    {
+      "id": "685d59841e3db0c5aaa89410",
+      "name": "Desconhecido"
+    },
+    {
+      "id": "685d596b1e3db0c5aaa89404",
+      "name": "Editor"
+    },
+    {
+      "id": "685d59731e3db0c5aaa89408",
+      "name": "Escritor"
+    },
+    {
+      "id": "685d594a1e3db0c5aaa893f2",
+      "name": "Libretista"
+    },
+    {
+      "id": "685d597b1e3db0c5aaa8940c",
+      "name": "Tradutor"
+    }
+  ],
+  "workGenres": [
+    {
+      "id": "686028450b6936a3c6cf4522",
+      "name": "aberturas",
+      "createdAt": "2025-06-28T17:37:09.592Z",
+      "updatedAt": "2025-06-28T17:37:09.593Z"
+    },
+    {
+      "id": "6861f73b2d0344907e76d2f0",
+      "name": "adagiettos",
+      "createdAt": "2025-06-30T02:32:27.932Z",
+      "updatedAt": "2025-06-30T02:32:27.932Z"
+    },
+    {
+      "id": "686024d70b6936a3c6cf4461",
+      "name": "adágios",
+      "createdAt": "2025-06-28T17:22:31.268Z",
+      "updatedAt": "2025-06-28T17:22:31.269Z"
+    },
+    {
+      "id": "686207912d0344907e76d65d",
+      "name": "agitatos",
+      "createdAt": "2025-06-30T03:42:09.248Z",
+      "updatedAt": "2025-06-30T03:42:09.250Z"
+    },
+    {
+      "id": "68604d4b0b6936a3c6cf4cee",
+      "name": "agnus dei",
+      "createdAt": "2025-06-28T20:15:07.840Z",
+      "updatedAt": "2025-06-28T20:15:07.842Z"
+    },
+    {
+      "id": "68602fd50b6936a3c6cf46c2",
+      "name": "alemandas",
+      "createdAt": "2025-06-28T18:09:25.375Z",
+      "updatedAt": "2025-06-28T18:09:25.377Z"
+    },
+    {
+      "id": "68603c0b0b6936a3c6cf4961",
+      "name": "allegrettos",
+      "createdAt": "2025-06-28T19:01:31.940Z",
+      "updatedAt": "2025-06-28T19:01:31.941Z"
+    },
+    {
+      "id": "6860a5a10b6936a3c6cf5e91",
+      "name": "allegros",
+      "createdAt": "2025-06-29T02:32:01.281Z",
+      "updatedAt": "2025-06-29T02:32:01.282Z"
+    },
+    {
+      "id": "6860378a0b6936a3c6cf486e",
+      "name": "andantes",
+      "createdAt": "2025-06-28T18:42:18.756Z",
+      "updatedAt": "2025-06-28T18:42:18.757Z"
+    },
+    {
+      "id": "68603d570b6936a3c6cf49a6",
+      "name": "andantinos",
+      "createdAt": "2025-06-28T19:07:03.121Z",
+      "updatedAt": "2025-06-28T19:07:03.123Z"
+    },
+    {
+      "id": "68602aea0b6936a3c6cf45b8",
+      "name": "antífonas",
+      "createdAt": "2025-06-28T17:48:26.309Z",
+      "updatedAt": "2025-06-28T17:48:26.310Z"
+    },
+    {
+      "id": "686030010b6936a3c6cf46cb",
+      "name": "arabescos",
+      "createdAt": "2025-06-28T18:10:09.236Z",
+      "updatedAt": "2025-06-28T18:10:09.237Z"
+    },
+    {
+      "id": "686026360b6936a3c6cf44b3",
+      "name": "ariettas",
+      "createdAt": "2025-06-28T17:28:22.939Z",
+      "updatedAt": "2025-06-28T17:28:22.940Z"
+    },
+    {
+      "id": "68602e760b6936a3c6cf467c",
+      "name": "ariosos",
+      "createdAt": "2025-06-28T18:03:34.247Z",
+      "updatedAt": "2025-06-28T18:03:34.248Z"
+    },
+    {
+      "id": "68621ae52d0344907e76da22",
+      "name": "aubadas",
+      "createdAt": "2025-06-30T05:04:37.873Z",
+      "updatedAt": "2025-06-30T05:04:37.874Z"
+    },
+    {
+      "id": "68616f4f0b6936a3c6cf8589",
+      "name": "autobiografias",
+      "createdAt": "2025-06-29T16:52:31.388Z",
+      "updatedAt": "2025-06-29T16:52:31.389Z"
+    },
+    {
+      "id": "68610a4c0b6936a3c6cf721b",
+      "name": "ave maria",
+      "createdAt": "2025-06-29T09:41:32.933Z",
+      "updatedAt": "2025-06-29T09:41:32.934Z"
+    },
+    {
+      "id": "6860156950400eeeb5a5af27",
+      "name": "bagatelas",
+      "createdAt": "2025-06-28T16:16:41.894Z",
+      "updatedAt": "2025-06-28T16:16:41.895Z"
+    },
+    {
+      "id": "68610dbd0b6936a3c6cf72bf",
+      "name": "baixas danças",
+      "createdAt": "2025-06-29T09:56:13.255Z",
+      "updatedAt": "2025-06-29T09:56:13.256Z"
+    },
+    {
+      "id": "686013fa50400eeeb5a5aee0",
+      "name": "baladas",
+      "createdAt": "2025-06-28T16:10:34.227Z",
+      "updatedAt": "2025-06-28T16:10:34.228Z"
+    }
+  ],
+  "composers": [
+    {
+      "id": "685d8f9a8803000f9b61d151",
+      "name": "Bach",
+      "fullName": "Johann Sebastian Bach",
+      "alternativeNames": "Jean Sébastien Bach (fr), Jan Sebastian Bach, John Sebastian Bach (en), Juan Sebastián Bach (es, spa), Giovanni Sebastiano Bach (it, ita), Ιωάννης Σεβαστιανός Μπαχ (gr), Иоганн Себастьян Бах (ru), (ar) يوهان سباستيان باخ, 约翰·塞巴斯蒂安·巴赫 (chi,zho), 요한 제바스티안 바흐 (ko,kor),יוהאן  סבסטיאן באך (heb).",
+      "birthDate": "21 March 1685",
+      "deathDate": "28 July 1750",
+      "portraitUrl": "https://imslp.org/images/thumb/6/6a/Johann_Sebastian_Bach.jpg/180px-Johann_Sebastian_Bach.jpg",
+      "epochId": "685d59e11e3db0c5aaa8942d",
+      "epochName": "Barroco",
+      "bio": null,
+      "videoUrl": null,
+      "permLinkImslp": "https://imslp.org/wiki/Category:Bach,_Johann_Sebastian",
+      "imslpId": "Category:Bach, Johann Sebastian",
+      "wikipediaLink": "https://en.wikipedia.org/wiki/Johann_Sebastian_Bach",
+      "nationality": "German",
+      "instruments": "Piano, Violin, Viola, Cello, Flute, Oboe, Harp, Organ, Harpsichord, Soprano",
+      "imslpCategories": "Category, View source, History, What links here, Related changes, Printable version, Permanent link, Composers, All people, Nationality, WIMA collection, Performer name, Commercial recordings, Top, Chart, next 200, http://imslp.org/index.php?title=Category:Bach,_Johann_Sebastian&oldid=4004960, Composers with links to Sheet Music Plus, People, People from the Baroque era, German people, Male people, People with recordings, Collaborations, Pasticcios, Collected Works, Collections Withs, Arrangers, Editors, Copyists, Dedicatees",
+      "pageQuality": "high",
+      "lastVerified": "2025-06-26T18:21:14.235Z",
+      "dataCompleteness": 88,
+      "hasValidImage": true,
+      "createdBy": null,
+      "isCustom": false,
+      "dataQuality": null,
+      "verificationStatus": null,
+      "verifiedBy": null,
+      "verifiedAt": null,
+      "dataSource": null,
+      "isVerified": false,
+      "verificationNotes": null,
+      "lastEditedBy": null,
+      "lastEditedAt": null,
+      "editHistory": null,
+      "primaryRoleId": "685d591c1e3db0c5aaa893e4",
+      "roles": "685d59571e3db0c5aaa893fa, 685d596b1e3db0c5aaa89404",
+      "createdAt": "2025-06-26T18:21:14.238Z",
+      "updatedAt": "2025-07-28T05:07:05.665Z",
+      "epoch": {
+        "id": "685d59e11e3db0c5aaa8942d",
+        "name": "Barroco"
+      },
+      "primaryRole": {
+        "id": "685d591c1e3db0c5aaa893e4",
+        "name": "Compositor"
+      },
+      "_count": {
+        "works": 1426
+      }
+    },
+    {
+      "id": "685f4a93c6bd886c5b498cce",
+      "name": "Schubert",
+      "fullName": "Franz Schubert",
+      "alternativeNames": "Franz Peter Schubert",
+      "birthDate": "31 January 1797",
+      "deathDate": "19 November 1828",
+      "portraitUrl": "https://imslp.org/images/thumb/3/39/Schubert_HQ.JPG/180px-Schubert_HQ.JPG",
+      "epochId": "685d59f31e3db0c5aaa89439",
+      "epochName": "Romântico",
+      "bio": null,
+      "videoUrl": null,
+      "permLinkImslp": "https://imslp.org/wiki/Category:Schubert,_Franz",
+      "imslpId": "Category:Schubert, Franz",
+      "wikipediaLink": "https://en.wikipedia.org/wiki/Franz_Schubert",
+      "nationality": "Austrian",
+      "instruments": "Piano, Violin, Cello, Flute, Viola, Double bass, Guitar, Organ, Voice, Soprano",
+      "imslpCategories": "Category, View source, History, What links here, Related changes, Printable version, Permanent link, Composers, All people, Nationality, WIMA collection, Performer name, Commercial recordings, Top, Chart, next 200, http://imslp.org/index.php?title=Category:Schubert,_Franz&oldid=4021119, Composers with links to Sheet Music Plus, People, People from the Romantic era, Austrian people, Male people, People with recordings, Collected Works, Collections Withs, Arrangers, Librettists, Copyists, Dedicatees, People from the Classical era",
+      "pageQuality": "high",
+      "lastVerified": "2025-06-28T01:51:15.919Z",
+      "dataCompleteness": 88,
+      "hasValidImage": true,
+      "createdBy": null,
+      "isCustom": false,
+      "dataQuality": null,
+      "verificationStatus": null,
+      "verifiedBy": null,
+      "verifiedAt": null,
+      "dataSource": null,
+      "isVerified": false,
+      "verificationNotes": null,
+      "lastEditedBy": null,
+      "lastEditedAt": null,
+      "editHistory": null,
+      "primaryRoleId": "685d591c1e3db0c5aaa893e4",
+      "roles": "685d59571e3db0c5aaa893fa, 685d594a1e3db0c5aaa893f2",
+      "createdAt": "2025-06-28T01:51:15.920Z",
+      "updatedAt": "2025-09-02T21:23:33.797Z",
+      "epoch": {
+        "id": "685d59f31e3db0c5aaa89439",
+        "name": "Romântico"
+      },
+      "primaryRole": {
+        "id": "685d591c1e3db0c5aaa893e4",
+        "name": "Compositor"
+      },
+      "_count": {
+        "works": 1061
+      }
+    },
+    {
+      "id": "685e7ff8c6bd886c5b496e2a",
+      "name": "Haydn",
+      "fullName": "Joseph Haydn",
+      "alternativeNames": "Franz Joseph Haydn, Josef Haydn, Franz Josef Haydn, Гайдн, Йозеф (rus), Франц Іозеф Гайдн (bg, bull), (ar) جوزيف هايدن, (heb) יוזף היידן, 约瑟夫·海顿 (chi, zho), フランツ・ヨーゼフ・ハイドン (jp), 요제프 하이든 (ko, kor), იოზეფ ჰაიდნი (geo, kat).",
+      "birthDate": "31 March 1732",
+      "deathDate": "31 May 1809",
+      "portraitUrl": "https://imslp.org/images/thumb/c/c6/J-haydn.jpg/180px-J-haydn.jpg",
+      "epochId": "685d59eb1e3db0c5aaa89435",
+      "epochName": "Clássico",
+      "bio": null,
+      "videoUrl": null,
+      "permLinkImslp": "https://imslp.org/wiki/Category:Haydn,_Joseph",
+      "imslpId": "Category:Haydn, Joseph",
+      "wikipediaLink": "https://en.wikipedia.org/wiki/Joseph_Haydn",
+      "nationality": "Austrian",
+      "instruments": "Piano, Violin, Wind quintet, Viola, Cello, Double bass, Flute, Horn, Harp, Organ",
+      "imslpCategories": "Category, View source, History, What links here, Related changes, Printable version, Permanent link, Composers, All people, Nationality, WIMA collection, Performer name, Commercial recordings, Top, Chart, next 200, http://imslp.org/index.php?title=Category:Haydn,_Joseph&oldid=4468957, Composers with links to Sheet Music Plus, People, People from the Classical era, Austrian people, Male people, People with recordings, Pasticcios, Collected Works, Collections Withs, Arrangers, Dedicatees",
+      "pageQuality": "high",
+      "lastVerified": "2025-06-27T11:26:48.586Z",
+      "dataCompleteness": 88,
+      "hasValidImage": true,
+      "createdBy": null,
+      "isCustom": false,
+      "dataQuality": null,
+      "verificationStatus": null,
+      "verifiedBy": null,
+      "verifiedAt": null,
+      "dataSource": null,
+      "isVerified": false,
+      "verificationNotes": null,
+      "lastEditedBy": null,
+      "lastEditedAt": null,
+      "editHistory": null,
+      "primaryRoleId": "685d591c1e3db0c5aaa893e4",
+      "roles": "685d59571e3db0c5aaa893fa",
+      "createdAt": "2025-06-27T11:26:48.588Z",
+      "updatedAt": "2025-07-28T05:07:06.457Z",
+      "epoch": {
+        "id": "685d59eb1e3db0c5aaa89435",
+        "name": "Clássico"
+      },
+      "primaryRole": {
+        "id": "685d591c1e3db0c5aaa893e4",
+        "name": "Compositor"
+      },
+      "_count": {
+        "works": 936
+      }
+    },
+    {
+      "id": "685ef349c6bd886c5b497f8f",
+      "name": "Mozart",
+      "fullName": "Wolfgang Amadeus Mozart",
+      "alternativeNames": "Johann Chrysostom Wolfgang Theophilus Mozart, Wolfgango Amadeo Mozart, Wolfgang Amadé Mozart, Wolfgang Gottlieb Mozart",
+      "birthDate": "27 January 1756",
+      "deathDate": "5 December 1791",
+      "portraitUrl": "https://imslp.org/images/thumb/8/87/415_mozart.jpg/180px-415_mozart.jpg",
+      "epochId": "685d59eb1e3db0c5aaa89435",
+      "epochName": "Clássico",
+      "bio": null,
+      "videoUrl": null,
+      "permLinkImslp": "https://imslp.org/wiki/Category:Mozart,_Wolfgang_Amadeus",
+      "imslpId": "Category:Mozart, Wolfgang Amadeus",
+      "wikipediaLink": "https://en.wikipedia.org/wiki/Wolfgang_Amadeus_Mozart",
+      "nationality": "Austrian",
+      "instruments": "Piano, Violin, Flute, Bassoon, Bass, Viola, Cello, Double bass, Clarinet, Horn",
+      "imslpCategories": "Category, View source, History, What links here, Related changes, Printable version, Permanent link, Composers, All people, Nationality, WIMA collection, Performer name, Commercial recordings, Top, Chart, next 200, http://imslp.org/index.php?title=Category:Mozart,_Wolfgang_Amadeus&oldid=4004982, Composers with links to Sheet Music Plus, People, People from the Classical era, Austrian people, Male people, People with recordings, Collaborations, Pasticcios, Collected Works, Collections Withs, Arrangers, Librettists, Copyists, Dedicatees, Books",
+      "pageQuality": "high",
+      "lastVerified": "2025-06-27T19:38:49.735Z",
+      "dataCompleteness": 88,
+      "hasValidImage": true,
+      "createdBy": null,
+      "isCustom": false,
+      "dataQuality": null,
+      "verificationStatus": null,
+      "verifiedBy": null,
+      "verifiedAt": null,
+      "dataSource": null,
+      "isVerified": false,
+      "verificationNotes": null,
+      "lastEditedBy": null,
+      "lastEditedAt": null,
+      "editHistory": null,
+      "primaryRoleId": "685d591c1e3db0c5aaa893e4",
+      "roles": "685d59571e3db0c5aaa893fa, 685d594a1e3db0c5aaa893f2, 685d59731e3db0c5aaa89408",
+      "createdAt": "2025-06-27T19:38:49.736Z",
+      "updatedAt": "2025-09-02T21:23:11.190Z",
+      "epoch": {
+        "id": "685d59eb1e3db0c5aaa89435",
+        "name": "Clássico"
+      },
+      "primaryRole": {
+        "id": "685d591c1e3db0c5aaa893e4",
+        "name": "Compositor"
+      },
+      "_count": {
+        "works": 829
+      }
+    },
+    {
+      "id": "685f8b71c6bd886c5b4995fe",
+      "name": "Vivaldi",
+      "fullName": "Antonio Vivaldi",
+      "alternativeNames": "Antonio Lucio Vivaldi, Антоніа Вівальдзі, Антонио Вивалди, 安东尼奥维瓦尔第 (chi, zho), 안토니오 비발디 (ko, kor), ანტონიო ვივალდი, Αντόνιο Βιβάλντι (grk), アントニオヴィヴァルディ(jp), Антонио Вивалди, (ar) أنطونيو فيفالدي, Антоніо Вівальді,אַנטאָניאָ וויוואַלדי ,אנטוניו ויוואלדי.",
+      "birthDate": "4 March 1678",
+      "deathDate": "28 July 1741",
+      "portraitUrl": "https://imslp.org/images/thumb/1/1b/Antonio_Vivaldi.jpg/180px-Antonio_Vivaldi.jpg",
+      "epochId": "685d59e11e3db0c5aaa8942d",
+      "epochName": "Barroco",
+      "bio": "Antonio Vivaldi (4 de março de 1678 - 28 de julho de 1741) foi um compositor, violinista e padre católico italiano do período Barroco. Nascido em Veneza, Itália, Vivaldi é conhecido principalmente como compositor, tendo criado mais de 400 concertos para violino e orquestra.\n\nVivaldi estudou música com seu pai, Giovanni Battista Vivaldi, e mais tarde com Giovanni Legrenzi. Suas principais influências musicais foram os compositores italianos da época, como Arcangelo Corelli e Giuseppe Torelli.\n\nO estilo composicional de Vivaldi é caracterizado por sua habilidade em criar melodias cativantes e harmônicas complexas. Ele é famoso por suas \"Quatro Estações\", um conjunto de quatro concertos para violino que descrevem as mudanças de estação em Veneza.\n\nVivaldi fez contribuições significativas para a música, incluindo a criação de concertos para instrumentos solistas e orquestra, que se tornaram uma forma padrão de música clássica. Ele também foi um dos primeiros compositores a usar a forma sonata como base para suas obras.\n\nNo contexto histórico, Vivaldi viveu durante o período Barroco, quando a música clássica estava se desenvolvendo rapidamente. Ele foi contemporâneo de outros compositores famosos, como Johann Sebastian Bach e George Frideric Handel.\n\nVivaldi também teve uma vida pessoal interessante, tendo sido ordenado padre católico em 1703, mas mais tarde abandonou a vida eclesiástica para se dedicar à música. Ele foi conhecido por sua personalidade forte e seu talento como violinista.\n\nLeia mais em: https://pt.wikipedia.org/wiki/Antonio_Vivaldi",
+      "videoUrl": null,
+      "permLinkImslp": "https://imslp.org/wiki/Category:Vivaldi,_Antonio",
+      "imslpId": "Category:Vivaldi, Antonio",
+      "wikipediaLink": "https://en.wikipedia.org/wiki/Antonio_Vivaldi",
+      "nationality": "Italian",
+      "instruments": "Violin, Viola, Cello, Flute, Oboe, Bassoon, Horn, Trumpet, Organ, Bass",
+      "imslpCategories": "Category, View source, History, What links here, Related changes, Printable version, Permanent link, Composers, All people, Nationality, WIMA collection, Performer name, Commercial recordings, Top, Chart, next 200, http://imslp.org/index.php?title=Category:Vivaldi,_Antonio&oldid=2766033, Composers with links to Sheet Music Plus, People, People from the Baroque era, Italian people, Male people, People with recordings, Collaborations, Pasticcios, Collected Works, Collections Withs, Dedicatees",
+      "pageQuality": "high",
+      "lastVerified": "2025-06-28T06:28:01.693Z",
+      "dataCompleteness": 88,
+      "hasValidImage": true,
+      "createdBy": null,
+      "isCustom": false,
+      "dataQuality": null,
+      "verificationStatus": "verified",
+      "verifiedBy": null,
+      "verifiedAt": "2025-07-10T20:06:00.848Z",
+      "dataSource": null,
+      "isVerified": false,
+      "verificationNotes": null,
+      "lastEditedBy": null,
+      "lastEditedAt": null,
+      "editHistory": {
+        "action": "verified",
+        "by": "6867dd6fcc0ebd96bc5b336f",
+        "at": "2025-07-10T20:06:00.848Z",
+        "notes": "Verificado",
+        "previous": null
+      },
+      "primaryRoleId": "685d591c1e3db0c5aaa893e4",
+      "roles": null,
+      "createdAt": "2025-06-28T06:28:01.694Z",
+      "updatedAt": "2025-09-02T21:43:44.849Z",
+      "epoch": {
+        "id": "685d59e11e3db0c5aaa8942d",
+        "name": "Barroco"
+      },
+      "primaryRole": {
+        "id": "685d591c1e3db0c5aaa893e4",
+        "name": "Compositor"
+      },
+      "_count": {
+        "works": 696
+      }
+    },
+    {
+      "id": "685e7a9fc6bd886c5b496d62",
+      "name": "Handel",
+      "fullName": "George Frideric Handel",
+      "alternativeNames": "Georg Friederich Händel, Georg Friedrich Haendel, George Frideric Hendel, Georges-Frédéric Haendel (fr), Georg Friedrich Händel, George Frederick Handel, Γεώργιος Φρειδερίκος Χαίντελ (grk), Георг-Фридрих Гендель (rus), (ar) جورج فريدريك هاندل, 格奥尔格·弗里德里希·亨德尔 (chi,zho), 게오르크 프리드리히 헨델 (ko, kor),จอร์จ เฟรดริก ฮันเดล (tha).",
+      "birthDate": "23 February 1685",
+      "deathDate": "14 April 1759",
+      "portraitUrl": "https://imslp.org/images/thumb/3/3d/Haendel.jpg/180px-Haendel.jpg",
+      "epochId": "685d59e11e3db0c5aaa8942d",
+      "epochName": "Barroco",
+      "bio": null,
+      "videoUrl": null,
+      "permLinkImslp": "https://imslp.org/wiki/Category:Handel,_George_Frideric",
+      "imslpId": "Category:Handel, George Frideric",
+      "wikipediaLink": "https://en.wikipedia.org/wiki/George_Frideric_Handel",
+      "nationality": "German",
+      "instruments": "Piano, Violin, Viola, Oboe, Harp, Organ, Harpsichord, Soprano, Cello, Flute",
+      "imslpCategories": "Category, View source, History, What links here, Related changes, Printable version, Permanent link, Composers, All people, Nationality, WIMA collection, Performer name, Commercial recordings, Top, Chart, next 200, http://imslp.org/index.php?title=Category:Handel,_George_Frideric&oldid=2603455, Composers with links to Sheet Music Plus, People, People from the Baroque era, German people, English people, Male people, People with recordings, Collaborations, Pasticcios, Collected Works, Collections Withs, Arrangers, Editors, Dedicatees",
+      "pageQuality": "high",
+      "lastVerified": "2025-06-27T11:03:59.884Z",
+      "dataCompleteness": 88,
+      "hasValidImage": true,
+      "createdBy": null,
+      "isCustom": false,
+      "dataQuality": null,
+      "verificationStatus": null,
+      "verifiedBy": null,
+      "verifiedAt": null,
+      "dataSource": null,
+      "isVerified": false,
+      "verificationNotes": null,
+      "lastEditedBy": null,
+      "lastEditedAt": null,
+      "editHistory": null,
+      "primaryRoleId": "685d591c1e3db0c5aaa893e4",
+      "roles": "685d59571e3db0c5aaa893fa, 685d596b1e3db0c5aaa89404",
+      "createdAt": "2025-06-27T11:03:59.885Z",
+      "updatedAt": "2025-09-02T21:23:33.797Z",
+      "epoch": {
+        "id": "685d59e11e3db0c5aaa8942d",
+        "name": "Barroco"
+      },
+      "primaryRole": {
+        "id": "685d591c1e3db0c5aaa893e4",
+        "name": "Compositor"
+      },
+      "_count": {
+        "works": 661
+      }
+    },
+    {
+      "id": "685ec880c6bd886c5b497957",
+      "name": "Liszt",
+      "fullName": "Franz Liszt",
+      "alternativeNames": "Ferenc Liszt, Ferencz Liszt, Franz Ritter von Liszt, Franciszek Liszt",
+      "birthDate": "22 October 1811",
+      "deathDate": "31 July 1886",
+      "portraitUrl": "https://imslp.org/images/thumb/1/1f/Liszt-last-pic.png/180px-Liszt-last-pic.png",
+      "epochId": "685d59f31e3db0c5aaa89439",
+      "epochName": "Romântico",
+      "bio": null,
+      "videoUrl": null,
+      "permLinkImslp": "https://imslp.org/wiki/Category:Liszt,_Franz",
+      "imslpId": "Category:Liszt, Franz",
+      "wikipediaLink": "https://en.wikipedia.org/wiki/Franz_Liszt",
+      "nationality": "Hungarian",
+      "instruments": "Piano, Violin, Viola, Cello, Harp, Organ, Soprano, Alto, Orchestra, String quartet",
+      "imslpCategories": "Category, View source, History, What links here, Related changes, Printable version, Permanent link, Composers, All people, Nationality, WIMA collection, Performer name, Commercial recordings, Emil von Sauer, Ruth Dana Collection of Liszt Editions, Top, Chart, next 200, http://imslp.org/index.php?title=Category:Liszt,_Franz&oldid=4236842, Pages with direct-links to Naxos, Composers with links to Sheet Music Plus, People, People from the Romantic era, Hungarian people, Male people, People with recordings, Collaborations, Collected Works, Collections Withs, Arrangers, Editors, Translators, Dedicatees, Books",
+      "pageQuality": "high",
+      "lastVerified": "2025-06-27T16:36:16.554Z",
+      "dataCompleteness": 88,
+      "hasValidImage": true,
+      "createdBy": null,
+      "isCustom": false,
+      "dataQuality": null,
+      "verificationStatus": null,
+      "verifiedBy": null,
+      "verifiedAt": null,
+      "dataSource": null,
+      "isVerified": false,
+      "verificationNotes": null,
+      "lastEditedBy": null,
+      "lastEditedAt": null,
+      "editHistory": null,
+      "primaryRoleId": "685d591c1e3db0c5aaa893e4",
+      "roles": "685d59571e3db0c5aaa893fa, 685d596b1e3db0c5aaa89404, 685d597b1e3db0c5aaa8940c, 685d59731e3db0c5aaa89408",
+      "createdAt": "2025-06-27T16:36:16.555Z",
+      "updatedAt": "2025-09-02T21:23:33.797Z",
+      "epoch": {
+        "id": "685d59f31e3db0c5aaa89439",
+        "name": "Romântico"
+      },
+      "primaryRole": {
+        "id": "685d591c1e3db0c5aaa893e4",
+        "name": "Compositor"
+      },
+      "_count": {
+        "works": 583
+      }
+    }
+  ],
+  "works": [
+    {
+      "id": "688c29660c933f2b957d5aee",
+      "title": "Experience",
+      "composerId": "685e1087c6bd886c5b495d66",
+      "instrumentId": "685ef4b5a249f2a204023458",
+      "epochId": "685d59f31e3db0c5aaa89439",
+      "videoUrl": "",
+      "imslpPermlink": "",
+      "imslpId": "",
+      "opOrCatalog": "",
+      "compositionYear": "",
+      "firstPublishDate": "",
+      "tone": "",
+      "mediaDuration": "",
+      "workStyle": "",
+      "moviment": "",
+      "categoryNames": [],
+      "workGenresArr": [],
+      "dedicateTo": "",
+      "instrumentation": "",
+      "workType": "INDIVIDUAL",
+      "movementNumber": null,
+      "parentWorkId": null,
+      "createdAt": "2025-08-01T02:41:42.407Z",
+      "updatedAt": "2025-08-27T18:46:42.969Z",
+      "subtitle": "",
+      "imslpTags": [],
+      "spotifyTrackId": null,
+      "spotifyTrackUrl": null,
+      "spotifyDisplayTitle": null,
+      "spotifyDuration": null,
+      "spotifyArtists": null,
+      "spotifyThumbnail": null,
+      "youtubeVideoId": "Tu96yevGMEA",
+      "youtubeVideoUrl": "https://www.youtube.com/watch?v=Tu96yevGMEA",
+      "youtubeTitle": "Experience - undefined",
+      "customAudioUrl": null,
+      "customAudioFile": null,
+      "customAudioSource": null,
+      "customAudioMetadata": null,
+      "mediaSource": null,
+      "lastMediaSearch": null,
+      "mediaSearchError": null,
+      "videoAulaUrl": null,
+      "videoAulaFile": null,
+      "videoAulaTitle": null,
+      "videoAulaType": null,
+      "videoAulaSource": null,
+      "videoAulaAddedBy": null,
+      "videoAulaAddedAt": null,
+      "videoAulaMetadata": null,
+      "imslpDifficultyLevel": null,
+      "imslpDifficultySystem": null,
+      "imslpDifficultyRating": null,
+      "imslpSourceId": null,
+      "verificationStatus": null,
+      "verifiedBy": null,
+      "verifiedAt": null,
+      "isVerified": false,
+      "createdBy": null,
+      "isCustom": true,
+      "lastEditedBy": "688b808db7e734850607c1d7",
+      "lastEditedAt": "2025-08-01T02:47:49.089Z",
+      "editHistory": null,
+      "difficultyLevel": null,
+      "difficultySystem": null,
+      "difficultyRating": null,
+      "difficultySourceId": null,
+      "annotationsCount": 0,
+      "helpfulAnnotationsCount": 0,
+      "lastAnnotationAt": null,
+      "composer": {
+        "id": "685e1087c6bd886c5b495d66",
+        "name": "Chopin",
+        "fullName": "Frédéric Chopin",
+        "epochName": "Romântico"
+      },
+      "epoch": {
+        "id": "685d59f31e3db0c5aaa89439",
+        "name": "Romântico"
+      },
+      "instrument": {
+        "id": "685ef4b5a249f2a204023458",
+        "name": "Piano"
+      },
+      "_count": {
+        "favoriteBy": 0
+      }
+    },
+    {
+      "id": "6879bfbc68d244782048d0fc",
+      "title": "Œuvres célèbres pour orgue, Walter Kraft",
+      "composerId": "685d8f9a8803000f9b61d151",
+      "instrumentId": "686024a90b6936a3c6cf4454",
+      "epochId": "685d59e11e3db0c5aaa8942d",
+      "videoUrl": null,
+      "imslpPermlink": "https://imslp.org/wiki/Œuvres_célèbres_pour_orgue,_Walter_Kraft_(Bach,_Johann_Sebastian)",
+      "imslpId": "927933",
+      "opOrCatalog": null,
+      "compositionYear": null,
+      "firstPublishDate": null,
+      "tone": null,
+      "mediaDuration": null,
+      "workStyle": "Baroque",
+      "moviment": "10 tracks on 1 disc of 2 sides:\n Side 1:\n\nPrelude on the chorale BWV 715 “Allein Gott in der Höh sei Ehr”\nChorale for organ BWV 711 “Allein Gott in der Höh sei Ehr”\nFantasy in G BWV 572\nPrelude on the chorale BWV 645 “Wachet auf, ruft uns die Stimme”\nPrelude on the chorale BWV 727 “Herzlich tut mich verlangen”\nPrelude & Fugue in E minor BWV 533\n\n Side 2:\n\nPastorale in F BWV 590\nPrelude on the chorale BWV 659 “Nun komm der Heiden Heiland”\nPrelude on the chorale BWV 646 “Wo soll ich fliehen hin”\nToccata & Fugue in D minor BWV 565",
+      "categoryNames": ["Para 1 instrumentista"],
+      "workGenresArr": [
+        "prelúdios de coral",
+        "fantasias",
+        "prelúdios",
+        "fugas",
+        "pastorais",
+        "tocatas"
+      ],
+      "dedicateTo": null,
+      "instrumentation": "Órgão",
+      "workType": "COLLECTED_WORKS",
+      "movementNumber": null,
+      "parentWorkId": null,
+      "createdAt": "2025-07-18T03:30:04.036Z",
+      "updatedAt": "2025-07-28T17:03:24.073Z",
+      "subtitle": null,
+      "imslpTags": [
+        "Composers",
+        "People",
+        "People by nationality",
+        "WIMA files",
+        "People with recordings&memberitst=Recordings",
+        "Performers",
+        "Pages with commercial recordings",
+        "Pages with parts for purchase&simplesubcat=1&launchtab=parts",
+        "Chorale preludes&transclude=Template:Catintro",
+        "Fantasias&transclude=Template:Catintro",
+        "Preludes&transclude=Template:Catintro",
+        "Fugues&transclude=Template:Catintro",
+        "Pastorales&transclude=Template:Catintro",
+        "Toccatas&transclude=Template:Catintro",
+        "For organ&transclude=Template:Catintro",
+        "Scores featuring the organ&transclude=Template:Catintro",
+        "For 1 player&transclude=Template:Catintro",
+        "Kraft, Walter",
+        "Bach, Johann Sebastian",
+        "Baroque",
+        "Baroque style",
+        "Kraft, Walter/Performer",
+        "Recordings",
+        "Scores",
+        "Bach, Johann Sebastian/Collections",
+        "Chorale preludes",
+        "Fantasias",
+        "Preludes",
+        "Fugues",
+        "Pastorales",
+        "Toccatas",
+        "For organ",
+        "Scores featuring the organ",
+        "For 1 player",
+        "Bach, Johann Sebastian/Collected Works"
+      ],
+      "spotifyTrackId": null,
+      "spotifyTrackUrl": null,
+      "spotifyDisplayTitle": null,
+      "spotifyDuration": null,
+      "spotifyArtists": [],
+      "spotifyThumbnail": null,
+      "youtubeVideoId": null,
+      "youtubeVideoUrl": null,
+      "youtubeTitle": null,
+      "customAudioUrl": null,
+      "customAudioFile": null,
+      "customAudioSource": null,
+      "customAudioMetadata": null,
+      "mediaSource": null,
+      "lastMediaSearch": null,
+      "mediaSearchError": null,
+      "videoAulaUrl": null,
+      "videoAulaFile": null,
+      "videoAulaTitle": null,
+      "videoAulaType": null,
+      "videoAulaSource": null,
+      "videoAulaAddedBy": null,
+      "videoAulaAddedAt": null,
+      "videoAulaMetadata": null,
+      "imslpDifficultyLevel": null,
+      "imslpDifficultySystem": null,
+      "imslpDifficultyRating": null,
+      "imslpSourceId": null,
+      "verificationStatus": null,
+      "verifiedBy": null,
+      "verifiedAt": null,
+      "isVerified": false,
+      "createdBy": null,
+      "isCustom": false,
+      "lastEditedBy": null,
+      "lastEditedAt": null,
+      "editHistory": null,
+      "difficultyLevel": "ADVANCED",
+      "difficultySystem": null,
+      "difficultyRating": null,
+      "difficultySourceId": null,
+      "annotationsCount": 0,
+      "helpfulAnnotationsCount": 0,
+      "lastAnnotationAt": null,
+      "composer": {
+        "id": "685d8f9a8803000f9b61d151",
+        "name": "Bach",
+        "fullName": "Johann Sebastian Bach",
+        "epochName": "Barroco"
+      },
+      "epoch": {
+        "id": "685d59e11e3db0c5aaa8942d",
+        "name": "Barroco"
+      },
+      "instrument": {
+        "id": "686024a90b6936a3c6cf4454",
+        "name": "Órgão"
+      },
+      "_count": {
+        "favoriteBy": 0
+      }
+    },
+    {
+      "id": "6879bfb468d244782048d0fa",
+      "title": "Œuvres complètes pour piano",
+      "composerId": "685e1087c6bd886c5b495d66",
+      "instrumentId": "685ef4b5a249f2a204023458",
+      "epochId": "685d59f31e3db0c5aaa89439",
+      "videoUrl": null,
+      "imslpPermlink": "https://imslp.org/wiki/Œuvres_complètes_pour_piano_(Chopin,_Frédéric)",
+      "imslpId": "318858",
+      "opOrCatalog": null,
+      "compositionYear": null,
+      "firstPublishDate": "1915-16 or 1917",
+      "tone": null,
+      "mediaDuration": null,
+      "workStyle": "Romantic",
+      "moviment": "12 volumes",
+      "categoryNames": ["Peças", "Para 1 instrumentista"],
+      "workGenresArr": ["pieces"],
+      "dedicateTo": null,
+      "instrumentation": "Piano",
+      "workType": "COLLECTED_WORKS",
+      "movementNumber": null,
+      "parentWorkId": null,
+      "createdAt": "2025-07-18T03:29:56.453Z",
+      "updatedAt": "2025-07-28T17:03:24.073Z",
+      "subtitle": null,
+      "imslpTags": [
+        "Composers",
+        "People",
+        "People by nationality",
+        "WIMA files",
+        "People with recordings&memberitst=Recordings",
+        "Performers",
+        "Pages with commercial recordings",
+        "Pages with parts for purchase&simplesubcat=1&launchtab=parts",
+        "Pieces&transclude=Template:Catintro",
+        "For piano&transclude=Template:Catintro",
+        "Scores featuring the piano&transclude=Template:Catintro",
+        "For 1 player&transclude=Template:Catintro",
+        "Debussy, Claude",
+        "Chopin, Frédéric",
+        "Romantic",
+        "Romantic style",
+        "Debussy, Claude/Editor",
+        "Scores published by Durand",
+        "Sibley Mirroring Project",
+        "Scores",
+        "Chopin, Frédéric/Collections",
+        "Pieces",
+        "For piano",
+        "Scores featuring the piano",
+        "For 1 player",
+        "Works first published in 1915",
+        "Works first published in the 20th century",
+        "Chopin, Frédéric/Collected Works"
+      ],
+      "spotifyTrackId": null,
+      "spotifyTrackUrl": null,
+      "spotifyDisplayTitle": null,
+      "spotifyDuration": null,
+      "spotifyArtists": [],
+      "spotifyThumbnail": null,
+      "youtubeVideoId": null,
+      "youtubeVideoUrl": null,
+      "youtubeTitle": null,
+      "customAudioUrl": null,
+      "customAudioFile": null,
+      "customAudioSource": null,
+      "customAudioMetadata": null,
+      "mediaSource": null,
+      "lastMediaSearch": null,
+      "mediaSearchError": null,
+      "videoAulaUrl": null,
+      "videoAulaFile": null,
+      "videoAulaTitle": null,
+      "videoAulaType": null,
+      "videoAulaSource": null,
+      "videoAulaAddedBy": null,
+      "videoAulaAddedAt": null,
+      "videoAulaMetadata": null,
+      "imslpDifficultyLevel": null,
+      "imslpDifficultySystem": null,
+      "imslpDifficultyRating": null,
+      "imslpSourceId": null,
+      "verificationStatus": null,
+      "verifiedBy": null,
+      "verifiedAt": null,
+      "isVerified": false,
+      "createdBy": null,
+      "isCustom": false,
+      "lastEditedBy": null,
+      "lastEditedAt": null,
+      "editHistory": null,
+      "difficultyLevel": "INTERMEDIATE",
+      "difficultySystem": null,
+      "difficultyRating": null,
+      "difficultySourceId": null,
+      "annotationsCount": 0,
+      "helpfulAnnotationsCount": 0,
+      "lastAnnotationAt": null,
+      "composer": {
+        "id": "685e1087c6bd886c5b495d66",
+        "name": "Chopin",
+        "fullName": "Frédéric Chopin",
+        "epochName": "Romântico"
+      },
+      "epoch": {
+        "id": "685d59f31e3db0c5aaa89439",
+        "name": "Romântico"
+      },
+      "instrument": {
+        "id": "685ef4b5a249f2a204023458",
+        "name": "Piano"
+      },
+      "_count": {
+        "favoriteBy": 0
+      }
+    },
+    {
+      "id": "6879bfb068d244782048d0f9",
+      "title": "Œuvres complètes pour orgue",
+      "composerId": "685d8f9a8803000f9b61d151",
+      "instrumentId": "686024a90b6936a3c6cf4454",
+      "epochId": "685d59e11e3db0c5aaa8942d",
+      "videoUrl": null,
+      "imslpPermlink": "https://imslp.org/wiki/Œuvres_complètes_pour_orgue_(Bach,_Johann_Sebastian)",
+      "imslpId": "9330",
+      "opOrCatalog": null,
+      "compositionYear": null,
+      "firstPublishDate": "1916-20",
+      "tone": null,
+      "mediaDuration": null,
+      "workStyle": "Baroque",
+      "moviment": "3 volumes\nVolume I: Preludes et fugues\nVolume II: Chorals varies\nVolume III: Sonates, concertos, piéces diverses",
+      "categoryNames": ["Peças", "Para 1 instrumentista"],
+      "workGenresArr": ["pieces"],
+      "dedicateTo": null,
+      "instrumentation": "Órgão",
+      "workType": "COLLECTED_WORKS",
+      "movementNumber": null,
+      "parentWorkId": null,
+      "createdAt": "2025-07-18T03:29:52.557Z",
+      "updatedAt": "2025-07-28T01:05:32.469Z",
+      "subtitle": null,
+      "imslpTags": [
+        "Composers",
+        "People",
+        "People by nationality",
+        "WIMA files",
+        "People with recordings&memberitst=Recordings",
+        "Performers",
+        "Pages with commercial recordings",
+        "Pages with parts for purchase&simplesubcat=1&launchtab=parts",
+        "Pieces&transclude=Template:Catintro",
+        "For organ&transclude=Template:Catintro",
+        "Scores featuring the organ&transclude=Template:Catintro",
+        "For 1 player&transclude=Template:Catintro",
+        "Fauré, Gabriel",
+        "Bonnet, Joseph",
+        "Bach, Johann Sebastian",
+        "Baroque",
+        "Baroque style",
+        "Fauré, Gabriel/Editor",
+        "Scores published by Durand",
+        "Sibley Mirroring Project",
+        "Bonnet, Joseph/Editor",
+        "Scores",
+        "Bach, Johann Sebastian/Collections",
+        "Pieces",
+        "For organ",
+        "Scores featuring the organ",
+        "For 1 player",
+        "Works first published in 1916",
+        "Works first published in the 20th century",
+        "Bach, Johann Sebastian/Collected Works"
+      ],
+      "spotifyTrackId": null,
+      "spotifyTrackUrl": null,
+      "spotifyDisplayTitle": null,
+      "spotifyDuration": null,
+      "spotifyArtists": [],
+      "spotifyThumbnail": null,
+      "youtubeVideoId": null,
+      "youtubeVideoUrl": null,
+      "youtubeTitle": null,
+      "customAudioUrl": null,
+      "customAudioFile": null,
+      "customAudioSource": null,
+      "customAudioMetadata": null,
+      "mediaSource": null,
+      "lastMediaSearch": null,
+      "mediaSearchError": null,
+      "videoAulaUrl": null,
+      "videoAulaFile": null,
+      "videoAulaTitle": null,
+      "videoAulaType": null,
+      "videoAulaSource": null,
+      "videoAulaAddedBy": null,
+      "videoAulaAddedAt": null,
+      "videoAulaMetadata": null,
+      "imslpDifficultyLevel": null,
+      "imslpDifficultySystem": null,
+      "imslpDifficultyRating": null,
+      "imslpSourceId": null,
+      "verificationStatus": null,
+      "verifiedBy": null,
+      "verifiedAt": null,
+      "isVerified": false,
+      "createdBy": null,
+      "isCustom": false,
+      "lastEditedBy": null,
+      "lastEditedAt": null,
+      "editHistory": null,
+      "difficultyLevel": "INTERMEDIATE",
+      "difficultySystem": null,
+      "difficultyRating": null,
+      "difficultySourceId": null,
+      "annotationsCount": 0,
+      "helpfulAnnotationsCount": 0,
+      "lastAnnotationAt": null,
+      "composer": {
+        "id": "685d8f9a8803000f9b61d151",
+        "name": "Bach",
+        "fullName": "Johann Sebastian Bach",
+        "epochName": "Barroco"
+      },
+      "epoch": {
+        "id": "685d59e11e3db0c5aaa8942d",
+        "name": "Barroco"
+      },
+      "instrument": {
+        "id": "686024a90b6936a3c6cf4454",
+        "name": "Órgão"
+      },
+      "_count": {
+        "favoriteBy": 0
+      }
+    }
+  ],
+  "workScores": [],
+  "users": [
+    {
+      "id": "688cdfd7cc5e99751f75a76f",
+      "firstName": "iago_martins",
+      "lastName": "",
+      "username": "iago_martins",
+      "email": "admin@email.com",
+      "emailVerified": "2025-08-01T16:28:51.109Z",
+      "hashedPassword": "$2b$12$WyYlR5TuJ1DH2Wp/82KMeetyJ5BFY6MeeFlwZOcKS0v8RSLiVxgLG",
+      "image": "",
+      "bio": null,
+      "createdAt": "2025-08-01T15:40:07.873Z",
+      "updatedAt": "2025-09-02T04:49:46.100Z",
+      "role": 2,
+      "userType": "MUSIC_STUDENT",
+      "onboardingCompleted": true,
+      "city": "Acrelândia",
+      "state": "Acre",
+      "country": "Brazil",
+      "phone": "+5511988598530",
+      "phoneCountryCode": null,
+      "phoneNumber": "988598530",
+      "favoriteComposerId": null,
+      "favoriteEpochId": null,
+      "experienceLevel": "BEGINNER",
+      "practiceTimePerWeek": null,
+      "profilePublic": true,
+      "showLocation": false,
+      "helpfulAnnotationsCount": 0,
+      "totalAnnotationsCount": 1,
+      "totalXP": 0,
+      "totalUploads": 0,
+      "uploadScore": 0,
+      "isTeacher": false,
+      "isStudent": false
+    }
+  ],
+  "metadata": {
+    "extractedAt": "2025-09-10T20:51:50.566Z",
+    "totalComposers": 14,
+    "totalWorks": 25,
+    "totalScores": 0,
+    "note": "Dados extraídos para melhorar mocks durante build time"
+  }
+}
