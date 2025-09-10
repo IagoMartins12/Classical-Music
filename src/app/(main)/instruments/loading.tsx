@@ -123,7 +123,7 @@ export default function InstrumentsLoading() {
       ></div>
 
       {/* Loading indicator */}
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-30">
+      {/* <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-30">
         <div className="classical-card px-6 py-3">
           <div className="flex items-center space-x-3">
             <div className="w-5 h-5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
@@ -132,7 +132,7 @@ export default function InstrumentsLoading() {
             </span>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* CSS for animations */}
       <style jsx>{`
