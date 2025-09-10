@@ -312,7 +312,7 @@ const Navbar: React.FC = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
-            <div className="relative hidden sm:block">
+            <div className="relative block">
               <GiGrandPiano className="w-8 h-8 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
             </div>
             <span className="text-xl font-bold text-gradient-brand classical-title">

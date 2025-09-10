@@ -64,7 +64,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: 'Opus Atlas',
       images: [
         {
-          url: '/https://opusatlas.com.br/logo-opus-atlas.jpeg',
+          url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
           width: 1200,
           height: 630,
           alt: 'Opus Atlas - Classical Music Encyclopedia',
@@ -73,7 +73,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      images: ['/https://opusatlas.com.br/logo-opus-atlas.jpeg'],
+      images: ['https://opusatlas.com.br/logo-opus-atlas.jpeg'],
       title: t.title,
       description: t.description,
     },

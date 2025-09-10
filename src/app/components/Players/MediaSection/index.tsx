@@ -603,7 +603,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     <AnimatedCard hover="lift" className="classical-card overflow-hidden">
       {/* Header da Seção */}
       <div className="p-2 md:p-8 pb-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row  items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
               <FiMusic className="w-5 h-5 text-theme-primary" />
@@ -619,7 +619,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           </div>
 
           {/* Botões de Ação */}
-          <div className="flex items-center space-x-3">
+          <div className="flex mt-4 md:mt-0 items-start md:items-center space-x-3">
             {canEditMedia && (
               <Button
                 variant="secondary"
