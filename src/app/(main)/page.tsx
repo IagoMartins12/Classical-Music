@@ -242,9 +242,9 @@ export async function generateMetadata(): Promise<Metadata> {
       url: baseUrl,
       images: [
         {
-          url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
-          width: 1200,
-          height: 630,
+          url: 'https://opusatlas.com.br/logo-opus-atlas-mini.jpeg',
+          width: 400,
+          height: 400,
           alt:
             language === 'pt'
               ? 'Opus Atlas - Enciclopédia de Música Clássica'
@@ -263,7 +263,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: t.twitterDescription,
       images: [
         {
-          url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
+          url: 'https://opusatlas.com.br/logo-opus-atlas-mini.jpeg',
           alt:
             language === 'pt'
               ? 'Opus Atlas - Partituras Gratuitas de Música Clássica'

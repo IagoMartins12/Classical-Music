@@ -2,7 +2,6 @@
 import HeroMainPage from '../components/HeroMainPage';
 import PopularComposers from '../components/PopularComposers';
 import EssentialComposers from '../components/EssentialComposers';
-
 import {
   getEpochsCache,
   getRecomendadedComposers,
