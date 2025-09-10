@@ -14,7 +14,7 @@ const inter = Inter({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const lang = await getServerLanguageStatic();
+  const language = await getServerLanguageStatic();
 
   const content = {
     pt: {
@@ -29,6 +29,9 @@ export async function generateMetadata(): Promise<Metadata> {
         'piano',
         'estudo musical',
       ],
+      ogTitle: 'Opus Atlas - Enciclopédia Musical Gratuita',
+      ogDescription:
+        'Democratizando o acesso à música clássica com partituras gratuitas de grandes mestres como Chopin, Bach, Beethoven e Mozart.',
     },
     en: {
       title: 'Opus Atlas - Classical Music Encyclopedia',
@@ -42,10 +45,13 @@ export async function generateMetadata(): Promise<Metadata> {
         'piano',
         'music study',
       ],
+      ogTitle: 'Opus Atlas - Free Musical Encyclopedia',
+      ogDescription:
+        'Democratizing access to classical music with free sheet music from great masters like Chopin, Bach, Beethoven and Mozart.',
     },
   };
 
-  const t = content[lang] || content.pt;
+  const t = content[language] || content.pt;
 
   return {
     title: {
@@ -57,10 +63,14 @@ export async function generateMetadata(): Promise<Metadata> {
     authors: [{ name: 'Opus Atlas Team' }],
     creator: 'Opus Atlas',
     openGraph: {
+      title: t.ogTitle,
+      description: t.ogDescription,
       type: 'website',
-      locale: lang === 'pt' ? 'pt_BR' : 'en_US',
+      locale: language === 'pt' ? 'pt_BR' : 'en_US',
       url:
-        lang === 'pt' ? 'https://opusatlas.com.br' : 'https://opusatlas.com/en',
+        language === 'pt'
+          ? 'https://opusatlas.com.br'
+          : 'https://opusatlas.com',
       siteName: 'Opus Atlas',
       images: [
         {
@@ -73,18 +83,26 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
+      title: t.ogTitle,
+      description: t.ogDescription,
       images: ['https://opusatlas.com.br/logo-opus-atlas.jpeg'],
-      title: t.title,
-      description: t.description,
     },
-
     robots: {
       index: true,
       follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
     alternates: {
       canonical:
-        lang === 'pt' ? 'https://opusatlas.com.br' : 'https://opusatlas.com',
+        language === 'pt'
+          ? 'https://opusatlas.com.br'
+          : 'https://opusatlas.com',
       languages: {
         'pt-BR': 'https://opusatlas.com.br',
         'en-US': 'https://opusatlas.com',
@@ -125,7 +143,7 @@ export default function RootLayout({
           <AuthProvider>{children}</AuthProvider>
         </ClientThemeWrapper>
 
-        {/* Umami Analytics - Movido para o body */}
+        {/* Umami Analytics */}
         <Script
           src="https://analytics.opusatlas.com.br/analytics"
           data-website-id="f3475284-e507-4e7e-af4a-3a1ecd932652"
