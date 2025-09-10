@@ -88,11 +88,23 @@ export async function generateMetadata(): Promise<Metadata> {
           ? 'https://opusatlas.com.br/copyright'
           : 'https://opusatlas.com.br/copyright',
       siteName: 'Opus Atlas',
+      images: [
+        {
+          url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
+          width: 1200,
+          height: 630,
+          alt:
+            language === 'pt'
+              ? 'Sobre o Opus Atlas - Enciclopédia Musical'
+              : 'About Opus Atlas - Musical Encyclopedia',
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: t.ogTitle,
       description: t.ogDescription,
+      images: ['https://opusatlas.com.br/logo-opus-atlas.jpeg'],
     },
     robots: {
       index: true,
