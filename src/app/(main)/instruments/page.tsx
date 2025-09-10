@@ -102,8 +102,8 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [
         {
           url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
-          width: 1200,
-          height: 630,
+          width: 400,
+          height: 400,
           alt:
             language === 'pt'
               ? 'Instrumentos Clássicos Históricos'
