@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { FiShare2, FiCopy, FiCheck, FiX } from 'react-icons/fi';
 import { FaWhatsapp, FaTwitter, FaTelegram, FaFacebook } from 'react-icons/fa';
 import Input from '../Common/Inputs';
-import { useTranslation } from '@/app/context/TranslationContext';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ShareButtonProps {
   url?: string;
