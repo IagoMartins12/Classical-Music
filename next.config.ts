@@ -8,11 +8,19 @@ const nextConfig: NextConfig = {
   trailingSlash: false,
 
   images: {
+    // Permitir domínios não otimizados (menos seguro mas mais flexível)
+    unoptimized: false,
+
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'opusatlas.com.br',
         pathname: '/uploads/**',
+      },
+      // Wildcard para permitir qualquer HTTPS (menos seguro)
+      {
+        protocol: 'https',
+        hostname: '**',
       },
     ],
   },
