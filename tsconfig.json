@@ -27,7 +27,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "scripts/imslp-scrape..js"
+    "scripts/imslp-scrape..js",
+    "src/app/libs/prismadb.ts"
   ],
   "exclude": ["node_modules"]
 }
