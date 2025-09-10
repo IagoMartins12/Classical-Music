@@ -93,7 +93,7 @@ export async function generateMetadata({
       siteName: 'Opus Atlas',
       images: [
         {
-          url: '/images/og/teacher-profile.jpg',
+          url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
           width: 1200,
           height: 630,
           alt:

@@ -242,7 +242,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url: baseUrl,
       images: [
         {
-          url: 'https://opusatlas.com.br/images/og/opus-atlas-home.jpg',
+          url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
           width: 1200,
           height: 630,
           alt:
@@ -263,7 +263,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: t.twitterDescription,
       images: [
         {
-          url: 'https://opusatlas.com.br/images/og/opus-atlas-home.jpg',
+          url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
           alt:
             language === 'pt'
               ? 'Opus Atlas - Partituras Gratuitas de Música Clássica'
