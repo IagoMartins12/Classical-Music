@@ -225,7 +225,8 @@ export default async function RootLayout({
           name="google-site-verification"
           content="XC9v3XyFFCT6IhoCOH1NuuhJBju232tXhlZDCcNEiFU"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link
           rel="icon"
           type="image/png"
@@ -238,11 +239,12 @@ export default async function RootLayout({
           sizes="16x16"
           href="/favicon-16x16.png"
         />
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/apple-touch-icon.png"
-        />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
+
+        {/* Meta adicional para favicons */}
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <ClientThemeWrapper>

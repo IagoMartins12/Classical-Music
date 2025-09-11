@@ -193,14 +193,6 @@ const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
     isAuthenticated && !user?.onboardingCompleted;
   const shouldRenderGoogleHandler = true; // Sempre necessário para detectar retornos
 
-  console.log('🎯 AuthProvider - Renderização condicional:', {
-    isAuthenticated,
-    onboardingCompleted: user?.onboardingCompleted,
-    shouldRenderAuthModals,
-    shouldRenderOnboardingModals,
-    isHydrated,
-  });
-
   if (!isHydrated) {
     // Renderizar apenas estrutura básica durante hidratação
     return (

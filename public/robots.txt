@@ -1,12 +1,55 @@
+# public/robots.txt - Atualizado para sitemap dinâmico
+
+# NOTICE: The collection of content and other data on this
+# site through automated means, including any device, tool,
+# or process designed to data mine or scrape content, is
+# prohibited except (1) for the purpose of search engine indexing or
+# artificial intelligence retrieval augmented generation or (2) with express
+# written permission from this site's operator.
+
+# To request permission to license our intellectual
+# property and/or other materials, please contact this
+# site's operator directly.
+
+# BEGIN Cloudflare Managed content
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+
+# END Cloudflare Managed Content
+
 User-agent: *
 Allow: /
 
-# Bloquear se necessário
+# Bloquear áreas privadas
 Disallow: /api/auth/
 Disallow: /_next/static/
+Disallow: /admin/
+Disallow: /dashboard/
 
-# Sitemap
-Sitemap: https://opusatlas.com.br/sitemap.xml
+# Sitemap dinâmico (ATUALIZADO)
+Sitemap: https://opusatlas.com.br/api/sitemap.xml
 
 # Configurações específicas
 User-agent: Googlebot
@@ -16,3 +59,11 @@ Crawl-delay: 1
 User-agent: Bingbot  
 Allow: /
 Crawl-delay: 2
+
+# Performance - permitir recursos estáticos
+User-agent: *
+Allow: /favicon.ico
+Allow: /logo*.png
+Allow: /images/
+Allow: /_next/image
+Allow: /fonts/
