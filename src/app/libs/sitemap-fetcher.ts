@@ -1,4 +1,4 @@
-// app/libs/sitemap-fetcher.ts - Buscar dados reais do banco para sitemap
+// app/libs/sitemap-fetcher.ts - Buscar dados reais do banco para sitemap (tipos corrigidos)
 import prisma from '@/app/libs/prismadb';
 import { cacheHelper } from './redis';
 
@@ -15,7 +15,15 @@ export interface SitemapWork {
   updatedAt: Date;
 }
 
+export interface StaticUrl {
+  path: string;
+  lastModified: string;
+  changeFreq: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  priority: number;
+}
+
 export interface SitemapData {
+  staticUrls: StaticUrl[];
   composers: SitemapComposer[];
   works: SitemapWork[];
   totalCount: number;
@@ -31,6 +39,82 @@ const CACHE_KEYS = {
 
 // Cache TTL (10 minutos)
 const CACHE_TTL = 600;
+
+// URLs estáticas do site
+const STATIC_URLS: StaticUrl[] = [
+  {
+    path: '',
+    lastModified: new Date().toISOString(),
+    changeFreq: 'daily',
+    priority: 1,
+  },
+  {
+    path: '/works',
+    lastModified: new Date().toISOString(),
+    changeFreq: 'daily',
+    priority: 0.9,
+  },
+  {
+    path: '/composers',
+    lastModified: new Date().toISOString(),
+    changeFreq: 'weekly',
+    priority: 0.9,
+  },
+  {
+    path: '/instruments',
+    lastModified: new Date().toISOString(),
+    changeFreq: 'weekly',
+    priority: 0.8,
+  },
+  {
+    path: '/genres',
+    lastModified: new Date().toISOString(),
+    changeFreq: 'weekly',
+    priority: 0.8,
+  },
+  {
+    path: '/learning',
+    lastModified: new Date().toISOString(),
+    changeFreq: 'weekly',
+    priority: 0.8,
+  },
+  {
+    path: '/music-history',
+    lastModified: new Date().toISOString(),
+    changeFreq: 'monthly',
+    priority: 0.7,
+  },
+  {
+    path: '/teachers',
+    lastModified: new Date().toISOString(),
+    changeFreq: 'weekly',
+    priority: 0.7,
+  },
+  {
+    path: '/about-us',
+    lastModified: new Date().toISOString(),
+    changeFreq: 'monthly',
+    priority: 0.6,
+  },
+  {
+    path: '/contact',
+    lastModified: new Date().toISOString(),
+    changeFreq: 'monthly',
+    priority: 0.6,
+  },
+  {
+    path: '/help',
+    lastModified: new Date().toISOString(),
+    changeFreq: 'monthly',
+    priority: 0.6,
+  },
+  {
+    path: '/faq',
+    lastModified: new Date().toISOString(),
+    changeFreq: 'monthly',
+    priority: 0.5,
+  },
+];
 
 /**
  * Buscar compositores famosos para sitemap
@@ -210,9 +294,10 @@ export async function getCompleteSitemapData(): Promise<SitemapData> {
     ]);
 
     const sitemapData: SitemapData = {
+      staticUrls: STATIC_URLS,
       composers,
       works,
-      totalCount: composers.length + works.length,
+      totalCount: STATIC_URLS.length + composers.length + works.length,
       lastUpdated: new Date(),
     };
 
@@ -228,9 +313,10 @@ export async function getCompleteSitemapData(): Promise<SitemapData> {
 
     // Fallback minimalista
     return {
+      staticUrls: STATIC_URLS,
       composers: [],
       works: [],
-      totalCount: 0,
+      totalCount: STATIC_URLS.length,
       lastUpdated: new Date(),
     };
   }
@@ -268,9 +354,9 @@ export async function checkSitemapCacheHealth(): Promise<{
     const redisHealth = await cacheHelper.ping();
 
     const cacheKeys = {
-      composers: await cacheHelper.exists(CACHE_KEYS.composers),
-      works: await cacheHelper.exists(CACHE_KEYS.works),
-      complete: await cacheHelper.exists(CACHE_KEYS.complete),
+      composers: !!(await cacheHelper.get(CACHE_KEYS.composers)),
+      works: !!(await cacheHelper.get(CACHE_KEYS.works)),
+      complete: !!(await cacheHelper.get(CACHE_KEYS.complete)),
     };
 
     let stats = null;

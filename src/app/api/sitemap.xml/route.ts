@@ -1,297 +1,156 @@
-// app/api/sitemap.xml/route.ts - API dinâmica para sitemap
+// app/api/sitemap.xml/route.ts - API dinâmica para sitemap (URLs corrigidas)
 import { NextRequest, NextResponse } from 'next/server';
 import { getCompleteSitemapData } from '@/app/libs/sitemap-fetcher';
+
+// Detectar baseURL correto baseado no environment/headers
+function getBaseUrl(request: NextRequest): string {
+  // Em produção, usar sempre o domínio oficial
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://opusatlas.com.br';
+  }
+
+  // Em desenvolvimento, tentar detectar da requisição
+  const host = request.headers.get('host');
+  const protocol = request.headers.get('x-forwarded-proto') || 'http';
+
+  if (host) {
+    return `${protocol}://${host}`;
+  }
+
+  // Fallback para desenvolvimento local
+  return 'http://localhost:3000';
+}
 
 // Configurar headers para XML
 const XML_HEADERS = {
   'Content-Type': 'application/xml; charset=utf-8',
-  'Cache-Control': 'public, max-age=600, stale-while-revalidate=1800', // Cache 10min, stale 30min
-} as const;
+  'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=1800', // Cache 10 min
+};
 
-/**
- * Gerar sitemap XML dinâmico
- * GET /api/sitemap.xml
- */
-export async function GET(): Promise<NextResponse> {
+export async function GET(request: NextRequest) {
+  const start = Date.now();
+
   try {
-    const startTime = Date.now();
-    console.log('🌍 Generating dynamic sitemap...');
+    // Detectar baseURL correto
+    const baseUrl = getBaseUrl(request);
+    console.log(`🔗 Using baseURL: ${baseUrl}`);
 
-    // Buscar dados do banco/cache
-    const sitemapData = await getCompleteSitemapData();
-
-    // Base URL dinâmica (para development/production)
-    const baseUrl = process.env.NEXTAUTH_URL || 'https://opusatlas.com.br';
-
-    // URLs estáticas (sempre incluídas)
-    const staticUrls = [
-      {
-        url: baseUrl,
-        lastmod: new Date().toISOString(),
-        changefreq: 'daily',
-        priority: 1.0,
-      },
-      {
-        url: `${baseUrl}/works`,
-        lastmod: new Date().toISOString(),
-        changefreq: 'daily',
-        priority: 0.9,
-      },
-      {
-        url: `${baseUrl}/composers`,
-        lastmod: new Date().toISOString(),
-        changefreq: 'weekly',
-        priority: 0.9,
-      },
-      {
-        url: `${baseUrl}/instruments`,
-        lastmod: new Date().toISOString(),
-        changefreq: 'weekly',
-        priority: 0.8,
-      },
-      {
-        url: `${baseUrl}/genres`,
-        lastmod: new Date().toISOString(),
-        changefreq: 'weekly',
-        priority: 0.8,
-      },
-      {
-        url: `${baseUrl}/learning`,
-        lastmod: new Date().toISOString(),
-        changefreq: 'weekly',
-        priority: 0.8,
-      },
-      {
-        url: `${baseUrl}/music-history`,
-        lastmod: new Date().toISOString(),
-        changefreq: 'monthly',
-        priority: 0.7,
-      },
-      {
-        url: `${baseUrl}/teachers`,
-        lastmod: new Date().toISOString(),
-        changefreq: 'weekly',
-        priority: 0.7,
-      },
-      {
-        url: `${baseUrl}/about-us`,
-        lastmod: new Date().toISOString(),
-        changefreq: 'monthly',
-        priority: 0.6,
-      },
-      {
-        url: `${baseUrl}/contact`,
-        lastmod: new Date().toISOString(),
-        changefreq: 'monthly',
-        priority: 0.6,
-      },
-      {
-        url: `${baseUrl}/help`,
-        lastmod: new Date().toISOString(),
-        changefreq: 'monthly',
-        priority: 0.6,
-      },
-      {
-        url: `${baseUrl}/faq`,
-        lastmod: new Date().toISOString(),
-        changefreq: 'monthly',
-        priority: 0.5,
-      },
-    ];
-
-    // URLs dinâmicas de compositores
-    const composerUrls = sitemapData.composers.map((composer) => ({
-      url: `${baseUrl}/composer/${composer.id}`,
-      lastmod: composer.updatedAt.toISOString(),
-      changefreq: 'monthly',
-      priority: 0.8,
-    }));
-
-    // URLs dinâmicas de obras
-    const workUrls = sitemapData.works.map((work) => ({
-      url: `${baseUrl}/work/${work.id}`,
-      lastmod: work.updatedAt.toISOString(),
-      changefreq: 'monthly',
-      priority: 0.7,
-    }));
-
-    // Combinar todas as URLs
-    const allUrls = [...staticUrls, ...composerUrls, ...workUrls];
-
-    // Gerar XML do sitemap
-    const xml = generateSitemapXML(allUrls, sitemapData.lastUpdated);
-
-    const endTime = Date.now();
-    const duration = endTime - startTime;
-
-    console.log(`✅ Dynamic sitemap generated:`);
-    console.log(`   📊 Total URLs: ${allUrls.length}`);
-    console.log(`   📂 Static: ${staticUrls.length}`);
-    console.log(`   👨‍🎼 Composers: ${composerUrls.length}`);
-    console.log(`   🎵 Works: ${workUrls.length}`);
-    console.log(`   ⏱️  Duration: ${duration}ms`);
-
-    // Retornar XML com headers corretos
-    return new NextResponse(xml, {
-      status: 200,
-      headers: {
-        ...XML_HEADERS,
-        'X-Generated-At': new Date().toISOString(),
-        'X-Total-URLs': allUrls.length.toString(),
-        'X-Generation-Time': `${duration}ms`,
-      },
-    });
-  } catch (error) {
-    console.error('❌ Error generating dynamic sitemap:', error);
-
-    // Fallback para sitemap básico em caso de erro
-    const baseUrl = process.env.NEXTAUTH_URL || 'https://opusatlas.com.br';
-    const fallbackXml = generateFallbackSitemap(baseUrl);
-
-    return new NextResponse(fallbackXml, {
-      status: 200, // Sempre retornar 200 para não quebrar SEO
-      headers: {
-        ...XML_HEADERS,
-        'X-Fallback': 'true',
-        'X-Error': 'Dynamic generation failed',
-      },
-    });
-  }
-}
-
-/**
- * Gerar XML do sitemap com formatação correta
- */
-function generateSitemapXML(
-  urls: Array<{
-    url: string;
-    lastmod: string;
-    changefreq: string;
-    priority: number;
-  }>,
-  lastUpdated: Date
-): string {
-  const xmlDeclaration = '<?xml version="1.0" encoding="UTF-8"?>';
-
-  const urlsetOpen = `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
-
-  const urlEntries = urls
-    .map(
-      (entry) => `  <url>
-    <loc>${escapeXml(entry.url)}</loc>
-    <lastmod>${entry.lastmod}</lastmod>
-    <changefreq>${entry.changefreq}</changefreq>
-    <priority>${entry.priority}</priority>
-  </url>`
-    )
-    .join('\n');
-
-  const urlsetClose = '</urlset>';
-
-  // XML comment com metadados
-  const comment = `<!--
-  Opus Atlas - Dynamic Sitemap
-  Generated: ${lastUpdated.toISOString()}
-  Total URLs: ${urls.length}
-  Generator: Next.js API Route with Redis Cache
--->`;
-
-  return [xmlDeclaration, comment, urlsetOpen, urlEntries, urlsetClose].join(
-    '\n'
-  );
-}
-
-/**
- * Sitemap de fallback em caso de erro
- */
-function generateFallbackSitemap(baseUrl: string): string {
-  const fallbackUrls = [
-    {
-      url: baseUrl,
-      lastmod: new Date().toISOString(),
-      changefreq: 'daily',
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/works`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/composers`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/instruments`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/about-us`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'monthly',
-      priority: 0.6,
-    },
-  ];
-
-  return generateSitemapXML(fallbackUrls, new Date());
-}
-
-/**
- * Escapar caracteres especiais para XML
- */
-function escapeXml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-}
-
-/**
- * Health check para a API de sitemap
- * GET /api/sitemap.xml?health=true
- */
-export async function HEAD(request: NextRequest): Promise<NextResponse> {
-  try {
-    // Quick health check sem gerar XML completo
-    const url = new URL(request.url);
-    const isHealthCheck = url.searchParams.get('health') === 'true';
-
+    // Health check para debug
+    const isHealthCheck = request.nextUrl.searchParams.get('health') === 'true';
     if (isHealthCheck) {
-      const startTime = Date.now();
-      const sitemapData = await getCompleteSitemapData();
-      const endTime = Date.now();
-
-      return new NextResponse(null, {
-        status: 200,
-        headers: {
-          'X-Health': 'OK',
-          'X-Total-URLs': sitemapData.totalCount.toString(),
-          'X-Response-Time': `${endTime - startTime}ms`,
-          'X-Last-Updated': sitemapData.lastUpdated.toISOString(),
+      return NextResponse.json(
+        {
+          status: 'ok',
+          baseUrl,
+          timestamp: new Date().toISOString(),
+          environment: process.env.NODE_ENV,
+          redis_configured: !!process.env.REDIS_HOST,
         },
-      });
+        {
+          headers: { 'Cache-Control': 'no-cache' },
+        }
+      );
     }
 
-    // HEAD request normal - retornar headers sem body
-    return new NextResponse(null, {
+    // Buscar dados do sitemap
+    console.log('📊 Fetching sitemap data...');
+    const sitemapData = await getCompleteSitemapData();
+
+    console.log(`📈 Sitemap stats:`, {
+      staticUrls: sitemapData.staticUrls.length,
+      composers: sitemapData.composers.length,
+      works: sitemapData.works.length,
+      total:
+        sitemapData.staticUrls.length +
+        sitemapData.composers.length +
+        sitemapData.works.length,
+    });
+
+    // Gerar XML do sitemap
+    const currentDate = new Date().toISOString();
+    const totalUrls =
+      sitemapData.staticUrls.length +
+      sitemapData.composers.length +
+      sitemapData.works.length;
+
+    const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Opus Atlas - Dynamic Sitemap
+  Generated: ${currentDate}
+  Total URLs: ${totalUrls}
+  Base URL: ${baseUrl}
+  Generator: Next.js API Route with Redis Cache
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapData.staticUrls
+  .map(
+    (url) => `  <url>
+    <loc>${baseUrl}${url.path}</loc>
+    <lastmod>${url.lastModified}</lastmod>
+    <changefreq>${url.changeFreq}</changefreq>
+    <priority>${url.priority}</priority>
+  </url>`
+  )
+  .join('\n')}
+${sitemapData.composers
+  .map(
+    (composer) => `  <url>
+    <loc>${baseUrl}/composer/${composer.id}</loc>
+    <lastmod>${composer.updatedAt}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>`
+  )
+  .join('\n')}
+${sitemapData.works
+  .map(
+    (work) => `  <url>
+    <loc>${baseUrl}/work/${work.id}</loc>
+    <lastmod>${work.updatedAt}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`
+  )
+  .join('\n')}
+</urlset>`;
+
+    const duration = Date.now() - start;
+    console.log(`✅ Sitemap generated in ${duration}ms with ${totalUrls} URLs`);
+
+    return new NextResponse(xmlContent, {
       status: 200,
       headers: XML_HEADERS,
     });
   } catch (error) {
-    console.error('❌ Sitemap health check failed:', error);
-    return new NextResponse(null, {
-      status: 500,
-      headers: {
-        'X-Health': 'ERROR',
-        'X-Error': 'Health check failed',
-      },
+    console.error('❌ Sitemap generation error:', error);
+
+    // Fallback: sitemap mínimo com URLs estáticas
+    const baseUrl = getBaseUrl(request);
+    const fallbackXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${baseUrl}</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/works</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/composers</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+</urlset>`;
+
+    return new NextResponse(fallbackXml, {
+      status: 200,
+      headers: XML_HEADERS,
     });
   }
 }
