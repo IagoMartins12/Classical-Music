@@ -249,7 +249,28 @@ export default async function RootLayout({
           <AuthProvider>{children}</AuthProvider>
         </ClientThemeWrapper>
 
-        {/* Analytics */}
+        {/* 🆕 Google Analytics 4 */}
+        {process.env.NODE_ENV === 'production' && (
+          <>
+            <Script
+              src="https://www.googletagmanager.com/gtag/js?id=G-W2993PXTWQ"
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-W2993PXTWQ', {
+                  page_title: document.title,
+                  page_location: window.location.href,
+                });
+              `}
+            </Script>
+          </>
+        )}
+
+        {/* Umami Analytics */}
         {process.env.NODE_ENV === 'production' && (
           <Script
             src="https://analytics.opusatlas.com.br/analytics"
