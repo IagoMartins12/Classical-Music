@@ -1,25 +1,71 @@
-// app/libs/prismadb.ts - SOLUÇÃO UNIVERSAL COM MOCKS ULTRA REALISTAS
+// app/libs/prismadb.ts - SOLUÇÃO CORRIGIDA PARA BUILD TIME vs RUNTIME
 import { PrismaClient } from '@prisma/client';
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-// DETECÇÃO DE BUILD TIME
-const IS_BUILD_TIME =
-  process.env.DATABASE_URL?.includes('build:build@localhost') ||
-  (process.env.NODE_ENV === 'production' &&
-    typeof window === 'undefined' &&
-    !process.env.VERCEL);
+// 🔧 DETECÇÃO PRECISA DE BUILD TIME vs RUNTIME
+const IS_BUILD_TIME = (() => {
+  // 1. Verificar NEXT_PHASE (mais confiável)
+  if (
+    process.env.NEXT_PHASE === 'phase-production-build' ||
+    process.env.NEXT_PHASE === 'phase-development-server'
+  ) {
+    return true;
+  }
 
-// DADOS MOCK BÁSICOS PARA BUILD TIME
+  // 2. Verificar argumentos do processo
+  const buildCommands = ['build', 'next build'];
+  const haseBuildArg = process.argv.some((arg) =>
+    buildCommands.some((cmd) => arg.includes(cmd))
+  );
+  if (haseBuildArg) {
+    return true;
+  }
+
+  // 3. Verificar DATABASE_URL fake (backup)
+  if (process.env.DATABASE_URL?.includes('build:build@localhost')) {
+    return true;
+  }
+
+  // 4. Verificar se está no processo de build do Next.js
+  if (
+    process.env.NODE_ENV === 'production' &&
+    typeof window === 'undefined' &&
+    !process.env.VERCEL &&
+    !(global as any).prismaConnected
+  ) {
+    // Flag adicional
+
+    // Verificar se consegue conectar com o banco real
+    // Se não conseguir, provavelmente é build time
+    try {
+      // Tentativa rápida de conexão (sem criar client completo)
+      const dbUrl = process.env.DATABASE_URL || '';
+      if (
+        dbUrl.includes('localhost:27017') ||
+        dbUrl.includes('opus-atlas-mongodb-prod:27017')
+      ) {
+        // Se parece com URL real, assumir que é runtime
+        (global as any).prismaConnected = true;
+        return false;
+      }
+    } catch {
+      // Se der erro na verificação, assumir build time
+      return true;
+    }
+  }
+
+  return false;
+})();
+
+// Dados mock (mantendo os mesmos dados que você já tem)
 const EMPTY_RESULT: any[] = [];
 const EMPTY_COUNT = 0;
 const EMPTY_OBJECT = null;
 
-// 🎯 MOCKS ULTRA REALISTAS baseados nos seus dados reais
-
-// ÉPOCAS REAIS
+// 🎯 MOCKS ULTRA REALISTAS (mantendo os existentes)
 const MOCK_EPOCHS = [
   { id: '685d59e11e3db0c5aaa8942d', name: 'Barroco' },
   { id: '685d59eb1e3db0c5aaa89435', name: 'Clássico' },
@@ -30,7 +76,6 @@ const MOCK_EPOCHS = [
   { id: '685d59f31e3db0c5aaa89439', name: 'Romântico' },
 ];
 
-// INSTRUMENTOS REAIS (principais)
 const MOCK_INSTRUMENTS = [
   { id: '685ef4b5a249f2a204023458', name: 'Piano', category: null },
   { id: '686024a90b6936a3c6cf4454', name: 'Órgão', category: null },
@@ -44,7 +89,6 @@ const MOCK_INSTRUMENTS = [
   { id: '6860a4270b6936a3c6cf5e46', name: 'Bandolim', category: null },
 ];
 
-// ROLES REAIS
 const MOCK_ROLES = [
   { id: '685d591c1e3db0c5aaa893e4', name: 'Compositor' },
   { id: '685d59571e3db0c5aaa893fa', name: 'Arranjador' },
@@ -56,7 +100,6 @@ const MOCK_ROLES = [
   { id: '685d597b1e3db0c5aaa8940c', name: 'Tradutor' },
 ];
 
-// GÊNEROS DE OBRA REAIS
 const MOCK_WORK_GENRES = [
   {
     id: '686028450b6936a3c6cf4522',
@@ -76,51 +119,8 @@ const MOCK_WORK_GENRES = [
     createdAt: new Date('2025-06-28T17:22:31.268Z'),
     updatedAt: new Date('2025-06-28T17:22:31.269Z'),
   },
-  {
-    id: '68602fd50b6936a3c6cf46c2',
-    name: 'alemandas',
-    createdAt: new Date('2025-06-28T18:09:25.375Z'),
-    updatedAt: new Date('2025-06-28T18:09:25.377Z'),
-  },
-  {
-    id: '68603c0b0b6936a3c6cf4961',
-    name: 'allegrettos',
-    createdAt: new Date('2025-06-28T19:01:31.940Z'),
-    updatedAt: new Date('2025-06-28T19:01:31.941Z'),
-  },
-  {
-    id: '6860a5a10b6936a3c6cf5e91',
-    name: 'allegros',
-    createdAt: new Date('2025-06-29T02:32:01.281Z'),
-    updatedAt: new Date('2025-06-29T02:32:01.282Z'),
-  },
-  {
-    id: '6860378a0b6936a3c6cf486e',
-    name: 'andantes',
-    createdAt: new Date('2025-06-28T18:42:18.756Z'),
-    updatedAt: new Date('2025-06-28T18:42:18.757Z'),
-  },
-  {
-    id: '68603d570b6936a3c6cf49a6',
-    name: 'andantinos',
-    createdAt: new Date('2025-06-28T19:07:03.121Z'),
-    updatedAt: new Date('2025-06-28T19:07:03.123Z'),
-  },
-  {
-    id: '686026360b6936a3c6cf44b3',
-    name: 'ariettas',
-    createdAt: new Date('2025-06-28T17:28:22.939Z'),
-    updatedAt: new Date('2025-06-28T17:28:22.940Z'),
-  },
-  {
-    id: '68602e760b6936a3c6cf467c',
-    name: 'ariosos',
-    createdAt: new Date('2025-06-28T18:03:34.247Z'),
-    updatedAt: new Date('2025-06-28T18:03:34.248Z'),
-  },
 ];
 
-// COMPOSITORES REAIS (baseados nos seus dados)
 const MOCK_COMPOSERS = [
   {
     id: '685d8f9a8803000f9b61d151',
@@ -214,150 +214,8 @@ const MOCK_COMPOSERS = [
     primaryRole: { id: '685d591c1e3db0c5aaa893e4', name: 'Compositor' },
     _count: { works: 829 },
   },
-  {
-    id: '685f8b71c6bd886c5b4995fe',
-    name: 'Vivaldi',
-    fullName: 'Antonio Vivaldi',
-    alternativeNames: 'Antonio Lucio Vivaldi',
-    birthDate: '4 March 1678',
-    deathDate: '28 July 1741',
-    portraitUrl:
-      'https://imslp.org/images/thumb/1/1b/Antonio_Vivaldi.jpg/180px-Antonio_Vivaldi.jpg',
-    epochId: '685d59e11e3db0c5aaa8942d',
-    epochName: 'Barroco',
-    bio: 'Antonio Vivaldi (4 de março de 1678 - 28 de julho de 1741) foi um compositor, violinista e padre católico italiano do período Barroco.',
-    videoUrl: null,
-    permLinkImslp: 'https://imslp.org/wiki/Category:Vivaldi,_Antonio',
-    imslpId: 'Category:Vivaldi, Antonio',
-    wikipediaLink: 'https://en.wikipedia.org/wiki/Antonio_Vivaldi',
-    nationality: 'Italian',
-    instruments:
-      'Violin, Viola, Cello, Flute, Oboe, Bassoon, Horn, Trumpet, Organ, Bass',
-    imslpCategories:
-      'Composers, People from the Baroque era, Italian people, Male people',
-    pageQuality: 'high',
-    lastVerified: new Date('2025-06-28T06:28:01.693Z'),
-    dataCompleteness: 88,
-    hasValidImage: true,
-    createdBy: null,
-    isCustom: false,
-    dataQuality: null,
-    verificationStatus: 'verified',
-    verifiedBy: null,
-    verifiedAt: new Date('2025-07-10T20:06:00.848Z'),
-    dataSource: null,
-    isVerified: false,
-    verificationNotes: null,
-    lastEditedBy: null,
-    lastEditedAt: null,
-    editHistory: {
-      action: 'verified',
-      by: '6867dd6fcc0ebd96bc5b336f',
-      at: '2025-07-10T20:06:00.848Z',
-      notes: 'Verificado',
-      previous: null,
-    },
-    primaryRoleId: '685d591c1e3db0c5aaa893e4',
-    roles: null,
-    createdAt: new Date('2025-06-28T06:28:01.694Z'),
-    updatedAt: new Date('2025-09-02T21:43:44.849Z'),
-    epoch: { id: '685d59e11e3db0c5aaa8942d', name: 'Barroco' },
-    primaryRole: { id: '685d591c1e3db0c5aaa893e4', name: 'Compositor' },
-    _count: { works: 696 },
-  },
-  {
-    id: '685f4a93c6bd886c5b498cce',
-    name: 'Schubert',
-    fullName: 'Franz Schubert',
-    alternativeNames: 'Franz Peter Schubert',
-    birthDate: '31 January 1797',
-    deathDate: '19 November 1828',
-    portraitUrl:
-      'https://imslp.org/images/thumb/3/39/Schubert_HQ.JPG/180px-Schubert_HQ.JPG',
-    epochId: '685d59f31e3db0c5aaa89439',
-    epochName: 'Romântico',
-    bio: null,
-    videoUrl: null,
-    permLinkImslp: 'https://imslp.org/wiki/Category:Schubert,_Franz',
-    imslpId: 'Category:Schubert, Franz',
-    wikipediaLink: 'https://en.wikipedia.org/wiki/Franz_Schubert',
-    nationality: 'Austrian',
-    instruments:
-      'Piano, Violin, Cello, Flute, Viola, Double bass, Guitar, Organ, Voice, Soprano',
-    imslpCategories:
-      'Composers, People from the Romantic era, Austrian people, Male people',
-    pageQuality: 'high',
-    lastVerified: new Date('2025-06-28T01:51:15.919Z'),
-    dataCompleteness: 88,
-    hasValidImage: true,
-    createdBy: null,
-    isCustom: false,
-    dataQuality: null,
-    verificationStatus: null,
-    verifiedBy: null,
-    verifiedAt: null,
-    dataSource: null,
-    isVerified: false,
-    verificationNotes: null,
-    lastEditedBy: null,
-    lastEditedAt: null,
-    editHistory: null,
-    primaryRoleId: '685d591c1e3db0c5aaa893e4',
-    roles: '685d59571e3db0c5aaa893fa, 685d594a1e3db0c5aaa893f2',
-    createdAt: new Date('2025-06-28T01:51:15.920Z'),
-    updatedAt: new Date('2025-09-02T21:23:33.797Z'),
-    epoch: { id: '685d59f31e3db0c5aaa89439', name: 'Romântico' },
-    primaryRole: { id: '685d591c1e3db0c5aaa893e4', name: 'Compositor' },
-    _count: { works: 1061 },
-  },
-  {
-    id: '685e7ff8c6bd886c5b496e2a',
-    name: 'Haydn',
-    fullName: 'Joseph Haydn',
-    alternativeNames: 'Franz Joseph Haydn, Josef Haydn, Franz Josef Haydn',
-    birthDate: '31 March 1732',
-    deathDate: '31 May 1809',
-    portraitUrl:
-      'https://imslp.org/images/thumb/c/c6/J-haydn.jpg/180px-J-haydn.jpg',
-    epochId: '685d59eb1e3db0c5aaa89435',
-    epochName: 'Clássico',
-    bio: null,
-    videoUrl: null,
-    permLinkImslp: 'https://imslp.org/wiki/Category:Haydn,_Joseph',
-    imslpId: 'Category:Haydn, Joseph',
-    wikipediaLink: 'https://en.wikipedia.org/wiki/Joseph_Haydn',
-    nationality: 'Austrian',
-    instruments:
-      'Piano, Violin, Wind quintet, Viola, Cello, Double bass, Flute, Horn, Harp, Organ',
-    imslpCategories:
-      'Composers, People from the Classical era, Austrian people, Male people',
-    pageQuality: 'high',
-    lastVerified: new Date('2025-06-27T11:26:48.586Z'),
-    dataCompleteness: 88,
-    hasValidImage: true,
-    createdBy: null,
-    isCustom: false,
-    dataQuality: null,
-    verificationStatus: null,
-    verifiedBy: null,
-    verifiedAt: null,
-    dataSource: null,
-    isVerified: false,
-    verificationNotes: null,
-    lastEditedBy: null,
-    lastEditedAt: null,
-    editHistory: null,
-    primaryRoleId: '685d591c1e3db0c5aaa893e4',
-    roles: '685d59571e3db0c5aaa893fa',
-    createdAt: new Date('2025-06-27T11:26:48.588Z'),
-    updatedAt: new Date('2025-07-28T05:07:06.457Z'),
-    epoch: { id: '685d59eb1e3db0c5aaa89435', name: 'Clássico' },
-    primaryRole: { id: '685d591c1e3db0c5aaa893e4', name: 'Compositor' },
-    _count: { works: 936 },
-  },
 ];
 
-// OBRAS REAIS (baseadas nos seus dados)
 const MOCK_WORKS = [
   {
     id: '6879bfbc68d244782048d0fc',
@@ -408,56 +266,8 @@ const MOCK_WORKS = [
     instrument: MOCK_INSTRUMENTS[1],
     _count: { favoriteBy: 0 },
   },
-  {
-    id: '6879bfb468d244782048d0fa',
-    title: 'Œuvres complètes pour piano',
-    composerId: '685e1087c6bd886c5b495d66',
-    instrumentId: '685ef4b5a249f2a204023458',
-    epochId: '685d59f31e3db0c5aaa89439',
-    videoUrl: null,
-    imslpPermlink:
-      'https://imslp.org/wiki/Œuvres_complètes_pour_piano_(Chopin,_Frédéric)',
-    imslpId: '318858',
-    opOrCatalog: null,
-    compositionYear: null,
-    firstPublishDate: '1915-16 or 1917',
-    tone: null,
-    mediaDuration: null,
-    workStyle: 'Romantic',
-    moviment: '12 volumes',
-    categoryNames: ['Peças', 'Para 1 instrumentista'],
-    workGenresArr: ['pieces'],
-    dedicateTo: null,
-    instrumentation: 'Piano',
-    workType: 'COLLECTED_WORKS',
-    movementNumber: null,
-    parentWorkId: null,
-    createdAt: new Date('2025-07-18T03:29:56.453Z'),
-    updatedAt: new Date('2025-07-28T17:03:24.073Z'),
-    subtitle: null,
-    imslpTags: [
-      'Composers',
-      'Romantic',
-      'For piano',
-      'Scores featuring the piano',
-    ],
-    difficultyLevel: 'INTERMEDIATE',
-    annotationsCount: 0,
-    helpfulAnnotationsCount: 0,
-    lastAnnotationAt: null,
-    composer: {
-      id: '685e1087c6bd886c5b495d66',
-      name: 'Chopin',
-      fullName: 'Frédéric Chopin',
-      epochName: 'Romântico',
-    },
-    epoch: MOCK_EPOCHS[6],
-    instrument: MOCK_INSTRUMENTS[0],
-    _count: { favoriteBy: 0 },
-  },
 ];
 
-// USUÁRIOS REAIS
 const MOCK_USERS = [
   {
     id: '688cdfd7cc5e99751f75a76f',
@@ -497,7 +307,7 @@ const MOCK_USERS = [
   },
 ];
 
-// FACTORY PARA RESULTADOS MOCK REALISTAS
+// Factory para resultados mock ROBUSTA
 const createMockResult = (model: string, operation: string, args: any) => {
   if (IS_BUILD_TIME) {
     console.log(`🔧 Build time detected - mocking ${model}.${operation}`);
@@ -511,7 +321,17 @@ const createMockResult = (model: string, operation: string, args: any) => {
           case 'composer':
             return MOCK_COMPOSERS.slice(skip, skip + take);
           case 'work':
-            return MOCK_WORKS.slice(skip, skip + take);
+            // 🔧 MELHORAR MOCKS DE WORK COM FAVORITESBY COMO ARRAY
+            return MOCK_WORKS.slice(skip, skip + take).map((work) => ({
+              ...work,
+              favoriteBy: [], // Array vazio para evitar erro
+              _count: {
+                favoriteBy: 0,
+                annotations: 0,
+                wantToLearners: 0,
+                learners: 0,
+              },
+            }));
           case 'epoch':
             return MOCK_EPOCHS.slice(skip, skip + take);
           case 'instrument':
@@ -522,40 +342,52 @@ const createMockResult = (model: string, operation: string, args: any) => {
             return MOCK_WORK_GENRES.slice(skip, skip + take);
           case 'user':
             return MOCK_USERS.slice(skip, skip + take);
-          case 'workScore':
-          case 'annotation':
+          // 🔧 RETORNAR ARRAYS VAZIOS EM VEZ DE EMPTY_RESULT
           case 'favoriteWork':
           case 'favoriteComposer':
+          case 'favoriteScore':
           case 'wantToLearn':
           case 'learned':
           case 'userInstrument':
-          case 'account':
-          case 'session':
-          case 'userToken':
-            return EMPTY_RESULT; // Tabelas relacionadas ao usuário retornam vazio
+          case 'annotation':
+          case 'workAnnotation':
+            return []; // Arrays vazios para relações
           default:
-            return EMPTY_RESULT;
+            return []; // Array vazio como padrão
         }
 
       case 'findFirst':
       case 'findUnique':
         switch (model) {
           case 'composer':
-            return MOCK_COMPOSERS[0];
+            return MOCK_COMPOSERS[0] || null;
           case 'work':
-            return MOCK_WORKS[0];
+            // 🔧 GARANTIR QUE WORK TENHA TODAS AS PROPRIEDADES
+            const work = MOCK_WORKS[0];
+            return work
+              ? {
+                  ...work,
+                  favoriteBy: [],
+                  _count: {
+                    favoriteBy: 0,
+                    annotations: 0,
+                    wantToLearners: 0,
+                    learners: 0,
+                  },
+                }
+              : null;
           case 'epoch':
-            return MOCK_EPOCHS[0];
+            return MOCK_EPOCHS[0] || null;
           case 'instrument':
-            return MOCK_INSTRUMENTS[0];
+            return MOCK_INSTRUMENTS[0] || null;
           case 'role':
-            return MOCK_ROLES[0];
+            return MOCK_ROLES[0] || null;
           case 'workGenre':
-            return MOCK_WORK_GENRES[0];
+            return MOCK_WORK_GENRES[0] || null;
           case 'user':
-            return MOCK_USERS[0];
+            return MOCK_USERS[0] || null;
           default:
-            return EMPTY_OBJECT;
+            return null; // Retornar null em vez de EMPTY_OBJECT
         }
 
       case 'count':
@@ -574,12 +406,22 @@ const createMockResult = (model: string, operation: string, args: any) => {
             return MOCK_WORK_GENRES.length;
           case 'user':
             return MOCK_USERS.length;
+          // 🔧 ADICIONAR COUNTS PARA TABELAS RELACIONADAS
+          case 'favoriteWork':
+          case 'favoriteComposer':
+          case 'favoriteScore':
+          case 'wantToLearn':
+          case 'learned':
+          case 'userInstrument':
+          case 'annotation':
+          case 'workAnnotation':
+            return 0; // Zero para relações
           default:
-            return EMPTY_COUNT;
+            return 0; // Zero em vez de EMPTY_COUNT
         }
 
       case 'aggregate':
-        let count = EMPTY_COUNT;
+        let count = 0;
         switch (model) {
           case 'composer':
             count = MOCK_COMPOSERS.length;
@@ -602,29 +444,33 @@ const createMockResult = (model: string, operation: string, args: any) => {
           case 'user':
             count = MOCK_USERS.length;
             break;
+          default:
+            count = 0;
         }
-        return { _count: { id: count } };
+        return { _count: { id: count, _all: count } };
+
+      // 🔧 ADICIONAR OPERAÇÕES EXTRAS QUE PODEM SER CHAMADAS
+      case 'groupBy':
+        return EMPTY_RESULT;
+
+      case 'findFirstOrThrow':
+      case 'findUniqueOrThrow':
+        // Mesmo comportamento de findFirst/findUnique
+        return createMockResult(model, 'findFirst', args);
 
       case 'create':
       case 'update':
       case 'upsert':
+        // Retornar primeiro item dos mocks para operações de escrita
         switch (model) {
           case 'composer':
-            return MOCK_COMPOSERS[0];
+            return MOCK_COMPOSERS[0] || null;
           case 'work':
-            return MOCK_WORKS[0];
-          case 'epoch':
-            return MOCK_EPOCHS[0];
-          case 'instrument':
-            return MOCK_INSTRUMENTS[0];
-          case 'role':
-            return MOCK_ROLES[0];
-          case 'workGenre':
-            return MOCK_WORK_GENRES[0];
+            return MOCK_WORKS[0] || null;
           case 'user':
-            return MOCK_USERS[0];
+            return MOCK_USERS[0] || null;
           default:
-            return EMPTY_OBJECT;
+            return null;
         }
 
       case 'delete':
@@ -635,32 +481,30 @@ const createMockResult = (model: string, operation: string, args: any) => {
       case 'updateMany':
         return { count: 0 };
 
-      case 'aggregateRaw':
-        return EMPTY_RESULT;
-
       default:
+        console.warn(`🔧 Unhandled operation: ${model}.${operation}`);
         return EMPTY_RESULT;
     }
   }
 
-  return null; // Não é build time, prosseguir normalmente
+  return null; // NÃO é build time, prosseguir normalmente
 };
 
-// CRIAR INSTÂNCIA REAL DO PRISMA
+// Criar instância real do Prisma
 const realPrisma = globalForPrisma.prisma ?? new PrismaClient();
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = realPrisma;
 }
 
-// PROXY UNIVERSAL PARA INTERCEPTAR TODAS AS OPERAÇÕES
+// Proxy para interceptar operações
 const createModelProxy = (modelName: string) => {
   return new Proxy(
     {},
     {
       get(target, operation) {
         return async (...args: any[]) => {
-          // Se for build time, retornar mock
+          // 🔧 Verificar se é build time primeiro
           const mockResult = createMockResult(
             modelName,
             operation as string,
@@ -670,7 +514,7 @@ const createModelProxy = (modelName: string) => {
             return mockResult;
           }
 
-          // Caso contrário, usar Prisma real
+          // 🚀 Runtime normal - usar Prisma real
           try {
             const model = (realPrisma as any)[modelName];
             if (model && typeof model[operation as string] === 'function') {
@@ -687,7 +531,7 @@ const createModelProxy = (modelName: string) => {
               error
             );
 
-            // Fallback para erro - retornar estrutura vazia
+            // Fallback para erro
             if ((operation as string).includes('find')) {
               return (operation as string) === 'findMany'
                 ? EMPTY_RESULT
@@ -705,95 +549,71 @@ const createModelProxy = (modelName: string) => {
   );
 };
 
-// PROXY PRINCIPAL PARA INTERCEPTAR ACESSO AOS MODELOS
+// Proxy principal
 const prisma = new Proxy(realPrisma, {
   get(target, modelName) {
-    // Se for build time e for um modelo, retornar proxy mock
+    // Lista completa dos modelos do schema
+    const models = [
+      'user',
+      'composer',
+      'work',
+      'epoch',
+      'role',
+      'instrument',
+      'workGenre',
+      'workScore',
+      'annotation',
+      'workAnnotation',
+      'annotationHelpfulVote',
+      'userInstrument',
+      'favoriteWork',
+      'favoriteComposer',
+      'favoriteScore',
+      'scoreFavoriteStats',
+      'wantToLearn',
+      'learned',
+      'account',
+      'session',
+      'userToken',
+      'uploadHistory',
+      'uploadModeration',
+      'generatedReport',
+      'advertisement',
+      'adStats',
+      'newsletterSubscriber',
+      'newsletterTemplate',
+      'newsletterCampaign',
+      'newsletterCampaignSend',
+      'newsletterEmailEvent',
+      'testEmailList',
+      'templateFragment',
+      'teacher',
+      'student',
+      'teacherStudent',
+      'lesson',
+      'assignment',
+      'notification',
+      'schoolActivity',
+      'userAchievement',
+      'achievementProgress',
+      'sharedProgressReport',
+      'sharedReportComment',
+    ];
+
     if (
       IS_BUILD_TIME &&
       typeof modelName === 'string' &&
-      modelName !== 'constructor'
+      models.includes(modelName)
     ) {
-      // Lista COMPLETA dos modelos do schema
-      const models = [
-        // Modelos principais
-        'user',
-        'composer',
-        'work',
-        'epoch',
-        'role',
-        'instrument',
-        'workGenre',
-
-        // Modelos de partitura e conteúdo
-        'workScore',
-        'annotation',
-        'workAnnotation',
-        'annotationHelpfulVote',
-
-        // Modelos de usuário e favoritos
-        'userInstrument',
-        'favoriteWork',
-        'favoriteComposer',
-        'favoriteScore',
-        'scoreFavoriteStats',
-        'wantToLearn',
-        'learned',
-
-        // Modelos de autenticação
-        'account',
-        'session',
-        'userToken',
-
-        // Modelos de upload e moderação
-        'uploadHistory',
-        'uploadModeration',
-        'generatedReport',
-
-        // Modelos de publicidade
-        'advertisement',
-        'adStats',
-
-        // Modelos de newsletter
-        'newsletterSubscriber',
-        'newsletterTemplate',
-        'newsletterCampaign',
-        'newsletterCampaignSend',
-        'newsletterEmailEvent',
-        'testEmailList',
-        'templateFragment',
-
-        // Modelos do sistema professor-aluno
-        'teacher',
-        'student',
-        'teacherStudent',
-        'lesson',
-        'assignment',
-
-        // Modelos de notificação e atividade
-        'notification',
-        'schoolActivity',
-
-        // Modelos de conquistas
-        'userAchievement',
-        'achievementProgress',
-
-        // Modelos de relatórios compartilhados
-        'sharedProgressReport',
-        'sharedReportComment',
-      ];
-
-      if (models.includes(modelName)) {
-        return createModelProxy(modelName);
-      }
+      return createModelProxy(modelName);
     }
 
-    // Operações não-modelo ou runtime normal
+    // Runtime normal ou operações não-modelo
     return Reflect.get(target, modelName);
   },
 });
 
-// LOG DE STATUS
+// 🔧 LOG DE STATUS MELHORADO
 if (IS_BUILD_TIME) {
   console.log('🔧 PRISMA BUILD-SAFE MODE ACTIVATED');
   console.log(
@@ -802,6 +622,7 @@ if (IS_BUILD_TIME) {
   console.log('🎯 Using real data from your database for convincing mocks');
 } else {
   console.log('🚀 PRISMA RUNTIME MODE - Real database operations enabled');
+  console.log('💾 Connected to real database for live data');
 }
 
 export default prisma;
