@@ -1,0 +1,362 @@
+/* critical.css - CSS crítico (substitui globals.css completamente) */
+@import 'tailwindcss';
+
+/* ===== CSS CRÍTICO - APENAS O ESSENCIAL ===== */
+:root {
+  /* Transições base */
+  --transition-theme: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.15s ease-out;
+  --transition-smooth: all 0.3s ease-out;
+  --transition-slow: all 0.5s ease-out;
+
+  /* Fonts */
+  --font-inter: 'Inter', 'Segoe UI', sans-serif;
+  --font-serif: 'Georgia', 'Times New Roman', serif;
+}
+
+/* ===== TEMA ESCURO (PADRÃO) ===== */
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Background colors - apenas essenciais */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a2e;
+  --bg-tertiary: #16213e;
+  --bg-elevated: #2d3748;
+  --bg-overlay: rgba(0, 0, 0, 0.8);
+
+  /* Text colors */
+  --text-primary: #ffffff;
+  --text-secondary: #e5e7eb;
+  --text-tertiary: #9ca3af;
+  --text-inverse: #0a0a0a;
+
+  /* Brand colors */
+  --brand-primary: #d4af37;
+  --brand-secondary: #fbbf24;
+  --brand-gradient: linear-gradient(135deg, #d4af37 0%, #fbbf24 100%);
+
+  /* Border colors */
+  --border-primary: rgba(212, 175, 55, 0.2);
+  --border-secondary: rgba(229, 231, 235, 0.1);
+  --border-accent: #d4af37;
+
+  /* Interactive states */
+  --interactive-hover: rgba(212, 175, 55, 0.1);
+  --interactive-active: rgba(212, 175, 55, 0.2);
+  --interactive-focus: rgba(212, 175, 55, 0.3);
+
+  /* Shadows essenciais */
+  --shadow-small: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-large: 0 20px 40px rgba(0, 0, 0, 0.4);
+
+  /* Gradientes críticos */
+  --gradient-primary: linear-gradient(
+    135deg,
+    #0a0a0a 0%,
+    #1a1a2e 50%,
+    #16213e 100%
+  );
+  --gradient-card: linear-gradient(
+    135deg,
+    rgba(45, 55, 72, 0.6) 0%,
+    rgba(26, 26, 46, 0.6) 100%
+  );
+}
+
+/* ===== TEMA CLARO ===== */
+[data-theme='light'] {
+  color-scheme: light;
+
+  /* Background colors */
+  --bg-primary: #faf9f6;
+  --bg-secondary: #f4f1eb;
+  --bg-tertiary: #ede8df;
+  --bg-elevated: #ffffff;
+  --bg-overlay: rgba(45, 42, 35, 0.75);
+
+  /* Text colors */
+  --text-primary: #2d2a23;
+  --text-secondary: #4a453c;
+  --text-tertiary: #6b6358;
+  --text-inverse: #faf9f6;
+
+  /* Brand colors */
+  --brand-primary: #b8941f;
+  --brand-secondary: #d4af37;
+  --brand-gradient: linear-gradient(
+    135deg,
+    #b8941f 0%,
+    #d4af37 50%,
+    #e6c554 100%
+  );
+
+  /* Border colors */
+  --border-primary: rgba(184, 148, 31, 0.25);
+  --border-secondary: rgba(107, 99, 88, 0.15);
+  --border-accent: #b8941f;
+
+  /* Interactive states */
+  --interactive-hover: rgba(184, 148, 31, 0.08);
+  --interactive-active: rgba(184, 148, 31, 0.15);
+  --interactive-focus: rgba(184, 148, 31, 0.25);
+
+  /* Shadows */
+  --shadow-small: 0 2px 8px rgba(45, 42, 35, 0.08);
+  --shadow-medium: 0 8px 24px rgba(45, 42, 35, 0.12);
+  --shadow-large: 0 16px 40px rgba(45, 42, 35, 0.15);
+
+  /* Gradientes */
+  --gradient-primary: linear-gradient(
+    135deg,
+    #faf9f6 0%,
+    #f4f1eb 50%,
+    #ede8df 100%
+  );
+  --gradient-card: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(244, 241, 235, 0.6) 100%
+  );
+}
+
+/* ===== BASE STYLES ===== */
+* {
+  transition: var(--transition-theme);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-inter);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== COMPONENTES CRÍTICOS ===== */
+.classical-theme {
+  background: var(--bg-primary);
+  min-height: 100vh;
+  transition: var(--transition-theme);
+}
+
+/* Card básico */
+.classical-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-primary);
+  border-radius: 1rem;
+  transition: var(--transition-smooth);
+}
+
+.classical-card:hover {
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-2px);
+}
+
+/* Botões essenciais */
+.btn-classical-primary {
+  background: var(--brand-gradient);
+  color: var(--text-inverse);
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-medium);
+  cursor: pointer;
+}
+
+.btn-classical-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-large);
+}
+
+.btn-classical-secondary {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  font-weight: 500;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+}
+
+.btn-classical-secondary:hover {
+  background: var(--interactive-hover);
+  border-color: var(--border-accent);
+}
+
+/* Input básico */
+.input-classical {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-secondary);
+  color: var(--text-primary);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  transition: var(--transition-smooth);
+  padding-left: 3rem;
+}
+
+.input-classical:focus {
+  outline: none;
+  border-color: var(--border-accent);
+  box-shadow: 0 0 0 3px var(--interactive-focus);
+}
+
+.input-classical::placeholder {
+  color: var(--text-tertiary);
+}
+
+.input-classical-2 {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-secondary);
+  color: var(--text-primary);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  transition: var(--transition-smooth);
+}
+
+.input-classical-2:focus {
+  outline: none;
+  border-color: var(--border-accent);
+  box-shadow: 0 0 0 3px var(--interactive-focus);
+}
+
+.input-classical-2::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Navbar básica */
+.navbar-classical {
+  background: linear-gradient(
+    135deg,
+    var(--bg-primary) 0%,
+    var(--bg-secondary) 100%
+  );
+  border-bottom: 1px solid var(--border-secondary);
+  backdrop-filter: blur(16px);
+  transition: var(--transition-theme);
+}
+
+/* Text utilities */
+.text-gradient-brand {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+.text-brand-primary {
+  color: var(--brand-primary);
+}
+
+.text-brand-secondary {
+  color: var(--brand-secondary);
+}
+
+.border-color-primary {
+  border-color: var(--brand-primary);
+}
+
+/* Utility classes essenciais */
+.bg-theme-primary {
+  background: var(--bg-primary);
+}
+.bg-theme-secondary {
+  background: var(--bg-secondary);
+}
+.bg-theme-elevated {
+  background: var(--bg-elevated);
+}
+
+.text-theme-primary {
+  color: var(--text-primary);
+}
+.text-theme-secondary {
+  color: var(--text-secondary);
+}
+.text-theme-tertiary {
+  color: var(--text-tertiary);
+}
+
+.border-theme-primary {
+  border-color: var(--border-primary);
+}
+.border-theme-secondary {
+  border-color: var(--border-secondary);
+}
+.border-theme-accent {
+  border-color: var(--border-accent);
+}
+
+.shadow-theme-medium {
+  box-shadow: var(--shadow-medium);
+}
+
+/* Container básico */
+.section-wrap {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+}
+
+.section-wrap-nav {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1rem 2.5rem;
+}
+
+/* Responsive básico */
+@media (max-width: 768px) {
+  .section-wrap {
+    padding: 1rem 1.5rem;
+  }
+
+  .btn-classical-primary,
+  .btn-classical-secondary {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .section-wrap {
+    padding: 1.5rem 1rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .classical-theme {
+    background: white !important;
+    color: black !important;
+  }
+
+  .classical-card {
+    border: 1px solid #ccc !important;
+    background: white !important;
+  }
+}

@@ -8,16 +8,23 @@ import { TranslationLoadingModal } from '../TranslationLoadingModal';
 interface LanguageToggleProps {
   variant?: 'default' | 'compact' | 'navbar' | 'globe';
   showLabel?: boolean;
+  showSystemIndicator?: boolean; // 🆕 Mostrar se está seguindo o sistema
   className?: string;
 }
 
 export const LanguageToggle: React.FC<LanguageToggleProps> = ({
   variant = 'default',
   showLabel = false,
+  showSystemIndicator = false, // 🆕 Padrão false para não quebrar componentes existentes
   className = '',
 }) => {
-  const { language, toggleLanguage, isTranslating, onModalComplete } =
-    useLanguageWithRefresh();
+  const {
+    language,
+    toggleLanguage,
+    isTranslating,
+    onModalComplete,
+    hasUserPreference, // 🆕 Nova propriedade
+  } = useLanguageWithRefresh();
 
   const getVariantClasses = () => {
     switch (variant) {
@@ -123,7 +130,14 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
   };
 
   const getLanguageLabel = () => {
-    return language === 'pt' ? 'Português' : 'English';
+    const baseLabel = language === 'pt' ? 'Português' : 'English';
+
+    // 🆕 Adicionar indicador se está seguindo o sistema
+    if (showSystemIndicator && !hasUserPreference) {
+      return `${baseLabel} (Sistema)`;
+    }
+
+    return baseLabel;
   };
 
   return (
@@ -184,6 +198,11 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
             </div>
           )}
 
+          {/* 🆕 Indicador de sistema (apenas se showSystemIndicator = true) */}
+          {showSystemIndicator && !hasUserPreference && (
+            <div className="absolute -top-1 -left-1 w-2 h-2 bg-accent-blue rounded-full opacity-75 animate-pulse" />
+          )}
+
           {/* Subtle animation indicator */}
           <div className="absolute -top-1 -right-1 w-2 h-2 bg-accent-green rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
         </button>
@@ -195,8 +214,10 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
 // Versão alternativa com ícone de globo e dropdown
 export const LanguageDropdown: React.FC<{
   className?: string;
-}> = ({ className = '' }) => {
-  const { language, changeLanguage } = useLanguageWithRefresh();
+  showSystemIndicator?: boolean; // 🆕
+}> = ({ className = '', showSystemIndicator = false }) => {
+  const { language, changeLanguage, hasUserPreference } =
+    useLanguageWithRefresh();
   const [isOpen, setIsOpen] = React.useState(false);
 
   const languages = [
@@ -220,12 +241,24 @@ export const LanguageDropdown: React.FC<{
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center space-x-2 px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg hover:bg-interactive-hover transition-colors duration-200 disabled:opacity-50"
       >
-        <FiGlobe className="w-4 h-4 text-brand-primary" />
+        <div className="relative">
+          <FiGlobe className="w-4 h-4 text-brand-primary" />
+          {/* 🆕 Indicador de sistema */}
+          {showSystemIndicator && !hasUserPreference && (
+            <div className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-accent-blue rounded-full opacity-75" />
+          )}
+        </div>
         {currentLanguage && (
           <>
             {currentLanguage.flag}
             <span className="text-sm font-medium text-theme-primary hidden sm:block">
               {currentLanguage.name}
+              {/* 🆕 Mostrar (Sistema) se aplicável */}
+              {showSystemIndicator && !hasUserPreference && (
+                <span className="text-xs text-theme-tertiary ml-1">
+                  (Sistema)
+                </span>
+              )}
             </span>
           </>
         )}

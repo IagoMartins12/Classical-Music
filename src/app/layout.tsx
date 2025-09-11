@@ -116,16 +116,98 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
 };
-// export const dynamic = 'force-dynamic';
 
-export default function RootLayout({
+// 🎯 Script otimizado para evitar flash de tema/linguagem
+const themeScript = `(function() {
+  'use strict';
+  
+  function getSystemTheme() {
+    if (typeof window === 'undefined') return 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  
+  function getSystemLanguage() {
+    if (typeof navigator === 'undefined') return 'pt';
+    const browserLang = navigator.language || navigator.languages?.[0] || 'pt';
+    return browserLang.toLowerCase().startsWith('pt') ? 'pt' : 'en';
+  }
+  
+  function getStoredData(key) {
+    try {
+      const stored = localStorage.getItem(key);
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  }
+  
+  function applyBasicTheme(mode) {
+    const root = document.documentElement;
+    root.setAttribute('data-theme', mode);
+    
+    if (mode === 'dark') {
+      root.style.setProperty('--bg-primary', '#0A0A0B');
+      root.style.setProperty('--text-primary', '#FFFFFF');
+      root.style.setProperty('--bg-secondary', '#141416');
+      root.style.setProperty('--bg-elevated', '#1A1A1C');
+    } else {
+      root.style.setProperty('--bg-primary', '#FFFFFF');
+      root.style.setProperty('--text-primary', '#1A1A1A');
+      root.style.setProperty('--bg-secondary', '#F8F9FA');
+      root.style.setProperty('--bg-elevated', '#FFFFFF');
+    }
+  }
+  
+  function determineTheme() {
+    const themeData = getStoredData('classical-music-theme');
+    if (themeData?.state?.hasUserPreference) {
+      return themeData.state.mode || 'dark';
+    }
+    return getSystemTheme();
+  }
+  
+  function determineLanguage() {
+    const langData = getStoredData('opus-atlas-language');
+    if (langData?.state?.hasUserPreference) {
+      return langData.state.language || 'pt';
+    }
+    return getSystemLanguage();
+  }
+  
+  // 🚀 Aplicar configurações
+  try {
+    const theme = determineTheme();
+    const language = determineLanguage();
+    
+    applyBasicTheme(theme);
+    document.documentElement.setAttribute('data-language', language);
+    
+    // 🆕 Atualizar lang do HTML dinamicamente
+    document.documentElement.lang = language === 'pt' ? 'pt-BR' : 'en-US';
+    
+  } catch (error) {
+    applyBasicTheme('dark');
+    document.documentElement.setAttribute('data-language', 'pt');
+    document.documentElement.lang = 'pt-BR';
+  }
+})();`;
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // 🆕 Obter linguagem para o HTML inicial
+  const serverLanguage = await getServerLanguageStatic();
+  const htmlLang = serverLanguage === 'pt' ? 'pt-BR' : 'en-US';
+
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang={htmlLang} suppressHydrationWarning>
       <head>
+        {/* 🎯 Script anti-flash - DEVE ser o primeiro */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+
+        {/* Meta tags de tema */}
         <meta name="color-scheme" content="dark light" />
         <meta
           name="theme-color"
@@ -135,11 +217,31 @@ export default function RootLayout({
         <meta
           name="theme-color"
           media="(prefers-color-scheme: dark)"
-          content="#0a0a0a"
+          content="#0a0a0b"
         />
+
+        {/* SEO e favicons */}
         <meta
           name="google-site-verification"
           content="XC9v3XyFFCT6IhoCOH1NuuhJBju232tXhlZDCcNEiFU"
+        />
+        <link rel="icon" href="/favicon.ico" />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
         />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
@@ -147,12 +249,14 @@ export default function RootLayout({
           <AuthProvider>{children}</AuthProvider>
         </ClientThemeWrapper>
 
-        {/* Umami Analytics */}
-        <Script
-          src="https://analytics.opusatlas.com.br/analytics"
-          data-website-id="f3475284-e507-4e7e-af4a-3a1ecd932652"
-          strategy="afterInteractive"
-        />
+        {/* Analytics */}
+        {process.env.NODE_ENV === 'production' && (
+          <Script
+            src="https://analytics.opusatlas.com.br/analytics"
+            data-website-id="f3475284-e507-4e7e-af4a-3a1ecd932652"
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );

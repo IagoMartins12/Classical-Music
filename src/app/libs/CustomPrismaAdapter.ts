@@ -207,7 +207,7 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           );
 
           const emailResult = await sendTemplateEmail(user.email, {
-            type: 'ACCOUNT_CONFIRMATION',
+            type: 'WELCOME',
             variables: {
               firstName: firstName || 'Usuário',
               userName: firstName || 'Usuário',

@@ -636,7 +636,7 @@ const Navbar: React.FC = () => {
 
                     <button
                       onClick={handleLogout}
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-accent-red hover:bg-accent-red hover:bg-opacity-10 rounded-lg transition-all"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm  rounded-lg "
                     >
                       <FiLogOut className="w-4 h-4" />
                       <span>{t('navbar_sair')}</span>
@@ -821,7 +821,7 @@ const Navbar: React.FC = () => {
                       <li>
                         <button
                           onClick={handleLogout}
-                          className="flex items-center space-x-3 w-full px-4 py-3 text-accent-red hover:bg-accent-red hover:bg-opacity-10 rounded-lg transition-all"
+                          className="flex items-center space-x-3 w-full px-4 py-3 text-accent-red hover:bg-accent-red rounded-lg l"
                         >
                           <FiLogOut className="w-5 h-5" />
                           <span>{t('navbar_sair')}</span>
