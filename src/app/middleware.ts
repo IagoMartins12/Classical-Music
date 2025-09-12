@@ -1,20 +1,11 @@
-// middleware.ts - VERSÃO ATUALIZADA COM UPLOADS ESTÁTICOS
+// middleware.ts - VERSÃO ATUALIZADA COM LOGGING
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  // ✅ PRIORIDADE MÁXIMA: Arquivos estáticos em uploads
-  if (
-    pathname.startsWith('/uploads/') &&
-    /\.(webp|jpg|jpeg|png|gif|svg|pdf|mp3|wav|mp4|ico)$/i.test(pathname)
-  ) {
-    // Deixar Next.js servir diretamente da pasta public/ sem processamento
-    return NextResponse.next();
-  }
-
   const response = NextResponse.next();
+  const { pathname } = request.nextUrl;
 
   // Detectar idioma preferido se não há cookie
   if (!request.cookies.has('opus-atlas-language')) {
@@ -47,7 +38,6 @@ export async function middleware(request: NextRequest) {
     '/_next/',
     '/api/health',
     '/api/auth/session', // Evitar spam de logs
-    '/uploads/', // Não fazer log de arquivos estáticos
   ];
 
   const shouldSkip = skipLogging.some((path) => pathname.startsWith(path));
@@ -56,6 +46,29 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith('/api') && !shouldSkip) {
     try {
       const startTime = Date.now();
+
+      // Tentar obter dados do usuário
+      let userData = null;
+      try {
+        const token = await getToken({
+          req: request,
+          secret: process.env.NEXTAUTH_SECRET,
+        });
+
+        if (token) {
+          userData = {
+            userId: token.sub,
+            userName:
+              token.firstName && token.lastName
+                ? `${token.firstName} ${token.lastName}`
+                : token.email,
+            userRole: token.role || 0,
+          };
+        }
+      } catch (error) {
+        // Falha silenciosa na obtenção do token
+        console.warn('Failed to get token in middleware:', error);
+      }
 
       // Construir contexto para logging
       const requestContext = {
@@ -66,6 +79,7 @@ export async function middleware(request: NextRequest) {
           request.headers.get('x-real-ip') ||
           'unknown',
         referer: request.headers.get('referer'),
+        ...userData,
         traceId: `req_${startTime}_${Math.random().toString(36).substring(2)}`,
       };
 

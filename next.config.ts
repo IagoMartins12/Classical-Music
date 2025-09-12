@@ -9,17 +9,16 @@ const nextConfig: NextConfig = withBundleAnalyzer({
   trailingSlash: false,
   compress: true,
   images: {
-    unoptimized: false,
-    dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 31536000,
+    // Permitir domínios não otimizados (menos seguro mas mais flexível)
+    unoptimized: process.env.NODE_ENV === 'production', // ← MUDAR PARA TRUE
+
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'opusatlas.com.br',
         pathname: '/uploads/**',
       },
+      // Wildcard para permitir qualquer HTTPS (menos seguro)
       {
         protocol: 'https',
         hostname: '**',
