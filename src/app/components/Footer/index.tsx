@@ -27,7 +27,7 @@ import {
   FaYoutube,
   FaSpotify,
 } from 'react-icons/fa';
-import { GiGrandPiano, GiViolin, GiTrumpet } from 'react-icons/gi';
+import { GiGrandPiano, GiViolin } from 'react-icons/gi';
 import {
   useNewsletterSubscription,
   useNewsletterForm,
@@ -233,16 +233,8 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative  bg-gradient-to-b from-theme-primary to-theme-secondary border-t border-theme-secondary">
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-10 -left-10 w-40 h-40 bg-brand-primary opacity-5 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-10 -right-10 w-60 h-60 bg-accent-purple opacity-5 rounded-full blur-3xl"></div>
-        <GiTrumpet className="absolute top-10 right-20 w-8 h-8 text-brand-primary opacity-10 rotate-12" />
-        <GiViolin className="absolute bottom-20 left-20 w-10 h-10 text-accent-purple opacity-10 -rotate-12" />
-      </div>
-
-      <div className="relative">
+    <footer className="  bg-gradient-to-b from-theme-primary to-theme-secondary border-t border-theme-secondary">
+      <div className="">
         {/* Main Footer Content */}
         <div className="section-wrap py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">

@@ -3,14 +3,13 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   // Disable static optimization completely
   output: 'standalone',
-
-  // Force dynamic rendering for all pages
   trailingSlash: false,
-
+  compress: true,
   images: {
     // Permitir domínios não otimizados (menos seguro mas mais flexível)
     unoptimized: false,
-
+    formats: ['image/avif', 'image/webp'], // Formatos modernos
+    minimumCacheTTL: 31536000, // 1 ano de cache
     remotePatterns: [
       {
         protocol: 'https',
