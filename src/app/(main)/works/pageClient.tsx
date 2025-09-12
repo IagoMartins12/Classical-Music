@@ -730,9 +730,9 @@ const WorksClient = memo(
 
                     {/* Epoch Filter */}
                     <div className="space-y-2 flex flex-col gap-1 relative z-[105]">
-                      <label className="text-sm font-medium text-theme-secondary">
+                      <span className="text-sm font-medium text-theme-secondary">
                         {t('client_jsx_label_epoch')}
-                      </label>
+                      </span>
                       <div className="relative">
                         <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                         <Select
@@ -759,9 +759,9 @@ const WorksClient = memo(
 
                     {/* Genre Filter */}
                     <div className="space-y-2 flex flex-col gap-1 relative z-[115]">
-                      <label className="text-sm font-medium text-theme-secondary">
+                      <span className="text-sm font-medium text-theme-secondary">
                         {t('client_jsx_label_genre')}
-                      </label>
+                      </span>
                       <GenreSearchInput
                         selectedGenre={selectedGenre}
                         onGenreSelect={handleGenreFilter}

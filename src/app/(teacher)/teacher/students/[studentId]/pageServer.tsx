@@ -100,7 +100,7 @@ export default async function TeacherStudentDetailPageServer({
 }) {
   const language = await getServerLanguageStatic();
   const { translations } = await loadPageTranslationsWithCommon(language, [
-    'teacher/studentId',
+    'teacher/studentsId',
   ]);
 
   try {
