@@ -1,172 +1,133 @@
-// app/libs/redis.ts - Cliente Redis com detecção de build time
+// app/libs/redis.ts - Cliente Redis simplificado e compatível
 import { Redis } from 'ioredis';
 
 declare global {
   var __redis: Redis | undefined | null;
 }
 
-// Detectar se está em build time (mesmo sistema do Prisma)
-const IS_BUILD_TIME = (() => {
-  if (
-    process.env.NEXT_PHASE === 'phase-production-build' ||
-    process.env.NEXT_PHASE === 'phase-development-server'
-  ) {
-    return true;
-  }
-
-  const buildCommands = ['build', 'next build'];
-  const hasBuildArg = process.argv.some((arg) =>
-    buildCommands.some((cmd) => arg.includes(cmd))
+// Detectar se está em build time
+const isBuildTime = (() => {
+  return (
+    process.env.NODE_ENV === 'production' &&
+    (process.env.NEXT_PHASE === 'phase-production-build' ||
+      process.env.CI === 'true' ||
+      process.argv.includes('build'))
   );
-
-  return hasBuildArg;
 })();
 
-// Configuração Redis (apenas se não for build time)
+// Configuração Redis usando apenas opções compatíveis
 const createRedisInstance = (): Redis | null => {
-  if (IS_BUILD_TIME) {
-    console.log('🔧 Build time detected - skipping Redis connection');
+  if (isBuildTime) {
+    console.log('Build time detected - skipping Redis connection');
     return null;
   }
 
-  const redis = new Redis({
-    host: process.env.REDIS_HOST || 'opus-atlas-redis',
-    port: parseInt(process.env.REDIS_PORT || '6379'),
-    password: process.env.REDIS_PASSWORD || 'RedisOpusAtlas2024!',
-    maxRetriesPerRequest: 3,
-    connectTimeout: 10000,
-    commandTimeout: 5000,
-  });
+  try {
+    let redis: Redis;
 
-  // Event listeners para debugging (apenas em runtime)
-  redis.on('connect', () => {
-    console.log('🔗 Redis connected successfully');
-  });
+    // Usar REDIS_URL se disponível (mais simples)
+    if (process.env.REDIS_URL) {
+      console.log('Connecting to Redis using REDIS_URL...');
+      redis = new Redis(process.env.REDIS_URL);
+    } else {
+      // Fallback para configuração separada
+      redis = new Redis({
+        host: process.env.REDIS_HOST || 'opus-atlas-redis',
+        port: parseInt(process.env.REDIS_PORT || '6379'),
+        password: process.env.REDIS_PASSWORD,
+      });
+    }
 
-  redis.on('ready', () => {
-    console.log('✅ Redis ready for commands');
-  });
+    // Event listeners para logging
+    redis.on('connect', () => {
+      console.log('Redis connected successfully');
+    });
 
-  redis.on('error', (err) => {
-    console.error('❌ Redis connection error:', err.message);
-  });
+    redis.on('error', (err) => {
+      console.log('Redis error:', err.message);
+    });
 
-  redis.on('close', () => {
-    console.log('🔌 Redis connection closed');
-  });
+    redis.on('ready', () => {
+      console.log('Redis ready for commands');
+    });
 
-  redis.on('reconnecting', () => {
-    console.log('🔄 Redis reconnecting...');
-  });
-
-  return redis;
+    return redis;
+  } catch (error) {
+    console.log('Failed to create Redis instance:', error);
+    return null;
+  }
 };
 
-// Singleton para development (evitar múltiplas conexões)
-const redis = globalThis.__redis ?? createRedisInstance();
+// Singleton Redis client
+export const redis = globalThis.__redis ?? createRedisInstance();
 
-if (process.env.NODE_ENV !== 'production' && !IS_BUILD_TIME) {
+if (process.env.NODE_ENV !== 'production') {
   globalThis.__redis = redis;
 }
 
-export default redis;
-
-// Utility functions para cache (build-safe)
+// Helper functions para operações de cache
 export const cacheHelper = {
-  // Set com TTL
-  async set(key: string, value: any, ttlSeconds: number = 600): Promise<void> {
-    if (IS_BUILD_TIME || !redis) {
-      // Durante build, não fazer nada
-      return;
-    }
-
-    try {
-      const serialized = JSON.stringify(value);
-      await redis.setex(key, ttlSeconds, serialized);
-    } catch (error) {
-      console.error(`Redis SET error for key ${key}:`, error);
-      // Não quebrar a aplicação se Redis falhar
-    }
-  },
-
-  // Get com parsing
-  async get<T = any>(key: string): Promise<T | null> {
-    if (IS_BUILD_TIME || !redis) {
-      // Durante build, sempre retornar null (cache miss)
+  async get<T>(key: string): Promise<T | null> {
+    if (!redis) {
+      console.log(`Redis not available - skipping cache get for ${key}`);
       return null;
     }
 
     try {
       const cached = await redis.get(key);
-      if (!cached) return null;
-      return JSON.parse(cached) as T;
+      if (cached) {
+        console.log(`Cache hit for ${key}`);
+        return JSON.parse(cached) as T;
+      }
+      console.log(`Cache miss for ${key}`);
+      return null;
     } catch (error) {
-      console.error(`Redis GET error for key ${key}:`, error);
+      console.log(`Cache get error for ${key}:`, error);
       return null;
     }
   },
 
-  // Delete
-  async del(key: string): Promise<void> {
-    if (IS_BUILD_TIME || !redis) {
-      return;
+  async set<T>(
+    key: string,
+    data: T,
+    ttlSeconds: number = 600
+  ): Promise<boolean> {
+    if (!redis) {
+      console.log(`Redis not available - skipping cache set for ${key}`);
+      return false;
     }
+
+    try {
+      await redis.setex(key, ttlSeconds, JSON.stringify(data));
+      console.log(`Cached ${key} for ${ttlSeconds}s`);
+      return true;
+    } catch (error) {
+      console.log(`Cache set error for ${key}:`, error);
+      return false;
+    }
+  },
+
+  async del(key: string): Promise<boolean> {
+    if (!redis) return false;
 
     try {
       await redis.del(key);
+      console.log(`Deleted cache for ${key}`);
+      return true;
     } catch (error) {
-      console.error(`Redis DEL error for key ${key}:`, error);
-    }
-  },
-
-  // Verificar se existe
-  async exists(key: string): Promise<boolean> {
-    if (IS_BUILD_TIME || !redis) {
-      return false;
-    }
-
-    try {
-      const result = await redis.exists(key);
-      return result === 1;
-    } catch (error) {
-      console.error(`Redis EXISTS error for key ${key}:`, error);
+      console.log(`Cache delete error for ${key}:`, error);
       return false;
     }
   },
 
-  // Múltiplas chaves
-  async mget(keys: string[]): Promise<(any | null)[]> {
-    if (IS_BUILD_TIME || !redis) {
-      return new Array(keys.length).fill(null);
-    }
-
-    try {
-      const values = await redis.mget(...keys);
-      return values.map((value) => {
-        if (!value) return null;
-        try {
-          return JSON.parse(value);
-        } catch {
-          return value;
-        }
-      });
-    } catch (error) {
-      console.error('Redis MGET error:', error);
-      return new Array(keys.length).fill(null);
-    }
-  },
-
-  // Health check
   async ping(): Promise<boolean> {
-    if (IS_BUILD_TIME || !redis) {
-      return false;
-    }
+    if (!redis) return false;
 
     try {
       const result = await redis.ping();
       return result === 'PONG';
     } catch (error) {
-      console.error('Redis PING error:', error);
+      console.log('Redis ping failed:', error);
       return false;
     }
   },
