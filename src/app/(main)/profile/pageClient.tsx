@@ -23,6 +23,7 @@ import { User } from 'next-auth';
 import { useAuthStore } from '@/app/stores/authStore';
 import ProfileSkeleton from './loading';
 import { useTranslation } from '@/app/context/TranslationContext';
+import Button from '@/app/components/Common/Button';
 
 interface Tab {
   id: string;
@@ -36,7 +37,7 @@ interface Tab {
 
 export default function ProfilePageClient() {
   const { user, isAuthenticated, updateUser } = useAuth(); // Usar o novo hook
-  const { hasOnboardingProgress, openOnboardingModal } = useAuthStore();
+  const { openOnboardingModal } = useAuthStore();
   const [activeTab, setActiveTab] = useState('personal');
   const { t } = useTranslation({ sections: ['pages/profile'] });
 
@@ -124,7 +125,7 @@ export default function ProfilePageClient() {
 
   return (
     <>
-      {hasOnboardingProgress() && !user.onboardingCompleted ? (
+      {!user.onboardingCompleted ? (
         <>
           <div className="text-center py-12">
             <div className="classical-card-2 p-8 max-w-md mx-auto">
@@ -134,12 +135,9 @@ export default function ProfilePageClient() {
               <p className="text-theme-secondary mb-6">
                 {t('profile_main_finish_onboarding')}
               </p>
-              <button
-                onClick={openOnboardingModal}
-                className="btn-primary classical-card-simple px-3 py-2"
-              >
+              <Button onClick={openOnboardingModal} variant="primary">
                 {t('profile_main_open_onboarding')}
-              </button>
+              </Button>
             </div>
           </div>
         </>

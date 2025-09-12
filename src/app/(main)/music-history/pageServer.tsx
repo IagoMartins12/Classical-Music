@@ -2,10 +2,11 @@
 import { MusicHistoryPageClient } from '@/app/(main)/music-history/pageClient';
 import { TranslationProvider } from '@/app/context/TranslationContext';
 import {
-  getComposersByEpochTranslated,
-  getComposersTimelineTranslated,
-  getEpochsHistoricalDataTranslated,
-} from '@/app/requests/music-history-translated';
+  getCachedComposersByEpochTranslated,
+  getCachedComposersTimelineTranslated,
+  getCachedEpochsHistoricalDataTranslated,
+} from '@/app/requests/cached-requests/cached-music-history-functions';
+
 import {
   getServerLanguageStatic,
   loadPageTranslationsWithCommon,
@@ -19,13 +20,11 @@ export async function MusicHistoryPageServer() {
     // Executar requests com idioma - todas as funções já retornam dados traduzidos
     const [epochsWithComposers, epochsHistoricalData, composersTimeline] =
       await Promise.all([
-        getComposersByEpochTranslated(language),
-        getEpochsHistoricalDataTranslated(language), // ✅ Função adicionada
-        getComposersTimelineTranslated(language),
+        getCachedComposersByEpochTranslated(language),
+        getCachedEpochsHistoricalDataTranslated(language), // ✅ Função adicionada
+        getCachedComposersTimelineTranslated(language),
       ]);
 
-    // ✅ OPCIONAL: Se você quiser manter compatibilidade com o código antigo
-    // Combina dados das épocas (mas os dados já vêm traduzidos)
     const enrichedEpochs = epochsWithComposers.map((epoch) => {
       const historicalData = epochsHistoricalData.find(
         (h) => h.name === epoch.epochName

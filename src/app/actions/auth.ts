@@ -6,7 +6,7 @@ import { z } from 'zod';
 import prisma from '@/app/libs/prismadb';
 import { revalidatePath } from 'next/cache';
 import { OnboardingData } from '../stores/authStore';
-import { allFamousNames } from '../requests/utils';
+import { allFamousNames } from '../utils/utils';
 import {
   createToken,
   logSecurityEvent,

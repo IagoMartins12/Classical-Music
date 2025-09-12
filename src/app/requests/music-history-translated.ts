@@ -10,6 +10,7 @@ import {
 interface EpochDataTranslated {
   name: string;
   period: string;
+
   description: string;
   characteristics: string[];
   keyDevelopments: string[];

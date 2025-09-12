@@ -1,7 +1,11 @@
 // app/requests/home-components.ts - VERSÃO SIMPLIFICADA E EFICIENTE
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
-import { allFamousNames, getComposerCuriosities, musicalFacts } from './utils';
+import {
+  allFamousNames,
+  getComposerCuriosities,
+  musicalFacts,
+} from '../utils/utils';
 
 // Compositor em destaque (muda a cada 24h)
 export const getFeaturedComposer = unstable_cache(

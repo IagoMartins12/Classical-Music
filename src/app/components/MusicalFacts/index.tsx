@@ -11,7 +11,7 @@ import {
   categories,
   getFactsByCategory,
   getRandomFacts,
-} from '@/app/requests/utils';
+} from '@/app/utils/utils';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Language } from '@/app/utils/translations/serverTranslations';

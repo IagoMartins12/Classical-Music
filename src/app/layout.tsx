@@ -225,8 +225,6 @@ export default async function RootLayout({
           name="google-site-verification"
           content="XC9v3XyFFCT6IhoCOH1NuuhJBju232tXhlZDCcNEiFU"
         />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link
           rel="icon"
           type="image/png"
