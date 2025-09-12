@@ -38,13 +38,20 @@ export async function GET(request: NextRequest) {
     // Health check para debug
     const isHealthCheck = request.nextUrl.searchParams.get('health') === 'true';
     if (isHealthCheck) {
+      // Importar redis para verificar status real
+      const { redis } = await import('@/app/libs/redis');
+
       return NextResponse.json(
         {
           status: 'ok',
           baseUrl,
           timestamp: new Date().toISOString(),
           environment: process.env.NODE_ENV,
-          redis_configured: !!process.env.REDIS_HOST,
+          redis_configured:
+            !!redis && !!(process.env.REDIS_URL || process.env.REDIS_HOST),
+          redis_connected: redis
+            ? await redis.ping().catch(() => false)
+            : false,
         },
         {
           headers: { 'Cache-Control': 'no-cache' },
