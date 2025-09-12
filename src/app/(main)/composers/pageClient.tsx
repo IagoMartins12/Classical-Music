@@ -11,7 +11,6 @@ import PaginationControls from '../../components/PaginationControls';
 import { FaRegUser } from 'react-icons/fa';
 import AnimatedMusicalNotes2 from '../../components/AnimatedMusicalNotes2';
 import ViewModeToggle from '../../components/ViewModeToggle';
-// Importar componentes de animação - INCLUINDO SEQUENCIAL
 import {
   PageContainer,
   AnimatedContainer,

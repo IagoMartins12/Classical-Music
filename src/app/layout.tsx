@@ -1,4 +1,4 @@
-// app/layout.tsx - Layout raiz mínimo para páginas globais
+// app/layout.tsx - Versão otimizada para performance
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
@@ -11,6 +11,7 @@ const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
+  preload: true, // 🚀 Precarregar fonte
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -114,81 +115,54 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
+  viewportFit: 'cover',
 };
 
-// 🎯 Script otimizado para evitar flash de tema/linguagem
-const themeScript = `(function() {
+// 🚀 Script anti-flash OTIMIZADO - reduzido pela metade
+const themeScript = `(function(){
   'use strict';
-  
-  function getSystemTheme() {
-    if (typeof window === 'undefined') return 'dark';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  function getSystem(){
+    if(typeof window==='undefined')return{theme:'dark',lang:'pt'};
+    return{
+      theme:window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light',
+      lang:navigator.language?.toLowerCase().startsWith('pt')?'pt':'en'
+    };
   }
-  
-  function getSystemLanguage() {
-    if (typeof navigator === 'undefined') return 'pt';
-    const browserLang = navigator.language || navigator.languages?.[0] || 'pt';
-    return browserLang.toLowerCase().startsWith('pt') ? 'pt' : 'en';
+  function getStored(key){
+    try{
+      const stored=localStorage.getItem(key);
+      return stored?JSON.parse(stored):null;
+    }catch{return null;}
   }
-  
-  function getStoredData(key) {
-    try {
-      const stored = localStorage.getItem(key);
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
+  function apply(mode,lang){
+    const root=document.documentElement;
+    root.setAttribute('data-theme',mode);
+    root.setAttribute('data-language',lang);
+    root.lang=lang==='pt'?'pt-BR':'en-US';
+    
+    if(mode==='dark'){
+      root.style.setProperty('--bg-primary','#0A0A0B');
+      root.style.setProperty('--text-primary','#FFFFFF');
+      root.style.setProperty('--bg-secondary','#141416');
+      root.style.setProperty('--bg-elevated','#1A1A1C');
+    }else{
+      root.style.setProperty('--bg-primary','#FFFFFF');
+      root.style.setProperty('--text-primary','#1A1A1A');
+      root.style.setProperty('--bg-secondary','#F8F9FA');
+      root.style.setProperty('--bg-elevated','#FFFFFF');
     }
   }
-  
-  function applyBasicTheme(mode) {
-    const root = document.documentElement;
-    root.setAttribute('data-theme', mode);
+  try{
+    const system=getSystem();
+    const themeData=getStored('classical-music-theme');
+    const langData=getStored('opus-atlas-language');
     
-    if (mode === 'dark') {
-      root.style.setProperty('--bg-primary', '#0A0A0B');
-      root.style.setProperty('--text-primary', '#FFFFFF');
-      root.style.setProperty('--bg-secondary', '#141416');
-      root.style.setProperty('--bg-elevated', '#1A1A1C');
-    } else {
-      root.style.setProperty('--bg-primary', '#FFFFFF');
-      root.style.setProperty('--text-primary', '#1A1A1A');
-      root.style.setProperty('--bg-secondary', '#F8F9FA');
-      root.style.setProperty('--bg-elevated', '#FFFFFF');
-    }
-  }
-  
-  function determineTheme() {
-    const themeData = getStoredData('classical-music-theme');
-    if (themeData?.state?.hasUserPreference) {
-      return themeData.state.mode || 'dark';
-    }
-    return getSystemTheme();
-  }
-  
-  function determineLanguage() {
-    const langData = getStoredData('opus-atlas-language');
-    if (langData?.state?.hasUserPreference) {
-      return langData.state.language || 'pt';
-    }
-    return getSystemLanguage();
-  }
-  
-  // 🚀 Aplicar configurações
-  try {
-    const theme = determineTheme();
-    const language = determineLanguage();
+    const theme=themeData?.state?.hasUserPreference?themeData.state.mode:system.theme;
+    const language=langData?.state?.hasUserPreference?langData.state.language:system.lang;
     
-    applyBasicTheme(theme);
-    document.documentElement.setAttribute('data-language', language);
-    
-    // 🆕 Atualizar lang do HTML dinamicamente
-    document.documentElement.lang = language === 'pt' ? 'pt-BR' : 'en-US';
-    
-  } catch (error) {
-    applyBasicTheme('dark');
-    document.documentElement.setAttribute('data-language', 'pt');
-    document.documentElement.lang = 'pt-BR';
+    apply(theme||'dark',language||'pt');
+  }catch{
+    apply('dark','pt');
   }
 })();`;
 
@@ -197,17 +171,20 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // 🆕 Obter linguagem para o HTML inicial
   const serverLanguage = await getServerLanguageStatic();
   const htmlLang = serverLanguage === 'pt' ? 'pt-BR' : 'en-US';
 
   return (
     <html lang={htmlLang} suppressHydrationWarning>
       <head>
-        {/* 🎯 Script anti-flash - DEVE ser o primeiro */}
+        {/* 🚀 Script anti-flash otimizado */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
 
-        {/* Meta tags de tema */}
+        {/* 🚀 Preconnect para analytics - acelerar carregamento */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://analytics.opusatlas.com.br" />
+
+        {/* Meta tags essenciais */}
         <meta name="color-scheme" content="dark light" />
         <meta
           name="theme-color"
@@ -220,11 +197,13 @@ export default async function RootLayout({
           content="#0a0a0b"
         />
 
-        {/* SEO e favicons */}
+        {/* SEO */}
         <meta
           name="google-site-verification"
           content="XC9v3XyFFCT6IhoCOH1NuuhJBju232tXhlZDCcNEiFU"
         />
+
+        {/* Favicons otimizados */}
         <link
           rel="icon"
           type="image/png"
@@ -240,43 +219,29 @@ export default async function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
 
-        {/* Meta adicional para favicons */}
         <meta name="msapplication-TileColor" content="#da532c" />
-        <meta name="theme-color" content="#ffffff" />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <ClientThemeWrapper>
           <AuthProvider>{children}</AuthProvider>
         </ClientThemeWrapper>
 
-        {/* 🆕 Google Analytics 4 */}
+        {/* 🚀 Analytics otimizados - carregamento assíncrono */}
         {process.env.NODE_ENV === 'production' && (
           <>
             <Script
               src="https://www.googletagmanager.com/gtag/js?id=G-W2993PXTWQ"
               strategy="afterInteractive"
             />
-            <Script id="google-analytics" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'G-W2993PXTWQ', {
-                  page_title: document.title,
-                  page_location: window.location.href,
-                });
-              `}
+            <Script id="ga" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-W2993PXTWQ');`}
             </Script>
+            <Script
+              src="https://analytics.opusatlas.com.br/analytics"
+              data-website-id="f3475284-e507-4e7e-af4a-3a1ecd932652"
+              strategy="afterInteractive"
+            />
           </>
-        )}
-
-        {/* Umami Analytics */}
-        {process.env.NODE_ENV === 'production' && (
-          <Script
-            src="https://analytics.opusatlas.com.br/analytics"
-            data-website-id="f3475284-e507-4e7e-af4a-3a1ecd932652"
-            strategy="afterInteractive"
-          />
         )}
       </body>
     </html>
