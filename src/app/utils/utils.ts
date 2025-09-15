@@ -4135,7 +4135,7 @@ export const musicalFacts = [
       pt: 'Ottaviano Petrucci foi o primeiro a imprimir música em moveable type (1501), revolucionando a disseminação de partituras na Europa.',
       en: 'Ottaviano Petrucci was the first to print music with moveable type (1501), revolutionizing the dissemination of sheet music in Europe.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '27',
@@ -4149,7 +4149,7 @@ export const musicalFacts = [
       pt: 'O madrigal renascentista combinava poesia refinada com música polifônica complexa, sendo o equivalente musical da literatura humanística.',
       en: 'The Renaissance madrigal combined refined poetry with complex polyphonic music, being the musical equivalent of humanistic literature.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '28',
@@ -4163,7 +4163,7 @@ export const musicalFacts = [
       pt: 'A técnica de imitação polifônica, onde cada voz repete o mesmo tema em momentos diferentes, foi aperfeiçoada no Renascimento.',
       en: 'The technique of polyphonic imitation, where each voice repeats the same theme at different times, was perfected in the Renaissance.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '29',
@@ -4177,7 +4177,7 @@ export const musicalFacts = [
       pt: 'A "Missa Pange Lingua" de Josquin des Prez é considerada uma das obras-primas da polifonia renascentista, baseada em um hino gregoriano.',
       en: 'Josquin des Prez\'s "Missa Pange Lingua" is considered one of the masterpieces of Renaissance polyphony, based on a Gregorian hymn.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '30',
@@ -4191,7 +4191,7 @@ export const musicalFacts = [
       pt: 'O Concílio de Trento (1545-1563) quase baniu a polifonia da música sacra, mas a "Missa Papae Marcelli" de Palestrina a salvou.',
       en: 'The Council of Trent (1545-1563) almost banned polyphony from sacred music, but Palestrina\'s "Missa Papae Marcelli" saved it.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '31',
@@ -4205,7 +4205,7 @@ export const musicalFacts = [
       pt: 'Os compositores franco-flamengos dominaram a música europeia por 200 anos, espalhando-se por toda a Europa como maestros de capela.',
       en: 'Franco-Flemish composers dominated European music for 200 years, spreading throughout Europe as chapel masters.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '32',
@@ -4219,7 +4219,7 @@ export const musicalFacts = [
       pt: 'O cravo se tornou o rei dos instrumentos de teclado no Renascimento, com alguns exemplares tendo dois teclados e pedais.',
       en: 'The harpsichord became the king of keyboard instruments in the Renaissance, with some examples having two keyboards and pedals.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '33',
@@ -4233,7 +4233,7 @@ export const musicalFacts = [
       pt: 'A chanson francesa renascentista influenciou toda a música secular europeia, com compositores como Clément Janequin imitando sons da natureza.',
       en: 'The Renaissance French chanson influenced all European secular music, with composers like Clément Janequin imitating sounds of nature.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '34',
@@ -4247,7 +4247,7 @@ export const musicalFacts = [
       pt: 'Os compositores renascentistas desenvolveram a arte de "pintar" palavras com música, usando técnicas como melismas em palavras como "alegria".',
       en: 'Renaissance composers developed the art of "painting" words with music, using techniques like melismas on words like "joy."',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '35',
@@ -4261,7 +4261,7 @@ export const musicalFacts = [
       pt: 'As danças de corte renascentistas como pavana e galharda eram verdadeiros espetáculos sociais, com coreografias complexas.',
       en: 'Renaissance court dances like pavane and galliard were true social spectacles, with complex choreographies.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '36',
@@ -4275,7 +4275,7 @@ export const musicalFacts = [
       pt: 'A Camerata Florentina tentou recriar o drama grego antigo, acabando por inventar a ópera no final do século XVI.',
       en: 'The Florentine Camerata attempted to recreate ancient Greek drama, eventually inventing opera at the end of the 16th century.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '37',
@@ -4289,7 +4289,7 @@ export const musicalFacts = [
       pt: 'O "Lamento di Arianna" de Monteverdi foi tão popular que existia em versão operística e em versão madrigal.',
       en: 'Monteverdi\'s "Lamento di Arianna" was so popular that it existed in both operatic and madrigal versions.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '38',
@@ -4303,7 +4303,7 @@ export const musicalFacts = [
       pt: 'No Renascimento, a família das violas tinha seis tamanhos diferentes, do soprano ao contra-baixo, cada um com afinação específica.',
       en: 'In the Renaissance, the viola family had six different sizes, from soprano to contrabass, each with specific tuning.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '39',
@@ -4317,7 +4317,7 @@ export const musicalFacts = [
       pt: 'A Basílica de São Marcos em Veneza tinha dois coros opostos, criando o estilo policoral com efeitos estereofônicos únicos.',
       en: "St. Mark's Basilica in Venice had two opposing choirs, creating the polychoral style with unique stereophonic effects.",
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '40',
@@ -4331,7 +4331,7 @@ export const musicalFacts = [
       pt: 'A técnica do cantus firmus usava melodias pré-existentes (geralmente gregorianas) como base estrutural para composições polifônicas.',
       en: 'The cantus firmus technique used pre-existing melodies (usually Gregorian) as structural basis for polyphonic compositions.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '41',
@@ -4345,7 +4345,7 @@ export const musicalFacts = [
       pt: '"El Maestro" de Luis de Milán (1536) foi o primeiro livro de música para vihuela impresso na Espanha, influenciando toda a música de cordas.',
       en: '"El Maestro" by Luis de Milán (1536) was the first vihuela music book printed in Spain, influencing all string music.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '42',
@@ -4359,7 +4359,7 @@ export const musicalFacts = [
       pt: 'Os intermezzi eram espetáculos musicais entre os atos de peças teatrais, precursores diretos da ópera barroca.',
       en: 'Intermezzi were musical spectacles between acts of theatrical plays, direct precursors to Baroque opera.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '43',
@@ -4373,7 +4373,7 @@ export const musicalFacts = [
       pt: 'Houve uma verdadeira "guerra" estilística entre madrigalistas italianos, com compositores criando versões rivais das mesmas poesias.',
       en: 'There was a true stylistic "war" between Italian madrigalists, with composers creating rival versions of the same poems.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '44',
@@ -4387,7 +4387,7 @@ export const musicalFacts = [
       pt: 'A sacabuxa renascentista era o ancestral do trombone moderno, mas com sonoridade mais suave e adaptada à música vocal.',
       en: 'The Renaissance sackbut was the ancestor of the modern trombone, but with softer sound adapted to vocal music.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '45',
@@ -4401,7 +4401,7 @@ export const musicalFacts = [
       pt: 'O Cancionero de Palacio preserva a música da corte espanhola dos Reis Católicos, mostrando a fusão de tradições cristãs, árabes e judaicas.',
       en: 'The Cancionero de Palacio preserves music from the Spanish court of the Catholic Monarchs, showing the fusion of Christian, Arab, and Jewish traditions.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '46',
@@ -4415,7 +4415,7 @@ export const musicalFacts = [
       pt: 'A musica ficta permitia aos intérpretes acrescentar acidentes não escritos, criando uma dimensão interpretativa perdida hoje.',
       en: 'Musica ficta allowed performers to add unwritten accidentals, creating an interpretive dimension lost today.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '47',
@@ -4429,7 +4429,7 @@ export const musicalFacts = [
       pt: "A commedia dell'arte influenciou a música renascentista, com compositores criando canções para os personagens típicos como Arlequim.",
       en: "Commedia dell'arte influenced Renaissance music, with composers creating songs for typical characters like Harlequin.",
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '48',
@@ -4443,7 +4443,7 @@ export const musicalFacts = [
       pt: 'O temperamento mesotônico renascentista privilegiava certas tonalidades, criando cores harmônicas distintas para cada tom.',
       en: 'Renaissance meantone temperament favored certain keys, creating distinct harmonic colors for each tone.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '49',
@@ -4457,7 +4457,7 @@ export const musicalFacts = [
       pt: 'O rei Henrique VIII da Inglaterra era compositor talentoso, tendo escrito "Greensleeves" e outras canções populares.',
       en: 'King Henry VIII of England was a talented composer, having written "Greensleeves" and other popular songs.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
   {
     id: '50',
@@ -4471,7 +4471,7 @@ export const musicalFacts = [
       pt: 'O "consort" inglês reunia instrumentos da mesma família (como violas) em diferentes tamanhos, criando texturas homogêneas únicas.',
       en: 'The English "consort" brought together instruments of the same family (like viols) in different sizes, creating unique homogeneous textures.',
     },
-    category: 'Renaissance',
+    category: 'Renascimento',
   },
 
   // PERÍODO BARROCO (50 curiosidades)
@@ -4487,7 +4487,7 @@ export const musicalFacts = [
       pt: 'Johann Sebastian Bach teve 20 filhos, e quatro deles (Wilhelm Friedemann, Carl Philipp Emanuel, Johann Christoph Friedrich e Johann Christian) tornaram-se compositores renomados.',
       en: 'Johann Sebastian Bach had 20 children, and four of them (Wilhelm Friedemann, Carl Philipp Emanuel, Johann Christoph Friedrich, and Johann Christian) became renowned composers.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '52',
@@ -4501,7 +4501,7 @@ export const musicalFacts = [
       pt: 'A primeira ópera conhecida, "Dafne" de Jacopo Peri (1598), marcou o nascimento de um gênero que dominaria a música por séculos.',
       en: 'The first known opera, "Dafne" by Jacopo Peri (1598), marked the birth of a genre that would dominate music for centuries.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '53',
@@ -4515,7 +4515,7 @@ export const musicalFacts = [
       pt: 'O baixo contínuo (basso continuo) era a "espinha dorsal" da música barroca, com cravo ou órgão realizando harmonias a partir de cifras.',
       en: 'The basso continuo was the "backbone" of Baroque music, with harpsichord or organ realizing harmonies from figured bass.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '54',
@@ -4529,7 +4529,7 @@ export const musicalFacts = [
       pt: 'Luís XIV, o Rei Sol, dançava pessoalmente nas óperas de Lully, estabelecendo a ópera francesa como espetáculo da realeza.',
       en: "Louis XIV, the Sun King, personally danced in Lully's operas, establishing French opera as a royal spectacle.",
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '55',
@@ -4543,7 +4543,7 @@ export const musicalFacts = [
       pt: 'Antonio Stradivari (1644-1737) produziu cerca de 1.100 instrumentos, dos quais 650 sobrevivem hoje, valendo milhões de dólares cada.',
       en: 'Antonio Stradivari (1644-1737) produced about 1,100 instruments, of which 650 survive today, each worth millions of dollars.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '56',
@@ -4557,7 +4557,7 @@ export const musicalFacts = [
       pt: 'Bach foi quase esquecido após sua morte, sendo redescoberto apenas quando Mendelssohn regeu a "Paixão segundo São Mateus" em 1829.',
       en: 'Bach was almost forgotten after his death, being rediscovered only when Mendelssohn conducted the "St. Matthew Passion" in 1829.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '57',
@@ -4571,7 +4571,7 @@ export const musicalFacts = [
       pt: 'A fuga barroca é como uma conversa musical onde um tema é apresentado e depois imitado por outras vozes em diferentes alturas.',
       en: 'The Baroque fugue is like a musical conversation where a theme is presented and then imitated by other voices at different pitches.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '58',
@@ -4585,7 +4585,7 @@ export const musicalFacts = [
       pt: 'Os castrati eram cantores masculinos castrados na infância para manter voz aguda, sendo as maiores estrelas da ópera barroca.',
       en: 'Castrati were male singers castrated in childhood to maintain high voices, being the biggest stars of Baroque opera.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '59',
@@ -4599,7 +4599,7 @@ export const musicalFacts = [
       pt: 'Bach demonstrou as possibilidades do temperamento igual no "Cravo Bem Temperado", permitindo tocar em todas as 24 tonalidades.',
       en: 'Bach demonstrated the possibilities of equal temperament in "The Well-Tempered Clavier," allowing performance in all 24 keys.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '60',
@@ -4613,7 +4613,7 @@ export const musicalFacts = [
       pt: 'A "Música Aquática" de Händel foi composta para acompanhar o rei Jorge I numa festa em barcos no Rio Tâmisa em 1717.',
       en: 'Handel\'s "Water Music" was composed to accompany King George I at a boat party on the River Thames in 1717.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '61',
@@ -4627,7 +4627,7 @@ export const musicalFacts = [
       pt: 'Os trompetes barrocos não tinham válvulas e tocavam apenas notas da série harmônica, exigindo técnica extraordinária dos músicos.',
       en: 'Baroque trumpets had no valves and played only notes from the harmonic series, requiring extraordinary technique from musicians.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '62',
@@ -4641,7 +4641,7 @@ export const musicalFacts = [
       pt: 'Vivaldi não era apenas compositor, mas também empresário musical, produzindo suas próprias óperas e gerenciando teatros em Veneza.',
       en: 'Vivaldi was not only a composer but also a musical entrepreneur, producing his own operas and managing theaters in Venice.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '63',
@@ -4655,7 +4655,7 @@ export const musicalFacts = [
       pt: 'A teoria dos Affekt (afetos) ditava que cada peça deveria expressar uma única emoção de forma consistente e intensa.',
       en: 'The theory of Affekt (affects) dictated that each piece should express a single emotion consistently and intensely.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '64',
@@ -4669,7 +4669,7 @@ export const musicalFacts = [
       pt: 'Vivaldi escreveu "As Quatro Estações" como música programática, incluindo sonetos que descrevem cada movimento de forma detalhada.',
       en: 'Vivaldi wrote "The Four Seasons" as programmatic music, including sonnets that describe each movement in detail.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '65',
@@ -4683,7 +4683,7 @@ export const musicalFacts = [
       pt: 'O concerto grosso criou o contraste entre solistas (concertino) e orquestra (ripieno), estabelecendo o princípio do concerto moderno.',
       en: 'The concerto grosso created contrast between soloists (concertino) and orchestra (ripieno), establishing the principle of the modern concerto.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '66',
@@ -4697,7 +4697,7 @@ export const musicalFacts = [
       pt: 'Jean-Philippe Rameau revolucionou a teoria musical com seu "Tratado de Harmonia" (1722), estabelecendo bases da harmonia tonal.',
       en: 'Jean-Philippe Rameau revolutionized music theory with his "Treatise on Harmony" (1722), establishing the foundations of tonal harmony.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '67',
@@ -4711,7 +4711,7 @@ export const musicalFacts = [
       pt: 'O cravo barroco não podia fazer crescendos ou diminuendos, mas compensava com ornamentação elaborada e registros variados.',
       en: 'The Baroque harpsichord could not make crescendos or diminuendos, but compensated with elaborate ornamentation and varied registrations.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '68',
@@ -4725,7 +4725,7 @@ export const musicalFacts = [
       pt: 'Händel e Bach nasceram no mesmo ano (1685) na Alemanha, mas Händel tornou-se famoso internacionalmente enquanto Bach permaneceu local.',
       en: 'Handel and Bach were born in the same year (1685) in Germany, but Handel became internationally famous while Bach remained local.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '69',
@@ -4739,7 +4739,7 @@ export const musicalFacts = [
       pt: 'A forma ritornello alterava seções do grupo completo (tutti) com seções solísticas, criando dinamismo e contraste.',
       en: 'The ritornello form alternated full ensemble (tutti) sections with solo sections, creating dynamism and contrast.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '70',
@@ -4753,7 +4753,7 @@ export const musicalFacts = [
       pt: 'A música em Versalhes seguia etiqueta rígida: até a duração das peças era determinada pelo protocolo real francês.',
       en: 'Music at Versailles followed strict etiquette: even the duration of pieces was determined by French royal protocol.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '71',
@@ -4767,7 +4767,7 @@ export const musicalFacts = [
       pt: 'Os tímpanos barrocos eram afinados manualmente com chaves, limitando as mudanças de altura durante a performance.',
       en: 'Baroque timpani were tuned manually with keys, limiting pitch changes during performance.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '72',
@@ -4781,7 +4781,7 @@ export const musicalFacts = [
       pt: 'A ópera seria seguia regras rígidas: exatamente seis personagens, alternância de recitativos e árias, e finais felizes obrigatórios.',
       en: 'Opera seria followed strict rules: exactly six characters, alternation of recitatives and arias, and mandatory happy endings.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '73',
@@ -4795,7 +4795,7 @@ export const musicalFacts = [
       pt: 'A suíte barroca padronizou a sequência Allemande-Courante-Sarabande-Gigue, representando diferentes países e características.',
       en: 'The Baroque suite standardized the sequence Allemande-Courante-Sarabande-Gigue, representing different countries and characteristics.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '74',
@@ -4809,7 +4809,7 @@ export const musicalFacts = [
       pt: 'Farinelli, o castrato mais famoso, tinha alcance vocal de três oitavas e meio e podia sustentar notas por mais de um minuto.',
       en: 'Farinelli, the most famous castrato, had a vocal range of three and a half octaves and could sustain notes for over a minute.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '75',
@@ -4823,7 +4823,7 @@ export const musicalFacts = [
       pt: 'A ornamentação barroca era parcialmente improvisada, com cada país desenvolvendo símbolos e estilos próprios de decoração.',
       en: 'Baroque ornamentation was partially improvised, with each country developing its own symbols and decoration styles.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '76',
@@ -4837,7 +4837,7 @@ export const musicalFacts = [
       pt: 'Bach compôs pelo menos cinco Paixões, mas apenas duas sobreviveram completas: segundo São Mateus e segundo São João.',
       en: 'Bach composed at least five Passions, but only two survived complete: St. Matthew and St. John.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '77',
@@ -4851,7 +4851,7 @@ export const musicalFacts = [
       pt: 'A viola da gamba tinha até sete cordas e trastes, permitindo expressividade única que influenciou compositores como Bach.',
       en: 'The viola da gamba had up to seven strings and frets, allowing unique expressiveness that influenced composers like Bach.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '78',
@@ -4865,7 +4865,7 @@ export const musicalFacts = [
       pt: 'Nápoles era o centro mundial da ópera no século XVIII, com conservatórios que treinavam os melhores cantores da Europa.',
       en: 'Naples was the world center of opera in the 18th century, with conservatories that trained the best singers in Europe.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '79',
@@ -4879,7 +4879,7 @@ export const musicalFacts = [
       pt: 'Bach criou as "Invenções" especificamente como material didático, estabelecendo princípios pedagógicos ainda usados hoje.',
       en: 'Bach created the "Inventions" specifically as didactic material, establishing pedagogical principles still used today.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '80',
@@ -4893,7 +4893,7 @@ export const musicalFacts = [
       pt: 'Bach compôs a humorística "Cantata do Café" satirizando o vício feminino no café, bebida nova e controversa na época.',
       en: 'Bach composed the humorous "Coffee Cantata" satirizing women\'s addiction to coffee, a new and controversial drink at the time.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '81',
@@ -4907,7 +4907,7 @@ export const musicalFacts = [
       pt: 'O cânone barroco era mathematical music, com vozes seguindo regras estritas de imitação em diferentes intervalos de tempo.',
       en: 'The Baroque canon was mathematical music, with voices following strict rules of imitation at different time intervals.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '82',
@@ -4921,7 +4921,7 @@ export const musicalFacts = [
       pt: 'Os intermezzi cômicos entre atos de óperas sérias acabaram evoluindo para a ópera bufa, gênero independente.',
       en: 'Comic intermezzi between acts of serious operas eventually evolved into opera buffa, an independent genre.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '83',
@@ -4935,7 +4935,7 @@ export const musicalFacts = [
       pt: 'A trompa natural barroca usava diferentes tubos (crooks) para mudar de tonalidade, cada um alterando a cor do som.',
       en: 'The Baroque natural horn used different crooks to change key, each altering the color of sound.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '84',
@@ -4949,7 +4949,7 @@ export const musicalFacts = [
       pt: 'As "tempestades" eram tópica musical barroca, com escalas rápidas, tremolo e dinâmicas contrastantes pintando a fúria natural.',
       en: 'Musical "storms" were a Baroque topic, with rapid scales, tremolo, and contrasting dynamics painting natural fury.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '85',
@@ -4963,7 +4963,7 @@ export const musicalFacts = [
       pt: 'O sistema de partitura moderno, com chaves, armaduras e fórmulas de compasso padronizadas, foi estabelecido no Barroco.',
       en: 'The modern score system, with standardized clefs, key signatures, and time signatures, was established in the Baroque.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '86',
@@ -4977,7 +4977,7 @@ export const musicalFacts = [
       pt: 'A Ópera de Hambúrgo foi o primeiro teatro lírico público da Alemanha, democratizando o acesso à ópera além da aristocracia.',
       en: 'Hamburg Opera was the first public opera house in Germany, democratizing access to opera beyond the aristocracy.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '87',
@@ -4991,7 +4991,7 @@ export const musicalFacts = [
       pt: 'O madrigalismo barroco levou a pintura musical ao extremo, com notas literalmente "subindo" em palavras como "céu".',
       en: 'Baroque madrigalism took musical painting to extremes, with notes literally "ascending" on words like "heaven."',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '88',
@@ -5005,7 +5005,7 @@ export const musicalFacts = [
       pt: 'As Variações Goldberg foram encomendadas pelo Conde Keyserlingk para curar sua insônia, devendo ser tocadas durante a noite.',
       en: 'The Goldberg Variations were commissioned by Count Keyserlingk to cure his insomnia, meant to be played during the night.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '89',
@@ -5019,7 +5019,7 @@ export const musicalFacts = [
       pt: 'O clavicórdio permitia vibrato (bebung) e controle dinâmico, sendo o instrumento de teclado mais expressivo da época.',
       en: 'The clavichord allowed vibrato (bebung) and dynamic control, being the most expressive keyboard instrument of the era.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '90',
@@ -5033,7 +5033,7 @@ export const musicalFacts = [
       pt: 'A "Guerre des Bouffons" em Paris dividiu intelectuais entre ópera francesa (Rameau) e italiana (Pergolesi), influenciando a estética.',
       en: 'The "Guerre des Bouffons" in Paris divided intellectuals between French opera (Rameau) and Italian (Pergolesi), influencing aesthetics.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '91',
@@ -5047,7 +5047,7 @@ export const musicalFacts = [
       pt: 'A forma sonata começou a emergir no Barroco tardio, com Domenico Scarlatti explorando desenvolvimentos temáticos em suas sonatas.',
       en: 'Sonata form began to emerge in the late Baroque, with Domenico Scarlatti exploring thematic developments in his sonatas.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '92',
@@ -5061,7 +5061,7 @@ export const musicalFacts = [
       pt: 'A música de câmara barroca era literalmente música para "câmaras" (quartos) pequenos, contrastando com música de igreja ou teatro.',
       en: 'Baroque chamber music was literally music for small "chambers" (rooms), contrasting with church or theater music.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '93',
@@ -5075,7 +5075,7 @@ export const musicalFacts = [
       pt: 'Compositores barrocos estudavam retórica clássica, aplicando figuras de linguagem como anáfora e quiasmo na música.',
       en: 'Baroque composers studied classical rhetoric, applying figures of speech like anaphora and chiasmus in music.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '94',
@@ -5089,7 +5089,7 @@ export const musicalFacts = [
       pt: 'Arcangelo Corelli estabeleceu a escola italiana de violino, padronizando técnicas de arco e dedilhado ainda usadas hoje.',
       en: 'Arcangelo Corelli established the Italian violin school, standardizing bow and fingering techniques still used today.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '95',
@@ -5103,7 +5103,7 @@ export const musicalFacts = [
       pt: 'No Barroco existiam flautas em várias afinações (soprano, alto, tenor), cada uma com características timbrísticas específicas.',
       en: 'In the Baroque there were flutes in various tunings (soprano, alto, tenor), each with specific timbral characteristics.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '96',
@@ -5117,7 +5117,7 @@ export const musicalFacts = [
       pt: 'Bach copiava música de outros compositores para estudo, incluindo toda a obra de Vivaldi, absorvendo o estilo italiano.',
       en: "Bach copied music by other composers for study, including all of Vivaldi's work, absorbing the Italian style.",
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '97',
@@ -5131,7 +5131,7 @@ export const musicalFacts = [
       pt: 'O recitativo secco (com apenas cravo) permitia declamação natural do texto, aproximando a ópera da fala humana.',
       en: 'Recitativo secco (with harpsichord only) allowed natural text declamation, bringing opera closer to human speech.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '98',
@@ -5145,7 +5145,7 @@ export const musicalFacts = [
       pt: 'A Academia de Arcádia em Roma padronizou libretos de ópera, estabelecendo temas pastorais e estruturas dramáticas.',
       en: 'The Arcadian Academy in Rome standardized opera librettos, establishing pastoral themes and dramatic structures.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '99',
@@ -5159,7 +5159,7 @@ export const musicalFacts = [
       pt: 'O estilo concertato barroco contrastava grupos instrumentais e vocais, criando efeitos de eco e diálogo espacial.',
       en: 'The Baroque concertato style contrasted instrumental and vocal groups, creating echo effects and spatial dialogue.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
   {
     id: '100',
@@ -5173,7 +5173,7 @@ export const musicalFacts = [
       pt: 'Bach morreu enquanto trabalhava na "Arte da Fuga", deixando a última fuga incompleta precisamente onde introduz seu nome.',
       en: 'Bach died while working on "The Art of Fugue," leaving the last fugue incomplete precisely where he introduces his name.',
     },
-    category: 'Baroque',
+    category: 'Barroco',
   },
 
   // PERÍODO CLÁSSICO (50 curiosidades)
@@ -5189,7 +5189,7 @@ export const musicalFacts = [
       pt: 'Mozart começou a compor aos 5 anos e escreveu sua primeira sinfonia aos 8 anos, demonstrando um talento extraordinário desde a infância.',
       en: 'Mozart began composing at age 5 and wrote his first symphony at age 8, demonstrating extraordinary talent from childhood.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '102',
@@ -5203,7 +5203,7 @@ export const musicalFacts = [
       pt: 'A forma sonata clássica (exposição-desenvolvimento-recapitulação) tornou-se a estrutura fundamental da música instrumental.',
       en: 'Classical sonata form (exposition-development-recapitulation) became the fundamental structure of instrumental music.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '103',
@@ -5217,7 +5217,7 @@ export const musicalFacts = [
       pt: 'O fortepiano substituiu o cravo por permitir dinâmicas graduais, revolucionando a expressividade musical no período clássico.',
       en: 'The fortepiano replaced the harpsichord by allowing gradual dynamics, revolutionizing musical expressiveness in the Classical period.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '104',
@@ -5231,7 +5231,7 @@ export const musicalFacts = [
       pt: 'O estilo clássico priorizava clareza formal, equilíbrio entre seções e elegância melódica sobre complexidade contrapuntística.',
       en: 'The Classical style prioritized formal clarity, balance between sections, and melodic elegance over contrapuntal complexity.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '105',
@@ -5245,7 +5245,7 @@ export const musicalFacts = [
       pt: 'Haydn compôs 104 sinfonias, estabelecendo o gênero sinfônico e ganhando o título de "Pai da Sinfonia".',
       en: 'Haydn composed 104 symphonies, establishing the symphonic genre and earning the title "Father of the Symphony."',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '106',
@@ -5259,7 +5259,7 @@ export const musicalFacts = [
       pt: 'A ópera buffa democratizou a ópera com personagens comuns e situações cotidianas, contrastando com a ópera seria aristocrática.',
       en: 'Opera buffa democratized opera with common characters and everyday situations, contrasting with aristocratic opera seria.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '107',
@@ -5273,7 +5273,7 @@ export const musicalFacts = [
       pt: 'Haydn praticamente inventou o quarteto de cordas moderno, compondo 83 quartetos que definiram o gênero.',
       en: 'Haydn virtually invented the modern string quartet, composing 83 quartets that defined the genre.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '108',
@@ -5287,7 +5287,7 @@ export const musicalFacts = [
       pt: 'Mozart foi um dos primeiros compositores a explorar totalmente o clarinete, escrevendo seu famoso Concerto em Lá maior.',
       en: 'Mozart was one of the first composers to fully explore the clarinet, writing his famous Concerto in A major.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '109',
@@ -5301,7 +5301,7 @@ export const musicalFacts = [
       pt: 'Mozart estava compondo seu Requiem quando morreu, deixando a obra inacabada e envolta em mistério até hoje.',
       en: 'Mozart was composing his Requiem when he died, leaving the work unfinished and shrouded in mystery to this day.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '110',
@@ -5315,7 +5315,7 @@ export const musicalFacts = [
       pt: 'Beethoven levou o desenvolvimento motívico ao extremo, construindo movimentos inteiros a partir de fragmentos melódicos simples.',
       en: 'Beethoven took motivic development to extremes, building entire movements from simple melodic fragments.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '111',
@@ -5329,7 +5329,7 @@ export const musicalFacts = [
       pt: 'Haydn trabalhou 30 anos para a família Esterházy, isolado mas com orquestra própria para experimentar suas composições.',
       en: 'Haydn worked 30 years for the Esterházy family, isolated but with his own orchestra to experiment with his compositions.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '112',
@@ -5343,7 +5343,7 @@ export const musicalFacts = [
       pt: 'O concerto clássico estabeleceu o padrão de três movimentos (rápido-lento-rápido) e a cadenza como momento de virtuosismo.',
       en: 'The Classical concerto established the three-movement pattern (fast-slow-fast) and the cadenza as a moment of virtuosity.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '113',
@@ -5357,7 +5357,7 @@ export const musicalFacts = [
       pt: 'A ópera "As Bodas de Fígaro" de Mozart foi inicialmente censurada por criticar a aristocracia, mas conseguiu estrear em Viena.',
       en: 'Mozart\'s opera "The Marriage of Figaro" was initially censored for criticizing the aristocracy, but managed to premiere in Vienna.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '114',
@@ -5371,7 +5371,7 @@ export const musicalFacts = [
       pt: 'A forma rondó (ABACA ou ABACABA) tornou-se padrão para movimentos finais, proporcionando leveza e memorabilidade.',
       en: 'The rondo form (ABACA or ABACABA) became standard for final movements, providing lightness and memorability.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '115',
@@ -5385,7 +5385,7 @@ export const musicalFacts = [
       pt: 'A Orquestra de Mannheim criou o "foguete de Mannheim" - escalas ascendentes rápidas que causavam sensação na audiência.',
       en: 'The Mannheim Orchestra created the "Mannheim rocket" - rapid ascending scales that caused sensation in the audience.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '116',
@@ -5399,7 +5399,7 @@ export const musicalFacts = [
       pt: 'No período clássico, os tímpanos começaram a ser afinados cromàticamente, expandindo suas possibilidades melódicas.',
       en: 'In the Classical period, timpani began to be tuned chromatically, expanding their melodic possibilities.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '117',
@@ -5413,7 +5413,7 @@ export const musicalFacts = [
       pt: 'Apesar do talento, Mozart teve problemas financeiros crônicos, morrendo pobre e sendo enterrado numa vala comum.',
       en: 'Despite his talent, Mozart had chronic financial problems, dying poor and being buried in a common grave.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '118',
@@ -5427,7 +5427,7 @@ export const musicalFacts = [
       pt: 'A orquestra clássica padronizou instrumentação: cordas, madeiras aos pares, 2 trompas e às vezes trompetes e tímpanos.',
       en: 'The Classical orchestra standardized instrumentation: strings, woodwinds in pairs, 2 horns and sometimes trumpets and timpani.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '119',
@@ -5441,7 +5441,7 @@ export const musicalFacts = [
       pt: 'Domenico Scarlatti compôs 555 sonatas para cravo, explorando técnicas que anteciparam o virtuosismo pianístico.',
       en: 'Domenico Scarlatti composed 555 sonatas for harpsichord, exploring techniques that anticipated pianistic virtuosity.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '120',
@@ -5455,7 +5455,7 @@ export const musicalFacts = [
       pt: 'O movimento "Sturm und Drang" influenciou compositores como Haydn a usar tonalidades menores e expressões dramáticas.',
       en: 'The "Sturm und Drang" movement influenced composers like Haydn to use minor keys and dramatic expressions.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '121',
@@ -5469,7 +5469,7 @@ export const musicalFacts = [
       pt: 'A "música turca" estava na moda no século XVIII, com Mozart incorporando percussão exótica no Rapto do Serralho.',
       en: 'Turkish music was fashionable in the 18th century, with Mozart incorporating exotic percussion in The Abduction from the Seraglio.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '122',
@@ -5483,7 +5483,7 @@ export const musicalFacts = [
       pt: 'O arco moderno foi aperfeiçoado por François Tourte, permitindo maior controle dinâmico e articulação.',
       en: 'The modern bow was perfected by François Tourte, allowing greater dynamic control and articulation.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '123',
@@ -5497,7 +5497,7 @@ export const musicalFacts = [
       pt: 'Carl Philipp Emanuel Bach, filho de J.S. Bach, foi considerado o maior compositor de sua época, influenciando Mozart.',
       en: "Carl Philipp Emanuel Bach, J.S. Bach's son, was considered the greatest composer of his time, influencing Mozart.",
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '124',
@@ -5511,7 +5511,7 @@ export const musicalFacts = [
       pt: 'O Singspiel alemão combinava música e diálogos falados, democratizando a ópera em língua vernácula.',
       en: 'German Singspiel combined music and spoken dialogue, democratizing opera in vernacular language.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '125',
@@ -5525,7 +5525,7 @@ export const musicalFacts = [
       pt: 'A "Sonata ao Luar" de Beethoven só recebeu esse nome após sua morte - ele a dedicou à Condessa Giulietta Guicciardi.',
       en: 'Beethoven\'s "Moonlight Sonata" only received this name after his death - he dedicated it to Countess Giulietta Guicciardi.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '126',
@@ -5539,7 +5539,7 @@ export const musicalFacts = [
       pt: 'As variações clássicas exploravam diferentes aspectos de um tema: ornamentação, mudança de modo, alteração rítmica.',
       en: 'Classical variations explored different aspects of a theme: ornamentation, mode change, rhythmic alteration.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '127',
@@ -5553,7 +5553,7 @@ export const musicalFacts = [
       pt: 'O minueto era a única forma de dança que sobreviveu na sinfonia clássica, sempre no terceiro movimento.',
       en: 'The minuet was the only dance form that survived in the Classical symphony, always in the third movement.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '128',
@@ -5567,7 +5567,7 @@ export const musicalFacts = [
       pt: 'Mozart revolucionou a escrita para trompa, tratando-a como instrumento melódico e não apenas de apoio harmônico.',
       en: 'Mozart revolutionized horn writing, treating it as a melodic instrument and not just harmonic support.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '129',
@@ -5581,7 +5581,7 @@ export const musicalFacts = [
       pt: 'O período clássico viu o nascimento dos concertos públicos, democratizando o acesso à música além da aristocracia.',
       en: 'The Classical period saw the birth of public concerts, democratizing access to music beyond the aristocracy.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '130',
@@ -5595,7 +5595,7 @@ export const musicalFacts = [
       pt: 'A impressão musical em larga escala permitiu disseminação internacional das obras, criando um "mercado" musical.',
       en: 'Large-scale music printing allowed international dissemination of works, creating a musical "market."',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '131',
@@ -5609,7 +5609,7 @@ export const musicalFacts = [
       pt: 'A 6ª Sinfonia de Beethoven foi uma das primeiras sinfonias programáticas, descrevendo cenas da vida rural.',
       en: "Beethoven's 6th Symphony was one of the first programmatic symphonies, describing scenes of rural life.",
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '132',
@@ -5623,7 +5623,7 @@ export const musicalFacts = [
       pt: 'As modulações clássicas seguiam rotas harmônicas previsíveis: tônica para dominante na exposição, explorações no desenvolvimento.',
       en: 'Classical modulations followed predictable harmonic routes: tonic to dominant in exposition, explorations in development.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '133',
@@ -5637,7 +5637,7 @@ export const musicalFacts = [
       pt: 'A ópera "Don Giovanni" de Mozart foi chamada de "ópera das óperas" por muitos críticos e compositores posteriores.',
       en: 'Mozart\'s opera "Don Giovanni" was called the "opera of operas" by many later critics and composers.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '134',
@@ -5651,7 +5651,7 @@ export const musicalFacts = [
       pt: 'Beethoven expandiu a sonata para piano de entretenimento doméstico para forma artística profunda e pessoal.',
       en: 'Beethoven expanded the piano sonata from domestic entertainment to a deep and personal artistic form.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '135',
@@ -5665,7 +5665,7 @@ export const musicalFacts = [
       pt: 'Beethoven começou a perder audição aos 28 anos, mas compôs suas obras mais importantes já completamente surdo.',
       en: 'Beethoven began losing his hearing at age 28, but composed his most important works while completely deaf.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '136',
@@ -5679,7 +5679,7 @@ export const musicalFacts = [
       pt: 'O período clássico estabeleceu a frase de 8 compassos (antecedente-consequente) como unidade básica da música.',
       en: 'The Classical period established the 8-bar phrase (antecedent-consequent) as the basic unit of music.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '137',
@@ -5693,7 +5693,7 @@ export const musicalFacts = [
       pt: 'Além de Mozart, o período clássico teve muitas crianças prodígio, incluindo Hummel, que estudou com Mozart.',
       en: 'Besides Mozart, the Classical period had many child prodigies, including Hummel, who studied with Mozart.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '138',
@@ -5707,7 +5707,7 @@ export const musicalFacts = [
       pt: 'Muitas obras clássicas seguem proporções matemáticas, com clímaxes ocorrendo em pontos de proporção áurea.',
       en: 'Many Classical works follow mathematical proportions, with climaxes occurring at golden ratio points.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '139',
@@ -5721,7 +5721,7 @@ export const musicalFacts = [
       pt: 'Mozart e Clementi fizeram uma famosa competição de piano diante do Imperador José II em 1781.',
       en: 'Mozart and Clementi had a famous piano competition before Emperor Joseph II in 1781.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '140',
@@ -5735,7 +5735,7 @@ export const musicalFacts = [
       pt: 'A flauta de madeira foi gradualmente substituída pela de metal no período clássico, mudando seu timbre.',
       en: 'The wooden flute was gradually replaced by metal in the Classical period, changing its timbre.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '141',
@@ -5749,7 +5749,7 @@ export const musicalFacts = [
       pt: 'As cartas de Mozart revelam sua personalidade irreverente e humor escatológico, contrastando com sua música sublime.',
       en: "Mozart's letters reveal his irreverent personality and scatological humor, contrasting with his sublime music.",
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '142',
@@ -5763,7 +5763,7 @@ export const musicalFacts = [
       pt: 'Gluck reformou a ópera eliminando ornamentação excessiva e priorizando drama e expressão natural.',
       en: 'Gluck reformed opera by eliminating excessive ornamentation and prioritizing drama and natural expression.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '143',
@@ -5777,7 +5777,7 @@ export const musicalFacts = [
       pt: 'Mozart odiava trabalhar para o Arcebispo de Salzburgo, chegando a ser literalmente "chutado" para fora do palácio.',
       en: 'Mozart hated working for the Archbishop of Salzburg, literally being "kicked" out of the palace.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '144',
@@ -5791,7 +5791,7 @@ export const musicalFacts = [
       pt: 'A cadência perfeita (V-I) tornou-se fundamental na música clássica, criando pontos de repouso estruturais.',
       en: 'The perfect cadence (V-I) became fundamental in Classical music, creating structural points of rest.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '145',
@@ -5805,7 +5805,7 @@ export const musicalFacts = [
       pt: 'A última sinfonia de Mozart (nº 41 "Júpiter") termina com uma fuga dupla que combina cinco temas simultaneamente.',
       en: 'Mozart\'s last symphony (No. 41 "Jupiter") ends with a double fugue that combines five themes simultaneously.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '146',
@@ -5819,7 +5819,7 @@ export const musicalFacts = [
       pt: 'O serpentão, precursor da tuba, era usado em igrejas e bandas militares por seu som poderoso nos graves.',
       en: 'The serpent, precursor to the tuba, was used in churches and military bands for its powerful bass sound.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '147',
@@ -5833,7 +5833,7 @@ export const musicalFacts = [
       pt: 'Haydn incluiu efeitos especiais como tiros de canhão na "Sinfonia Militar" e relógio na "Sinfonia do Relógio".',
       en: 'Haydn included special effects like cannon shots in the "Military Symphony" and clock in the "Clock Symphony."',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '148',
@@ -5847,7 +5847,7 @@ export const musicalFacts = [
       pt: 'O método de Clementi "Gradus ad Parnassum" estabeleceu princípios de ensino pianístico ainda usados hoje.',
       en: 'Clementi\'s method "Gradus ad Parnassum" established principles of piano teaching still used today.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '149',
@@ -5861,7 +5861,7 @@ export const musicalFacts = [
       pt: 'Os divertimenti eram música de entretenimento para eventos sociais, mais leves que sinfonias mas ainda sofisticados.',
       en: 'Divertimenti were entertainment music for social events, lighter than symphonies but still sophisticated.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   },
   {
     id: '150',
@@ -5875,7 +5875,7 @@ export const musicalFacts = [
       pt: 'O estilo galante priorizava melodias elegantes e acompanhamentos simples, rejeitando a complexidade barroca.',
       en: 'The galant style prioritized elegant melodies and simple accompaniments, rejecting Baroque complexity.',
     },
-    category: 'Classical',
+    category: 'Clássico',
   }, // PERÍODO ROMÂNTICO (50 curiosidades)
   {
     id: '151',
@@ -5889,7 +5889,7 @@ export const musicalFacts = [
       pt: 'Schumann dedicou seu "Ano das Canções" (1840) a Clara Wieck, compondo 138 lieder no ano de seu casamento.',
       en: 'Schumann dedicated his "Year of Songs" (1840) to Clara Wieck, composing 138 lieder in the year of their marriage.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '152',
@@ -5903,7 +5903,7 @@ export const musicalFacts = [
       pt: 'A "Sinfonia Fantástica" de Berlioz revolucionou a música sinfônica ao contar uma história específica através de música.',
       en: 'Berlioz\'s "Symphonie Fantastique" revolutionized symphonic music by telling a specific story through music.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '153',
@@ -5917,7 +5917,7 @@ export const musicalFacts = [
       pt: 'Franz Liszt causava "Lisztomania" - histeria coletiva em seus concertos, sendo considerado o primeiro popstar da música clássica.',
       en: 'Franz Liszt caused "Lisztomania" - collective hysteria at his concerts, being considered the first popstar of classical music.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '154',
@@ -5931,7 +5931,7 @@ export const musicalFacts = [
       pt: 'O rubato romântico permitia flexibilidade temporal expressiva, com Chopin sendo mestre nesta técnica interpretativa.',
       en: 'Romantic rubato allowed expressive temporal flexibility, with Chopin being a master of this interpretive technique.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '155',
@@ -5945,7 +5945,7 @@ export const musicalFacts = [
       pt: 'O piano romântico ganhou pedais, maior extensão e som mais poderoso, inspirando o virtuosismo de Liszt e Chopin.',
       en: 'The Romantic piano gained pedals, greater range, and more powerful sound, inspiring the virtuosity of Liszt and Chopin.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '156',
@@ -5959,7 +5959,7 @@ export const musicalFacts = [
       pt: 'Chopin criou o noturno pianístico moderno, inspirado nos noturnos para piano de John Field mas com maior sofisticação.',
       en: "Chopin created the modern pianistic nocturne, inspired by John Field's piano nocturnes but with greater sophistication.",
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '157',
@@ -5973,7 +5973,7 @@ export const musicalFacts = [
       pt: 'Wagner desenvolveu o sistema de leitmotiv - temas musicais associados a personagens, objetos ou ideias específicas.',
       en: 'Wagner developed the leitmotif system - musical themes associated with specific characters, objects, or ideas.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '158',
@@ -5987,7 +5987,7 @@ export const musicalFacts = [
       pt: 'Paganini era tão virtuoso que rumores diziam ter vendido a alma ao diabo - suas técnicas violinísticas pareciam impossíveis.',
       en: 'Paganini was so virtuosic that rumors said he had sold his soul to the devil - his violin techniques seemed impossible.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '159',
@@ -6001,7 +6001,7 @@ export const musicalFacts = [
       pt: 'O Romantismo valorizou formas pequenas como o lied, mazurca e impromptu, explorando momentos íntimos de expressão.',
       en: 'Romanticism valued small forms like the lied, mazurka, and impromptu, exploring intimate moments of expression.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '160',
@@ -6015,7 +6015,7 @@ export const musicalFacts = [
       pt: 'Os românticos se inspiravam na natureza e ruínas medievais - Mendelssohn compôs após visitar as Hébridas na Escócia.',
       en: 'Romantics were inspired by nature and medieval ruins - Mendelssohn composed after visiting the Hebrides in Scotland.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '161',
@@ -6029,7 +6029,7 @@ export const musicalFacts = [
       pt: 'A invenção das válvulas transformou trompetes e trompas em instrumentos cromáticos, expandindo suas possibilidades.',
       en: 'The invention of valves transformed trumpets and horns into chromatic instruments, expanding their possibilities.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '162',
@@ -6043,7 +6043,7 @@ export const musicalFacts = [
       pt: 'Berlioz baseou obras em Shakespeare, Byron e Goethe, estabelecendo conexões profundas entre música e literatura.',
       en: 'Berlioz based works on Shakespeare, Byron, and Goethe, establishing deep connections between music and literature.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '163',
@@ -6057,7 +6057,7 @@ export const musicalFacts = [
       pt: 'Berlioz e Liszt desenvolveram a forma cíclica, onde temas retornam transformados ao longo de obras multi-movimentos.',
       en: 'Berlioz and Liszt developed cyclical form, where themes return transformed throughout multi-movement works.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '164',
@@ -6071,7 +6071,7 @@ export const musicalFacts = [
       pt: 'Os "Estudos Transcendentais" de Liszt levaram a técnica pianística aos limites extremos da possibilidade humana.',
       en: 'Liszt\'s "Transcendental Études" pushed piano technique to the extreme limits of human possibility.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '165',
@@ -6085,7 +6085,7 @@ export const musicalFacts = [
       pt: 'Wagner revolucionou a ópera com "dramas musicais" onde música, texto e cenário formavam uma obra de arte total.',
       en: 'Wagner revolutionized opera with "music dramas" where music, text, and staging formed a total work of art.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '166',
@@ -6099,7 +6099,7 @@ export const musicalFacts = [
       pt: 'Liszt compôs "Années de Pèlerinage" baseado em suas viagens pela Suíça e Itália, criando "cartões postais" musicais.',
       en: 'Liszt composed "Années de Pèlerinage" based on his travels through Switzerland and Italy, creating musical "postcards."',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '167',
@@ -6113,7 +6113,7 @@ export const musicalFacts = [
       pt: 'O arco de Tourte e cordas de metal permitiram maior potência sonora, atendendo às demandas expressivas românticas.',
       en: 'The Tourte bow and metal strings allowed greater sonic power, meeting Romantic expressive demands.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '168',
@@ -6127,7 +6127,7 @@ export const musicalFacts = [
       pt: 'Brahms amou Clara Schumann por toda vida, mas nunca se casaram - essa tensão emocional permeia sua música.',
       en: 'Brahms loved Clara Schumann his whole life, but they never married - this emotional tension permeates his music.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '169',
@@ -6141,7 +6141,7 @@ export const musicalFacts = [
       pt: 'Liszt inventou o poema sinfônico - forma orquestral de um movimento que narra história ou evoca imagens.',
       en: 'Liszt invented the symphonic poem - a single-movement orchestral form that narrates a story or evokes images.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '170',
@@ -6155,7 +6155,7 @@ export const musicalFacts = [
       pt: 'As quatro baladas de Chopin foram inspiradas por poemas de Adam Mickiewicz, criando narrativas musicais abstratas.',
       en: "Chopin's four ballades were inspired by poems by Adam Mickiewicz, creating abstract musical narratives.",
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '171',
@@ -6169,7 +6169,7 @@ export const musicalFacts = [
       pt: 'Berlioz foi pioneiro na orquestração colorística, usando timbres instrumentais como um pintor usa cores.',
       en: 'Berlioz was a pioneer in coloristic orchestration, using instrumental timbres like a painter uses colors.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '172',
@@ -6183,7 +6183,7 @@ export const musicalFacts = [
       pt: 'Paganini se apresentava como showman, usando efeitos teatrais e chegando a tocar uma sonata inteira numa só corda.',
       en: 'Paganini performed as a showman, using theatrical effects and even playing an entire sonata on one string.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '173',
@@ -6197,7 +6197,7 @@ export const musicalFacts = [
       pt: 'O harmonium (órgão portátil) tornou-se popular na música doméstica, influenciando compositores como Dvořák.',
       en: 'The harmonium (portable organ) became popular in domestic music, influencing composers like Dvořák.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '174',
@@ -6211,7 +6211,7 @@ export const musicalFacts = [
       pt: 'Mendelssohn criou as "Canções sem Palavras" - peças pianísticas que cantam melodias sem texto.',
       en: 'Mendelssohn created "Songs without Words" - piano pieces that sing melodies without text.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '175',
@@ -6225,7 +6225,7 @@ export const musicalFacts = [
       pt: 'O Romantismo incentivou nacionalismos musicais, com compositores usando folclore e história pátria como inspiração.',
       en: 'Romanticism encouraged musical nationalism, with composers using folklore and national history as inspiration.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '176',
@@ -6239,7 +6239,7 @@ export const musicalFacts = [
       pt: 'Muitos compositores românticos morreram de tuberculose (Chopin, Bellini), doença que simbolizava sensibilidade artística.',
       en: 'Many Romantic composers died of tuberculosis (Chopin, Bellini), a disease that symbolized artistic sensitivity.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '177',
@@ -6253,7 +6253,7 @@ export const musicalFacts = [
       pt: 'Liszt desenvolveu a transformação temática, onde um tema aparece em diferentes caracteres ao longo da obra.',
       en: 'Liszt developed thematic transformation, where a theme appears in different characters throughout the work.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '178',
@@ -6267,7 +6267,7 @@ export const musicalFacts = [
       pt: 'A "Sinfonia Inacabada" de Schubert tem apenas dois movimentos, permanecendo um mistério por que foi abandonada.',
       en: 'Schubert\'s "Unfinished Symphony" has only two movements, remaining a mystery why it was abandoned.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '179',
@@ -6281,7 +6281,7 @@ export const musicalFacts = [
       pt: 'Adolphe Sax inventou o saxofone em 1840, mas este só se tornou popular no jazz, raramente usado na música clássica.',
       en: 'Adolphe Sax invented the saxophone in 1840, but it only became popular in jazz, rarely used in classical music.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '180',
@@ -6295,7 +6295,7 @@ export const musicalFacts = [
       pt: 'O século XIX viu a expansão dos conservatórios nacionais, profissionalizando o ensino musical e criando "escolas" nacionais.',
       en: 'The 19th century saw the expansion of national conservatories, professionalizing musical education and creating national "schools."',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '181',
@@ -6309,7 +6309,7 @@ export const musicalFacts = [
       pt: 'Wagner concebeu a "obra de arte total" onde música, drama, poesia e artes visuais se uniriam em experiência transcendente.',
       en: 'Wagner conceived the "total work of art" where music, drama, poetry, and visual arts would unite in a transcendent experience.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '182',
@@ -6323,7 +6323,7 @@ export const musicalFacts = [
       pt: 'As barcarolas evocavam as canções dos gondoleiros venezianos, criando atmosferas aquáticas e nostálgicas.',
       en: 'Barcarolles evoked the songs of Venetian gondoliers, creating aquatic and nostalgic atmospheres.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '183',
@@ -6337,7 +6337,7 @@ export const musicalFacts = [
       pt: 'Liszt antecipou o impressionismo em obras como "Os Jogos de Água na Villa d\'Este", explorando atmosferas sonoras.',
       en: 'Liszt anticipated Impressionism in works like "Les jeux d\'eau à la Villa d\'Este," exploring sonic atmospheres.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '184',
@@ -6351,7 +6351,7 @@ export const musicalFacts = [
       pt: 'Schumann foi pioneiro da crítica musical moderna, "descobrindo" Chopin e defendendo Brahms em seus escritos.',
       en: 'Schumann was a pioneer of modern music criticism, "discovering" Chopin and defending Brahms in his writings.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '185',
@@ -6365,7 +6365,7 @@ export const musicalFacts = [
       pt: 'O piano de cauda romântico atingiu dimensões monumentais, com alguns instrumentos de Liszt tendo mais de 3 metros.',
       en: "The Romantic grand piano reached monumental dimensions, with some of Liszt's instruments over 3 meters long.",
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '186',
@@ -6379,7 +6379,7 @@ export const musicalFacts = [
       pt: 'As tournées de concertos se tornaram fenômeno social, com virtuoses viajando pela Europa como verdadeiras celebridades.',
       en: 'Concert tours became a social phenomenon, with virtuosos traveling across Europe as true celebrities.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '187',
@@ -6393,7 +6393,7 @@ export const musicalFacts = [
       pt: 'Schubert e Schumann criaram ciclos de lieder que contam histórias completas, como "A Bela Moleira" e "Amor de Poeta".',
       en: 'Schubert and Schumann created song cycles that tell complete stories, like "Die schöne Müllerin" and "Dichterliebe."',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '188',
@@ -6407,7 +6407,7 @@ export const musicalFacts = [
       pt: 'A ópera "La Sonnambula" de Bellini explorou o tema romântico do sonambulismo e estados alterados de consciência.',
       en: 'Bellini\'s opera "La Sonnambula" explored the Romantic theme of sleepwalking and altered states of consciousness.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '189',
@@ -6421,7 +6421,7 @@ export const musicalFacts = [
       pt: 'Wagner desenvolveu a "melodia infinita", evitando cadências e criando fluxo musical contínuo sem pausas estruturais.',
       en: 'Wagner developed "endless melody," avoiding cadences and creating continuous musical flow without structural pauses.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '190',
@@ -6435,7 +6435,7 @@ export const musicalFacts = [
       pt: 'Wagner construiu seu próprio teatro em Bayreuth especificamente para apresentar suas óperas, ainda ativo hoje.',
       en: 'Wagner built his own theater in Bayreuth specifically to present his operas, still active today.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '191',
@@ -6449,7 +6449,7 @@ export const musicalFacts = [
       pt: 'Wagner encomendou tubas especiais para "O Anel", criando instrumentos únicos para sua sonoridade épica.',
       en: 'Wagner commissioned special tubas for "The Ring," creating unique instruments for his epic sonority.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '192',
@@ -6463,7 +6463,7 @@ export const musicalFacts = [
       pt: 'O "Liebestod" (Morte de Amor) de Wagner influenciou toda a música posterior, explorando êxtase erótico e morte.',
       en: 'Wagner\'s "Liebestod" (Love Death) influenced all subsequent music, exploring erotic ecstasy and death.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '193',
@@ -6477,7 +6477,7 @@ export const musicalFacts = [
       pt: 'A orquestra romântica expandiu dramaticamente, com Berlioz chegando a escrever para mais de 400 instrumentistas.',
       en: 'The Romantic orchestra expanded dramatically, with Berlioz writing for over 400 instrumentalists.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '194',
@@ -6491,7 +6491,7 @@ export const musicalFacts = [
       pt: 'Clara Schumann foi uma das primeiras pianistas profissionais, mantendo carreira de concertista por mais de 60 anos.',
       en: 'Clara Schumann was one of the first professional female pianists, maintaining a concert career for over 60 years.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '195',
@@ -6505,7 +6505,7 @@ export const musicalFacts = [
       pt: 'Compositores românticos exploraram sinestesia, associando cores a tonalidades e criando "pinturas" sonoras.',
       en: 'Romantic composers explored synesthesia, associating colors with keys and creating sonic "paintings."',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '196',
@@ -6519,7 +6519,7 @@ export const musicalFacts = [
       pt: 'Muitas obras românticas foram perdidas ou destruídas - Schumann queimou várias composições por autocrítica excessiva.',
       en: 'Many Romantic works were lost or destroyed - Schumann burned several compositions due to excessive self-criticism.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '197',
@@ -6533,7 +6533,7 @@ export const musicalFacts = [
       pt: 'A viola ganhou importância no Romantismo, com Berlioz compondo "Haroldo na Itália" especificamente para o instrumento.',
       en: 'The viola gained importance in Romanticism, with Berlioz composing "Harold in Italy" specifically for the instrument.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '198',
@@ -6547,7 +6547,7 @@ export const musicalFacts = [
       pt: 'O verismo operístico retratou a vida cotidiana com realismo brutal, contrastando com o escapismo romântico anterior.',
       en: 'Operatic verismo portrayed everyday life with brutal realism, contrasting with earlier Romantic escapism.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '199',
@@ -6561,7 +6561,7 @@ export const musicalFacts = [
       pt: 'Compositores românticos experimentaram formas livres, criando estruturas únicas para cada obra em vez de moldes pré-existentes.',
       en: 'Romantic composers experimented with free forms, creating unique structures for each work instead of pre-existing molds.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
   {
     id: '200',
@@ -6575,7 +6575,7 @@ export const musicalFacts = [
       pt: 'Os salões parisienses eram centros da vida musical romântica, onde compositores apresentavam primeiras audições de obras.',
       en: 'Parisian salons were centers of Romantic musical life, where composers presented premieres of works.',
     },
-    category: 'Romantic',
+    category: 'Romântico',
   },
 
   // IMPRESSIONISMO (25 curiosidades)
@@ -6591,7 +6591,7 @@ export const musicalFacts = [
       pt: 'Debussy odiava ser chamado de "impressionista", preferindo "simbolista", mas sua música evoca cores e atmosferas como a pintura impressionista.',
       en: 'Debussy hated being called an "impressionist," preferring "symbolist," but his music evokes colors and atmospheres like Impressionist painting.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '202',
@@ -6605,7 +6605,7 @@ export const musicalFacts = [
       pt: '"La Mer" de Debussy foi composta longe do mar, no interior da França, mostrando como a música pode capturar essências emocionais.',
       en: 'Debussy\'s "La Mer" was composed far from the sea, in inland France, showing how music can capture emotional essences.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '203',
@@ -6619,7 +6619,7 @@ export const musicalFacts = [
       pt: 'Debussy usou escalas pentafônicas, octatônicas e de tons inteiros, expandindo o vocabulário harmônico para além do sistema tonal.',
       en: 'Debussy used pentatonic, octatonic, and whole-tone scales, expanding harmonic vocabulary beyond the tonal system.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '204',
@@ -6633,7 +6633,7 @@ export const musicalFacts = [
       pt: 'A Exposição Universal de Paris (1889) introduziu música javanesa a Debussy, influenciando profundamente seu estilo harmônico.',
       en: 'The Paris Universal Exhibition (1889) introduced Javanese music to Debussy, profoundly influencing his harmonic style.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '205',
@@ -6647,7 +6647,7 @@ export const musicalFacts = [
       pt: 'Os impressionistas exploraram novos efeitos pianísticos usando pedais, harmônicos e texturas que imitavam orquestras.',
       en: 'Impressionists explored new piano effects using pedals, harmonics, and textures that imitated orchestras.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '206',
@@ -6661,7 +6661,7 @@ export const musicalFacts = [
       pt: 'Ravel e Debussy priorizaram atmosfera sobre desenvolvimento temático, criando "quadros" sonoros ao invés de argumentos musicais.',
       en: 'Ravel and Debussy prioritized atmosphere over thematic development, creating sonic "paintings" instead of musical arguments.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '207',
@@ -6675,7 +6675,7 @@ export const musicalFacts = [
       pt: '"Jardins na Chuva" de Debussy usa técnicas pianísticas que realmente evocam gotas de chuva e folhas tremulando.',
       en: 'Debussy\'s "Gardens in the Rain" uses piano techniques that actually evoke raindrops and trembling leaves.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '208',
@@ -6689,7 +6689,7 @@ export const musicalFacts = [
       pt: 'Os acordes paralelos impressionistas criavam coloração harmônica única, abandonando as regras de condução de vozes tradicionais.',
       en: 'Impressionist parallel chords created unique harmonic coloration, abandoning traditional voice-leading rules.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '209',
@@ -6703,7 +6703,7 @@ export const musicalFacts = [
       pt: 'O "Bolero" cresceu de uma experiência rítmica para obra icônica, com Ravel surpreendido pelo sucesso popular.',
       en: 'The "Bolero" grew from a rhythmic experiment to an iconic work, with Ravel surprised by its popular success.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '210',
@@ -6717,7 +6717,7 @@ export const musicalFacts = [
       pt: 'Ravel foi mestre da orquestração sutil, usando combinações inusitadas de instrumentos para criar timbres únicos.',
       en: 'Ravel was a master of subtle orchestration, using unusual instrument combinations to create unique timbres.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '211',
@@ -6731,7 +6731,7 @@ export const musicalFacts = [
       pt: 'A música impressionista muitas vezes parece suspender o tempo, criando momentos de contemplação estática.',
       en: 'Impressionist music often seems to suspend time, creating moments of static contemplation.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '212',
@@ -6745,7 +6745,7 @@ export const musicalFacts = [
       pt: '"Clair de Lune" tornou-se a peça impressionista mais famosa, mas é apenas o terceiro movimento da "Suite Bergamasque".',
       en: '"Clair de Lune" became the most famous Impressionist piece, but is only the third movement of the "Suite Bergamasque."',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '213',
@@ -6759,7 +6759,7 @@ export const musicalFacts = [
       pt: 'Os impressionistas evitavam formas rígidas, preferindo estruturas orgânicas que fluem como água ou luz.',
       en: 'Impressionists avoided rigid forms, preferring organic structures that flow like water or light.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '214',
@@ -6773,7 +6773,7 @@ export const musicalFacts = [
       pt: 'A ópera "Pelléas et Mélisande" de Debussy revolucionou o gênero com recitativo naturalístico e orquestra sussurrante.',
       en: 'Debussy\'s opera "Pelléas et Mélisande" revolutionized the genre with naturalistic recitative and whispering orchestra.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '215',
@@ -6787,7 +6787,7 @@ export const musicalFacts = [
       pt: 'A harpa ganhou protagonismo no impressionismo, com glissandos e harmônicos criando efeitos aquáticos e etéreos.',
       en: 'The harp gained prominence in Impressionism, with glissandos and harmonics creating aquatic and ethereal effects.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '216',
@@ -6801,7 +6801,7 @@ export const musicalFacts = [
       pt: 'A harmonia impressionista priorizava cor sobre função, usando acordes como "cores" em uma paleta sonora.',
       en: 'Impressionist harmony prioritized color over function, using chords as "colors" in a sonic palette.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '217',
@@ -6815,7 +6815,7 @@ export const musicalFacts = [
       pt: '"A Catedral Submersa" evoca lenda bretã sobre catedral que emerge das águas, demonstrando narrativa impressionista.',
       en: '"The Sunken Cathedral" evokes a Breton legend about a cathedral that emerges from the waters, demonstrating Impressionist narrative.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '218',
@@ -6829,7 +6829,7 @@ export const musicalFacts = [
       pt: 'Os ritmos impressionistas fluem sem acentos marcados, criando sensação de movimento orgânico e natural.',
       en: 'Impressionist rhythms flow without marked accents, creating a sense of organic and natural movement.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '219',
@@ -6843,7 +6843,7 @@ export const musicalFacts = [
       pt: 'Embora agrupados, Ravel era mais clássico e preciso, enquanto Debussy era mais experimental e atmosférico.',
       en: 'Though grouped together, Ravel was more classical and precise, while Debussy was more experimental and atmospheric.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '220',
@@ -6857,7 +6857,7 @@ export const musicalFacts = [
       pt: 'Técnicas como surdina, harmônicos artificiais e tremolo criavam texturas veladas características do impressionismo.',
       en: 'Techniques like mutes, artificial harmonics, and tremolo created the veiled textures characteristic of Impressionism.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '221',
@@ -6871,7 +6871,7 @@ export const musicalFacts = [
       pt: 'O retorno aos modos antigos deu aos impressionistas alternativas ao sistema tonal maior-menor tradicional.',
       en: 'The return to ancient modes gave Impressionists alternatives to the traditional major-minor tonal system.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '222',
@@ -6885,7 +6885,7 @@ export const musicalFacts = [
       pt: 'As "Estampes" de Debussy retratam paisagens exóticas: Pagodes (Ásia), Soirée dans Grenade (Espanha), Jardins na Chuva (França).',
       en: 'Debussy\'s "Estampes" portray exotic landscapes: Pagodes (Asia), Soirée dans Grenade (Spain), Gardens in the Rain (France).',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '223',
@@ -6899,7 +6899,7 @@ export const musicalFacts = [
       pt: 'A música impressionista frequentemente simbolizava estados emocionais através de gestos musicais sutis e sugestivos.',
       en: 'Impressionist music frequently symbolized emotional states through subtle and suggestive musical gestures.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '224',
@@ -6913,7 +6913,7 @@ export const musicalFacts = [
       pt: 'A "Pavane para uma Infanta Defunta" de Ravel não tem significado fúnebre - o título evoca apenas sonoridades nostálgicas.',
       en: 'Ravel\'s "Pavane for a Dead Princess" has no funereal meaning - the title evokes only nostalgic sonorities.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
   {
     id: '225',
@@ -6927,7 +6927,7 @@ export const musicalFacts = [
       pt: 'Instrumentos de metal com surdina criavam timbres pastéis essenciais à paleta sonora impressionista.',
       en: 'Muted brass instruments created pastel timbres essential to the Impressionist sonic palette.',
     },
-    category: 'Impressionism',
+    category: 'Impressionismo',
   },
 
   // MODERNISMO/CONTEMPORÂNEO (50 curiosidades)
@@ -6943,7 +6943,7 @@ export const musicalFacts = [
       pt: 'Schoenberg abandonou totalmente o sistema tonal em 1908, criando a primeira música verdadeiramente atonal da história.',
       en: 'Schoenberg completely abandoned the tonal system in 1908, creating the first truly atonal music in history.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '227',
@@ -6957,7 +6957,7 @@ export const musicalFacts = [
       pt: 'A estreia de "A Sagração da Primavera" de Stravinsky (1913) causou um motim no teatro, dividindo o público.',
       en: 'The premiere of Stravinsky\'s "The Rite of Spring" (1913) caused a riot in the theater, dividing the audience.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '228',
@@ -6971,7 +6971,7 @@ export const musicalFacts = [
       pt: 'Schoenberg criou o sistema dodecafônico, usando todas as 12 notas cromáticas em sequências específicas (séries).',
       en: 'Schoenberg created the twelve-tone system, using all 12 chromatic notes in specific sequences (series).',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '229',
@@ -6985,7 +6985,7 @@ export const musicalFacts = [
       pt: '"Pierrot Lunaire" de Schoenberg usa Sprechgesang - técnica vocal entre fala e canto que ainda causa controvérsia.',
       en: 'Schoenberg\'s "Pierrot Lunaire" uses Sprechgesang - a vocal technique between speech and song that still causes controversy.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '230',
@@ -6999,7 +6999,7 @@ export const musicalFacts = [
       pt: 'John Cage inseriu objetos entre as cordas do piano, criando um "gamelan de um homem só" com sonoridades únicas.',
       en: 'John Cage inserted objects between piano strings, creating a "one-man gamelan" with unique sonorities.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '231',
@@ -7013,7 +7013,7 @@ export const musicalFacts = [
       pt: 'A peça "4\'33"" de Cage consiste em 4 minutos e 33 segundos de silêncio, questionando a própria definição de música.',
       en: 'Cage\'s piece "4\'33"" consists of 4 minutes and 33 seconds of silence, questioning the very definition of music.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '232',
@@ -7027,7 +7027,7 @@ export const musicalFacts = [
       pt: 'Compositores como Milhaud usaram múltiplas tonalidades simultaneamente, criando complexidade harmônica única.',
       en: 'Composers like Milhaud used multiple keys simultaneously, creating unique harmonic complexity.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '233',
@@ -7041,7 +7041,7 @@ export const musicalFacts = [
       pt: 'Bartók coletou milhares de melodias folclóricas com fonógrafo, preservando tradições musicais do Leste Europeu.',
       en: 'Bartók collected thousands of folk melodies with a phonograph, preserving Eastern European musical traditions.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '234',
@@ -7055,7 +7055,7 @@ export const musicalFacts = [
       pt: 'As Ondas Martenot, instrumento eletrônico inventado em 1928, foram usadas por Messiaen e Honegger.',
       en: 'The Ondes Martenot, electronic instrument invented in 1928, were used by Messiaen and Honegger.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '235',
@@ -7069,7 +7069,7 @@ export const musicalFacts = [
       pt: 'A música eletrônica nasceu na década de 1950 com estúdios em Paris e Colônia experimentando com fitas magnéticas.',
       en: 'Electronic music was born in the 1950s with studios in Paris and Cologne experimenting with magnetic tapes.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '236',
@@ -7083,7 +7083,7 @@ export const musicalFacts = [
       pt: 'Mahler incluiu instrumentos infantis como trompete de brinquedo em sinfonias, antecipando experimentações modernas.',
       en: "Mahler included children's instruments like toy trumpet in symphonies, anticipating modern experimentations.",
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '237',
@@ -7097,7 +7097,7 @@ export const musicalFacts = [
       pt: 'Cage e outros criaram música aleatória onde intérpretes fazem escolhas durante a performance, nunca resultando igual.',
       en: 'Cage and others created aleatory music where performers make choices during performance, never resulting the same.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '238',
@@ -7111,7 +7111,7 @@ export const musicalFacts = [
       pt: 'Messiaen transcreveu cantos de pássaros do mundo todo, incorporando-os em obras como "Catálogo dos Pássaros".',
       en: 'Messiaen transcribed bird songs from around the world, incorporating them in works like "Catalogue of Birds."',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '239',
@@ -7125,7 +7125,7 @@ export const musicalFacts = [
       pt: 'Compositores espectrais como Grisey analisam espectros sonoros cientificamente, baseando harmonias em acústica.',
       en: 'Spectral composers like Grisey scientifically analyze sound spectra, basing harmonies on acoustics.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '240',
@@ -7139,7 +7139,7 @@ export const musicalFacts = [
       pt: 'Ligeti\'s "Atmosphères" foi usada em "2001: Uma Odisseia no Espaço", levando música de vanguarda ao cinema mainstream.',
       en: 'Ligeti\'s "Atmosphères" was used in "2001: A Space Odyssey," bringing avant-garde music to mainstream cinema.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '241',
@@ -7153,7 +7153,7 @@ export const musicalFacts = [
       pt: 'Compositores como Partch criaram instrumentos afinados em intervalos menores que semitons, expandindo o espectro tonal.',
       en: 'Composers like Partch created instruments tuned in intervals smaller than semitones, expanding the tonal spectrum.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '242',
@@ -7167,7 +7167,7 @@ export const musicalFacts = [
       pt: 'Iannis Xenakis era arquiteto (trabalhou com Le Corbusier) e aplicou princípios matemáticos e arquitetônicos à música.',
       en: 'Iannis Xenakis was an architect (worked with Le Corbusier) and applied mathematical and architectural principles to music.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '243',
@@ -7181,7 +7181,7 @@ export const musicalFacts = [
       pt: 'Técnicas estendidas como col legno, sul ponticello e multifônicos expandiram dramaticamente as possibilidades instrumentais.',
       en: 'Extended techniques like col legno, sul ponticello, and multiphonics dramatically expanded instrumental possibilities.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '244',
@@ -7195,7 +7195,7 @@ export const musicalFacts = [
       pt: 'O IRCAM em Paris pioneirou música por computador, com Boulez criando centro de pesquisa musical e tecnológica.',
       en: 'IRCAM in Paris pioneered computer music, with Boulez creating a musical and technological research center.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '245',
@@ -7209,7 +7209,7 @@ export const musicalFacts = [
       pt: 'Stockhausen compôs para performances em múltiplos andares, criando experiências musicais tridimensionais.',
       en: 'Stockhausen composed for performances on multiple floors, creating three-dimensional musical experiences.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '246',
@@ -7223,7 +7223,7 @@ export const musicalFacts = [
       pt: 'Boulez e outros aplicaram organização serial não apenas a alturas, mas também a durações, dinâmicas e articulações.',
       en: 'Boulez and others applied serial organization not only to pitches, but also to durations, dynamics, and articulations.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '247',
@@ -7237,7 +7237,7 @@ export const musicalFacts = [
       pt: 'Kagel e outros criaram "teatro musical" onde instrumentistas também atuam, borrando fronteiras entre artes.',
       en: 'Kagel and others created "music theater" where instrumentalists also act, blurring boundaries between arts.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '248',
@@ -7251,7 +7251,7 @@ export const musicalFacts = [
       pt: 'Sintetizadores como o Moog revolucionaram música experimental, com compositores explorando sons impossíveis acusticamente.',
       en: 'Synthesizers like the Moog revolutionized experimental music, with composers exploring acoustically impossible sounds.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '249',
@@ -7265,7 +7265,7 @@ export const musicalFacts = [
       pt: 'Steve Reich e Philip Glass criaram minimalismo musical, usando repetição e mudança gradual para hipnotizar audientes.',
       en: 'Steve Reich and Philip Glass created musical minimalism, using repetition and gradual change to hypnotize audiences.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '250',
@@ -7279,7 +7279,7 @@ export const musicalFacts = [
       pt: 'Brian Eno criou o conceito de "música ambiente" - música que pode ser ignorada mas que enriquece o ambiente sonoro.',
       en: 'Brian Eno created the concept of "ambient music" - music that can be ignored but enriches the sonic environment.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '251',
@@ -7293,7 +7293,7 @@ export const musicalFacts = [
       pt: 'Compositores modernos usam análise espectral por computador para compreender e manipular timbres com precisão científica.',
       en: 'Modern composers use computer spectral analysis to understand and manipulate timbres with scientific precision.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '252',
@@ -7307,7 +7307,7 @@ export const musicalFacts = [
       pt: 'Nos anos 1960, compositores criaram "happenings" - eventos multimídia onde música se misturava com arte visual e performance.',
       en: 'In the 1960s, composers created "happenings" - multimedia events where music mixed with visual art and performance.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '253',
@@ -7321,7 +7321,7 @@ export const musicalFacts = [
       pt: 'Música eletroacústica ao vivo combina instrumentos tradicionais com eletrônicos, criando interação em tempo real.',
       en: 'Live electroacoustic music combines traditional instruments with electronics, creating real-time interaction.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '254',
@@ -7335,7 +7335,7 @@ export const musicalFacts = [
       pt: 'Compositores como Tan Dun fusionam tradições musicais orientais e ocidentais, criando linguagem musical verdadeiramente global.',
       en: 'Composers like Tan Dun fuse Eastern and Western musical traditions, creating a truly global musical language.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '255',
@@ -7349,7 +7349,7 @@ export const musicalFacts = [
       pt: 'Lachenmann e outros exploraram "música gestual" onde o gesto físico de tocar é tão importante quanto o som resultante.',
       en: 'Lachenmann and others explored "gestural music" where the physical gesture of playing is as important as the resulting sound.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '256',
@@ -7363,7 +7363,7 @@ export const musicalFacts = [
       pt: 'Compositores incorporam sons urbanos - trânsito, construção, multidões - como material musical legítimo.',
       en: 'Composers incorporate urban sounds - traffic, construction, crowds - as legitimate musical material.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '257',
@@ -7377,7 +7377,7 @@ export const musicalFacts = [
       pt: 'Smartphones e tablets tornaram-se instrumentos musicais legítimos, com apps permitindo performances complexas.',
       en: 'Smartphones and tablets became legitimate musical instruments, with apps allowing complex performances.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '258',
@@ -7391,7 +7391,7 @@ export const musicalFacts = [
       pt: 'Inteligência artificial já compõe música autonomamente, levantando questões sobre criatividade e autoria artística.',
       en: 'Artificial intelligence already composes music autonomously, raising questions about creativity and artistic authorship.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '259',
@@ -7405,7 +7405,7 @@ export const musicalFacts = [
       pt: 'Compositores usam dados astronômicos - pulsares, radiação cósmica - como fonte de material musical.',
       en: 'Composers use astronomical data - pulsars, cosmic radiation - as a source of musical material.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '260',
@@ -7419,7 +7419,7 @@ export const musicalFacts = [
       pt: 'Steve Reich pioneirou loop delay, técnica hoje comum onde performers criam camadas em tempo real.',
       en: 'Steve Reich pioneered loop delay, a technique now common where performers create layers in real time.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '261',
@@ -7433,7 +7433,7 @@ export const musicalFacts = [
       pt: 'Compositores como John Adams retornaram à tonalidade e melodia, criando "neo-romantismo" acessível ao público.',
       en: 'Composers like John Adams returned to tonality and melody, creating accessible "neo-romanticism" for the public.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '262',
@@ -7447,7 +7447,7 @@ export const musicalFacts = [
       pt: 'Música interativa responde a ações do público ou intérpretes, criando experiências únicas a cada performance.',
       en: 'Interactive music responds to actions of the audience or performers, creating unique experiences each performance.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '263',
@@ -7461,7 +7461,7 @@ export const musicalFacts = [
       pt: 'Compositores traduzem sequências de DNA em música, explorando padrões da vida como material compositivo.',
       en: 'Composers translate DNA sequences into music, exploring life patterns as compositional material.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '264',
@@ -7475,7 +7475,7 @@ export const musicalFacts = [
       pt: 'Internet permite performances colaborativas globais, com músicos em continentes diferentes tocando juntos.',
       en: 'Internet enables global collaborative performances, with musicians on different continents playing together.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '265',
@@ -7489,7 +7489,7 @@ export const musicalFacts = [
       pt: 'Óperas modernas abordam temas atuais - terrorismo, mudança climática, redes sociais - mantendo o gênero relevante.',
       en: 'Modern operas address current themes - terrorism, climate change, social networks - keeping the genre relevant.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '266',
@@ -7503,7 +7503,7 @@ export const musicalFacts = [
       pt: 'Luthiers criam instrumentos híbridos combinando tradições diferentes, expandindo possibilidades sonoras.',
       en: 'Luthiers create hybrid instruments combining different traditions, expanding sonic possibilities.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '267',
@@ -7517,7 +7517,7 @@ export const musicalFacts = [
       pt: 'Compositores usam pesquisa psicoacústica para criar ilusões auditivas e efeitos perceptivos específicos.',
       en: 'Composers use psychoacoustic research to create auditory illusions and specific perceptual effects.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '268',
@@ -7531,7 +7531,7 @@ export const musicalFacts = [
       pt: 'Movimento de "eco-música" incorpora sons naturais e consciência ambiental nas composições contemporâneas.',
       en: 'The "eco-music" movement incorporates natural sounds and environmental awareness in contemporary compositions.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '269',
@@ -7545,7 +7545,7 @@ export const musicalFacts = [
       pt: 'Partituras contemporâneas usam símbolos visuais, cores e formas gráficas para comunicar ideias musicais.',
       en: 'Contemporary scores use visual symbols, colors, and graphic forms to communicate musical ideas.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '270',
@@ -7559,7 +7559,7 @@ export const musicalFacts = [
       pt: 'Pandemia levou compositores a criar obras para performance doméstica, adaptando-se a realidades contemporâneas.',
       en: 'The pandemic led composers to create works for domestic performance, adapting to contemporary realities.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '271',
@@ -7573,7 +7573,7 @@ export const musicalFacts = [
       pt: 'Gravação binaural cria experiências 3D através de fones, permitindo composições específicas para este meio.',
       en: 'Binaural recording creates 3D experiences through headphones, allowing compositions specific to this medium.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '272',
@@ -7587,7 +7587,7 @@ export const musicalFacts = [
       pt: 'Compositores exploram sons de fontes energéticas - eletricidade, magnetismo - como material musical.',
       en: 'Composers explore sounds from energy sources - electricity, magnetism - as musical material.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '273',
@@ -7601,7 +7601,7 @@ export const musicalFacts = [
       pt: 'Algoritmos matemáticos geram estruturas musicais complexas, explorando padrões impossíveis para mente humana.',
       en: 'Mathematical algorithms generate complex musical structures, exploring patterns impossible for the human mind.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '274',
@@ -7615,7 +7615,7 @@ export const musicalFacts = [
       pt: 'Flashmobs musicais levam música clássica a espaços públicos, democratizando acesso e surpreendendo transeuntes.',
       en: 'Musical flashmobs bring classical music to public spaces, democratizing access and surprising passersby.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
   {
     id: '275',
@@ -7629,7 +7629,7 @@ export const musicalFacts = [
       pt: 'Instrumentos aquáticos usam água como meio sonoro, explorando acústica líquida para efeitos únicos.',
       en: 'Aquatic instruments use water as a sonic medium, exploring liquid acoustics for unique effects.',
     },
-    category: 'Modern',
+    category: 'Moderno',
   },
 
   // TEORIA E TÉCNICA GERAL (25 curiosidades finais)
@@ -7645,7 +7645,7 @@ export const musicalFacts = [
       pt: 'O círculo das quintas organiza todas as tonalidades em relação matemática perfeita, sendo ferramenta fundamental da harmonia.',
       en: 'The circle of fifths organizes all keys in perfect mathematical relationship, being a fundamental tool of harmony.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '277',
@@ -7659,7 +7659,7 @@ export const musicalFacts = [
       pt: 'A proporção áurea (1:1.618) aparece em muitas obras clássicas, desde Bach até Debussy, criando satisfação estética.',
       en: 'The golden ratio (1:1.618) appears in many classical works, from Bach to Debussy, creating aesthetic satisfaction.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '278',
@@ -7673,7 +7673,7 @@ export const musicalFacts = [
       pt: 'Heinrich Schenker desenvolveu método analítico que reduz obras a estruturas fundamentais, revelando lógica profunda.',
       en: 'Heinrich Schenker developed an analytical method that reduces works to fundamental structures, revealing deep logic.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '279',
@@ -7687,7 +7687,7 @@ export const musicalFacts = [
       pt: 'Compositores exploram efeito Doppler (mudança de altura por movimento) criando ilusões espaciais na música.',
       en: 'Composers explore the Doppler effect (pitch change through movement) creating spatial illusions in music.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '280',
@@ -7701,7 +7701,7 @@ export const musicalFacts = [
       pt: 'Software moderno analisa milhares de obras simultaneamente, revelando padrões estatísticos na música clássica.',
       en: 'Modern software analyzes thousands of works simultaneously, revealing statistical patterns in classical music.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '281',
@@ -7715,7 +7715,7 @@ export const musicalFacts = [
       pt: 'Pesquisas revelam que música ativa múltiplas áreas cerebrais simultaneamente, sendo "ginástica" para o cérebro.',
       en: 'Research reveals that music activates multiple brain areas simultaneously, being "exercise" for the brain.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '282',
@@ -7729,7 +7729,7 @@ export const musicalFacts = [
       pt: 'Teoria dos conjuntos aplica matemática à análise musical, especialmente útil para música atonal e serial.',
       en: 'Set theory applies mathematics to musical analysis, especially useful for atonal and serial music.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '283',
@@ -7743,7 +7743,7 @@ export const musicalFacts = [
       pt: 'Instrumentos acústicos funcionam por síntese subtrativa - produzem espectro rico que é filtrado pela ressonância.',
       en: 'Acoustic instruments work by subtractive synthesis - they produce rich spectrum that is filtered by resonance.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '284',
@@ -7757,7 +7757,7 @@ export const musicalFacts = [
       pt: 'Composições fractais repetem padrões em diferentes escalas, criando autossimilaridade hipnótica.',
       en: 'Fractal compositions repeat patterns at different scales, creating hypnotic self-similarity.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '285',
@@ -7771,7 +7771,7 @@ export const musicalFacts = [
       pt: 'A afinação em 440 Hz para o Lá foi padronizada internacionalmente apenas em 1939, variando muito antes disso.',
       en: 'The 440 Hz tuning for A was internationally standardized only in 1939, varying greatly before that.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '286',
@@ -7785,7 +7785,7 @@ export const musicalFacts = [
       pt: 'O sistema de cinco espécies do contraponto de Fux ainda é base do ensino musical, codificando movimento de vozes.',
       en: "Fux's five-species counterpoint system is still the basis of musical education, codifying voice movement.",
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '287',
@@ -7799,7 +7799,7 @@ export const musicalFacts = [
       pt: 'Apenas 1 em 10.000 pessoas tem ouvido absoluto, capacidade mais comum entre músicos que começaram muito cedo.',
       en: 'Only 1 in 10,000 people have perfect pitch, an ability more common among musicians who started very early.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '288',
@@ -7813,7 +7813,7 @@ export const musicalFacts = [
       pt: 'Teoria neo-riemanniana explica progressões harmônicas românticas através de transformações geométricas.',
       en: 'Neo-Riemannian theory explains Romantic harmonic progressions through geometric transformations.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '289',
@@ -7827,7 +7827,7 @@ export const musicalFacts = [
       pt: 'Cerca de 4% das pessoas experienciam sinestesia, vendo cores específicas para diferentes notas musicais.',
       en: 'About 4% of people experience synesthesia, seeing specific colors for different musical notes.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '290',
@@ -7841,7 +7841,7 @@ export const musicalFacts = [
       pt: 'Métricas como 5/8 ou 7/8 criam assimetrias rítmicas que desafiam expectativas baseadas em métrica binária.',
       en: 'Meters like 5/8 or 7/8 create rhythmic asymmetries that challenge expectations based on binary meter.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '291',
@@ -7855,7 +7855,7 @@ export const musicalFacts = [
       pt: 'Batimentos entre frequências próximas criam pulsações audíveis, fenômeno usado para afinar instrumentos.',
       en: 'Beats between close frequencies create audible pulsations, a phenomenon used to tune instruments.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '292',
@@ -7869,7 +7869,7 @@ export const musicalFacts = [
       pt: 'Análise paradigmática de Ruwet organiza música em segmentos similares, revelando estruturas repetitivas ocultas.',
       en: "Ruwet's paradigmatic analysis organizes music into similar segments, revealing hidden repetitive structures.",
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '293',
@@ -7883,7 +7883,7 @@ export const musicalFacts = [
       pt: 'Percepção temporal na música varia dramaticamente - trechos lentos parecem mais longos que indicam cronômetros.',
       en: 'Temporal perception in music varies dramatically - slow passages seem longer than chronometers indicate.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '294',
@@ -7897,7 +7897,7 @@ export const musicalFacts = [
       pt: 'Schoenberg criou "melodia de timbres" onde cores instrumentais, não alturas, criam linha melódica.',
       en: 'Schoenberg created "melody of timbres" where instrumental colors, not pitches, create melodic line.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '295',
@@ -7911,7 +7911,7 @@ export const musicalFacts = [
       pt: 'Sequência de Fibonacci aparece naturalmente na música, influenciando proporções em obras de Bartók e outros.',
       en: 'The Fibonacci sequence appears naturally in music, influencing proportions in works by Bartók and others.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '296',
@@ -7925,7 +7925,7 @@ export const musicalFacts = [
       pt: 'Topologia musical estuda transformações contínuas entre objetos musicais, criando "geometria" harmônica.',
       en: 'Musical topology studies continuous transformations between musical objects, creating harmonic "geometry."',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '297',
@@ -7939,7 +7939,7 @@ export const musicalFacts = [
       pt: 'A série harmônica natural produz microtons entre semitons, mas instrumentos temperados aproximam estas frequências.',
       en: 'The natural harmonic series produces microtones between semitones, but tempered instruments approximate these frequencies.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '298',
@@ -7953,7 +7953,7 @@ export const musicalFacts = [
       pt: 'Análise estatística revela "impressões digitais" composicionais únicas para cada compositor através de padrões.',
       en: 'Statistical analysis reveals unique compositional "fingerprints" for each composer through patterns.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '299',
@@ -7967,7 +7967,7 @@ export const musicalFacts = [
       pt: 'Kepler calculou "música das esferas" baseada em órbitas planetárias, conectando astronomia e harmonia musical.',
       en: 'Kepler calculated "music of the spheres" based on planetary orbits, connecting astronomy and musical harmony.',
     },
-    category: 'Theory',
+    category: 'Teoria',
   },
   {
     id: '300',
@@ -7981,7 +7981,7 @@ export const musicalFacts = [
       pt: 'A música clássica continua evoluindo com novas tecnologias, mantendo tradições milenares enquanto explora possibilidades infinitas.',
       en: 'Classical music continues evolving with new technologies, maintaining millennial traditions while exploring infinite possibilities.',
     },
-    category: 'Future',
+    category: 'Futuro',
   },
 ];
 

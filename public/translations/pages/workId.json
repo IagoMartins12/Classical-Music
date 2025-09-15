@@ -346,7 +346,7 @@
     "verification_button_verificar_obra": "Verificar obra",
 
     "report_button_reportar": "Reportar",
-    "report_modal_titulo": "Reportar {entityType}",
+    "report_modal_titulo": "Reportar ",
     "report_modal_motivo": "Motivo do report *",
     "report_modal_descricao": "Descrição adicional",
     "report_modal_descricao_obrigatoria": "Descrição adicional *",
@@ -830,7 +830,7 @@
     "verification_button_verificar_obra": "Verify work",
 
     "report_button_reportar": "Report",
-    "report_modal_titulo": "Report {entityType}",
+    "report_modal_titulo": "Report ",
     "report_modal_motivo": "Report reason *",
     "report_modal_descricao": "Additional description",
     "report_modal_descricao_obrigatoria": "Additional description *",

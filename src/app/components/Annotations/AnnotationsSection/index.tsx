@@ -271,7 +271,7 @@ export default function AnnotationsSection({
         {/* Header */}
         <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
           <div className="p-2 md:p-6">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6 gap-4">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
                   <FiMessageSquare className="w-6 h-6 text-theme-primary" />

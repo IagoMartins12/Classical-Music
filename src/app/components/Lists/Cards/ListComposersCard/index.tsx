@@ -56,7 +56,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
             <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
 
             {/* Floating Action Buttons */}
-            <div className="absolute top-3 right-3 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+            <div className="absolute top-3 right-3 flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
               {/* Favorite Button */}
               <FavoriteButton
                 id={composer.id}

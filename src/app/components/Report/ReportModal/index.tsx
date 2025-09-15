@@ -7,7 +7,7 @@ import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Modal from '../../Modal';
 import { useToast } from '@/app/hooks/useToast';
-import { useTranslation } from '@/app/context/TranslationContext';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -24,7 +24,9 @@ export default function ReportModal({
   entityId,
   entityName,
 }: ReportModalProps) {
-  const { t } = useTranslation({ sections: ['pages/workId'] });
+  const { t, language } = useTranslation({
+    sections: ['components/reportModal'],
+  });
   const [selectedReason, setSelectedReason] = useState('');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -66,8 +68,20 @@ export default function ReportModal({
   ];
 
   const getEntityTypeLabel = () => {
-    const entityTypeKey = `entity_type_${entityType}`;
-    return t(entityTypeKey);
+    const mapping = {
+      pt: {
+        composer: 'Compositor',
+        work: 'Peça',
+        score: 'Partitura',
+      },
+      en: {
+        composer: 'Composer',
+        work: 'Work',
+        score: 'Score',
+      },
+    };
+
+    return mapping[language][entityType];
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -137,9 +151,7 @@ export default function ReportModal({
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
-                  {t('report_modal_titulo', {
-                    entityType: getEntityTypeLabel(),
-                  })}
+                  {t('report_modal_titulo')} {getEntityTypeLabel()}
                 </h2>
                 <p className="text-sm text-theme-secondary">
                   &quot;{entityName}&quot;

@@ -60,7 +60,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
                   {work.opOrCatalog}
                 </span>
               )}
-              <div className=" flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+              <div className=" flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                 <FavoriteButton
                   id={work.id}
                   type="work"

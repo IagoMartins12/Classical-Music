@@ -781,7 +781,7 @@ const LearningModal = () => {
                   icon={FiCalendar}
                   description={t('target_date_description')}
                 >
-                  <input
+                  <Input
                     type="date"
                     value={wantToLearnForm.targetDate || ''}
                     onChange={(e) =>
@@ -875,7 +875,7 @@ const LearningModal = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField label={t('study_start_modal')} icon={FiCalendar}>
-                  <input
+                  <Input
                     type="date"
                     value={learnedForm.studyStartDate || ''}
                     onChange={(e) =>
@@ -1059,8 +1059,8 @@ const LearningModal = () => {
                       currentProgress >= 100
                         ? 'bg-green-400'
                         : currentProgress >= 50
-                        ? 'bg-blue-400'
-                        : 'bg-yellow-400'
+                          ? 'bg-blue-400'
+                          : 'bg-yellow-400'
                     }`}
                     style={{ width: `${currentProgress}%` }}
                   />
@@ -1345,8 +1345,8 @@ const LearningModal = () => {
                   ? t('uploading_status')
                   : t('saving_status')
                 : isCurrentlyActive
-                ? t('update_button')
-                : t('save_button')}
+                  ? t('update_button')
+                  : t('save_button')}
             </Button>
 
             {/* Botões Secundários - Quando editando */}
@@ -1420,8 +1420,8 @@ const LearningModal = () => {
                     ? t('uploading_status')
                     : t('saving_status')
                   : isCurrentlyActive
-                  ? t('update_button')
-                  : t('save_button')}
+                    ? t('update_button')
+                    : t('save_button')}
               </Button>
             </div>
           </div>
@@ -1552,8 +1552,8 @@ const LearningModal = () => {
                         currentProgress >= 100
                           ? 'bg-green-400'
                           : currentProgress >= 50
-                          ? 'bg-blue-400'
-                          : 'bg-yellow-400'
+                            ? 'bg-blue-400'
+                            : 'bg-yellow-400'
                       }`}
                       style={{ width: `${currentProgress}%` }}
                     />
