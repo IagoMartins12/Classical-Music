@@ -46,10 +46,6 @@ async function getUserVerificationData(
         select: { isVerified: true },
       });
       result.teacherVerified = teacherProfile?.isVerified || false;
-      console.log(
-        '✅ [CustomAdapter] Teacher verification status:',
-        result.teacherVerified
-      );
     }
 
     if (isStudent) {

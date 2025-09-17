@@ -29,7 +29,7 @@ import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { ThemeToggle } from '../../ThemeToggle';
 import NotificationBell from '../../Notification/NotificationBell';
-import { LanguageDropdown, LanguageToggle } from '../../LanguageToggle';
+import { LanguageToggle } from '../../LanguageToggle';
 import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface TeacherNavigationProps {
@@ -361,11 +361,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
 
               {/* Theme Toggle */}
               <ThemeToggle variant="navbar" className="hidden sm:block" />
-              <NotificationBell
-                userRole="teacher"
-                userId={user.id}
-                className="hidden sm:block"
-              />
+              <NotificationBell userRole="teacher" userId={user.id} />
 
               {/* Profile Menu */}
               <div className="relative" ref={profileRef}>
@@ -514,15 +510,6 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                 </button>
               </div>
 
-              {/* Notification Bell Mobile */}
-              <div className="mb-6 pb-4 border-b border-theme-secondary">
-                <NotificationBell
-                  userRole="teacher"
-                  userId={user.id}
-                  className="w-full justify-center"
-                />
-              </div>
-
               {/* Navigation Items */}
               <nav className="space-y-2">
                 {navigationItems.map((item) => (
@@ -602,12 +589,10 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                 ))}
               </nav>
 
-              <LanguageDropdown className="hidden sm:block" />
-              <div className="mt-8 pt-6 border-t border-theme-secondary">
-                <ThemeToggle
-                  variant="navbar"
-                  className="w-full justify-center"
-                />
+              <div className="mt-8 pt-6 border-t flex gap-4 justify-center border-theme-secondary">
+                <LanguageToggle className="" variant="compact" />
+
+                <ThemeToggle variant="navbar" className="" />
               </div>
             </div>
           </div>

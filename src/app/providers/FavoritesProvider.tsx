@@ -9,7 +9,6 @@ interface FavoritesProviderProps {
 
 export const FavoritesProvider = ({ children }: FavoritesProviderProps) => {
   // Inicializa automaticamente os favoritos
-  console.log('chamou favoritos');
   useFavorites();
 
   return <>{children}</>;

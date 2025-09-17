@@ -1,4 +1,4 @@
-// app/components/WorkSearchInput.tsx - VERSÃO CORRIGIDA SEM LOOPS INFINITOS
+// app/components/WorkSearchInput.tsx - VERSÃO CORRIGIDA COM RETORNO DE OBRA COMPLETA
 import React, {
   useState,
   useEffect,
@@ -18,7 +18,7 @@ import {
   FiAlertCircle,
 } from 'react-icons/fi';
 
-interface Work {
+export interface WorkSearchInputWorkProp {
   id: string;
   title: string;
   composer: {
@@ -40,8 +40,8 @@ interface UserWork {
 
 interface WorkSearchInputProps {
   selectedWork: string;
-  onWorkSelect: (workId: string) => void;
-  popularWorks?: Work[];
+  onWorkSelect: (workId: string, workData?: WorkSearchInputWorkProp) => void; // 🆕 Adicionado workData opcional
+  popularWorks?: WorkSearchInputWorkProp[];
   placeholder?: string;
   error?: string;
   disabled?: boolean;
@@ -63,11 +63,14 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   loadingUserSuggestions = false,
 }) => {
   const [query, setQuery] = useState('');
-  const [works, setWorks] = useState<Work[]>([]);
+  const [works, setWorks] = useState<WorkSearchInputWorkProp[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedWorkData, setSelectedWorkData] = useState<Work | null>(null);
-  const [composerWorks, setComposerWorks] = useState<Work[]>([]);
+  const [selectedWorkData, setSelectedWorkData] =
+    useState<WorkSearchInputWorkProp | null>(null);
+  const [composerWorks, setComposerWorks] = useState<WorkSearchInputWorkProp[]>(
+    []
+  );
   const [isInitialized, setIsInitialized] = useState(false);
 
   const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
@@ -76,7 +79,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   const lastComposerRef = useRef<string>('');
   const lastQueryRef = useRef<string>('');
 
-  // 🔥 MEMOIZAR PROPS ESTÁVEIS PARA EVITAR RE-RENDERS
+  // MEMOIZAR PROPS ESTÁVEIS PARA EVITAR RE-RENDERS
   const stableFilterByComposer = useMemo(
     () => filterByComposer,
     [filterByComposer]
@@ -87,9 +90,8 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   );
   const stablePopularWorks = useMemo(() => popularWorks, [popularWorks]);
 
-  // 🔥 FUNÇÃO PARA CARREGAR OBRAS DO COMPOSITOR - MEMOIZADA E ESTÁVEL
+  // FUNÇÃO PARA CARREGAR OBRAS DO COMPOSITOR - MEMOIZADA E ESTÁVEL
   const loadComposerWorks = useCallback(async (composerId: string) => {
-    // Evitar chamadas duplicadas
     if (
       !composerId ||
       composerId.trim() === '' ||
@@ -98,7 +100,6 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       return;
     }
 
-    console.log('🎼 Carregando obras do compositor:', composerId);
     lastComposerRef.current = composerId;
 
     try {
@@ -115,34 +116,25 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       if (response.ok) {
         const data = await response.json();
         setComposerWorks(data.works || []);
-        console.log(
-          '✅ Obras do compositor carregadas:',
-          data.works?.length || 0
-        );
       } else {
-        console.error(
-          '❌ Erro ao carregar obras do compositor:',
-          response.status
-        );
+        console.error('Erro ao carregar obras do compositor:', response.status);
         setComposerWorks([]);
       }
     } catch (error) {
-      console.error('❌ Erro ao buscar obras do compositor:', error);
+      console.error('Erro ao buscar obras do compositor:', error);
       setComposerWorks([]);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // 🔥 EFFECT PARA CARREGAR OBRAS DO COMPOSITOR - SEM LOOPS
+  // EFFECT PARA CARREGAR OBRAS DO COMPOSITOR - SEM LOOPS
   useEffect(() => {
     if (stableFilterByComposer && stableFilterByComposer.trim() !== '') {
-      // Só carrega se realmente mudou
       if (lastComposerRef.current !== stableFilterByComposer) {
         loadComposerWorks(stableFilterByComposer);
       }
     } else {
-      // Limpar obras do compositor se não há filtro
       if (composerWorks.length > 0) {
         setComposerWorks([]);
         lastComposerRef.current = '';
@@ -150,9 +142,9 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     }
   }, [stableFilterByComposer, loadComposerWorks, composerWorks.length]);
 
-  // 🔥 FUNÇÃO PARA PRIORIZAR OBRAS DO USUÁRIO - MEMOIZADA
+  // FUNÇÃO PARA PRIORIZAR OBRAS DO USUÁRIO - MEMOIZADA
   const prioritizeUserWorks = useCallback(
-    (apiWorks: Work[]): Work[] => {
+    (apiWorks: WorkSearchInputWorkProp[]): WorkSearchInputWorkProp[] => {
       const userWorksFiltered = stableUserSuggestions.filter((userWork) => {
         const matchesQuery =
           query.length < 2 ||
@@ -180,10 +172,8 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     [query, stableFilterByComposer, stableUserSuggestions]
   );
 
-  // 🔥 FUNÇÃO PARA SUGESTÕES LOCAIS - MEMOIZADA E ESTÁVEL
-  const getLocalSuggestions = useCallback((): Work[] => {
-    console.log('💡 Obtendo sugestões locais...');
-
+  // FUNÇÃO PARA SUGESTÕES LOCAIS - MEMOIZADA E ESTÁVEL
+  const getLocalSuggestions = useCallback((): WorkSearchInputWorkProp[] => {
     // 1. SEMPRE priorizar obras do usuário se existirem
     if (stableUserSuggestions.length > 0) {
       let userWorksToShow = stableUserSuggestions;
@@ -195,14 +185,10 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
         );
 
         if (userWorksToShow.length === 0) {
-          console.log(
-            '🔄 Nenhuma obra do usuário para este compositor, usando obras gerais'
-          );
           return composerWorks.slice(0, 8);
         }
       }
 
-      console.log(`⭐ Mostrando obras do usuário: ${userWorksToShow.length}`);
       return userWorksToShow.slice(0, 8);
     }
 
@@ -212,7 +198,6 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       stableFilterByComposer.trim() !== '' &&
       composerWorks.length > 0
     ) {
-      console.log(`🎼 Mostrando obras do compositor: ${composerWorks.length}`);
       return composerWorks.slice(0, 8);
     }
 
@@ -228,7 +213,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
 
       if (popularFiltered.length > 0) {
         console.log(
-          `📊 Obras populares filtradas por compositor: ${popularFiltered.length}`
+          `Obras populares filtradas por compositor: ${popularFiltered.length}`
         );
         return popularFiltered.slice(0, 8);
       }
@@ -236,13 +221,10 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
 
     // 4. Fallback: obras populares gerais (apenas se não há filtro de compositor)
     if (!stableFilterByComposer || stableFilterByComposer.trim() === '') {
-      console.log(
-        `🌟 Mostrando obras populares gerais: ${stablePopularWorks.length}`
-      );
       return stablePopularWorks.slice(0, 8);
     }
 
-    console.log('❌ Nenhuma obra encontrada para as condições atuais');
+    console.log('Nenhuma obra encontrada para as condições atuais');
     return [];
   }, [
     stableUserSuggestions,
@@ -251,7 +233,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     stablePopularWorks,
   ]);
 
-  // 🔥 FUNCTION PARA BUSCA - MEMOIZADA E COM DEBOUNCE MELHOR
+  // FUNCTION PARA BUSCA - MEMOIZADA E COM DEBOUNCE MELHOR
   const performSearch = useCallback(
     async (searchQuery: string, composerFilter: string) => {
       // Evitar buscas duplicadas
@@ -272,7 +254,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
           params.append('composer', composerFilter);
         }
 
-        console.log('🔍 Buscando obras:', {
+        console.log('Buscando obras:', {
           query: searchQuery,
           filterByComposer: composerFilter,
         });
@@ -280,22 +262,18 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
         const response = await fetch(`/api/works/search?${params.toString()}`);
         const endTime = Date.now();
 
-        console.log(`⏱️ Busca completada em ${endTime - startTime}ms`);
+        console.log(`Busca completada em ${endTime - startTime}ms`);
 
         if (response.ok) {
           const data = await response.json();
           const combinedWorks = prioritizeUserWorks(data.works || []);
           setWorks(combinedWorks);
-          console.log(
-            '✅ Obras encontradas e priorizadas:',
-            combinedWorks.length
-          );
         } else {
-          console.error('❌ Erro na busca:', response.status);
+          console.error('Erro na busca:', response.status);
           setWorks([]);
         }
       } catch (error) {
-        console.error('❌ Erro ao buscar obras:', error);
+        console.error('Erro ao buscar obras:', error);
         setWorks([]);
       } finally {
         setIsLoading(false);
@@ -304,7 +282,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     [prioritizeUserWorks]
   );
 
-  // 🔥 EFFECT PARA BUSCA COM QUERY - SEM LOOPS E COM DEBOUNCE MELHOR
+  // EFFECT PARA BUSCA COM QUERY - SEM LOOPS E COM DEBOUNCE MELHOR
   useEffect(() => {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
@@ -332,7 +310,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     };
   }, [query, stableFilterByComposer, getLocalSuggestions, performSearch]);
 
-  // 🔥 EFFECT PARA INICIALIZAÇÃO - APENAS UMA VEZ
+  // EFFECT PARA INICIALIZAÇÃO - APENAS UMA VEZ
   useEffect(() => {
     if (!isInitialized && query.length < 2) {
       const suggestions = getLocalSuggestions();
@@ -341,7 +319,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     }
   }, [isInitialized, query.length, getLocalSuggestions]);
 
-  // 🔥 BUSCAR DADOS DA OBRA SELECIONADA - MEMOIZADO
+  // BUSCAR DADOS DA OBRA SELECIONADA - MEMOIZADO
   const findSelectedWorkData = useCallback(() => {
     if (!selectedWork) return null;
 
@@ -370,7 +348,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     }
   }, [selectedWork, findSelectedWorkData, query]);
 
-  // 🔥 FECHAR DROPDOWN AO CLICAR FORA - MEMOIZADO
+  // FECHAR DROPDOWN AO CLICAR FORA - MEMOIZADO
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -389,11 +367,11 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     };
   }, []);
 
-  // 🔥 HANDLERS MEMOIZADOS
+  // 🆕 HANDLER PARA SELEÇÃO DE OBRA - AGORA RETORNA OS DADOS COMPLETOS
   const handleWorkSelect = useCallback(
-    (work: Work) => {
-      console.log('🎯 Obra selecionada:', work.title);
-      onWorkSelect(work.id);
+    (work: WorkSearchInputWorkProp) => {
+      console.log('Obra selecionada:', work.title);
+      onWorkSelect(work.id, work); // 🆕 Passa tanto ID quanto dados da obra
       setSelectedWorkData(work);
       setQuery('');
       setIsOpen(false);
@@ -402,7 +380,6 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   );
 
   const handleClearSelection = useCallback(() => {
-    console.log('🗑️ Limpando seleção de obra');
     onWorkSelect('');
     setSelectedWorkData(null);
     setQuery('');
@@ -422,7 +399,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     [selectedWorkData, handleClearSelection]
   );
 
-  // 🔥 LABELS E CORES MEMOIZADOS
+  // LABELS E CORES MEMOIZADOS
   const { suggestionsLabel, iconAndColor } = useMemo(() => {
     const getSuggestionsLabel = () => {
       if (query.length >= 2) {
@@ -586,7 +563,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                       <button
                         key={`${work.id}-${i}`}
                         type="button"
-                        onClick={() => handleWorkSelect(work)}
+                        onClick={() => handleWorkSelect(work)} // 🆕 Usa o novo handler
                         className="w-full text-left p-3 rounded-lg hover:bg-theme-secondary transition-colors group"
                       >
                         <div className="flex items-center space-x-3">
@@ -633,9 +610,9 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                     {query.length >= 2
                       ? `Nenhuma obra encontrada para "${query}"`
                       : stableFilterByComposer &&
-                        stableFilterByComposer.trim() !== ''
-                      ? 'Nenhuma obra encontrada para este compositor'
-                      : 'Nenhuma obra disponível'}
+                          stableFilterByComposer.trim() !== ''
+                        ? 'Nenhuma obra encontrada para este compositor'
+                        : 'Nenhuma obra disponível'}
                   </p>
                   {query.length >= 2 && (
                     <p className="text-xs mt-1">

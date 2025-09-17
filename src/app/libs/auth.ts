@@ -26,7 +26,6 @@ async function getUserVerificationData(userId: string, isTeacher: boolean) {
         select: { isVerified: true },
       });
       result.teacherVerified = teacherProfile?.isVerified || false;
-      console.log('✅ Teacher verification status:', result.teacherVerified);
     } else {
       // Buscar o status do convite mais recente (ACCEPTED tem prioridade)
       const studentRelation = await prisma.teacherStudent.findFirst({

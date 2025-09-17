@@ -1,10 +1,25 @@
-// app/api/upload/route.ts - SISTEMA COM UPLOADS TEMPORÁRIOS E DEFINITIVOS
+// app/api/upload/route.ts - SISTEMA CORRIGIDO PARA IMAGENS
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { generateUniqueFileName } from '@/app/utils/fileUtils';
+
+// 🆕 FUNÇÃO AUXILIAR PARA MAPEAR MIME TYPE PARA EXTENSÃO
+function getImageExtensionFromMimeType(mimeType: string): string {
+  const mimeToExtension: { [key: string]: string } = {
+    'image/png': 'png',
+    'image/jpeg': 'jpg',
+    'image/jpg': 'jpg',
+    'image/gif': 'gif',
+    'image/bmp': 'bmp',
+    'image/webp': 'webp',
+    'image/svg+xml': 'svg',
+  };
+
+  return mimeToExtension[mimeType] || 'png'; // fallback para PNG
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +33,7 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File;
     const type = formData.get('type') as string;
 
-    // 🆕 Novos parâmetros para diferentes tipos de upload
+    // Novos parâmetros para diferentes tipos de upload
     const userId = formData.get('userId') as string;
     const tempId = formData.get('tempId') as string;
     const scoreDir = formData.get('scoreDir') as string;
@@ -40,7 +55,7 @@ export async function POST(request: NextRequest) {
       user: session.user.name || session.user.email,
     });
 
-    // 🆕 Validação de tipo expandida para novos tipos
+    // Validação de tipo expandida para novos tipos
     const allowedTypes = {
       score: [
         'application/pdf',
@@ -61,9 +76,23 @@ export async function POST(request: NextRequest) {
         'image/webp',
         'image/jpg',
       ],
-      // 🆕 Novos tipos para o sistema de thumbnails
-      'score-temp': ['image/png', 'image/jpeg', 'application/pdf'],
-      'score-final': ['image/png', 'image/jpeg', 'application/pdf'],
+      // Novos tipos para o sistema de thumbnails
+      'score-temp': [
+        'image/png',
+        'image/jpeg',
+        'image/gif',
+        'image/bmp',
+        'image/webp',
+        'application/pdf',
+      ],
+      'score-final': [
+        'image/png',
+        'image/jpeg',
+        'image/gif',
+        'image/bmp',
+        'image/webp',
+        'application/pdf',
+      ],
     };
 
     const validTypes = allowedTypes[type as keyof typeof allowedTypes] || [];
@@ -83,7 +112,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 🆕 Validação de tamanho por tipo
+    // Validação de tamanho por tipo
     const maxSizes = {
       score: 50 * 1024 * 1024, // 50MB para partituras
       image: 10 * 1024 * 1024, // 10MB para imagens
@@ -111,7 +140,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 🆕 Determinar estrutura de pastas baseado no tipo
+    // Determinar estrutura de pastas baseado no tipo
     let uploadDir: string;
     let fileName: string;
     let publicUrl: string;
@@ -123,7 +152,7 @@ export async function POST(request: NextRequest) {
 
     switch (type) {
       case 'score-temp':
-        // 🆕 Upload temporário na pasta do usuário
+        // Upload temporário na pasta do usuário
         if (!userId || !tempId) {
           return NextResponse.json(
             {
@@ -134,9 +163,29 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        fileName = file.name.includes('thumb')
-          ? `temp-${tempId}-thumb.png`
-          : `temp-${tempId}.pdf`;
+        // 🔧 LÓGICA CORRIGIDA PARA DETECÇÃO DE TIPO DE ARQUIVO
+        let tempFileName: string;
+
+        if (file.name.includes('thumb')) {
+          // É thumbnail - sempre PNG
+          tempFileName = `temp-${tempId}-thumb.png`;
+        } else {
+          // É arquivo principal - detectar tipo pelo MIME type
+          if (file.type === 'application/pdf') {
+            tempFileName = `temp-${tempId}.pdf`;
+          } else if (file.type.startsWith('image/')) {
+            // É imagem - usar extensão correta
+            const imageExtension = getImageExtensionFromMimeType(file.type);
+            tempFileName = `temp-${tempId}.${imageExtension}`;
+          } else {
+            // Fallback - usar extensão original do arquivo
+            const originalExtension =
+              path.extname(file.name).toLowerCase().slice(1) || 'pdf';
+            tempFileName = `temp-${tempId}.${originalExtension}`;
+          }
+        }
+
+        fileName = tempFileName;
 
         uploadDir = path.join(
           process.cwd(),
@@ -152,7 +201,7 @@ export async function POST(request: NextRequest) {
         break;
 
       case 'score-final':
-        // 🆕 Upload definitivo na estrutura organizada por obra - NOVA ESTRUTURA
+        // Upload definitivo na estrutura organizada por obra - NOVA ESTRUTURA
         if (!scoreDir) {
           return NextResponse.json(
             { error: 'scoreDir é obrigatório para uploads definitivos' },
@@ -160,7 +209,7 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        // Definir se é thumbnail ou PDF
+        // Definir se é thumbnail ou PDF/imagem
         if (isThumb === 'true' && thumbDir) {
           // É thumbnail - vai para subpasta thumb
           fileName = file.name;
@@ -174,7 +223,7 @@ export async function POST(request: NextRequest) {
           );
           publicUrl = `/uploads/scores/final/${thumbDir}/${fileName}`;
         } else {
-          // É PDF - vai para pasta da partitura
+          // É PDF/imagem - vai para pasta da partitura
           fileName = file.name;
           uploadDir = path.join(
             process.cwd(),
@@ -236,7 +285,7 @@ export async function POST(request: NextRequest) {
     // Criar diretório se não existir
     await mkdir(uploadDir, { recursive: true });
 
-    // 🆕 Salvar arquivo com tratamento de erro melhorado
+    // Salvar arquivo com tratamento de erro melhorado
     try {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
@@ -251,7 +300,7 @@ export async function POST(request: NextRequest) {
       throw new Error('Erro ao salvar arquivo no servidor');
     }
 
-    // 🆕 Metadados expandidos para diferentes tipos
+    // Metadados expandidos para diferentes tipos
     const fileExtension = path.extname(file.name).toLowerCase();
     const fileBaseName = path.basename(file.name, fileExtension);
 
@@ -267,7 +316,7 @@ export async function POST(request: NextRequest) {
       uploadType: type,
       uploadDate: now.toISOString(),
 
-      // 🆕 Campos específicos para sistema de thumbnails
+      // Campos específicos para sistema de thumbnails
       tempPath: tempPath, // Para uploads temporários
       scoreDir: scoreDir, // Para uploads definitivos
       thumbDir: thumbDir, // Diretório da thumbnail

@@ -334,11 +334,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
               {/* Theme Toggle */}
               <ThemeToggle variant="navbar" className="hidden sm:block" />
-              <NotificationBell
-                userRole="student"
-                userId={user.id}
-                className="hidden sm:block"
-              />
+              <NotificationBell userRole="student" userId={user.id} />
               {/* Profile Menu */}
               <div className="relative" ref={profileRef}>
                 <button
@@ -502,15 +498,6 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                 >
                   <FiX className="w-5 h-5 text-theme-secondary" />
                 </button>
-              </div>
-
-              {/* Notification Bell Mobile */}
-              <div className="mb-6 pb-4 border-b border-theme-secondary">
-                <NotificationBell
-                  userRole="student"
-                  userId={user.id}
-                  className="w-full justify-center"
-                />
               </div>
 
               {/* Navigation Items */}

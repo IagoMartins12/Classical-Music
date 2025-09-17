@@ -40,8 +40,6 @@ export default function ComposerSearchInput({
   // Função para buscar dados do compositor por ID
   const fetchComposerById = useCallback(async (composerId: string) => {
     try {
-      console.log('🔍 Buscando compositor por ID:', composerId);
-
       const response = await fetch('/api/composers', {
         method: 'POST',
         headers: {

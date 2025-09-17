@@ -109,8 +109,13 @@ export default async function EditScorePage({ params }: EditScorePageProps) {
   }
 
   const isAdmin = session.user.role === 2;
-  const isOwner = score.uploader === session.user.id;
+  const isOwner = score.uploadedBy === session.user.id;
 
+  console.log('isowner', {
+    isOwner,
+    uploader: score,
+    sessuin: session.user.id,
+  });
   if (!isAdmin && !isOwner) {
     redirect('/access-denied');
   }

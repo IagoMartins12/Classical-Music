@@ -1,5 +1,5 @@
-// app/utils/pdfUtils.ts - VERSÃO COM PDF.js FUNCIONANDO
-interface PDFInfo {
+// app/utils/pdfUtils.ts - VERSÃO ATUALIZADA PARA ACEITAR IMAGENS
+interface FileInfo {
   isValid: boolean;
   fileSize?: string;
   pageCount?: number;
@@ -10,12 +10,12 @@ interface PDFInfo {
 interface ThumbnailResult {
   success: boolean;
   thumbnailUrl?: string;
-  tempThumbnailPath?: string; // 🆕 Caminho temporário
+  tempThumbnailPath?: string;
   error?: string;
 }
 
 /**
- * 🆕 Detecta as bordas do conteúdo removendo espaços em branco
+ * Detecta as bordas do conteúdo removendo espaços em branco
  */
 function detectContentBounds(
   context: CanvasRenderingContext2D,
@@ -37,10 +37,8 @@ function detectContentBounds(
   let top = height;
   let bottom = 0;
 
-  // Definir threshold para detectar conteúdo (não-branco)
-  const threshold = 250; // Pixels com RGB abaixo disso são considerados conteúdo
+  const threshold = 250;
 
-  // Função para verificar se um pixel é "conteúdo" (não-branco)
   const isContent = (x: number, y: number): boolean => {
     const index = (y * width + x) * 4;
     const r = data[index];
@@ -48,11 +46,9 @@ function detectContentBounds(
     const b = data[index + 2];
     const alpha = data[index + 3];
 
-    // Considerar conteúdo se não for quase branco ou se tem transparência
     return (r < threshold || g < threshold || b < threshold) && alpha > 0;
   };
 
-  // Verificar cada pixel procurando por conteúdo
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       if (isContent(x, y)) {
@@ -64,13 +60,11 @@ function detectContentBounds(
     }
   }
 
-  // Se não encontrou conteúdo, usar canvas inteiro
   if (left === width) {
     console.log('⚠️ Nenhum conteúdo detectado, usando canvas completo');
     return { left: 0, top: 0, right: width, bottom: height };
   }
 
-  // Adicionar pequena margem ao redor do conteúdo
   const margin = Math.min(20, Math.min(width, height) * 0.02);
 
   const bounds = {
@@ -95,17 +89,15 @@ function detectContentBounds(
 }
 
 /**
- * 🆕 Carrega PDF.js via CDN com versão compatível
+ * Carrega PDF.js via CDN com versão compatível
  */
 async function loadPDFJS(): Promise<any> {
   return new Promise((resolve, reject) => {
-    // Verificar se já está carregado
     if ((window as any).pdfjsLib) {
       resolve((window as any).pdfjsLib);
       return;
     }
 
-    // Carregar script do PDF.js
     const script = document.createElement('script');
     script.src =
       'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
@@ -117,7 +109,6 @@ async function loadPDFJS(): Promise<any> {
         return;
       }
 
-      // Configurar worker com versão compatível
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
@@ -134,16 +125,28 @@ async function loadPDFJS(): Promise<any> {
 }
 
 /**
- * Verifica se uma URL é um PDF válido e extrai informações básicas
+ * Verifica se uma URL é um arquivo válido e extrai informações básicas
  */
-export async function validateAndExtractPDFInfo(url: string): Promise<PDFInfo> {
+export async function validateAndExtractFileInfo(
+  url: string
+): Promise<FileInfo> {
   try {
-    console.log('🔍 Verificando PDF:', url);
+    console.log('🔍 Verificando arquivo:', url);
 
-    if (!url.toLowerCase().includes('.pdf')) {
+    const urlLower = url.toLowerCase();
+    const isPDF = urlLower.includes('.pdf');
+    const isImage =
+      urlLower.includes('.jpg') ||
+      urlLower.includes('.jpeg') ||
+      urlLower.includes('.png') ||
+      urlLower.includes('.gif') ||
+      urlLower.includes('.bmp') ||
+      urlLower.includes('.webp');
+
+    if (!isPDF && !isImage) {
       return {
         isValid: false,
-        error: 'URL deve ser um arquivo PDF (.pdf)',
+        error: 'URL deve ser um arquivo PDF ou imagem (JPG, PNG, GIF, etc.)',
       };
     }
 
@@ -163,11 +166,23 @@ export async function validateAndExtractPDFInfo(url: string): Promise<PDFInfo> {
     }
 
     const contentType = response.headers.get('content-type');
-    if (contentType && !contentType.includes('application/pdf')) {
-      return {
-        isValid: false,
-        error: 'O arquivo não é um PDF válido',
-      };
+    if (contentType) {
+      const validTypes = [
+        'application/pdf',
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/gif',
+        'image/bmp',
+        'image/webp',
+      ];
+
+      if (!validTypes.some((type) => contentType.includes(type))) {
+        return {
+          isValid: false,
+          error: 'O arquivo não é um PDF ou imagem válida',
+        };
+      }
     }
 
     const contentLength = response.headers.get('content-length');
@@ -177,10 +192,20 @@ export async function validateAndExtractPDFInfo(url: string): Promise<PDFInfo> {
     if (contentLength) {
       const bytes = parseInt(contentLength);
       fileSize = formatFileSize(bytes);
-      estimatedPages = Math.max(1, Math.round(bytes / 51200));
+
+      if (isPDF) {
+        estimatedPages = Math.max(1, Math.round(bytes / 51200));
+      } else {
+        estimatedPages = 1; // Imagens têm 1 "página"
+      }
     }
 
-    console.log('✅ PDF válido:', { fileSize, estimatedPages });
+    console.log('✅ Arquivo válido:', {
+      fileSize,
+      estimatedPages,
+      isPDF,
+      isImage,
+    });
 
     return {
       isValid: true,
@@ -189,16 +214,16 @@ export async function validateAndExtractPDFInfo(url: string): Promise<PDFInfo> {
       title: extractTitleFromUrl(url),
     };
   } catch (error) {
-    console.error('❌ Erro ao verificar PDF:', error);
+    console.error('❌ Erro ao verificar arquivo:', error);
     return {
       isValid: false,
-      error: 'Erro ao verificar o arquivo PDF',
+      error: 'Erro ao verificar o arquivo',
     };
   }
 }
 
 /**
- * 🆕 Gera thumbnail PROVISÓRIA e faz upload para pasta temporária
+ * Gera thumbnail PROVISÓRIA e faz upload para pasta temporária
  */
 export async function generateAndUploadTempThumbnail(
   file: File,
@@ -207,22 +232,31 @@ export async function generateAndUploadTempThumbnail(
   try {
     console.log('🖼️ Gerando thumbnail provisória para:', file.name);
 
-    // Verificar se é PDF
-    if (file.type !== 'application/pdf') {
+    // Verificar se é PDF ou imagem
+    const isPDF = file.type === 'application/pdf';
+    const isImage = file.type.startsWith('image/');
+
+    if (!isPDF && !isImage) {
       return {
         success: false,
-        error: 'Arquivo não é PDF',
+        error: 'Arquivo deve ser PDF ou imagem',
       };
     }
 
-    // Informar sobre PDF grande
+    // Informar sobre arquivos grandes
     if (file.size > 10 * 1024 * 1024) {
-      // 10MB
-      console.log('📄 PDF grande detectado - processo pode ser mais lento');
+      console.log('📄 Arquivo grande detectado - processo pode ser mais lento');
     }
 
-    // Gerar thumbnail
-    const thumbnailDataUrl = await generatePDFThumbnail(file);
+    let thumbnailDataUrl: string | null = null;
+
+    if (isPDF) {
+      // Para PDFs: usar o método existente com PDF.js
+      thumbnailDataUrl = await generatePDFThumbnail(file);
+    } else if (isImage) {
+      // Para imagens: usar a própria imagem como thumbnail
+      thumbnailDataUrl = await generateImageThumbnail(file);
+    }
 
     if (!thumbnailDataUrl) {
       console.warn('⚠️ Não foi possível gerar preview - usando fallback');
@@ -236,11 +270,11 @@ export async function generateAndUploadTempThumbnail(
     const response = await fetch(thumbnailDataUrl);
     const blob = await response.blob();
 
-    // 🆕 Nome temporário único
+    // Nome temporário único
     const tempId = generateTempId();
     const thumbnailName = `temp-${tempId}-thumb.png`;
 
-    // 🆕 Upload para pasta temporária do usuário
+    // Upload para pasta temporária do usuário
     const formData = new FormData();
     formData.append('file', blob, thumbnailName);
     formData.append('type', 'score-temp');
@@ -263,7 +297,7 @@ export async function generateAndUploadTempThumbnail(
     return {
       success: true,
       thumbnailUrl: uploadData.url,
-      tempThumbnailPath: uploadData.tempPath, // Caminho temporário para mover depois
+      tempThumbnailPath: uploadData.tempPath,
     };
   } catch (error) {
     console.error('❌ Erro ao gerar thumbnail provisória:', error);
@@ -275,7 +309,7 @@ export async function generateAndUploadTempThumbnail(
 }
 
 /**
- * 🆕 Gera thumbnail DEFINITIVA para pasta final da obra - VERSÃO ATUALIZADA
+ * Gera thumbnail DEFINITIVA para pasta final da obra
  */
 export async function generateAndUploadFinalThumbnail(
   file: File,
@@ -287,7 +321,13 @@ export async function generateAndUploadFinalThumbnail(
   try {
     console.log('🖼️ Gerando thumbnail definitiva para:', workTitle);
 
-    const thumbnailDataUrl = await generatePDFThumbnail(file);
+    let thumbnailDataUrl: string | null = null;
+
+    if (file.type === 'application/pdf') {
+      thumbnailDataUrl = await generatePDFThumbnail(file);
+    } else if (file.type.startsWith('image/')) {
+      thumbnailDataUrl = await generateImageThumbnail(file);
+    }
 
     if (!thumbnailDataUrl) {
       return {
@@ -303,12 +343,12 @@ export async function generateAndUploadFinalThumbnail(
     const response = await fetch(thumbnailDataUrl);
     const blob = await response.blob();
 
-    // 🆕 Gerar estrutura de pastas com ID único
+    // Gerar estrutura de pastas com ID único
     const structure = generateScoreDirectory(workTitle, scoreId);
     const cleanTitle = sanitizeWorkTitle(workTitle);
     const thumbnailName = `${cleanTitle}.png`;
 
-    // Upload para pasta definitiva com nova estrutura
+    // Upload para pasta definitiva
     const formData = new FormData();
     formData.append('file', blob, thumbnailName);
     formData.append('type', 'score-final');
@@ -349,33 +389,98 @@ export async function generateAndUploadFinalThumbnail(
 }
 
 /**
- * 🆕 Gera thumbnail usando PDF.js - VERSÃO FUNCIONANDO
+ * 🆕 Gera thumbnail a partir de uma imagem
  */
-export async function generatePDFThumbnail(file: File): Promise<string | null> {
+export async function generateImageThumbnail(
+  file: File
+): Promise<string | null> {
   try {
-    console.log('🖼️ Gerando thumbnail do PDF:', file.name);
+    console.log('🖼️ Gerando thumbnail da imagem:', file.name);
 
-    // Verificar se é PDF
-    if (file.type !== 'application/pdf') {
-      console.warn('❌ Arquivo não é PDF');
+    if (!file.type.startsWith('image/')) {
+      console.warn('❌ Arquivo não é uma imagem');
       return null;
     }
 
-    // Verificar se está no cliente
     if (typeof window === 'undefined') {
       console.warn('❌ Função só funciona no cliente');
       return null;
     }
 
-    // 🆕 Tentar importar PDF.js dinamicamente - VERSÃO CORRIGIDA
+    return new Promise((resolve) => {
+      const img = new Image();
+
+      img.onload = () => {
+        try {
+          // Limpar URL após processamento
+          URL.revokeObjectURL(fileUrl);
+
+          // Usar a imagem original como thumbnail (sem redimensionamento conforme solicitado)
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          if (!ctx) {
+            console.error('❌ Não foi possível criar contexto do canvas');
+            resolve(null);
+            return;
+          }
+
+          // Usar dimensões originais da imagem
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          // Desenhar imagem no canvas
+          ctx.drawImage(img, 0, 0);
+
+          console.log(
+            `✅ Thumbnail de imagem gerada: ${canvas.width}x${canvas.height}`
+          );
+          resolve(canvas.toDataURL('image/png', 0.8));
+        } catch (error) {
+          console.error('❌ Erro ao processar imagem:', error);
+          resolve(null);
+        }
+      };
+
+      img.onerror = () => {
+        console.error('❌ Erro ao carregar imagem');
+        URL.revokeObjectURL(fileUrl);
+        resolve(null);
+      };
+
+      // Criar URL da imagem
+      const fileUrl = URL.createObjectURL(file);
+      img.src = fileUrl;
+    });
+  } catch (error) {
+    console.error('❌ Erro geral ao gerar thumbnail de imagem:', error);
+    return null;
+  }
+}
+
+/**
+ * Gera thumbnail usando PDF.js
+ */
+export async function generatePDFThumbnail(file: File): Promise<string | null> {
+  try {
+    console.log('🖼️ Gerando thumbnail do PDF:', file.name);
+
+    if (file.type !== 'application/pdf') {
+      console.warn('❌ Arquivo não é PDF');
+      return null;
+    }
+
+    if (typeof window === 'undefined') {
+      console.warn('❌ Função só funciona no cliente');
+      return null;
+    }
+
     let pdfjsLib: any;
     try {
-      // Verificar se PDF.js já está carregado globalmente
       if (typeof window !== 'undefined' && (window as any).pdfjsLib) {
         pdfjsLib = (window as any).pdfjsLib;
         console.log('📚 Usando PDF.js global:', pdfjsLib.version);
       } else {
-        // Carregar PDF.js via CDN se não estiver disponível
         pdfjsLib = await loadPDFJS();
       }
 
@@ -390,18 +495,12 @@ export async function generatePDFThumbnail(file: File): Promise<string | null> {
     }
 
     try {
-      // Converter arquivo para ArrayBuffer
       const arrayBuffer = await file.arrayBuffer();
-
-      // Carregar PDF
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       console.log(`📄 PDF carregado: ${pdf.numPages} páginas`);
 
-      // Pegar primeira página
       const page = await pdf.getPage(1);
 
-
-      // Criar canvas
       let canvas = document.createElement('canvas');
       let context = canvas.getContext('2d');
 
@@ -409,7 +508,6 @@ export async function generatePDFThumbnail(file: File): Promise<string | null> {
         throw new Error('Não foi possível criar contexto do canvas');
       }
 
-      // Renderizar página em canvas temporário maior para análise
       const tempCanvas = document.createElement('canvas');
       const tempContext = tempCanvas.getContext('2d');
 
@@ -417,14 +515,12 @@ export async function generatePDFThumbnail(file: File): Promise<string | null> {
         throw new Error('Não foi possível criar contexto temporário do canvas');
       }
 
-      // Usar escala maior para melhor qualidade de análise
       const analysisScale = 2;
       const analysisViewport = page.getViewport({ scale: analysisScale });
 
       tempCanvas.width = analysisViewport.width;
       tempCanvas.height = analysisViewport.height;
 
-      // Renderizar em alta resolução para análise
       const analysisRenderContext = {
         canvasContext: tempContext,
         viewport: analysisViewport,
@@ -435,7 +531,6 @@ export async function generatePDFThumbnail(file: File): Promise<string | null> {
         `📊 Página renderizada para análise: ${tempCanvas.width}x${tempCanvas.height}`
       );
 
-      // 🆕 Detectar área de conteúdo e recortar espaços em branco
       const contentBounds = detectContentBounds(
         tempContext,
         tempCanvas.width,
@@ -443,7 +538,6 @@ export async function generatePDFThumbnail(file: File): Promise<string | null> {
       );
       console.log('📐 Área de conteúdo detectada:', contentBounds);
 
-      // Criar canvas final com tamanho otimizado
       canvas = document.createElement('canvas');
       context = canvas.getContext('2d');
 
@@ -451,23 +545,19 @@ export async function generatePDFThumbnail(file: File): Promise<string | null> {
         throw new Error('Não foi possível criar contexto do canvas final');
       }
 
-      // 🆕 Calcular dimensões finais mantendo proporção do conteúdo
       const contentWidth = contentBounds.right - contentBounds.left;
       const contentHeight = contentBounds.bottom - contentBounds.top;
       const contentAspectRatio = contentWidth / contentHeight;
 
-      // Definir tamanho máximo para thumbnail
       const maxWidth = 400;
       const maxHeight = 520;
 
       let finalWidth, finalHeight;
 
       if (contentAspectRatio > maxWidth / maxHeight) {
-        // Conteúdo é mais largo
         finalWidth = Math.min(maxWidth, contentWidth / analysisScale);
         finalHeight = finalWidth / contentAspectRatio;
       } else {
-        // Conteúdo é mais alto
         finalHeight = Math.min(maxHeight, contentHeight / analysisScale);
         finalWidth = finalHeight * contentAspectRatio;
       }
@@ -481,21 +571,20 @@ export async function generatePDFThumbnail(file: File): Promise<string | null> {
         } (aspect: ${contentAspectRatio.toFixed(2)})`
       );
 
-      // 🆕 Desenhar apenas a área de conteúdo no canvas final
       context.drawImage(
         tempCanvas,
-        contentBounds.left, // sx - posição x da área de origem
-        contentBounds.top, // sy - posição y da área de origem
-        contentWidth, // sw - largura da área de origem
-        contentHeight, // sh - altura da área de origem
-        0, // dx - posição x no canvas de destino
-        0, // dy - posição y no canvas de destino
-        canvas.width, // dw - largura no canvas de destino
-        canvas.height // dh - altura no canvas de destino
+        contentBounds.left,
+        contentBounds.top,
+        contentWidth,
+        contentHeight,
+        0,
+        0,
+        canvas.width,
+        canvas.height
       );
 
       console.log('✅ Thumbnail gerada com crop automático');
-      return canvas.toDataURL('image/png', 0.8); // Qualidade 80%
+      return canvas.toDataURL('image/png', 0.8);
     } catch (renderError) {
       console.warn('⚠️ Erro ao renderizar PDF, usando fallback:', renderError);
       return await generatePlaceholder(file);
@@ -507,7 +596,7 @@ export async function generatePDFThumbnail(file: File): Promise<string | null> {
 }
 
 /**
- * Gera placeholder melhorado quando PDF.js falha
+ * Gera placeholder melhorado quando processamento falha
  */
 async function generatePlaceholder(file: File): Promise<string | null> {
   console.log('📋 Gerando placeholder para:', file.name);
@@ -529,11 +618,21 @@ async function generatePlaceholder(file: File): Promise<string | null> {
   ctx.lineWidth = 2;
   ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-  // Ícone PDF estilizado
-  ctx.fillStyle = '#dc2626';
-  ctx.font = 'bold 36px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('PDF', canvas.width / 2, canvas.height / 2 - 40);
+  // Ícone baseado no tipo de arquivo
+  const isPDF = file.type === 'application/pdf';
+  const isImage = file.type.startsWith('image/');
+
+  if (isPDF) {
+    ctx.fillStyle = '#dc2626';
+    ctx.font = 'bold 36px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('PDF', canvas.width / 2, canvas.height / 2 - 40);
+  } else if (isImage) {
+    ctx.fillStyle = '#059669';
+    ctx.font = 'bold 36px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('IMG', canvas.width / 2, canvas.height / 2 - 40);
+  }
 
   // Nome do arquivo
   ctx.fillStyle = '#374151';
@@ -561,29 +660,29 @@ async function generatePlaceholder(file: File): Promise<string | null> {
 }
 
 /**
- * 🆕 Gera ID temporário único
+ * Gera ID temporário único
  */
 function generateTempId(): string {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
 /**
- * 🆕 Limpa título da obra para usar como nome de pasta
+ * Limpa título da obra para usar como nome de pasta
  */
 export function sanitizeWorkTitle(title: string): string {
   return title
     .toLowerCase()
-    .normalize('NFD') // Decomposer acentos
-    .replace(/[\u0300-\u036f]/g, '') // Remover acentos
-    .replace(/[^a-z0-9\s-]/g, '') // Apenas letras, números, espaços e hífens
-    .replace(/\s+/g, '-') // Espaços viram hífens
-    .replace(/-+/g, '-') // Múltiplos hífens viram um
-    .replace(/^-|-$/g, '') // Remover hífens do início/fim
-    .substring(0, 50); // Máximo 50 caracteres
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .substring(0, 50);
 }
 
 /**
- * 🆕 Gera ID único para partitura específica
+ * Gera ID único para partitura específica
  */
 export function generateScoreId(): string {
   const timestamp = Date.now();
@@ -592,7 +691,7 @@ export function generateScoreId(): string {
 }
 
 /**
- * 🆕 Gera estrutura de pastas para partitura específica
+ * Gera estrutura de pastas para partitura específica
  */
 export function generateScoreDirectory(
   workTitle: string,
@@ -624,28 +723,53 @@ export function generateScoreDirectory(
 /**
  * Valida se um arquivo uploadado é válido
  */
-export async function validateUploadedFile(file: File): Promise<PDFInfo> {
+export async function validateUploadedFile(file: File): Promise<FileInfo> {
   try {
     console.log('🔍 Verificando arquivo uploadado:', file.name);
 
-    // Verificar tipo MIME
-    if (file.type !== 'application/pdf') {
+    // Verificar tipo MIME - agora aceita PDFs e imagens
+    const validTypes = [
+      'application/pdf',
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/gif',
+      'image/bmp',
+      'image/webp',
+    ];
+
+    if (!validTypes.includes(file.type)) {
       return {
         isValid: false,
-        error: 'O arquivo deve ser um PDF',
+        error: 'O arquivo deve ser um PDF ou imagem (PNG, JPG, GIF, etc.)',
       };
     }
 
     // Verificar extensão
-    if (!file.name.toLowerCase().endsWith('.pdf')) {
+    const fileName = file.name.toLowerCase();
+    const validExtensions = [
+      '.pdf',
+      '.png',
+      '.jpg',
+      '.jpeg',
+      '.gif',
+      '.bmp',
+      '.webp',
+    ];
+    const hasValidExtension = validExtensions.some((ext) =>
+      fileName.endsWith(ext)
+    );
+
+    if (!hasValidExtension) {
       return {
         isValid: false,
-        error: 'O arquivo deve ter extensão .pdf',
+        error:
+          'O arquivo deve ter uma extensão válida (.pdf, .png, .jpg, etc.)',
       };
     }
 
     // Verificar tamanho (máximo 50MB)
-    const maxSize = 50 * 1024 * 1024; // 50MB
+    const maxSize = 50 * 1024 * 1024;
     if (file.size > maxSize) {
       return {
         isValid: false,
@@ -662,10 +786,21 @@ export async function validateUploadedFile(file: File): Promise<PDFInfo> {
     }
 
     const fileSize = formatFileSize(file.size);
-    const estimatedPages = Math.max(1, Math.round(file.size / 51200));
+
+    // Para PDFs: estimar páginas. Para imagens: 1 página
+    let estimatedPages = 1;
+    if (file.type === 'application/pdf') {
+      estimatedPages = Math.max(1, Math.round(file.size / 51200));
+    }
+
     const title = extractTitleFromUrl(file.name);
 
-    console.log('✅ Arquivo PDF válido:', { fileSize, estimatedPages, title });
+    console.log('✅ Arquivo válido:', {
+      fileSize,
+      estimatedPages,
+      title,
+      type: file.type,
+    });
 
     return {
       isValid: true,
@@ -704,21 +839,21 @@ function extractTitleFromUrl(url: string): string {
     const pathname = urlObj.pathname;
     const filename = pathname.split('/').pop() || '';
 
-    // Remove extensão .pdf
-    const title = filename.replace(/\.pdf$/i, '');
+    // Remove extensão
+    const title = filename.replace(/\.(pdf|png|jpg|jpeg|gif|bmp|webp)$/i, '');
 
-    // Decodifica caracteres especiais
     const decoded = decodeURIComponent(title);
-
-    // Substitui underscores e hífens por espaços
     const cleaned = decoded.replace(/[_-]/g, ' ');
-
-    // Capitaliza primeira letra de cada palavra
     const capitalized = cleaned.replace(/\b\w/g, (char) => char.toUpperCase());
 
     return capitalized.trim();
   } catch {
-    return '';
+    // Se não é URL, processar como nome de arquivo
+    const filename = url || '';
+    const title = filename.replace(/\.(pdf|png|jpg|jpeg|gif|bmp|webp)$/i, '');
+    const cleaned = title.replace(/[_-]/g, ' ');
+    const capitalized = cleaned.replace(/\b\w/g, (char) => char.toUpperCase());
+    return capitalized.trim();
   }
 }
 
@@ -735,10 +870,24 @@ export function isValidUrl(string: string): boolean {
 }
 
 /**
- * Detecta se uma URL é provavelmente um PDF
+ * Detecta se uma URL é provavelmente um arquivo válido (PDF ou imagem)
  */
-export function isProbablyPDF(url: string): boolean {
+export function isProbablyValidFile(url: string): boolean {
   if (!isValidUrl(url)) return false;
   const urlLower = url.toLowerCase();
-  return urlLower.includes('.pdf') || urlLower.includes('pdf');
+  return (
+    urlLower.includes('.pdf') ||
+    urlLower.includes('.png') ||
+    urlLower.includes('.jpg') ||
+    urlLower.includes('.jpeg') ||
+    urlLower.includes('.gif') ||
+    urlLower.includes('.bmp') ||
+    urlLower.includes('.webp') ||
+    urlLower.includes('pdf') ||
+    urlLower.includes('image')
+  );
 }
+
+// Manter compatibilidade com nomes antigos
+export const validateAndExtractPDFInfo = validateAndExtractFileInfo;
+export const isProbablyPDF = isProbablyValidFile;

@@ -613,7 +613,7 @@ export default function WorkDetailsClient({
                 <div className="lg:col-span-3 space-y-6">
                   {/* Título e Compositor */}
                   <div className="space-y-4">
-                    <div className="flex items-start justify-between mb-0 md:mb-auto">
+                    <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <div className="flex items-center  gap-4">
                           <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">

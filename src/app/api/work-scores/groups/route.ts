@@ -48,10 +48,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    console.log(
-      `🔍 [GROUPS-API] Buscando grupos existentes para obra: ${workId}, usuário: ${userId}`
-    );
-
     // 1️⃣ Buscar todas as partituras desta obra
     const allWorkScores = await prisma.workScore.findMany({
       where: {
@@ -74,10 +70,6 @@ export async function GET(request: NextRequest) {
         createdAt: true,
       },
     });
-
-    console.log(
-      `📋 [GROUPS-API] Encontradas ${allWorkScores.length} partituras totais`
-    );
 
     if (allWorkScores.length === 0) {
       return NextResponse.json({
@@ -102,10 +94,6 @@ export async function GET(request: NextRequest) {
       (score) =>
         (score.source === 'CUSTOM' || score.source === 'UPLOAD') &&
         score.uploadedBy !== userId
-    );
-
-    console.log(
-      `📊 [GROUPS-API] Separação: ${imslpScores.length} IMSLP, ${currentUserScores.length} do usuário atual, ${otherUsersScores.length} de outros usuários`
     );
 
     // 3️⃣ Função para criar grupos por fonte/usuário
@@ -234,10 +222,6 @@ export async function GET(request: NextRequest) {
         source: 'USER_UPLOADED',
       });
     }
-
-    console.log(
-      `✅ [GROUPS-API] Processamento concluído: ${imslpGroups.length} grupos IMSLP, ${userGroups.length} grupos do usuário`
-    );
 
     return NextResponse.json({
       success: true,

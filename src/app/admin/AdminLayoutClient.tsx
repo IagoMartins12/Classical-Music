@@ -22,7 +22,7 @@ export default function AdminLayoutClient({
   }, [pathname]);
 
   const handleOnMenuClick = () => {
-    setSidebarOpen(true);
+    setSidebarOpen((prev) => !prev);
   };
 
   // Fechar sidebar quando clicar fora (mobile)

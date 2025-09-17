@@ -15,11 +15,13 @@ import { translateEpochWithHook } from '@/app/utils/translations/epochTranslatio
 interface listComposersCardsProps {
   composer: composerHomeProps;
   isActive: boolean;
+  isMobile: boolean;
 }
 
 const ListComposersCards: React.FC<listComposersCardsProps> = ({
   composer,
   isActive,
+  isMobile,
 }) => {
   // const [imageLoaded, setImageLoaded] = useState(false);
   const { t } = useTranslation({ sections: ['pages/home'] });
@@ -65,6 +67,8 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
                 size="md"
                 itemName={composer.fullName}
                 showToast={true}
+                highlightMobile
+                isMobile={isMobile}
               />
             </div>
 
