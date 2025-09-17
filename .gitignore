@@ -38,7 +38,7 @@ yarn-error.log*
 classical-music/scraper-composers-state.log
 
 backups/
-
+public/uploads
 scraper-works-state.log
 scraper-composers-state.log
 # vercel
