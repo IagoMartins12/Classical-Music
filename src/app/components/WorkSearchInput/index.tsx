@@ -1,4 +1,4 @@
-// app/components/WorkSearchInput.tsx - VERSÃO CORRIGIDA COM RETORNO DE OBRA COMPLETA
+// app/components/WorkSearchInput.tsx - COM PRESERVAÇÃO DA OBRA SELECIONADA
 import React, {
   useState,
   useEffect,
@@ -40,7 +40,7 @@ interface UserWork {
 
 interface WorkSearchInputProps {
   selectedWork: string;
-  onWorkSelect: (workId: string, workData?: WorkSearchInputWorkProp) => void; // 🆕 Adicionado workData opcional
+  onWorkSelect: (workId: string, workData?: WorkSearchInputWorkProp) => void;
   popularWorks?: WorkSearchInputWorkProp[];
   placeholder?: string;
   error?: string;
@@ -73,6 +73,11 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   );
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // 🆕 ESTADO PARA PRESERVAR A OBRA SELECIONADA
+  const [preservedSelectedWork, setPreservedSelectedWork] =
+    useState<WorkSearchInputWorkProp | null>(null);
+
+  console.log('selectedWorkData', selectedWorkData);
   const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -319,10 +324,11 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     }
   }, [isInitialized, query.length, getLocalSuggestions]);
 
-  // BUSCAR DADOS DA OBRA SELECIONADA - MEMOIZADO
+  // 🆕 BUSCAR DADOS DA OBRA SELECIONADA - COM FALLBACK PARA OBRA PRESERVADA
   const findSelectedWorkData = useCallback(() => {
     if (!selectedWork) return null;
 
+    // 1. PRIMEIRO: Tentar nas listas normais
     const allWorks = [
       ...stableUserSuggestions,
       ...composerWorks,
@@ -330,23 +336,49 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       ...works,
     ];
 
-    return allWorks.find((w) => w.id === selectedWork) || null;
+    const foundWork = allWorks.find((w) => w.id === selectedWork);
+
+    if (foundWork) {
+      console.log('✅ [LISTAS] Obra encontrada nas listas:', foundWork.title);
+      return foundWork;
+    }
+
+    // 2. FALLBACK: Usar obra preservada se IDs coincidem
+    if (preservedSelectedWork && preservedSelectedWork.id === selectedWork) {
+      console.log(
+        '✅ [PRESERVADA] Usando obra preservada:',
+        preservedSelectedWork.title
+      );
+      return preservedSelectedWork;
+    }
+
+    console.warn(
+      '⚠️ [NOT FOUND] Obra não encontrada em lugar nenhum:',
+      selectedWork
+    );
+    return null;
   }, [
     selectedWork,
     stableUserSuggestions,
     composerWorks,
     stablePopularWorks,
     works,
+    preservedSelectedWork, // 🆕 Adicionar obra preservada como dependência
   ]);
 
   // Effect para atualizar dados da obra selecionada
   useEffect(() => {
     const workData = findSelectedWorkData();
+    console.log('WORK DATA', workData);
     setSelectedWorkData(workData);
-    if (workData && query !== '') {
-      setQuery(''); // Limpar query quando uma obra é selecionada
+  }, [selectedWork, findSelectedWorkData]);
+
+  // 🆕 Effect para limpar obra preservada quando selectedWork muda para vazio
+  useEffect(() => {
+    if (!selectedWork) {
+      setPreservedSelectedWork(null);
     }
-  }, [selectedWork, findSelectedWorkData, query]);
+  }, [selectedWork]);
 
   // FECHAR DROPDOWN AO CLICAR FORA - MEMOIZADO
   useEffect(() => {
@@ -367,11 +399,15 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     };
   }, []);
 
-  // 🆕 HANDLER PARA SELEÇÃO DE OBRA - AGORA RETORNA OS DADOS COMPLETOS
+  // 🆕 HANDLER PARA SELEÇÃO DE OBRA - COM PRESERVAÇÃO
   const handleWorkSelect = useCallback(
     (work: WorkSearchInputWorkProp) => {
-      console.log('Obra selecionada:', work.title);
-      onWorkSelect(work.id, work); // 🆕 Passa tanto ID quanto dados da obra
+      console.log('Obra selecionada:', work);
+
+      // 🆕 PRESERVAR a obra selecionada IMEDIATAMENTE
+      setPreservedSelectedWork(work);
+
+      onWorkSelect(work.id, work);
       setSelectedWorkData(work);
       setQuery('');
       setIsOpen(false);
@@ -382,21 +418,18 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   const handleClearSelection = useCallback(() => {
     onWorkSelect('');
     setSelectedWorkData(null);
+    setPreservedSelectedWork(null); // 🆕 Limpar obra preservada também
     setQuery('');
     setIsOpen(false);
   }, [onWorkSelect]);
 
+  // handleInputChange MUITO SIMPLES - apenas atualiza query e isOpen
   const handleInputChange = useCallback(
     (value: string) => {
       setQuery(value);
       setIsOpen(value.length > 0 || !selectedWorkData);
-
-      // Se limpar o input, limpar seleção
-      if (value.length === 0 && selectedWorkData) {
-        handleClearSelection();
-      }
     },
-    [selectedWorkData, handleClearSelection]
+    [selectedWorkData]
   );
 
   // LABELS E CORES MEMOIZADOS
@@ -563,7 +596,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                       <button
                         key={`${work.id}-${i}`}
                         type="button"
-                        onClick={() => handleWorkSelect(work)} // 🆕 Usa o novo handler
+                        onClick={() => handleWorkSelect(work)}
                         className="w-full text-left p-3 rounded-lg hover:bg-theme-secondary transition-colors group"
                       >
                         <div className="flex items-center space-x-3">

@@ -1,4 +1,4 @@
-// app/components/modals/CreateWorkModal.tsx - TRADUZIDO
+// app/components/modals/CreateWorkModal.tsx - COM INTEGRAÇÃO DE SUGESTÃO DE OBRA PAI
 'use client';
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
@@ -46,6 +46,7 @@ import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
 import { translateEpochName } from '@/app/utils/translations/epochTranslations';
 import { translateInstrument } from '@/app/utils/translations/instrumentsGenresTranslation';
 import { translateToneStatic } from '@/app/utils/translations/toneTranslation';
+import ParentWorkSuggestionModal from '../ParentWorkSuggestionModal';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -104,6 +105,7 @@ const CreateWorkModal = ({
     duplicateType?: 'url' | 'title_composer';
     duplicateReason?: string;
   }>({ loading: false, found: false });
+
   // 🆕 ESTADO PARA PARENT WORK (COLEÇÃO)
   const [isPartOfCollection, setIsPartOfCollection] = useState(false);
   const [parentWorks, setParentWorks] = useState<
@@ -114,6 +116,13 @@ const CreateWorkModal = ({
     }>
   >([]);
   const [isEditingExternalSource, setIsEditingExternalSource] = useState(false);
+
+  // 🆕 ESTADOS PARA SUGESTÃO DE OBRA PAI
+  const [showParentSuggestionModal, setShowParentSuggestionModal] =
+    useState(false);
+  const [parentWorkData, setParentWorkData] = useState<any>(null);
+  const [loadingParentWork, setLoadingParentWork] = useState(false);
+
   const [includeMedia, setIncludeMedia] = useState(false);
   const [mediaData, setMediaData] = useState({
     spotifyUrl: '',
@@ -130,6 +139,7 @@ const CreateWorkModal = ({
   const [uploadingVideoAula, setUploadingVideoAula] = useState(false);
 
   const { user } = useAuth();
+  const toast = useToast();
 
   const validCategoryOptions = useMemo(() => getAllValidCategories(), []);
   const validWorkGenreOptions = useMemo(
@@ -154,13 +164,12 @@ const CreateWorkModal = ({
     { value: 'INTERMEDIATE', label: t('difficulty_INTERMEDIATE') },
     { value: 'ADVANCED', label: t('difficulty_ADVANCED') },
   ];
+
   const getTonalityOptions = (language: string) => {
     const selectLabel =
       language === 'en' ? 'Select a tonality' : 'Selecione uma tonalidade';
 
-    // Lista base das tonalidades em português (como estão armazenadas no banco)
     const baseTonalities = [
-      // Tonalidades Maiores
       'Do maior',
       'Do# maior',
       'Reb maior',
@@ -178,8 +187,6 @@ const CreateWorkModal = ({
       'La# maior',
       'Sib maior',
       'Si maior',
-
-      // Tonalidades Menores
       'Do menor',
       'Do# menor',
       'Reb menor',
@@ -197,16 +204,12 @@ const CreateWorkModal = ({
       'La# menor',
       'Sib menor',
       'Si menor',
-
-      // Modos
       'Dórico',
       'Frígio',
       'Lídio',
       'Mixolídio',
       'Eólio',
       'Lócrio',
-
-      // Outras categorias
       'Atonal',
       'Politonal',
       'Modal',
@@ -219,7 +222,7 @@ const CreateWorkModal = ({
     return [
       { value: '', label: selectLabel },
       ...baseTonalities.map((tonality) => ({
-        value: tonality, // Manter valor original para salvar no banco
+        value: tonality,
         label: translateToneStatic(tonality, language as 'pt' | 'en'),
       })),
     ];
@@ -264,20 +267,6 @@ const CreateWorkModal = ({
     parentWorkId: '', // 🆕 NOVO CAMPO
   });
 
-  // const [supportData, setSupportData] = useState<{
-  //   epochs: any[];
-  //   instruments: any[];
-  //   roles: any[];
-  //   composers: any[];
-  //   works: any[];
-  // }>({
-  //   epochs: epochs,
-  //   instruments: instruments,
-  //   roles: [],
-  //   composers: composers,
-  //   works: [],
-  // });
-
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const requiredFields = useMemo(() => {
@@ -287,7 +276,7 @@ const CreateWorkModal = ({
     }
     return base;
   }, [isPartOfCollection]);
-  // const customValidations = workModalValidations;
+
   const customValidations = useMemo(
     () => ({
       ...workModalValidations,
@@ -300,6 +289,7 @@ const CreateWorkModal = ({
     }),
     [isPartOfCollection]
   );
+
   const { validateForm } = useFormValidation(
     fieldRefs,
     requiredFields,
@@ -380,6 +370,116 @@ const CreateWorkModal = ({
   }, [editingWork]);
 
   const hasChanges = useSmartFormChanges(formData, originalData, ['workType']);
+
+  // 🆕 FUNÇÃO PARA BUSCAR DADOS DA OBRA PAI
+  const fetchParentWorkData = useCallback(async (parentWorkId: string) => {
+    if (!parentWorkId) return;
+
+    setLoadingParentWork(true);
+    try {
+      console.log('🔍 Buscando dados da obra pai:', parentWorkId);
+
+      const response = await fetch(`/api/works/${parentWorkId}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ Dados da obra pai carregados:', data.title);
+        setParentWorkData(data);
+
+        // Verificar se há dados úteis para copiar
+        const hasUsefulData = checkIfParentHasUsefulData(data);
+        if (hasUsefulData) {
+          setShowParentSuggestionModal(true);
+        }
+      } else {
+        console.error('❌ Erro ao buscar obra pai:', response.status);
+      }
+    } catch (error) {
+      console.error('❌ Erro ao buscar dados da obra pai:', error);
+    } finally {
+      setLoadingParentWork(false);
+    }
+  }, []);
+
+  // 🆕 FUNÇÃO PARA VERIFICAR SE A OBRA PAI TEM DADOS ÚTEIS
+  const checkIfParentHasUsefulData = useCallback(
+    (parentData: any) => {
+      if (!parentData) return false;
+
+      // Verificar se há pelo menos um campo útil que pode ser copiado
+      const fieldsToCheck = [
+        { field: 'opOrCatalog', current: formData.opOrCatalog },
+        { field: 'compositionYear', current: formData.compositionYear },
+        { field: 'firstPublishDate', current: formData.firstPublishDate },
+        { field: 'tone', current: formData.tone },
+        { field: 'mediaDuration', current: formData.mediaDuration },
+        { field: 'workStyle', current: formData.workStyle },
+        { field: 'moviment', current: formData.moviment },
+        { field: 'instrumentation', current: formData.instrumentation },
+        { field: 'dedicateTo', current: formData.dedicateTo },
+        { field: 'difficultyLevel', current: formData.difficultyLevel },
+      ];
+
+      // Verificar campos simples
+      for (const { field, current } of fieldsToCheck) {
+        if (parentData[field] && !current?.trim()) {
+          return true;
+        }
+      }
+
+      // Verificar arrays
+      if (parentData.categoryNames?.length && !formData.categoryNames.length) {
+        return true;
+      }
+      if (parentData.workGenresArr?.length && !formData.workGenresArr.length) {
+        return true;
+      }
+      if (parentData.imslpTags?.length && !formData.imslpTags.trim()) {
+        return true;
+      }
+
+      // Verificar IDs especiais
+      if (parentData.epochId && !formData.epochId.trim()) {
+        return true;
+      }
+      if (parentData.instrumentId && !formData.instrumentId.trim()) {
+        return true;
+      }
+      if (parentData.workType && formData.workType === 'INDIVIDUAL') {
+        return true;
+      }
+
+      return false;
+    },
+    [formData]
+  );
+
+  // 🆕 FUNÇÃO PARA APLICAR DADOS SELECIONADOS
+  const handleApplyParentData = useCallback(
+    (selectedData: any) => {
+      console.log('📋 Aplicando dados da obra pai:', selectedData);
+
+      setFormData((prev) => ({
+        ...prev,
+        ...selectedData,
+      }));
+
+      // Limpar erros dos campos que foram preenchidos
+      const updatedErrors = { ...errors };
+      Object.keys(selectedData).forEach((field) => {
+        if (updatedErrors[field]) {
+          delete updatedErrors[field];
+        }
+      });
+      setErrors(updatedErrors);
+
+      toast.success(
+        'Sucesso',
+        `${Object.keys(selectedData).length} campo(s) preenchido(s) com dados da obra pai`
+      );
+    },
+    [errors, toast]
+  );
+
   // 🆕 FUNÇÃO PARA CARREGAR OBRAS DO COMPOSITOR (PARA PARENT WORK)
   const loadParentWorks = useCallback(async (composerId: string) => {
     if (!composerId) {
@@ -408,6 +508,7 @@ const CreateWorkModal = ({
       setParentWorks([]);
     }
   }, []);
+
   // 🆕 EFFECT PARA CARREGAR PARENT WORKS QUANDO COMPOSITOR MUDAR
   useEffect(() => {
     if (isPartOfCollection && formData.composerId) {
@@ -417,10 +518,23 @@ const CreateWorkModal = ({
     }
   }, [isPartOfCollection, formData.composerId, loadParentWorks]);
 
-  // 🆕 HANDLER PARA PARENT WORK
-  const handleParentWorkSelect = useCallback((parentWorkId: string) => {
-    setFormData((prev) => ({ ...prev, parentWorkId }));
-  }, []);
+  // 🆕 HANDLER PARA PARENT WORK - ATUALIZADO COM BUSCA DE DADOS
+  const handleParentWorkSelect = useCallback(
+    (parentWorkId: string) => {
+      setFormData((prev) => ({ ...prev, parentWorkId }));
+
+      // 🆕 BUSCAR DADOS DA OBRA PAI SE SELECIONADA
+      if (parentWorkId && parentWorkId.trim() !== '') {
+        console.log('🎯 Obra pai selecionada, buscando dados...');
+        fetchParentWorkData(parentWorkId);
+      } else {
+        // Limpar dados se obra pai foi removida
+        setParentWorkData(null);
+        setShowParentSuggestionModal(false);
+      }
+    },
+    [fetchParentWorkData]
+  );
 
   const handleAudioUpload = async (file: File) => {
     if (!file) return;
@@ -495,27 +609,8 @@ const CreateWorkModal = ({
     }
   };
 
-  // Load form data
-  // const loadFormData = async () => {
-  //   try {
-  //     const response = await fetch('/api/uploads/form-data');
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setSupportData((prev) => ({
-  //         ...prev,
-  //         roles: data.roles || [],
-  //         instruments: data.instruments || prev.instruments,
-  //         works: data.works || [],
-  //       }));
-  //     }
-  //   } catch (error) {
-  //     console.error('Erro ao carregar dados do formulário:', error);
-  //   }
-  // };
-
   // Check for duplicates
   const checkDuplicateByLink = async (url: string) => {
-    // Verificar se tem dados suficientes para fazer a verificação
     if (!url.trim() && (!formData.title.trim() || !formData.composerId)) {
       return false;
     }
@@ -556,7 +651,6 @@ const CreateWorkModal = ({
     }
   };
 
-  // Nova função para verificar duplicatas apenas por título + compositor
   const checkDuplicateByTitle = async () => {
     if (!formData.title.trim() || !formData.composerId) {
       return false;
@@ -603,8 +697,6 @@ const CreateWorkModal = ({
     return isValid;
   };
 
-  const toast = useToast();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -614,13 +706,11 @@ const CreateWorkModal = ({
 
     // Check for duplicates if not editing external source
     if (!isEditingExternalSource) {
-      // Verificar duplicata por URL se existe
       if (formData.imslpId && (await checkDuplicateByLink(formData.imslpId))) {
         toast.error(t('toast_error'), t('toast_work_duplicate_imslp'));
         return;
       }
 
-      // Verificar duplicata por título + compositor
       if (await checkDuplicateByTitle()) {
         const composerName =
           composers.find((c) => c.id === formData.composerId)?.fullName ||
@@ -827,7 +917,6 @@ const CreateWorkModal = ({
   };
 
   useEffect(() => {
-    // loadFormData();
     if (editingWork) {
       let detectedUrl = '';
 
@@ -866,7 +955,7 @@ const CreateWorkModal = ({
         subtitle: editingWork.subtitle || '',
         imslpTags: editingWork.imslpTags?.join(', ') || '',
         difficultyLevel: editingWork.difficultyLevel || '',
-        parentWorkId: editingWork.parentWorkId || '', // 🆕 NOVO CAMPO
+        parentWorkId: editingWork.parentWorkId || '',
       });
 
       const hasExistingMedia = !!(
@@ -899,854 +988,905 @@ const CreateWorkModal = ({
   if (!isOpen) return null;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => {
-        if (editingWork && originalData) {
-          setFormData(originalData);
-        }
-        onClose();
-      }}
-      maxWidth="4xl"
-      showCloseButton={true}
-      confirmOnClose={true}
-      hasChanges={hasChanges}
-      isProcessing={isSubmitting || duplicateCheck.loading}
-      processName="criação de peça"
-      setPr
-    >
-      <AnimatedItem direction="scale" springType="bouncy" className="w-full">
-        <div>
-          {/* Header */}
-          <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
-                <FiMusic className="w-5 h-5 text-theme-primary" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-theme-primary classical-title">
-                  {editingWork
-                    ? t('modal_work_title_edit')
-                    : t('modal_work_title_create')}
-                </h2>
-                <p className="text-theme-secondary text-sm">
-                  {editingWork
-                    ? t('modal_work_subtitle_edit')
-                    : t('modal_work_subtitle_create')}
-                </p>
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          if (editingWork && originalData) {
+            setFormData(originalData);
+          }
+          onClose();
+        }}
+        maxWidth="4xl"
+        showCloseButton={true}
+        confirmOnClose={true}
+        hasChanges={hasChanges}
+        isProcessing={isSubmitting || duplicateCheck.loading}
+        processName="criação de peça"
+      >
+        <AnimatedItem direction="scale" springType="bouncy" className="w-full">
+          <div>
+            {/* Header */}
+            <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
+                  <FiMusic className="w-5 h-5 text-theme-primary" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-theme-primary classical-title">
+                    {editingWork
+                      ? t('modal_work_title_edit')
+                      : t('modal_work_title_create')}
+                  </h2>
+                  <p className="text-theme-secondary text-sm">
+                    {editingWork
+                      ? t('modal_work_subtitle_edit')
+                      : t('modal_work_subtitle_create')}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Content */}
-          <div className="mt-4 ">
-            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-              {/* URL Scraping */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-2">
-                    <FiDatabase className="w-4 h-4 text-theme-tertiary" />
-                    <span className="text-sm font-medium text-theme-primary">
-                      {t('modal_work_scraping_title')}
-                    </span>
-                    {isEditingExternalSource && (
-                      <div className="flex items-center space-x-1 text-xs text-blue-600">
-                        <FiLock className="w-3 h-3" />
-                        <span>Fonte IMSLP detectada automaticamente</span>
+            {/* Content */}
+            <div className="mt-4">
+              <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+                {/* URL Scraping */}
+                <AnimatedCard
+                  className="classical-card-simple p-4"
+                  hover="none"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-2">
+                      <FiDatabase className="w-4 h-4 text-theme-tertiary" />
+                      <span className="text-sm font-medium text-theme-primary">
+                        {t('modal_work_scraping_title')}
+                      </span>
+                      {isEditingExternalSource && (
+                        <div className="flex items-center space-x-1 text-xs text-blue-600">
+                          <FiLock className="w-3 h-3" />
+                          <span>Fonte IMSLP detectada automaticamente</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <Input
+                      label={t('modal_work_scraping_url_label')}
+                      value={urlToScrape}
+                      onChange={(e) => setUrlToScrape(e.target.value)}
+                      placeholder="https://imslp.org/wiki/Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
+                      leftIcon={<FiLink />}
+                      disabled={isEditingExternalSource}
+                    />
+
+                    {duplicateCheck.loading && (
+                      <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="flex items-center space-x-2">
+                          <FiLoader className="w-4 h-4 animate-spin text-blue-600" />
+                          <span className="text-sm text-blue-800">
+                            {t('modal_work_scraping_checking_duplicates')}
+                          </span>
+                        </div>
                       </div>
                     )}
-                  </div>
-                </div>
 
-                <div className="space-y-4">
-                  <Input
-                    label={t('modal_work_scraping_url_label')}
-                    value={urlToScrape}
-                    onChange={(e) => setUrlToScrape(e.target.value)}
-                    placeholder="https://imslp.org/wiki/Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
-                    leftIcon={<FiLink />}
-                    disabled={isEditingExternalSource}
-                  />
-
-                  {duplicateCheck.loading && (
-                    <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
-                      <div className="flex items-center space-x-2">
-                        <FiLoader className="w-4 h-4 animate-spin text-blue-600" />
-                        <span className="text-sm text-blue-800">
-                          {t('modal_work_scraping_checking_duplicates')}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {duplicateCheck.found && (
-                    <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <FiAlertCircle className="w-4 h-4 text-red-600" />
-                        <span className="text-sm font-medium text-red-800">
-                          {duplicateCheck.duplicateType === 'url'
-                            ? 'Duplicata encontrada por URL do IMSLP'
-                            : 'Duplicata encontrada por título e compositor'}
-                        </span>
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-sm text-red-700">
-                          <strong>Obra existente:</strong>{' '}
-                          {duplicateCheck.work?.title}
-                          {duplicateCheck.work?.subtitle &&
-                            ` - ${duplicateCheck.work.subtitle}`}
-                        </p>
-                        <p className="text-sm text-red-700">
-                          <strong>Compositor:</strong>{' '}
-                          {duplicateCheck.work?.composerName}
-                        </p>
-                        {duplicateCheck.work?.opOrCatalog && (
+                    {duplicateCheck.found && (
+                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <FiAlertCircle className="w-4 h-4 text-red-600" />
+                          <span className="text-sm font-medium text-red-800">
+                            {duplicateCheck.duplicateType === 'url'
+                              ? 'Duplicata encontrada por URL do IMSLP'
+                              : 'Duplicata encontrada por título e compositor'}
+                          </span>
+                        </div>
+                        <div className="space-y-1">
                           <p className="text-sm text-red-700">
-                            <strong>Op./Catálogo:</strong>{' '}
-                            {duplicateCheck.work.opOrCatalog}
+                            <strong>Obra existente:</strong>{' '}
+                            {duplicateCheck.work?.title}
+                            {duplicateCheck.work?.subtitle &&
+                              ` - ${duplicateCheck.work.subtitle}`}
                           </p>
-                        )}
-                        <p className="text-sm text-red-600 font-medium mt-2">
-                          {duplicateCheck.duplicateType === 'url'
-                            ? 'Uma obra com este link do IMSLP já existe no sistema.'
-                            : `Uma obra com o título "${duplicateCheck.work?.title}" deste compositor já existe no sistema.`}
-                        </p>
+                          <p className="text-sm text-red-700">
+                            <strong>Compositor:</strong>{' '}
+                            {duplicateCheck.work?.composerName}
+                          </p>
+                          {duplicateCheck.work?.opOrCatalog && (
+                            <p className="text-sm text-red-700">
+                              <strong>Op./Catálogo:</strong>{' '}
+                              {duplicateCheck.work.opOrCatalog}
+                            </p>
+                          )}
+                          <p className="text-sm text-red-600 font-medium mt-2">
+                            {duplicateCheck.duplicateType === 'url'
+                              ? 'Uma obra com este link do IMSLP já existe no sistema.'
+                              : `Uma obra com o título "${duplicateCheck.work?.title}" deste compositor já existe no sistema.`}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  )}
-
-                  {!isEditingExternalSource && (
-                    <div className="mt-3">
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        size="sm"
-                        leftIcon={
-                          scrapingUrl ? (
-                            <FiLoader className="animate-spin" />
-                          ) : (
-                            <FiSearch />
-                          )
-                        }
-                        onClick={handleScrapeUrl}
-                      >
-                        {scrapingUrl
-                          ? t('modal_work_scraping_extracting')
-                          : t('modal_work_scraping_extract_button')}
-                      </Button>
-                    </div>
-                  )}
-
-                  {scrapingResult && (
-                    <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <FiCheck className="w-4 h-4 text-green-600" />
-                        <span className="text-sm font-medium text-green-800">
-                          {t('modal_work_scraping_success')}
-                        </span>
-                      </div>
-                      <div className="text-xs text-green-700">
-                        {t('modal_work_scraping_source', {
-                          source: scrapingResult.source,
-                          quality: scrapingResult.data.pageQuality,
-                          completeness: scrapingResult.data.dataCompleteness,
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {isEditingExternalSource && (
-                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <div className="flex items-center space-x-2">
-                        <FiInfo className="w-4 h-4 text-blue-600" />
-                        <span className="text-sm text-blue-800">
-                          {t('modal_work_scraping_external_detected')}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </AnimatedCard>
-
-              {/* Basic Information */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiInfo className="w-5 h-5" />
-                  <span>{t('modal_work_basic_title')}</span>
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label={`${t('modal_work_basic_title_field')} *`}
-                    ref={fieldRefs.title}
-                    value={formData.title}
-                    onChange={(e) => handleInputChange('title', e.target.value)}
-                    error={errors.title}
-                    placeholder="Sinfonia No. 40 em Sol menor"
-                  />
-
-                  <Input
-                    label={t('modal_work_basic_subtitle')}
-                    value={formData.subtitle}
-                    onChange={(e) =>
-                      handleInputChange('subtitle', e.target.value)
-                    }
-                    placeholder="Subtítulo da obra"
-                  />
-
-                  <div ref={fieldRefs.composerId}>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_work_basic_composer')} *
-                    </label>
-                    <ComposerSearchInput
-                      selectedComposer={formData.composerId}
-                      onComposerSelect={handleComposerSelect}
-                      popularComposers={composers}
-                    />
-                    {errors.composerId && (
-                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
-                        <FiAlertCircle className="w-4 h-4" />
-                        <span>{errors.composerId}</span>
-                      </p>
                     )}
-                  </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_work_basic_instrument')} *
-                    </label>
-                    <Select
-                      ref={fieldRefs.instrumentId}
-                      options={[
-                        {
-                          value: '',
-                          label:
-                            language === 'pt'
-                              ? 'Selecione um instrumento'
-                              : 'Select an instrument',
-                        },
-                        ...instruments.map((instrument) => ({
-                          value: instrument.id,
-                          label: `${translateInstrument(
-                            instrument.name,
-                            language
-                          )}`,
-                        })),
-                      ]}
-                      value={formData.instrumentId}
-                      onChange={(e) =>
-                        handleInputChange('instrumentId', e.target.value)
-                      }
-                      error={errors.instrumentId}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_work_basic_epoch')} *
-                    </label>
-                    <Select
-                      ref={fieldRefs.epochId}
-                      options={[
-                        {
-                          value: '',
-                          label:
-                            language === 'pt'
-                              ? 'Selecione uma época'
-                              : 'Select an epoch',
-                        },
-                        ...epochs.map((epoch) => ({
-                          value: epoch.id,
-                          label: translateEpochName(epoch.name, language),
-                        })),
-                      ]}
-                      value={formData.epochId}
-                      onChange={(e) =>
-                        handleInputChange('epochId', e.target.value)
-                      }
-                      error={errors.epochId}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_work_basic_work_type')}
-                    </label>
-                    <Select
-                      options={workTypeOptions}
-                      value={formData.workType}
-                      onChange={(e) =>
-                        handleInputChange('workType', e.target.value)
-                      }
-                    />
-                  </div>
-                </div>
-              </AnimatedCard>
-
-              {/* 🆕 PARENT WORK (COLEÇÃO) SECTION */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0 mb-4">
-                  <div className="flex items-center space-x-2">
-                    <FiLayers className="w-4 h-4 text-theme-tertiary" />
-                    <span className="text-sm font-medium text-theme-primary">
-                      Coleção
-                    </span>
-                  </div>
-
-                  <label className="flex items-center space-x-2 cursor-pointer">
-                    <Checkbox
-                      label="Essa peça faz parte de uma coleção?"
-                      type="checkbox"
-                      checked={isPartOfCollection}
-                      onChange={(e) => {
-                        const checked = e.target.checked;
-                        setIsPartOfCollection(checked);
-                        if (!checked) {
-                          setFormData((prev) => ({
-                            ...prev,
-                            parentWorkId: '',
-                          }));
-                        }
-                      }}
-                    />
-                  </label>
-                </div>
-
-                {isPartOfCollection && (
-                  <div className="space-y-4 border-t border-theme-secondary pt-4">
-                    {/* Informação sobre compositor */}
-                    <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <div className="flex items-center space-x-2">
-                        <FiInfo className="w-4 h-4 text-blue-600" />
-                        <span className="text-sm text-blue-800">
-                          <strong>Importante:</strong> A obra da coleção deve
-                          ser do mesmo compositor (
-                          {formData.composerId
-                            ? composers.find(
-                                (c) => c.id === formData.composerId
-                              )?.fullName || 'compositor selecionado'
-                            : 'selecione um compositor primeiro'}
-                          ).
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Work Search Input para Parent Work */}
-                    {formData.composerId ? (
-                      <div>
-                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          Obra da Coleção *
-                        </label>
-                        <SimpleWorkSearchInput
-                          selectedWork={formData.parentWorkId}
-                          onWorkSelect={handleParentWorkSelect}
-                          userSuggestions={parentWorks}
-                          placeholder="Digite para buscar a obra da coleção..."
-                          filterByComposer={formData.composerId}
-                          error={
-                            errors.parentWorkId
-                              ? 'Selecione a obra principal.'
-                              : undefined
+                    {!isEditingExternalSource && (
+                      <div className="mt-3">
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          leftIcon={
+                            scrapingUrl ? (
+                              <FiLoader className="animate-spin" />
+                            ) : (
+                              <FiSearch />
+                            )
                           }
-                        />
-                        <p className="text-xs text-theme-tertiary mt-2">
-                          💡 Busque pela obra principal que contém esta peça
-                          como parte ou movimento.
-                        </p>
+                          onClick={handleScrapeUrl}
+                        >
+                          {scrapingUrl
+                            ? t('modal_work_scraping_extracting')
+                            : t('modal_work_scraping_extract_button')}
+                        </Button>
                       </div>
-                    ) : (
-                      <></>
+                    )}
+
+                    {scrapingResult && (
+                      <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <FiCheck className="w-4 h-4 text-green-600" />
+                          <span className="text-sm font-medium text-green-800">
+                            {t('modal_work_scraping_success')}
+                          </span>
+                        </div>
+                        <div className="text-xs text-green-700">
+                          {t('modal_work_scraping_source', {
+                            source: scrapingResult.source,
+                            quality: scrapingResult.data.pageQuality,
+                            completeness: scrapingResult.data.dataCompleteness,
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {isEditingExternalSource && (
+                      <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="flex items-center space-x-2">
+                          <FiInfo className="w-4 h-4 text-blue-600" />
+                          <span className="text-sm text-blue-800">
+                            {t('modal_work_scraping_external_detected')}
+                          </span>
+                        </div>
+                      </div>
                     )}
                   </div>
-                )}
-              </AnimatedCard>
+                </AnimatedCard>
 
-              {/* Catalog Information */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiTag className="w-5 h-5" />
-                  <span>{t('modal_work_catalog_title')}</span>
-                </h3>
+                {/* Basic Information */}
+                <AnimatedCard
+                  className="classical-card-simple p-4"
+                  hover="none"
+                >
+                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                    <FiInfo className="w-5 h-5" />
+                    <span>{t('modal_work_basic_title')}</span>
+                  </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label={t('modal_work_catalog_op')}
-                    value={formData.opOrCatalog}
-                    onChange={(e) =>
-                      handleInputChange('opOrCatalog', e.target.value)
-                    }
-                    placeholder="K. 550, Op. 67"
-                  />
-
-                  <Input
-                    label={t('modal_work_catalog_composition_year')}
-                    value={formData.compositionYear}
-                    onChange={(e) =>
-                      handleInputChange('compositionYear', e.target.value)
-                    }
-                    placeholder="1788"
-                  />
-
-                  <Input
-                    label={t('modal_work_catalog_first_publish')}
-                    value={formData.firstPublishDate}
-                    onChange={(e) =>
-                      handleInputChange('firstPublishDate', e.target.value)
-                    }
-                    placeholder="1794"
-                  />
-
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_work_catalog_tonality')}
-                    </label>
-                    <Select
-                      options={tonalityOptions}
-                      value={formData.tone}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input
+                      label={`${t('modal_work_basic_title_field')} *`}
+                      ref={fieldRefs.title}
+                      value={formData.title}
                       onChange={(e) =>
-                        handleInputChange('tone', e.target.value)
+                        handleInputChange('title', e.target.value)
                       }
-                      placeholder={t('tonality_select_placeholder')}
+                      error={errors.title}
+                      placeholder="Sinfonia No. 40 em Sol menor"
                     />
-                  </div>
 
-                  <Input
-                    label={t('modal_work_catalog_duration')}
-                    value={formData.mediaDuration}
-                    onChange={(e) =>
-                      handleInputChange('mediaDuration', e.target.value)
-                    }
-                    placeholder="35 minutos"
-                  />
-
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_work_catalog_difficulty')}
-                    </label>
-                    <Select
-                      options={difficultyOptions}
-                      value={formData.difficultyLevel}
+                    <Input
+                      label={t('modal_work_basic_subtitle')}
+                      value={formData.subtitle}
                       onChange={(e) =>
-                        handleInputChange('difficultyLevel', e.target.value)
+                        handleInputChange('subtitle', e.target.value)
                       }
+                      placeholder="Subtítulo da obra"
                     />
+
+                    <div ref={fieldRefs.composerId}>
+                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                        {t('modal_work_basic_composer')} *
+                      </label>
+                      <ComposerSearchInput
+                        selectedComposer={formData.composerId}
+                        onComposerSelect={handleComposerSelect}
+                        popularComposers={composers}
+                      />
+                      {errors.composerId && (
+                        <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
+                          <FiAlertCircle className="w-4 h-4" />
+                          <span>{errors.composerId}</span>
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                        {t('modal_work_basic_instrument')} *
+                      </label>
+                      <Select
+                        ref={fieldRefs.instrumentId}
+                        options={[
+                          {
+                            value: '',
+                            label:
+                              language === 'pt'
+                                ? 'Selecione um instrumento'
+                                : 'Select an instrument',
+                          },
+                          ...instruments.map((instrument) => ({
+                            value: instrument.id,
+                            label: `${translateInstrument(
+                              instrument.name,
+                              language
+                            )}`,
+                          })),
+                        ]}
+                        value={formData.instrumentId}
+                        onChange={(e) =>
+                          handleInputChange('instrumentId', e.target.value)
+                        }
+                        error={errors.instrumentId}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                        {t('modal_work_basic_epoch')} *
+                      </label>
+                      <Select
+                        ref={fieldRefs.epochId}
+                        options={[
+                          {
+                            value: '',
+                            label:
+                              language === 'pt'
+                                ? 'Selecione uma época'
+                                : 'Select an epoch',
+                          },
+                          ...epochs.map((epoch) => ({
+                            value: epoch.id,
+                            label: translateEpochName(epoch.name, language),
+                          })),
+                        ]}
+                        value={formData.epochId}
+                        onChange={(e) =>
+                          handleInputChange('epochId', e.target.value)
+                        }
+                        error={errors.epochId}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                        {t('modal_work_basic_work_type')}
+                      </label>
+                      <Select
+                        options={workTypeOptions}
+                        value={formData.workType}
+                        onChange={(e) =>
+                          handleInputChange('workType', e.target.value)
+                        }
+                      />
+                    </div>
                   </div>
-                </div>
-              </AnimatedCard>
+                </AnimatedCard>
 
-              {/* Musical Details */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiMusic className="w-5 h-5" />
-                  <span>{t('modal_work_musical_title')}</span>
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label={t('modal_work_musical_style')}
-                    value={formData.workStyle}
-                    onChange={(e) =>
-                      handleInputChange('workStyle', e.target.value)
-                    }
-                    placeholder="Classical"
-                  />
-
-                  <Input
-                    label={t('modal_work_musical_movement')}
-                    value={formData.moviment}
-                    onChange={(e) =>
-                      handleInputChange('moviment', e.target.value)
-                    }
-                    placeholder="I. Allegro molto"
-                  />
-
-                  <Input
-                    label={t('modal_work_musical_instrumentation')}
-                    value={formData.instrumentation}
-                    onChange={(e) =>
-                      handleInputChange('instrumentation', e.target.value)
-                    }
-                    placeholder="2 flautas, 2 oboés, 2 clarinetes..."
-                  />
-
-                  <Input
-                    label={t('modal_work_musical_dedicated_to')}
-                    value={formData.dedicateTo}
-                    onChange={(e) =>
-                      handleInputChange('dedicateTo', e.target.value)
-                    }
-                    placeholder="Nome do dedicatário"
-                  />
-                </div>
-              </AnimatedCard>
-
-              {/* Categories and Genres */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiTag className="w-5 h-5" />
-                  <span>{t('modal_work_categories_title')}</span>
-                </h3>
-
-                <div className="space-y-4">
-                  <MultiSelect
-                    label={t('modal_work_categories_label')}
-                    options={validCategoryOptions}
-                    selectedValues={formData.categoryNames}
-                    onChange={(values) =>
-                      handleInputChange('categoryNames', values)
-                    }
-                    placeholder={t('modal_work_categories_placeholder')}
-                    excludeValues={categoryExcludeValues}
-                  />
-
-                  <MultiSelect
-                    label={t('modal_work_genres_label')}
-                    options={validWorkGenreOptions}
-                    selectedValues={formData.workGenresArr}
-                    onChange={(values) =>
-                      handleInputChange('workGenresArr', values)
-                    }
-                    placeholder={t('modal_work_genres_placeholder')}
-                    excludeValues={workGenresExcludeValues}
-                  />
-                </div>
-              </AnimatedCard>
-
-              {/* External Links */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiExternalLink className="w-5 h-5" />
-                  <span>{t('modal_work_external_links_title')}</span>
-                </h3>
-
-                <div className="flex flex-col gap-2">
-                  <Input
-                    label={t('modal_work_external_imslp_link')}
-                    value={formData.imslpPermlink}
-                    onChange={(e) =>
-                      handleInputChange('imslpId', e.target.value)
-                    }
-                    placeholder="Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
-                    leftIcon={<FiExternalLink />}
-                    disabled={scrapingResult}
-                    className={
-                      scrapingResult ? 'bg-gray-50 cursor-not-allowed' : ''
-                    }
-                  />
-
-                  {scrapingResult && (
-                    <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
-                      <FiLock className="w-3 h-3" />
-                      <span>
-                        Campo bloqueado pois foi extraído via scraping do IMSLP
+                {/* 🆕 PARENT WORK (COLEÇÃO) SECTION */}
+                <AnimatedCard
+                  className="classical-card-simple p-4"
+                  hover="none"
+                >
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0 mb-4">
+                    <div className="flex items-center space-x-2">
+                      <FiLayers className="w-4 h-4 text-theme-tertiary" />
+                      <span className="text-sm font-medium text-theme-primary">
+                        Coleção
                       </span>
                     </div>
-                  )}
-                </div>
-              </AnimatedCard>
 
-              {/* Media Section */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-2">
-                    <FiMusic className="w-4 h-4 text-theme-tertiary" />
-                    <span className="text-sm font-medium text-theme-primary">
-                      {t('modal_work_media_title')}
-                    </span>
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <Checkbox
+                        label="Essa peça faz parte de uma coleção?"
+                        type="checkbox"
+                        checked={isPartOfCollection}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setIsPartOfCollection(checked);
+                          if (!checked) {
+                            setFormData((prev) => ({
+                              ...prev,
+                              parentWorkId: '',
+                            }));
+                            // Limpar dados da obra pai quando desmarcar
+                            setParentWorkData(null);
+                            setShowParentSuggestionModal(false);
+                          }
+                        }}
+                      />
+                    </label>
                   </div>
 
-                  <label className="flex items-center space-x-2 cursor-pointer">
-                    <Checkbox
-                      label={t('modal_work_media_checkbox')}
-                      type="checkbox"
-                      checked={includeMedia}
-                      onChange={(e) => setIncludeMedia(e.target.checked)}
-                    />
-                  </label>
-                </div>
-
-                {includeMedia && (
-                  <div className="space-y-6 border-t border-theme-secondary pt-4">
-                    {/* Spotify */}
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <SiSpotify className="w-5 h-5 text-green-400" />
-                        <h4 className="text-lg font-semibold text-theme-primary">
-                          {t('modal_work_media_spotify_title')}
-                        </h4>
+                  {isPartOfCollection && (
+                    <div className="space-y-4 border-t border-theme-secondary pt-4">
+                      {/* Informação sobre compositor */}
+                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="flex items-center space-x-2">
+                          <FiInfo className="w-4 h-4 text-blue-600" />
+                          <span className="text-sm text-blue-800">
+                            <strong>Importante:</strong> A obra da coleção deve
+                            ser do mesmo compositor (
+                            {formData.composerId
+                              ? composers.find(
+                                  (c) => c.id === formData.composerId
+                                )?.fullName || 'compositor selecionado'
+                              : 'selecione um compositor primeiro'}
+                            ).
+                          </span>
+                        </div>
                       </div>
-                      <Input
-                        label={t('modal_work_media_spotify_url')}
-                        value={mediaData.spotifyUrl}
-                        onChange={(e) =>
-                          setMediaData((prev) => ({
-                            ...prev,
-                            spotifyUrl: e.target.value,
-                          }))
-                        }
-                        placeholder="https://open.spotify.com/track/..."
-                        leftIcon={<SiSpotify />}
-                      />
-                    </div>
 
-                    {/* YouTube */}
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <SiYoutube className="w-5 h-5 text-red-400" />
-                        <h4 className="text-lg font-semibold text-theme-primary">
-                          {t('modal_work_media_youtube_title')}
-                        </h4>
-                      </div>
-                      <Input
-                        label={t('modal_work_media_youtube_url')}
-                        value={mediaData.youtubeUrl}
-                        onChange={(e) =>
-                          setMediaData((prev) => ({
-                            ...prev,
-                            youtubeUrl: e.target.value,
-                          }))
-                        }
-                        placeholder="https://www.youtube.com/watch?v=..."
-                        leftIcon={<SiYoutube />}
-                      />
-                    </div>
-
-                    {/* Custom Audio */}
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <FiMusic className="w-5 h-5 text-blue-400" />
-                        <h4 className="text-lg font-semibold text-theme-primary">
-                          {t('modal_work_media_audio_title')}
-                        </h4>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          {t('modal_work_media_audio_upload')}
-                        </label>
-                        <Input
-                          type="file"
-                          accept="audio/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              setMediaData((prev) => ({
-                                ...prev,
-                                audioFile: file,
-                              }));
-                              if (editingWork) {
-                                handleAudioUpload(file);
-                              }
+                      {/* Work Search Input para Parent Work */}
+                      {formData.composerId ? (
+                        <div>
+                          <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                            Obra da Coleção *
+                          </label>
+                          <SimpleWorkSearchInput
+                            selectedWork={formData.parentWorkId}
+                            onWorkSelect={handleParentWorkSelect}
+                            userSuggestions={parentWorks}
+                            placeholder="Digite para buscar a obra da coleção..."
+                            filterByComposer={formData.composerId}
+                            error={
+                              errors.parentWorkId
+                                ? 'Selecione a obra principal.'
+                                : undefined
                             }
-                          }}
-                          className="w-full p-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary"
-                          disabled={uploadingAudio}
-                        />
-                        {uploadingAudio && (
-                          <p className="text-sm text-blue-400 mt-1 flex items-center space-x-1">
-                            <FiLoader className="w-4 h-4 animate-spin" />
-                            <span>{t('modal_work_media_audio_uploading')}</span>
+                            disabled={loadingParentWork}
+                          />
+                          {loadingParentWork && (
+                            <div className="mt-2 flex items-center space-x-2 text-sm text-blue-600">
+                              <FiLoader className="w-4 h-4 animate-spin" />
+                              <span>Verificando dados da obra pai...</span>
+                            </div>
+                          )}
+                          <p className="text-xs text-theme-tertiary mt-2">
+                            💡 Busque pela obra principal que contém esta peça
+                            como parte ou movimento.
                           </p>
-                        )}
-                        {mediaData.audioFile && (
-                          <p className="text-sm text-theme-secondary mt-1">
-                            Arquivo: {mediaData.audioFile.name}
-                          </p>
-                        )}
-                      </div>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  )}
+                </AnimatedCard>
+
+                {/* Catalog Information */}
+                <AnimatedCard
+                  className="classical-card-simple p-4"
+                  hover="none"
+                >
+                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                    <FiTag className="w-5 h-5" />
+                    <span>{t('modal_work_catalog_title')}</span>
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input
+                      label={t('modal_work_catalog_op')}
+                      value={formData.opOrCatalog}
+                      onChange={(e) =>
+                        handleInputChange('opOrCatalog', e.target.value)
+                      }
+                      placeholder="K. 550, Op. 67"
+                    />
+
+                    <Input
+                      label={t('modal_work_catalog_composition_year')}
+                      value={formData.compositionYear}
+                      onChange={(e) =>
+                        handleInputChange('compositionYear', e.target.value)
+                      }
+                      placeholder="1788"
+                    />
+
+                    <Input
+                      label={t('modal_work_catalog_first_publish')}
+                      value={formData.firstPublishDate}
+                      onChange={(e) =>
+                        handleInputChange('firstPublishDate', e.target.value)
+                      }
+                      placeholder="1794"
+                    />
+
+                    <div>
+                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                        {t('modal_work_catalog_tonality')}
+                      </label>
+                      <Select
+                        options={tonalityOptions}
+                        value={formData.tone}
+                        onChange={(e) =>
+                          handleInputChange('tone', e.target.value)
+                        }
+                        placeholder={t('tonality_select_placeholder')}
+                      />
                     </div>
 
-                    {/* Video Lesson */}
-                    {user && user.role >= 1 && (
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <FaGraduationCap className="w-5 h-5 text-purple-400" />
-                            <h4 className="text-lg font-semibold text-theme-primary">
-                              {t('modal_work_media_video_lesson_title')}
-                            </h4>
-                          </div>
+                    <Input
+                      label={t('modal_work_catalog_duration')}
+                      value={formData.mediaDuration}
+                      onChange={(e) =>
+                        handleInputChange('mediaDuration', e.target.value)
+                      }
+                      placeholder="35 minutos"
+                    />
 
-                          <label className="flex items-center space-x-2 cursor-pointer">
-                            <Checkbox
-                              label={t(
-                                'modal_work_media_video_lesson_checkbox'
-                              )}
-                              type="checkbox"
-                              checked={mediaData.hasVideoAula}
-                              onChange={(e) =>
+                    <div>
+                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                        {t('modal_work_catalog_difficulty')}
+                      </label>
+                      <Select
+                        options={difficultyOptions}
+                        value={formData.difficultyLevel}
+                        onChange={(e) =>
+                          handleInputChange('difficultyLevel', e.target.value)
+                        }
+                      />
+                    </div>
+                  </div>
+                </AnimatedCard>
+
+                {/* Musical Details */}
+                <AnimatedCard
+                  className="classical-card-simple p-4"
+                  hover="none"
+                >
+                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                    <FiMusic className="w-5 h-5" />
+                    <span>{t('modal_work_musical_title')}</span>
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input
+                      label={t('modal_work_musical_style')}
+                      value={formData.workStyle}
+                      onChange={(e) =>
+                        handleInputChange('workStyle', e.target.value)
+                      }
+                      placeholder="Classical"
+                    />
+
+                    <Input
+                      label={t('modal_work_musical_movement')}
+                      value={formData.moviment}
+                      onChange={(e) =>
+                        handleInputChange('moviment', e.target.value)
+                      }
+                      placeholder="I. Allegro molto"
+                    />
+
+                    <Input
+                      label={t('modal_work_musical_instrumentation')}
+                      value={formData.instrumentation}
+                      onChange={(e) =>
+                        handleInputChange('instrumentation', e.target.value)
+                      }
+                      placeholder="2 flautas, 2 oboés, 2 clarinetes..."
+                    />
+
+                    <Input
+                      label={t('modal_work_musical_dedicated_to')}
+                      value={formData.dedicateTo}
+                      onChange={(e) =>
+                        handleInputChange('dedicateTo', e.target.value)
+                      }
+                      placeholder="Nome do dedicatário"
+                    />
+                  </div>
+                </AnimatedCard>
+
+                {/* Categories and Genres */}
+                <AnimatedCard
+                  className="classical-card-simple p-4"
+                  hover="none"
+                >
+                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                    <FiTag className="w-5 h-5" />
+                    <span>{t('modal_work_categories_title')}</span>
+                  </h3>
+
+                  <div className="space-y-4">
+                    <MultiSelect
+                      label={t('modal_work_categories_label')}
+                      options={validCategoryOptions}
+                      selectedValues={formData.categoryNames}
+                      onChange={(values) =>
+                        handleInputChange('categoryNames', values)
+                      }
+                      placeholder={t('modal_work_categories_placeholder')}
+                      excludeValues={categoryExcludeValues}
+                    />
+
+                    <MultiSelect
+                      label={t('modal_work_genres_label')}
+                      options={validWorkGenreOptions}
+                      selectedValues={formData.workGenresArr}
+                      onChange={(values) =>
+                        handleInputChange('workGenresArr', values)
+                      }
+                      placeholder={t('modal_work_genres_placeholder')}
+                      excludeValues={workGenresExcludeValues}
+                    />
+                  </div>
+                </AnimatedCard>
+
+                {/* External Links */}
+                <AnimatedCard
+                  className="classical-card-simple p-4"
+                  hover="none"
+                >
+                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                    <FiExternalLink className="w-5 h-5" />
+                    <span>{t('modal_work_external_links_title')}</span>
+                  </h3>
+
+                  <div className="flex flex-col gap-2">
+                    <Input
+                      label={t('modal_work_external_imslp_link')}
+                      value={formData.imslpPermlink}
+                      onChange={(e) =>
+                        handleInputChange('imslpId', e.target.value)
+                      }
+                      placeholder="Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
+                      leftIcon={<FiExternalLink />}
+                      disabled={scrapingResult}
+                      className={
+                        scrapingResult ? 'bg-gray-50 cursor-not-allowed' : ''
+                      }
+                    />
+
+                    {scrapingResult && (
+                      <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
+                        <FiLock className="w-3 h-3" />
+                        <span>
+                          Campo bloqueado pois foi extraído via scraping do
+                          IMSLP
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </AnimatedCard>
+
+                {/* Media Section */}
+                <AnimatedCard
+                  className="classical-card-simple p-4"
+                  hover="none"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-2">
+                      <FiMusic className="w-4 h-4 text-theme-tertiary" />
+                      <span className="text-sm font-medium text-theme-primary">
+                        {t('modal_work_media_title')}
+                      </span>
+                    </div>
+
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <Checkbox
+                        label={t('modal_work_media_checkbox')}
+                        type="checkbox"
+                        checked={includeMedia}
+                        onChange={(e) => setIncludeMedia(e.target.checked)}
+                      />
+                    </label>
+                  </div>
+
+                  {includeMedia && (
+                    <div className="space-y-6 border-t border-theme-secondary pt-4">
+                      {/* Spotify */}
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-2">
+                          <SiSpotify className="w-5 h-5 text-green-400" />
+                          <h4 className="text-lg font-semibold text-theme-primary">
+                            {t('modal_work_media_spotify_title')}
+                          </h4>
+                        </div>
+                        <Input
+                          label={t('modal_work_media_spotify_url')}
+                          value={mediaData.spotifyUrl}
+                          onChange={(e) =>
+                            setMediaData((prev) => ({
+                              ...prev,
+                              spotifyUrl: e.target.value,
+                            }))
+                          }
+                          placeholder="https://open.spotify.com/track/..."
+                          leftIcon={<SiSpotify />}
+                        />
+                      </div>
+
+                      {/* YouTube */}
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-2">
+                          <SiYoutube className="w-5 h-5 text-red-400" />
+                          <h4 className="text-lg font-semibold text-theme-primary">
+                            {t('modal_work_media_youtube_title')}
+                          </h4>
+                        </div>
+                        <Input
+                          label={t('modal_work_media_youtube_url')}
+                          value={mediaData.youtubeUrl}
+                          onChange={(e) =>
+                            setMediaData((prev) => ({
+                              ...prev,
+                              youtubeUrl: e.target.value,
+                            }))
+                          }
+                          placeholder="https://www.youtube.com/watch?v=..."
+                          leftIcon={<SiYoutube />}
+                        />
+                      </div>
+
+                      {/* Custom Audio */}
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-2">
+                          <FiMusic className="w-5 h-5 text-blue-400" />
+                          <h4 className="text-lg font-semibold text-theme-primary">
+                            {t('modal_work_media_audio_title')}
+                          </h4>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                            {t('modal_work_media_audio_upload')}
+                          </label>
+                          <Input
+                            type="file"
+                            accept="audio/*"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
                                 setMediaData((prev) => ({
                                   ...prev,
-                                  hasVideoAula: e.target.checked,
-                                }))
+                                  audioFile: file,
+                                }));
+                                if (editingWork) {
+                                  handleAudioUpload(file);
+                                }
                               }
-                            />
-                          </label>
+                            }}
+                            className="w-full p-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary"
+                            disabled={uploadingAudio}
+                          />
+                          {uploadingAudio && (
+                            <p className="text-sm text-blue-400 mt-1 flex items-center space-x-1">
+                              <FiLoader className="w-4 h-4 animate-spin" />
+                              <span>
+                                {t('modal_work_media_audio_uploading')}
+                              </span>
+                            </p>
+                          )}
+                          {mediaData.audioFile && (
+                            <p className="text-sm text-theme-secondary mt-1">
+                              Arquivo: {mediaData.audioFile.name}
+                            </p>
+                          )}
                         </div>
+                      </div>
 
-                        {mediaData.hasVideoAula && (
-                          <div className="space-y-4 p-4 bg-purple-900/10 border border-purple-700/30 rounded-xl">
-                            {/* Type and Source */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div>
-                                <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                                  {t('modal_work_media_video_type')}
-                                </label>
-                                <Select
-                                  options={videoAulaTypeOptions}
-                                  value={mediaData.videoAulaType}
-                                  onChange={(e) =>
-                                    setMediaData((prev) => ({
-                                      ...prev,
-                                      videoAulaType: e.target.value,
-                                    }))
-                                  }
-                                />
-                              </div>
-
-                              <div>
-                                <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                                  {t('modal_work_media_video_source')}
-                                </label>
-                                <Select
-                                  options={videoAulaSourceOptions}
-                                  value={mediaData.videoAulaSource}
-                                  onChange={(e) =>
-                                    setMediaData((prev) => ({
-                                      ...prev,
-                                      videoAulaSource: e.target.value,
-                                    }))
-                                  }
-                                />
-                              </div>
+                      {/* Video Lesson */}
+                      {user && user.role >= 1 && (
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <FaGraduationCap className="w-5 h-5 text-purple-400" />
+                              <h4 className="text-lg font-semibold text-theme-primary">
+                                {t('modal_work_media_video_lesson_title')}
+                              </h4>
                             </div>
 
-                            {/* Custom title */}
-                            <Input
-                              label={t('modal_work_media_video_title_field')}
-                              value={mediaData.videoAulaTitle}
-                              onChange={(e) =>
-                                setMediaData((prev) => ({
-                                  ...prev,
-                                  videoAulaTitle: e.target.value,
-                                }))
-                              }
-                              placeholder="Ex: Tutorial de Técnica - Chopin Étude Op. 10 No. 1"
-                            />
-
-                            {/* URL or Upload */}
-                            {mediaData.videoAulaSource !== 'local' ? (
-                              <Input
-                                label={t('modal_work_media_video_url')}
-                                value={mediaData.videoAulaUrl}
+                            <label className="flex items-center space-x-2 cursor-pointer">
+                              <Checkbox
+                                label={t(
+                                  'modal_work_media_video_lesson_checkbox'
+                                )}
+                                type="checkbox"
+                                checked={mediaData.hasVideoAula}
                                 onChange={(e) =>
                                   setMediaData((prev) => ({
                                     ...prev,
-                                    videoAulaUrl: e.target.value,
+                                    hasVideoAula: e.target.checked,
                                   }))
                                 }
-                                placeholder={
-                                  mediaData.videoAulaSource === 'youtube'
-                                    ? 'https://www.youtube.com/watch?v=...'
-                                    : mediaData.videoAulaSource === 'instagram'
-                                      ? 'https://www.instagram.com/reel/...'
-                                      : 'https://...'
-                                }
-                                leftIcon={
-                                  mediaData.videoAulaSource === 'youtube' ? (
-                                    <SiYoutube />
-                                  ) : mediaData.videoAulaSource ===
-                                    'instagram' ? (
-                                    <SiInstagram />
-                                  ) : mediaData.videoAulaSource === 'tiktok' ? (
-                                    <SiTiktok />
-                                  ) : (
-                                    <FiExternalLink />
-                                  )
-                                }
                               />
-                            ) : (
-                              <div>
-                                <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                                  {t('modal_work_media_video_upload')}
-                                </label>
-                                <Input
-                                  type="file"
-                                  accept="video/*"
-                                  onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) {
+                            </label>
+                          </div>
+
+                          {mediaData.hasVideoAula && (
+                            <div className="space-y-4 p-4 bg-purple-900/10 border border-purple-700/30 rounded-xl">
+                              {/* Type and Source */}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                                    {t('modal_work_media_video_type')}
+                                  </label>
+                                  <Select
+                                    options={videoAulaTypeOptions}
+                                    value={mediaData.videoAulaType}
+                                    onChange={(e) =>
                                       setMediaData((prev) => ({
                                         ...prev,
-                                        videoAulaFile: file,
-                                      }));
-                                      if (editingWork) {
-                                        handleVideoAulaUpload(file);
-                                      }
+                                        videoAulaType: e.target.value,
+                                      }))
                                     }
-                                  }}
-                                  className="w-full p-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary"
-                                  disabled={uploadingVideoAula}
-                                />
-                                {uploadingVideoAula && (
-                                  <p className="text-sm text-purple-400 mt-1 flex items-center space-x-1">
-                                    <FiLoader className="w-4 h-4 animate-spin" />
-                                    <span>
-                                      {t('modal_work_media_video_uploading')}
-                                    </span>
-                                  </p>
-                                )}
-                                {mediaData.videoAulaFile && (
-                                  <p className="text-sm text-theme-secondary mt-1">
-                                    Arquivo: {mediaData.videoAulaFile.name}
-                                  </p>
-                                )}
+                                  />
+                                </div>
+
+                                <div>
+                                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                                    {t('modal_work_media_video_source')}
+                                  </label>
+                                  <Select
+                                    options={videoAulaSourceOptions}
+                                    value={mediaData.videoAulaSource}
+                                    onChange={(e) =>
+                                      setMediaData((prev) => ({
+                                        ...prev,
+                                        videoAulaSource: e.target.value,
+                                      }))
+                                    }
+                                  />
+                                </div>
                               </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </AnimatedCard>
 
-              {/* Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={onClose}
-                  disabled={isSubmitting}
-                >
-                  {t('form_cancel')}
-                </Button>
+                              {/* Custom title */}
+                              <Input
+                                label={t('modal_work_media_video_title_field')}
+                                value={mediaData.videoAulaTitle}
+                                onChange={(e) =>
+                                  setMediaData((prev) => ({
+                                    ...prev,
+                                    videoAulaTitle: e.target.value,
+                                  }))
+                                }
+                                placeholder="Ex: Tutorial de Técnica - Chopin Étude Op. 10 No. 1"
+                              />
 
-                <Button
-                  type="submit"
-                  variant="primary"
-                  leftIcon={
-                    isSubmitting || uploadingAudio || uploadingVideoAula ? (
-                      <FiLoader className="animate-spin" />
-                    ) : (
-                      <FiSave />
-                    )
-                  }
-                  disabled={
-                    isSubmitting || uploadingAudio || uploadingVideoAula
-                  }
-                >
-                  {isSubmitting
-                    ? t('form_saving')
-                    : editingWork
-                      ? t('form_update') + ' Obra'
-                      : t('form_create') + ' Obra'}
-                </Button>
-              </div>
-            </form>
+                              {/* URL or Upload */}
+                              {mediaData.videoAulaSource !== 'local' ? (
+                                <Input
+                                  label={t('modal_work_media_video_url')}
+                                  value={mediaData.videoAulaUrl}
+                                  onChange={(e) =>
+                                    setMediaData((prev) => ({
+                                      ...prev,
+                                      videoAulaUrl: e.target.value,
+                                    }))
+                                  }
+                                  placeholder={
+                                    mediaData.videoAulaSource === 'youtube'
+                                      ? 'https://www.youtube.com/watch?v=...'
+                                      : mediaData.videoAulaSource ===
+                                          'instagram'
+                                        ? 'https://www.instagram.com/reel/...'
+                                        : 'https://...'
+                                  }
+                                  leftIcon={
+                                    mediaData.videoAulaSource === 'youtube' ? (
+                                      <SiYoutube />
+                                    ) : mediaData.videoAulaSource ===
+                                      'instagram' ? (
+                                      <SiInstagram />
+                                    ) : mediaData.videoAulaSource ===
+                                      'tiktok' ? (
+                                      <SiTiktok />
+                                    ) : (
+                                      <FiExternalLink />
+                                    )
+                                  }
+                                />
+                              ) : (
+                                <div>
+                                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                                    {t('modal_work_media_video_upload')}
+                                  </label>
+                                  <Input
+                                    type="file"
+                                    accept="video/*"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) {
+                                        setMediaData((prev) => ({
+                                          ...prev,
+                                          videoAulaFile: file,
+                                        }));
+                                        if (editingWork) {
+                                          handleVideoAulaUpload(file);
+                                        }
+                                      }
+                                    }}
+                                    className="w-full p-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary"
+                                    disabled={uploadingVideoAula}
+                                  />
+                                  {uploadingVideoAula && (
+                                    <p className="text-sm text-purple-400 mt-1 flex items-center space-x-1">
+                                      <FiLoader className="w-4 h-4 animate-spin" />
+                                      <span>
+                                        {t('modal_work_media_video_uploading')}
+                                      </span>
+                                    </p>
+                                  )}
+                                  {mediaData.videoAulaFile && (
+                                    <p className="text-sm text-theme-secondary mt-1">
+                                      Arquivo: {mediaData.videoAulaFile.name}
+                                    </p>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </AnimatedCard>
+
+                {/* Actions */}
+                <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={onClose}
+                    disabled={isSubmitting}
+                  >
+                    {t('form_cancel')}
+                  </Button>
+
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    leftIcon={
+                      isSubmitting || uploadingAudio || uploadingVideoAula ? (
+                        <FiLoader className="animate-spin" />
+                      ) : (
+                        <FiSave />
+                      )
+                    }
+                    disabled={
+                      isSubmitting || uploadingAudio || uploadingVideoAula
+                    }
+                  >
+                    {isSubmitting
+                      ? t('form_saving')
+                      : editingWork
+                        ? t('form_update') + ' Obra'
+                        : t('form_create') + ' Obra'}
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      </AnimatedItem>
-    </Modal>
+        </AnimatedItem>
+      </Modal>
+
+      {/* 🆕 MODAL DE SUGESTÃO DE OBRA PAI */}
+      <ParentWorkSuggestionModal
+        isOpen={showParentSuggestionModal}
+        onClose={() => setShowParentSuggestionModal(false)}
+        parentWorkData={parentWorkData}
+        currentFormData={formData}
+        onApplyData={handleApplyParentData}
+      />
+    </>
   );
 };
 

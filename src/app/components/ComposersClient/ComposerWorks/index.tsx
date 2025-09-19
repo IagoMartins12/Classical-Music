@@ -881,7 +881,7 @@ export default function ComposerWorks({
                                 </span>
 
                                 {work.opOrCatalog && (
-                                  <span className="text-sm w-max text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
+                                  <span className="text-sm max-w-fit w-max text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
                                     {work.opOrCatalog}
                                   </span>
                                 )}

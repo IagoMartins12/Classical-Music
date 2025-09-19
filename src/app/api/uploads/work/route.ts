@@ -174,7 +174,7 @@ export async function POST(request: NextRequest) {
     const language = await getServerLanguageStatic();
     const message =
       language === 'pt'
-        ? 'Compositor criada com sucesso!'
+        ? 'Peça criada com sucesso!'
         : 'Work created successfully!';
 
     return NextResponse.json({
