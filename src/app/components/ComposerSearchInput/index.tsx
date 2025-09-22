@@ -1,9 +1,9 @@
 // components/ComposerSearchInput.tsx - Versão Melhorada com Traduções
 'use client';
 
+import { useTranslation } from '@/app/context/TranslationContext';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { FiSearch, FiUser, FiX, FiTrendingUp } from 'react-icons/fi';
-import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface Composer {
   id: string;
@@ -25,7 +25,7 @@ export default function ComposerSearchInput({
   popularComposers = [],
   isDisabled = false,
 }: ComposerSearchInputProps) {
-  const { t } = useTranslation({ sections: ['pages/works'] });
+  const { t } = useTranslation({ sections: ['components/composerFilter'] });
 
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -266,7 +266,7 @@ export default function ComposerSearchInput({
     !searchTerm && popularComposers && popularComposers.length > 0;
 
   return (
-    <div className="relative z-[120]">
+    <div className={`relative ${isOpen ? 'z-[9999]' : 'z-[200]'}`}>
       <div className="relative">
         <FiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary z-10" />
 
@@ -304,7 +304,11 @@ export default function ComposerSearchInput({
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-[500] max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-[9999] max-h-80 overflow-hidden"
+          style={{
+            boxShadow:
+              '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.3)',
+          }}
         >
           {/* Header com label */}
           {showPopularLabel && (

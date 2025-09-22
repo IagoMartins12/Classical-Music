@@ -600,7 +600,7 @@ const WorksClient = memo(
           {/* Search and Filters Section */}
           <AnimatedItem
             direction="up"
-            className={`classical-card mx-0 md:mx-4 sm:p-0 !p-6 transition-all duration-500 ${
+            className={`classical-card mx-0 sm:p-0 !p-6 relative z-[100] transition-all duration-500 ${
               isPending ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -794,7 +794,7 @@ const WorksClient = memo(
           </AnimatedItem>
 
           {/* Results Section */}
-          <div className="relative mt-4 pt-4 z-[50]">
+          <div className="relative mt-4 pt-4 z-[10]">
             {isPending ? <WorksSkeleton /> : worksGrid}
 
             {/* Loading Overlay */}

@@ -216,7 +216,7 @@ export default function GenreSearchInput({
   };
 
   return (
-    <div className="relative z-[115]">
+    <div className={`relative ${isOpen ? 'z-[9999]' : 'z-[200]'}`}>
       {/* Input Field */}
       <div className="relative">
         <FiTag className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
@@ -271,10 +271,10 @@ export default function GenreSearchInput({
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute classical-card-simple top-full left-0 right-0 mt-2 bg-theme-surface border border-theme-primary rounded-lg shadow-theme-glow z-[400] max-h-80 overflow-hidden"
+          className="absolute classical-card-simple top-full left-0 right-0 mt-2 bg-theme-surface border border-theme-primary rounded-lg shadow-theme-glow z-[9999] max-h-80 overflow-hidden"
           style={{
             boxShadow:
-              '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05)',
+              '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.3)',
           }}
         >
           {/* Search Header */}

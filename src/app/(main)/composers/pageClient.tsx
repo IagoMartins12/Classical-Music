@@ -193,7 +193,7 @@ export default function ComposersClient({
         {/* Filters Section */}
         <AnimatedItem
           direction="up"
-          className={`classical-card mx-0 md:mx-4 sm:p-0 !p-6 transition-all duration-500 ${
+          className={`classical-card mx-0 sm:p-0 !p-6 transition-all duration-500 ${
             isPending ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >
