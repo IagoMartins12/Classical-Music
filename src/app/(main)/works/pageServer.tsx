@@ -1,4 +1,4 @@
-// app/works/pageServer.tsx - VERSÃO ULTRA OTIMIZADA COM TRADUÇÕES
+// app/works/pageServer.tsx - VERSÃO ULTRA OTIMIZADA COM TRADUÇÕES - CORRIGIDA
 import { unstable_cache } from 'next/cache';
 import { getWorks, getFilterOptions } from '@/app/requests/work-details';
 import WorksClient from '@/app/(main)/works/pageClient';
@@ -147,10 +147,12 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
       // 🔍 COM FILTROS: Cache específico + otimizações
       console.log('🔍 Modo filtrado:', cacheKey);
 
+      // 🔧 CORREÇÃO: Mapear corretamente os filtros
       const filters = {
         ...(searchParams.composer && { composerId: searchParams.composer }),
+        // ✅ USAR ID para instrument corretamente
         ...(searchParams.instrument && {
-          instrumentId: searchParams.instrument,
+          instrumentId: searchParams.instrument, // Agora recebe o ID
         }),
         ...(searchParams.epoch && { epochId: searchParams.epoch }),
         ...(searchParams.genre && { workGenreId: searchParams.genre }),
@@ -241,35 +243,4 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
       console.error('💥 Fallback também falhou:', fallbackError);
     }
   }
-}
-
-// 🚀 FUNÇÃO PARA INVALIDAÇÃO INTELIGENTE DO CACHE
-export async function revalidateWorksCache(
-  type: 'works' | 'filters' | 'all' = 'all'
-) {
-  const { revalidateTag } = await import('next/cache');
-
-  switch (type) {
-    case 'works':
-      revalidateTag('works-optimized');
-      revalidateTag('works-default');
-      revalidateTag('works-filtered');
-      revalidateTag('works-count');
-      break;
-    case 'filters':
-      revalidateTag('filters-optimized');
-      revalidateTag('filters-optimized-translated');
-      break;
-    case 'all':
-      revalidateTag('works-optimized');
-      revalidateTag('works-default');
-      revalidateTag('works-filtered');
-      revalidateTag('works-count');
-      revalidateTag('filters-optimized');
-      revalidateTag('filters-optimized-translated');
-      revalidateTag('works-metadata');
-      break;
-  }
-
-  console.log(`🔄 Cache invalidated: ${type}`);
 }

@@ -1,4 +1,4 @@
-// app/requests/work-details.ts - VERSÃO HÍBRIDA ULTRA OTIMIZADA
+// app/requests/work-details.ts - VERSÃO HÍBRIDA ULTRA OTIMIZADA - CORRIGIDA
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 import { WorkDetails } from './work-page-details';
@@ -388,7 +388,7 @@ const getCachedWorksSimpleFilter = unstable_cache(
   }
 );
 
-// 🚀 CACHE 3: COM BUSCA TEXTUAL - Otimizado para texto
+// 🚀 CACHE 3: COM BUSCA TEXTUAL - Otimizado para texto + outros filtros
 const getCachedWorksWithSearch = unstable_cache(
   async (
     skip: number,
@@ -401,8 +401,27 @@ const getCachedWorksWithSearch = unstable_cache(
       const searchTerm = filters.search.trim();
       const searchPattern = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+      // 🔧 CORREÇÃO: Incluir outros filtros na agregação
+      const initialMatchStage: any = {};
+
+      // Adicionar filtros não-textuais
+      if (filters.composerId) {
+        initialMatchStage.composerId = { $oid: filters.composerId };
+      }
+      if (filters.instrumentId) {
+        initialMatchStage.instrumentId = { $oid: filters.instrumentId };
+      }
+      if (filters.epochId) {
+        initialMatchStage.epochId = { $oid: filters.epochId };
+      }
+
       const result = await prisma.work.aggregateRaw({
         pipeline: [
+          // ✅ Aplicar filtros não-textuais primeiro
+          ...(Object.keys(initialMatchStage).length > 0
+            ? [{ $match: initialMatchStage }]
+            : []),
+
           // Match inicial por texto
           {
             $match: {
@@ -543,7 +562,7 @@ const getCachedWorksWithSearch = unstable_cache(
       const works = Array.isArray(result) ? result : [];
 
       // Count otimizado para busca
-      const totalCount = await getSearchCount(searchTerm);
+      const totalCount = await getSearchCount(searchTerm, filters);
 
       const formattedWorks = works.map((work: any) => ({
         id: work._id,
@@ -641,13 +660,33 @@ const getBatchEpochs = async (epochIds: string[]) => {
   });
 };
 
-// Count otimizado para busca
-const getSearchCount = async (searchTerm: string): Promise<number> => {
+// 🔧 Count otimizado para busca COM FILTROS COMBINADOS
+const getSearchCount = async (
+  searchTerm: string,
+  filters: any
+): Promise<number> => {
   const searchPattern = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   try {
+    // Incluir outros filtros no count
+    const initialMatchStage: any = {};
+
+    if (filters.composerId) {
+      initialMatchStage.composerId = { $oid: filters.composerId };
+    }
+    if (filters.instrumentId) {
+      initialMatchStage.instrumentId = { $oid: filters.instrumentId };
+    }
+    if (filters.epochId) {
+      initialMatchStage.epochId = { $oid: filters.epochId };
+    }
+
     const result = await prisma.work.aggregateRaw({
       pipeline: [
+        // ✅ Aplicar filtros não-textuais primeiro
+        ...(Object.keys(initialMatchStage).length > 0
+          ? [{ $match: initialMatchStage }]
+          : []),
         {
           $match: {
             $or: [
@@ -688,10 +727,11 @@ const getSearchCount = async (searchTerm: string): Promise<number> => {
   }
 };
 
-// Build where clause para Prisma
+// 🔧 Build where clause CORRIGIDO para combinar filtros
 const buildWhereClause = (filters: any) => {
   const whereClause: any = {};
 
+  // 🔧 FILTROS PRINCIPAIS (sempre aplicados se presentes)
   if (filters.composerId) whereClause.composerId = filters.composerId;
   if (filters.instrumentId) whereClause.instrumentId = filters.instrumentId;
   if (filters.epochId) whereClause.epochId = filters.epochId;
@@ -705,9 +745,12 @@ const buildWhereClause = (filters: any) => {
     whereClause.workGenresArr = { has: filters.workGenresArr };
   }
 
+  // 🔧 BUSCA TEXTUAL (combinada com outros filtros usando AND)
   if (filters.search) {
     const searchTerm = filters.search.trim();
-    whereClause.OR = [
+
+    // ✅ CORREÇÃO: Usar AND para combinar busca textual com outros filtros
+    const searchConditions = [
       { title: { contains: searchTerm, mode: 'insensitive' } },
       { subtitle: { contains: searchTerm, mode: 'insensitive' } },
       { opOrCatalog: { contains: searchTerm, mode: 'insensitive' } },
@@ -720,6 +763,26 @@ const buildWhereClause = (filters: any) => {
         },
       },
     ];
+
+    // Se já temos outros filtros, combinamos com AND
+    if (Object.keys(whereClause).length > 0) {
+      whereClause.AND = [
+        // Manter os filtros existentes
+        { ...whereClause },
+        // Adicionar as condições de busca
+        { OR: searchConditions },
+      ];
+
+      // Limpar as propriedades que foram movidas para AND
+      Object.keys(whereClause).forEach((key) => {
+        if (key !== 'AND') {
+          delete whereClause[key];
+        }
+      });
+    } else {
+      // Se não há outros filtros, usar apenas OR
+      whereClause.OR = searchConditions;
+    }
   }
 
   return whereClause;
@@ -978,7 +1041,6 @@ export async function revalidateWorkCache(workId?: string) {
 export const getWorkById = async (
   workId: string
 ): Promise<WorkDetails | null> => {
-  // Implementação mantida igual...
   try {
     const work = await prisma.work.findUnique({
       where: { id: workId },

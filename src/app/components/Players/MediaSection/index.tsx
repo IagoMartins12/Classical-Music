@@ -1,4 +1,4 @@
-// app/components/Players/MediaSection.tsx - COM TRADUÇÕES
+// app/components/Players/MediaSection.tsx - COM TRADUÇÕES E BUSCA AUTOMÁTICA
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -88,20 +88,19 @@ const MediaSection: React.FC<MediaSectionProps> = ({
   // CONTROLE LOCAL DE BUSCA REALIZADA NESTA SESSÃO
   const [hasSearchedInSession, setHasSearchedInSession] = useState(false);
 
+  // 🆕 CONTROLE PARA BUSCA AUTOMÁTICA (evita múltiplas buscas automáticas)
+  const [hasTriedAutoSearch, setHasTriedAutoSearch] = useState(false);
+
   const toast = useToast();
 
-  // VERIFICAR SE JÁ FOI FEITA ALGUMA BUSCA (SERVIDOR OU SESSÃO ATUAL)
-  const hasSearchBeenMade =
-    !!work.lastMediaSearch ||
-    hasSearchedInSession ||
-    !work.youtubeVideoUrl ||
-    !work.spotifyTrackId;
-
-  // VERIFICAR SE É ADMIN (role 2 ou isAdmin como fallback)
+  // 🔧 LÓGICA CORRIGIDA E SIMPLIFICADA
+  const hasSearchBeenMade = !!work.lastMediaSearch || hasSearchedInSession;
   const isAdminUser = userRole === 2 || isAdmin;
-
-  // VERIFICAR SE PODE BUSCAR (admin pode sempre, usuário comum só se não buscou)
   const canSearch = isAdminUser || !hasSearchBeenMade;
+
+  // 🆕 BUSCA AUTOMÁTICA: Apenas se NUNCA foi buscado no servidor
+  const shouldAutoSearch =
+    !work.lastMediaSearch && !hasTriedAutoSearch && !isSearching;
 
   // Função para parsear artistas do Spotify
   const parseSpotifyArtists = (artistsData: any): string[] => {
@@ -183,6 +182,25 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       removeCustomAudio: false,
     });
   }, [work, t]);
+
+  // 🆕 BUSCA AUTOMÁTICA SIMPLIFICADA - Executa apenas uma vez se nunca foi buscado
+  useEffect(() => {
+    // Verificação direta: se não tem lastMediaSearch E não tentou ainda E não está buscando
+    if (!work.lastMediaSearch && !hasTriedAutoSearch && !isSearching) {
+      console.log(
+        '🚀 [AUTO-SEARCH] Iniciando busca automática para:',
+        work.title
+      );
+      setHasTriedAutoSearch(true);
+
+      // Delay pequeno para UI estar montada
+      const timer = setTimeout(() => {
+        searchMedia(false);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [work.id, work.lastMediaSearch]); // Dependências mínimas
 
   // Buscar mídia automaticamente (INTEGRADA: Spotify + YouTube + Áudio)
   const searchMedia = async (forceRefresh = false) => {
@@ -295,10 +313,13 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         }
 
         if (foundSources.length > 0) {
-          toast.success(t('media_encontrada'));
+          // 🆕 Toast diferenciado para busca automática vs manual
         } else {
           setSearchError(t('media_nenhuma_encontrada'));
-          toast.warning(t('media_nenhuma_encontrada'));
+          // 🆕 Para busca automática, não mostrar toast de aviso
+          if (forceRefresh || !shouldAutoSearch) {
+            toast.warning(t('media_nenhuma_encontrada'));
+          }
         }
       } else {
         throw new Error(data.error || t('media_erro_busca'));
@@ -308,7 +329,16 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       const errorMessage =
         error instanceof Error ? error.message : 'Erro desconhecido';
       setSearchError(errorMessage);
-      toast.error(`${t('media_erro_busca_geral')} ${errorMessage}`);
+
+      // 🆕 Para busca automática, apenas log do erro, não toast
+      if (!shouldAutoSearch) {
+        toast.error(`${t('media_erro_busca_geral')} ${errorMessage}`);
+      } else {
+        console.log(
+          '🔍 [AUTO-SEARCH] Falha na busca automática, mas não é crítico:',
+          errorMessage
+        );
+      }
     } finally {
       setIsSearching(false);
     }
@@ -593,11 +623,13 @@ const MediaSection: React.FC<MediaSectionProps> = ({
   const hasAudioAndVideo =
     (mediaData.spotify || mediaData.customAudio) && mediaData.youtube;
 
-  // ESTADOS PARA EXIBIÇÃO
-  const shouldShowLoadButton = !hasSearchBeenMade && !hasAnyMedia;
+  // 🆕 ESTADOS PARA EXIBIÇÃO ATUALIZADOS
+  const shouldShowLoadButton =
+    !hasSearchBeenMade && !hasAnyMedia && !isSearching;
   const shouldShowNoMediaMessage =
     hasSearchBeenMade && !hasAnyMedia && !isSearching;
   const shouldShowContent = hasAnyMedia;
+  const shouldShowSearchingIndicator = isSearching && !hasAnyMedia;
 
   return (
     <AnimatedCard hover="lift" className="classical-card overflow-hidden">
@@ -841,6 +873,20 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
       {/* CONTEÚDO PRINCIPAL COM NOVA LÓGICA */}
       <div className="px-2 pb-2 md:px-8 md:pb-8">
+        {/* 🆕 ESTADO: Buscando automaticamente */}
+        {shouldShowSearchingIndicator && (
+          <AnimatedItem direction="up" delay={0.1}>
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <FiRefreshCw className="w-8 h-8 text-theme-primary animate-spin" />
+              </div>
+              <h3 className="text-xl font-semibold text-theme-primary mb-3">
+                {t('media_buscando')}
+              </h3>
+            </div>
+          </AnimatedItem>
+        )}
+
         {/* ESTADO: Nenhuma busca foi feita e não tem mídia */}
         {shouldShowLoadButton && (
           <AnimatedItem direction="up" delay={0.1}>
@@ -1070,14 +1116,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           </>
         )}
 
-        {/* Status de Carregamento Global */}
-        {isSearching && (
+        {/* Status de Carregamento Global - ATUALIZADO */}
+        {isSearching && hasAnyMedia && (
           <AnimatedItem direction="up" delay={0.1}>
             <div className="mt-6 bg-blue-900/20 border border-blue-700/30 rounded-xl p-4 flex items-center space-x-3">
               <FiRefreshCw className="w-5 h-5 text-blue-400 animate-spin" />
               <div className="flex-1">
                 <p className="text-blue-300 text-sm font-medium">
-                  {t('media_buscando_para')} &quot;{work.title}&quot;...
+                  {t('media_atualizando_para')} &quot;{work.title}&quot;...
                 </p>
                 <p className="text-blue-400 text-xs mt-1">
                   🎵 Spotify • 📺 YouTube • 🎼 Fontes de Áudio
