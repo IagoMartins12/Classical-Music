@@ -783,6 +783,10 @@
 
     "form_validation_parent_work_same_composer": "A obra da coleção deve ser do mesmo compositor",
 
+    "score_card_download": "Download",
+    "score_card_paginas": "páginas",
+    "score_card_favorita_comunidade": "Favorita da comunidade",
+
     "tone_do_maior": "Dó maior",
     "tone_dos_maior": "Dó# maior",
     "tone_reb_maior": "Réb maior",
@@ -1574,6 +1578,10 @@
     "toast_network_error_message": "Check your internet connection",
     "toast_timeout_error": "Timeout exceeded",
     "toast_server_error": "Internal server error",
+
+    "score_card_download": "Download",
+    "score_card_paginas": "pages",
+    "score_card_favorita_comunidade": "Community favorite",
 
     "toast_pdf_processing": "Processing PDF file...",
     "toast_pdf_thumbnail_generating": "Generating score preview...",
