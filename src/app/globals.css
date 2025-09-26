@@ -708,10 +708,6 @@ body {
     padding: 0.625rem 1.25rem;
     font-size: 0.875rem;
   }
-
-  .modal-content {
-    max-height: 100;
-  }
 }
 
 @media (max-width: 640px) {
@@ -767,56 +763,9 @@ body {
   background-color: #04c514;
 }
 
-.filters-section {
-  position: relative;
-  z-index: 60; /* Maior que z-[50] dos resultados */
-}
-
-/* Garantir que dropdowns fiquem sempre no topo */
-.dropdown-container {
-  position: relative;
-  z-index: 200;
-}
-
-.dropdown-container.is-open {
-  z-index: 999;
-}
-
-.dropdown-menu {
-  position: absolute;
-  z-index: 1000;
-}
-
 /* Alternativa: usar !important se necessário */
-.force-top {
-  z-index: 9999 !important;
-  position: relative;
-}
 
-.force-top .dropdown-menu {
-  z-index: 9999 !important;
-}
 /* ===== ANIMAÇÕES PREMIUM ===== */
-
-@keyframes modalFadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
 
 @keyframes float {
   0%,

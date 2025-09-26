@@ -25,7 +25,7 @@ interface ModalProps {
   className?: string;
   preventBodyScroll?: boolean;
 
-  // 🎯 PROPS SIMPLES DE CONFIRMAÇÃO (TODAS OPCIONAIS)
+  // PROPS SIMPLES DE CONFIRMAÇÃO (TODAS OPCIONAIS)
   confirmOnClose?: boolean; // Se true, ativa o sistema de confirmação
   hasChanges?: boolean; // Detectou mudanças no form
   isProcessing?: boolean; // Tem processo rodando
@@ -38,6 +38,33 @@ interface ModalProps {
 export interface ModalRef {
   scrollToTop: () => void;
 }
+
+// CONTADOR GLOBAL SIMPLES
+let openModalCount = 0;
+let savedScrollY = 0;
+
+const lockBodyScroll = () => {
+  if (openModalCount === 0) {
+    savedScrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${savedScrollY}px`;
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+  }
+  openModalCount++;
+};
+
+const unlockBodyScroll = () => {
+  openModalCount = Math.max(0, openModalCount - 1);
+
+  if (openModalCount === 0) {
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    window.scrollTo(0, savedScrollY);
+  }
+};
 
 const Modal = forwardRef<ModalRef, ModalProps>(
   (
@@ -74,7 +101,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       '6xl',
     ].includes(maxWidth);
 
-    // 🎯 SÓ USA CONFIRMAÇÃO SE HABILITADA
+    // SÓ USA CONFIRMAÇÃO SE HABILITADA
     const {
       requestClose,
       showConfirmation,
@@ -102,24 +129,14 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       '6xl': 'max-w-6xl',
     };
 
-    // Prevenção de scroll
+    // CORREÇÃO: Usar contador global
     useLayoutEffect(() => {
-      if (!isOpen) return;
+      if (!isOpen || !preventBodyScroll) return;
 
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      document.body.style.overflow = 'hidden';
+      lockBodyScroll();
 
       return () => {
-        const body = document.body;
-        const scrollY = parseInt(body.style.top || '0') * -1;
-        body.style.position = '';
-        body.style.top = '';
-        body.style.width = '';
-        body.style.overflow = '';
-        window.scrollTo(0, scrollY);
+        unlockBodyScroll();
       };
     }, [isOpen, preventBodyScroll]);
 
@@ -131,7 +148,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       },
     }));
 
-    // 🎯 FECHAMENTO INTELIGENTE
+    // FECHAMENTO INTELIGENTE
     const handleClose = () => {
       if (confirmOnClose) {
         requestClose(onClose); // Vai mostrar confirmação se necessário
@@ -224,7 +241,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
               ref={contentRef}
               className={`
             overflow-y-auto overflow-x-hidden classical-scrollbar pt-4  flex-1
-            ${title || showCloseButton ? 'px-2 pb-2 md:px-6 md:pb-6' : 'p-2 md:p-6'}
+            ${title || showCloseButton ? 'px-2 pb-2 md:px-6 md:pb-10 lg:pb-8' : 'p-2 md:p-6'}
           `}
               style={{
                 maxHeight: isMobile

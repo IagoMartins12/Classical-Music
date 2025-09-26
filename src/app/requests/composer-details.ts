@@ -1,4 +1,4 @@
-// app/requests/composer-details.ts - Updated with new properties
+// app/requests/composer-details.ts - Updated with moviment search
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 
@@ -57,6 +57,7 @@ export interface ComposerWork {
   mediaDuration?: string;
   imslpPermlink: string;
   videoUrl?: string;
+  moviment?: string; // 🆕 moviment field
   instrument?: {
     id: string;
     name: string;
@@ -87,7 +88,7 @@ export interface ComposerFilterOptions {
   difficultyLevels: { value: string; label: string }[]; // 🆕 New filter
 }
 
-// Função OTIMIZADA para buscar obras do compositor com paginação e filtros (incluindo novas propriedades)
+// Função OTIMIZADA para buscar obras do compositor com paginação e filtros (incluindo busca em movimentos)
 export const getComposerWorksWithFilters = async (
   composerId: string,
   page: number = 1,
@@ -98,7 +99,7 @@ export const getComposerWorksWithFilters = async (
     categoryNames?: string;
     search?: string;
     workType?: string;
-    difficultyLevel?: string; // 🆕 New filter
+    difficultyLevel?: string;
   }
 ): Promise<ComposerWorksResponse> => {
   try {
@@ -134,6 +135,7 @@ export const getComposerWorksWithFilters = async (
       whereClause.difficultyLevel = filters.difficultyLevel;
     }
 
+    // 🆕 ENHANCED SEARCH - Now includes moviment
     if (filters?.search) {
       whereClause.OR = [
         {
@@ -144,7 +146,6 @@ export const getComposerWorksWithFilters = async (
         },
         {
           subtitle: {
-            // 🆕 Include subtitle in search
             contains: filters.search,
             mode: 'insensitive',
           },
@@ -161,6 +162,13 @@ export const getComposerWorksWithFilters = async (
             mode: 'insensitive',
           },
         },
+        // 🆕 BUSCA EM MOVIMENTOS - Aqui é onde a mágica acontece
+        {
+          moviment: {
+            contains: filters.search,
+            mode: 'insensitive',
+          },
+        },
       ];
     }
 
@@ -171,13 +179,14 @@ export const getComposerWorksWithFilters = async (
         select: {
           id: true,
           title: true,
-          subtitle: true, // 🆕
+          subtitle: true,
           opOrCatalog: true,
           compositionYear: true,
           tone: true,
           mediaDuration: true,
           imslpPermlink: true,
           videoUrl: true,
+          moviment: true, // 🆕 Include moviment in selection
           workType: true,
           workGenresArr: true,
           categoryNames: true,
@@ -219,10 +228,12 @@ export const getComposerWorksWithFilters = async (
         mediaDuration: work.mediaDuration || undefined,
         imslpPermlink: work.imslpPermlink,
         videoUrl: work.videoUrl || undefined,
+        moviment: work.moviment || undefined, // 🆕 Include moviment
         workType: work.workType,
         workGenresArr: work.workGenresArr,
         categoryNames: work.categoryNames,
         isVerified: work.isVerified,
+        instrument: work.instrument || undefined,
         // 🆕 New properties
         difficultyLevel: work.difficultyLevel || undefined,
         imslpTags: work.imslpTags || undefined,
@@ -262,7 +273,7 @@ export const getComposerFilterOptions = unstable_cache(
           instrumentId: true,
           workGenresArr: true,
           categoryNames: true,
-          difficultyLevel: true, // 🆕 Include difficulty level
+          difficultyLevel: true,
           instrument: {
             select: {
               id: true,
@@ -317,7 +328,7 @@ export const getComposerFilterOptions = unstable_cache(
         instruments,
         workGenres: Array.from(genresSet).sort(),
         categories: Array.from(categoriesSet).sort(),
-        difficultyLevels: DIFFICULTY_LEVELS, // 🆕 Add difficulty levels
+        difficultyLevels: DIFFICULTY_LEVELS,
       };
     } catch (error) {
       console.error('Erro ao buscar opções de filtros do compositor:', error);
