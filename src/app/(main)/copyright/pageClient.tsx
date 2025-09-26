@@ -481,7 +481,7 @@ export default function CopyrightPage() {
                   <div className="flex items-center justify-center space-x-3">
                     <FiMail className="w-5 h-5 text-brand-primary" />
                     <span className="text-theme-primary font-medium">
-                      dmca@classicalhub.com
+                      opusatlas@gmail.com
                     </span>
                   </div>
                   <div className="flex items-center justify-center space-x-3">

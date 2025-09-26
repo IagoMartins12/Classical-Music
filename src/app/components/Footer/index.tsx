@@ -240,7 +240,7 @@ const Footer: React.FC = () => {
               <div className="space-y-3">
                 <div className="flex items-center space-x-3 text-sm text-theme-tertiary">
                   <FiMail className="w-4 h-4 text-brand-primary" />
-                  <span>contato@classicalhub.com</span>
+                  <span>opusatlas@gmail.com</span>
                 </div>
                 <div className="flex items-center space-x-3 text-sm text-theme-tertiary">
                   <FiPhone className="w-4 h-4 text-brand-primary" />
