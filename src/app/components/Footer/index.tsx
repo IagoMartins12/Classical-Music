@@ -266,6 +266,7 @@ const Footer: React.FC = () => {
                   <li key={label}>
                     <Link
                       href={href}
+                      target="_blank"
                       className="flex items-center space-x-2 text-sm text-theme-tertiary hover:text-brand-primary transition-colors duration-300 group"
                     >
                       <Icon className="w-4 h-4 group-hover:scale-110 transition-transform" />
