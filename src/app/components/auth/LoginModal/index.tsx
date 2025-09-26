@@ -7,7 +7,6 @@ import { FiMail, FiLock, FiAlertTriangle } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { GiGrandPiano } from 'react-icons/gi';
 import { useRouter } from 'next/navigation';
-
 import { toast } from 'react-hot-toast';
 import { useLoginModal } from '@/app/stores/authStore';
 import Modal from '../../Modal';

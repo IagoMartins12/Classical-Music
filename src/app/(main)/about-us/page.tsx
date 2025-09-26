@@ -133,7 +133,7 @@ export default async function AboutPageRoute() {
 
   return (
     <TranslationProvider language={language} translations={translations}>
-      <AboutPage />;
+      <AboutPage />
     </TranslationProvider>
   );
 }

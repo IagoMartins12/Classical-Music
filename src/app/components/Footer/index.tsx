@@ -19,14 +19,9 @@ import {
   FiLoader,
   FiRefreshCw,
 } from 'react-icons/fi';
-import {
-  FaFacebook,
-  FaTwitter,
-  FaInstagram,
-  FaLinkedin,
-  FaYoutube,
-  FaSpotify,
-} from 'react-icons/fa';
+import { FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
+
 import { GiGrandPiano, GiViolin } from 'react-icons/gi';
 import {
   useNewsletterSubscription,
@@ -91,40 +86,28 @@ const Footer: React.FC = () => {
 
   const socialLinks = [
     {
-      icon: FaFacebook,
-      href: '#',
-      label: 'Facebook',
-      color: 'hover:text-blue-500',
-    },
-    {
-      icon: FaTwitter,
-      href: '#',
-      label: 'Twitter',
+      icon: FaXTwitter,
+      href: 'https://x.com/Opus_Atlas',
+      label: 'Twitter / X',
       color: 'hover:text-sky-500',
     },
     {
       icon: FaInstagram,
-      href: '#',
+      href: 'https://www.instagram.com/opusatlas/',
       label: 'Instagram',
       color: 'hover:text-pink-500',
     },
     {
       icon: FaLinkedin,
-      href: '#',
+      href: 'https://www.linkedin.com/company/opus-atlas/about/',
       label: 'LinkedIn',
       color: 'hover:text-blue-600',
     },
     {
-      icon: FaYoutube,
-      href: '#',
-      label: 'YouTube',
-      color: 'hover:text-red-500',
-    },
-    {
-      icon: FaSpotify,
-      href: '#',
-      label: 'Spotify',
-      color: 'hover:text-green-500',
+      icon: FaTiktok,
+      href: 'https://www.tiktok.com/@opusatlas5',
+      label: 'Tik tok',
+      color: 'hover:text-blue-600',
     },
   ];
 

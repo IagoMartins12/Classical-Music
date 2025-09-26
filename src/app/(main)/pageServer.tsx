@@ -22,17 +22,6 @@ import {
   getServerLanguageStatic,
   loadPageTranslationsWithCommon,
 } from '../utils/translations/serverTranslations';
-// import {
-//   getRecomendadedComposers,
-//   getTop20FamousComposers,
-// } from '../requests/composers';
-// import {
-//   getFeaturedComposer,
-//   getMusicalFacts,
-//   getRandomDiscoveries,
-//   getRecentAdditions,
-// } from '../requests/home-request';
-// import { getEpochs } from '../actions/auth';
 
 export default async function EnhancedHomePage() {
   console.log('🏠 Loading Enhanced Home Page with Hybrid Cache...');
@@ -59,27 +48,6 @@ export default async function EnhancedHomePage() {
     getCachedMusicalFacts(), // Cache de 4h
     getServerLanguageStatic(),
   ]);
-
-  // const [
-  //   composersData,
-  //   recomendadData,
-  //   featuredComposer,
-  //   epochsData,
-  //   randomDiscoveries,
-  //   recentComposers,
-  //   musicalFacts,
-  //   // Dados de tradução (sem cache por enquanto)
-  //   language,
-  // ] = await Promise.all([
-  //   getTop20FamousComposers(), // Cache semanal
-  //   getRecomendadedComposers(), // Cache semanal
-  //   getFeaturedComposer(), // Cache diário (muda a cada 24h)
-  //   getEpochs(), // Cache semanal
-  //   getRandomDiscoveries(), // Cache de 4h
-  //   getRecentAdditions(), // Cache de 30min (atualização frequente)
-  //   getMusicalFacts(), // Cache de 4h
-  //   getServerLanguageStatic(),
-  // ]);
 
   // Carregar traduções (pode ser cacheado futuramente se necessário)
   const { translations } = await loadPageTranslationsWithCommon(language, [
