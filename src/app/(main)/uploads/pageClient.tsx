@@ -1,4 +1,4 @@
-// UploadsClient.tsx - TRADUZIDO
+// UploadsClient.tsx - OTIMIZADO PARA PERFORMANCE
 'use client';
 
 import { useState, useTransition, useCallback, useMemo } from 'react';
@@ -14,10 +14,10 @@ import {
   FiSettings,
   FiFileText,
   FiArrowRight,
+  FiRefreshCw,
 } from 'react-icons/fi';
 import { MdUpload } from 'react-icons/md';
 
-// Importar componentes de animação
 import {
   PageContainer,
   AnimatedContainer,
@@ -60,7 +60,6 @@ interface FilterWork {
   composerName: string;
 }
 
-// 🆕 INTERFACES PARA FORM-DATA
 interface FormDataInstrument {
   id: string;
   name: string;
@@ -84,6 +83,7 @@ interface FormDataWork {
   title: string;
   composer: { id?: string; name: string; fullName: string };
 }
+
 interface FormDataProps {
   epochs: Epoch[];
   instruments: FormDataInstrument[];
@@ -91,6 +91,7 @@ interface FormDataProps {
   composers: FormDataComposer[];
   works: FormDataWork[];
 }
+
 interface UploadsClientProps {
   uploads: UserUpload[];
   composers: any[];
@@ -115,7 +116,6 @@ interface UploadsClientProps {
   selectedWork: string;
   isAdmin: boolean;
   userId: string;
-  // 🆕 PROPS PARA FORM-DATA
   formData: FormDataProps;
 }
 
@@ -124,8 +124,8 @@ type FilterTab = 'all' | 'composers' | 'works' | 'scores';
 const UploadsClient = ({
   uploads,
   epochs,
-  filterComposers,
-  filterWorks,
+  filterComposers: initialFilterComposers,
+  filterWorks: initialFilterWorks,
   currentPage,
   totalPages,
   totalCount,
@@ -141,16 +141,16 @@ const UploadsClient = ({
   selectedComposer: initialSelectedComposer,
   selectedWork: initialSelectedWork,
   isAdmin,
-  formData,
+  formData: initialFormData,
 }: UploadsClientProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { t } = useTranslation({ sections: ['pages/uploads'] });
-
-  // Estados e hooks permanecem iguais
   const toast = useToast();
 
+  // 🚀 OTIMIZAÇÃO 1: Estados simplificados
   const [isPending, startTransition] = useTransition();
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [selectedType, setSelectedType] = useState<FilterTab>(
     initialSelectedType === 'composer'
@@ -177,46 +177,54 @@ const UploadsClient = ({
   const [showBulkInsertModal, setShowBulkInsertModal] = useState(false);
   const [bulkInsertComposer, setBulkInsertComposer] = useState<any>(null);
 
+  // 🚀 OTIMIZAÇÃO 2: Lazy loading de dados
+  const [filterComposers, setFilterComposers] = useState<FilterComposer[]>(
+    initialFilterComposers
+  );
+  const [filterWorks, setFilterWorks] =
+    useState<FilterWork[]>(initialFilterWorks);
+  const [formData, setFormData] = useState<FormDataProps>(initialFormData);
   const [availableEpochs, setAvailableEpochs] = useState(epochs);
+
+  // Estados de loading para lazy loading
+  const [loadingFilterData, setLoadingFilterData] = useState(false);
   const [loadingEpochs, setLoadingEpochs] = useState(false);
 
-  const memoizedLocalComposers = useMemo(() => {
-    return filterComposers;
-  }, [filterComposers]);
+  // 🚀 OTIMIZAÇÃO 3: Lazy loading functions
+  const loadFilterData = useCallback(async () => {
+    if (filterComposers.length > 0) return; // Já carregado
 
-  // Carregar dados do formulário quando necessário
-  // useEffect(() => {
-  //   if (
-  //     (showCreateModal || showBulkInsertModal) &&
-  //     formData.roles.length === 0
-  //   ) {
-  //     loadFormData();
-  //   }
-  // }, [showCreateModal, showBulkInsertModal]);
+    setLoadingFilterData(true);
+    try {
+      const response = await fetch('/api/uploads/filter-data');
+      if (response.ok) {
+        const data = await response.json();
+        setFilterComposers(data.composers || []);
+        setFilterWorks(data.works || []);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados para filtros:', error);
+    } finally {
+      setLoadingFilterData(false);
+    }
+  }, [filterComposers.length]);
 
-  // const loadFormData = async () => {
-  //   setLoadingFormData(true);
-  //   try {
-  //     const response = await fetch('/api/uploads/form-data');
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setFormData((prev) => ({
-  //         ...prev,
-  //         roles: data.roles || [],
-  //         instruments: data.instruments || [],
-  //         composers: data.composers || [],
-  //         works: data.works || [],
-  //       }));
-  //     }
-  //   } catch (error) {
-  //     console.error('Erro ao carregar dados do formulário:', error);
-  //     toast.error('Erro', 'Não foi possível carregar os dados do formulário');
-  //   } finally {
-  //     setLoadingFormData(false);
-  //   }
-  // };
+  const loadFormData = useCallback(async () => {
+    if (formData.roles.length > 0) return; // Já carregado
 
-  const loadAvailableEpochs = async (type: string) => {
+    try {
+      const response = await fetch('/api/uploads/form-data');
+      if (response.ok) {
+        const data = await response.json();
+        setFormData(data);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados do formulário:', error);
+      toast.error('Erro', 'Não foi possível carregar os dados do formulário');
+    }
+  }, [formData.roles.length, toast]);
+
+  const loadAvailableEpochs = useCallback(async (type: string) => {
     setLoadingEpochs(true);
     try {
       const typeParam =
@@ -240,9 +248,32 @@ const UploadsClient = ({
     } finally {
       setLoadingEpochs(false);
     }
-  };
+  }, []);
 
-  // Função para atualizar URL
+  // 🚀 OTIMIZAÇÃO 4: Função de refresh
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      const response = await fetch('/api/uploads/refresh', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (response.ok) {
+        router.refresh();
+        toast.success('Sucesso', 'Lista atualizada!');
+      } else {
+        throw new Error('Erro ao atualizar');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar:', error);
+      toast.error('Erro', 'Não foi possível atualizar a lista');
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [router, toast]);
+
+  // 🚀 OTIMIZAÇÃO 5: UpdateUrl otimizada
   const updateUrl = useCallback(
     (params: {
       page?: number;
@@ -254,53 +285,19 @@ const UploadsClient = ({
     }) => {
       const newParams = new URLSearchParams(searchParams.toString());
 
-      if (params.page !== undefined) {
-        if (params.page === 1) {
-          newParams.delete('page');
-        } else {
-          newParams.set('page', params.page.toString());
-        }
-      }
+      Object.entries(params).forEach(([key, value]) => {
+        if (value === undefined) return;
 
-      if (params.search !== undefined) {
-        if (params.search === '') {
-          newParams.delete('search');
+        if (
+          value === '' ||
+          (key === 'page' && value === 1) ||
+          (key === 'type' && value === 'all')
+        ) {
+          newParams.delete(key);
         } else {
-          newParams.set('search', params.search);
+          newParams.set(key, value.toString());
         }
-      }
-
-      if (params.type !== undefined) {
-        if (params.type === 'all') {
-          newParams.delete('type');
-        } else {
-          newParams.set('type', params.type);
-        }
-      }
-
-      if (params.epoch !== undefined) {
-        if (params.epoch === '') {
-          newParams.delete('epoch');
-        } else {
-          newParams.set('epoch', params.epoch);
-        }
-      }
-
-      if (params.composer !== undefined) {
-        if (params.composer === '') {
-          newParams.delete('composer');
-        } else {
-          newParams.set('composer', params.composer);
-        }
-      }
-
-      if (params.work !== undefined) {
-        if (params.work === '') {
-          newParams.delete('work');
-        } else {
-          newParams.set('work', params.work);
-        }
-      }
+      });
 
       const newUrl = `${window.location.pathname}${
         newParams.toString() ? '?' + newParams.toString() : ''
@@ -313,7 +310,7 @@ const UploadsClient = ({
     [router, searchParams]
   );
 
-  // Separar uploads por tipo
+  // 🚀 OTIMIZAÇÃO 6: Memoizar uploads por tipo (sem filtro cliente)
   const uploadsByType = useMemo(() => {
     const composerUploads = uploads.filter(
       (upload) => upload.type === 'composer'
@@ -328,43 +325,7 @@ const UploadsClient = ({
     };
   }, [uploads]);
 
-  // Filtrar dados baseado na busca
-  const filteredData = useMemo(() => {
-    let composersFiltered = [...uploadsByType.composers];
-    let worksFiltered = [...uploadsByType.works];
-    let scoresFiltered = [...uploadsByType.scores];
-
-    // Search filter
-    if (searchTerm) {
-      const query = searchTerm.toLowerCase();
-
-      composersFiltered = composersFiltered.filter(
-        (item) =>
-          item.title.toLowerCase().includes(query) ||
-          item.composerName?.toLowerCase().includes(query)
-      );
-
-      worksFiltered = worksFiltered.filter(
-        (item) =>
-          item.title.toLowerCase().includes(query) ||
-          item.composerName?.toLowerCase().includes(query)
-      );
-
-      scoresFiltered = scoresFiltered.filter(
-        (item) =>
-          item.title.toLowerCase().includes(query) ||
-          item.composerName?.toLowerCase().includes(query)
-      );
-    }
-
-    return {
-      composers: composersFiltered,
-      works: worksFiltered,
-      scores: scoresFiltered,
-    };
-  }, [uploadsByType, searchTerm]);
-
-  // Handlers para filtros
+  // 🚀 OTIMIZAÇÃO 7: Handlers otimizados
   const handleSearchChange = useCallback(
     (value: string) => {
       setSearchTerm(value);
@@ -388,6 +349,7 @@ const UploadsClient = ({
               ? 'score'
               : 'all';
 
+      // Carregar épocas disponíveis
       loadAvailableEpochs(tab);
 
       updateUrl({
@@ -437,7 +399,6 @@ const UploadsClient = ({
     [updateUrl]
   );
 
-  // Clear filters
   const clearFilters = useCallback(() => {
     setSearchTerm('');
     setSelectedType('all');
@@ -454,7 +415,7 @@ const UploadsClient = ({
     });
   }, [updateUrl]);
 
-  // Check active filters
+  // 🚀 OTIMIZAÇÃO 8: hasActiveFilters memoizado
   const hasActiveFilters = useMemo(() => {
     return (
       searchTerm ||
@@ -465,13 +426,13 @@ const UploadsClient = ({
     );
   }, [searchTerm, selectedType, selectedEpoch, selectedComposer, selectedWork]);
 
-  // Statistics
+  // 🚀 OTIMIZAÇÃO 9: Stats memoizadas
   const stats = useMemo(() => {
     const imslpCount = uploads.filter((item) => item.isIMSLP).length;
     const customCount = uploads.filter((item) => !item.isIMSLP).length;
 
     return {
-      totalCount: totalCount,
+      totalCount,
       composerCount,
       workCount,
       scoreCount,
@@ -481,92 +442,115 @@ const UploadsClient = ({
   }, [uploads, totalCount, composerCount, workCount, scoreCount]);
 
   // Handlers para ações
-  const handleCreateNew = (type: 'composer' | 'work' | 'score') => {
-    setCreateModalType(type);
-    setShowCreateModal(true);
-  };
+  const handleCreateNew = useCallback(
+    (type: 'composer' | 'work' | 'score') => {
+      setCreateModalType(type);
+      setShowCreateModal(true);
+      // Carregar dados do formulário quando modal abrir
+      loadFormData();
+    },
+    [loadFormData]
+  );
 
-  const handleEdit = (item: UserUpload) => {
-    router.push(`/uploads/${item.type}/${item.id}/edit`);
-  };
+  const handleEdit = useCallback(
+    (item: UserUpload) => {
+      router.push(`/uploads/${item.type}/${item.id}/edit`);
+    },
+    [router]
+  );
 
-  const handleSeeMore = (type: 'composers' | 'works' | 'scores') => {
-    handleTabChange(type);
-  };
+  const handleSeeMore = useCallback(
+    (type: 'composers' | 'works' | 'scores') => {
+      handleTabChange(type);
+    },
+    [handleTabChange]
+  );
 
-  const handleBulkInsertWorks = (composer: UserUpload) => {
-    setBulkInsertComposer(composer);
-    setShowBulkInsertModal(true);
-  };
+  const handleBulkInsertWorks = useCallback(
+    (composer: UserUpload) => {
+      setBulkInsertComposer(composer);
+      setShowBulkInsertModal(true);
+      loadFormData();
+    },
+    [loadFormData]
+  );
 
-  const handleDelete = async (item: UserUpload) => {
-    await performDelete(item);
-  };
+  const handleDelete = useCallback(
+    async (item: UserUpload) => {
+      setDeletingItemId(item.id);
 
-  const performDelete = async (item: UserUpload) => {
-    setDeletingItemId(item.id);
+      try {
+        const response = await fetch(`/api/uploads/${item.type}/${item.id}`, {
+          method: 'DELETE',
+        });
 
-    try {
-      const response = await fetch(`/api/uploads/${item.type}/${item.id}`, {
-        method: 'DELETE',
-      });
+        if (response.ok) {
+          const result = await response.json();
 
-      if (response.ok) {
-        const result = await response.json();
-
-        if (result.details) {
-          if (item.type === 'composer' && result.details.deletedWorks > 0) {
-            toast.success(
-              'Compositor Excluído',
-              `${result.details.composerName} foi excluído junto com ${result.details.deletedWorks} obra(s) e ${result.details.deletedScores} partitura(s).`
-            );
-          } else if (
-            item.type === 'work' &&
-            result.details.totalDeletedScores > 0
-          ) {
-            toast.success(
-              'Obra Excluída',
-              `${result.details.workTitle} foi excluída junto com ${
-                result.details.totalDeletedScores
-              } partitura(s)${
-                result.details.deletedChildWorks > 0
-                  ? ` e ${result.details.deletedChildWorks} obra(s) filha(s)`
-                  : ''
-              }.`
-            );
-          } else if (item.type === 'score') {
-            toast.success(
-              'Partitura Excluída',
-              `A partitura "${result.details.scoreTitle}" da obra "${result.details.workTitle}" foi excluída com sucesso.`
-            );
+          if (result.details) {
+            if (item.type === 'composer' && result.details.deletedWorks > 0) {
+              toast.success(
+                'Compositor Excluído',
+                `${result.details.composerName} foi excluído junto com ${result.details.deletedWorks} obra(s) e ${result.details.deletedScores} partitura(s).`
+              );
+            } else if (
+              item.type === 'work' &&
+              result.details.totalDeletedScores > 0
+            ) {
+              toast.success(
+                'Obra Excluída',
+                `${result.details.workTitle} foi excluída junto com ${
+                  result.details.totalDeletedScores
+                } partitura(s)${
+                  result.details.deletedChildWorks > 0
+                    ? ` e ${result.details.deletedChildWorks} obra(s) filha(s)`
+                    : ''
+                }.`
+              );
+            } else if (item.type === 'score') {
+              toast.success(
+                'Partitura Excluída',
+                `A partitura "${result.details.scoreTitle}" da obra "${result.details.workTitle}" foi excluída com sucesso.`
+              );
+            } else {
+              toast.success(
+                'Sucesso',
+                result.message || 'Item excluído com sucesso'
+              );
+            }
           } else {
             toast.success(
               'Sucesso',
               result.message || 'Item excluído com sucesso'
             );
           }
-        } else {
-          toast.success(
-            'Sucesso',
-            result.message || 'Item excluído com sucesso'
-          );
-        }
 
-        router.refresh();
-      } else {
-        const error = await response.json();
-        throw new Error(error.error || 'Erro ao excluir item');
+          router.refresh();
+        } else {
+          const error = await response.json();
+          throw new Error(error.error || 'Erro ao excluir item');
+        }
+      } catch (error) {
+        console.error('Erro ao excluir:', error);
+        toast.error(
+          'Erro',
+          error instanceof Error ? error.message : 'Erro ao excluir item'
+        );
+      } finally {
+        setDeletingItemId(null);
       }
-    } catch (error) {
-      console.error('Erro ao excluir:', error);
-      toast.error(
-        'Erro',
-        error instanceof Error ? error.message : 'Erro ao excluir item'
-      );
-    } finally {
-      setDeletingItemId(null);
+    },
+    [toast, router]
+  );
+
+  // Handler para quando filtros forem abertos
+  const handleFiltersToggle = useCallback(() => {
+    if (!showFilters) {
+      // Carregar dados quando filtros abrirem
+      loadFilterData();
     }
-  };
+    setShowFilters(!showFilters);
+  }, [showFilters, loadFilterData]);
 
   // Função para renderizar filtros específicos por aba
   const renderTabSpecificFilters = () => {
@@ -602,11 +586,14 @@ const UploadsClient = ({
           <div>
             <label className="block text-xs font-medium text-theme-tertiary mb-2">
               {t('filter_composer')}
+              {loadingFilterData && (
+                <span className="text-xs ml-2">Carregando...</span>
+              )}
             </label>
             <Select
               options={[
                 { value: '', label: t('filter_all_composers') },
-                ...memoizedLocalComposers.map((composer) => ({
+                ...filterComposers.map((composer) => ({
                   value: composer.id,
                   label: composer.fullName,
                 })),
@@ -614,7 +601,7 @@ const UploadsClient = ({
               value={selectedComposer}
               onChange={(e) => handleComposerChange(e.target.value)}
               className="input-classical-2 w-full"
-              disabled={loadingEpochs}
+              disabled={loadingFilterData}
             />
           </div>
           <div>
@@ -648,6 +635,9 @@ const UploadsClient = ({
           <div>
             <label className="block text-xs font-medium text-theme-tertiary mb-2">
               {t('filter_work')}
+              {loadingFilterData && (
+                <span className="text-xs ml-2">Carregando...</span>
+              )}
             </label>
             <Select
               options={[
@@ -660,6 +650,7 @@ const UploadsClient = ({
               value={selectedWork}
               onChange={(e) => handleWorkChange(e.target.value)}
               className="input-classical-2 w-full"
+              disabled={loadingFilterData}
             />
           </div>
           <div>
@@ -687,7 +678,6 @@ const UploadsClient = ({
       );
     }
 
-    // Para "all", mostrar filtros gerais
     return (
       <div>
         <label className="block text-xs font-medium text-theme-tertiary mb-2">
@@ -735,7 +725,7 @@ const UploadsClient = ({
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
-          <AnimatedCard hover="none" className="classical-card  p-6">
+          <AnimatedCard hover="none" className="classical-card p-6">
             {/* Tabs */}
             <div className="flex bg-theme-secondary classical-scrollbar-mini rounded-xl p-1 overflow-x-auto mb-4">
               <button
@@ -779,6 +769,7 @@ const UploadsClient = ({
                 {t('tabs_scores')} ({stats.scoreCount})
               </button>
             </div>
+
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               {/* Create Buttons */}
               <div className="flex flex-col md:flex-row flex-wrap gap-2">
@@ -824,8 +815,20 @@ const UploadsClient = ({
 
                 {/* Action Buttons */}
                 <div className="flex items-center space-x-2">
+                  {/* 🚀 Botão de Refresh */}
                   <button
-                    onClick={() => setShowFilters(!showFilters)}
+                    onClick={handleRefresh}
+                    disabled={isRefreshing}
+                    className="flex items-center space-x-2 px-4 py-3 rounded-lg transition-all font-medium bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover disabled:opacity-50"
+                    title="Atualizar lista"
+                  >
+                    <FiRefreshCw
+                      className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`}
+                    />
+                  </button>
+
+                  <button
+                    onClick={handleFiltersToggle}
                     className={`flex items-center space-x-2 px-4 py-3 rounded-lg w-full justify-center transition-all font-medium ${
                       showFilters
                         ? 'bg-brand-primary text-theme-primary border-theme-primary border-2 border-brand-primary shadow-md'
@@ -860,6 +863,7 @@ const UploadsClient = ({
                 </div>
               </div>
             </div>
+
             {/* Expanded Filters */}
             {showFilters && (
               <AnimatedItem direction="scale" springType="gentle">
@@ -926,10 +930,12 @@ const UploadsClient = ({
                 )}
               </div>
 
-              {isPending && (
+              {(isPending || isRefreshing) && (
                 <div className="flex items-center text-brand-primary text-sm">
                   <LoadingSpinner size="sm" />
-                  <span className="ml-2">{t('results_loading')}</span>
+                  <span className="ml-2">
+                    {isRefreshing ? 'Atualizando...' : t('results_loading')}
+                  </span>
                 </div>
               )}
             </div>
@@ -953,7 +959,7 @@ const UploadsClient = ({
           {/* Composers Section */}
           {(selectedType === 'all' || selectedType === 'composers') && (
             <>
-              {filteredData.composers.length > 0 ? (
+              {uploadsByType.composers.length > 0 ? (
                 <AnimatedItem
                   direction="up"
                   className="mt-4"
@@ -970,17 +976,12 @@ const UploadsClient = ({
                         </h2>
                         <p className="text-theme-tertiary">
                           {selectedType === 'all'
-                            ? `${Math.min(
-                                filteredData.composers.length,
-                                16
-                              )} ${t('results_of')} ${stats.composerCount} ${t(
-                                'results_composers'
-                              )}`
-                            : `${filteredData.composers.length} ${t(
+                            ? `${Math.min(uploadsByType.composers.length, 16)} ${t(
                                 'results_of'
-                              )} ${stats.composerCount} ${t(
-                                'results_composers'
-                              )}`}
+                              )} ${stats.composerCount} ${t('results_composers')}`
+                            : `${uploadsByType.composers.length} ${t('results_of')} ${
+                                stats.composerCount
+                              } ${t('results_composers')}`}
                         </p>
                       </div>
                     </div>
@@ -1000,8 +1001,8 @@ const UploadsClient = ({
                   {viewMode === 'cards' ? (
                     <SequentialGrid cols={3} gap={6} delayBetweenItems={0.1}>
                       {(selectedType === 'all'
-                        ? filteredData.composers.slice(0, 16)
-                        : filteredData.composers
+                        ? uploadsByType.composers.slice(0, 16)
+                        : uploadsByType.composers
                       ).map((item) => (
                         <UploadComposerCard
                           key={item.id}
@@ -1018,8 +1019,8 @@ const UploadsClient = ({
                   ) : (
                     <div className="space-y-4">
                       {(selectedType === 'all'
-                        ? filteredData.composers.slice(0, 16)
-                        : filteredData.composers
+                        ? uploadsByType.composers.slice(0, 16)
+                        : uploadsByType.composers
                       ).map((item, index) => (
                         <AnimatedItem
                           key={item.id}
@@ -1039,6 +1040,7 @@ const UploadsClient = ({
                             }
                             isAdmin={isAdmin}
                             viewMode={viewMode}
+                            isDeleting={deletingItemId === item.id}
                           />
                         </AnimatedItem>
                       ))}
@@ -1077,7 +1079,7 @@ const UploadsClient = ({
           {/* Works Section */}
           {(selectedType === 'all' || selectedType === 'works') && (
             <>
-              {filteredData.works.length > 0 ? (
+              {uploadsByType.works.length > 0 ? (
                 <AnimatedItem
                   direction="up"
                   className="mt-4"
@@ -1094,12 +1096,12 @@ const UploadsClient = ({
                         </h2>
                         <p className="text-theme-tertiary">
                           {selectedType === 'all'
-                            ? `${Math.min(filteredData.works.length, 16)} ${t(
-                                'results_of'
-                              )} ${stats.workCount} ${t('results_works')}`
-                            : `${filteredData.works.length} ${t(
-                                'results_of'
-                              )} ${stats.workCount} ${t('results_works')}`}
+                            ? `${Math.min(uploadsByType.works.length, 16)} ${t('results_of')} ${
+                                stats.workCount
+                              } ${t('results_works')}`
+                            : `${uploadsByType.works.length} ${t('results_of')} ${
+                                stats.workCount
+                              } ${t('results_works')}`}
                         </p>
                       </div>
                     </div>
@@ -1119,8 +1121,8 @@ const UploadsClient = ({
                   {viewMode === 'cards' ? (
                     <SequentialGrid cols={3} gap={6} delayBetweenItems={0.1}>
                       {(selectedType === 'all'
-                        ? filteredData.works.slice(0, 16)
-                        : filteredData.works
+                        ? uploadsByType.works.slice(0, 16)
+                        : uploadsByType.works
                       ).map((item) => (
                         <UploadWorkCard
                           key={item.id}
@@ -1136,8 +1138,8 @@ const UploadsClient = ({
                   ) : (
                     <div className="space-y-4">
                       {(selectedType === 'all'
-                        ? filteredData.works.slice(0, 16)
-                        : filteredData.works
+                        ? uploadsByType.works.slice(0, 16)
+                        : uploadsByType.works
                       ).map((item, index) => (
                         <AnimatedItem
                           key={item.id}
@@ -1193,7 +1195,7 @@ const UploadsClient = ({
           {/* Scores Section */}
           {(selectedType === 'all' || selectedType === 'scores') && (
             <>
-              {filteredData.scores.length > 0 ? (
+              {uploadsByType.scores.length > 0 ? (
                 <AnimatedItem
                   direction="up"
                   className="mt-4"
@@ -1210,12 +1212,12 @@ const UploadsClient = ({
                         </h2>
                         <p className="text-theme-tertiary">
                           {selectedType === 'all'
-                            ? `${Math.min(filteredData.scores.length, 16)} ${t(
-                                'results_of'
-                              )} ${stats.scoreCount} ${t('results_scores')}`
-                            : `${filteredData.scores.length} ${t(
-                                'results_of'
-                              )} ${stats.scoreCount} ${t('results_scores')}`}
+                            ? `${Math.min(uploadsByType.scores.length, 16)} ${t('results_of')} ${
+                                stats.scoreCount
+                              } ${t('results_scores')}`
+                            : `${uploadsByType.scores.length} ${t('results_of')} ${
+                                stats.scoreCount
+                              } ${t('results_scores')}`}
                         </p>
                       </div>
                     </div>
@@ -1235,8 +1237,8 @@ const UploadsClient = ({
                   {viewMode === 'cards' ? (
                     <SequentialGrid cols={3} gap={6} delayBetweenItems={0.1}>
                       {(selectedType === 'all'
-                        ? filteredData.scores.slice(0, 16)
-                        : filteredData.scores
+                        ? uploadsByType.scores.slice(0, 16)
+                        : uploadsByType.scores
                       ).map((item) => (
                         <UploadScoreCard
                           key={item.id}
@@ -1252,8 +1254,8 @@ const UploadsClient = ({
                   ) : (
                     <div className="space-y-4">
                       {(selectedType === 'all'
-                        ? filteredData.scores.slice(0, 16)
-                        : filteredData.scores
+                        ? uploadsByType.scores.slice(0, 16)
+                        : uploadsByType.scores
                       ).map((item, index) => (
                         <AnimatedItem
                           key={item.id}
@@ -1306,14 +1308,14 @@ const UploadsClient = ({
             </>
           )}
 
-          {/* Estado vazio quando há uploads mas nenhum passa nos filtros da aba "Todos" */}
+          {/* Empty states para quando há filtros mas não há resultados */}
           {selectedType === 'all' &&
-            filteredData.composers.length === 0 &&
-            filteredData.works.length === 0 &&
-            filteredData.scores.length === 0 &&
-            (uploadsByType.composers.length > 0 ||
-              uploadsByType.works.length > 0 ||
-              uploadsByType.scores.length > 0) && (
+            uploadsByType.composers.length === 0 &&
+            uploadsByType.works.length === 0 &&
+            uploadsByType.scores.length === 0 &&
+            (stats.composerCount > 0 ||
+              stats.workCount > 0 ||
+              stats.scoreCount > 0) && (
               <AnimatedItem
                 direction="scale"
                 className="mt-4"
@@ -1368,21 +1370,6 @@ const UploadsClient = ({
                     {t('actions_new_work')}
                   </Button>
                 </div>
-              </div>
-            </AnimatedItem>
-          )}
-
-          {/* Loading Overlay */}
-          {isPending && (
-            <AnimatedItem
-              direction="scale"
-              className="absolute bottom-0 top-0 right-0 left-0 inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl"
-            >
-              <div className="classical-card flex flex-col items-center justify-center p-8 text-center">
-                <LoadingSpinner size="lg" />
-                <p className="text-theme-primary font-medium mt-4">
-                  {t('loading_uploads')}
-                </p>
               </div>
             </AnimatedItem>
           )}

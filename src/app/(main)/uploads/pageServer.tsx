@@ -1,13 +1,7 @@
-// app/uploads/pageServer.tsx - ATUALIZADO COM NOVOS FILTROS E LIMITAÇÃO
-
+// app/uploads/pageServer.tsx - OTIMIZADO PARA PERFORMANCE
 import UploadsClient from '@/app/(main)/uploads/pageClient';
 import { TranslationProvider } from '@/app/context/TranslationContext';
-import {
-  getEpochsCache,
-  getFilterData,
-  getFormDataPage,
-  getUserUploads,
-} from '@/app/requests/upload';
+import { getEpochsCache, getUserUploads } from '@/app/requests/upload';
 import {
   getServerLanguageStatic,
   loadPageTranslationsWithCommon,
@@ -20,8 +14,8 @@ export default async function UploadsPageServer({
   search,
   type,
   epochId,
-  composerId, // 🆕 Novo parâmetro
-  workId, // 🆕 Novo parâmetro
+  composerId,
+  workId,
   userId,
   userRole,
 }: {
@@ -29,22 +23,18 @@ export default async function UploadsPageServer({
   search: string;
   type: string;
   epochId: string;
-  composerId?: string; // 🆕
-  workId?: string; // 🆕
+  composerId?: string;
+  workId?: string;
   userId: string;
   userRole: number;
 }) {
   const isAdmin = userRole === 2;
-
-  // 🆕 Determinar se deve limitar por tipo (apenas na aba "all")
   const limitPerType = type === 'all';
 
   const language = await getServerLanguageStatic();
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pages/uploads',
-  ]);
 
-  const [uploadsData, filterData, epochsData, formData] = await Promise.all([
+  // 🚀 OTIMIZAÇÃO 1: Queries paralelas otimizadas
+  const [uploadsData, epochsData, { translations }] = await Promise.all([
     getUserUploads({
       userId,
       page,
@@ -52,16 +42,15 @@ export default async function UploadsPageServer({
       search,
       type,
       epochId,
-      composerId, // 🆕 Passar novo filtro
-      workId, // 🆕 Passar novo filtro
-      limitPerType, // 🆕 Passar flag de limitação
+      composerId,
+      workId,
+      limitPerType,
     }),
-    getFilterData(userId), // 🆕 Buscar dados para filtros
-    getEpochsCache(),
-    getFormDataPage(), // 🆕 Buscar dados para formulários
+    getEpochsCache(), // Só épocas básicas
+    loadPageTranslationsWithCommon(language, ['pages/uploads']),
   ]);
 
-  // Calcular totalPages baseado no tipo selecionado
+  // 🚀 OTIMIZAÇÃO 2: Cálculo de páginas simplificado
   let totalPages = 1;
   if (type === 'all') {
     totalPages = Math.ceil(uploadsData.totalCount / ITEMS_PER_PAGE);
@@ -73,6 +62,21 @@ export default async function UploadsPageServer({
     totalPages = Math.ceil(uploadsData.scoreCount / ITEMS_PER_PAGE);
   }
 
+  // 🚀 OTIMIZAÇÃO 3: Form data vazio - será carregado via lazy loading
+  const formData = {
+    epochs: [],
+    instruments: [],
+    roles: [],
+    composers: [],
+    works: [],
+  };
+
+  // 🚀 OTIMIZAÇÃO 4: Filter data vazio - será carregado via lazy loading
+  const filterData = {
+    composers: [],
+    works: [],
+  };
+
   return (
     <TranslationProvider language={language} translations={translations}>
       <UploadsClient
@@ -80,26 +84,26 @@ export default async function UploadsPageServer({
         composers={uploadsData.composers}
         works={uploadsData.works}
         scores={uploadsData.scores}
-        epochs={epochsData} // 🆕 Usar épocas filtradas
-        filterComposers={filterData.composers} // 🆕 Dados para filtros
-        filterWorks={filterData.works} // 🆕 Dados para filtros
+        epochs={epochsData}
+        filterComposers={filterData.composers} // Vazio inicialmente
+        filterWorks={filterData.works} // Vazio inicialmente
         currentPage={page}
         totalPages={totalPages}
         totalCount={uploadsData.totalCount}
-        composerCount={uploadsData.composerCount} // 🆕 Contadores específicos
-        workCount={uploadsData.workCount} // 🆕
-        scoreCount={uploadsData.scoreCount} // 🆕
-        hasMoreComposers={uploadsData.hasMoreComposers} // 🆕 Indicadores "ver mais"
-        hasMoreWorks={uploadsData.hasMoreWorks} // 🆕
-        hasMoreScores={uploadsData.hasMoreScores} // 🆕
+        composerCount={uploadsData.composerCount}
+        workCount={uploadsData.workCount}
+        scoreCount={uploadsData.scoreCount}
+        hasMoreComposers={uploadsData.hasMoreComposers}
+        hasMoreWorks={uploadsData.hasMoreWorks}
+        hasMoreScores={uploadsData.hasMoreScores}
         searchTerm={search}
         selectedType={type}
         selectedEpoch={epochId}
-        selectedComposer={composerId || ''} // 🆕 Estado do filtro
-        selectedWork={workId || ''} // 🆕 Estado do filtro
+        selectedComposer={composerId || ''}
+        selectedWork={workId || ''}
         isAdmin={isAdmin}
         userId={userId}
-        formData={formData}
+        formData={formData} // Vazio inicialmente
       />
     </TranslationProvider>
   );
