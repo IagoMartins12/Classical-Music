@@ -652,7 +652,7 @@ export default function WorkDetailsClient({
                       </div>
 
                       {/* Action buttons */}
-                      <div className="flex items-center flex-col md:flex-row gap-2 md:gap-3  space-x-3 ml-4">
+                      <div className="flex items-center flex-col md:flex-row gap-2 md:gap-3 ml-4">
                         <FavoriteButton
                           id={work.id}
                           type="work"
@@ -688,16 +688,15 @@ export default function WorkDetailsClient({
                           showLabel={false}
                         />
                         {/* Admin verification button */}
-                        {isAdmin ||
-                          (canEditMedia && (
-                            <EditButton
-                              entityId={work.id}
-                              variant="minimal"
-                              entityType="work"
-                              size="lg"
-                              showLabel={false}
-                            />
-                          ))}
+                        {(isAdmin || canEditMedia) && (
+                          <EditButton
+                            entityId={work.id}
+                            variant="minimal"
+                            entityType="work"
+                            size="lg"
+                            showLabel={false}
+                          />
+                        )}
                         {isAdmin && (
                           <VerificationButton
                             entityType="work"
