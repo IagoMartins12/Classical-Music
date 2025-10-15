@@ -101,9 +101,9 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: 'Opus Atlas',
       images: [
         {
-          url: '/logo-opus-atlas.jpeg',
-          width: 1200,
-          height: 630,
+          url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
+          width: 400,
+          height: 400,
           alt:
             language === 'pt'
               ? 'Instrumentos Clássicos Históricos'
@@ -116,7 +116,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: t.ogTitle,
       description: t.ogDescription,
 
-      images: ['/logo-opus-atlas.jpeg'],
+      images: ['https://opusatlas.com.br/logo-opus-atlas.jpeg'],
     },
     robots: {
       index: true,

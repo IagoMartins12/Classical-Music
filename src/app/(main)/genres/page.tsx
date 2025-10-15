@@ -104,6 +104,17 @@ export async function generateMetadata(): Promise<Metadata> {
           ? 'https://opusatlas.com.br/genres'
           : 'https://opusatlas.com.br/genres',
       siteName: 'Opus Atlas',
+      images: [
+        {
+          url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
+          width: 1200,
+          height: 630,
+          alt:
+            language === 'pt'
+              ? 'Sobre o Opus Atlas - Enciclopédia Musical'
+              : 'About Opus Atlas - Musical Encyclopedia',
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',

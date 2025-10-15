@@ -11,7 +11,7 @@ import {
   categories,
   getFactsByCategory,
   getRandomFacts,
-} from '@/app/requests/utils';
+} from '@/app/utils/utils';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Language } from '@/app/utils/translations/serverTranslations';
@@ -137,7 +137,7 @@ const FactCard = ({
         <div className="flex items-start gap-4">
           {/* Icon */}
           <div
-            className={`w-12 h-12 rounded-2xl ${style.bg} border ${style.border} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}
+            className={`w-12 h-12 rounded-2xl ${style.bg}  ${style.border} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}
           >
             <span className="text-2xl">{fact.icon}</span>
           </div>
@@ -235,6 +235,7 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 400));
 
+    console.log('category', category);
     if (category === 'all') {
       const facts = getRandomFacts(initialCount);
       setDisplayedFacts(facts);

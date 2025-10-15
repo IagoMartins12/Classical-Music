@@ -337,8 +337,8 @@ export default function WorkSelectionSection({
               {selectedWorks.length === 0
                 ? 'Nenhuma peça'
                 : selectedWorks.length === 1
-                ? '1 peça vinculada'
-                : `${selectedWorks.length} peças vinculadas`}
+                  ? '1 peça vinculada'
+                  : `${selectedWorks.length} peças vinculadas`}
             </div>
           </div>
         </div>
@@ -616,7 +616,7 @@ export default function WorkSelectionSection({
                   <li>Selecione primeiro o compositor, depois a obra</li>
                   <li>As obras do compositor são carregadas automaticamente</li>
                   <li>Cada peça pode ter uma partitura opcional vinculada</li>
-                  <li>As partituras vêm do seu acervo no Open Atlas</li>
+                  <li>As partituras vêm do seu acervo no Opus Atlas</li>
                   <li>Você pode adicionar até {maxWorks} peças por aula</li>
                   <li>
                     As peças vinculadas aparecerão nos relatórios de progresso

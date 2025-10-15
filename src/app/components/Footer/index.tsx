@@ -19,15 +19,10 @@ import {
   FiLoader,
   FiRefreshCw,
 } from 'react-icons/fi';
-import {
-  FaFacebook,
-  FaTwitter,
-  FaInstagram,
-  FaLinkedin,
-  FaYoutube,
-  FaSpotify,
-} from 'react-icons/fa';
-import { GiGrandPiano, GiViolin, GiTrumpet } from 'react-icons/gi';
+import { FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
+
+import { GiGrandPiano, GiViolin } from 'react-icons/gi';
 import {
   useNewsletterSubscription,
   useNewsletterForm,
@@ -91,40 +86,28 @@ const Footer: React.FC = () => {
 
   const socialLinks = [
     {
-      icon: FaFacebook,
-      href: '#',
-      label: 'Facebook',
-      color: 'hover:text-blue-500',
-    },
-    {
-      icon: FaTwitter,
-      href: '#',
-      label: 'Twitter',
+      icon: FaXTwitter,
+      href: 'https://x.com/Opus_Atlas',
+      label: 'Twitter / X',
       color: 'hover:text-sky-500',
     },
     {
       icon: FaInstagram,
-      href: '#',
+      href: 'https://www.instagram.com/opusatlas/',
       label: 'Instagram',
       color: 'hover:text-pink-500',
     },
     {
       icon: FaLinkedin,
-      href: '#',
+      href: 'https://www.linkedin.com/company/opus-atlas/about/',
       label: 'LinkedIn',
       color: 'hover:text-blue-600',
     },
     {
-      icon: FaYoutube,
-      href: '#',
-      label: 'YouTube',
-      color: 'hover:text-red-500',
-    },
-    {
-      icon: FaSpotify,
-      href: '#',
-      label: 'Spotify',
-      color: 'hover:text-green-500',
+      icon: FaTiktok,
+      href: 'https://www.tiktok.com/@opusatlas5',
+      label: 'Tik tok',
+      color: 'hover:text-blue-600',
     },
   ];
 
@@ -233,16 +216,8 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative  bg-gradient-to-b from-theme-primary to-theme-secondary border-t border-theme-secondary">
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-10 -left-10 w-40 h-40 bg-brand-primary opacity-5 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-10 -right-10 w-60 h-60 bg-accent-purple opacity-5 rounded-full blur-3xl"></div>
-        <GiTrumpet className="absolute top-10 right-20 w-8 h-8 text-brand-primary opacity-10 rotate-12" />
-        <GiViolin className="absolute bottom-20 left-20 w-10 h-10 text-accent-purple opacity-10 -rotate-12" />
-      </div>
-
-      <div className="relative">
+    <footer className="  bg-gradient-to-b from-theme-primary to-theme-secondary border-t border-theme-secondary">
+      <div className="">
         {/* Main Footer Content */}
         <div className="section-wrap py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
@@ -265,7 +240,7 @@ const Footer: React.FC = () => {
               <div className="space-y-3">
                 <div className="flex items-center space-x-3 text-sm text-theme-tertiary">
                   <FiMail className="w-4 h-4 text-brand-primary" />
-                  <span>contato@classicalhub.com</span>
+                  <span>opusatlas@gmail.com</span>
                 </div>
                 <div className="flex items-center space-x-3 text-sm text-theme-tertiary">
                   <FiPhone className="w-4 h-4 text-brand-primary" />
@@ -291,6 +266,7 @@ const Footer: React.FC = () => {
                   <li key={label}>
                     <Link
                       href={href}
+                      target="_blank"
                       className="flex items-center space-x-2 text-sm text-theme-tertiary hover:text-brand-primary transition-colors duration-300 group"
                     >
                       <Icon className="w-4 h-4 group-hover:scale-110 transition-transform" />

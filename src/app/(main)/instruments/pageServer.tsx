@@ -2,9 +2,6 @@
 // InstrumentsPageServer.tsx
 
 import {
-  getInstrumentsWithWorksTranslated,
-  getInstrumentsStatsTranslated,
-  getTopComposersByInstrumentTranslated,
   ComposerPreferences,
   WorksPreferences,
 } from '@/app/requests/instruments-history-translated';
@@ -14,6 +11,11 @@ import {
   loadPageTranslationsWithCommon,
 } from '@/app/utils/translations/serverTranslations';
 import { TranslationProvider } from '@/app/context/TranslationContext';
+import {
+  getCachedInstrumentsStatsTranslated,
+  getCachedInstrumentsWithWorksTranslated,
+  getCachedTopComposersByInstrumentTranslated,
+} from '@/app/requests/cached-requests/cached-instruments';
 export const dynamic = 'force-dynamic';
 
 // 🎼 CONFIGURAÇÃO DE COMPOSITORES DESTAQUE
@@ -229,13 +231,13 @@ export async function InstrumentsPageServer() {
 
     const [instrumentsWithWorks, instrumentsStats, topComposersByInstrument] =
       await Promise.all([
-        getInstrumentsWithWorksTranslated(
+        getCachedInstrumentsWithWorksTranslated(
           language,
           composerPreferences,
           worksPreferences
         ), // ✅ Passa idioma e preferências
-        getInstrumentsStatsTranslated(),
-        getTopComposersByInstrumentTranslated(composerPreferences),
+        getCachedInstrumentsStatsTranslated(),
+        getCachedTopComposersByInstrumentTranslated(composerPreferences),
       ]);
 
     const enrichedInstruments = instrumentsWithWorks.map((instrument) => {

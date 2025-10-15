@@ -704,8 +704,8 @@ export default function TeacherLessonDetailsPageClient({
         {loading.update
           ? t('save_pieces_saving')
           : hasUnsavedChanges
-          ? t('save_pieces_changes')
-          : t('save_pieces_saved')}
+            ? t('save_pieces_changes')
+            : t('save_pieces_saved')}
       </span>
     </button>
   );
@@ -1847,8 +1847,8 @@ export default function TeacherLessonDetailsPageClient({
                         {lesson.punctuality === 'on_time'
                           ? t('punctuality_on_time')
                           : lesson.punctuality === 'late'
-                          ? t('punctuality_late')
-                          : t('punctuality_early')}
+                            ? t('punctuality_late')
+                            : t('punctuality_early')}
                       </p>
                     )}
 
@@ -1928,10 +1928,10 @@ export default function TeacherLessonDetailsPageClient({
                   quickActionType === 'present'
                     ? 'bg-accent-green/10'
                     : quickActionType === 'absent'
-                    ? 'bg-accent-yellow/10'
-                    : quickActionType === 'complete'
-                    ? 'bg-accent-green/10'
-                    : 'bg-accent-red/10'
+                      ? 'bg-accent-yellow/10'
+                      : quickActionType === 'complete'
+                        ? 'bg-accent-green/10'
+                        : 'bg-accent-red/10'
                 }`}
               >
                 {quickActionType === 'present' && (

@@ -881,7 +881,7 @@ export default function ComposerWorks({
                                 </span>
 
                                 {work.opOrCatalog && (
-                                  <span className="text-sm w-max text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
+                                  <span className="text-sm max-w-fit w-max text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
                                     {work.opOrCatalog}
                                   </span>
                                 )}
@@ -949,7 +949,7 @@ export default function ComposerWorks({
                           </div>
 
                           <div
-                            className={`flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300`}
+                            className={`flex items-center space-x-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300`}
                             onClick={(e) => e.stopPropagation()}
                           >
                             <FavoriteButton
@@ -1062,7 +1062,7 @@ export default function ComposerWorks({
                             </div>
 
                             <div
-                              className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                              className="flex items-center space-x-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300"
                               onClick={(e) => e.stopPropagation()}
                             >
                               <FavoriteButton

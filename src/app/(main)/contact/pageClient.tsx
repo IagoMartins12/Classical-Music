@@ -331,8 +331,8 @@ export default function ContactPageClient() {
                       success
                         ? 'bg-accent-green/10 border-accent-green/20'
                         : error
-                        ? 'bg-accent-red/10 border-accent-red/20'
-                        : 'bg-brand-primary/10 border-brand-primary/20'
+                          ? 'bg-accent-red/10 border-accent-red/20'
+                          : 'bg-brand-primary/10 border-brand-primary/20'
                     }`}
                   >
                     {formStatus.icon}

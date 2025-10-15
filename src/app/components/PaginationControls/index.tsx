@@ -1,4 +1,4 @@
-// app/composers/PaginationControls.tsx - Premium pagination component
+// app/components/PaginationControls.tsx - Com scroll automático garantido
 'use client';
 
 import {
@@ -7,12 +7,15 @@ import {
   FiMoreHorizontal,
 } from 'react-icons/fi';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { useCallback } from 'react';
 
 interface PaginationControlsProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
   isPending: boolean;
+  autoScroll?: boolean; // Nova prop para controlar scroll automático
+  scrollOffset?: number; // Offset do scroll (padrão: 0)
 }
 
 const PaginationControls: React.FC<PaginationControlsProps> = ({
@@ -20,8 +23,30 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
   totalPages,
   onPageChange,
   isPending,
+  autoScroll = true, // Por padrão, sempre faz scroll
+  scrollOffset = 0, // Offset padrão
 }) => {
   const { t } = useTranslation({ sections: ['pages/composers'] });
+
+  // Função melhorada para mudança de página com scroll garantido
+  const handlePageChange = useCallback(
+    (page: number) => {
+      // Sempre chama a função do componente pai
+      onPageChange(page);
+
+      // Se autoScroll estiver habilitado, faz o scroll suave
+      if (autoScroll) {
+        // Pequeno delay para garantir que a mudança de página aconteça primeiro
+        setTimeout(() => {
+          window.scrollTo({
+            top: scrollOffset,
+            behavior: 'smooth',
+          });
+        }, 50); // 50ms de delay é suficiente
+      }
+    },
+    [onPageChange, autoScroll, scrollOffset]
+  );
 
   // Generate page numbers to show
   const getVisiblePages = () => {
@@ -64,7 +89,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
   const visiblePages = getVisiblePages();
 
   return (
-    <div className="classical-card p-6 mt-4">
+    <div className="classical-card p-6 mt-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         {/* Page info */}
         <div className="flex items-center space-x-2 text-theme-secondary text-sm">
@@ -81,7 +106,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
         <div className="flex items-center justify-center space-x-2">
           {/* First page */}
           <button
-            onClick={() => onPageChange(1)}
+            onClick={() => handlePageChange(1)}
             disabled={currentPage === 1 || isPending}
             className="hidden md:flex items-center px-3 py-2 text-sm font-medium text-theme-secondary hover:text-theme-primary bg-theme-elevated border border-theme-secondary hover:border-theme-primary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
           >
@@ -90,7 +115,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
 
           {/* Previous button */}
           <button
-            onClick={() => onPageChange(currentPage - 1)}
+            onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1 || isPending}
             className="flex items-center justify-center w-10 h-10 text-theme-secondary hover:text-brand-primary bg-theme-elevated border border-theme-secondary hover:border-brand-primary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 group"
           >
@@ -117,7 +142,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
               return (
                 <button
                   key={pageNum}
-                  onClick={() => onPageChange(pageNum)}
+                  onClick={() => handlePageChange(pageNum)}
                   disabled={isPending}
                   className={`
                     flex items-center justify-center w-10 h-10 text-sm font-medium rounded-lg transition-all duration-300 disabled:cursor-not-allowed hover:scale-105
@@ -136,7 +161,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
 
           {/* Next button */}
           <button
-            onClick={() => onPageChange(currentPage + 1)}
+            onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages || isPending}
             className="flex items-center justify-center w-10 h-10 text-theme-secondary hover:text-brand-primary bg-theme-elevated border border-theme-secondary hover:border-brand-primary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 group"
           >
@@ -145,7 +170,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
 
           {/* Last page */}
           <button
-            onClick={() => onPageChange(totalPages)}
+            onClick={() => handlePageChange(totalPages)}
             disabled={currentPage === totalPages || isPending}
             className="hidden md:flex items-center px-3 py-2 text-sm font-medium text-theme-secondary hover:text-theme-primary bg-theme-elevated border border-theme-secondary hover:border-theme-primary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
           >

@@ -809,8 +809,8 @@ export default function TeacherProgressPageClient({
                     reportData.reportMetadata.dataQuality === 'excellent'
                       ? 'bg-accent-green/10 text-accent-green'
                       : reportData.reportMetadata.dataQuality === 'good'
-                      ? 'bg-accent-blue/10 text-accent-blue'
-                      : 'bg-accent-yellow/10 text-accent-yellow'
+                        ? 'bg-accent-blue/10 text-accent-blue'
+                        : 'bg-accent-yellow/10 text-accent-yellow'
                   }`}
                 >
                   Qualidade: {reportData.reportMetadata.dataQuality}

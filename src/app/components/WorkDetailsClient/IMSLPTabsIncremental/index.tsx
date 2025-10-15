@@ -30,6 +30,7 @@ import {
   TabStatistics,
 } from '@/app/utils/type-utils';
 import { useTranslation } from '@/app/context/TranslationContext';
+import useIsTablet from '@/app/hooks/useIsTablet';
 
 // ✅ INTERFACE UNIFICADA SIMPLIFICADA
 interface MixedScoreData {
@@ -164,7 +165,7 @@ const SourceBadge = React.memo(
 );
 SourceBadge.displayName = 'SourceBadge';
 
-// ✅ COMPONENTE SCORECARD OTIMIZADO COM BADGE
+// ✅ COMPONENTE SCORECARD OTIMIZADO COM BADGE E COROA
 const ScoreCardWithBadge = React.memo(
   ({
     score,
@@ -181,24 +182,59 @@ const ScoreCardWithBadge = React.memo(
     isTempSelected,
     tempSelectedWorkScore,
     t,
+    isTablet,
   }: any) => (
     <div className="relative">
-      <ScoreCard
-        score={score}
-        workId={workId}
-        isSelected={isSelected}
-        onSelect={onSelect}
-        isLastInGroup={isLastInGroup}
-        groupSize={groupSize}
-        showFavoriteStats={showFavoriteStats}
-        showMostFavoritedBadge={showMostFavoritedBadge}
-        isMostFavorited={isMostFavorited}
-        favoriteStats={favoriteStats}
-        isSelectionMode={isSelectionMode}
-        isTempSelected={isTempSelected}
-        tempSelectedWorkScore={tempSelectedWorkScore}
-      />
-      <div className="absolute top-2 right-2">
+      {/* Container com borda dourada e coroa para cards mais favoritados */}
+      <div
+        className={`
+          relative 
+          ${
+            isMostFavorited
+              ? 'border-2 border-yellow-400 rounded-xl shadow-yellow-400/30 shadow-xl ring-1 ring-yellow-300/50 bg-gradient-to-r from-yellow-400/5 to-yellow-600/5 p-1'
+              : ''
+          }
+        `}
+      >
+        {/* Coroa no canto superior esquerdo */}
+        {showMostFavoritedBadge && isMostFavorited && (
+          <div
+            className="absolute -top-3 -left-3 z-20 group/crown"
+            title={t('score_card_favorita_comunidade')}
+          >
+            <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 border-2 border-yellow-300 text-yellow-900 rounded-full font-medium shadow-xl backdrop-blur-sm flex items-center justify-center ring-2 ring-yellow-400/40 animate-pulse hover:animate-none transition-all duration-300 hover:scale-110">
+              <span className="text-lg filter drop-shadow-sm">👑</span>
+            </div>
+
+            {/* Tooltip elegante */}
+            <div className="absolute left-12 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover/crown:opacity-100 transition-all duration-300 pointer-events-none shadow-xl border border-gray-700 z-30">
+              {t('score_card_favorita_comunidade')}
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 border-l border-b border-gray-700 rotate-45"></div>
+            </div>
+          </div>
+        )}
+
+        {/* ScoreCard original */}
+        <ScoreCard
+          score={score}
+          workId={workId}
+          isSelected={isSelected}
+          onSelect={onSelect}
+          isLastInGroup={isLastInGroup}
+          groupSize={groupSize}
+          showFavoriteStats={showFavoriteStats}
+          showMostFavoritedBadge={false} // Desabilitamos a badge interna
+          isMostFavorited={isMostFavorited}
+          favoriteStats={favoriteStats}
+          isSelectionMode={isSelectionMode}
+          isTempSelected={isTempSelected}
+          tempSelectedWorkScore={tempSelectedWorkScore}
+          isTablet={isTablet}
+        />
+      </div>
+
+      {/* Badge de fonte */}
+      <div className="absolute top-2 right-2 z-10">
         <SourceBadge source={score.source} t={t} />
       </div>
     </div>
@@ -281,7 +317,7 @@ const useProcessedData = (imslpData: any, workScores: WorkScore[]) => {
         if (scores.length > 0) {
           const group: MixedScoreGroup = {
             groupIndex: 0, // 🔄 MUDANÇA: Índice 0 para aparecer primeiro
-            groupTitle: `Open Atlas (${scores.length})`,
+            groupTitle: `Opus Atlas (${scores.length})`,
             source: 'WORKSCORE',
             scores: scores.map(
               (ws): MixedScoreData => ({
@@ -576,7 +612,7 @@ export default function IMSLPTabsIncremental({
   }, [finalGetTabStats, activeTab]);
 
   const { getScoreStats } = useScoreFavorites(workId || '');
-
+  const isTablet = useIsTablet();
   const handleScoreSelect = useCallback(
     (score: MixedScoreData) => {
       if (selectedScore?.id === score.id) {
@@ -750,8 +786,8 @@ export default function IMSLPTabsIncremental({
                               selectedScore.title
                             }`
                           : isSelectionMode
-                          ? t('imslp_tabs_selecione_partitura')
-                          : t('imslp_tabs_explore_partituras')}
+                            ? t('imslp_tabs_selecione_partitura')
+                            : t('imslp_tabs_explore_partituras')}
                       </p>
                     </div>
                   </div>
@@ -762,7 +798,7 @@ export default function IMSLPTabsIncremental({
             {/* Tabs Navigation */}
             {visibleTabs.length > 0 && (
               <nav
-                className="flex scrollbar-hide px-0 md:px-6"
+                className="flex overflow-x-scroll classical-scrollbar-mini px-0 md:px-6"
                 aria-label="Tabs"
               >
                 {visibleTabs.map((tab, index) => {
@@ -788,11 +824,11 @@ export default function IMSLPTabsIncremental({
                       <button
                         onClick={() => setActiveTab(tab.id)}
                         className={`
-                          flex items-center gap-3 px-6 py-4 cursor-pointer text-sm font-medium border-b-2 transition-all duration-300 whitespace-nowrap flex-shrink-0 animate-fade-in-up relative
+                          flex items-center gap-3 px-6 py-4 cursor-pointer text-sm font-medium  transition-all duration-300 whitespace-nowrap flex-shrink-0 animate-fade-in-up relative
                           ${
                             isActive
-                              ? 'border-brand-primary text-brand-primary bg-gradient-to-t from-brand-primary/10 to-transparent'
-                              : 'border-transparent text-theme-tertiary hover:text-theme-primary hover:border-theme-primary hover:bg-interactive-hover'
+                              ? 'border-0 md:border-b-2 border-brand-primary text-brand-primary bg-gradient-to-t from-brand-primary/10 to-transparent'
+                              : 'border-b-2 border-transparent text-theme-tertiary hover:text-theme-primary hover:border-theme-primary hover:bg-interactive-hover'
                           }
                         `}
                         style={{ animationDelay: `${index * 0.1}s` }}
@@ -910,6 +946,7 @@ export default function IMSLPTabsIncremental({
                                 }
                                 tempSelectedWorkScore={tempSelectedWorkScore}
                                 t={t}
+                                isTablet={isTablet}
                               />
                             </SequentialGrid>
                           );

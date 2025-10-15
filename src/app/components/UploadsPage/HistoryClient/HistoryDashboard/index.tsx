@@ -179,8 +179,6 @@ const HistoryDashboard = ({
     delete: colors.danger,
   };
 
-
-
   if (loading) {
     return (
       <PageContainer>
@@ -443,8 +441,8 @@ const HistoryDashboard = ({
                             action === 'create'
                               ? 'Criações'
                               : action === 'update'
-                              ? 'Atualizações'
-                              : 'Exclusões',
+                                ? 'Atualizações'
+                                : 'Exclusões',
                           value: count,
                           color:
                             actionColors[action as keyof typeof actionColors],
@@ -534,8 +532,8 @@ const HistoryDashboard = ({
                           type === 'composer'
                             ? 'Compositores'
                             : type === 'work'
-                            ? 'Obras'
-                            : 'Partituras',
+                              ? 'Obras'
+                              : 'Partituras',
                         value: count,
                       })
                     )}
@@ -634,13 +632,13 @@ const HistoryDashboard = ({
                           {action.action === 'create'
                             ? 'Criou'
                             : action.action === 'update'
-                            ? 'Atualizou'
-                            : 'Excluiu'}{' '}
+                              ? 'Atualizou'
+                              : 'Excluiu'}{' '}
                           {action.entityType === 'composer'
                             ? 'compositor'
                             : action.entityType === 'work'
-                            ? 'obra'
-                            : 'partitura'}
+                              ? 'obra'
+                              : 'partitura'}
                         </span>
                       </div>
 

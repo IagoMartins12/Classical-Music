@@ -577,9 +577,9 @@ export default function StudentAssignmentDetailsPageClient({
                               className={`text-sm ${
                                 assignment.isOverdue
                                   ? 'text-red-400 font-semibold'
-                                  : assignment.daysUntilDue ?? 0 <= 1
-                                  ? 'text-accent-yellow'
-                                  : 'text-theme-tertiary'
+                                  : (assignment.daysUntilDue ?? 0 <= 1)
+                                    ? 'text-accent-yellow'
+                                    : 'text-theme-tertiary'
                               }`}
                             >
                               {assignment.isOverdue
@@ -589,13 +589,13 @@ export default function StudentAssignmentDetailsPageClient({
                                     ),
                                   })
                                 : assignment.daysUntilDue === 0
-                                ? t('student_assignment_details_due_today')
-                                : t(
-                                    'student_assignment_details_days_remaining',
-                                    {
-                                      days: `${assignment.daysUntilDue}`,
-                                    }
-                                  )}
+                                  ? t('student_assignment_details_due_today')
+                                  : t(
+                                      'student_assignment_details_days_remaining',
+                                      {
+                                        days: `${assignment.daysUntilDue}`,
+                                      }
+                                    )}
                             </span>
                           )}
                         </div>
@@ -626,8 +626,8 @@ export default function StudentAssignmentDetailsPageClient({
                               currentProgress >= 100
                                 ? 'bg-green-400'
                                 : currentProgress >= 50
-                                ? 'bg-blue-400'
-                                : 'bg-yellow-400'
+                                  ? 'bg-blue-400'
+                                  : 'bg-yellow-400'
                             }`}
                             style={{ width: `${currentProgress}%` }}
                           />
@@ -860,8 +860,8 @@ export default function StudentAssignmentDetailsPageClient({
                             {isUploading
                               ? t('student_assignment_details_uploading')
                               : currentVideoSubmission
-                              ? t('student_assignment_details_replace_video')
-                              : t('student_assignment_details_upload_video')}
+                                ? t('student_assignment_details_replace_video')
+                                : t('student_assignment_details_upload_video')}
                           </span>
                         </button>
                       </div>
@@ -964,14 +964,16 @@ export default function StudentAssignmentDetailsPageClient({
                         {studentRating === 0
                           ? t('student_assignment_details_rating_not_rated')
                           : studentRating === 1
-                          ? t('student_assignment_details_rating_very_easy')
-                          : studentRating === 2
-                          ? t('student_assignment_details_rating_easy')
-                          : studentRating === 3
-                          ? t('student_assignment_details_rating_medium')
-                          : studentRating === 4
-                          ? t('student_assignment_details_rating_hard')
-                          : t('student_assignment_details_rating_very_hard')}
+                            ? t('student_assignment_details_rating_very_easy')
+                            : studentRating === 2
+                              ? t('student_assignment_details_rating_easy')
+                              : studentRating === 3
+                                ? t('student_assignment_details_rating_medium')
+                                : studentRating === 4
+                                  ? t('student_assignment_details_rating_hard')
+                                  : t(
+                                      'student_assignment_details_rating_very_hard'
+                                    )}
                       </span>
                     </div>
                   </div>
@@ -1211,8 +1213,8 @@ export default function StudentAssignmentDetailsPageClient({
                             currentProgress >= 100
                               ? 'bg-green-400'
                               : currentProgress >= 50
-                              ? 'bg-blue-400'
-                              : 'bg-yellow-400'
+                                ? 'bg-blue-400'
+                                : 'bg-yellow-400'
                           }`}
                           style={{ width: `${currentProgress}%` }}
                         />

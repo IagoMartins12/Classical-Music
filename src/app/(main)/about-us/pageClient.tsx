@@ -23,8 +23,6 @@ import {
 } from 'react-icons/gi';
 import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';
 import Link from 'next/link';
-
-// Importar componentes de animação
 import {
   PageContainer,
   AnimatedContainer,
@@ -136,7 +134,6 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* Floating Music Notes */}
           <AnimatedMusicalNotes />
         </AnimatedContainer>
       </section>

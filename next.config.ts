@@ -1,22 +1,31 @@
 import type { NextConfig } from 'next';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
 
-const nextConfig: NextConfig = {
-  // Disable static optimization completely
+const nextConfig: NextConfig = withBundleAnalyzer({
   output: 'standalone',
-
-
-  // Force dynamic rendering for all pages
   trailingSlash: false,
-
+  compress: true,
   images: {
+    // Permitir domínios não otimizados (menos seguro mas mais flexível)
+    unoptimized: process.env.NODE_ENV === 'production', // ← MUDAR PARA TRUE
+
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'opusatlas.com.br',
+        pathname: '/uploads/**',
+      },
+      // Wildcard para permitir qualquer HTTPS (menos seguro)
       {
         protocol: 'https',
         hostname: '**',
       },
     ],
   },
-
+  // REMOVER completamente a seção rewrites
   async headers() {
     return [
       {
@@ -37,6 +46,6 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-};
+});
 
 export default nextConfig;

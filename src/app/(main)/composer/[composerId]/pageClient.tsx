@@ -266,7 +266,7 @@ export default function ComposerDetailsClient({
             <div className=" p-2 md:p-8 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Informações do Compositor */}
-                <div className="lg:col-span-2 space-y-6 order-2 md:order-1 lg:order-1">
+                <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
                   {/* Nome e título */}
                   <AnimatedItem direction="up" springType="bouncy">
                     <div className="space-y-3">
@@ -329,7 +329,7 @@ export default function ComposerDetailsClient({
                           {isAdmin && (
                             <VerificationButton
                               entityType="composer"
-                              variant="ghost"
+                              variant="secondary"
                               size="lg"
                               onClick={() => setShowVerificationModal(true)}
                             />
@@ -546,7 +546,7 @@ export default function ComposerDetailsClient({
                 <AnimatedItem
                   direction="scale"
                   springType="bouncy"
-                  className="flex justify-center order-1 md:order-2 space-y-6 lg:order-2 lg:justify-end"
+                  className="flex justify-center order-1  space-y-6 lg:order-2 lg:justify-end"
                 >
                   <div className="relative group">
                     {composer.portraitUrl && !imageError ? (
@@ -673,16 +673,14 @@ export default function ComposerDetailsClient({
           )}
 
           {/* Obras do Compositor */}
-          <AnimatedCard hover="none" className="">
-            <ComposerWorks
-              composerId={composer.id}
-              composerName={composer.name}
-              initialWorks={initialWorksData.works}
-              initialTotalCount={initialWorksData.totalCount}
-              initialHasMore={initialWorksData.hasMore}
-              filterOptions={filterOptions}
-            />
-          </AnimatedCard>
+          <ComposerWorks
+            composerId={composer.id}
+            composerName={composer.name}
+            initialWorks={initialWorksData.works}
+            initialTotalCount={initialWorksData.totalCount}
+            initialHasMore={initialWorksData.hasMore}
+            filterOptions={filterOptions}
+          />
         </AnimatedContainer>
       </div>
       {isAdmin && (

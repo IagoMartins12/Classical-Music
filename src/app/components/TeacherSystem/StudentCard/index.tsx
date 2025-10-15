@@ -322,8 +322,8 @@ export default function StudentCard({
             {isToggling
               ? '...'
               : isPaused
-              ? translations.reactivate
-              : translations.pause}
+                ? translations.reactivate
+                : translations.pause}
           </span>
         </button>
 

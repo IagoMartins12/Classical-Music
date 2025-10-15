@@ -99,9 +99,6 @@ export function useComposerBiography(
           );
         } else {
           setBiography(null);
-          console.log(
-            `Nenhuma biografia encontrada para ${composerName} (${language})`
-          );
         }
       } catch (err) {
         const errorMessage =

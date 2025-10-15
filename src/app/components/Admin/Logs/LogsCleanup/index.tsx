@@ -27,12 +27,7 @@ interface LogsCleanupProps {
 }
 
 export default function LogsCleanup({ onClose }: LogsCleanupProps) {
-  const {
-    stats,
-    deleteLogs,
-    cleanupOldLogs,
-    exportLogs,
-  } = useAdminLogs();
+  const { stats, deleteLogs, cleanupOldLogs, exportLogs } = useAdminLogs();
 
   const [selectedDates, setSelectedDates] = useState<Set<string>>(new Set());
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);

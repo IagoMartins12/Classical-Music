@@ -499,10 +499,10 @@ export default function StudentLessonsPageClient({
                     lesson.status === 'COMPLETED'
                       ? 'bg-accent-green'
                       : lesson.status === 'CANCELLED'
-                      ? 'bg-accent-red'
-                      : lesson.status === 'NO_SHOW'
-                      ? 'bg-accent-yellow'
-                      : 'bg-accent-blue'
+                        ? 'bg-accent-red'
+                        : lesson.status === 'NO_SHOW'
+                          ? 'bg-accent-yellow'
+                          : 'bg-accent-blue'
                   }`}
                 />
                 {statusInfo.needsAttention && (

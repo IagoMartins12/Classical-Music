@@ -36,6 +36,8 @@ interface FavoriteButtonProps {
 
   // Estilo customizado
   style?: React.CSSProperties;
+  highlightMobile?: boolean; // 🔥 nova flag
+  isMobile?: boolean;
 }
 
 const FavoriteButton = ({
@@ -51,6 +53,8 @@ const FavoriteButton = ({
   onError,
   itemName,
   style,
+  highlightMobile = false,
+  isMobile = false,
 }: FavoriteButtonProps) => {
   const { t } = useTranslation({ sections: ['pages/workId'] });
   const { user, isAuthenticated } = useAuth();
@@ -132,7 +136,18 @@ const FavoriteButton = ({
         : 'bg-transparent border-transparent text-theme-tertiary hover:text-red-500',
     };
 
-    return `${baseClasses} ${variants[variant]}`;
+    // 🔥 regra extra para mobile quando highlightMobile = true
+    const mobileHighlight =
+      highlightMobile && isMobile
+        ? `
+      bg-gradient-to-br from-black/60 via-black/30 to-transparent
+      backdrop-blur-md
+      border border-white/20
+      shadow-md
+    `
+        : '';
+
+    return `${baseClasses} ${variants[variant]} ${mobileHighlight}`;
   };
 
   // Handler de clique

@@ -171,11 +171,11 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
                 ? `/composers?epoch=${epoch.id}`
                 : `/composers`
             }
-            className="group/btn flex items-center justify-between w-full px-4 py-3 bg-theme-tertiary rounded-xl text-theme-primary font-medium hover:bg-interactive-hover hover:border-brand-primary hover:text-brand-primary transition-all duration-300 shadow-theme-sm"
+            className=" flex items-center justify-between w-full px-4 py-3 bg-theme-tertiary rounded-xl text-theme-primary font-medium hover:bg-interactive-hover hover:border-brand-primary hover:text-brand-primary transition-all duration-300 shadow-theme-sm"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                <FiUsers className="w-4 h-4" />
+              <div className="w-8 h-8 bg-white/20 rounded-lg hidden md:flex items-center justify-center">
+                <FiUsers className="w-4 h-4 " />
               </div>
               <div className="text-left">
                 <div className="text-sm font-semibold">
@@ -209,7 +209,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
             className="group/btn flex items-center justify-between w-full px-4 py-3 bg-theme-tertiary rounded-xl text-theme-primary font-medium hover:bg-interactive-hover hover:border-brand-primary hover:text-brand-primary transition-all duration-300 shadow-theme-sm"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-white/20 rounded-lg hidden md:flex items-center justify-center">
                 <FiMusic className="w-4 h-4" />
               </div>
 
@@ -271,7 +271,7 @@ const ComposersByEpoch: React.FC<ComposersByEpochProps> = ({ epochs }) => {
       />
 
       {/* Grid de épocas - responsivo */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-10 mt-12">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 md:gap-8 lg:gap-10 mt-12">
         {epochs.map((epoch, index) => (
           <div
             key={epoch.id}

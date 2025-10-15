@@ -91,8 +91,8 @@ export default function PublicTeacherDetailsPageClient({
   const bioToShow = showFullBio
     ? teacher.fullBio
     : teacher.fullBio.length > 500
-    ? teacher.fullBio.substring(0, 500) + '...'
-    : teacher.fullBio;
+      ? teacher.fullBio.substring(0, 500) + '...'
+      : teacher.fullBio;
 
   return (
     <div className="bg-gradient-primary">
@@ -598,9 +598,9 @@ export default function PublicTeacherDetailsPageClient({
                             'whatsapp'
                               ? 'WhatsApp'
                               : teacher.contactPreferences.preferredMethod ===
-                                'email'
-                              ? 'Email'
-                              : 'WhatsApp ou Email'}
+                                  'email'
+                                ? 'Email'
+                                : 'WhatsApp ou Email'}
                           </strong>
                         </span>
                       </div>

@@ -81,6 +81,11 @@ export async function PUT(
     const userId = session.user.id;
     const body = await request.json();
 
+    // 🔍 DEBUG: Vamos ver exatamente o que está chegando
+    console.log('🔍 BODY RECEBIDO:', JSON.stringify(body, null, 2));
+    console.log('🔍 CAMPOS DO BODY:', Object.keys(body));
+    console.log('🔍 workId no body:', body.workId);
+
     // Buscar partitura atual
     const currentScore = await prisma.workScore.findUnique({
       where: { id },
@@ -109,18 +114,61 @@ export async function PUT(
     }
 
     // Validações básicas
-    if (!body.title || !body.workId) {
+    if (!body.title) {
       return NextResponse.json(
-        { error: 'Campos obrigatórios não preenchidos' },
+        { error: 'Título é obrigatório' },
         { status: 400 }
       );
     }
+
+    // 🔧 SEPARAR campos válidos do WorkScore (baseado no schema atual)
+    const allowedFields = [
+      'title',
+      'downloadUrl',
+      'fileSize',
+      'pageCount',
+      'fileFormat',
+      'editor',
+      'publisher',
+      'copyright',
+      'thumbnailUrl',
+      'uploadDate',
+      'uploader',
+      'notes',
+      'type',
+      'groupIndex',
+      'groupTitle',
+      'rating',
+      'ratingsCount',
+      'downloadCount',
+      'isCustom',
+      'dataQuality',
+      'verificationStatus',
+      'customData',
+      'isActive',
+      'isVerified',
+      'qualityScore',
+      // REMOVIDOS: tempThumbnailPath, tempPdfPath, hasTemporaryFiles (não existem no schema)
+    ];
+
+    // Filtrar apenas campos permitidos
+    const updateData: any = {};
+    allowedFields.forEach((field) => {
+      if (body.hasOwnProperty(field)) {
+        updateData[field] = body[field];
+      }
+    });
+
+    console.log(
+      '🔍 DADOS FILTRADOS PARA UPDATE:',
+      JSON.stringify(updateData, null, 2)
+    );
 
     // Atualizar partitura
     const updatedScore = await prisma.workScore.update({
       where: { id },
       data: {
-        ...body,
+        ...updateData,
         lastEditedBy: userId,
         lastEditedAt: new Date(),
       },

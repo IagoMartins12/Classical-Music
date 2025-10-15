@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   FiBarChart2,
   FiUsers,
@@ -54,14 +54,12 @@ export default function AdminSidebar() {
         : [...prev, sectionTitle]
     );
   };
+  const params = useSearchParams();
 
-  // const isActive = params.get('isActive');
-  // const hasAnnotations = params.get('hasAnnotations');
-  // const hasUploads = params.get('hasUploads');
+  const isActive = params.get('isActive');
+  const hasAnnotations = params.get('hasAnnotations');
+  const hasUploads = params.get('hasUploads');
 
-  const isActive = false;
-  const hasAnnotations = false;
-  const hasUploads = false;
   // Configurar seções da sidebar com dados reais
   const sidebarSections: SidebarSection[] = [
     {
@@ -322,7 +320,7 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="hidden lg:block w-64 bg-theme-elevated border-r border-theme-primary h-[calc(100vh-80px)] overflow-y-auto">
+    <aside className="block w-full md:w-64 bg-theme-elevated border-r border-theme-primary h-[calc(100vh-80px)] overflow-y-auto">
       <div className="p-4 lg:p-6">
         {/* Sidebar Header */}
         <div className="mb-6 lg:mb-8">

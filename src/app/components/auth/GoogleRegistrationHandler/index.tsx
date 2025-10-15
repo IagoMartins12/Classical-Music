@@ -1,25 +1,25 @@
-// components/auth/GoogleRegistrationHandler.tsx - VERSÃO CORRIGIDA
+// components/auth/GoogleRegistrationHandler.tsx - VERSÃO CORRIGIDA sem erros
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import {
-  useRegisterModal,
-  useOnboardingModal,
-  usePromptModal,
-} from '@/app/stores/authStore';
+import { useOnboardingModal, usePromptModal } from '@/app/stores/authStore';
+import { toast } from 'react-hot-toast';
 
 /**
- * Componente para detectar e processar retorno de registro Google
- * CORRIGIDO: Só processa como sucesso se realmente houve sucesso
+ * Componente para detectar novos usuários Google e abrir onboarding
+ * CORRIGIDO: Sem erros TypeScript, evita toasts duplicados
  */
 const GoogleRegistrationHandler: React.FC = () => {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
-  const { open: openRegisterModal } = useRegisterModal();
   const { open: openOnboardingModal } = useOnboardingModal();
   const { open: openPromptModal } = usePromptModal();
+
+  // Refs para persistir estado entre renders
+  const processedUserIds = useRef(new Set<string>());
+  const hasProcessedNewUser = useRef(false);
 
   useEffect(() => {
     // Só executar no cliente
@@ -28,134 +28,104 @@ const GoogleRegistrationHandler: React.FC = () => {
     // Aguardar a sessão carregar
     if (status === 'loading') return;
 
-    // 🔧 VERIFICAÇÃO DE ERRO PRIMEIRO - Se há erro na URL, não processar como sucesso
+    // Verificação de erro primeiro
     const urlError = searchParams.get('error');
     if (urlError) {
-      console.log(
-        '❌ Erro detectado na URL, limpando flags de sucesso:',
-        urlError
-      );
-
-      // Limpar todas as flags de registro Google em caso de erro
-      sessionStorage.removeItem('google-register-pending');
-      sessionStorage.removeItem('google-register-timestamp');
-      sessionStorage.removeItem('google-register-email');
-      sessionStorage.removeItem('google-register-name');
-
-      // Não processar como sucesso
+      console.log('Erro detectado na URL:', urlError);
+      // Limpar URL de erro
+      const url = new URL(window.location.href);
+      url.searchParams.delete('error');
+      url.searchParams.delete('error_description');
+      window.history.replaceState({}, '', url.toString());
       return;
     }
 
-    // Verificar parâmetros da URL para sucesso
-    const isGoogleRegister = searchParams.get('google-register') === 'true';
+    // Verificar se já processamos este usuário específico
+    const userId = session?.user?.id;
+    if (!userId) return;
 
-    // Verificar flags no sessionStorage
-    const googleRegisterFlag = sessionStorage.getItem(
-      'google-register-pending'
-    );
-    const googleRegisterTimestamp = sessionStorage.getItem(
-      'google-register-timestamp'
-    );
+    // Se já processamos este usuário específico, não fazer nada
+    if (processedUserIds.current.has(userId)) {
+      console.log('Usuário já foi processado:', userId);
+      return;
+    }
 
-    // 🔧 LÓGICA CORRIGIDA: Só processar como sucesso se:
-    // 1. Há indicação de registro Google E
-    // 2. Há uma sessão válida E
-    // 3. NÃO há erro na URL
-    if (
-      (isGoogleRegister || googleRegisterFlag === 'true') &&
+    // Verificar no sessionStorage também (backup)
+    const sessionKey = `google-welcome-shown-${userId}`;
+    if (sessionStorage.getItem(sessionKey) === 'true') {
+      console.log('Welcome já foi mostrado para este usuário (sessionStorage)');
+      processedUserIds.current.add(userId);
+      return;
+    }
+
+    // Detectar através da flag isNewGoogleUser na sessão
+    const isNewGoogleUser = (session?.user as any)?.isNewGoogleUser;
+
+    // OU através dos parâmetros da URL (backup)
+    const urlNewUser = searchParams.get('new-user') === 'true';
+    const urlGoogleRegister = searchParams.get('google-register') === 'true';
+
+    if (session?.user && (isNewGoogleUser || urlNewUser || urlGoogleRegister)) {
+      console.log('Novo usuário Google detectado!', {
+        userId,
+        isNewGoogleUser,
+        urlNewUser,
+        urlGoogleRegister,
+        userName: session.user.firstName || session.user.name,
+      });
+
+      // Marcar como processado ANTES de fazer ações
+      processedUserIds.current.add(userId);
+      sessionStorage.setItem(sessionKey, 'true');
+      hasProcessedNewUser.current = true;
+
+      // Limpar parâmetros da URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete('google-register');
+      url.searchParams.delete('new-user');
+      window.history.replaceState({}, '', url.toString());
+
+      // Mostrar boas-vindas (apenas uma vez)
+      const userName =
+        session.user.firstName || session.user.name?.split(' ')[0] || 'Usuário';
+
+      // Toast com ID único para evitar duplicação
+      toast.success(
+        `Bem-vindo(a), ${userName}! Sua conta foi criada com sucesso.`,
+        {
+          id: `welcome-${userId}`, // ID único para evitar duplicação
+          duration: 4000,
+          icon: '🎉',
+        }
+      );
+
+      // Abrir modal de onboarding
+      setTimeout(() => {
+        console.log('Abrindo modal de onboarding para novo usuário Google');
+        openOnboardingModal();
+      }, 1500); // Delay para mostrar o toast
+    } else if (
       session?.user &&
-      !urlError
+      !session.user.onboardingCompleted &&
+      !hasProcessedNewUser.current
     ) {
-      // Verificar se é realmente um registro novo baseado no timestamp
-      const now = Date.now();
-      const timestamp = googleRegisterTimestamp
-        ? parseInt(googleRegisterTimestamp)
-        : 0;
-      const timeDiff = now - timestamp;
-
-      // Considerar como registro se:
-      // 1. Tem timestamp e foi nos últimos 10 minutos
-      // 2. OU se veio da URL com parâmetro google-register=true
-      const isRecentRegistration = timestamp > 0 && timeDiff < 10 * 60 * 1000; // 10 minutos
-
-      if (isRecentRegistration || isGoogleRegister) {
-        console.log('✅ Registro Google bem-sucedido detectado');
-
-        // Salvar dados para o modal (se não existirem)
-        const existingEmail = sessionStorage.getItem('google-register-email');
-        const existingName = sessionStorage.getItem('google-register-name');
-
-        if (!existingEmail) {
-          sessionStorage.setItem(
-            'google-register-email',
-            session.user.email || ''
-          );
-        }
-        if (!existingName) {
-          sessionStorage.setItem(
-            'google-register-name',
-            session.user.firstName ||
-              session.user.name?.split(' ')[0] ||
-              'Usuário'
-          );
-        }
-
-        // Limpar parâmetro da URL se necessário
-        if (isGoogleRegister) {
-          const url = new URL(window.location.href);
-          url.searchParams.delete('google-register');
-          window.history.replaceState({}, '', url.toString());
-        }
-
-        // Abrir modal de registro com delay para garantir que tudo carregou
-        setTimeout(() => {
-          openRegisterModal();
-        }, 800);
-      } else {
-        // Timestamp muito antigo - limpar flags
-        console.log('🧹 Limpando flags antigas de registro Google');
-        sessionStorage.removeItem('google-register-pending');
-        sessionStorage.removeItem('google-register-timestamp');
-        sessionStorage.removeItem('google-register-email');
-        sessionStorage.removeItem('google-register-name');
-
-        // Se o usuário não completou onboarding, mostrar modal de onboarding
-        if (session.user && !session.user.onboardingCompleted) {
-          setTimeout(() => {
-            openOnboardingModal();
-          }, 500);
-        }
-      }
-    } else if (session?.user && !session.user.onboardingCompleted) {
-      // Usuário logado normalmente mas sem onboarding completo
+      // Usuário existente sem onboarding completo
+      console.log('Usuário existente sem onboarding:', userId);
       setTimeout(() => {
         openPromptModal();
       }, 500);
-    } else if (
-      !session?.user &&
-      (googleRegisterFlag === 'true' || isGoogleRegister)
-    ) {
-      // 🆕 NOVO: Se há flags de registro mas não há sessão, significa que houve erro
-      console.log(
-        '❌ Flags de registro detectadas mas sem sessão - houve erro'
-      );
-
-      // Limpar flags pois não houve sucesso
-      sessionStorage.removeItem('google-register-pending');
-      sessionStorage.removeItem('google-register-timestamp');
-      sessionStorage.removeItem('google-register-email');
-      sessionStorage.removeItem('google-register-name');
     }
-  }, [
-    session,
-    status,
-    searchParams,
-    openRegisterModal,
-    openOnboardingModal,
-    openPromptModal,
-  ]);
+  }, [session, status, searchParams, openOnboardingModal, openPromptModal]);
 
-  // 🆕 NOVO: Listener para detectar mudanças na URL (erros que podem vir depois)
+  // Reset apenas quando o usuário realmente muda (não a cada render)
+  useEffect(() => {
+    const currentUserId = session?.user?.id;
+    if (currentUserId && !processedUserIds.current.has(currentUserId)) {
+      hasProcessedNewUser.current = false;
+    }
+  }, [session?.user?.id]); // Apenas quando o ID do usuário muda
+
+  // Listener para mudanças na URL (cleanup)
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -164,22 +134,16 @@ const GoogleRegistrationHandler: React.FC = () => {
       const error = url.searchParams.get('error');
 
       if (error) {
-        console.log('❌ Erro detectado via mudança de URL:', error);
-
-        // Limpar flags de registro em caso de erro
-        sessionStorage.removeItem('google-register-pending');
-        sessionStorage.removeItem('google-register-timestamp');
-        sessionStorage.removeItem('google-register-email');
-        sessionStorage.removeItem('google-register-name');
+        console.log('Erro detectado via mudança de URL:', error);
+        // Limpar parâmetros de erro
+        url.searchParams.delete('error');
+        url.searchParams.delete('error_description');
+        window.history.replaceState({}, '', url.toString());
       }
     };
 
-    // Escutar mudanças na URL (popstate)
     window.addEventListener('popstate', handleUrlChange);
-
-    return () => {
-      window.removeEventListener('popstate', handleUrlChange);
-    };
+    return () => window.removeEventListener('popstate', handleUrlChange);
   }, []);
 
   // Componente não renderiza nada visualmente

@@ -13,21 +13,22 @@ import {
   generateScoreDirectory,
 } from '@/app/utils/pdfUtils';
 import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
-
 /**
- * Move arquivos da pasta temporária para a pasta definitiva - NOVA ESTRUTURA
+ * Move arquivos da pasta temporária para a pasta definitiva - CORRIGIDO PARA IMAGENS
  */
 async function moveTemporaryFilesToFinal(
-  tempPdfPath: string,
+  tempFilePath: string, // Pode ser PDF ou imagem
   tempThumbnailPath: string,
   workTitle: string,
-  workId: string
+  workId: string,
+  fileFormat?: string // 🆕 Receber o formato do arquivo para detecção correta
 ): Promise<{ pdfUrl: string; thumbnailUrl: string | null; scoreId: string }> {
   try {
     console.log(
-      '📁 [MOVE-FILES] Iniciando movimentação de arquivos temporários...'
+      '📁 [MOVE-FILES] Iniciando movimentação de arquivos temporários...,',
+      fileFormat
     );
-    console.log('📄 [MOVE-FILES] PDF temporário:', tempPdfPath);
+    console.log('📄 [MOVE-FILES] Arquivo principal:', tempFilePath);
     console.log('🖼️ [MOVE-FILES] Thumbnail temporário:', tempThumbnailPath);
 
     // Obter dados da obra para criar estrutura de pastas
@@ -46,8 +47,24 @@ async function moveTemporaryFilesToFinal(
 
     console.log('📁 [MOVE-FILES] Nova estrutura gerada:', structure);
 
+    // 🆕 DETECTAR TIPO DE ARQUIVO USANDO FORMATO CONFIÁVEL
+    const isImageFile =
+      fileFormat &&
+      (fileFormat.toLowerCase() === 'png' ||
+        fileFormat.toLowerCase() === 'jpg' ||
+        fileFormat.toLowerCase() === 'jpeg' ||
+        fileFormat.toLowerCase() === 'gif' ||
+        fileFormat.toLowerCase() === 'bmp' ||
+        fileFormat.toLowerCase() === 'webp');
+
+    console.log('🔍 [MOVE-FILES] Tipo de arquivo detectado:', {
+      isImage: isImageFile,
+      fileFormat,
+      tempFilePath,
+    });
+
     // Criar estrutura de pastas definitiva
-    const finalPdfDir = path.join(
+    const finalMainDir = path.join(
       process.cwd(),
       'public',
       'uploads',
@@ -56,101 +73,137 @@ async function moveTemporaryFilesToFinal(
       structure.scoreDir
     );
 
-    const finalThumbDir = path.join(
-      process.cwd(),
-      'public',
-      'uploads',
-      'scores',
-      'final',
-      structure.thumbDir
-    );
+    // Para imagens: não criar subpasta thumb
+    const finalThumbDir = isImageFile
+      ? finalMainDir
+      : path.join(
+          process.cwd(),
+          'public',
+          'uploads',
+          'scores',
+          'final',
+          structure.thumbDir
+        );
 
-    console.log('📁 [MOVE-FILES] Diretório PDF final:', finalPdfDir);
-    console.log('📁 [MOVE-FILES] Diretório thumbnail final:', finalThumbDir);
+    console.log('📁 [MOVE-FILES] Diretório principal:', finalMainDir);
+    if (!isImageFile) {
+      console.log('📁 [MOVE-FILES] Diretório thumbnail:', finalThumbDir);
+    }
 
-    // Criar diretórios se não existirem
-    await fs.mkdir(finalPdfDir, { recursive: true });
-    await fs.mkdir(finalThumbDir, { recursive: true });
+    // Criar diretórios
+    await fs.mkdir(finalMainDir, { recursive: true });
+    if (!isImageFile) {
+      await fs.mkdir(finalThumbDir, { recursive: true });
+    }
     console.log('✅ [MOVE-FILES] Diretórios criados/verificados');
 
-    // Nomes dos arquivos definitivos
-    const finalPdfName = `${cleanTitle}.pdf`;
-    const finalThumbnailName = `${cleanTitle}.png`;
-
-    // Caminhos definitivos
-    const finalPdfPath = path.join(finalPdfDir, finalPdfName);
-    const finalThumbnailPath = path.join(finalThumbDir, finalThumbnailName);
-
-    // 🔧 URLs públicas definitivas com nova estrutura
-    const pdfUrl = `/uploads/scores/final/${structure.scoreDir}/${finalPdfName}`;
+    // 🆕 NOMES E CAMINHOS BASEADOS NO TIPO DE ARQUIVO
+    let finalFileName: string;
+    let finalFilePath: string;
+    let finalUrl: string;
     let thumbnailUrl: string | null = null;
 
-    // Mover arquivo PDF
-    if (tempPdfPath) {
-      let tempPdfFullPath: string;
+    if (isImageFile) {
+      // 🖼️ PARA IMAGENS: usar extensão correta do fileFormat
+      const extension = fileFormat?.toLowerCase() || 'png';
+      finalFileName = `${cleanTitle}.${extension}`;
+      finalFilePath = path.join(finalMainDir, finalFileName);
+      finalUrl = `/uploads/scores/final/${structure.scoreDir}/${finalFileName}`;
+
+      console.log('🖼️ [MOVE-FILES] Processando IMAGEM:', {
+        finalFileName,
+        finalUrl,
+        extension,
+      });
+    } else {
+      // 📄 PARA PDFs: lógica original
+      finalFileName = `${cleanTitle}.pdf`;
+      finalFilePath = path.join(finalMainDir, finalFileName);
+      finalUrl = `/uploads/scores/final/${structure.scoreDir}/${finalFileName}`;
+
+      console.log('📄 [MOVE-FILES] Processando PDF:', {
+        finalFileName,
+        finalUrl,
+      });
+    }
+
+    // Mover arquivo principal
+    if (tempFilePath) {
+      let tempFileFullPath: string;
 
       // Verificar se é URL relativa ou caminho completo
-      if (tempPdfPath.startsWith('/uploads/')) {
-        tempPdfFullPath = path.join(process.cwd(), 'public', tempPdfPath);
-      } else if (tempPdfPath.startsWith('http')) {
+      if (tempFilePath.startsWith('/uploads/')) {
+        tempFileFullPath = path.join(process.cwd(), 'public', tempFilePath);
+      } else if (tempFilePath.startsWith('http')) {
         console.warn(
-          '⚠️ [MOVE-FILES] PDF é URL externa, não pode ser movido:',
-          tempPdfPath
+          '⚠️ [MOVE-FILES] Arquivo é URL externa, não pode ser movido:',
+          tempFilePath
         );
         return {
-          pdfUrl: tempPdfPath,
+          pdfUrl: tempFilePath,
           thumbnailUrl: null,
           scoreId: structure.scoreId,
         };
       } else {
-        tempPdfFullPath = tempPdfPath;
+        tempFileFullPath = tempFilePath;
       }
 
-      console.log('📄 [MOVE-FILES] Movendo PDF de:', tempPdfFullPath);
-      console.log('📄 [MOVE-FILES] Para:', finalPdfPath);
+      console.log('📄 [MOVE-FILES] Movendo arquivo de:', tempFileFullPath);
+      console.log('📄 [MOVE-FILES] Para:', finalFilePath);
 
       // Verificar se arquivo temporário existe
-      const pdfExists = await fs
-        .access(tempPdfFullPath)
+      const fileExists = await fs
+        .access(tempFileFullPath)
         .then(() => true)
         .catch(() => false);
 
-      if (pdfExists) {
+      if (fileExists) {
         // Copiar arquivo
-        await fs.copyFile(tempPdfFullPath, finalPdfPath);
-        console.log(`✅ [MOVE-FILES] PDF copiado com sucesso`);
+        await fs.copyFile(tempFileFullPath, finalFilePath);
+        console.log(`✅ [MOVE-FILES] Arquivo copiado com sucesso`);
 
         // Verificar se foi copiado corretamente
         const finalExists = await fs
-          .access(finalPdfPath)
+          .access(finalFilePath)
           .then(() => true)
           .catch(() => false);
 
         if (finalExists) {
+          // 🆕 PARA IMAGENS: usar o mesmo arquivo como thumbnail
+          if (isImageFile) {
+            thumbnailUrl = finalUrl; // Mesmo arquivo para ambos
+            console.log(
+              '🖼️ [MOVE-FILES] Para imagem, usando mesmo arquivo como thumbnail:',
+              thumbnailUrl
+            );
+          }
+
           // Remover arquivo temporário apenas se cópia foi bem-sucedida
-          await fs.unlink(tempPdfFullPath);
+          await fs.unlink(tempFileFullPath);
           console.log(
-            `🗑️ [MOVE-FILES] PDF temporário removido: ${tempPdfFullPath}`
+            `🗑️ [MOVE-FILES] Arquivo temporário removido: ${tempFileFullPath}`
           );
         } else {
-          throw new Error('Cópia do PDF falhou - arquivo final não existe');
+          throw new Error('Cópia do arquivo falhou - arquivo final não existe');
         }
       } else {
         console.warn(
-          '⚠️ [MOVE-FILES] Arquivo PDF temporário não encontrado:',
-          tempPdfFullPath
+          '⚠️ [MOVE-FILES] Arquivo temporário não encontrado:',
+          tempFileFullPath
         );
-        // Se não achou arquivo temporário, usar URL original
         return {
-          pdfUrl: tempPdfPath,
+          pdfUrl: tempFilePath,
           thumbnailUrl: null,
           scoreId: structure.scoreId,
         };
       }
     }
 
-    // Mover arquivo de thumbnail
-    if (tempThumbnailPath) {
+    // 🆕 PROCESSAR THUMBNAIL APENAS PARA PDFs
+    if (!isImageFile && tempThumbnailPath) {
+      const finalThumbnailName = `${cleanTitle}.png`;
+      const finalThumbnailPath = path.join(finalThumbDir, finalThumbnailName);
+
       let tempThumbnailFullPath: string;
 
       // Verificar se é URL relativa ou caminho completo
@@ -212,9 +265,9 @@ async function moveTemporaryFilesToFinal(
 
     // Tentar limpar pasta temporária do usuário se estiver vazia
     try {
-      if (tempPdfPath && tempPdfPath.includes('/temp/')) {
+      if (tempFilePath && tempFilePath.includes('/temp/')) {
         const tempUserDir = path.dirname(
-          path.join(process.cwd(), 'public', tempPdfPath)
+          path.join(process.cwd(), 'public', tempFilePath)
         );
         const files = await fs.readdir(tempUserDir).catch(() => []);
 
@@ -238,13 +291,15 @@ async function moveTemporaryFilesToFinal(
       );
     }
 
-    console.log('✅ [MOVE-FILES] Movimentação concluída:', {
-      pdfUrl,
-      thumbnailUrl,
+    const result = {
+      pdfUrl: finalUrl, // Para imagens, este é o URL da imagem
+      thumbnailUrl, // Para imagens, mesmo que pdfUrl. Para PDFs, thumbnail separado
       scoreId: structure.scoreId,
-    });
+    };
 
-    return { pdfUrl, thumbnailUrl, scoreId: structure.scoreId };
+    console.log('✅ [MOVE-FILES] Movimentação concluída:', result);
+
+    return result;
   } catch (error) {
     console.error('❌ [MOVE-FILES] Erro ao mover arquivos temporários:', error);
     throw new Error(`Erro ao organizar arquivos: ${error}`);
@@ -319,6 +374,7 @@ export async function POST(request: NextRequest) {
       tempPdfPath: body.tempPdfPath,
       tempThumbnailPath: body.tempThumbnailPath,
       downloadUrlHasTemp: body.downloadUrl?.includes('/temp/'),
+      body: body,
     });
 
     if (
@@ -336,7 +392,8 @@ export async function POST(request: NextRequest) {
           body.tempPdfPath || body.downloadUrl,
           body.tempThumbnailPath || body.thumbnailUrl,
           body.title,
-          body.workId
+          body.workId,
+          body.fileFormat
         );
 
         // 🔧 USAR OS CAMINHOS DEFINITIVOS RETORNADOS

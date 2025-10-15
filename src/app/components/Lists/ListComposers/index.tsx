@@ -8,6 +8,7 @@ import ListComposersCards from '../Cards/ListComposersCard';
 import { composerHomeProps } from '../../PopularComposers';
 import { useNavigate } from '@/app/hooks/useNavigate';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { useIsMobile } from '@/app/hooks/useMobile';
 
 interface listComposersProps {
   composers: composerHomeProps[];
@@ -30,6 +31,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
 
   const visibleComposers = composers.slice(0, visibleCount);
 
+  const isMobile = useIsMobile();
   return (
     <div className="relative">
       {/* Header stats */}
@@ -50,6 +52,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
             <ListComposersCards
               composer={composer}
               isActive={activeComposerId === composer.id}
+              isMobile={isMobile}
             />
           </div>
         ))}

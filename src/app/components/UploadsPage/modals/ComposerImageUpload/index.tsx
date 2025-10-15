@@ -264,7 +264,10 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
         /* Upload Mode */
         <div className="text-center">
           <button
-            onClick={() => fileInputRef.current?.click()}
+            onClick={(e) => {
+              e.preventDefault();
+              fileInputRef.current?.click();
+            }}
             disabled={currentUploading}
             className="flex items-center space-x-2 px-6 py-3 bg-brand-primary text-white rounded-lg hover:bg-brand-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >

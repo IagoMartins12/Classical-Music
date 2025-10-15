@@ -11,7 +11,6 @@ import PaginationControls from '../../components/PaginationControls';
 import { FaRegUser } from 'react-icons/fa';
 import AnimatedMusicalNotes2 from '../../components/AnimatedMusicalNotes2';
 import ViewModeToggle from '../../components/ViewModeToggle';
-// Importar componentes de animação - INCLUINDO SEQUENCIAL
 import {
   PageContainer,
   AnimatedContainer,
@@ -194,7 +193,7 @@ export default function ComposersClient({
         {/* Filters Section */}
         <AnimatedItem
           direction="up"
-          className={`classical-card mx-0 md:mx-4 sm:p-0 !p-6 transition-all duration-500 ${
+          className={`classical-card mx-0 sm:p-0 !p-6 transition-all duration-500 ${
             isPending ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >

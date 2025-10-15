@@ -23,7 +23,7 @@ import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import TermsAcceptance from '../TermsAcceptance';
-import { useTranslation } from '@/app/context/TranslationContext';
+import { useTranslation } from '@/app/hooks/useTranslation';
 interface RegisterStep {
   step: 'form' | 'success' | 'confirmation-sent';
   userData?: {
@@ -781,7 +781,7 @@ const RegisterModal: React.FC = () => {
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      maxWidth="lg"
+      maxWidth="xl"
       showCloseButton={true}
       setPr
     >

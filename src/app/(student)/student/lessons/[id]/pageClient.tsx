@@ -752,8 +752,8 @@ export default function StudentLessonDetailPageClient({
                         {lesson.punctuality === 'on_time'
                           ? t('on_time')
                           : lesson.punctuality === 'late'
-                          ? t('late')
-                          : t('early')}
+                            ? t('late')
+                            : t('early')}
                       </p>
                     )}
 

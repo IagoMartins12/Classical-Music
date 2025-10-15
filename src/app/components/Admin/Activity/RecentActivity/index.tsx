@@ -337,8 +337,8 @@ export default function RecentActivity() {
                               {activity.status === 'success'
                                 ? 'Sucesso'
                                 : activity.status === 'warning'
-                                ? 'Aviso'
-                                : 'Erro'}
+                                  ? 'Aviso'
+                                  : 'Erro'}
                             </span>
                           )}
 
@@ -380,10 +380,10 @@ export default function RecentActivity() {
                                 activity.target?.type === 'user'
                                   ? '/admin/users'
                                   : activity.target?.type === 'composer'
-                                  ? '/composer'
-                                  : activity.target?.type === 'work'
-                                  ? '/works'
-                                  : '/admin';
+                                    ? '/composer'
+                                    : activity.target?.type === 'work'
+                                      ? '/works'
+                                      : '/admin';
                               router.push(`${path}/${activity.target?.id}`);
                             }}
                             className="text-accent-blue hover:bg-accent-blue/10"

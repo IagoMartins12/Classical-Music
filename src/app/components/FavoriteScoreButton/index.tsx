@@ -12,10 +12,10 @@ import {
   FiCheck,
   FiLoader,
 } from 'react-icons/fi';
-import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useLoginModal } from '@/app/stores/authStore';
 import { WorkScore } from '@prisma/client';
+import { useToast } from '@/app/hooks/useToast';
 
 interface FavoriteWorkScore {
   id: string;
@@ -251,6 +251,7 @@ export default function FavoriteScoreButton({
   const favoriteData = getScoreFavorite(workId, score.id, 'IMSLP');
   const isLoading = loading.scores.has(scoreKey) || isProcessing;
 
+  const toast = useToast();
   const { isAuthenticated } = useAuth();
   const handleToggleFavorite = async (
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
@@ -288,11 +289,7 @@ export default function FavoriteScoreButton({
         toast.success(
           result
             ? '❤️ Partitura adicionada aos favoritos!'
-            : '💔 Partitura removida dos favoritos',
-          {
-            duration: 3000,
-            position: 'bottom-center',
-          }
+            : '💔 Partitura removida dos favoritos'
         );
       }
 

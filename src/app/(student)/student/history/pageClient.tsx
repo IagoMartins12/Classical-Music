@@ -695,9 +695,9 @@ const StudentHistoryClient = ({
                                     'video'
                                       ? t('student_history_metadata_video')
                                       : activity.metadata.submissionType ===
-                                        'file'
-                                      ? t('student_history_metadata_file')
-                                      : t('student_history_metadata_text')}
+                                          'file'
+                                        ? t('student_history_metadata_file')
+                                        : t('student_history_metadata_text')}
                                   </span>
                                 )}
                                 {activity.metadata.hasMessage && (

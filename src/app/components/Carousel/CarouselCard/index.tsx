@@ -11,7 +11,11 @@ import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 
-const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
+const CarouselCard: React.FC<CarouselCardProps> = ({
+  item,
+  isActive,
+  isMobile,
+}) => {
   const { t } = useTranslation({ sections: ['pages/home'] });
   return (
     <div className="group cursor-pointer select-none h-full">
@@ -43,10 +47,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
               height={500}
               className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-95`}
             />
-
-            {/* Gradient Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+            <div className="absolute block md:hidden inset-0 bg-black/30"></div>
 
             {/* Floating Action Buttons */}
             <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
@@ -58,6 +59,8 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
                 size="md"
                 itemName={item.fullName}
                 showToast={true}
+                highlightMobile
+                isMobile={isMobile}
               />
             </div>
 
@@ -78,7 +81,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
           </div>
 
           {/* Content Section */}
-          <div className="p-6 relative">
+          <div className="p-4 pb-0 md:p-6 relative">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5 music-note-background"></div>
 

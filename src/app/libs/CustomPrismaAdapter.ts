@@ -46,10 +46,6 @@ async function getUserVerificationData(
         select: { isVerified: true },
       });
       result.teacherVerified = teacherProfile?.isVerified || false;
-      console.log(
-        '✅ [CustomAdapter] Teacher verification status:',
-        result.teacherVerified
-      );
     }
 
     if (isStudent) {
@@ -207,7 +203,7 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           );
 
           const emailResult = await sendTemplateEmail(user.email, {
-            type: 'ACCOUNT_CONFIRMATION',
+            type: 'WELCOME',
             variables: {
               firstName: firstName || 'Usuário',
               userName: firstName || 'Usuário',

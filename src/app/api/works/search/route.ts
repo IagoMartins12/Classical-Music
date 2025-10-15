@@ -564,14 +564,6 @@ export async function GET(request: NextRequest) {
     const isFamous = searchParams.get('famous') === 'true';
     const composerFilter = searchParams.get('composer') || '';
 
-    console.log('📊 Parâmetros da busca híbrida:', {
-      query,
-      limit,
-      isRandom,
-      isFamous,
-      composerFilter: composerFilter || null,
-    });
-
     // 🚀 ROTA 1: Obras aleatórias
     if (isRandom && isFamous) {
       console.log('🎲 Modo: Obras aleatórias');

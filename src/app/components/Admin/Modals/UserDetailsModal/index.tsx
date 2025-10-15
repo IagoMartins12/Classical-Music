@@ -424,8 +424,8 @@ export default function UserDetailsModal({
                                 activity.type === 'annotation'
                                   ? 'bg-accent-green/20 text-accent-green'
                                   : activity.type === 'favorite'
-                                  ? 'bg-accent-red/20 text-accent-red'
-                                  : 'bg-accent-purple/20 text-accent-purple'
+                                    ? 'bg-accent-red/20 text-accent-red'
+                                    : 'bg-accent-purple/20 text-accent-purple'
                               }`}
                             >
                               {activity.type === 'annotation' && (
@@ -564,8 +564,8 @@ export default function UserDetailsModal({
                                   upload.type === 'composer'
                                     ? 'bg-accent-blue/20 text-accent-blue'
                                     : upload.type === 'work'
-                                    ? 'bg-accent-green/20 text-accent-green'
-                                    : 'bg-accent-purple/20 text-accent-purple'
+                                      ? 'bg-accent-green/20 text-accent-green'
+                                      : 'bg-accent-purple/20 text-accent-purple'
                                 }`}
                               >
                                 {upload.type === 'composer' && (
@@ -587,8 +587,8 @@ export default function UserDetailsModal({
                                   {upload.type === 'composer'
                                     ? 'Compositor'
                                     : upload.type === 'work'
-                                    ? 'Obra'
-                                    : 'Partitura'}
+                                      ? 'Obra'
+                                      : 'Partitura'}
                                 </p>
                               </div>
                             </div>
@@ -599,15 +599,15 @@ export default function UserDetailsModal({
                                   upload.status === 'approved'
                                     ? 'bg-accent-green/20 text-accent-green'
                                     : upload.status === 'pending'
-                                    ? 'bg-accent-amber/20 text-accent-amber'
-                                    : 'bg-accent-red/20 text-accent-red'
+                                      ? 'bg-accent-amber/20 text-accent-amber'
+                                      : 'bg-accent-red/20 text-accent-red'
                                 }`}
                               >
                                 {upload.status === 'approved'
                                   ? 'Aprovado'
                                   : upload.status === 'pending'
-                                  ? 'Pendente'
-                                  : 'Rejeitado'}
+                                    ? 'Pendente'
+                                    : 'Rejeitado'}
                               </span>
                               <p className="text-xs text-theme-quaternary mt-1">
                                 {new Date(upload.createdAt).toLocaleDateString(

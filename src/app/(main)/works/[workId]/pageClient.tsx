@@ -613,7 +613,7 @@ export default function WorkDetailsClient({
                 <div className="lg:col-span-3 space-y-6">
                   {/* Título e Compositor */}
                   <div className="space-y-4">
-                    <div className="flex items-start justify-between mb-0 md:mb-auto">
+                    <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <div className="flex items-center  gap-4">
                           <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
@@ -652,7 +652,7 @@ export default function WorkDetailsClient({
                       </div>
 
                       {/* Action buttons */}
-                      <div className="flex items-center flex-col md:flex-row gap-2 md:gap-3  space-x-3 ml-4">
+                      <div className="flex items-center flex-col md:flex-row gap-2 md:gap-3 ml-4">
                         <FavoriteButton
                           id={work.id}
                           type="work"
@@ -688,16 +688,15 @@ export default function WorkDetailsClient({
                           showLabel={false}
                         />
                         {/* Admin verification button */}
-                        {isAdmin ||
-                          (canEditMedia && (
-                            <EditButton
-                              entityId={work.id}
-                              variant="minimal"
-                              entityType="work"
-                              size="lg"
-                              showLabel={false}
-                            />
-                          ))}
+                        {(isAdmin || canEditMedia) && (
+                          <EditButton
+                            entityId={work.id}
+                            variant="minimal"
+                            entityType="work"
+                            size="lg"
+                            showLabel={false}
+                          />
+                        )}
                         {isAdmin && (
                           <VerificationButton
                             entityType="work"
@@ -1003,7 +1002,7 @@ export default function WorkDetailsClient({
                               <span className="text-sm font-medium text-theme-tertiary block mb-3">
                                 {t('work_details_categorias')}
                               </span>
-                              <div className="flex flex-wrap gap-2">
+                              <div className="flex flex-wrap gap-2 gap-y-5">
                                 {work.categoryNames.map(
                                   (categoryName, index) => (
                                     <AnimatedItem
@@ -1034,7 +1033,7 @@ export default function WorkDetailsClient({
                                 <span className="text-sm font-medium text-theme-tertiary block mb-3">
                                   {t('work_details_tipos_obra')}
                                 </span>
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-2 gap-y-5">
                                   {work.workGenresArr.map(
                                     (workGenre, index) => (
                                       <AnimatedItem

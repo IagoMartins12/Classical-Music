@@ -113,8 +113,8 @@ const Carousel: React.FC<ModernCarouselProps> = ({
                     isMobile
                       ? 'px-4' // Mobile: padding uniforme
                       : index !== 0
-                      ? 'px-3'
-                      : 'pr-3 pl-6' // Desktop: comportamento original com padding do tema
+                        ? 'px-3'
+                        : 'pr-3 pl-6' // Desktop: comportamento original com padding do tema
                   }`}
                   style={{
                     width: isMobile
@@ -128,6 +128,7 @@ const Carousel: React.FC<ModernCarouselProps> = ({
                       index >= currentIndex &&
                       index < currentIndex + responsiveItemsPerView
                     }
+                    isMobile={isMobile}
                   />
                 </div>
               ))}

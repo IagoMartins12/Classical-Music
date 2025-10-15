@@ -242,23 +242,13 @@ export async function generateMetadata(): Promise<Metadata> {
       url: baseUrl,
       images: [
         {
-          url: '/images/og/opus-atlas-home.jpg',
-          width: 1200,
-          height: 630,
+          url: 'https://opusatlas.com.br/logo-opus-atlas-mini.jpeg',
+          width: 400,
+          height: 400,
           alt:
             language === 'pt'
               ? 'Opus Atlas - Enciclopédia de Música Clássica'
               : 'Opus Atlas - Classical Music Encyclopedia',
-          type: 'image/jpeg',
-        },
-        {
-          url: '/images/og/classical-composers.jpg',
-          width: 1200,
-          height: 630,
-          alt:
-            language === 'pt'
-              ? 'Compositores Clássicos - Bach, Chopin, Beethoven, Mozart'
-              : 'Classical Composers - Bach, Chopin, Beethoven, Mozart',
           type: 'image/jpeg',
         },
       ],
@@ -273,7 +263,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: t.twitterDescription,
       images: [
         {
-          url: '/images/twitter/opus-atlas-card.jpg',
+          url: 'https://opusatlas.com.br/logo-opus-atlas-mini.jpeg',
           alt:
             language === 'pt'
               ? 'Opus Atlas - Partituras Gratuitas de Música Clássica'
@@ -305,12 +295,6 @@ export async function generateMetadata(): Promise<Metadata> {
         'en-US': 'https://opusatlas.com',
         'x-default': 'https://opusatlas.com.br',
       },
-    },
-
-    // Verificação de propriedade
-    verification: {
-      google: 'your-google-site-verification',
-      yandex: 'your-yandex-verification',
     },
 
     // Schema.org estruturado COMPLETO
@@ -366,6 +350,7 @@ export async function generateMetadata(): Promise<Metadata> {
           logo: {
             '@type': 'ImageObject',
             url: `${baseUrl}/images/logo/opus-atlas-logo.png`,
+
             width: 180,
             height: 60,
           },

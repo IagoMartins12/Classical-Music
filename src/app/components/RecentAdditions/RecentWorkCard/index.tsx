@@ -174,18 +174,18 @@ const RecentWorkCard = ({ work }: RecentWorkCardProps) => {
             </div>
 
             {/* Action bar */}
-            <div className="flex items-center justify-between pt-3 border-t border-theme-secondary/50">
-              <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
+            <div className="flex items-center justify-end pt-3 border-t border-theme-secondary/50">
+              {/* <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
                 <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
                 <span className="font-medium">Recém-adicionado</span>
-              </div>
+              </div> */}
 
               <div className="flex items-center gap-2">
                 <div
-                  className="w-5 h-5 border border-theme-tertiary/30 rounded-full flex items-center justify-center text-theme-tertiary hover:border-blue-400 hover:text-blue-400 transition-all duration-300"
+                  className="w-7 h-7 border border-theme-tertiary/30 rounded-full flex items-center justify-center text-theme-tertiary hover:border-blue-400 hover:text-blue-400 transition-all duration-300"
                   title="Disponível no IMSLP"
                 >
-                  <FiExternalLink className="w-2.5 h-2.5" />
+                  <FiExternalLink className="w-3.5 h-3.5" />
                 </div>
 
                 {/* Navigation arrow */}

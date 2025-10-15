@@ -639,8 +639,8 @@ export default function TeacherStudentDetailPageClient({
                   {loading.toggleStatus
                     ? t('btn_wait')
                     : isPaused
-                    ? t('btn_reactivate')
-                    : t('btn_pause')}
+                      ? t('btn_reactivate')
+                      : t('btn_pause')}
                 </span>
               </button>
               <Link
@@ -1068,17 +1068,17 @@ export default function TeacherStudentDetailPageClient({
                                 lesson.status === 'COMPLETED'
                                   ? 'bg-accent-green/10 border border-accent-green/30 text-accent-green'
                                   : lesson.status === 'CANCELLED'
-                                  ? 'bg-accent-red/10 border border-accent-red/30 text-accent-red'
-                                  : 'bg-accent-blue/10 border border-accent-blue/30 text-accent-blue'
+                                    ? 'bg-accent-red/10 border border-accent-red/30 text-accent-red'
+                                    : 'bg-accent-blue/10 border border-accent-blue/30 text-accent-blue'
                               }`}
                             >
                               {lesson.status === 'COMPLETED'
                                 ? t('lesson_completed')
                                 : lesson.status === 'CANCELLED'
-                                ? t('lesson_cancelled')
-                                : lesson.status === 'SCHEDULED'
-                                ? t('lesson_scheduled')
-                                : lesson.status}
+                                  ? t('lesson_cancelled')
+                                  : lesson.status === 'SCHEDULED'
+                                    ? t('lesson_scheduled')
+                                    : lesson.status}
                             </span>
                           </div>
 
@@ -1331,15 +1331,15 @@ export default function TeacherStudentDetailPageClient({
                               assignment.priority === 'high'
                                 ? 'bg-accent-red/10 border border-accent-red/30 text-accent-red'
                                 : assignment.priority === 'medium'
-                                ? 'bg-accent-yellow/10 border border-accent-yellow/30 text-accent-yellow'
-                                : 'bg-accent-green/10 border border-accent-green/30 text-accent-green'
+                                  ? 'bg-accent-yellow/10 border border-accent-yellow/30 text-accent-yellow'
+                                  : 'bg-accent-green/10 border border-accent-green/30 text-accent-green'
                             }`}
                           >
                             {assignment.priority === 'high'
                               ? t('priority_high')
                               : assignment.priority === 'medium'
-                              ? t('priority_medium')
-                              : t('priority_low')}
+                                ? t('priority_medium')
+                                : t('priority_low')}
                           </span>
                         </div>
 

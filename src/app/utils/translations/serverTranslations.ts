@@ -245,6 +245,7 @@ export const COMMON_TRANSLATION_SECTIONS = [
   'components/auth-modals',
   'pages/error',
   'components/onboarding',
+  'components/composerFilter',
 ];
 
 /**

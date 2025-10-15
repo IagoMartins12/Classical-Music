@@ -1,4 +1,4 @@
-// providers/AuthProvider.tsx - Versão com persistência otimizada E sem erro de SSR
+// providers/AuthProvider.tsx - VERSÃO OTIMIZADA com renderização condicional
 'use client';
 
 import React, { useEffect, useState, useCallback, Suspense } from 'react';
@@ -18,12 +18,12 @@ import { useUserStore } from '../hooks/userStore';
 import { useOnboardingPersistence } from '../hooks/useOnboardingPersistence';
 import OnboardingPrompt from '../components/auth/onboarding/OnboardingPrompt';
 
-// 🔧 SOLUÇÃO: Dynamic import do GoogleRegistrationHandler sem SSR
+// Dynamic import do GoogleRegistrationHandler sem SSR
 const GoogleRegistrationHandler = dynamic(
   () => import('../components/auth/GoogleRegistrationHandler'),
   {
-    ssr: false, // Não renderizar no servidor
-    loading: () => null, // Sem loading spinner
+    ssr: false,
+    loading: () => null,
   }
 );
 
@@ -32,11 +32,13 @@ interface AuthProviderProps {
 }
 
 // ================================
-// COMPONENTES INTERNOS
+// COMPONENTES INTERNOS OTIMIZADOS
 // ================================
 
-// Gerenciador de onboarding com persistência
-const OnboardingManager: React.FC = () => {
+// Gerenciador de onboarding OTIMIZADO - só roda se necessário
+const OnboardingManager: React.FC<{ shouldRender: boolean }> = ({
+  shouldRender,
+}) => {
   const { user, isAuthenticated, isLoading } = useAuth();
   const {
     open: openOnboarding,
@@ -47,37 +49,47 @@ const OnboardingManager: React.FC = () => {
   const { isHydrated } = useHydration();
   const [hasCheckedProgress, setHasCheckedProgress] = useState(false);
 
-  // Hook de persistência para auto-restore
+  // Hook de persistência só se necessário
   useOnboardingPersistence({
-    autoSaveDelay: 800, // Save mais rápido para melhor UX
-    enableLocalBackup: true,
-    showSaveIndicator: true,
+    autoSaveDelay: 800,
+    enableLocalBackup: shouldRender,
+    showSaveIndicator: shouldRender,
   });
 
-  // Função para verificar se deve mostrar onboarding
   const shouldShowOnboarding = useCallback(() => {
-    if (!isHydrated || isLoading || !isAuthenticated || !user) {
+    if (
+      !shouldRender ||
+      !isHydrated ||
+      isLoading ||
+      !isAuthenticated ||
+      !user
+    ) {
       return false;
     }
 
-    // Usuário já completou onboarding
     if (user.onboardingCompleted) {
       return false;
     }
 
-    // Modal já está aberto
     if (isOnboardingOpen) {
       return false;
     }
 
     return true;
-  }, [isHydrated, isLoading, isAuthenticated, user, isOnboardingOpen]);
+  }, [
+    shouldRender,
+    isHydrated,
+    isLoading,
+    isAuthenticated,
+    user,
+    isOnboardingOpen,
+  ]);
 
-  // Verificar progresso salvo e decidir se abre modal
   useEffect(() => {
+    if (!shouldRender) return;
+
     const checkAndOpenOnboarding = () => {
       if (hasProgress) {
-        // Tem progresso salvo, perguntar se quer continuar
         if (!isPromptModalOpen && !isLoading) {
           openPromptModal();
         }
@@ -85,10 +97,10 @@ const OnboardingManager: React.FC = () => {
       setHasCheckedProgress(true);
     };
 
-    // Pequeno delay para garantir que tudo carregou
     const timer = setTimeout(checkAndOpenOnboarding, 100);
     return () => clearTimeout(timer);
   }, [
+    shouldRender,
     shouldShowOnboarding,
     hasProgress,
     openOnboarding,
@@ -96,15 +108,16 @@ const OnboardingManager: React.FC = () => {
     hasCheckedProgress,
   ]);
 
-  // Reset check quando usuário muda
   useEffect(() => {
-    setHasCheckedProgress(false);
-  }, [user?.id]);
+    if (shouldRender) {
+      setHasCheckedProgress(false);
+    }
+  }, [user?.id, shouldRender]);
 
   return null;
 };
 
-// Inicializador dos stores com hidratação otimizada
+// Inicializador dos stores OTIMIZADO
 const StoreManager: React.FC = () => {
   const setUserStoreHydrated = useUserStore((state) => state.setHydrated);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -114,12 +127,8 @@ const StoreManager: React.FC = () => {
 
     const initializeStores = async () => {
       try {
-        // Hidratação sequencial para evitar conflitos
         setUserStoreHydrated(true);
-
-        // Pequeno delay para garantir que stores estejam prontos
         await new Promise((resolve) => setTimeout(resolve, 50));
-
         setIsInitialized(true);
       } catch (error) {
         console.error('Erro na hidratação dos stores:', error);
@@ -168,45 +177,73 @@ const PersistenceErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
 };
 
 // ================================
-// COMPONENTE PRINCIPAL
+// COMPONENTE PRINCIPAL OTIMIZADO
 // ================================
 
-// Conteúdo que depende de hidratação
+// Conteúdo que depende de hidratação OTIMIZADO
 const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { user, isAuthenticated } = useAuth();
+  const { isHydrated } = useHydration();
+
+  // 🚀 OTIMIZAÇÃO: Determinar quais modais renderizar baseado no estado
+  const shouldRenderAuthModals = !isAuthenticated;
+  const shouldRenderOnboardingModals =
+    isAuthenticated && !user?.onboardingCompleted;
+  const shouldRenderGoogleHandler = true; // Sempre necessário para detectar retornos
+
+  if (!isHydrated) {
+    // Renderizar apenas estrutura básica durante hidratação
+    return (
+      <PersistenceErrorBoundary>
+        <StoreManager />
+        {children}
+      </PersistenceErrorBoundary>
+    );
+  }
+
   return (
     <PersistenceErrorBoundary>
-      {/* Gerenciadores */}
+      {/* Gerenciadores sempre necessários */}
       <StoreManager />
 
-      {/* Modais de autenticação */}
-      <LoginModal />
-      <RegisterModal />
-      <OnboardingModal />
+      {/* 🚀 OTIMIZAÇÃO: Modais de autenticação só se não logado */}
+      {shouldRenderAuthModals && (
+        <>
+          <LoginModal />
+          <RegisterModal />
+        </>
+      )}
 
-      {/* 🔧 SOLUÇÃO: Suspense boundary para o GoogleRegistrationHandler */}
-      <Suspense fallback={null}>
-        <GoogleRegistrationHandler />
-      </Suspense>
+      {/* 🚀 OTIMIZAÇÃO: Modais de onboarding só se logado e sem onboarding */}
+      {shouldRenderOnboardingModals && (
+        <>
+          <OnboardingModal />
+          <OnboardingPrompt />
+          <OnboardingManager shouldRender={true} />
+        </>
+      )}
 
-      {/* Lógica de onboarding com persistência */}
-      <OnboardingManager />
+      {/* GoogleRegistrationHandler sempre presente para detectar retornos */}
+      {shouldRenderGoogleHandler && (
+        <Suspense fallback={null}>
+          <GoogleRegistrationHandler />
+        </Suspense>
+      )}
 
-      <OnboardingPrompt />
       {/* Conteúdo da aplicação */}
       {children}
     </PersistenceErrorBoundary>
   );
 };
 
-// Provider principal
+// Provider principal OTIMIZADO
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   return (
     <SessionProvider
-      // refetchInterval={5 * 60} // 5 minutos
-      // refetchOnWindowFocus={true}
       refetchWhenOffline={false}
+      // refetchInterval={10 * 60} // 10 minutos ao invés de 5
     >
       <HydratedContent>{children}</HydratedContent>
     </SessionProvider>

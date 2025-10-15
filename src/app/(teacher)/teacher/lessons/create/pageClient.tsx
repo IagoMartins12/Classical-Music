@@ -756,8 +756,8 @@ export default function CreateLessonPageClient({
     (field: string, index: number, value: string) => {
       setFormData((prev) => ({
         ...prev,
-        [field]: (prev[field as keyof typeof prev] as string[]).map((item, i) =>
-          i === index ? value : item
+        [field]: (prev[field as keyof typeof prev] as string[]).map(
+          (item, i) => (i === index ? value : item)
         ),
       }));
     },
@@ -1597,12 +1597,12 @@ export default function CreateLessonPageClient({
                             ? t('creating_series')
                             : t('creating_lesson')
                           : checkingConflicts
-                          ? t('checking')
-                          : formData.isRecurring
-                          ? `${t('create_lessons')} ${lessonCount} ${
-                              lessonCount !== 1 ? t('lessons') : t('lesson')
-                            }`
-                          : t('create_lesson')}
+                            ? t('checking')
+                            : formData.isRecurring
+                              ? `${t('create_lessons')} ${lessonCount} ${
+                                  lessonCount !== 1 ? t('lessons') : t('lesson')
+                                }`
+                              : t('create_lesson')}
                       </span>
                     </button>
                   </div>

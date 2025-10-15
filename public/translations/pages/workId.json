@@ -346,7 +346,7 @@
     "verification_button_verificar_obra": "Verificar obra",
 
     "report_button_reportar": "Reportar",
-    "report_modal_titulo": "Reportar {entityType}",
+    "report_modal_titulo": "Reportar ",
     "report_modal_motivo": "Motivo do report *",
     "report_modal_descricao": "Descrição adicional",
     "report_modal_descricao_obrigatoria": "Descrição adicional *",
@@ -371,7 +371,7 @@
     "report_reason_other_desc": "Outro motivo não listado",
 
     "score_preview_imslp": "IMSLP",
-    "score_preview_open_atlas": "Open Atlas",
+    "score_preview_open_atlas": "Opus Atlas",
     "score_preview_baixar": "Baixar partitura",
     "score_preview_download_indisponivel": "Download não disponível",
     "score_preview_preview_de": "Preview de",
@@ -464,7 +464,7 @@
     "imslp_tabs_carregar_mais": "Carregar Mais {tipo} ({amount})",
     "imslp_tabs_carregar_todas": "Carregar Todas as {tipo} ({remaining} restantes)",
     "imslp_tabs_carregar_todas_partituras": "Carregar Todas as Partituras ({remaining} restantes)",
-    "imslp_tabs_mais_open_atlas": "Mais partituras Open Atlas disponíveis",
+    "imslp_tabs_mais_open_atlas": "Mais partituras Opus Atlas disponíveis",
     "imslp_tabs_carregando_mais": "Carregando mais partituras...",
     "imslp_tabs_mostrando_partituras": "Mostrando {current} de {total} partituras",
     "imslp_tabs_carregar_mais_20": "Carregar Mais (20)",
@@ -830,7 +830,7 @@
     "verification_button_verificar_obra": "Verify work",
 
     "report_button_reportar": "Report",
-    "report_modal_titulo": "Report {entityType}",
+    "report_modal_titulo": "Report ",
     "report_modal_motivo": "Report reason *",
     "report_modal_descricao": "Additional description",
     "report_modal_descricao_obrigatoria": "Additional description *",
@@ -855,7 +855,7 @@
     "report_reason_other_desc": "Other reason not listed",
 
     "score_preview_imslp": "IMSLP",
-    "score_preview_open_atlas": "Open Atlas",
+    "score_preview_open_atlas": "Opus Atlas",
     "score_preview_baixar": "Download score",
     "score_preview_download_indisponivel": "Download not available",
     "score_preview_preview_de": "Preview of",
@@ -948,7 +948,7 @@
     "imslp_tabs_carregar_mais": "Load More {tipo} ({amount})",
     "imslp_tabs_carregar_todas": "Load All {tipo} ({remaining} remaining)",
     "imslp_tabs_carregar_todas_partituras": "Load All Scores ({remaining} remaining)",
-    "imslp_tabs_mais_open_atlas": "More Open Atlas scores available",
+    "imslp_tabs_mais_open_atlas": "More Opus Atlas scores available",
     "imslp_tabs_carregando_mais": "Loading more scores...",
     "imslp_tabs_mostrando_partituras": "Showing {current} of {total} scores",
     "imslp_tabs_carregar_mais_20": "Load More (20)",

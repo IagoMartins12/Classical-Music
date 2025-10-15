@@ -33,13 +33,7 @@ export async function GET(request: NextRequest) {
     const composerId = searchParams.get('id') || '';
     const permLinkImslp = searchParams.get('imslpId') || '';
     const limit = parseInt(searchParams.get('limit') || '20');
-
-    console.log('GET - Parâmetros recebidos:', {
-      searchTerm,
-      composerId,
-      imslpId: permLinkImslp,
-      limit,
-    });
+    const workId = searchParams.get('workId') || '';
 
     // Se tem imslpId, busca compositor por imslpId
     if (permLinkImslp) {
@@ -50,6 +44,11 @@ export async function GET(request: NextRequest) {
     // Se tem ID, busca compositor específico
     if (composerId) {
       const composer = await getComposerById(composerId);
+      return NextResponse.json(composer);
+    }
+
+    if (workId) {
+      const composer = await getComposerByWorkId(workId);
       return NextResponse.json(composer);
     }
 
@@ -72,31 +71,26 @@ export async function POST(request: NextRequest) {
     const {
       q: searchTerm = '',
       id: composerId = '',
+      workId: workId = '',
       permLinkImslp = '',
       limit = 20,
     } = body;
 
-    console.log('POST - Parâmetros recebidos:', {
-      searchTerm,
-      composerId,
-      permLinkImslp,
-      limit,
-    });
-
     // 🆕 NOVO: Se tem permLinkImslp, busca compositor por imslpId
     if (permLinkImslp) {
       const composer = await getComposerByImslpId(permLinkImslp);
-      console.log('✅ Busca por imslpId concluída:', composer?.name || 'null');
       return NextResponse.json(composer);
     }
 
     // Se tem ID, busca compositor específico
     if (composerId) {
       const composer = await getComposerById(composerId);
-      console.log('✅ Compositor encontrado por ID:', composer?.name || 'null');
       return NextResponse.json(composer);
     }
-
+    if (workId) {
+      const composer = await getComposerByWorkId(workId);
+      return NextResponse.json(composer);
+    }
     // Senão, faz busca normal
     const composers = await searchComposers(searchTerm, limit);
     console.log(
@@ -205,7 +199,6 @@ async function searchComposers(searchTerm: string, limit: number) {
 
   if (!searchTerm.trim()) {
     // Se não há busca, retorna compositores populares
-    console.log('🔍 Buscando compositores populares...');
     composers = await prisma.composer.findMany({
       where: {
         OR: FAMOUS_COMPOSERS.map((name) => ({
@@ -314,8 +307,6 @@ async function searchComposers(searchTerm: string, limit: number) {
 // Função auxiliar para buscar compositor por ID - MELHORADA
 async function getComposerById(composerId: string) {
   try {
-    console.log('🔍 Buscando compositor por ID:', composerId);
-
     const composer = await prisma.composer.findUnique({
       where: {
         id: composerId,
@@ -346,6 +337,65 @@ async function getComposerById(composerId: string) {
     }
 
     console.log('✅ Compositor encontrado:', composer.name);
+    return {
+      id: composer.id,
+      name: composer.name,
+      fullName: composer.fullName || undefined,
+      alternativeNames: composer.alternativeNames || undefined,
+      imslpId: composer.imslpId || undefined,
+      worksCount: composer._count.works,
+      epoch: composer.epoch || undefined,
+    };
+  } catch (error) {
+    console.error('❌ Erro ao buscar compositor por ID:', error);
+    return null;
+  }
+}
+
+async function getComposerByWorkId(workId: string) {
+  try {
+    const composerId = await prisma.work.findUnique({
+      where: {
+        id: workId,
+      },
+      select: {
+        composer: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    if (!composerId) return;
+    const composer = await prisma.composer.findUnique({
+      where: {
+        id: composerId.composer.id,
+      },
+      select: {
+        id: true,
+        name: true,
+        fullName: true,
+        alternativeNames: true,
+        imslpId: true,
+        epoch: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        _count: {
+          select: {
+            works: true,
+          },
+        },
+      },
+    });
+
+    if (!composer) {
+      return null;
+    }
+
     return {
       id: composer.id,
       name: composer.name,

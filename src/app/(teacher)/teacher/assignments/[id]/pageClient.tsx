@@ -329,9 +329,9 @@ export default function AssignmentDetailsPageClient({
                               className={`text-sm ${
                                 assignment.isOverdue
                                   ? 'text-accent-red'
-                                  : assignment.daysUntilDue ?? 0 <= 1
-                                  ? 'text-accent-yellow'
-                                  : 'text-theme-tertiary'
+                                  : (assignment.daysUntilDue ?? 0 <= 1)
+                                    ? 'text-accent-yellow'
+                                    : 'text-theme-tertiary'
                               }`}
                             >
                               {assignment.isOverdue
@@ -341,10 +341,10 @@ export default function AssignmentDetailsPageClient({
                                     ),
                                   })
                                 : assignment.daysUntilDue === 0
-                                ? t('due_today')
-                                : t('days_until_due', {
-                                    days: `${assignment.daysUntilDue}`,
-                                  })}
+                                  ? t('due_today')
+                                  : t('days_until_due', {
+                                      days: `${assignment.daysUntilDue}`,
+                                    })}
                             </span>
                           )}
                         </div>

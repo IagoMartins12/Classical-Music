@@ -279,8 +279,8 @@ export default function CreateAssignmentPageClient({
     (field: string, index: number, value: string) => {
       setFormData((prev) => ({
         ...prev,
-        [field]: (prev[field as keyof typeof prev] as string[]).map((item, i) =>
-          i === index ? value : item
+        [field]: (prev[field as keyof typeof prev] as string[]).map(
+          (item, i) => (i === index ? value : item)
         ),
       }));
     },

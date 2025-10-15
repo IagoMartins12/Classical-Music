@@ -74,8 +74,8 @@ const RecentComposerCard = ({
                       />
                     </div>
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center border-2 border-green-400/20 group-hover:border-green-400/50 transition-all duration-500">
-                      <FiUser className="w-6 h-6 text-white" />
+                    <div className="w-full h-full bg-gradient-to-br  rounded-full flex items-center justify-center border-2 border-green-400/20 group-hover:border-green-400/50 transition-all duration-500">
+                      <FiUser className="w-6 h-6 text-theme-primary" />
                     </div>
                   )}
 
@@ -128,11 +128,11 @@ const RecentComposerCard = ({
             </div>
 
             {/* Action bar */}
-            <div className="flex items-center justify-between pt-3 border-t border-theme-secondary/50">
-              <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
+            <div className="flex items-center justify-end pt-3 border-t border-theme-secondary/50">
+              {/* <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
                 <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
                 <span className="font-medium">Recém-adicionado</span>
-              </div>
+              </div> */}
 
               <div className="w-6 h-6 border border-theme-tertiary/30 rounded-full flex items-center justify-center group-hover:border-green-400 group-hover:bg-green-400/10 transition-all duration-300">
                 <svg

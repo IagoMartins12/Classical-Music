@@ -479,9 +479,9 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                     step === currentStep
                       ? 'bg-red-400'
                       : index <
-                        ['warning', 'cascade', 'confirm'].indexOf(currentStep)
-                      ? 'bg-green-400'
-                      : 'bg-theme-tertiary'
+                          ['warning', 'cascade', 'confirm'].indexOf(currentStep)
+                        ? 'bg-green-400'
+                        : 'bg-theme-tertiary'
                   }`}
                 />
               ))}

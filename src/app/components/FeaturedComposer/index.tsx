@@ -63,8 +63,8 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
     const death = composer.deathDate
       ? new Date(composer.deathDate).getFullYear()
       : language === 'pt'
-      ? 'presente'
-      : 'present';
+        ? 'presente'
+        : 'present';
 
     return `${birth} - ${death}`;
   };
@@ -146,7 +146,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                   {composer.name}
                 </h3>
 
-                <span className="text-lg flex items-center text-theme-secondary font-medium">
+                <span className="text-lg flex justify-center items-center text-theme-secondary font-medium">
                   {composer.fullName}
                   <VerificationBadge
                     verified={composer.isVerified}

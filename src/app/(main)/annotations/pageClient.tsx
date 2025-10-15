@@ -439,8 +439,8 @@ export default function AnnotationsPageClient() {
                       showFilters
                         ? 'bg-brand-primary text-theme-primary border-brand-primary shadow-md'
                         : hasActiveFilters
-                        ? 'bg-accent-blue/10 text-accent-blue border-accent-blue/30 shadow-sm'
-                        : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
+                          ? 'bg-accent-blue/10 text-accent-blue border-accent-blue/30 shadow-sm'
+                          : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
                     }`}
                   >
                     <FiFilter className="w-4 h-4" />
@@ -472,8 +472,8 @@ export default function AnnotationsPageClient() {
                       {isMobile
                         ? t('stats_button_mobile')
                         : showStats
-                        ? t('stats_button_hide')
-                        : t('stats_button_show')}
+                          ? t('stats_button_hide')
+                          : t('stats_button_show')}
                     </span>
                   </Button>
 
@@ -609,15 +609,15 @@ export default function AnnotationsPageClient() {
                     {debouncedSearchQuery || hasActiveFilters
                       ? t('no_annotations_found')
                       : stats.totalAnnotations === 0
-                      ? t('no_annotations_yet')
-                      : t('no_annotations_category')}
+                        ? t('no_annotations_yet')
+                        : t('no_annotations_category')}
                   </h3>
                   <p className="text-theme-tertiary mb-8 max-w-md mx-auto">
                     {debouncedSearchQuery || hasActiveFilters
                       ? t('adjust_filters_search')
                       : stats.totalAnnotations === 0
-                      ? t('create_first_annotation')
-                      : t('adjust_filters_applied')}
+                        ? t('create_first_annotation')
+                        : t('adjust_filters_applied')}
                   </p>
                   {stats.totalAnnotations === 0 && (
                     <Link

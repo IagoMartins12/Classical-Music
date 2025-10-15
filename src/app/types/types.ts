@@ -37,6 +37,7 @@ export interface LazyImageProps {
 export interface CarouselCardProps {
   item: composerHomeProps;
   isActive: boolean;
+  isMobile: boolean;
 }
 
 export interface CarouselControlsProps {

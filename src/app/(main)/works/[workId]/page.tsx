@@ -139,7 +139,7 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
             ]
           : [
               {
-                url: '/logo-opus-atlas.jpeg',
+                url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
                 width: 1200,
                 height: 630,
                 alt: 'Opus Atlas - Logo',
@@ -150,7 +150,10 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
         card: 'summary_large_image',
         title: t.titleTemplate,
         description: description.substring(0, 200),
-        images: [work.composer.portraitUrl || '/logo-opus-atlas.jpeg'],
+        images: [
+          work.composer.portraitUrl ||
+            'https://opusatlas.com.br/logo-opus-atlas.jpeg',
+        ],
       },
       alternates: {
         canonical: `https://opusatlas.com.br/work/${work.id}`,

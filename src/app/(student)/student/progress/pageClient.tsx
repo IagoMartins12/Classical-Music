@@ -419,10 +419,10 @@ export default function StudentProgressPageClient({
                     {progressData.stats.studyConsistency >= 80
                       ? t('excellent')
                       : progressData.stats.studyConsistency >= 60
-                      ? t('very_good')
-                      : progressData.stats.studyConsistency >= 40
-                      ? t('can_improve')
-                      : t('needs_focus')}
+                        ? t('very_good')
+                        : progressData.stats.studyConsistency >= 40
+                          ? t('can_improve')
+                          : t('needs_focus')}
                   </span>
                 </div>
               </div>

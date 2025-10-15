@@ -15,11 +15,11 @@ export async function generateMetadata() {
   const content = {
     pt: {
       title: 'Cancelar inscrição - Opus Atlas | Newsletter',
-      description: 'Cancelar inscrição da newsletter do Open Atlas',
+      description: 'Cancelar inscrição da newsletter do Opus Atlas',
     },
     en: {
       title: 'Unsubscribe - Opus Atlas | Newsletter',
-      description: 'Unsubscribe from the Open Atlas newsletter',
+      description: 'Unsubscribe from the Opus Atlas newsletter',
     },
   };
 

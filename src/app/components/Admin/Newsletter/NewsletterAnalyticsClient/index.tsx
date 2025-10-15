@@ -78,8 +78,8 @@ export default function NewsletterAnalyticsClient() {
             analytics.subscribers.growth > 0
               ? 'increase'
               : analytics.subscribers.growth < 0
-              ? 'decrease'
-              : 'neutral',
+                ? 'decrease'
+                : 'neutral',
           icon: FiUsers,
           color: 'accent-blue',
         },
@@ -100,8 +100,8 @@ export default function NewsletterAnalyticsClient() {
             analytics.engagement.openRateChange > 0
               ? 'increase'
               : analytics.engagement.openRateChange < 0
-              ? 'decrease'
-              : 'neutral',
+                ? 'decrease'
+                : 'neutral',
           icon: FiEye,
           color: 'accent-purple',
         },
@@ -113,8 +113,8 @@ export default function NewsletterAnalyticsClient() {
             analytics.engagement.clickRateChange > 0
               ? 'increase'
               : analytics.engagement.clickRateChange < 0
-              ? 'decrease'
-              : 'neutral',
+                ? 'decrease'
+                : 'neutral',
           icon: FiMousePointer,
           color: 'accent-amber',
         },
@@ -210,8 +210,8 @@ export default function NewsletterAnalyticsClient() {
                           metric.changeType === 'increase'
                             ? 'text-accent-green'
                             : metric.changeType === 'decrease'
-                            ? 'text-accent-red'
-                            : 'text-theme-tertiary'
+                              ? 'text-accent-red'
+                              : 'text-theme-tertiary'
                         }`}
                       >
                         <span>

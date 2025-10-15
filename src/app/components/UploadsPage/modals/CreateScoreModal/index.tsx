@@ -1,4 +1,4 @@
-// app/components/UploadsPage/modals/CreateScoreModal/index.tsx - TRADUZIDO
+// app/components/UploadsPage/modals/CreateScoreModal/index.tsx - ATUALIZADO PARA IMAGENS
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
@@ -29,16 +29,18 @@ import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
-import WorkSearchInput from '@/app/components/WorkSearchInput';
+import WorkSearchInput, {
+  WorkSearchInputWorkProp,
+} from '@/app/components/WorkSearchInput';
 import ComposerSearchInput from '@/app/components/ComposerSearchInput';
 import {
   useFormValidation,
   scoreModalValidations,
 } from '@/app/utils/formUtils';
 import {
-  validateAndExtractPDFInfo,
+  validateAndExtractFileInfo,
   validateUploadedFile,
-  isProbablyPDF,
+  isProbablyValidFile,
   isValidUrl,
   generateAndUploadTempThumbnail,
 } from '@/app/utils/pdfUtils';
@@ -84,7 +86,7 @@ const CreateScoreModal = ({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
-  const [validatingPDF, setValidatingPDF] = useState(false);
+  const [validatingFile, setValidatingFile] = useState(false);
 
   const [composerFilter, setComposerFilter] = useState('');
   const [userWorks, setUserWorks] = useState<UserWork[]>([]);
@@ -94,7 +96,7 @@ const CreateScoreModal = ({
   const [generatingThumbnail, setGeneratingThumbnail] = useState(false);
   const [thumbnailGenerated, setThumbnailGenerated] = useState(false);
   const [thumbnailError, setThumbnailError] = useState<string | null>(null);
-  const [isLargePDF, setIsLargePDF] = useState(false);
+  const [isLargeFile, setIsLargeFile] = useState(false);
 
   const fieldRefs = {
     workId: useRef<HTMLDivElement>(null),
@@ -131,7 +133,7 @@ const CreateScoreModal = ({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [pdfValidation, setPdfValidation] = useState<{
+  const [fileValidation, setFileValidation] = useState<{
     isValidating: boolean;
     isValid: boolean;
     error?: string;
@@ -158,11 +160,11 @@ const CreateScoreModal = ({
 
   const fileFormatOptions = [
     { value: 'PDF', label: t('file_formats_PDF') },
+    { value: 'PNG', label: t('file_formats_PNG') },
+    { value: 'JPG', label: t('file_formats_JPG') },
     { value: 'MIDI', label: t('file_formats_MIDI') },
     { value: 'MusicXML', label: t('file_formats_MusicXML') },
     { value: 'SVG', label: t('file_formats_SVG') },
-    { value: 'PNG', label: t('file_formats_PNG') },
-    { value: 'JPG', label: t('file_formats_JPG') },
     { value: 'Other', label: t('file_formats_Other') },
   ];
 
@@ -212,7 +214,6 @@ const CreateScoreModal = ({
           },
         }));
         setUserWorks(works);
-        console.log('✅ Obras do usuário carregadas:', works.length);
       }
     } catch (error) {
       console.error('❌ Erro ao carregar obras do usuário:', error);
@@ -222,7 +223,7 @@ const CreateScoreModal = ({
   };
 
   const requiredFields = ['workId', 'title', 'downloadUrl'];
-  // Função de validação personalizada para upload mode
+
   const customValidations = {
     ...scoreModalValidations,
     uploadMode: () => {
@@ -335,25 +336,56 @@ const CreateScoreModal = ({
     }
   };
 
-  const handleWorkSelect = (workId: string) => {
+  const handleWorkSelect = (
+    workId: string,
+    workData?: WorkSearchInputWorkProp
+  ) => {
     setFormData((prev) => ({ ...prev, workId }));
 
     if (workId) {
+      // 🆕 PRIMEIRO: Verificar se temos os dados da obra diretamente (da busca)
+      if (workData && workData.composer) {
+        console.log(
+          '✅ Usando dados da obra retornados pela busca:',
+          workData.title
+        );
+
+        if (workData.composer.id) {
+          setComposerFilter(workData.composer.id);
+        } else {
+          // Buscar ID do compositor pelo nome
+          findComposerIdByName(
+            workData.composer.fullName || workData.composer.name
+          );
+        }
+        return; // Não continuar para as outras verificações
+      }
+
+      // SEGUNDO: Verificar em obras do usuário (caso não tenha workData)
       const userWork = userWorks.find((w) => w.id === workId);
       if (userWork) {
+        console.log('✅ Encontrada em obras do usuário:', userWork.title);
         setComposerFilter(userWork.composer.id);
-      } else {
-        const generalWork = works.find((w) => w.id === workId);
-        if (generalWork && generalWork.composer) {
-          if (generalWork.composer.id) {
-            setComposerFilter(generalWork.composer.id);
-          } else {
-            findComposerIdByName(
-              generalWork.composer.fullName || generalWork.composer.name
-            );
-          }
-        }
+        return;
       }
+
+      // TERCEIRO: Verificar em obras populares (fallback)
+      const generalWork = works.find((w) => w.id === workId);
+      if (generalWork && generalWork.composer) {
+        console.log('✅ Encontrada em obras populares:', generalWork.title);
+
+        if (generalWork.composer.id) {
+          setComposerFilter(generalWork.composer.id);
+        } else {
+          findComposerIdByName(
+            generalWork.composer.fullName || generalWork.composer.name
+          );
+        }
+        return;
+      }
+
+      // FALLBACK: Se não encontrou em lugar nenhum
+      console.warn('⚠️ Obra não encontrada em nenhuma lista local:', workId);
     } else {
       setComposerFilter('');
     }
@@ -364,6 +396,7 @@ const CreateScoreModal = ({
   };
 
   const findComposerIdByName = async (composerName: string) => {
+    console.log('CHAMOU ', composerName);
     try {
       const response = await fetch('/api/composers', {
         method: 'POST',
@@ -371,6 +404,7 @@ const CreateScoreModal = ({
         body: JSON.stringify({ q: composerName, limit: 1 }),
       });
 
+      console.log('RESPONSE', { response, composerName });
       if (response.ok) {
         const composers = await response.json();
         if (composers.length > 0) {
@@ -404,8 +438,8 @@ const CreateScoreModal = ({
     setGeneratingThumbnail(false);
     setThumbnailGenerated(false);
     setThumbnailError(null);
-    setIsLargePDF(false);
-    setPdfValidation({ isValidating: false, isValid: false });
+    setIsLargeFile(false);
+    setFileValidation({ isValidating: false, isValid: false });
     setFormData((prev) => ({
       ...prev,
       downloadUrl: '',
@@ -429,41 +463,41 @@ const CreateScoreModal = ({
   const handleUrlChange = async (url: string) => {
     handleInputChange('downloadUrl', url);
 
-    if (url && isValidUrl(url) && isProbablyPDF(url)) {
-      setValidatingPDF(true);
-      setPdfValidation({ isValidating: true, isValid: false });
+    if (url && isValidUrl(url) && isProbablyValidFile(url)) {
+      setValidatingFile(true);
+      setFileValidation({ isValidating: true, isValid: false });
 
       try {
-        const pdfInfo = await validateAndExtractPDFInfo(url);
+        const fileInfo = await validateAndExtractFileInfo(url);
 
-        if (pdfInfo.isValid) {
+        if (fileInfo.isValid) {
           setFormData((prev) => ({
             ...prev,
             downloadUrl: url,
-            fileSize: pdfInfo.fileSize || prev.fileSize,
-            pageCount: pdfInfo.pageCount?.toString() || prev.pageCount,
-            title: prev.title || pdfInfo.title || prev.title,
+            fileSize: fileInfo.fileSize || prev.fileSize,
+            pageCount: fileInfo.pageCount?.toString() || prev.pageCount,
+            title: prev.title || fileInfo.title || prev.title,
           }));
 
-          setPdfValidation({ isValidating: false, isValid: true });
+          setFileValidation({ isValidating: false, isValid: true });
         } else {
-          setPdfValidation({
+          setFileValidation({
             isValidating: false,
             isValid: false,
-            error: pdfInfo.error,
+            error: fileInfo.error,
           });
         }
       } catch {
-        setPdfValidation({
+        setFileValidation({
           isValidating: false,
           isValid: false,
-          error: 'Erro ao validar PDF',
+          error: 'Erro ao validar arquivo',
         });
       } finally {
-        setValidatingPDF(false);
+        setValidatingFile(false);
       }
     } else {
-      setPdfValidation({ isValidating: false, isValid: false });
+      setFileValidation({ isValidating: false, isValid: false });
     }
   };
 
@@ -485,10 +519,10 @@ const CreateScoreModal = ({
       }
 
       const isLarge = file.size > 10 * 1024 * 1024;
-      setIsLargePDF(isLarge);
+      setIsLargeFile(isLarge);
 
       if (isLarge) {
-        toast.info(t('toast_info'), t('toast_score_pdf_large_detected'));
+        toast.info(t('toast_info'), t('toast_score_file_large_detected'));
       }
 
       const tempId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -512,7 +546,8 @@ const CreateScoreModal = ({
       let thumbnailUrl: string | null = null;
       let tempThumbnailPath: string | null | undefined = null;
 
-      if (file.type === 'application/pdf') {
+      // Gerar thumbnail para PDFs e imagens
+      if (file.type === 'application/pdf' || file.type.startsWith('image/')) {
         setGeneratingThumbnail(true);
 
         try {
@@ -557,7 +592,7 @@ const CreateScoreModal = ({
       }));
 
       setSelectedFile(file);
-      setPdfValidation({ isValidating: false, isValid: true });
+      setFileValidation({ isValidating: false, isValid: true });
 
       if (errors.downloadUrl) {
         setErrors((prev) => ({ ...prev, downloadUrl: '' }));
@@ -565,7 +600,7 @@ const CreateScoreModal = ({
     } catch {
       console.error('❌ Erro no upload:');
       toast.error(t('toast_error'), t('toast_score_file_upload_error'));
-      setPdfValidation({
+      setFileValidation({
         isValidating: false,
         isValid: false,
         error: 'Erro no upload',
@@ -678,7 +713,6 @@ const CreateScoreModal = ({
       hasChanges={hasChanges}
       isProcessing={isSubmitting}
       processName="criação de partitura"
-      setPr
     >
       <AnimatedItem direction="scale" springType="bouncy" className="w-full">
         <div>
@@ -741,7 +775,7 @@ const CreateScoreModal = ({
                               {t('modal_score_upload_url')}
                             </h4>
                             <p className="text-xs opacity-75">
-                              {t('modal_score_upload_url_description')}
+                              PDF, PNG, JPG ou outras imagens via URL
                             </p>
                           </div>
                         </div>
@@ -772,7 +806,7 @@ const CreateScoreModal = ({
                               {t('modal_score_upload_file')}
                             </h4>
                             <p className="text-xs opacity-75">
-                              {t('modal_score_upload_file_description')}
+                              Envie PDF ou imagens do seu dispositivo
                             </p>
                           </div>
                         </div>
@@ -798,7 +832,7 @@ const CreateScoreModal = ({
                 <AnimatedCard className="classical-card-2 p-4">
                   <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                     <FiUpload className="w-5 h-5" />
-                    <span>{t('modal_score_file_upload_title')}</span>
+                    <span>Enviar Arquivo</span>
                   </h3>
 
                   <div className="space-y-4">
@@ -815,7 +849,7 @@ const CreateScoreModal = ({
                       <input
                         id="file-upload"
                         type="file"
-                        accept=".pdf,.mid,.midi,.xml,.musicxml,.svg,.png,.jpg,.jpeg"
+                        accept=".pdf,.png,.jpg,.jpeg,.gif,.bmp,.webp"
                         className="hidden"
                         onChange={(e) => {
                           const file = e.target.files?.[0];
@@ -829,13 +863,17 @@ const CreateScoreModal = ({
                         <div className="flex items-center justify-center space-x-2">
                           <FiLoader className="w-6 h-6 animate-spin text-brand-primary" />
                           <span className="text-theme-secondary">
-                            {t('modal_score_file_uploading')}
+                            Enviando arquivo...
                           </span>
                         </div>
                       ) : selectedFile ? (
                         <div className="space-y-4">
                           <div className="flex items-center justify-center space-x-2">
-                            <FiFile className="w-6 h-6 text-accent-green" />
+                            {selectedFile.type.startsWith('image/') ? (
+                              <FiImage className="w-6 h-6 text-accent-green" />
+                            ) : (
+                              <FiFile className="w-6 h-6 text-accent-green" />
+                            )}
                             <span className="text-theme-primary font-medium">
                               {selectedFile.name}
                             </span>
@@ -849,15 +887,14 @@ const CreateScoreModal = ({
                               <div className="flex items-center justify-center space-x-2 text-sm text-brand-primary">
                                 <FiLoader className="w-4 h-4 animate-spin" />
                                 <span>
-                                  {isLargePDF
-                                    ? t('modal_score_file_preview_large')
-                                    : t('modal_score_file_preview_generating')}
+                                  {isLargeFile
+                                    ? 'Processando arquivo grande...'
+                                    : 'Gerando preview...'}
                                 </span>
                               </div>
-                              {isLargePDF && (
+                              {isLargeFile && (
                                 <div className="mt-2 text-xs text-theme-tertiary">
-                                  📄 PDFs grandes podem levar mais tempo para
-                                  processar
+                                  📄 Arquivos grandes podem levar mais tempo
                                 </div>
                               )}
                             </div>
@@ -868,7 +905,7 @@ const CreateScoreModal = ({
                               <div className="w-24 h-32 mx-auto rounded border border-theme-primary/30 overflow-hidden shadow-theme-small">
                                 <Image
                                   src={generatedThumbnail}
-                                  alt="Preview da partitura"
+                                  alt="Preview do arquivo"
                                   width={96}
                                   height={128}
                                   className="w-full h-full object-cover"
@@ -881,9 +918,7 @@ const CreateScoreModal = ({
                             <div className="mt-4 text-center">
                               <div className="flex items-center justify-center space-x-2 text-sm text-amber-600 mb-2">
                                 <FiAlertCircle className="w-4 h-4" />
-                                <span>
-                                  {t('modal_score_file_preview_unavailable')}
-                                </span>
+                                <span>Preview não disponível</span>
                               </div>
                               <div className="text-xs text-theme-tertiary">
                                 {thumbnailError}
@@ -895,13 +930,13 @@ const CreateScoreModal = ({
                         <div>
                           <FiUpload className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                           <p className="text-theme-secondary">
-                            {t('modal_score_file_drop_text')}
+                            Clique aqui ou arraste arquivos para enviar
                           </p>
                           <p className="text-theme-tertiary text-sm mt-2">
-                            {t('modal_score_file_formats')}
+                            PDF, PNG, JPG, GIF, BMP, WEBP (máx. 50MB)
                           </p>
                           <p className="text-theme-tertiary text-xs mt-1">
-                            🖼️ {t('modal_score_file_pdf_preview')}
+                            🖼️ Preview automático para PDFs e imagens
                           </p>
                         </div>
                       )}
@@ -928,7 +963,7 @@ const CreateScoreModal = ({
                         className="flex items-center space-x-2 mx-auto text-sm text-theme-tertiary hover:text-accent-red transition-colors"
                       >
                         <FiX className="w-4 h-4" />
-                        <span>{t('modal_score_file_remove')}</span>
+                        <span>Remover arquivo</span>
                       </button>
                     )}
                   </div>
@@ -940,7 +975,7 @@ const CreateScoreModal = ({
                 <AnimatedCard className="classical-card-2 p-4">
                   <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                     <FiLink className="w-5 h-5" />
-                    <span>{t('modal_score_url_title')}</span>
+                    <span>URL do Arquivo</span>
                   </h3>
 
                   <Input
@@ -953,26 +988,26 @@ const CreateScoreModal = ({
                     leftIcon={<FiLink />}
                   />
 
-                  {validatingPDF && (
+                  {validatingFile && (
                     <div className="mt-2 flex items-center space-x-2 text-sm text-brand-primary">
                       <FiLoader className="w-4 h-4 animate-spin" />
-                      <span>{t('modal_score_url_validating')}</span>
+                      <span>Validando arquivo...</span>
                     </div>
                   )}
 
-                  {pdfValidation.isValid && (
+                  {fileValidation.isValid && (
                     <div className="mt-2 flex items-center space-x-2 text-sm text-accent-green">
                       <FiCheck className="w-4 h-4" />
-                      <span>{t('modal_score_url_valid')}</span>
+                      <span>Arquivo válido encontrado</span>
                     </div>
                   )}
 
-                  {pdfValidation.error && (
+                  {fileValidation.error && (
                     <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                       <div className="flex items-center space-x-2">
                         <FiAlertCircle className="w-4 h-4 text-red-600" />
                         <span className="text-sm font-medium text-red-800">
-                          {pdfValidation.error}
+                          {fileValidation.error}
                         </span>
                       </div>
                     </div>
@@ -1148,7 +1183,7 @@ const CreateScoreModal = ({
                   />
 
                   <Input
-                    label={t('modal_score_basic_pages')}
+                    label="Páginas/Imagens"
                     value={formData.pageCount}
                     onChange={(e) =>
                       handleInputChange('pageCount', e.target.value)
@@ -1342,8 +1377,8 @@ const CreateScoreModal = ({
                   {isSubmitting
                     ? t('form_saving')
                     : editingScore
-                    ? t('form_update') + ' Partitura'
-                    : t('form_create') + ' Partitura'}
+                      ? t('form_update') + ' Partitura'
+                      : t('form_create') + ' Partitura'}
                 </Button>
               </div>
             </form>

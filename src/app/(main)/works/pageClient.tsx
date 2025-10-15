@@ -1,4 +1,4 @@
-// app/works/pageClient.tsx - Com Performance Otimizada e Traduções
+// app/works/pageClient.tsx - Com Performance Otimizada e Traduções - CORRIGIDO
 'use client';
 
 import {
@@ -144,7 +144,7 @@ const ResultsInfo = memo(
 
 ResultsInfo.displayName = 'ResultsInfo';
 
-// Componente de Filtros Ativos memoizado
+// Componente de Filtros Ativos memoizado - CORRIGIDO
 const ActiveFilters = memo(
   ({
     searchParams,
@@ -222,11 +222,9 @@ const ActiveFilters = memo(
             <div className="flex items-center gap-2 px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm">
               <span>
                 {t('client_jsx_span_instrument_filter')}{' '}
+                {/* 🔧 CORREÇÃO: Buscar pelo ID em vez de nome */}
                 {filterOptions.instruments.find(
-                  (i: any) =>
-                    (i.originalName &&
-                      i.originalName === searchParams.instrument) ||
-                    i.id === searchParams.instrument
+                  (i: any) => i.id === searchParams.instrument
                 )?.name || searchParams.instrument}
               </span>
               <button
@@ -415,19 +413,27 @@ const WorksClient = memo(
       [updateSearchParams]
     );
 
+    // 🔧 CORREÇÃO: Handler de instrumento usando ID
     const handleInstrumentFilter = useCallback(
       (instrumentValue: string) => {
         setSelectedInstrument(instrumentValue);
-        // Sempre usar o nome original (português) para o filtro
+
+        if (!instrumentValue) {
+          updateSearchParams({ instrument: undefined });
+          return;
+        }
+
+        // Encontrar o instrumento pelo nome traduzido ou original
         const instrument = filterOptions.instruments.find(
           (i) =>
             i.name === instrumentValue ||
             (i.originalName && i.originalName === instrumentValue) ||
             i.id === instrumentValue
         );
-        const originalName =
-          instrument?.originalName || instrument?.name || instrumentValue;
-        updateSearchParams({ instrument: originalName || undefined });
+
+        // ✅ USAR ID em vez de name/originalName
+        const instrumentId = instrument?.id || instrumentValue;
+        updateSearchParams({ instrument: instrumentId || undefined });
       },
       [updateSearchParams, filterOptions.instruments]
     );
@@ -504,6 +510,19 @@ const WorksClient = memo(
         setShowFilters(true);
       }
     }, [hasActiveFilters]);
+
+    // 🔧 CORREÇÃO: Inicializar o valor selecionado do instrumento corretamente
+    useEffect(() => {
+      if (searchParams.instrument) {
+        // Encontrar o instrumento pelo ID
+        const instrument = filterOptions.instruments.find(
+          (i) => i.id === searchParams.instrument
+        );
+        if (instrument) {
+          setSelectedInstrument(instrument.name); // Usar nome traduzido para exibição
+        }
+      }
+    }, [searchParams.instrument, filterOptions.instruments]);
 
     // Render do grid de obras memoizado
     const worksGrid = useMemo(() => {
@@ -600,7 +619,7 @@ const WorksClient = memo(
           {/* Search and Filters Section */}
           <AnimatedItem
             direction="up"
-            className={`classical-card mx-0 md:mx-4 sm:p-0 !p-6 transition-all duration-500 ${
+            className={`classical-card mx-0 sm:p-0 !p-6 relative z-[100] transition-all duration-500 ${
               isPending ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -715,7 +734,7 @@ const WorksClient = memo(
                             },
                             ...filterOptions.instruments.map((instrument) => ({
                               label: instrument.name, // Nome traduzido para exibição
-                              value: instrument.originalName || instrument.name, // Nome original para filtro
+                              value: instrument.name, // Usar nome traduzido como valor para o select
                             })),
                           ]}
                           value={selectedInstrument}
@@ -730,9 +749,9 @@ const WorksClient = memo(
 
                     {/* Epoch Filter */}
                     <div className="space-y-2 flex flex-col gap-1 relative z-[105]">
-                      <label className="text-sm font-medium text-theme-secondary">
+                      <span className="text-sm font-medium text-theme-secondary">
                         {t('client_jsx_label_epoch')}
-                      </label>
+                      </span>
                       <div className="relative">
                         <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                         <Select
@@ -759,9 +778,9 @@ const WorksClient = memo(
 
                     {/* Genre Filter */}
                     <div className="space-y-2 flex flex-col gap-1 relative z-[115]">
-                      <label className="text-sm font-medium text-theme-secondary">
+                      <span className="text-sm font-medium text-theme-secondary">
                         {t('client_jsx_label_genre')}
-                      </label>
+                      </span>
                       <GenreSearchInput
                         selectedGenre={selectedGenre}
                         onGenreSelect={handleGenreFilter}
@@ -794,7 +813,7 @@ const WorksClient = memo(
           </AnimatedItem>
 
           {/* Results Section */}
-          <div className="relative mt-4 pt-4 z-[50]">
+          <div className="relative mt-4 pt-4 z-[10]">
             {isPending ? <WorksSkeleton /> : worksGrid}
 
             {/* Loading Overlay */}
