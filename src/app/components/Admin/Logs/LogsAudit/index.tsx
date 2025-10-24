@@ -1,31 +1,20 @@
-// app/components/Admin/Logs/LogsAudit/index.tsx - VERSÃO ATUALIZADA
+// app/components/Admin/Logs/LogsAudit/index.tsx - CORRIGIDO
 'use client';
 
-import { useState } from 'react';
 import {
   FiFileText,
-  FiShield,
   FiActivity,
   FiUser,
-  FiDatabase,
-  FiServer,
-  FiAlertTriangle,
-  FiX,
-  FiDownload,
   FiSearch,
-  FiEye,
-  FiSettings,
-  FiTrash2,
-  FiBarChart2,
   FiRefreshCw,
   FiFilter,
   FiLoader,
   FiClock,
-  FiUsers,
   FiUpload,
   FiMessageSquare,
   FiHeart,
   FiMusic,
+  FiX,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -36,18 +25,10 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
-
-import {
-  useAdminLogs,
-  TestLoggingResult,
-} from '@/app/hooks/admin/useAdminLogs';
+import { useAdminActivity } from '@/app/hooks/admin/useAdminActivity';
 import { formatNumber } from '../../Utils';
 import toast from 'react-hot-toast';
-import { LogCategory, LogLevel } from '@/app/libs/logging/systemLogger';
-import LogsCleanup from '../LogsCleanup';
-import { useAdminActivity } from '@/app/hooks/admin/useAdminActivity';
-
-// 🆕 IMPORT DO HOOK DE ATIVIDADES
+import Input from '@/app/components/Common/Inputs';
 
 interface ActivityItem {
   id: string;
@@ -71,20 +52,6 @@ interface ActivityItem {
 
 export default function LogsAudit() {
   const {
-    logs,
-    stats,
-    loading,
-    error,
-    filters,
-    setFilters,
-    refreshLogs,
-    exportLogs,
-    testLogging,
-    getRelativeTime,
-  } = useAdminLogs();
-
-  // 🆕 HOOK PARA ATIVIDADES
-  const {
     activities,
     loading: activitiesLoading,
     filters: activityFilters,
@@ -94,98 +61,52 @@ export default function LogsAudit() {
     loadMoreActivities,
   } = useAdminActivity();
 
-  const [activeTab, setActiveTab] = useState('logs');
-  const [showCleanup, setShowCleanup] = useState(false);
-  const [bulkActionOpen, setBulkActionOpen] = useState(false);
-
-  const handleExportLogs = async (format: 'csv' | 'json') => {
-    try {
-      await exportLogs(format);
-      toast.success(`Logs exportados em formato ${format.toUpperCase()}!`);
-      setBulkActionOpen(false);
-    } catch {
-      toast.error('Erro ao exportar logs');
-    }
-  };
-
   const handleRefresh = async () => {
     try {
-      if (activeTab === 'logs') {
-        await refreshLogs();
-      } else if (activeTab === 'activities') {
-        await refreshActivities();
-      }
+      await refreshActivities();
       toast.success('Dados atualizados com sucesso!');
     } catch {
       toast.error('Erro ao atualizar dados');
     }
   };
 
-  const handleTestLogging = async () => {
-    try {
-      const result: TestLoggingResult = await testLogging();
-      toast.success(`Log de teste criado! Trace ID: ${result.traceId}`);
-    } catch {
-      toast.error('Erro ao criar log de teste');
-    }
-  };
-
-  // 🆕 HELPERS PARA ATIVIDADES
   const getActivityIcon = (type: string) => {
-    switch (type) {
-      case 'user_registration':
-        return FiUser;
-      case 'upload':
-        return FiUpload;
-      case 'annotation':
-        return FiMessageSquare;
-      case 'favorite':
-        return FiHeart;
-      case 'moderation':
-        return FiShield;
-      case 'system':
-        return FiDatabase;
-      case 'study_session':
-        return FiActivity;
-      default:
-        return FiActivity;
-    }
-  };
-
-  const getTargetIcon = (type?: string) => {
-    switch (type) {
-      case 'composer':
-        return FiUsers;
-      case 'work':
-        return FiMusic;
-      case 'score':
-        return FiFileText;
-      case 'user':
-        return FiUser;
-      default:
-        return FiDatabase;
-    }
+    const iconMap: Record<string, any> = {
+      UPLOAD: FiUpload, // 🆕 Ícone para uploads
+      FAVORITE_COMPOSER: FiHeart,
+      UNFAVORITE_COMPOSER: FiHeart,
+      FAVORITE_WORK: FiMusic,
+      UNFAVORITE_WORK: FiMusic,
+      FAVORITE_SCORE: FiFileText,
+      UNFAVORITE_SCORE: FiFileText,
+      ADD_WANT_TO_LEARN: FiUpload,
+      REMOVE_WANT_TO_LEARN: FiUpload,
+      UPDATE_WANT_TO_LEARN: FiUpload,
+      ADD_LEARNED: FiActivity,
+      REMOVE_LEARNED: FiActivity,
+      UPDATE_LEARNED: FiActivity,
+      CREATE_ANNOTATION: FiMessageSquare,
+      UPDATE_ANNOTATION: FiMessageSquare,
+      DELETE_ANNOTATION: FiMessageSquare,
+      VOTE_ANNOTATION_HELPFUL: FiMessageSquare,
+      VOTE_ANNOTATION_NOT_HELPFUL: FiMessageSquare,
+      REPORT_UPLOAD: FiActivity,
+      UPLOAD_VIDEO: FiUpload,
+      DELETE_VIDEO: FiUpload,
+      UPDATE_PROFILE: FiUser,
+    };
+    return iconMap[type] || FiActivity;
   };
 
   const getActivityColor = (type: string) => {
-    switch (type) {
-      case 'user_registration':
-        return 'text-accent-blue';
-      case 'upload':
-        return 'text-accent-green';
-      case 'annotation':
-        return 'text-accent-purple';
-      case 'favorite':
-        return 'text-accent-red';
-      case 'moderation':
-        return 'text-accent-amber';
-      case 'system':
-        return 'text-theme-tertiary';
-      case 'study_session':
-        return 'text-accent-blue';
-      default:
-        return 'text-accent-blue';
-    }
+    if (type === 'UPLOAD') return 'text-accent-blue'; // 🆕
+    if (type.includes('FAVORITE')) return 'text-accent-red';
+    if (type.includes('LEARNED')) return 'text-accent-green';
+    if (type.includes('WANT_TO_LEARN')) return 'text-accent-blue';
+    if (type.includes('ANNOTATION')) return 'text-accent-purple';
+    if (type.includes('REPORT')) return 'text-accent-amber';
+    if (type.includes('VIDEO')) return 'text-accent-blue';
+    return 'text-accent-blue';
   };
 
   const getStatusColor = (status?: string) => {
@@ -201,444 +122,46 @@ export default function LogsAudit() {
     }
   };
 
-  // 🆕 RENDERIZAR ATIVIDADES RECENTES
-  const renderRecentActivities = () => (
-    <div className="space-y-6">
-      {/* Filtros para atividades */}
-      <div className="flex flex-wrap items-center gap-4 p-4 bg-theme-secondary rounded-xl">
-        <div className="relative flex-1 min-w-64">
-          <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-          <input
-            type="text"
-            placeholder="Buscar nas atividades..."
-            value={activityFilters.search || ''}
-            onChange={(e) => setActivityFilters({ search: e.target.value })}
-            className="input-classical-2 pl-10 w-full"
-          />
-        </div>
+  const getRelativeTime = (timestamp: string) => {
+    const now = new Date();
+    const date = new Date(timestamp);
+    const diff = now.getTime() - date.getTime();
+    const minutes = Math.floor(diff / 60000);
 
-        <Select
-          value={activityFilters.type || 'all'}
-          onChange={(e) =>
-            setActivityFilters({
-              type: e.target.value === 'all' ? undefined : e.target.value,
-            })
-          }
-          options={[
-            { value: 'all', label: 'Todas as atividades' },
-            { value: 'user_registration', label: 'Registros' },
-            { value: 'upload', label: 'Uploads' },
-            { value: 'annotation', label: 'Anotações' },
-            { value: 'favorite', label: 'Favoritos' },
-            { value: 'moderation', label: 'Moderação' },
-            { value: 'study_session', label: 'Sessões de Estudo' },
-            { value: 'system', label: 'Sistema' },
-          ]}
-          className="input-classical-2 min-w-48"
-        />
+    if (minutes < 1) return 'Agora mesmo';
+    if (minutes < 60) return `${minutes}min atrás`;
 
-        <div className="flex items-center space-x-2">
-          <input
-            type="date"
-            value={activityFilters.dateFrom || ''}
-            onChange={(e) => setActivityFilters({ dateFrom: e.target.value })}
-            className="input-classical-2"
-          />
-          <span className="text-theme-tertiary">até</span>
-          <input
-            type="date"
-            value={activityFilters.dateTo || ''}
-            onChange={(e) => setActivityFilters({ dateTo: e.target.value })}
-            className="input-classical-2"
-          />
-        </div>
-      </div>
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h atrás`;
 
-      {/* Info da busca */}
-      {(activityFilters.search ||
-        activityFilters.type ||
-        activityFilters.dateFrom ||
-        activityFilters.dateTo) && (
-        <div className="flex items-center justify-between p-3 bg-accent-blue/10 border border-accent-blue rounded-lg">
-          <div className="flex items-center space-x-2 text-sm text-accent-blue">
-            <FiFilter className="w-4 h-4" />
-            <span>
-              Filtros ativos:{' '}
-              {[
-                activityFilters.search && `"${activityFilters.search}"`,
-                activityFilters.type && activityFilters.type,
-                (activityFilters.dateFrom || activityFilters.dateTo) &&
-                  'período',
-              ]
-                .filter(Boolean)
-                .join(', ')}
-            </span>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setActivityFilters({})}
-            leftIcon={<FiX />}
-          >
-            Limpar Filtros
-          </Button>
-        </div>
-      )}
+    const days = Math.floor(hours / 24);
+    return `${days}d atrás`;
+  };
 
-      {/* Lista de Atividades */}
-      {activitiesLoading && activities.length === 0 ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-4">
-              Carregando atividades...
-            </p>
-          </div>
-        </div>
-      ) : activities.length === 0 ? (
-        <div className="text-center py-12">
-          <FiActivity className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-theme-primary mb-2">
-            Nenhuma atividade encontrada
-          </h3>
-          <p className="text-theme-secondary">
-            Ajuste os filtros para encontrar as atividades desejadas.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {activities.map((activity: ActivityItem) => {
-            const ActivityIcon = getActivityIcon(activity.type);
-            const TargetIcon = getTargetIcon(activity.target?.type);
-
-            return (
-              <div
-                key={activity.id}
-                className="p-4 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors"
-              >
-                <div className="flex items-start space-x-4">
-                  <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center bg-theme-primary ${getActivityColor(
-                      activity.type
-                    )} flex-shrink-0`}
-                  >
-                    <ActivityIcon className="w-5 h-5" />
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <span className="text-xs text-theme-tertiary flex items-center space-x-1">
-                        <FiClock className="w-3 h-3" />
-                        <span>
-                          {getRelativeTime(activity.timestamp.toString())}
-                        </span>
-                      </span>
-                      {activity.status && (
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                            activity.status
-                          )}`}
-                        >
-                          {activity.status === 'success'
-                            ? 'Sucesso'
-                            : activity.status === 'warning'
-                              ? 'Aviso'
-                              : 'Erro'}
-                        </span>
-                      )}
-                      {activity.target && (
-                        <span className="text-xs text-theme-tertiary capitalize flex items-center space-x-1">
-                          <TargetIcon className="w-3 h-3" />
-                          <span>{activity.target.type}</span>
-                        </span>
-                      )}
-                    </div>
-
-                    <p className="text-theme-primary font-medium mb-2">
-                      <span className="font-bold">{activity.user.name}</span>{' '}
-                      {activity.action}
-                      {activity.target && (
-                        <span className="inline-flex items-center space-x-1 ml-1">
-                          <span className="font-semibold truncate">
-                            {activity.target.name}
-                          </span>
-                        </span>
-                      )}
-                    </p>
-
-                    {activity.metadata && (
-                      <div className="text-xs text-theme-tertiary">
-                        {activity.metadata.error && (
-                          <span className="text-accent-red">
-                            Erro: {activity.metadata.error}
-                          </span>
-                        )}
-                        {activity.metadata.size && (
-                          <span>Tamanho: {activity.metadata.size}</span>
-                        )}
-                        {activity.metadata.duration && (
-                          <span className="ml-2">
-                            Duração: {activity.metadata.duration}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    {activity.target && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={<FiEye />}
-                        onClick={() => {
-                          // Navegar para a entidade relacionada
-                          console.log('Ver detalhes:', activity.target);
-                        }}
-                        className="text-accent-blue hover:bg-accent-blue/10"
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Load More Activities */}
-          {activityPagination.hasMore && (
-            <div className="text-center pt-6">
-              <Button
-                variant="secondary"
-                onClick={loadMoreActivities}
-                disabled={activitiesLoading}
-                leftIcon={
-                  activitiesLoading ? (
-                    <FiLoader className="animate-spin" />
-                  ) : undefined
-                }
-              >
-                {activitiesLoading
-                  ? 'Carregando...'
-                  : `Carregar mais atividades (${
-                      activityPagination.total - activities.length
-                    } restantes)`}
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-
-  // Renderizar logs (código original mantido)
-  const renderSystemLogs = () => (
-    <div className="space-y-6">
-      {/* Filtros originais mantidos */}
-      <div className="flex flex-wrap items-center gap-4 p-4 bg-theme-secondary rounded-xl">
-        <div className="relative flex-1 min-w-64">
-          <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-          <input
-            type="text"
-            placeholder="Buscar nos logs..."
-            value={filters.search || ''}
-            onChange={(e) => setFilters({ search: e.target.value })}
-            className="input-classical-2 pl-10 w-full"
-          />
-        </div>
-
-        <Select
-          value={filters.level || 'all'}
-          onChange={(e) =>
-            setFilters({
-              level:
-                e.target.value === 'all'
-                  ? undefined
-                  : (e.target.value as LogLevel),
-            })
-          }
-          options={[
-            { value: 'all', label: 'Todos os Níveis' },
-            { value: LogLevel.ERROR, label: 'Errors' },
-            { value: LogLevel.WARN, label: 'Warnings' },
-            { value: LogLevel.INFO, label: 'Info' },
-            { value: LogLevel.DEBUG, label: 'Debug' },
-            { value: LogLevel.TRACE, label: 'Trace' },
-          ]}
-          className="input-classical-2 min-w-40"
-        />
-
-        <Select
-          value={filters.category || 'all'}
-          onChange={(e) =>
-            setFilters({
-              category:
-                e.target.value === 'all'
-                  ? undefined
-                  : (e.target.value as LogCategory),
-            })
-          }
-          options={[
-            { value: 'all', label: 'Todas as Categorias' },
-            { value: LogCategory.API, label: 'API' },
-            { value: LogCategory.DATABASE, label: 'Database' },
-            { value: LogCategory.AUTH, label: 'Auth' },
-            { value: LogCategory.SECURITY, label: 'Security' },
-            { value: LogCategory.PERFORMANCE, label: 'Performance' },
-            { value: LogCategory.ADMIN, label: 'Admin' },
-            { value: LogCategory.SYSTEM, label: 'System' },
-            { value: LogCategory.AUDIT, label: 'Audit' },
-          ]}
-          className="input-classical-2 min-w-48"
-        />
-
-        <div className="flex items-center space-x-2">
-          <input
-            type="date"
-            value={filters.dateFrom || ''}
-            onChange={(e) => setFilters({ dateFrom: e.target.value })}
-            className="input-classical-2"
-          />
-          <span className="text-theme-tertiary">até</span>
-          <input
-            type="date"
-            value={filters.dateTo || ''}
-            onChange={(e) => setFilters({ dateTo: e.target.value })}
-            className="input-classical-2"
-          />
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            leftIcon={<FiRefreshCw className={loading ? 'animate-spin' : ''} />}
-            onClick={handleRefresh}
-            disabled={loading}
-          >
-            {loading ? 'Atualizando...' : 'Atualizar'}
-          </Button>
-
-          <div className="relative">
-            <Button
-              variant="secondary"
-              size="sm"
-              leftIcon={<FiDownload />}
-              onClick={() => setBulkActionOpen(!bulkActionOpen)}
-            >
-              Exportar
-            </Button>
-
-            {bulkActionOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-theme-elevated border border-theme-secondary rounded-xl shadow-lg z-10">
-                <div className="p-2">
-                  <button
-                    onClick={() => handleExportLogs('csv')}
-                    className="w-full text-left px-3 py-2 text-sm text-theme-primary hover:bg-theme-secondary rounded-lg"
-                  >
-                    Exportar como CSV
-                  </button>
-                  <button
-                    onClick={() => handleExportLogs('json')}
-                    className="w-full text-left px-3 py-2 text-sm text-theme-primary hover:bg-theme-secondary rounded-lg"
-                  >
-                    Exportar como JSON
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <Button
-            variant="secondary"
-            size="sm"
-            leftIcon={<FiTrash2 />}
-            onClick={() => setShowCleanup(true)}
-          >
-            Gerenciar
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            leftIcon={<FiSettings />}
-            onClick={handleTestLogging}
-          >
-            Teste
-          </Button>
-        </div>
-      </div>
-
-      {/* Resto do código original dos logs mantido... */}
-      {loading && logs.length === 0 ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-4">
-              Carregando logs...
-            </p>
-          </div>
-        </div>
-      ) : logs.length === 0 ? (
-        <div className="text-center py-12">
-          <FiFileText className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-theme-primary mb-2">
-            Nenhum log encontrado
-          </h3>
-          <p className="text-theme-secondary">
-            Ajuste os filtros para encontrar os logs desejados.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {/* Resto da renderização dos logs mantida igual... */}
-          <p className="text-theme-secondary text-center py-8">
-            [Logs renderizados aqui - código original mantido]
-          </p>
-        </div>
-      )}
-    </div>
-  );
-
-  const renderStatistics = () => (
-    <div className="space-y-6">
-      <h3 className="text-xl font-bold text-theme-primary">
-        Estatísticas dos Logs
-      </h3>
-      {/* Código das estatísticas mantido igual */}
-    </div>
-  );
-
-  // 🆕 TABS ATUALIZADAS
-  const tabs = [
-    { id: 'logs', label: 'Logs do Sistema', icon: FiServer },
-    { id: 'activities', label: 'Atividades Recentes', icon: FiActivity }, // 🆕 NOVA ABA
-    { id: 'stats', label: 'Estatísticas', icon: FiBarChart2 },
+  const periodOptions = [
+    { value: 'hoje', label: 'Hoje' },
+    { value: 'ontem', label: 'Ontem' },
+    { value: 'esta_semana', label: 'Esta Semana' },
+    { value: '7d', label: 'Últimos 7 dias' },
+    { value: '30d', label: 'Últimos 30 dias' },
+    { value: '3m', label: 'Últimos 3 meses' },
+    { value: '6m', label: 'Últimos 6 meses' },
+    { value: '1y', label: 'Último ano' },
+    { value: 'todos', label: 'Todos' },
   ];
 
-  if (error) {
-    return (
-      <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <AnimatedCard className="classical-card p-8 text-center max-w-md">
-            <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-3xl flex items-center justify-center mx-auto mb-4">
-              <FiAlertTriangle className="w-8 h-8 text-theme-primary" />
-            </div>
-            <h3 className="text-xl font-bold text-theme-primary mb-2">
-              Erro ao Carregar Dados
-            </h3>
-            <p className="text-theme-secondary mb-4">{error}</p>
-            <Button
-              variant="primary"
-              onClick={handleRefresh}
-              leftIcon={<FiRefreshCw />}
-            >
-              Tentar Novamente
-            </Button>
-          </AnimatedCard>
-        </div>
-      </PageContainer>
-    );
-  }
+  const activityTypeOptions = [
+    { value: 'all', label: 'Todas as atividades' },
+    { value: 'UPLOAD', label: 'Uploads (Criação/Edição)' }, // 🆕
+    { value: 'FAVORITE_COMPOSER', label: 'Favoritos - Compositores' },
+    { value: 'FAVORITE_WORK', label: 'Favoritos - Obras' },
+    { value: 'FAVORITE_SCORE', label: 'Favoritos - Partituras' },
+    { value: 'ADD_WANT_TO_LEARN', label: 'Quero Aprender' },
+    { value: 'ADD_LEARNED', label: 'Já Aprendi' },
+    { value: 'CREATE_ANNOTATION', label: 'Anotações' },
+    { value: 'REPORT_UPLOAD', label: 'Denúncias' },
+    { value: 'UPLOAD_VIDEO', label: 'Uploads de Vídeo' },
+  ];
 
   return (
     <PageContainer showBackground={true}>
@@ -648,97 +171,249 @@ export default function LogsAudit() {
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiFileText className="w-8 h-8 text-theme-primary" />
+                <FiActivity className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Sistema de Logs & Atividades
+              Atividades Recentes
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle mb-6">
-              Monitoramento completo e em tempo real do sistema
+              Monitoramento completo das ações dos usuários
             </p>
 
             {/* Status Summary */}
-            {stats && (
-              <div className="flex items-center justify-center space-x-8 mt-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-theme-primary">
-                    {formatNumber(stats.overview.totalLogs)}
-                  </div>
-                  <div className="text-sm text-theme-tertiary">
-                    Total de Logs
-                  </div>
+            <div className="flex items-center justify-center space-x-8 mt-6">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-accent-blue">
+                  {formatNumber(activityPagination.total)}
                 </div>
-
-                <div className="text-center">
-                  <div
-                    className={`text-2xl font-bold ${
-                      stats.overview.errorRate < 5
-                        ? 'text-accent-green'
-                        : stats.overview.errorRate < 15
-                          ? 'text-accent-amber'
-                          : 'text-accent-red'
-                    }`}
-                  >
-                    {stats.overview.errorRate.toFixed(1)}%
-                  </div>
-                  <div className="text-sm text-theme-tertiary">
-                    Taxa de Erro
-                  </div>
-                </div>
-
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-accent-blue">
-                    {activities.length}
-                  </div>
-                  <div className="text-sm text-theme-tertiary">Atividades</div>
+                <div className="text-sm text-theme-tertiary">
+                  Total de Atividades
                 </div>
               </div>
-            )}
+
+              <div className="text-center">
+                <div className="text-2xl font-bold text-theme-primary">
+                  {activities.length}
+                </div>
+                <div className="text-sm text-theme-tertiary">Carregadas</div>
+              </div>
+            </div>
           </div>
         </AnimatedItem>
 
-        {/* Tabs */}
+        {/* Filtros */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="flex flex-wrap gap-2 mb-8 p-2 bg-theme-elevated rounded-2xl">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all ${
-                  activeTab === tab.id
-                    ? 'bg-gradient-to-r from-brand-primary to-brand-secondary text-theme-primary shadow-lg'
-                    : 'text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary'
-                }`}
+          <AnimatedCard className="classical-card p-6 mb-8">
+            <div className="flex flex-wrap items-center gap-4">
+              {/* Filtro de Período Temporal */}
+              <Select
+                value={activityFilters.period || '7d'}
+                onChange={(e) => setActivityFilters({ period: e.target.value })}
+                options={periodOptions}
+                className="input-classical-2 min-w-48"
+              />
+
+              {/* Filtro de Tipo */}
+              <Select
+                value={activityFilters.type || 'all'}
+                onChange={(e) =>
+                  setActivityFilters({
+                    type: e.target.value === 'all' ? undefined : e.target.value,
+                  })
+                }
+                options={activityTypeOptions}
+                className="input-classical-2 min-w-64"
+              />
+
+              {/* Busca */}
+              <div className="relative flex-1 min-w-64">
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                <Input
+                  type="text"
+                  placeholder="Buscar por usuário, ação..."
+                  value={activityFilters.search || ''}
+                  onChange={(e) =>
+                    setActivityFilters({ search: e.target.value })
+                  }
+                  className="input-classical-2 pl-10 w-full"
+                />
+              </div>
+
+              {/* Botão Refresh */}
+              <Button
+                variant="ghost"
+                size="sm"
+                leftIcon={
+                  <FiRefreshCw
+                    className={activitiesLoading ? 'animate-spin' : ''}
+                  />
+                }
+                onClick={handleRefresh}
+                disabled={activitiesLoading}
               >
-                <tab.icon className="w-4 h-4" />
-                <span className="font-medium">{tab.label}</span>
-              </button>
-            ))}
-          </div>
+                {activitiesLoading ? 'Atualizando...' : 'Atualizar'}
+              </Button>
+            </div>
+
+            {/* Info de filtros ativos */}
+            {(activityFilters.search ||
+              activityFilters.type ||
+              activityFilters.period) && (
+              <div className="flex items-center justify-between p-3 mt-4 bg-accent-blue/10 border border-accent-blue rounded-lg">
+                <div className="flex items-center space-x-2 text-sm text-accent-blue">
+                  <FiFilter className="w-4 h-4" />
+                  <span>
+                    Filtros ativos:{' '}
+                    {[
+                      activityFilters.search && `"${activityFilters.search}"`,
+                      activityFilters.type && activityFilters.type,
+                      activityFilters.period &&
+                        periodOptions.find(
+                          (p) => p.value === activityFilters.period
+                        )?.label,
+                    ]
+                      .filter(Boolean)
+                      .join(', ')}
+                  </span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setActivityFilters({})}
+                  leftIcon={<FiX />}
+                >
+                  Limpar Filtros
+                </Button>
+              </div>
+            )}
+          </AnimatedCard>
         </AnimatedItem>
 
-        {/* Content */}
+        {/* Lista de Atividades */}
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard className="classical-card p-8">
-            {activeTab === 'logs' && renderSystemLogs()}
-            {activeTab === 'activities' && renderRecentActivities()}{' '}
-            {/* 🆕 NOVA RENDERIZAÇÃO */}
-            {activeTab === 'stats' && renderStatistics()}
+            {activitiesLoading && activities.length === 0 ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <LoadingSpinner size="lg" />
+                  <p className="text-theme-primary font-medium mt-4">
+                    Carregando atividades...
+                  </p>
+                </div>
+              </div>
+            ) : activities.length === 0 ? (
+              <div className="text-center py-12">
+                <FiActivity className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-theme-primary mb-2">
+                  Nenhuma atividade encontrada
+                </h3>
+                <p className="text-theme-secondary">
+                  Ajuste os filtros para encontrar as atividades desejadas.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {activities.map((activity: ActivityItem) => {
+                  const ActivityIcon = getActivityIcon(activity.type);
+
+                  return (
+                    <div
+                      key={activity.id}
+                      className="p-4 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors"
+                    >
+                      <div className="flex items-start space-x-4">
+                        <div
+                          className={`w-10 h-10 rounded-xl flex items-center justify-center bg-theme-primary ${getActivityColor(
+                            activity.type
+                          )} flex-shrink-0`}
+                        >
+                          <ActivityIcon className="w-5 h-5" />
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <span className="text-xs text-theme-tertiary flex items-center space-x-1">
+                              <FiClock className="w-3 h-3" />
+                              <span>
+                                {getRelativeTime(activity.timestamp.toString())}
+                              </span>
+                            </span>
+                            {activity.status && (
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                                  activity.status
+                                )}`}
+                              >
+                                {activity.status === 'success'
+                                  ? 'Sucesso'
+                                  : activity.status === 'warning'
+                                    ? 'Aviso'
+                                    : 'Erro'}
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="text-theme-primary font-medium mb-2">
+                            <span className="font-bold">
+                              {activity.user.name}
+                            </span>{' '}
+                            {activity.action}
+                            {activity.target && (
+                              <span className="inline-flex items-center space-x-1 ml-1">
+                                <span className="font-semibold truncate">
+                                  {activity.target.name}
+                                </span>
+                              </span>
+                            )}
+                          </p>
+
+                          {/* 🔧 CORREÇÃO DO ERRO TYPESCRIPT */}
+                          {activity.metadata && (
+                            <div className="text-xs text-theme-tertiary">
+                              {Object.entries(activity.metadata)
+                                .filter(
+                                  ([_, value]) => value != null && value !== ''
+                                ) // Filtrar valores inválidos
+                                .map(([key, value]) => (
+                                  <span key={key} className="mr-2">
+                                    {key}: {String(value)}
+                                  </span>
+                                ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Load More */}
+                {activityPagination.hasMore && (
+                  <div className="text-center pt-6">
+                    <Button
+                      variant="secondary"
+                      onClick={loadMoreActivities}
+                      disabled={activitiesLoading}
+                      leftIcon={
+                        activitiesLoading ? (
+                          <FiLoader className="animate-spin" />
+                        ) : undefined
+                      }
+                    >
+                      {activitiesLoading
+                        ? 'Carregando...'
+                        : `Carregar mais (${
+                            activityPagination.total - activities.length
+                          } restantes)`}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
           </AnimatedCard>
         </AnimatedItem>
       </AnimatedContainer>
-
-      {/* Modal de Limpeza */}
-      {showCleanup && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-theme-elevated rounded-2xl max-w-4xl max-h-[90vh] overflow-y-auto w-full">
-            <div className="p-6">
-              <LogsCleanup onClose={() => setShowCleanup(false)} />
-            </div>
-          </div>
-        </div>
-      )}
     </PageContainer>
   );
 }

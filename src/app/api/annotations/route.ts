@@ -1,9 +1,14 @@
-// app/api/annotations/route.ts - VERSÃO COM REVALIDAÇÃO DE CACHE APRIMORADA
+// app/api/annotations/route.ts - COM ACTIVITY TRACKING
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
+import {
+  trackActivity,
+  getRequestInfo,
+  ActivityActions,
+} from '@/app/libs/activityTracker';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,6 +17,9 @@ export async function POST(request: NextRequest) {
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
+
+    // 🆕 EXTRAIR INFO DO REQUEST
+    const requestInfo = getRequestInfo(request);
 
     const body = await request.json();
     const {
@@ -58,7 +66,13 @@ export async function POST(request: NextRequest) {
     // Verificar se a obra existe
     const workExists = await prisma.work.findUnique({
       where: { id: workId },
-      select: { id: true, title: true },
+      select: {
+        id: true,
+        title: true,
+        composer: {
+          select: { name: true },
+        },
+      },
     });
 
     if (!workExists) {
@@ -138,13 +152,31 @@ export async function POST(request: NextRequest) {
       }),
     ]);
 
-    // 🔄 REVALIDAÇÃO DE CACHE AMPLIADA
+    // 🆕 TRACKING
+    trackActivity({
+      userId: session.user.id,
+      type: 'CREATE_ANNOTATION',
+      action: ActivityActions.CREATE_ANNOTATION,
+      entityType: 'annotation',
+      entityId: annotation.id,
+      entityName: annotation.title,
+      metadata: {
+        workTitle: workExists.title,
+        composerName: workExists.composer.name,
+        category: annotation.category,
+        difficulty: annotation.difficulty,
+        isPublic: annotation.isPublic,
+        scope: annotation.scope,
+        contentLength: content.length,
+      },
+      ...requestInfo,
+    });
+
+    // Revalidação de cache
     revalidateTag(`work-annotations-${workId}`);
     revalidateTag(`user-annotations-${session.user.id}`);
     revalidateTag('annotations-popular');
     revalidateTag('annotation-stats');
-
-    // ✅ REVALIDAR CACHE DO PERFIL DO ESTUDANTE
     revalidateTag('student-profile-data');
     revalidateTag(`student-profile-${session.user.id}`);
     revalidateTag('student-dashboard-data');
@@ -182,7 +214,7 @@ export async function POST(request: NextRequest) {
       user: annotation.user,
       work: annotation.work,
       _count: annotation._count,
-      userVote: null, // Para novas anotações, o usuário ainda não votou
+      userVote: null,
     };
 
     return NextResponse.json({
@@ -208,10 +240,9 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get('userId');
     const page = parseInt(searchParams.get('page') || '1');
     const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 50);
-    const sortBy = searchParams.get('sortBy') || 'helpful'; // helpful, recent, oldest
+    const sortBy = searchParams.get('sortBy') || 'helpful';
     const search = searchParams.get('search');
 
-    // Construir filtros
     const where: any = {};
 
     if (workId) where.workId = workId;
@@ -228,7 +259,6 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // Construir ordenação
     let orderBy: any = {};
     switch (sortBy) {
       case 'recent':
@@ -243,7 +273,6 @@ export async function GET(request: NextRequest) {
         break;
     }
 
-    // Buscar anotações com paginação
     const [annotations, totalCount] = await Promise.all([
       prisma.workAnnotation.findMany({
         where,
@@ -284,7 +313,6 @@ export async function GET(request: NextRequest) {
       prisma.workAnnotation.count({ where }),
     ]);
 
-    // Buscar votos do usuário atual (se logado) para todas as anotações
     const session = await getServerSession(authOptions);
     let userVotes: any[] = [];
 
@@ -297,7 +325,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Incrementar view count para as anotações visualizadas
     if (annotations.length > 0) {
       await prisma.workAnnotation.updateMany({
         where: {
@@ -309,7 +336,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Formatar anotações com informações de voto do usuário
     const formattedAnnotations = annotations.map((annotation) => {
       const userVote = userVotes.find(
         (vote) => vote.annotationId === annotation.id
@@ -336,7 +362,7 @@ export async function GET(request: NextRequest) {
         isPublic: annotation.isPublic,
         isVerified: annotation.isVerified,
         helpfulCount: annotation.helpfulCount,
-        viewCount: annotation.viewCount + 1, // Incluir o incremento
+        viewCount: annotation.viewCount + 1,
         createdAt: annotation.createdAt.toISOString(),
         updatedAt: annotation.updatedAt.toISOString(),
         user: annotation.user,

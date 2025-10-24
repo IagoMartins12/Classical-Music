@@ -1,11 +1,17 @@
-// components/ui/Button.tsx
 'use client';
 
 import React from 'react';
 import { BiLoader } from 'react-icons/bi';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'google' | 'delete';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'outline'
+    | 'ghost'
+    | 'google'
+    | 'delete'
+    | 'success';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
@@ -49,6 +55,10 @@ const Button: React.FC<ButtonProps> = ({
     google: `
       bg-white text-gray-700 border border-gray-300 hover:bg-gray-50
       focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+    `,
+    success: `
+      bg-green-600 text-white hover:bg-green-700
+      focus:ring-2 focus:ring-green-500 focus:ring-opacity-50
     `,
   };
 

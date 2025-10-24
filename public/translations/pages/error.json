@@ -15,6 +15,7 @@
     "error_area_title_teacher": "Área do Professor",
     "error_area_title_student": "Área do Estudante",
     "error_area_title_admin": "Painel Administrativo",
+    "error_area_title_blog": "Blog do Opus Atlas",
     "error_area_title_main": "Opus Atlas"
   },
   "en": {
@@ -33,6 +34,8 @@
     "error_area_title_teacher": "Teacher Area",
     "error_area_title_student": "Student Area",
     "error_area_title_admin": "Admin Panel",
+    "error_area_title_blog": "Opus Atlas Blog",
+
     "error_area_title_main": "Opus Atlas"
   }
 }

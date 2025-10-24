@@ -1,10 +1,13 @@
 // contexts/TranslationContext.tsx - Context provider for server translations
 'use client';
 
+import { SkeletonText } from '@/app/components/SkeletonText';
 import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
 import { Language } from '@/app/utils/translations/serverTranslations';
 import React, {
   createContext,
+  createElement,
+  JSX,
   useCallback,
   useContext,
   useEffect,
@@ -178,7 +181,7 @@ interface UseTranslationOptions {
 }
 
 interface UseTranslationResult {
-  t: (key: string, params?: Record<string, string | number>) => string;
+  t: (key: string, params?: Record<string, string | number>) => string | any;
   tSection: (
     section: string,
     key: string,
@@ -306,7 +309,15 @@ function useOriginalTranslation(
 
   // Função principal de tradução
   const t = useCallback(
-    (key: string, params?: Record<string, string | number>): string => {
+    (
+      key: string,
+      params?: Record<string, string | number>
+    ): string | JSX.Element => {
+      // Mostrar skeleton se ainda estiver carregando
+      if (isLoading && sections?.length) {
+        return createElement(SkeletonText, { width: 'w-24', height: 'h-5' });
+      }
+
       if (key.includes(':')) {
         const [section, actualKey] = key.split(':', 2);
         return tSection(section, actualKey, params);
@@ -332,7 +343,7 @@ function useOriginalTranslation(
 
       return formatKeyAsFallback(key);
     },
-    [defaultSection, loadedSections, tSection]
+    [defaultSection, loadedSections, tSection, isLoading, sections]
   );
 
   const changeLanguage = useCallback(

@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { FiX, FiChevronDown, FiSearch, FiCheck } from 'react-icons/fi';
+import { FiX, FiChevronDown, FiSearch, FiCheck, FiPlus } from 'react-icons/fi';
 
 interface MultiSelectProps {
   label: string;
@@ -13,7 +13,8 @@ interface MultiSelectProps {
   maxDisplay?: number;
   isDisabled?: boolean;
   error?: string;
-  excludeValues?: string[]; // ✅ NOVO: Para excluir valores (ex: primaryRole)
+  excludeValues?: string[];
+  allowCreate?: boolean; // ✅ NOVO: Permitir criar novos itens
 }
 
 export default function MultiSelect({
@@ -25,7 +26,8 @@ export default function MultiSelect({
   maxDisplay = 10,
   isDisabled = false,
   error,
-  excludeValues = [], // ✅ NOVO
+  excludeValues = [],
+  allowCreate = false, // ✅ NOVO: Padrão false
 }: MultiSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -34,24 +36,20 @@ export default function MultiSelect({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // ✅ CORREÇÃO: Usar useMemo para estabilizar excludeValues
   const stableExcludeValues = useMemo(
     () => excludeValues,
     [excludeValues.join(',')]
   );
 
-  // ✅ CORREÇÃO: Usar useMemo para computar as opções filtradas
   const computedFilteredOptions = useMemo(() => {
     let filtered = options;
 
-    // Excluir valores especificados (ex: primaryRole)
     if (stableExcludeValues.length > 0) {
       filtered = filtered.filter(
         (option) => !stableExcludeValues.includes(option)
       );
     }
 
-    // Aplicar filtro de busca
     if (!searchTerm.trim()) {
       return filtered;
     } else {
@@ -61,12 +59,10 @@ export default function MultiSelect({
     }
   }, [options, searchTerm, stableExcludeValues]);
 
-  // ✅ CORREÇÃO: Usar useEffect apenas para sincronizar o estado
   useEffect(() => {
     setFilteredOptions(computedFilteredOptions);
   }, [computedFilteredOptions]);
 
-  // Fechar dropdown ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -95,19 +91,19 @@ export default function MultiSelect({
 
   const handleRemoveSelected = (option: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault(); // ✅ CORREÇÃO: Prevenir submissão do form
+    e.preventDefault();
     onChange(selectedValues.filter((val) => val !== option));
   };
 
   const handleClearAll = (e: React.MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault(); // ✅ CORREÇÃO: Prevenir submissão do form
+    e.preventDefault();
     onChange([]);
   };
 
   const handleToggleDropdown = (e?: React.MouseEvent) => {
     if (e) {
-      e.preventDefault(); // ✅ CORREÇÃO: Prevenir submissão do form
+      e.preventDefault();
       e.stopPropagation();
     }
     if (!isDisabled) {
@@ -119,9 +115,37 @@ export default function MultiSelect({
   };
 
   const handleOptionClick = (option: string, e: React.MouseEvent) => {
-    e.preventDefault(); // ✅ CORREÇÃO: Prevenir submissão do form
+    e.preventDefault();
     e.stopPropagation();
     handleToggleOption(option);
+  };
+
+  // ✅ NOVO: Criar novo item ao pressionar Enter
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+
+      if (!allowCreate || !searchTerm.trim()) return;
+
+      const newValue = searchTerm.trim();
+
+      // Verificar se já existe
+      const exists =
+        options.some((opt) => opt.toLowerCase() === newValue.toLowerCase()) ||
+        selectedValues.includes(newValue);
+
+      if (!exists) {
+        // Adicionar aos selecionados
+        onChange([...selectedValues, newValue]);
+        setSearchTerm('');
+      } else {
+        // Se já existe, apenas selecionar
+        if (!selectedValues.includes(newValue)) {
+          onChange([...selectedValues, newValue]);
+        }
+        setSearchTerm('');
+      }
+    }
   };
 
   return (
@@ -136,11 +160,7 @@ export default function MultiSelect({
         className={`
           relative cursor-pointer border rounded-xl px-4 py-3 bg-theme-elevated
           transition-all duration-200 min-h-[48px] flex items-center
-          ${
-            isDisabled
-              ? 'cursor-not-allowed opacity-50'
-              : 'hover:border-brand-primary/50'
-          }
+          ${isDisabled ? 'cursor-not-allowed opacity-50' : 'hover:border-brand-primary/50'}
           ${error ? 'border-red-300' : 'border-theme-secondary'}
           ${isOpen ? 'border-brand-primary ring-2 ring-brand-primary/20' : ''}
         `}
@@ -158,7 +178,7 @@ export default function MultiSelect({
               >
                 {value}
                 <button
-                  type="button" // ✅ CORREÇÃO: Adicionar type="button"
+                  type="button"
                   onClick={(e) => handleRemoveSelected(value, e)}
                   className="hover:bg-brand-primary/20 rounded p-0.5 transition-colors"
                   disabled={isDisabled}
@@ -176,7 +196,7 @@ export default function MultiSelect({
                 >
                   {value}
                   <button
-                    type="button" // ✅ CORREÇÃO: Adicionar type="button"
+                    type="button"
                     onClick={(e) => handleRemoveSelected(value, e)}
                     className="hover:bg-brand-primary/20 rounded p-0.5 transition-colors"
                     disabled={isDisabled}
@@ -196,7 +216,7 @@ export default function MultiSelect({
         <div className="flex items-center gap-1">
           {selectedValues.length > 0 && (
             <button
-              type="button" // ✅ CORREÇÃO: Adicionar type="button"
+              type="button"
               onClick={handleClearAll}
               className="p-1 hover:bg-theme-secondary/20 rounded transition-colors"
               disabled={isDisabled}
@@ -205,9 +225,7 @@ export default function MultiSelect({
             </button>
           )}
           <FiChevronDown
-            className={`w-4 h-4 text-theme-tertiary transition-transform ${
-              isOpen ? 'rotate-180' : ''
-            }`}
+            className={`w-4 h-4 text-theme-tertiary transition-transform ${isOpen ? 'rotate-180' : ''}`}
           />
         </div>
       </div>
@@ -228,15 +246,14 @@ export default function MultiSelect({
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Buscar opções..."
+                placeholder={
+                  allowCreate
+                    ? 'Buscar ou criar nova opção (Enter)...'
+                    : 'Buscar opções...'
+                }
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyDown={(e) => {
-                  // ✅ CORREÇÃO: Prevenir submissão do form ao pressionar Enter
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                  }
-                }}
+                onKeyDown={handleKeyDown}
                 className="w-full pl-10 pr-4 py-2 bg-theme-primary border border-theme-secondary rounded-lg text-sm focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
               />
             </div>
@@ -244,14 +261,38 @@ export default function MultiSelect({
 
           {/* Options List */}
           <div className="max-h-48 overflow-y-auto">
-            {filteredOptions.length === 0 ? (
+            {/* ✅ NOVO: Botão para criar novo item */}
+            {allowCreate &&
+              searchTerm.trim() &&
+              !filteredOptions.some(
+                (opt) => opt.toLowerCase() === searchTerm.toLowerCase()
+              ) && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const newValue = searchTerm.trim();
+                    onChange([...selectedValues, newValue]);
+                    setSearchTerm('');
+                  }}
+                  className="w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 flex items-center gap-2 border-b border-theme-secondary/50 bg-green-50 dark:bg-green-900/20"
+                >
+                  <FiPlus className="w-4 h-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-600">
+                    Criar &quot;{searchTerm}&quot; e adicionar
+                  </span>
+                </button>
+              )}
+
+            {filteredOptions.length === 0 &&
+            (!allowCreate || !searchTerm.trim()) ? (
               <div className="px-4 py-8 text-center">
                 <p className="text-sm capitalize text-theme-secondary">
                   {searchTerm
                     ? `Nenhuma opção encontrada para "${searchTerm}"`
                     : stableExcludeValues.length > 0
-                    ? 'Todas as opções disponíveis já foram selecionadas ou excluídas'
-                    : 'Nenhuma opção disponível'}
+                      ? 'Todas as opções disponíveis já foram selecionadas ou excluídas'
+                      : 'Nenhuma opção disponível'}
                 </p>
               </div>
             ) : (
@@ -260,16 +301,12 @@ export default function MultiSelect({
                 return (
                   <button
                     key={option}
-                    type="button" // ✅ CORREÇÃO: Adicionar type="button"
+                    type="button"
                     onClick={(e) => handleOptionClick(option, e)}
                     className={`
                       w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 
                       flex items-center justify-between border-b last:border-b-0 border-theme-secondary/50
-                      ${
-                        isSelected
-                          ? 'bg-brand-primary/5 text-brand-primary'
-                          : 'text-theme-primary'
-                      }
+                      ${isSelected ? 'bg-brand-primary/5 text-brand-primary' : 'text-theme-primary'}
                     `}
                   >
                     <span className="text-sm capitalize">{option}</span>

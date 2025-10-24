@@ -1,3 +1,4 @@
+//api/admin/users/route
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -264,14 +265,14 @@ const getCachedUserAnalytics = (period: TimePeriod) =>
         period === '7d'
           ? 7
           : period === '30d'
-          ? 30
-          : period === '3m'
-          ? 90
-          : period === '6m'
-          ? 180
-          : period === '1y'
-          ? 365
-          : 30;
+            ? 30
+            : period === '3m'
+              ? 90
+              : period === '6m'
+                ? 180
+                : period === '1y'
+                  ? 365
+                  : 30;
       const groupByDays = timelineDays > 90 ? 7 : timelineDays > 30 ? 3 : 1; // Agrupar por semana se > 90 dias
 
       const userGrowth = await Promise.all(
@@ -319,27 +320,23 @@ const getCachedUserAnalytics = (period: TimePeriod) =>
       );
 
       // Métricas de engajamento e retenção
-      const [
-        avgAnnotationsPerUser,
-        avgUploadsPerUser,
-        usersWithUploads,
-      ] = await Promise.all([
-        prisma.user.aggregate({
-          _avg: { totalAnnotationsCount: true },
-          where: periodStart ? { createdAt: { gte: periodStart } } : {},
-        }),
-        prisma.user.aggregate({
-          _avg: { totalUploads: true },
-          where: periodStart ? { createdAt: { gte: periodStart } } : {},
-        }),
-        prisma.user.count({
-          where: {
-            totalUploads: { gt: 0 },
-            ...(periodStart && { createdAt: { gte: periodStart } }),
-          },
-        }),
-     
-      ]);
+      const [avgAnnotationsPerUser, avgUploadsPerUser, usersWithUploads] =
+        await Promise.all([
+          prisma.user.aggregate({
+            _avg: { totalAnnotationsCount: true },
+            where: periodStart ? { createdAt: { gte: periodStart } } : {},
+          }),
+          prisma.user.aggregate({
+            _avg: { totalUploads: true },
+            where: periodStart ? { createdAt: { gte: periodStart } } : {},
+          }),
+          prisma.user.count({
+            where: {
+              totalUploads: { gt: 0 },
+              ...(periodStart && { createdAt: { gte: periodStart } }),
+            },
+          }),
+        ]);
 
       // Calcular métricas derivadas
       const totalPeriodUsers = periodStart ? newUsersPeriod : totalUsers;
@@ -917,8 +914,8 @@ export async function PATCH(request: NextRequest) {
         newRole === 1 && currentRole !== 1
           ? 'Usuário promovido a professor. Email de convite enviado!'
           : newRole !== 1 && currentRole === 1
-          ? 'Usuário removido do cargo de professor'
-          : 'Usuário atualizado com sucesso',
+            ? 'Usuário removido do cargo de professor'
+            : 'Usuário atualizado com sucesso',
       teacherProfileCreated: newRole === 1 && currentRole !== 1,
       teacherProfileDeactivated: newRole !== 1 && currentRole === 1,
       inviteEmailSent: shouldSendTeacherInvite,

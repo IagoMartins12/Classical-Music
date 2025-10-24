@@ -776,3 +776,147 @@ body {
     transform: translateY(-10px);
   }
 }
+
+/* Focus Mode */
+body.focus-mode .navbar-classical,
+body.focus-mode footer,
+body.focus-mode .related-articles,
+body.focus-mode .comment-section {
+  opacity: 0.3;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+body.focus-mode .navbar-classical:hover,
+body.focus-mode footer:hover {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Loading skeleton animation */
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.loading-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 25%,
+    var(--interactive-hover) 50%,
+    var(--bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.ProseMirror img {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ProseMirror img:hover {
+  opacity: 0.9;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ProseMirror .image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.ProseMirror .image-controls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: none;
+  background: white;
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.ProseMirror .image-wrapper:hover .image-controls {
+  display: flex;
+  gap: 4px;
+}
+
+/* Smooth scrolling no carrossel */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+/* Snap scroll */
+.snap-x {
+  scroll-snap-type: x mandatory;
+}
+
+.snap-start {
+  scroll-snap-align: start;
+}
+
+/* Hide scrollbar mas mantém funcionalidade */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* app/globals.css - Adicionar isso */
+
+@keyframes gradient-move {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.opus-atlas-gradient {
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #d4af37 25%,
+    #ffd700 50%,
+    #d4af37 75%,
+    #ffffff 100%
+  );
+  background-size: 200% 200%;
+  animation: gradient-move 3s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+/* Dark mode: inverter cores */
+[data-theme='dark'] .opus-atlas-gradient {
+  background: linear-gradient(
+    90deg,
+    #d4af37 0%,
+    #ffd700 25%,
+    #ffffff 50%,
+    #ffd700 75%,
+    #d4af37 100%
+  );
+  background-size: 200% 200%;
+  animation: gradient-move 3s ease infinite;
+}

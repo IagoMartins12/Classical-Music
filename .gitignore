@@ -20,6 +20,8 @@
 # production
 /build
 
+
+
 # misc
 .DS_Store
 *.pem
@@ -37,6 +39,7 @@ yarn-error.log*
 .scraper-composers-state.log
 classical-music/scraper-composers-state.log
 
+credentials/
 backups/
 public/uploads
 mobile/

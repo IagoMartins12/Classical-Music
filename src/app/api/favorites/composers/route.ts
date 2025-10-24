@@ -1,9 +1,14 @@
-// app/api/favorites/composers/route.ts
+// app/api/favorites/composers/route.ts - COM ACTIVITY TRACKING
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
+import {
+  trackActivity,
+  getRequestInfo,
+  ActivityActions,
+} from '@/app/libs/activityTracker';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,18 +19,19 @@ export async function POST(request: NextRequest) {
     }
 
     const { composerId, action } = await request.json();
+    const requestInfo = getRequestInfo(request);
 
     if (!composerId || !action) {
       return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 });
     }
 
-    // Verificar se o compositor existe
-    const composerExists = await prisma.composer.findUnique({
+    // Buscar compositor para tracking
+    const composer = await prisma.composer.findUnique({
       where: { id: composerId },
-      select: { id: true },
+      select: { id: true, name: true, fullName: true, epochName: true },
     });
 
-    if (!composerExists) {
+    if (!composer) {
       return NextResponse.json(
         { error: 'Compositor não encontrado' },
         { status: 404 }
@@ -33,7 +39,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (action === 'add') {
-      // Adicionar aos favoritos (upsert para evitar duplicatas)
       const favorite = await prisma.favoriteComposer.upsert({
         where: {
           userId_composerId: {
@@ -41,7 +46,7 @@ export async function POST(request: NextRequest) {
             composerId: composerId,
           },
         },
-        update: {}, // Se já existe, não faz nada
+        update: {},
         create: {
           userId: session.user.id,
           composerId: composerId,
@@ -59,7 +64,20 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Invalidar caches relacionados
+      // 🆕 TRACKING
+      trackActivity({
+        userId: session.user.id,
+        type: 'FAVORITE_COMPOSER',
+        action: ActivityActions.FAVORITE_COMPOSER,
+        entityType: 'composer',
+        entityId: composerId,
+        entityName: composer.fullName || composer.name,
+        metadata: {
+          epochName: composer.epochName,
+        },
+        ...requestInfo,
+      });
+
       revalidateTag(`user-favorites-${session.user.id}`);
       revalidateTag(`composer-favorites-${composerId}`);
       revalidateTag('user-favorites');
@@ -75,7 +93,6 @@ export async function POST(request: NextRequest) {
         },
       });
     } else if (action === 'remove') {
-      // Remover dos favoritos
       await prisma.favoriteComposer.deleteMany({
         where: {
           userId: session.user.id,
@@ -83,7 +100,20 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Invalidar caches relacionados
+      // 🆕 TRACKING
+      trackActivity({
+        userId: session.user.id,
+        type: 'UNFAVORITE_COMPOSER',
+        action: ActivityActions.UNFAVORITE_COMPOSER,
+        entityType: 'composer',
+        entityId: composerId,
+        entityName: composer.fullName || composer.name,
+        metadata: {
+          epochName: composer.epochName,
+        },
+        ...requestInfo,
+      });
+
       revalidateTag(`user-favorites-${session.user.id}`);
       revalidateTag(`composer-favorites-${composerId}`);
       revalidateTag('user-favorites');
@@ -116,7 +146,6 @@ export async function GET(request: NextRequest) {
     const composerId = searchParams.get('composerId');
 
     if (composerId) {
-      // Verificar se um compositor específico está favoritado
       const favorite = await prisma.favoriteComposer.findFirst({
         where: {
           userId: session.user.id,
@@ -148,7 +177,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Buscar todos os compositores favoritos do usuário
     const favorites = await prisma.favoriteComposer.findMany({
       where: {
         userId: session.user.id,

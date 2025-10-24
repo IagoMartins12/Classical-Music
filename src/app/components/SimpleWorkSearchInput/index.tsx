@@ -22,7 +22,7 @@ interface Work {
 
 interface SimpleWorkSearchInputProps {
   selectedWork: string;
-  onWorkSelect: (workId: string) => void;
+  onWorkSelect: (workId: string, data?: any) => void;
   placeholder?: string;
   error?: string;
   disabled?: boolean;
@@ -169,7 +169,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
 
       // Se limpar completamente, limpar seleção
       if (value.length === 0 && selectedWorkData) {
-        onWorkSelect('');
+        onWorkSelect('', null);
         setSelectedWorkData(null);
         // 🆕 Mostrar sugestões quando limpar
         setWorks(userSuggestions.slice(0, 8));
@@ -269,7 +269,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   const handleWorkSelect = useCallback(
     (work: Work) => {
       console.log('🎯 [SIMPLE-WORK-SEARCH] Obra selecionada:', work.title);
-      onWorkSelect(work.id);
+      onWorkSelect(work.id, work);
       setSelectedWorkData(work);
       setQuery('');
       setIsOpen(false);
@@ -280,7 +280,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
 
   const handleClearSelection = useCallback(() => {
     console.log('🗑️ [SIMPLE-WORK-SEARCH] Limpando seleção');
-    onWorkSelect('');
+    onWorkSelect('', null);
     setSelectedWorkData(null);
     setQuery('');
     setIsOpen(false);
@@ -464,8 +464,8 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                     {query.length >= 2
                       ? `Nenhuma obra encontrada para "${query}"`
                       : userSuggestions.length === 0
-                      ? 'Nenhuma sugestão disponível'
-                      : 'Digite pelo menos 2 caracteres para buscar'}
+                        ? 'Nenhuma sugestão disponível'
+                        : 'Digite pelo menos 2 caracteres para buscar'}
                   </p>
                   {query.length >= 2 && (
                     <p className="text-xs mt-1">Tente termos diferentes</p>

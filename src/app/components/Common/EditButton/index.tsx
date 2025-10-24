@@ -5,7 +5,7 @@ import { FiEdit } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 
 interface EditButtonProps {
-  entityType: 'composer' | 'work' | 'score';
+  entityType: 'composer' | 'work' | 'score' | 'article';
   entityId: string;
   variant?: 'primary' | 'secondary' | 'ghost' | 'minimal';
   size?: 'sm' | 'md' | 'lg';
@@ -23,7 +23,11 @@ export default function EditButton({
   const router = useRouter();
 
   const goToEditPage = () => {
-    const url = `/uploads/${entityType}/${entityId}/edit`;
+    let url = `/uploads/${entityType}/${entityId}/edit`;
+
+    if (entityType === 'article') {
+      url = `/blog/admin/articles/${entityId}/edit`;
+    }
     router.push(url);
   };
 
@@ -53,7 +57,7 @@ export default function EditButton({
                     }
                     rounded-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group
                   `}
-        title="Reportar"
+        title="Editar"
       >
         <FiEdit
           className={`${iconSizes[size]} group-hover:rotate-12 transition-transform duration-300`}

@@ -1,9 +1,14 @@
-// app/api/annotations/[annotationId]/route.ts - COM REVALIDAÇÃO DE CACHE APRIMORADA
+// app/api/annotations/[annotationId]/route.ts - COM ACTIVITY TRACKING
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
+import {
+  trackActivity,
+  getRequestInfo,
+  ActivityActions,
+} from '@/app/libs/activityTracker';
 
 // PATCH - Atualizar anotação
 export async function PATCH(
@@ -17,17 +22,25 @@ export async function PATCH(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
+    // 🆕 EXTRAIR INFO DO REQUEST
+    const requestInfo = getRequestInfo(request);
+
     const { annotationId } = await params;
     const body = await request.json();
-
-    console.log('🔧 PATCH /api/annotations/[annotationId] - ID:', annotationId);
-    console.log('🔧 PATCH Body:', body);
 
     // Verificar se a anotação existe e pertence ao usuário
     const existingAnnotation = await prisma.workAnnotation.findFirst({
       where: {
         id: annotationId,
         userId: session.user.id,
+      },
+      include: {
+        work: {
+          select: {
+            title: true,
+            composer: { select: { name: true } },
+          },
+        },
       },
     });
 
@@ -38,7 +51,6 @@ export async function PATCH(
       );
     }
 
-    // Atualizar apenas campos permitidos
     const allowedFields = [
       'title',
       'content',
@@ -64,15 +76,12 @@ export async function PATCH(
       }
     }
 
-    // Trimmar strings antes de salvar
     if (updateData.title) updateData.title = updateData.title.trim();
     if (updateData.content) updateData.content = updateData.content.trim();
     if (updateData.movement) updateData.movement = updateData.movement.trim();
     if (updateData.section) updateData.section = updateData.section.trim();
     if (updateData.instrument)
       updateData.instrument = updateData.instrument.trim();
-
-    console.log('🔧 Update data:', updateData);
 
     const updatedAnnotation = await prisma.workAnnotation.update({
       where: { id: annotationId },
@@ -109,7 +118,7 @@ export async function PATCH(
       },
     });
 
-    // Buscar voto do usuário atual para esta anotação
+    // Buscar voto do usuário atual
     const userVote = await prisma.annotationHelpfulVote.findUnique({
       where: {
         userId_annotationId: {
@@ -119,22 +128,32 @@ export async function PATCH(
       },
     });
 
-    // 🔄 REVALIDAÇÃO DE CACHE AMPLIADA
+    // 🆕 TRACKING
+    trackActivity({
+      userId: session.user.id,
+      type: 'UPDATE_ANNOTATION',
+      action: ActivityActions.UPDATE_ANNOTATION,
+      entityType: 'annotation',
+      entityId: annotationId,
+      entityName: updatedAnnotation.title,
+      metadata: {
+        workTitle: updatedAnnotation.work.title,
+        composerName: updatedAnnotation.work.composer.name,
+        category: updatedAnnotation.category,
+        fieldsUpdated: Object.keys(updateData),
+      },
+      ...requestInfo,
+    });
+
+    // Revalidação de cache
     revalidateTag(`work-annotations-${updatedAnnotation.workId}`);
     revalidateTag(`user-annotations-${session.user.id}`);
     revalidateTag('user-annotations');
-
-    // ✅ REVALIDAR CACHE DO PERFIL DO ESTUDANTE
     revalidateTag('student-profile-data');
     revalidateTag(`student-profile-${session.user.id}`);
     revalidateTag('student-dashboard-data');
     revalidateTag(`student-dashboard-${session.user.id}`);
 
-    console.log(
-      `🔄 Cache revalidated for annotation UPDATE - User: ${session.user.id}, Work: ${updatedAnnotation.workId}`
-    );
-
-    // Formatar resposta corretamente
     const formattedAnnotation = {
       id: updatedAnnotation.id,
       userId: updatedAnnotation.userId,
@@ -165,8 +184,6 @@ export async function PATCH(
       userVote: userVote ? userVote.isHelpful : null,
     };
 
-    console.log('✅ Anotação atualizada com sucesso:', formattedAnnotation.id);
-
     return NextResponse.json({
       success: true,
       annotation: formattedAnnotation,
@@ -192,18 +209,24 @@ export async function DELETE(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    const { annotationId } = await params;
+    // 🆕 EXTRAIR INFO DO REQUEST
+    const requestInfo = getRequestInfo(request);
 
-    console.log(
-      '🗑️ DELETE /api/annotations/[annotationId] - ID:',
-      annotationId
-    );
+    const { annotationId } = await params;
 
     // Verificar se a anotação existe e pertence ao usuário
     const existingAnnotation = await prisma.workAnnotation.findFirst({
       where: {
         id: annotationId,
         userId: session.user.id,
+      },
+      include: {
+        work: {
+          select: {
+            title: true,
+            composer: { select: { name: true } },
+          },
+        },
       },
     });
 
@@ -214,7 +237,15 @@ export async function DELETE(
       );
     }
 
-    // Deletar anotação (cascade deletará votos e respostas)
+    // 🆕 SALVAR DADOS ANTES DE DELETAR
+    const annotationData = {
+      title: existingAnnotation.title,
+      workTitle: existingAnnotation.work.title,
+      composerName: existingAnnotation.work.composer.name,
+      category: existingAnnotation.category,
+    };
+
+    // Deletar anotação
     await prisma.workAnnotation.delete({
       where: { id: annotationId },
     });
@@ -235,22 +266,30 @@ export async function DELETE(
       }),
     ]);
 
-    // 🔄 REVALIDAÇÃO DE CACHE AMPLIADA
+    // 🆕 TRACKING
+    trackActivity({
+      userId: session.user.id,
+      type: 'DELETE_ANNOTATION',
+      action: ActivityActions.DELETE_ANNOTATION,
+      entityType: 'annotation',
+      entityId: annotationId,
+      entityName: annotationData.title,
+      metadata: {
+        workTitle: annotationData.workTitle,
+        composerName: annotationData.composerName,
+        category: annotationData.category,
+      },
+      ...requestInfo,
+    });
+
+    // Revalidação de cache
     revalidateTag(`work-annotations-${existingAnnotation.workId}`);
     revalidateTag(`user-annotations-${session.user.id}`);
     revalidateTag('user-annotations');
-
-    // ✅ REVALIDAR CACHE DO PERFIL DO ESTUDANTE
     revalidateTag('student-profile-data');
     revalidateTag(`student-profile-${session.user.id}`);
     revalidateTag('student-dashboard-data');
     revalidateTag(`student-dashboard-${session.user.id}`);
-
-    console.log(
-      `🔄 Cache revalidated for annotation DELETE - User: ${session.user.id}, Work: ${existingAnnotation.workId}`
-    );
-
-    console.log('✅ Anotação deletada com sucesso:', annotationId);
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -270,8 +309,6 @@ export async function GET(
   try {
     const session = await getServerSession(authOptions);
     const { annotationId } = await params;
-
-    console.log('🔍 GET /api/annotations/[annotationId] - ID:', annotationId);
 
     const annotation = await prisma.workAnnotation.findUnique({
       where: { id: annotationId },
@@ -314,7 +351,6 @@ export async function GET(
       );
     }
 
-    // Verificar se é pública ou se o usuário é o dono
     if (!annotation.isPublic && annotation.userId !== session?.user?.id) {
       return NextResponse.json(
         { error: 'Anotação não encontrada' },
@@ -322,7 +358,6 @@ export async function GET(
       );
     }
 
-    // Buscar voto do usuário atual
     let userVote = null;
     if (session?.user?.id) {
       const vote = await prisma.annotationHelpfulVote.findUnique({
@@ -336,7 +371,6 @@ export async function GET(
       userVote = vote ? vote.isHelpful : null;
     }
 
-    // Incrementar view count
     await prisma.workAnnotation.update({
       where: { id: annotationId },
       data: { viewCount: { increment: 1 } },

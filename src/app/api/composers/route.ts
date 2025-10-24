@@ -1,4 +1,4 @@
-// app/api/composers/route.ts - VERSÃO MELHORADA COM BUSCA POR permLinkImslp
+// app/api/composers/route.ts - CORRIGIDO COM CAMPOS DO SCHEMA
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/libs/prismadb';
 
@@ -25,38 +25,118 @@ const FAMOUS_COMPOSERS = [
   'Joseph Haydn',
 ];
 
-// Método GET (mantido para compatibilidade)
+// ✅ Define quais campos retornar baseado em fullData
+function getComposerSelect(fullData: boolean = false) {
+  if (fullData) {
+    // Retorna TODOS os campos disponíveis no schema
+    return {
+      id: true,
+      name: true,
+      fullName: true,
+      alternativeNames: true,
+      imslpId: true,
+      portraitUrl: true,
+      epochName: true,
+      birthDate: true,
+      deathDate: true,
+      nationality: true,
+      instruments: true,
+      bio: true,
+      permLinkImslp: true,
+      wikipediaLink: true,
+      epoch: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      _count: {
+        select: {
+          works: true,
+        },
+      },
+    };
+  } else {
+    // Retorna apenas campos básicos (modo leve)
+    return {
+      id: true,
+      name: true,
+      fullName: true,
+      imslpId: true,
+      portraitUrl: true,
+      epochName: true,
+      _count: {
+        select: {
+          works: true,
+        },
+      },
+    };
+  }
+}
+
+// ✅ Formata a resposta baseado em fullData
+function formatComposerResponse(composer: any, fullData: boolean = false) {
+  const baseResponse = {
+    id: composer.id,
+    name: composer.name,
+    fullName: composer.fullName || undefined,
+    imslpId: composer.imslpId || undefined,
+    worksCount: composer._count?.works || 0,
+    portraitUrl: composer.portraitUrl || undefined,
+    epochName: composer.epochName || undefined,
+  };
+
+  if (!fullData) {
+    return baseResponse;
+  }
+
+  // Adiciona todos os campos extras quando fullData = true
+  return {
+    ...baseResponse,
+    alternativeNames: composer.alternativeNames || undefined,
+    epoch: composer.epoch || undefined,
+    birthDate: composer.birthDate || undefined,
+    deathDate: composer.deathDate || undefined,
+    nationality: composer.nationality || undefined,
+    instruments: composer.instruments || undefined,
+    bio: composer.bio || undefined,
+    permLinkImslp: composer.permLinkImslp || undefined,
+    wikipediaLink: composer.wikipediaLink || undefined,
+  };
+}
+
+// Método GET
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const searchTerm = searchParams.get('q') || '';
     const composerId = searchParams.get('id') || '';
     const permLinkImslp = searchParams.get('imslpId') || '';
-    const limit = parseInt(searchParams.get('limit') || '20');
     const workId = searchParams.get('workId') || '';
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const fullData = searchParams.get('fullData') === 'true';
 
-    // Se tem imslpId, busca compositor por imslpId
+    console.log('📡 GET /api/composers - fullData:', fullData);
+
     if (permLinkImslp) {
-      const composer = await getComposerByImslpId(permLinkImslp);
+      const composer = await getComposerByImslpId(permLinkImslp, fullData);
       return NextResponse.json(composer);
     }
 
-    // Se tem ID, busca compositor específico
     if (composerId) {
-      const composer = await getComposerById(composerId);
+      const composer = await getComposerById(composerId, fullData);
       return NextResponse.json(composer);
     }
 
     if (workId) {
-      const composer = await getComposerByWorkId(workId);
+      const composer = await getComposerByWorkId(workId, fullData);
       return NextResponse.json(composer);
     }
 
-    // Senão, faz busca normal
-    const composers = await searchComposers(searchTerm, limit);
+    const composers = await searchComposers(searchTerm, limit, fullData);
     return NextResponse.json(composers);
   } catch (error) {
-    console.error('Erro ao buscar compositores (GET):', error);
+    console.error('❌ Erro ao buscar compositores (GET):', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
@@ -64,7 +144,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Método POST (implementação melhorada)
+// Método POST
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -74,25 +154,27 @@ export async function POST(request: NextRequest) {
       workId: workId = '',
       permLinkImslp = '',
       limit = 20,
+      fullData = false,
     } = body;
 
-    // 🆕 NOVO: Se tem permLinkImslp, busca compositor por imslpId
+    console.log('📡 POST /api/composers - fullData:', fullData);
+
     if (permLinkImslp) {
-      const composer = await getComposerByImslpId(permLinkImslp);
+      const composer = await getComposerByImslpId(permLinkImslp, fullData);
       return NextResponse.json(composer);
     }
 
-    // Se tem ID, busca compositor específico
     if (composerId) {
-      const composer = await getComposerById(composerId);
+      const composer = await getComposerById(composerId, fullData);
       return NextResponse.json(composer);
     }
+
     if (workId) {
-      const composer = await getComposerByWorkId(workId);
+      const composer = await getComposerByWorkId(workId, fullData);
       return NextResponse.json(composer);
     }
-    // Senão, faz busca normal
-    const composers = await searchComposers(searchTerm, limit);
+
+    const composers = await searchComposers(searchTerm, limit, fullData);
     console.log(
       '📊 Busca concluída:',
       composers.length,
@@ -108,10 +190,11 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 🆕 NOVA: Função para buscar compositor por imslpId
-async function getComposerByImslpId(imslpId: string) {
+async function getComposerByImslpId(
+  imslpId: string,
+  fullData: boolean = false
+) {
   try {
-    // Limpar e normalizar o imslpId antes de buscar
     const cleanedImslpId = cleanImslpId(imslpId);
     console.log('🔍 Buscando compositor por imslpId:', cleanedImslpId);
 
@@ -119,24 +202,7 @@ async function getComposerByImslpId(imslpId: string) {
       where: {
         imslpId: cleanedImslpId,
       },
-      select: {
-        id: true,
-        name: true,
-        fullName: true,
-        alternativeNames: true,
-        imslpId: true,
-        epoch: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        _count: {
-          select: {
-            works: true,
-          },
-        },
-      },
+      select: getComposerSelect(fullData),
     });
 
     if (!composer) {
@@ -145,37 +211,24 @@ async function getComposerByImslpId(imslpId: string) {
     }
 
     console.log('✅ Compositor encontrado por imslpId:', composer.name);
-    return {
-      id: composer.id,
-      name: composer.name,
-      fullName: composer.fullName || undefined,
-      alternativeNames: composer.alternativeNames || undefined,
-      imslpId: composer.imslpId || undefined,
-      worksCount: composer._count.works,
-      epoch: composer.epoch || undefined,
-    };
+    if (fullData) {
+      console.log('📊 Retornando dados completos');
+    }
+
+    return formatComposerResponse(composer, fullData);
   } catch (error) {
     console.error('❌ Erro ao buscar compositor por imslpId:', error);
     return null;
   }
 }
 
-/**
- * Limpa e normaliza o imslpId antes de buscar no banco
- * @param imslpId - ID do IMSLP a ser limpo
- * @returns ID limpo e normalizado
- */
 function cleanImslpId(imslpId: string): string {
   if (!imslpId) return '';
 
   try {
-    // Decodificar caracteres URL (ex: %C3%A9 -> é)
     let cleaned = decodeURIComponent(imslpId);
-
-    // Remover espaços extras
     cleaned = cleaned.trim();
 
-    // Garantir que tenha o formato correto
     if (!cleaned.startsWith('Category:')) {
       cleaned = `Category:${cleaned}`;
     }
@@ -184,7 +237,6 @@ function cleanImslpId(imslpId: string): string {
     return cleaned;
   } catch (error) {
     console.error('❌ Erro ao limpar imslpId:', error);
-    // Se der erro na decodificação, tentar uma limpeza básica
     let cleaned = imslpId.trim();
     if (!cleaned.startsWith('Category:')) {
       cleaned = `Category:${cleaned}`;
@@ -193,12 +245,15 @@ function cleanImslpId(imslpId: string): string {
   }
 }
 
-// Função auxiliar para buscar compositores
-async function searchComposers(searchTerm: string, limit: number) {
+async function searchComposers(
+  searchTerm: string,
+  limit: number,
+  fullData: boolean = false
+) {
   let composers;
 
   if (!searchTerm.trim()) {
-    // Se não há busca, retorna compositores populares
+    // Compositores populares
     composers = await prisma.composer.findMany({
       where: {
         OR: FAMOUS_COMPOSERS.map((name) => ({
@@ -208,19 +263,7 @@ async function searchComposers(searchTerm: string, limit: number) {
           ],
         })),
       },
-      select: {
-        id: true,
-        name: true,
-        fullName: true,
-        epochName: true,
-        portraitUrl: true,
-        imslpId: true,
-        _count: {
-          select: {
-            works: true,
-          },
-        },
-      },
+      select: getComposerSelect(fullData),
       orderBy: {
         works: {
           _count: 'desc',
@@ -268,19 +311,7 @@ async function searchComposers(searchTerm: string, limit: number) {
           },
         ],
       },
-      select: {
-        id: true,
-        name: true,
-        fullName: true,
-        imslpId: true,
-        portraitUrl: true,
-        epochName: true,
-        _count: {
-          select: {
-            works: true,
-          },
-        },
-      },
+      select: getComposerSelect(fullData),
       orderBy: [
         {
           works: {
@@ -295,40 +326,18 @@ async function searchComposers(searchTerm: string, limit: number) {
     });
   }
 
-  return composers.map((composer) => ({
-    id: composer.id,
-    name: composer.name,
-    fullName: composer.fullName || undefined,
-    imslpId: composer.imslpId || undefined,
-    worksCount: composer._count.works,
-    portraitUrl: composer.portraitUrl,
-  }));
+  return composers.map((composer) =>
+    formatComposerResponse(composer, fullData)
+  );
 }
-// Função auxiliar para buscar compositor por ID - MELHORADA
-async function getComposerById(composerId: string) {
+
+async function getComposerById(composerId: string, fullData: boolean = false) {
   try {
     const composer = await prisma.composer.findUnique({
       where: {
         id: composerId,
       },
-      select: {
-        id: true,
-        name: true,
-        fullName: true,
-        alternativeNames: true,
-        imslpId: true,
-        epoch: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        _count: {
-          select: {
-            works: true,
-          },
-        },
-      },
+      select: getComposerSelect(fullData),
     });
 
     if (!composer) {
@@ -337,24 +346,20 @@ async function getComposerById(composerId: string) {
     }
 
     console.log('✅ Compositor encontrado:', composer.name);
-    return {
-      id: composer.id,
-      name: composer.name,
-      fullName: composer.fullName || undefined,
-      alternativeNames: composer.alternativeNames || undefined,
-      imslpId: composer.imslpId || undefined,
-      worksCount: composer._count.works,
-      epoch: composer.epoch || undefined,
-    };
+    if (fullData) {
+      console.log('📊 Retornando dados completos:', Object.keys(composer));
+    }
+
+    return formatComposerResponse(composer, fullData);
   } catch (error) {
     console.error('❌ Erro ao buscar compositor por ID:', error);
     return null;
   }
 }
 
-async function getComposerByWorkId(workId: string) {
+async function getComposerByWorkId(workId: string, fullData: boolean = false) {
   try {
-    const composerId = await prisma.work.findUnique({
+    const work = await prisma.work.findUnique({
       where: {
         id: workId,
       },
@@ -367,46 +372,26 @@ async function getComposerByWorkId(workId: string) {
       },
     });
 
-    if (!composerId) return;
+    if (!work) return null;
+
     const composer = await prisma.composer.findUnique({
       where: {
-        id: composerId.composer.id,
+        id: work.composer.id,
       },
-      select: {
-        id: true,
-        name: true,
-        fullName: true,
-        alternativeNames: true,
-        imslpId: true,
-        epoch: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        _count: {
-          select: {
-            works: true,
-          },
-        },
-      },
+      select: getComposerSelect(fullData),
     });
 
     if (!composer) {
       return null;
     }
 
-    return {
-      id: composer.id,
-      name: composer.name,
-      fullName: composer.fullName || undefined,
-      alternativeNames: composer.alternativeNames || undefined,
-      imslpId: composer.imslpId || undefined,
-      worksCount: composer._count.works,
-      epoch: composer.epoch || undefined,
-    };
+    if (fullData) {
+      console.log('📊 Retornando dados completos para compositor da obra');
+    }
+
+    return formatComposerResponse(composer, fullData);
   } catch (error) {
-    console.error('❌ Erro ao buscar compositor por ID:', error);
+    console.error('❌ Erro ao buscar compositor por workId:', error);
     return null;
   }
 }

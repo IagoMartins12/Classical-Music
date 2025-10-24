@@ -10,6 +10,8 @@
     "not_found_area_title_teacher": "Área do Professor",
     "not_found_area_title_student": "Área do Estudante",
     "not_found_area_title_admin": "Painel Administrativo",
+    "not_found_area_title_blog": "Blog do Opus Atlas",
+
     "not_found_area_title_main": "Opus Atlas",
     "not_found_teacher_suggestions_0__title": "Dashboard do Professor",
     "not_found_teacher_suggestions_0__description": "Voltar ao painel principal",
@@ -34,7 +36,14 @@
     "not_found_main_suggestions_1__title": "História da Música",
     "not_found_main_suggestions_1__description": "Descubra a evolução musical",
     "not_found_main_suggestions_2__title": "Instrumentos",
-    "not_found_main_suggestions_2__description": "Conheça os instrumentos clássicos"
+    "not_found_main_suggestions_2__description": "Conheça os instrumentos clássicos",
+
+    "not_found_blog_suggestions_0__title": "Artigos",
+    "not_found_blog_suggestions_0__description": "Veja todos os nossos artigos publicados.",
+    "not_found_blog_suggestions_1__title": "Categorias",
+    "not_found_blog_suggestions_1__description": "Descubra todas as nossas categorias disponíveis.",
+    "not_found_blog_suggestions_2__title": "Blog",
+    "not_found_blog_suggestions_2__description": "Volte para nossa pagina inicial."
   },
   "en": {
     "not_found_jsx_span_children_0__opus_atlas": "Opus Atlas",
@@ -47,6 +56,8 @@
     "not_found_area_title_teacher": "Teacher Area",
     "not_found_area_title_student": "Student Area",
     "not_found_area_title_admin": "Admin Panel",
+    "not_found_area_title_blog": "Opus Atlas Blog",
+
     "not_found_area_title_main": "Opus Atlas",
     "not_found_teacher_suggestions_0__title": "Teacher Dashboard",
     "not_found_teacher_suggestions_0__description": "Return to main panel",
@@ -71,6 +82,13 @@
     "not_found_main_suggestions_1__title": "Music History",
     "not_found_main_suggestions_1__description": "Discover musical evolution",
     "not_found_main_suggestions_2__title": "Instruments",
-    "not_found_main_suggestions_2__description": "Learn about classical instruments"
+    "not_found_main_suggestions_2__description": "Learn about classical instruments",
+
+    "not_found_blog_suggestions_0__title": "Articles",
+    "not_found_blog_suggestions_0__description": "See all our published articles.",
+    "not_found_blog_suggestions_1__title": "Categories",
+    "not_found_blog_suggestions_1__description": "Discover all our available categories.",
+    "not_found_blog_suggestions_2__title": "Blog",
+    "not_found_blog_suggestions_2__description": "Return to our home page."
   }
 }

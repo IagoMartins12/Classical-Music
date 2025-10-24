@@ -93,6 +93,9 @@ export default function UsersList() {
     exportUsers,
   } = useAdminUsers();
 
+  // ✅ FORÇAR período 'all' para esta página
+  const FORCED_PERIOD = 'all' as const;
+
   // Filtros baseados na URL
   const urlFilters = useMemo(() => {
     const filters: UserListFilters = {
@@ -104,6 +107,7 @@ export default function UsersList() {
       isActive: searchParams.get('active') === 'true' || undefined,
       hasUploads: searchParams.get('contributors') === 'true' || undefined,
       hasAnnotations: searchParams.get('annotators') === 'true' || undefined,
+      period: FORCED_PERIOD, // ✅ SEMPRE 'all'
     };
 
     // Remover valores undefined/vazios
@@ -120,7 +124,7 @@ export default function UsersList() {
       setLocalFilters(urlFilters);
       fetchUsers(urlFilters, 1);
     } else {
-      fetchUsers({}, 1);
+      fetchUsers({ period: FORCED_PERIOD }, 1);
     }
   }, []);
 
@@ -129,7 +133,7 @@ export default function UsersList() {
     const params = new URLSearchParams();
 
     Object.entries(newFilters).forEach(([key, value]) => {
-      if (value && value !== 'all' && value !== '') {
+      if (value && value !== 'all' && value !== '' && key !== 'period') {
         params.set(key, value.toString());
       }
     });
@@ -143,7 +147,11 @@ export default function UsersList() {
 
   // Aplicar filtros
   const applyFilters = (newFilters: UserListFilters) => {
-    const combinedFilters = { ...localFilters, ...newFilters };
+    const combinedFilters = {
+      ...localFilters,
+      ...newFilters,
+      period: FORCED_PERIOD,
+    };
     setLocalFilters(combinedFilters);
     updateURL(combinedFilters);
     fetchUsers(combinedFilters, 1);
@@ -152,29 +160,34 @@ export default function UsersList() {
   // Busca por termo
   const handleSearch = (term: string) => {
     setSearchTerm(term);
-    const newFilters = { ...localFilters, search: term || undefined };
+    const newFilters = {
+      ...localFilters,
+      search: term || undefined,
+      period: FORCED_PERIOD,
+    };
     applyFilters(newFilters);
   };
 
   // Limpar filtros
   const clearFilters = () => {
-    setLocalFilters({});
+    setLocalFilters({ period: FORCED_PERIOD });
     setSearchTerm('');
-    updateURL({});
-    fetchUsers({}, 1);
+    updateURL({ period: FORCED_PERIOD });
+    fetchUsers({ period: FORCED_PERIOD }, 1);
   };
 
   // Carregar mais usuários (paginação)
   const loadMore = () => {
     if (pagination?.hasMore) {
-      fetchUsers(localFilters, pagination.page + 1);
+      fetchUsers(
+        { ...localFilters, period: FORCED_PERIOD },
+        pagination.page + 1
+      );
     }
   };
 
   // Filtros ativos
   const activeFiltersCount = useMemo(() => {
-    console.log('local', Object.values(localFilters));
-
     return Object.values(localFilters).filter(
       (value) =>
         value !== undefined &&
@@ -182,8 +195,7 @@ export default function UsersList() {
         value !== 'all' &&
         value !== 'createdAt' &&
         value !== 'annotationsCount' &&
-        value !== '"uploadsCount"' &&
-        value !== 'createdAt' &&
+        value !== 'uploadsCount' &&
         value !== 'asc' &&
         value !== 'desc'
     ).length;
@@ -225,32 +237,32 @@ export default function UsersList() {
       <AnimatedContainer delay={0.1} staggerSpeed="normal">
         {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="text-center mb-8 py-12">
-            <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiUsers className="w-8 h-8 text-theme-primary" />
+          <div className="text-center mb-8 py-8 md:py-12">
+            <div className="flex items-center justify-center mb-4 md:mb-6">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl md:rounded-3xl flex items-center justify-center shadow-theme-glow">
+                <FiUsers className="w-6 h-6 md:w-8 md:h-8 text-theme-primary" />
               </div>
             </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
+            <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold text-gradient-brand classical-title mb-2 md:mb-4">
               Lista de Usuários
               {activeFilterType && (
-                <span className="text-lg md:text-xl text-accent-blue block mt-2">
+                <span className="text-base md:text-lg lg:text-xl text-accent-blue block mt-2">
                   {activeFilterType === 'contribuidores' && 'Contribuidores'}
                   {activeFilterType === 'anotadores' && 'Anotadores'}
                   {activeFilterType === 'ativos' && 'Usuários Ativos'}
                 </span>
               )}
             </h1>
-            <p className="text-lg md:text-xl text-theme-secondary classical-subtitle">
-              Gerencie e visualize todos os usuários da plataforma
+            <p className="text-base md:text-lg lg:text-xl text-theme-secondary classical-subtitle px-4">
+              Todos os usuários cadastrados na plataforma
             </p>
           </div>
         </AnimatedItem>
 
         {/* Controles de Busca e Filtro */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="mb-8">
-            <div className="flex flex-col lg:flex-row gap-4 mb-4">
+          <div className="mb-6 md:mb-8">
+            <div className="flex flex-col gap-3 md:gap-4 mb-4">
               {/* Busca */}
               <div className="flex-1 relative">
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
@@ -259,7 +271,7 @@ export default function UsersList() {
                   placeholder="Buscar por nome ou email..."
                   value={searchTerm}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-theme-secondary border border-theme-primary rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-blue text-theme-primary placeholder-theme-tertiary"
+                  className="w-full pl-10 pr-10 py-3 bg-theme-secondary border border-theme-primary rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-blue text-theme-primary placeholder-theme-tertiary"
                 />
                 {searchTerm && (
                   <button
@@ -272,7 +284,7 @@ export default function UsersList() {
               </div>
 
               {/* Botões de Ação */}
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant={showFilters ? 'primary' : 'secondary'}
                   leftIcon={<FiFilter />}
@@ -288,6 +300,7 @@ export default function UsersList() {
                     )
                   }
                   onClick={() => setShowFilters(!showFilters)}
+                  className="flex-1 sm:flex-none"
                 >
                   Filtros
                 </Button>
@@ -297,6 +310,7 @@ export default function UsersList() {
                     variant="ghost"
                     leftIcon={<FiX />}
                     onClick={clearFilters}
+                    className="flex-1 sm:flex-none"
                   >
                     Limpar
                   </Button>
@@ -307,6 +321,7 @@ export default function UsersList() {
                   leftIcon={<FiRefreshCw />}
                   onClick={refreshData}
                   disabled={loading}
+                  className="flex-1 sm:flex-none"
                 >
                   Atualizar
                 </Button>
@@ -447,7 +462,7 @@ export default function UsersList() {
 
             {/* Estatísticas Rápidas */}
             {pagination && (
-              <div className="flex items-center justify-between text-sm text-theme-tertiary mb-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-sm text-theme-tertiary mb-4 px-2">
                 <span>
                   Mostrando {users.length} de {formatNumber(pagination.total)}{' '}
                   usuários
@@ -481,190 +496,172 @@ export default function UsersList() {
             </Button>
           </AnimatedCard>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3 md:space-y-4">
             {users.map((user) => (
               <AnimatedCard
                 key={user.id}
                 className="classical-card hover:shadow-theme-glow transition-all duration-300"
               >
-                <div className="p-4">
-                  <div className="flex items-center justify-between">
-                    {/* Informações Principais */}
-                    <div className="flex items-center space-x-4 flex-1 min-w-0">
+                <div className="p-3 md:p-4">
+                  <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-0">
+                    {/* Linha Superior: Avatar + Info Básica */}
+                    <div className="flex items-start md:items-center space-x-3 md:space-x-4 flex-1 min-w-0">
                       {/* Avatar */}
-                      <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center text-theme-primary font-bold text-lg">
+                      <div className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center text-theme-primary font-bold text-base md:text-lg">
                         {user.name?.charAt(0) || user.email?.charAt(0) || 'U'}
                       </div>
 
-                      {/* Dados Básicos - VERSÃO ATUALIZADA COM TEACHER BADGE */}
+                      {/* Dados Básicos */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <h3 className="font-bold text-theme-primary truncate">
+                        <div className="flex items-start flex-col gap-1 mb-1">
+                          <h3 className="font-bold text-theme-primary text-sm md:text-base truncate w-full">
                             {user.name || 'Usuário Sem Nome'}
                           </h3>
 
-                          {/* 🆕 BADGE DE ROLE (PROFESSOR/ADMIN) */}
-                          {user.role === 1 && (
-                            <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-accent-blue/20 text-accent-blue flex items-center gap-1">
-                              <FiAward className="w-3 h-3" />
-                              Professor
-                              {user.teacherProfile?.isVerified && (
-                                <span className="text-accent-green">✓</span>
-                              )}
-                            </span>
-                          )}
+                          {/* Badges */}
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {/* Badge de Role */}
+                            {user.role === 1 && (
+                              <span className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium bg-accent-blue/20 text-accent-blue flex items-center gap-1">
+                                <FiAward className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                                Professor
+                                {user.teacherProfile?.isVerified && (
+                                  <span className="text-accent-green">✓</span>
+                                )}
+                              </span>
+                            )}
 
-                          {user.role === 2 && (
-                            <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-accent-red/20 text-accent-red flex items-center gap-1">
-                              <FiShield className="w-3 h-3" />
-                              Admin
-                            </span>
-                          )}
+                            {user.role === 2 && (
+                              <span className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium bg-accent-red/20 text-accent-red flex items-center gap-1">
+                                <FiShield className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                                Admin
+                              </span>
+                            )}
 
-                          {/* BADGE DE USER TYPE */}
-                          {user.userType && (
-                            <span
-                              className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                                user.userType === 'TEACHER'
-                                  ? 'bg-accent-purple/20 text-accent-purple'
-                                  : user.userType === 'PROFESSIONAL'
+                            {/* Badge de User Type */}
+                            {user.userType && (
+                              <span
+                                className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium ${
+                                  user.userType === 'TEACHER'
+                                    ? 'bg-accent-purple/20 text-accent-purple'
+                                    : user.userType === 'PROFESSIONAL'
+                                      ? 'bg-accent-green/20 text-accent-green'
+                                      : user.userType === 'MUSIC_STUDENT'
+                                        ? 'bg-accent-blue/20 text-accent-blue'
+                                        : 'bg-theme-secondary text-theme-tertiary'
+                                }`}
+                              >
+                                {user.userType === 'MUSIC_STUDENT'
+                                  ? 'Estudante'
+                                  : user.userType === 'CASUAL_USER'
+                                    ? 'Casual'
+                                    : user.userType === 'PROFESSIONAL'
+                                      ? 'Profissional'
+                                      : user.userType === 'TEACHER'
+                                        ? 'Professor'
+                                        : user.userType}
+                              </span>
+                            )}
+
+                            {/* Status do Teacher Profile */}
+                            {user.isTeacher && user.teacherProfile && (
+                              <span
+                                className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium ${
+                                  user.teacherProfile.status === 'ACTIVE'
                                     ? 'bg-accent-green/20 text-accent-green'
-                                    : user.userType === 'MUSIC_STUDENT'
-                                      ? 'bg-accent-blue/20 text-accent-blue'
+                                    : user.teacherProfile.status === 'PENDING'
+                                      ? 'bg-accent-yellow/20 text-accent-yellow'
                                       : 'bg-theme-secondary text-theme-tertiary'
-                              }`}
-                            >
-                              {user.userType === 'MUSIC_STUDENT'
-                                ? 'Estudante'
-                                : user.userType === 'CASUAL_USER'
-                                  ? 'Casual'
-                                  : user.userType === 'PROFESSIONAL'
-                                    ? 'Profissional'
-                                    : user.userType === 'TEACHER'
-                                      ? 'Professor'
-                                      : user.userType}
-                            </span>
-                          )}
-
-                          {/* 🆕 STATUS DO TEACHER PROFILE SE APLICÁVEL */}
-                          {user.isTeacher && user.teacherProfile && (
-                            <span
-                              className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                                user.teacherProfile.status === 'ACTIVE'
-                                  ? 'bg-accent-green/20 text-accent-green'
-                                  : user.teacherProfile.status === 'PENDING'
-                                    ? 'bg-accent-yellow/20 text-accent-yellow'
-                                    : 'bg-theme-secondary text-theme-tertiary'
-                              }`}
-                            >
-                              {user.teacherProfile.status === 'ACTIVE' &&
-                                'Ativo'}
-                              {user.teacherProfile.status === 'PENDING' &&
-                                'Pendente'}
-                              {user.teacherProfile.status === 'INACTIVE' &&
-                                'Inativo'}
-                            </span>
-                          )}
+                                }`}
+                              >
+                                {user.teacherProfile.status === 'ACTIVE' &&
+                                  'Ativo'}
+                                {user.teacherProfile.status === 'PENDING' &&
+                                  'Pendente'}
+                                {user.teacherProfile.status === 'INACTIVE' &&
+                                  'Inativo'}
+                              </span>
+                            )}
+                          </div>
                         </div>
 
-                        <div className="flex items-center gap-4 text-sm text-theme-tertiary">
-                          <span className="flex items-center gap-1">
-                            <FiMail className="w-4 h-4" />
-                            {user.email}
+                        {/* Info Secundária */}
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs md:text-sm text-theme-tertiary">
+                          <span className="flex items-center gap-1 truncate">
+                            <FiMail className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                            <span className="truncate">{user.email}</span>
                           </span>
                           <span className="flex items-center gap-1">
-                            <FiClock className="w-4 h-4" />
+                            <FiClock className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                             {new Date(user.createdAt).toLocaleDateString(
                               'pt-BR'
                             )}
                           </span>
 
-                          {/* 🆕 INFORMAÇÕES ADICIONAIS PARA PROFESSORES */}
-                          {user.isTeacher && user.teacherProfile && (
-                            <>
-                              {user.teacherProfile.instruments &&
-                                user.teacherProfile.instruments.length > 0 && (
-                                  <span className="flex items-center gap-1 text-accent-blue">
-                                    <FiAward className="w-4 h-4" />
-                                    {user.teacherProfile.instruments
-                                      .slice(0, 2)
-                                      .join(', ')}
-                                    {user.teacherProfile.instruments.length >
-                                      2 &&
-                                      ` +${
-                                        user.teacherProfile.instruments.length -
-                                        2
-                                      }`}
-                                  </span>
-                                )}
-                            </>
-                          )}
+                          {/* Info de Instrumentos para Professores */}
+                          {user.isTeacher &&
+                            user.teacherProfile &&
+                            user.teacherProfile.instruments &&
+                            user.teacherProfile.instruments.length > 0 && (
+                              <span className="hidden sm:flex items-center gap-1 text-accent-blue">
+                                <FiAward className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                                {user.teacherProfile.instruments
+                                  .slice(0, 2)
+                                  .join(', ')}
+                                {user.teacherProfile.instruments.length > 2 &&
+                                  ` +${
+                                    user.teacherProfile.instruments.length - 2
+                                  }`}
+                              </span>
+                            )}
                         </div>
                       </div>
                     </div>
 
-                    {/* Estatísticas */}
-                    <div className="hidden md:flex items-center gap-6 mx-6">
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-accent-green">
-                          {formatNumber(user.annotationsCount)}
+                    {/* Linha Inferior Mobile: Estatísticas + Ações */}
+                    <div className="flex items-center justify-between md:justify-end gap-3 md:gap-6 mt-2 md:mt-0 pt-2 md:pt-0 border-t md:border-t-0 border-theme-primary">
+                      {/* Estatísticas */}
+                      <div className="flex items-center gap-3 md:gap-6">
+                        <div className="text-center">
+                          <div className="text-sm md:text-lg font-bold text-accent-green">
+                            {formatNumber(user.annotationsCount)}
+                          </div>
+                          <div className="text-[10px] md:text-xs text-theme-tertiary">
+                            Anotações
+                          </div>
                         </div>
-                        <div className="text-xs text-theme-tertiary">
-                          Anotações
+
+                        <div className="text-center">
+                          <div className="text-sm md:text-lg font-bold text-accent-purple">
+                            {formatNumber(user.uploadsCount)}
+                          </div>
+                          <div className="text-[10px] md:text-xs text-theme-tertiary">
+                            Uploads
+                          </div>
                         </div>
                       </div>
 
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-accent-purple">
-                          {formatNumber(user.uploadsCount)}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          Uploads
-                        </div>
-                      </div>
-                    </div>
+                      {/* Ações */}
+                      <div className="flex items-center gap-1 md:gap-2">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          leftIcon={<FiEye />}
+                          onClick={() => setSelectedUser(user)}
+                          className="text-xs md:text-sm px-2 md:px-3"
+                        >
+                          <span className="hidden sm:inline">Ver</span>
+                        </Button>
 
-                    {/* Ações */}
-                    <div className="flex items-center gap-2">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        leftIcon={<FiEye />}
-                        onClick={() => setSelectedUser(user)}
-                      >
-                        Ver
-                      </Button>
-
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        leftIcon={<FiEdit3 />}
-                        onClick={() => setEditingUser(user)}
-                      >
-                        Editar
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Estatísticas Mobile */}
-                  <div className="md:hidden mt-4 pt-4 border-t border-theme-primary">
-                    <div className="flex justify-around text-center">
-                      <div>
-                        <div className="text-sm font-bold text-accent-green">
-                          {formatNumber(user.annotationsCount)}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          Anotações
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="text-sm font-bold text-accent-purple">
-                          {formatNumber(user.uploadsCount)}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          Uploads
-                        </div>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          leftIcon={<FiEdit3 />}
+                          onClick={() => setEditingUser(user)}
+                          className="text-xs md:text-sm px-2 md:px-3"
+                        >
+                          <span className="hidden sm:inline">Editar</span>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -680,6 +677,7 @@ export default function UsersList() {
                   leftIcon={<FiMoreHorizontal />}
                   onClick={loadMore}
                   disabled={loading}
+                  className="w-full sm:w-auto"
                 >
                   {loading ? 'Carregando...' : 'Carregar Mais'}
                 </Button>
@@ -690,7 +688,7 @@ export default function UsersList() {
 
         {/* Ações em Lote */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-theme-secondary">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-6 md:pt-8 border-t border-theme-secondary">
             <Button
               variant="primary"
               leftIcon={<FiUsers />}
@@ -703,7 +701,9 @@ export default function UsersList() {
             <Button
               variant="secondary"
               leftIcon={<FiDownload />}
-              onClick={() => exportUsers(localFilters)}
+              onClick={() =>
+                exportUsers({ ...localFilters, period: FORCED_PERIOD })
+              }
               className="flex-1"
               disabled={loading}
             >
@@ -728,7 +728,6 @@ export default function UsersList() {
           isOpen={!!editingUser}
           onClose={() => setEditingUser(null)}
           onSave={() => {
-            // TODO: Atualizar usuário na lista local
             setEditingUser(null);
             refreshData();
           }}

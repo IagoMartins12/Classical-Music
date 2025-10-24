@@ -33,6 +33,7 @@ interface ModalProps {
   withouVerification?: boolean;
   setPr?: boolean;
   middlePosition?: boolean;
+  minHeight?: boolean | null;
 }
 
 export interface ModalRef {
@@ -85,6 +86,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       processName,
       setPr,
       middlePosition,
+      minHeight,
     },
     ref
   ) => {
@@ -240,7 +242,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
             <div
               ref={contentRef}
               className={`
-            overflow-y-auto overflow-x-hidden classical-scrollbar pt-4  flex-1
+            overflow-y-auto overflow-x-hidden classical-scrollbar pt-4  flex-1 ${minHeight ? 'min-h-[30rem]' : ''} 
             ${title || showCloseButton ? 'px-2 pb-2 md:px-6 md:pb-10 lg:pb-8' : 'p-2 md:p-6'}
           `}
               style={{

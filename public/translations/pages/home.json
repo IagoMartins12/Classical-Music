@@ -81,7 +81,8 @@
     "composers_explored": "Você explorou todos os ",
     "collection_composers": "compositores desta coleção.",
     "see_all_composers": "Ver Todos os Compositores ",
-    "see_works": "Ver Obras"
+    "see_works": "Ver Obras",
+    "home_quick_actions_explore": "Explorar Obras"
   },
   "en": {
     "heroMainPage_image_alt_partitura": "Classic music period - historical instruments and old scores",
@@ -164,6 +165,7 @@
     "composers_explored": "You explored all the ",
     "collection_composers": "composers of this collection.",
     "see_all_composers": "See all composers ",
-    "see_works": "See Works"
+    "see_works": "See Works",
+    "home_quick_actions_explore": "Explore Works"
   }
 }

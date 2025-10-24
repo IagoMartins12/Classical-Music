@@ -346,6 +346,50 @@ enum AchievementRarity {
   LEGENDARY // Diamante - 100 XP
 }
 
+enum ActivityLogType {
+  // Favoritos
+  FAVORITE_COMPOSER
+  UNFAVORITE_COMPOSER
+  FAVORITE_WORK
+  UNFAVORITE_WORK
+  FAVORITE_SCORE
+  UNFAVORITE_SCORE
+  
+  // Aprendizado
+  ADD_WANT_TO_LEARN
+  REMOVE_WANT_TO_LEARN
+  UPDATE_WANT_TO_LEARN
+  ADD_LEARNED
+  REMOVE_LEARNED
+  UPDATE_LEARNED
+  SELECT_SCORE_WANT_TO_LEARN
+  SELECT_SCORE_LEARNED
+  
+  // Anotações
+  CREATE_ANNOTATION
+  UPDATE_ANNOTATION
+  DELETE_ANNOTATION
+  VOTE_ANNOTATION_HELPFUL
+  VOTE_ANNOTATION_NOT_HELPFUL
+  
+  // Moderação
+  REPORT_UPLOAD
+  
+  // Uploads
+  UPLOAD_VIDEO
+  DELETE_VIDEO
+  
+  // Perfil
+  UPDATE_PROFILE
+  
+  // Visualizações (opcional - para futuro)
+  VIEW_COMPOSER
+  VIEW_WORK
+  VIEW_SCORE
+  GENERATE_BIO
+}
+
+
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   firstName      String?
@@ -399,6 +443,13 @@ model User {
   schoolActivities    SchoolActivity[]      @relation("UserSchoolActivities")
   achievements        UserAchievement[]     @relation("UserAchievements")
   achievementProgress AchievementProgress[] @relation("AchievementProgress")
+
+  blogArticles       BlogArticle[]      @relation("BlogAuthor")
+  blogComments       BlogComment[]      @relation("BlogComments")
+  blogCommentLikes   BlogCommentLike[]  @relation("BlogCommentLikes")
+  blogLikes          BlogLike[]         @relation("BlogLikes")
+  blogBookmarks      BlogBookmark[]     @relation("BlogBookmarks")
+  activityLogs ActivityLog[] @relation("UserActivityLogs")
 
   // 🆕 CACHE DE XP (opcional)
   totalXP      Int @default(0) // Cache do XP total do usuário
@@ -2317,4 +2368,516 @@ model SharedReportComment {
   @@index([reportId, createdAt])
   @@index([studentId, createdAt])
   @@map("shared_report_comments")
+}
+
+model ActivityLog {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Usuário que fez a ação (opcional para ações anônimas)
+  userId String? @db.ObjectId
+  
+  // Tipo de evento
+  type ActivityLogType
+  
+  // Ação descritiva (texto amigável)
+  action String
+  
+  // Entidade relacionada
+  entityType String? // "composer", "work", "score", "annotation", etc.
+  entityId   String? @db.ObjectId
+  entityName String? // Nome da entidade para facilitar exibição
+  
+  // Metadados flexíveis (JSON com informações específicas do evento)
+  metadata Json?
+  
+  // Dados de request
+  ipAddress String?
+  userAgent String?
+  
+  // Timestamp
+  createdAt DateTime @default(now())
+  
+  // Relações
+  user User? @relation("UserActivityLogs", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Índices otimizados
+  @@index([userId, createdAt])
+  @@index([type, createdAt])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@index([userId, type, createdAt])
+  @@map("activity_logs")
+}
+
+// ==================== BLOG ENUMS ====================
+enum ArticleType {
+  COMPOSER_ANALYSIS      // Análise de Compositor
+  WORK_ANALYSIS         // Análise de Obra
+  INSTRUMENT_GUIDE      // Guia de Instrumentos
+  MUSIC_HISTORY         // História da Música (inclui estilos como ópera)
+  TUTORIAL              // Tutorial/Guia Prático
+  TOP_LIST              // Lista/Top 10
+  INTERVIEW             // Entrevista
+  NEWS                  // Notícia
+  CURIOSITY             // Curiosidades
+  PERFORMANCE_VIDEO     // Vídeo de Performance
+  CONCERT_GUIDE         // Guia de Concerto
+  GENERAL               // Artigo Geral (sem tipo específico)
+}
+
+enum ArticleStatus {
+  DRAFT        // Rascunho (só autor vê)
+  REVIEW       // Em revisão (co-autores podem ver)
+  SCHEDULED    // Agendado para publicação futura
+  PUBLISHED    // Publicado
+  ARCHIVED     // Arquivado (não aparece mais)
+}
+
+enum MediaType {
+  IMAGE        // Foto
+  VIDEO        // Vídeo (YouTube/Vimeo)
+  AUDIO        // Áudio (para música de fundo)
+}
+
+enum CommentStatus {
+  PENDING      // Aguardando moderação (se moderação prévia)
+  APPROVED     // Aprovado
+  REJECTED     // Rejeitado
+  FLAGGED      // Reportado por usuários
+  SPAM
+}
+
+enum BlockType {
+  // Blocos especiais do editor
+  PARAGRAPH           // Parágrafo normal
+  HEADING             // Título (H1, H2, H3)
+  IMAGE               // Imagem inline
+  VIDEO               // Vídeo inline
+  GALLERY             // Galeria de fotos
+  VIDEO_GALLERY       // Galeria de vídeos
+  SCORE_VIEWER        // Visualizador de partitura
+  AUDIO_PLAYER        // Player de obra específica
+  COMPOSER_CARD       // Card rico do compositor
+  WORK_CARD           // Card rico da obra
+  TIMELINE            // Timeline de eventos
+  VIDEO_COMPARISON    // Comparação de 2 performances
+  QUOTE_MUSICAL       // Citação com áudio de fundo
+  ACCORDION           // Acordeão/Collapsible
+  TABS                // Abas
+  COLUMNS             // Colunas (2 ou 3)
+  CODE                // Código (notação musical)
+  TABLE               // Tabela
+  BLOCKQUOTE          // Citação
+  LIST                // Lista (bullets ou números)
+}
+
+// ==================== BLOG ARTICLE ====================
+model BlogArticle {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // ===== CAMPOS BÁSICOS =====
+  title             String              // Título do artigo
+  slug              String              @unique // URL amigável (único)
+  description       String?             // Descrição curta (preview/SEO)
+  content           Json                // Conteúdo rico (JSON com blocos)
+  
+  // Imagem de capa
+  coverImage        String?             // URL da imagem de capa
+  coverImageAlt     String?             // Alt text da imagem
+  coverImageCredit  String?             // Crédito do fotógrafo
+  ttsAudioUrl       String?  // ✅ NOVO
+
+  // Status e visibilidade
+  status            ArticleStatus       @default(DRAFT)
+  isFeatured        Boolean             @default(false) // Artigo em destaque (máx 5)
+  featuredOrder     Int?                // Ordem no carrossel de destaques (1-5)
+  
+  // ===== TIPOS E CATEGORIAS =====
+  types             ArticleType[]       @default([]) // Múltiplos tipos possíveis
+  
+  // Autor
+  authorId          String              @db.ObjectId
+  author            User                @relation("BlogAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  
+  // Co-autores (opcional)
+  coAuthorIds       String[]            @default([]) @db.ObjectId
+  
+  // ===== DATAS =====
+  publishedAt       DateTime?           // Data de publicação
+  scheduledFor      DateTime?           // Agendado para (se SCHEDULED)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  readTime          Int?                @default(0)
+  // ===== VINCULAÇÕES COM OPUS ATLAS =====
+  // Compositores vinculados
+  composerIds       String[]            @default([]) @db.ObjectId
+  
+  // Obras vinculadas
+  workIds           String[]            @default([]) @db.ObjectId
+  
+  // Partituras vinculadas
+  scoreIds          String[]            @default([]) // IDs das partituras (WorkScore.sourceId)
+  
+  // Instrumentos vinculados
+  instrumentIds     String[]            @default([]) @db.ObjectId
+  
+  // Épocas vinculadas (múltiplas)
+  epochIds          String[]            @default([]) @db.ObjectId
+  
+  // ===== MÚSICA DE FUNDO =====
+  backgroundMusicUrl     String?        // URL do YouTube/externa
+  backgroundMusicTitle   String?        // Título da música
+  backgroundMusicVolume  Float?         @default(0.3) // Volume (0.0 - 1.0)
+  backgroundMusicLoop    Boolean        @default(true) // Loop
+  backgroundMusicAutoplay Boolean       @default(true) // Autoplay
+  
+  // ===== MÉTRICAS =====
+  viewCount         Int                 @default(0) // Visualizações
+  readCount         Int                 @default(0) // Leituras completas
+  avgReadTime       Int?                // Tempo médio de leitura (segundos)
+  estimatedReadTime Int?                // Tempo estimado (calculado)
+  
+  // ===== SEO =====
+  metaTitle         String?             // Meta title customizado
+  metaDescription   String?             // Meta description customizada
+  keywords          String[]            @default([]) // Keywords para SEO
+  
+  // ===== VERSIONING =====
+  version           Int                 @default(1) // Versão atual
+  
+  // ===== RELAÇÕES =====
+  categories        BlogArticleCategory[]  // M-N com categorias
+  tags              BlogArticleTag[]       // M-N com tags
+  media             BlogMedia[]            // Galeria de mídia
+  comments          BlogComment[]          // Comentários
+  likes             BlogLike[]             // Curtidas
+  bookmarks         BlogBookmark[]         // Salvos
+  versions          BlogArticleVersion[]   // Histórico de versões
+  series            BlogSeriesArticle[]    // Séries que fazem parte
+  
+  // ===== ÍNDICES =====
+  @@index([status, publishedAt])
+  @@index([authorId, status])
+  @@index([isFeatured, featuredOrder])
+  @@index([status, isFeatured])
+  @@index([publishedAt])
+  @@index([types])
+  @@index([viewCount])
+  @@map("blog_articles")
+}
+
+// ==================== BLOG CATEGORY ====================
+model BlogCategory {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  name        String   // Nome da categoria
+  slug        String   @unique // URL amigável
+  description String?  // Descrição da categoria
+  
+  // Hierarquia (subcategorias)
+  parentId    String?  @db.ObjectId
+  parent      BlogCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    BlogCategory[] @relation("CategoryHierarchy")
+  showInMenu  Boolean @default(true)
+  isActive    Boolean @default(true)
+  image       String?
+  // Aparência
+  icon        String?  // Emoji ou classe de ícone
+  color       String?  // Cor hex (#000000)
+  coverImage  String?  // Imagem de capa da categoria
+  
+  // Ordem de exibição
+  order       Int      @default(0)
+  
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  articles  BlogArticleCategory[]
+  
+  @@index([parentId])
+  @@index([order])
+  @@map("blog_categories")
+}
+
+// ==================== BLOG TAG ====================
+model BlogTag {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  name  String @unique // Nome da tag (#barroco)
+  slug  String @unique // URL amigável
+  
+  // Metadados
+  description String? // Descrição da tag
+  color       String? // Cor hex para visualização
+  
+  // Contadores (cache)
+  articleCount Int @default(0) // Quantos artigos usam essa tag
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  articles BlogArticleTag[]
+  
+  @@index([articleCount])
+  @@map("blog_tags")
+}
+
+// ==================== TABELAS DE JUNÇÃO ====================
+
+// M-N: Artigo <-> Categoria
+model BlogArticleCategory {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  articleId  String @db.ObjectId
+  categoryId String @db.ObjectId
+  
+  article  BlogArticle  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  category BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([articleId, categoryId])
+  @@index([articleId])
+  @@index([categoryId])
+  @@map("blog_article_categories")
+}
+
+// M-N: Artigo <-> Tag
+model BlogArticleTag {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  articleId String @db.ObjectId
+  tagId     String @db.ObjectId
+  
+  article BlogArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag     BlogTag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([articleId, tagId])
+  @@index([articleId])
+  @@index([tagId])
+  @@map("blog_article_tags")
+}
+
+// ==================== BLOG MEDIA ====================
+model BlogMedia {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  articleId String @db.ObjectId
+  article   BlogArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  
+  // Tipo e dados
+  type      MediaType
+  url       String    // URL da mídia (YouTube, Vimeo, Cloudinary, etc)
+  title     String?   // Título/legenda
+  caption   String?   // Legenda adicional
+  credit    String?   // Crédito do autor
+  alt       String?   // Alt text (para imagens)
+  
+  // Metadados
+  thumbnailUrl String? // Thumbnail (para vídeos)
+  duration     Int?    // Duração em segundos (para vídeos)
+  width        Int?    // Largura original
+  height       Int?    // Altura original
+  fileSize     Int?    // Tamanho em bytes
+  
+  // Ordem na galeria
+  order     Int @default(0)
+  
+  // Inline ou galeria
+  isInline  Boolean @default(false) // Se está inline no conteúdo
+  inGallery Boolean @default(true)  // Se aparece na galeria
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([articleId, type])
+  @@index([articleId, order])
+  @@map("blog_media")
+}
+
+// ==================== BLOG COMMENT ====================
+model BlogComment {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  articleId String @db.ObjectId
+  article   BlogArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  
+  userId String @db.ObjectId
+  user   User   @relation("BlogComments", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Conteúdo
+  content String // Texto do comentário
+  
+  // Comentários aninhados (respostas)
+  parentId String?       @db.ObjectId
+  parent   BlogComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies  BlogComment[] @relation("CommentReplies")
+  
+  // Status e moderação
+  status CommentStatus @default(APPROVED) // Se precisa moderação
+  isEdited    Boolean    @default(false)
+  
+  // Métricas
+  likeCount Int @default(0) // Cache de curtidas
+  
+  // Flags/Reports
+  isFlagged    Boolean @default(false)
+  flagReason   String? // Motivo do report
+  flaggedBy    String? @db.ObjectId // Quem reportou
+  moderatedBy  String? @db.ObjectId // Quem moderou
+  moderatedAt  DateTime?
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  likes BlogCommentLike[]
+  
+  @@index([articleId, status, createdAt])
+  @@index([userId])
+  @@index([parentId])
+  @@index([status])
+  @@map("blog_comments")
+}
+
+// ==================== BLOG COMMENT LIKE ====================
+model BlogCommentLike {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  commentId String @db.ObjectId
+  comment   BlogComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  
+  userId String @db.ObjectId
+  user   User   @relation("BlogCommentLikes", fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([commentId, userId])
+  @@index([commentId])
+  @@index([userId])
+  @@map("blog_comment_likes")
+}
+
+// ==================== BLOG LIKE ====================
+model BlogLike {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  articleId String @db.ObjectId
+  article   BlogArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  
+  userId String @db.ObjectId
+  user   User   @relation("BlogLikes", fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([articleId, userId])
+  @@index([articleId])
+  @@index([userId])
+  @@map("blog_likes")
+}
+
+// ==================== BLOG BOOKMARK ====================
+model BlogBookmark {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  articleId String @db.ObjectId
+  article   BlogArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  
+  userId String @db.ObjectId
+  user   User   @relation("BlogBookmarks", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Notas pessoais
+  notes String?
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([articleId, userId])
+  @@index([userId, createdAt])
+  @@map("blog_bookmarks")
+}
+
+// ==================== BLOG ARTICLE VERSION ====================
+model BlogArticleVersion {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  articleId String @db.ObjectId
+  article   BlogArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  
+  // Versão
+  version Int // Número da versão
+  
+  // Snapshot completo do artigo naquela versão
+  snapshot Json // Todo o conteúdo + metadados
+  
+  // Quem fez a mudança
+  editedBy  String @db.ObjectId
+  changeLog String? // Descrição das mudanças
+  
+  // Timestamp
+  createdAt DateTime @default(now())
+  
+  @@index([articleId, version])
+  @@index([articleId, createdAt])
+  @@map("blog_article_versions")
+}
+
+// ==================== BLOG SERIES ====================
+model BlogSeries {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Informações da série
+  title       String // Título da série
+  slug        String @unique // URL amigável
+  description String? // Descrição da série
+  coverImage  String? // Imagem de capa da série
+  
+  // Autor da série
+  authorId String @db.ObjectId
+  
+  // Status
+  isActive Boolean @default(true)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  articles BlogSeriesArticle[]
+  
+  @@index([authorId])
+  @@map("blog_series")
+}
+
+// ==================== BLOG SERIES ARTICLE ====================
+model BlogSeriesArticle {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  seriesId  String @db.ObjectId
+  series    BlogSeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  
+  articleId String @db.ObjectId
+  article   BlogArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  
+  // Ordem na série
+  order Int
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([seriesId, articleId])
+  @@index([seriesId, order])
+  @@map("blog_series_articles")
 }

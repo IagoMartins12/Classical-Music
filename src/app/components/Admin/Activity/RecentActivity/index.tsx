@@ -1,4 +1,4 @@
-// app/components/Admin/Activity/RecentActivity.tsx
+// app/components/Admin/Activity/RecentActivity.tsx - CORRIGIDO
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -27,14 +27,7 @@ import Select from '@/app/components/Common/Select';
 
 interface ActivityItem {
   id: string;
-  type:
-    | 'user_registration'
-    | 'upload'
-    | 'annotation'
-    | 'favorite'
-    | 'moderation'
-    | 'system'
-    | 'study_session';
+  type: string;
   user: {
     id: string;
     name: string;
@@ -104,8 +97,6 @@ export default function RecentActivity() {
     } catch (err) {
       console.error('Erro ao buscar atividades:', err);
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
-
-      // Fallback para dados básicos em caso de erro
       setActivities([]);
     } finally {
       setLoading(false);
@@ -119,24 +110,16 @@ export default function RecentActivity() {
   }, [filter, mounted]);
 
   const getActivityIcon = (type: string) => {
-    switch (type) {
-      case 'user_registration':
-        return FiUser;
-      case 'upload':
-        return FiUpload;
-      case 'annotation':
-        return FiMessageSquare;
-      case 'favorite':
-        return FiHeart;
-      case 'moderation':
-        return FiShield;
-      case 'system':
-        return FiDatabase;
-      case 'study_session':
-        return FiActivity;
-      default:
-        return FiActivity;
-    }
+    // Mapear tipos específicos do ActivityLog
+    if (type === 'UPLOAD') return FiUpload;
+    if (type.includes('FAVORITE')) return FiHeart;
+    if (type.includes('ANNOTATION')) return FiMessageSquare;
+    if (type.includes('LEARNED') || type.includes('WANT_TO_LEARN'))
+      return FiActivity;
+    if (type === 'REPORT_UPLOAD') return FiShield;
+    if (type.includes('VIDEO')) return FiUpload;
+    if (type === 'UPDATE_PROFILE') return FiUser;
+    return FiActivity;
   };
 
   const getTargetIcon = (type?: string) => {
@@ -168,24 +151,12 @@ export default function RecentActivity() {
   };
 
   const getActivityColor = (type: string) => {
-    switch (type) {
-      case 'user_registration':
-        return 'text-accent-blue';
-      case 'upload':
-        return 'text-accent-green';
-      case 'annotation':
-        return 'text-accent-purple';
-      case 'favorite':
-        return 'text-accent-red';
-      case 'moderation':
-        return 'text-accent-amber';
-      case 'system':
-        return 'text-theme-tertiary';
-      case 'study_session':
-        return 'text-accent-blue';
-      default:
-        return 'text-accent-blue';
-    }
+    if (type === 'UPLOAD') return 'text-accent-blue';
+    if (type.includes('FAVORITE')) return 'text-accent-red';
+    if (type.includes('ANNOTATION')) return 'text-accent-purple';
+    if (type.includes('LEARNED')) return 'text-accent-green';
+    if (type === 'REPORT_UPLOAD') return 'text-accent-amber';
+    return 'text-accent-blue';
   };
 
   const formatTimeAgo = (date: Date) => {
@@ -206,40 +177,30 @@ export default function RecentActivity() {
   };
 
   const getActivityTypeLabel = (type: string) => {
-    switch (type) {
-      case 'user_registration':
-        return 'Registros';
-      case 'upload':
-        return 'Uploads';
-      case 'annotation':
-        return 'Anotações';
-      case 'favorite':
-        return 'Favoritos';
-      case 'moderation':
-        return 'Moderação';
-      case 'system':
-        return 'Sistema';
-      case 'study_session':
-        return 'Sessões de Estudo';
-      default:
-        return 'Outras';
-    }
+    if (type === 'UPLOAD') return 'Uploads';
+    if (type === 'favorite') return 'Favoritos';
+    if (type === 'annotation') return 'Anotações';
+    if (type === 'study_session') return 'Sessões de Estudo';
+    if (type === 'moderation') return 'Moderação';
+    if (type === 'system') return 'Sistema';
+    return 'Outras';
   };
 
   const handleRefresh = () => {
     fetchActivities();
   };
 
+  // Opções atualizadas com tipos genéricos suportados
   const activityRecentsOpcions = [
     { value: 'all', label: 'Todas as atividades' },
-    { value: 'user_registration', label: 'Registros' },
-    { value: 'upload', label: 'Uploads' },
-    { value: 'annotation', label: 'Anotações' },
+    { value: 'UPLOAD', label: 'Uploads (Criação/Edição)' },
     { value: 'favorite', label: 'Favoritos' },
+    { value: 'annotation', label: 'Anotações' },
+    { value: 'study_session', label: 'Sessões de Estudo' },
     { value: 'moderation', label: 'Moderação' },
-    { value: 'study_session', label: 'Sessões' },
     { value: 'system', label: 'Sistema' },
   ];
+
   return (
     <AnimatedCard className="classical-card p-4 lg:p-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
@@ -390,7 +351,7 @@ export default function RecentActivity() {
                           />
                         )}
 
-                        {activity.type === 'moderation' && (
+                        {activity.type === 'REPORT_UPLOAD' && (
                           <Button
                             variant="ghost"
                             size="sm"

@@ -22,13 +22,14 @@ import AdminHeader from './components/Admin/AdminHeader';
 import AdminSidebar from './components/Admin/AdminSidebar';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { useClientMetadata } from './hooks/useClientMetadata';
+import { BlogHeader } from './components/blog/BlogHeader';
 
 interface ErrorProps {
   error: Error & { digest?: string };
   reset: () => void;
 }
 
-type AreaType = 'main' | 'teacher' | 'student' | 'admin';
+type AreaType = 'main' | 'teacher' | 'student' | 'admin' | 'blog';
 
 export default function Error({ error, reset }: ErrorProps) {
   const pathname = usePathname();
@@ -72,6 +73,8 @@ export default function Error({ error, reset }: ErrorProps) {
       setCurrentArea('student');
     } else if (pathname.startsWith('/admin')) {
       setCurrentArea('admin');
+    } else if (pathname.startsWith('/blog')) {
+      setCurrentArea('blog');
     } else {
       setCurrentArea('main');
     }
@@ -84,6 +87,9 @@ export default function Error({ error, reset }: ErrorProps) {
 
       case 'student':
         return session?.user ? <StudentNavigation user={session.user} /> : null;
+
+      case 'blog':
+        return <BlogHeader />;
 
       case 'admin':
         return (
@@ -133,6 +139,8 @@ export default function Error({ error, reset }: ErrorProps) {
         return '/student';
       case 'admin':
         return '/admin';
+      case 'blog':
+        return '/blog';
       default:
         return '/';
     }
@@ -146,6 +154,8 @@ export default function Error({ error, reset }: ErrorProps) {
         return t('error_area_title_student');
       case 'admin':
         return t('error_area_title_admin');
+      case 'blog':
+        return t('error_area_title_blog');
       default:
         return t('error_area_title_main');
     }

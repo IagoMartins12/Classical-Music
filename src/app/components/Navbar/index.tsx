@@ -322,9 +322,9 @@ const Navbar: React.FC = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-6">
-            {optionsArr.map(({ label, href, active, submenu }) => (
+            {optionsArr.map(({ label, href, active, submenu }, index) => (
               <div
-                key={label}
+                key={index}
                 className="relative"
                 onMouseEnter={() => submenu && handleMouseEnter(label)}
                 onMouseLeave={() => submenu && handleMouseLeave()}
@@ -358,9 +358,9 @@ const Navbar: React.FC = () => {
                     {activeSubmenu === label && (
                       <div className="absolute top-full left-0 mt-2 w-72 bg-theme-tertiary rounded-2xl shadow-xl border border-theme-secondary z-50 overflow-hidden">
                         <div className="p-2">
-                          {submenu.map((item) => (
+                          {submenu.map((item, index) => (
                             <Link
-                              key={item.label}
+                              key={index}
                               href={item.href}
                               className={`
                                 block p-3 rounded-lg transition-colors group
@@ -703,8 +703,8 @@ const Navbar: React.FC = () => {
               >
                 <ul className="space-y-2">
                   {/* Navigation Links */}
-                  {optionsArr.map(({ label, href, active, submenu }) => (
-                    <li key={label}>
+                  {optionsArr.map(({ label, href, active, submenu }, index) => (
+                    <li key={index}>
                       {submenu ? (
                         <div className="flex items-center justify-between">
                           <Link
@@ -1099,8 +1099,8 @@ const Navbar: React.FC = () => {
 
                   {/* Submenu Items */}
                   <ul className="space-y-1">
-                    {activeSubmenuItems.map((item) => (
-                      <li key={item.label}>
+                    {activeSubmenuItems.map((item, index) => (
+                      <li key={index}>
                         <Link
                           href={item.href}
                           className={`

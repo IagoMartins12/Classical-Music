@@ -16,7 +16,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
   isActive,
   isMobile,
 }) => {
-  const { t } = useTranslation({ sections: ['pages/home'] });
+  const { t, language } = useTranslation({ sections: ['pages/home'] });
   return (
     <div className="group cursor-pointer select-none h-full">
       <Link href={`/composer/${item.id}`}>
@@ -69,7 +69,10 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
               <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0">
                 <span className="inline-flex items-center px-3 py-1 bg-brand-primary/20 backdrop-blur-md border border-brand-primary/30 rounded-full text-xs font-medium text-white">
                   <FiCalendar className="w-3 h-3 mr-1" />
-                  {translateEpochWithHook(item.epochName, t)}
+                  {translateEpochWithHook(
+                    translateEpochWithHook(item.epochName, t),
+                    t
+                  )}
                 </span>
               </div>
             )}
@@ -97,7 +100,24 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
               {item.epochName && (
                 <p className="text-theme-secondary text-sm mb-3 flex items-center">
                   <FiUser className="w-3 h-3 mr-1 opacity-60" />
-                  Compositor {item.epochName}
+
+                  {language === 'en' ? (
+                    <>
+                      {translateEpochWithHook(
+                        translateEpochWithHook(item.epochName, t),
+                        t
+                      )}{' '}
+                      {t('random_discoveries_composer_badge')}
+                    </>
+                  ) : (
+                    <>
+                      {t('random_discoveries_composer_badge')}{' '}
+                      {translateEpochWithHook(
+                        translateEpochWithHook(item.epochName, t),
+                        t
+                      )}
+                    </>
+                  )}
                 </p>
               )}
 
@@ -106,7 +126,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
                   <span className="text-xs text-theme-tertiary font-medium">
-                    Explorar obras
+                    {t('home_quick_actions_explore')}
                   </span>
                 </div>
 

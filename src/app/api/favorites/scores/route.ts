@@ -5,6 +5,11 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 import { ScoreSource, IMSLPScoreType } from '@prisma/client';
+import {
+  ActivityActions,
+  getRequestInfo,
+  trackActivity,
+} from '@/app/libs/activityTracker';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,6 +29,7 @@ export async function POST(request: NextRequest) {
       notes,
       tags = [],
     } = await request.json();
+    const requestInfo = getRequestInfo(request);
 
     if (!workId || !scoreId || !action) {
       return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 });
@@ -109,6 +115,18 @@ export async function POST(request: NextRequest) {
         console.error
       );
 
+      // 🆕 TRACKING
+      trackActivity({
+        userId: session.user.id,
+        type: 'FAVORITE_COMPOSER',
+        action: ActivityActions.FAVORITE_COMPOSER,
+        entityType: 'composer',
+        entityId: scoreId,
+        entityName: scoreData.fullName || scoreData.name,
+
+        ...requestInfo,
+      });
+
       // Invalidar caches relacionados
       revalidateTag(`user-favorites-${session.user.id}`);
       revalidateTag(`work-favorites-${workId}`);
@@ -142,6 +160,18 @@ export async function POST(request: NextRequest) {
           scoreId: scoreId,
           scoreSource: scoreSource as ScoreSource,
         },
+      });
+
+      // 🆕 TRACKING
+      trackActivity({
+        userId: session.user.id,
+        type: 'UNFAVORITE_COMPOSER',
+        action: ActivityActions.UNFAVORITE_COMPOSER,
+        entityType: 'composer',
+        entityId: scoreId,
+        entityName: scoreData.fullName || scoreData.name,
+
+        ...requestInfo,
       });
 
       if (deleted.count > 0) {
@@ -517,26 +547,29 @@ async function calculateRealTimeStats(workId: string) {
     });
 
     // Agrupar por scoreId + scoreSource
-    const grouped = favorites.reduce((acc, fav) => {
-      const key = `${fav.scoreId}-${fav.scoreSource}`;
-      if (!acc[key]) {
-        acc[key] = {
-          workId,
-          scoreId: fav.scoreId,
-          scoreSource: fav.scoreSource,
-          scoreTitle: fav.scoreTitle,
-          scoreType: fav.scoreType,
-          downloadUrl: fav.downloadUrl,
-          totalFavorites: 0,
-          ratings: [],
-        };
-      }
-      acc[key].totalFavorites += 1;
-      if (fav.personalRating) {
-        acc[key].ratings.push(fav.personalRating);
-      }
-      return acc;
-    }, {} as Record<string, any>);
+    const grouped = favorites.reduce(
+      (acc, fav) => {
+        const key = `${fav.scoreId}-${fav.scoreSource}`;
+        if (!acc[key]) {
+          acc[key] = {
+            workId,
+            scoreId: fav.scoreId,
+            scoreSource: fav.scoreSource,
+            scoreTitle: fav.scoreTitle,
+            scoreType: fav.scoreType,
+            downloadUrl: fav.downloadUrl,
+            totalFavorites: 0,
+            ratings: [],
+          };
+        }
+        acc[key].totalFavorites += 1;
+        if (fav.personalRating) {
+          acc[key].ratings.push(fav.personalRating);
+        }
+        return acc;
+      },
+      {} as Record<string, any>
+    );
 
     // Converter para array e calcular médias
     const topScores = Object.values(grouped)
@@ -622,19 +655,22 @@ async function getMostFavoritedScoreOnly(workId: string) {
     }
 
     // Contar favoritos por partitura
-    const counts = favorites.reduce((acc, fav) => {
-      const key = `${fav.scoreId}-${fav.scoreSource}`;
-      if (!acc[key]) {
-        acc[key] = {
-          scoreId: fav.scoreId,
-          scoreSource: fav.scoreSource,
-          scoreTitle: fav.scoreTitle,
-          totalFavorites: 0,
-        };
-      }
-      acc[key].totalFavorites += 1;
-      return acc;
-    }, {} as Record<string, any>);
+    const counts = favorites.reduce(
+      (acc, fav) => {
+        const key = `${fav.scoreId}-${fav.scoreSource}`;
+        if (!acc[key]) {
+          acc[key] = {
+            scoreId: fav.scoreId,
+            scoreSource: fav.scoreSource,
+            scoreTitle: fav.scoreTitle,
+            totalFavorites: 0,
+          };
+        }
+        acc[key].totalFavorites += 1;
+        return acc;
+      },
+      {} as Record<string, any>
+    );
 
     // Encontrar a mais favoritada
     const sortedScores = Object.values(counts).sort(

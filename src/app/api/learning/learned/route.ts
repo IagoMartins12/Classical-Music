@@ -1,4 +1,4 @@
-// app/api/learning/learned/route.ts - ATUALIZADO COM UPLOAD DE VÍDEO
+// app/api/learning/learned/route.ts - COM ACTIVITY TRACKING
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -11,6 +11,11 @@ import {
   extractLearnedVideoData,
   createLearnedVideoData,
 } from '@/app/utils/learnedVideoUpload';
+import {
+  trackActivity,
+  getRequestInfo,
+  ActivityActions,
+} from '@/app/libs/activityTracker';
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +25,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    // 🆕 PROCESSAR FORMDATA PARA UPLOAD DE VÍDEO
+    // 🆕 EXTRAIR INFO DO REQUEST
+    const requestInfo = getRequestInfo(request);
+
     const contentType = request.headers.get('content-type');
     let body: any;
     let videoFile: File | null = null;
@@ -30,8 +37,6 @@ export async function POST(request: NextRequest) {
       const jsonData = formData.get('data') as string;
       body = JSON.parse(jsonData);
       videoFile = formData.get('videoFile') as File | null;
-
-      console.log(`🎥 [LEARNED] FormData recebido - vídeo: ${!!videoFile}`);
     } else {
       body = await request.json();
     }
@@ -40,7 +45,6 @@ export async function POST(request: NextRequest) {
       workId,
       action,
       mastery = 0,
-      // Campos existentes
       studyStartDate,
       studyDuration,
       notes,
@@ -51,7 +55,6 @@ export async function POST(request: NextRequest) {
       technicalChallenges,
       musicalInsights,
       selectedWorkScoreId,
-      // 🆕 NOVO: Campo para vídeo público/privado
       isVideoPublic = false,
     } = body;
 
@@ -66,20 +69,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar se a obra existe
-    const workExists = await prisma.work.findUnique({
+    // Buscar obra para tracking
+    const work = await prisma.work.findUnique({
       where: { id: workId },
-      select: { id: true },
+      select: {
+        id: true,
+        title: true,
+        composer: { select: { name: true } },
+      },
     });
 
-    if (!workExists) {
+    if (!work) {
       return NextResponse.json(
         { error: 'Obra não encontrada' },
         { status: 404 }
       );
     }
 
-    // Validar WorkScore se fornecido
     if (selectedWorkScoreId) {
       const workScoreExists = await prisma.workScore.findFirst({
         where: {
@@ -98,7 +104,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (action === 'add') {
-      // Remover da lista de "quero estudar" (exclusão mútua)
       await prisma.wantToLearn.deleteMany({
         where: {
           userId: session.user.id,
@@ -106,14 +111,12 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Preparar dados base
       const dataToSave: any = {
         userId: session.user.id,
         workId: workId,
         mastery: mastery,
       };
 
-      // Campos opcionais
       if (studyStartDate) dataToSave.studyStartDate = new Date(studyStartDate);
       if (studyDuration) dataToSave.studyDuration = studyDuration;
       if (notes) dataToSave.notes = notes;
@@ -129,7 +132,6 @@ export async function POST(request: NextRequest) {
       if (selectedWorkScoreId)
         dataToSave.selectedWorkScoreId = selectedWorkScoreId;
 
-      // Primeiro, criar o item learned (para obter o ID)
       const learnedItem = await prisma.learned.upsert({
         where: {
           userId_workId: {
@@ -147,15 +149,10 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // 🆕 PROCESSAR UPLOAD DE VÍDEO SE FORNECIDO
       let videoUploadResult = null;
       let videoData = null;
 
       if (videoFile) {
-        console.log(
-          `🎥 [LEARNED] Processando upload de vídeo para learned ${learnedItem.id}`
-        );
-
         videoUploadResult = await uploadLearnedVideo(
           workId,
           learnedItem.id,
@@ -163,7 +160,6 @@ export async function POST(request: NextRequest) {
         );
 
         if (!videoUploadResult.success) {
-          // Se falhou upload, remover learned item criado
           await prisma.learned.delete({
             where: { id: learnedItem.id },
           });
@@ -174,19 +170,31 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        // Criar dados do vídeo
         videoData = createLearnedVideoData(videoUploadResult, isVideoPublic);
 
-        // Atualizar learned item com dados do vídeo
         await prisma.learned.update({
           where: { id: learnedItem.id },
           data: videoData,
         });
 
-        console.log(`✅ [LEARNED] Vídeo salvo: ${videoUploadResult.filename}`);
+        // 🆕 TRACKING DE UPLOAD DE VÍDEO
+        trackActivity({
+          userId: session.user.id,
+          type: 'UPLOAD_VIDEO',
+          action: ActivityActions.UPLOAD_VIDEO,
+          entityType: 'work',
+          entityId: workId,
+          entityName: work.title,
+          metadata: {
+            composerName: work.composer.name,
+            fileName: videoUploadResult.filename,
+            isPublic: isVideoPublic,
+            learnedItemId: learnedItem.id,
+          },
+          ...requestInfo,
+        });
       }
 
-      // Buscar item completo para resposta
       const completeLearnedItem = await prisma.learned.findUnique({
         where: { id: learnedItem.id },
         include: {
@@ -226,6 +234,24 @@ export async function POST(request: NextRequest) {
         },
       });
 
+      // 🆕 TRACKING DE ADD LEARNED
+      trackActivity({
+        userId: session.user.id,
+        type: 'ADD_LEARNED',
+        action: ActivityActions.ADD_LEARNED,
+        entityType: 'work',
+        entityId: workId,
+        entityName: work.title,
+        metadata: {
+          composerName: work.composer.name,
+          mastery,
+          difficulty,
+          hasVideo: !!videoFile,
+          hasScore: !!selectedWorkScoreId,
+        },
+        ...requestInfo,
+      });
+
       // Revalidação de cache
       revalidateTag(`user-learning-${session.user.id}`);
       revalidateTag(`work-learning-${workId}`);
@@ -235,12 +261,6 @@ export async function POST(request: NextRequest) {
       revalidateTag(`student-profile-${session.user.id}`);
       revalidateTag('student-dashboard-data');
       revalidateTag(`student-dashboard-${session.user.id}`);
-
-      console.log(
-        `✅ [LEARNED] Item criado${videoFile ? ' com vídeo' : ''} - User: ${
-          session.user.id
-        }, Work: ${workId}`
-      );
 
       return NextResponse.json({
         success: true,
@@ -263,7 +283,6 @@ export async function POST(request: NextRequest) {
           musicalInsights: completeLearnedItem!.musicalInsights,
           selectedWorkScoreId: completeLearnedItem!.selectedWorkScoreId,
           selectedWorkScore: completeLearnedItem!.selectedWorkScore,
-          // 🆕 CAMPOS DE VÍDEO
           videoUrl: completeLearnedItem!.videoUrl,
           videoFileName: completeLearnedItem!.videoFileName,
           videoFilePath: completeLearnedItem!.videoFilePath,
@@ -274,7 +293,6 @@ export async function POST(request: NextRequest) {
         },
       });
     } else if (action === 'remove') {
-      // Buscar item para pegar dados do vídeo antes de deletar
       const existingItem = await prisma.learned.findFirst({
         where: {
           userId: session.user.id,
@@ -283,17 +301,28 @@ export async function POST(request: NextRequest) {
       });
 
       if (existingItem) {
-        // 🆕 DELETAR VÍDEO SE EXISTE
         const videoData = extractLearnedVideoData(existingItem);
         if (videoData) {
           await deleteAllLearnedVideos(workId, existingItem.id);
-          console.log(
-            `🗑️ [LEARNED] Vídeos do learned ${existingItem.id} removidos`
-          );
+
+          // 🆕 TRACKING DE DELETE VÍDEO
+          trackActivity({
+            userId: session.user.id,
+            type: 'DELETE_VIDEO',
+            action: ActivityActions.DELETE_VIDEO,
+            entityType: 'work',
+            entityId: workId,
+            entityName: work.title,
+            metadata: {
+              composerName: work.composer.name,
+              fileName: videoData.filename,
+              learnedItemId: existingItem.id,
+            },
+            ...requestInfo,
+          });
         }
       }
 
-      // Remover da lista de aprendidas
       await prisma.learned.deleteMany({
         where: {
           userId: session.user.id,
@@ -301,7 +330,20 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Revalidação de cache
+      // 🆕 TRACKING DE REMOVE LEARNED
+      trackActivity({
+        userId: session.user.id,
+        type: 'REMOVE_LEARNED',
+        action: ActivityActions.REMOVE_LEARNED,
+        entityType: 'work',
+        entityId: workId,
+        entityName: work.title,
+        metadata: {
+          composerName: work.composer.name,
+        },
+        ...requestInfo,
+      });
+
       revalidateTag(`user-learning-${session.user.id}`);
       revalidateTag(`work-learning-${workId}`);
       revalidateTag('user-learning');
@@ -310,10 +352,6 @@ export async function POST(request: NextRequest) {
       revalidateTag(`student-profile-${session.user.id}`);
       revalidateTag('student-dashboard-data');
       revalidateTag(`student-dashboard-${session.user.id}`);
-
-      console.log(
-        `✅ [LEARNED] Item removido com vídeos - User: ${session.user.id}, Work: ${workId}`
-      );
 
       return NextResponse.json({
         success: true,
@@ -339,7 +377,9 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    // 🆕 PROCESSAR FORMDATA PARA UPLOAD DE VÍDEO
+    // 🆕 EXTRAIR INFO DO REQUEST
+    const requestInfo = getRequestInfo(request);
+
     const contentType = request.headers.get('content-type');
     let body: any;
     let videoFile: File | null = null;
@@ -349,16 +389,12 @@ export async function PATCH(request: NextRequest) {
       const jsonData = formData.get('data') as string;
       body = JSON.parse(jsonData);
       videoFile = formData.get('videoFile') as File | null;
-
-      console.log(
-        `🎥 [LEARNED] PATCH FormData recebido - vídeo: ${!!videoFile}`
-      );
     } else {
       body = await request.json();
     }
 
     const {
-      workId, // ✅ CORREÇÃO: Removido 'action' da validação do PATCH
+      workId,
       mastery,
       studyStartDate,
       studyDuration,
@@ -370,17 +406,31 @@ export async function PATCH(request: NextRequest) {
       technicalChallenges,
       musicalInsights,
       selectedWorkScoreId,
-      // 🆕 NOVOS CAMPOS DE VÍDEO
       isVideoPublic,
-      deleteVideo = false, // Flag para deletar vídeo existente
+      deleteVideo = false,
     } = body;
 
-    // ✅ CORREÇÃO: Validação apenas do workId (action não é necessário no PATCH)
     if (!workId) {
       return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 });
     }
 
-    // Buscar item atual
+    // Buscar obra para tracking
+    const work = await prisma.work.findUnique({
+      where: { id: workId },
+      select: {
+        id: true,
+        title: true,
+        composer: { select: { name: true } },
+      },
+    });
+
+    if (!work) {
+      return NextResponse.json(
+        { error: 'Obra não encontrada' },
+        { status: 404 }
+      );
+    }
+
     const existingItem = await prisma.learned.findFirst({
       where: {
         userId: session.user.id,
@@ -395,7 +445,6 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    // Validar WorkScore se fornecido
     if (selectedWorkScoreId) {
       const workScoreExists = await prisma.workScore.findFirst({
         where: {
@@ -413,7 +462,6 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
-    // Preparar dados para atualização
     const dataToUpdate: any = {};
 
     if (mastery !== undefined) {
@@ -427,7 +475,6 @@ export async function PATCH(request: NextRequest) {
       dataToUpdate.learnedAt = new Date();
     }
 
-    // Campos opcionais
     if (studyStartDate !== undefined)
       dataToUpdate.studyStartDate = studyStartDate
         ? new Date(studyStartDate)
@@ -447,17 +494,27 @@ export async function PATCH(request: NextRequest) {
     if (selectedWorkScoreId !== undefined)
       dataToUpdate.selectedWorkScoreId = selectedWorkScoreId;
 
-    // 🆕 GERENCIAMENTO DE VÍDEO
-
-    // 1. Se solicitou deletar vídeo existente
     if (deleteVideo) {
       const videoData = extractLearnedVideoData(existingItem);
       if (videoData && videoData.filePath) {
         await deleteLearnedVideo(videoData.filePath);
-        console.log(`🗑️ [LEARNED] Vídeo existente removido`);
+
+        // 🆕 TRACKING DE DELETE VÍDEO
+        trackActivity({
+          userId: session.user.id,
+          type: 'DELETE_VIDEO',
+          action: ActivityActions.DELETE_VIDEO,
+          entityType: 'work',
+          entityId: workId,
+          entityName: work.title,
+          metadata: {
+            composerName: work.composer.name,
+            fileName: videoData.filename,
+          },
+          ...requestInfo,
+        });
       }
 
-      // Limpar campos de vídeo
       dataToUpdate.videoUrl = null;
       dataToUpdate.videoFileName = null;
       dataToUpdate.videoFilePath = null;
@@ -466,23 +523,17 @@ export async function PATCH(request: NextRequest) {
       dataToUpdate.videoUploadedAt = null;
     }
 
-    // 2. Se tem novo vídeo para upload
     if (videoFile) {
-      // Deletar vídeo anterior se existe
       const videoData = extractLearnedVideoData(existingItem);
       if (videoData && videoData.filePath) {
         await deleteLearnedVideo(videoData.filePath);
-        console.log(`🗑️ [LEARNED] Vídeo anterior substituído`);
       }
 
-      // Upload novo vídeo
       const videoUploadResult = await uploadLearnedVideo(
         workId,
         existingItem.id,
         videoFile
       );
-
-      console.log('VIDEO UPLOADS', videoUploadResult);
 
       if (!videoUploadResult.success) {
         return NextResponse.json(
@@ -491,24 +542,35 @@ export async function PATCH(request: NextRequest) {
         );
       }
 
-      // Adicionar dados do novo vídeo
       const newVideoData = createLearnedVideoData(
         videoUploadResult,
         isVideoPublic ?? false
       );
       Object.assign(dataToUpdate, newVideoData);
 
-      console.log(
-        `✅ [LEARNED] Novo vídeo salvo: ${videoUploadResult.filename}`
-      );
+      // 🆕 TRACKING DE UPLOAD VÍDEO
+      trackActivity({
+        userId: session.user.id,
+        type: 'UPLOAD_VIDEO',
+        action: ActivityActions.UPLOAD_VIDEO,
+        entityType: 'work',
+        entityId: workId,
+        entityName: work.title,
+        metadata: {
+          composerName: work.composer.name,
+          fileName: videoUploadResult.filename,
+          fileSize: videoUploadResult.fileSize,
+          isPublic: isVideoPublic ?? false,
+          action: 'replace',
+        },
+        ...requestInfo,
+      });
     }
 
-    // 3. Se só mudou configuração de público/privado (sem novo vídeo)
     if (isVideoPublic !== undefined && !videoFile && !deleteVideo) {
       dataToUpdate.isVideoPublic = isVideoPublic;
     }
 
-    // Atualizar item
     const updated = await prisma.learned.updateMany({
       where: {
         userId: session.user.id,
@@ -524,7 +586,23 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    // Buscar item atualizado
+    // 🆕 TRACKING DE UPDATE LEARNED
+    trackActivity({
+      userId: session.user.id,
+      type: 'UPDATE_LEARNED',
+      action: ActivityActions.UPDATE_LEARNED,
+      entityType: 'work',
+      entityId: workId,
+      entityName: work.title,
+      metadata: {
+        composerName: work.composer.name,
+        fieldsUpdated: Object.keys(dataToUpdate),
+        hasNewVideo: !!videoFile,
+        videoDeleted: deleteVideo,
+      },
+      ...requestInfo,
+    });
+
     const updatedItem = await prisma.learned.findFirst({
       where: {
         userId: session.user.id,
@@ -567,7 +645,6 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    // Revalidar cache
     revalidateTag(`user-learning-${session.user.id}`);
     revalidateTag('user-learning');
     revalidateTag('learning-stats');
@@ -596,7 +673,6 @@ export async function PATCH(request: NextRequest) {
             musicalInsights: updatedItem.musicalInsights,
             selectedWorkScoreId: updatedItem.selectedWorkScoreId,
             selectedWorkScore: updatedItem.selectedWorkScore,
-            // 🆕 CAMPOS DE VÍDEO
             videoUrl: updatedItem.videoUrl,
             videoFileName: updatedItem.videoFileName,
             videoFilePath: updatedItem.videoFilePath,
@@ -615,7 +691,8 @@ export async function PATCH(request: NextRequest) {
     );
   }
 }
-// GET method atualizado para incluir campos de vídeo
+
+// GET permanece igual (sem tracking necessário em leituras)
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -692,7 +769,6 @@ export async function GET(request: NextRequest) {
               musicalInsights: learnedItem.musicalInsights,
               selectedWorkScoreId: learnedItem.selectedWorkScoreId,
               selectedWorkScore: learnedItem.selectedWorkScore,
-              // 🆕 CAMPOS DE VÍDEO
               videoUrl: learnedItem.videoUrl,
               videoFileName: learnedItem.videoFileName,
               videoFilePath: learnedItem.videoFilePath,
@@ -705,7 +781,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Buscar todos os itens
     const learnedItems = await prisma.learned.findMany({
       where: {
         userId: session.user.id,
@@ -732,7 +807,6 @@ export async function GET(request: NextRequest) {
         musicalInsights: item.musicalInsights,
         selectedWorkScoreId: item.selectedWorkScoreId,
         selectedWorkScore: item.selectedWorkScore,
-        // 🆕 CAMPOS DE VÍDEO
         videoUrl: item.videoUrl,
         videoFileName: item.videoFileName,
         videoFilePath: item.videoFilePath,

@@ -10,6 +10,7 @@ import {
   translateAndCacheBiography,
 } from '@/app/utils/translations/biographyTranslation';
 import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
+import { getRequestInfo, trackActivity } from '@/app/libs/activityTracker';
 
 // Cache para controle de processamento concurrent
 const processCache = new Map<
@@ -27,6 +28,7 @@ export async function POST(
   { params }: { params: Promise<{ composerId: string }> }
 ) {
   let composerId = '';
+  const requestInfo = getRequestInfo(request);
 
   try {
     const resolvedParams = await params;
@@ -79,6 +81,19 @@ export async function POST(
       requestedLanguage,
       cacheKey
     );
+
+    trackActivity({
+      type: 'GENERATE_BIO', // Use um tipo genérico
+      action: 'gerou biografia com IA',
+      entityType: 'composer',
+      entityId: composerId,
+      metadata: {
+        language: requestedLanguage,
+        generated: true,
+        fromCache: false,
+      },
+      ...requestInfo,
+    });
     return result;
   } catch (error) {
     console.error('Erro geral na rota:', error);

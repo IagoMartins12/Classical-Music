@@ -8,6 +8,11 @@ import {
   getMilestonesByInstrument,
   calculateProgress,
 } from '@/app/utils/progressMilestones';
+import {
+  ActivityActions,
+  getRequestInfo,
+  trackActivity,
+} from '@/app/libs/activityTracker';
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,6 +23,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    const requestInfo = getRequestInfo(request);
+
     const {
       workId,
       action,
@@ -50,6 +57,7 @@ export async function POST(request: NextRequest) {
       where: { id: workId },
       select: {
         id: true,
+        title: true,
         instrument: {
           select: {
             name: true,
@@ -181,7 +189,21 @@ export async function POST(request: NextRequest) {
           },
         },
       });
-
+      trackActivity({
+        userId: session.user.id,
+        type: 'ADD_WANT_TO_LEARN',
+        action: ActivityActions.ADD_WANT_TO_LEARN,
+        entityType: 'work',
+        entityId: workId,
+        entityName: work.title,
+        metadata: {
+          priority,
+          difficulty,
+          estimatedStudyTime,
+          hasScore: !!selectedWorkScoreId,
+        },
+        ...requestInfo,
+      });
       // Revalidação de cache
       revalidateTag(`user-learning-${session.user.id}`);
       revalidateTag(`work-learning-${workId}`);
@@ -227,7 +249,16 @@ export async function POST(request: NextRequest) {
           workId: workId,
         },
       });
+      trackActivity({
+        userId: session.user.id,
+        type: 'REMOVE_WANT_TO_LEARN',
+        action: ActivityActions.REMOVE_WANT_TO_LEARN,
+        entityType: 'work',
+        entityId: workId,
+        entityName: work.title,
 
+        ...requestInfo,
+      });
       // Revalidação de cache
       revalidateTag(`user-learning-${session.user.id}`);
       revalidateTag(`work-learning-${workId}`);
@@ -267,6 +298,8 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
+    const requestInfo = getRequestInfo(request);
+
     const {
       workId,
       priority,
@@ -290,6 +323,7 @@ export async function PATCH(request: NextRequest) {
       where: { id: workId },
       select: {
         id: true,
+        title: true,
         instrument: {
           select: {
             name: true,
@@ -369,6 +403,19 @@ export async function PATCH(request: NextRequest) {
         workId: workId,
       },
       data: dataToUpdate,
+    });
+
+    trackActivity({
+      userId: session.user.id,
+      type: 'UPDATE_WANT_TO_LEARN',
+      action: ActivityActions.UPDATE_WANT_TO_LEARN,
+      entityType: 'work',
+      entityId: workId,
+      entityName: work.title,
+      metadata: {
+        fieldsUpdated: Object.keys(dataToUpdate),
+      },
+      ...requestInfo,
     });
 
     if (updated.count === 0) {

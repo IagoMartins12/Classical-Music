@@ -1,9 +1,14 @@
-// app/api/favorites/works/route.ts
+// app/api/favorites/works/route.ts - COM ACTIVITY TRACKING
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
+import {
+  trackActivity,
+  getRequestInfo,
+  ActivityActions,
+} from '@/app/libs/activityTracker';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,18 +19,24 @@ export async function POST(request: NextRequest) {
     }
 
     const { workId, action } = await request.json();
+    const requestInfo = getRequestInfo(request);
 
     if (!workId || !action) {
       return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 });
     }
 
-    // Verificar se a obra existe
-    const workExists = await prisma.work.findUnique({
+    // Buscar obra para tracking
+    const work = await prisma.work.findUnique({
       where: { id: workId },
-      select: { id: true },
+      select: {
+        id: true,
+        title: true,
+        opOrCatalog: true,
+        composer: { select: { name: true } },
+      },
     });
 
-    if (!workExists) {
+    if (!work) {
       return NextResponse.json(
         { error: 'Obra não encontrada' },
         { status: 404 }
@@ -33,7 +44,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (action === 'add') {
-      // Adicionar aos favoritos (upsert para evitar duplicatas)
       const favorite = await prisma.favoriteWork.upsert({
         where: {
           userId_workId: {
@@ -41,7 +51,7 @@ export async function POST(request: NextRequest) {
             workId: workId,
           },
         },
-        update: {}, // Se já existe, não faz nada
+        update: {},
         create: {
           userId: session.user.id,
           workId: workId,
@@ -63,7 +73,21 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Invalidar caches relacionados
+      // 🆕 TRACKING
+      trackActivity({
+        userId: session.user.id,
+        type: 'FAVORITE_WORK',
+        action: ActivityActions.FAVORITE_WORK,
+        entityType: 'work',
+        entityId: workId,
+        entityName: work.title,
+        metadata: {
+          composerName: work.composer.name,
+          opOrCatalog: work.opOrCatalog,
+        },
+        ...requestInfo,
+      });
+
       revalidateTag(`user-favorites-${session.user.id}`);
       revalidateTag(`work-favorites-${workId}`);
       revalidateTag('user-favorites');
@@ -79,7 +103,6 @@ export async function POST(request: NextRequest) {
         },
       });
     } else if (action === 'remove') {
-      // Remover dos favoritos
       await prisma.favoriteWork.deleteMany({
         where: {
           userId: session.user.id,
@@ -87,7 +110,21 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Invalidar caches relacionados
+      // 🆕 TRACKING
+      trackActivity({
+        userId: session.user.id,
+        type: 'UNFAVORITE_WORK',
+        action: ActivityActions.UNFAVORITE_WORK,
+        entityType: 'work',
+        entityId: workId,
+        entityName: work.title,
+        metadata: {
+          composerName: work.composer.name,
+          opOrCatalog: work.opOrCatalog,
+        },
+        ...requestInfo,
+      });
+
       revalidateTag(`user-favorites-${session.user.id}`);
       revalidateTag(`work-favorites-${workId}`);
       revalidateTag('user-favorites');
@@ -120,7 +157,6 @@ export async function GET(request: NextRequest) {
     const workId = searchParams.get('workId');
 
     if (workId) {
-      // Verificar se uma obra específica está favoritada
       const favorite = await prisma.favoriteWork.findFirst({
         where: {
           userId: session.user.id,
@@ -156,7 +192,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Buscar todas as obras favoritas do usuário
     const favorites = await prisma.favoriteWork.findMany({
       where: {
         userId: session.user.id,

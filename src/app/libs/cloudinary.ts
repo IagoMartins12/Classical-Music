@@ -567,4 +567,55 @@ export const uploadMetrics = {
   },
 };
 
+// ========================================
+// ADICIONAR AO FINAL DO app/libs/cloudinary.ts
+// ========================================
+
+/**
+ * 🎤 Upload de áudio TTS (Google Text-to-Speech)
+ */
+export async function uploadTTSAudio(
+  audioBuffer: Buffer,
+  articleId: string
+): Promise<CloudinaryUploadResult> {
+  const folder = `blog/tts/${articleId}`;
+  const publicId = `tts_audio_${Date.now()}`;
+
+  return uploadToCloudinary(audioBuffer, {
+    folder,
+    resourceType: 'video', // Cloudinary usa 'video' para áudio
+    publicId,
+    overwrite: true,
+    tags: ['tts', 'google-tts', 'blog', articleId],
+    // 🆕 SEM transformações - áudio já vem otimizado do Google
+    transformation: undefined,
+    eager: false,
+    context: {
+      articleId,
+      type: 'tts_audio',
+      source: 'google_cloud_tts',
+      uploadedAt: new Date().toISOString(),
+    },
+  });
+}
+
+/**
+ * 🗑️ Deletar áudio TTS antigo
+ */
+export async function deleteTTSAudio(publicId: string): Promise<boolean> {
+  return deleteFromCloudinary(publicId, 'video');
+}
+
+/**
+ * 🎵 Gerar URL otimizada para áudio TTS
+ */
+export function getTTSAudioUrl(publicId: string): string {
+  return cloudinary.url(publicId, {
+    resource_type: 'video',
+    secure: true,
+    fetch_format: 'auto', // mp3, ogg, etc
+    quality: 'auto',
+  });
+}
+
 export default cloudinary;

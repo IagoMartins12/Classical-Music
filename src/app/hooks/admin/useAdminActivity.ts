@@ -1,16 +1,9 @@
-// app/hooks/admin/useAdminActivity.ts
+// app/hooks/admin/useAdminActivity.ts - ATUALIZADO COM TIPOS CORRETOS
 import { useState, useEffect, useCallback } from 'react';
 
 export interface ActivityItem {
   id: string;
-  type:
-    | 'user_registration'
-    | 'upload'
-    | 'annotation'
-    | 'favorite'
-    | 'moderation'
-    | 'system'
-    | 'study_session';
+  type: string;
   user: {
     id: string;
     name: string;
@@ -31,8 +24,7 @@ export interface ActivityItem {
 export interface ActivityFilters {
   type?: string;
   search?: string;
-  dateFrom?: string;
-  dateTo?: string;
+  period?: string;
   userId?: string;
 }
 
@@ -43,11 +35,24 @@ export interface ActivityPagination {
   hasMore: boolean;
 }
 
+// Tipos de atividade suportados
+export const ACTIVITY_TYPES = {
+  ALL: 'all',
+  UPLOAD: 'UPLOAD', // Do UploadHistory
+  FAVORITE: 'favorite', // Mapeado para múltiplos tipos de favoritos
+  ANNOTATION: 'annotation', // Mapeado para múltiplos tipos de anotação
+  STUDY: 'study_session', // Mapeado para tipos de estudo
+  MODERATION: 'moderation', // Denúncias
+  SYSTEM: 'system', // Ações do sistema
+} as const;
+
 export function useAdminActivity() {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<ActivityFilters>({});
+  const [filters, setFilters] = useState<ActivityFilters>({
+    period: '7d',
+  });
   const [pagination, setPagination] = useState<ActivityPagination>({
     page: 1,
     limit: 50,
@@ -68,8 +73,7 @@ export function useAdminActivity() {
 
         if (filters.type) params.set('type', filters.type);
         if (filters.search) params.set('search', filters.search);
-        if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
-        if (filters.dateTo) params.set('dateTo', filters.dateTo);
+        if (filters.period) params.set('period', filters.period);
         if (filters.userId) params.set('userId', filters.userId);
 
         const response = await fetch(`/api/admin/activity?${params}`);

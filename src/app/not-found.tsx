@@ -11,6 +11,8 @@ import {
   FiUsers,
   FiBookOpen,
   FiCompass,
+  FiFileText,
+  FiLayers,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 import {
@@ -19,7 +21,6 @@ import {
   AnimatedItem,
 } from './components/animation/AnimatedComponents';
 import AnimatedMusicalNotes from './components/AnimatedMusicalNotes';
-
 // Importar navegações específicas
 import TeacherNavigation from './components/TeacherSystem/TeacherNavigation';
 import StudentNavigation from './components/TeacherSystem/StudentNavigation';
@@ -29,8 +30,9 @@ import AdminSidebar from './components/Admin/AdminSidebar';
 import Footer from './components/Footer';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { useClientMetadata } from './hooks/useClientMetadata';
+import { BlogHeader } from './components/blog/BlogHeader';
 
-type AreaType = 'main' | 'teacher' | 'student' | 'admin';
+type AreaType = 'main' | 'teacher' | 'student' | 'blog' | 'admin';
 
 export default function NotFound() {
   const pathname = usePathname();
@@ -69,6 +71,8 @@ export default function NotFound() {
       setCurrentArea('student');
     } else if (pathname.startsWith('/admin')) {
       setCurrentArea('admin');
+    } else if (pathname.startsWith('/blog')) {
+      setCurrentArea('blog');
     } else {
       setCurrentArea('main');
     }
@@ -81,7 +85,8 @@ export default function NotFound() {
 
       case 'student':
         return session?.user ? <StudentNavigation user={session.user} /> : null;
-
+      case 'blog':
+        return <BlogHeader />;
       case 'admin':
         return (
           <>
@@ -265,6 +270,8 @@ export default function NotFound() {
         return '/student';
       case 'admin':
         return '/admin';
+      case 'blog':
+        return '/blog';
       default:
         return '/';
     }
@@ -278,6 +285,8 @@ export default function NotFound() {
         return t('not_found_area_title_student');
       case 'admin':
         return t('not_found_area_title_admin');
+      case 'blog':
+        return t('not_found_area_title_blog');
       default:
         return t('not_found_area_title_main');
     }
@@ -348,6 +357,28 @@ export default function NotFound() {
             description: t('not_found_admin_suggestions_2__description'),
             href: '/admin/composers',
             icon: FiMusic,
+          },
+        ];
+
+      case 'blog':
+        return [
+          {
+            title: t('not_found_blog_suggestions_0__title'),
+            description: t('not_found_blog_suggestions_0__description'),
+            href: '/blog/articles',
+            icon: FiFileText,
+          },
+          {
+            title: t('not_found_blog_suggestions_1__title'),
+            description: t('not_found_blog_suggestions_1__description'),
+            href: '/blog/category',
+            icon: FiLayers,
+          },
+          {
+            title: t('not_found_blog_suggestions_2__title'),
+            description: t('not_found_blog_suggestions_2__description'),
+            href: '/blog',
+            icon: FiHome,
           },
         ];
 

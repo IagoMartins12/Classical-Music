@@ -9,7 +9,7 @@ export interface AdminUser {
   username?: string;
   userType?: 'MUSIC_STUDENT' | 'CASUAL_USER' | 'PROFESSIONAL' | 'TEACHER';
   experienceLevel?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
-  role?: number; // 0 = usuário, 1 = professor, 2 = super admin
+  role?: number;
   annotationsCount: number;
   uploadsCount: number;
   uploadScore: number;
@@ -18,10 +18,8 @@ export interface AdminUser {
   isProfilePublic: boolean;
   onboardingCompleted: boolean;
   moderationsCount?: number;
-
   teacherInviteStatus?: 'pending' | 'accepted' | 'declined' | null;
   teacherInviteAcceptedAt?: Date;
-
   isTeacher?: boolean;
   teacherProfile?: {
     id: string;
@@ -80,55 +78,12 @@ export interface UserAnalytics {
   contributorsPercentage?: number;
 }
 
-export interface UserDetailsData {
-  profile: {
-    totalFavoriteWorks: number;
-    totalFavoriteComposers: number;
-    totalAnnotations: number;
-    lastActivity: string;
-    joinedDaysAgo: number;
-  };
-  recentActivity: Array<{
-    type: 'annotation' | 'study' | 'favorite' | 'upload';
-    title: string;
-    subtitle: string;
-    date: string;
-    workTitle?: string;
-    composerName?: string;
-  }>;
-  contributions: {
-    topAnnotations: Array<{
-      id: string;
-      workTitle: string;
-      composerName: string;
-      content: string;
-      helpfulCount: number;
-      createdAt: string;
-    }>;
-    recentUploads: Array<{
-      id: string;
-      type: 'composer' | 'work' | 'score';
-      title: string;
-      status: string;
-      createdAt: string;
-    }>;
-  };
-}
-
-export interface UserEditData {
-  role: number;
-  userType: string;
-  experienceLevel: string;
-}
-
-// Constantes para o sistema
 export const USER_ROLES = {
   USER: 0,
   TEACHER: 1,
   SUPER_ADMIN: 2,
 } as const;
 
-// Labels traduzidos
 export const ROLE_LABELS = {
   [USER_ROLES.USER]: 'Usuário Comum',
   [USER_ROLES.TEACHER]: 'Professor',
@@ -165,9 +120,8 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
   const [statsLoading, setStatsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pagination, setPagination] = useState<any>(null);
-  const [period, setPeriod] = useState<TimePeriod>('30d');
+  const [period, setPeriod] = useState<TimePeriod>('all'); // Período padrão restaurado
 
-  // Refs para evitar múltiplas chamadas
   const fetchingUsersRef = useRef(false);
   const fetchingAnalyticsRef = useRef(false);
   const initialLoadedRef = useRef(false);
@@ -175,7 +129,6 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
 
   const fetchUsers = useCallback(
     async (filters: UserListFilters = {}, page: number = 1) => {
-      // Prevenir múltiplas chamadas simultâneas
       if (fetchingUsersRef.current) {
         console.log('[useAdminUsers] Ignorando fetchUsers - já em andamento');
         return;
@@ -190,16 +143,16 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
           action: 'list',
           page: page.toString(),
           limit: (filters.limit || 50).toString(),
-          period: period,
+          period: filters.period || period, // Usar period dos filtros ou do estado
         });
 
-        // Adicionar filtros válidos
         Object.entries(filters).forEach(([key, value]) => {
           if (
             value !== undefined &&
             value !== null &&
             value !== '' &&
-            value !== 'all'
+            value !== 'all' &&
+            key !== 'period'
           ) {
             searchParams.set(key, value.toString());
           }
@@ -246,7 +199,6 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
   );
 
   const fetchAnalytics = useCallback(async () => {
-    // Prevenir múltiplas chamadas simultâneas
     if (fetchingAnalyticsRef.current) {
       console.log('[useAdminUsers] Ignorando fetchAnalytics - já em andamento');
       return;
@@ -274,7 +226,6 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
       const data = await response.json();
 
       if (data.success) {
-        // Limpar dados desnecessários e garantir estrutura consistente
         const cleanAnalytics: UserAnalytics = {
           totalUsers: data.analytics?.totalUsers || 0,
           activeUsers: {
@@ -351,7 +302,6 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
         const data = await response.json();
 
         if (data.success) {
-          // Atualizar usuário na lista local
           setUsers((prev) =>
             prev.map((user) =>
               user.id === userId ? { ...user, ...data.user } : user
@@ -376,16 +326,16 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
         const searchParams = new URLSearchParams({
           action: 'export',
           format: 'csv',
-          period: period,
+          period: filters.period || period,
         });
 
-        // Adicionar filtros para export
         Object.entries(filters).forEach(([key, value]) => {
           if (
             value !== undefined &&
             value !== null &&
             value !== '' &&
-            value !== 'all'
+            value !== 'all' &&
+            key !== 'period'
           ) {
             searchParams.set(key, value.toString());
           }
@@ -399,12 +349,11 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
           throw new Error('Erro ao exportar usuários');
         }
 
-        // Baixar arquivo
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `usuarios-${period}-${
+        a.download = `usuarios-${filters.period || period}-${
           new Date().toISOString().split('T')[0]
         }.csv`;
         document.body.appendChild(a);
@@ -420,14 +369,12 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
   );
 
   const refreshData = useCallback(async () => {
-    // Evitar múltiplas chamadas simultâneas
     if (fetchingUsersRef.current && fetchingAnalyticsRef.current) {
       console.log('[useAdminUsers] Ignorando refreshData - já em andamento');
       return;
     }
 
     try {
-      // Chamar apenas se não estiver já executando
       const promises = [];
       if (!fetchingUsersRef.current) {
         promises.push(fetchUsers());
@@ -442,7 +389,7 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
     }
   }, [fetchUsers, fetchAnalytics]);
 
-  // 🔥 EFFECT PRINCIPAL - Carregamento inicial e mudança de período
+  // Carregamento inicial e mudança de período
   useEffect(() => {
     const periodChanged = lastPeriodRef.current !== period;
 
@@ -453,7 +400,6 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
         period,
       });
 
-      // Resetar flags quando o período muda
       if (periodChanged) {
         fetchingUsersRef.current = false;
         fetchingAnalyticsRef.current = false;
@@ -464,27 +410,29 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
         initialLoadedRef.current = true;
       });
     }
-  }, [period]); // Apenas period como dependência
+  }, [period, refreshData]);
 
-  // 🔥 AUTO-REFRESH - Intervalo independente
+  // Auto-refresh
   useEffect(() => {
-    if (!initialLoadedRef.current) return; // Não iniciar até carregar inicial
+    if (!initialLoadedRef.current) return;
 
-    const interval = setInterval(() => {
-      // Só fazer auto-refresh se não estiver carregando nada
-      if (
-        !fetchingUsersRef.current &&
-        !fetchingAnalyticsRef.current &&
-        !loading &&
-        !statsLoading
-      ) {
-        console.log('[useAdminUsers] Auto-refresh executado');
-        fetchAnalytics(); // Só analytics no auto-refresh
-      }
-    }, 10 * 60 * 1000); // 10 minutos
+    const interval = setInterval(
+      () => {
+        if (
+          !fetchingUsersRef.current &&
+          !fetchingAnalyticsRef.current &&
+          !loading &&
+          !statsLoading
+        ) {
+          console.log('[useAdminUsers] Auto-refresh executado');
+          fetchAnalytics();
+        }
+      },
+      10 * 60 * 1000
+    );
 
     return () => clearInterval(interval);
-  }, []); // Array vazio - independente de outras variáveis
+  }, [fetchAnalytics, loading, statsLoading]);
 
   return {
     users,
