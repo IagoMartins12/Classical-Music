@@ -53,7 +53,7 @@
     "// === DIAGNOSTIC SCRIPTS ===": "",
     "backup:diagnose": "tsx scripts/backup/diagnose-backup.ts",
     "backup:monitor": "tsx scripts/backup/backup-monitor.ts",
-    "teste2": "tsx scripts/extract-mock-data.ts",
+    "teste2": "tsx scripts/workstyle-epoch-fixer.ts",
     "teste": "tsx scripts/backup/backup-utils.ts",
     "backup:custom": "tsx scripts/backup/backup-utils.ts custom-backup",
     "vercel-build": "prisma generate && next build",

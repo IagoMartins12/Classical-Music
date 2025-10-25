@@ -310,251 +310,171 @@ const MOCK_USERS = [
 // 🎨 MOCK DATA DO BLOG
 const MOCK_BLOG_CATEGORIES = [
   {
-    id: '670a1b2c3d4e5f6a7b8c9d0e',
-    name: 'Análise de Compositores',
-    slug: 'analise-compositores',
-    description: 'Artigos aprofundados sobre a vida e obra dos grandes mestres',
+    id: '68efc0195f2b6ccd0c08ef52',
+    name: 'Clássico',
+    slug: 'classico',
+    description: 'Conheça mais sobre o periodo clássico.',
     parentId: null,
     showInMenu: true,
     isActive: true,
-    image: null,
-    icon: '🎼',
-    color: '#3b82f6',
+    image:
+      '/blog/categories/category-68efc0195f2b6ccd0c08ef52-1760637906265-m9nq49.jpeg',
+    icon: '🎹',
+    color: '#d4af37',
     coverImage: null,
     order: 1,
-    metaTitle: 'Análise de Compositores | Opus Atlas Blog',
-    metaDescription:
-      'Conheça os grandes compositores da história da música clássica',
-    createdAt: new Date('2025-01-15T10:00:00.000Z'),
-    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
-  },
-  {
-    id: '670a1b2c3d4e5f6a7b8c9d0f',
-    name: 'História da Música',
-    slug: 'historia-musica',
-    description: 'Explorando as épocas e movimentos musicais',
-    parentId: null,
-    showInMenu: true,
-    isActive: true,
-    image: null,
-    icon: '📜',
-    color: '#8b5cf6',
-    coverImage: null,
-    order: 2,
-    metaTitle: 'História da Música | Opus Atlas Blog',
-    metaDescription:
-      'Descubra a evolução da música clássica através dos séculos',
-    createdAt: new Date('2025-01-15T10:00:00.000Z'),
-    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
-  },
-  {
-    id: '670a1b2c3d4e5f6a7b8c9d10',
-    name: 'Guias e Tutoriais',
-    slug: 'guias-tutoriais',
-    description: 'Dicas práticas para músicos de todos os níveis',
-    parentId: null,
-    showInMenu: true,
-    isActive: true,
-    image: null,
-    icon: '📚',
-    color: '#10b981',
-    coverImage: null,
-    order: 3,
-    metaTitle: 'Guias e Tutoriais | Opus Atlas Blog',
-    metaDescription: 'Aprenda técnicas e dicas para melhorar sua performance',
-    createdAt: new Date('2025-01-15T10:00:00.000Z'),
-    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
+    metaTitle: null,
+    metaDescription: null,
+    createdAt: new Date('2025-10-15T15:39:05.088Z'),
+    updatedAt: new Date('2025-10-17T19:31:35.390Z'),
   },
 ];
 
 const MOCK_BLOG_TAGS = [
   {
-    id: '670a1b2c3d4e5f6a7b8c9d11',
-    name: 'barroco',
-    slug: 'barroco',
-    description: 'Artigos sobre o período Barroco',
-    color: '#f59e0b',
-    articleCount: 5,
-    createdAt: new Date('2025-01-15T10:00:00.000Z'),
-    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
-  },
-  {
-    id: '670a1b2c3d4e5f6a7b8c9d12',
-    name: 'piano',
-    slug: 'piano',
-    description: 'Artigos relacionados ao piano',
-    color: '#6366f1',
-    articleCount: 8,
-    createdAt: new Date('2025-01-15T10:00:00.000Z'),
-    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
-  },
-  {
-    id: '670a1b2c3d4e5f6a7b8c9d13',
-    name: 'iniciantes',
-    slug: 'iniciantes',
-    description: 'Conteúdo para músicos iniciantes',
-    color: '#10b981',
-    articleCount: 12,
-    createdAt: new Date('2025-01-15T10:00:00.000Z'),
-    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
+    id: '68efcd7c0c8b0f5c66f56adb',
+    name: 'Chopin3',
+    slug: 'chopin2',
+    description: '',
+    color: '#d4af37',
+    articleCount: 0,
+    createdAt: new Date('2025-10-15T16:36:12.786Z'),
+    updatedAt: new Date('2025-10-15T16:38:40.229Z'),
   },
 ];
 
 const MOCK_BLOG_ARTICLES = [
   {
-    id: '670a1b2c3d4e5f6a7b8c9d14',
-    title: 'Bach: O Mestre do Barroco Alemão',
-    slug: 'bach-mestre-barroco-alemao',
+    id: '68efbb9cf438e29db2293b58',
+    title: 'Curiosidades de chopin',
+    slug: 'chopin-bacana',
     description:
-      'Conheça a vida e obra de Johann Sebastian Bach, um dos maiores compositores de todos os tempos',
+      'Veja 23 curiosidades desse compositor incrivel do periodo romantico.',
     content: {
-      blocks: [
-        {
-          type: 'paragraph',
-          content:
-            'Johann Sebastian Bach é amplamente reconhecido como um dos maiores compositores da história da música.',
-        },
-        {
-          type: 'heading',
-          level: 2,
-          content: 'Primeiros Anos',
-        },
-        {
-          type: 'paragraph',
-          content:
-            'Nascido em 1685 em Eisenach, Alemanha, Bach veio de uma longa linhagem de músicos.',
-        },
-      ],
+      type: 'doc',
+      content: [], // Array vazio ou estrutura simplificada
     },
-    coverImage: '/images/blog/bach-cover.jpg',
-    coverImageAlt: 'Retrato de Johann Sebastian Bach',
-    coverImageCredit: 'Domínio Público',
-    ttsAudioUrl: null,
+    coverImage:
+      '/blog/68efbb9cf438e29db2293b58/thumbnail/1760588906971-965vjn.png',
+    coverImageAlt: '',
+    coverImageCredit: null,
+    ttsAudioUrl:
+      'https://res.cloudinary.com/dikufxgpb/video/upload/v1761139346/blog/tts/68efbb9cf438e29db2293b58/tts_audio_1761139342206.mp3',
     status: 'PUBLISHED',
     isFeatured: true,
-    featuredOrder: 1,
-    types: ['COMPOSER_ANALYSIS'],
+    featuredOrder: 3,
+    types: ['COMPOSER_ANALYSIS', 'WORK_ANALYSIS'],
     authorId: '688cdfd7cc5e99751f75a76f',
     coAuthorIds: [],
-    publishedAt: new Date('2025-01-20T09:00:00.000Z'),
+    publishedAt: new Date('2025-10-15T15:19:56.114Z'),
     scheduledFor: null,
-    createdAt: new Date('2025-01-18T10:00:00.000Z'),
-    updatedAt: new Date('2025-01-20T09:00:00.000Z'),
-    readTime: 8,
-    composerIds: ['685d8f9a8803000f9b61d151'],
-    workIds: [],
-    scoreIds: [],
-    instrumentIds: ['685ef4b5a249f2a204023458'],
-    epochIds: ['685d59e11e3db0c5aaa8942d'],
-    backgroundMusicUrl: null,
-    backgroundMusicTitle: null,
-    backgroundMusicVolume: 0.3,
-    backgroundMusicLoop: true,
-    backgroundMusicAutoplay: true,
-    viewCount: 1547,
-    readCount: 892,
-    avgReadTime: 480,
-    estimatedReadTime: 480,
-    metaTitle: 'Bach: O Mestre do Barroco Alemão | Opus Atlas',
-    metaDescription:
-      'Descubra a vida e obra de Johann Sebastian Bach, suas principais composições e legado',
-    keywords: ['bach', 'barroco', 'música clássica', 'compositor alemão'],
-    version: 1,
-  },
-  {
-    id: '670a1b2c3d4e5f6a7b8c9d15',
-    title: 'Como Estudar Piano: Guia para Iniciantes',
-    slug: 'como-estudar-piano-guia-iniciantes',
-    description:
-      'Um guia completo com dicas práticas para quem está começando a estudar piano',
-    content: {
-      blocks: [
-        {
-          type: 'paragraph',
-          content:
-            'Começar a estudar piano pode parecer desafiador, mas com as técnicas certas você pode progredir rapidamente.',
-        },
-        {
-          type: 'heading',
-          level: 2,
-          content: 'Postura Correta',
-        },
-        {
-          type: 'paragraph',
-          content:
-            'A postura é fundamental para tocar piano de forma confortável e eficiente.',
-        },
-      ],
-    },
-    coverImage: '/images/blog/piano-guide-cover.jpg',
-    coverImageAlt: 'Mãos tocando piano',
-    coverImageCredit: 'Unsplash',
-    ttsAudioUrl: null,
-    status: 'PUBLISHED',
-    isFeatured: false,
-    featuredOrder: null,
-    types: ['TUTORIAL'],
-    authorId: '688cdfd7cc5e99751f75a76f',
-    coAuthorIds: [],
-    publishedAt: new Date('2025-01-22T14:00:00.000Z'),
-    scheduledFor: null,
-    createdAt: new Date('2025-01-21T10:00:00.000Z'),
-    updatedAt: new Date('2025-01-22T14:00:00.000Z'),
-    readTime: 6,
+    createdAt: new Date('2025-10-15T15:19:56.115Z'),
+    updatedAt: new Date('2025-10-24T18:43:54.569Z'),
+    readTime: 7,
     composerIds: [],
     workIds: [],
     scoreIds: [],
-    instrumentIds: ['685ef4b5a249f2a204023458'],
+    instrumentIds: [],
     epochIds: [],
-    backgroundMusicUrl: null,
-    backgroundMusicTitle: null,
-    backgroundMusicVolume: 0.3,
+    backgroundMusicUrl: 'https://www.youtube.com/watch?v=mLmbZJAjeoI',
+    backgroundMusicTitle: 'Sokolov',
+    backgroundMusicVolume: 0.5,
     backgroundMusicLoop: true,
     backgroundMusicAutoplay: true,
-    viewCount: 2341,
-    readCount: 1456,
-    avgReadTime: 360,
-    estimatedReadTime: 360,
-    metaTitle: 'Como Estudar Piano: Guia Completo para Iniciantes',
-    metaDescription:
-      'Aprenda as melhores técnicas e dicas para começar seus estudos de piano',
-    keywords: ['piano', 'iniciantes', 'tutorial', 'técnica'],
-    version: 1,
+    viewCount: 198,
+    readCount: 0,
+    avgReadTime: null,
+    estimatedReadTime: 7,
+    metaTitle: '',
+    metaDescription: '',
+    keywords: [],
+    version: 11,
   },
 ];
 
 const MOCK_BLOG_COMMENTS = [
   {
-    id: '670a1b2c3d4e5f6a7b8c9d16',
-    articleId: '670a1b2c3d4e5f6a7b8c9d14',
+    id: '68efdb9a903df79587a00f31',
+    articleId: '68efbb9cf438e29db2293b58',
     userId: '688cdfd7cc5e99751f75a76f',
-    content: 'Excelente artigo! Bach realmente foi um gênio incomparável.',
+    content: 'teste',
     parentId: null,
     status: 'APPROVED',
     isEdited: false,
-    likeCount: 5,
+    likeCount: 1,
     isFlagged: false,
     flagReason: null,
     flaggedBy: null,
     moderatedBy: null,
     moderatedAt: null,
-    createdAt: new Date('2025-01-20T11:30:00.000Z'),
-    updatedAt: new Date('2025-01-20T11:30:00.000Z'),
+    createdAt: new Date('2025-10-15T17:36:26.570Z'),
+    updatedAt: new Date('2025-10-16T02:56:32.744Z'),
   },
 ];
 
-const MOCK_BLOG_SERIES = [
+const MOCK_BLOG_ARTICLE_CATEGORIES = [
   {
-    id: '670a1b2c3d4e5f6a7b8c9d17',
-    title: 'Grandes Compositores do Barroco',
-    slug: 'grandes-compositores-barroco',
-    description:
-      'Uma série sobre os principais compositores do período Barroco',
-    coverImage: '/images/blog/barroco-series.jpg',
-    authorId: '688cdfd7cc5e99751f75a76f',
-    isActive: true,
-    createdAt: new Date('2025-01-15T10:00:00.000Z'),
-    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
+    id: '68f2d0598ff6ad1d5ae4789e',
+    articleId: '68efbb9cf438e29db2293b58',
+    categoryId: '68effceb97e86ee1aacecc7c',
+    createdAt: new Date('2025-10-17T23:25:13.994Z'),
+  },
+];
+
+const MOCK_BLOG_ARTICLE_VERSIONS = [
+  {
+    id: '68efbb9cf438e29db2293b59',
+    articleId: '68efbb9cf438e29db2293b58',
+    version: 1,
+    snapshot: {
+      id: '68efbb9cf438e29db2293b58',
+      title: 'Chopin bacana',
+      slug: 'chopin-bacana',
+      description: 'Teste CHopin',
+      content: {},
+      coverImage: null,
+      coverImageAlt: null,
+      coverImageCredit: null,
+      status: 'PUBLISHED',
+      isFeatured: true,
+      featuredOrder: 1,
+      types: ['COMPOSER_ANALYSIS'],
+      authorId: '688cdfd7cc5e99751f75a76f',
+      coAuthorIds: [],
+      publishedAt: '2025-10-15T15:19:56.114Z',
+      scheduledFor: null,
+      createdAt: '2025-10-15T15:19:56.115Z',
+      updatedAt: '2025-10-15T15:19:56.115Z',
+      readTime: 0,
+      composerIds: [],
+      workIds: [],
+      scoreIds: [],
+      instrumentIds: [],
+      epochIds: [],
+      backgroundMusicUrl: null,
+      backgroundMusicTitle: null,
+      backgroundMusicVolume: 0.3,
+      backgroundMusicLoop: true,
+      backgroundMusicAutoplay: true,
+      viewCount: 0,
+      readCount: 0,
+      avgReadTime: null,
+      estimatedReadTime: 1,
+      metaTitle: null,
+      metaDescription: null,
+      keywords: [],
+      version: 1,
+      author: {
+        id: '688cdfd7cc5e99751f75a76f',
+        firstName: 'iago_martins',
+        lastName: '',
+        username: 'iago_martins',
+        image: '',
+      },
+    },
+    editedBy: '688cdfd7cc5e99751f75a76f',
+    changeLog: 'Versão inicial',
+    createdAt: new Date('2025-10-15T15:19:56.126Z'),
   },
 ];
 
@@ -602,7 +522,7 @@ const createMockResult = (model: string, operation: string, args: any) => {
           case 'user':
             return MOCK_USERS.slice(skip, skip + take);
 
-          // ===== BLOG MODELS =====
+          // ===== BLOG MODELS CORRIGIDOS =====
           case 'blogCategory':
             return MOCK_BLOG_CATEGORIES.slice(skip, skip + take);
 
@@ -615,8 +535,14 @@ const createMockResult = (model: string, operation: string, args: any) => {
           case 'blogComment':
             return MOCK_BLOG_COMMENTS.slice(skip, skip + take);
 
+          case 'blogArticleCategory':
+            return MOCK_BLOG_ARTICLE_CATEGORIES.slice(skip, skip + take);
+
+          case 'blogArticleVersion':
+            return MOCK_BLOG_ARTICLE_VERSIONS.slice(skip, skip + take);
+
           case 'blogSeries':
-            return MOCK_BLOG_SERIES.slice(skip, skip + take);
+          case 'blogArticleTag':
 
           // ===== RELAÇÕES E TABELAS DE JUNÇÃO =====
           case 'favoriteWork':
@@ -753,7 +679,7 @@ const createMockResult = (model: string, operation: string, args: any) => {
             return MOCK_BLOG_COMMENTS[0] || null;
 
           case 'blogSeries':
-            return MOCK_BLOG_SERIES[0] || null;
+            return null;
 
           // ===== TODOS OS OUTROS RETORNAM NULL =====
           default:
@@ -798,7 +724,6 @@ const createMockResult = (model: string, operation: string, args: any) => {
             return MOCK_BLOG_COMMENTS.length;
 
           case 'blogSeries':
-            return MOCK_BLOG_SERIES.length;
 
           // ===== RELAÇÕES E OUTROS MODELS RETORNAM 0 =====
           case 'favoriteWork':
@@ -894,7 +819,7 @@ const createMockResult = (model: string, operation: string, args: any) => {
             count = MOCK_BLOG_COMMENTS.length;
             break;
           case 'blogSeries':
-            count = MOCK_BLOG_SERIES.length;
+            count = 0;
             break;
 
           default:
@@ -929,7 +854,7 @@ const createMockResult = (model: string, operation: string, args: any) => {
           case 'blogComment':
             return MOCK_BLOG_COMMENTS[0] || null;
           case 'blogSeries':
-            return MOCK_BLOG_SERIES[0] || null;
+            return null;
           default:
             return null;
         }
