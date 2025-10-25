@@ -272,7 +272,7 @@ const MOCK_USERS = [
   {
     id: '688cdfd7cc5e99751f75a76f',
     firstName: 'iago_martins',
-    lastName: '',
+    lastName: 'iago_martins',
     username: 'iago_martins',
     email: 'admin@email.com',
     emailVerified: new Date('2025-08-01T16:28:51.109Z'),
@@ -389,6 +389,12 @@ const MOCK_BLOG_ARTICLES = [
     metaDescription: '',
     keywords: [],
     version: 11,
+    author: {
+      id: MOCK_USERS[0].id,
+      firstName: MOCK_USERS[0].firstName,
+      lastName: MOCK_USERS[0].lastName,
+      image: MOCK_USERS[0].image,
+    },
   },
 ];
 
