@@ -11,7 +11,7 @@ interface Article {
   slug: string;
   description: string | null;
   coverImage: string | null;
-  readTime: number;
+  readTime?: number | null;
   publishedAt: Date | null;
   author: {
     firstName: string | null;

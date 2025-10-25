@@ -10,7 +10,7 @@ interface ArticleCardProps {
     slug: string;
     description: string | null;
     coverImage: string | null; // ✅ Vai usar image no futuro
-    readTime: number | null;
+    readTime?: number | null;
     publishedAt: Date | null;
     author: {
       firstName: string | null;
@@ -121,7 +121,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
           <div className="flex items-center space-x-3 text-xs text-theme-tertiary">
             <div className="flex items-center space-x-1">
               <FaClock className="w-3 h-3" />
-              <span>{article.readTime}min</span>
+              <span>{article?.readTime ?? 0}min</span>
             </div>
             <div className="flex items-center space-x-1">
               <FaHeart className="w-3 h-3" />

@@ -136,7 +136,7 @@ async function getCategoriesWithArticles() {
 
     articles: (cat.articles ?? []).map((a) => ({
       ...a.article,
-      readTime: a.article.readTime ?? 0,
+      readTime: a.article?.readTime ?? 0,
     })),
 
     // articles: cat.articles.map((a) => ({
@@ -177,12 +177,12 @@ export default async function ArticlesPage() {
 
   const latestWithReadTime = latestArticles.map((a) => ({
     ...a,
-    readTime: a.readTime ?? 0,
+    readTime: a?.readTime ?? 0,
   }));
 
   const trendingWithReadTime = trendingArticles.map((a) => ({
     ...a,
-    readTime: a.readTime ?? 0,
+    readTime: a?.readTime ?? 0,
   }));
 
   return (
