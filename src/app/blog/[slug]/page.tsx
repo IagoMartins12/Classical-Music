@@ -247,19 +247,19 @@ export default async function ArticlePage({ params }: PageProps) {
   );
 }
 
-export async function generateStaticParams() {
-  const articles = await prisma.blogArticle.findMany({
-    where: {
-      status: 'PUBLISHED',
-    },
-    select: {
-      slug: true,
-    },
-    orderBy: { viewCount: 'desc' },
-    take: 50,
-  });
+// export async function generateStaticParams() {
+//   const articles = await prisma.blogArticle.findMany({
+//     where: {
+//       status: 'PUBLISHED',
+//     },
+//     select: {
+//       slug: true,
+//     },
+//     orderBy: { viewCount: 'desc' },
+//     take: 50,
+//   });
 
-  return articles.map((article) => ({
-    slug: article.slug,
-  }));
-}
+//   return articles.map((article) => ({
+//     slug: article.slug,
+//   }));
+// }
