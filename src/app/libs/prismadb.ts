@@ -527,20 +527,30 @@ const createMockResult = (model: string, operation: string, args: any) => {
 
           // ===== BLOG MODELS CORRIGIDOS =====
           case 'blogCategory':
-            return MOCK_BLOG_CATEGORIES.slice(skip, skip + take).map((cat) => ({
-              ...cat,
-              articles: MOCK_BLOG_ARTICLE_CATEGORIES.filter(
+            return MOCK_BLOG_CATEGORIES.slice(skip, skip + take).map((cat) => {
+              const joinedArticles = MOCK_BLOG_ARTICLE_CATEGORIES.filter(
                 (ac) => ac.categoryId === cat.id
-              ).map((ac) => ({
-                article: MOCK_BLOG_ARTICLES.find((a) => a.id === ac.articleId),
-              })),
+              )
+                .map((ac) =>
+                  MOCK_BLOG_ARTICLES.find((a) => a.id === ac.articleId)
+                )
+                .filter(
+                  (a) =>
+                    a?.status === 'PUBLISHED' && a?.publishedAt <= new Date()
+                )
+                .sort(
+                  (a, b) => (b!.publishedAt as any) - (a!.publishedAt as any)
+                )
+                .slice(0, args?.include?.articles?.take ?? 12);
 
-              _count: {
-                articles: MOCK_BLOG_ARTICLE_CATEGORIES.filter(
-                  (ac) => ac.categoryId === cat.id
-                ).length,
-              },
-            }));
+              return {
+                ...cat,
+                articles: joinedArticles.map((article) => ({ article })),
+                _count: {
+                  articles: joinedArticles.length,
+                },
+              };
+            });
 
           case 'blogTag':
             return MOCK_BLOG_TAGS.slice(skip, skip + take);
