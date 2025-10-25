@@ -422,7 +422,7 @@ const MOCK_BLOG_ARTICLE_CATEGORIES = [
   {
     id: '68f2d0598ff6ad1d5ae4789e',
     articleId: '68efbb9cf438e29db2293b58',
-    categoryId: '68effceb97e86ee1aacecc7c',
+    categoryId: '68efc0195f2b6ccd0c08ef52', // ← mesmo ID do MOCK_BLOG_CATEGORIES
     createdAt: new Date('2025-10-17T23:25:13.994Z'),
   },
 ];

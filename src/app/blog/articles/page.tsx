@@ -133,10 +133,16 @@ async function getCategoriesWithArticles() {
 
   return categories.map((cat) => ({
     ...cat,
-    articles: cat.articles.map((a) => ({
+
+    articles: (cat.articles ?? []).map((a) => ({
       ...a.article,
       readTime: a.article.readTime ?? 0,
     })),
+
+    // articles: cat.articles.map((a) => ({
+    //   ...a.article,
+    //   readTime: a.article.readTime ?? 0,
+    // })),
   }));
 }
 
