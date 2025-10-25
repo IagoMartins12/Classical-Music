@@ -134,10 +134,13 @@ async function getCategoriesWithArticles() {
   return categories.map((cat) => ({
     ...cat,
 
-    articles: (cat.articles ?? []).map((a) => ({
-      ...a.article,
-      readTime: a.article?.readTime ?? 0,
-    })),
+    articles: (cat.articles ?? [])
+      .map((a) =>
+        a && (a as any).article
+          ? { ...(a as any).article, readTime: a.article?.readTime ?? 0 }
+          : null
+      )
+      .filter(Boolean),
 
     // articles: cat.articles.map((a) => ({
     //   ...a.article,

@@ -531,13 +531,9 @@ const createMockResult = (model: string, operation: string, args: any) => {
               ...cat,
               articles: MOCK_BLOG_ARTICLE_CATEGORIES.filter(
                 (ac) => ac.categoryId === cat.id
-              )
-                .map(
-                  (ac) =>
-                    MOCK_BLOG_ARTICLES.find((a) => a.id === ac.articleId) ||
-                    null
-                )
-                .filter(Boolean),
+              ).map((ac) => ({
+                article: MOCK_BLOG_ARTICLES.find((a) => a.id === ac.articleId),
+              })),
 
               _count: {
                 articles: MOCK_BLOG_ARTICLE_CATEGORIES.filter(
