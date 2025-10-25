@@ -527,34 +527,24 @@ const createMockResult = (model: string, operation: string, args: any) => {
 
           // ===== BLOG MODELS CORRIGIDOS =====
           case 'blogCategory':
-            return MOCK_BLOG_CATEGORIES.slice(skip, skip + take).map((cat) => {
-              // Encontrar os pivots daquela categoria
-              const articleCategoryRelations =
-                MOCK_BLOG_ARTICLE_CATEGORIES.filter(
-                  (ac) => ac.categoryId === cat.id
-                );
-
-              // Montar a lista final de artigos (sem wrapper {article:...}) + readTime
-              const articles = articleCategoryRelations
+            return MOCK_BLOG_CATEGORIES.slice(skip, skip + take).map((cat) => ({
+              ...cat,
+              articles: MOCK_BLOG_ARTICLE_CATEGORIES.filter(
+                (ac) => ac.categoryId === cat.id
+              )
                 .map(
                   (ac) =>
                     MOCK_BLOG_ARTICLES.find((a) => a.id === ac.articleId) ||
                     null
                 )
-                .filter(Boolean)
-                .map((a) => ({
-                  ...a,
-                  readTime: a?.readTime ?? 0, // ← ESSENCIAL
-                }));
+                .filter(Boolean),
 
-              return {
-                ...cat,
-                articles,
-                _count: {
-                  articles: articles.length,
-                },
-              };
-            });
+              _count: {
+                articles: MOCK_BLOG_ARTICLE_CATEGORIES.filter(
+                  (ac) => ac.categoryId === cat.id
+                ).length,
+              },
+            }));
 
           case 'blogTag':
             return MOCK_BLOG_TAGS.slice(skip, skip + take);
