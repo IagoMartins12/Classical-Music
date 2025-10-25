@@ -546,7 +546,27 @@ const createMockResult = (model: string, operation: string, args: any) => {
             return MOCK_BLOG_TAGS.slice(skip, skip + take);
 
           case 'blogArticle':
-            return MOCK_BLOG_ARTICLES.slice(skip, skip + take);
+            return MOCK_BLOG_ARTICLES.slice(skip, skip + take).map((a) => {
+              const articleCategories = MOCK_BLOG_ARTICLE_CATEGORIES.filter(
+                (ac) => ac.articleId === a.id
+              ).map((ac) => ({
+                category: MOCK_BLOG_CATEGORIES.find(
+                  (c) => c.id === ac.categoryId
+                ),
+              }));
+
+              return {
+                ...a,
+                readTime: a.readTime ?? a.estimatedReadTime ?? 0,
+                _count: {
+                  comments: MOCK_BLOG_COMMENTS.filter(
+                    (c) => c.articleId === a.id && c.status === 'APPROVED'
+                  ).length,
+                  likes: 0, // você ainda não tem likes no mock, deixar 0 é seguro
+                },
+                categories: articleCategories,
+              };
+            });
 
           case 'blogComment':
             return MOCK_BLOG_COMMENTS.slice(skip, skip + take);

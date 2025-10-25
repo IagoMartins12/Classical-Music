@@ -313,7 +313,7 @@ export default async function BlogHomePage() {
                       </h4>
                       <div className="flex items-center text-xs text-theme-tertiary space-x-2">
                         <BsClock className="w-3 h-3" />
-                        <span>{article.readTime} min</span>
+                        <span>{article?.readTime ?? 0} min</span>
                         <span>•</span>
                         <span>{article.viewCount.toLocaleString()} views</span>
                       </div>
