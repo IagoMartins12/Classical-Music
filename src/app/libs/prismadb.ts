@@ -984,6 +984,14 @@ const prisma = new Proxy(realPrisma, {
       'achievementProgress',
       'sharedProgressReport',
       'sharedReportComment',
+      'blogArticle',
+      'blogCategory',
+      'blogTag',
+      'blogArticleCategory',
+      'blogArticleTag',
+      'blogComment',
+      'blogCommentLike',
+      'blogLike',
     ];
 
     if (
