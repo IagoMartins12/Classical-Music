@@ -484,9 +484,6 @@ const MOCK_BLOG_ARTICLE_VERSIONS = [
   },
 ];
 
-// createMockResult - Sistema completo de mocks para build time
-// Este arquivo deve substituir a função createMockResult no prismadb.ts
-
 const createMockResult = (model: string, operation: string, args: any) => {
   if (IS_BUILD_TIME) {
     console.log(`🔧 Build time detected - mocking ${model}.${operation}`);
@@ -530,7 +527,20 @@ const createMockResult = (model: string, operation: string, args: any) => {
 
           // ===== BLOG MODELS CORRIGIDOS =====
           case 'blogCategory':
-            return MOCK_BLOG_CATEGORIES.slice(skip, skip + take);
+            return MOCK_BLOG_CATEGORIES.slice(skip, skip + take).map((cat) => ({
+              ...cat,
+              articles: MOCK_BLOG_ARTICLE_CATEGORIES.filter(
+                (ac) => ac.categoryId === cat.id
+              ).map((ac) => ({
+                article:
+                  MOCK_BLOG_ARTICLES.find((a) => a.id === ac.articleId) || null,
+              })),
+              _count: {
+                articles: MOCK_BLOG_ARTICLE_CATEGORIES.filter(
+                  (ac) => ac.categoryId === cat.id
+                ).length,
+              },
+            }));
 
           case 'blogTag':
             return MOCK_BLOG_TAGS.slice(skip, skip + take);
