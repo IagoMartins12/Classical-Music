@@ -174,7 +174,7 @@ export async function POST(request: NextRequest) {
       targetSegments: targetSegments || null,
       scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
       senderName: senderName || 'Opus Atlas',
-      senderEmail: senderEmail || 'noreply@classicalhub.com',
+      senderEmail: senderEmail || 'noreply@opusatlas.com',
       replyToEmail: replyToEmail || null,
       status: status,
       // 🆕 CAMPOS ADICIONAIS

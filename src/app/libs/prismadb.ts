@@ -307,7 +307,260 @@ const MOCK_USERS = [
   },
 ];
 
-// Factory para resultados mock ROBUSTA
+// 🎨 MOCK DATA DO BLOG
+const MOCK_BLOG_CATEGORIES = [
+  {
+    id: '670a1b2c3d4e5f6a7b8c9d0e',
+    name: 'Análise de Compositores',
+    slug: 'analise-compositores',
+    description: 'Artigos aprofundados sobre a vida e obra dos grandes mestres',
+    parentId: null,
+    showInMenu: true,
+    isActive: true,
+    image: null,
+    icon: '🎼',
+    color: '#3b82f6',
+    coverImage: null,
+    order: 1,
+    metaTitle: 'Análise de Compositores | Opus Atlas Blog',
+    metaDescription:
+      'Conheça os grandes compositores da história da música clássica',
+    createdAt: new Date('2025-01-15T10:00:00.000Z'),
+    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
+  },
+  {
+    id: '670a1b2c3d4e5f6a7b8c9d0f',
+    name: 'História da Música',
+    slug: 'historia-musica',
+    description: 'Explorando as épocas e movimentos musicais',
+    parentId: null,
+    showInMenu: true,
+    isActive: true,
+    image: null,
+    icon: '📜',
+    color: '#8b5cf6',
+    coverImage: null,
+    order: 2,
+    metaTitle: 'História da Música | Opus Atlas Blog',
+    metaDescription:
+      'Descubra a evolução da música clássica através dos séculos',
+    createdAt: new Date('2025-01-15T10:00:00.000Z'),
+    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
+  },
+  {
+    id: '670a1b2c3d4e5f6a7b8c9d10',
+    name: 'Guias e Tutoriais',
+    slug: 'guias-tutoriais',
+    description: 'Dicas práticas para músicos de todos os níveis',
+    parentId: null,
+    showInMenu: true,
+    isActive: true,
+    image: null,
+    icon: '📚',
+    color: '#10b981',
+    coverImage: null,
+    order: 3,
+    metaTitle: 'Guias e Tutoriais | Opus Atlas Blog',
+    metaDescription: 'Aprenda técnicas e dicas para melhorar sua performance',
+    createdAt: new Date('2025-01-15T10:00:00.000Z'),
+    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
+  },
+];
+
+const MOCK_BLOG_TAGS = [
+  {
+    id: '670a1b2c3d4e5f6a7b8c9d11',
+    name: 'barroco',
+    slug: 'barroco',
+    description: 'Artigos sobre o período Barroco',
+    color: '#f59e0b',
+    articleCount: 5,
+    createdAt: new Date('2025-01-15T10:00:00.000Z'),
+    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
+  },
+  {
+    id: '670a1b2c3d4e5f6a7b8c9d12',
+    name: 'piano',
+    slug: 'piano',
+    description: 'Artigos relacionados ao piano',
+    color: '#6366f1',
+    articleCount: 8,
+    createdAt: new Date('2025-01-15T10:00:00.000Z'),
+    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
+  },
+  {
+    id: '670a1b2c3d4e5f6a7b8c9d13',
+    name: 'iniciantes',
+    slug: 'iniciantes',
+    description: 'Conteúdo para músicos iniciantes',
+    color: '#10b981',
+    articleCount: 12,
+    createdAt: new Date('2025-01-15T10:00:00.000Z'),
+    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
+  },
+];
+
+const MOCK_BLOG_ARTICLES = [
+  {
+    id: '670a1b2c3d4e5f6a7b8c9d14',
+    title: 'Bach: O Mestre do Barroco Alemão',
+    slug: 'bach-mestre-barroco-alemao',
+    description:
+      'Conheça a vida e obra de Johann Sebastian Bach, um dos maiores compositores de todos os tempos',
+    content: {
+      blocks: [
+        {
+          type: 'paragraph',
+          content:
+            'Johann Sebastian Bach é amplamente reconhecido como um dos maiores compositores da história da música.',
+        },
+        {
+          type: 'heading',
+          level: 2,
+          content: 'Primeiros Anos',
+        },
+        {
+          type: 'paragraph',
+          content:
+            'Nascido em 1685 em Eisenach, Alemanha, Bach veio de uma longa linhagem de músicos.',
+        },
+      ],
+    },
+    coverImage: '/images/blog/bach-cover.jpg',
+    coverImageAlt: 'Retrato de Johann Sebastian Bach',
+    coverImageCredit: 'Domínio Público',
+    ttsAudioUrl: null,
+    status: 'PUBLISHED',
+    isFeatured: true,
+    featuredOrder: 1,
+    types: ['COMPOSER_ANALYSIS'],
+    authorId: '688cdfd7cc5e99751f75a76f',
+    coAuthorIds: [],
+    publishedAt: new Date('2025-01-20T09:00:00.000Z'),
+    scheduledFor: null,
+    createdAt: new Date('2025-01-18T10:00:00.000Z'),
+    updatedAt: new Date('2025-01-20T09:00:00.000Z'),
+    readTime: 8,
+    composerIds: ['685d8f9a8803000f9b61d151'],
+    workIds: [],
+    scoreIds: [],
+    instrumentIds: ['685ef4b5a249f2a204023458'],
+    epochIds: ['685d59e11e3db0c5aaa8942d'],
+    backgroundMusicUrl: null,
+    backgroundMusicTitle: null,
+    backgroundMusicVolume: 0.3,
+    backgroundMusicLoop: true,
+    backgroundMusicAutoplay: true,
+    viewCount: 1547,
+    readCount: 892,
+    avgReadTime: 480,
+    estimatedReadTime: 480,
+    metaTitle: 'Bach: O Mestre do Barroco Alemão | Opus Atlas',
+    metaDescription:
+      'Descubra a vida e obra de Johann Sebastian Bach, suas principais composições e legado',
+    keywords: ['bach', 'barroco', 'música clássica', 'compositor alemão'],
+    version: 1,
+  },
+  {
+    id: '670a1b2c3d4e5f6a7b8c9d15',
+    title: 'Como Estudar Piano: Guia para Iniciantes',
+    slug: 'como-estudar-piano-guia-iniciantes',
+    description:
+      'Um guia completo com dicas práticas para quem está começando a estudar piano',
+    content: {
+      blocks: [
+        {
+          type: 'paragraph',
+          content:
+            'Começar a estudar piano pode parecer desafiador, mas com as técnicas certas você pode progredir rapidamente.',
+        },
+        {
+          type: 'heading',
+          level: 2,
+          content: 'Postura Correta',
+        },
+        {
+          type: 'paragraph',
+          content:
+            'A postura é fundamental para tocar piano de forma confortável e eficiente.',
+        },
+      ],
+    },
+    coverImage: '/images/blog/piano-guide-cover.jpg',
+    coverImageAlt: 'Mãos tocando piano',
+    coverImageCredit: 'Unsplash',
+    ttsAudioUrl: null,
+    status: 'PUBLISHED',
+    isFeatured: false,
+    featuredOrder: null,
+    types: ['TUTORIAL'],
+    authorId: '688cdfd7cc5e99751f75a76f',
+    coAuthorIds: [],
+    publishedAt: new Date('2025-01-22T14:00:00.000Z'),
+    scheduledFor: null,
+    createdAt: new Date('2025-01-21T10:00:00.000Z'),
+    updatedAt: new Date('2025-01-22T14:00:00.000Z'),
+    readTime: 6,
+    composerIds: [],
+    workIds: [],
+    scoreIds: [],
+    instrumentIds: ['685ef4b5a249f2a204023458'],
+    epochIds: [],
+    backgroundMusicUrl: null,
+    backgroundMusicTitle: null,
+    backgroundMusicVolume: 0.3,
+    backgroundMusicLoop: true,
+    backgroundMusicAutoplay: true,
+    viewCount: 2341,
+    readCount: 1456,
+    avgReadTime: 360,
+    estimatedReadTime: 360,
+    metaTitle: 'Como Estudar Piano: Guia Completo para Iniciantes',
+    metaDescription:
+      'Aprenda as melhores técnicas e dicas para começar seus estudos de piano',
+    keywords: ['piano', 'iniciantes', 'tutorial', 'técnica'],
+    version: 1,
+  },
+];
+
+const MOCK_BLOG_COMMENTS = [
+  {
+    id: '670a1b2c3d4e5f6a7b8c9d16',
+    articleId: '670a1b2c3d4e5f6a7b8c9d14',
+    userId: '688cdfd7cc5e99751f75a76f',
+    content: 'Excelente artigo! Bach realmente foi um gênio incomparável.',
+    parentId: null,
+    status: 'APPROVED',
+    isEdited: false,
+    likeCount: 5,
+    isFlagged: false,
+    flagReason: null,
+    flaggedBy: null,
+    moderatedBy: null,
+    moderatedAt: null,
+    createdAt: new Date('2025-01-20T11:30:00.000Z'),
+    updatedAt: new Date('2025-01-20T11:30:00.000Z'),
+  },
+];
+
+const MOCK_BLOG_SERIES = [
+  {
+    id: '670a1b2c3d4e5f6a7b8c9d17',
+    title: 'Grandes Compositores do Barroco',
+    slug: 'grandes-compositores-barroco',
+    description:
+      'Uma série sobre os principais compositores do período Barroco',
+    coverImage: '/images/blog/barroco-series.jpg',
+    authorId: '688cdfd7cc5e99751f75a76f',
+    isActive: true,
+    createdAt: new Date('2025-01-15T10:00:00.000Z'),
+    updatedAt: new Date('2025-01-15T10:00:00.000Z'),
+  },
+];
+
+// createMockResult - Sistema completo de mocks para build time
+// Este arquivo deve substituir a função createMockResult no prismadb.ts
+
 const createMockResult = (model: string, operation: string, args: any) => {
   if (IS_BUILD_TIME) {
     console.log(`🔧 Build time detected - mocking ${model}.${operation}`);
@@ -318,13 +571,14 @@ const createMockResult = (model: string, operation: string, args: any) => {
         const skip = args?.skip || 0;
 
         switch (model) {
+          // ===== MODELOS PRINCIPAIS =====
           case 'composer':
             return MOCK_COMPOSERS.slice(skip, skip + take);
+
           case 'work':
-            // 🔧 MELHORAR MOCKS DE WORK COM FAVORITESBY COMO ARRAY
             return MOCK_WORKS.slice(skip, skip + take).map((work) => ({
               ...work,
-              favoriteBy: [], // Array vazio para evitar erro
+              favoriteBy: [],
               _count: {
                 favoriteBy: 0,
                 annotations: 0,
@@ -332,37 +586,130 @@ const createMockResult = (model: string, operation: string, args: any) => {
                 learners: 0,
               },
             }));
+
           case 'epoch':
             return MOCK_EPOCHS.slice(skip, skip + take);
+
           case 'instrument':
             return MOCK_INSTRUMENTS.slice(skip, skip + take);
+
           case 'role':
             return MOCK_ROLES.slice(skip, skip + take);
+
           case 'workGenre':
             return MOCK_WORK_GENRES.slice(skip, skip + take);
+
           case 'user':
             return MOCK_USERS.slice(skip, skip + take);
-          // 🔧 RETORNAR ARRAYS VAZIOS EM VEZ DE EMPTY_RESULT
+
+          // ===== BLOG MODELS =====
+          case 'blogCategory':
+            return MOCK_BLOG_CATEGORIES.slice(skip, skip + take);
+
+          case 'blogTag':
+            return MOCK_BLOG_TAGS.slice(skip, skip + take);
+
+          case 'blogArticle':
+            return MOCK_BLOG_ARTICLES.slice(skip, skip + take);
+
+          case 'blogComment':
+            return MOCK_BLOG_COMMENTS.slice(skip, skip + take);
+
+          case 'blogSeries':
+            return MOCK_BLOG_SERIES.slice(skip, skip + take);
+
+          // ===== RELAÇÕES E TABELAS DE JUNÇÃO =====
           case 'favoriteWork':
           case 'favoriteComposer':
           case 'favoriteScore':
+          case 'scoreFavoriteStats':
           case 'wantToLearn':
           case 'learned':
           case 'userInstrument':
           case 'annotation':
           case 'workAnnotation':
-            return []; // Arrays vazios para relações
+          case 'annotationHelpfulVote':
+          case 'workScore':
+            return [];
+
+          // Blog Relations
+          case 'blogArticleCategory':
+          case 'blogArticleTag':
+          case 'blogMedia':
+          case 'blogLike':
+          case 'blogBookmark':
+          case 'blogCommentLike':
+          case 'blogArticleVersion':
+          case 'blogSeriesArticle':
+            return [];
+
+          // ===== SISTEMA DE AUTENTICAÇÃO =====
+          case 'account':
+          case 'session':
+          case 'userToken':
+            return [];
+
+          // ===== SISTEMA DE UPLOAD/MODERAÇÃO =====
+          case 'uploadHistory':
+          case 'uploadModeration':
+          case 'generatedReport':
+            return [];
+
+          // ===== SISTEMA DE ANÚNCIOS =====
+          case 'advertisement':
+          case 'adStats':
+            return [];
+
+          // ===== SISTEMA DE NEWSLETTER =====
+          case 'newsletterSubscriber':
+          case 'newsletterTemplate':
+          case 'newsletterCampaign':
+          case 'newsletterCampaignSend':
+          case 'newsletterEmailEvent':
+          case 'testEmailList':
+          case 'templateFragment':
+            return [];
+
+          // ===== SISTEMA PROFESSOR-ALUNO =====
+          case 'teacher':
+          case 'student':
+          case 'teacherStudent':
+          case 'lesson':
+          case 'assignment':
+            return [];
+
+          // ===== SISTEMA DE NOTIFICAÇÕES =====
+          case 'notification':
+          case 'schoolActivity':
+            return [];
+
+          // ===== SISTEMA DE CONQUISTAS =====
+          case 'userAchievement':
+          case 'achievementProgress':
+            return [];
+
+          // ===== SISTEMA DE RELATÓRIOS =====
+          case 'sharedProgressReport':
+          case 'sharedReportComment':
+            return [];
+
+          // ===== SISTEMA DE ACTIVITY LOG =====
+          case 'activityLog':
+            return [];
+
           default:
-            return []; // Array vazio como padrão
+            console.warn(`⚠️ Unhandled model in findMany: ${model}`);
+            return [];
         }
 
       case 'findFirst':
       case 'findUnique':
         switch (model) {
+          // ===== MODELOS PRINCIPAIS =====
           case 'composer':
             return MOCK_COMPOSERS[0] || null;
+
           case 'work':
-            // 🔧 GARANTIR QUE WORK TENHA TODAS AS PROPRIEDADES
             const work = MOCK_WORKS[0];
             return work
               ? {
@@ -376,53 +723,141 @@ const createMockResult = (model: string, operation: string, args: any) => {
                   },
                 }
               : null;
+
           case 'epoch':
             return MOCK_EPOCHS[0] || null;
+
           case 'instrument':
             return MOCK_INSTRUMENTS[0] || null;
+
           case 'role':
             return MOCK_ROLES[0] || null;
+
           case 'workGenre':
             return MOCK_WORK_GENRES[0] || null;
+
           case 'user':
             return MOCK_USERS[0] || null;
+
+          // ===== BLOG MODELS =====
+          case 'blogCategory':
+            return MOCK_BLOG_CATEGORIES[0] || null;
+
+          case 'blogTag':
+            return MOCK_BLOG_TAGS[0] || null;
+
+          case 'blogArticle':
+            return MOCK_BLOG_ARTICLES[0] || null;
+
+          case 'blogComment':
+            return MOCK_BLOG_COMMENTS[0] || null;
+
+          case 'blogSeries':
+            return MOCK_BLOG_SERIES[0] || null;
+
+          // ===== TODOS OS OUTROS RETORNAM NULL =====
           default:
-            return null; // Retornar null em vez de EMPTY_OBJECT
+            return null;
         }
 
       case 'count':
         switch (model) {
+          // ===== MODELOS PRINCIPAIS =====
           case 'composer':
             return MOCK_COMPOSERS.length;
+
           case 'work':
             return MOCK_WORKS.length;
+
           case 'epoch':
             return MOCK_EPOCHS.length;
+
           case 'instrument':
             return MOCK_INSTRUMENTS.length;
+
           case 'role':
             return MOCK_ROLES.length;
+
           case 'workGenre':
             return MOCK_WORK_GENRES.length;
+
           case 'user':
             return MOCK_USERS.length;
-          // 🔧 ADICIONAR COUNTS PARA TABELAS RELACIONADAS
+
+          // ===== BLOG MODELS =====
+          case 'blogCategory':
+            return MOCK_BLOG_CATEGORIES.length;
+
+          case 'blogTag':
+            return MOCK_BLOG_TAGS.length;
+
+          case 'blogArticle':
+            return MOCK_BLOG_ARTICLES.length;
+
+          case 'blogComment':
+            return MOCK_BLOG_COMMENTS.length;
+
+          case 'blogSeries':
+            return MOCK_BLOG_SERIES.length;
+
+          // ===== RELAÇÕES E OUTROS MODELS RETORNAM 0 =====
           case 'favoriteWork':
           case 'favoriteComposer':
           case 'favoriteScore':
+          case 'scoreFavoriteStats':
           case 'wantToLearn':
           case 'learned':
           case 'userInstrument':
           case 'annotation':
           case 'workAnnotation':
-            return 0; // Zero para relações
+          case 'annotationHelpfulVote':
+          case 'workScore':
+          case 'blogArticleCategory':
+          case 'blogArticleTag':
+          case 'blogMedia':
+          case 'blogLike':
+          case 'blogBookmark':
+          case 'blogCommentLike':
+          case 'blogArticleVersion':
+          case 'blogSeriesArticle':
+          case 'account':
+          case 'session':
+          case 'userToken':
+          case 'uploadHistory':
+          case 'uploadModeration':
+          case 'generatedReport':
+          case 'advertisement':
+          case 'adStats':
+          case 'newsletterSubscriber':
+          case 'newsletterTemplate':
+          case 'newsletterCampaign':
+          case 'newsletterCampaignSend':
+          case 'newsletterEmailEvent':
+          case 'testEmailList':
+          case 'templateFragment':
+          case 'teacher':
+          case 'student':
+          case 'teacherStudent':
+          case 'lesson':
+          case 'assignment':
+          case 'notification':
+          case 'schoolActivity':
+          case 'userAchievement':
+          case 'achievementProgress':
+          case 'sharedProgressReport':
+          case 'sharedReportComment':
+          case 'activityLog':
+            return 0;
+
           default:
-            return 0; // Zero em vez de EMPTY_COUNT
+            console.warn(`⚠️ Unhandled model in count: ${model}`);
+            return 0;
         }
 
       case 'aggregate':
         let count = 0;
         switch (model) {
+          // ===== MODELOS PRINCIPAIS =====
           case 'composer':
             count = MOCK_COMPOSERS.length;
             break;
@@ -444,24 +879,40 @@ const createMockResult = (model: string, operation: string, args: any) => {
           case 'user':
             count = MOCK_USERS.length;
             break;
+
+          // ===== BLOG MODELS =====
+          case 'blogCategory':
+            count = MOCK_BLOG_CATEGORIES.length;
+            break;
+          case 'blogTag':
+            count = MOCK_BLOG_TAGS.length;
+            break;
+          case 'blogArticle':
+            count = MOCK_BLOG_ARTICLES.length;
+            break;
+          case 'blogComment':
+            count = MOCK_BLOG_COMMENTS.length;
+            break;
+          case 'blogSeries':
+            count = MOCK_BLOG_SERIES.length;
+            break;
+
           default:
             count = 0;
         }
         return { _count: { id: count, _all: count } };
 
-      // 🔧 ADICIONAR OPERAÇÕES EXTRAS QUE PODEM SER CHAMADAS
+      // ===== OPERAÇÕES EXTRAS =====
       case 'groupBy':
-        return EMPTY_RESULT;
+        return [];
 
       case 'findFirstOrThrow':
       case 'findUniqueOrThrow':
-        // Mesmo comportamento de findFirst/findUnique
         return createMockResult(model, 'findFirst', args);
 
       case 'create':
       case 'update':
       case 'upsert':
-        // Retornar primeiro item dos mocks para operações de escrita
         switch (model) {
           case 'composer':
             return MOCK_COMPOSERS[0] || null;
@@ -469,6 +920,16 @@ const createMockResult = (model: string, operation: string, args: any) => {
             return MOCK_WORKS[0] || null;
           case 'user':
             return MOCK_USERS[0] || null;
+          case 'blogCategory':
+            return MOCK_BLOG_CATEGORIES[0] || null;
+          case 'blogTag':
+            return MOCK_BLOG_TAGS[0] || null;
+          case 'blogArticle':
+            return MOCK_BLOG_ARTICLES[0] || null;
+          case 'blogComment':
+            return MOCK_BLOG_COMMENTS[0] || null;
+          case 'blogSeries':
+            return MOCK_BLOG_SERIES[0] || null;
           default:
             return null;
         }
@@ -482,8 +943,8 @@ const createMockResult = (model: string, operation: string, args: any) => {
         return { count: 0 };
 
       default:
-        console.warn(`🔧 Unhandled operation: ${model}.${operation}`);
-        return EMPTY_RESULT;
+        console.warn(`⚠️ Unhandled operation: ${model}.${operation}`);
+        return null;
     }
   }
 

@@ -107,7 +107,7 @@ export default function AboutPage() {
               <AnimatedItem direction="up" springType="gentle">
                 <h1 className="text-4xl lg:text-6xl font-bold classical-title text-theme-primary mb-6">
                   {t('about_hero_title_1')}
-                  <span className="text-gradient-brand block lg:inline lg:ml-4">
+                  <span className="text-gradient-brand block lg:inline ml-2 lg:ml-4">
                     {t('about_hero_title_2')}
                   </span>
                 </h1>

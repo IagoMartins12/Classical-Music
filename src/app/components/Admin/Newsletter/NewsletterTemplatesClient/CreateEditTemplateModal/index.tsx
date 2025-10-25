@@ -70,7 +70,7 @@ export default function CreateEditTemplateModal({
     textContent: '',
     description: '',
     senderName: 'Opus Atlas',
-    senderEmail: 'noreply@classicalhub.com',
+    senderEmail: 'noreply@opusatlas.com',
     replyToEmail: '',
     isActive: true,
     isDefault: false,
@@ -95,7 +95,7 @@ export default function CreateEditTemplateModal({
         textContent: template.textContent,
         description: template.description || '',
         senderName: template.senderName || 'Opus Atlas',
-        senderEmail: template.senderEmail || 'noreply@classicalhub.com',
+        senderEmail: template.senderEmail || 'noreply@opusatlas.com',
         replyToEmail: template.replyToEmail || '',
         isActive: template.isActive,
         isDefault: template.isDefault,
@@ -269,8 +269,8 @@ export default function CreateEditTemplateModal({
                     currentStep === step.id
                       ? 'bg-brand-primary text-white'
                       : currentStep > step.id
-                      ? 'bg-green-700 text-white'
-                      : 'bg-theme-secondary text-theme-tertiary'
+                        ? 'bg-green-700 text-white'
+                        : 'bg-theme-secondary text-theme-tertiary'
                   }`}
                   onClick={() => setCurrentStep(step.id)}
                 >
@@ -457,7 +457,7 @@ export default function CreateEditTemplateModal({
                       onChange={(e) =>
                         handleInputChange('senderEmail', e.target.value)
                       }
-                      placeholder="noreply@classicalhub.com"
+                      placeholder="noreply@opusatlas.com"
                       error={errors.senderEmail}
                     />
                   </div>
@@ -473,7 +473,7 @@ export default function CreateEditTemplateModal({
                     onChange={(e) =>
                       handleInputChange('replyToEmail', e.target.value)
                     }
-                    placeholder="contato@classicalhub.com"
+                    placeholder="contato@opusatlas.com"
                     error={errors.replyToEmail}
                   />
                 </div>
@@ -594,8 +594,8 @@ export default function CreateEditTemplateModal({
                   {saving
                     ? 'Salvando...'
                     : isEditing
-                    ? 'Atualizar Template'
-                    : 'Criar Template'}
+                      ? 'Atualizar Template'
+                      : 'Criar Template'}
                 </Button>
               )}
             </div>

@@ -551,7 +551,7 @@ export default function SupportPage(): JSX.Element {
               <AnimatedItem direction="up" springType="gentle">
                 <h1 className="text-4xl lg:text-6xl font-bold classical-title text-theme-primary mb-6">
                   {t('support_animatedcontainer_animateditem_suporte')}
-                  <span className="text-gradient-brand block lg:inline lg:ml-4">
+                  <span className="text-gradient-brand block lg:inline ml-2 lg:ml-4">
                     {t('support_animatedcontainer_animateditem_técnico')}
                   </span>
                 </h1>

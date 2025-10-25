@@ -16,8 +16,8 @@ const EMAIL_CONFIG = {
   },
 
   defaults: {
-    from: process.env.EMAIL_FROM || 'Opus Atlas <noreply@classicalhub.com>',
-    replyTo: process.env.EMAIL_REPLY_TO || 'contato@classicalhub.com',
+    from: process.env.EMAIL_FROM || 'Opus Atlas <noreply@opusatlas.com>',
+    replyTo: process.env.EMAIL_REPLY_TO || 'contato@opusatlas.com',
   },
 };
 

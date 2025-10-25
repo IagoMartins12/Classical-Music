@@ -147,9 +147,8 @@ async function sendSupportEmail(data: {
   const priorityColor = getPriorityColor(data.priority);
 
   const emailData = {
-    to: 'suporte@classicalhub.com',
-    cc:
-      data.category === 'moderacao' ? 'moderacao@classicalhub.com' : undefined,
+    to: 'suporte@opusatlas.com',
+    cc: data.category === 'moderacao' ? 'moderacao@opusatlas.com' : undefined,
     subject: `[${data.ticketId}] ${priorityLabel} - ${data.subject}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

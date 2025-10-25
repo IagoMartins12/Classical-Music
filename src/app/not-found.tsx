@@ -69,10 +69,10 @@ export default function NotFound() {
       setCurrentArea('teacher');
     } else if (pathname.startsWith('/student')) {
       setCurrentArea('student');
-    } else if (pathname.startsWith('/admin')) {
-      setCurrentArea('admin');
     } else if (pathname.startsWith('/blog')) {
       setCurrentArea('blog');
+    } else if (pathname.startsWith('/admin')) {
+      setCurrentArea('admin');
     } else {
       setCurrentArea('main');
     }
@@ -268,10 +268,11 @@ export default function NotFound() {
         return '/teacher';
       case 'student':
         return '/student';
-      case 'admin':
-        return '/admin';
       case 'blog':
         return '/blog';
+      case 'admin':
+        return '/admin';
+
       default:
         return '/';
     }

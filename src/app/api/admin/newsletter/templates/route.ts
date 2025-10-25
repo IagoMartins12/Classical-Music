@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
       textContent,
       description,
       senderName = 'Opus Atlas',
-      senderEmail = 'noreply@classicalhub.com',
+      senderEmail = 'noreply@opusatlas.com',
       replyToEmail,
       isActive = true,
       isDefault = false,

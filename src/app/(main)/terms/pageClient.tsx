@@ -155,7 +155,7 @@ export default function TermsPage() {
               <AnimatedItem direction="up" springType="gentle">
                 <h1 className="text-4xl lg:text-6xl font-bold classical-title text-theme-primary mb-6">
                   {t('terms_jsx_h1_children_0__termos')}
-                  <span className="text-gradient-brand block lg:inline lg:ml-4">
+                  <span className="text-gradient-brand block lg:inline ml-2 lg:ml-4">
                     {t('terms_jsx_span_children_0__uso')}
                   </span>
                 </h1>

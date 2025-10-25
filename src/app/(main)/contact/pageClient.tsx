@@ -239,7 +239,7 @@ export default function ContactPageClient() {
               <AnimatedItem direction="up" springType="gentle">
                 <h1 className="text-4xl lg:text-6xl font-bold classical-title text-theme-primary mb-6">
                   {t('contact_jsx_h1_children_0__entre_em')}
-                  <span className="text-gradient-brand block lg:inline lg:ml-4">
+                  <span className="text-gradient-brand block lg:inline ml-2 lg:ml-4">
                     {t('contact_jsx_span_children_0__contato')}
                   </span>
                 </h1>
