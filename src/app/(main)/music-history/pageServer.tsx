@@ -34,6 +34,7 @@ export async function MusicHistoryPageServer() {
         historicalData: historicalData || epoch.historicalData, // Usa o que já vem traduzido
       };
     });
+
     const { translations } = await loadPageTranslationsWithCommon(language, [
       'pages/music-history',
     ]);

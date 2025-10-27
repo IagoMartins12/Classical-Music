@@ -2,7 +2,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { FiClock,  } from 'react-icons/fi';
+import { FiClock } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { ComposerTimelineCard } from '../ComposerTimelineCard';

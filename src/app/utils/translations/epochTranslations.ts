@@ -56,7 +56,7 @@ export const EPOCH_CHRONOLOGICAL_ORDER_PT = [
   'Renascentista',
   'Barroco',
   'Clássico',
-  'Rômantico',
+  'Romântico',
   'Modernismo',
 ];
 

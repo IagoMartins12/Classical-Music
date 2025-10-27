@@ -291,7 +291,10 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
               onKeyPress={(e) => e.key === 'Enter' && handleUrlSubmit()}
             />
             <button
-              onClick={handleUrlSubmit}
+              onClick={(e) => {
+                e.preventDefault();
+                handleUrlSubmit();
+              }}
               className="px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-secondary transition-colors"
             >
               Aplicar
