@@ -1,6 +1,6 @@
 # Multi-stage build otimizado para Next.js 15
 FROM node:20.18.1-alpine AS base
-RUN apk add --no-cache libc6-compat curl
+RUN apk add --no-cache libc6-compat curl ffmpeg
 WORKDIR /app
 
 # Stage 1: Install dependencies
@@ -12,14 +12,13 @@ RUN npm ci --only=production && npm cache clean --force
 FROM base AS builder
 COPY package.json package-lock.json* ./
 RUN npm ci
-
 COPY . .
 
 # Gerar Prisma Client
 RUN npx prisma generate
 
-# Configurações de build otimizadas
-ENV NODE_OPTIONS="--max-old-space-size=1536"
+# Configurações de build otimizadas - AUMENTANDO MEMÓRIA
+ENV NODE_OPTIONS="--max-old-space-size=3072"
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV SKIP_ENV_VALIDATION=true
 
@@ -52,6 +51,11 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Criar arquivos necessários
 RUN touch /app/logs/imslp/analysis/prediction_model.json
 RUN chown -R nextjs:nodejs /app
+
+# Criar diretório uploads com permissões corretas
+RUN mkdir -p /app/public/uploads && \
+    chown -R nextjs:nodejs /app/public/uploads && \
+    chmod -R 755 /app/public/uploads
 
 USER nextjs
 EXPOSE 3000
