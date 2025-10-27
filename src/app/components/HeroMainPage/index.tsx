@@ -7,6 +7,7 @@ import Link from 'next/link';
 const HeroMainPage = () => {
   const { t } = useTranslation({ sections: ['pages/home'] });
 
+  console.log('hero page loaded');
   return (
     <div className="section-wrap flex flex-col lg:flex-row gap-6">
       {/* Seção Principal - História da Música */}
