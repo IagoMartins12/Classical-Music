@@ -94,12 +94,13 @@ export async function POST(request: NextRequest) {
       uploadDir = path.join(
         process.cwd(),
         'public',
+        'uploads',
         'blog',
         '_temp',
         tempSessionId,
         folder || 'images'
       );
-      fileUrl = `uploads/blog/_temp/${tempSessionId}/${folder || 'images'}/${fileName}`;
+      fileUrl = `/uploads/blog/_temp/${tempSessionId}/${folder || 'images'}/${fileName}`;
 
       console.log(`📁 Upload temporário: ${tempSessionId}`);
     } else {
@@ -107,11 +108,12 @@ export async function POST(request: NextRequest) {
       uploadDir = path.join(
         process.cwd(),
         'public',
+        'uploads',
         'blog',
         articleId,
         folder || 'thumbnail'
       );
-      fileUrl = `uploads/blog/${articleId}/${folder || 'thumbnail'}/${fileName}`;
+      fileUrl = `/uploads/blog/${articleId}/${folder || 'thumbnail'}/${fileName}`;
     }
 
     await mkdir(uploadDir, { recursive: true });
@@ -176,11 +178,18 @@ export async function PUT(request: NextRequest) {
     const tempDir = path.join(
       process.cwd(),
       'public',
+      'uploads',
       'blog',
       '_temp',
       sessionId
     );
-    const finalDir = path.join(process.cwd(), 'public', 'blog', articleId);
+    const finalDir = path.join(
+      process.cwd(),
+      'public',
+      'uploads',
+      'blog',
+      articleId
+    );
 
     console.log(`🔄 Movendo arquivos de ${sessionId} para ${articleId}`);
 
@@ -256,7 +265,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     const urlPath = imageUrl.replace(/^\//, '');
-    const filePath = path.join(process.cwd(), 'public', urlPath);
+    const filePath = path.join(process.cwd(), 'public', 'uploads', urlPath);
 
     await unlink(filePath);
 

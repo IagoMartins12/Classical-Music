@@ -55,7 +55,13 @@ export async function POST(request: NextRequest) {
     );
 
     // Preparar diretório de categorias
-    const uploadDir = path.join(process.cwd(), 'public', 'blog', 'categories');
+    const uploadDir = path.join(
+      process.cwd(),
+      'public',
+      'uploads',
+      'blog',
+      'categories'
+    );
 
     await mkdir(uploadDir, { recursive: true });
 
@@ -73,7 +79,7 @@ export async function POST(request: NextRequest) {
     await writeFile(filePath, buffer);
 
     // Gerar URL pública
-    const imageUrl = `uploads/blog/categories/${fileName}`;
+    const imageUrl = `/uploads/blog/categories/${fileName}`;
 
     const processingTime = Date.now() - startTime;
 

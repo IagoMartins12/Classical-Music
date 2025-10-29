@@ -266,7 +266,7 @@ export function BlogHeader() {
   }
 
   navLinks.push({
-    label: 'Opus atlas',
+    label: 'Opus Atlas',
     href: '/',
   });
 
@@ -360,7 +360,7 @@ export function BlogHeader() {
                 <GiGrandPiano className="w-8 h-8 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
               </div>
               <div className="hidden sm:block">
-                <span className="text-xl font-bold text-gradient-brand classical-title">
+                <span className="text-xl font-bold text-gradient-brand gold-shine classical-title">
                   Opus atlas
                 </span>
                 <div className="text-xs text-theme-tertiary -mt-1 font-medium">
@@ -454,13 +454,18 @@ export function BlogHeader() {
                             ? 'text-brand-primary bg-interactive-active'
                             : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
                         }
+                        ${label === 'Opus Atlas' ? 'text-transparent' : ''}
                         after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 
                         after:bg-brand-gradient after:transition-all after:duration-300
                         hover:after:w-full hover:after:left-0
                         ${active ? 'after:w-full after:left-0' : ''}
                       `}
                     >
-                      {label}
+                      {label === 'Opus Atlas' ? (
+                        <span className="gold-shine">Opus Atlas</span>
+                      ) : (
+                        label
+                      )}
                     </Link>
                   )}
                 </div>
@@ -737,6 +742,7 @@ export function BlogHeader() {
                             href={href || '#'}
                             className={`
                             block px-4 py-3 rounded-lg font-medium transition-all
+                            ${label === 'Opus Atlas' ? 'text-transparent' : ''}
                             ${
                               active
                                 ? 'text-brand-primary bg-interactive-active'
@@ -745,7 +751,11 @@ export function BlogHeader() {
                           `}
                             onClick={handleMobileNavClick}
                           >
-                            {label}
+                            {label === 'Opus Atlas' ? (
+                              <span className="gold-shine">Opus Atlas</span>
+                            ) : (
+                              label
+                            )}
                           </Link>
                         )}
                       </li>

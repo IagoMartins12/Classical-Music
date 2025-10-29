@@ -14,7 +14,7 @@ const categorySchema = z.object({
   description: z.string().max(200).optional(),
   icon: z.string().max(2).optional(),
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-  image: z.string().url().optional().or(z.literal('')),
+  image: z.string().optional().or(z.literal('')),
   isActive: z.boolean().default(true),
 });
 
@@ -53,6 +53,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    console.log('data', body);
+
     const data = categorySchema.parse(body);
 
     // Check if slug already exists

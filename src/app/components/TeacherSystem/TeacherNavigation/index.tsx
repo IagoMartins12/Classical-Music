@@ -248,7 +248,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                   <GiGrandPiano className="w-8 h-8 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
                 </div>
                 <div className="hidden sm:block">
-                  <span className="text-xl font-bold text-gradient-brand classical-title">
+                  <span className="text-xl font-bold gold-shine text-gradient-brand classical-title">
                     {t('brand_name')}
                   </span>
                   <div className="text-xs text-theme-tertiary font-medium">
@@ -494,7 +494,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                 <div className="flex items-center">
                   <GiGrandPiano className="w-8 h-8 mr-3 text-brand-primary" />
                   <div>
-                    <span className="text-lg font-bold text-gradient-brand">
+                    <span className="text-lg gold-shine font-bold text-gradient-brand">
                       {t('brand_name')}
                     </span>
                     <div className="text-xs text-theme-tertiary">
