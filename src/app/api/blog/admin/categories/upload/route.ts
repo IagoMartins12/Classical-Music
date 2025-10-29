@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
     await writeFile(filePath, buffer);
 
     // Gerar URL pública
-    const imageUrl = `/blog/categories/${fileName}`;
+    const imageUrl = `uploads/blog/categories/${fileName}`;
 
     const processingTime = Date.now() - startTime;
 

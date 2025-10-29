@@ -54,12 +54,12 @@ O Opus Atlas implementa uma stack completa de observabilidade enterprise, fornec
 
 ### URLs de Acesso
 
-| Serviço         | URL                                   | Autenticação                  |
-| --------------- | ------------------------------------- | ----------------------------- |
-| Grafana         | https://monitor.opusatlas.com.br:3003 | admin / OpusAtlas2024!Monitor |
-| Prometheus      | https://monitor.opusatlas.com.br:9090 | Basic Auth                    |
-| Uptime Kuma     | https://monitor.opusatlas.com.br:3002 | admin / OpusAtlas2024!Monitor |
-| Umami Analytics | https://analytics.opusatlas.com.br    | Configuração própria          |
+| Serviço         | URL                                   | Autenticação                |
+| --------------- | ------------------------------------- | --------------------------- |
+| Grafana         | https://monitor.opusatlas.com.br:3003 | admin / SenhaMonitorMonitor |
+| Prometheus      | https://monitor.opusatlas.com.br:9090 | Basic Auth                  |
+| Uptime Kuma     | https://monitor.opusatlas.com.br:3002 | admin / SenhaMonitorMonitor |
+| Umami Analytics | https://analytics.opusatlas.com.br    | Configuração própria        |
 
 ### Containers Ativos
 
@@ -563,21 +563,21 @@ db.printSecondaryReplicationInfo();
 # Verificar conexão
 docker exec opus-atlas-mongodb-prod mongosh \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "db.adminCommand('ping')"
 
 # Verificar replica set
 docker exec opus-atlas-mongodb-prod mongosh \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "rs.status().ok"
 
 # Verificar coleções principais
 docker exec opus-atlas-mongodb-prod mongosh \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "
     use opus_atlas_prod;

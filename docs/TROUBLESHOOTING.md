@@ -82,7 +82,7 @@ fi
 # MongoDB
 echo -n "MongoDB: "
 if docker exec opus-atlas-mongodb-prod mongosh \
-   --quiet --username opusatlas --password SuperSecureOpusAtlas2024! \
+   --quiet --username opusatlas --password SenhaSuperSegura! \
    --authenticationDatabase admin --eval "db.adminCommand('ping').ok" 2>/dev/null | grep -q "1"; then
     echo "✅ OK"
 else
@@ -91,7 +91,7 @@ fi
 
 # Redis
 echo -n "Redis: "
-if docker exec opus-atlas-redis redis-cli -a RedisOpusAtlas2024! ping 2>/dev/null | grep -q "PONG"; then
+if docker exec opus-atlas-redis redis-cli -a SenhaSuperSeguraRedis! ping 2>/dev/null | grep -q "PONG"; then
     echo "✅ OK"
 else
     echo "❌ FAIL"
@@ -232,7 +232,7 @@ export NODE_OPTIONS="--max-old-space-size=1024"
 docker exec opus-atlas-app-prod env | grep -E "(NEXTAUTH|GOOGLE|EMAIL)"
 
 # 2. Verificar Redis (sessions)
-docker exec opus-atlas-redis redis-cli -a RedisOpusAtlas2024! KEYS "*session*"
+docker exec opus-atlas-redis redis-cli -a SenhaSuperSeguraRedis! KEYS "*session*"
 
 # 3. Verificar logs de autenticação
 docker logs opus-atlas-app-prod | grep -i "auth\|login\|session"
@@ -278,7 +278,7 @@ docker exec opus-atlas-app-prod ping opus-atlas-mongodb-prod
 
 # 2. Testar conexão MongoDB
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin --eval "db.adminCommand('ping')"
 
 # 3. Verificar string de conexão
@@ -286,7 +286,7 @@ echo $DATABASE_URL
 
 # 4. Verificar replica set
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin --eval "rs.status()"
 ```
 
@@ -295,7 +295,7 @@ docker exec opus-atlas-mongodb-prod mongosh \
 ```bash
 # 1. Reinicializar replica set
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "rs.reconfig(rs.conf(), {force: true})"
 
@@ -305,7 +305,7 @@ sleep 30
 docker-compose restart app-prod
 
 # 3. Verificar string de conexão
-# DATABASE_URL="mongodb://opusatlas:SuperSecureOpusAtlas2024!@opus-atlas-mongodb-prod:27017/opus_atlas_prod?authSource=admin&replicaSet=rs0"
+# DATABASE_URL="mongodb://opusatlas:SenhaSuperSegura!@opus-atlas-mongodb-prod:27017/opus_atlas_prod?authSource=admin&replicaSet=rs0"
 
 # 4. Regenerar Prisma client
 docker exec opus-atlas-app-prod npx prisma generate
@@ -353,7 +353,7 @@ docker exec opus-atlas-mongodb-prod chmod 600 /etc/mongodb-keyfile
 # 2. Verificar configuração do replica set
 # Se logs mostram problema de replica set:
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "rs.initiate({
     _id: 'rs0',
@@ -383,7 +383,7 @@ docker-compose up -d mongodb-prod
 ```bash
 # 1. Verificar queries lentas
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "
     use opus_atlas_prod;
@@ -393,7 +393,7 @@ docker exec opus-atlas-mongodb-prod mongosh \
 
 # 2. Verificar stats do database
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "
     use opus_atlas_prod;
@@ -403,7 +403,7 @@ docker exec opus-atlas-mongodb-prod mongosh \
 
 # 3. Verificar indexes
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "
     use opus_atlas_prod;
@@ -413,7 +413,7 @@ docker exec opus-atlas-mongodb-prod mongosh \
 
 # 4. Verificar conexões ativas
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "db.serverStatus().connections"
 ```
@@ -423,7 +423,7 @@ docker exec opus-atlas-mongodb-prod mongosh \
 ```bash
 # 1. Otimizar indexes
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "
     use opus_atlas_prod;
@@ -433,7 +433,7 @@ docker exec opus-atlas-mongodb-prod mongosh \
 
 # 2. Compactar collections
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "
     use opus_atlas_prod;
@@ -463,16 +463,16 @@ docker exec opus-atlas-mongodb-prod mongosh \
 
 ```bash
 # 1. Verificar status Redis
-docker exec opus-atlas-redis redis-cli -a RedisOpusAtlas2024! ping
+docker exec opus-atlas-redis redis-cli -a SenhaSuperSeguraRedis! ping
 
 # 2. Verificar configuração
-docker exec opus-atlas-redis redis-cli -a RedisOpusAtlas2024! CONFIG GET "*"
+docker exec opus-atlas-redis redis-cli -a SenhaSuperSeguraRedis! CONFIG GET "*"
 
 # 3. Verificar memória
-docker exec opus-atlas-redis redis-cli -a RedisOpusAtlas2024! INFO memory
+docker exec opus-atlas-redis redis-cli -a SenhaSuperSeguraRedis! INFO memory
 
 # 4. Verificar conexões
-docker exec opus-atlas-redis redis-cli -a RedisOpusAtlas2024! CLIENT LIST
+docker exec opus-atlas-redis redis-cli -a SenhaSuperSeguraRedis! CLIENT LIST
 ```
 
 **Soluções:**
@@ -482,10 +482,10 @@ docker exec opus-atlas-redis redis-cli -a RedisOpusAtlas2024! CLIENT LIST
 docker-compose restart redis
 
 # 2. Flush Redis (CUIDADO - apaga tudo)
-docker exec opus-atlas-redis redis-cli -a RedisOpusAtlas2024! FLUSHALL
+docker exec opus-atlas-redis redis-cli -a SenhaSuperSeguraRedis! FLUSHALL
 
 # 3. Verificar URL de conexão no app
-# REDIS_URL="redis://:RedisOpusAtlas2024!@opus-atlas-redis:6379"
+# REDIS_URL="redis://:SenhaSuperSeguraRedis!@opus-atlas-redis:6379"
 
 # 4. Aumentar timeout
 # timeout 300 no redis.conf
@@ -897,12 +897,12 @@ docker stats --no-stream
 
 # 3. Verificar queries lentas
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "db.system.profile.find().limit(5).sort({ts:-1}).pretty()"
 
 # 4. Verificar cache Redis
-docker exec opus-atlas-redis redis-cli -a RedisOpusAtlas2024! INFO stats
+docker exec opus-atlas-redis redis-cli -a SenhaSuperSeguraRedis! INFO stats
 ```
 
 **Soluções:**
@@ -940,7 +940,7 @@ export NODE_OPTIONS="--max-old-space-size=1024"
 ```bash
 # 1. Profiling MongoDB
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "
     use opus_atlas_prod;
@@ -951,7 +951,7 @@ docker exec opus-atlas-mongodb-prod mongosh \
 
 # 2. Verificar explain de queries
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "
     use opus_atlas_prod;
@@ -960,7 +960,7 @@ docker exec opus-atlas-mongodb-prod mongosh \
 
 # 3. Verificar indexes
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "
     use opus_atlas_prod;
@@ -973,7 +973,7 @@ docker exec opus-atlas-mongodb-prod mongosh \
 ```bash
 # 1. Criar indexes otimizados
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "
     use opus_atlas_prod;
@@ -1017,7 +1017,7 @@ docker exec opus-atlas-grafana curl http://opus-atlas-prometheus:9090/api/v1/que
 docker exec opus-atlas-grafana cat /etc/grafana/grafana.ini | grep -A 5 "\[database\]"
 
 # 4. Testar acesso externo
-curl -u admin:OpusAtlas2024!Monitor http://localhost:3003/api/health
+curl -u admin:SenhaMonitorMonitor http://localhost:3003/api/health
 ```
 
 **Soluções:**
@@ -1261,7 +1261,7 @@ cd /opt/opus-atlas
 
 # 4. Verificar configuração MongoDB
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "db.adminCommand('ping')"
 ```
@@ -1283,7 +1283,7 @@ tar -tzf backup_file.tar.gz
 
 # 2. Verificar MongoDB connection
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin --eval "db.stats()"
 
 # 3. Check backup content
@@ -1299,7 +1299,7 @@ tar -tzf backup_file.tar.gz | head -20
 # 2. Restore com drop
 docker exec opus-atlas-mongodb-prod mongorestore \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --db opus_atlas_prod \
   --drop \
@@ -1307,7 +1307,7 @@ docker exec opus-atlas-mongodb-prod mongorestore \
 
 # 3. Verificar integridade pós-restore
 docker exec opus-atlas-mongodb-prod mongosh \
-  --username opusatlas --password SuperSecureOpusAtlas2024! \
+  --username opusatlas --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "
     use opus_atlas_prod;
@@ -1463,8 +1463,8 @@ quick_diagnosis() {
 
     # Quick health checks
     echo "App: $(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/health)"
-    echo "MongoDB: $(docker exec opus-atlas-mongodb-prod mongosh --quiet --username opusatlas --password SuperSecureOpusAtlas2024! --authenticationDatabase admin --eval 'db.adminCommand("ping").ok' 2>/dev/null || echo 'Error')"
-    echo "Redis: $(docker exec opus-atlas-redis redis-cli -a RedisOpusAtlas2024! ping 2>/dev/null || echo 'Error')"
+    echo "MongoDB: $(docker exec opus-atlas-mongodb-prod mongosh --quiet --username opusatlas --password SenhaSuperSegura! --authenticationDatabase admin --eval 'db.adminCommand("ping").ok' 2>/dev/null || echo 'Error')"
+    echo "Redis: $(docker exec opus-atlas-redis redis-cli -a SenhaSuperSeguraRedis! ping 2>/dev/null || echo 'Error')"
 
     read -p "Press Enter to continue..."
     debug_menu
@@ -1599,14 +1599,14 @@ comprehensive_health() {
     fi
 
     # MongoDB health
-    if docker exec opus-atlas-mongodb-prod mongosh --quiet --username opusatlas --password SuperSecureOpusAtlas2024! --authenticationDatabase admin --eval "db.adminCommand('ping').ok" 2>/dev/null | grep -q "1"; then
+    if docker exec opus-atlas-mongodb-prod mongosh --quiet --username opusatlas --password SenhaSuperSegura! --authenticationDatabase admin --eval "db.adminCommand('ping').ok" 2>/dev/null | grep -q "1"; then
         echo "✅ MongoDB: Healthy" | tee -a $report_file
     else
         echo "❌ MongoDB: Unhealthy" | tee -a $report_file
     fi
 
     # Redis health
-    if docker exec opus-atlas-redis redis-cli -a RedisOpusAtlas2024! ping 2>/dev/null | grep -q "PONG"; then
+    if docker exec opus-atlas-redis redis-cli -a SenhaSuperSeguraRedis! ping 2>/dev/null | grep -q "PONG"; then
         echo "✅ Redis: Healthy" | tee -a $report_file
     else
         echo "❌ Redis: Unhealthy" | tee -a $report_file

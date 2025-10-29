@@ -525,8 +525,8 @@ NEXT_TELEMETRY_DISABLED=1
 # =============================================================================
 # DATABASE
 # =============================================================================
-DATABASE_URL="mongodb://opusatlas:SuperSecureOpusAtlas2024!@opus-atlas-mongodb-prod:27017/opus_atlas_prod?authSource=admin&replicaSet=rs0"
-REDIS_URL="redis://:RedisOpusAtlas2024!@opus-atlas-redis:6379"
+DATABASE_URL="mongodb://opusatlas:SenhaSuperSegura!@opus-atlas-mongodb-prod:27017/opus_atlas_prod?authSource=admin&replicaSet=rs0"
+REDIS_URL="redis://:SenhaSuperSeguraRedis!@opus-atlas-redis:6379"
 
 # =============================================================================
 # NEXTAUTH.JS

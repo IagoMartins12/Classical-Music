@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
         tempSessionId,
         folder || 'images'
       );
-      fileUrl = `/blog/_temp/${tempSessionId}/${folder || 'images'}/${fileName}`;
+      fileUrl = `uploads/blog/_temp/${tempSessionId}/${folder || 'images'}/${fileName}`;
 
       console.log(`📁 Upload temporário: ${tempSessionId}`);
     } else {
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
         articleId,
         folder || 'thumbnail'
       );
-      fileUrl = `/blog/${articleId}/${folder || 'thumbnail'}/${fileName}`;
+      fileUrl = `uploads/blog/${articleId}/${folder || 'thumbnail'}/${fileName}`;
     }
 
     await mkdir(uploadDir, { recursive: true });

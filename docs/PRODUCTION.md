@@ -245,7 +245,7 @@ services:
     restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: opusatlas
-      MONGO_INITDB_ROOT_PASSWORD: SuperSecureOpusAtlas2024!
+      MONGO_INITDB_ROOT_PASSWORD: SenhaSuperSegura!
       MONGO_INITDB_DATABASE: opus_atlas_prod
     ports:
       - '27017:27017'
@@ -268,7 +268,7 @@ services:
     image: redis:7.2-alpine
     container_name: opus-atlas-redis
     restart: unless-stopped
-    command: redis-server --requirepass RedisOpusAtlas2024! --appendonly yes --appendfsync everysec
+    command: redis-server --requirepass SenhaSuperSeguraRedis! --appendonly yes --appendfsync everysec
     ports:
       - '6379:6379'
     volumes:
@@ -374,7 +374,7 @@ services:
     container_name: opus-atlas-grafana
     restart: unless-stopped
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=OpusAtlas2024!Monitor
+      - GF_SECURITY_ADMIN_PASSWORD=SenhaMonitorMonitor
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_SERVER_ROOT_URL=https://monitor.opusatlas.com.br/grafana/
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
@@ -444,10 +444,10 @@ services:
       - '8081:8081'
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: opusatlas
-      ME_CONFIG_MONGODB_ADMINPASSWORD: SuperSecureOpusAtlas2024!
-      ME_CONFIG_MONGODB_URL: mongodb://opusatlas:SuperSecureOpusAtlas2024!@opus-atlas-mongodb-prod:27017/
+      ME_CONFIG_MONGODB_ADMINPASSWORD: SenhaSuperSegura!
+      ME_CONFIG_MONGODB_URL: mongodb://opusatlas:SenhaSuperSegura!@opus-atlas-mongodb-prod:27017/
       ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: OpusAtlas2024!Monitor
+      ME_CONFIG_BASICAUTH_PASSWORD: SenhaMonitorMonitor
     depends_on:
       - mongodb-prod
     networks:
@@ -484,12 +484,12 @@ NEXT_TELEMETRY_DISABLED=1
 # =============================================================================
 # DATABASE
 # =============================================================================
-DATABASE_URL="mongodb://opusatlas:SuperSecureOpusAtlas2024!@opus-atlas-mongodb-prod:27017/opus_atlas_prod?authSource=admin&replicaSet=rs0"
+DATABASE_URL="mongodb://opusatlas:SenhaSuperSegura!@opus-atlas-mongodb-prod:27017/opus_atlas_prod?authSource=admin&replicaSet=rs0"
 
 # =============================================================================
 # REDIS
 # =============================================================================
-REDIS_URL="redis://:RedisOpusAtlas2024!@opus-atlas-redis:6379"
+REDIS_URL="redis://:SenhaSuperSeguraRedis!@opus-atlas-redis:6379"
 
 # =============================================================================
 # NEXTAUTH.JS
@@ -816,7 +816,7 @@ server {
 # Criar usuário para monitoramento
 sudo apt install -y apache2-utils
 htpasswd -c /opt/opus-atlas/nginx/.htpasswd admin
-# Senha: OpusAtlas2024!Monitor
+# Senha: SenhaMonitorMonitor
 ```
 
 ---
@@ -895,7 +895,7 @@ sleep 30
 # Inicializar replica set
 docker exec opus-atlas-mongodb-prod mongosh \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'opus-atlas-mongodb-prod:27017'}]})"
 
@@ -928,7 +928,7 @@ curl -I https://opusatlas.com.br/api/health
 # Verificar MongoDB
 docker exec opus-atlas-mongodb-prod mongosh \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "rs.status()"
 ```
@@ -957,7 +957,7 @@ echo "$(date): Starting MongoDB backup - ${BACKUP_NAME}" >> ${BACKUP_DIR}/backup
 # Criar backup
 docker exec opus-atlas-mongodb-prod mongodump \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --db opus_atlas_prod \
   --gzip \
@@ -1189,18 +1189,18 @@ Auth: SSH Key
 
 # MongoDB
 User: opusatlas
-Pass: SuperSecureOpusAtlas2024!
+Pass: SenhaSuperSegura!
 
 # Redis
-Pass: RedisOpusAtlas2024!
+Pass: SenhaSuperSeguraRedis!
 
 # Monitoring Basic Auth
 User: admin
-Pass: OpusAtlas2024!Monitor
+Pass: SenhaMonitorMonitor
 
 # Grafana
 User: admin
-Pass: OpusAtlas2024!Monitor
+Pass: SenhaMonitorMonitor
 ```
 
 ---

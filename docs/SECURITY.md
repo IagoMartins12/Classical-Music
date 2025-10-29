@@ -997,7 +997,7 @@ const mongoOptions = {
 # redis.conf - Configuração segura
 bind 127.0.0.1 opus-atlas-redis
 port 6379
-requirepass "RedisOpusAtlas2024!"
+requirepass "SenhaSuperSeguraRedis!"
 
 # Disable dangerous commands
 rename-command FLUSHDB ""
@@ -1196,7 +1196,7 @@ mkdir -p $BACKUP_DIR
 echo "Creating MongoDB backup..."
 docker exec opus-atlas-mongodb-prod mongodump \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --db opus_atlas_prod \
   --gzip \

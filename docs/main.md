@@ -158,14 +158,14 @@ NODE_ENV="production"
 NEXT_TELEMETRY_DISABLED="1"
 
 # Database (Replica Set)
-DATABASE_URL="mongodb://opusatlas:SuperSecureOpusAtlas2024!@opus-atlas-mongodb-prod:27017/opus_atlas_prod?authSource=admin&replicaSet=rs0"
+DATABASE_URL="mongodb://opusatlas:SenhaSuperSegura!@opus-atlas-mongodb-prod:27017/opus_atlas_prod?authSource=admin&replicaSet=rs0"
 
 # NextAuth.js
 NEXTAUTH_URL="https://opusatlas.com.br"
 NEXTAUTH_SECRET="super-secret-production-key-change-this-in-prod-2024"
 
 # Redis
-REDIS_URL="redis://:RedisOpusAtlas2024!@opus-atlas-redis:6379"
+REDIS_URL="redis://:SenhaSuperSeguraRedis!@opus-atlas-redis:6379"
 
 # APIs (mesmas do desenvolvimento)
 OPENAI_API_KEY="sk-proj-..."
@@ -284,7 +284,7 @@ services:
     restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: opusatlas
-      MONGO_INITDB_ROOT_PASSWORD: SuperSecureOpusAtlas2024!
+      MONGO_INITDB_ROOT_PASSWORD: SenhaSuperSegura!
       MONGO_INITDB_DATABASE: opus_atlas_prod
     ports:
       - '27017:27017'
@@ -300,7 +300,7 @@ services:
     image: redis:7.2-alpine
     container_name: opus-atlas-redis
     restart: unless-stopped
-    command: redis-server --requirepass RedisOpusAtlas2024! --appendonly yes
+    command: redis-server --requirepass SenhaSuperSeguraRedis! --appendonly yes
     ports:
       - '6379:6379'
     volumes:
@@ -376,7 +376,7 @@ services:
     container_name: opus-atlas-grafana
     restart: unless-stopped
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=OpusAtlas2024!Monitor
+      - GF_SECURITY_ADMIN_PASSWORD=SenhaMonitorMonitor
       - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - grafana_data:/var/lib/grafana
@@ -464,7 +464,7 @@ docker-compose up -d mongodb-prod redis
 # Inicializar replica set MongoDB
 docker exec opus-atlas-mongodb-prod mongosh \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --eval "rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'opus-atlas-mongodb-prod:27017'}]})"
 
@@ -636,7 +636,7 @@ Classical-Music/
 
 - **Aplicação**: https://opusatlas.com.br
 - **Monitoramento**: https://monitor.opusatlas.com.br
-- **Grafana**: :3003 (admin/OpusAtlas2024!Monitor)
+- **Grafana**: :3003 (admin/SenhaMonitorMonitor)
 - **Prometheus**: :9090
 - **Uptime Kuma**: :3002
 
@@ -727,7 +727,7 @@ docker-compose restart nginx
 # Backup manual
 docker exec opus-atlas-mongodb-prod mongodump \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --db opus_atlas_prod \
   --out /data/backup-$(date +%Y%m%d)
@@ -739,7 +739,7 @@ docker exec opus-atlas-mongodb-prod mongodump \
 # Conectar
 docker exec -it opus-atlas-mongodb-prod mongosh \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin
 
 # Replica set status
@@ -756,7 +756,7 @@ db.User.countDocuments()
 
 ```bash
 # Conectar
-docker exec -it opus-atlas-redis redis-cli -a RedisOpusAtlas2024!
+docker exec -it opus-atlas-redis redis-cli -a SenhaSuperSeguraRedis!
 
 # Info
 INFO memory
@@ -889,14 +889,14 @@ Auth: SSH keys (ED25519)
 
 # MongoDB
 User: opusatlas
-Pass: SuperSecureOpusAtlas2024!
+Pass: SenhaSuperSegura!
 
 # Redis
-Pass: RedisOpusAtlas2024!
+Pass: SenhaSuperSeguraRedis!
 
 # Monitoring
 User: admin
-Pass: OpusAtlas2024!Monitor
+Pass: SenhaMonitorMonitor
 ```
 
 ---

@@ -1535,7 +1535,7 @@ DATABASE_URL="..." npx prisma db push --accept-data-loss
 # Backup completo
 docker exec opus-atlas-mongodb-prod mongodump \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --db opus_atlas_prod \
   --gzip \
@@ -1544,7 +1544,7 @@ docker exec opus-atlas-mongodb-prod mongodump \
 # Backup específico
 docker exec opus-atlas-mongodb-prod mongodump \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --db opus_atlas_prod \
   --collection User \
@@ -1557,7 +1557,7 @@ docker exec opus-atlas-mongodb-prod mongodump \
 # Restore completo
 docker exec opus-atlas-mongodb-prod mongorestore \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --db opus_atlas_prod \
   --gzip \
@@ -1566,7 +1566,7 @@ docker exec opus-atlas-mongodb-prod mongorestore \
 # Restore específico
 docker exec opus-atlas-mongodb-prod mongorestore \
   --username opusatlas \
-  --password SuperSecureOpusAtlas2024! \
+  --password SenhaSuperSegura! \
   --authenticationDatabase admin \
   --db opus_atlas_prod \
   --collection User \

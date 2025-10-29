@@ -127,7 +127,7 @@ export function getPublicBlogImageUrl(
   folder: string = 'thumbnail',
   fileName: string
 ): string {
-  return `/blog/${articleId}/${folder}/${fileName}`;
+  return `uploads/blog/${articleId}/${folder}/${fileName}`;
 }
 
 // ✅ LIMPAR ARQUIVOS ANTIGOS
