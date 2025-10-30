@@ -52,8 +52,12 @@ export async function POST(
     revalidateTag(`blog-article-${id}`);
     revalidateTag(`blog-article-${article.slug}`);
 
-    // Redirecionar para o artigo publicado
-    return NextResponse.redirect(new URL(`/blog/${article.slug}`, request.url));
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      request.headers.get('origin') ||
+      'https://opusatlas.com.br';
+
+    return NextResponse.redirect(`${baseUrl}/blog/${article.slug}`);
   } catch (error) {
     console.error('Erro ao aprovar artigo:', error);
     return NextResponse.json(
