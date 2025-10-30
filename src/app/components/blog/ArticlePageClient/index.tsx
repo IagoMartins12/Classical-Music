@@ -76,12 +76,6 @@ export function ArticlePageClient({
             {/* Left Sidebar - Reading Controls (Fixed) */}
             <div className="hidden lg:block lg:col-span-2">
               <ReadingControls
-                article={{
-                  id: article.id,
-                  title: article.title,
-                  slug: article.slug,
-                  content: article.content,
-                }}
                 onOpenShareModal={() => setShowShareModal(true)}
                 onOpenFocusMode={() => setShowFocusMode(true)}
               />
@@ -117,6 +111,7 @@ export function ArticlePageClient({
                 <ArticleInteractions
                   articleId={article.id}
                   onOpenShareModal={() => setShowShareModal(true)}
+                  onOpenFocusMode={() => setShowFocusMode(true)}
                 />
               </div>
 
@@ -162,12 +157,6 @@ export function ArticlePageClient({
       {/* Mobile Reading Controls */}
       <div className="lg:hidden">
         <ReadingControls
-          article={{
-            id: article.id,
-            title: article.title,
-            slug: article.slug,
-            content: article.content,
-          }}
           isMobile
           onOpenShareModal={() => setShowShareModal(true)}
           onOpenFocusMode={() => setShowFocusMode(true)}

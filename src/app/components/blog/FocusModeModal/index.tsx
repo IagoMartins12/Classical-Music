@@ -3,7 +3,7 @@
 
 import Image from 'next/image';
 import { JSX, useEffect, useState } from 'react';
-import { FiX, FiMinus, FiPlus, FiSun, FiMoon } from 'react-icons/fi';
+import { FiX, FiMinus, FiPlus } from 'react-icons/fi';
 
 interface FocusModeModalProps {
   isOpen: boolean;
@@ -19,15 +19,8 @@ export function FocusModeModal({
   title,
 }: FocusModeModalProps) {
   const [fontSize, setFontSize] = useState(18);
-  const [isDark, setIsDark] = useState(false);
 
   // Detectar tema do sistema
-  useEffect(() => {
-    const prefersDark = window.matchMedia(
-      '(prefers-color-scheme: dark)'
-    ).matches;
-    setIsDark(prefersDark);
-  }, []);
 
   // Bloquear scroll do body quando modal está aberto
   useEffect(() => {
@@ -65,9 +58,7 @@ export function FocusModeModal({
     <div className="fixed inset-0 z-[9999] flex items-center justify-center">
       {/* BACKDROP */}
       <div
-        className={`absolute inset-0 transition-colors duration-300 ${
-          isDark ? 'bg-gray-900' : 'bg-white'
-        }`}
+        className={`absolute inset-0 transition-colors bg-theme-primary duration-300 `}
         onClick={onClose}
       />
 
@@ -94,19 +85,6 @@ export function FocusModeModal({
           </button>
         </div>
 
-        {/* Alternar Tema */}
-        <button
-          onClick={() => setIsDark(!isDark)}
-          className="p-3 bg-theme-elevated rounded-full shadow-2xl hover:bg-theme-classical transition-all border border-theme-secondary"
-          title="Alternar tema"
-        >
-          {isDark ? (
-            <FiSun className="w-5 h-5 text-yellow-500" />
-          ) : (
-            <FiMoon className="w-5 h-5 text-indigo-600" />
-          )}
-        </button>
-
         {/* Botão Fechar */}
         <button
           onClick={onClose}
@@ -120,9 +98,7 @@ export function FocusModeModal({
       {/* CONTEÚDO */}
       <div className="relative max-w-4xl w-full h-full overflow-y-auto px-8 py-16 z-1">
         <article
-          className={`prose max-w-none transition-all duration-300 ${
-            isDark ? 'prose-invert' : ''
-          }`}
+          className={`prose max-w-none transition-all duration-300 `}
           style={{ fontSize: `${fontSize}px` }}
         >
           <h1 className="text-4xl font-bold mb-8 leading-tight">{title}</h1>

@@ -2,30 +2,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FaHeart, FaBookmark, FaShareAlt, FaBullseye } from 'react-icons/fa';
-import { useSession } from 'next-auth/react';
+import { FaBullseye } from 'react-icons/fa';
 
 interface ReadingControlsProps {
-  article: {
-    id: string;
-    title: string;
-    slug: string;
-    content: any;
-  };
   isMobile?: boolean;
   onOpenShareModal?: () => void;
   onOpenFocusMode?: () => void;
 }
 
 export function ReadingControls({
-  article,
   isMobile = false,
-  onOpenShareModal,
   onOpenFocusMode,
 }: ReadingControlsProps) {
-  const { data: session } = useSession();
-  const [isLiked, setIsLiked] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
   const [fontSize, setFontSize] = useState(18);
   // const [urlCopied, setUrlCopied] = useState(false);
 
@@ -49,50 +37,6 @@ export function ReadingControls({
     setFontSize(newSize);
     applyFontSize(newSize);
     localStorage.setItem('article-font-size', newSize.toString());
-  };
-
-  const handleLike = async () => {
-    if (!session) {
-      alert('Faça login para curtir artigos');
-      return;
-    }
-
-    try {
-      const method = isLiked ? 'DELETE' : 'POST';
-      const response = await fetch('/api/blog/interactions/like', {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ articleId: article.id }),
-      });
-
-      if (response.ok) {
-        setIsLiked(!isLiked);
-      }
-    } catch (error) {
-      console.error('Erro ao curtir:', error);
-    }
-  };
-
-  const handleSave = async () => {
-    if (!session) {
-      alert('Faça login para salvar artigos');
-      return;
-    }
-
-    try {
-      const method = isSaved ? 'DELETE' : 'POST';
-      const response = await fetch('/api/blog/interactions/save', {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ articleId: article.id }),
-      });
-
-      if (response.ok) {
-        setIsSaved(!isSaved);
-      }
-    } catch (error) {
-      console.error('Erro ao salvar:', error);
-    }
   };
 
   // ✅ COPIAR URL
@@ -143,51 +87,7 @@ export function ReadingControls({
   // );
 
   if (isMobile) {
-    return (
-      <div className="fixed bottom-0 left-0 right-0 bg-theme-secondary border-t border-theme-secondary backdrop-blur-lg z-40">
-        <div className="section-wrap py-3">
-          <div className="flex items-center justify-around">
-            <button
-              onClick={handleLike}
-              className={`flex flex-col items-center space-y-1 ${
-                isLiked ? 'text-red-500' : 'text-theme-secondary'
-              }`}
-            >
-              <FaHeart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
-              <span className="text-xs">Curtir</span>
-            </button>
-
-            <button
-              onClick={handleSave}
-              className={`flex flex-col items-center space-y-1 ${
-                isSaved ? 'text-brand-primary' : 'text-theme-secondary'
-              }`}
-            >
-              <FaBookmark
-                className={`w-5 h-5 ${isSaved ? 'fill-current' : ''}`}
-              />
-              <span className="text-xs">Salvar</span>
-            </button>
-
-            <button
-              onClick={onOpenShareModal}
-              className="flex flex-col items-center space-y-1 text-theme-secondary"
-            >
-              <FaShareAlt className="w-5 h-5" />
-              <span className="text-xs">Compartilhar</span>
-            </button>
-
-            <button
-              onClick={onOpenFocusMode}
-              className="flex flex-col items-center space-y-1 text-theme-secondary"
-            >
-              <FaBullseye className="w-5 h-5" />
-              <span className="text-xs">Foco</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+    return <> </>;
   }
 
   return (

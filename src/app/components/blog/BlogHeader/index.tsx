@@ -208,11 +208,11 @@ export function BlogHeader() {
   ];
   // Navigation items
   const navLinks: NavItem[] = [
-    {
-      label: 'Blog',
-      href: '/blog',
-      active: isPathActive('/blog'),
-    },
+    // {
+    //   label: 'Blog',
+    //   href: '/blog',
+    //   active: isPathActive('/blog'),
+    // },
     {
       label: 'Artigos',
       href: '/blog/articles',
@@ -359,7 +359,7 @@ export function BlogHeader() {
               <div className="relative">
                 <GiGrandPiano className="w-8 h-8 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
               </div>
-              <div className="hidden sm:block">
+              <div className="">
                 <span className="text-xl font-bold text-gradient-brand gold-shine classical-title">
                   Opus atlas
                 </span>
@@ -484,7 +484,7 @@ export function BlogHeader() {
               </button>
               <LanguageToggle variant="compact" className="hidden sm:block" />
 
-              <ThemeToggle variant="navbar" />
+              <ThemeToggle variant="navbar" className="hidden sm:block" />
 
               {/* User Menu / Login - Desktop */}
               {isLoading ? null : isAuthenticated && user ? (

@@ -2,19 +2,29 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark } from 'react-icons/fa';
+import {
+  FaHeart,
+  FaRegHeart,
+  FaBookmark,
+  FaRegBookmark,
+  FaShareAlt,
+  FaBullseye,
+} from 'react-icons/fa';
 import { BiComment } from 'react-icons/bi';
 import { FiShare2 } from 'react-icons/fi';
 import { useToast } from '@/app/hooks/useToast';
+import { useIsMobile } from '@/app/hooks/useMobile';
 
 interface ArticleInteractionsProps {
   articleId: string;
   onOpenShareModal?: () => void;
+  onOpenFocusMode: () => void;
 }
 
 export function ArticleInteractions({
   articleId,
   onOpenShareModal,
+  onOpenFocusMode,
 }: ArticleInteractionsProps) {
   const { data: session } = useSession();
   const [isLiked, setIsLiked] = useState(false);
@@ -23,7 +33,7 @@ export function ArticleInteractions({
   const [bookmarksCount, setBookmarksCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-
+  const isMobile = useIsMobile();
   useEffect(() => {
     fetchInteractions();
   }, [session, articleId]);
@@ -120,6 +130,54 @@ export function ArticleInteractions({
       commentsSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  if (isMobile) {
+    return (
+      <div className="fixed bottom-0 left-0 right-0 bg-theme-secondary border-t border-theme-secondary backdrop-blur-lg z-40">
+        <div className="section-wrap py-3">
+          <div className="flex items-center justify-around">
+            <button
+              onClick={handleLike}
+              className={`flex flex-col items-center space-y-1 ${
+                isLiked ? 'text-red-500' : 'text-theme-secondary'
+              }`}
+            >
+              <FaHeart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
+              <span className="text-xs">Curtir</span>
+            </button>
+
+            <button
+              onClick={handleSave}
+              className={`flex flex-col items-center space-y-1 ${
+                isSaved ? 'text-brand-primary' : 'text-theme-secondary'
+              }`}
+            >
+              <FaBookmark
+                className={`w-5 h-5 ${isSaved ? 'fill-current' : ''}`}
+              />
+              <span className="text-xs">Salvar</span>
+            </button>
+
+            <button
+              onClick={onOpenShareModal}
+              className="flex flex-col items-center space-y-1 text-theme-secondary"
+            >
+              <FaShareAlt className="w-5 h-5" />
+              <span className="text-xs">Compartilhar</span>
+            </button>
+
+            <button
+              onClick={onOpenFocusMode}
+              className="flex flex-col items-center space-y-1 text-theme-secondary"
+            >
+              <FaBullseye className="w-5 h-5" />
+              <span className="text-xs">Foco</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="classical-card p-6">
