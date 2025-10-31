@@ -428,10 +428,10 @@ function getPremiumOpusAtlasLayout(
                   ''
                 )}</a><br>
                 ${config?.LOCATION} | <a href="mailto:${
-    config.CONTACT_EMAIL
-  }" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">${
-    config.CONTACT_EMAIL
-  }</a>
+                  config.CONTACT_EMAIL
+                }" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">${
+                  config.CONTACT_EMAIL
+                }</a>
             </p>
         </div>
     </div>

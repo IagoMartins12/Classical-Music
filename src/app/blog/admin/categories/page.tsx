@@ -119,7 +119,6 @@ export default async function CategoriesAdminPage() {
                     <FiGrid className="w-8 h-8 text-blue-500" />
                   </div>
                 </div>
-                <div className="h-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-b-xl"></div>
               </div>
             </AnimatedItem>
 
@@ -139,7 +138,6 @@ export default async function CategoriesAdminPage() {
                     <FiTag className="w-8 h-8 text-green-500" />
                   </div>
                 </div>
-                <div className="h-2 bg-gradient-to-r from-green-500 to-green-600 rounded-b-xl"></div>
               </div>
             </AnimatedItem>
 
@@ -159,7 +157,6 @@ export default async function CategoriesAdminPage() {
                     <FiGrid className="w-8 h-8 text-purple-500" />
                   </div>
                 </div>
-                <div className="h-2 bg-gradient-to-r from-purple-500 to-purple-600 rounded-b-xl"></div>
               </div>
             </AnimatedItem>
           </div>

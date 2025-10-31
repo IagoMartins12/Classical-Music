@@ -389,6 +389,56 @@ enum ActivityLogType {
   GENERATE_BIO
 }
 
+enum PlanType {
+  FREE
+  PLUS
+  MENTOR
+  MAESTRO
+}
+
+enum BillingPeriod {
+  MONTHLY
+  YEARLY
+}
+
+enum SubscriptionPlanStatus {
+  TRIAL        // Período de teste
+  ACTIVE       // Ativa e paga
+  CANCELLED    // Cancelada (acesso até o fim do período)
+  EXPIRED      // Expirada
+  PAST_DUE     // Pagamento atrasado
+}
+
+enum PaymentStatus {
+  PENDING      // Aguardando pagamento
+  APPROVED     // Aprovado
+  REJECTED     // Rejeitado
+  REFUNDED     // Reembolsado
+  CANCELLED    // Cancelado
+  IN_PROCESS   // Em processamento (MP)
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  PIX
+  BOLETO
+  MERCADO_PAGO_WALLET
+}
+
+enum InvoiceStatus {
+  PENDING      // Pendente
+  PAID         // Paga
+  OVERDUE      // Vencida
+  CANCELLED    // Cancelada
+}
+
+enum CouponType {
+  PERCENTAGE   // Desconto percentual
+  FIXED        // Valor fixo
+  FREE_TRIAL   // Trial grátis estendido
+}
+
 
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -443,6 +493,14 @@ model User {
   schoolActivities    SchoolActivity[]      @relation("UserSchoolActivities")
   achievements        UserAchievement[]     @relation("UserAchievements")
   achievementProgress AchievementProgress[] @relation("AchievementProgress")
+  // 🆕 RELAÇÕES DE ASSINATURA
+  subscriptions   Subscription[]  @relation("UserSubscriptions")
+  couponUsages    CouponUsage[]   @relation("UserCouponUsages")
+  
+  // 🆕 CACHE DO PLANO ATUAL (para performance)
+  currentPlan     PlanType        @default(FREE)
+  planExpiresAt   DateTime?       // Data de expiração do plano
+  isTrialActive   Boolean         @default(false)
 
   blogArticles       BlogArticle[]      @relation("BlogAuthor")
   blogComments       BlogComment[]      @relation("BlogComments")
@@ -2880,4 +2938,265 @@ model BlogSeriesArticle {
   @@unique([seriesId, articleId])
   @@index([seriesId, order])
   @@map("blog_series_articles")
+}
+
+// ==================== MODELO DE ASSINATURA ====================
+model Subscription {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Relacionamento com usuário
+  userId String @db.ObjectId
+  user   User   @relation("UserSubscriptions", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Plano e período
+  planType      PlanType       @default(FREE)
+  billingPeriod BillingPeriod? // null para FREE
+  
+  // Status
+  status SubscriptionPlanStatus @default(ACTIVE)
+  
+  // 🔁 Stripe integration
+  stripeSessionId    String?   // session.id
+  stripeCheckoutUrl  String?   // session.url
+  stripeSubscriptionId String? // depois do webhook
+  stripeCustomerId    String?
+
+  // Datas
+  startDate     DateTime  @default(now())
+  endDate       DateTime? // null = indefinido (FREE)
+  trialEndDate  DateTime? // Data fim do trial
+  cancelledAt   DateTime? // Data do cancelamento
+  
+  // Financeiro
+  price         Float?   // Preço mensal/anual
+  currency      String   @default("BRL")
+  autoRenew     Boolean  @default(true)
+  
+  // Mercado Pago
+  mpSubscriptionId   String? // ID da assinatura MP (se recorrente)
+  
+  // Cupom aplicado
+  couponId String? @db.ObjectId
+  coupon   Coupon? @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  
+  // Metadados
+  metadata Json? // Dados extras (ex: features específicas)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  payments  Payment[]
+  invoices  Invoice[]
+  history   SubscriptionHistory[]
+  
+  @@index([userId, status])
+  @@index([status, endDate])
+  @@index([planType, status])
+  @@map("subscriptions")
+}
+
+// ==================== MODELO DE PAGAMENTO ====================
+model Payment {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Relacionamento
+  subscriptionId String       @db.ObjectId
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  stripeSessionId String?
+  // Valores
+  amount        Float
+  currency      String  @default("BRL")
+  discountAmount Float? @default(0) // Desconto aplicado
+  finalAmount   Float   // Valor final pago
+  
+  // Status e método
+  status        PaymentStatus
+  paymentMethod PaymentMethod?
+  
+  // Mercado Pago
+  mpPaymentId        String? @unique // ID do pagamento no MP
+  mpStatus           String? // Status original do MP
+  mpStatusDetail     String? // Detalhe do status MP
+  
+  // Dados do pagamento
+  payerEmail String?
+  payerName  String?
+  payerDocument String? // CPF/CNPJ
+  
+  // Datas
+  paidAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  
+  // Metadados
+  metadata Json? // Dados extras do MP
+  
+  // Relação com nota fiscal
+  invoice Invoice?
+  
+  @@index([subscriptionId])
+  @@index([status, createdAt])
+  @@map("payments")
+}
+
+// ==================== MODELO DE NOTA FISCAL ====================
+model Invoice {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Relacionamentos
+  subscriptionId String       @db.ObjectId
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  
+  paymentId String  @unique @db.ObjectId
+  payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  
+  // Número da nota
+  invoiceNumber String @unique // Ex: NF-2024-001234
+  
+  // Valores
+  amount       Float
+  taxAmount    Float  @default(0)
+  totalAmount  Float
+  currency     String @default("BRL")
+  
+  // Status
+  status InvoiceStatus @default(PENDING)
+  
+  // Datas
+  issueDate DateTime  @default(now())
+  dueDate   DateTime
+  paidAt    DateTime?
+  
+  // Dados do cliente
+  customerName     String
+  customerEmail    String
+  customerDocument String  // CPF/CNPJ
+  customerAddress  String?
+  customerCity     String?
+  customerState    String?
+  customerZipCode  String?
+  
+  // Dados da empresa (Opus Atlas)
+  companyName     String @default("Opus Atlas Ltda")
+  companyDocument String @default("00.000.000/0000-00") // CNPJ fictício
+  companyAddress  String @default("São Paulo, SP")
+  
+  // Arquivo PDF
+  pdfUrl String? // URL do PDF gerado
+  
+  // Descrição
+  description String // Descrição do serviço
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([subscriptionId])
+  @@index([status, dueDate])
+  @@map("invoices")
+}
+
+// ==================== HISTÓRICO DE ASSINATURAS ====================
+model SubscriptionHistory {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Relacionamento
+  subscriptionId String       @db.ObjectId
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  
+  userId String @db.ObjectId
+  
+  // Ação realizada
+  action String // CREATED, UPGRADED, DOWNGRADED, CANCELLED, REACTIVATED, RENEWED, EXPIRED
+  
+  // Planos
+  fromPlan PlanType?
+  toPlan   PlanType?
+  
+  // Valores (se aplicável)
+  fromPrice Float?
+  toPrice   Float?
+  
+  // Motivo
+  reason String? // Motivo da mudança (ex: "upgrade manual", "trial expirado")
+  
+  // Metadados
+  metadata Json? // Dados extras
+  
+  // Timestamp
+  createdAt DateTime @default(now())
+  
+  @@index([subscriptionId, createdAt])
+  @@index([userId, createdAt])
+  @@map("subscription_history")
+}
+
+// ==================== MODELO DE CUPOM ====================
+model Coupon {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Código do cupom
+  code String @unique // Ex: "BEMVINDO20", "PROMO50"
+  
+  // Tipo e valor
+  type           CouponType
+  discountValue  Float      // 20 (para 20% ou R$ 20)
+  maxDiscount    Float?     // Desconto máximo (para percentual)
+  
+  // Aplicável a quais planos
+  applicablePlans PlanType[] @default([]) // [] = todos os planos
+  
+  // Período de validade
+  validFrom  DateTime
+  validUntil DateTime
+  
+  // Limites de uso
+  maxUses       Int?  // null = ilimitado
+  usedCount     Int   @default(0)
+  maxUsesPerUser Int? @default(1) // Quantas vezes cada usuário pode usar
+  
+  // Status
+  isActive Boolean @default(true)
+  
+  // Trial estendido (se aplicável)
+  extraTrialDays Int? // Dias extras de trial
+  
+  // Descrição
+  description String?
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  subscriptions Subscription[]
+  usages        CouponUsage[]
+  
+  @@index([code, isActive])
+  @@index([validFrom, validUntil])
+  @@map("coupons")
+}
+
+// ==================== USO DE CUPONS ====================
+model CouponUsage {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Relacionamentos
+  couponId String @db.ObjectId
+  coupon   Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  
+  userId String @db.ObjectId
+  user   User   @relation("UserCouponUsages", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Valor do desconto aplicado
+  discountApplied Float
+  
+  // Timestamp
+  usedAt DateTime @default(now())
+  
+  @@unique([couponId, userId])
+  @@index([userId])
+  @@map("coupon_usages")
 }
