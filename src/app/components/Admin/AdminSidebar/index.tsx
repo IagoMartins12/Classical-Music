@@ -21,11 +21,13 @@ import {
   FiChevronRight,
   FiHardDrive,
   FiSend,
-  FiMail, // Nova importação para backup
+  FiMail,
+  FiPercent, // Nova importação para backup
 } from 'react-icons/fi';
 import { BiTestTube } from 'react-icons/bi';
 import { LuUser } from 'react-icons/lu';
 import { GiBroom } from 'react-icons/gi';
+import { MdOutlineTextSnippet } from 'react-icons/md';
 
 interface SidebarSection {
   title: string;
@@ -259,6 +261,28 @@ export default function AdminSidebar() {
           label: 'Insights',
           icon: FiTrendingUp,
           isActive: pathname.startsWith('/admin/insights'),
+        },
+      ],
+    },
+    {
+      title: 'Blog',
+      items: [
+        {
+          href: '/admin/blog/media',
+          label: 'Gerenciar Media do blog',
+          icon: MdOutlineTextSnippet, // Adicionar ao imports: FiTarget
+          isActive: pathname.startsWith('/admin/blog/media'),
+        },
+      ],
+    },
+    {
+      title: 'Pricing',
+      items: [
+        {
+          href: '/admin/coupons',
+          label: 'Gerenciar Cupons do site',
+          icon: FiPercent, // Adicionar ao imports: FiTarget
+          isActive: pathname.startsWith('/admin/coupons'),
         },
       ],
     },
