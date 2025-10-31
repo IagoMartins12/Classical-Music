@@ -9,10 +9,20 @@ import {
 } from './subscriptionConstants';
 
 // Configuração do cliente Stripe
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-10-29.clover',
-  timeout: 5000,
-});
+// export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+//   apiVersion: '2025-10-29.clover',
+//   timeout: 5000,
+// });
+
+export const stripe = new Stripe(
+  'sk_test_51SOLnFGmqGOcpsPeoopGs0b7xusrqGQfMlp9mDe4YGQC5VGo8ItsLTOCGNP8sjDxeDhLeJ2h8KajQYOcRhq1QwK800Q292E0mp',
+  {
+    apiVersion: '2025-10-29.clover',
+    timeout: 5000,
+  }
+);
+
+/**
 
 /**
  * Interface para criação de sessão de checkout (assinatura)
@@ -136,7 +146,10 @@ export async function processStripeWebhook(
   signature: string | string[] | undefined
 ) {
   try {
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+    // const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+    const endpointSecret =
+      'sk_test_51SOLnFGmqGOcpsPeoopGs0b7xusrqGQfMlp9mDe4YGQC5VGo8ItsLTOCGNP8sjDxeDhLeJ2h8KajQYOcRhq1QwK800Q292E0mp';
+
     const event = stripe.webhooks.constructEvent(
       body,
       signature!,
