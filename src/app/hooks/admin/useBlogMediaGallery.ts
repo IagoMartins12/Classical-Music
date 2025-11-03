@@ -30,6 +30,15 @@ export interface BlogMediaFile {
   folder: string;
   isTemporary: boolean;
   inGallery: boolean;
+  // 🆕 CAMPOS DE USO
+  isUsed: boolean;
+  usedIn: Array<{
+    articleId: string;
+    articleTitle: string;
+    usageType: 'cover' | 'content' | 'background-music' | 'gallery';
+    slug: string;
+  }>;
+  usageCount: number;
 }
 
 export interface MediaGalleryStats {
@@ -40,8 +49,13 @@ export interface MediaGalleryStats {
   byType: Record<string, { count: number; size: number }>;
   temporaryFiles: number;
   temporarySize: number;
+  // 🆕 STATS DE USO
+  usedFiles: number;
+  unusedFiles: number;
+  multiUseFiles: number;
 }
-
+// ✅ Tipo correto para os dados por categoria
+type CategoryStats = Record<MediaCategory, { count: number; size: number }>;
 export interface MediaGalleryResult {
   files: BlogMediaFile[];
   stats: MediaGalleryStats;
@@ -164,12 +178,19 @@ export function useBlogMediaGallery() {
     setSelectedFiles([]);
   }, []);
 
-  // Get stats por categoria
-  const getCategoryStats = useCallback(() => {
-    if (!galleryResult) return {};
-    return galleryResult.stats.byCategory;
+  // ✅ Agora a função sempre retorna o tipo certo
+  const getCategoryStats = useCallback((): CategoryStats => {
+    return (
+      galleryResult?.stats.byCategory || {
+        all: { count: 0, size: 0 },
+        cover: { count: 0, size: 0 },
+        content: { count: 0, size: 0 },
+        audio: { count: 0, size: 0 },
+        temp: { count: 0, size: 0 },
+        gallery: { count: 0, size: 0 },
+      }
+    );
   }, [galleryResult]);
-
   // Formatar tamanho selecionado
   const getFormattedSelectedSize = useCallback(() => {
     if (!galleryResult || selectedFiles.length === 0) return '0 B';
@@ -214,6 +235,17 @@ export function useBlogMediaGallery() {
     return `${Math.floor(days / 365)}a atrás`;
   }, []);
 
+  // Get display name do tipo de uso
+  const getUsageTypeLabel = useCallback((type: string): string => {
+    const labels: Record<string, string> = {
+      cover: 'Capa',
+      content: 'Conteúdo',
+      'background-music': 'Música de Fundo',
+      gallery: 'Galeria',
+    };
+    return labels[type] || type;
+  }, []);
+
   return {
     galleryResult,
     isLoading,
@@ -229,5 +261,6 @@ export function useBlogMediaGallery() {
     getFormattedSelectedSize,
     getCategoryDisplayName,
     formatDate,
+    getUsageTypeLabel, // 🆕 NOVA FUNÇÃO
   };
 }

@@ -24,7 +24,7 @@ import {
   FiMail,
   FiPercent, // Nova importação para backup
 } from 'react-icons/fi';
-import { BiTestTube } from 'react-icons/bi';
+import { BiDollar, BiTestTube } from 'react-icons/bi';
 import { LuUser } from 'react-icons/lu';
 import { GiBroom } from 'react-icons/gi';
 import { MdOutlineTextSnippet } from 'react-icons/md';
@@ -279,10 +279,22 @@ export default function AdminSidebar() {
       title: 'Pricing',
       items: [
         {
-          href: '/admin/coupons',
+          href: '/admin/plans/pricing',
+          label: 'Gerenciar Planos',
+          icon: BiDollar, // Adicionar ao imports: FiTarget
+          isActive: pathname.startsWith('/admin/plans/pricing'),
+        },
+        {
+          href: '/admin/plans/subscribers',
+          label: 'Gerenciar Assinantes',
+          icon: BiDollar, // Adicionar ao imports: FiTarget
+          isActive: pathname.startsWith('/admin/plans/subscribers'),
+        },
+        {
+          href: '/admin/plans/coupons',
           label: 'Gerenciar Cupons do site',
           icon: FiPercent, // Adicionar ao imports: FiTarget
-          isActive: pathname.startsWith('/admin/coupons'),
+          isActive: pathname.startsWith('/admin/plans/coupons'),
         },
       ],
     },

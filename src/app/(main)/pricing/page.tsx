@@ -6,6 +6,8 @@ import {
 import { Metadata } from 'next';
 import PricingPage from './pageClient';
 import { TranslationProvider } from '@/app/context/TranslationContext';
+import prisma from '@/app/libs/prismadb';
+import { PlanType } from '@prisma/client';
 
 export async function generateMetadata(): Promise<Metadata> {
   const language = await getServerLanguageStatic();
@@ -196,16 +198,164 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const revalidate = 3600; // Revalidar a cada 1 hora
+type PricingData = {
+  monthly: number;
+  quarterly: {
+    price: number;
+    discount: number;
+    monthlyEquivalent: number;
+    savings: number;
+  };
+  biannual: {
+    price: number;
+    discount: number;
+    monthlyEquivalent: number;
+    savings: number;
+  };
+  yearly: {
+    price: number;
+    discount: number;
+    monthlyEquivalent: number;
+    savings: number;
+  };
+  trialDays: number;
+  description: string | null;
+};
+async function getPricing() {
+  try {
+    const planPricing = await prisma.planPricing.findMany({
+      where: { isActive: true },
+      orderBy: { displayOrder: 'asc' },
+      select: {
+        planType: true,
+        monthlyPrice: true,
+        quarterlyPrice: true,
+        biannualPrice: true,
+        yearlyPrice: true,
+        quarterlyDiscount: true,
+        biannualDiscount: true,
+        yearlyDiscount: true,
+        trialDays: true,
+        description: true,
+      },
+    });
+
+    const formattedPricing: Record<PlanType, PricingData> = planPricing.reduce(
+      (acc, plan) => {
+        acc[plan.planType] = {
+          monthly: plan.monthlyPrice,
+          quarterly: {
+            price: plan.quarterlyPrice || 0,
+            discount: plan.quarterlyDiscount,
+            monthlyEquivalent: (plan.quarterlyPrice || 0) / 3,
+            savings: plan.monthlyPrice * 3 - (plan.quarterlyPrice || 0),
+          },
+          biannual: {
+            price: plan.biannualPrice || 0,
+            discount: plan.biannualDiscount,
+            monthlyEquivalent: (plan.biannualPrice || 0) / 6,
+            savings: plan.monthlyPrice * 6 - (plan.biannualPrice || 0),
+          },
+          yearly: {
+            price: plan.yearlyPrice || 0,
+            discount: plan.yearlyDiscount,
+            monthlyEquivalent: (plan.yearlyPrice || 0) / 12,
+            savings: plan.monthlyPrice * 12 - (plan.yearlyPrice || 0),
+          },
+          trialDays: plan.trialDays,
+          description: plan.description ?? null, // ✅ AQUI!
+        };
+        return acc;
+      },
+      {} as Record<PlanType, PricingData>
+    );
+
+    return formattedPricing;
+  } catch (error) {
+    console.error('Error fetching pricing:', error);
+    // Retornar preços default em caso de erro
+    return {
+      PLUS: {
+        monthly: 29,
+        quarterly: {
+          price: 78.3,
+          discount: 10,
+          monthlyEquivalent: 26.1,
+          savings: 8.7,
+        },
+        biannual: {
+          price: 148.2,
+          discount: 15,
+          monthlyEquivalent: 24.7,
+          savings: 25.8,
+        },
+        yearly: {
+          price: 278.4,
+          discount: 20,
+          monthlyEquivalent: 23.2,
+          savings: 69.6,
+        },
+        trialDays: 7,
+      },
+      MENTOR: {
+        monthly: 79,
+        quarterly: {
+          price: 213.3,
+          discount: 10,
+          monthlyEquivalent: 71.1,
+          savings: 23.7,
+        },
+        biannual: {
+          price: 403.8,
+          discount: 15,
+          monthlyEquivalent: 67.3,
+          savings: 70.2,
+        },
+        yearly: {
+          price: 758.4,
+          discount: 20,
+          monthlyEquivalent: 63.2,
+          savings: 189.6,
+        },
+        trialDays: 14,
+      },
+      MAESTRO: {
+        monthly: 149,
+        quarterly: {
+          price: 402.3,
+          discount: 10,
+          monthlyEquivalent: 134.1,
+          savings: 44.7,
+        },
+        biannual: {
+          price: 761.4,
+          discount: 15,
+          monthlyEquivalent: 126.9,
+          savings: 132.6,
+        },
+        yearly: {
+          price: 1428.0,
+          discount: 20,
+          monthlyEquivalent: 119.0,
+          savings: 360.0,
+        },
+        trialDays: 30,
+      },
+    };
+  }
+}
 
 export default async function PricingPageRoute() {
   const language = await getServerLanguageStatic();
+  const pricing = await getPricing();
+
   const { translations } = await loadPageTranslationsWithCommon(language, [
     'pages/pricing',
   ]);
 
   return (
     <TranslationProvider language={language} translations={translations}>
-      <PricingPage />
+      <PricingPage pricing={pricing} />
     </TranslationProvider>
   );
 }

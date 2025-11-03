@@ -438,6 +438,12 @@ enum CouponType {
   FIXED        // Valor fixo
   FREE_TRIAL   // Trial grátis estendido
 }
+enum BillingPeriodType {
+  MONTHLY
+  QUARTERLY
+  BIANNUAL
+  YEARLY
+}
 
 
 model User {
@@ -3199,4 +3205,42 @@ model CouponUsage {
   @@unique([couponId, userId])
   @@index([userId])
   @@map("coupon_usages")
+}
+
+model PlanPricing {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Tipo de plano
+  planType PlanType // FREE, PLUS, MENTOR, MAESTRO
+  
+  // Preços por período
+  monthlyPrice    Float  @default(0)
+  quarterlyPrice  Float? // Trimestral
+  biannualPrice   Float? // Semestral
+  yearlyPrice     Float? // Anual
+  
+  // Descontos aplicados (%)
+  quarterlyDiscount Float @default(10) // 10% desconto
+  biannualDiscount  Float @default(15) // 15% desconto
+  yearlyDiscount    Float @default(20) // 20% desconto
+  
+  // Dias de trial
+  trialDays Int @default(0)
+  
+  // Status
+  isActive Boolean @default(true)
+  
+  // Metadados
+  features     Json? // Features incluídas no plano
+  description  String?
+  displayOrder Int    @default(0) // Ordem de exibição
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Constraint: apenas um preço ativo por plano
+  @@index([planType])
+  @@index([isActive])
+  @@map("plan_pricing")
 }

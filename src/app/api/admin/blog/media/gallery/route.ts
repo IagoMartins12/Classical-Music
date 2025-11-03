@@ -1,4 +1,4 @@
-// app/api/admin/blog/media/gallery/route.ts
+// app/api/blog/media/gallery/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -27,6 +27,14 @@ interface BlogMediaFile {
   folder: string;
   isTemporary: boolean;
   inGallery: boolean;
+  // 🆕 CAMPOS DE USO
+  isUsed: boolean;
+  usedIn: Array<{
+    articleId: string;
+    articleTitle: string;
+    usageType: 'cover' | 'content' | 'background-music' | 'gallery';
+  }>;
+  usageCount: number;
 }
 
 function formatFileSize(bytes: number): string {
@@ -108,6 +116,10 @@ async function scanLocalFiles(
             folder: path.dirname(relativePath).split('/').pop() || '',
             isTemporary: isTemp,
             inGallery: true,
+            // 🆕 INICIALIZAR CAMPOS DE USO
+            isUsed: false,
+            usedIn: [],
+            usageCount: 0,
           });
         }
       }
@@ -152,7 +164,148 @@ async function scanDatabaseMedia(): Promise<BlogMediaFile[]> {
     folder: 'gallery',
     isTemporary: false,
     inGallery: media.inGallery,
+    // 🆕 INICIALIZAR CAMPOS DE USO
+    isUsed: true, // Sempre usado pois está no banco
+    usedIn: [
+      {
+        articleId: media.articleId,
+        articleTitle: media.article.title,
+        usageType: 'gallery' as const,
+      },
+    ],
+    usageCount: 1,
   }));
+}
+
+// 🆕 FUNÇÃO OTIMIZADA PARA VERIFICAR USO DE IMAGENS
+async function checkImageUsage(
+  files: BlogMediaFile[]
+): Promise<BlogMediaFile[]> {
+  console.log('🔍 [USAGE-CHECK] Verificando uso de imagens...');
+
+  // Buscar APENAS os campos necessários dos artigos
+  const articles = await prisma.blogArticle.findMany({
+    select: {
+      id: true,
+      title: true,
+      coverImage: true,
+      backgroundMusicUrl: true,
+      slug: true,
+      // ✅ NÃO buscar content completo aqui
+    },
+  });
+
+  // Criar mapa de uso para cada arquivo
+  const usageMap = new Map<
+    string,
+    Array<{
+      articleId: string;
+      articleTitle: string;
+      usageType: 'cover' | 'content' | 'background-music' | 'gallery';
+      slug: string;
+    }>
+  >();
+
+  // 1️⃣ VERIFICAR COVERS (rápido - apenas string comparison)
+  console.log('📸 [USAGE-CHECK] Verificando covers...');
+  for (const article of articles) {
+    if (article.coverImage) {
+      const usage = usageMap.get(article.coverImage) || [];
+      usage.push({
+        articleId: article.id,
+        articleTitle: article.title,
+        usageType: 'cover',
+        slug: article.slug,
+      });
+      usageMap.set(article.coverImage, usage);
+    }
+  }
+
+  // 2️⃣ VERIFICAR BACKGROUND MUSIC (rápido - apenas string comparison)
+  console.log('🎵 [USAGE-CHECK] Verificando áudios de fundo...');
+  for (const article of articles) {
+    if (article.backgroundMusicUrl) {
+      const usage = usageMap.get(article.backgroundMusicUrl) || [];
+      usage.push({
+        articleId: article.id,
+        articleTitle: article.title,
+        usageType: 'background-music',
+        slug: article.slug,
+      });
+      usageMap.set(article.backgroundMusicUrl, usage);
+    }
+  }
+
+  // 3️⃣ VERIFICAR CONTENT (otimizado - busca por URL específica)
+  console.log('📝 [USAGE-CHECK] Verificando conteúdo dos artigos...');
+
+  // Buscar apenas artigos que podem ter as URLs
+  const urlsToCheck = files.map((f) => f.url);
+
+  // Buscar todos os artigos ativos (sem o content completo ainda)
+  const allArticles = await prisma.blogArticle.findMany({
+    where: {
+      status: { not: 'DRAFT' },
+    },
+    select: {
+      id: true,
+      title: true,
+      content: true, // Agora vamos buscar, mas otimizado
+      slug: true,
+    },
+  });
+
+  // Para cada URL, verificar se está no content de algum artigo
+  for (const url of urlsToCheck) {
+    try {
+      // Buscar artigos que contém essa URL
+      const articlesWithUrl = allArticles.filter((article) => {
+        // Converter content para string e buscar URL
+        const contentStr = JSON.stringify(article.content);
+        return contentStr.includes(url);
+      });
+
+      if (articlesWithUrl.length > 0) {
+        const usage = usageMap.get(url) || [];
+        for (const article of articlesWithUrl) {
+          // Verificar se já não foi adicionado como cover/background
+          const alreadyAdded = usage.some(
+            (u) => u.articleId === article.id && u.usageType === 'content'
+          );
+
+          if (!alreadyAdded) {
+            usage.push({
+              articleId: article.id,
+              slug: article.slug,
+              articleTitle: article.title,
+              usageType: 'content',
+            });
+          }
+        }
+        usageMap.set(url, usage);
+      }
+    } catch (error) {
+      console.error(`❌ Erro ao verificar URL ${url}:`, error);
+    }
+  }
+
+  // 4️⃣ APLICAR DADOS DE USO AOS ARQUIVOS
+  console.log('✅ [USAGE-CHECK] Aplicando dados de uso...');
+  return files.map((file) => {
+    const usedIn = usageMap.get(file.url) || [];
+
+    // Remover duplicatas por articleId
+    const uniqueUsage = Array.from(
+      new Map(usedIn.map((u) => [u.articleId, u])).values()
+    );
+
+    return {
+      ...file,
+      isUsed: uniqueUsage.length > 0,
+      usedIn: uniqueUsage,
+      usageCount: uniqueUsage.length,
+    };
+  });
 }
 
 export async function GET(request: NextRequest) {
@@ -184,8 +337,12 @@ export async function GET(request: NextRequest) {
       new Map(allFiles.map((f) => [f.url, f])).values()
     );
 
+    // 🆕 VERIFICAR USO DAS IMAGENS (otimizado)
+    console.log('🔍 [BLOG-MEDIA-GALLERY] Verificando uso das imagens...');
+    const filesWithUsage = await checkImageUsage(uniqueFiles);
+
     // Filtros
-    let filteredFiles = uniqueFiles;
+    let filteredFiles = filesWithUsage;
 
     if (category && category !== 'all') {
       filteredFiles = filteredFiles.filter((f) => f.category === category);
@@ -208,6 +365,10 @@ export async function GET(request: NextRequest) {
       temporarySize: filteredFiles
         .filter((f) => f.isTemporary)
         .reduce((sum, f) => sum + f.size, 0),
+      // 🆕 STATS DE USO
+      usedFiles: filteredFiles.filter((f) => f.isUsed).length,
+      unusedFiles: filteredFiles.filter((f) => !f.isUsed).length,
+      multiUseFiles: filteredFiles.filter((f) => f.usageCount > 1).length,
     };
 
     // Stats por categoria

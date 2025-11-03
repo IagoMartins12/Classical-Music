@@ -132,7 +132,35 @@ const comparisonData = [
   },
 ];
 
-export default function PricingPage() {
+type PricingProps = {
+  pricing: {
+    [key in PlanType]?: {
+      monthly: number;
+      quarterly?: {
+        price: number;
+        discount: number;
+        monthlyEquivalent: number;
+        savings: number;
+      };
+      biannual?: {
+        price: number;
+        discount: number;
+        monthlyEquivalent: number;
+        savings: number;
+      };
+      yearly?: {
+        price: number;
+        discount: number;
+        monthlyEquivalent: number;
+        savings: number;
+      };
+      trialDays?: number;
+      description?: string | null;
+    };
+  };
+};
+
+export default function PricingPage({ pricing }: PricingProps) {
   const { status } = useSession();
   const router = useRouter();
   const {
@@ -158,25 +186,33 @@ export default function PricingPage() {
 
   const currentPlan = getCurrentPlan();
 
-  // Preços dos planos
   const prices = {
     plus: {
-      monthly: PLAN_PRICES.PLUS.MONTHLY,
-      yearly: PLAN_PRICES.PLUS.YEARLY,
-      yearlyTotal: PLAN_PRICES.PLUS.YEARLY_TOTAL,
-      yearlySavings: PLAN_PRICES.PLUS.YEARLY_SAVINGS,
+      monthly: pricing.PLUS?.monthly ?? PLAN_PRICES.PLUS.MONTHLY,
+      yearly:
+        pricing.PLUS?.yearly?.monthlyEquivalent ?? PLAN_PRICES.PLUS.YEARLY,
+      yearlyTotal: pricing.PLUS?.yearly?.price ?? PLAN_PRICES.PLUS.YEARLY_TOTAL,
+      yearlySavings:
+        pricing.PLUS?.yearly?.savings ?? PLAN_PRICES.PLUS.YEARLY_SAVINGS,
     },
     mentor: {
-      monthly: PLAN_PRICES.MENTOR.MONTHLY,
-      yearly: PLAN_PRICES.MENTOR.YEARLY,
-      yearlyTotal: PLAN_PRICES.MENTOR.YEARLY_TOTAL,
-      yearlySavings: PLAN_PRICES.MENTOR.YEARLY_SAVINGS,
+      monthly: pricing.MENTOR?.monthly ?? PLAN_PRICES.MENTOR.MONTHLY,
+      yearly:
+        pricing.MENTOR?.yearly?.monthlyEquivalent ?? PLAN_PRICES.MENTOR.YEARLY,
+      yearlyTotal:
+        pricing.MENTOR?.yearly?.price ?? PLAN_PRICES.MENTOR.YEARLY_TOTAL,
+      yearlySavings:
+        pricing.MENTOR?.yearly?.savings ?? PLAN_PRICES.MENTOR.YEARLY_SAVINGS,
     },
     maestro: {
-      monthly: PLAN_PRICES.MAESTRO.MONTHLY,
-      yearly: PLAN_PRICES.MAESTRO.YEARLY,
-      yearlyTotal: PLAN_PRICES.MAESTRO.YEARLY_TOTAL,
-      yearlySavings: PLAN_PRICES.MAESTRO.YEARLY_SAVINGS,
+      monthly: pricing.MAESTRO?.monthly ?? PLAN_PRICES.MAESTRO.MONTHLY,
+      yearly:
+        pricing.MAESTRO?.yearly?.monthlyEquivalent ??
+        PLAN_PRICES.MAESTRO.YEARLY,
+      yearlyTotal:
+        pricing.MAESTRO?.yearly?.price ?? PLAN_PRICES.MAESTRO.YEARLY_TOTAL,
+      yearlySavings:
+        pricing.MAESTRO?.yearly?.savings ?? PLAN_PRICES.MAESTRO.YEARLY_SAVINGS,
     },
   };
 
@@ -414,9 +450,7 @@ export default function PricingPage() {
                   { text: 'Até 3 uploads de performance', enabled: true },
                   { text: 'Gamificação com XP', enabled: true },
                   { text: 'Recomendações inteligentes', enabled: false },
-                  { text: 'Metas semanais', enabled: false },
-                  { text: 'Relatórios personalizados', enabled: false },
-                  { text: 'Assistente IA', enabled: false },
+                  { text: 'Assistente IA de estudo', enabled: false },
                 ]}
                 buttonText="Começar Agora"
                 onSelect={() => handleSelectPlan(PlanType.FREE, false)}
@@ -432,7 +466,7 @@ export default function PricingPage() {
                     ? prices.plus.monthly
                     : prices.plus.yearly
                 }
-                period={billingPeriod === 'monthly' ? 'mês' : 'mês'}
+                period="mês"
                 yearlyTotal={
                   billingPeriod === 'yearly'
                     ? prices.plus.yearlyTotal
@@ -447,7 +481,7 @@ export default function PricingPage() {
                 iconGradient
                 badge="POPULAR"
                 highlighted
-                trialDays={7}
+                trialDays={pricing.PLUS?.trialDays ?? 7}
                 features={[
                   {
                     text: 'Uploads ilimitados de performance',
@@ -476,11 +510,6 @@ export default function PricingPage() {
                   },
                   {
                     text: 'Assistente IA de estudo',
-                    enabled: true,
-                    accent: true,
-                  },
-                  {
-                    text: 'Análises guiadas de obras',
                     enabled: true,
                     accent: true,
                   },
@@ -534,7 +563,7 @@ export default function PricingPage() {
                     ? prices.mentor.monthly
                     : prices.mentor.yearly
                 }
-                period={billingPeriod === 'monthly' ? 'mês' : 'mês'}
+                period="mês"
                 yearlyTotal={
                   billingPeriod === 'yearly'
                     ? prices.mentor.yearlyTotal
@@ -547,7 +576,7 @@ export default function PricingPage() {
                 }
                 icon={GiTeacher}
                 iconColor="from-accent-purple to-accent-blue"
-                trialDays={14}
+                trialDays={pricing.MENTOR?.trialDays ?? 14}
                 features={[
                   { text: 'Painel completo do professor', enabled: true },
                   { text: 'Até 7 alunos simultâneos', enabled: true },
@@ -558,7 +587,6 @@ export default function PricingPage() {
                   { text: 'Biblioteca de materiais', enabled: true },
                   { text: 'Vídeos nas tarefas', enabled: false },
                   { text: 'Relatórios avançados', enabled: false },
-                  { text: 'Notificações automáticas', enabled: false },
                 ]}
                 buttonText="Começar Teste de 14 Dias"
                 onSelect={() => handleSelectPlan(PlanType.MENTOR)}
@@ -575,7 +603,7 @@ export default function PricingPage() {
                     ? prices.maestro.monthly
                     : prices.maestro.yearly
                 }
-                period={billingPeriod === 'monthly' ? 'mês' : 'mês'}
+                period="mês"
                 yearlyTotal={
                   billingPeriod === 'yearly'
                     ? prices.maestro.yearlyTotal
@@ -590,7 +618,7 @@ export default function PricingPage() {
                 iconGradient
                 badge="⭐ PREMIUM"
                 highlighted
-                trialDays={30}
+                trialDays={pricing.MAESTRO?.trialDays ?? 30}
                 features={[
                   { text: 'Alunos ilimitados', enabled: true, accent: true },
                   {
@@ -619,17 +647,7 @@ export default function PricingPage() {
                     accent: true,
                   },
                   {
-                    text: 'Estatísticas detalhadas',
-                    enabled: true,
-                    accent: true,
-                  },
-                  {
                     text: 'Notificações SMS/Push/Email',
-                    enabled: true,
-                    accent: true,
-                  },
-                  {
-                    text: 'Prioridade no marketplace',
                     enabled: true,
                     accent: true,
                   },
@@ -934,11 +952,17 @@ export default function PricingPage() {
                 <p className="text-lg text-theme-secondary mt-2">
                   R${' '}
                   {selectedPlan.period === BillingPeriod.MONTHLY
-                    ? (prices as any)[
-                        selectedPlan.type.toLowerCase()
+                    ? prices[
+                        selectedPlan.type.toLowerCase() as
+                          | 'plus'
+                          | 'mentor'
+                          | 'maestro'
                       ].monthly.toFixed(2)
-                    : (prices as any)[
-                        selectedPlan.type.toLowerCase()
+                    : prices[
+                        selectedPlan.type.toLowerCase() as
+                          | 'plus'
+                          | 'mentor'
+                          | 'maestro'
                       ].yearlyTotal.toFixed(2)}
                 </p>
               )}

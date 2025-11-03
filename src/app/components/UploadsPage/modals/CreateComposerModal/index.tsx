@@ -20,6 +20,7 @@ import {
   FiDatabase,
   FiLock,
   FiPlay,
+  FiBookOpen,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -41,6 +42,8 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
+import { MdTranslate } from 'react-icons/md';
+import { GiSparkles } from 'react-icons/gi';
 
 interface DuplicateCheckState {
   loading: boolean;
@@ -222,6 +225,15 @@ const CreateComposerModal = ({
     loading: false,
     found: false,
   });
+  const [biographyTab, setBiographyTab] = useState<'pt' | 'en'>('pt');
+  const [biographies, setBiographies] = useState({
+    pt: '',
+    en: '',
+  });
+  const [isGeneratingBio, setIsGeneratingBio] = useState(false);
+  const [isTranslatingBio, setIsTranslatingBio] = useState(false);
+  const [bioMessage, setBioMessage] = useState({ type: '', text: '' });
+
   const fieldRefs = {
     name: useRef<HTMLInputElement>(null),
     fullName: useRef<HTMLInputElement>(null),
@@ -258,6 +270,150 @@ const CreateComposerModal = ({
 
   const requiredFields = ['name', 'fullName', 'epochId', 'primaryRoleId'];
   const customValidations = composerModalValidations;
+
+  // 🆕 FUNÇÃO PARA GERAR BIOGRAFIA COM IA
+  const handleGenerateBiography = async (lang: 'pt' | 'en') => {
+    if (!formData.name || !formData.fullName) {
+      toast.warning(
+        'Campos obrigatórios',
+        'Preencha pelo menos o nome e nome completo antes de gerar biografia'
+      );
+      return;
+    }
+
+    setIsGeneratingBio(true);
+    setBioMessage({ type: '', text: '' });
+
+    try {
+      const response = await fetch(
+        `/api/composer/${editingComposer?.id || 'new'}/biography/generate`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            composerName: formData.name,
+            fullName: formData.fullName,
+            birthDate: formData.birthDate,
+            deathDate: formData.deathDate,
+            epoch: formData.epochName,
+            role: roles.find((r) => r.id === formData.primaryRoleId)?.name,
+            language: lang,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        setBiographies((prev) => ({
+          ...prev,
+          [lang]: data.biography,
+        }));
+        setBioMessage({
+          type: 'success',
+          text: `Biografia em ${lang === 'pt' ? 'português' : 'inglês'} gerada com sucesso!`,
+        });
+      } else {
+        throw new Error(data.error || 'Erro ao gerar biografia');
+      }
+    } catch (error) {
+      console.error('Erro ao gerar biografia:', error);
+      setBioMessage({
+        type: 'error',
+        text:
+          error instanceof Error ? error.message : 'Erro ao gerar biografia',
+      });
+    } finally {
+      setIsGeneratingBio(false);
+    }
+  };
+
+  // 🆕 FUNÇÃO PARA TRADUZIR BIOGRAFIA
+  const handleTranslateBiography = async (
+    from: 'pt' | 'en',
+    to: 'pt' | 'en'
+  ) => {
+    if (!biographies[from]) {
+      setBioMessage({
+        type: 'error',
+        text: `Não há biografia em ${from === 'pt' ? 'português' : 'inglês'} para traduzir`,
+      });
+      return;
+    }
+
+    setIsTranslatingBio(true);
+    setBioMessage({ type: '', text: '' });
+
+    try {
+      const response = await fetch(
+        `/api/composer/${editingComposer?.id || 'new'}/biography/translate`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: biographies[from],
+            from,
+            to,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        setBiographies((prev) => ({
+          ...prev,
+          [to]: data.translatedText,
+        }));
+        setBioMessage({
+          type: 'success',
+          text: `Biografia traduzida para ${to === 'pt' ? 'português' : 'inglês'}!`,
+        });
+      } else {
+        throw new Error(data.error || 'Erro ao traduzir biografia');
+      }
+    } catch (error) {
+      console.error('Erro ao traduzir biografia:', error);
+      setBioMessage({
+        type: 'error',
+        text:
+          error instanceof Error ? error.message : 'Erro ao traduzir biografia',
+      });
+    } finally {
+      setIsTranslatingBio(false);
+    }
+  };
+
+  // 🆕 FUNÇÃO PARA CARREGAR BIOGRAFIAS DO JSON
+  const loadBiographiesFromJson = async (composerId: string) => {
+    try {
+      const response = await fetch(
+        `/api/composer/${composerId}/biography/load`
+      );
+      const data = await response.json();
+
+      if (data.success) {
+        setBiographies({
+          pt: data.biographies.pt || formData.bio || '',
+          en: data.biographies.en || '',
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao carregar biografias:', error);
+      // Fallback para o bio do banco
+      setBiographies({
+        pt: formData.bio || '',
+        en: '',
+      });
+    }
+  };
+
+  // 🆕 CARREGAR BIOGRAFIAS DO JSON QUANDO EDITAR
+  useEffect(() => {
+    if (editingComposer && isOpen) {
+      loadBiographiesFromJson(editingComposer.id);
+    }
+  }, [editingComposer, isOpen]);
 
   const originalData = useMemo(() => {
     if (!editingComposer) return null;
@@ -522,6 +678,31 @@ const CreateComposerModal = ({
     }));
   };
 
+  // 🆕 FUNÇÃO PARA SALVAR BIOGRAFIAS NO JSON
+  const saveBiographiesToJson = async (composerId: string) => {
+    try {
+      const response = await fetch(
+        `/api/composer/${composerId}/biography/save`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            composerName: formData.fullName || formData.name,
+            composerId: composerId,
+            pt: biographies.pt,
+            en: biographies.en,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        console.warn('Erro ao salvar biografias no JSON');
+      }
+    } catch (error) {
+      console.error('Erro ao salvar biografias no JSON:', error);
+    }
+  };
+
   const handleValidation = () => {
     const { isValid, errors: validationErrors } = validateForm(formData);
     setErrors(validationErrors);
@@ -584,6 +765,7 @@ const CreateComposerModal = ({
         deathDate: formatDateForSave(formData.deathDate),
         roles: formData.roles.join(', '),
         dataSource: formData.dataSource,
+        bio: biographies.pt, // 🆕 Salvar bio PT no campo principal
       };
 
       const response = await fetch(url, {
@@ -597,6 +779,10 @@ const CreateComposerModal = ({
       const data = await response.json();
 
       if (response.ok) {
+        // 🆕 SALVAR BIOGRAFIAS NO JSON
+        if (data.composerId || editingComposer?.id) {
+          await saveBiographiesToJson(data.composerId || editingComposer.id);
+        }
         router.refresh();
         onClose();
         toast.success(
@@ -1370,7 +1556,7 @@ const CreateComposerModal = ({
               </AnimatedCard>
 
               {/* Biography */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
+              {/* <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiUser className="w-5 h-5" />
                   <span>{t('modal_composer_bio_title')}</span>
@@ -1388,6 +1574,193 @@ const CreateComposerModal = ({
                       className="input-classical-2 w-full resize-none"
                       placeholder={t('modal_composer_bio_placeholder')}
                     />
+                  </div>
+                </div>
+              </AnimatedCard> */}
+
+              {/* 🆕 NOVO CARD: Biography Management */}
+              <AnimatedCard className="classical-card-simple p-4" hover="none">
+                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                  <FiBookOpen className="w-5 h-5" />
+                  <span>{t('modal_composer_bio_title')}</span>
+                </h3>
+
+                {/* Tabs PT/EN */}
+                <div className="flex border-b border-theme-secondary mb-4">
+                  <button
+                    type="button"
+                    onClick={() => setBiographyTab('pt')}
+                    className={`flex-1 px-4 py-3 font-semibold transition-all ${
+                      biographyTab === 'pt'
+                        ? 'border-b-2 border-brand-primary text-brand-primary'
+                        : 'text-theme-tertiary hover:text-theme-primary'
+                    }`}
+                  >
+                    🇧🇷 Português
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBiographyTab('en')}
+                    className={`flex-1 px-4 py-3 font-semibold transition-all ${
+                      biographyTab === 'en'
+                        ? 'border-b-2 border-brand-primary text-brand-primary'
+                        : 'text-theme-tertiary hover:text-theme-primary'
+                    }`}
+                  >
+                    🇺🇸 English
+                  </button>
+                </div>
+
+                {/* Message Alert */}
+                {bioMessage.text && (
+                  <div
+                    className={`mb-4 p-3 rounded-xl flex items-center space-x-2 ${
+                      bioMessage.type === 'success'
+                        ? 'bg-accent-green/10 border border-accent-green/30 text-accent-green'
+                        : 'bg-accent-red/10 border border-accent-red/30 text-accent-red'
+                    }`}
+                  >
+                    {bioMessage.type === 'success' ? (
+                      <FiCheck className="w-4 h-4 flex-shrink-0" />
+                    ) : (
+                      <FiAlertCircle className="w-4 h-4 flex-shrink-0" />
+                    )}
+                    <span className="text-sm font-medium">
+                      {bioMessage.text}
+                    </span>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-3 mb-4">
+                  <button
+                    type="button"
+                    onClick={() => handleGenerateBiography(biographyTab)}
+                    disabled={isGeneratingBio}
+                    className="btn-classical-primary flex items-center space-x-2"
+                  >
+                    {isGeneratingBio ? (
+                      <FiLoader className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <GiSparkles className="w-4 h-4" />
+                    )}
+                    <span>Gerar com IA</span>
+                  </button>
+
+                  {biographyTab === 'pt' ? (
+                    <button
+                      type="button"
+                      onClick={() => handleTranslateBiography('pt', 'en')}
+                      disabled={isTranslatingBio || !biographies.pt}
+                      className="btn-classical-secondary flex items-center space-x-2"
+                    >
+                      {isTranslatingBio ? (
+                        <FiLoader className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <MdTranslate className="w-4 h-4" />
+                      )}
+                      <span>Traduzir para Inglês</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleTranslateBiography('en', 'pt')}
+                      disabled={isTranslatingBio || !biographies.en}
+                      className="btn-classical-secondary flex items-center space-x-2"
+                    >
+                      {isTranslatingBio ? (
+                        <FiLoader className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <MdTranslate className="w-4 h-4" />
+                      )}
+                      <span>Traduzir para Português</span>
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBiographies((prev) => ({
+                        ...prev,
+                        [biographyTab]: '',
+                      }));
+                      setBioMessage({ type: '', text: '' });
+                    }}
+                    disabled={!biographies[biographyTab]}
+                    className="px-4 py-2 bg-theme-elevated text-theme-tertiary rounded-lg font-medium hover:bg-interactive-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Limpar
+                  </button>
+                </div>
+
+                {/* Text Editor */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-sm font-medium text-theme-tertiary">
+                      {biographyTab === 'pt'
+                        ? 'Biografia em Português'
+                        : 'Biography in English'}
+                    </label>
+                    <span className="text-xs text-theme-tertiary">
+                      {biographies[biographyTab]?.length || 0} caracteres
+                    </span>
+                  </div>
+
+                  <textarea
+                    value={biographies[biographyTab]}
+                    onChange={(e) => {
+                      setBiographies((prev) => ({
+                        ...prev,
+                        [biographyTab]: e.target.value,
+                      }));
+                      setBioMessage({ type: '', text: '' });
+                    }}
+                    rows={10}
+                    className="input-classical-2 w-full resize-none font-mono text-sm"
+                    placeholder={
+                      biographyTab === 'pt'
+                        ? 'Digite a biografia em português ou clique em "Gerar com IA"...'
+                        : 'Type the biography in English or click "Generate with AI"...'
+                    }
+                  />
+                </div>
+
+                {/* Status Cards */}
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div className="p-3 bg-theme-elevated rounded-lg border border-theme-secondary">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xl">🇧🇷</span>
+                        <div>
+                          <p className="text-xs text-theme-tertiary">
+                            Português
+                          </p>
+                          <p className="text-sm font-semibold text-theme-primary">
+                            {biographies.pt ? 'Preenchida' : 'Vazia'}
+                          </p>
+                        </div>
+                      </div>
+                      {biographies.pt && (
+                        <FiCheck className="w-5 h-5 text-accent-green" />
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-theme-elevated rounded-lg border border-theme-secondary">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xl">🇺🇸</span>
+                        <div>
+                          <p className="text-xs text-theme-tertiary">English</p>
+                          <p className="text-sm font-semibold text-theme-primary">
+                            {biographies.en ? 'Filled' : 'Empty'}
+                          </p>
+                        </div>
+                      </div>
+                      {biographies.en && (
+                        <FiCheck className="w-5 h-5 text-accent-green" />
+                      )}
+                    </div>
                   </div>
                 </div>
               </AnimatedCard>

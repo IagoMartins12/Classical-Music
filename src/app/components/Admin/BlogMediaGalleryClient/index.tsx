@@ -13,9 +13,14 @@ import {
   FiAlertTriangle,
   FiHardDrive,
   FiClock,
+  FiInfo,
   FiEye,
   FiGrid,
   FiFileText,
+  FiCheck,
+  FiX,
+  FiLayers,
+  FiExternalLink,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -26,6 +31,7 @@ import {
 import {
   useBlogMediaGallery,
   MediaCategory,
+  BlogMediaFile,
 } from '@/app/hooks/admin/useBlogMediaGallery';
 import Button from '@/app/components/Common/Button';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
@@ -91,11 +97,15 @@ export default function BlogMediaGalleryClient() {
     getCategoryStats,
     getFormattedSelectedSize,
     getCategoryDisplayName,
+    getUsageTypeLabel, // 🆕
   } = useBlogMediaGallery();
 
   const [activeTab, setActiveTab] = useState<MediaCategory>('all');
   const [showPreview, setShowPreview] = useState<string | null>(null);
+  const [showUsageDetails, setShowUsageDetails] =
+    useState<BlogMediaFile | null>(null); // 🆕
 
+  console.log('showUsageDetails', showUsageDetails);
   // Auto-load na primeira montagem
   useEffect(() => {
     loadGallery({ includeTemp: true });
@@ -120,7 +130,7 @@ export default function BlogMediaGalleryClient() {
   };
 
   const filteredFiles = getFilteredFiles();
-  const categoryStats: any = getCategoryStats();
+  const categoryStats = getCategoryStats();
 
   const getFileIcon = (type: string) => {
     switch (type) {
@@ -262,7 +272,7 @@ export default function BlogMediaGalleryClient() {
           {/* Stats */}
           {galleryResult && (
             <AnimatedItem direction="up" springType="gentle">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 lg:gap-6">
                 <MetricCard
                   title={`Arquivos ${activeTab === 'all' ? 'Total' : 'na Seleção'}`}
                   value={filteredFiles.length.toLocaleString()}
@@ -301,6 +311,28 @@ export default function BlogMediaGalleryClient() {
                   }}
                   icon={FiClock}
                   color="#F59E0B"
+                />
+
+                <MetricCard
+                  title="Não Usados"
+                  value={galleryResult.stats.unusedFiles.toLocaleString()}
+                  change={{
+                    value: `${galleryResult.stats.usedFiles} em uso`,
+                    isPositive: true,
+                  }}
+                  icon={FiX}
+                  color="#EF4444"
+                />
+
+                <MetricCard
+                  title="Múltiplo Uso"
+                  value={galleryResult.stats.multiUseFiles.toLocaleString()}
+                  change={{
+                    value: 'Usados em 2+ artigos',
+                    isPositive: true,
+                  }}
+                  icon={FiLayers}
+                  color="#8B5CF6"
                 />
               </div>
             </AnimatedItem>
@@ -419,18 +451,30 @@ export default function BlogMediaGalleryClient() {
                               <span className="text-xs text-theme-tertiary">
                                 {file.formattedSize}
                               </span>
-                              {file.isTemporary && (
-                                <span className="text-xs px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800">
-                                  Temp
-                                </span>
-                              )}
+                              <div className="flex items-center space-x-1">
+                                {file.isTemporary && (
+                                  <span className="text-xs px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800">
+                                    Temp
+                                  </span>
+                                )}
+                                {file.isUsed ? (
+                                  <span className="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-800 flex items-center space-x-1">
+                                    <FiCheck className="w-3 h-3" />
+                                    <span>{file.usageCount}</span>
+                                  </span>
+                                ) : (
+                                  <span className="text-xs px-1.5 py-0.5 rounded bg-red-100 text-red-800">
+                                    Não usado
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
 
                           {/* Actions Overlay */}
                           <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-2">
                             <Button
-                              variant="ghost"
+                              variant="outline"
                               size="sm"
                               leftIcon={<FiEye />}
                               onClick={(e) => {
@@ -440,6 +484,19 @@ export default function BlogMediaGalleryClient() {
                             >
                               Ver
                             </Button>
+                            {file.usageCount > 0 && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                leftIcon={<FiInfo />}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setShowUsageDetails(file);
+                                }}
+                              >
+                                Uso
+                              </Button>
+                            )}
                           </div>
                         </div>
                       );
@@ -466,6 +523,103 @@ export default function BlogMediaGalleryClient() {
               height={800}
               className="w-full h-auto rounded-lg"
             />
+          </div>
+        </div>
+      )}
+
+      {/* Usage Details Modal */}
+      {showUsageDetails && (
+        <div
+          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowUsageDetails(null)}
+        >
+          <div
+            className="classical-card max-w-2xl w-full max-h-[80vh] overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6">
+              {/* Header */}
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-theme-primary mb-2">
+                    Uso do Arquivo
+                  </h3>
+                  <p className="text-sm text-theme-secondary break-all">
+                    {showUsageDetails.url}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowUsageDetails(null)}
+                  className="p-2 hover:bg-theme-secondary rounded-lg transition-colors"
+                >
+                  <FiX className="w-5 h-5 text-theme-tertiary" />
+                </button>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="text-center p-4 bg-theme-secondary rounded-lg">
+                  <p className="text-2xl font-bold text-brand-primary">
+                    {showUsageDetails.usageCount}
+                  </p>
+                  <p className="text-xs text-theme-tertiary mt-1">
+                    Artigos usando
+                  </p>
+                </div>
+                <div className="text-center p-4 bg-theme-secondary rounded-lg">
+                  <p className="text-2xl font-bold text-green-600">
+                    {showUsageDetails.formattedSize}
+                  </p>
+                  <p className="text-xs text-theme-tertiary mt-1">Tamanho</p>
+                </div>
+                <div className="text-center p-4 bg-theme-secondary rounded-lg">
+                  <p className="text-2xl font-bold text-purple-600">
+                    {showUsageDetails.type}
+                  </p>
+                  <p className="text-xs text-theme-tertiary mt-1">Tipo</p>
+                </div>
+              </div>
+
+              {/* Usage List */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-theme-primary">
+                  Usado em {showUsageDetails.usageCount} artigo
+                  {showUsageDetails.usageCount !== 1 ? 's' : ''}:
+                </h4>
+
+                {showUsageDetails.usedIn.map((usage, index) => (
+                  <div
+                    key={`${usage.articleId}-${index}`}
+                    className="p-4 bg-theme-secondary rounded-lg hover:bg-theme-primary transition-colors"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <p className="font-medium text-theme-primary mb-1">
+                          {usage.articleTitle}
+                        </p>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs px-2 py-1 rounded bg-brand-primary/10 text-brand-primary">
+                            {getUsageTypeLabel(usage.usageType)}
+                          </span>
+                          <span className="text-xs text-theme-tertiary">
+                            ID: {usage.articleId.slice(0, 8)}...
+                          </span>
+                        </div>
+                      </div>
+                      <a
+                        href={`/blog/${usage.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 hover:bg-theme-tertiary rounded-lg transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <FiExternalLink className="w-4 h-4 text-brand-primary" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}
