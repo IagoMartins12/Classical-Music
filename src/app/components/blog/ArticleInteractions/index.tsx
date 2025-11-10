@@ -8,7 +8,6 @@ import {
   FaBookmark,
   FaRegBookmark,
   FaShareAlt,
-  FaBullseye,
 } from 'react-icons/fa';
 import { BiComment } from 'react-icons/bi';
 import { FiShare2 } from 'react-icons/fi';
@@ -18,13 +17,13 @@ import { useIsMobile } from '@/app/hooks/useMobile';
 interface ArticleInteractionsProps {
   articleId: string;
   onOpenShareModal?: () => void;
-  onOpenFocusMode: () => void;
+  // onOpenFocusMode: () => void;
 }
 
 export function ArticleInteractions({
   articleId,
   onOpenShareModal,
-  onOpenFocusMode,
+  // onOpenFocusMode,
 }: ArticleInteractionsProps) {
   const { data: session } = useSession();
   const [isLiked, setIsLiked] = useState(false);
@@ -166,13 +165,13 @@ export function ArticleInteractions({
               <span className="text-xs">Compartilhar</span>
             </button>
 
-            <button
+            {/* <button
               onClick={onOpenFocusMode}
               className="flex flex-col items-center space-y-1 text-theme-secondary"
             >
               <FaBullseye className="w-5 h-5" />
               <span className="text-xs">Foco</span>
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

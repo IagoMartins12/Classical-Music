@@ -157,14 +157,6 @@ async function concatenateAudioFiles(audioBuffers: Buffer[]): Promise<Buffer> {
 export async function POST(request: NextRequest) {
   try {
     // ✅ VALIDAR AUTENTICAÇÃO
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Não autorizado' },
-        { status: 401 }
-      );
-    }
 
     // ✅ OBTER DADOS
     const { text, articleId, voiceName, speakingRate, regenerate } =

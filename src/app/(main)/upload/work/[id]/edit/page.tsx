@@ -1,5 +1,5 @@
 // app/uploads/work/[id]/edit/page.tsx - Editar obra específica
-import EditWorkClient from '@/app/(main)/uploads/work/[id]/edit/pageClient';
+import EditWorkClient from '@/app/(main)/upload/work/[id]/edit/pageClient';
 import { TranslationProvider } from '@/app/context/TranslationContext';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';

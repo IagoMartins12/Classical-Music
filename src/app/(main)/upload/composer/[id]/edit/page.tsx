@@ -4,7 +4,7 @@ import { authOptions } from '@/app/libs/auth';
 import { notFound, redirect } from 'next/navigation';
 import prisma from '@/app/libs/prismadb';
 import { getComposerFormData } from '@/app/requests/upload';
-import EditComposerClient from '@/app/(main)/uploads/composer/[id]/edit/pageClient';
+import EditComposerClient from '@/app/(main)/upload/composer/[id]/edit/pageClient';
 import { getComposerById } from '@/app/requests/composer-details';
 import {
   getServerLanguageStatic,

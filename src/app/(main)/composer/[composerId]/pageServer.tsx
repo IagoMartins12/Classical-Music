@@ -13,6 +13,7 @@ import {
   loadPageTranslationsWithCommon,
 } from '@/app/utils/translations/serverTranslations';
 import { TranslationProvider } from '@/app/context/TranslationContext';
+import { getComposerArticles } from '@/app/requests/blog/blog-requests';
 
 interface ComposerDetailsServerProps {
   composerId: string;
@@ -29,11 +30,13 @@ export default async function ComposerDetailsServer({
 
   try {
     // OTIMIZAÇÃO: Carregar dados do compositor, obras iniciais e opções de filtro em paralelo
-    const [composer, initialWorksData, filterOptions] = await Promise.all([
-      getComposerById(composerId),
-      getComposerWorksWithFilters(composerId, 1, 50), // Primeira página com 50 obras
-      getComposerFilterOptions(composerId),
-    ]);
+    const [composer, initialWorksData, filterOptions, composerArticles] =
+      await Promise.all([
+        getComposerById(composerId),
+        getComposerWorksWithFilters(composerId, 1, 50), // Primeira página com 50 obras
+        getComposerFilterOptions(composerId),
+        getComposerArticles(composerId, 5), // 🆕 Buscar últimos 5 artigos
+      ]);
 
     if (!composer) {
       notFound();
@@ -46,6 +49,7 @@ export default async function ComposerDetailsServer({
           composer={composer}
           initialWorksData={initialWorksData}
           filterOptions={filterOptions}
+          composerArticles={composerArticles} // 🆕
           isAdmin={isAdmin}
         />
       </TranslationProvider>

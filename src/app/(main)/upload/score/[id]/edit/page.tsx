@@ -1,5 +1,5 @@
 // app/uploads/score/[id]/page.tsx - Editar partitura específica
-import EditScoreClient from '@/app/(main)/uploads/score/[id]/edit/pageClient';
+import EditScoreClient from '@/app/(main)/upload/score/[id]/edit/pageClient';
 import { TranslationProvider } from '@/app/context/TranslationContext';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';

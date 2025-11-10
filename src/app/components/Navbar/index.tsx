@@ -557,11 +557,11 @@ const Navbar: React.FC = () => {
                     </Link>
 
                     <Link
-                      href="/uploads"
+                      href="/upload"
                       className={`
                         flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                         ${
-                          pathname === '/uploads'
+                          pathname === '/upload'
                             ? 'text-brand-primary bg-interactive-active'
                             : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
                         }
@@ -990,11 +990,11 @@ const Navbar: React.FC = () => {
 
                       <li>
                         <Link
-                          href="/uploads"
+                          href="/upload"
                           className={`
                             flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                             ${
-                              pathname === '/uploads'
+                              pathname === '/upload'
                                 ? 'text-brand-primary bg-interactive-active'
                                 : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
                             }

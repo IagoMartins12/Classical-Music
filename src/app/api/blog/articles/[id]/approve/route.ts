@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 import { authOptions } from '@/app/libs/auth';
+import { invalidateBlogCache } from '@/app/requests/blog/cached-blog-function';
 
 export async function POST(
   request: NextRequest,
@@ -51,6 +52,7 @@ export async function POST(
     revalidateTag('blog-home');
     revalidateTag(`blog-article-${id}`);
     revalidateTag(`blog-article-${article.slug}`);
+    await invalidateBlogCache();
 
     const baseUrl =
       process.env.NEXT_PUBLIC_SITE_URL ||

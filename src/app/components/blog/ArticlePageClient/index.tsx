@@ -4,14 +4,11 @@
 import { useState } from 'react';
 import { ArticleContent } from '../ArticleContent';
 import { ReadingControls } from '../ReadingControls';
-import { RelatedEntities } from '../RelatedEntities';
 import { ArticleInteractions } from '../ArticleInteractions';
 import { ProgressBar } from '../ProgressBar';
 import { CommentSection } from '../CommentSection';
 import Link from 'next/link';
-
 import { AudioAutoplay } from '../AudioAutoplay';
-import { FocusModeModal } from '../FocusModeModal';
 import { ShareModalBlog } from '../ShareModalBlog';
 import { TextToSpeechGoogle } from '../TextToSpeechGoogle';
 
@@ -22,6 +19,7 @@ interface ArticlePageClientProps {
     slug: string;
     content: any;
     composerIds: string[];
+    ttsAudioUrl?: string | null;
     workIds: string[];
     scoreIds: string[];
     _count: {
@@ -41,6 +39,8 @@ interface ArticlePageClientProps {
   backgroundMusicUrl: string;
   backgroundMusicTitle: string;
   backgroundAudioType: 'upload' | 'youtube' | null;
+  isPreview?: boolean;
+  isAdmin?: boolean;
 }
 
 export function ArticlePageClient({
@@ -49,9 +49,11 @@ export function ArticlePageClient({
   backgroundMusicUrl,
   backgroundMusicTitle,
   backgroundAudioType,
+  isPreview,
+  isAdmin,
 }: ArticlePageClientProps) {
   const [showShareModal, setShowShareModal] = useState(false);
-  const [showFocusMode, setShowFocusMode] = useState(false);
+  // const [showFocusMode, setShowFocusMode] = useState(false);
 
   const articleUrl =
     typeof window !== 'undefined'
@@ -77,7 +79,7 @@ export function ArticlePageClient({
             <div className="hidden lg:block lg:col-span-2">
               <ReadingControls
                 onOpenShareModal={() => setShowShareModal(true)}
-                onOpenFocusMode={() => setShowFocusMode(true)}
+                // onOpenFocusMode={() => setShowFocusMode(true)}
               />
             </div>
 
@@ -91,27 +93,30 @@ export function ArticlePageClient({
               <TextToSpeechGoogle
                 content={article.content}
                 articleId={article.id}
+                existingAudioUrl={article.ttsAudioUrl}
+                isAdmin={isAdmin}
               />
               {/* <VoiceTester /> */}
               {/* Related Entities */}
-              {(article.composerIds.length > 0 ||
+              {/* {(article.composerIds.length > 0 ||
                 article.workIds.length > 0 ||
-                article.scoreIds.length > 0) && (
-                <div className="mt-12">
-                  <RelatedEntities
-                    composerIds={article.composerIds}
-                    workIds={article.workIds}
-                    scoreIds={article.scoreIds}
-                  />
-                </div>
-              )}
+                article.scoreIds.length > 0) &&
+                !isPreview && (
+                  <div className="mt-12">
+                    <RelatedEntities
+                      composerIds={article.composerIds}
+                      workIds={article.workIds}
+                      scoreIds={article.scoreIds}
+                    />
+                  </div>
+                )} */}
 
               {/* Interactions */}
               <div className="mt-12">
                 <ArticleInteractions
                   articleId={article.id}
                   onOpenShareModal={() => setShowShareModal(true)}
-                  onOpenFocusMode={() => setShowFocusMode(true)}
+                  // onOpenFocusMode={() => setShowFocusMode(true)}
                 />
               </div>
 
@@ -138,12 +143,14 @@ export function ArticlePageClient({
               </div>
 
               {/* Comments */}
-              <div className="mt-12" id="comments-section">
-                <CommentSection
-                  articleId={article.id}
-                  commentCount={article._count.comments}
-                />
-              </div>
+              {isPreview && (
+                <div className="mt-12" id="comments-section">
+                  <CommentSection
+                    articleId={article.id}
+                    commentCount={article._count.comments}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Right Sidebar - Progress Bar (Fixed) */}
@@ -154,14 +161,16 @@ export function ArticlePageClient({
         </div>
       </div>
 
+      {isPreview && (
+        <div className="lg:hidden">
+          <ReadingControls
+            isMobile
+            onOpenShareModal={() => setShowShareModal(true)}
+            // onOpenFocusMode={() => setShowFocusMode(true)}
+          />
+        </div>
+      )}
       {/* Mobile Reading Controls */}
-      <div className="lg:hidden">
-        <ReadingControls
-          isMobile
-          onOpenShareModal={() => setShowShareModal(true)}
-          onOpenFocusMode={() => setShowFocusMode(true)}
-        />
-      </div>
 
       {/* ✅ MODAL DE COMPARTILHAMENTO */}
       <ShareModalBlog
@@ -172,12 +181,12 @@ export function ArticlePageClient({
       />
 
       {/* ✅ MODAL DE MODO FOCO */}
-      <FocusModeModal
+      {/* <FocusModeModal
         isOpen={showFocusMode}
         onClose={() => setShowFocusMode(false)}
         content={article.content}
         title={article.title}
-      />
+      /> */}
     </>
   );
 }

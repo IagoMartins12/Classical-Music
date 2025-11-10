@@ -1,15 +1,20 @@
-// app/blog/page.tsx (atualizado - apenas a seção de categorias)
+// app/blog/page.tsx
 import Link from 'next/link';
 import Image from 'next/image';
-import prisma from '@/app/libs/prismadb';
 import { BsClock } from 'react-icons/bs';
 import { BiTrendingUp } from 'react-icons/bi';
 import { HeroCarousel } from '@/app/components/blog/HeroCarousel';
 import { ArticleCard } from '@/app/components/blog/ArticleCard';
 import SectionTitle from '../components/Utils/SectionTitle';
 import { FiTrendingUp, FiGrid, FiArrowRight } from 'react-icons/fi';
+import {
+  getCachedFeaturedArticles,
+  getCachedLatestArticles,
+  getCachedMostReadArticles,
+  getCachedCategories,
+} from '@/app/requests/blog/cached-blog-function';
 
-// Revalidar a cada 5 minutos
+// ✅ Revalidação de 5 minutos (fallback para ISR do Next.js)
 export const revalidate = 300;
 
 export const metadata = {
@@ -18,155 +23,44 @@ export const metadata = {
     'Explore artigos, análises e histórias sobre música clássica, compositores e obras imortais',
 };
 
-async function getFeaturedArticles() {
-  return await prisma.blogArticle.findMany({
-    where: {
-      status: 'PUBLISHED',
-      publishedAt: { lte: new Date() },
-      isFeatured: true,
-    },
-    include: {
-      author: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          image: true,
-        },
-      },
-      categories: {
-        include: {
-          category: true,
-        },
-      },
-      _count: {
-        select: {
-          comments: { where: { status: 'APPROVED' } },
-          likes: true,
-        },
-      },
-    },
-    orderBy: { featuredOrder: 'asc' },
-    take: 6,
-  });
-}
-
-async function getLatestArticles() {
-  return await prisma.blogArticle.findMany({
-    where: {
-      status: 'PUBLISHED',
-      publishedAt: { lte: new Date() },
-    },
-    include: {
-      author: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          image: true,
-        },
-      },
-      categories: {
-        include: {
-          category: true,
-        },
-      },
-      _count: {
-        select: {
-          comments: { where: { status: 'APPROVED' } },
-          likes: true,
-        },
-      },
-    },
-    orderBy: { publishedAt: 'desc' },
-    take: 9,
-  });
-}
-
-async function getMostReadArticles() {
-  return await prisma.blogArticle.findMany({
-    where: {
-      status: 'PUBLISHED',
-      publishedAt: { lte: new Date() },
-    },
-    include: {
-      author: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          image: true,
-        },
-      },
-      categories: {
-        include: {
-          category: true,
-        },
-      },
-    },
-    orderBy: { viewCount: 'desc' },
-    take: 5,
-  });
-}
-
-async function getCategories() {
-  return await prisma.blogCategory.findMany({
-    where: { isActive: true },
-    include: {
-      _count: {
-        select: {
-          articles: {
-            where: {
-              article: {
-                status: 'PUBLISHED',
-                publishedAt: { lte: new Date() },
-              },
-            },
-          },
-        },
-      },
-    },
-    orderBy: { order: 'asc' },
-    take: 8,
-  });
-}
-
 export default async function BlogHomePage() {
-  const [featuredArticles, latestArticles, mostReadArticles, categories] =
-    await Promise.all([
-      getFeaturedArticles(),
-      getLatestArticles(),
-      getMostReadArticles(),
-      getCategories(),
-    ]);
+  console.log('📰 Loading Blog Home Page...');
+
+  // ✅ Buscar dados em paralelo com cache condicional (dev vs prod)
+  const [
+    featuredArticles,
+    latestArticles,
+    mostReadArticles,
+    categories,
+    // trendingTopics,
+  ] = await Promise.all([
+    getCachedFeaturedArticles(),
+    getCachedLatestArticles(),
+    getCachedMostReadArticles(),
+    getCachedCategories(),
+    // getCachedTrendingTopics(),
+  ]);
+
+  console.log('✅ Blog data loaded successfully');
 
   return (
     <div>
       {/* Hero Carousel */}
-      {
-        <section className="section-wrap pt-8">
-          <HeroCarousel articles={featuredArticles} />
-        </section>
-      }
+      <section className="section-wrap pt-8">
+        <HeroCarousel articles={featuredArticles} />
+      </section>
 
-      {/* <section className="section-wrap flex  gap-6 pt-8">
-        <div className="w-8/12">
-          <HeroCarousel articles={featuredArticles} />
-        </div>
-
-        <div className="flex flex-col w-4/12 gap-4">
-          {latestArticles.map((article) => (
-            <ArticleCardList key={article.id} article={article} />
-          ))}
-        </div>
+      {/* Quote Inspiradora */}
+      {/* <section className="section-wrap">
+        <ComposerQuote />
       </section> */}
 
       {/* Latest Articles */}
       <section className="section-wrap">
         <SectionTitle
-          title={'Últimos Artigos'}
-          subtitle={'Descubra as novidades do mundo da música clássica'}
-          linkText={'Ver todos'}
+          title="Últimos Artigos"
+          subtitle="Descubra as novidades do mundo da música clássica"
+          linkText="Ver todos"
           linkHref="/blog/articles"
           icon={<FiTrendingUp className="w-6 h-6" />}
           accent="gold"
@@ -178,12 +72,17 @@ export default async function BlogHomePage() {
         </div>
       </section>
 
-      {/* ===== SEÇÃO DE CATEGORIAS MODERNIZADA ===== */}
+      {/* Tópicos em Alta */}
+      {/* <section className="section-wrap">
+        <TrendingTopics topics={trendingTopics} />
+      </section> */}
+
+      {/* Seção de Categorias */}
       <section className="section-wrap">
         <SectionTitle
-          title={'Explore por Categoria'}
-          subtitle={'Navegue pelos temas que mais te interessam'}
-          linkText={'Ver todas'}
+          title="Explore por Categoria"
+          subtitle="Navegue pelos temas que mais te interessam"
+          linkText="Ver todas"
           linkHref="/blog/category"
           icon={<FiGrid className="w-6 h-6" />}
           accent="gold"
@@ -220,27 +119,6 @@ export default async function BlogHomePage() {
                     {category.icon || '📚'}
                   </div>
                 )}
-
-                {/* Icon Badge */}
-                {/* <div className="absolute top-4 left-4">
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-lg backdrop-blur-sm"
-                    style={{
-                      background: category.color
-                        ? `${category.color}60`
-                        : 'rgba(212, 175, 55, 0.6)',
-                      border: `2px solid ${category.color || '#d4af37'}`,
-                    }}
-                  >
-                    {category.icon || '📚'}
-                  </div>
-                </div>
-
-                <div className="absolute top-4 right-4">
-                  <div className="px-3 py-1 rounded-lg bg-white/90 backdrop-blur-sm text-xs font-bold text-gray-900">
-                    {category._count.articles}
-                  </div>
-                </div> */}
               </div>
 
               {/* Content */}

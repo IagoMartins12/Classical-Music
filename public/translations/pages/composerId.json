@@ -75,7 +75,13 @@
     "epochs_modernismo": "Modernismo",
     "epochs_moderno": "Moderno",
     "epochs_contemporaneo": "Contemporâneo",
-    "epochs_desconhecido": "Desconhecido"
+    "epochs_desconhecido": "Desconhecido",
+    "articles_about_composer_title": "Últimos Artigos",
+    "articles_subtitle": "Análises e artigos sobre",
+    "article": "artigo",
+    "articles": "artigos",
+    "see_more_articles_about_composer": "Ver mais artigos sobre este compositor",
+    "see_more_articles_blog": "Ver mais artigos no nosso blog"
   },
   "en": {
     "breadcrumb_composers": "Composers",
@@ -153,6 +159,12 @@
     "epochs_modernismo": "Modernism",
     "epochs_moderno": "Modern",
     "epochs_contemporaneo": "Contemporary",
-    "epochs_desconhecido": "Unknown"
+    "epochs_desconhecido": "Unknown",
+    "articles_about_composer_title": "Latest Articles",
+    "articles_subtitle": "Reviews and articles about",
+    "article": "article",
+    "articles": "articles",
+    "see_more_articles_about_composer": "See more articles about this composer",
+    "see_more_articles_blog": "See more articles on our blog"
   }
 }

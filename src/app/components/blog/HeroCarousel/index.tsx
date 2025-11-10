@@ -28,18 +28,25 @@ interface Article {
 }
 
 export function HeroCarousel({ articles }: { articles: Article[] }) {
+  // ✅ USAR MONTAGEM CONTROLADA PARA EVITAR HIDRATAÇÃO
+  const [mounted, setMounted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
+  // ✅ GARANTIR QUE ESTÁ MONTADO NO CLIENTE
   useEffect(() => {
-    if (!isAutoPlaying || articles.length <= 1) return;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || !isAutoPlaying || articles.length <= 1) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % articles.length);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying, articles.length]);
+  }, [mounted, isAutoPlaying, articles.length]);
 
   const goToPrevious = () => {
     setIsAutoPlaying(false);
@@ -55,6 +62,15 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
     setIsAutoPlaying(false);
     setCurrentIndex(index);
   };
+
+  // ✅ RENDERIZAR VERSÃO ESTÁTICA ATÉ MONTAR
+  if (!mounted) {
+    return (
+      <div className="relative rounded-2xl overflow-hidden shadow-theme-large h-[500px] md:h-[600px] bg-theme-elevated animate-pulse">
+        <div className="absolute inset-0 bg-gradient-hero" />
+      </div>
+    );
+  }
 
   if (articles.length === 0) {
     return (
@@ -72,7 +88,6 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
   }`.trim();
 
   return (
-    // <div className="relative rounded-2xl overflow-hidden shadow-theme-large">
     <div className="relative rounded-2xl overflow-hidden shadow-theme-large h-full">
       {/* Main Slide */}
       <div className="relative h-[500px] md:h-[600px]">

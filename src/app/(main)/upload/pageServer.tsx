@@ -1,11 +1,11 @@
 // app/uploads/pageServer.tsx - OTIMIZADO PARA PERFORMANCE
-import UploadsClient from '@/app/(main)/uploads/pageClient';
 import { TranslationProvider } from '@/app/context/TranslationContext';
 import { getEpochsCache, getUserUploads } from '@/app/requests/upload';
 import {
   getServerLanguageStatic,
   loadPageTranslationsWithCommon,
 } from '@/app/utils/translations/serverTranslations';
+import UploadsClient from './pageClient';
 
 const ITEMS_PER_PAGE = 24;
 

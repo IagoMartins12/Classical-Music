@@ -1,7 +1,7 @@
-// components/blog/TextToSpeechGoogle.tsx - UX NATURAL E AUTOMÁTICA
+// components/blog/TextToSpeechGoogle.tsx - OTIMIZADO SEM RE-RENDERS
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   FiVolume2,
   FiPause,
@@ -15,12 +15,14 @@ interface TextToSpeechGoogleProps {
   content: any; // TipTap JSON
   articleId: string;
   existingAudioUrl?: string | null;
+  isAdmin?: boolean;
 }
 
 export function TextToSpeechGoogle({
   content,
   articleId,
   existingAudioUrl,
+  isAdmin,
 }: TextToSpeechGoogleProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(
@@ -34,58 +36,10 @@ export function TextToSpeechGoogle({
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitializedRef = useRef(false);
 
-  // ✅ CARREGAR ÁUDIO EXISTENTE
-  useEffect(() => {
-    if (existingAudioUrl) {
-      setAudioUrl(existingAudioUrl);
-    }
-  }, [existingAudioUrl]);
-
-  // ✅ CONFIGURAR ÁUDIO QUANDO URL MUDAR
-  useEffect(() => {
-    if (audioUrl && !audioRef.current) {
-      const audio = new Audio(audioUrl);
-      audio.volume = volume;
-
-      audio.onloadedmetadata = () => {
-        setDuration(audio.duration);
-      };
-
-      audio.onended = () => {
-        setIsPlaying(false);
-        setIsPaused(false);
-        setCurrentTime(0);
-        if (progressIntervalRef.current) {
-          clearInterval(progressIntervalRef.current);
-        }
-      };
-
-      audioRef.current = audio;
-    }
-  }, [audioUrl, volume]);
-
-  // ✅ ATUALIZAR PROGRESSO
-  useEffect(() => {
-    if (isPlaying && audioRef.current) {
-      progressIntervalRef.current = setInterval(() => {
-        setCurrentTime(audioRef.current?.currentTime || 0);
-      }, 100);
-    } else {
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-      }
-    }
-
-    return () => {
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-      }
-    };
-  }, [isPlaying]);
-
-  // ✅ EXTRAIR TEXTO DO CONTEÚDO
-  const extractText = (json: any): string => {
+  // ✅ EXTRAIR TEXTO DO CONTEÚDO (memoizado)
+  const extractText = useCallback((json: any): string => {
     if (!json || !json.content) return '';
 
     let text = '';
@@ -104,10 +58,83 @@ export function TextToSpeechGoogle({
 
     json.content.forEach((node: any) => processNode(node));
     return text.trim();
-  };
+  }, []);
 
-  // ✅ GERAR ÁUDIO AUTOMATICAMENTE (primeira vez)
-  const handleGenerateAudio = async () => {
+  // ✅ CARREGAR ÁUDIO EXISTENTE (apenas na montagem)
+  useEffect(() => {
+    if (existingAudioUrl && !isInitializedRef.current) {
+      setAudioUrl(existingAudioUrl);
+      isInitializedRef.current = true;
+    }
+  }, [existingAudioUrl]);
+
+  // ✅ CONFIGURAR ÁUDIO QUANDO URL MUDAR (com cleanup)
+  useEffect(() => {
+    if (!audioUrl) return;
+
+    // Limpar áudio anterior
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
+      audioRef.current = null;
+    }
+
+    // Criar novo áudio
+    const audio = new Audio(audioUrl);
+    audio.volume = volume;
+
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setIsPaused(false);
+      setCurrentTime(0);
+    };
+
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('ended', handleEnded);
+
+    audioRef.current = audio;
+
+    // Cleanup
+    return () => {
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('ended', handleEnded);
+      audio.pause();
+      audio.src = '';
+    };
+  }, [audioUrl, volume]);
+
+  // ✅ ATUALIZAR PROGRESSO (otimizado com cleanup)
+  useEffect(() => {
+    // Limpar intervalo anterior
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+      progressIntervalRef.current = null;
+    }
+
+    // Criar novo intervalo apenas se estiver tocando
+    if (isPlaying && audioRef.current) {
+      progressIntervalRef.current = setInterval(() => {
+        if (audioRef.current) {
+          setCurrentTime(audioRef.current.currentTime);
+        }
+      }, 100);
+    }
+
+    // Cleanup
+    return () => {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+    };
+  }, [isPlaying]);
+
+  // ✅ GERAR ÁUDIO
+  const handleGenerateAudio = useCallback(async () => {
     setIsGenerating(true);
 
     try {
@@ -118,18 +145,14 @@ export function TextToSpeechGoogle({
         return;
       }
 
-      console.log('🎤 Gerando áudio...', {
-        textLength: fullText.length,
-      });
-
       const response = await fetch('/api/blog/tts/google', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: fullText,
           articleId,
-          voiceName: 'pt-BR-Wavenet-B', // ✅ VOZ FIXA
-          speakingRate: 1.0, // ✅ VELOCIDADE FIXA
+          voiceName: 'pt-BR-Wavenet-B',
+          speakingRate: 1.0,
           regenerate: false,
         }),
       });
@@ -147,10 +170,10 @@ export function TextToSpeechGoogle({
     } finally {
       setIsGenerating(false);
     }
-  };
+  }, [content, articleId, extractText]);
 
   // ✅ TOCAR/PAUSAR
-  const handlePlayPause = () => {
+  const handlePlayPause = useCallback(() => {
     if (!audioRef.current) return;
 
     if (isPlaying) {
@@ -158,14 +181,16 @@ export function TextToSpeechGoogle({
       setIsPlaying(false);
       setIsPaused(true);
     } else {
-      audioRef.current.play();
+      audioRef.current.play().catch((err) => {
+        console.error('Erro ao reproduzir áudio:', err);
+      });
       setIsPlaying(true);
       setIsPaused(false);
     }
-  };
+  }, [isPlaying]);
 
   // ✅ PARAR
-  const handleStop = () => {
+  const handleStop = useCallback(() => {
     if (!audioRef.current) return;
 
     audioRef.current.pause();
@@ -173,45 +198,64 @@ export function TextToSpeechGoogle({
     setIsPlaying(false);
     setIsPaused(false);
     setCurrentTime(0);
-  };
+  }, []);
 
   // ✅ BUSCAR (SEEK)
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSeek = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (!audioRef.current) return;
 
     const newTime = parseFloat(e.target.value);
     audioRef.current.currentTime = newTime;
     setCurrentTime(newTime);
-  };
+  }, []);
 
   // ✅ VOLUME
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
-  };
+  const handleVolumeChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newVolume = parseFloat(e.target.value);
+      setVolume(newVolume);
+      if (audioRef.current) {
+        audioRef.current.volume = newVolume;
+      }
+    },
+    []
+  );
 
   // ✅ BAIXAR
-  const handleDownload = () => {
+  const handleDownload = useCallback(() => {
     if (!audioUrl) return;
     const a = document.createElement('a');
     a.href = audioUrl;
     a.download = `artigo-audio.mp3`;
     a.click();
-  };
+  }, [audioUrl]);
 
-  // ✅ FORMATAR TEMPO
-  const formatTime = (seconds: number): string => {
+  // ✅ FORMATAR TEMPO (memoizado)
+  const formatTime = useCallback((seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+  }, []);
 
-  // ✅ PROGRESSO EM %
-  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+  // ✅ PROGRESSO EM % (memoizado)
+  const progress = useMemo(() => {
+    return duration > 0 ? (currentTime / duration) * 100 : 0;
+  }, [currentTime, duration]);
 
+  // ✅ GRADIENTE DE PROGRESSO (memoizado)
+  const progressGradient = useMemo(() => {
+    return `linear-gradient(to right, var(--brand-primary) 0%, var(--brand-primary) ${progress}%, #e5e7eb ${progress}%, #e5e7eb 100%)`;
+  }, [progress]);
+
+  // ✅ GRADIENTE DE VOLUME (memoizado)
+  const volumeGradient = useMemo(() => {
+    const volumePercent = volume * 100;
+    return `linear-gradient(to right, var(--brand-primary) 0%, var(--brand-primary) ${volumePercent}%, #e5e7eb ${volumePercent}%, #e5e7eb 100%)`;
+  }, [volume]);
+
+  if (!audioUrl && !isAdmin) {
+    return <></>;
+  }
   return (
     <div className="classical-card p-6 my-8">
       {/* HEADER */}
@@ -237,7 +281,7 @@ export function TextToSpeechGoogle({
               onChange={handleSeek}
               className="w-full h-2 rounded-lg appearance-none cursor-pointer"
               style={{
-                background: `linear-gradient(to right, var(--brand-primary) 0%, var(--brand-primary) ${progress}%, #e5e7eb ${progress}%, #e5e7eb 100%)`,
+                background: progressGradient,
               }}
             />
             <div className="flex justify-between text-xs text-theme-tertiary mt-1">
@@ -294,7 +338,7 @@ export function TextToSpeechGoogle({
               onChange={handleVolumeChange}
               className="flex-1 h-1 rounded-lg appearance-none cursor-pointer"
               style={{
-                background: `linear-gradient(to right, var(--brand-primary) 0%, var(--brand-primary) ${volume * 100}%, #e5e7eb ${volume * 100}%, #e5e7eb 100%)`,
+                background: volumeGradient,
               }}
             />
             <span className="text-xs text-theme-tertiary w-12 text-right">

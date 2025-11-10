@@ -5,6 +5,7 @@ import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 import { ArticleStatus, ArticleType } from '@prisma/client';
 import { authOptions } from '@/app/libs/auth';
+import { invalidateBlogCache } from '@/app/requests/blog/cached-blog-function';
 
 // ==================== GET - Listar Artigos ====================
 export async function GET(request: NextRequest) {
@@ -414,7 +415,7 @@ export async function POST(request: NextRequest) {
     // Revalidar caches
     revalidateTag('blog-articles');
     revalidateTag('blog-home');
-
+    await invalidateBlogCache();
     return NextResponse.json({
       success: true,
       article,
@@ -644,6 +645,7 @@ export async function PUT(request: NextRequest) {
     revalidateTag('blog-articles');
     revalidateTag(`blog-article-${id}`);
     revalidateTag(`blog-article-${existingArticle.slug}`);
+    await invalidateBlogCache();
 
     return NextResponse.json({
       success: true,
@@ -706,6 +708,7 @@ export async function DELETE(request: NextRequest) {
 
     revalidateTag('blog-articles');
     revalidateTag('blog-home');
+    await invalidateBlogCache();
 
     return NextResponse.json({
       success: true,

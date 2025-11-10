@@ -40,12 +40,15 @@ import EditButton from '../../../components/Common/EditButton';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { translateRole } from '@/app/components/UploadsPage/modals/CreateComposerModal';
+import { BlogArticlePreview } from '@/app/requests/blog/blog-requests';
+import ComposerArticlesSection from '@/app/components/ComposerArticlesSection';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
   initialWorksData: ComposerWorksResponse;
   filterOptions: ComposerFilterOptions;
   isAdmin: boolean;
+  composerArticles: { articles: BlogArticlePreview[]; totalCount: number }; // 🆕
 }
 
 export default function ComposerDetailsClient({
@@ -53,6 +56,7 @@ export default function ComposerDetailsClient({
   initialWorksData,
   filterOptions,
   isAdmin,
+  composerArticles,
 }: ComposerDetailsClientProps) {
   const [imageError, setImageError] = useState(false);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
@@ -663,6 +667,12 @@ export default function ComposerDetailsClient({
               />
             </AnimatedItem>
           </AnimatedCard>
+
+          <ComposerArticlesSection
+            articles={composerArticles.articles}
+            totalCount={composerArticles.totalCount}
+            composerName={composer.name}
+          />
 
           {/* Vídeo do Compositor - Nova seção */}
           {composer.videoUrl && (

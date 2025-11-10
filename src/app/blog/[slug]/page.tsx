@@ -230,11 +230,13 @@ export default async function ArticlePage({ params }: PageProps) {
           scoreIds: article.scoreIds,
           _count: article._count,
           categories: article.categories,
+          ttsAudioUrl: article.ttsAudioUrl,
         }}
         hasBackgroundMusic={hasBackgroundMusic}
         backgroundMusicUrl={article.backgroundMusicUrl || ''}
         backgroundMusicTitle={article.backgroundMusicTitle || ''}
         backgroundAudioType={backgroundAudioType}
+        isAdmin={isAdmin}
       />
 
       {/* Related Articles */}

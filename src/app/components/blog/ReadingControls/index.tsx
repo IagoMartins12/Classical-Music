@@ -2,17 +2,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FaBullseye } from 'react-icons/fa';
 
 interface ReadingControlsProps {
   isMobile?: boolean;
   onOpenShareModal?: () => void;
-  onOpenFocusMode?: () => void;
+  // onOpenFocusMode?: () => void;
 }
 
 export function ReadingControls({
   isMobile = false,
-  onOpenFocusMode,
+  // onOpenFocusMode,
 }: ReadingControlsProps) {
   const [fontSize, setFontSize] = useState(18);
   // const [urlCopied, setUrlCopied] = useState(false);
@@ -149,13 +148,13 @@ export function ReadingControls({
               A+
             </button>
 
-            <button
+            {/* <button
               onClick={() => onOpenFocusMode?.()}
               className="flex-1 w-14 py-2 bg-theme-elevated flex justify-center items-center hover:bg-theme-classical rounded-lg text-xs font-medium transition-all"
               disabled={fontSize >= 24}
             >
               <FaBullseye className="w-4 h-4" />
-            </button>
+            </button> */}
           </div>
         </div>
 

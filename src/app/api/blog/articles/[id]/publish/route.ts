@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
+import { invalidateBlogCache } from '@/app/requests/blog/cached-blog-function';
 
 export async function PATCH(
   request: NextRequest,
@@ -80,6 +81,7 @@ export async function PATCH(
     revalidateTag('blog-articles');
     revalidateTag(`blog-article-${id}`);
     revalidateTag('blog-home');
+    await invalidateBlogCache();
 
     return NextResponse.json({
       success: true,

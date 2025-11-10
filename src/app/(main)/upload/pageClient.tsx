@@ -454,7 +454,7 @@ const UploadsClient = ({
 
   const handleEdit = useCallback(
     (item: UserUpload) => {
-      router.push(`/uploads/${item.type}/${item.id}/edit`);
+      router.push(`/upload/${item.type}/${item.id}/edit`);
     },
     [router]
   );
@@ -946,7 +946,7 @@ const UploadsClient = ({
                 variant="ghost"
                 size="sm"
                 leftIcon={<FiSettings />}
-                onClick={() => router.push('/uploads/history')}
+                onClick={() => router.push('/upload/history')}
               >
                 {t('action_history')}
               </Button>

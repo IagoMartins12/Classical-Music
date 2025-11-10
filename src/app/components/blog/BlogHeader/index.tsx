@@ -3,7 +3,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   FiMenu,
@@ -25,15 +25,12 @@ import Image from 'next/image';
 import { toast } from 'react-hot-toast';
 import { ThemeToggle } from '../../ThemeToggle';
 import Button from '../../Common/Button';
-import {
-  useAuthStore,
-  useLoginModal,
-  useRegisterModal,
-} from '@/app/stores/authStore';
+import { useLoginModal, useRegisterModal } from '@/app/stores/authStore';
 import { GiGrandPiano } from 'react-icons/gi';
 import { SearchModal } from '../SearchModal';
 import { LanguageToggle } from '../../LanguageToggle';
-import { useAuth } from '@/app/hooks/useAuth';
+import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
+import { useLearningStore } from '@/app/stores/useLearningStore';
 
 interface NavItem {
   label: string;
@@ -69,11 +66,11 @@ export function BlogHeader() {
   const mobileButtonRef = useRef<HTMLButtonElement>(null);
   const submenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  const { refresh } = useRouter();
+  const { reset } = useLearningStore();
+  const { reset: resetFavorite } = useFavoritesStore();
   const { open: openLogin } = useLoginModal();
   const { open: openRegister } = useRegisterModal();
-  const { logout: authLogout } = useAuthStore();
-  const { logout } = useAuth();
-  const { refresh } = useRouter();
 
   const user = session?.user;
   const isAuthenticated = status === 'authenticated';
@@ -133,8 +130,9 @@ export function BlogHeader() {
 
   const handleLogout = async () => {
     try {
-      logout();
-      authLogout();
+      resetFavorite();
+      reset();
+      await signOut({ redirect: false });
       toast.success('Logout realizado com sucesso!');
       setIsProfileOpen(false);
       closeMobileMenu();
@@ -962,7 +960,7 @@ export function BlogHeader() {
 
                             <li>
                               <Link
-                                href="/blog/articles"
+                                href="/blog/admin/articles"
                                 className={`
                                 flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                                 ${

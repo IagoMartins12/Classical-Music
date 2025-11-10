@@ -128,13 +128,13 @@ const HistoryClient = ({
     if (selectedAction !== 'all') params.set('action', selectedAction);
     if (page !== 1) params.set('page', '1');
 
-    router.push(`/uploads/history?${params.toString()}`);
+    router.push(`/upload/history?${params.toString()}`);
   };
 
   const clearFilters = () => {
     setSelectedType('all');
     setSelectedAction('all');
-    router.push('/uploads/history');
+    router.push('/upload/history');
   };
 
   const toggleExpanded = (id: string) => {
@@ -779,7 +779,7 @@ const HistoryClient = ({
                       params.set('page', (i + 1).toString());
                       if (type !== 'all') params.set('type', type);
                       if (action !== 'all') params.set('action', action);
-                      router.push(`/uploads/history?${params.toString()}`);
+                      router.push(`/upload/history?${params.toString()}`);
                     }}
                     className={`px-4 py-2 rounded-lg transition-colors ${
                       page === i + 1

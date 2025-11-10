@@ -1,148 +1,129 @@
-// app/libs/hybrid-cache.ts - Cache híbrido que funciona com ou sem Redis
-import { cacheHelper } from './redis';
+// app/libs/hybrid-cache.ts
+import Redis from 'ioredis';
 
-type CacheFunction<T> = () => Promise<T>;
+// ✅ Cliente Redis (lazy loading)
+let redisClient: Redis | null = null;
 
-interface CacheOptions {
-  key: string;
-  ttl: number; // TTL em segundos
-  fallbackToMemory?: boolean; // Se true, usa cache em memória quando Redis não disponível
-}
-
-// Cache em memória simples para fallback (apenas em desenvolvimento)
-const memoryCache = new Map<string, { data: any; expires: number }>();
-const isDevelopment = process.env.NODE_ENV === 'development';
-
-// Limpar cache em memória periodicamente (apenas em desenvolvimento)
-if (isDevelopment) {
-  setInterval(() => {
-    const now = Date.now();
-    for (const [key, { expires }] of memoryCache.entries()) {
-      if (now > expires) {
-        memoryCache.delete(key);
+function getRedisClient(): Redis | null {
+  // Apenas em produção E se REDIS_URL estiver configurado
+  if (process.env.NODE_ENV === 'production' && process.env.REDIS_URL) {
+    if (!redisClient) {
+      try {
+        redisClient = new Redis(process.env.REDIS_URL, {
+          maxRetriesPerRequest: 3,
+          retryStrategy: (times) => {
+            if (times > 3) return null;
+            return Math.min(times * 50, 2000);
+          },
+        });
+        console.log('✅ Redis client initialized for production');
+      } catch (error) {
+        console.error('❌ Redis connection failed:', error);
+        return null;
       }
     }
-  }, 300000); // Limpar a cada 5 minutos
+    return redisClient;
+  }
+  return null;
 }
 
 /**
- * Cache híbrido que usa Redis em produção e fallback em desenvolvimento
- * - Produção: Redis com fallback gracioso se falhar
- * - Desenvolvimento: Cache em memória opcional
- * - Sempre executa a função se cache não disponível
+ * ✅ Cache wrapper genérico com fallback
  */
-export async function hybridCache<T>(
-  fn: CacheFunction<T>,
-  options: CacheOptions
+async function cacheWrapper<T>(
+  fn: () => Promise<T>,
+  key: string,
+  ttl: number // em segundos
 ): Promise<T> {
-  const { key, ttl, fallbackToMemory = true } = options;
+  const redis = getRedisClient();
 
+  // ✅ SEM REDIS: executar função diretamente
+  if (!redis) {
+    console.log(`📦 No Redis: executing ${key} directly`);
+    return fn();
+  }
+
+  // ✅ COM REDIS: tentar buscar do cache
   try {
-    // Tentar buscar no Redis primeiro (se disponível)
-    const cached = await cacheHelper.get<T>(key);
-    if (cached !== null) {
-      console.log(`🎯 Cache hit (Redis): ${key}`);
-      return cached;
+    const cached = await redis.get(key);
+
+    if (cached) {
+      console.log(`✅ Redis HIT: ${key}`);
+      return JSON.parse(cached);
     }
 
-    // Se não encontrou no Redis, tentar cache em memória (apenas em dev)
-    if (process.env.NODE_ENV === 'development' && fallbackToMemory) {
-      const memoryItem = memoryCache.get(key);
-      if (memoryItem && Date.now() < memoryItem.expires) {
-        console.log(`🧠 Cache hit (Memory): ${key}`);
-        return memoryItem.data as T;
-      }
-    }
-
-    // Cache miss - executar função
-    console.log(`💨 Cache miss: ${key} - executing function...`);
+    console.log(`❌ Redis MISS: ${key}`);
     const result = await fn();
 
-    // Tentar salvar no Redis (sem falhar se Redis não disponível)
-    const redisSaved = await cacheHelper.set(key, result, ttl);
-
-    if (redisSaved) {
-      console.log(`💾 Cached in Redis: ${key} (TTL: ${ttl}s)`);
-    } else {
-      // Fallback para cache em memória se Redis não disponível
-      if (process.env.NODE_ENV === 'development' && fallbackToMemory) {
-        const expires = Date.now() + ttl * 1000;
-        memoryCache.set(key, { data: result, expires });
-        console.log(`🧠 Cached in Memory: ${key} (TTL: ${ttl}s)`);
-      } else {
-        console.log(`⚠️ No cache available for: ${key}`);
-      }
-    }
+    // Salvar no cache
+    await redis.setex(key, ttl, JSON.stringify(result));
+    console.log(`💾 Redis SAVED: ${key} (TTL: ${ttl}s)`);
 
     return result;
   } catch (error) {
-    // Em caso de qualquer erro de cache, executar função normalmente
-    console.log(`❌ Cache error for ${key}, executing function:`, error);
-    return await fn();
+    console.error(`❌ Redis error for ${key}:`, error);
+    // Fallback: executar função diretamente
+    return fn();
   }
 }
 
 /**
- * Versões pré-configuradas com TTLs apropriados para diferentes tipos de dados
+ * ✅ Presets de cache com TTLs otimizados
  */
 export const cachePresets = {
-  // Cache diário - renova a cada 24h (featuredComposer)
-  daily: <T>(fn: CacheFunction<T>, key: string) =>
-    hybridCache(fn, { key: `daily:${key}`, ttl: 86400 }), // 24 horas
+  // 30 minutos - dados que mudam com frequência
+  short: <T>(fn: () => Promise<T>, key: string) =>
+    cacheWrapper(fn, `short:${key}`, 1800),
 
-  // Cache de horas - renova a cada 4h (dados que mudam moderadamente)
-  hourly: <T>(fn: CacheFunction<T>, key: string) =>
-    hybridCache(fn, { key: `hourly:${key}`, ttl: 14400 }), // 4 horas
+  // 1 hora - dados moderadamente dinâmicos
+  hourly: <T>(fn: () => Promise<T>, key: string) =>
+    cacheWrapper(fn, `hourly:${key}`, 3600),
 
-  // Cache curto - renova a cada 30 min (recentAdditions, dados dinâmicos)
-  short: <T>(fn: CacheFunction<T>, key: string) =>
-    hybridCache(fn, { key: `short:${key}`, ttl: 1800 }), // 30 minutos
+  // 4 horas - dados semi-estáticos
+  halfDay: <T>(fn: () => Promise<T>, key: string) =>
+    cacheWrapper(fn, `halfday:${key}`, 14400),
 
-  // Cache longo - renova a cada 7 dias (dados estáticos como épocos)
-  weekly: <T>(fn: CacheFunction<T>, key: string) =>
-    hybridCache(fn, { key: `weekly:${key}`, ttl: 604800 }), // 7 dias
+  // 24 horas - dados estáticos
+  daily: <T>(fn: () => Promise<T>, key: string) =>
+    cacheWrapper(fn, `daily:${key}`, 86400),
 
-  // Cache customizado
-  custom: <T>(fn: CacheFunction<T>, key: string, ttlSeconds: number) =>
-    hybridCache(fn, { key: `custom:${key}`, ttl: ttlSeconds }),
+  // 7 dias - dados muito estáveis
+  weekly: <T>(fn: () => Promise<T>, key: string) =>
+    cacheWrapper(fn, `weekly:${key}`, 604800),
 };
 
 /**
- * Função para invalidar cache específico
+ * ✅ Invalidação de cache
  */
-export async function invalidateCache(key: string): Promise<void> {
+export async function invalidateCache(key: string) {
+  const redis = getRedisClient();
+  if (!redis) {
+    console.log(`🔧 No Redis: skipping invalidation of ${key}`);
+    return;
+  }
+
   try {
-    // Invalidar no Redis
-    await cacheHelper.del(key);
-
-    // Invalidar no cache em memória
-    if (process.env.NODE_ENV === 'development') {
-      memoryCache.delete(key);
-    }
-
+    await redis.del(key);
     console.log(`🗑️ Cache invalidated: ${key}`);
   } catch (error) {
-    console.log(`❌ Error invalidating cache ${key}:`, error);
+    console.error(`❌ Failed to invalidate ${key}:`, error);
   }
 }
 
-/**
- * Função para invalidar múltiplas chaves por prefixo
- */
-export async function invalidateCacheByPrefix(prefix: string): Promise<void> {
-  try {
-    // No Redis, seria mais complexo - por simplicidade, apenas log
-    console.log(`🗑️ Cache invalidation requested for prefix: ${prefix}`);
+export async function invalidateCacheByPrefix(prefix: string) {
+  const redis = getRedisClient();
+  if (!redis) {
+    console.log(`🔧 No Redis: skipping prefix invalidation ${prefix}`);
+    return;
+  }
 
-    // Invalidar cache em memória por prefixo
-    if (process.env.NODE_ENV === 'development') {
-      for (const key of memoryCache.keys()) {
-        if (key.startsWith(prefix)) {
-          memoryCache.delete(key);
-        }
-      }
+  try {
+    const keys = await redis.keys(`${prefix}*`);
+    if (keys.length > 0) {
+      await redis.del(...keys);
+      console.log(`🗑️ Invalidated ${keys.length} keys with prefix: ${prefix}`);
     }
   } catch (error) {
-    console.log(`❌ Error invalidating cache by prefix ${prefix}:`, error);
+    console.error(`❌ Failed to invalidate prefix ${prefix}:`, error);
   }
 }
