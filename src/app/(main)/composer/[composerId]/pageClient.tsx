@@ -291,7 +291,7 @@ export default function ComposerDetailsClient({
                           )}
                         </div>
                         {/* Ações */}
-                        <div className="flex items-center self-end space-x-3 pt-2 b">
+                        <div className="flex items-center self-end space-x-3 py-4 sm:pb-0 sm:pt-2 b">
                           <FavoriteButton
                             id={composer.id}
                             type="composer"

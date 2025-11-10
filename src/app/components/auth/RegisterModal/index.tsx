@@ -24,6 +24,7 @@ import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import TermsAcceptance from '../TermsAcceptance';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { Language } from '@/app/stores/useLanguageStore';
 interface RegisterStep {
   step: 'form' | 'success' | 'confirmation-sent';
   userData?: {
@@ -33,11 +34,55 @@ interface RegisterStep {
     registrationMethod?: 'credentials' | 'google';
   };
 }
+const registerErrorMessages: Record<string, { pt: string; en: string }> = {
+  Callback: {
+    pt: 'Este email já está cadastrado com senha. Use "Fazer login" ou redefina sua senha.',
+    en: 'This email is already registered with a password. Use "Sign in" or reset your password.',
+  },
+  OAuthCallback: {
+    pt: 'Erro na autenticação com o Google. Tente novamente.',
+    en: 'Google authentication error. Please try again.',
+  },
+  OAuthSignin: {
+    pt: 'Erro ao conectar com o Google. Verifique suas permissões.',
+    en: 'Error connecting with Google. Check your permissions.',
+  },
+  OAuthCreateAccount: {
+    pt: 'Este email já está em uso. Tente entrar com email e senha.',
+    en: 'This email is already in use. Try signing in with email and password.',
+  },
+  EmailCreateAccount: {
+    pt: 'Este email já está em uso.',
+    en: 'This email is already in use.',
+  },
+  AccessDenied: {
+    pt: 'Acesso negado pelo Google.',
+    en: 'Access denied by Google.',
+  },
+  Verification: {
+    pt: 'Erro na verificação. Tente novamente.',
+    en: 'Verification error. Please try again.',
+  },
+  DEFAULT: {
+    pt: 'Erro ao tentar registrar. Tente novamente.',
+    en: 'Error during registration. Please try again.',
+  },
+};
+const getRegisterErrorMessage = (
+  errorCode: string | null,
+  language: Language
+) => {
+  if (!errorCode) return null;
+  const msg = registerErrorMessages[errorCode] || registerErrorMessages.DEFAULT;
+  return msg[language as 'pt' | 'en'];
+};
 
 const RegisterModal: React.FC = () => {
   const { isOpen, close, switchToLogin } = useRegisterModal();
   const { open: openOnboarding } = useOnboardingModal();
-  const { t } = useTranslation({ sections: ['components/auth-modals'] });
+  const { t, language } = useTranslation({
+    sections: ['components/auth-modals'],
+  });
 
   const [registerStep, setRegisterStep] = useState<RegisterStep>({
     step: 'form',
@@ -168,36 +213,15 @@ const RegisterModal: React.FC = () => {
       sessionStorage.removeItem('google-register-name');
       sessionStorage.removeItem('google-register-timestamp');
 
-      let errorMessage = '';
-      let shouldShowConflictError = false;
+      const errorMessage = getRegisterErrorMessage(error, language);
+      const shouldShowConflictError = false;
 
-      switch (error) {
-        case 'Callback':
-          errorMessage = t('register_modal_email_conflict_credentials');
-          shouldShowConflictError = true;
-          break;
-        case 'OAuthCallback':
-          errorMessage = t('register_modal_google_oauth_error');
-          break;
-        case 'OAuthSignin':
-          errorMessage = t('register_modal_google_signin_error');
-          break;
-        case 'OAuthCreateAccount':
-          errorMessage = t('register_modal_email_conflict_google');
-          shouldShowConflictError = true;
-          break;
-        case 'EmailCreateAccount':
-          errorMessage = t('register_modal_email_exists');
-          shouldShowConflictError = true;
-          break;
-        case 'AccessDenied':
-          errorMessage = t('register_modal_google_access_denied');
-          break;
-        case 'Verification':
-          errorMessage = t('register_modal_google_verification_error');
-          break;
-        default:
-          errorMessage = errorDescription || t('register_modal_google_error');
+      if (
+        ['Callback', 'OAuthCreateAccount', 'EmailCreateAccount'].includes(error)
+      ) {
+        setEmailConflictError(errorMessage);
+      } else {
+        toast.error(errorMessage);
       }
 
       if (shouldShowConflictError) {

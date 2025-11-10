@@ -159,11 +159,11 @@ const Navbar: React.FC = () => {
       href: '/music-history',
       active: isPathActive('/music-history'),
     },
-    {
-      label: t('navbar_instrumentos'),
-      href: '/instruments',
-      active: isPathActive('/instruments'),
-    },
+    // {
+    //   label: t('navbar_instrumentos'),
+    //   href: '/instruments',
+    //   active: isPathActive('/instruments'),
+    // },
     {
       label: t('navbar_compositores'),
       href: '/composers',
@@ -190,6 +190,11 @@ const Navbar: React.FC = () => {
       label: t('navbar_quem_somos'),
       href: '/about-us',
       active: isPathActive('/about-us'),
+    },
+    {
+      label: 'Blog',
+      href: '/blog',
+      active: isPathActive('/blog'),
     },
   ];
 
@@ -400,6 +405,7 @@ const Navbar: React.FC = () => {
                     href={href || '#'}
                     className={`
                       relative px-3 py-2 rounded-lg font-medium transition-all duration-300
+                      
                       ${
                         active
                           ? 'text-brand-primary bg-interactive-active'
@@ -411,7 +417,11 @@ const Navbar: React.FC = () => {
                       ${active ? 'after:w-full after:left-0' : ''}
                     `}
                   >
-                    {label}
+                    {label === 'Blog' ? (
+                      <span className="gold-shine">Blog</span>
+                    ) : (
+                      label
+                    )}{' '}
                   </Link>
                 )}
               </div>
@@ -741,7 +751,11 @@ const Navbar: React.FC = () => {
                           `}
                           onClick={handleMobileNavClick}
                         >
-                          {label}
+                          {label === 'Blog' ? (
+                            <span className="gold-shine">Blog</span>
+                          ) : (
+                            label
+                          )}{' '}
                         </Link>
                       )}
                     </li>

@@ -11,20 +11,19 @@ interface ClientThemeWrapperProps {
 export const ClientThemeWrapper: React.FC<ClientThemeWrapperProps> = ({
   children,
 }) => {
-  const { mode, applyTheme } = useThemeStore();
+  const { applyTheme } = useThemeStore();
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Evita hydration mismatch
   useEffect(() => {
-    setIsHydrated(true);
+    if (!isHydrated) setIsHydrated(true);
   }, []);
-
-  // Aplica o tema quando o componente monta ou o tema muda
-  useEffect(() => {
-    if (isHydrated) {
-      applyTheme(mode);
-    }
-  }, [mode, applyTheme, isHydrated]);
+  // // Aplica o tema quando o componente monta ou o tema muda
+  // useEffect(() => {
+  //   if (isHydrated) {
+  //     applyTheme(mode);
+  //   }
+  // }, [mode, applyTheme, isHydrated]);
 
   // Detecta preferência do sistema
   useEffect(() => {

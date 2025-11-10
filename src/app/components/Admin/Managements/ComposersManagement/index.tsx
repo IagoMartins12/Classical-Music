@@ -48,7 +48,6 @@ import { getPeriodLabel } from '@/app/utils/adminUtils';
 import PeriodSelector from '../../Common/PeriodSelector';
 import LoadingAdminState from '../../Common/LoadingState';
 import { mapStatsToChartData } from '@/app/utils/admin/adminDebug';
-import { AdminDebugPanel } from '@/app/utils/admin/AdminDebugPanel';
 
 interface ComposerFilters {
   search: string;
@@ -240,24 +239,35 @@ export default function ComposersManagement() {
       <AnimatedContainer delay={0.1} staggerSpeed="normal">
         {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="text-center mb-8 py-16">
+          <div className="text-center mb-8 py-12">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <FiUsers className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Gerenciar Compositores
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
+            <p className="text-lg md:text-xl text-theme-secondary classical-subtitle">
               Administre o catálogo de compositores da plataforma
             </p>
-            <div className="flex justify-center mt-6">
+            <div className="flex items-center justify-center space-x-4 mt-6">
               <PeriodSelector
                 value={period}
                 onChange={setPeriod}
                 className="bg-theme-secondary px-4 py-2 rounded-xl"
               />
+              <Button
+                variant="ghost"
+                size="sm"
+                leftIcon={
+                  <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                }
+                onClick={handleRefresh}
+                disabled={refreshing || statsLoading}
+              >
+                Atualizar
+              </Button>
             </div>
           </div>
         </AnimatedItem>
@@ -356,8 +366,6 @@ export default function ComposersManagement() {
           </div>
         ) : null}
 
-        <AdminDebugPanel stats={stats} filters={filters} />
-
         {/* Top Performers */}
         {statsLoading ? (
           <TopPerformersSkeleton />
@@ -449,19 +457,34 @@ export default function ComposersManagement() {
 
         {/* Filters and Controls */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="classical-card p-6 mb-8">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-              <h3 className="text-xl font-bold text-theme-primary">
-                Lista de Compositores
-              </h3>
-              <div className="flex items-center space-x-3">
+          <div className="classical-card p-4 md:p-6 mb-8">
+            {/* Header */}
+            <div className="flex flex-col gap-4 mb-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg md:text-xl font-bold text-theme-primary">
+                  Lista de Compositores
+                </h3>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  leftIcon={<FiPlus />}
+                  onClick={() => router.push('/uploads')}
+                  className="hidden md:flex"
+                >
+                  Novo Compositor
+                </Button>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
                   leftIcon={<FiFilter />}
                   onClick={() => setShowFilters(!showFilters)}
+                  className="flex-shrink-0"
                 >
-                  Filtros Avançados
+                  <span className="hidden sm:inline">Filtros Avançados</span>
+                  <span className="sm:hidden">Filtros</span>
                 </Button>
                 <Button
                   variant="ghost"
@@ -471,38 +494,32 @@ export default function ComposersManagement() {
                   }
                   onClick={handleRefresh}
                   disabled={refreshing}
+                  className="flex-shrink-0"
                 >
-                  Atualizar
-                </Button>
-
-                <Button
-                  variant="primary"
-                  size="sm"
-                  leftIcon={<FiPlus />}
-                  onClick={() => router.push('/uploads')}
-                >
-                  Novo Compositor
+                  <span className="hidden sm:inline">Atualizar</span>
                 </Button>
               </div>
             </div>
 
-            {/* Filtros Básicos - sempre visíveis */}
+            {/* Filtros Básicos */}
             <div className="space-y-4 mb-6">
-              <div className="flex items-center space-x-4">
-                <div className="relative flex-1">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-                  <Input
-                    type="text"
-                    placeholder="Buscar compositores..."
-                    value={filters.search}
-                    onChange={(e) =>
-                      setFilters({ ...filters, search: e.target.value })
-                    }
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    className="input-classical-2 !pl-10 w-full"
-                  />
-                </div>
+              {/* Busca */}
+              <div className="relative w-full">
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                <Input
+                  type="text"
+                  placeholder="Buscar compositores..."
+                  value={filters.search}
+                  onChange={(e) =>
+                    setFilters({ ...filters, search: e.target.value })
+                  }
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  className="input-classical-2 !pl-10 w-full"
+                />
+              </div>
 
+              {/* Ordenação e Buscar */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                 <Select
                   value={filters.sortBy}
                   onChange={(e) => handleFilterChange('sortBy', e.target.value)}
@@ -512,7 +529,7 @@ export default function ComposersManagement() {
                     { value: 'worksCount', label: 'Número de Obras' },
                     { value: 'favoritesCount', label: 'Favoritos' },
                   ]}
-                  className="input-classical-2 min-w-[160px]"
+                  className="input-classical-2  w-full"
                 />
 
                 <Select
@@ -524,7 +541,7 @@ export default function ComposersManagement() {
                     { value: 'desc', label: 'Decrescente' },
                     { value: 'asc', label: 'Crescente' },
                   ]}
-                  className="input-classical-2 min-w-[120px]"
+                  className="input-classical-2  w-full"
                 />
 
                 <Button
@@ -532,6 +549,7 @@ export default function ComposersManagement() {
                   size="sm"
                   leftIcon={<FiSearch />}
                   onClick={handleSearch}
+                  className=" w-full"
                 >
                   Buscar
                 </Button>
@@ -540,14 +558,16 @@ export default function ComposersManagement() {
 
             {/* Filtros Avançados */}
             <div
-              className={`space-y-4 mb-6 ${showFilters ? 'block' : 'hidden'}`}
+              className={`space-y-4 mb-6 transition-all duration-300 ${
+                showFilters ? 'block' : 'hidden'
+              }`}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <Select
                   value={filters.epoch}
                   onChange={(e) => handleFilterChange('epoch', e.target.value)}
                   options={epochs}
-                  className="input-classical-2"
+                  className="input-classical-2 w-full"
                 />
 
                 <Select
@@ -560,7 +580,7 @@ export default function ComposersManagement() {
                     { value: 'true', label: 'Verificados' },
                     { value: 'false', label: 'Não Verificados' },
                   ]}
-                  className="input-classical-2"
+                  className="input-classical-2 w-full"
                 />
 
                 <Select
@@ -574,7 +594,7 @@ export default function ComposersManagement() {
                     { value: 'medium', label: 'Média Qualidade' },
                     { value: 'low', label: 'Baixa Qualidade' },
                   ]}
-                  className="input-classical-2"
+                  className="input-classical-2 w-full"
                 />
 
                 <Select
@@ -587,14 +607,14 @@ export default function ComposersManagement() {
                     { value: 'true', label: 'Com Imagem' },
                     { value: 'false', label: 'Sem Imagem' },
                   ]}
-                  className="input-classical-2"
+                  className="input-classical-2 w-full"
                 />
               </div>
 
               {/* Filtros Numéricos */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                  <label className="block text-xs md:text-sm font-medium text-theme-secondary mb-1 md:mb-2">
                     Mínimo de Obras
                   </label>
                   <Input
@@ -604,13 +624,13 @@ export default function ComposersManagement() {
                     onChange={(e) =>
                       setFilters({ ...filters, minWorks: e.target.value })
                     }
-                    className="input-classical-2"
+                    className="input-classical-2 w-full"
                     min="0"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                  <label className="block text-xs md:text-sm font-medium text-theme-secondary mb-1 md:mb-2">
                     Máximo de Obras
                   </label>
                   <Input
@@ -620,13 +640,13 @@ export default function ComposersManagement() {
                     onChange={(e) =>
                       setFilters({ ...filters, maxWorks: e.target.value })
                     }
-                    className="input-classical-2"
+                    className="input-classical-2 w-full"
                     min="0"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                <div className="sm:col-span-2 lg:col-span-1">
+                  <label className="block text-xs md:text-sm font-medium text-theme-secondary mb-1 md:mb-2">
                     Mínimo de Favoritos
                   </label>
                   <Input
@@ -636,7 +656,7 @@ export default function ComposersManagement() {
                     onChange={(e) =>
                       setFilters({ ...filters, minFavorites: e.target.value })
                     }
-                    className="input-classical-2"
+                    className="input-classical-2 w-full"
                     min="0"
                   />
                 </div>
@@ -645,16 +665,18 @@ export default function ComposersManagement() {
 
             {/* Bulk Actions */}
             {selectedComposers.size > 0 && (
-              <div className="flex items-center justify-between p-4 bg-accent-blue/10 border border-accent-blue rounded-xl mb-6">
-                <span className="text-accent-blue font-medium">
-                  {selectedComposers.size} compositores selecionados
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 md:p-4 bg-accent-blue/10 border border-accent-blue rounded-xl mb-6 gap-3">
+                <span className="text-sm md:text-base text-accent-blue font-medium">
+                  {selectedComposers.size} selecionado
+                  {selectedComposers.size > 1 ? 's' : ''}
                 </span>
-                <div className="flex items-center space-x-2">
+                <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                   <Button
                     variant="secondary"
                     size="sm"
                     leftIcon={<FiCheckCircle />}
                     onClick={() => handleBulkAction('verify')}
+                    className="flex-1 sm:flex-none"
                   >
                     Verificar
                   </Button>
@@ -663,28 +685,34 @@ export default function ComposersManagement() {
                     size="sm"
                     leftIcon={<FiX />}
                     onClick={() => handleBulkAction('unverify')}
+                    className="flex-1 sm:flex-none"
                   >
-                    Remover Verificação
+                    <span className="hidden md:inline">
+                      Remover Verificação
+                    </span>
+                    <span className="md:hidden">Remover</span>
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setSelectedComposers(new Set())}
+                    className="w-full sm:w-auto"
                   >
-                    Limpar Seleção
+                    Limpar
                   </Button>
                 </div>
               </div>
             )}
 
             {/* Lista de Compositores */}
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {composers.map((composer) => (
                 <div
                   key={composer.id}
-                  className="p-4 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors"
+                  className="p-3 md:p-4 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors"
                 >
-                  <div className="flex items-start space-x-4">
+                  <div className="flex items-start gap-3 md:gap-4">
+                    {/* Checkbox */}
                     <input
                       type="checkbox"
                       checked={selectedComposers.has(composer.id)}
@@ -697,37 +725,45 @@ export default function ComposersManagement() {
                         }
                         setSelectedComposers(newSelected);
                       }}
-                      className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2 mt-1"
+                      className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2 mt-1 flex-shrink-0"
                     />
 
-                    {composer.portraitUrl ? (
-                      <Image
-                        width={64}
-                        height={64}
-                        src={composer.portraitUrl}
-                        alt={composer.name}
-                        className="w-16 h-16 rounded-xl object-cover flex-shrink-0"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 rounded-xl bg-theme-primary/20 flex items-center justify-center flex-shrink-0">
-                        <FiUsers className="w-8 h-8 text-theme-tertiary" />
-                      </div>
-                    )}
+                    {/* Imagem */}
+                    <div className="flex-shrink-0">
+                      {composer.portraitUrl ? (
+                        <Image
+                          width={48}
+                          height={48}
+                          src={composer.portraitUrl}
+                          alt={composer.name}
+                          className="w-12 h-12 md:w-16 md:h-16 rounded-xl object-cover"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl bg-theme-primary/20 flex items-center justify-center">
+                          <FiUsers className="w-6 h-6 md:w-8 md:h-8 text-theme-tertiary" />
+                        </div>
+                      )}
+                    </div>
 
+                    {/* Conteúdo */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <h4 className="font-bold text-theme-primary text-lg">
+                      {/* Nome e badges */}
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <h4 className="font-bold text-theme-primary text-base md:text-lg">
                           {composer.name}
                         </h4>
                         {composer.isVerified && (
-                          <FiCheckCircle className="w-5 h-5 text-accent-green" />
+                          <FiCheckCircle className="w-4 h-4 md:w-5 md:h-5 text-accent-green flex-shrink-0" />
                         )}
-                        <span className="text-sm text-theme-tertiary">
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2 mb-2 text-xs md:text-sm">
+                        <span className="text-theme-tertiary">
                           {composer.epoch}
                         </span>
                         {composer.dataQuality && (
                           <span
-                            className={`text-xs font-medium ${getQualityColor(
+                            className={`font-medium ${getQualityColor(
                               composer.dataQuality
                             )}`}
                           >
@@ -735,34 +771,40 @@ export default function ComposersManagement() {
                           </span>
                         )}
                         {!composer.hasValidImage && (
-                          <span className="text-xs bg-accent-red/10 text-accent-red px-2 py-1 rounded">
+                          <span className="bg-accent-red/10 text-accent-red px-2 py-0.5 rounded">
                             Sem imagem
                           </span>
                         )}
                       </div>
 
+                      {/* Nome completo */}
                       {composer.fullName &&
                         composer.fullName !== composer.name && (
-                          <p className="text-theme-secondary mb-2">
-                            Nome completo: {composer.fullName}
+                          <p className="text-xs md:text-sm text-theme-secondary mb-2 break-words">
+                            {composer.fullName}
                           </p>
                         )}
 
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-theme-secondary">
+                      {/* Informações */}
+                      <div className="grid grid-cols-2 gap-2 text-xs md:text-sm text-theme-secondary mb-2">
                         {composer.birthDate && (
-                          <div className="flex items-center space-x-1">
-                            <FiCalendar className="w-4 h-4" />
-                            <span>{composer.birthDate}</span>
+                          <div className="flex items-center gap-1">
+                            <FiCalendar className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                            <span className="truncate">
+                              {composer.birthDate}
+                            </span>
                           </div>
                         )}
                         {composer.nationality && (
-                          <div className="flex items-center space-x-1">
-                            <FiMapPin className="w-4 h-4" />
-                            <span>{composer.nationality}</span>
+                          <div className="flex items-center gap-1">
+                            <FiMapPin className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                            <span className="truncate">
+                              {composer.nationality}
+                            </span>
                           </div>
                         )}
-                        <div className="flex items-center space-x-1">
-                          <FiMusic className="w-4 h-4" />
+                        <div className="flex items-center gap-1">
+                          <FiMusic className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                           <span
                             className={
                               composer.worksCount === 0 ? 'text-accent-red' : ''
@@ -771,20 +813,22 @@ export default function ComposersManagement() {
                             {composer.worksCount} obras
                           </span>
                         </div>
-                        <div className="flex items-center space-x-1">
-                          <FiHeart className="w-4 h-4" />
+                        <div className="flex items-center gap-1">
+                          <FiHeart className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                           <span>{composer.favoritesCount} favoritos</span>
                         </div>
                       </div>
 
+                      {/* Uploader */}
                       {composer.uploader && (
-                        <div className="mt-2 text-xs text-theme-tertiary">
-                          Adicionado por: {composer.uploader}
+                        <div className="text-xs text-theme-tertiary">
+                          Por: {composer.uploader}
                         </div>
                       )}
                     </div>
 
-                    <div className="flex items-center space-x-2 flex-shrink-0">
+                    {/* Ações - Desktop */}
+                    <div className="hidden md:flex items-center gap-2 flex-shrink-0">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -834,18 +878,68 @@ export default function ComposersManagement() {
                       />
                     </div>
                   </div>
+
+                  {/* Ações - Mobile */}
+                  <div className="flex md:hidden items-center gap-2 mt-3 pt-3 border-t border-theme-primary/10">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => router.push(`/composer/${composer.id}`)}
+                      className="flex-1"
+                    >
+                      <FiEye className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        router.push(`/uploads/composer/${composer.id}/edit`)
+                      }
+                      className="flex-1"
+                    >
+                      <FiEdit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        handleVerifyComposer(composer.id, !composer.isVerified)
+                      }
+                      className={`flex-1 ${
+                        composer.isVerified
+                          ? 'text-accent-red'
+                          : 'text-accent-green'
+                      }`}
+                    >
+                      {composer.isVerified ? (
+                        <FiX className="w-4 h-4" />
+                      ) : (
+                        <FiShield className="w-4 h-4" />
+                      )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        handleDeleteComposer(composer.id, composer.name)
+                      }
+                      className="flex-1 text-accent-red hover:bg-accent-red/10"
+                    >
+                      <FiTrash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
 
             {/* Pagination */}
             {pagination && (
-              <div className="flex items-center justify-between mt-6 pt-6 border-t border-theme-secondary">
-                <div className="text-sm text-theme-secondary">
+              <div className="flex flex-col sm:flex-row items-center justify-between mt-6 pt-6 border-t border-theme-secondary gap-4">
+                <div className="text-xs md:text-sm text-theme-secondary text-center sm:text-left">
                   Mostrando {composers.length} de {pagination.total}{' '}
                   compositores
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -859,8 +953,8 @@ export default function ComposersManagement() {
                   >
                     Anterior
                   </Button>
-                  <span className="text-sm text-theme-primary">
-                    Página {pagination.page} de {pagination.pages}
+                  <span className="text-xs md:text-sm text-theme-primary whitespace-nowrap">
+                    {pagination.page} / {pagination.pages}
                   </span>
                   <Button
                     variant="ghost"

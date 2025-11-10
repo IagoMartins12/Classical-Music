@@ -217,7 +217,10 @@
 
 /* Base styles */
 * {
-  transition: var(--transition-theme);
+  transition:
+    background-color 0.05s linear,
+    color 0.05s linear,
+    border-color 0.05s linear;
 }
 
 html {
@@ -231,6 +234,12 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.theme-icon {
+  transition:
+    transform 0.4s ease,
+    opacity 0.3s ease;
 }
 
 /* Componentes base */
@@ -261,7 +270,7 @@ body {
 .classical-card-2:hover {
   border-color: var(--border-accent);
   box-shadow: var(--shadow-glow);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .classical-card-simple {

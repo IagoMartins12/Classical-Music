@@ -120,7 +120,7 @@ function cleanImslpUrl(url: string): string {
 
 // 🆕 FUNÇÃO PARA EXTRAIR ID CORRETO DO IMSLP
 function extractImslpWorkId(
-  $: cheerio.CheerioAPI,
+  $: cheerio.Root,
   url: string
 ): {
   urlId: string;
@@ -583,8 +583,8 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
         dataCompleteness >= 80
           ? 'high'
           : dataCompleteness >= 60
-          ? 'medium'
-          : 'low',
+            ? 'medium'
+            : 'low',
     };
   } catch (error) {
     console.error('Erro ao fazer scraping do IMSLP:', error);
@@ -652,7 +652,7 @@ async function findComposerByName(fullName: string, lastName?: string) {
   }
 }
 
-function extractWorkDetails($: cheerio.CheerioAPI) {
+function extractWorkDetails($: cheerio.Root) {
   const details: any = {};
 
   $('.wi_body table tr, .wp_header table tr').each((index, element) => {
@@ -705,7 +705,7 @@ function extractWorkDetails($: cheerio.CheerioAPI) {
   return details;
 }
 
-function extractSubtitle(title: string, $: cheerio.CheerioAPI): string | null {
+function extractSubtitle(title: string, $: cheerio.Root): string | null {
   // Procurar por título alternativo na página
   let subtitle: string | null = null;
 
@@ -736,7 +736,7 @@ function extractSubtitle(title: string, $: cheerio.CheerioAPI): string | null {
 }
 
 // Função melhorada para extrair apenas categorias válidas
-function extractCategories($: cheerio.CheerioAPI): string[] {
+function extractCategories($: cheerio.Root): string[] {
   const categories: Set<string> = new Set();
 
   // Buscar categorias nas páginas IMSLP
@@ -770,7 +770,7 @@ function extractCategories($: cheerio.CheerioAPI): string[] {
 }
 
 // 🆕 FUNÇÃO MELHORADA PARA EXTRAIR GÊNEROS VÁLIDOS SEM DUPLICATAS
-function extractWorkGenres($: cheerio.CheerioAPI): string[] {
+function extractWorkGenres($: cheerio.Root): string[] {
   const workGenres = new Set<string>();
 
   console.log('🔍 Iniciando extração de gêneros...');
@@ -854,7 +854,7 @@ function extractWorkGenres($: cheerio.CheerioAPI): string[] {
   return finalGenres;
 }
 
-function extractIMSLPTags($: cheerio.CheerioAPI): string[] {
+function extractIMSLPTags($: cheerio.Root): string[] {
   const tags: Set<string> = new Set();
 
   $('a[href*="Category:"]').each((index, element) => {
@@ -873,7 +873,7 @@ function extractIMSLPTags($: cheerio.CheerioAPI): string[] {
 
 function determineWorkType(
   title: string,
-  $?: cheerio.CheerioAPI
+  $?: cheerio.Root
 ):
   | 'INDIVIDUAL'
   | 'COMPLETE_WORK'

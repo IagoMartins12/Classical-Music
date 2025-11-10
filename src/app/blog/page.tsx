@@ -141,7 +141,7 @@ export default async function BlogHomePage() {
     ]);
 
   return (
-    <div className="min-h-screen">
+    <div>
       {/* Hero Carousel */}
       {
         <section className="section-wrap pt-8">

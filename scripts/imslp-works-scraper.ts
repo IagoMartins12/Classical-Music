@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 // scripts/imslp-work-scraper.ts
 
 import axios from 'axios';
@@ -276,7 +277,7 @@ class WorkScraper {
       this.state = { ...this.state, ...savedState };
 
       console.log('✓ Estado carregado:', this.state);
-    } catch (error) {
+    } catch {
       console.log('⚠ Nenhum estado anterior encontrado, iniciando do zero');
     }
   }
@@ -349,7 +350,7 @@ class WorkScraper {
 
       console.log(`📊 Encontradas ${works.length} obras válidas`);
       return works;
-    } catch (error) {
+    } catch {
       console.error(
         `❌ ERRO ao buscar obras (start=${start}, tentativa ${retries + 1}):`
       );
@@ -368,7 +369,7 @@ class WorkScraper {
   }
 
   // Verificar se obra já existe no banco
-  async workExists(imslpId: string, title: string): Promise<boolean> {
+  async workExists(imslpId: string, _title: string): Promise<boolean> {
     try {
       const existing = await prisma.work.findFirst({
         where: {
@@ -515,7 +516,7 @@ class WorkScraper {
   // Determinar tipo de trabalho baseado no título
   determineWorkType(
     title: string,
-    $?: cheerio.CheerioAPI
+    $?: cheerio.Root
   ):
     | 'INDIVIDUAL'
     | 'COMPLETE_WORK'
@@ -668,7 +669,7 @@ class WorkScraper {
   // Extrair informações de dedicação
   extractDedicationInfo(
     dedicationText: string,
-    $: cheerio.CheerioAPI
+    $: cheerio.Root
   ): { dedicateTo: string | null } {
     if (!dedicationText) {
       return { dedicateTo: null };
@@ -688,9 +689,7 @@ class WorkScraper {
 
       if (composerLink && composerLink.includes('Category:')) {
         // É um compositor, salvar o link completo
-        const fullLink = composerLink.startsWith('http')
-          ? composerLink
-          : `https://imslp.org${composerLink}`;
+
         return {
           dedicateTo: composerName,
         };
@@ -704,7 +703,7 @@ class WorkScraper {
   }
 
   // Extrair múltiplas categorias da obra
-  async extractWorkCategories($: cheerio.CheerioAPI): Promise<string[]> {
+  async extractWorkCategories($: cheerio.Root): Promise<string[]> {
     const categories: Set<string> = new Set();
 
     $('.wp_header table tr').each((index, element) => {
@@ -734,7 +733,7 @@ class WorkScraper {
     return Array.from(categories);
   }
 
-  async extractWorkGenres($: cheerio.CheerioAPI): Promise<string[]> {
+  async extractWorkGenres($: cheerio.Root): Promise<string[]> {
     const workGenres: Set<string> = new Set();
 
     // Buscar em diferentes locais da página
@@ -781,7 +780,7 @@ class WorkScraper {
   }
 
   // Extrair subtítulo/apelido da obra
-  extractSubtitle(title: string, $: cheerio.CheerioAPI): string | null {
+  extractSubtitle(title: string, $: cheerio.Root): string | null {
     // Procurar por "Alternative Title" na página
     let subtitle: string | null = null;
 
@@ -851,7 +850,7 @@ class WorkScraper {
   }
 
   // Extrair detalhes dos movimentos
-  extractMovementsDetailed($: cheerio.CheerioAPI): MovementDetail[] {
+  extractMovementsDetailed($: cheerio.Root): MovementDetail[] {
     const movements: MovementDetail[] = [];
 
     // Procurar pela seção de movimentos/conteúdo
@@ -913,7 +912,7 @@ class WorkScraper {
   }
 
   // Extrair compasso
-  extractTimeSignature($: cheerio.CheerioAPI): string | null {
+  extractTimeSignature($: cheerio.Root): string | null {
     let timeSignature: string | null = null;
 
     $('.wp_header table tr').each((index, element) => {
@@ -940,7 +939,7 @@ class WorkScraper {
   }
 
   // Extrair andamento
-  extractTempoMarking($: cheerio.CheerioAPI): string | null {
+  extractTempoMarking($: cheerio.Root): string | null {
     let tempoMarking: string | null = null;
 
     $('.wp_header table tr').each((index, element) => {
@@ -982,7 +981,7 @@ class WorkScraper {
   }
 
   // Extrair tags do IMSLP
-  extractIMSLPTags($: cheerio.CheerioAPI): string[] {
+  extractIMSLPTags($: cheerio.Root): string[] {
     const tags: Set<string> = new Set();
 
     // Procurar por categorias na página
@@ -1271,6 +1270,7 @@ class WorkScraper {
 
         // Buscar instrumentos conhecidos no texto
         for (const [key, value] of Object.entries(INSTRUMENT_MAPPING)) {
+          console.log(value);
           if (instrumentText.includes(key)) {
             primaryInstrument = await this.findOrCreateInstrument(key);
             break;
@@ -1281,6 +1281,8 @@ class WorkScraper {
         if (!primaryInstrument) {
           const titleLower = workDetails.title.toLowerCase();
           for (const [key, value] of Object.entries(INSTRUMENT_MAPPING)) {
+            console.log(value);
+
             if (titleLower.includes(key)) {
               primaryInstrument = await this.findOrCreateInstrument(key);
               break;
@@ -1303,7 +1305,7 @@ class WorkScraper {
       const titleLower = workDetails.title.toLowerCase();
 
       let primaryWorkGenre = null;
-      for (const [key, value] of Object.entries(NORMALIZED_CATEGORIES)) {
+      for (const [key, _value] of Object.entries(NORMALIZED_CATEGORIES)) {
         if (titleLower.includes(key)) {
           primaryWorkGenre = await this.findOrCreateWorkGenre(key);
           break;
@@ -1512,7 +1514,7 @@ class WorkScraper {
       }
 
       // Usar transação para garantir consistência dos dados
-      const result = await prisma.$transaction(async (tx) => {
+      const _result = await prisma.$transaction(async (tx) => {
         // Criar a obra no banco
         const savedWork = await tx.work.create({
           data: {

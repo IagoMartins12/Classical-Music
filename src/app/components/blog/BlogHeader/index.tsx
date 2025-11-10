@@ -3,7 +3,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   FiMenu,
@@ -25,10 +25,15 @@ import Image from 'next/image';
 import { toast } from 'react-hot-toast';
 import { ThemeToggle } from '../../ThemeToggle';
 import Button from '../../Common/Button';
-import { useLoginModal, useRegisterModal } from '@/app/stores/authStore';
+import {
+  useAuthStore,
+  useLoginModal,
+  useRegisterModal,
+} from '@/app/stores/authStore';
 import { GiGrandPiano } from 'react-icons/gi';
 import { SearchModal } from '../SearchModal';
 import { LanguageToggle } from '../../LanguageToggle';
+import { useAuth } from '@/app/hooks/useAuth';
 
 interface NavItem {
   label: string;
@@ -46,7 +51,6 @@ type MobileMenuView = 'main' | 'profile' | 'submenu';
 export function BlogHeader() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
-  const router = useRouter();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -67,6 +71,9 @@ export function BlogHeader() {
 
   const { open: openLogin } = useLoginModal();
   const { open: openRegister } = useRegisterModal();
+  const { logout: authLogout } = useAuthStore();
+  const { logout } = useAuth();
+  const { refresh } = useRouter();
 
   const user = session?.user;
   const isAuthenticated = status === 'authenticated';
@@ -124,15 +131,14 @@ export function BlogHeader() {
     closeMobileMenu();
   };
 
-  // Logout
   const handleLogout = async () => {
     try {
-      await signOut({ redirect: false });
+      logout();
+      authLogout();
       toast.success('Logout realizado com sucesso!');
       setIsProfileOpen(false);
       closeMobileMenu();
-      router.push('/blog');
-      router.refresh();
+      refresh();
     } catch {
       toast.error('Erro ao fazer logout');
     }

@@ -1,6 +1,5 @@
 // app/libs/imslp-score-scraper-incremental.ts - Versão com Carregamento por Tab Específica
 import * as cheerio from 'cheerio';
-import { AnyNode } from 'domhandler';
 import { IMSLPBatchProcessorOptimized } from './imslp-batch-processor-optimized';
 
 export interface IMSLPWorkScoresIncremental {
@@ -301,8 +300,8 @@ export class IMSLPScraperIncremental {
    * 🚀 Extração de partituras de uma aba com paginação otimizada
    */
   private static async extractScoresFromTabPaginated(
-    $: cheerio.CheerioAPI,
-    $tabContent: cheerio.Cheerio<AnyNode>,
+    $: any,
+    $tabContent: any,
     type: IMSLPScore['type'],
     options: { limit: number; offset: number }
   ): Promise<IMSLPScoreGroup[]> {
@@ -311,12 +310,12 @@ export class IMSLPScraperIncremental {
 
     // 🆕 Coletar todos os grupos COM seus títulos de seção
     const groups: {
-      element: cheerio.Cheerio<AnyNode>;
+      element: any;
       index: number;
       sectionTitle: string | null; // 🆕 Título da seção (h5)
     }[] = [];
 
-    $tabContent.find('.we').each((groupIndex, groupElement) => {
+    $tabContent.find('.we').each((groupIndex: any, groupElement: any) => {
       const $groupElement = $(groupElement);
 
       // 🆕 Buscar o título da seção (h5) que precede este grupo
@@ -343,7 +342,7 @@ export class IMSLPScraperIncremental {
       if (!sectionTitle) {
         // Buscar h5 antes deste grupo na mesma estrutura
         const $parent = $groupElement.parent();
-        $parent.children().each((childIndex, childElement) => {
+        $parent.children().each((childIndex: any, childElement: any) => {
           const $child = $(childElement);
           if ($child.is($groupElement)) {
             // Chegou no nosso elemento, parar
@@ -388,12 +387,14 @@ export class IMSLPScraperIncremental {
       sectionTitle,
     } of groups) {
       const scoreElements: {
-        element: cheerio.Cheerio<AnyNode>;
+        element: any;
         index: number;
       }[] = [];
-      $groupElement.find('[id^="IMSLP"]').each((scoreIndex, scoreElement) => {
-        scoreElements.push({ element: $(scoreElement), index: scoreIndex });
-      });
+      $groupElement
+        .find('[id^="IMSLP"]')
+        .each((scoreIndex: any, scoreElement: any) => {
+          scoreElements.push({ element: $(scoreElement), index: scoreIndex });
+        });
 
       for (const { element: $element, index: scoreIndex } of scoreElements) {
         // Verificar se devemos pular esta partitura (offset)
@@ -579,7 +580,7 @@ export class IMSLPScraperIncremental {
 
   // === MÉTODOS AUXILIARES ===
 
-  private static extractTabCounts($: cheerio.CheerioAPI) {
+  private static extractTabCounts($: any) {
     const totalCounts = {
       scores: 0,
       parts: 0,
@@ -597,7 +598,7 @@ export class IMSLPScraperIncremental {
     return totalCounts;
   }
 
-  private static extractWorkTitle($: cheerio.CheerioAPI): string {
+  private static extractWorkTitle($: any): string {
     return (
       $('h1').first().text().trim() ||
       $('#firstHeading').text().trim() ||
@@ -606,8 +607,8 @@ export class IMSLPScraperIncremental {
   }
 
   private static extractScoreMetadata(
-    $: cheerio.CheerioAPI,
-    $element: cheerio.Cheerio<AnyNode>,
+    $: any,
+    $element: any,
     type: IMSLPScore['type'],
     groupIndex: number,
     scoreIndex: number
@@ -723,7 +724,8 @@ export class IMSLPScraperIncremental {
 
         const $relatedImages = $relatedContainer.find('img');
 
-        $relatedImages.each((_, imgEl) => {
+        $relatedImages.each((teste: any, imgEl: any) => {
+          console.log(teste);
           if (thumbnailUrl) return false; // Para quando encontrar a primeira
 
           const $img = $(imgEl);

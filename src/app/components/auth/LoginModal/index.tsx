@@ -14,6 +14,56 @@ import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import ForgotPasswordModal from '../ForgotPasswordModal';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { Language } from '@/app/stores/useLanguageStore';
+
+const errorMessages: Record<string, { pt: string; en: string }> = {
+  Callback: {
+    pt: 'Este email já está cadastrado com senha. Use "Entrar com Email" ou redefina sua senha.',
+    en: 'This email is already registered with a password. Use "Sign in with Email" or reset your password.',
+  },
+  OAuthCallback: {
+    pt: 'Erro na autenticação com Google. Tente novamente.',
+    en: 'Google authentication error. Please try again.',
+  },
+  OAuthSignin: {
+    pt: 'Erro ao conectar com Google. Verifique suas permissões.',
+    en: 'Error connecting to Google. Check your permissions.',
+  },
+  OAuthCreateAccount: {
+    pt: 'Este email já está em uso. Tente fazer login com email e senha.',
+    en: 'This email is already in use. Try signing in with email and password.',
+  },
+  EmailCreateAccount: {
+    pt: 'Este email já está em uso.',
+    en: 'This email is already in use.',
+  },
+  Signin: {
+    pt: 'Email ou senha incorretos.',
+    en: 'Incorrect email or password.',
+  },
+  SessionRequired: {
+    pt: 'Sessão expirada. Faça login novamente.',
+    en: 'Session expired. Please sign in again.',
+  },
+  AccessDenied: {
+    pt: 'Acesso negado pelo Google.',
+    en: 'Access denied by Google.',
+  },
+  Verification: {
+    pt: 'Erro na verificação. Tente novamente.',
+    en: 'Verification error. Please try again.',
+  },
+  DEFAULT: {
+    pt: 'Erro ao autenticar. Tente novamente.',
+    en: 'Authentication error. Please try again.',
+  },
+};
+
+const getErrorMessage = (errorCode: string | null, language: Language) => {
+  if (!errorCode) return null;
+  const msg = errorMessages[errorCode] || errorMessages.DEFAULT;
+  return msg[language as 'pt' | 'en'];
+};
 
 const LoginModal: React.FC = () => {
   const { isOpen, close, switchToRegister } = useLoginModal();
@@ -21,7 +71,9 @@ const LoginModal: React.FC = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const router = useRouter();
-  const { t } = useTranslation({ sections: ['components/auth-modals'] });
+  const { t, language } = useTranslation({
+    sections: ['components/auth-modals'],
+  });
 
   // Estado para erro específico de conflito de email
   const [emailConflictError, setEmailConflictError] = useState<string | null>(
@@ -42,70 +94,27 @@ const LoginModal: React.FC = () => {
   // 🆕 NOVO: Função para verificar e processar erros na URL
   const checkUrlErrors = () => {
     if (typeof window === 'undefined') return;
-
-    const currentUrl = new URL(window.location.href);
-    const error = currentUrl.searchParams.get('error');
-    const errorDescription = currentUrl.searchParams.get('error_description');
+    const url = new URL(window.location.href);
+    const error = url.searchParams.get('error');
 
     if (error) {
-      console.log('🔍 Erro detectado na URL:', { error, errorDescription });
+      const errorMessage = getErrorMessage(error, language);
 
-      // Processar diferentes tipos de erro
-      let errorMessage = '';
-      let shouldShowConflictError = false;
-
-      switch (error) {
-        case 'Callback':
-          errorMessage = t('login_modal_email_conflict_credentials');
-          shouldShowConflictError = true;
-          break;
-        case 'OAuthCallback':
-          errorMessage = t('login_modal_google_oauth_error');
-          break;
-        case 'OAuthSignin':
-          errorMessage = t('login_modal_google_signin_error');
-          break;
-        case 'OAuthCreateAccount':
-          errorMessage = t('login_modal_email_conflict_google');
-          shouldShowConflictError = true;
-          break;
-        case 'EmailCreateAccount':
-          errorMessage = t('register_modal_email_exists');
-          shouldShowConflictError = true;
-          break;
-        case 'Signin':
-          errorMessage = t('login_modal_credentials_error');
-          break;
-        case 'SessionRequired':
-          errorMessage = t('login_modal_session_expired');
-          break;
-        case 'AccessDenied':
-          errorMessage = t('login_modal_google_access_denied');
-          break;
-        case 'Verification':
-          errorMessage = t('login_modal_verification_error');
-          break;
-        default:
-          // Usar error_description se disponível
-          errorMessage = errorDescription || t('login_modal_google_error');
-      }
-
-      // Mostrar erro apropriado
-      if (shouldShowConflictError) {
+      // Se for conflito, exibe dentro do modal
+      if (
+        ['Callback', 'OAuthCreateAccount', 'EmailCreateAccount'].includes(error)
+      ) {
         setEmailConflictError(errorMessage);
       } else {
         toast.error(errorMessage);
       }
 
-      // 🆕 NOVO: Limpar URL dos parâmetros de erro
-      const cleanUrl = new URL(window.location.href);
-      cleanUrl.searchParams.delete('error');
-      cleanUrl.searchParams.delete('error_description');
-      cleanUrl.searchParams.delete('code');
-      cleanUrl.searchParams.delete('state');
-
-      // Atualizar URL sem recarregar a página
-      window.history.replaceState({}, '', cleanUrl.toString());
+      // limpar URL
+      url.searchParams.delete('error');
+      url.searchParams.delete('error_description');
+      url.searchParams.delete('code');
+      url.searchParams.delete('state');
+      window.history.replaceState({}, '', url.toString());
     }
   };
 
@@ -188,34 +197,18 @@ const LoginModal: React.FC = () => {
       console.log('📊 Resultado do Google SignIn:', result);
 
       if (result?.error) {
-        console.error('❌ Erro no Google SignIn:', result.error);
+        const message = getErrorMessage(result.error, language);
 
-        // Tratar erros específicos do Google
-        switch (result.error) {
-          case 'Callback':
-            setEmailConflictError(t('login_modal_email_conflict_credentials'));
-            toast.error(t('register_modal_email_exists'));
-            break;
-          case 'OAuthCallback':
-            toast.error(t('login_modal_google_oauth_error'));
-            break;
-          case 'OAuthSignin':
-            toast.error(t('login_modal_google_signin_error'));
-            break;
-          case 'OAuthCreateAccount':
-            setEmailConflictError(t('login_modal_email_conflict_google'));
-            toast.error(t('register_modal_email_exists'));
-            break;
-          case 'EmailCreateAccount':
-            setEmailConflictError(t('login_modal_email_conflict_google'));
-            toast.error(t('register_modal_email_exists'));
-            break;
-          case 'AccessDenied':
-            toast.error(t('login_modal_google_access_denied'));
-            break;
-          default:
-            toast.error(t('login_modal_google_error'));
+        if (
+          ['Callback', 'OAuthCreateAccount', 'EmailCreateAccount'].includes(
+            result.error
+          )
+        ) {
+          setEmailConflictError(message);
+        } else {
+          toast.error(message);
         }
+        return;
       } else if (result?.url) {
         // Login bem-sucedido
         console.log('✅ Login Google bem-sucedido, redirecionando...');

@@ -367,14 +367,14 @@ async function scrapeIMSLPWorkDirect(url: string, composer: any) {
       dataCompleteness >= 80
         ? 'high'
         : dataCompleteness >= 60
-        ? 'medium'
-        : 'low',
+          ? 'medium'
+          : 'low',
   };
 }
 
 // 🔄 FUNÇÕES AUXILIARES (copiadas do scraper original)
 function extractImslpWorkId(
-  $: cheerio.CheerioAPI,
+  $: cheerio.Root,
   url: string
 ): {
   urlId: string;
@@ -412,7 +412,7 @@ function cleanTitle(title: string): string {
   return title.replace(/\([^)]*\)$/, '').trim();
 }
 
-function extractWorkDetails($: cheerio.CheerioAPI) {
+function extractWorkDetails($: cheerio.Root) {
   const details: any = {};
 
   $('.wi_body table tr, .wp_header table tr').each((index, element) => {
@@ -465,7 +465,7 @@ function extractWorkDetails($: cheerio.CheerioAPI) {
   return details;
 }
 
-function extractSubtitle(title: string, $: cheerio.CheerioAPI): string | null {
+function extractSubtitle(title: string, $: cheerio.Root): string | null {
   let subtitle: string | null = null;
 
   $('.wp_header table tr').each((index, element) => {
@@ -493,7 +493,7 @@ function extractSubtitle(title: string, $: cheerio.CheerioAPI): string | null {
   return subtitle && subtitle.length > 0 ? subtitle : null;
 }
 
-function extractCategories($: cheerio.CheerioAPI): string[] {
+function extractCategories($: cheerio.Root): string[] {
   const categories: Set<string> = new Set();
 
   $('a[href*="Category:"]').each((index, element) => {
@@ -519,7 +519,7 @@ function extractCategories($: cheerio.CheerioAPI): string[] {
   return Array.from(categories);
 }
 
-function extractWorkGenres($: cheerio.CheerioAPI): string[] {
+function extractWorkGenres($: cheerio.Root): string[] {
   const workGenres = new Set<string>();
 
   $('.wp_header table tr').each((index, element) => {
@@ -581,7 +581,7 @@ function extractWorkGenres($: cheerio.CheerioAPI): string[] {
   return finalGenres;
 }
 
-function extractIMSLPTags($: cheerio.CheerioAPI): string[] {
+function extractIMSLPTags($: cheerio.Root): string[] {
   const tags: Set<string> = new Set();
 
   $('a[href*="Category:"]').each((index, element) => {

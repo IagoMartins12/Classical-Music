@@ -171,7 +171,6 @@ const STATE_COMPOSERS_FILE = path.join(
 );
 
 const BATCH_SIZE = 1000;
-const MAX_BATCH_SIZE = 28000;
 
 const DELAY_BETWEEN_REQUESTS = 2000; // 2 segundos entre requisições
 const DELAY_BETWEEN_BATCHES = 5000; // 5 segundos entre lotes
@@ -201,6 +200,7 @@ class IMSLPScraper {
     };
 
     // Definir instância global
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     globalScraperInstance = this;
   }
 
@@ -223,7 +223,7 @@ class IMSLPScraper {
           this.timer.totalElapsedTime
         )}`
       );
-    } catch (error) {
+    } catch {
       console.log('⚠ Nenhum estado anterior encontrado, iniciando do zero');
     }
   }
@@ -365,7 +365,7 @@ class IMSLPScraper {
   }
 
   // Extrair link da Wikipedia
-  extractWikipediaLink($: cheerio.CheerioAPI): string | null {
+  extractWikipediaLink($: cheerio.Root): string | null {
     try {
       const linksDiv = $('.cp_links');
       if (linksDiv.length === 0) {
@@ -456,7 +456,7 @@ class IMSLPScraper {
   }
 
   // Determinar o papel baseado no texto encontrado na div mw-pages
-  determineRole($: cheerio.CheerioAPI): {
+  determineRole($: cheerio.Root): {
     primaryRole: string | null;
     roles: string | null;
   } {
@@ -532,7 +532,7 @@ class IMSLPScraper {
   }
 
   // 🆕 Método para extrair nomes alternativos da div cp_mainlinks
-  extractAlternativeNames($: cheerio.CheerioAPI): {
+  extractAlternativeNames($: cheerio.Root): {
     alternativeNames: string | null;
     pseudonyms: string | null;
   } {
@@ -596,7 +596,7 @@ class IMSLPScraper {
   }
 
   // 🆕 Método para extrair informação diversa
-  extractDiverseInfo($: cheerio.CheerioAPI): string | null {
+  extractDiverseInfo($: cheerio.Root): string | null {
     try {
       // Buscar pela seção "Informação diversa"
       const diverseHeader = $('h2')
@@ -639,7 +639,7 @@ class IMSLPScraper {
   }
 
   // 🆕 Método para extrair links externos
-  extractExternalLinks($: cheerio.CheerioAPI): string | null {
+  extractExternalLinks($: cheerio.Root): string | null {
     try {
       // Buscar pela seção "Links externos"
       const linksHeader = $('h2').find('span[id*="Links_externos"]').first();
@@ -689,7 +689,7 @@ class IMSLPScraper {
   }
 
   // 🆕 Método para extrair datas melhoradas (atualizado - removido birthPlace e deathPlace)
-  extractImprovedDates($: cheerio.CheerioAPI): {
+  extractImprovedDates($: cheerio.Root): {
     birthDate: string | null;
     deathDate: string | null;
   } {
@@ -759,7 +759,7 @@ class IMSLPScraper {
   }
 
   // 🆕 Método para extrair nacionalidade
-  extractNationality($: cheerio.CheerioAPI): string | null {
+  extractNationality($: cheerio.Root): string | null {
     try {
       // Buscar na div cp_firsth por indicações de nacionalidade
       const firsthDiv = $('.cp_firsth');
@@ -827,7 +827,7 @@ class IMSLPScraper {
   }
 
   // 🆕 Método para avaliar qualidade da página (atualizado - sem compositionsCount)
-  evaluatePageQuality($: cheerio.CheerioAPI): {
+  evaluatePageQuality($: cheerio.Root): {
     pageStatus: string;
     pageQuality: string;
     dataCompleteness: number;
@@ -889,7 +889,7 @@ class IMSLPScraper {
   }
 
   // 🆕 Método para extrair instrumentos (mantido)
-  extractInstruments($: cheerio.CheerioAPI): string | null {
+  extractInstruments($: cheerio.Root): string | null {
     try {
       const instruments: string[] = [];
 
@@ -969,7 +969,7 @@ class IMSLPScraper {
   }
 
   // 🔄 Método para extrair categorias IMSLP (VOLTOU)
-  extractCategories($: cheerio.CheerioAPI): string | null {
+  extractCategories($: cheerio.Root): string | null {
     try {
       const categories: string[] = [];
 
@@ -1016,7 +1016,7 @@ class IMSLPScraper {
   }
 
   // 🆕 Método para extrair data de última modificação
-  extractLastModified($: cheerio.CheerioAPI): string | null {
+  extractLastModified($: cheerio.Root): string | null {
     try {
       // Buscar por indicações de última modificação
       const footerText = $('#footer, .printfooter, #mw-page-base').text();
@@ -1045,7 +1045,7 @@ class IMSLPScraper {
   }
 
   // 🆕 Método para obter contagem de composições (melhorado)
-  getCompositionsCount($: cheerio.CheerioAPI): number {
+  getCompositionsCount($: cheerio.Root): number {
     try {
       // Método 1: Aba de composições
       const compositionsTab = $('.ui-tabs-nav li a, .ui-tabs-nav a').filter(
@@ -1405,7 +1405,7 @@ class IMSLPScraper {
         dataCompleteness: qualityInfo.dataCompleteness,
         hasValidImage: hasValidImage,
       };
-    } catch (error) {
+    } catch {
       console.error(`❌ Erro ao extrair dados de ${composer.id}\n`);
       await fs.appendFile(
         STATE_COMPOSERS_FILE,
@@ -1416,7 +1416,7 @@ class IMSLPScraper {
   }
 
   // 🆕 Método para extrair nome alternativo (contentSub)
-  extractOtherName($: cheerio.CheerioAPI): string | null {
+  extractOtherName($: cheerio.Root): string | null {
     try {
       const contentSubDiv = $('#contentSub');
       if (contentSubDiv.length === 0) {
@@ -1511,10 +1511,6 @@ class IMSLPScraper {
         console.log(`⚠ Compositor já existe: ${composerData.fullName}`);
         return false;
       }
-
-      // 🆕 Converter datas para formato ISO (mantendo flexibilidade para datas parciais)
-      const birthDate = this.parseFlexibleDate(composerData.birthDate);
-      const deathDate = this.parseFlexibleDate(composerData.deathDate);
 
       // Determinar época baseada na data de nascimento
       const epoch = this.determineEpochByDate(composerData.birthDate);

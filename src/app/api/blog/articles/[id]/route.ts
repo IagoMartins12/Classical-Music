@@ -59,18 +59,7 @@ export async function GET(
         media: {
           orderBy: { order: 'asc' },
         },
-        series: {
-          include: {
-            series: {
-              select: {
-                id: true,
-                title: true,
-                slug: true,
-                description: true,
-              },
-            },
-          },
-        },
+
         _count: {
           select: {
             comments: { where: { status: 'APPROVED' } },
@@ -269,39 +258,6 @@ export async function GET(
     });
 
     // Info da série (se faz parte)
-    let seriesInfo = null;
-    if (article.series.length > 0) {
-      const seriesRel = article.series[0];
-      const allSeriesArticles = await prisma.blogSeriesArticle.findMany({
-        where: { seriesId: seriesRel.series.id },
-        include: {
-          article: {
-            select: {
-              id: true,
-              title: true,
-              slug: true,
-            },
-          },
-        },
-        orderBy: { order: 'asc' },
-      });
-
-      const currentIndex = allSeriesArticles.findIndex(
-        (a) => a.articleId === article.id
-      );
-
-      seriesInfo = {
-        series: seriesRel.series,
-        currentOrder: seriesRel.order,
-        totalArticles: allSeriesArticles.length,
-        previousArticle:
-          currentIndex > 0 ? allSeriesArticles[currentIndex - 1].article : null,
-        nextArticle:
-          currentIndex < allSeriesArticles.length - 1
-            ? allSeriesArticles[currentIndex + 1].article
-            : null,
-      };
-    }
 
     return NextResponse.json({
       success: true,
@@ -317,7 +273,6 @@ export async function GET(
         userLiked,
         userBookmarked,
         relatedArticles,
-        series: seriesInfo,
       },
       stats: {
         views: article.viewCount,

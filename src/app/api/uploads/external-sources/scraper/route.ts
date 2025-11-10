@@ -169,7 +169,7 @@ async function scrapeWikipedia(url: string): Promise<ScrapedComposerData> {
   }
 }
 
-function extractFullBiography($: cheerio.CheerioAPI): string | null {
+function extractFullBiography($: cheerio.Root): string | null {
   try {
     const biographyParagraphs: string[] = [];
 
@@ -307,9 +307,7 @@ function extractFullBiography($: cheerio.CheerioAPI): string | null {
 }
 
 // Função alternativa mais simples (captura até o primeiro heading)
-function extractBiographyUntilFirstHeading(
-  $: cheerio.CheerioAPI
-): string | null {
+function extractBiographyUntilFirstHeading($: cheerio.Root): string | null {
   try {
     const biographyParagraphs: string[] = [];
 
@@ -363,7 +361,7 @@ function extractBiographyUntilFirstHeading(
 }
 
 // Função com detecção inteligente de seções
-function extractBiographyIntelligent($: cheerio.CheerioAPI): string | null {
+function extractBiographyIntelligent($: cheerio.Root): string | null {
   try {
     const biographyParagraphs: string[] = [];
 
@@ -417,9 +415,7 @@ function extractBiographyIntelligent($: cheerio.CheerioAPI): string | null {
 }
 
 // Função para extrair nacionalidade da Wikipedia traduzida para português
-function extractWikipediaNationalityTranslated(
-  $: cheerio.CheerioAPI
-): string | null {
+function extractWikipediaNationalityTranslated($: cheerio.Root): string | null {
   console.log('🔍 Iniciando extração de nacionalidade...');
 
   // 1. Tentar na infobox primeiro
@@ -524,7 +520,7 @@ function extractWikipediaNationalityTranslated(
 }
 
 // Função melhorada para extrair datas da Wikipedia
-function extractWikipediaDates($: cheerio.CheerioAPI): {
+function extractWikipediaDates($: cheerio.Root): {
   birthDate: string | null;
   deathDate: string | null;
 } {
@@ -559,7 +555,7 @@ function extractWikipediaDates($: cheerio.CheerioAPI): {
 }
 
 // Extração melhorada da infobox
-function extractFromInfoboxImproved($: cheerio.CheerioAPI): {
+function extractFromInfoboxImproved($: cheerio.Root): {
   birthDate: string | null;
   deathDate: string | null;
 } {
@@ -604,7 +600,7 @@ function extractFromInfoboxImproved($: cheerio.CheerioAPI): {
 }
 
 // Extrair datas do primeiro parágrafo
-function extractDatesFromFirstParagraph($: cheerio.CheerioAPI): {
+function extractDatesFromFirstParagraph($: cheerio.Root): {
   birthDate: string | null;
   deathDate: string | null;
 } {
@@ -637,7 +633,7 @@ function extractDatesFromFirstParagraph($: cheerio.CheerioAPI): {
 }
 
 // Extrair datas de todo o texto da página
-function extractDatesFromFullText($: cheerio.CheerioAPI): {
+function extractDatesFromFullText($: cheerio.Root): {
   birthDate: string | null;
   deathDate: string | null;
 } {
@@ -875,7 +871,7 @@ function formatDateToISO(dateString: string): string | null {
   return extractDateFromText(dateString);
 }
 
-function extractNationalityIMSLP($: cheerio.CheerioAPI): string | null {
+function extractNationalityIMSLP($: cheerio.Root): string | null {
   console.log('🔍 Iniciando extração de nacionalidade do IMSLP...');
 
   try {
@@ -968,7 +964,7 @@ function extractNationalityFromBirthPlace(text: string): string | null {
 }
 
 // Função auxiliar para extrair categorias IMSLP
-function extractCategoriesIMSLP($: cheerio.CheerioAPI): string | null {
+function extractCategoriesIMSLP($: cheerio.Root): string | null {
   try {
     const categories: string[] = [];
     const categoryLinks = $('a[href*="Category:"]');
@@ -994,7 +990,7 @@ function extractCategoriesIMSLP($: cheerio.CheerioAPI): string | null {
 // Função para extrair nome e fullName do IMSLP (baseada no padrão Category:Sobrenome,_Nome)
 function extractNameAndFullNameIMSLP(
   imslpId: string,
-  $: cheerio.CheerioAPI
+  $: cheerio.Root
 ): {
   name: string;
   fullName: string;
@@ -1077,7 +1073,7 @@ function extractFirstName(fullName: string): string {
   return parts[parts.length - 1];
 }
 
-function extractWikipediaImage($: cheerio.CheerioAPI): string | null {
+function extractWikipediaImage($: cheerio.Root): string | null {
   const infoboxImage = $('.infobox img, .infobox-vcard img').first();
   if (infoboxImage.length > 0) {
     const src = infoboxImage.attr('src');
@@ -1106,7 +1102,7 @@ function calculateWikipediaCompleteness(
 }
 
 // Função melhorada para extrair datas do IMSLP (baseada no imslp-scraper.ts)
-function extractImprovedDatesIMSLP($: cheerio.CheerioAPI): {
+function extractImprovedDatesIMSLP($: cheerio.Root): {
   birthDate: string | null;
   deathDate: string | null;
 } {
@@ -1331,7 +1327,7 @@ async function scrapeIMSLP(url: string): Promise<ScrapedComposerData> {
 }
 
 // Função para extrair nomes alternativos do IMSLP
-function extractAlternativeNamesIMSLP($: cheerio.CheerioAPI): {
+function extractAlternativeNamesIMSLP($: cheerio.Root): {
   alternativeNames: string | null;
 } {
   try {
@@ -1368,7 +1364,7 @@ function extractAlternativeNamesIMSLP($: cheerio.CheerioAPI): {
 }
 
 // Função para extrair URL do retrato do IMSLP
-function extractPortraitUrlIMSLP($: cheerio.CheerioAPI): string | null {
+function extractPortraitUrlIMSLP($: cheerio.Root): string | null {
   const imageElement = $('.cp_img img');
   if (imageElement.length > 0) {
     const imgSrc = imageElement.attr('src');
@@ -1380,7 +1376,7 @@ function extractPortraitUrlIMSLP($: cheerio.CheerioAPI): string | null {
 }
 
 // Função para extrair links externos do IMSLP
-function extractExternalLinksIMSLP($: cheerio.CheerioAPI): string | null {
+function extractExternalLinksIMSLP($: cheerio.Root): string | null {
   try {
     const linksHeader = $('h2').find('span[id*="Links_externos"]').first();
     if (linksHeader.length === 0) return null;
@@ -1410,7 +1406,7 @@ function extractExternalLinksIMSLP($: cheerio.CheerioAPI): string | null {
 }
 
 // Função para extrair instrumentos do IMSLP
-function extractInstrumentsIMSLP($: cheerio.CheerioAPI): string | null {
+function extractInstrumentsIMSLP($: cheerio.Root): string | null {
   try {
     const instruments: string[] = [];
     const commonInstruments = [
@@ -1463,7 +1459,7 @@ function extractInstrumentsIMSLP($: cheerio.CheerioAPI): string | null {
 }
 
 // Função para extrair link da Wikipedia do IMSLP
-function extractWikipediaLinkIMSLP($: cheerio.CheerioAPI): string | null {
+function extractWikipediaLinkIMSLP($: cheerio.Root): string | null {
   try {
     const linksDiv = $('.cp_links');
     if (linksDiv.length === 0) return null;
@@ -1496,7 +1492,7 @@ function extractWikipediaLinkIMSLP($: cheerio.CheerioAPI): string | null {
 }
 
 // Função para determinar papel do IMSLP
-function determineRoleIMSLP($: cheerio.CheerioAPI): {
+function determineRoleIMSLP($: cheerio.Root): {
   primaryRole: string | null;
   roles: string | null;
 } {
@@ -1544,7 +1540,7 @@ function determineRoleIMSLP($: cheerio.CheerioAPI): {
 }
 
 // Função para avaliar qualidade da página do IMSLP
-function evaluatePageQualityIMSLP($: cheerio.CheerioAPI): {
+function evaluatePageQualityIMSLP($: cheerio.Root): {
   pageQuality: string;
   dataCompleteness: number;
   hasValidImage: boolean;
