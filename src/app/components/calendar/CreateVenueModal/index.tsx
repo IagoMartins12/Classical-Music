@@ -462,6 +462,8 @@ export default function CreateVenueModal({
                   onError={(e) => {
                     e.currentTarget.src = '/placeholder-venue.jpg';
                   }}
+                  width={100}
+                  height={100}
                 />
               </div>
             </div>

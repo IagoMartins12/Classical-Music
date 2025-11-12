@@ -494,6 +494,8 @@ export default function CreateEventModal({
                   onError={(e) => {
                     e.currentTarget.src = '/placeholder-event.jpg';
                   }}
+                  height={100}
+                  width={100}
                 />
               </div>
             </div>

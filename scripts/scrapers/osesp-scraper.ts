@@ -207,22 +207,21 @@ export class OSESPScraper extends BaseScraper {
     const program = this.extractProgram($);
 
     if (!title || !date) {
-      console.warn(`⚠️  Skipping event: missing title or date (${url})`);
+      console.warn('⚠️ Skipping event (missing title or date):', url);
       return null;
     }
 
     const type = detectEventType(title, description);
-    const textForComposers = `${title}\n${description}\n${program || ''}`;
+    const textForComposers = `${title}${description}${program}`;
     let composerNames = extractComposerNames(textForComposers);
 
-    // Remove falsos positivos
+    // Remover falsos positivos
     if (
       composerNames.includes('Wagner') &&
       textForComposers.includes('Wagner Polistchuk')
     ) {
       composerNames = composerNames.filter((c) => c !== 'Wagner');
     }
-
     if (
       composerNames.includes('Berlioz') &&
       !program?.includes('BERLIOZ') &&
@@ -243,7 +242,8 @@ export class OSESPScraper extends BaseScraper {
       endDate: null,
       endTime: null,
       venueDetails: venue,
-      ticketUrl: ticketUrl || url,
+      ticketUrl: ticketUrl || url, // URL de ingressos (Sympla ou página)
+      externalUrl: url, // ✅ URL da página do evento
       ticketInfo: isFree ? 'Entrada gratuita' : ticketInfo,
       externalId,
       imageUrl,

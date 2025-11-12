@@ -27,6 +27,8 @@ export interface ScrapedEvent {
   endTime: string | null;
   venueDetails: string | null;
   ticketUrl: string | null;
+  externalUrl: string | null; // ✅ NOVO: URL da página do evento
+
   ticketInfo: string | null;
   externalId: string;
   imageUrl: string | null;

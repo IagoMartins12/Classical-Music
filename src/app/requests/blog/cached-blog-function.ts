@@ -84,3 +84,15 @@ export const invalidateBlogCache = async () => {
 
   console.log('🔄 Blog cache invalidated');
 };
+
+export const invalidateBlogCategories = async () => {
+  if (isDev) {
+    console.log('🔧 DEV MODE: Cache invalidation skipped');
+    return;
+  }
+
+  const { invalidateCacheByPrefix } = await import('@/app/libs/hybrid-cache');
+  await invalidateCacheByPrefix('hourly:blog-categories');
+
+  console.log('🔄 Blog categories cache invalidated');
+};

@@ -10,10 +10,11 @@ import CreateEventModal from '@/app/components/calendar/CreateEventModal';
 import CreateVenueModal from '@/app/components/calendar/CreateVenueModal';
 import ConfirmDeleteEventModal from '@/app/components/calendar/ConfirmDeleteEventModal';
 import ConfirmDeleteVenueModal from '@/app/components/calendar/ConfirmDeleteVenueModal';
-import { FiCalendar, FiPlus, FiMapPin } from 'react-icons/fi';
+import { FiCalendar, FiPlus, FiMapPin, FiSearch } from 'react-icons/fi';
 import { PageContainer } from '@/app/components/animation/AnimatedComponents';
 import { useCalendarManagement } from '@/app/hooks/useCalendarManagement';
 import { useAuth } from '@/app/hooks/useAuth';
+import SearchEventsModal from '@/app/components/calendar/SearchEventsModal';
 
 interface CalendarPageClientProps {
   initialData: CalendarPageData;
@@ -30,6 +31,7 @@ export default function CalendarPageClient({
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
   // Filtros
   const [selectedCity, setSelectedCity] = useState<string>('');
@@ -130,6 +132,14 @@ export default function CalendarPageClient({
               <span>Novo Evento</span>
             </button>
             <button
+              onClick={() => setIsSearchModalOpen(true)}
+              className="btn-classical-secondary flex items-center space-x-2"
+            >
+              <FiSearch className="w-4 h-4" />
+              <span>Buscar Eventos (Scraper)</span>
+            </button>
+
+            <button
               onClick={calendarManagement.openCreateVenueModal}
               className="btn-classical-secondary flex items-center space-x-2"
             >
@@ -192,7 +202,11 @@ export default function CalendarPageClient({
           venues={venues}
           editingEvent={calendarManagement.editingEvent}
         />
-
+        <SearchEventsModal
+          isOpen={isSearchModalOpen}
+          onClose={() => setIsSearchModalOpen(false)}
+          onSuccess={fetchEvents}
+        />
         {/* Create/Edit Venue Modal */}
         <CreateVenueModal
           isOpen={calendarManagement.isVenueModalOpen}

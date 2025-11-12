@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
+import { invalidateBlogCategories } from '@/app/requests/blog/cached-blog-function';
 
 // ==================== GET - Listar Categorias ====================
 export async function GET(request: NextRequest) {
@@ -146,6 +147,7 @@ export async function POST(request: NextRequest) {
     });
 
     revalidateTag('blog-categories');
+    await invalidateBlogCategories();
 
     return NextResponse.json({
       success: true,
@@ -230,6 +232,7 @@ export async function PUT(request: NextRequest) {
 
     revalidateTag('blog-categories');
     revalidateTag(`blog-category-${id}`);
+    await invalidateBlogCategories();
 
     return NextResponse.json({
       success: true,
@@ -302,7 +305,7 @@ export async function DELETE(request: NextRequest) {
     });
 
     revalidateTag('blog-categories');
-
+    await invalidateBlogCategories();
     return NextResponse.json({
       success: true,
       message: 'Categoria deletada com sucesso',

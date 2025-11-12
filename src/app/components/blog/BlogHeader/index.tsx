@@ -28,7 +28,6 @@ import Button from '../../Common/Button';
 import { useLoginModal, useRegisterModal } from '@/app/stores/authStore';
 import { GiGrandPiano } from 'react-icons/gi';
 import { SearchModal } from '../SearchModal';
-import { LanguageToggle } from '../../LanguageToggle';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 
@@ -486,7 +485,6 @@ export function BlogHeader() {
               >
                 <FaSearch className="w-4 h-4 text-theme-secondary group-hover:text-brand-primary transition-colors" />
               </button>
-              <LanguageToggle variant="compact" className="hidden sm:block" />
 
               <ThemeToggle variant="navbar" className="hidden sm:block" />
 

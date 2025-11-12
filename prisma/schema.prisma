@@ -3212,6 +3212,9 @@ enum EventType {
   LECTURE          // Palestra
   EXHIBITION       // Exposição
   OTHER            // Outro
+  CHOIR
+  BALLET
+  CHORAL
 }
 
 enum EventStatus {
@@ -3347,6 +3350,7 @@ model Event {
   
   // Ingressos
   ticketUrl       String?  // Link para compra
+
   ticketPrice     Json?    // Estrutura de preços
   // Exemplo: { min: 50, max: 200, currency: "BRL", categories: [...] }
   isFree          Boolean  @default(false)

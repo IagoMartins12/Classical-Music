@@ -59,15 +59,14 @@ interface UserState {
   logout: () => void;
 }
 
+// hooks/userStore.ts
 export const useUserStore = create<UserState>()(
   subscribeWithSelector((set) => ({
-    // Initial state
     user: null,
     isLoading: false,
     isAuthenticated: false,
     isHydrated: false,
 
-    // Actions
     setUser: (user) =>
       set({
         user,
@@ -93,23 +92,7 @@ export const useUserStore = create<UserState>()(
   }))
 );
 
-// Hooks com proteção SSR
-export const useUser = () => {
-  const store = useUserStore();
-  return typeof window !== 'undefined' ? store.user : null;
-};
-
-export const useIsAuthenticated = () => {
-  const store = useUserStore();
-  return typeof window !== 'undefined' ? store.isAuthenticated : false;
-};
-
-export const useUserLoading = () => {
-  const store = useUserStore();
-  return typeof window !== 'undefined' ? store.isLoading : false;
-};
-
-export const useUpdateUser = () => {
-  const store = useUserStore();
-  return typeof window !== 'undefined' ? store.updateUser : () => {};
-};
+// ✅ Use seletores otimizados
+export const useUser = () => useUserStore((state) => state.user);
+export const useIsAuthenticated = () =>
+  useUserStore((state) => state.isAuthenticated);
