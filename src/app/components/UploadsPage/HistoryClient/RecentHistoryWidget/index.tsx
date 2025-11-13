@@ -197,7 +197,7 @@ const RecentHistoryWidget = ({
             </h3>
           </div>
           <Link
-            href="/uploads/history"
+            href="/upload/history"
             className="text-sm text-brand-primary hover:text-brand-secondary transition-colors flex items-center space-x-1"
           >
             <span>Ver Tudo</span>
@@ -274,7 +274,7 @@ const RecentHistoryWidget = ({
       {history.length > 0 && (
         <div className="mt-4 pt-4 border-t border-theme-secondary">
           <Link
-            href="/uploads/history"
+            href="/upload/history"
             className="w-full btn-classical-secondary text-sm justify-center"
           >
             Ver Histórico Completo
