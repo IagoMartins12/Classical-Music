@@ -191,7 +191,7 @@ const UploadScoreCard = ({
         {/* Header Section */}
         <div className="relative p-6 pb-4 border-b border-theme-secondary">
           {/* Floating action buttons */}
-          <div className="absolute top-4 right-4 z-50 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <div className="absolute top-4 right-4 z-50 flex flex-col space-y-2 opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
             <button
               onClick={onEdit}
               className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center shadow-theme-medium"
@@ -293,8 +293,8 @@ const UploadScoreCard = ({
                     item.dataQuality === 'high'
                       ? 'bg-accent-green/10 text-accent-green border border-accent-green/30'
                       : item.dataQuality === 'medium'
-                      ? 'bg-accent-amber/10 text-accent-amber border border-accent-amber/30'
-                      : 'bg-accent-red/10 text-accent-red border border-accent-red/30'
+                        ? 'bg-accent-amber/10 text-accent-amber border border-accent-amber/30'
+                        : 'bg-accent-red/10 text-accent-red border border-accent-red/30'
                   }`}
                 >
                   <FiStar className="w-2.5 h-2.5 mr-1" />

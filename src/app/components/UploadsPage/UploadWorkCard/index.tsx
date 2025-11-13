@@ -162,7 +162,7 @@ const UploadWorkCard = ({
             <div className="absolute inset-0 opacity-5 music-note-background"></div>
 
             {/* Floating action buttons */}
-            <div className="absolute top-4 right-4 z-50 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+            <div className="absolute top-0 sm:top-4 right-4 z-50 flex flex-col space-y-2 opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
               <button
                 onClick={handleEditClick}
                 className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center shadow-theme-medium"

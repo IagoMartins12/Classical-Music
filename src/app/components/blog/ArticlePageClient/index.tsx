@@ -143,7 +143,7 @@ export function ArticlePageClient({
               </div>
 
               {/* Comments */}
-              {isPreview && (
+              {!isPreview && (
                 <div className="mt-12" id="comments-section">
                   <CommentSection
                     articleId={article.id}

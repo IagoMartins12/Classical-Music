@@ -195,17 +195,17 @@ export function BlogHeader() {
     },
     {
       label: 'Romântico',
-      href: '/blog/romantico',
+      href: '/blog/category/romantico',
       description: 'Explore todos os artigos do periodo romântico',
     },
     {
       label: 'Barroco',
-      href: '/blog/barroco',
+      href: '/blog/category/barroco',
       description: 'Explore todos os artigos do periodo barroco',
     },
     {
       label: 'Clássico',
-      href: '/blog/classico',
+      href: '/blog/category/classico',
       description: 'Explore todos os artigos do periodo clássico.',
     },
   ];

@@ -2,6 +2,8 @@ import { BlogHeader } from '@/app/components/blog/BlogHeader';
 import { Metadata } from 'next';
 import Footer from '../components/Footer';
 import { ToasterProvider } from '../providers/ToasterProvider';
+import { FavoritesProvider } from '../providers/FavoritesProvider';
+import AdsProvider from '../components/Ads/AdsProvider';
 
 export const metadata: Metadata = {
   title: 'Blog - Opus Atlas',
@@ -14,14 +16,16 @@ export default function BlogLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <div className="classical-theme  flex flex-col">
-        <BlogHeader />
-        <main className="flex-1">{children}</main>
-        <Footer />
-      </div>
+    <AdsProvider>
+      <FavoritesProvider>
+        <div className="classical-theme  flex flex-col">
+          <BlogHeader />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
 
-      <ToasterProvider />
-    </>
+        <ToasterProvider />
+      </FavoritesProvider>
+    </AdsProvider>
   );
 }

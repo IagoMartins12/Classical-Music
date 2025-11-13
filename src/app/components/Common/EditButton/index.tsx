@@ -23,7 +23,7 @@ export default function EditButton({
   const router = useRouter();
 
   const goToEditPage = () => {
-    let url = `/uploads/${entityType}/${entityId}/edit`;
+    let url = `/upload/${entityType}/${entityId}/edit`;
 
     if (entityType === 'article') {
       url = `/blog/admin/articles/${entityId}/edit`;

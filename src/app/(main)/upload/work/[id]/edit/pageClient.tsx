@@ -20,6 +20,7 @@ import {
   FiTag,
   FiLayers,
   FiBookOpen,
+  FiEye,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiMetronome } from 'react-icons/gi';
 
@@ -97,7 +98,7 @@ const EditWorkClient = ({
       });
 
       if (response.ok) {
-        router.push('/uploads');
+        router.push('/upload');
       } else {
         const data = await response.json();
         throw new Error(data.error || 'Erro ao excluir obra');
@@ -126,7 +127,7 @@ const EditWorkClient = ({
         <AnimatedItem direction="down" springType="gentle">
           <nav className="flex items-center space-x-2 text-sm text-theme-tertiary mb-6 pt-4">
             <Link
-              href="/uploads"
+              href="/upload"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_uploads')}
@@ -145,7 +146,7 @@ const EditWorkClient = ({
               />
             </svg>
             <Link
-              href="/uploads"
+              href="/upload"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_works')}
@@ -185,7 +186,7 @@ const EditWorkClient = ({
                 <div className="lg:col-span-3 space-y-6">
                   {/* Título e Header */}
                   <div className="space-y-4">
-                    <div className="flex items-start justify-between">
+                    <div className="flex flex-col sm:flex-row items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-4">
                           <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
@@ -226,39 +227,40 @@ const EditWorkClient = ({
                       </div>
 
                       {/* Action buttons */}
-                      <div className="flex items-center space-x-3 ml-4">
-                        <Button
-                          variant="primary"
-                          leftIcon={<FiSave />}
-                          onClick={() => setShowEditModal(true)}
-                        >
-                          {t('edit_button')}
-                        </Button>
-
-                        {(isAdmin || work.createdBy === userId) && (
-                          <Button
-                            variant="delete"
-                            leftIcon={
-                              isDeleting ? (
-                                <FiLoader className="animate-spin" />
-                              ) : (
-                                <FiTrash2 />
-                              )
-                            }
-                            onClick={handleDelete}
-                            disabled={isDeleting}
-                          >
-                            {isDeleting
-                              ? t('deleting_button')
-                              : t('delete_button')}
-                          </Button>
-                        )}
-
+                      <div className="flex flex-wrap justify-center gap-3 sm:gap-0 items-center space-x-3 mt-4 sm:mt-0 ml-4">
                         <Link href={`/works/${work.id}`} className="ml-2">
-                          <Button variant="primary">
+                          <Button variant="primary" leftIcon={<FiEye />}>
                             {t('view_work_button')}
                           </Button>
                         </Link>
+
+                        {(isAdmin || work.createdBy === userId) && (
+                          <>
+                            <Button
+                              variant="primary"
+                              leftIcon={<FiSave />}
+                              onClick={() => setShowEditModal(true)}
+                            >
+                              {t('edit_button')}
+                            </Button>
+                            <Button
+                              variant="delete"
+                              leftIcon={
+                                isDeleting ? (
+                                  <FiLoader className="animate-spin" />
+                                ) : (
+                                  <FiTrash2 />
+                                )
+                              }
+                              onClick={handleDelete}
+                              disabled={isDeleting}
+                            >
+                              {isDeleting
+                                ? t('deleting_button')
+                                : t('delete_button')}
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </div>
 

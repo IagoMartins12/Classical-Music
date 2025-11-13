@@ -546,6 +546,10 @@
     "edit_work_title": "Editar Obra",
     "edit_score_title": "Editar Partitura",
 
+    "see_composer": "Ver Compositor",
+    "see_work": "Ver Obra",
+    "see_score": "Ver Partitura",
+
     "edit_button": "Editar",
     "delete_button": "Excluir",
     "deleting_button": "Excluindo...",
@@ -1370,6 +1374,10 @@
     "edit_composer_title": "Edit Composer",
     "edit_work_title": "Edit Work",
     "edit_score_title": "Edit Score",
+
+    "see_composer": "See Composer",
+    "see_work": "See Work",
+    "see_score": "See Score",
 
     "edit_button": "Edit",
     "delete_button": "Delete",

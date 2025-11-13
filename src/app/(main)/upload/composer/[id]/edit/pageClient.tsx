@@ -16,6 +16,7 @@ import {
   FiBookOpen,
   FiEdit3,
   FiInfo,
+  FiEye,
 } from 'react-icons/fi';
 
 import {
@@ -179,7 +180,7 @@ const EditComposerClient = ({
         <AnimatedItem direction="down" springType="gentle">
           <nav className="flex items-center space-x-2 text-sm text-theme-tertiary mb-6 pt-4">
             <Link
-              href="/uploads"
+              href="/upload"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_uploads')}
@@ -198,7 +199,7 @@ const EditComposerClient = ({
               />
             </svg>
             <Link
-              href="/uploads"
+              href="/upload"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_composers')}
@@ -235,7 +236,7 @@ const EditComposerClient = ({
                 <div className="lg:col-span-2 space-y-6 order-2 md:order-1 lg:order-1">
                   <AnimatedItem direction="up" springType="bouncy">
                     <div className="space-y-3">
-                      <div className="flex items-start justify-between">
+                      <div className="flex flex-col sm:flex-row items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-4">
                             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
@@ -253,32 +254,39 @@ const EditComposerClient = ({
                         </div>
 
                         {/* Action buttons */}
-                        <div className="flex items-center space-x-3 ml-4">
-                          <Button
-                            variant="primary"
-                            leftIcon={<FiSave />}
-                            onClick={() => setShowEditModal(true)}
-                          >
-                            {t('edit_button')}
-                          </Button>
-
-                          {(isAdmin || composer.createdBy === userId) && (
-                            <Button
-                              variant="delete"
-                              leftIcon={
-                                isDeleting ? (
-                                  <FiLoader className="animate-spin" />
-                                ) : (
-                                  <FiTrash2 />
-                                )
-                              }
-                              onClick={handleDelete}
-                              disabled={isDeleting}
-                            >
-                              {isDeleting
-                                ? t('deleting_button')
-                                : t('delete_button')}
+                        <div className="flex flex-wrap justify-center gap-3 items-center space-x-3 ml-4">
+                          <Link href={`/composer/${composer.id}`}>
+                            <Button variant="primary" leftIcon={<FiEye />}>
+                              {t('see_composer')}
                             </Button>
+                          </Link>
+                          {(isAdmin || composer.createdBy === userId) && (
+                            <>
+                              <Button
+                                variant="primary"
+                                leftIcon={<FiSave />}
+                                onClick={() => setShowEditModal(true)}
+                              >
+                                {t('edit_button')}
+                              </Button>
+
+                              <Button
+                                variant="delete"
+                                leftIcon={
+                                  isDeleting ? (
+                                    <FiLoader className="animate-spin" />
+                                  ) : (
+                                    <FiTrash2 />
+                                  )
+                                }
+                                onClick={handleDelete}
+                                disabled={isDeleting}
+                              >
+                                {isDeleting
+                                  ? t('deleting_button')
+                                  : t('delete_button')}
+                              </Button>
+                            </>
                           )}
                         </div>
                       </div>

@@ -20,6 +20,7 @@ import {
   FiExternalLink,
   FiMusic,
   FiLayers,
+  FiEye,
 } from 'react-icons/fi';
 
 import {
@@ -90,7 +91,7 @@ const EditScoreClient = ({
       });
 
       if (response.ok) {
-        router.push('/uploads');
+        router.push('/upload');
       } else {
         const data = await response.json();
         throw new Error(data.error || 'Erro ao excluir partitura');
@@ -119,7 +120,7 @@ const EditScoreClient = ({
         <AnimatedItem direction="down" springType="gentle">
           <nav className="flex items-center space-x-2 text-sm text-theme-tertiary mb-6 pt-4">
             <Link
-              href="/uploads"
+              href="/upload"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_uploads')}
@@ -138,7 +139,7 @@ const EditScoreClient = ({
               />
             </svg>
             <Link
-              href="/uploads"
+              href="/upload"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_scores')}
@@ -178,7 +179,7 @@ const EditScoreClient = ({
                 <div className="lg:col-span-3 space-y-6">
                   {/* Título e Header */}
                   <div className="space-y-4">
-                    <div className="flex items-start justify-between">
+                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-0  items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-4">
                           <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
@@ -217,32 +218,40 @@ const EditScoreClient = ({
                       </div>
 
                       {/* Action buttons */}
-                      <div className="flex items-center space-x-3 ml-4">
-                        <Button
-                          variant="primary"
-                          leftIcon={<FiSave />}
-                          onClick={() => setShowEditModal(true)}
-                        >
-                          {t('edit_button')}
-                        </Button>
+                      <div className="flex flex-wrap justify-center gap-4 sm:gap-0 items-center space-x-3 ml-4">
+                        <Link href={`/score/${score.id}`}>
+                          <Button variant="primary" leftIcon={<FiEye />}>
+                            {t('see_score')}
+                          </Button>
+                        </Link>
 
                         {(isAdmin || score.uploadedBy === userId) && (
-                          <Button
-                            variant="delete"
-                            leftIcon={
-                              isDeleting ? (
-                                <FiLoader className="animate-spin" />
-                              ) : (
-                                <FiTrash2 />
-                              )
-                            }
-                            onClick={handleDelete}
-                            disabled={isDeleting}
-                          >
-                            {isDeleting
-                              ? t('deleting_button')
-                              : t('delete_button')}
-                          </Button>
+                          <>
+                            <Button
+                              variant="primary"
+                              leftIcon={<FiSave />}
+                              onClick={() => setShowEditModal(true)}
+                            >
+                              {t('edit_button')}
+                            </Button>
+
+                            <Button
+                              variant="delete"
+                              leftIcon={
+                                isDeleting ? (
+                                  <FiLoader className="animate-spin" />
+                                ) : (
+                                  <FiTrash2 />
+                                )
+                              }
+                              onClick={handleDelete}
+                              disabled={isDeleting}
+                            >
+                              {isDeleting
+                                ? t('deleting_button')
+                                : t('delete_button')}
+                            </Button>
+                          </>
                         )}
                       </div>
                     </div>
