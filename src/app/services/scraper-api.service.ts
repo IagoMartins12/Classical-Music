@@ -1,5 +1,5 @@
 const SCRAPER_API_URL =
-  process.env.NEXT_PUBLIC_SCRAPER_API_URL || 'http://localhost:4000/api';
+  process.env.NEXT_PUBLIC_SCRAPER_API_URL || 'https://api.opusatlas.com.br/api';
 const API_KEY = process.env.SCRAPER_API_KEY || 'minha-chave-secreta-123';
 
 interface ScraperResponse {
