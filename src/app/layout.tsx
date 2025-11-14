@@ -141,14 +141,14 @@ const themeScript = `(function(){
     root.lang=lang==='pt'?'pt-BR':'en-US';
     
     if(mode==='dark'){
-      root.style.setProperty('--bg-primary','#0A0A0B');
+      root.style.setProperty('--bg-primary','#0a0a0a');
       root.style.setProperty('--text-primary','#FFFFFF');
-      root.style.setProperty('--bg-secondary','#141416');
-      root.style.setProperty('--bg-elevated','#1A1A1C');
+      root.style.setProperty('--bg-secondary','#1a1a2e');
+      root.style.setProperty('--bg-elevated','#2d3748');
     }else{
-      root.style.setProperty('--bg-primary','#FFFFFF');
-      root.style.setProperty('--text-primary','#1A1A1A');
-      root.style.setProperty('--bg-secondary','#F8F9FA');
+      root.style.setProperty('--bg-primary','#faf9f6');
+      root.style.setProperty('--text-primary','#2d2a23');
+      root.style.setProperty('--bg-secondary','#f4f1eb');
       root.style.setProperty('--bg-elevated','#FFFFFF');
     }
   }

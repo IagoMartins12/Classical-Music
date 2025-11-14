@@ -14,7 +14,7 @@ import { FiCalendar, FiPlus, FiMapPin, FiSearch } from 'react-icons/fi';
 import { PageContainer } from '@/app/components/animation/AnimatedComponents';
 import { useCalendarManagement } from '@/app/hooks/useCalendarManagement';
 import { useAuth } from '@/app/hooks/useAuth';
-import SearchEventsModal from '@/app/components/calendar/SearchEventsModal';
+import EventScraperModal from '@/app/components/blog/EventScraperModal';
 
 interface CalendarPageClientProps {
   initialData: CalendarPageData;
@@ -202,7 +202,7 @@ export default function CalendarPageClient({
           venues={venues}
           editingEvent={calendarManagement.editingEvent}
         />
-        <SearchEventsModal
+        <EventScraperModal
           isOpen={isSearchModalOpen}
           onClose={() => setIsSearchModalOpen(false)}
           onSuccess={fetchEvents}

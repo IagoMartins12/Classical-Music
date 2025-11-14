@@ -28,6 +28,7 @@ import { BiDollar, BiTestTube } from 'react-icons/bi';
 import { LuUser } from 'react-icons/lu';
 import { GiBroom } from 'react-icons/gi';
 import { MdOutlineTextSnippet } from 'react-icons/md';
+import { SiWebauthn } from 'react-icons/si';
 
 interface SidebarSection {
   title: string;
@@ -272,6 +273,12 @@ export default function AdminSidebar() {
           label: 'Gerenciar Media do blog',
           icon: MdOutlineTextSnippet, // Adicionar ao imports: FiTarget
           isActive: pathname.startsWith('/admin/blog/media'),
+        },
+        {
+          href: '/admin/scrapers',
+          label: 'Ver Scrapers de eventos',
+          icon: SiWebauthn, // Adicionar ao imports: FiTarget
+          isActive: pathname.startsWith('/admin/scrapers'),
         },
       ],
     },
