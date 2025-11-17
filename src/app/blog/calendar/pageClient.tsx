@@ -15,6 +15,7 @@ import { PageContainer } from '@/app/components/animation/AnimatedComponents';
 import { useCalendarManagement } from '@/app/hooks/useCalendarManagement';
 import { useAuth } from '@/app/hooks/useAuth';
 import EventScraperModal from '@/app/components/blog/EventScraperModal';
+import DayEventsListModal from '@/app/components/calendar/DayEventsListModal';
 
 interface CalendarPageClientProps {
   initialData: CalendarPageData;
@@ -39,8 +40,19 @@ export default function CalendarPageClient({
   const [selectedVenue, setSelectedVenue] = useState<string>('');
   const [selectedType, setSelectedType] = useState<string>('');
 
+  const [isDayEventsModalOpen, setIsDayEventsModalOpen] = useState(false);
+  const [selectedDayDate, setSelectedDayDate] = useState<Date | null>(null);
+  const [selectedDayEvents, setSelectedDayEvents] = useState<any[]>([]);
+
   // Calendar Management Hook
   const calendarManagement = useCalendarManagement(fetchEvents);
+
+  // ✅ NOVO: Handler para clicar no dia
+  const handleDayClick = (date: Date, events: any[]) => {
+    setSelectedDayDate(date);
+    setSelectedDayEvents(events);
+    setIsDayEventsModalOpen(true);
+  };
 
   // Carregar eventos quando mudar período ou filtros
   async function fetchEvents(start?: Date, end?: Date) {
@@ -176,12 +188,25 @@ export default function CalendarPageClient({
             events={events}
             onEventClick={handleEventClick}
             onDateChange={fetchEventsCallback}
+            onDayClick={handleDayClick} // ✅ PASSAR HANDLER
           />
         </div>
 
         {/* Legenda */}
         <EventLegend />
-
+        {selectedDayDate && (
+          <DayEventsListModal
+            isOpen={isDayEventsModalOpen}
+            onClose={() => {
+              setIsDayEventsModalOpen(false);
+              setSelectedDayDate(null);
+              setSelectedDayEvents([]);
+            }}
+            date={selectedDayDate}
+            events={selectedDayEvents}
+            onEventClick={handleEventClick} // ✅ Abrir EventModal
+          />
+        )}
         {/* Event Modal */}
         <EventModal
           event={selectedEvent}

@@ -599,7 +599,7 @@ export default function SearchEventsModal({
                 </div>
 
                 {/* Events List */}
-                <div className="max-h-[50vh] overflow-y-auto space-y-3">
+                <div className=" overflow-y-auto space-y-3">
                   {scrapedEvents.map((event) => (
                     <AnimatedItem
                       key={event.id}
@@ -775,7 +775,7 @@ export default function SearchEventsModal({
                 </div>
 
                 {/* Events progress */}
-                <div className="max-h-96 overflow-y-auto space-y-3">
+                <div className=" overflow-y-auto space-y-3">
                   {eventProgress.map((event) => (
                     <div
                       key={event.tempId}

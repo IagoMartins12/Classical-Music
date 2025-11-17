@@ -28,6 +28,7 @@ export interface CalendarPageData {
     description?: string;
     ticketUrl?: string;
     isFree: boolean;
+    externalUrl: string | null;
   }>;
   filters: {
     venues: Array<{ id: string; name: string; city: string }>;

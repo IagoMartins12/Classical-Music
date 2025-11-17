@@ -1,61 +1,77 @@
+// app/services/scraper-api/scraper-api.client.ts
 import {
   ScraperResponse,
-  ImportResult,
   ScrapedEvent,
+  ImportResult,
+  JobResponse,
+  JobStatusResponse,
+  ScraperJob,
+  JobStatus,
+  ScraperInfo,
 } from './scraper-api.types';
 
-const SCRAPER_API_URL =
-  process.env.NEXT_PUBLIC_SCRAPER_API_URL ||
-  (process.env.NODE_ENV === 'development'
+const getScraperApiUrl = (): string => {
+  if (process.env.NEXT_PUBLIC_SCRAPER_API_URL) {
+    return process.env.NEXT_PUBLIC_SCRAPER_API_URL;
+  }
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  return isDevelopment
     ? 'http://localhost:4000/api'
-    : 'https://api.opusatlas.com.br/api');
+    : 'https://api.opusatlas.com.br/api';
+};
 
-const API_KEY = process.env.NEXT_PUBLIC_SCRAPER_API_KEY || '';
+const SCRAPER_API_URL = getScraperApiUrl();
+const API_KEY = process.env.NEXT_PUBLIC_SCRAPER_API_KEY;
 
 export class ScraperApiClient {
   private static headers = {
     'Content-Type': 'application/json',
-    'x-api-key': API_KEY,
+    ...(API_KEY && { 'x-api-key': API_KEY }),
   };
 
   /**
-   * 🎯 Executar scraper e retornar eventos
+   * ✅ NOVO: Listar todos os scrapers disponíveis
    */
-  static async scrape(
-    scraperId: string,
-    options?: {
-      startDate?: string;
-      endDate?: string;
-    }
-  ): Promise<ScraperResponse> {
-    const params = new URLSearchParams();
-    if (options?.startDate) params.append('startDate', options.startDate);
-    if (options?.endDate) params.append('endDate', options.endDate);
-
-    const url = `${SCRAPER_API_URL}/scrapers/${scraperId}/scrape${
-      params.toString() ? '?' + params.toString() : ''
-    }`;
-
+  static async listScrapers(): Promise<ScraperInfo[]> {
+    const url = `${SCRAPER_API_URL}/scrapers/list`;
     const response = await fetch(url, {
       method: 'GET',
       headers: this.headers,
       cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao listar scrapers');
+    }
+
+    const data = await response.json();
+    return data.scrapers;
+  }
+
+  /**
+   * ✅ ATUALIZADO: Iniciar scraper assíncrono (API unificada)
+   */
+  static async scrapeAsync(scraperId: string): Promise<string> {
+    const url = `${SCRAPER_API_URL}/scrapers/${scraperId}/scrape`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: this.headers,
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || `Erro ao executar scraper ${scraperId}`);
+      throw new Error(error.message || 'Erro ao iniciar scraper');
     }
 
-    return response.json();
+    const data: JobResponse = await response.json();
+    return data.jobId;
   }
 
   /**
-   * 📊 Verificar status do scraper
+   * ✅ ATUALIZADO: Verificar status do job (API unificada)
    */
-  static async getStatus(scraperId: string): Promise<any> {
-    const url = `${SCRAPER_API_URL}/scrapers/${scraperId}/status`;
-
+  static async getJobStatus(jobId: string): Promise<ScraperJob> {
+    const url = `${SCRAPER_API_URL}/scrapers/status/${jobId}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: this.headers,
@@ -63,28 +79,107 @@ export class ScraperApiClient {
     });
 
     if (!response.ok) {
-      throw new Error(`Erro ao verificar status do scraper ${scraperId}`);
+      throw new Error('Erro ao verificar status do job');
     }
 
-    return response.json();
+    const data: JobStatusResponse = await response.json();
+
+    if (!data.success) {
+      throw new Error('Job não encontrado');
+    }
+
+    return data.job;
   }
 
   /**
-   * 💾 Importar eventos para o banco de dados (via Next.js API)
+   * ✅ NOVO: Executar todos os scrapers de uma vez
+   */
+  static async scrapeAll(): Promise<
+    Array<{ scraperId: string; jobId: string }>
+  > {
+    const url = `${SCRAPER_API_URL}/scrapers/scrape-all`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: this.headers,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Erro ao iniciar scrapers');
+    }
+
+    const data = await response.json();
+    return data.jobs;
+  }
+
+  /**
+   * ✅ NOVO: Listar todos os jobs
+   */
+  static async getAllJobs(): Promise<ScraperJob[]> {
+    const url = `${SCRAPER_API_URL}/scrapers/jobs`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: this.headers,
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao listar jobs');
+    }
+
+    const data = await response.json();
+    return data.jobs;
+  }
+
+  /**
+   * Polling do status até completar
+   */
+  static async waitForCompletion(
+    jobId: string,
+    onProgress?: (job: ScraperJob) => void
+  ): Promise<ScraperResponse> {
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(async () => {
+        try {
+          const job = await this.getJobStatus(jobId);
+
+          if (onProgress) {
+            onProgress(job);
+          }
+
+          if (job.status === JobStatus.COMPLETED) {
+            clearInterval(interval);
+            resolve(job.result!);
+          } else if (job.status === JobStatus.FAILED) {
+            clearInterval(interval);
+            reject(new Error(job.error || 'Scraper failed'));
+          }
+        } catch (error) {
+          clearInterval(interval);
+          reject(error);
+        }
+      }, 2000); // Verificar a cada 2 segundos
+
+      // Timeout de 10 minutos
+      setTimeout(() => {
+        clearInterval(interval);
+        reject(new Error('Timeout: Scraper demorou mais de 10 minutos'));
+      }, 600000);
+    });
+  }
+
+  /**
+   * Importar eventos
    */
   static async importEvents(
     scraperId: string,
     events: ScrapedEvent[]
   ): Promise<ImportResult> {
-    const response = await fetch('/api/admin/scrapers/import', {
+    const url = `${SCRAPER_API_URL}/scrapers/${scraperId}/import`;
+    const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        scraperId,
-        events,
-      }),
+      headers: this.headers,
+      body: JSON.stringify({ events }),
     });
 
     if (!response.ok) {
@@ -93,27 +188,5 @@ export class ScraperApiClient {
     }
 
     return response.json();
-  }
-
-  /**
-   * 🔍 Verificar duplicatas (via Next.js API)
-   */
-  static async checkDuplicates(
-    events: ScrapedEvent[]
-  ): Promise<ScrapedEvent[]> {
-    const response = await fetch('/api/admin/scrapers/check-duplicates', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ events }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Erro ao verificar duplicatas');
-    }
-
-    const data = await response.json();
-    return data.events;
   }
 }

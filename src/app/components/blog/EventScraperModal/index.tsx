@@ -31,8 +31,11 @@ import { useProcessChanges } from '@/app/hooks/useFormChanges';
 import Checkbox from '@/app/components/Common/Checkbox';
 import Image from 'next/image';
 import { ScraperApiClient } from '@/app/services/scraper-api/scraper-api.client';
-import { ScrapedEvent } from '@/app/services/scraper-api/scraper-api.types';
-import { getEnabledScrapers } from '@/app/services/scraper-api/scappers/base-scraper.config';
+import {
+  ScrapedEvent,
+  ScraperJob,
+} from '@/app/services/scraper-api/scraper-api.types';
+import { useScrapers } from '@/app/hooks/useScrapers';
 
 interface EventWithSelection extends ScrapedEvent {
   id: string;
@@ -61,9 +64,7 @@ interface EventScraperModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-  /** Se true, abre direto na seleção de scraper */
   autoStart?: boolean;
-  /** Scraper pré-selecionado (opcional) */
   defaultScraperId?: string;
 }
 
@@ -71,7 +72,7 @@ export default function EventScraperModal({
   isOpen,
   onClose,
   onSuccess,
-  //   autoStart = false,
+  // autoStart = false,
   defaultScraperId,
 }: EventScraperModalProps) {
   const router = useRouter();
@@ -85,6 +86,13 @@ export default function EventScraperModal({
   const [scrapedEvents, setScrapedEvents] = useState<EventWithSelection[]>([]);
   const [processResults, setProcessResults] = useState<ProcessResult[]>([]);
   const [eventProgress, setEventProgress] = useState<EventProgress[]>([]);
+
+  // ✅ NOVO: Estados do Job
+  const [currentJob, setCurrentJob] = useState<ScraperJob | null>(null);
+  const [jobProgress, setJobProgress] = useState({
+    percentage: 0,
+    message: 'Iniciando...',
+  });
 
   // Estado para mostrar/ocultar duplicados
   const [showDuplicates, setShowDuplicates] = useState(false);
@@ -102,7 +110,7 @@ export default function EventScraperModal({
     selected: 0,
   });
 
-  const scrapers = getEnabledScrapers();
+  const { scrapers, isLoading: isLoadingScrapers } = useScrapers();
 
   // Filtrar eventos
   const newEvents = scrapedEvents.filter((e) => !e.isDuplicate);
@@ -110,7 +118,7 @@ export default function EventScraperModal({
 
   // ==================== FUNÇÕES ====================
 
-  // 1. Executar scraper
+  // 1. Executar scraper (ASSÍNCRONO COM PROGRESSO)
   const handleRunScraper = async (scraperId?: string) => {
     const targetScraperId = scraperId || selectedScraperId;
 
@@ -122,12 +130,26 @@ export default function EventScraperModal({
     setSelectedScraperId(targetScraperId);
     setIsScraping(true);
     setCurrentStep('scraping');
+    setJobProgress({ percentage: 0, message: 'Iniciando scraper...' });
 
     try {
       const scraper = scrapers.find((s) => s.id === targetScraperId);
-      toast.info('Buscando eventos', `Executando scraper ${scraper?.name}...`);
+      toast.info('Iniciando scraper', `Executando ${scraper?.name}...`);
 
-      const response = await ScraperApiClient.scrape(targetScraperId);
+      // ✅ Usar novo endpoint unificado
+      const jobId = await ScraperApiClient.scrapeAsync(targetScraperId);
+
+      // Aguardar conclusão com callback de progresso
+      const response = await ScraperApiClient.waitForCompletion(
+        jobId,
+        (job: ScraperJob) => {
+          setCurrentJob(job);
+          setJobProgress({
+            percentage: job.progress.percentage,
+            message: job.progress.message,
+          });
+        }
+      );
 
       if (
         !response.success ||
@@ -162,9 +184,9 @@ export default function EventScraperModal({
       setCurrentStep('select-scraper');
     } finally {
       setIsScraping(false);
+      setCurrentJob(null);
     }
   };
-
   // 2. Atualizar estatísticas
   const updateStats = (events: EventWithSelection[]) => {
     const newStats = {
@@ -176,7 +198,7 @@ export default function EventScraperModal({
     setStats(newStats);
   };
 
-  // 3. Toggle seleção
+  // 3. Toggle seleção de evento
   const toggleEventSelection = (eventId: string) => {
     const updated = scrapedEvents.map((event) =>
       event.id === eventId ? { ...event, selected: !event.selected } : event
@@ -185,7 +207,7 @@ export default function EventScraperModal({
     updateStats(updated);
   };
 
-  // 4. Selecionar todos
+  // 4. Selecionar/deselecionar todos
   const toggleSelectAll = (selectAll: boolean) => {
     const updated = scrapedEvents.map((event) => ({
       ...event,
@@ -195,14 +217,14 @@ export default function EventScraperModal({
     updateStats(updated);
   };
 
-  // 5. Remover evento
+  // 5. Remover evento da lista
   const removeEvent = (eventId: string) => {
     const updated = scrapedEvents.filter((event) => event.id !== eventId);
     setScrapedEvents(updated);
     updateStats(updated);
   };
 
-  // 6. Processar eventos
+  // 6. Processar eventos selecionados
   const handleProcessEvents = async () => {
     const selectedEvents = scrapedEvents.filter(
       (e) => e.selected && !e.isDuplicate
@@ -328,7 +350,7 @@ export default function EventScraperModal({
     }
   };
 
-  // 7. Fechar modal
+  // 7. Fechar modal e resetar
   const handleClose = () => {
     setCurrentStep('select-scraper');
     setSelectedScraperId(defaultScraperId || '');
@@ -337,138 +359,23 @@ export default function EventScraperModal({
     setEventProgress([]);
     setStats({ total: 0, new: 0, existing: 0, selected: 0 });
     setShowDuplicates(false);
+    setCurrentJob(null);
+    setJobProgress({ percentage: 0, message: 'Iniciando...' });
     onClose();
   };
 
-  // Componente de card de evento
-  const EventCard = ({
-    event,
-    isDuplicate = false,
-  }: {
-    event: EventWithSelection;
-    isDuplicate?: boolean;
-  }) => (
-    <div
-      className={`classical-card-simple rounded-lg p-4 ${
-        isDuplicate
-          ? 'opacity-60 bg-yellow-500/5 border-yellow-500/20'
-          : event.selected
-            ? 'border-brand-primary shadow-theme-glow'
-            : ''
-      }`}
-    >
-      <div className="flex items-start space-x-4">
-        <div className="flex-shrink-0 pt-1">
-          {isDuplicate ? (
-            <div className="w-5 h-5 rounded bg-yellow-500/20 flex items-center justify-center">
-              <FiAlertCircle className="w-3 h-3 text-yellow-500" />
-            </div>
-          ) : (
-            <Checkbox
-              checked={event.selected}
-              onChange={() => toggleEventSelection(event.id)}
-            />
-          )}
-        </div>
-
-        {event.imageUrl && (
-          <div className="flex-shrink-0">
-            <Image
-              src={event.imageUrl}
-              alt={event.title}
-              className="w-16 h-16 object-cover rounded"
-              width={64}
-              height={64}
-            />
-          </div>
-        )}
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between mb-2">
-            <h4 className="font-bold text-theme-primary">{event.title}</h4>
-            {isDuplicate && (
-              <span className="text-xs bg-yellow-500/20 text-yellow-500 px-2 py-1 rounded ml-2 flex-shrink-0">
-                Já existe
-              </span>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-2 text-xs text-theme-secondary mb-2">
-            <div className="flex items-center">
-              <FiCalendar className="w-3 h-3 mr-1" />
-              {new Date(event.startDate).toLocaleDateString('pt-BR')}
-              {event.startTime && ` às ${event.startTime}`}
-            </div>
-            <div className="flex items-center">
-              <FiMusic className="w-3 h-3 mr-1" />
-              {event.type}
-            </div>
-            {event.venueDetails && (
-              <div className="flex items-center">
-                <FiMapPin className="w-3 h-3 mr-1" />
-                {event.venueDetails}
-              </div>
-            )}
-            {event.ticketInfo && (
-              <div className="flex items-center">
-                <FiDollarSign className="w-3 h-3 mr-1" />
-                {event.ticketInfo}
-              </div>
-            )}
-          </div>
-
-          {event.composerNames.length > 0 && (
-            <div className="text-xs text-theme-tertiary">
-              🎼 {event.composerNames.join(', ')}
-            </div>
-          )}
-
-          <p className="text-xs text-theme-tertiary mt-2 line-clamp-2">
-            {event.description}
-          </p>
-        </div>
-
-        <div className="flex-shrink-0 flex items-center space-x-2">
-          <a
-            href={event.externalUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-theme-tertiary hover:text-accent-blue"
-            title="Ver evento"
-          >
-            <FiExternalLink className="w-4 h-4" />
-          </a>
-
-          {event.ticketUrl !== event.externalUrl && (
-            <a
-              href={event.ticketUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-theme-tertiary hover:text-accent-green"
-              title="Comprar ingresso"
-            >
-              <FiShoppingCart className="w-4 h-4" />
-            </a>
-          )}
-
-          {!isDuplicate && (
-            <button
-              onClick={() => removeEvent(event.id)}
-              className="text-theme-tertiary hover:text-accent-red"
-              title="Remover"
-            >
-              <FiTrash2 className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-
   if (!isOpen) return null;
 
-  // ==================== RENDER ====================
-
+  if (isLoadingScrapers && scrapers.length === 0) {
+    return (
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <div className="p-6 text-center">
+          <FiLoader className="w-8 h-8 text-brand-primary animate-spin mx-auto mb-4" />
+          <p className="text-theme-secondary">Carregando scrapers...</p>
+        </div>
+      </Modal>
+    );
+  }
   return (
     <Modal
       isOpen={isOpen}
@@ -605,7 +512,7 @@ export default function EventScraperModal({
               </div>
             )}
 
-            {/* STEP 2: SCRAPING */}
+            {/* STEP 2: SCRAPING COM PROGRESSO */}
             {currentStep === 'scraping' && (
               <div className="p-6 text-center">
                 <AnimatedCard className="classical-card-2 p-8 max-w-md mx-auto">
@@ -613,15 +520,41 @@ export default function EventScraperModal({
                   <h3 className="text-lg font-bold text-theme-primary mb-2">
                     Buscando Eventos...
                   </h3>
-                  <p className="text-theme-secondary">
-                    Aguarde enquanto coletamos os eventos do{' '}
-                    {scrapers.find((s) => s.id === selectedScraperId)?.name}
+                  <p className="text-theme-secondary mb-4">
+                    {jobProgress.message}
                   </p>
+
+                  {/* ✅ BARRA DE PROGRESSO */}
+                  <div className="w-full bg-theme-secondary rounded-full h-3 mb-2 overflow-hidden">
+                    <div
+                      className="h-full progress-bar transition-all duration-300 rounded-full"
+                      style={{ width: `${jobProgress.percentage}%` }}
+                    />
+                  </div>
+                  <div className="text-xs text-theme-tertiary">
+                    {jobProgress.percentage}% completo
+                  </div>
+
+                  {/* ✅ INFO DO JOB */}
+                  {currentJob && (
+                    <div className="mt-4 text-left text-xs text-theme-tertiary space-y-1">
+                      <div>
+                        Status:{' '}
+                        <span className="text-brand-primary font-medium">
+                          {currentJob.status}
+                        </span>
+                      </div>
+                      <div>
+                        Progresso: {currentJob.progress.current}/
+                        {currentJob.progress.total}
+                      </div>
+                    </div>
+                  )}
                 </AnimatedCard>
               </div>
             )}
 
-            {/* STEP 3: SELECT EVENTS */}
+            {/* STEP 3: SELECT EVENTS (mesmo código anterior) */}
             {currentStep === 'select' && (
               <div className="p-6">
                 {/* Stats */}
@@ -684,7 +617,11 @@ export default function EventScraperModal({
                         direction="left"
                         springType="smooth"
                       >
-                        <EventCard event={event} />
+                        <EventCard
+                          event={event}
+                          removeEvent={removeEvent}
+                          toggleEventSelection={toggleEventSelection}
+                        />
                       </AnimatedItem>
                     ))}
                   </div>
@@ -719,7 +656,12 @@ export default function EventScraperModal({
                               direction="left"
                               springType="smooth"
                             >
-                              <EventCard event={event} isDuplicate />
+                              <EventCard
+                                event={event}
+                                isDuplicate
+                                removeEvent={removeEvent}
+                                toggleEventSelection={toggleEventSelection}
+                              />
                             </AnimatedItem>
                           ))}
                         </div>
@@ -730,6 +672,7 @@ export default function EventScraperModal({
               </div>
             )}
 
+            {/* STEP 4: PROCESSING */}
             {/* STEP 4: PROCESSING */}
             {currentStep === 'process' && (
               <div className="p-6">
@@ -766,7 +709,7 @@ export default function EventScraperModal({
                   </div>
                 </div>
 
-                <div className="max-h-96 overflow-y-auto space-y-3">
+                <div className=" overflow-y-auto space-y-3">
                   {eventProgress.map((event) => (
                     <div
                       key={event.tempId}
@@ -937,3 +880,132 @@ export default function EventScraperModal({
     </Modal>
   );
 }
+
+// Componente de card de evento
+const EventCard = ({
+  event,
+  isDuplicate = false,
+  removeEvent,
+  toggleEventSelection,
+}: {
+  event: EventWithSelection;
+  isDuplicate?: boolean;
+  removeEvent: (event: any) => void;
+  toggleEventSelection: (id: string) => void;
+}) => (
+  <div
+    className={`classical-card-simple rounded-lg p-4 ${
+      isDuplicate
+        ? 'opacity-60 bg-yellow-500/5 border-yellow-500/20'
+        : event.selected
+          ? 'border-brand-primary shadow-theme-glow'
+          : ''
+    }`}
+  >
+    <div className="flex items-start space-x-4">
+      <div className="flex-shrink-0 pt-1">
+        {isDuplicate ? (
+          <div className="w-5 h-5 rounded bg-yellow-500/20 flex items-center justify-center">
+            <FiAlertCircle className="w-3 h-3 text-yellow-500" />
+          </div>
+        ) : (
+          <Checkbox
+            checked={event.selected}
+            onChange={() => toggleEventSelection(event.id)}
+          />
+        )}
+      </div>
+
+      {event.imageUrl && (
+        <div className="flex-shrink-0">
+          <Image
+            src={event.imageUrl}
+            alt={event.title}
+            className="w-16 h-16 object-cover rounded"
+            width={64}
+            height={64}
+          />
+        </div>
+      )}
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between mb-2">
+          <h4 className="font-bold text-theme-primary">{event.title}</h4>
+          {isDuplicate && (
+            <span className="text-xs bg-yellow-500/20 text-yellow-500 px-2 py-1 rounded ml-2 flex-shrink-0">
+              Já existe
+            </span>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 text-xs text-theme-secondary mb-2">
+          <div className="flex items-center">
+            <FiCalendar className="w-3 h-3 mr-1" />
+            {new Date(event.startDate).toLocaleDateString('pt-BR')}
+            {event.startTime && ` às ${event.startTime}`}
+          </div>
+          <div className="flex items-center">
+            <FiMusic className="w-3 h-3 mr-1" />
+            {event.type}
+          </div>
+          {event.venueDetails && (
+            <div className="flex items-center">
+              <FiMapPin className="w-3 h-3 mr-1" />
+              {event.venueDetails}
+            </div>
+          )}
+          {event.ticketInfo && (
+            <div className="flex items-center">
+              <FiDollarSign className="w-3 h-3 mr-1" />
+              {event.ticketInfo}
+            </div>
+          )}
+        </div>
+
+        {event.composerNames.length > 0 && (
+          <div className="text-xs text-theme-tertiary">
+            🎼 {event.composerNames.join(', ')}
+          </div>
+        )}
+
+        <p className="text-xs text-theme-tertiary mt-2 line-clamp-2">
+          {event.description}
+        </p>
+      </div>
+
+      <div className="flex-shrink-0 flex items-center space-x-2">
+        <a
+          href={event.externalUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-theme-tertiary hover:text-accent-blue"
+          title="Ver evento"
+        >
+          <FiExternalLink className="w-4 h-4" />
+        </a>
+
+        {event.ticketUrl !== event.externalUrl && (
+          <a
+            href={event.ticketUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-theme-tertiary hover:text-accent-green"
+            title="Comprar ingresso"
+          >
+            <FiShoppingCart className="w-4 h-4" />
+          </a>
+        )}
+
+        {!isDuplicate && (
+          <button
+            onClick={() => removeEvent(event.id)}
+            className="text-theme-tertiary hover:text-accent-red"
+            title="Remover"
+          >
+            <FiTrash2 className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+);

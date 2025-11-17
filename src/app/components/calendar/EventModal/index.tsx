@@ -73,6 +73,7 @@ export default function EventModal({
         .trim()
     );
   }
+  console.log('EVENTO', event);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={event.title} maxWidth="lg">

@@ -1,4 +1,3 @@
-// app/blog/calendar/components/MonthView.tsx
 'use client';
 
 interface MonthViewProps {
@@ -6,6 +5,7 @@ interface MonthViewProps {
   currentDate: Date;
   getEventsForDay: (date: Date) => any[];
   onEventClick: (event: any) => void;
+  onDayClick: (date: Date, events: any[]) => void; // ✅ NOVO
   weekdays: string[];
 }
 
@@ -14,6 +14,7 @@ export default function MonthView({
   currentDate,
   getEventsForDay,
   onEventClick,
+  onDayClick, // ✅ NOVO
   weekdays,
 }: MonthViewProps) {
   const today = new Date();
@@ -39,6 +40,7 @@ export default function MonthView({
           const isToday = day.toDateString() === today.toDateString();
           const isCurrentMonth = day.getMonth() === currentMonth;
           const events = getEventsForDay(day);
+          const hasMoreThan2Events = events.length > 2; // ✅ VERIFICAR
 
           return (
             <div
@@ -81,10 +83,16 @@ export default function MonthView({
                     </div>
                   </button>
                 ))}
-                {events.length > 2 && (
-                  <div className="text-xs text-theme-tertiary">
-                    +{events.length - 2} mais
-                  </div>
+
+                {/* ✅ MOSTRAR INDICADOR SE TIVER MAIS DE 2 EVENTOS */}
+                {hasMoreThan2Events && (
+                  <button
+                    onClick={() => onDayClick(day, events)} // ✅ ABRIR MODAL
+                    className="w-full text-left p-1 rounded text-xs font-medium bg-brand-primary/20 hover:bg-brand-primary/30 transition-all text-brand-primary"
+                  >
+                    +{events.length - 2} mais evento
+                    {events.length - 2 !== 1 ? 's' : ''}
+                  </button>
                 )}
               </div>
             </div>

@@ -26,6 +26,7 @@ interface CustomCalendarProps {
   events: CalendarEvent[];
   onEventClick: (event: CalendarEvent) => void;
   onDateChange?: (start: Date, end: Date) => void;
+  onDayClick: (date: Date, events: CalendarEvent[]) => void; // ✅ NOVO
 }
 
 type ViewType = 'month' | 'week' | 'day';
@@ -48,6 +49,7 @@ const MONTHS = [
 
 export default function CustomCalendar({
   events,
+  onDayClick,
   onEventClick,
   onDateChange,
 }: CustomCalendarProps) {
@@ -250,6 +252,7 @@ export default function CustomCalendar({
             getEventsForDay={getEventsForDay}
             onEventClick={onEventClick}
             weekdays={WEEKDAYS}
+            onDayClick={onDayClick}
           />
         )}
         {view === 'week' && (

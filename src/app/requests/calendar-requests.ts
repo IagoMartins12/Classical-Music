@@ -20,6 +20,7 @@ export interface CalendarEventData {
     portraitUrl?: string;
   }>;
   imageUrl?: string;
+  externalUrl: string;
   description?: string;
   ticketUrl?: string;
   isFree: boolean;
@@ -88,6 +89,7 @@ export async function getCalendarEventsForPageServer(
           start: startTime,
           end: endTime,
           type: event.type,
+          externalUrl: event.externalUrl,
           venue: {
             id: event.venue.id,
             name: event.venue.name,

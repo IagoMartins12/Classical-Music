@@ -107,8 +107,10 @@ export default async function TeacherLessonsPageServer({
 }) {
   const language = await getServerLanguageStatic();
   const { translations } = await loadPageTranslationsWithCommon(language, [
-    'teacher/lesson',
+    'teacher/lessons',
   ]);
+
+  console.log('translations', translations);
   try {
     // Buscar dados em paralelo
     const [lessonsData, studentsData] = await Promise.all([

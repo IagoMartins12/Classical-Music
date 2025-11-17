@@ -1,4 +1,10 @@
-// ==================== TIPOS COMPARTILHADOS ====================
+// app/services/scraper-api/scraper-api.types.ts
+
+export interface ScraperInfo {
+  id: string;
+  name: string;
+  slug: string;
+}
 
 export interface ScrapedEvent {
   title: string;
@@ -7,8 +13,8 @@ export interface ScrapedEvent {
   type: EventType;
   startDate: Date | string;
   startTime: string | null;
-  endDate: Date | string | null;
-  endTime: string | null;
+  endDate?: Date | string | null;
+  endTime?: string | null;
   venueDetails: string | null;
   ticketUrl: string;
   externalUrl: string;
@@ -40,25 +46,45 @@ export interface ScraperResponse {
   eventsScraped: number;
   newEvents: number;
   duplicates: number;
-  events: ScrapedEvent[];
+  events?: ScrapedEvent[];
   errors: string[];
-  executionTime: number;
+  duration: number;
 }
 
-export interface ScraperConfig {
+export enum JobStatus {
+  PENDING = 'pending',
+  RUNNING = 'running',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+}
+
+export interface ScraperJob {
   id: string;
-  name: string;
-  description: string;
-  venue: string;
-  icon: string;
-  color: string;
-  endpoint: string;
-  enabled: boolean;
-  supportsDateRange?: boolean;
-  defaultDateRange?: {
-    start: Date;
-    end: Date;
+  scraperId: string;
+  status: JobStatus;
+  progress: {
+    current: number;
+    total: number;
+    percentage: number;
+    message: string;
   };
+  startTime: number;
+  endTime?: number;
+  duration?: number;
+  result?: ScraperResponse;
+  error?: string;
+}
+
+export interface JobResponse {
+  success: boolean;
+  jobId: string;
+  message: string;
+}
+
+export interface JobStatusResponse {
+  success: boolean;
+  job: ScraperJob;
+  message?: string;
 }
 
 export interface ImportResult {
