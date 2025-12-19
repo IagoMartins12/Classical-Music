@@ -1,4 +1,4 @@
-// providers/AuthProvider.tsx - VERSÃO OTIMIZADA com renderização condicional
+// providers/AuthProvider.tsx - ATUALIZADO com Online Status
 'use client';
 
 import React, { useEffect, useState, useCallback, Suspense } from 'react';
@@ -16,6 +16,7 @@ import { useOnboardingModal, usePromptModal } from '../stores/authStore';
 import { useHydration } from '../hooks/useHydration';
 import { useUserStore } from '../hooks/userStore';
 import { useOnboardingPersistence } from '../hooks/useOnboardingPersistence';
+import { useOnlineStatus } from '../hooks/useOnlineStatus'; // 🆕
 import OnboardingPrompt from '../components/auth/onboarding/OnboardingPrompt';
 
 // Dynamic import do GoogleRegistrationHandler sem SSR
@@ -34,6 +35,32 @@ interface AuthProviderProps {
 // ================================
 // COMPONENTES INTERNOS OTIMIZADOS
 // ================================
+
+// 🆕 Gerenciador de Status Online
+const OnlineStatusManager: React.FC<{ shouldRender: boolean }> = ({
+  shouldRender,
+}) => {
+  const { isAuthenticated } = useAuth();
+
+  // Iniciar tracking de status online
+  const { isActive, lastActivity } = useOnlineStatus({
+    updateInterval: 5 * 60 * 1000, // 5 minutos
+    inactivityThreshold: 30 * 60 * 1000, // 30 minutos
+    enabled: shouldRender && isAuthenticated,
+  });
+
+  // Log de status (apenas em dev)
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development' && shouldRender) {
+      console.log('🟢 Status Online:', {
+        isActive,
+        lastActivity: new Date(lastActivity).toLocaleString(),
+      });
+    }
+  }, [isActive, lastActivity, shouldRender]);
+
+  return null;
+};
 
 // Gerenciador de onboarding OTIMIZADO - só roda se necessário
 const OnboardingManager: React.FC<{ shouldRender: boolean }> = ({
@@ -191,10 +218,10 @@ const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
   const shouldRenderAuthModals = !isAuthenticated;
   const shouldRenderOnboardingModals =
     isAuthenticated && !user?.onboardingCompleted;
-  const shouldRenderGoogleHandler = true; // Sempre necessário para detectar retornos
+  const shouldRenderGoogleHandler = true;
+  const shouldRenderOnlineStatus = isAuthenticated; // 🆕
 
   if (!isHydrated) {
-    // Renderizar apenas estrutura básica durante hidratação
     return (
       <PersistenceErrorBoundary>
         <StoreManager />
@@ -207,6 +234,9 @@ const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
     <PersistenceErrorBoundary>
       {/* Gerenciadores sempre necessários */}
       <StoreManager />
+
+      {/* 🆕 Gerenciador de Status Online */}
+      {shouldRenderOnlineStatus && <OnlineStatusManager shouldRender={true} />}
 
       {/* 🚀 OTIMIZAÇÃO: Modais de autenticação só se não logado */}
       {shouldRenderAuthModals && (

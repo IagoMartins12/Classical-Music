@@ -4,260 +4,352 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 
-interface UserDetailsData {
-  profile: {
-    totalFavoriteWorks: number;
-    totalFavoriteComposers: number;
-    totalAnnotations: number;
-    lastActivity: string;
-    joinedDaysAgo: number;
-  };
-  recentActivity: Array<{
-    type: 'annotation' | 'study' | 'favorite' | 'upload';
-    title: string;
-    subtitle: string;
-    date: string;
-    workTitle?: string;
-    composerName?: string;
-  }>;
-  contributions: {
-    topAnnotations: Array<{
-      id: string;
-      workTitle: string;
-      composerName: string;
-      content: string;
-      helpfulCount: number;
-      createdAt: string;
-    }>;
-    recentUploads: Array<{
-      id: string;
-      type: 'composer' | 'work' | 'score';
-      title: string;
-      status: string;
-      createdAt: string;
-    }>;
-  };
-}
-
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
     // Verificar se é admin
     if (!session?.user?.id || session.user.role !== 2) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
 
     if (!userId) {
-      return NextResponse.json({ error: 'User ID required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'userId é obrigatório' },
+        { status: 400 }
+      );
     }
 
-    // Verificar se o usuário existe
+    // Buscar dados completos do usuário
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, createdAt: true, updatedAt: true },
+      include: {
+        // Compositores favoritos
+        favoriteComposers: {
+          include: {
+            composer: {
+              select: {
+                id: true,
+                name: true,
+                fullName: true,
+                portraitUrl: true,
+                epochName: true,
+              },
+            },
+          },
+          take: 10,
+          orderBy: { id: 'desc' },
+        },
+
+        // Obras favoritas
+        favoriteWorks: {
+          include: {
+            work: {
+              select: {
+                id: true,
+                title: true,
+                composer: {
+                  select: {
+                    name: true,
+                    fullName: true,
+                  },
+                },
+                instrumentId: true,
+              },
+            },
+          },
+          take: 10,
+          orderBy: { id: 'desc' },
+        },
+
+        // Partituras favoritas
+        favoriteScores: {
+          select: {
+            id: true,
+            scoreTitle: true,
+            scoreType: true,
+            personalRating: true,
+            addedAt: true,
+            work: {
+              select: {
+                id: true,
+                title: true,
+                composer: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+          take: 10,
+          orderBy: { addedAt: 'desc' },
+        },
+
+        // Instrumentos
+        instruments: {
+          include: {
+            instrument: {
+              select: {
+                id: true,
+                name: true,
+                category: true,
+              },
+            },
+          },
+        },
+
+        // Obras que quer aprender
+        wantToLearn: {
+          include: {
+            work: {
+              select: {
+                id: true,
+                title: true,
+                composer: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+          take: 10,
+          orderBy: { priority: 'desc' },
+        },
+
+        // Obras que já aprendeu
+        learned: {
+          include: {
+            work: {
+              select: {
+                id: true,
+                title: true,
+                composer: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+          take: 10,
+          orderBy: { learnedAt: 'desc' },
+        },
+
+        // Anotações
+        workAnnotations: {
+          include: {
+            work: {
+              select: {
+                id: true,
+                title: true,
+                composer: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+          take: 10,
+          orderBy: { createdAt: 'desc' },
+        },
+
+        // Compositor e Época favoritos (relação direta)
+        favoriteComposer: {
+          select: {
+            id: true,
+            name: true,
+            fullName: true,
+            portraitUrl: true,
+            epochName: true,
+          },
+        },
+        favoriteEpoch: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+
+        // Perfil de Professor (se aplicável)
+        teacherProfile: {
+          include: {
+            students: {
+              include: {
+                student: {
+                  select: {
+                    userId: true,
+                    user: {
+                      select: {
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+
+        // Perfil de Estudante (se aplicável)
+        studentProfile: {
+          include: {
+            teachers: {
+              include: {
+                teacher: {
+                  select: {
+                    userId: true,
+                    user: {
+                      select: {
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Usuário não encontrado' },
+        { status: 404 }
+      );
     }
 
-    // Buscar dados em paralelo para performance
-    const [
-      favoriteWorksCount,
-      favoriteComposersCount,
-      annotationsData,
-      topAnnotations,
-      recentUploads,
-      recentFavorites,
-    ] = await Promise.all([
-      // Contagem de favoritos
-      prisma.favoriteWork.count({
-        where: { userId },
-      }),
-
-      prisma.favoriteComposer.count({
-        where: { userId },
-      }),
-
-      // Dados de anotações
-      prisma.workAnnotation.findMany({
-        where: { userId },
-        select: {
-          id: true,
-          content: true,
-          helpfulCount: true,
-          createdAt: true,
-          work: {
-            select: {
-              title: true,
-              composer: {
-                select: { name: true },
-              },
-            },
+    // Calcular estatísticas adicionais
+    const [totalAnnotations, helpfulAnnotations, totalUploads, totalFavorites] =
+      await Promise.all([
+        prisma.workAnnotation.count({
+          where: { userId: user.id },
+        }),
+        prisma.workAnnotation.count({
+          where: {
+            userId: user.id,
+            helpfulCount: { gt: 0 },
           },
-        },
-        orderBy: { createdAt: 'desc' },
-        take: 50, // Limitar para performance
-      }),
-
-      // Top anotações mais úteis
-      prisma.workAnnotation.findMany({
-        where: {
-          userId,
-          isPublic: true,
-          helpfulCount: { gt: 0 },
-        },
-        select: {
-          id: true,
-          content: true,
-          helpfulCount: true,
-          createdAt: true,
-          work: {
-            select: {
-              title: true,
-              composer: {
-                select: { name: true },
-              },
-            },
+        }),
+        prisma.uploadHistory.count({
+          where: {
+            userId: user.id,
+            action: 'create',
           },
-        },
-        orderBy: { helpfulCount: 'desc' },
-        take: 10,
-      }),
+        }),
+        prisma.favoriteWork.count({
+          where: { userId: user.id },
+        }),
+        prisma.favoriteComposer.count({
+          where: { userId: user.id },
+        }),
+        prisma.favoriteScore.count({
+          where: { userId: user.id },
+        }),
+      ]);
 
-      // Uploads recentes (simulando dados - ajustar conforme schema real)
-      prisma.uploadHistory.findMany({
-        where: { userId },
-        select: {
-          id: true,
-          entityType: true,
-          entityId: true,
-          action: true,
-          changes: true,
-          createdAt: true,
-        },
-        orderBy: { createdAt: 'desc' },
-        take: 10,
-      }),
-
-      // Favoritos recentes para atividade
-      prisma.favoriteWork.findMany({
-        where: { userId },
-        select: {
-          id: true,
-          work: {
-            select: {
-              title: true,
-              composer: {
-                select: { name: true },
-              },
-            },
-          },
-        },
-        orderBy: { id: 'desc' }, // Assumindo que não tem createdAt
-        take: 5,
-      }),
-    ]);
-
-    // Calcular dados derivados
-    const totalAnnotations = annotationsData.length;
+    // Calcular tempo desde o cadastro
     const joinedDaysAgo = Math.floor(
-      (Date.now() - user.createdAt.getTime()) / (1000 * 60 * 60 * 24)
+      (Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)
     );
 
-    // Atividade recente combinada
-    const recentActivity: UserDetailsData['recentActivity'] = [];
+    // Calcular tempo desde última atividade
+    const lastActivityDate = user.lastSeen ?? user.updatedAt;
 
-    // Adicionar anotações recentes
-    annotationsData.slice(0, 5).forEach((annotation) => {
-      recentActivity.push({
-        type: 'annotation',
-        title: 'Criou uma anotação',
-        subtitle:
-          annotation.content.substring(0, 100) +
-          (annotation.content.length > 100 ? '...' : ''),
-        date: annotation.createdAt.toISOString(),
-        workTitle: annotation.work.title,
-        composerName: annotation.work.composer.name,
-      });
-    });
-
-    // Adicionar favoritos recentes
-    recentFavorites.forEach((favorite) => {
-      recentActivity.push({
-        type: 'favorite',
-        title: 'Adicionou aos favoritos',
-        subtitle: 'Nova obra favorita',
-        date: new Date().toISOString(), // Placeholder - ajustar se tiver createdAt
-        workTitle: favorite.work.title,
-        composerName: favorite.work.composer.name,
-      });
-    });
-
-    // Adicionar uploads recentes
-    recentUploads.forEach((upload) => {
-      recentActivity.push({
-        type: 'upload',
-        title: `Upload de ${upload.entityType}`,
-        subtitle:
-          upload.action === 'create'
-            ? 'Novo item adicionado'
-            : 'Item atualizado',
-        date: upload.createdAt.toISOString(),
-      });
-    });
-
-    // Ordenar atividade por data
-    recentActivity.sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    const lastSeenMinutesAgo = Math.floor(
+      (Date.now() - new Date(lastActivityDate).getTime()) / (1000 * 60)
     );
 
-    // Montar resposta
-    const details: UserDetailsData = {
-      profile: {
-        totalFavoriteWorks: favoriteWorksCount,
-        totalFavoriteComposers: favoriteComposersCount,
+    // Determinar status online
+    const isOnline = lastSeenMinutesAgo < 10; // Online se visto nos últimos 10 minutos
+
+    // Montar resposta detalhada
+    const detailedUser = {
+      // Informações básicas
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      email: user.email,
+      image: user.image,
+      bio: user.bio,
+      role: user.role,
+      userType: user.userType,
+      experienceLevel: user.experienceLevel,
+      onboardingCompleted: user.onboardingCompleted,
+      profilePublic: user.profilePublic,
+      showLocation: user.showLocation,
+
+      // Localização
+      city: user.city,
+      state: user.state,
+      country: user.country,
+
+      // Telefone
+      phone: user.phone,
+      phoneCountryCode: user.phoneCountryCode,
+      phoneNumber: user.phoneNumber,
+
+      // Preferências musicais
+      favoriteComposerId: user.favoriteComposerId,
+      favoriteComposer: user.favoriteComposer,
+      favoriteEpochId: user.favoriteEpochId,
+      favoriteEpoch: user.favoriteEpoch,
+      practiceTimePerWeek: user.practiceTimePerWeek,
+
+      // Status e atividade
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      joinedDaysAgo,
+      lastSeenMinutesAgo,
+      isOnline,
+      lastActivity: user.updatedAt,
+
+      // Estatísticas
+      stats: {
         totalAnnotations,
-        lastActivity: user.updatedAt.toISOString(),
-        joinedDaysAgo,
+        helpfulAnnotations,
+        totalUploads,
+        totalFavorites,
+        annotationsCount: user.totalAnnotationsCount,
+        uploadScore: user.uploadScore,
       },
-      recentActivity: recentActivity.slice(0, 20), // Limitar a 20 itens
-      contributions: {
-        topAnnotations: topAnnotations.map((annotation) => ({
-          id: annotation.id,
-          workTitle: annotation.work.title,
-          composerName: annotation.work.composer.name,
-          content: annotation.content,
-          helpfulCount: annotation.helpfulCount,
-          createdAt: annotation.createdAt.toISOString(),
-        })),
-        recentUploads: recentUploads.map((upload) => ({
-          id: upload.id,
-          type: upload.entityType as 'composer' | 'work' | 'score',
-          title: `${upload.entityType} - ${upload.action}`,
-          status: 'approved', // Placeholder - implementar lógica real
-          createdAt: upload.createdAt.toISOString(),
-        })),
-      },
+
+      // Coleções
+      favoriteComposers: user.favoriteComposers,
+      favoriteWorks: user.favoriteWorks,
+      favoriteScores: user.favoriteScores,
+      instruments: user.instruments,
+      wantToLearn: user.wantToLearn,
+      learned: user.learned,
+      annotations: user.workAnnotations,
+
+      // Perfis (professor/estudante)
+      teacherProfile: user.teacherProfile,
+      studentProfile: user.studentProfile,
+      isTeacher: user.isTeacher,
+      isStudent: user.isStudent,
     };
 
     return NextResponse.json({
       success: true,
-      details,
+      user: detailedUser,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Erro ao buscar detalhes do usuário:', error);
+    console.error('❌ Erro ao buscar detalhes do usuário:', error);
     return NextResponse.json(
-      {
-        success: false,
-        error: 'Erro interno do servidor',
-        details: null,
-      },
+      { error: 'Erro ao buscar detalhes do usuário' },
       { status: 500 }
     );
   }
