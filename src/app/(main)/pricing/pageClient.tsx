@@ -44,6 +44,8 @@ import { useSubscription } from '@/app/hooks/useSubscription';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Link from 'next/link';
+import { useLoginModal } from '@/app/stores/authStore';
+import Image from 'next/image';
 
 const comparisonData = [
   {
@@ -131,6 +133,63 @@ const comparisonData = [
     maestro: true,
   },
 ];
+const PLAN_DETAILS = {
+  FREE: {
+    title: 'Plano Free',
+    description:
+      'Explore o catálogo completo de música clássica e acompanhe seu progresso básico.',
+    image: '/logo-opus-atlas.jpeg',
+    highlight: 'Mais Econômico',
+
+    features: [
+      'Acesso completo ao catálogo',
+      'Progresso básico',
+      'Até 3 uploads de performance',
+      'Gamificação com XP',
+    ],
+  },
+  PLUS: {
+    title: 'Plano Plus',
+    description: 'Para músicos dedicados que querem evoluir mais rápido.',
+    image: '/plus.png',
+    highlight: 'Mais popular',
+    features: [
+      'Uploads ilimitados',
+      'Recomendações inteligentes',
+      'Metas personalizadas',
+      'Relatórios de progresso',
+      'Assistente IA de estudo',
+    ],
+  },
+  MENTOR: {
+    title: 'Plano Mentor',
+    description:
+      'Ferramentas essenciais para professores organizarem seus alunos.',
+    image: '/mentor.png',
+    highlight: 'Popular com Professores',
+
+    features: [
+      'Até 7 alunos',
+      'Criação de tarefas',
+      'Acompanhamento individual',
+      'Perfil público',
+    ],
+  },
+  MAESTRO: {
+    title: 'Plano Maestro',
+    description: 'A solução completa para professores profissionais.',
+    image: '/maestro.png',
+    highlight: 'Melhor custo-beneficio',
+
+    features: [
+      'Alunos ilimitados',
+      'Vídeos nas tarefas',
+      'Análises avançadas',
+      'Relatórios pedagógicos',
+      'Suporte prioritário',
+    ],
+  },
+};
 
 type PricingProps = {
   pricing: {
@@ -166,7 +225,7 @@ export default function PricingPage({ pricing }: PricingProps) {
   const {
     loading: subscriptionLoading,
     createSubscription,
-    changePlan,
+    createStripeCheckout,
     getCurrentPlan,
     canUpgradeTo,
   } = useSubscription();
@@ -186,6 +245,7 @@ export default function PricingPage({ pricing }: PricingProps) {
 
   const currentPlan = getCurrentPlan();
 
+  const { open: openLoginModal } = useLoginModal();
   const prices = {
     plus: {
       monthly: pricing.PLUS?.monthly ?? PLAN_PRICES.PLUS.MONTHLY,
@@ -224,7 +284,7 @@ export default function PricingPage({ pricing }: PricingProps) {
     // Verificar se está logado
     if (status === 'unauthenticated') {
       toast.error('Faça login para assinar um plano');
-      router.push('/login?redirect=/pricing');
+      openLoginModal();
       return;
     }
 
@@ -308,22 +368,14 @@ export default function PricingPage({ pricing }: PricingProps) {
     setProcessingPlan(selectedPlan.type);
 
     try {
-      // Se já tem assinatura, fazer upgrade/downgrade
-      if (currentPlan !== PlanType.FREE) {
-        await changePlan(selectedPlan.type, selectedPlan.period);
-      } else {
-        // Criar nova assinatura
-        await createSubscription(
-          selectedPlan.type,
-          selectedPlan.period,
-          couponData?.coupon?.code
-        );
-      }
-
-      // Modal será fechado automaticamente pelo redirect do MP
+      await createStripeCheckout(
+        selectedPlan.type,
+        selectedPlan.period,
+        couponData?.coupon?.code
+      );
     } catch (error: any) {
-      console.error('Error confirming subscription:', error);
-      toast.error(error.message || 'Erro ao processar assinatura');
+      console.error(error);
+      toast.error(error.message || 'Erro ao redirecionar para pagamento');
       setProcessingPlan(null);
     }
   };
@@ -331,7 +383,7 @@ export default function PricingPage({ pricing }: PricingProps) {
   return (
     <PageContainer showBackground={true} className="classical-theme">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-16">
+      <section className="relative overflow-hidden pt-16">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-accent-purple/5 to-accent-blue/5"></div>
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
@@ -412,7 +464,7 @@ export default function PricingPage({ pricing }: PricingProps) {
       </section>
 
       {/* Seção de Planos para USUÁRIOS */}
-      <section className="py-8">
+      <section className="pb-8">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="section-wrap">
             <div className="text-center mb-16">
@@ -447,7 +499,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                   { text: 'Acesso completo ao catálogo', enabled: true },
                   { text: "'Quero Aprender' e 'Já Aprendi'", enabled: true },
                   { text: 'Progresso básico', enabled: true },
-                  { text: 'Até 3 uploads de performance', enabled: true },
+                  { text: 'Até 7 uploads de performance', enabled: true },
                   { text: 'Gamificação com XP', enabled: true },
                   { text: 'Recomendações inteligentes', enabled: false },
                   { text: 'Assistente IA de estudo', enabled: false },
@@ -516,7 +568,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                 ]}
                 buttonText={
                   currentPlan === PlanType.FREE
-                    ? 'Começar Teste Grátis'
+                    ? 'Começar Teste'
                     : 'Fazer Upgrade'
                 }
                 onSelect={() => handleSelectPlan(PlanType.PLUS)}
@@ -576,7 +628,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                 }
                 icon={GiTeacher}
                 iconColor="from-accent-purple to-accent-blue"
-                trialDays={pricing.MENTOR?.trialDays ?? 14}
+                trialDays={pricing.MENTOR?.trialDays ?? 30}
                 features={[
                   { text: 'Painel completo do professor', enabled: true },
                   { text: 'Até 7 alunos simultâneos', enabled: true },
@@ -585,10 +637,12 @@ export default function PricingPage({ pricing }: PricingProps) {
                   { text: 'Perfil público no diretório', enabled: true },
                   { text: 'Agendamento de aulas', enabled: true },
                   { text: 'Biblioteca de materiais', enabled: true },
+                  { text: 'Notificações SMS/Push/Email', enabled: false },
+
                   { text: 'Vídeos nas tarefas', enabled: false },
                   { text: 'Relatórios avançados', enabled: false },
                 ]}
-                buttonText="Começar Teste de 14 Dias"
+                buttonText="Começar Teste"
                 onSelect={() => handleSelectPlan(PlanType.MENTOR)}
                 isCurrentPlan={currentPlan === PlanType.MENTOR}
                 isProcessing={processingPlan === PlanType.MENTOR}
@@ -652,12 +706,22 @@ export default function PricingPage({ pricing }: PricingProps) {
                     accent: true,
                   },
                   {
+                    text: 'Todos os Alunos ganham plano Plus',
+                    enabled: true,
+                    accent: true,
+                  },
+                  {
+                    text: 'Aviso de Aulas com antecedência',
+                    enabled: true,
+                    accent: true,
+                  },
+                  {
                     text: 'Suporte prioritário 24/7',
                     enabled: true,
                     accent: true,
                   },
                 ]}
-                buttonText="Começar Teste de 30 Dias"
+                buttonText="Começar Teste"
                 onSelect={() => handleSelectPlan(PlanType.MAESTRO)}
                 isCurrentPlan={currentPlan === PlanType.MAESTRO}
                 isProcessing={processingPlan === PlanType.MAESTRO}
@@ -819,7 +883,7 @@ export default function PricingPage({ pricing }: PricingProps) {
               />
               <FAQItem
                 question="Existe período de teste?"
-                answer="Sim! Plus tem 7 dias grátis, Mentor tem 14 dias e Maestro tem 30 dias de teste gratuito. Cancele quando quiser durante o período de teste sem cobranças."
+                answer="Sim! Todos os planos tem um período de 30 dias de teste gratuito. Cancele quando quiser durante o período de teste sem cobranças."
               />
               <FAQItem
                 question="Como funciona o pagamento anual?"
@@ -909,118 +973,183 @@ export default function PricingPage({ pricing }: PricingProps) {
             setCouponData(null);
             setProcessingPlan(null);
           }}
-          maxWidth="md"
+          maxWidth="xl"
         >
-          <div className="rounded-2xl p-4 w-full  relative">
-            <h3 className="text-2xl font-bold text-theme-primary mb-4">
-              Confirmar Assinatura
-            </h3>
+          {(() => {
+            const plan = PLAN_DETAILS[selectedPlan.type];
 
-            <div className="classical-card !hover:transform-none !hover:border-none rounded-xl p-4 mb-6">
-              <p className="text-sm text-theme-tertiary mb-2">
-                Plano selecionado:
-              </p>
-              <p className="text-xl font-bold text-theme-primary">
-                {selectedPlan.type} -{' '}
-                {selectedPlan.period === BillingPeriod.MONTHLY
-                  ? 'Mensal'
-                  : 'Anual'}
-              </p>
-              {couponData?.pricing ? (
-                <div className="mt-4 space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-theme-tertiary">Preço original:</span>
-                    <span className="text-theme-secondary line-through">
-                      R$ {couponData.pricing.originalPrice.toFixed(2)}
-                    </span>
+            return (
+              <div className="rounded-2xl p-5 w-full relative space-y-6">
+                {/* Header */}
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold text-theme-primary">
+                    Confirmar Assinatura
+                  </h3>
+                  <p className="text-theme-tertiary mt-1">
+                    Revise os detalhes antes de continuar
+                  </p>
+                </div>
+
+                {/* Card do Plano */}
+                <div className="classical-card rounded-xl p-5 space-y-4">
+                  {/* Topo */}
+                  <div className="flex items-center gap-4">
+                    <Image
+                      src={plan.image}
+                      alt={plan.title}
+                      className="w-32 h-32 rounded-xl object-cover border border-theme-secondary"
+                      width={300}
+                      height={300}
+                    />
+
+                    <div className="flex-1">
+                      <div className="flex flex-nowrap  items-start justify-centerl gap-2">
+                        <h4 className="text-xl font-bold text-theme-primary">
+                          {plan.title}
+                        </h4>
+                        {plan.highlight && (
+                          <span className="text-xs  py-1 rounded-full bg-accent-amber text-theme-primary font-semibold">
+                            {plan.highlight}
+                          </span>
+                        )}
+                      </div>
+
+                      <p className="text-sm text-theme-secondary mt-1">
+                        {plan.description}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-theme-tertiary">Desconto:</span>
-                    <span className="text-accent-green">
-                      - R$ {couponData.pricing.discount.toFixed(2)} (
-                      {couponData.pricing.savingsPercentage}%)
-                    </span>
+
+                  {/* Lista de benefícios */}
+                  <div className="space-y-2 pt-2">
+                    {plan.features.map((feature, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 text-sm"
+                      >
+                        <FiCheck className="text-accent-green w-4 h-4" />
+                        <span className="text-theme-secondary">{feature}</span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex justify-between text-lg font-bold pt-2 border-t border-theme-tertiary">
-                    <span className="text-theme-primary">Total:</span>
-                    <span className="text-brand-primary">
-                      R$ {couponData.pricing.finalPrice.toFixed(2)}
-                    </span>
+
+                  {/* Preço */}
+                  <div className="pt-4 border-t border-theme-secondary">
+                    <p className="text-sm text-theme-tertiary mb-1">
+                      Plano selecionado:
+                    </p>
+                    <p className="text-lg font-bold text-theme-primary">
+                      {selectedPlan.type} –{' '}
+                      {selectedPlan.period === BillingPeriod.MONTHLY
+                        ? 'Mensal'
+                        : 'Anual'}
+                    </p>
+
+                    {couponData?.pricing ? (
+                      <div className="mt-4 space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-theme-tertiary">
+                            Preço original
+                          </span>
+                          <span className="line-through text-theme-secondary">
+                            R$ {couponData.pricing.originalPrice.toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-theme-tertiary">Desconto</span>
+                          <span className="text-accent-green">
+                            - R$ {couponData.pricing.discount.toFixed(2)} (
+                            {couponData.pricing.savingsPercentage}%)
+                          </span>
+                        </div>
+                        <div className="flex justify-between font-bold text-lg pt-2 border-t border-theme-tertiary">
+                          <span>Total</span>
+                          <span className="text-brand-primary">
+                            R$ {couponData.pricing.finalPrice.toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-lg text-theme-secondary mt-2">
+                        R${' '}
+                        {selectedPlan.period === BillingPeriod.MONTHLY
+                          ? prices[
+                              selectedPlan.type.toLowerCase() as
+                                | 'plus'
+                                | 'mentor'
+                                | 'maestro'
+                            ].monthly.toFixed(2)
+                          : prices[
+                              selectedPlan.type.toLowerCase() as
+                                | 'plus'
+                                | 'mentor'
+                                | 'maestro'
+                            ].yearlyTotal.toFixed(2)}
+                      </p>
+                    )}
                   </div>
                 </div>
-              ) : (
-                <p className="text-lg text-theme-secondary mt-2">
-                  R${' '}
-                  {selectedPlan.period === BillingPeriod.MONTHLY
-                    ? prices[
-                        selectedPlan.type.toLowerCase() as
-                          | 'plus'
-                          | 'mentor'
-                          | 'maestro'
-                      ].monthly.toFixed(2)
-                    : prices[
-                        selectedPlan.type.toLowerCase() as
-                          | 'plus'
-                          | 'mentor'
-                          | 'maestro'
-                      ].yearlyTotal.toFixed(2)}
-                </p>
-              )}
-            </div>
 
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-theme-secondary mb-2">
-                Cupom de desconto (opcional)
-              </label>
-              <div className="flex gap-2">
-                <Input
-                  type="text"
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                  placeholder="BEMVINDO20"
-                  disabled={couponValidating || processingPlan !== null}
-                  widhtFull
-                />
+                {/* Cupom */}
+                <div>
+                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                    Cupom de desconto (opcional)
+                  </label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) =>
+                        setCouponCode(e.target.value.toUpperCase())
+                      }
+                      placeholder="BEMVINDO20"
+                      disabled={couponValidating || processingPlan !== null}
+                      widhtFull
+                    />
+                    <Button
+                      onClick={handleValidateCoupon}
+                      disabled={!couponCode.trim() || couponValidating}
+                      variant="outline"
+                    >
+                      {couponValidating ? (
+                        <FiLoader className="w-5 h-5 animate-spin" />
+                      ) : (
+                        'Validar'
+                      )}
+                    </Button>
+                  </div>
+
+                  {couponData && (
+                    <div className="mt-2 flex items-center gap-2 text-sm text-accent-green">
+                      <FiCheck className="w-4 h-4" />
+                      <span>{couponData.message}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* CTA */}
                 <Button
-                  onClick={handleValidateCoupon}
-                  disabled={!couponCode.trim() || couponValidating}
-                  variant="outline"
+                  onClick={handleConfirmSubscription}
+                  disabled={processingPlan !== null}
+                  className="w-full"
                 >
-                  {couponValidating ? (
-                    <FiLoader className="w-5 h-5 animate-spin" />
+                  {processingPlan ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <FiLoader className="w-5 h-5 animate-spin" />
+                      <span>Processando...</span>
+                    </div>
                   ) : (
-                    'Validar'
+                    'Continuar para Pagamento'
                   )}
                 </Button>
+
+                <p className="text-xs text-theme-tertiary text-center">
+                  Você será redirecionado para o Stripe para completar o
+                  pagamento com segurança.
+                </p>
               </div>
-              {couponData && (
-                <div className="mt-2 flex items-center gap-2 text-sm text-accent-green">
-                  <FiCheck className="w-4 h-4" />
-                  <span>{couponData.message}</span>
-                </div>
-              )}
-            </div>
-
-            <Button
-              onClick={handleConfirmSubscription}
-              disabled={processingPlan !== null}
-              className="w-full"
-            >
-              {processingPlan ? (
-                <div className="flex items-center justify-center gap-2">
-                  <FiLoader className="w-5 h-5 animate-spin" />
-                  <span>Processando...</span>
-                </div>
-              ) : (
-                'Continuar para Pagamento'
-              )}
-            </Button>
-
-            <p className="text-xs text-theme-tertiary text-center mt-4">
-              Você será redirecionado para o Stripe para completar o pagamento
-              de forma segura.
-            </p>
-          </div>
+            );
+          })()}
         </Modal>
       )}
 
@@ -1182,7 +1311,13 @@ function PlanCard({
 
       <div className="space-y-4">
         <p className="text-sm font-semibold text-theme-primary mb-4">
-          {price === 0 ? 'O que está incluído:' : 'Tudo do Free +'}
+          {price === 0
+            ? 'O que está incluído:'
+            : name === 'Mentor'
+              ? 'Tudo do Free + Plus +'
+              : name === 'Maestro'
+                ? 'Tudo do Free + Plus + Maestro + '
+                : 'Tudo do Free + '}
         </p>
         {features.map((feature, index) => (
           <Feature

@@ -46,6 +46,31 @@ export function useSubscription() {
       setLoading(false);
     }
   };
+  const createStripeCheckout = async (
+    planType: PlanType,
+    billingPeriod: BillingPeriod,
+    couponCode?: string
+  ) => {
+    const response = await fetch('/api/stripe/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        planType,
+        billingPeriod,
+        couponCode,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Erro ao iniciar pagamento');
+    }
+
+    if (result.url) {
+      window.location.href = result.url;
+    }
+  };
 
   // Create subscription
   const createSubscription = async (
@@ -245,7 +270,7 @@ export function useSubscription() {
     // State
     loading,
     error,
-
+    createStripeCheckout,
     // Actions
     createSubscription,
     changePlan,

@@ -61,7 +61,7 @@ export async function GET() {
     const grouped = {
       approved: payments.filter((p) => p.status === 'APPROVED'),
       pending: payments.filter((p) => p.status === 'PENDING'),
-      rejected: payments.filter((p) => p.status === 'REJECTED'),
+      rejected: payments.filter((p) => p.status === 'FAILED'),
       refunded: payments.filter((p) => p.status === 'REFUNDED'),
     };
 

@@ -407,12 +407,13 @@ enum SubscriptionPlanStatus {
   CANCELLED // Cancelada (acesso até o fim do período)
   EXPIRED // Expirada
   PAST_DUE // Pagamento atrasado
+  PENDING
 }
 
 enum PaymentStatus {
   PENDING // Aguardando pagamento
   APPROVED // Aprovado
-  REJECTED // Rejeitado
+  FAILED // Falhou
   REFUNDED // Reembolsado
   CANCELLED // Cancelado
   IN_PROCESS // Em processamento (MP)

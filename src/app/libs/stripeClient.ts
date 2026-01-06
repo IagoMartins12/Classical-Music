@@ -14,13 +14,30 @@ import {
 //   timeout: 5000,
 // });
 
-export const stripe = new Stripe(
-  'sk_test_51SOLnFGmqGOcpsPeoopGs0b7xusrqGQfMlp9mDe4YGQC5VGo8ItsLTOCGNP8sjDxeDhLeJ2h8KajQYOcRhq1QwK800Q292E0mp',
-  {
-    apiVersion: '2025-10-29.clover',
-    timeout: 5000,
-  }
+const isProduction = process.env.NODE_ENV === 'production';
+
+export const stripeClient = new Stripe(
+  isProduction
+    ? process.env.STRIPE_SECRET_KEY!
+    : process.env.STRIPE_SECRET_KEY_TEST!,
+  { apiVersion: '2025-10-29.clover' }
 );
+
+export const STRIPE_WEBHOOK_SECRET = isProduction
+  ? process.env.STRIPE_WEBHOOK_SECRET!
+  : process.env.STRIPE_WEBHOOK_SECRET_TEST!;
+
+export const getAppUrl = () => {
+  if (process.env.NODE_ENV === 'production') {
+    if (!process.env.NEXT_PUBLIC_APP_URL_PROD)
+      throw new Error('NEXT_PUBLIC_APP_URL_PROD não definido');
+    return process.env.NEXT_PUBLIC_APP_URL_PROD;
+  } else {
+    if (!process.env.NEXT_PUBLIC_APP_URL)
+      throw new Error('NEXT_PUBLIC_APP_URL não definido');
+    return process.env.NEXT_PUBLIC_APP_URL;
+  }
+};
 
 /**
 
@@ -60,13 +77,13 @@ export async function createCheckoutSession(data: CreateCheckoutSessionData) {
     const periodName = getBillingPeriodName(billingPeriod);
 
     // Criar ou usar um produto Stripe (você pode cachear IDs no DB)
-    const product = await stripe.products.create({
+    const product = await stripeClient.products.create({
       name: `Opus Atlas - ${planName}`,
       description: `Assinatura ${periodName}`,
     });
 
     // Criar preço recorrente
-    const price = await stripe.prices.create({
+    const price = await stripeClient.prices.create({
       product: product.id,
       unit_amount: Math.round(finalPrice * 100), // centavos
       currency: 'brl',
@@ -76,7 +93,7 @@ export async function createCheckoutSession(data: CreateCheckoutSessionData) {
     });
 
     // Criar sessão de checkout
-    const session = await stripe.checkout.sessions.create({
+    const session = await stripeClient.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card', 'pix'],
       customer_email: userEmail,
@@ -120,7 +137,7 @@ export async function createCheckoutSession(data: CreateCheckoutSessionData) {
  */
 export async function getCheckoutSession(sessionId: string) {
   try {
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    const session = await stripeClient.checkout.sessions.retrieve(sessionId, {
       expand: ['subscription', 'payment_intent'],
     });
 
@@ -150,7 +167,7 @@ export async function processStripeWebhook(
     const endpointSecret =
       'sk_test_51SOLnFGmqGOcpsPeoopGs0b7xusrqGQfMlp9mDe4YGQC5VGo8ItsLTOCGNP8sjDxeDhLeJ2h8KajQYOcRhq1QwK800Q292E0mp';
 
-    const event = stripe.webhooks.constructEvent(
+    const event = stripeClient.webhooks.constructEvent(
       body,
       signature!,
       endpointSecret
