@@ -356,24 +356,6 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                   </div>
                 )}
 
-                {/* ✅ RESULTADOS */}
-                {!searchLoading && searchResults.length > 0 && (
-                  <div className="space-y-3">
-                    <h3 className="font-semibold text-theme-primary">
-                      Resultados da busca ({searchResults.length})
-                    </h3>
-
-                    {searchResults.map((student) => (
-                      <div
-                        key={student.id}
-                        className="classical-card-simple p-4"
-                      >
-                        {/* (seu conteúdo existente aqui, sem mudanças) */}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
                 {/* ❌ NENHUM RESULTADO */}
                 {hasSearched && searchResults.length === 0 && (
                   <div className="text-center py-10">
