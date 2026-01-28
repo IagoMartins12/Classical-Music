@@ -158,14 +158,17 @@ function executeBackup(): Promise<{
     });
 
     // Timeout de 30 minutos
-    setTimeout(() => {
-      backupProcess.kill();
-      resolve({
-        success: false,
-        output,
-        error: 'Timeout: Backup levou mais de 30 minutos',
-      });
-    }, 30 * 60 * 1000);
+    setTimeout(
+      () => {
+        backupProcess.kill();
+        resolve({
+          success: false,
+          output,
+          error: 'Timeout: Backup levou mais de 30 minutos',
+        });
+      },
+      30 * 60 * 1000
+    );
   });
 }
 
@@ -204,14 +207,17 @@ function executeRestore(
     });
 
     // Timeout de 30 minutos
-    setTimeout(() => {
-      restoreProcess.kill();
-      resolve({
-        success: false,
-        output,
-        error: 'Timeout: Restore levou mais de 30 minutos',
-      });
-    }, 30 * 60 * 1000);
+    setTimeout(
+      () => {
+        restoreProcess.kill();
+        resolve({
+          success: false,
+          output,
+          error: 'Timeout: Restore levou mais de 30 minutos',
+        });
+      },
+      30 * 60 * 1000
+    );
   });
 }
 
@@ -310,10 +316,10 @@ export async function GET(request: NextRequest) {
             (backup.size.includes('GB')
               ? 1024 * 1024 * 1024
               : backup.size.includes('MB')
-              ? 1024 * 1024
-              : backup.size.includes('KB')
-              ? 1024
-              : 1);
+                ? 1024 * 1024
+                : backup.size.includes('KB')
+                  ? 1024
+                  : 1);
           return sum + sizeInBytes;
         }, 0);
 
