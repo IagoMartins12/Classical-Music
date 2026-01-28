@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
-import { getAppUrl, stripeClient } from '@/app/libs/stripeClient';
+import { getAppUrl, getStripeClient } from '@/app/libs/stripeClient';
 
 /**
  * POST /api/stripe/checkout
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
 
     console.log('successUrl', successUrl); // veja se está correto
 
-    const checkoutSession = await stripeClient.checkout.sessions.create({
+    const checkoutSession = await getStripeClient().checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
       customer_email: user.email,

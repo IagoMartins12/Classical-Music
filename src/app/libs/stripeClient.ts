@@ -16,12 +16,21 @@ import {
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-export const stripeClient = new Stripe(
-  isProduction
-    ? process.env.STRIPE_SECRET_KEY!
-    : process.env.STRIPE_SECRET_KEY_TEST!,
-  { apiVersion: '2025-10-29.clover' }
-);
+export function getStripeClient() {
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  const key = isProduction
+    ? process.env.STRIPE_SECRET_KEY
+    : process.env.STRIPE_SECRET_KEY_TEST;
+
+  if (!key) {
+    throw new Error('Stripe API key não definida');
+  }
+
+  return new Stripe(key, {
+    apiVersion: '2025-10-29.clover',
+  });
+}
 
 export const STRIPE_WEBHOOK_SECRET = isProduction
   ? process.env.STRIPE_WEBHOOK_SECRET!
@@ -77,13 +86,13 @@ export async function createCheckoutSession(data: CreateCheckoutSessionData) {
     const periodName = getBillingPeriodName(billingPeriod);
 
     // Criar ou usar um produto Stripe (você pode cachear IDs no DB)
-    const product = await stripeClient.products.create({
+    const product = await getStripeClient().products.create({
       name: `Opus Atlas - ${planName}`,
       description: `Assinatura ${periodName}`,
     });
 
     // Criar preço recorrente
-    const price = await stripeClient.prices.create({
+    const price = await getStripeClient().prices.create({
       product: product.id,
       unit_amount: Math.round(finalPrice * 100), // centavos
       currency: 'brl',
@@ -93,7 +102,7 @@ export async function createCheckoutSession(data: CreateCheckoutSessionData) {
     });
 
     // Criar sessão de checkout
-    const session = await stripeClient.checkout.sessions.create({
+    const session = await getStripeClient().checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card', 'pix'],
       customer_email: userEmail,
@@ -137,9 +146,12 @@ export async function createCheckoutSession(data: CreateCheckoutSessionData) {
  */
 export async function getCheckoutSession(sessionId: string) {
   try {
-    const session = await stripeClient.checkout.sessions.retrieve(sessionId, {
-      expand: ['subscription', 'payment_intent'],
-    });
+    const session = await getStripeClient().checkout.sessions.retrieve(
+      sessionId,
+      {
+        expand: ['subscription', 'payment_intent'],
+      }
+    );
 
     return {
       success: true,
@@ -167,7 +179,7 @@ export async function processStripeWebhook(
     const endpointSecret =
       'sk_test_51SOLnFGmqGOcpsPeoopGs0b7xusrqGQfMlp9mDe4YGQC5VGo8ItsLTOCGNP8sjDxeDhLeJ2h8KajQYOcRhq1QwK800Q292E0mp';
 
-    const event = stripeClient.webhooks.constructEvent(
+    const event = getStripeClient().webhooks.constructEvent(
       body,
       signature!,
       endpointSecret
