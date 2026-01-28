@@ -2,11 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
-import Stripe from 'stripe';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST!, {
-  apiVersion: '2025-10-29.clover',
-});
+import { getStripeClient } from '@/app/libs/stripeClient';
 
 /**
  * POST /api/stripe/portal
@@ -47,10 +43,12 @@ export async function POST() {
       );
     }
 
-    const portalSession = await stripe.billingPortal.sessions.create({
-      customer: subscription.stripeCustomerId,
-      return_url: process.env.NEXT_PUBLIC_APP_URL!,
-    });
+    const portalSession = await getStripeClient().billingPortal.sessions.create(
+      {
+        customer: subscription.stripeCustomerId,
+        return_url: process.env.NEXT_PUBLIC_APP_URL!,
+      }
+    );
 
     return NextResponse.json({
       success: true,

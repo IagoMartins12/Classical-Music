@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/libs/prismadb';
-import Stripe from 'stripe';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-10-29.clover',
-});
-
+import { getStripeClient } from '@/app/libs/stripeClient';
 /**
  * GET /api/stripe/success?session_id=xxx
  * Confirma pagamento após retorno do Stripe
@@ -22,9 +17,12 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ['subscription', 'customer'],
-    });
+    const session = await getStripeClient().checkout.sessions.retrieve(
+      sessionId,
+      {
+        expand: ['subscription', 'customer'],
+      }
+    );
 
     if (session.payment_status !== 'paid') {
       return NextResponse.json(
