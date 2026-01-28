@@ -1,9 +1,6 @@
 import Stripe from 'stripe';
 import { NextRequest, NextResponse } from 'next/server';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-10-29.clover',
-});
+import { getStripeClient } from '@/app/libs/stripeClient';
 
 export async function POST(req: NextRequest) {
   const sig = req.headers.get('stripe-signature');
@@ -18,7 +15,7 @@ export async function POST(req: NextRequest) {
     // 🔥 RAW BODY (OBRIGATÓRIO)
     const body = await req.text();
 
-    event = stripe.webhooks.constructEvent(
+    event = getStripeClient().webhooks.constructEvent(
       body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!

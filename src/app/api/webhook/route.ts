@@ -2,10 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import prisma from '@/app/libs/prismadb';
 import { Prisma } from '@prisma/client';
+import { getStripeClient } from '@/app/libs/stripeClient';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-10-29.clover',
-});
 type StripeInvoiceWithSubscription = Stripe.Invoice & {
   subscription?: string | Stripe.Subscription | null;
 };
@@ -17,7 +15,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.text();
-    event = stripe.webhooks.constructEvent(body, sig!, webhookSecret);
+    event = getStripeClient().webhooks.constructEvent(
+      body,
+      sig!,
+      webhookSecret
+    );
   } catch (err: any) {
     console.error('Webhook signature error:', err.message);
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });

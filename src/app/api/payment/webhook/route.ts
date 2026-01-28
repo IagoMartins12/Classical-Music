@@ -6,13 +6,7 @@ import { updateUserPlanCache } from '@/app/libs/subscriptionChecker';
 import { prepareInvoiceData } from '@/app/libs/invoiceGenerator';
 import { BillingPeriod } from '@/app/libs/subscriptionConstants';
 import { sendPaymentApprovedEmail } from '@/app/libs/newsletter/email';
-
-const stripe = new Stripe(
-  'sk_test_51SOLnFGmqGOcpsPeoopGs0b7xusrqGQfMlp9mDe4YGQC5VGo8ItsLTOCGNP8sjDxeDhLeJ2h8KajQYOcRhq1QwK800Q292E0mp',
-  {
-    apiVersion: '2025-10-29.clover',
-  }
-);
+import { getStripeClient } from '@/app/libs/stripeClient';
 
 /**
  * POST /api/payment/webhook
@@ -38,7 +32,7 @@ export async function POST(req: NextRequest) {
     //   sig,
     //   process.env.STRIPE_WEBHOOK_SECRET!
     // );
-    event = stripe.webhooks.constructEvent(
+    event = getStripeClient().webhooks.constructEvent(
       Buffer.from(buf),
       sig,
       'sk_test_51SOLnFGmqGOcpsPeoopGs0b7xusrqGQfMlp9mDe4YGQC5VGo8ItsLTOCGNP8sjDxeDhLeJ2h8KajQYOcRhq1QwK800Q292E0mp'
