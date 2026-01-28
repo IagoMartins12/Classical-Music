@@ -1160,7 +1160,7 @@ const LearningModal = () => {
                     className="w-full border-2 border-dashed border-theme-secondary hover:border-brand-primary rounded-xl p-4 text-center transition-all duration-300 hover:bg-brand-primary/5 group cursor-pointer block"
                   >
                     <div className="flex flex-col items-center space-y-2">
-                      <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border-2 border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-12 h-12 shadow-md border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <FiPlus className="w-6 h-6 text-brand-primary" />
                       </div>
                       <div>

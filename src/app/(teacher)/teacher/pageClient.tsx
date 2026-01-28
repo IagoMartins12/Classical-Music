@@ -378,11 +378,11 @@ export default function TeacherPageClient({
                 <FiUsers className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title m-0 mb-4">
               {t('dashboard_title')}
             </h1>
-            <div className="flex items-center justify-center space-x-4">
-              <p className="text-xl text-theme-secondary classical-subtitle">
+            <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row items-center justify-center space-x-4">
+              <p className="text-xl m-0 text-theme-secondary classical-subtitle">
                 {t('welcome_message', { name: teacherProfile.name })}
               </p>
 
@@ -416,13 +416,24 @@ export default function TeacherPageClient({
                       </p>
                     </div>
                   </div>
-                  <Link
-                    href="/teacher/students"
-                    className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
-                  >
-                    <span>{t('see_all')}</span>
-                    <FiChevronRight className="w-4 h-4" />
-                  </Link>
+
+                  <div className="flex gap-4 items-center justify-center">
+                    <Link
+                      href="/teacher/students"
+                      className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
+                    >
+                      <span>{t('see_all')}</span>
+                      <FiChevronRight className="w-4 h-4" />
+                    </Link>
+
+                    <button
+                      onClick={() => setShowAddStudent(true)}
+                      className="btn-classical-primary hidden sm:flex items-center space-x-2 mx-auto"
+                    >
+                      <FiUserPlus className="w-4 h-4" />
+                      <span>{t('add_student')}</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="space-y-4">

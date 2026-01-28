@@ -20,6 +20,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import Button from '../../Common/Button';
 import { FaChevronLeft } from 'react-icons/fa';
 import Checkbox from '../../Common/Checkbox';
+import { BiError } from 'react-icons/bi';
 
 interface AddStudentModalProps {
   onClose: () => void;
@@ -154,6 +155,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
       };
     });
   };
+
   const handleAddFocusArea = (area: string) => {
     if (area.trim() && !studyPlan.currentFocus.includes(area.trim())) {
       setStudyPlan((prev) => ({
@@ -189,11 +191,13 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
     });
   };
 
-  console.log('search', searchResults);
+  const isSearching = searchQuery.length >= 3 && searchLoading;
+  const hasSearched = searchQuery.length >= 3 && !searchLoading;
+
   return (
     <Modal maxWidth="5xl" isOpen={isOpen} onClose={onClose}>
       <AnimatedCard hover="none">
-        <div className="p-6">
+        <div className="p-0 sm:p-6">
           <div className="flex items-center gap-6 mb-6">
             {showStudyPlan && (
               <button
@@ -236,11 +240,6 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                   }}
                   className="input-classical w-full"
                 />
-                {searchLoading && (
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <div className="w-4 h-4 border-2 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
-                  </div>
-                )}
               </div>
 
               {/* Search Results */}
@@ -342,39 +341,68 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                 </div>
               )}
 
-              {/* Empty State / Instructions (existente, sem mudanças) */}
-              {searchQuery.length >= 3 &&
-                searchResults.length === 0 &&
-                !searchLoading && (
-                  <div className="text-center py-8">
-                    <FiSearch className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+              {/* RESULT AREA (altura fixa para evitar jumping) */}
+              <div className="min-h-[200px] transition-all">
+                {/* 🔄 BUSCANDO */}
+                {isSearching && (
+                  <div className="text-center py-10">
+                    <FiSearch className="w-12 h-12 text-theme-tertiary mx-auto mb-4 animate-pulse" />
                     <h3 className="font-semibold text-theme-primary mb-2">
-                      Nenhum aluno encontrado
+                      Buscando aluno…
                     </h3>
                     <p className="text-theme-tertiary text-sm">
-                      Verifique se o email está correto ou se o usuário já se
-                      cadastrou na plataforma.
+                      Procurando usuário com o email informado
                     </p>
                   </div>
                 )}
 
-              {searchQuery.length < 3 && (
-                <div className="text-center py-8">
-                  <FiUserPlus className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
-                  <h3 className="font-semibold text-theme-primary mb-2">
-                    Como adicionar um aluno
-                  </h3>
-                  <div className="text-theme-tertiary text-sm space-y-2">
-                    <p>1. Digite o email completo do aluno no campo acima</p>
-                    <p>2. O aluno deve estar cadastrado na plataforma</p>
-                    <p>
-                      3. Escolha &quot;Adicionar Rápido&quot; ou &quot;Com
-                      Plano&quot;
-                    </p>
-                    <p>4. Configure o plano de estudos (opcional)</p>
+                {/* ✅ RESULTADOS */}
+                {!searchLoading && searchResults.length > 0 && (
+                  <div className="space-y-3">
+                    <h3 className="font-semibold text-theme-primary">
+                      Resultados da busca ({searchResults.length})
+                    </h3>
+
+                    {searchResults.map((student) => (
+                      <div
+                        key={student.id}
+                        className="classical-card-simple p-4"
+                      >
+                        {/* (seu conteúdo existente aqui, sem mudanças) */}
+                      </div>
+                    ))}
                   </div>
-                </div>
-              )}
+                )}
+
+                {/* ❌ NENHUM RESULTADO */}
+                {hasSearched && searchResults.length === 0 && (
+                  <div className="text-center py-10">
+                    <BiError className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                    <h3 className="font-semibold text-theme-primary mb-2">
+                      Nenhum aluno encontrado
+                    </h3>
+                    <p className="text-theme-tertiary text-sm">
+                      Verifique se o email está correto ou se o aluno já possui
+                      cadastro.
+                    </p>
+                  </div>
+                )}
+
+                {/* 🧭 INSTRUÇÕES */}
+                {searchQuery.length < 3 && (
+                  <div className="text-center py-10">
+                    <FiUserPlus className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                    <h3 className="font-semibold text-theme-primary mb-2">
+                      Como adicionar um aluno
+                    </h3>
+                    <div className="text-theme-tertiary text-sm space-y-2">
+                      <p>1. Digite o email completo do aluno</p>
+                      <p>2. O aluno precisa estar cadastrado</p>
+                      <p>3. Escolha “Adicionar Rápido” ou “Com Plano”</p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             // 🆕 NOVA: SEÇÃO DE PLANO DE ESTUDOS
@@ -480,7 +508,6 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                   day.value
                                 )
                               }
-                              className="sr-only"
                             />
                           </label>
                         ))}

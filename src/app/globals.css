@@ -246,7 +246,7 @@ body {
   border: 1px solid var(--border-primary);
   backdrop-filter: blur(12px);
   border-radius: 1.5rem;
-  transition: var(--transition-smooth);
+  /* transition: var(--transition-smooth); */
 }
 
 .classical-card-2 {
@@ -254,14 +254,14 @@ body {
   border: 1px solid var(--border-secondary);
   backdrop-filter: blur(8px);
   border-radius: 1rem;
-  transition: var(--transition-smooth);
+  /* transition: var(--transition-smooth); */
 }
 
 .classical-card:hover,
 .classical-card-2:hover {
   border-color: var(--border-accent);
   box-shadow: var(--shadow-glow);
-  transform: translateY(-2px);
+  /* transform: translateY(-2px); */
 }
 
 .classical-card-simple {

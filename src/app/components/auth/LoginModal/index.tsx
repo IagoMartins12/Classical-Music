@@ -319,7 +319,7 @@ const LoginModal: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* General Error */}
           {errors.general && (
-            <div className="p-3 rounded-lg bg-accent-red bg-opacity-10 border border-accent-red text-accent-red text-sm">
+            <div className="p-3 rounded-lg bg-opacity-10 border border-red-400 text-red-400 text-sm">
               {errors.general}
             </div>
           )}

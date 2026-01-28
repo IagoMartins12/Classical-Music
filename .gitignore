@@ -20,7 +20,8 @@
 # production
 /build
 
-
+mongo-backup/
+.vscode/
 
 # misc
 .DS_Store
