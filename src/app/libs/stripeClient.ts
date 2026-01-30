@@ -20,7 +20,7 @@ export function getStripeClient() {
   const isProduction = process.env.NODE_ENV === 'production';
 
   const key = isProduction
-    ? process.env.STRIPE_SECRET_KEY
+    ? process.env.STRIPE_SECRET_KEY //depois retirar o TEST
     : process.env.STRIPE_SECRET_KEY_TEST;
 
   if (!key) {
@@ -33,7 +33,7 @@ export function getStripeClient() {
 }
 
 export const STRIPE_WEBHOOK_SECRET = isProduction
-  ? process.env.STRIPE_WEBHOOK_SECRET!
+  ? process.env.STRIPE_WEBHOOK_SECRET! //depois retirar o TEST
   : process.env.STRIPE_WEBHOOK_SECRET_TEST!;
 
 export const getAppUrl = () => {

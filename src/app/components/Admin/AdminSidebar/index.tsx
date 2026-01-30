@@ -22,7 +22,8 @@ import {
   FiHardDrive,
   FiSend,
   FiMail,
-  FiPercent, // Nova importação para backup
+  FiPercent,
+  FiSettings, // Nova importação para backup
 } from 'react-icons/fi';
 import { BiDollar, BiTestTube } from 'react-icons/bi';
 import { LuUser } from 'react-icons/lu';
@@ -221,8 +222,15 @@ export default function AdminSidebar() {
         {
           href: '/admin/system',
           label: 'Sistema',
-          icon: FiDatabase,
+          icon: FiSettings,
           isActive: pathname.startsWith('/admin/system'),
+        },
+
+        {
+          href: '/admin/database',
+          label: 'Database Studio',
+          icon: FiDatabase,
+          isActive: pathname.startsWith('/admin/database'),
         },
       ],
     },

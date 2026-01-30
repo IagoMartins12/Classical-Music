@@ -8,6 +8,9 @@ import { getAppUrl, getStripeClient } from '@/app/libs/stripeClient';
  * POST /api/stripe/checkout
  * Cria uma sessão de checkout no Stripe
  */
+
+const isProduction = process.env.NODE_ENV === 'production';
+
 export async function POST(req: NextRequest) {
   try {
     const sessionAuth = await getServerSession(authOptions);
@@ -41,7 +44,23 @@ export async function POST(req: NextRequest) {
       },
     };
 
-    const priceId = PRICE_IDS?.[planType]?.[billingPeriod];
+    const PRICE_IDS_PROD: Record<string, Record<string, string>> = {
+      PLUS: {
+        MONTHLY: 'price_1SmJCSK6ClJ0lnQJhxbdfcJ9',
+        YEARLY: 'price_1Suj3tK6ClJ0lnQJhPez25c0',
+      },
+      MENTOR: {
+        MONTHLY: 'price_1SmHu6K6ClJ0lnQJZpyJf5Uw',
+        YEARLY: 'price_1Suj3zK6ClJ0lnQJV31OWtEV',
+      },
+      MAESTRO: {
+        MONTHLY: 'price_1SmJCsK6ClJ0lnQJHfk1R5Vj',
+        YEARLY: 'price_1Suj3wK6ClJ0lnQJfF8AvGSs',
+      },
+    };
+
+    const PRICE_IDS_CERT = isProduction ? PRICE_IDS_PROD : PRICE_IDS;
+    const priceId = PRICE_IDS_CERT?.[planType]?.[billingPeriod];
 
     if (!priceId) {
       return NextResponse.json(
