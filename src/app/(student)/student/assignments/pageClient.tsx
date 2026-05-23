@@ -37,6 +37,7 @@ import Select from '@/app/components/Common/Select';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/app/context/TranslationContext';
+import Button from '@/app/components/Common/Button';
 
 interface StudentAssignmentsPageClientProps {
   initialData: StudentAssignmentsData | null;
@@ -799,81 +800,83 @@ export default function StudentAssignmentsPageClient({
 
         {/* Stats Cards */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-8">
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiClipboard className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {displayStats.total}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('student_assignments_stats_total')}
-              </div>
-            </AnimatedCard>
+          <div className="overflow-x-auto sm:overflow-x-hidden overflow-y-hidden pb-2 mb-8 scroll-smooth snap-x snap-mandatory scrollbar-hide">
+            <div className="grid grid-flow-col auto-cols-[minmax(260px,1fr)] gap-6 sm:grid-flow-row sm:grid-cols-5 sm:auto-cols-auto">
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center snap-start"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiClipboard className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {displayStats.total}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('student_assignments_stats_total')}
+                </div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiClock className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {displayStats.pending}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('student_assignments_stats_pending')}
-              </div>
-            </AnimatedCard>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center snap-start"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiClock className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {displayStats.pending}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('student_assignments_stats_pending')}
+                </div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiTrendingUp className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {displayStats.inProgress}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('student_assignments_stats_in_progress')}
-              </div>
-            </AnimatedCard>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center snap-start"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiTrendingUp className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {displayStats.inProgress}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('student_assignments_stats_in_progress')}
+                </div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCheck className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {displayStats.completed}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('student_assignments_stats_completed')}
-              </div>
-            </AnimatedCard>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center snap-start"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiCheck className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {displayStats.completed}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('student_assignments_stats_completed')}
+                </div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiAlertTriangle className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {displayStats.overdue}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('student_assignments_stats_overdue')}
-              </div>
-            </AnimatedCard>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center snap-start"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiAlertTriangle className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {displayStats.overdue}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('student_assignments_stats_overdue')}
+                </div>
+              </AnimatedCard>
+            </div>
           </div>
         </AnimatedItem>
 
@@ -894,64 +897,29 @@ export default function StudentAssignmentsPageClient({
               </div>
 
               {/* Controls */}
-              <div className="flex items-center space-x-4">
-                {/* 🆕 ORDENAÇÃO */}
-                <div className="flex items-center space-x-2">
-                  <Select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as SortOption)}
-                    options={[
-                      {
-                        value: 'due_date_asc',
-                        label: t('student_assignments_sort_due_date_asc'),
-                      },
-                      {
-                        value: 'due_date_desc',
-                        label: t('student_assignments_sort_due_date_desc'),
-                      },
-                      {
-                        value: 'created_desc',
-                        label: t('student_assignments_sort_newest'),
-                      },
-                      {
-                        value: 'created_asc',
-                        label: t('student_assignments_sort_oldest'),
-                      },
-                      {
-                        value: 'status',
-                        label: t('student_assignments_sort_status'),
-                      },
-                      {
-                        value: 'priority',
-                        label: t('student_assignments_sort_priority'),
-                      },
-                    ]}
-                    className="input-classical"
-                  />
-                </div>
-
-                <button
+              <div className="flex items-center justify-center space-x-4">
+                <Button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`btn-classical-secondary flex items-center space-x-2 ${
                     showFilters ? 'bg-brand-primary/10 text-brand-primary' : ''
                   }`}
+                  leftIcon={<FiFilter className="w-4 h-4" />}
                 >
-                  <FiFilter className="w-4 h-4" />
                   <span>{t('student_assignments_filters')}</span>
-                </button>
+                </Button>
 
-                <button
+                <Button
                   onClick={refreshAssignments}
                   disabled={loading.assignments}
                   className="btn-classical-secondary flex items-center space-x-2"
+                  leftIcon={
+                    <FiRefreshCw
+                      className={`w-4 h-4 ${loading.assignments ? 'animate-spin' : ''}`}
+                    />
+                  }
                 >
-                  <FiRefreshCw
-                    className={`w-4 h-4 ${
-                      loading.assignments ? 'animate-spin' : ''
-                    }`}
-                  />
                   <span>{t('student_assignments_refresh')}</span>
-                </button>
+                </Button>
                 {/* 🆕 VIEW MODE TOGGLE */}
                 <ViewModeToggle
                   viewMode={viewMode}
@@ -962,7 +930,7 @@ export default function StudentAssignmentsPageClient({
 
             {/* Filters */}
             {showFilters && (
-              <div className="mt-6 pt-6 border-t border-theme-secondary grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="mt-6 pt-6 border-t border-theme-secondary grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-theme-tertiary mb-2">
                     Professor
@@ -1051,6 +1019,44 @@ export default function StudentAssignmentsPageClient({
                       },
                     ]}
                     className="input-classical w-full"
+                  />
+                </div>
+
+                <div>
+                  {/* 🆕 ORDENAÇÃO */}
+                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                    Ordenação
+                  </label>
+                  <Select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    options={[
+                      {
+                        value: 'due_date_asc',
+                        label: t('student_assignments_sort_due_date_asc'),
+                      },
+                      {
+                        value: 'due_date_desc',
+                        label: t('student_assignments_sort_due_date_desc'),
+                      },
+                      {
+                        value: 'created_desc',
+                        label: t('student_assignments_sort_newest'),
+                      },
+                      {
+                        value: 'created_asc',
+                        label: t('student_assignments_sort_oldest'),
+                      },
+                      {
+                        value: 'status',
+                        label: t('student_assignments_sort_status'),
+                      },
+                      {
+                        value: 'priority',
+                        label: t('student_assignments_sort_priority'),
+                      },
+                    ]}
+                    className="input-classical"
                   />
                 </div>
               </div>

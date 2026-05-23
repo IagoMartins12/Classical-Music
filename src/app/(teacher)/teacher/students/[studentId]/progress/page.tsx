@@ -1,6 +1,9 @@
 // app/(teacher)/teacher/students/[studentId]/progress/page.tsx - Página de Relatório de Progresso
 import { Metadata } from 'next';
-import TeacherProgressPageServer from './pageServer';
+import {
+  PageContainer,
+  AnimatedCard,
+} from '@/app/components/animation/AnimatedComponents';
 import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -72,20 +75,46 @@ export default async function TeacherProgressPage({
   params,
   searchParams,
 }: TeacherProgressPageProps) {
-  const paramsResolved = await params;
-  const searchParamsResolved = await searchParams;
+  // const paramsResolved = await params;
+  // const searchParamsResolved = await searchParams;
+  console.log('📊 [PROGRESS PAGE] Parâmetros recebidos:', {
+    params,
+    searchParams,
+  });
 
-  // Extract query parameters
-  const period = (searchParamsResolved.period as string) || '6months';
-  const startDate = searchParamsResolved.startDate as string;
-  const endDate = searchParamsResolved.endDate as string;
+  // // Extract query parameters
+  // const period = (searchParamsResolved.period as string) || '6months';
+  // const startDate = searchParamsResolved.startDate as string;
+  // const endDate = searchParamsResolved.endDate as string;
 
   return (
-    <TeacherProgressPageServer
-      studentId={paramsResolved.studentId}
-      initialPeriod={period}
-      customStartDate={startDate}
-      customEndDate={endDate}
-    />
+    <PageContainer showBackground={true}>
+      <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center px-4 py-16">
+        <AnimatedCard
+          hover="none"
+          className="classical-card p-10 max-w-3xl mx-auto text-center"
+        >
+          <span className="text-sm uppercase tracking-[0.3em] text-theme-tertiary mb-4 inline-block">
+            Em breve
+          </span>
+          <h1 className="text-4xl md:text-5xl font-bold text-theme-primary classical-title mb-4">
+            Relatório de Progresso
+          </h1>
+          <p className="text-lg text-theme-secondary max-w-2xl mx-auto">
+            Esta página ainda está em desenvolvimento. Em breve você poderá
+            acompanhar o progresso detalhado do aluno aqui.
+          </p>
+        </AnimatedCard>
+      </div>
+
+      {/*
+      <TeacherProgressPageServer
+        studentId={paramsResolved.studentId}
+        initialPeriod={period}
+        customStartDate={startDate}
+        customEndDate={endDate}
+      />
+      */}
+    </PageContainer>
   );
 }

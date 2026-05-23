@@ -359,8 +359,8 @@ export default function WorkSelectionSection({
                   springType="gentle"
                 >
                   <div className="bg-theme-elevated border border-theme-secondary rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3 flex-1 min-w-0">
+                    <div className="flex items-center flex-col sm:flex-row gap-4 sm:gap-0 justify-between">
+                      <div className="flex items-center space-x-3 flex-1 min-w-0 w-full">
                         <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
                           <FiMusic className="w-4 h-4 text-accent-blue" />
                         </div>
@@ -540,7 +540,7 @@ export default function WorkSelectionSection({
                 </div>
 
                 {/* Botões de ação */}
-                <div className="flex items-center justify-between pt-2">
+                <div className="flex flex-col sm:flex-row gap-4 items-center justify-between pt-2">
                   <div className="text-xs text-theme-tertiary">
                     {hasComposerSelected && hasWorkSelected ? (
                       <span className="text-accent-green flex items-center space-x-1">
@@ -607,7 +607,7 @@ export default function WorkSelectionSection({
         {selectedWorks.length === 0 && !isAddingWork && (
           <div className="bg-theme-secondary/10 rounded-lg p-4">
             <div className="flex items-start space-x-3">
-              <FiInfo className="w-5 h-5 text-theme-tertiary mt-0.5" />
+              <FiInfo className="w-5 h-5 text-theme-tertiary mt-0.5 hidden sm:flex" />
               <div className="text-sm text-theme-secondary">
                 <p className="font-medium mb-1">
                   💡 Como funciona o sistema de peças:

@@ -17,7 +17,7 @@ export default function ViewModeToggle({
   className = '',
 }: ViewModeToggleProps) {
   return (
-    <div className={`flex items-center space-x-3 ${className}`}>
+    <div className={`hidden sm:flex items-center space-x-3 ${className}`}>
       {/* <span className="text-sm text-theme-secondary">Vista:</span> */}
       <div className="bg-theme-secundary border border-theme-primary rounded-lg p-1 flex">
         <button

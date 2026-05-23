@@ -172,7 +172,7 @@ export default function QuickCreateLessonModal({
                   { value: '', label: 'Selecione um aluno...' },
                   ...students.map((student) => ({
                     value: student.id,
-                    label: `${student.name} (${student.level})`,
+                    label: student.name,
                   })),
                 ]}
                 value={formData.studentUserId}

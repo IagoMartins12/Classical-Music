@@ -919,7 +919,7 @@ export default function CreateLessonPageClient({
           </div>
         </AnimatedItem>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="flex flex-col-reverse sm:flex-row gap-8">
           {/* Main Form */}
           <div className="lg:col-span-2">
             <AnimatedItem direction="up" springType="gentle">
@@ -941,7 +941,7 @@ export default function CreateLessonPageClient({
                           { value: '', label: t('select_student') },
                           ...initialData.students.map((student) => ({
                             value: student.id,
-                            label: `${student.name} (${student.level})`,
+                            label: `${student.name}`,
                           })),
                         ]}
                         value={formData.studentUserId}
@@ -1674,9 +1674,11 @@ export default function CreateLessonPageClient({
                               {t('preferred_days')}
                             </span>
                             <span className="text-theme-primary">
-                              {selectedStudent.relationship.preferredDays.join(
-                                ', '
-                              )}
+                              {selectedStudent.relationship.preferredDays
+                                .map(
+                                  (day) => t(`days_${day.toLowerCase()}`) || day
+                                )
+                                .join(', ')}
                             </span>
                           </div>
                         )}

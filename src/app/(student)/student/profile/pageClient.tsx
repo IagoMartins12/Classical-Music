@@ -518,7 +518,7 @@ export default function StudentProfilePageClient({
         <div className="space-y-8">
           {/* 1. INFORMAÇÕES PESSOAIS */}
           <AnimatedCard hover="lift" className="classical-card">
-            <div className="p-6">
+            <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
@@ -740,7 +740,7 @@ export default function StudentProfilePageClient({
 
           {/* 2. CONFIGURAÇÕES DE ESTUDO */}
           <AnimatedCard hover="lift" className="classical-card">
-            <div className="p-6">
+            <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
@@ -1007,7 +1007,7 @@ export default function StudentProfilePageClient({
 
           {/* 3. PREFERÊNCIAS MUSICAIS */}
           <AnimatedCard hover="lift" className="classical-card">
-            <div className="p-6">
+            <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-pink rounded-lg flex items-center justify-center">
@@ -1127,7 +1127,7 @@ export default function StudentProfilePageClient({
 
           {/* 4. CONFIGURAÇÕES DE PRIVACIDADE */}
           <AnimatedCard hover="lift" className="classical-card">
-            <div className="p-6">
+            <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
@@ -1329,7 +1329,7 @@ export default function StudentProfilePageClient({
 
           {/* 5. CONFIGURAÇÕES DE COMUNICAÇÃO */}
           <AnimatedCard hover="lift" className="classical-card">
-            <div className="p-6">
+            <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-orange to-accent-red rounded-lg flex items-center justify-center">
@@ -1429,7 +1429,7 @@ export default function StudentProfilePageClient({
 
           {/* 6. MEU REPERTÓRIO (READ-ONLY) */}
           <AnimatedCard hover="lift" className="classical-card">
-            <div className="p-6">
+            <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-lg flex items-center justify-center">

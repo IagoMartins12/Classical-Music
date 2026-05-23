@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 
 interface CreateAssignmentData {
-  lessonId?: string;
+  lessonId: string;
   studentUserId: string;
   title: string;
   description: string;

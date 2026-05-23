@@ -106,8 +106,6 @@ export default async function StudentLessonsPageServer({
     futureDate.setMonth(futureDate.getMonth() + 6);
 
     const lessonsData = await getStudentLessonsForPageServer(userId, {
-      dateFrom: threeMonthsAgo.toISOString().split('T')[0],
-      dateTo: futureDate.toISOString().split('T')[0],
       limit: 50,
       offset: 0,
     });

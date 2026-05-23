@@ -304,7 +304,7 @@ export default function StudentLessonDetailPageClient({
       <AnimatedContainer delay={0.1} staggerSpeed="normal">
         {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
               <Link
                 href="/student/lessons"
@@ -320,9 +320,6 @@ export default function StudentLessonDetailPageClient({
                   {t('lesson_details_subtitle')}
                 </p>
               </div>
-            </div>
-
-            <div className="flex items-center space-x-3">
               <span
                 className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
                   lesson.status
@@ -330,7 +327,9 @@ export default function StudentLessonDetailPageClient({
               >
                 {getStatusLabel(lesson.status)}
               </span>
+            </div>
 
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 items-center space-x-3">
               {/* Ações do Aluno - apenas para aulas agendadas */}
               {lesson.status === 'SCHEDULED' && (
                 <div className="flex items-center space-x-2">

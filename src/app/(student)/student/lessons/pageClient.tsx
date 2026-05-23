@@ -32,6 +32,7 @@ import { useStudentLessons } from '@/app/hooks/lessonsSystem/useStudentLessons';
 import Select from '@/app/components/Common/Select';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
+import Button from '@/app/components/Common/Button';
 
 interface StudentLessonsPageClientProps {
   initialData: StudentLessonsData | null;
@@ -267,6 +268,7 @@ export default function StudentLessonsPageClient({
     sortBy,
   ]);
 
+  console.log('lessons', { filteredLessons, displayLessons });
   // Pagination
   const totalPages = Math.ceil(filteredLessons.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -648,71 +650,73 @@ export default function StudentLessonsPageClient({
 
         {/* Stats Cards */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCalendar className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.total}
-              </div>
-              <div className="text-sm text-theme-tertiary">{t('total')}</div>
-            </AnimatedCard>
+          <div className="overflow-x-auto sm:overflow-x-hidden overflow-y-hidden pb-2 mb-8 scroll-smooth snap-x snap-mandatory scrollbar-hide">
+            <div className="grid grid-flow-col auto-cols-[minmax(260px,1fr)] gap-6 sm:grid-flow-row sm:grid-cols-4 sm:auto-cols-auto">
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center snap-start"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiCalendar className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {stats.total}
+                </div>
+                <div className="text-sm text-theme-tertiary">{t('total')}</div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiClock className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.scheduled}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('scheduled')}
-              </div>
-            </AnimatedCard>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center snap-start"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiClock className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {stats.scheduled}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('scheduled')}
+                </div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCheck className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.completed}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('completed')}
-              </div>
-            </AnimatedCard>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center snap-start"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiCheck className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {stats.completed}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('completed')}
+                </div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiX className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.cancelled}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('cancelled')}
-              </div>
-            </AnimatedCard>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center snap-start"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiX className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {stats.cancelled}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('cancelled')}
+                </div>
+              </AnimatedCard>
+            </div>
           </div>
         </AnimatedItem>
 
         {/* Search and Filters */}
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard hover="none" className="classical-card p-6 mb-8">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 ">
               {/* Search */}
               <div className="relative flex-1 max-w-md">
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
@@ -726,64 +730,33 @@ export default function StudentLessonsPageClient({
               </div>
 
               {/* Controls */}
-              <div className="flex items-center space-x-4">
-                {/* 🆕 ORDENAÇÃO */}
-                <div className="flex items-center space-x-2">
-                  <Select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as SortOption)}
-                    options={[
-                      {
-                        value: 'scheduled_asc',
-                        label: t('student_lessons_sort_scheduled_asc'),
-                      },
-                      {
-                        value: 'scheduled_desc',
-                        label: t('student_lessons_sort_scheduled_desc'),
-                      },
-                      {
-                        value: 'created_desc',
-                        label: t('student_lessons_sort_newest'),
-                      },
-                      {
-                        value: 'created_asc',
-                        label: t('student_lessons_sort_oldest'),
-                      },
-                      {
-                        value: 'status',
-                        label: t('student_lessons_sort_status'),
-                      },
-                      {
-                        value: 'teacher',
-                        label: t('student_lessons_sort_teacher'),
-                      },
-                    ]}
-                    className="input-classical"
-                  />
-                </div>
-
-                <button
+              <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row items-center space-x-4">
+                <Button
+                  size="lg"
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`btn-classical-secondary flex items-center space-x-2 ${
+                  className={`btn-classical-secondary w-full sm:w-auto flex items-center space-x-2 ${
                     showFilters ? 'bg-brand-primary/10 text-brand-primary' : ''
                   }`}
+                  leftIcon={<FiFilter className="w-4 h-4" />}
                 >
-                  <FiFilter className="w-4 h-4" />
                   <span>{t('filters')}</span>
-                </button>
+                </Button>
 
-                <button
+                <Button
+                  size="lg"
                   onClick={handleRefresh}
                   disabled={loading.lessons}
-                  className="btn-classical-secondary flex items-center space-x-2"
+                  className="btn-classical-secondary w-full sm:w-auto  flex items-center space-x-2"
+                  leftIcon={
+                    <FiRefreshCw
+                      className={`w-4 h-4 ${
+                        loading.lessons ? 'animate-spin' : ''
+                      }`}
+                    />
+                  }
                 >
-                  <FiRefreshCw
-                    className={`w-4 h-4 ${
-                      loading.lessons ? 'animate-spin' : ''
-                    }`}
-                  />
                   <span>{t('refresh')}</span>
-                </button>
+                </Button>
 
                 {/* 🆕 VIEW MODE TOGGLE */}
                 <ViewModeToggle
@@ -795,7 +768,7 @@ export default function StudentLessonsPageClient({
 
             {/* Filters */}
             {showFilters && (
-              <div className="mt-6 pt-6 border-t border-theme-secondary grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="mt-6 pt-6 border-t border-theme-secondary grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-theme-tertiary mb-2">
                     {t('teacher')}
@@ -851,6 +824,44 @@ export default function StudentLessonsPageClient({
                       { value: 'this_month', label: t('this_month') },
                     ]}
                     className="input-classical w-full"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                    {t('ordered')}
+                  </label>
+                  {/* 🆕 ORDENAÇÃO */}
+                  <Select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    options={[
+                      {
+                        value: 'scheduled_asc',
+                        label: t('student_lessons_sort_scheduled_asc'),
+                      },
+                      {
+                        value: 'scheduled_desc',
+                        label: t('student_lessons_sort_scheduled_desc'),
+                      },
+                      {
+                        value: 'created_desc',
+                        label: t('student_lessons_sort_newest'),
+                      },
+                      {
+                        value: 'created_asc',
+                        label: t('student_lessons_sort_oldest'),
+                      },
+                      {
+                        value: 'status',
+                        label: t('student_lessons_sort_status'),
+                      },
+                      {
+                        value: 'teacher',
+                        label: t('student_lessons_sort_teacher'),
+                      },
+                    ]}
+                    className="!w-full !sm:w-auto"
                   />
                 </div>
               </div>

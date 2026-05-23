@@ -63,7 +63,6 @@ export async function GET(request: NextRequest) {
     const session = await getServerSession(authOptions);
 
     console.log('SESSION', session);
-    // 🐛 CORREÇÃO: Mudança de >= 1 para !== 1
     if (!session?.user?.id || session.user.role !== 1) {
       console.log(
         `❌ [TEACHER-CALENDAR] Acesso negado. UserID: ${session?.user?.id}, Role: ${session?.user?.role}`
@@ -77,15 +76,13 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const startDate = searchParams.get('start');
     const endDate = searchParams.get('end');
-    const view = searchParams.get('view') || 'month'; // month, week, day
+    const view = searchParams.get('view') || 'month';
     const includeStats = searchParams.get('stats') === 'true';
     const detectConflicts = searchParams.get('conflicts') === 'true';
 
     if (!startDate || !endDate) {
       return NextResponse.json(
-        {
-          error: 'Parâmetros start e end são obrigatórios',
-        },
+        { error: 'Parâmetros start e end são obrigatórios' },
         { status: 400 }
       );
     }
@@ -94,7 +91,6 @@ export async function GET(request: NextRequest) {
       `📅 [TEACHER-CALENDAR] Carregando calendário: ${startDate} a ${endDate} para professor ${session.user.id}`
     );
 
-    // Verificar se professor existe
     const teacherProfile = await prisma.teacher.findUnique({
       where: { userId: session.user.id },
       select: { id: true },
@@ -112,66 +108,95 @@ export async function GET(request: NextRequest) {
 
     const start = new Date(startDate);
     const end = new Date(endDate);
+    const now = new Date();
     const teacherId = teacherProfile.id;
 
     console.log(`🎯 [TEACHER-CALENDAR] Teacher ID: ${teacherId}`);
 
-    // Buscar aulas no período
-    const lessons = await prisma.lesson.findMany({
-      where: {
-        teacherId,
-        scheduledAt: {
-          gte: start,
-          lte: end,
+    // Buscar aulas do período + atrasadas do passado em paralelo
+    const [lessons, overdueFromPast] = await Promise.all([
+      prisma.lesson.findMany({
+        where: {
+          teacherId,
+          scheduledAt: {
+            gte: start,
+            lte: end,
+          },
         },
-      },
-      include: {
-        student: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                image: true,
+        include: {
+          student: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  image: true,
+                },
               },
             },
           },
         },
-      },
-      orderBy: { scheduledAt: 'asc' },
-    });
+        orderBy: { scheduledAt: 'asc' },
+      }),
+
+      // 🆕 Buscar TODAS as atrasadas antes do período (SCHEDULED + já passou)
+      prisma.lesson.findMany({
+        where: {
+          teacherId,
+          status: 'SCHEDULED',
+          scheduledAt: {
+            lt: start,
+          },
+        },
+        include: {
+          student: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  image: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: { scheduledAt: 'asc' },
+      }),
+    ]);
 
     console.log(
-      `📊 [TEACHER-CALENDAR] Encontradas ${lessons.length} aulas no período`
+      `📊 [TEACHER-CALENDAR] Encontradas ${lessons.length} aulas no período, ${overdueFromPast.length} atrasadas do passado`
     );
 
-    // Converter aulas para eventos do calendário
+    // Converter aulas do período
     const events: CalendarEvent[] = lessons.map((lesson) => {
       const startTime = new Date(lesson.scheduledAt);
       const endTime = new Date(startTime.getTime() + lesson.duration * 60000);
+      const needsAttention = lesson.status === 'SCHEDULED' && endTime < now;
 
-      // Cores baseadas no status
-      let backgroundColor = '#3B82F6'; // Azul padrão
+      let backgroundColor = '#3B82F6';
       let borderColor = '#1D4ED8';
       let textColor = '#FFFFFF';
 
       switch (lesson.status) {
         case 'COMPLETED':
-          backgroundColor = '#10B981'; // Verde
+          backgroundColor = '#10B981';
           borderColor = '#059669';
           break;
         case 'CANCELLED':
-          backgroundColor = '#EF4444'; // Vermelho
+          backgroundColor = '#EF4444';
           borderColor = '#DC2626';
           break;
         case 'NO_SHOW':
-          backgroundColor = '#F59E0B'; // Amarelo
+          backgroundColor = '#F59E0B';
           borderColor = '#D97706';
           textColor = '#000000';
           break;
         case 'RESCHEDULED':
-          backgroundColor = '#8B5CF6'; // Roxo
+          backgroundColor = '#8B5CF6';
           borderColor = '#7C3AED';
           break;
       }
@@ -183,6 +208,7 @@ export async function GET(request: NextRequest) {
         end: endTime,
         type: 'lesson',
         status: lesson.status as any,
+        needsAttention,
         student: {
           id: lesson.student.user.id,
           name: `${lesson.student.user.firstName || ''} ${
@@ -210,37 +236,80 @@ export async function GET(request: NextRequest) {
       };
     });
 
+    // 🆕 Converter atrasadas do passado (sempre needsAttention: true)
+    const overdueEvents: CalendarEvent[] = overdueFromPast.map((lesson) => {
+      const startTime = new Date(lesson.scheduledAt);
+      const endTime = new Date(startTime.getTime() + lesson.duration * 60000);
+
+      return {
+        id: lesson.id,
+        title: lesson.title,
+        start: startTime,
+        end: endTime,
+        type: 'lesson',
+        status: lesson.status as any,
+        needsAttention: true,
+        student: {
+          id: lesson.student.user.id,
+          name: `${lesson.student.user.firstName || ''} ${
+            lesson.student.user.lastName || ''
+          }`.trim(),
+          image: lesson.student.user.image || undefined,
+          level: lesson.student.level,
+        },
+        location: lesson.location || undefined,
+        description: lesson.description || undefined,
+        objectives: lesson.objectives,
+        backgroundColor: '#EF4444',
+        borderColor: '#DC2626',
+        textColor: '#FFFFFF',
+        details: {
+          workScoreIds: lesson.workScoreIds,
+          topics: lesson.topics,
+          techniques: lesson.techniques,
+          homework: lesson.homework || undefined,
+          teacherNotes: lesson.teacherNotes || undefined,
+          publicNotes: lesson.publicNotes || undefined,
+          isRecurring: lesson.isRecurring,
+          recurrenceType: lesson.recurrenceType || undefined,
+        },
+      };
+    });
+
+    // 🆕 Mesclar: atrasadas primeiro + período normal
+    const allEvents = [...overdueEvents, ...events];
+
     // Resposta base
     const response: any = {
       success: true,
-      events,
+      events: allEvents,
       period: {
         start,
         end,
         view,
       },
       metadata: {
-        totalEvents: events.length,
-        lessonCount: events.filter((e) => e.type === 'lesson').length,
+        totalEvents: allEvents.length,
+        lessonCount: allEvents.filter((e) => e.type === 'lesson').length,
       },
     };
 
-    // Adicionar estatísticas se solicitado
+    // Adicionar estatísticas se solicitado (baseado em allEvents)
     if (includeStats) {
       console.log('📈 Calculando estatísticas do período...');
 
-      const totalLessons = events.length;
-      const completedLessons = events.filter(
+      const totalLessons = allEvents.length;
+      const completedLessons = allEvents.filter(
         (e) => e.status === 'COMPLETED'
       ).length;
-      const scheduledLessons = events.filter(
+      const scheduledLessons = allEvents.filter(
         (e) => e.status === 'SCHEDULED'
       ).length;
-      const cancelledLessons = events.filter(
+      const cancelledLessons = allEvents.filter(
         (e) => e.status === 'CANCELLED'
       ).length;
 
-      const busyHours = events.reduce((total, event) => {
+      const busyHours = allEvents.reduce((total, event) => {
         const duration =
           (event.end.getTime() - event.start.getTime()) / (1000 * 60 * 60);
         return total + duration;
@@ -249,8 +318,8 @@ export async function GET(request: NextRequest) {
       const periodDays = Math.ceil(
         (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
       );
-      const workingDays = Math.max(1, (periodDays * 5) / 7); // Aproximação de dias úteis
-      const totalAvailableHours = workingDays * 8; // 8h por dia útil
+      const workingDays = Math.max(1, (periodDays * 5) / 7);
+      const totalAvailableHours = workingDays * 8;
       const freeHours = Math.max(0, totalAvailableHours - busyHours);
       const averageLessonsPerDay = totalLessons / Math.max(1, periodDays);
 
@@ -267,14 +336,13 @@ export async function GET(request: NextRequest) {
       response.stats = stats;
     }
 
-    // Detectar conflitos se solicitado
+    // Detectar conflitos se solicitado (apenas no período visual, sem os antigos)
     if (detectConflicts) {
       console.log('🔍 Detectando conflitos de horário...');
 
       const conflicts: CalendarConflict[] = [];
       const conflictMap = new Map<string, CalendarEvent[]>();
 
-      // Agrupar eventos por data para detectar sobreposições
       events.forEach((event) => {
         const dateKey = event.start.toDateString();
         if (!conflictMap.has(dateKey)) {
@@ -283,7 +351,6 @@ export async function GET(request: NextRequest) {
         conflictMap.get(dateKey)!.push(event);
       });
 
-      // Verificar sobreposições em cada dia
       conflictMap.forEach((dayEvents, dateStr) => {
         const dayConflicts: CalendarConflict['conflicts'] = [];
 
@@ -292,7 +359,6 @@ export async function GET(request: NextRequest) {
             const event1 = dayEvents[i];
             const event2 = dayEvents[j];
 
-            // Verificar se há sobreposição
             const hasOverlap =
               event1.start < event2.end && event1.end > event2.start;
 
@@ -332,7 +398,9 @@ export async function GET(request: NextRequest) {
       response.hasConflicts = conflicts.length > 0;
     }
 
-    console.log(`✅ [TEACHER-CALENDAR] Calendário carregado com sucesso`);
+    console.log(
+      `✅ [TEACHER-CALENDAR] Calendário carregado: ${events.length} no período + ${overdueEvents.length} atrasadas`
+    );
 
     return NextResponse.json(response);
   } catch (error) {

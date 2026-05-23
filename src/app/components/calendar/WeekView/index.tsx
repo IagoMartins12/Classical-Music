@@ -31,7 +31,7 @@ export default function WeekView({
   return (
     <div>
       {/* Header */}
-      <div className="grid grid-cols-7 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-7 gap-4 mb-4">
         {days.map((day, index) => {
           const isToday = day.toDateString() === today.toDateString();
 

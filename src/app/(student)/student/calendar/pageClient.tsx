@@ -469,41 +469,43 @@ export default function StudentCalendarPageClient({
               </div>
 
               {/* View Mode Toggle */}
-              <div className="flex bg-theme-secondary rounded-lg p-1">
-                <button
-                  onClick={() => setViewMode('month')}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    viewMode === 'month'
-                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                      : 'text-theme-tertiary hover:text-theme-primary'
-                  }`}
-                >
-                  {t('student_calendar_view_month')}
-                </button>
-                <button
-                  onClick={() => setViewMode('week')}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    viewMode === 'week'
-                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                      : 'text-theme-tertiary hover:text-theme-primary'
-                  }`}
-                >
-                  {t('student_calendar_view_week')}
-                </button>
-                <button
-                  onClick={() => setViewMode('day')}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    viewMode === 'day'
-                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                      : 'text-theme-tertiary hover:text-theme-primary'
-                  }`}
-                >
-                  {t('student_calendar_view_day')}
-                </button>
+              <div className="flex justify-center ">
+                <div className="bg-theme-secondary rounded-lg p-1">
+                  <button
+                    onClick={() => setViewMode('month')}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      viewMode === 'month'
+                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                        : 'text-theme-tertiary hover:text-theme-primary'
+                    }`}
+                  >
+                    {t('student_calendar_view_month')}
+                  </button>
+                  <button
+                    onClick={() => setViewMode('week')}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      viewMode === 'week'
+                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                        : 'text-theme-tertiary hover:text-theme-primary'
+                    }`}
+                  >
+                    {t('student_calendar_view_week')}
+                  </button>
+                  <button
+                    onClick={() => setViewMode('day')}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      viewMode === 'day'
+                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                        : 'text-theme-tertiary hover:text-theme-primary'
+                    }`}
+                  >
+                    {t('student_calendar_view_day')}
+                  </button>
+                </div>
               </div>
 
               {/* View Mode and Filters */}
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4 justify-center">
                 {/* Teacher Filter */}
                 {calendarData && calendarData.teachers.length > 1 && (
                   <Select
@@ -593,7 +595,6 @@ export default function StudentCalendarPageClient({
                   setSelectedEvent(event);
                   setShowEventModal(true);
                 }}
-                formatTime={formatTime}
                 formatEventTime={formatEventTime}
                 getEventStatusColor={getEventStatusColor}
               />
@@ -760,7 +761,6 @@ interface WeekViewProps {
   days: Date[];
   getEventsForDay: (date: Date) => any[];
   onEventClick: (event: any) => void;
-  formatTime: (date: Date | string) => string;
   formatEventTime: (start: Date | string, end: Date | string) => string;
   getEventStatusColor: (status: string) => string;
 }
@@ -775,19 +775,21 @@ function WeekView({
   const today = new Date();
 
   return (
-    <div>
-      {/* Header */}
-      <div className="grid grid-cols-7 gap-4 mb-4">
-        {days.map((day, index) => {
-          const isToday = day.toDateString() === today.toDateString();
+    <div className="grid grid-cols-1 sm:grid-cols-7 gap-4">
+      {days.map((day, index) => {
+        const isToday = day.toDateString() === today.toDateString();
+        const events = getEventsForDay(day);
 
-          return (
+        return (
+          <div
+            key={index}
+            className="rounded-lg bg-theme-secondary overflow-hidden"
+          >
             <div
-              key={index}
-              className={`text-center p-3 rounded-lg ${
+              className={`text-center p-4 ${
                 isToday
-                  ? 'bg-brand-primary/10 border border-brand-primary/30'
-                  : 'bg-theme-elevated'
+                  ? 'bg-brand-primary/10 border-b border-brand-primary/30'
+                  : 'bg-theme-secondary/50 border-b border-theme-secondary/30'
               }`}
             >
               <div className="text-sm text-theme-tertiary">
@@ -801,42 +803,39 @@ function WeekView({
                 {day.getDate()}
               </div>
             </div>
-          );
-        })}
-      </div>
 
-      {/* Events */}
-      <div className="grid grid-cols-7 gap-4">
-        {days.map((day, index) => {
-          const events = getEventsForDay(day);
-
-          return (
-            <div key={index} className="space-y-2 min-h-96">
-              {events.map((event) => (
-                <button
-                  key={event.id}
-                  onClick={() => onEventClick(event)}
-                  className={`w-full text-left p-3 rounded-lg transition-all hover:scale-105 ${getEventStatusColor(
-                    event.status
-                  )}`}
-                >
-                  <div className="font-medium text-sm truncate">
-                    {event.title}
-                  </div>
-                  <div className="text-xs opacity-75">
-                    {formatEventTime(event.start, event.end)}
-                  </div>
-                  {event.teacher && (
-                    <div className="text-xs opacity-75 truncate">
-                      Prof. {event.teacher.name}
+            <div className="space-y-2 p-3 min-h-96">
+              {events.length === 0 ? (
+                <div className="text-xs text-theme-tertiary text-center py-6">
+                  Sem eventos
+                </div>
+              ) : (
+                events.map((event) => (
+                  <button
+                    key={event.id}
+                    onClick={() => onEventClick(event)}
+                    className={`w-full text-left p-3 rounded-lg transition-all hover:scale-105 ${getEventStatusColor(
+                      event.status
+                    )}`}
+                  >
+                    <div className="font-medium text-sm truncate">
+                      {event.title}
                     </div>
-                  )}
-                </button>
-              ))}
+                    <div className="text-xs opacity-75">
+                      {formatEventTime(event.start, event.end)}
+                    </div>
+                    {event.teacher && (
+                      <div className="text-xs opacity-75 truncate">
+                        Prof. {event.teacher.name}
+                      </div>
+                    )}
+                  </button>
+                ))
+              )}
             </div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

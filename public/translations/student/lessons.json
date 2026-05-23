@@ -47,6 +47,7 @@
     "objectives": "Objetivos",
     "minutes": "minutos",
     "loading": "Carregando...",
+    "ordered": "Ordenação",
 
     "student_lessons_sort_scheduled_asc": "Agendamento (próximas)",
     "student_lessons_sort_scheduled_desc": "Agendamento (distantes)",
@@ -103,7 +104,7 @@
     "objectives": "Objectives",
     "minutes": "minutes",
     "loading": "Loading...",
-
+    "ordered": "Ordered",
     "student_lessons_sort_scheduled_asc": "Scheduled (upcoming)",
     "student_lessons_sort_scheduled_desc": "Scheduled (distant)",
     "student_lessons_sort_newest": "Newest",

@@ -38,6 +38,7 @@ import WorkSelectionSection, {
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
 import { translateNivel } from '@/app/utils';
 import { useTranslation } from '@/app/context/TranslationContext';
+import Button from '@/app/components/Common/Button';
 
 interface CreateAssignmentPageClientProps {
   initialData: CreateAssignmentData;
@@ -75,6 +76,7 @@ export default function CreateAssignmentPageClient({
   // 🆕 REFS PARA VALIDAÇÃO E SCROLL AUTOMÁTICO
   const fieldRefs = {
     studentUserId: useRef<HTMLSelectElement>(null),
+    lessonId: useRef<HTMLSelectElement>(null),
     title: useRef<HTMLInputElement>(null),
     description: useRef<HTMLTextAreaElement>(null),
     dueDate: useRef<HTMLInputElement>(null),
@@ -139,6 +141,11 @@ export default function CreateAssignmentPageClient({
     // Validação do aluno
     if (!formData.studentUserId.trim()) {
       newErrors.studentUserId = t('validation_select_student');
+    }
+
+    // Validação da aula relacionada
+    if (!formData.lessonId.trim()) {
+      newErrors.lessonId = t('validation_select_lesson');
     }
 
     // Validação do título
@@ -337,6 +344,7 @@ export default function CreateAssignmentPageClient({
       // Clean up array fields
       const cleanData = {
         ...formData,
+        lessonId: formData.lessonId,
         practiceGoals: formData.practiceGoals.filter((goal) => goal.trim()),
         technicalGoals: formData.technicalGoals.filter((goal) => goal.trim()),
         musicalGoals: formData.musicalGoals.filter((goal) => goal.trim()),
@@ -427,7 +435,7 @@ export default function CreateAssignmentPageClient({
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Form */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 order-2 lg:order-1">
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <form onSubmit={handleSubmit} className="space-y-8">
@@ -447,7 +455,7 @@ export default function CreateAssignmentPageClient({
                           { value: '', label: t('select_student') },
                           ...initialData.students.map((student) => ({
                             value: student.id,
-                            label: `${student.name} (${student.level})`,
+                            label: student.name,
                           })),
                         ]}
                         value={formData.studentUserId}
@@ -468,28 +476,46 @@ export default function CreateAssignmentPageClient({
                       )}
                     </div>
 
-                    {/* Lesson Selection (Optional) */}
-                    {selectedStudent && filteredLessons.length > 0 && (
+                    {selectedStudent && (
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('related_lesson')}
+                          {t('related_lesson')} *
                         </label>
-                        <Select
-                          options={[
-                            { value: '', label: t('no_specific_lesson') },
-                            ...filteredLessons.map((lesson) => ({
-                              value: lesson.id,
-                              label: `${lesson.title} - ${new Date(
-                                lesson.scheduledAt
-                              ).toLocaleDateString('pt-BR')}`,
-                            })),
-                          ]}
-                          value={formData.lessonId}
-                          onChange={(e) =>
-                            updateFormData('lessonId', e.target.value)
-                          }
-                          className="input-classical w-full"
-                        />
+                        {filteredLessons.length > 0 ? (
+                          <>
+                            <Select
+                              ref={fieldRefs.lessonId}
+                              options={[
+                                { value: '', label: t('select_lesson') },
+                                ...filteredLessons.map((lesson) => ({
+                                  value: lesson.id,
+                                  label: `${lesson.title} - ${new Date(
+                                    lesson.scheduledAt
+                                  ).toLocaleDateString('pt-BR')}`,
+                                })),
+                              ]}
+                              value={formData.lessonId}
+                              onChange={(e) =>
+                                updateFormData('lessonId', e.target.value)
+                              }
+                              className={`input-classical w-full ${
+                                validationErrors.lessonId
+                                  ? '!border-red-400'
+                                  : ''
+                              }`}
+                              required
+                            />
+                            {validationErrors.lessonId && (
+                              <p className="text-red-500 text-sm mt-1">
+                                {validationErrors.lessonId}
+                              </p>
+                            )}
+                          </>
+                        ) : (
+                          <p className="text-sm text-theme-tertiary">
+                            {t('validation_no_lessons_for_student')}
+                          </p>
+                        )}
                       </div>
                     )}
 
@@ -951,22 +977,28 @@ export default function CreateAssignmentPageClient({
                     >
                       {t('cancel')}
                     </Link>
-                    <button
+                    <Button
                       type="submit"
-                      disabled={loading.createAssignment}
+                      disabled={
+                        !formData.lessonId.trim() ||
+                        !!loading?.createAssignment ||
+                        !!(selectedStudent && filteredLessons.length === 0)
+                      }
                       className="btn-classical-primary flex items-center space-x-2"
+                      leftIcon={
+                        loading?.createAssignment ? (
+                          <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <FiSave className="w-4 h-4" />
+                        )
+                      }
                     >
-                      {loading.createAssignment ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <FiSave className="w-4 h-4" />
-                      )}
                       <span>
-                        {loading.createAssignment
+                        {loading?.createAssignment
                           ? t('creating_task')
                           : t('create_task')}
                       </span>
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </AnimatedCard>
@@ -974,7 +1006,7 @@ export default function CreateAssignmentPageClient({
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-6 order-1 lg:order-2">
             {/* Selected Student Info */}
             {selectedStudent && (
               <AnimatedItem direction="up" springType="gentle">

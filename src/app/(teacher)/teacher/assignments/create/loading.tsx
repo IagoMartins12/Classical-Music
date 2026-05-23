@@ -63,7 +63,7 @@ export default function CreateAssignmentLoading() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Form Skeleton */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 order-2 lg:order-1">
             <div className="classical-card p-6 animate-pulse">
               <div className="space-y-8">
                 {/* Basic Info Section */}
@@ -228,7 +228,7 @@ export default function CreateAssignmentLoading() {
           </div>
 
           {/* Sidebar Skeleton */}
-          <div className="space-y-6">
+          <div className="space-y-6 order-1 lg:order-2">
             {/* Selected Student Info */}
             <div className="classical-card p-6 animate-pulse">
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-32 mb-4"></div>

@@ -768,7 +768,7 @@ const ScoreSelectionModal = ({
 
       {/* Footer */}
       <div className="border-t border-theme-secondary p-4 bg-theme-elevated">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 items-center justify-between">
           <div className="text-sm text-theme-secondary">
             {currentSelectedScore ? (
               <span>
@@ -781,11 +781,11 @@ const ScoreSelectionModal = ({
           </div>
 
           <div className="flex items-center space-x-3">
-            <button onClick={onClose} className="btn-classical-secondary">
+            <Button onClick={onClose} className="btn-classical-secondary">
               {isEditing ? t('keep_current') : t('cancel_button')}
-            </button>
+            </Button>
 
-            <button
+            <Button
               onClick={handleConfirmSelection}
               disabled={isConverting}
               className="btn-classical-primary"
@@ -799,7 +799,7 @@ const ScoreSelectionModal = ({
                   : isEditing
                     ? t('remove_score')
                     : t('continue_without_score')}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

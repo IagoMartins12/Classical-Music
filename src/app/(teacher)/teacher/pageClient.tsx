@@ -402,22 +402,22 @@ export default function TeacherPageClient({
           <div className="lg:col-span-2 space-y-8">
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
-                      <FiUsers className="w-5 h-5 text-theme-primary" />
+                <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-0 justify-between mb-6">
+                  <div className="flex items-center w-full sm:w-[75%]  justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
+                        <FiUsers className="w-5 h-5 text-theme-primary" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-theme-primary classical-title">
+                          {t('your_students_title')}
+                        </h2>
+                        <p className="text-theme-tertiary text-sm">
+                          {activeStudents.length} {t('active_students')}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-xl font-bold text-theme-primary classical-title">
-                        {t('your_students_title')}
-                      </h2>
-                      <p className="text-theme-tertiary text-sm">
-                        {activeStudents.length} {t('active_students')}
-                      </p>
-                    </div>
-                  </div>
 
-                  <div className="flex gap-4 items-center justify-center">
                     <Link
                       href="/teacher/students"
                       className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
@@ -425,10 +425,12 @@ export default function TeacherPageClient({
                       <span>{t('see_all')}</span>
                       <FiChevronRight className="w-4 h-4" />
                     </Link>
+                  </div>
 
+                  <div className="flex gap-4 items-center justify-center">
                     <button
                       onClick={() => setShowAddStudent(true)}
-                      className="btn-classical-primary hidden sm:flex items-center space-x-2 mx-auto"
+                      className="btn-classical-primary flex items-center space-x-2 mx-auto"
                     >
                       <FiUserPlus className="w-4 h-4" />
                       <span>{t('add_student')}</span>

@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import {
   FiCalendar,
   FiClock,
@@ -37,6 +37,7 @@ import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
 import { MdOutlineCancel } from 'react-icons/md';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { useToast } from '@/app/hooks/useToast';
 
 interface TeacherCalendarPageClientProps {
   initialData: TeacherCalendarData;
@@ -98,8 +99,6 @@ export default function TeacherCalendarPageClient({
     null
   );
   const [showEventModal, setShowEventModal] = useState(false);
-
-  // Estados para Modal de todas as aulas do dia
   const [selectedDayEvents, setSelectedDayEvents] = useState<CalendarEvent[]>(
     []
   );
@@ -113,7 +112,9 @@ export default function TeacherCalendarPageClient({
   } | null>(null);
   const [updatingStatus, setUpdatingStatus] = useState(false);
 
-  // Initialize hook data on mount
+  const initialLoadRef = useRef(false);
+  const { info } = useToast();
+
   useEffect(() => {
     if (initialData && initialData.events.length > 0) {
       setInitialData({
@@ -123,19 +124,81 @@ export default function TeacherCalendarPageClient({
         hasConflicts: initialData.hasConflicts,
       });
     }
-  }, [initialData, setInitialData]);
+
+    if (!initialLoadRef.current) {
+      initialLoadRef.current = true;
+
+      const startDate = new Date(2000, 0, 1);
+      const endDate = new Date();
+
+      refreshCalendar(startDate, endDate, viewMode).catch((error) => {
+        console.error('[CALENDAR] Erro no carregamento inicial:', error);
+      });
+    }
+  }, [initialData, setInitialData, refreshCalendar, viewMode]);
+
+  const fetchCalendarForDate = useCallback(
+    async (date: Date, mode: CalendarView) => {
+      const startDate = new Date(date);
+      startDate.setDate(1);
+
+      const endDate = new Date(date);
+      endDate.setMonth(endDate.getMonth() + 2);
+      endDate.setDate(0);
+
+      await refreshCalendar(startDate, endDate, mode);
+    },
+    [refreshCalendar]
+  );
+
+  const navigateMonth = useCallback(
+    async (direction: 'prev' | 'next') => {
+      const newDate = new Date(currentDate);
+      newDate.setMonth(newDate.getMonth() + (direction === 'prev' ? -1 : 1));
+      setCurrentDate(newDate);
+      await fetchCalendarForDate(newDate, viewMode);
+    },
+    [currentDate, fetchCalendarForDate, viewMode]
+  );
+
+  const navigateWeek = useCallback(
+    async (direction: 'prev' | 'next') => {
+      const newDate = new Date(currentDate);
+      newDate.setDate(newDate.getDate() + (direction === 'prev' ? -7 : 7));
+      setCurrentDate(newDate);
+      await fetchCalendarForDate(newDate, viewMode);
+    },
+    [currentDate, fetchCalendarForDate, viewMode]
+  );
+
+  const goToToday = useCallback(async () => {
+    const today = new Date();
+    setCurrentDate(today);
+    await fetchCalendarForDate(today, viewMode);
+
+    const count = events.filter(
+      (event) => new Date(event.start).toDateString() === today.toDateString()
+    ).length;
+
+    info(
+      count > 0
+        ? t('today_lessons_found', { count, plural: count !== 1 ? 's' : '' })
+        : t('no_lessons_today') // ex: "Nenhuma aula encontrada para hoje"
+    );
+  }, [fetchCalendarForDate, viewMode, events]);
 
   // 🆕 FUNÇÃO PARA VERIFICAR SE EVENTO PASSOU E PRECISA DE ATENÇÃO
   const getEventStatusInfo = useCallback((event: CalendarEvent) => {
     const now = new Date();
     const eventTime = new Date(event.start);
     const eventEndTime = new Date(event.end);
-    const hasPassedScheduledTime = eventEndTime < now; // Verifica se já passou do horário de fim
+    // Usa o valor do server se disponível, senão recalcula no client
     const needsAttention =
-      hasPassedScheduledTime && event.status === 'SCHEDULED';
+      event.needsAttention ??
+      (eventEndTime < now && event.status === 'SCHEDULED');
 
     return {
-      hasPassedScheduledTime,
+      hasPassedScheduledTime: eventEndTime < now,
       needsAttention,
       isPast: eventEndTime < now,
       isToday: eventTime.toDateString() === now.toDateString(),
@@ -147,35 +210,23 @@ export default function TeacherCalendarPageClient({
         : 0,
     };
   }, []);
+  // const overdueEvents = useMemo(
+  //   () => events.filter((event) => getEventStatusInfo(event).needsAttention),
+  //   [events, getEventStatusInfo]
+  // );
+  // const overallNeedsAttention = overdueEvents.length;
 
-  // Calendar navigation
-  const navigateMonth = useCallback((direction: 'prev' | 'next') => {
-    setCurrentDate((prev) => {
-      const newDate = new Date(prev);
-      if (direction === 'prev') {
-        newDate.setMonth(newDate.getMonth() - 1);
-      } else {
-        newDate.setMonth(newDate.getMonth() + 1);
-      }
-      return newDate;
-    });
-  }, []);
-
-  const navigateWeek = useCallback((direction: 'prev' | 'next') => {
-    setCurrentDate((prev) => {
-      const newDate = new Date(prev);
-      if (direction === 'prev') {
-        newDate.setDate(newDate.getDate() - 7);
-      } else {
-        newDate.setDate(newDate.getDate() + 7);
-      }
-      return newDate;
-    });
-  }, []);
-
-  const goToToday = useCallback(() => {
-    setCurrentDate(new Date());
-  }, []);
+  // Initialize hook data on mount
+  useEffect(() => {
+    if (initialData && initialData.events.length > 0) {
+      setInitialData({
+        events: initialData.events,
+        stats: initialData.stats,
+        conflicts: initialData.conflicts,
+        hasConflicts: initialData.hasConflicts,
+      });
+    }
+  }, [initialData, setInitialData]);
 
   // Handle calendar refresh
   const handleRefreshCalendar = useCallback(async () => {
@@ -686,10 +737,10 @@ export default function TeacherCalendarPageClient({
         {/* Calendar Controls */}
         <AnimatedItem direction="up" className="mb-4" springType="gentle">
           <AnimatedCard hover="none" className="classical-card p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-0">
               {/* Navigation */}
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
+              <div className="flex flex-col sm:flex-row gap-4 items-center space-x-4">
+                <div className="flex  items-center space-x-2">
                   <button
                     onClick={() =>
                       viewMode === 'month'
@@ -727,30 +778,32 @@ export default function TeacherCalendarPageClient({
                   </button>
                 </div>
 
-                <button
-                  onClick={goToToday}
-                  disabled={loading.calendar}
-                  className="btn-classical-secondary text-sm disabled:opacity-50"
-                >
-                  {t('today')}
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={goToToday}
+                    disabled={loading.calendar}
+                    className="btn-classical-secondary text-sm disabled:opacity-50"
+                  >
+                    {t('today')}
+                  </button>
 
-                <button
-                  onClick={handleRefreshCalendar}
-                  disabled={loading.calendar}
-                  className="btn-classical-secondary text-sm flex items-center space-x-2 disabled:opacity-50"
-                >
-                  <FiRefreshCw
-                    className={`w-4 h-4 ${
-                      loading.calendar ? 'animate-spin' : ''
-                    }`}
-                  />
-                  <span>{t('update')}</span>
-                </button>
+                  <button
+                    onClick={handleRefreshCalendar}
+                    disabled={loading.calendar}
+                    className="btn-classical-secondary text-sm flex items-center space-x-2 disabled:opacity-50"
+                  >
+                    <FiRefreshCw
+                      className={`w-4 h-4 ${
+                        loading.calendar ? 'animate-spin' : ''
+                      }`}
+                    />
+                    <span>{t('update')}</span>
+                  </button>
+                </div>
               </div>
 
               {/* View Mode and Filters */}
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center justify-center space-x-4">
                 {/* View Mode Toggle */}
                 <div className="flex bg-theme-secondary rounded-lg p-1">
                   <button
@@ -784,24 +837,28 @@ export default function TeacherCalendarPageClient({
                     {t('day')}
                   </button>
                 </div>
+              </div>
 
-                {/* Student Filter */}
-                <Select
-                  value={selectedStudent}
-                  options={SelectedStudentsOptions}
-                  onChange={(e) => setSelectedStudent(e.target.value)}
-                  className="input-classical-2 w-auto min-w-48"
-                />
+              <div className="flex flex-col sm:flex-row items-center space-x-4 gap-4 sm:gap-0">
+                <div className="flex items-center space-x-2">
+                  {/* Student Filter */}
+                  <Select
+                    value={selectedStudent}
+                    options={SelectedStudentsOptions}
+                    onChange={(e) => setSelectedStudent(e.target.value)}
+                    className="input-classical-2 w-auto min-w-48"
+                  />
 
-                {/* Status Filter */}
-                <Select
-                  options={stateOptions}
-                  value={eventFilter}
-                  onChange={(e) =>
-                    setEventFilter(e.target.value as EventFilter)
-                  }
-                  className="input-classical-2 w-auto min-w-40"
-                />
+                  {/* Status Filter */}
+                  <Select
+                    options={stateOptions}
+                    value={eventFilter}
+                    onChange={(e) =>
+                      setEventFilter(e.target.value as EventFilter)
+                    }
+                    className="input-classical-2 w-auto min-w-40"
+                  />
+                </div>
 
                 {/* Create Button */}
                 <Link
@@ -1226,31 +1283,25 @@ function WeekView({
   const today = new Date();
 
   return (
-    <div>
-      {/* Header */}
-      <div className="grid grid-cols-7 gap-4 mb-4">
-        {days.map((day, index) => {
-          const isToday = day.toDateString() === today.toDateString();
-          const events = getEventsForDay(day);
-          const eventsNeedingAttention = events.filter(
-            (event) => getEventStatusInfo(event).needsAttention
-          );
-          const hasAttentionEvents = eventsNeedingAttention.length > 0;
+    <div className="grid grid-cols-1 sm:grid-cols-7 gap-4">
+      {days.map((day, index) => {
+        const isToday = day.toDateString() === today.toDateString();
+        const events = getEventsForDay(day);
 
-          return (
+        return (
+          <div
+            key={index}
+            className="rounded-lg bg-theme-secondary overflow-hidden"
+          >
             <div
-              key={index}
-              className={`text-center p-3 rounded-lg ${
+              className={`text-center p-4 ${
                 isToday
-                  ? 'bg-brand-primary/10 border border-brand-primary/30'
-                  : 'bg-theme-elevated'
-              } ${hasAttentionEvents ? 'ring-1 ring-accent-red/40' : ''}`}
+                  ? 'bg-brand-primary/10 border-b border-brand-primary/30'
+                  : 'bg-theme-secondary/50 border-b border-theme-secondary/30'
+              }`}
             >
               <div className="text-sm text-theme-tertiary flex items-center justify-center space-x-1">
                 <span>{WEEKDAYS[index]}</span>
-                {hasAttentionEvents && (
-                  <FiAlertTriangle className="w-3 h-3 text-accent-red" />
-                )}
               </div>
               <div
                 className={`text-lg font-bold ${
@@ -1260,49 +1311,48 @@ function WeekView({
                 {day.getDate()}
               </div>
             </div>
-          );
-        })}
-      </div>
 
-      {/* Events */}
-      <div className="grid grid-cols-7 gap-4">
-        {days.map((day, index) => {
-          const events = getEventsForDay(day);
-
-          return (
-            <div key={index} className="space-y-2 min-h-96">
-              {events.map((event) => {
-                const statusInfo = getEventStatusInfo(event);
-                return (
-                  <button
-                    key={event.id}
-                    onClick={() => onEventClick(event)}
-                    className={`w-full text-left p-3 rounded-lg transition-all hover:scale-105 relative ${getEventStatusColor(
-                      event.status,
-                      statusInfo.needsAttention
-                    )}`}
-                  >
-                    {statusInfo.needsAttention && (
-                      <FiAlertTriangle className="absolute -top-1 -right-1 w-3 h-3 text-accent-red" />
-                    )}
-                    <div className="font-medium text-sm truncate">
-                      {event.title}
-                    </div>
-                    <div className="text-xs opacity-75">
-                      {formatEventTime(event.start, event.end)}
-                    </div>
-                    {event.student && (
-                      <div className="text-xs opacity-75 truncate">
-                        {event.student.name}
+            <div className="space-y-2 p-3 min-h-96">
+              {events.length === 0 ? (
+                <div className="text-xs text-theme-tertiary text-center py-6">
+                  Sem eventos
+                </div>
+              ) : (
+                events.map((event) => {
+                  const statusInfo = getEventStatusInfo(event);
+                  return (
+                    <button
+                      key={event.id}
+                      onClick={() => onEventClick(event)}
+                      className={`w-full text-left p-3 rounded-lg transition-all hover:scale-105 relative ${getEventStatusColor(
+                        event.status,
+                        statusInfo.needsAttention
+                      )}`}
+                    >
+                      {statusInfo.needsAttention && (
+                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
+                          <FiAlertTriangle className="w-3 h-3 text-white" />
+                        </div>
+                      )}
+                      <div className="font-medium text-sm truncate">
+                        {event.title}
                       </div>
-                    )}
-                  </button>
-                );
-              })}
+                      <div className="text-xs opacity-75">
+                        {formatEventTime(event.start, event.end)}
+                      </div>
+                      {event.student && (
+                        <div className="text-xs opacity-75 truncate">
+                          {event.student.name}
+                        </div>
+                      )}
+                    </button>
+                  );
+                })
+              )}
             </div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

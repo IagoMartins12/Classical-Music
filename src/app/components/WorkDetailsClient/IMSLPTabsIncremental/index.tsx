@@ -145,12 +145,12 @@ const TABS = [
 
 // ✅ COMPONENTE BADGE DE FONTE
 const SourceBadge = React.memo(
-  ({ source, t }: { source: 'IMSLP' | 'UPLOAD' | 'CUSTOM'; t: any }) => {
+  ({ source }: { source: 'IMSLP' | 'UPLOAD' | 'CUSTOM'; t: any }) => {
     if (source === 'IMSLP') {
       return (
         <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
           <FiBookOpen className="w-3 h-3 mr-1" />
-          {t('score_preview_imslp')}
+          IMSLP
         </div>
       );
     }
@@ -158,7 +158,7 @@ const SourceBadge = React.memo(
     return (
       <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
         <FiTarget className="w-3 h-3 mr-1" />
-        {t('score_preview_open_atlas')}
+        Opus Atlas
       </div>
     );
   }

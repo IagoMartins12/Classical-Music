@@ -768,28 +768,32 @@ export default function TeacherLessonDetailsPageClient({
 
   return (
     <PageContainer showBackground={true}>
-      <AnimatedContainer delay={0.1} staggerSpeed="normal">
+      <AnimatedContainer
+        delay={0.1}
+        className="mb-8 sm:mb-0"
+        staggerSpeed="normal"
+      >
         {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/teacher/lessons"
-                className="w-10 h-10 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
-              >
-                <FiArrowLeft className="w-5 h-5 text-theme-tertiary" />
-              </Link>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-theme-primary classical-title">
-                  {t('page_title')}
-                </h1>
-                <p className="text-theme-secondary classical-subtitle">
-                  {t('page_subtitle')}
-                </p>
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mb-8">
+            <div className="flex w-full justify-between items-center space-x-4">
+              <div className="flex items-center space-x-4">
+                <Link
+                  href="/teacher/lessons"
+                  className="w-10 h-10 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
+                >
+                  <FiArrowLeft className="w-5 h-5 text-theme-tertiary" />
+                </Link>
+                <div>
+                  <h1 className="text-2xl md:text-3xl font-bold text-theme-primary classical-title">
+                    {t('page_title')}
+                  </h1>
+                  <p className="text-theme-secondary classical-subtitle">
+                    {t('page_subtitle')}
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center space-x-3">
               <span
                 className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
                   lesson.status
@@ -797,7 +801,9 @@ export default function TeacherLessonDetailsPageClient({
               >
                 {getStatusLabel(lesson.status)}
               </span>
+            </div>
 
+            <div className="flex items-center space-x-3">
               {canDelete && (
                 <button
                   onClick={() => setShowDeleteModal(true)}
@@ -825,7 +831,7 @@ export default function TeacherLessonDetailsPageClient({
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Info */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 order-2 sm:order-1 space-y-6">
             {/* Basic Info */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
@@ -1637,7 +1643,7 @@ export default function TeacherLessonDetailsPageClient({
           </div>
 
           {/* Right Column - Student & Actions */}
-          <div className="space-y-6">
+          <div className="space-y-6 order-1 sm:order-2">
             {/* Student Info */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">

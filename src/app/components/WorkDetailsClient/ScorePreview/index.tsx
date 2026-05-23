@@ -14,12 +14,12 @@ interface ScorePreviewProps {
 
 // ✅ COMPONENTE BADGE MEMOIZADO
 const SourceBadge = React.memo(
-  ({ source, t }: { source: 'IMSLP' | 'UPLOAD' | 'CUSTOM'; t: any }) => {
+  ({ source }: { source: 'IMSLP' | 'UPLOAD' | 'CUSTOM'; t: any }) => {
     if (source === 'IMSLP') {
       return (
         <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 border border-blue-200 dark:border-blue-700">
           <FiBookOpen className="w-3 h-3 mr-1.5" />
-          {t('score_preview_imslp')}
+          IMSLP
         </div>
       );
     }
@@ -27,7 +27,7 @@ const SourceBadge = React.memo(
     return (
       <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border border-green-200 dark:border-green-700">
         <FiTarget className="w-3 h-3 mr-1.5" />
-        {t('score_preview_open_atlas')}
+        Opus Atlas
       </div>
     );
   }
@@ -161,7 +161,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
             }
           >
             <LuDownload className="w-4 h-4" />
-            <span className="hidden sm:inline">{t('score_card_download')}</span>
+            <span className="hidden sm:inline">Download</span>
           </button>
         </div>
 
@@ -227,7 +227,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
           {score.fileSize && (
             <div className="flex flex-col">
               <span className="text-theme-tertiary font-medium mb-1">
-                {t('score_preview_tamanho')}
+                Tamanho
               </span>
               <span className="text-theme-primary font-semibold">
                 {formatFileSize(score.fileSize)}
@@ -238,7 +238,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
           {score.pageCount && (
             <div className="flex flex-col">
               <span className="text-theme-tertiary font-medium mb-1">
-                {t('score_preview_paginas')}
+                Páginas
               </span>
               <span className="text-theme-primary font-semibold">
                 {formatPageCount(score.pageCount)}
@@ -249,7 +249,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
           {score.rating && (
             <div className="flex flex-col">
               <span className="text-theme-tertiary font-medium mb-1">
-                {t('score_preview_avaliacao')}
+                Avaliação
               </span>
               <div className="flex items-center gap-1">
                 <LuStar className="w-3 h-3 text-yellow-500 fill-current" />
@@ -268,7 +268,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
           {score.downloadCount && (
             <div className="flex flex-col">
               <span className="text-theme-tertiary font-medium mb-1">
-                {t('score_preview_downloads')}
+                Downloads
               </span>
               <span className="text-theme-primary font-semibold">
                 {formatDownloadCount(score.downloadCount)}
@@ -284,7 +284,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
               {score.editor && (
                 <div className="flex justify-between">
                   <span className="text-theme-tertiary font-medium">
-                    {t('score_preview_editor')}
+                    Editor
                   </span>
                   <span className="text-theme-primary text-right">
                     {score.editor}
@@ -295,7 +295,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
               {score.publisher && (
                 <div className="flex justify-between">
                   <span className="text-theme-tertiary font-medium">
-                    {t('score_preview_editora')}
+                    Editora
                   </span>
                   <span className="text-theme-primary text-right">
                     {score.publisher}
@@ -312,7 +312,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
             {score.copyright && (
               <div>
                 <span className="text-theme-tertiary font-medium block mb-1 text-xs">
-                  {t('score_preview_copyright')}
+                  Copyright
                 </span>
                 <span className="text-theme-secondary text-xs leading-relaxed block">
                   {score.copyright}
@@ -323,7 +323,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
             {score.notes && (
               <div>
                 <span className="text-theme-tertiary font-medium block mb-1 text-xs">
-                  {t('score_preview_notas')}
+                  Notas
                 </span>
                 <span className="text-theme-secondary text-xs leading-relaxed block">
                   {score.notes}
@@ -341,7 +341,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
               className="flex gap-2 px-4 py-2 btn-classical-primary justify-center items-center !w-full disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
             >
               <FiExternalLink className="w-4 h-4" />
-              <span>{t('score_preview_baixar_partitura')}</span>
+              Baixar partitura
             </button>
           </div>
         )}

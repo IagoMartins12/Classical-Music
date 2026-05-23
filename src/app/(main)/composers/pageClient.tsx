@@ -313,7 +313,7 @@ export default function ComposersClient({
 
               {isPending && (
                 <div className="flex items-center text-brand-primary text-sm">
-                  <LoadingSpinner size="sm" classname="" />
+                  <LoadingSpinner size="sm" />
                   <span className="ml-2  hidden sm:flex">
                     {t('client_jsx_span_children_0__carregando')}
                   </span>

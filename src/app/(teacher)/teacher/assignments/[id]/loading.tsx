@@ -77,7 +77,7 @@ export default function AssignmentDetailsLoading() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2  order-2 lg:order-1 space-y-8">
             {/* Assignment Info */}
             <div className="classical-card p-6 animate-pulse">
               <div className="h-6 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-48 mb-6"></div>
@@ -270,7 +270,7 @@ export default function AssignmentDetailsLoading() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-6 order-1 lg:order-2">
             {/* Student Info */}
             <div className="classical-card p-6 animate-pulse">
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-12 mb-4"></div>

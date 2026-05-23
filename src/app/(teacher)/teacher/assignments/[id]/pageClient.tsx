@@ -221,7 +221,7 @@ export default function AssignmentDetailsPageClient({
       <AnimatedContainer delay={0.1} staggerSpeed="normal">
         {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
               <Link
                 href="/teacher/assignments"
@@ -230,26 +230,26 @@ export default function AssignmentDetailsPageClient({
                 <FiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </Link>
               <div>
-                <h1 className="text-3xl font-bold text-gradient-brand classical-title">
-                  {assignment.title}
-                </h1>
+                <div className="flex items-center gap-4 justify-center">
+                  <h1 className="text-3xl font-bold text-gradient-brand classical-title">
+                    {assignment.title}
+                  </h1>
+                  <span
+                    className={`px-3 py-2 rounded-full text-sm font-medium border ${getStatusColor(
+                      assignment
+                    )}`}
+                  >
+                    {getStatusText(assignment)}
+                  </span>
+                </div>
                 <p className="text-theme-secondary classical-subtitle">
-                  {t('assignment_by')}
-                  {assignment.student.name}
+                  {t('assignment_by')} {assignment.student.name}
                 </p>
               </div>
             </div>
 
             {/* Quick Actions */}
-            <div className="flex items-center space-x-3">
-              <span
-                className={`px-3 py-2 rounded-full text-sm font-medium border ${getStatusColor(
-                  assignment
-                )}`}
-              >
-                {getStatusText(assignment)}
-              </span>
-
+            <div className="flex w-full sm:w-auto items-end justify-end space-x-3">
               {/* 🆕 Indicador de vídeo */}
               {videoSubmission && (
                 <span className="px-3 py-2 rounded-full text-sm font-medium border bg-accent-purple/10 border-accent-purple/30 text-accent-purple flex items-center space-x-1">
@@ -273,7 +273,7 @@ export default function AssignmentDetailsPageClient({
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 order-2 lg:order-1 space-y-8 mb-8 sm:mb-0">
             {/* Assignment Info */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
@@ -753,7 +753,7 @@ export default function AssignmentDetailsPageClient({
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-6 order-1 lg:order-2">
             {/* Student Info */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">

@@ -28,6 +28,7 @@ export interface CalendarEvent {
   backgroundColor?: string;
   borderColor?: string;
   textColor?: string;
+  needsAttention?: boolean;
   details?: {
     workScoreIds: string[];
     topics: string[];
@@ -112,6 +113,8 @@ export default async function TeacherCalendarPageServer({
     if (!calendarData) {
       throw new Error('Falha ao carregar dados do calendário');
     }
+
+    console.log('calendarData:', calendarData);
 
     // Preparar lista de alunos ativos
     const activeStudents =

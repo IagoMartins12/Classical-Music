@@ -74,7 +74,7 @@ export default function TeacherLessonsPageClient({
 
   // Filtros
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>('week');
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
   const [selectedStudent, setSelectedStudent] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
@@ -115,29 +115,15 @@ export default function TeacherLessonsPageClient({
 
   // Filter lessons com prioridade para aulas que precisam de atenção
   const filteredLessons = useMemo(() => {
-    const filtered = [...lessons];
     const now = new Date();
+    let filtered = [...lessons];
 
-    // Primeiro, identificar aulas que precisam de atenção (sempre mostradas)
-    const lessonsNeedingAttention = filtered.filter((lesson) => {
-      const lessonTime = new Date(lesson.scheduledAt);
-      return lessonTime < now && lesson.status === 'SCHEDULED';
-    });
-
-    // Resto das aulas para aplicar filtros
-    let regularLessons = filtered.filter((lesson) => {
-      const lessonTime = new Date(lesson.scheduledAt);
-      return !(lessonTime < now && lesson.status === 'SCHEDULED');
-    });
-
-    // Status filter (apenas para aulas regulares)
+    // 1. Aplicar filtro de status PRIMEIRO (em toda a lista)
     if (statusFilter !== 'all') {
-      regularLessons = regularLessons.filter(
-        (lesson) => lesson.status === statusFilter
-      );
+      filtered = filtered.filter((lesson) => lesson.status === statusFilter);
     }
 
-    // Time filter (apenas para aulas regulares)
+    // 2. Aplicar filtro de tempo
     if (timeFilter !== 'all') {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -147,7 +133,7 @@ export default function TeacherLessonsPageClient({
 
       const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
 
-      regularLessons = regularLessons.filter((lesson) => {
+      filtered = filtered.filter((lesson) => {
         const lessonDate = new Date(lesson.scheduledAt);
 
         switch (timeFilter) {
@@ -165,72 +151,60 @@ export default function TeacherLessonsPageClient({
       });
     }
 
-    // Student filter (aplicar para ambas as listas)
+    // 3. Aplicar filtro de aluno
     if (selectedStudent !== 'all') {
-      regularLessons = regularLessons.filter(
+      filtered = filtered.filter(
         (lesson) => lesson.student.id === selectedStudent
       );
-      // Também filtrar aulas que precisam de atenção se for um estudante específico
-      const filteredAttentionLessons = lessonsNeedingAttention.filter(
-        (lesson) => lesson.student.id === selectedStudent
-      );
-      // Atualizar a lista de aulas que precisam de atenção
-      lessonsNeedingAttention.length = 0;
-      lessonsNeedingAttention.push(...filteredAttentionLessons);
     }
 
-    // Search filter (aplicar para ambas as listas)
+    // 4. Aplicar filtro de busca
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      const searchFilter = (lesson: any) =>
-        lesson.title.toLowerCase().includes(query) ||
-        lesson.student.name.toLowerCase().includes(query) ||
-        lesson.description?.toLowerCase().includes(query) ||
-        lesson.location?.toLowerCase().includes(query);
-
-      regularLessons = regularLessons.filter(searchFilter);
-
-      // Também filtrar aulas que precisam de atenção
-      const filteredAttentionLessons =
-        lessonsNeedingAttention.filter(searchFilter);
-      lessonsNeedingAttention.length = 0;
-      lessonsNeedingAttention.push(...filteredAttentionLessons);
+      filtered = filtered.filter(
+        (lesson) =>
+          lesson.title.toLowerCase().includes(query) ||
+          lesson.student.name.toLowerCase().includes(query) ||
+          lesson.description?.toLowerCase().includes(query) ||
+          lesson.location?.toLowerCase().includes(query)
+      );
     }
 
-    // Ordenação cronológica para aulas regulares
-    const now_timestamp = now.getTime();
+    // 5. Separar "needs attention" APENAS para ordenação com prioridade
+    const needsAttention = filtered.filter((lesson) => {
+      const lessonTime = new Date(lesson.scheduledAt);
+      return lessonTime < now && lesson.status === 'SCHEDULED';
+    });
 
-    const sortedRegular = regularLessons.sort((a, b) => {
+    const regular = filtered.filter((lesson) => {
+      const lessonTime = new Date(lesson.scheduledAt);
+      return !(lessonTime < now && lesson.status === 'SCHEDULED');
+    });
+
+    // 6. Ordenar cada grupo
+    const now_ts = now.getTime();
+
+    const sortedRegular = regular.sort((a, b) => {
       const aTime = new Date(a.scheduledAt).getTime();
       const bTime = new Date(b.scheduledAt).getTime();
+      const aIsFuture = aTime >= now_ts;
+      const bIsFuture = bTime >= now_ts;
 
-      // Separar aulas futuras das passadas
-      const aIsFuture = aTime >= now_timestamp;
-      const bIsFuture = bTime >= now_timestamp;
-
-      if (aIsFuture && !bIsFuture) return -1; // Futuras primeiro
-      if (!aIsFuture && bIsFuture) return 1; // Futuras primeiro
-
-      if (aIsFuture && bIsFuture) {
-        // Ambas futuras: mais próximas primeiro
-        return aTime - bTime;
-      } else {
-        // Ambas passadas: mais recentes primeiro
-        return bTime - aTime;
-      }
+      if (aIsFuture && !bIsFuture) return -1;
+      if (!aIsFuture && bIsFuture) return 1;
+      if (aIsFuture && bIsFuture) return aTime - bTime;
+      return bTime - aTime;
     });
 
-    // Ordenar aulas que precisam de atenção por data (mais antigas primeiro)
-    const sortedAttention = lessonsNeedingAttention.sort((a, b) => {
-      return (
+    const sortedAttention = needsAttention.sort(
+      (a, b) =>
         new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime()
-      );
-    });
+    );
 
-    // Retornar aulas que precisam de atenção primeiro, depois as regulares
     return [...sortedAttention, ...sortedRegular];
   }, [lessons, statusFilter, timeFilter, selectedStudent, searchQuery]);
 
+  console.log('LESSONS', { lessons, filteredLessons });
   // Função para verificar se aula passou e precisa de atenção
   const getLessonStatusInfo = useCallback((lesson: any) => {
     const now = new Date();
@@ -385,13 +359,11 @@ export default function TeacherLessonsPageClient({
   // Force refresh when page gains focus
   useEffect(() => {
     const handleFocus = () => {
-      console.log('🔄 Página ganhou foco, atualizando dados...');
       handleRefresh();
     };
 
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        console.log('🔄 Página ficou visível, atualizando dados...');
         handleRefresh();
       }
     };
@@ -682,12 +654,23 @@ export default function TeacherLessonsPageClient({
   // Render lesson list item component
   const renderLessonListItem = useCallback(
     (lesson: any) => {
+      const statusInfo = getLessonStatusInfo(lesson);
+
       return (
         <AnimatedCard
           key={lesson.id}
           hover="lift"
-          className="classical-card p-6"
+          className={`classical-card p-6 relative ${
+            statusInfo.needsAttention ? ' border !border-red-400 0' : ''
+          }`}
         >
+          {/* Indicativo de atenção necessária */}
+          {statusInfo.needsAttention && (
+            <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
+              <FiAlertTriangle className="w-6 h-6 text-red-600" />
+            </div>
+          )}
+
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-start justify-between mb-4">
@@ -923,6 +906,15 @@ export default function TeacherLessonsPageClient({
                   {t('created_on')} {formatDate(lesson.createdAt)}
                 </div>
               </div>
+              {/* Alerta para aulas que precisam de atenção */}
+              {statusInfo.needsAttention && (
+                <div className="flex items-center justify-center space-x-1 mt-3 text-accent-red">
+                  <FiAlertTriangle className="w-4 h-4 text-red-600" />
+                  <span className="strong text-red-600">
+                    {t('needs_status_update')}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </AnimatedCard>
@@ -1003,81 +995,83 @@ export default function TeacherLessonsPageClient({
 
         {/* Stats Cards */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-8">
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiBookOpen className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.total}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_total')}
-              </div>
-            </AnimatedCard>
+          <div className="overflow-x-auto sm:overflow-x-hidden overflow-y-hidden pb-2 mb-8">
+            <div className="grid grid-cols-5 gap-6 min-w-[700px]">
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiBookOpen className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {stats.total}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('stats_total')}
+                </div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCalendar className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.scheduled}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_scheduled')}
-              </div>
-            </AnimatedCard>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiCalendar className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {stats.scheduled}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('stats_scheduled')}
+                </div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCheckCircle className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.completed}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_completed')}
-              </div>
-            </AnimatedCard>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiCheckCircle className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {stats.completed}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('stats_completed')}
+                </div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiClock className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.today}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_today')}
-              </div>
-            </AnimatedCard>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiClock className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {stats.today}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('stats_today')}
+                </div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiXCircle className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.cancelled}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('stats_cancelled')}
-              </div>
-            </AnimatedCard>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiXCircle className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {stats.cancelled}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('stats_cancelled')}
+                </div>
+              </AnimatedCard>
+            </div>
           </div>
         </AnimatedItem>
 
@@ -1100,44 +1094,48 @@ export default function TeacherLessonsPageClient({
               </div>
 
               {/* Filters and Controls */}
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className={`btn-classical-secondary flex items-center space-x-2 ${
-                    showFilters
-                      ? 'bg-brand-primary/10 border-brand-primary/30'
-                      : ''
-                  }`}
-                >
-                  <FiFilter className="w-4 h-4" />
-                  <span>{t('filters')}</span>
-                </button>
-
-                <button
-                  onClick={handleRefresh}
-                  disabled={loading.lessons}
-                  className="btn-classical-secondary flex items-center space-x-2"
-                >
-                  <FiRefreshCw
-                    className={`w-4 h-4 ${
-                      loading.lessons ? 'animate-spin' : ''
+              <div className="flex flex-col gap-4 sm:flex-row sm:gap-0 items-center space-x-4">
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={() => setShowFilters(!showFilters)}
+                    className={`btn-classical-secondary flex items-center space-x-2 ${
+                      showFilters
+                        ? 'bg-brand-primary/10 border-brand-primary/30'
+                        : ''
                     }`}
-                  />
-                  <span>{t('refresh')}</span>
-                </button>
+                  >
+                    <FiFilter className="w-4 h-4" />
+                    <span>{t('filters')}</span>
+                  </button>
 
-                <Link
-                  href="/teacher/lessons/create"
-                  className="btn-classical-primary flex items-center space-x-2"
-                >
-                  <FiPlus className="w-4 h-4" />
-                  <span>{t('new_lesson')}</span>
-                </Link>
-                {/* VIEW MODE TOGGLE */}
-                <ViewModeToggle
-                  viewMode={viewMode}
-                  onViewModeChange={setViewMode}
-                />
+                  <button
+                    onClick={handleRefresh}
+                    disabled={loading.lessons}
+                    className="btn-classical-secondary flex items-center space-x-2"
+                  >
+                    <FiRefreshCw
+                      className={`w-4 h-4 ${
+                        loading.lessons ? 'animate-spin' : ''
+                      }`}
+                    />
+                    <span>{t('refresh')}</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                  <Link
+                    href="/teacher/lessons/create"
+                    className="btn-classical-primary flex items-center space-x-2"
+                  >
+                    <FiPlus className="w-4 h-4" />
+                    <span>{t('new_lesson')}</span>
+                  </Link>
+                  {/* VIEW MODE TOGGLE */}
+                  <ViewModeToggle
+                    viewMode={viewMode}
+                    onViewModeChange={setViewMode}
+                  />
+                </div>
               </div>
             </div>
 

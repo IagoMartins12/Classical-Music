@@ -1,9 +1,9 @@
-// components/animation/AnimatedComponents.tsx - Otimização Conservadora (mantém animações)
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 
-// Tipos EXATOS do original - sem mudanças
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 type AnimationSpeed = 'fast' | 'normal' | 'slow';
 type AnimationDirection = 'up' | 'down' | 'left' | 'right' | 'scale';
 type SpringType = 'smooth' | 'bouncy' | 'gentle';
@@ -16,184 +16,136 @@ interface BaseAnimationProps {
   children: React.ReactNode;
 }
 
-// CSS COMPLETO - mantendo todas as funcionalidades originais
-const COMPLETE_CSS_ANIMATIONS = `
-/* Base - elementos começam visíveis para evitar flash */
-.css-animate-container {
-  opacity: 1;
-}
+// ─── CSS ─────────────────────────────────────────────────────────────────────
+// Injected once via a <style> tag; SSR-safe (guarded by typeof document check).
 
-.css-animate-item {
-  opacity: 1;
-  transform: none;
-}
-
-.css-animate-card {
+const ANIMATION_CSS = `
+/* ── Defaults: elements are always visible unless opted into animation ── */
+.anim-container,
+.anim-item,
+.anim-card {
   opacity: 1;
   transform: none;
 }
 
-/* Estados de animação - aplicados apenas quando necessário */
-.css-animate-container.css-will-animate {
+/* ── Opt-in: hidden state BEFORE intersection ── */
+.anim-container[data-pending],
+.anim-item[data-pending],
+.anim-card[data-pending] {
   opacity: 0;
+}
+
+.anim-item[data-pending][data-dir="up"]    { transform: translateY(20px); }
+.anim-item[data-pending][data-dir="down"]  { transform: translateY(-20px); }
+.anim-item[data-pending][data-dir="left"]  { transform: translateX(-20px); }
+.anim-item[data-pending][data-dir="right"] { transform: translateX(20px); }
+.anim-item[data-pending][data-dir="scale"] { transform: scale(0.95); }
+
+.anim-card[data-pending] {
+  transform: scale(0.95) translateY(20px);
+}
+
+/* ── Transitions (only when pending, removed on reveal to avoid conflicts) ── */
+.anim-container[data-pending] {
   transition: opacity 0.6s ease-out;
 }
 
-.css-animate-container.css-will-animate.css-visible {
-  opacity: 1;
-}
-
-.css-animate-item.css-will-animate {
-  opacity: 0;
+.anim-item[data-pending] {
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
-.css-animate-item.css-will-animate.css-direction-up {
-  transform: translateY(20px);
+.anim-card[data-pending] {
+  transition:
+    opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.css-animate-item.css-will-animate.css-direction-down {
-  transform: translateY(-20px);
-}
+/* ── Speed overrides ── */
+.anim-speed-fast[data-pending]   { transition-duration: 0.3s !important; }
+.anim-speed-normal[data-pending] { transition-duration: 0.5s !important; }
+.anim-speed-slow[data-pending]   { transition-duration: 0.8s !important; }
 
-.css-animate-item.css-will-animate.css-direction-left {
-  transform: translateX(-20px);
-}
+/* ── Spring overrides ── */
+.anim-spring-smooth[data-pending]  { transition-timing-function: ease-out !important; }
+.anim-spring-bouncy[data-pending]  { transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55) !important; }
+.anim-spring-gentle[data-pending]  { transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94) !important; }
 
-.css-animate-item.css-will-animate.css-direction-right {
-  transform: translateX(20px);
-}
+/* ── Hover effects ── */
+.anim-hover-scale { transition: transform 0.2s ease-out; }
+.anim-hover-scale:hover { transform: scale(1.05); }
 
-.css-animate-item.css-will-animate.css-direction-scale {
-  transform: scale(0.95);
-}
+.anim-hover-lift { transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; }
+.anim-hover-lift:hover { transform: translateY(-5px) scale(1.02); }
 
-.css-animate-item.css-will-animate.css-visible {
+.anim-hover-glow { transition: box-shadow 0.2s ease-out; }
+.anim-hover-glow:hover { box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); }
+
+/* ── Sequential grid ── */
+.anim-seq-grid > .anim-seq-child {
   opacity: 1;
   transform: none;
 }
 
-/* Card específico */
-.css-animate-card.css-will-animate {
-  opacity: 0;
-  transform: scale(0.95) translateY(20px);
-  transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.css-animate-card.css-will-animate.css-visible {
-  opacity: 1;
-  transform: none;
-}
-
-/* Variações de velocidade */
-.css-speed-fast { transition-duration: 0.3s !important; }
-.css-speed-normal { transition-duration: 0.5s !important; }
-.css-speed-slow { transition-duration: 0.8s !important; }
-
-/* Variações de spring */
-.css-spring-smooth { transition-timing-function: ease-out !important; }
-.css-spring-bouncy { transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55) !important; }
-.css-spring-gentle { transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94) !important; }
-
-/* Hover effects */
-.css-hover-scale {
-  transition: transform 0.2s ease-out !important;
-}
-.css-hover-scale:hover {
-  transform: scale(1.05) !important;
-}
-
-.css-hover-lift {
-  transition: all 0.2s ease-out !important;
-}
-.css-hover-lift:hover {
-  transform: translateY(-5px) scale(1.02) !important;
-}
-
-.css-hover-glow {
-  transition: all 0.2s ease-out !important;
-}
-.css-hover-glow:hover {
-  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3) !important;
-}
-
-/* Skeleton animations */
-.css-skeleton-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite linear;
-}
-
-.css-skeleton-pulse {
-  animation: pulse 1.5s infinite ease-in-out;
-}
-
-/* Loading spinner */
-.css-loading-spinner {
-  animation: spin 1s linear infinite;
-}
-
-/* Sequential grid - versão mais simples */
-.css-sequential-grid > * {
-  opacity: 1;
-  transform: none;
-}
-
-.css-sequential-grid.css-will-animate > * {
+.anim-seq-grid[data-pending] > .anim-seq-child {
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 }
 
-.css-sequential-grid.css-animate > * {
-  opacity: 1;
-  transform: none;
-}
-
-.css-sequential-grid > *:hover {
-  transform: translateY(-5px) !important;
+.anim-seq-grid > .anim-seq-child:hover {
+  transform: translateY(-5px);
   transition: transform 0.2s ease-out !important;
 }
 
-/* Floating elements */
-.css-floating-element {
-  animation: float 6s ease-in-out infinite;
+/* ── Skeleton ── */
+.anim-skeleton-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+  background-size: 200% 100%;
+  animation: anim-shimmer 2s infinite linear;
 }
 
-/* Keyframes */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
+.anim-skeleton-pulse {
+  animation: anim-pulse 1.5s infinite ease-in-out;
+}
+
+/* ── Spinner ── */
+.anim-spinner {
+  animation: anim-spin 1s linear infinite;
+}
+
+/* ── Floating ── */
+.anim-floating {
+  animation: anim-float 6s ease-in-out infinite;
+}
+
+/* ── Keyframes ── */
+@keyframes anim-shimmer {
+  0%   { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
 
-@keyframes pulse {
+@keyframes anim-pulse {
   0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+  50%       { opacity: 1; }
 }
 
-@keyframes spin {
+@keyframes anim-spin {
   from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  to   { transform: rotate(360deg); }
 }
 
-@keyframes float {
-  0%, 100% { 
-    transform: translateY(0) rotate(0deg); 
-    opacity: 0.3; 
-  }
-  50% { 
-    transform: translateY(-10px) rotate(2deg); 
-    opacity: 0.7; 
-  }
+@keyframes anim-float {
+  0%, 100% { transform: translateY(0) rotate(0deg);   opacity: 0.3; }
+  50%       { transform: translateY(-10px) rotate(2deg); opacity: 0.7; }
 }
 
-/* Accessibility */
+/* ── Reduced-motion: opt out of everything ── */
 @media (prefers-reduced-motion: reduce) {
-  .css-animate-container,
-  .css-animate-item,
-  .css-animate-card,
-  .css-sequential-grid > *,
-  .css-floating-element {
+  .anim-container[data-pending],
+  .anim-item[data-pending],
+  .anim-card[data-pending],
+  .anim-seq-grid[data-pending] > .anim-seq-child,
+  .anim-floating {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
@@ -202,88 +154,118 @@ const COMPLETE_CSS_ANIMATIONS = `
 }
 `;
 
-// OTIMIZAÇÃO PRINCIPAL: Observer Global Compartilhado
-class OptimizedIntersectionManager {
-  private static instance: OptimizedIntersectionManager;
-  private observer: IntersectionObserver | null = null;
-  private callbacks = new Map<Element, () => void>();
-  private cssInjected = false;
-  private elementsCount = 0;
+// ─── CSS injection (singleton, client-only) ───────────────────────────────────
 
-  static getInstance(): OptimizedIntersectionManager {
-    if (!OptimizedIntersectionManager.instance) {
-      OptimizedIntersectionManager.instance =
-        new OptimizedIntersectionManager();
-    }
-    return OptimizedIntersectionManager.instance;
-  }
+let cssInjected = false;
 
-  injectCSS(): void {
-    if (this.cssInjected || typeof document === 'undefined') return;
-
-    const style = document.createElement('style');
-    style.textContent = COMPLETE_CSS_ANIMATIONS;
-    document.head.appendChild(style);
-    this.cssInjected = true;
-  }
-
-  observe(element: Element, callback: () => void): void {
-    // Criar observer apenas quando necessário
-    if (!this.observer) {
-      this.observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const callback = this.callbacks.get(entry.target);
-              if (callback) {
-                callback();
-                this.unobserve(entry.target);
-              }
-            }
-          });
-        },
-        {
-          threshold: 0,
-          rootMargin: '50px', // Trigger um pouco antes para animação mais suave
-        }
-      );
-    }
-
-    this.callbacks.set(element, callback);
-    this.observer.observe(element);
-    this.elementsCount++;
-
-    // Debug: monitorar quantos observers estamos usando
-    // console.log(`Total elements being observed: ${this.elementsCount}`);
-  }
-
-  unobserve(element: Element): void {
-    if (this.observer) {
-      this.observer.unobserve(element);
-      this.callbacks.delete(element);
-      this.elementsCount--;
-    }
-  }
+function ensureCSS() {
+  if (cssInjected || typeof document === 'undefined') return;
+  const style = document.createElement('style');
+  style.dataset.id = 'animated-components';
+  style.textContent = ANIMATION_CSS;
+  document.head.appendChild(style);
+  cssInjected = true;
 }
 
-// Função para verificar se elemento já está visível (OTIMIZADA)
-const isElementVisible = (element: Element): boolean => {
-  const rect = element.getBoundingClientRect();
-  const windowHeight =
-    window.innerHeight || document.documentElement.clientHeight;
-  const windowWidth = window.innerWidth || document.documentElement.clientWidth;
+// ─── Shared IntersectionObserver ──────────────────────────────────────────────
+// One observer for the entire app; each element registers its own callback.
 
-  return (
-    rect.top >= -100 && // Pequena margem para elementos próximos
-    rect.left >= -100 &&
-    rect.bottom <= windowHeight + 100 &&
-    rect.right <= windowWidth + 100
-  );
+let sharedObserver: IntersectionObserver | null = null;
+const observerCallbacks = new Map<Element, () => void>();
+
+function getObserver(): IntersectionObserver {
+  if (!sharedObserver) {
+    sharedObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const cb = observerCallbacks.get(entry.target);
+          if (cb) {
+            cb();
+            sharedObserver!.unobserve(entry.target);
+            observerCallbacks.delete(entry.target);
+          }
+        });
+      },
+      { threshold: 0, rootMargin: '0px 0px -40px 0px' }
+    );
+  }
+  return sharedObserver;
+}
+
+function observeElement(el: Element, cb: () => void) {
+  observerCallbacks.set(el, cb);
+  getObserver().observe(el);
+}
+
+function unobserveElement(el: Element) {
+  getObserver().unobserve(el);
+  observerCallbacks.delete(el);
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/** True when the element is already inside the viewport on mount. */
+function isAlreadyVisible(el: Element): boolean {
+  const { top, bottom, left, right } = el.getBoundingClientRect();
+  const vh = window.innerHeight ?? document.documentElement.clientHeight;
+  const vw = window.innerWidth ?? document.documentElement.clientWidth;
+  return top < vh && bottom > 0 && left < vw && right > 0;
+}
+
+/** Remove data-pending and all direction/speed/spring data attrs, ending the transition. */
+function reveal(el: Element) {
+  delete (el as HTMLElement).dataset.pending;
+  delete (el as HTMLElement).dataset.dir;
+}
+
+const STAGGER_DELAYS: Record<AnimationSpeed, number> = {
+  fast: 50,
+  normal: 100,
+  slow: 150,
 };
 
-// =================================
-// CONTAINER COMPONENTS - Mantendo funcionalidade original
-// =================================
+// ─── useRevealOnScroll ────────────────────────────────────────────────────────
+// Core hook: marks element as pending, observes it, reveals on intersection.
+
+function useRevealOnScroll(
+  ref: React.RefObject<Element | null>,
+  delay: number,
+  onReveal?: (el: Element) => void
+) {
+  const onRevealRef = useRef(onReveal);
+  onRevealRef.current = onReveal;
+
+  useEffect(() => {
+    ensureCSS();
+    const el = ref.current;
+    if (!el) return;
+
+    // Already in viewport → skip animation entirely
+    if (isAlreadyVisible(el)) return;
+
+    // Mark as pending (triggers the hidden CSS state)
+    (el as HTMLElement).dataset.pending = '';
+
+    const trigger = () => {
+      const delayMs = delay * 1000;
+      if (delayMs > 0) {
+        setTimeout(() => {
+          reveal(el);
+          onRevealRef.current?.(el);
+        }, delayMs);
+      } else {
+        reveal(el);
+        onRevealRef.current?.(el);
+      }
+    };
+
+    observeElement(el, trigger);
+    return () => unobserveElement(el);
+  }, []); // intentionally runs once on mount
+}
+
+// ─── AnimatedContainer ────────────────────────────────────────────────────────
 
 interface AnimatedContainerProps extends BaseAnimationProps {
   staggerSpeed?: AnimationSpeed;
@@ -291,65 +273,35 @@ interface AnimatedContainerProps extends BaseAnimationProps {
 
 export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
   children,
-  delay = 0.1,
+  delay = 0,
   staggerSpeed = 'normal',
   className = '',
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const manager = OptimizedIntersectionManager.getInstance();
 
-  useEffect(() => {
-    manager.injectCSS();
+  const onReveal = useCallback(
+    (el: Element) => {
+      // Stagger direct .anim-item[data-pending] children
+      const items = el.querySelectorAll<HTMLElement>(
+        '.anim-item[data-pending]'
+      );
+      items.forEach((item, i) => {
+        setTimeout(() => reveal(item), i * STAGGER_DELAYS[staggerSpeed]);
+      });
+    },
+    [staggerSpeed]
+  );
 
-    if (!ref.current) return;
-
-    const element = ref.current;
-
-    // OTIMIZAÇÃO: Se já está visível, não animar
-    if (isElementVisible(element)) {
-      return;
-    }
-
-    // Marcar para animação
-    element.classList.add('css-will-animate');
-
-    const callback = () => {
-      setTimeout(() => {
-        element.classList.add('css-visible');
-
-        // Stagger children se necessário
-        const children = element.querySelectorAll(
-          '.css-animate-item.css-will-animate'
-        );
-        const staggerDelays = {
-          fast: 50,
-          normal: 100,
-          slow: 150,
-        };
-
-        children.forEach((child, index) => {
-          setTimeout(() => {
-            child.classList.add('css-visible');
-          }, index * staggerDelays[staggerSpeed]);
-        });
-      }, delay * 1000);
-    };
-
-    manager.observe(element, callback);
-
-    return () => manager.unobserve(element);
-  }, [delay, staggerSpeed, manager]);
+  useRevealOnScroll(ref, delay, onReveal);
 
   return (
-    <div ref={ref} className={`css-animate-container ${className}`}>
+    <div ref={ref} className={`anim-container ${className}`}>
       {children}
     </div>
   );
 };
 
-// =================================
-// ITEM COMPONENTS - Funcionalidade completa mantida
-// =================================
+// ─── AnimatedItem ─────────────────────────────────────────────────────────────
 
 interface AnimatedItemProps extends BaseAnimationProps {
   direction?: AnimationDirection;
@@ -372,45 +324,20 @@ export const AnimatedItem: React.FC<AnimatedItemProps> = ({
   style,
   delay = 0,
 }) => {
-  const ref = useRef<HTMLDivElement | HTMLTableRowElement>(null);
-  const manager = OptimizedIntersectionManager.getInstance();
+  const ref = useRef<HTMLDivElement & HTMLTableRowElement>(null);
 
   useEffect(() => {
-    manager.injectCSS();
+    // Set data-dir BEFORE the observer hook so CSS picks it up immediately
+    if (ref.current) ref.current.dataset.dir = direction;
+  }, [direction]);
 
-    if (!ref.current) return;
+  useRevealOnScroll(ref, delay);
 
-    const element = ref.current;
-
-    // OTIMIZAÇÃO: Se já está visível, não animar
-    if (isElementVisible(element)) {
-      return;
-    }
-
-    // Marcar para animação
-    const classes = [
-      'css-will-animate',
-      `css-direction-${direction}`,
-      `css-speed-${speed}`,
-      `css-spring-${springType}`,
-    ];
-
-    element.classList.add(...classes);
-
-    const callback = () => {
-      setTimeout(() => {
-        element.classList.add('css-visible');
-      }, delay * 1000);
-    };
-
-    manager.observe(element, callback);
-
-    return () => manager.unobserve(element);
-  }, [direction, springType, speed, delay, manager]);
-
-  const allClasses = [
-    'css-animate-item',
-    hover !== 'none' ? `css-hover-${hover}` : '',
+  const classes = [
+    'anim-item',
+    `anim-speed-${speed}`,
+    `anim-spring-${springType}`,
+    hover !== 'none' ? `anim-hover-${hover}` : '',
     onClick ? 'cursor-pointer' : '',
     className,
   ]
@@ -419,32 +346,20 @@ export const AnimatedItem: React.FC<AnimatedItemProps> = ({
 
   if (component === 'tr') {
     return (
-      <tr
-        ref={ref as React.RefObject<HTMLTableRowElement>}
-        className={allClasses}
-        onClick={onClick}
-        style={style}
-      >
+      <tr ref={ref} className={classes} onClick={onClick} style={style}>
         {children}
       </tr>
     );
   }
 
   return (
-    <div
-      ref={ref as React.RefObject<HTMLDivElement>}
-      className={allClasses}
-      onClick={onClick}
-      style={style}
-    >
+    <div ref={ref} className={classes} onClick={onClick} style={style}>
       {children}
     </div>
   );
 };
 
-// =================================
-// SPECIALIZED COMPONENTS - Funcionalidade mantida
-// =================================
+// ─── AnimatedCard ─────────────────────────────────────────────────────────────
 
 interface AnimatedCardProps extends BaseAnimationProps {
   hover?: HoverEffect;
@@ -462,38 +377,13 @@ export const AnimatedCard: React.FC<AnimatedCardProps> = ({
   delay = 0,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const manager = OptimizedIntersectionManager.getInstance();
 
-  useEffect(() => {
-    manager.injectCSS();
+  useRevealOnScroll(ref, delay);
 
-    if (!ref.current) return;
-
-    const element = ref.current;
-
-    // OTIMIZAÇÃO: Se já está visível, não animar
-    if (isElementVisible(element)) {
-      return;
-    }
-
-    // Marcar para animação
-    const classes = ['css-will-animate', `css-speed-${speed}`];
-    element.classList.add(...classes);
-
-    const callback = () => {
-      setTimeout(() => {
-        element.classList.add('css-visible');
-      }, delay * 1000);
-    };
-
-    manager.observe(element, callback);
-
-    return () => manager.unobserve(element);
-  }, [speed, delay, manager]);
-
-  const allClasses = [
-    'css-animate-card',
-    hover !== 'none' ? `css-hover-${hover}` : '',
+  const classes = [
+    'anim-card',
+    `anim-speed-${speed}`,
+    hover !== 'none' ? `anim-hover-${hover}` : '',
     clickable || onClick ? 'cursor-pointer' : '',
     className,
   ]
@@ -501,19 +391,79 @@ export const AnimatedCard: React.FC<AnimatedCardProps> = ({
     .join(' ');
 
   return (
-    <div
-      ref={ref}
-      className={allClasses}
-      onClick={onClick ? onClick : undefined}
-    >
+    <div ref={ref} className={classes} onClick={onClick}>
       {children}
     </div>
   );
 };
 
-// =================================
-// SKELETON COMPONENTS - Mantidos iguais
-// =================================
+// ─── SequentialGrid ───────────────────────────────────────────────────────────
+
+interface SequentialGridProps {
+  children: React.ReactNode;
+  cols?: 1 | 2 | 3 | 4 | 5;
+  gap?: number;
+  delayBetweenItems?: number;
+  className?: string;
+  classNameSub?: string;
+}
+
+const GRID_COLS: Record<number, string> = {
+  1: 'grid-cols-1',
+  2: 'grid-cols-1 md:grid-cols-2',
+  3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+  4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+  5: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5',
+};
+
+export const SequentialGrid: React.FC<SequentialGridProps> = ({
+  children,
+  cols = 4,
+  gap = 6,
+  delayBetweenItems = 0.1,
+  className = '',
+  classNameSub = '',
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const onReveal = useCallback(
+    (el: Element) => {
+      const items = el.querySelectorAll<HTMLElement>(
+        ':scope > .anim-seq-child'
+      );
+      items.forEach((item, i) => {
+        setTimeout(
+          () => {
+            item.style.opacity = '1';
+            item.style.transform = 'none';
+          },
+          i * delayBetweenItems * 1000
+        );
+      });
+      delete (el as HTMLElement).dataset.pending;
+    },
+    [delayBetweenItems]
+  );
+
+  useRevealOnScroll(ref, 0, onReveal);
+
+  const gridClass = GRID_COLS[cols] ?? GRID_COLS[4];
+
+  return (
+    <div
+      ref={ref}
+      className={`grid gap-${gap} ${gridClass} anim-seq-grid ${className}`}
+    >
+      {React.Children.map(children, (child, index) => (
+        <div key={index} className={`anim-seq-child ${classNameSub}`}>
+          {child}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 interface SkeletonItemProps {
   width?: string;
@@ -532,20 +482,30 @@ export const SkeletonItem: React.FC<SkeletonItemProps> = ({
   pulse = false,
   className = '',
 }) => {
-  const manager = OptimizedIntersectionManager.getInstance();
-
   useEffect(() => {
-    manager.injectCSS();
-  }, [manager]);
+    ensureCSS();
+  }, []);
 
-  const baseClass = `${width} ${height} ${rounded ? 'rounded' : ''} bg-theme-elevated`;
-  const animationClass = shimmer
-    ? 'css-skeleton-shimmer'
+  const animClass = shimmer
+    ? 'anim-skeleton-shimmer'
     : pulse
-      ? 'css-skeleton-pulse'
+      ? 'anim-skeleton-pulse'
       : '';
 
-  return <div className={`${baseClass} ${animationClass} ${className}`} />;
+  return (
+    <div
+      className={[
+        width,
+        height,
+        rounded ? 'rounded' : '',
+        'bg-theme-elevated',
+        animClass,
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    />
+  );
 };
 
 interface SkeletonCardProps {
@@ -560,41 +520,35 @@ export const SkeletonCard: React.FC<SkeletonCardProps> = ({
   showIcon = true,
   showButton = false,
   className = '',
-}) => {
-  return (
-    <AnimatedCard className={`classical-card p-6 ${className}`} hover="none">
-      {showIcon && (
-        <div className="flex items-center space-x-3 mb-4">
-          <SkeletonItem width="w-12" height="h-12" />
-          <div className="flex-1 space-y-2">
-            <SkeletonItem width="w-3/4" height="h-5" />
-            <SkeletonItem width="w-1/2" height="h-3" />
-          </div>
+}) => (
+  <AnimatedCard className={`classical-card p-6 ${className}`} hover="none">
+    {showIcon && (
+      <div className="flex items-center space-x-3 mb-4">
+        <SkeletonItem width="w-12" height="h-12" />
+        <div className="flex-1 space-y-2">
+          <SkeletonItem width="w-3/4" height="h-5" />
+          <SkeletonItem width="w-1/2" height="h-3" />
         </div>
-      )}
-
-      <div className="space-y-3">
-        {Array.from({ length: lines }).map((_, i) => (
-          <SkeletonItem
-            key={i}
-            width={i === lines - 1 ? 'w-2/3' : 'w-full'}
-            height="h-4"
-          />
-        ))}
       </div>
+    )}
+    <div className="space-y-3">
+      {Array.from({ length: lines }, (_, i) => (
+        <SkeletonItem
+          key={i}
+          width={i === lines - 1 ? 'w-2/3' : 'w-full'}
+          height="h-4"
+        />
+      ))}
+    </div>
+    {showButton && (
+      <div className="mt-4 pt-4 border-t border-theme-secondary">
+        <SkeletonItem width="w-32" height="h-10" />
+      </div>
+    )}
+  </AnimatedCard>
+);
 
-      {showButton && (
-        <div className="mt-4 pt-4 border-t border-theme-secondary">
-          <SkeletonItem width="w-32" height="h-10" />
-        </div>
-      )}
-    </AnimatedCard>
-  );
-};
-
-// =================================
-// LAYOUT COMPONENTS - Mantidos
-// =================================
+// ─── Layout & Utility ─────────────────────────────────────────────────────────
 
 interface PageContainerProps {
   children: React.ReactNode;
@@ -607,34 +561,33 @@ export const PageContainer: React.FC<PageContainerProps> = ({
   className = '',
   showBackground = true,
 }) => {
-  const manager = OptimizedIntersectionManager.getInstance();
-
   useEffect(() => {
-    manager.injectCSS();
-  }, [manager]);
+    ensureCSS();
+  }, []);
 
   return (
     <div
-      className={`${showBackground ? 'bg-gradient-primary' : ''} ${className}`}
+      className={[
+        showBackground ? 'bg-gradient-primary' : '',
+        'relative',
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
     >
       {showBackground && (
         <div className="absolute inset-0 pointer-events-none opacity-5">
-          <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl css-floating-element" />
+          <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl anim-floating" />
           <div
-            className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl css-floating-element"
+            className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl anim-floating"
             style={{ animationDelay: '2s' }}
           />
         </div>
       )}
-
       <div className="section-wrap space-y-8 relative z-10">{children}</div>
     </div>
   );
 };
-
-// =================================
-// UTILITY COMPONENTS - Mantidos
-// =================================
 
 interface FloatingElementProps {
   children: React.ReactNode;
@@ -647,15 +600,13 @@ export const FloatingElement: React.FC<FloatingElementProps> = ({
   className = '',
   delay = 0,
 }) => {
-  const manager = OptimizedIntersectionManager.getInstance();
-
   useEffect(() => {
-    manager.injectCSS();
-  }, [manager]);
+    ensureCSS();
+  }, []);
 
   return (
     <div
-      className={`absolute pointer-events-none css-floating-element ${className}`}
+      className={`absolute pointer-events-none anim-floating ${className}`}
       style={{ animationDelay: `${delay}s` }}
     >
       {children}
@@ -666,120 +617,23 @@ export const FloatingElement: React.FC<FloatingElementProps> = ({
 interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg';
   color?: string;
-  classname?: string;
+  className?: string;
 }
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = 'md',
   color = 'border-brand-primary',
-  classname = '',
-}) => {
-  const manager = OptimizedIntersectionManager.getInstance();
-
-  useEffect(() => {
-    manager.injectCSS();
-  }, [manager]);
-
-  const sizeClasses = {
-    sm: 'w-4 h-4',
-    md: 'w-8 h-8',
-    lg: 'w-12 h-12',
-  };
-
-  return (
-    <div
-      className={`${sizeClasses[size]} border-4 ${color} border-t-transparent rounded-full css-loading-spinner ${classname}`}
-    />
-  );
-};
-
-// =================================
-// GRID COM ANIMAÇÃO SEQUENCIAL - Mantido
-// =================================
-
-interface SequentialGridProps {
-  children: React.ReactNode;
-  cols?: number;
-  gap?: number;
-  delayBetweenItems?: number;
-  className?: string;
-  classNameSub?: string;
-}
-
-export const SequentialGrid: React.FC<SequentialGridProps> = ({
-  children,
-  cols = 4,
-  gap = 6,
-  delayBetweenItems = 0.1,
   className = '',
-  classNameSub = '',
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const manager = OptimizedIntersectionManager.getInstance();
-
-  const getGridCols = () => {
-    switch (cols) {
-      case 1:
-        return 'grid-cols-1';
-      case 2:
-        return 'grid-cols-1 md:grid-cols-2';
-      case 3:
-        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
-      case 4:
-        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
-      case 5:
-        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5';
-      default:
-        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
-    }
-  };
-
   useEffect(() => {
-    manager.injectCSS();
+    ensureCSS();
+  }, []);
 
-    if (!ref.current) return;
-
-    const element = ref.current;
-
-    // OTIMIZAÇÃO: Se já está visível, não animar
-    if (isElementVisible(element)) {
-      return;
-    }
-
-    // Marcar para animação
-    element.classList.add('css-will-animate');
-
-    const callback = () => {
-      element.classList.add('css-animate');
-
-      // Animar children com delay
-      const children = element.querySelectorAll(':scope > div');
-      children.forEach((child, index) => {
-        setTimeout(
-          () => {
-            (child as HTMLElement).style.opacity = '1';
-            (child as HTMLElement).style.transform = 'none';
-          },
-          index * (delayBetweenItems * 1000)
-        );
-      });
-    };
-
-    manager.observe(element, callback);
-
-    return () => manager.unobserve(element);
-  }, [delayBetweenItems, manager]);
+  const sizeClass = { sm: 'w-4 h-4', md: 'w-8 h-8', lg: 'w-12 h-12' }[size];
 
   return (
     <div
-      ref={ref}
-      className={`grid gap-${gap} ${getGridCols()} css-sequential-grid ${className}`}
-    >
-      {React.Children.map(children, (child, index) => (
-        <div key={index} className={classNameSub}>
-          {child}
-        </div>
-      ))}
-    </div>
+      className={`${sizeClass} border-4 ${color} border-t-transparent rounded-full anim-spinner ${className}`}
+    />
   );
 };

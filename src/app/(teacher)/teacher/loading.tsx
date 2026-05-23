@@ -99,7 +99,7 @@ export default function TeacherDashboardLoading() {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - 2/3 */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 order-2 lg:order-1 space-y-8">
             {/* Quick Actions Skeleton */}
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-6">
@@ -163,7 +163,7 @@ export default function TeacherDashboardLoading() {
           </div>
 
           {/* Right Column - 1/3 */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 order-1 lg:order-2 space-y-6">
             {/* Today's Schedule Skeleton */}
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-4">

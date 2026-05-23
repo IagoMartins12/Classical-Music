@@ -1953,7 +1953,7 @@ export const getTeacherAssignmentsData = unstable_cache(
             // Relacionamentos
             student: {
               id: assignment.student.user.id,
-              name: `${assignment.student.user.firstName} ${assignment.student.user.lastName}`.trim(),
+              name: `${assignment.student.user.firstName} ${assignment.student.user.lastName ?? ''} `.trim(),
               image: assignment.student.user.image,
             },
             lesson: {
@@ -2270,10 +2270,13 @@ export const getTeacherLessonsData = unstable_cache(
           ]);
 
         // Calcular estatísticas por status
-        const statusCounts = allLessons.reduce((acc, lesson) => {
-          acc[lesson.status] = (acc[lesson.status] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
+        const statusCounts = allLessons.reduce(
+          (acc, lesson) => {
+            acc[lesson.status] = (acc[lesson.status] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>
+        );
 
         // Calcular duração média
         const totalDuration = allLessons.reduce(
@@ -2918,7 +2921,7 @@ export const getTeacherAssignmentDetailsData = unstable_cache(
         // Relacionamentos
         student: {
           id: assignment.student.user.id,
-          name: `${assignment.student.user.firstName} ${assignment.student.user.lastName}`.trim(),
+          name: `${assignment.student.user.firstName} ${assignment.student.user.lastName ?? ''}`.trim(),
           image: assignment.student.user.image,
         },
         lesson: {

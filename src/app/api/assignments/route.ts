@@ -526,11 +526,10 @@ export async function POST(request: NextRequest) {
       musicalGoals = [],
     } = body;
 
-    if (!lessonId || !studentUserId || !title || !description) {
+    if (!studentUserId || !title || !description) {
       return NextResponse.json(
         {
-          error:
-            'lessonId, studentUserId, title e description são obrigatórios',
+          error: 'Estudante, titulo e descrição são obrigatórios',
         },
         { status: 400 }
       );

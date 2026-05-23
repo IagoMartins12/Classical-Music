@@ -168,9 +168,7 @@ const ScoreCard = ({
                     onClick={(e) => e.stopPropagation()}
                   >
                     <FiDownload className="w-3  hidden md:block h-3 group-hover/download:animate-bounce" />
-                    <span className="text-xs md:text-md">
-                      {t('score_card_download')}
-                    </span>
+                    <span className="text-xs md:text-md">Download</span>
                     <div className="">
                       <svg
                         className="w-3 h-3 transition-transform group-hover/download:translate-x-0.5"

@@ -119,7 +119,9 @@
       "thursday": "quinta-feira",
       "friday": "sexta-feira",
       "saturday": "sábado"
-    }
+    },
+    "no_lessons_today": "Nenhuma aula hoje",
+    "today_lessons_found": "{count} aula{plural} encontrada{plural} para hoje"
   },
   "en": {
     "page_title": "Lesson Calendar",
@@ -241,6 +243,8 @@
       "thursday": "Thursday",
       "friday": "Friday",
       "saturday": "Saturday"
-    }
+    },
+    "no_lessons_today": "No lessons today",
+    "today_lessons_found": "{count} lesson{plural} found for today"
   }
 }

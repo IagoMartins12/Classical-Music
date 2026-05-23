@@ -21,7 +21,6 @@ import {
   FiArrowLeft,
   FiPlus,
   FiEye,
-  FiActivity,
   FiMessageSquare,
   FiFileText,
   FiSettings,
@@ -595,8 +594,8 @@ export default function TeacherStudentDetailPageClient({
 
         {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row items-center justify-between mb-8">
+            <div className="flex items-center w-full sm:w-auto space-x-4">
               <Link
                 href="/teacher/students"
                 className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
@@ -613,7 +612,7 @@ export default function TeacherStudentDetailPageClient({
               </div>
             </div>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center w-full justify-between sm:justify-start sm:w-auto space-x-3">
               <span
                 className={`px-4 py-2 border rounded-full text-sm font-medium bg-${getStatusColor()}/10 border-${getStatusColor()}/30 text-${getStatusColor()}`}
               >
@@ -963,7 +962,7 @@ export default function TeacherStudentDetailPageClient({
 
             {/* Progress Stats */}
             <AnimatedItem direction="up" springType="gentle">
-              <SequentialGrid cols={4} gap={6} delayBetweenItems={0.1}>
+              <SequentialGrid cols={3} gap={6} delayBetweenItems={0.1}>
                 <AnimatedCard
                   hover="scale"
                   className="classical-card p-6 text-center"
@@ -1008,7 +1007,7 @@ export default function TeacherStudentDetailPageClient({
                     {t('study_hours')}
                   </div>
                 </AnimatedCard>
-
+                {/* 
                 <AnimatedCard
                   hover="scale"
                   className="classical-card p-6 text-center"
@@ -1022,7 +1021,7 @@ export default function TeacherStudentDetailPageClient({
                   <div className="text-sm text-theme-tertiary">
                     {t('streak_days')}
                   </div>
-                </AnimatedCard>
+                </AnimatedCard> */}
               </SequentialGrid>
             </AnimatedItem>
 
@@ -1446,7 +1445,11 @@ export default function TeacherStudentDetailPageClient({
             </AnimatedItem>
 
             {/* Refresh Button */}
-            <AnimatedItem direction="up" springType="gentle">
+            <AnimatedItem
+              direction="up"
+              className="mb-8 sm:mb-0"
+              springType="gentle"
+            >
               <button
                 onClick={refreshStudentData}
                 disabled={loading.refresh}

@@ -103,7 +103,14 @@
     "back_to_lessons": "Voltar às Aulas",
     "error_loading_data": "Erro ao Carregar Dados",
     "min_advance_notice": "Aulas devem ser agendadas com pelo menos 15 minutos de antecedência",
-    "select_date": "Selecione uma data"
+    "select_date": "Selecione uma data",
+    "days_monday": "Segunda-feira",
+    "days_tuesday": "Terça-feira",
+    "days_wednesday": "Quarta-feira",
+    "days_thursday": "Quinta-feira",
+    "days_friday": "Sexta-feira",
+    "days_saturday": "Sábado",
+    "days_sunday": "Domingo"
   },
   "en": {
     "page_title": "Create New Lesson",
@@ -209,6 +216,13 @@
     "back_to_lessons": "Back to Lessons",
     "error_loading_data": "Error Loading Data",
     "min_advance_notice": "Lessons must be scheduled at least 15 minutes in advance",
-    "select_date": "Select a date"
+    "select_date": "Select a date",
+    "days_monday": "Monday",
+    "days_tuesday": "Tuesday",
+    "days_wednesday": "Wednesday",
+    "days_thursday": "Thursday",
+    "days_friday": "Friday",
+    "days_saturday": "Saturday",
+    "days_sunday": "Sunday"
   }
 }

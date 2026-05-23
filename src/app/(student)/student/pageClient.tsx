@@ -26,7 +26,6 @@ import {
   AnimatedCard,
   AnimatedItem,
   PageContainer,
-  SequentialGrid,
 } from '../../components/animation/AnimatedComponents';
 import { StudentDashboardData } from './pageServer';
 import { useStudentDashboard } from '@/app/hooks/lessonsSystem/useStudentDashboard';
@@ -263,84 +262,82 @@ export default function StudentPageClient({
 
         {/* Stats Cards */}
         <AnimatedItem direction="up" springType="gentle">
-          <SequentialGrid
-            cols={4}
-            gap={6}
-            delayBetweenItems={0.1}
-            className="mb-8"
-          >
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiBookOpen className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.totalLessons}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('student_home_stats_total_lessons')}
-              </div>
-              <div className="text-xs text-accent-green mt-1">
-                {stats.completedLessons} {t('student_home_stats_completed')}
-              </div>
-            </AnimatedCard>
+          <div className="overflow-x-auto sm:overflow-x-hidden overflow-y-hidden pb-2 mb-8 scroll-smooth snap-x snap-mandatory scrollbar-hide">
+            <div className="grid grid-flow-col auto-cols-[minmax(260px,1fr)] gap-6 sm:grid-flow-row sm:grid-cols-4 sm:auto-cols-auto">
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center snap-start"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiBookOpen className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {stats.totalLessons}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('student_home_stats_total_lessons')}
+                </div>
+                <div className="text-xs text-accent-green mt-1">
+                  {stats.completedLessons} {t('student_home_stats_completed')}
+                </div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCalendar className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.upcomingLessons}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('student_home_stats_upcoming_lessons')}
-              </div>
-              <div className="text-xs text-accent-blue mt-1">
-                {todayLessons.length} {t('student_home_stats_today')}
-              </div>
-            </AnimatedCard>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center snap-start"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiCalendar className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {stats.upcomingLessons}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('student_home_stats_upcoming_lessons')}
+                </div>
+                <div className="text-xs text-accent-blue mt-1">
+                  {todayLessons.length} {t('student_home_stats_today')}
+                </div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiClock className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {formatDuration(stats.totalStudyTime).split(' ')[0]}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('student_home_stats_study_hours')}
-              </div>
-              <div className="text-xs text-accent-green mt-1">
-                {stats.averageAttendance}% {t('student_home_stats_attendance')}
-              </div>
-            </AnimatedCard>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center snap-start"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiClock className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {formatDuration(stats.totalStudyTime).split(' ')[0]}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('student_home_stats_study_hours')}
+                </div>
+                <div className="text-xs text-accent-green mt-1">
+                  {stats.averageAttendance}%{' '}
+                  {t('student_home_stats_attendance')}
+                </div>
+              </AnimatedCard>
 
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiAward className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.currentStreak}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                {t('student_home_stats_current_streak')}
-              </div>
-              <div className="text-xs text-theme-tertiary mt-1">
-                {t('student_home_stats_record')} {stats.longestStreak}
-              </div>
-            </AnimatedCard>
-          </SequentialGrid>
+              <AnimatedCard
+                hover="scale"
+                className="classical-card p-6 text-center snap-start"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <FiAward className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary mb-1">
+                  {stats.currentStreak}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('student_home_stats_current_streak')}
+                </div>
+                <div className="text-xs text-theme-tertiary mt-1">
+                  {t('student_home_stats_record')} {stats.longestStreak}
+                </div>
+              </AnimatedCard>
+            </div>
+          </div>
         </AnimatedItem>
 
         {/* Main Content Grid */}
@@ -479,37 +476,38 @@ export default function StudentPageClient({
                     >
                       <div className="classical-card-2 p-4 group">
                         <div className="flex items-start justify-between mb-3">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                              {lesson.title}
-                            </h3>
+                          <div className="flex flex-col gap-4 w-full">
+                            <div className="flex items-center w-full justify-between">
+                              <h3 className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
+                                {lesson.title}
+                              </h3>
+
+                              <div className="flex items-center space-x-2">
+                                <span className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
+                                  {t(
+                                    'student_home_recent_lessons_status_completed'
+                                  )}
+                                </span>
+                                <Link
+                                  href={`/student/lessons/${lesson.id}`}
+                                  className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group/btn"
+                                >
+                                  <FiEye className="w-4 h-4 text-theme-tertiary group-hover/btn:text-brand-primary transition-colors" />
+                                </Link>
+                              </div>
+                            </div>
+
                             <div className="flex items-center space-x-4 text-sm text-theme-tertiary mt-1">
                               <span>
                                 {t('student_home_recent_lessons_professor')}{' '}
                                 {lesson.teacher.name}
                               </span>
-                              <span>•</span>
                               <span>
-                                {formatDate(lesson.scheduledAt)} •{' '}
+                                {formatDate(lesson.scheduledAt)} -
                                 {formatTime(lesson.scheduledAt)}
                               </span>
-                              <span>•</span>
                               <span>{lesson.duration}min</span>
                             </div>
-                          </div>
-
-                          <div className="flex items-center space-x-2">
-                            <span className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
-                              {t(
-                                'student_home_recent_lessons_status_completed'
-                              )}
-                            </span>
-                            <Link
-                              href={`/student/lessons/${lesson.id}`}
-                              className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group/btn"
-                            >
-                              <FiEye className="w-4 h-4 text-theme-tertiary group-hover/btn:text-brand-primary transition-colors" />
-                            </Link>
                           </div>
                         </div>
 

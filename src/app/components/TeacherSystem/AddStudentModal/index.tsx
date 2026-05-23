@@ -251,8 +251,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
 
                   {searchResults.map((student) => (
                     <div key={student.id} className="classical-card-simple p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
+                      <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row items-center justify-between">
+                        <div className="flex w-[95%] sm:w-auto  items-center space-x-3">
                           {/* Avatar */}
                           <div className="relative w-10 h-10">
                             {student.image ? (
@@ -593,7 +593,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                             onClick={() => handleAddFocusArea(area)}
                             className={`px-3 py-1 text-xs rounded-full border transition-all ${
                               studyPlan.currentFocus.includes(area)
-                                ? 'border-brand-primary bg-brand-primary text-white'
+                                ? 'border-brand-primary bg-brand-primary '
                                 : 'border-theme-secondary text-theme-secondary hover:border-brand-primary hover:text-brand-primary'
                             }`}
                             disabled={studyPlan.currentFocus.includes(area)}
@@ -613,7 +613,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                             {studyPlan.currentFocus.map((focus) => (
                               <span
                                 key={focus}
-                                className="inline-flex items-center gap-2 px-3 py-1 bg-brand-primary text-white text-sm rounded-full"
+                                className="inline-flex items-center gap-2 px-3 py-1 bg-brand-primary  text-sm rounded-full"
                               >
                                 {focus}
                                 <button

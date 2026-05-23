@@ -428,20 +428,20 @@ export default function TeacherAssignmentsPageClient({
           )}
 
           <div className="p-6 relative">
-            <div className="flex items-start justify-between">
+            <div className="flex flex-col space-y-4 md:flex-row md:items-start md:justify-between md:space-y-0">
               <div className="flex-1">
-                <div className="flex items-start space-x-4">
+                <div className="flex flex-col space-y-2 md:flex-row md:items-start md:space-x-4 md:space-y-0">
                   {/* Student Avatar */}
 
                   {/* Assignment Details */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="flex flex-col space-y-2 md:flex-row md:items-start md:justify-between md:space-y-0 mb-3">
                       <div className="flex flex-col gap-2 w-full">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
+                        <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between md:space-y-0">
+                          <div className="flex flex-col space-y-1 md:flex-row md:items-center md:space-x-2 md:space-y-0">
                             <div className="flex-shrink-0">
                               {assignment.student.image ? (
-                                <div className="w-12 h-12 relative rounded-full overflow-hidden">
+                                <div className="w-10 h-10 md:w-12 md:h-12 relative rounded-full overflow-hidden">
                                   <Image
                                     src={assignment.student.image}
                                     alt={assignment.student.name}
@@ -451,19 +451,19 @@ export default function TeacherAssignmentsPageClient({
                                   />
                                 </div>
                               ) : (
-                                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                                  <FiUser className="w-6 h-6 text-theme-primary" />
+                                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                                  <FiUser className="w-5 h-5 md:w-6 md:h-6 text-theme-primary" />
                                 </div>
                               )}
                             </div>
 
-                            <h3 className="font-bold text-lg text-theme-primary classical-title truncate">
+                            <h3 className="font-bold text-base md:text-lg text-theme-primary classical-title truncate  max-w-[250px]">
                               {assignment.title}
                             </h3>
                           </div>
-                          <div className="flex items-center space-x-3">
+                          <div className="flex flex-wrap items-center gap-2 ">
                             <span
-                              className={`px-3 py-1 rounded-full text-sm font-medium border flex items-center space-x-1 ${getStatusColor(
+                              className={`px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium border flex items-center space-x-1 ${getStatusColor(
                                 assignment
                               )}`}
                             >
@@ -488,7 +488,7 @@ export default function TeacherAssignmentsPageClient({
                             {/* 🆕 WORK SCORE INDICATOR */}
                             {hasScores && (
                               <div
-                                className="w-6 h-6 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full flex items-center justify-center"
+                                className="w-5 h-5 md:w-6 md:h-6 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full flex items-center justify-center"
                                 title={t('has_scores')}
                               >
                                 <FiMusic className="w-3 h-3" />
@@ -496,33 +496,33 @@ export default function TeacherAssignmentsPageClient({
                             )}
 
                             {/* Actions */}
-                            <div className="flex items-center space-x-2 ml-4">
+                            <div className="flex items-center space-x-1 md:space-x-2 ml-2 md:ml-4">
                               <button
                                 onClick={() => {
                                   setSelectedAssignment(assignment);
                                   setShowAssignmentModal(true);
                                 }}
-                                className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
+                                className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
                               >
-                                <FiEye className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                                <FiEye className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                               </button>
 
                               <Link href={`assignments/${assignment.id}/edit`}>
-                                <button className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
-                                  <FiEdit className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                                <button className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
+                                  <FiEdit className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                                 </button>
                               </Link>
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex items-center space-x-4 text-sm text-theme-secondary mt-1">
+                        <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-theme-secondary mt-1">
                           <div className="flex items-center space-x-1">
-                            <FiUser className="w-4 h-4" />
+                            <FiUser className="w-3 h-3 md:w-4 md:h-4" />
                             <span>{assignment.student.name}</span>
                           </div>
                           <div className="flex items-center space-x-1">
-                            <FiBookOpen className="w-4 h-4" />
+                            <FiBookOpen className="w-3 h-3 md:w-4 md:h-4" />
                             <span>
                               {t(
                                 ASSIGNMENT_TYPES[
@@ -533,13 +533,13 @@ export default function TeacherAssignmentsPageClient({
                           </div>
                           {assignment.dueDate && (
                             <div className="flex items-center space-x-1">
-                              <FiCalendar className="w-4 h-4" />
+                              <FiCalendar className="w-3 h-3 md:w-4 md:h-4" />
                               <span>{formatDueDate(assignment.dueDate)}</span>
                             </div>
                           )}
                           {assignment.estimatedTime && (
                             <div className="flex items-center space-x-1">
-                              <FiClock className="w-4 h-4" />
+                              <FiClock className="w-3 h-3 md:w-4 md:h-4" />
                               <span>{assignment.estimatedTime}min</span>
                             </div>
                           )}
@@ -613,9 +613,9 @@ export default function TeacherAssignmentsPageClient({
                     </div>
 
                     {/* Stats */}
-                    <div className="flex items-center space-x-6 text-sm text-theme-tertiary">
+                    <div className="flex flex-col space-y-1 md:flex-row md:items-center md:space-x-6 md:space-y-0 text-xs md:text-sm text-theme-tertiary">
                       <div className="flex items-center space-x-1">
-                        <FiCalendar className="w-4 h-4" />
+                        <FiCalendar className="w-3 h-3 md:w-4 md:h-4" />
                         <span>
                           {t('created_date', {
                             date: new Date(
@@ -626,7 +626,7 @@ export default function TeacherAssignmentsPageClient({
                       </div>
                       {assignment.completedAt && (
                         <div className="flex items-center space-x-1">
-                          <FiCheck className="w-4 h-4" />
+                          <FiCheck className="w-3 h-3 md:w-4 md:h-4" />
                           <span>
                             {t('completed_date', {
                               date: new Date(
@@ -638,7 +638,7 @@ export default function TeacherAssignmentsPageClient({
                       )}
                       {hasScores && (
                         <div className="flex items-center space-x-1 text-accent-purple">
-                          <FiMusic className="w-4 h-4" />
+                          <FiMusic className="w-3 h-3 md:w-4 md:h-4" />
                           <span>
                             {t('scores_count', {
                               count: assignment.workScoreIds.length,
@@ -700,13 +700,13 @@ export default function TeacherAssignmentsPageClient({
           )}
 
           <div className="p-6 relative">
-            <div className="flex items-start justify-between">
+            <div className="flex flex-col space-y-4 md:flex-row md:items-start md:justify-between md:space-y-0">
               <div className="flex-1">
-                <div className="flex items-start space-x-4">
+                <div className="flex flex-col space-y-2 md:flex-row md:items-start md:space-x-4 md:space-y-0">
                   {/* Student Avatar */}
                   <div className="flex-shrink-0">
                     {assignment.student.image ? (
-                      <div className="w-12 h-12 relative rounded-full overflow-hidden">
+                      <div className="w-10 h-10 md:w-12 md:h-12 relative rounded-full overflow-hidden">
                         <Image
                           src={assignment.student.image}
                           alt={assignment.student.name}
@@ -716,26 +716,26 @@ export default function TeacherAssignmentsPageClient({
                         />
                       </div>
                     ) : (
-                      <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                        <FiUser className="w-6 h-6 text-theme-primary" />
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                        <FiUser className="w-5 h-5 md:w-6 md:h-6 text-theme-primary" />
                       </div>
                     )}
                   </div>
 
                   {/* Assignment Details */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="flex flex-col space-y-2 md:flex-row md:items-start md:justify-between md:space-y-0 mb-3">
                       <div>
-                        <h3 className="font-bold text-lg text-theme-primary classical-title truncate">
+                        <h3 className="font-bold text-base md:text-lg text-theme-primary classical-title truncate">
                           {assignment.title}
                         </h3>
-                        <div className="flex items-center space-x-4 text-sm text-theme-secondary mt-1">
+                        <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-theme-secondary mt-1">
                           <div className="flex items-center space-x-1">
-                            <FiUser className="w-4 h-4" />
+                            <FiUser className="w-3 h-3 md:w-4 md:h-4" />
                             <span>{assignment.student.name}</span>
                           </div>
                           <div className="flex items-center space-x-1">
-                            <FiBookOpen className="w-4 h-4" />
+                            <FiBookOpen className="w-3 h-3 md:w-4 md:h-4" />
                             <span>
                               {t(
                                 ASSIGNMENT_TYPES[
@@ -746,22 +746,22 @@ export default function TeacherAssignmentsPageClient({
                           </div>
                           {assignment.dueDate && (
                             <div className="flex items-center space-x-1">
-                              <FiCalendar className="w-4 h-4" />
+                              <FiCalendar className="w-3 h-3 md:w-4 md:h-4" />
                               <span>{formatDueDate(assignment.dueDate)}</span>
                             </div>
                           )}
                           {assignment.estimatedTime && (
                             <div className="flex items-center space-x-1">
-                              <FiClock className="w-4 h-4" />
+                              <FiClock className="w-3 h-3 md:w-4 md:h-4" />
                               <span>{assignment.estimatedTime}min</span>
                             </div>
                           )}
                         </div>
                       </div>
 
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-2 md:space-x-3">
                         <span
-                          className={`px-3 py-1 rounded-full text-sm font-medium border flex items-center space-x-1 ${getStatusColor(
+                          className={`px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium border flex items-center space-x-1 ${getStatusColor(
                             assignment
                           )}`}
                         >
@@ -851,9 +851,9 @@ export default function TeacherAssignmentsPageClient({
                     </div>
 
                     {/* Stats */}
-                    <div className="flex items-center space-x-6 text-sm text-theme-tertiary">
+                    <div className="flex flex-col space-y-1 md:flex-row md:items-center md:space-x-6 md:space-y-0 text-xs md:text-sm text-theme-tertiary">
                       <div className="flex items-center space-x-1">
-                        <FiCalendar className="w-4 h-4" />
+                        <FiCalendar className="w-3 h-3 md:w-4 md:h-4" />
                         <span>
                           {t('created_date', {
                             date: new Date(
@@ -864,7 +864,7 @@ export default function TeacherAssignmentsPageClient({
                       </div>
                       {assignment.completedAt && (
                         <div className="flex items-center space-x-1">
-                          <FiCheck className="w-4 h-4" />
+                          <FiCheck className="w-3 h-3 md:w-4 md:h-4" />
                           <span>
                             {t('completed_date', {
                               date: new Date(
@@ -890,20 +890,20 @@ export default function TeacherAssignmentsPageClient({
               </div>
 
               {/* Actions */}
-              <div className="flex items-center space-x-2 ml-4">
+              <div className="flex items-center space-x-1 md:space-x-2 ml-2 md:ml-4">
                 <button
                   onClick={() => {
                     setSelectedAssignment(assignment);
                     setShowAssignmentModal(true);
                   }}
-                  className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
+                  className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
                 >
-                  <FiEye className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                  <FiEye className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                 </button>
 
                 <Link href={`assignments/${assignment.id}/edit`}>
-                  <button className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
-                    <FiEdit className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                  <button className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
+                    <FiEdit className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                   </button>
                 </Link>
 
@@ -1049,18 +1049,6 @@ export default function TeacherAssignmentsPageClient({
 
               {/* Actions */}
               <div className="flex items-center gap-3">
-                <button
-                  onClick={refreshAssignments}
-                  disabled={loading.assignments}
-                  className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
-                >
-                  <FiRefreshCw
-                    className={`w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all ${
-                      loading.assignments ? 'animate-spin' : ''
-                    }`}
-                  />
-                </button>
-
                 {/* 🆕 VIEW MODE TOGGLE */}
                 <ViewModeToggle
                   viewMode={viewMode}
@@ -1072,6 +1060,18 @@ export default function TeacherAssignmentsPageClient({
                     <span>{t('new_task')}</span>
                   </Button>
                 </Link>
+
+                <button
+                  onClick={refreshAssignments}
+                  disabled={loading.assignments}
+                  className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
+                >
+                  <FiRefreshCw
+                    className={`w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all ${
+                      loading.assignments ? 'animate-spin' : ''
+                    }`}
+                  />
+                </button>
               </div>
             </div>
 
@@ -1582,6 +1582,7 @@ function AssignmentDetailsModal({
   onClose,
   onUpdate,
   actionLoading,
+  t,
 }: AssignmentDetailsModalProps) {
   const [feedback, setFeedback] = useState(assignment.teacherFeedback || '');
   const [rating, setRating] = useState(assignment.teacherRating || 0);
@@ -1703,9 +1704,11 @@ function AssignmentDetailsModal({
                   <div className="flex items-center space-x-2 text-theme-secondary">
                     <FiBookOpen className="w-4 h-4" />
                     <span>
-                      {ASSIGNMENT_TYPES[
-                        assignment.type as keyof typeof ASSIGNMENT_TYPES
-                      ] || assignment.type}
+                      {t(
+                        ASSIGNMENT_TYPES[
+                          assignment.type as keyof typeof ASSIGNMENT_TYPES
+                        ]
+                      ) || assignment.type}
                     </span>
                   </div>
                   {assignment.dueDate && (
@@ -1733,11 +1736,11 @@ function AssignmentDetailsModal({
                       ]
                     }`}
                   >
-                    {
+                    {t(
                       PRIORITY_LABELS[
                         assignment.priority as keyof typeof PRIORITY_LABELS
                       ]
-                    }
+                    )}
                   </span>
 
                   {/* 🆕 Indicadores visuais */}
