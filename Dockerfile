@@ -1,6 +1,6 @@
 # Multi-stage build otimizado para Next.js 15
 FROM node:20.18.1-alpine AS base
-RUN apk add --no-cache libc6-compat curl ffmpeg
+RUN apk add --no-cache libc6-compat curl
 WORKDIR /app
 
 # Stage 1: Install dependencies
@@ -12,6 +12,7 @@ RUN npm ci --only=production && npm cache clean --force
 FROM base AS builder
 COPY package.json package-lock.json* ./
 RUN npm ci
+RUN apk add --no-cache ffmpeg
 COPY . .
 
 # Gerar Prisma Client

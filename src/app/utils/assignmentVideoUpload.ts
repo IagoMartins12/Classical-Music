@@ -54,12 +54,12 @@ export async function uploadAssignmentVideo(
       };
     }
 
-    // 3. Validar tamanho (100MB = 104857600 bytes)
-    const maxSize = 100 * 1024 * 1024; // 100MB
+    // 3. Validar tamanho (500MB = 524288000 bytes)
+    const maxSize = 500 * 1024 * 1024; // 500MB
     if (file.size > maxSize) {
       return {
         success: false,
-        error: 'Arquivo muito grande. Máximo 100MB permitido',
+        error: 'Arquivo muito grande. Máximo 500MB permitido',
       };
     }
 

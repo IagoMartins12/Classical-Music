@@ -53,9 +53,9 @@ export function useAssignmentVideo(): UseAssignmentVideoReturn {
         return;
       }
 
-      const maxSize = 100 * 1024 * 1024; // 100MB
+      const maxSize = 500 * 1024 * 1024; // 500MB
       if (file.size > maxSize) {
-        setUploadError('Arquivo muito grande. Máximo 100MB permitido.');
+        setUploadError('Arquivo muito grande. Máximo 500MB permitido.');
         return;
       }
 

@@ -225,7 +225,7 @@ export function validateFile(
   }
 
   // Validar tamanho
-  const maxSize = type === 'video' ? 100 * 1024 * 1024 : 10 * 1024 * 1024; // 100MB vídeo, 10MB imagem
+  const maxSize = type === 'video' ? 500 * 1024 * 1024 : 10 * 1024 * 1024; // 500MB vídeo, 10MB imagem
   if (file.size > maxSize) {
     errors.push(`Arquivo muito grande. Máximo: ${formatFileSize(maxSize)}`);
   }

@@ -28,7 +28,7 @@ export function useLearnedVideo(): UseLearnedVideoResult {
 
   // Validação de arquivo
   const validateVideoFile = useCallback((file: File): string | null => {
-    const maxSize = 100 * 1024 * 1024; // 100MB
+    const maxSize = 500 * 1024 * 1024; // 500MB
     const allowedTypes = [
       'video/mp4',
       'video/webm',
@@ -41,7 +41,7 @@ export function useLearnedVideo(): UseLearnedVideoResult {
     }
 
     if (file.size > maxSize) {
-      return `Arquivo muito grande. Tamanho máximo: 100MB`;
+      return `Arquivo muito grande. Tamanho máximo: 500MB`;
     }
 
     return null;

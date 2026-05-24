@@ -808,7 +808,7 @@ export default function MediaUploadModal({
                             <strong>Formatos:</strong> MP4, WebM, OGG
                           </p>
                           <p>
-                            <strong>Tamanho:</strong> Até 100MB
+                            <strong>Tamanho:</strong> Até 500MB
                           </p>
                           <p>
                             <strong>Duração:</strong> Até 60 segundos

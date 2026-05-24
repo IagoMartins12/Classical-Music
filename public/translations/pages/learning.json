@@ -224,7 +224,7 @@
     "private_label": "Privado",
     "replace_video": "Substituir vídeo",
     "add_video_title": "Adicionar Vídeo",
-    "video_formats_info": "MP4, WebM, MOV até 100MB",
+    "video_formats_info": "MP4, WebM, MOV até 500MB",
     "make_video_public": "Tornar vídeo público (visível para outros usuários)",
 
     "uploading_status": "Enviando...",
@@ -489,7 +489,7 @@
     "private_label": "Private",
     "replace_video": "Replace video",
     "add_video_title": "Add Video",
-    "video_formats_info": "MP4, WebM, MOV up to 100MB",
+    "video_formats_info": "MP4, WebM, MOV up to 500MB",
     "make_video_public": "Make video public (visible to other users)",
 
     "uploading_status": "Uploading...",
