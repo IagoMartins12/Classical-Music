@@ -1,5 +1,28 @@
 import type { NextConfig } from 'next';
 import { OPTIMIZED_IMAGE_HOSTS } from './src/app/utils/imageHosts';
+import { SITE_NOINDEX } from './src/app/utils/indexing';
+import {
+  AUTH_COOKIE_PREFIX,
+  AUTH_COOKIE_PREFIX_PATTERN,
+} from './src/app/utils/authCookies';
+
+// Prefixo inválido gravaria cookies com nomes que a API não lê: login que
+// "funciona" e volta deslogado. Melhor não buildar. Ver `utils/authCookies.ts`.
+if (!AUTH_COOKIE_PREFIX_PATTERN.test(AUTH_COOKIE_PREFIX)) {
+  throw new Error(
+    `NEXT_PUBLIC_AUTH_COOKIE_PREFIX inválido: "${AUTH_COOKIE_PREFIX}". ` +
+      'Use letras minúsculas, dígitos e _ (ex.: opus_hml).'
+  );
+}
+
+/**
+ * Na Vercel o cache de ISR é da plataforma, compartilhado entre as funções —
+ * o problema que o handler do Redis resolve não existe lá. Ligado, ele cairia
+ * no fallback em memória de cada função, que é pior que o da Vercel. Então só
+ * vale fora dela (o VPS). Consequência: homologação **não** exercita o cache
+ * no Redis; isso só se valida em produção.
+ */
+const onVercel = process.env.VERCEL === '1';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
@@ -18,14 +41,14 @@ const nextConfig: NextConfig = withBundleAnalyzer({
    * o que é pior — um `revalidateTag` que só alcança a réplica que recebeu o
    * aviso da API. As demais servem dado velho até o TTL. Ver `cache-handler.js`.
    */
-  cacheHandler: require.resolve('./cache-handler.js'),
+  cacheHandler: onVercel ? undefined : require.resolve('./cache-handler.js'),
 
   /**
    * Zero desliga a camada em memória que o Next mantém **na frente** do
    * handler. Ela é por instância e não sabe de revalidação vinda de outra
    * réplica — mantê-la ligada devolveria o problema que o handler resolve.
    */
-  cacheMaxMemorySize: 0,
+  cacheMaxMemorySize: onVercel ? undefined : 0,
   /**
    * Otimização de imagem ligada — em produção ela estava **desligada**, e cada
    * visita baixava o arquivo original (retratos do IMSLP de 1 a 3 MB entre
@@ -51,6 +74,15 @@ const nextConfig: NextConfig = withBundleAnalyzer({
   // REMOVER completamente a seção rewrites
   async headers() {
     return [
+      // Homologação: nada é indexável. Ver `utils/indexing.ts`.
+      ...(SITE_NOINDEX
+        ? [
+            {
+              source: '/:path*',
+              headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+            },
+          ]
+        : []),
       {
         source: '/api/auth/:path*',
         headers: [

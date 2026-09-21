@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
+  ACCESS_TOKEN_COOKIE,
+  SESSION_HINT_COOKIE,
+} from '@/app/utils/authCookies';
+import {
   DEFAULT_ROUTE_LANGUAGE as DEFAULT_LANGUAGE,
   FILTERED_SEGMENT,
   LANGUAGE_COOKIE,
@@ -24,8 +28,6 @@ import {
  * próprio cliente, que já renova sozinho a cada 10 minutos.
  */
 
-const ACCESS_TOKEN_COOKIE = 'opus_access_token';
-
 /**
  * O marcador que a API grava no login (`SESSION_HINT_COOKIE`): diz que existe
  * refresh token a tentar, e vive o mesmo que ele.
@@ -36,7 +38,7 @@ const ACCESS_TOKEN_COOKIE = 'opus_access_token';
  * deixa de renovar — a pessoa abriria a página como deslogada. Antes quem dava
  * esse sinal era o cookie do NextAuth, que saiu na Etapa 7.
  */
-const SESSION_HINT_COOKIE = 'opus_session';
+// `SESSION_HINT_COOKIE` e `ACCESS_TOKEN_COOKIE` vêm de `utils/authCookies.ts`.
 
 /** Sessões abertas antes da Etapa 7 ainda carregam o cookie do NextAuth. */
 const LEGACY_SESSION_COOKIES = [

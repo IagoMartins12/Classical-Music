@@ -11,9 +11,10 @@
  */
 import { cookies } from 'next/headers';
 import { ApiError, apiFetch } from './client';
+import { ACCESS_TOKEN_COOKIE } from '@/app/utils/authCookies';
 import type { ProfileAccount } from './profile';
 
-export const ACCESS_TOKEN_COOKIE = 'opus_access_token';
+export { ACCESS_TOKEN_COOKIE };
 
 export async function getServerAccessToken(): Promise<string | undefined> {
   return (await cookies()).get(ACCESS_TOKEN_COOKIE)?.value;
