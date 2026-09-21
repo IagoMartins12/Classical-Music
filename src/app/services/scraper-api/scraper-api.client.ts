@@ -10,9 +10,17 @@ import {
   ScraperInfo,
 } from './scraper-api.types';
 
+/**
+ * A API do próprio ambiente vem antes do endereço fixo. Sem isso a homologação
+ * (build de produção na Vercel) caía em `api.opusatlas.com.br`, e o painel de
+ * scrapers da homologação disparava robôs na API de **produção**.
+ */
 const getScraperApiUrl = (): string => {
   if (process.env.NEXT_PUBLIC_SCRAPER_API_URL) {
     return process.env.NEXT_PUBLIC_SCRAPER_API_URL;
+  }
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
   }
   const isDevelopment = process.env.NODE_ENV === 'development';
   return isDevelopment
