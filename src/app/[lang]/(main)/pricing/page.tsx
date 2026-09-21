@@ -237,6 +237,12 @@ type PricingData = {
 async function getPricing() {
   const response = await apiFetch<ApiSchema<'PricingResponseDto'>>('/pricing', {
     next: { revalidate: 3600, tags: ['billing'] },
+    // **Vazio, nunca inventado.** O build do CI não tem API, e sem isto ele
+    // não consegue nem provar que a página compila. O que não pode acontecer
+    // é o contrário — uma tabela de preços embutida no código, que faria o
+    // site anunciar valores que talvez não estejam à venda. Aqui não há preço
+    // nenhum, e a página em branco se preenche na primeira revalidação.
+    buildFallback: { success: true, data: {} },
   });
 
   const formattedPricing: Record<string, PricingData> = Object.fromEntries(
@@ -252,6 +258,12 @@ async function getPricing() {
 export default async function PricingPageRoute({ params }: LangPageProps) {
   const language = await routeLanguage(params);
   const pricing = await getPricing();
+
+  // Só acontece no build sem API (ver `buildFallback` acima): em execução, a
+  // falha sobe e o Next devolve 500 sem guardar nada.
+  if (Object.keys(pricing).length === 0) {
+    return null;
+  }
 
   const { translations } = await loadPageTranslationsWithCommon(language, [
     'pages/pricing',

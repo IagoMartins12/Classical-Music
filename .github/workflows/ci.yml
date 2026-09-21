@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev, 'feat/**']
+  pull_request:
+    branches: [main, dev]
+
+# Um push novo cancela a execução anterior do mesmo branch.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  quality:
+    name: Lint, tipos e testes
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      # O client do Prisma é gerado, não versionado. A aplicação não o importa
+      # mais (Etapa 7), mas os 18 scripts de manutenção sim, e eles entram no
+      # type-check.
+      - name: Gerar Prisma Client
+        run: npx prisma generate
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type-check
+        run: npm run type-check
+
+      - name: Testes
+        run: npm test -- --ci
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: quality
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+      - run: npx prisma generate
+
+      # As páginas públicas são geradas no build, lendo a API — e aqui não há
+      # API nem banco. `ALLOW_BUILD_WITHOUT_API` deixa a geração seguir com
+      # conteúdo vazio **só neste contexto**: o artefato do CI é descartado, e
+      # no deploy o interruptor não existe, então a API fora derruba o build.
+      #
+      # Construir aqui não é luxo: é o único passo que pega erro de
+      # pré-renderização — `useSearchParams` empurrando a página para o
+      # navegador, manipulador de evento passado de componente de servidor,
+      # e afins. Nem o `tsc` nem o ESLint enxergam isso.
+      - name: Build
+        env:
+          ALLOW_BUILD_WITHOUT_API: 'true'
+          NEST_API_URL: http://localhost:4000/api
+          NEXT_PUBLIC_API_URL: http://localhost:4000/api
+        run: npm run build
+
+  security:
+    name: Segurança
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      # Falha só em vulnerabilidade alta ou crítica — moderadas viram ruído e
+      # o time acaba ignorando o job inteiro.
+      - name: Auditoria de dependências
+        run: npm audit --audit-level=high
+
+      - name: Varredura de segredos
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

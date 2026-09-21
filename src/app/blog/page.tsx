@@ -7,6 +7,7 @@ import { HeroCarousel } from '@/app/components/blog/HeroCarousel';
 import { ArticleCard } from '@/app/components/blog/ArticleCard';
 import SectionTitle from '../components/Utils/SectionTitle';
 import { FiTrendingUp, FiGrid, FiArrowRight } from 'react-icons/fi';
+import { tolerarApiForaNoBuild } from '@/app/libs/api/build-tolerance';
 import {
   getCachedFeaturedArticles,
   getCachedLatestArticles,
@@ -23,23 +24,26 @@ export const metadata = {
     'Explore artigos, análises e histórias sobre música clássica, compositores e obras imortais',
 };
 
-export default async function BlogHomePage() {
-  console.log('📰 Loading Blog Home Page...');
-
-  // ✅ Buscar dados em paralelo com cache condicional (dev vs prod)
-  const [
-    featuredArticles,
-    latestArticles,
-    mostReadArticles,
-    categories,
-    // trendingTopics,
-  ] = await Promise.all([
+/** O que a home do blog precisa, em paralelo. */
+function carregarBlog() {
+  return Promise.all([
     getCachedFeaturedArticles(),
     getCachedLatestArticles(),
     getCachedMostReadArticles(),
     getCachedCategories(),
-    // getCachedTrendingTopics(),
   ]);
+}
+
+export default async function BlogHomePage() {
+  console.log('📰 Loading Blog Home Page...');
+
+  // ✅ Buscar dados em paralelo com cache condicional (dev vs prod)
+  const [featuredArticles, latestArticles, mostReadArticles, categories] =
+    await tolerarApiForaNoBuild(
+      carregarBlog,
+      [[], [], [], []] as Awaited<ReturnType<typeof carregarBlog>>,
+      'blog: home'
+    );
 
   console.log('✅ Blog data loaded successfully');
 

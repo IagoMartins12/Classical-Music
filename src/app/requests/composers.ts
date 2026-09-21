@@ -77,7 +77,10 @@ const CACHE = {
 };
 
 export async function getEpochsCache(): Promise<EpochItem[]> {
-  return apiFetch<EpochItem[]>('/epochs', { next: CACHE.EPOCHS });
+  return apiFetch<EpochItem[]>('/epochs', {
+    next: CACHE.EPOCHS,
+    buildFallback: [],
+  });
 }
 
 export async function getComposersWithPagination(
@@ -102,6 +105,7 @@ export async function getComposersCount(params: CountParams): Promise<number> {
   return apiFetch<number>('/composers/count', {
     query: normalizeComposerCountParams(params),
     next: CACHE.COMPOSERS,
+    buildFallback: 0,
   });
 }
 
@@ -110,7 +114,11 @@ async function fetchComposerCards(
   next: { revalidate: number; tags: string[] },
   query?: PaginationParams
 ): Promise<ComposerCardItem[]> {
-  const composers = await apiFetch<ComposerListItem[]>(path, { query, next });
+  const composers = await apiFetch<ComposerListItem[]>(path, {
+    query,
+    next,
+    buildFallback: [],
+  });
   return composers.map(toComposerCardItem);
 }
 

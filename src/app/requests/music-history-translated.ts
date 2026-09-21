@@ -462,7 +462,7 @@ export async function getComposersByEpochTranslated(
 ): Promise<EpochComposersTranslated[]> {
   const groups = await apiFetch<ApiSchema<'EpochComposersGroupDto'>[]>(
     '/epochs/composers-by-epoch',
-    { next: MUSIC_HISTORY_CACHE }
+    { next: MUSIC_HISTORY_CACHE, buildFallback: [] }
   );
 
   return groups.map((group) => {
@@ -490,6 +490,7 @@ export async function getEpochsHistoricalDataTranslated(
 ): Promise<(EpochDataTranslated & { id: string })[]> {
   const epochs = await apiFetch<ApiSchema<'EpochItemDto'>[]>('/epochs', {
     next: MUSIC_HISTORY_CACHE,
+    buildFallback: [],
   });
 
   // Na ordem cronológica, só as épocas que existem no banco.
@@ -521,7 +522,7 @@ export async function getEpochsHistoricalDataTranslated(
 export async function getComposersTimelineTranslated(language: Language) {
   const composers = await apiFetch<ApiSchema<'TimelineComposerItemDto'>[]>(
     '/epochs/timeline',
-    { next: MUSIC_HISTORY_CACHE }
+    { next: MUSIC_HISTORY_CACHE, buildFallback: [] }
   );
 
   return composers.map((composer) => ({

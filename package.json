@@ -65,7 +65,9 @@
     "db:migrate:difficulty": "npx prisma db push",
     "db:generate": "npx prisma generate",
     "analyze": "ANALYZE=true npm run build",
-    "warm-cache": "node scripts/warm-cache.mjs"
+    "warm-cache": "node scripts/warm-cache.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
@@ -147,7 +149,8 @@
     "terser-webpack-plugin": "^5.3.14",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.3",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^2.1.9"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

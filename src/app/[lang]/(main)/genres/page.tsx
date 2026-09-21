@@ -9,6 +9,7 @@ import {
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
 import { alternatesFor } from '@/app/utils/seoAlternates';
+import Link from '@/app/components/LocalizedLink';
 
 /** `[lang]` é quem decide o idioma desta página — ver `routeLanguage`. */
 interface LangPageProps {
@@ -208,20 +209,25 @@ export default async function GenresPage({ params }: LangPageProps) {
 
           <p className="text-theme-secondary mb-6">{t.message}</p>
 
+          {/*
+            Links, e não botões com `onClick`: esta é uma página de servidor, e
+            passar manipulador de evento daqui derruba a renderização inteira
+            ("Event handlers cannot be passed to Client Component props"). O
+            efeito era o contrário do pretendido — quando a API falhava, em vez
+            da tela amigável vinha um erro. Tentar de novo é recarregar o
+            mesmo endereço; voltar é ir para o catálogo.
+          */}
           <div className="space-y-3">
-            <button
-              onClick={() => window.location.reload()}
-              className="btn-classical-primary w-full"
-            >
+            <Link href="/genres" className="btn-classical-primary w-full block">
               {t.tryAgain}
-            </button>
+            </Link>
 
-            <button
-              onClick={() => window.history.back()}
-              className="btn-classical-secondary w-full"
+            <Link
+              href="/works"
+              className="btn-classical-secondary w-full block"
             >
               {t.goBack}
-            </button>
+            </Link>
           </div>
         </div>
       </div>

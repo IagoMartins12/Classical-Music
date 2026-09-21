@@ -652,6 +652,7 @@ type InstrumentShowcaseItem = ApiSchema<'InstrumentShowcaseItemDto'>;
 function getShowcase(): Promise<InstrumentShowcaseItem[]> {
   return apiFetch<InstrumentShowcaseItem[]>('/instruments/showcase', {
     next: { revalidate: 21600, tags: ['instruments', 'works', 'composers'] },
+    buildFallback: [],
   });
 }
 

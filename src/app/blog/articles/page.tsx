@@ -6,6 +6,7 @@ import { ArticleCarousel } from '@/app/components/blog/ArticleCarousel';
 import SectionTitle from '@/app/components/Utils/SectionTitle';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { listArticles } from '@/app/requests/blog/articles';
+import { tolerarApiForaNoBuild } from '@/app/libs/api/build-tolerance';
 import {
   listCategories,
   listCategoryArticles,
@@ -33,12 +34,26 @@ async function getCategoriesWithArticles() {
   );
 }
 
-export default async function ArticlesPage() {
-  const [latest, trending, categoriesWithArticles] = await Promise.all([
+/** As três listas da página, em paralelo. */
+function carregarArtigos() {
+  return Promise.all([
     listArticles({ limit: 12, sortBy: 'newest' }),
     listArticles({ limit: 12, sortBy: 'popular' }),
     getCategoriesWithArticles(),
   ]);
+}
+
+export default async function ArticlesPage() {
+  const [latest, trending, categoriesWithArticles] =
+    await tolerarApiForaNoBuild(
+      carregarArtigos,
+      [
+        { articles: [], pagination: { total: 0 } },
+        { articles: [], pagination: { total: 0 } },
+        [],
+      ] as unknown as Awaited<ReturnType<typeof carregarArtigos>>,
+      'blog: artigos'
+    );
 
   // "Ver todos" aparece quando há mais do que cabe no carrossel (a API não
   // conta à parte os artigos com visita, como o legado fazia em "Em alta").

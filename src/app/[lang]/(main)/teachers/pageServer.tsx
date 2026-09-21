@@ -44,7 +44,20 @@ export default async function PublicTeachersPageServer({
   });
 
   if (!teachersData) {
-    throw new Error('Failed to load teachers data');
+    // Em tempo de execução, falhar alto é o certo: melhor um 500 do que uma
+    // página em cache dizendo que não há professor nenhum. No build do CI,
+    // onde não existe API, a página é gerada vazia e se preenche na primeira
+    // revalidação — ver `libs/api/build-tolerance`.
+    if (
+      process.env.NEXT_PHASE !== 'phase-production-build' ||
+      process.env.ALLOW_BUILD_WITHOUT_API !== 'true'
+    ) {
+      throw new Error('Failed to load teachers data');
+    }
+
+    console.warn('[build] /teachers: a API não respondeu; página vazia.');
+
+    return null;
   }
 
   console.log(

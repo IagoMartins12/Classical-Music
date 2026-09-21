@@ -95,6 +95,7 @@ export async function getWorks(
         : normalizedFilters.search
           ? CACHE.CATALOG_SEARCH
           : CACHE.CATALOG_FILTERED,
+      buildFallback: { works: [], totalCount: 0, hasMore: false },
     }
   );
 
@@ -108,7 +109,16 @@ export async function getWorks(
 export async function getFilterOptions(): Promise<FilterOptions> {
   const options = await apiFetch<ApiSchema<'WorkFilterOptionsResponseDto'>>(
     '/works/filter-options',
-    { next: CACHE.FILTERS }
+    {
+      next: CACHE.FILTERS,
+      buildFallback: {
+        instruments: [],
+        epochs: [],
+        workGenres: [],
+        popularComposers: [],
+        difficultyLevels: [],
+      },
+    }
   );
 
   return {
@@ -139,7 +149,10 @@ export async function searchWorkGenres(
 }
 
 export async function getAllWorkGenres(): Promise<WorkGenreItem[]> {
-  return apiFetch<WorkGenreItem[]>('/works/genres', { next: CACHE.GENRES });
+  return apiFetch<WorkGenreItem[]>('/works/genres', {
+    next: CACHE.GENRES,
+    buildFallback: [],
+  });
 }
 
 function toWorkListItem(work: WorkCatalogItem): WorkListItem {

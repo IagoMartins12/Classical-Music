@@ -32,13 +32,23 @@ jobs:
       - name: Lint code
         run: npm run lint
 
+      - name: Testes
+        run: npm test -- --ci
+
+      # As variáveis do banco e do NextAuth saíram: desde a Etapa 7 o front
+      # não fala com banco nenhum nem usa NextAuth. O que ele precisa agora é
+      # do endereço da API.
+      #
+      # `ALLOW_BUILD_WITHOUT_API` vale **só aqui**, onde não há API de pé: a
+      # geração das páginas públicas segue com conteúdo vazio, e o artefato é
+      # descartado. O build que vai ao ar é o do VPS, logo abaixo, e lá o
+      # interruptor não existe — a API fora derruba o deploy, como deve.
       - name: Build application
         run: npm run build
         env:
-          DATABASE_URL: 'mongodb://build:build@localhost:27017/build'
-          NEXTAUTH_SECRET: 'build-secret-temp'
-          NEXTAUTH_URL: 'http://localhost:3000'
-          SKIP_ENV_VALIDATION: 'true'
+          ALLOW_BUILD_WITHOUT_API: 'true'
+          NEST_API_URL: 'http://localhost:4000/api'
+          NEXT_PUBLIC_API_URL: 'http://localhost:4000/api'
   deploy-prod:
     needs: build-and-test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'

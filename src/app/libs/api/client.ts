@@ -45,6 +45,27 @@ export interface ApiRequest {
   token?: string;
 }
 
+/**
+ * O que devolver quando a API não responde **durante o `next build`** e
+ * `ALLOW_BUILD_WITHOUT_API=true`.
+ *
+ * **Para que serve.** As páginas públicas são geradas no build, lendo a API.
+ * Isso faz do build um passo que exige um serviço de pé — no CI, onde não há
+ * API nem banco, `npm run build` falha e o pipeline não consegue provar nem
+ * que a aplicação compila.
+ *
+ * **Por que não vale sempre.** Se o build tolerasse a API fora em qualquer
+ * circunstância, um soluço na hora do deploy publicaria um site vazio, e ele
+ * ficaria assim até o `revalidate` vencer. Sem o interruptor ligado, a API
+ * fora derruba o build — que é o certo no deploy.
+ *
+ * O tipo é o da própria resposta: o vazio de cada rota é conferido pelo
+ * compilador. Em tempo de execução isto nunca age.
+ */
+export interface BuildFallback<T> {
+  buildFallback?: T;
+}
+
 export class ApiError extends Error {
   constructor(
     readonly status: number,
@@ -97,9 +118,19 @@ export function refreshSession(): Promise<boolean> {
 
 export async function apiFetch<T = unknown>(
   path: string,
-  request: ApiRequest = {}
+  request: ApiRequest & BuildFallback<T> = {}
 ): Promise<T> {
-  const response = await send(path, request);
+  let response: Response;
+
+  try {
+    response = await send(path, request);
+  } catch (error) {
+    const alternativa = fallbackDeBuild<T>(path, request, error);
+
+    if (alternativa.usar) return alternativa.valor;
+
+    throw error;
+  }
 
   // No servidor não há cookie de renovação para usar: a página que chamou
   // decide o que fazer com o 401.
@@ -180,4 +211,29 @@ function messageOf(data: unknown): string | undefined {
   }
 
   return typeof message === 'string' ? message : undefined;
+}
+
+/**
+ * Decide se uma falha de rede durante o build pode virar conteúdo vazio.
+ * Ver `ApiRequest.buildFallback`.
+ */
+function fallbackDeBuild<T>(
+  path: string,
+  request: ApiRequest & BuildFallback<T>,
+  error: unknown
+): { usar: true; valor: T } | { usar: false } {
+  const noBuild = process.env.NEXT_PHASE === 'phase-production-build';
+  const permitido = process.env.ALLOW_BUILD_WITHOUT_API === 'true';
+
+  if (!noBuild || !permitido || request.buildFallback === undefined) {
+    return { usar: false };
+  }
+
+  console.warn(
+    `[build] ${path}: a API não respondeu e ALLOW_BUILD_WITHOUT_API está ` +
+      `ligado — a página vai ao ar vazia e se preenche na primeira ` +
+      `revalidação. Motivo: ${error instanceof Error ? error.message : String(error)}`
+  );
+
+  return { usar: true, valor: request.buildFallback as T };
 }

@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import { FiGrid, FiArrowRight } from 'react-icons/fi';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { listCategories } from '@/app/requests/blog/taxonomy';
+import { tolerarApiForaNoBuild } from '@/app/libs/api/build-tolerance';
 
 export const metadata: Metadata = {
   title: 'Categorias - Blog Opus Atlas',
@@ -13,7 +14,11 @@ export const metadata: Metadata = {
 export const revalidate = 600;
 
 export default async function CategoriesPage() {
-  const categories = await listCategories({ revalidate });
+  const categories = await tolerarApiForaNoBuild(
+    () => listCategories({ revalidate }),
+    [] as Awaited<ReturnType<typeof listCategories>>,
+    'blog: categorias'
+  );
 
   return (
     <div className="min-h-screen">
