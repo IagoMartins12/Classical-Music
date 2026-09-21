@@ -5,25 +5,27 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
-  FiBarChart2,
-  FiUsers,
-  FiShield,
-  FiFlag,
+  // Nova importação para backup,
   FiActivity,
-  FiDatabase,
-  FiFileText,
-  FiMusic,
-  FiUpload,
-  FiTrendingUp,
-  FiMessageSquare,
-  FiTarget,
+  FiBarChart2,
   FiChevronDown,
   FiChevronRight,
+  FiClock,
+  FiDatabase,
+  FiFileText,
+  FiFlag,
   FiHardDrive,
-  FiSend,
   FiMail,
+  FiMessageSquare,
+  FiMusic,
   FiPercent,
-  FiSettings, // Nova importação para backup
+  FiSend,
+  FiSettings,
+  FiShield,
+  FiTarget,
+  FiTrendingUp,
+  FiUpload,
+  FiUsers,
 } from 'react-icons/fi';
 import { BiDollar, BiTestTube } from 'react-icons/bi';
 import { LuUser } from 'react-icons/lu';
@@ -217,6 +219,13 @@ export default function AdminSidebar() {
           label: 'Gerenciar Backup',
           icon: FiHardDrive,
           isActive: pathname.startsWith('/admin/backup'),
+        },
+
+        {
+          href: '/admin/cron',
+          label: 'Tarefas Agendadas',
+          icon: FiClock,
+          isActive: pathname.startsWith('/admin/cron'),
         },
 
         {
