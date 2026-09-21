@@ -9,6 +9,7 @@ import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
+import { getWorkById } from '@/app/requests/catalog-search';
 
 interface WorkModalProps {
   editor: Editor;
@@ -25,12 +26,8 @@ export function WorkModal({ editor, onClose }: WorkModalProps) {
 
     if (workId) {
       try {
-        const response = await fetch(`/api/works/${workId}`);
-
-        if (response.ok) {
-          const work = await response.json();
-          setWorkData(work);
-        }
+        const work = await getWorkById(workId);
+        if (work) setWorkData(work);
       } catch (error) {
         console.error('Erro ao buscar obra:', error);
       }

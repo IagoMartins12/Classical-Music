@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { FiCheck, FiX, FiTrash2, FiMoreHorizontal } from 'react-icons/fi';
 import Button from '@/app/components/Common/Button';
 import { useToast } from '@/app/hooks/useToast';
+import { resolveModerations } from '@/app/requests/moderation';
 
 interface BulkReportActionsProps {
   selectedReports: string[];
@@ -25,25 +26,15 @@ export default function BulkReportActions({
 
     setIsProcessing(true);
     try {
-      const response = await fetch('/api/reports/bulk', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          reportIds: selectedReports,
-          action,
-        }),
-      });
+      const response = await resolveModerations(selectedReports, action);
 
       if (response.ok) {
-        const data = await response.json();
+        const data = response.data;
         toast.success('Sucesso', `${data.processedCount} reports processados`);
         onActionComplete();
         onClearSelection();
       } else {
-        const error = await response.json();
-        toast.error('Erro', error.error || 'Erro ao processar reports');
+        toast.error('Erro', response.error || 'Erro ao processar reports');
       }
     } catch (error) {
       console.error('Erro ao processar reports:', error);

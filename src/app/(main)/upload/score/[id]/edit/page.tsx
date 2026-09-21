@@ -1,14 +1,18 @@
 // app/uploads/score/[id]/page.tsx - Editar partitura específica
 import EditScoreClient from '@/app/(main)/upload/score/[id]/edit/pageClient';
 import { TranslationProvider } from '@/app/context/TranslationContext';
-import { authOptions } from '@/app/libs/auth';
-import prisma from '@/app/libs/prismadb';
+import { getUploadForEdit } from '@/app/requests/my-uploads';
 import {
   getServerLanguageStatic,
   loadPageTranslationsWithCommon,
 } from '@/app/utils/translations/serverTranslations';
-import { getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation';
+import { getServerSession } from '@/app/libs/api/server-session';
+
+/**
+ * Nunca cacheada: o conteúdo é de quem está logado.
+ */
+export const dynamic = 'force-dynamic';
 
 interface EditScorePageParams {
   id: string;
@@ -18,22 +22,24 @@ interface EditScorePageProps {
   params: Promise<EditScorePageParams>;
 }
 
+type ScoreForEdit = {
+  title?: string;
+  work: {
+    id: string;
+    title: string;
+    composer: { id: string; name: string; fullName: string | null };
+  };
+};
+
 export async function generateMetadata({ params }: EditScorePageProps) {
   const resolvedParams = await params;
   const language = await getServerLanguageStatic();
 
-  const score = await prisma.workScore.findUnique({
-    where: { id: resolvedParams.id },
-    select: {
-      title: true,
-      work: {
-        select: {
-          title: true,
-          composer: { select: { name: true } },
-        },
-      },
-    },
-  });
+  const lookup = await getUploadForEdit('score', resolvedParams.id).catch(
+    () => null
+  );
+  const score =
+    lookup?.status === 'ok' ? (lookup.data as ScoreForEdit) : undefined;
 
   const content = {
     pt: {
@@ -79,64 +85,35 @@ export async function generateMetadata({ params }: EditScorePageProps) {
 
 export default async function EditScorePage({ params }: EditScorePageProps) {
   const resolvedParams = await params;
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user?.id) {
     redirect('/not-authenticated');
   }
 
-  const score = await prisma.workScore.findUnique({
-    where: { id: resolvedParams.id },
-    include: {
-      work: {
-        select: {
-          id: true,
-          title: true,
-          composer: {
-            select: {
-              id: true,
-              name: true,
-              fullName: true,
-            },
-          },
-        },
-      },
-    },
-  });
+  // A API confere se a partitura existe (404) e se foi a pessoa que a enviou
+  // ou ela é administradora (403).
+  const lookup = await getUploadForEdit('score', resolvedParams.id);
 
-  if (!score) {
+  if (lookup.status === 'not-found') {
     notFound();
   }
 
-  const isAdmin = session.user.role === 2;
-  const isOwner = score.uploadedBy === session.user.id;
-
-  console.log('isowner', {
-    isOwner,
-    uploader: score,
-    sessuin: session.user.id,
-  });
-  if (!isAdmin && !isOwner) {
+  if (lookup.status === 'forbidden') {
     redirect('/access-denied');
   }
 
-  const works = await prisma.work.findMany({
-    select: {
-      id: true,
-      title: true,
-      composer: {
-        select: {
-          id: true,
-          name: true,
-          fullName: true,
-        },
-      },
-    },
-    where: {
+  const score = lookup.data as ScoreForEdit;
+  const isAdmin = session.user.role === 2;
+
+  // O seletor mostra só a obra da própria partitura, como no legado.
+  const works = [
+    {
       id: score.work.id,
+      title: score.work.title,
+      composer: score.work.composer,
     },
-    orderBy: { title: 'asc' },
-  });
+  ];
 
   const language = await getServerLanguageStatic();
   const { translations } = await loadPageTranslationsWithCommon(language, [

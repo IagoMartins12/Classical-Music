@@ -1,6 +1,7 @@
 // hooks/useBiographyWithLanguage.ts
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
+import { composerBiography } from '@/app/requests/composer-biography';
 
 interface BiographyResponse {
   success: boolean;
@@ -100,20 +101,27 @@ export function useBiographyWithLanguage(
     // Atualizar debounce
     debounceCache.set(requestKey, now);
 
-    // Criar nova promise para request
-    const requestPromise = fetch(`/api/composer/${composerId}/generate-bio`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(async (response) => {
-      const data: BiographyResponse = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || `Erro HTTP: ${response.status}`);
+    // Criar nova promise para request. A API devolve a biografia gravada no
+    // idioma pedido ou, faltando, gera (e grava) — com teto de custo.
+    const requestPromise = composerBiography(
+      composerId,
+      language === 'en' ? 'en' : 'pt'
+    ).then<BiographyResponse>((result) => {
+      if (result.biography === null) {
+        throw new Error(
+          result.status === 'generating'
+            ? 'Biografia já está sendo gerada. Aguarde alguns momentos.'
+            : 'Não há informação confiável sobre este compositor.'
+        );
       }
 
-      return data;
+      return {
+        success: true,
+        biography: result.biography,
+        generated: result.source === 'generated',
+        translated: result.source === 'translated',
+        fromDatabase: result.source === 'database',
+      };
     });
 
     // Armazenar request ativo
@@ -176,10 +184,10 @@ export function useBiographyWithLanguage(
           source: result.fromCache
             ? 'cache'
             : result.fromDatabase
-            ? 'database'
-            : result.generated
-            ? 'generated'
-            : 'unknown',
+              ? 'database'
+              : result.generated
+                ? 'generated'
+                : 'unknown',
           translated: result.translated,
           fallback: result.fallback,
         });

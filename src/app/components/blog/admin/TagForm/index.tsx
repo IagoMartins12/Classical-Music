@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiSave, FiX, FiAlertCircle, FiTag } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
+import { createTag, updateTag } from '@/app/requests/blog/admin-actions';
 
 interface TagFormProps {
   mode: 'create' | 'edit';
@@ -82,23 +83,10 @@ export function TagForm({ mode, tag }: TagFormProps) {
     setSubmitting(true);
 
     try {
-      const url =
-        mode === 'create'
-          ? '/api/blog/admin/tags'
-          : `/api/blog/admin/tags/${tag?.id}`;
-
-      const method = mode === 'create' ? 'POST' : 'PUT';
-
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao salvar tag');
+      if (mode === 'create' || !tag) {
+        await createTag(formData);
+      } else {
+        await updateTag(tag.id, formData);
       }
 
       toast.success(

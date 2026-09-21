@@ -36,6 +36,13 @@ import Modal from '../Modal';
 import Button from '../Common/Button';
 import StarRating from './StarRating';
 import FormField from './FormField';
+import {
+  getLearnedRequest,
+  toggleLearnedRequest,
+  updateLearnedRequest,
+  updateWantToLearnRequest,
+  uploadPerformanceVideo,
+} from '@/app/requests/library';
 import { WorkScore } from '@/app/hooks/useWorkScores';
 import ScoreSelectionModal from './ScoreSelectionModal';
 import Input from '../Common/Inputs';
@@ -424,35 +431,32 @@ const LearningModal = () => {
     videoFile: File
   ) => {
     try {
-      const formData = new FormData();
+      // O vídeo sobe direto ao armazenamento e o item leva só o id dele.
+      const videoAssetId = await uploadPerformanceVideo(workId, videoFile);
 
-      const dataToSend = {
-        workId,
+      const response = await toggleLearnedRequest(workId, 'add', {
         ...learnedData,
         isVideoPublic,
-        action: 'add',
-      };
-
-      formData.append('data', JSON.stringify(dataToSend));
-      formData.append('videoFile', videoFile);
-
-      const response = await fetch('/api/learning/learned', {
-        method: 'POST',
-        body: formData,
+        videoAssetId,
+        videoFileName: videoFile.name,
       });
 
-      const result = await response.json();
-
-      if (response.ok && result.success && result.item && user?.id) {
+      if (
+        response.ok &&
+        response.data?.success &&
+        response.data.item &&
+        user?.id
+      ) {
         // Atualizar store com item completo (incluindo dados de vídeo)
         await toggleLearned(workId, user.id, learnedForm.mastery, {
           ...learnedData,
           isVideoPublic,
         });
-        // addLearned(result.item);
         return true;
       } else {
-        throw new Error(result.error || 'Erro ao criar learned item');
+        throw new Error(
+          (!response.ok && response.error) || 'Erro ao criar learned item'
+        );
       }
     } catch (error) {
       console.error('Erro ao criar learned com vídeo:', error);
@@ -476,17 +480,10 @@ const LearningModal = () => {
             selectedWorkScoreId: selectedWorkScore?.id,
           };
 
-          const response = await fetch('/api/learning/want-to-learn', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              workId,
-              ...dataToUpdate,
-            }),
-          });
+          const response = await updateWantToLearnRequest(workId, dataToUpdate);
 
           if (response.ok) {
-            const result = await response.json();
+            const result = response.data;
             if (result.success && result.item) {
               addWantToLearn(result.item);
             }
@@ -506,14 +503,10 @@ const LearningModal = () => {
             });
 
             if (success) {
-              const response = await fetch(
-                `/api/learning/learned?workId=${workId}`
-              );
-              if (response.ok) {
-                const result = await response.json();
-                if (result.item) {
-                  addLearned(result.item);
-                }
+              const response = await getLearnedRequest(workId);
+
+              if (response.ok && response.data?.item) {
+                addLearned(response.data.item);
               }
 
               toast.success(modalTranslation.t.learnedDataUpdatedWithVideo);
@@ -521,21 +514,15 @@ const LearningModal = () => {
               throw new Error(modalTranslation.t.updateVideoError);
             }
           } else {
-            const response = await fetch('/api/learning/learned', {
-              method: 'PATCH',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                workId,
-                ...learnedForm,
-                selectedWorkScoreId: selectedWorkScore?.id,
-                isVideoPublic,
-              }),
+            const response = await updateLearnedRequest(workId, {
+              ...learnedForm,
+              selectedWorkScoreId: selectedWorkScore?.id,
+              isVideoPublic,
             });
 
             if (response.ok) {
-              const result = await response.json();
-              if (result.success && result.item) {
-                addLearned(result.item);
+              if (response.data?.success && response.data.item) {
+                addLearned(response.data.item);
               }
               toast.success(modalTranslation.t.learnedDataUpdated, {
                 icon: '✏️',

@@ -1,50 +1,21 @@
-// app/requests/cached-music-history-functions.ts - Versões com cache híbrido
-import { cachePresets } from '@/app/libs/hybrid-cache';
+// app/requests/cached-requests/cached-instruments.ts
+//
+// A vitrine de instrumentos vem da API (Etapa 3), com o cache do `fetch` do
+// Next por tag — que a API limpa quando o dado muda. O cache híbrido no Redis
+// do front saiu daqui: a revalidação por tag não chegava nele. A curadoria que
+// a página passava (compositores e obras por instrumento) mora na API.
 import { Language } from '@/app/stores/useLanguageStore';
 import {
-  ComposerPreferences,
   getInstrumentsStatsTranslated,
   getInstrumentsWithWorksTranslated,
   getTopComposersByInstrumentTranslated,
-  WorksPreferences,
 } from '../instruments-history-translated';
 
-/**
- * CACHED VERSIONS - Music History com Redis híbrido
- * Funciona com ou sem Redis disponível
- */
+export const getCachedInstrumentsStatsTranslated = () =>
+  getInstrumentsStatsTranslated();
 
-// Cache de 4h - dados de compositores por época (queries pesadas com filtragem específica)
-export const getCachedInstrumentsStatsTranslated = async () => {
-  return cachePresets.weekly(
-    () => getInstrumentsStatsTranslated(),
-    `instrument-stats`
-  );
-};
+export const getCachedInstrumentsWithWorksTranslated = (language: Language) =>
+  getInstrumentsWithWorksTranslated(language);
 
-// Cache semanal - dados históricos das épocas (muito estáveis, só tradução muda)
-export const getCachedInstrumentsWithWorksTranslated = async (
-  language: Language,
-  composerPreferences: ComposerPreferences,
-  worksPreferences: WorksPreferences
-) => {
-  return cachePresets.weekly(
-    () =>
-      getInstrumentsWithWorksTranslated(
-        language,
-        composerPreferences,
-        worksPreferences
-      ),
-    `instruments-with-works-${language}`
-  );
-};
-
-// Cache diário - timeline de compositores (query complexa com filtragem, mas pode ter updates)
-export const getCachedTopComposersByInstrumentTranslated = async (
-  composerPreferences: ComposerPreferences
-) => {
-  return cachePresets.weekly(
-    () => getTopComposersByInstrumentTranslated(composerPreferences),
-    `top-composers-by-intruments`
-  );
-};
+export const getCachedTopComposersByInstrumentTranslated = () =>
+  getTopComposersByInstrumentTranslated();

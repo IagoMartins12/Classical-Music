@@ -9,6 +9,7 @@ import {
   FiAlertCircle,
   FiStar,
 } from 'react-icons/fi';
+import { getWorkById, searchWorks } from '@/app/requests/catalog-search';
 
 interface Work {
   id: string;
@@ -67,42 +68,27 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
       setIsLoading(true);
 
       try {
-        const params = new URLSearchParams({
+        const data = await searchWorks({
           q: searchQuery,
-          limit: '12',
+          limit: 12,
+          composerId: filterByComposer?.trim() || undefined,
         });
+        const apiWorks = data.works;
 
-        if (filterByComposer && filterByComposer.trim() !== '') {
-          params.append('composer', filterByComposer);
-        }
+        // 🆕 COMBINAR COM USER SUGGESTIONS
+        const combinedWorks = combineWorksWithSuggestions(
+          apiWorks,
+          searchQuery
+        );
+        setWorks(combinedWorks);
 
-        const response = await fetch(`/api/works/search?${params.toString()}`);
-
-        if (response.ok) {
-          const data = await response.json();
-          const apiWorks = data.works || [];
-
-          // 🆕 COMBINAR COM USER SUGGESTIONS
-          const combinedWorks = combineWorksWithSuggestions(
-            apiWorks,
-            searchQuery
-          );
-          setWorks(combinedWorks);
-
-          console.log(
-            '✅ [SIMPLE-WORK-SEARCH] Obras combinadas:',
-            combinedWorks.length,
-            '(API:',
-            apiWorks.length,
-            '+ Sugestões)'
-          );
-        } else {
-          console.error(
-            '❌ [SIMPLE-WORK-SEARCH] Erro na busca:',
-            response.status
-          );
-          setWorks([]);
-        }
+        console.log(
+          '✅ [SIMPLE-WORK-SEARCH] Obras combinadas:',
+          combinedWorks.length,
+          '(API:',
+          apiWorks.length,
+          '+ Sugestões)'
+        );
       } catch (error) {
         console.error('❌ [SIMPLE-WORK-SEARCH] Erro:', error);
         setWorks([]);
@@ -211,9 +197,8 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
 
       // Se não encontrou nas sugestões, buscar na API
       try {
-        const response = await fetch(`/api/works/${workId}`);
-        if (response.ok) {
-          const workData = await response.json();
+        const workData = await getWorkById(workId);
+        if (workData) {
           setSelectedWorkData(workData);
           console.log(
             '✅ [SIMPLE-WORK-SEARCH] Obra carregada da API:',

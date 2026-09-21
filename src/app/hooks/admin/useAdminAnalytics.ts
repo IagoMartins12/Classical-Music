@@ -1,5 +1,6 @@
 // app/hooks/admin/useAdminAnalytics.ts
-import { useState, useEffect, useCallback } from 'react';
+import { adminKeys, useAdminQuery } from './query';
+import { getAdminAnalyticsData } from '@/app/requests/admin/metrics';
 
 interface AnalyticsOverview {
   users: {
@@ -95,80 +96,23 @@ interface UseAdminAnalyticsReturn {
   lastUpdated: Date | null;
 }
 
+/**
+ * Painel de análises. Estado de servidor do TanStack Query, com a atualização
+ * automática de dez em dez minutos que a tela já tinha — sem o `setInterval`
+ * que disparava mesmo com a aba escondida.
+ */
 export const useAdminAnalytics = (): UseAdminAnalyticsReturn => {
-  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-
-  const fetchAnalytics = useCallback(async () => {
-    if (loading) return;
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/admin/analytics', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        cache: 'no-store',
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Acesso não autorizado');
-        }
-        if (response.status === 403) {
-          throw new Error('Permissão negada');
-        }
-        throw new Error(`Erro ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      if (data.success && data.analytics) {
-        setAnalytics(data.analytics);
-        setLastUpdated(new Date(data.timestamp));
-      } else {
-        throw new Error('Resposta inválida do servidor');
-      }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Erro desconhecido';
-      setError(errorMessage);
-      console.error('Erro ao buscar analytics:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [loading]);
-
-  const refreshAnalytics = useCallback(async () => {
-    return fetchAnalytics();
-  }, [fetchAnalytics]);
-
-  // Carregar dados iniciais
-  useEffect(() => {
-    fetchAnalytics();
-  }, []);
-
-  // Auto-refresh a cada 10 minutos
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!loading && analytics) {
-        fetchAnalytics();
-      }
-    }, 10 * 60 * 1000); // 10 minutos
-
-    return () => clearInterval(interval);
-  }, [loading, analytics, fetchAnalytics]);
+  const analytics = useAdminQuery(
+    adminKeys.area('analytics'),
+    getAdminAnalyticsData,
+    { refetchInterval: 10 * 60 * 1000 }
+  );
 
   return {
-    analytics,
-    loading,
-    error,
-    refreshAnalytics,
-    lastUpdated,
+    analytics: analytics.data ?? null,
+    loading: analytics.loading,
+    error: analytics.error,
+    refreshAnalytics: analytics.refetch,
+    lastUpdated: analytics.updatedAt,
   };
 };

@@ -1,11 +1,17 @@
 // app/hooks/useTeacherLessons.ts - Hook para gerenciar aulas do professor - CORRIGIDO
 
-import {
+import type {
   LessonData,
   LessonsStats,
   TeacherLessonsData,
 } from '@/app/(teacher)/teacher/lessons/pageServer';
 import { useState, useCallback } from 'react';
+import {
+  cancelLessonRequest,
+  createLessonRequest,
+  updateLessonRequest,
+} from '@/app/requests/portal/lesson-actions';
+import { loadTeacherLessons } from '@/app/requests/portal/teacher';
 
 interface UseTeacherLessonsState {
   lessons: LessonData[];
@@ -235,43 +241,16 @@ export function useTeacherLessons(
       setError(null);
 
       try {
-        const params = new URLSearchParams();
-
-        if (filters?.status) params.append('status', filters.status);
-        if (filters?.studentId) params.append('studentId', filters.studentId);
-        if (filters?.dateFrom)
-          params.append('dateFrom', filters.dateFrom.toISOString());
-        if (filters?.dateTo)
-          params.append('dateTo', filters.dateTo.toISOString());
-        params.append('limit', (filters?.limit || 20).toString());
-        params.append('offset', (filters?.offset || 0).toString());
-        params.append('includeStats', 'true'); // 🆕 SEMPRE INCLUIR STATS
-
-        // 🆕 HEADER PARA FORÇAR REFRESH DO CACHE
-        const headers: HeadersInit = {
-          'Content-Type': 'application/json',
-        };
-
-        if (filters?.forceRefresh) {
-          headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
-          headers['Pragma'] = 'no-cache';
-          headers['Expires'] = '0';
-        }
-
-        const response = await fetch(`/api/lessons?${params}`, {
-          method: 'GET',
-          headers,
-        });
-
-        if (!response.ok) {
-          throw new Error('Erro ao buscar aulas');
-        }
-
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error(data.error || 'Erro desconhecido');
-        }
+        // Sem cache: a API responde sempre com o estado atual.
+        const data = await loadTeacherLessons(
+          filters?.studentId,
+          filters?.status,
+          filters?.dateFrom,
+          filters?.dateTo,
+          filters?.limit || 20,
+          filters?.offset || 0,
+          true
+        );
 
         setState((prev) => ({
           ...prev,
@@ -400,61 +379,26 @@ export function useTeacherLessons(
       }
 
       try {
-        console.log('📤 [USE-TEACHER-LESSONS] Enviando requisição para API...');
+        await createLessonRequest(data);
 
-        const response = await fetch('/api/lessons', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
+        // A criação devolve só id, título e data de cada aula da série; lista
+        // e resumo vêm de uma leitura nova.
+        const fresh = await loadTeacherLessons(
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          20,
+          0,
+          true
+        );
 
-        console.log('📥 [USE-TEACHER-LESSONS] Resposta da API:', {
-          status: response.status,
-          ok: response.ok,
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          const errorMessage =
-            errorData.error || `Erro HTTP ${response.status}`;
-          throw new Error(errorMessage);
-        }
-
-        const result = await response.json();
-
-        if (!result.success) {
-          throw new Error(result.error || 'Erro ao criar aula');
-        }
-
-        console.log('✅ [USE-TEACHER-LESSONS] Aula(s) criada(s) com sucesso:', {
-          lessonsCreated: result.lessons?.length || 1,
-          message: result.message,
-        });
-
-        // 🔥 ATUALIZAR ESTADO LOCAL
-        if (result.lessons && Array.isArray(result.lessons)) {
-          setState((prev) => {
-            const updatedLessons = [...result.lessons, ...prev.lessons];
-            const newStats = calculateStatsFromLessons(updatedLessons);
-
-            console.log('📊 [USE-TEACHER-LESSONS] Estado atualizado:', {
-              totalLessons: updatedLessons.length,
-              newStats: newStats,
-            });
-
-            return {
-              ...prev,
-              lessons: updatedLessons,
-              stats: newStats,
-              pagination: {
-                ...prev.pagination,
-                total: prev.pagination.total + result.lessons.length,
-              },
-            };
-          });
-        }
+        setState((prev) => ({
+          ...prev,
+          lessons: fresh.lessons,
+          stats: fresh.stats,
+          pagination: fresh.pagination,
+        }));
 
         return true;
       } catch (error) {
@@ -480,23 +424,7 @@ export function useTeacherLessons(
       setError(null);
 
       try {
-        const response = await fetch('/api/lessons', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ lessonId, ...updates }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Erro ao atualizar aula');
-        }
-
-        const result = await response.json();
-
-        if (!result.success) {
-          throw new Error(result.error || 'Erro ao atualizar aula');
-        }
+        await updateLessonRequest(lessonId, updates);
 
         // 🆕 ATUALIZAR STATE E RECALCULAR STATS
         setState((prev) => {
@@ -537,25 +465,7 @@ export function useTeacherLessons(
       setError(null);
 
       try {
-        const params = new URLSearchParams({
-          id: lessonId,
-          ...(reason && { reason }),
-          ...(cancelSeries && { cancelSeries: 'true' }),
-        });
-
-        const response = await fetch(`/api/lessons?${params}`, {
-          method: 'DELETE',
-        });
-
-        if (!response.ok) {
-          throw new Error('Erro ao cancelar aula');
-        }
-
-        const result = await response.json();
-
-        if (!result.success) {
-          throw new Error(result.error || 'Erro ao cancelar aula');
-        }
+        await cancelLessonRequest(lessonId, reason, cancelSeries);
 
         // 🆕 ATUALIZAR STATE E RECALCULAR STATS
         setState((prev) => {
@@ -598,14 +508,11 @@ export function useTeacherLessons(
         preparation?: number;
       }
     ): Promise<boolean> => {
-      const success = await updateLesson(lessonId, attendance);
-
-      // Se foi marcar presença, também atualizar status para COMPLETED
-      if (success && attendance.studentPresent) {
-        await updateLesson(lessonId, { status: 'COMPLETED' });
-      }
-
-      return success;
+      // Na API a presença é registrada ao concluir a aula; falta vira NO_SHOW.
+      return await updateLesson(lessonId, {
+        ...attendance,
+        status: attendance.studentPresent ? 'COMPLETED' : 'NO_SHOW',
+      });
     },
     [updateLesson]
   );

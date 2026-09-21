@@ -8,6 +8,7 @@ import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Modal from '../../Modal';
 import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { reportContent } from '@/app/requests/moderation';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -95,27 +96,19 @@ export default function ReportModal({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/reports', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          entityType,
-          entityId,
-          reason: selectedReason,
-          description: description.trim(),
-        }),
+      const response = await reportContent({
+        entityType,
+        entityId,
+        reason: selectedReason,
+        description,
       });
 
       if (response.ok) {
-        const data = await response.json();
-        toaster.success(data.message);
+        toaster.success(response.data.message);
         onClose();
         resetForm();
       } else {
-        const error = await response.json();
-        toaster.error(error.error || t('report_modal_erro_enviar'));
+        toaster.error(response.error || t('report_modal_erro_enviar'));
       }
     } catch (error) {
       console.log('error', error);

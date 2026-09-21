@@ -1,5 +1,7 @@
 // app/hooks/admin/useAdminActivity.ts - ATUALIZADO COM TIPOS CORRETOS
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { adminKeys, useAdminInfinite } from './query';
+import { listAdminActivity } from '@/app/requests/admin/uploads';
 
 export interface ActivityItem {
   id: string;
@@ -35,7 +37,8 @@ export interface ActivityPagination {
   hasMore: boolean;
 }
 
-// Tipos de atividade suportados
+// Tipos de atividade. Na API só há o histórico de contribuições (`UPLOAD`);
+// os outros filtros voltam vazios.
 export const ACTIVITY_TYPES = {
   ALL: 'all',
   UPLOAD: 'UPLOAD', // Do UploadHistory
@@ -46,99 +49,65 @@ export const ACTIVITY_TYPES = {
   SYSTEM: 'system', // Ações do sistema
 } as const;
 
+/** Quantas atividades por página — o mesmo do legado. */
+const PAGE_SIZE = 50;
+
+/**
+ * Trilha de atividades do painel.
+ *
+ * A lista vem por cursor (`useAdminInfinite`): o "carregar mais" pede a fatia
+ * seguinte a partir do id do último item mostrado, e o acúmulo é do próprio
+ * TanStack Query — trocar o filtro troca a chave, e a lista recomeça.
+ */
 export function useAdminActivity() {
-  const [activities, setActivities] = useState<ActivityItem[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<ActivityFilters>({
-    period: '7d',
-  });
-  const [pagination, setPagination] = useState<ActivityPagination>({
-    page: 1,
-    limit: 50,
-    total: 0,
-    hasMore: false,
-  });
+  const [filters, setFilters] = useState<ActivityFilters>({ period: '7d' });
 
-  // Função para buscar atividades
-  const fetchActivities = useCallback(
-    async (reset = false) => {
-      try {
-        setLoading(true);
-        setError(null);
+  const list = useAdminInfinite(
+    adminKeys.list('activity', filters),
+    async (cursor) => {
+      const data = await listAdminActivity({
+        ...filters,
+        cursor,
+        limit: PAGE_SIZE,
+      });
 
-        const params = new URLSearchParams();
-        params.set('page', reset ? '1' : pagination.page.toString());
-        params.set('limit', pagination.limit.toString());
-
-        if (filters.type) params.set('type', filters.type);
-        if (filters.search) params.set('search', filters.search);
-        if (filters.period) params.set('period', filters.period);
-        if (filters.userId) params.set('userId', filters.userId);
-
-        const response = await fetch(`/api/admin/activity?${params}`);
-        if (!response.ok) {
-          throw new Error(`Erro ao buscar atividades: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        if (reset) {
-          setActivities(data.activities || []);
-          setPagination({
-            page: 1,
-            limit: pagination.limit,
-            total: data.pagination?.total || 0,
-            hasMore: data.pagination?.hasMore || false,
-          });
-        } else {
-          setActivities((prev) => [...prev, ...(data.activities || [])]);
-          setPagination((prev) => ({
-            ...prev,
-            page: prev.page + 1,
-            hasMore: data.pagination?.hasMore || false,
-          }));
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
-      } finally {
-        setLoading(false);
-      }
-    },
-    [filters, pagination.page, pagination.limit]
+      return {
+        items: data.activities,
+        total: data.total,
+        nextCursor: data.nextCursor,
+      };
+    }
   );
 
-  // Função para definir filtros e reiniciar busca
   const setActivityFilters = useCallback(
     (newFilters: Partial<ActivityFilters>) => {
-      setFilters((prev) => ({ ...prev, ...newFilters }));
-      setPagination((prev) => ({ ...prev, page: 1 }));
+      setFilters((previous) => ({ ...previous, ...newFilters }));
     },
     []
   );
 
-  // Função para recarregar atividades
   const refreshActivities = useCallback(async () => {
-    await fetchActivities(true);
-  }, [fetchActivities]);
+    await list.refetch();
+  }, [list]);
 
-  // Função para carregar mais atividades
   const loadMoreActivities = useCallback(async () => {
-    if (!pagination.hasMore || loading) return;
-    await fetchActivities(false);
-  }, [fetchActivities, pagination.hasMore, loading]);
-
-  // Efeito para carregar dados iniciais
-  useEffect(() => {
-    refreshActivities();
-  }, [filters]);
+    list.loadMore();
+  }, [list]);
 
   return {
-    activities,
-    loading,
-    error,
+    activities: list.items,
+    loading: list.loading,
+    /** Buscando a fatia seguinte, com a lista já na tela. */
+    loadingMore: list.loadingMore,
+    error: list.error,
     filters,
-    pagination,
+    pagination: {
+      // "Página" é só quantas fatias já vieram; quem manda é o cursor.
+      page: Math.max(1, Math.ceil(list.items.length / PAGE_SIZE)),
+      limit: PAGE_SIZE,
+      total: list.total ?? list.items.length,
+      hasMore: list.hasMore,
+    } satisfies ActivityPagination,
     setActivityFilters,
     refreshActivities,
     loadMoreActivities,

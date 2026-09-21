@@ -12,8 +12,9 @@ import {
 } from 'react-icons/fa';
 import { FiArrowRight, FiRefreshCw, FiTrendingUp } from 'react-icons/fi';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import debounce from 'lodash/debounce';
+import { autocomplete } from '@/app/requests/blog/taxonomy';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -79,17 +80,24 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
       setIsLoading(true);
       try {
-        const response = await fetch(
-          `/api/blog/search/autocomplete?q=${encodeURIComponent(searchQuery)}&type=all`
-        );
+        const found = await autocomplete(searchQuery, 'all');
 
-        if (response.ok) {
-          const data = await response.json();
-          setSuggestions(
-            data.suggestions || { articles: [], tags: [], categories: [] }
-          );
-          setShowSuggestions(true);
-        }
+        setSuggestions({
+          articles: found.articles.map((article) => ({
+            ...article,
+            coverImage: article.coverImage ?? undefined,
+          })),
+          tags: found.tags.map((tag) => ({
+            ...tag,
+            color: tag.color ?? undefined,
+          })),
+          categories: found.categories.map((category) => ({
+            ...category,
+            icon: category.icon ?? undefined,
+            color: category.color ?? undefined,
+          })),
+        });
+        setShowSuggestions(true);
       } catch (error) {
         console.error('Erro ao buscar sugestões:', error);
       } finally {

@@ -9,6 +9,13 @@ import {
 import { TranslationProvider } from '@/app/context/TranslationContext';
 import UnsubscribePageClient from './pageClient';
 
+/**
+ * Nunca cacheada: o token vale uma vez e a página age sobre ele (confirma,
+ * recusa, cancela). Sem esta linha, o Next guardaria o resultado por token e
+ * uma segunda visita veria a resposta da primeira.
+ */
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata() {
   const language = await getServerLanguageStatic();
 

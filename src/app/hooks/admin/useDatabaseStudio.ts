@@ -1,6 +1,16 @@
 // app/hooks/admin/useDatabaseStudio.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { adminKeys, useAdminQuery, useInvalidateAdmin } from './query';
 import toast from 'react-hot-toast';
+import {
+  createDatabaseRecord,
+  deleteDatabaseRecords,
+  describeDatabaseModel,
+  exportDatabaseRecords,
+  listDatabaseModels,
+  listDatabaseRecords,
+  updateDatabaseRecord,
+} from '@/app/requests/admin/database';
 
 export interface DatabaseModel {
   name: string;
@@ -119,141 +129,118 @@ interface UseDatabaseStudioReturn {
   formatFieldValue: (value: any, field: ModelField) => string;
 }
 
+/**
+ * Estúdio de banco. Os models, o schema do model escolhido e a página de
+ * registros são estado de servidor (TanStack Query): a chave dos registros
+ * leva model, página, busca, ordenação, campos e filtros, então voltar a uma
+ * combinação já vista mostra o cache enquanto revalida. Cada escrita invalida
+ * a página.
+ */
 export const useDatabaseStudio = (): UseDatabaseStudioReturn => {
-  const [models, setModels] = useState<DatabaseModel[]>([]);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
-  const [records, setRecords] = useState<DatabaseRecord[]>([]);
-  const [totalRecords, setTotalRecords] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
-  const [loading, setLoading] = useState(false);
-  const [loadingRecords, setLoadingRecords] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  // A busca só vai ao servidor meio segundo depois da última tecla.
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [selectedRecords, setSelectedRecords] = useState<Set<string>>(
     new Set()
   );
-  const [modelSchema, setModelSchema] = useState<ModelSchema | null>(null);
   const [selectedFields, setSelectedFieldsState] = useState<string[]>([]);
-  const [availableFields, setAvailableFields] = useState<string[]>([]);
   const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
-  const [schemaStats, setSchemaStats] = useState<{
-    totalFields: number;
-    displayableFields: number;
-    editableFields: number;
-    searchableFields: number;
-  } | null>(null);
+  const invalidate = useInvalidateAdmin();
 
-  // Carregar lista de models
-  const fetchModels = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await fetch('/api/admin/database/models');
-      const data = await response.json();
+  const modelsQuery = useAdminQuery(
+    adminKeys.area('db-models'),
+    listDatabaseModels
+  );
 
-      if (data.success) {
-        setModels(data.models);
-      } else {
-        toast.error(data.error || 'Erro ao carregar models');
-      }
-    } catch (error) {
-      console.error('Erro ao buscar models:', error);
-      toast.error('Erro ao carregar models');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Campos do model (o que a tela mostra e o que aceita escrita)
+  const schemaQuery = useAdminQuery(
+    adminKeys.list('db-schema', selectedModel),
+    () => describeDatabaseModel(selectedModel as string),
+    { enabled: !!selectedModel }
+  );
+
+  const recordsQuery = useAdminQuery(
+    adminKeys.list('db-records', {
+      model: selectedModel,
+      page: currentPage,
+      pageSize,
+      search: debouncedSearch,
+      sortField,
+      sortDirection,
+      selectedFields,
+      activeFilters,
+    }),
+    () =>
+      listDatabaseRecords(
+        {
+          model: selectedModel as string,
+          search: debouncedSearch,
+          sortField,
+          sortDirection,
+          fields: selectedFields,
+          filters: activeFilters,
+        },
+        currentPage,
+        pageSize
+      ),
+    { enabled: !!selectedModel }
+  );
+
+  const models = useMemo(() => modelsQuery.data ?? [], [modelsQuery.data]);
+  const modelSchema = schemaQuery.data?.schema ?? null;
+  const availableFields = useMemo(
+    () => schemaQuery.data?.availableFields ?? [],
+    [schemaQuery.data]
+  );
+  const schemaStats = schemaQuery.data?.stats ?? null;
+  const records = (recordsQuery.data?.records ?? []) as DatabaseRecord[];
+  const totalRecords = recordsQuery.data?.total ?? 0;
+  const loading = modelsQuery.loading;
+  const loadingRecords = recordsQuery.loading || recordsQuery.fetching;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setCurrentPage(1);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Selecionar um model
   const selectModel = useCallback(async (modelName: string) => {
     setSelectedModel(modelName);
     setCurrentPage(1);
     setSearchQuery('');
+    setDebouncedSearch('');
     setSortField(null);
     setSelectedRecords(new Set());
     setActiveFilters({});
     setSelectedFieldsState([]);
-
-    // Buscar schema do model
-    try {
-      const response = await fetch(
-        `/api/admin/database/schema?model=${modelName}`
-      );
-      const data = await response.json();
-
-      if (data.success) {
-        setModelSchema(data.schema);
-
-        // Extrair campos disponíveis de displayableFields
-        const fields = data.displayableFields.map((f: any) => f.name);
-        setAvailableFields(fields);
-
-        // Salvar estatísticas
-        setSchemaStats({
-          totalFields: data.totalFields || 0,
-          displayableFields: data.totalDisplayableFields || 0,
-          editableFields: data.totalEditableFields || 0,
-          searchableFields: data.searchableFields?.length || 0,
-        });
-      }
-    } catch (error) {
-      console.error('Erro ao buscar schema:', error);
-      setSchemaStats(null);
-    }
   }, []);
 
-  // Carregar registros
   const loadRecords = useCallback(
     async (page?: number) => {
       if (!selectedModel) return;
 
-      const targetPage = page || currentPage;
-      setLoadingRecords(true);
-
-      try {
-        const params = new URLSearchParams({
-          model: selectedModel,
-          page: targetPage.toString(),
-          pageSize: pageSize.toString(),
-          ...(searchQuery && { search: searchQuery }),
-          ...(sortField && { sortField, sortDirection }),
-          ...(selectedFields.length > 0 && {
-            fields: selectedFields.join(','),
-          }),
-          ...(Object.keys(activeFilters).length > 0 && {
-            filters: JSON.stringify(activeFilters),
-          }),
-        });
-
-        const response = await fetch(`/api/admin/database/records?${params}`);
-        const data = await response.json();
-
-        if (data.success) {
-          setRecords(data.records);
-          setTotalRecords(data.total);
-          setCurrentPage(targetPage);
-        } else {
-          toast.error(data.error || 'Erro ao carregar registros');
-        }
-      } catch (error) {
-        console.error('Erro ao buscar registros:', error);
-        toast.error('Erro ao carregar registros');
-      } finally {
-        setLoadingRecords(false);
+      if (page && page !== currentPage) {
+        setCurrentPage(page);
+        return;
       }
+
+      await recordsQuery.refetch();
     },
-    [
-      selectedModel,
-      currentPage,
-      pageSize,
-      searchQuery,
-      sortField,
-      sortDirection,
-      selectedFields,
-      activeFilters,
-    ]
+    [selectedModel, currentPage, recordsQuery]
   );
+
+  const afterWrite = useCallback(async () => {
+    await invalidate('db-records');
+  }, [invalidate]);
 
   // Criar registro
   const createRecord = useCallback(
@@ -263,28 +250,19 @@ export const useDatabaseStudio = (): UseDatabaseStudioReturn => {
       const toastId = toast.loading('Criando registro...');
 
       try {
-        const response = await fetch('/api/admin/database/records', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model: selectedModel, data }),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          toast.success('Registro criado com sucesso!', { id: toastId });
-          await loadRecords(1);
-        } else {
-          toast.error(result.error || 'Erro ao criar registro', {
-            id: toastId,
-          });
-        }
+        await createDatabaseRecord(selectedModel, data, modelSchema);
+        toast.success('Registro criado com sucesso!', { id: toastId });
+        setCurrentPage(1);
+        await afterWrite();
       } catch (error) {
         console.error('Erro ao criar registro:', error);
-        toast.error('Erro ao criar registro', { id: toastId });
+        toast.error(
+          error instanceof Error ? error.message : 'Erro ao criar registro',
+          { id: toastId }
+        );
       }
     },
-    [selectedModel, loadRecords]
+    [selectedModel, modelSchema, afterWrite]
   );
 
   // Atualizar registro
@@ -295,28 +273,18 @@ export const useDatabaseStudio = (): UseDatabaseStudioReturn => {
       const toastId = toast.loading('Atualizando registro...');
 
       try {
-        const response = await fetch('/api/admin/database/records', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model: selectedModel, id, data }),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          toast.success('Registro atualizado com sucesso!', { id: toastId });
-          await loadRecords();
-        } else {
-          toast.error(result.error || 'Erro ao atualizar registro', {
-            id: toastId,
-          });
-        }
+        await updateDatabaseRecord(selectedModel, id, data, modelSchema);
+        toast.success('Registro atualizado com sucesso!', { id: toastId });
+        await afterWrite();
       } catch (error) {
         console.error('Erro ao atualizar registro:', error);
-        toast.error('Erro ao atualizar registro', { id: toastId });
+        toast.error(
+          error instanceof Error ? error.message : 'Erro ao atualizar registro',
+          { id: toastId }
+        );
       }
     },
-    [selectedModel, loadRecords]
+    [selectedModel, modelSchema, afterWrite]
   );
 
   // Deletar registro
@@ -332,33 +300,23 @@ export const useDatabaseStudio = (): UseDatabaseStudioReturn => {
       const toastId = toast.loading('Deletando registro...');
 
       try {
-        const response = await fetch('/api/admin/database/records', {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model: selectedModel, ids: [id] }),
+        await deleteDatabaseRecords(selectedModel, [id]);
+        toast.success('Registro deletado com sucesso!', { id: toastId });
+        setSelectedRecords((previous) => {
+          const next = new Set(previous);
+          next.delete(id);
+          return next;
         });
-
-        const result = await response.json();
-
-        if (result.success) {
-          toast.success('Registro deletado com sucesso!', { id: toastId });
-          setSelectedRecords((prev) => {
-            const newSet = new Set(prev);
-            newSet.delete(id);
-            return newSet;
-          });
-          await loadRecords();
-        } else {
-          toast.error(result.error || 'Erro ao deletar registro', {
-            id: toastId,
-          });
-        }
+        await afterWrite();
       } catch (error) {
         console.error('Erro ao deletar registro:', error);
-        toast.error('Erro ao deletar registro', { id: toastId });
+        toast.error(
+          error instanceof Error ? error.message : 'Erro ao deletar registro',
+          { id: toastId }
+        );
       }
     },
-    [selectedModel, loadRecords]
+    [selectedModel, afterWrite]
   );
 
   // Deletar múltiplos registros
@@ -374,31 +332,22 @@ export const useDatabaseStudio = (): UseDatabaseStudioReturn => {
       const toastId = toast.loading(`Deletando ${ids.length} registro(s)...`);
 
       try {
-        const response = await fetch('/api/admin/database/records', {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model: selectedModel, ids }),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          toast.success(`${ids.length} registro(s) deletado(s) com sucesso!`, {
-            id: toastId,
-          });
-          setSelectedRecords(new Set());
-          await loadRecords();
-        } else {
-          toast.error(result.error || 'Erro ao deletar registros', {
-            id: toastId,
-          });
-        }
+        const result = await deleteDatabaseRecords(selectedModel, ids);
+        toast.success(
+          `${result.deletedCount} registro(s) deletado(s) com sucesso!`,
+          { id: toastId }
+        );
+        setSelectedRecords(new Set());
+        await afterWrite();
       } catch (error) {
         console.error('Erro ao deletar registros:', error);
-        toast.error('Erro ao deletar registros', { id: toastId });
+        toast.error(
+          error instanceof Error ? error.message : 'Erro ao deletar registros',
+          { id: toastId }
+        );
       }
     },
-    [selectedModel, loadRecords]
+    [selectedModel, afterWrite]
   );
 
   // Exportar dados
@@ -409,39 +358,24 @@ export const useDatabaseStudio = (): UseDatabaseStudioReturn => {
       const toastId = toast.loading('Exportando dados...');
 
       try {
-        const params = new URLSearchParams({
-          model: selectedModel,
-          format,
-          ...(searchQuery && { search: searchQuery }),
-          ...(sortField && { sortField, sortDirection }),
-          ...(selectedFields.length > 0 && {
-            fields: selectedFields.join(','),
-          }),
-          ...(Object.keys(activeFilters).length > 0 && {
-            filters: JSON.stringify(activeFilters),
-          }),
-        });
-
-        const response = await fetch(`/api/admin/database/export?${params}`);
-
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `${selectedModel}_${new Date().toISOString()}.${format}`;
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-          document.body.removeChild(a);
-
-          toast.success('Dados exportados com sucesso!', { id: toastId });
-        } else {
-          toast.error('Erro ao exportar dados', { id: toastId });
-        }
+        await exportDatabaseRecords(
+          {
+            model: selectedModel,
+            search: searchQuery,
+            sortField,
+            sortDirection,
+            fields: selectedFields,
+            filters: activeFilters,
+          },
+          format
+        );
+        toast.success('Dados exportados com sucesso!', { id: toastId });
       } catch (error) {
         console.error('Erro ao exportar:', error);
-        toast.error('Erro ao exportar dados', { id: toastId });
+        toast.error(
+          error instanceof Error ? error.message : 'Erro ao exportar dados',
+          { id: toastId }
+        );
       }
     },
     [
@@ -489,9 +423,7 @@ export const useDatabaseStudio = (): UseDatabaseStudioReturn => {
     setSelectedRecords(new Set());
   }, []);
 
-  const refreshModels = useCallback(async () => {
-    await fetchModels();
-  }, [fetchModels]);
+  const refreshModels = modelsQuery.refetch;
 
   // Seleção de campos
   const toggleFieldSelection = useCallback((field: string) => {
@@ -592,36 +524,6 @@ export const useDatabaseStudio = (): UseDatabaseStudioReturn => {
       }
     }
   }, [selectedModel, sortField, modelSchema]);
-
-  // Carregar models no mount
-  useEffect(() => {
-    fetchModels();
-  }, [fetchModels]);
-
-  // Recarregar registros quando necessário
-  useEffect(() => {
-    if (selectedModel) {
-      loadRecords();
-    }
-  }, [
-    selectedModel,
-    pageSize,
-    sortField,
-    sortDirection,
-    selectedFields,
-    activeFilters,
-  ]);
-
-  // Debounce da busca
-  useEffect(() => {
-    if (!selectedModel) return;
-
-    const timer = setTimeout(() => {
-      loadRecords(1);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
 
   return {
     models,

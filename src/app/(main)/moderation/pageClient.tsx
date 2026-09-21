@@ -34,6 +34,7 @@ import { REPORT_REASONS } from '@/app/utils/reportHelpers';
 import BulkReportActions from '../../components/Report/BulkReportActions';
 import ReportPriorityBadge from '../../components/Report/ReportPriorityBadge';
 import { useToast } from '@/app/hooks/useToast';
+import { listModerations, resolveModeration } from '@/app/requests/moderation';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { useTranslation } from '@/app/context/TranslationContext';
 
@@ -83,11 +84,9 @@ const ModerationClient = ({
   const fetchModerations = async () => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `/api/uploads/moderation?page=${page}&status=${status}`
-      );
+      const response = await listModerations(page, status);
       if (response.ok) {
-        const data = await response.json();
+        const data = response.data;
         setModerations(data.moderations);
         setTotalPages(data.pagination.totalPages);
         // Limpar seleção ao carregar nova página
@@ -105,26 +104,21 @@ const ModerationClient = ({
   const handleModeration = async (moderationId: string, action: string) => {
     setProcessingId(moderationId);
     try {
-      const response = await fetch('/api/uploads/moderation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          moderationId,
-          action,
-          notes: moderationNotes,
-        }),
-      });
+      const response = await resolveModeration(
+        moderationId,
+        action as 'approve' | 'reject' | 'delete',
+        moderationNotes
+      );
 
       if (response.ok) {
-        const data = await response.json();
+        const data = response.data;
         toast.success('Sucesso', data.message);
         await fetchModerations();
         setShowModal(false);
         setModerationNotes('');
         setSelectedModeration(null);
       } else {
-        const error = await response.json();
-        throw new Error(error.error);
+        throw new Error(response.error);
       }
     } catch (error) {
       console.error('Erro ao processar moderação:', error);

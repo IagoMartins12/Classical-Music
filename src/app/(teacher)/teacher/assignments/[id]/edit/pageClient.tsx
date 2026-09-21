@@ -22,7 +22,7 @@ import {
   PageContainer,
 } from '../../../../../components/animation/AnimatedComponents';
 import { EditAssignmentData } from './pageServer';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { useRouter } from 'next/navigation';
@@ -32,6 +32,7 @@ import WorkSelectionSection, {
   LessonWork,
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { getWorkById } from '@/app/requests/catalog-search';
 
 interface EditAssignmentPageClientProps {
   initialData: EditAssignmentData | null;
@@ -127,10 +128,8 @@ export default function EditAssignmentPageClient({
         // Para cada work ID, buscar dados completos
         for (const workId of assignment.worksIds) {
           try {
-            const response = await fetch(`/api/works/${workId}`);
-            if (response.ok) {
-              const workData = await response.json();
-
+            const workData = await getWorkById(workId);
+            if (workData) {
               // Verificar se tem partitura específica para esta obra
               const scoreId = assignment.workScoreIds.find(() => {
                 // Aqui você pode implementar lógica para associar score com work

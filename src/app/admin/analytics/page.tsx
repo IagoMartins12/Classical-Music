@@ -1,11 +1,11 @@
 // app/admin/analytics/page.tsx
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
-import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import AdminAnalytics from '@/app/components/Admin/Analytics/AdminAnalytics';
 import LoadingAdminState from '@/app/components/Admin/Common/LoadingState';
+
+// Painel em CSR: o dado vem da API pelo navegador.
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Analytics | Admin Panel',
@@ -13,13 +13,7 @@ export const metadata: Metadata = {
   robots: 'noindex, nofollow',
 };
 
-export default async function AdminAnalyticsPage() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id || session.user.role !== 2) {
-    redirect('/');
-  }
-
+export default function AdminAnalyticsPage() {
   return (
     <Suspense
       fallback={

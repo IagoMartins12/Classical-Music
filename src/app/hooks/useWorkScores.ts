@@ -1,5 +1,6 @@
 // hooks/useWorkScores.ts - Hook CORRIGIDO SEM LOOPS INFINITOS
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { workScoresRequest } from '@/app/requests/work-scores';
 
 export interface WorkScore {
   id: string;
@@ -163,13 +164,7 @@ export const useWorkScores = (
           params.append('source', stableOptions.source);
         }
 
-        const response = await fetch(`/api/work-scores?${params.toString()}`);
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const result = await response.json();
+        const result = await workScoresRequest(params);
 
         if (result.success) {
           const newWorkScores = result.workScores || [];
@@ -309,13 +304,7 @@ export const useWorkScores = (
           params.append('source', scoreSource);
         }
 
-        const response = await fetch(`/api/work-scores?${params.toString()}`);
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const result = await response.json();
+        const result = await workScoresRequest(params);
 
         if (result.success && result.found && result.workScore) {
           console.log(
@@ -493,13 +482,7 @@ export const useWorkScore = (
         params.append('source', source);
       }
 
-      const response = await fetch(`/api/work-scores?${params.toString()}`);
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const result = await response.json();
+      const result = await workScoresRequest(params);
 
       if (result.success && result.found && result.workScore) {
         setWorkScore(result.workScore);

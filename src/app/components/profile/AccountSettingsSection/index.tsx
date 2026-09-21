@@ -2,7 +2,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { User } from 'next-auth';
+// Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
+// objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
+import type { User } from '@/app/hooks/userStore';
 import {
   FiMail,
   FiLock,
@@ -249,8 +251,8 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
     }
   };
 
-  const handleDeleteAccount = async () => {
-    await deleteAccount();
+  const handleDeleteAccount = async (currentPassword?: string) => {
+    await deleteAccount(currentPassword);
     setShowDeleteModal(false);
   };
 
@@ -856,6 +858,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         isOpen={showDeleteModal}
         onClose={handleCloseDeleteModal}
         onConfirm={handleDeleteAccount}
+        requirePassword={loginMethod.hasPassword}
         onLoadCascadeInfo={loadCascadeInfo}
         isLoading={isDeleting}
         isCascadeLoading={isCascadeLoading}

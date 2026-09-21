@@ -30,6 +30,7 @@ import {
   AnimatedItem,
   LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
+import { loadSchoolActivities } from '@/app/requests/portal/school-activities';
 
 interface Activity {
   id: string;
@@ -71,21 +72,10 @@ const RecentActivities = ({
     setError(null);
 
     try {
-      const response = await fetch(
-        '/api/school-activities?recent=true&limit=5'
-      );
+      // A API pagina a trilha da escola; aqui ficam as cinco mais recentes.
+      const data = await loadSchoolActivities({ as: userType, page: 1 });
 
-      if (!response.ok) {
-        throw new Error('Erro ao carregar atividades');
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        setActivities(data.activities || []);
-      } else {
-        throw new Error(data.error || 'Erro desconhecido');
-      }
+      setActivities(data.activities.slice(0, 5) as Activity[]);
     } catch (error) {
       console.error('Erro ao buscar atividades recentes:', error);
       setError(error instanceof Error ? error.message : 'Erro desconhecido');

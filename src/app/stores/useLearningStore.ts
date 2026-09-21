@@ -1,6 +1,12 @@
 // stores/useLearningStore.ts - ATUALIZADO COM CAMPOS FALTANTES
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import {
+  toggleLearnedRequest,
+  toggleWantToLearnRequest,
+  updateLearnedRequest,
+  updateWantToLearnRequest,
+} from '@/app/requests/library';
 
 export interface WantToLearnItem {
   id: string;
@@ -254,16 +260,11 @@ export const useLearningStore = create<LearningStore>()(
             });
           }
 
-          const response = await fetch('/api/learning/want-to-learn', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              workId,
-              action: isCurrentlyWanted ? 'remove' : 'add',
-              priority,
-              ...additionalData,
-            }),
-          });
+          const response = await toggleWantToLearnRequest(
+            workId,
+            isCurrentlyWanted ? 'remove' : 'add',
+            { priority, ...additionalData }
+          );
 
           if (!response.ok) {
             // Reverter otimistic update em caso de erro
@@ -283,7 +284,7 @@ export const useLearningStore = create<LearningStore>()(
             throw new Error('Erro ao atualizar lista de estudos');
           }
 
-          const result = await response.json();
+          const result = response.data;
 
           // Atualizar com dados corretos do servidor
           if (result.success) {
@@ -308,14 +309,7 @@ export const useLearningStore = create<LearningStore>()(
         setWantToLearnLoading(workId, true);
 
         try {
-          const response = await fetch('/api/learning/want-to-learn', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              workId,
-              action: 'remove',
-            }),
-          });
+          const response = await toggleWantToLearnRequest(workId, 'remove');
 
           if (response.ok) {
             removeWantToLearnLocal(workId);
@@ -351,14 +345,10 @@ export const useLearningStore = create<LearningStore>()(
 
       updateWantToLearnPriority: async (workId: string, priority: number) => {
         try {
-          const response = await fetch('/api/learning/want-to-learn', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ workId, priority }),
-          });
+          const response = await updateWantToLearnRequest(workId, { priority });
 
           if (response.ok) {
-            const result = await response.json();
+            const result = response.data;
             if (result.success && result.item) {
               set((state) => ({
                 wantToLearn: state.wantToLearn.map((item) =>
@@ -434,16 +424,11 @@ export const useLearningStore = create<LearningStore>()(
             });
           }
 
-          const response = await fetch('/api/learning/learned', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              workId,
-              action: isCurrentlyLearned ? 'remove' : 'add',
-              mastery,
-              ...additionalData,
-            }),
-          });
+          const response = await toggleLearnedRequest(
+            workId,
+            isCurrentlyLearned ? 'remove' : 'add',
+            { mastery, ...additionalData }
+          );
 
           if (!response.ok) {
             // Reverter otimistic update em caso de erro
@@ -463,7 +448,7 @@ export const useLearningStore = create<LearningStore>()(
             throw new Error('Erro ao atualizar obras aprendidas');
           }
 
-          const result = await response.json();
+          const result = response.data;
 
           // Atualizar com dados corretos do servidor
           if (result.success) {
@@ -488,14 +473,7 @@ export const useLearningStore = create<LearningStore>()(
         setLearnedLoading(workId, true);
 
         try {
-          const response = await fetch('/api/learning/learned', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              workId,
-              action: 'remove',
-            }),
-          });
+          const response = await toggleLearnedRequest(workId, 'remove');
 
           if (response.ok) {
             removeLearnedLocal(workId);
@@ -531,14 +509,10 @@ export const useLearningStore = create<LearningStore>()(
 
       updateLearnedMastery: async (workId: string, mastery: number) => {
         try {
-          const response = await fetch('/api/learning/learned', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ workId, mastery }),
-          });
+          const response = await updateLearnedRequest(workId, { mastery });
 
           if (response.ok) {
-            const result = await response.json();
+            const result = response.data;
             if (result.success && result.item) {
               set((state) => ({
                 learned: state.learned.map((item) =>

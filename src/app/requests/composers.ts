@@ -1,342 +1,130 @@
-// app/requests/composers-optimized.ts
-import prisma from '@/app/libs/prismadb';
-import { unstable_cache } from 'next/cache';
+// app/requests/composers.ts — catálogo de compositores, pela API (Etapa 3)
+import { apiFetch } from '@/app/libs/api/client';
+import { bioTeaser } from '@/app/requests/bio-teaser';
+import type { ApiSchema } from '@/app/libs/api/types';
 
-interface PaginationParams {
+export type PaginationParams = {
   page: number;
   limit: number;
   search?: string;
   epochId?: string;
-}
+};
 
-interface CountParams {
+export type CountParams = {
   search?: string;
   epochId?: string;
+};
+
+type EpochItem = ApiSchema<'EpochItemDto'>;
+
+/** O que a API devolve em `/composers`, `/composers/famous` e `/composers/recommended`. */
+type ComposerListItem = ApiSchema<'ComposerListItemDto'>;
+
+/**
+ * O formato que os cartões de compositor recebem (`composerHomeProps`,
+ * `ComposerImslp`). Época ausente vira texto vazio, que os cartões já
+ * escondem; sem nome completo, vai o nome curto.
+ */
+export interface ComposerCardItem {
+  id: string;
+  name: string;
+  fullName: string;
+  birthDate: string | null;
+  deathDate: string | null;
+  portraitUrl: string | null;
+  epochId: string;
+  epochName: string;
+  epoch: { name: string };
+  /** Resumo, não o texto inteiro — ver `bioTeaser`. */
+  bio: string | null;
+  permLinkImslp: string | null;
+  wikipediaLink: string | null;
+  imslpId: string | null;
+  isVerified: boolean;
 }
 
-// Cache de épocas por 24 horas (dados raramente mudam)
-export const getEpochsCache = unstable_cache(
-  async () => {
-    const epochs = await prisma.epoch.findMany({
-      select: {
-        id: true,
-        name: true,
-      },
-    });
-    return epochs.filter((epoch) => epoch.name !== 'Desconhecido');
-  },
-  ['epochs-list'],
-  {
-    revalidate: 86400, // 24 horas
-    tags: ['epochs'],
-  }
-);
+function toComposerCardItem(composer: ComposerListItem): ComposerCardItem {
+  const epochName = composer.epoch?.name ?? composer.epochName ?? '';
 
-// Função para construir filtros WHERE reutilizável
-function buildWhereClause(search?: string, epochId?: string) {
-  const where: any = {};
-
-  const roleFilter = [
-    {
-      primaryRoleId: '685d591c1e3db0c5aaa893e4',
-    },
-    {
-      roles: {
-        contains: '685d591c1e3db0c5aaa893e4',
-      },
-    },
-  ];
-
-  const hasSearch = search && search.trim();
-  const hasEpochId = epochId && epochId.trim();
-
-  if (hasSearch || hasEpochId) {
-    where.AND = [
-      {
-        OR: roleFilter,
-      },
-    ];
-
-    if (hasSearch) {
-      const terms = search.trim().split(/\s+/);
-
-      where.AND.push({
-        OR: [
-          {
-            AND: terms.map((term) => ({
-              name: {
-                contains: term,
-                mode: 'insensitive',
-              },
-            })),
-          },
-          {
-            AND: terms.map((term) => ({
-              fullName: {
-                contains: term,
-                mode: 'insensitive',
-              },
-            })),
-          },
-        ],
-      });
-    }
-
-    if (hasEpochId) {
-      where.AND.push({
-        epochId: epochId.trim(),
-      });
-    }
-  } else {
-    where.OR = roleFilter;
-  }
-
-  return where;
+  return {
+    id: composer.id,
+    name: composer.name,
+    fullName: composer.fullName ?? composer.name,
+    birthDate: composer.birthDate ?? null,
+    deathDate: composer.deathDate ?? null,
+    portraitUrl: composer.portraitUrl ?? null,
+    epochId: composer.epochId ?? '',
+    epochName,
+    epoch: { name: epochName },
+    bio: bioTeaser(composer.bio),
+    permLinkImslp: composer.permLinkImslp ?? null,
+    wikipediaLink: composer.wikipediaLink ?? null,
+    imslpId: composer.imslpId ?? null,
+    isVerified: composer.isVerified,
+  };
 }
 
-// Paginação otimizada com cache condicional
-export const getComposersWithPagination = unstable_cache(
-  async ({ page, limit, search, epochId }: PaginationParams) => {
-    const skip = (page - 1) * limit;
-    const where = buildWhereClause(search, epochId);
+/**
+ * Cache do `fetch` do Next, por tempo e por tag. O dado já vem do cache da API
+ * (Redis); aqui fica só a página pronta. A API avisa quando um compositor ou
+ * uma época muda (`POST /api/revalidate` com as tags `composers` e `epochs`),
+ * então o tempo é só o teto.
+ */
+const CACHE = {
+  EPOCHS: { revalidate: 86400, tags: ['epochs'] },
+  COMPOSERS: { revalidate: 1800, tags: ['composers'] },
+  CURATED: { revalidate: 86400, tags: ['composers'] },
+};
 
-    const composers = await prisma.composer.findMany({
-      where,
-      select: {
-        id: true,
-        name: true,
-        fullName: true,
-        birthDate: true,
-        deathDate: true,
-        portraitUrl: true,
-        epochId: true,
-        bio: true,
-        permLinkImslp: true,
-        wikipediaLink: true,
-        imslpId: true,
-        isVerified: true,
-        epoch: {
-          select: {
-            name: true,
-          },
-        },
-      },
-      orderBy: {
-        name: 'asc',
-      },
-      skip,
-      take: limit,
-    });
+export async function getEpochsCache(): Promise<EpochItem[]> {
+  return apiFetch<EpochItem[]>('/epochs', { next: CACHE.EPOCHS });
+}
 
-    // Transformar dados para incluir epochName
-    return composers.map((composer) => ({
-      ...composer,
-      epochName: composer.epoch.name,
-    }));
-  },
-  ['composers-paginated-2'],
-  {
-    revalidate: 1800, // 30 minutos
-    tags: ['composers'],
-  }
-);
+export async function getComposersWithPagination(
+  params: PaginationParams
+): Promise<ComposerCardItem[]> {
+  return fetchComposerCards(
+    '/composers',
+    CACHE.COMPOSERS,
+    normalizeComposerParams(params)
+  );
+}
 
-export const getTop20FamousComposers = unstable_cache(
-  async () => {
-    const famousComposerNames = [
-      'Ludwig van Beethoven',
-      'Wolfgang Amadeus Mozart',
-      'Johann Sebastian Bach',
-      'Richard Wagner',
-      'Joseph Haydn',
-      'Johannes Brahms',
-      'Franz Schubert',
-      'Peter Ilyich Tchaikovsky',
-      'George Frideric Handel',
-      'Igor Stravinsky',
-      'Robert Schumann',
-      'Felix Mendelssohn',
-      'Claude Debussy',
-      'Gustav Mahler',
-      'Franz Liszt ',
-      'Maurice Ravel',
-      'Antonín Dvořák',
-      'Antonio Vivaldi',
-      'Dmitri Shostakovich',
-      'Steve Reich',
-      'Frédéric Chopin',
-    ];
+export async function getTop20FamousComposers(): Promise<ComposerCardItem[]> {
+  return fetchComposerCards('/composers/famous', CACHE.CURATED);
+}
 
-    const composers = await prisma.composer.findMany({
-      where: {
-        fullName: {
-          in: famousComposerNames,
-        },
-      },
-      select: {
-        id: true,
-        name: true,
-        fullName: true,
-        portraitUrl: true,
-        isVerified: true,
-        epoch: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    });
+export async function getRecomendadedComposers(): Promise<ComposerCardItem[]> {
+  return fetchComposerCards('/composers/recommended', CACHE.CURATED);
+}
 
-    return composers.map((composer) => ({
-      ...composer,
-      epochName: composer.epoch.name,
-    }));
-  },
-  ['top-20-famous-composers'],
-  {
-    revalidate: 86400, // 24 horas
-    tags: ['composers', 'famous'],
-  }
-);
+export async function getComposersCount(params: CountParams): Promise<number> {
+  return apiFetch<number>('/composers/count', {
+    query: normalizeComposerCountParams(params),
+    next: CACHE.COMPOSERS,
+  });
+}
 
-export const getRecomendadedComposers = unstable_cache(
-  async () => {
-    const remainingComposerNames = [
-      'Serge Prokofiev',
-      'Dmitri Shostakovich',
-      'Béla Bartók',
-      'Hector Berlioz',
-      'Anton Bruckner',
-      'Giovanni Pierluigi da Palestrina',
-      'Claudio Monteverdi',
-      'Jean Sibelius',
-      'Maurice Ravel',
-      'Ralph Vaughan Williams',
-      'Modest Mussorgsky',
-      'Giacomo Puccini',
-      'Henry Purcell',
-      'Gioacchino Rossini',
-      'Edward Elgar',
-      'Sergei Rachmaninoff',
-      'Camille Saint-Saëns',
-      'Josquin Des Prez',
-      'Nikolai Rimsky-Korsakov',
-      'Carl Maria von Weber',
-      'Jean-Philippe Rameau',
-      'Jean-Baptiste Lully',
-      'Gabriel Fauré',
-      'Edvard Grieg',
-      'Christoph Willibald Gluck',
-      'Arnold Schoenberg',
-      'Charles Ives',
-      'Paul Hindemith',
-      'Olivier Messiaen',
-      'Aaron Copland',
-      'Francois Couperin',
-      'William Byrd',
-      'Erik Satie',
-      'Benjamin Britten',
-      'Bedrick Smetana',
-      'César Franck',
-      'Alexander Nikolayevich Scriabin',
-      'Georges Bizet',
-      'Domenico Scarlatti',
-      'Georg Philipp Telemann',
-      'Anton Webern',
-      'Roland de Lassus',
-      'George Gershwin',
-      'Gaetano Donizetti',
-      'Carl Philipp Emanuel Bach',
-      'Archangelo Corelli',
-      'Thomas Tallis',
-      'Johann Strauss II',
-      'Leos Janácek',
-      'Guillaume de Machaut',
-      'Alban Berg',
-      'Alexander Borodin',
-      'Vincenzo Bellini',
-      'Charles Gounod',
-      'Jules Massenet',
-      'Francis Poulenc',
-      'Giovanni Gabrieli',
-      'Pérotin',
-      'Heinrich Schütz',
-      'John Cage',
-      'Giovanni Battista Pergolesi',
-      'John Dowland',
-      'Gustav Holst',
-      'Dietrich Buxtehude',
-      'Ottorino Respighi',
-      'Guillaume Dufay',
-      'Hugo Wolf',
-      'Carl Nielsen',
-      'William Walton',
-      'Darius Milhaud',
-      'Orlando Gibbons',
-      'Giacomo Meyerbeer',
-      'Samuel Barber',
-      'Tomás Luis de Victoria',
-      'Léonin',
-      'Manuel de Falla',
-      'Hildegard von Bingen',
-      'Mikhail Glinka',
-      'Alexander Glazunov',
-      'Don Carlo Gesualdo',
-    ];
+async function fetchComposerCards(
+  path: string,
+  next: { revalidate: number; tags: string[] },
+  query?: PaginationParams
+): Promise<ComposerCardItem[]> {
+  const composers = await apiFetch<ComposerListItem[]>(path, { query, next });
+  return composers.map(toComposerCardItem);
+}
 
-    const composers = await prisma.composer.findMany({
-      where: {
-        fullName: {
-          in: remainingComposerNames,
-        },
-      },
-      select: {
-        id: true,
-        name: true,
-        fullName: true,
-        portraitUrl: true,
-        isVerified: true,
-        epoch: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    });
+function normalizeComposerParams(params: PaginationParams): PaginationParams {
+  return {
+    page: Math.max(params.page || 1, 1),
+    limit: Math.min(Math.max(params.limit || 30, 1), 100),
+    ...normalizeComposerCountParams(params),
+  };
+}
 
-    return composers.map((composer) => ({
-      ...composer,
-      epochName: composer.epoch.name,
-    }));
-  },
-  ['get-recomendaded-composers'],
-  {
-    revalidate: 86400, // 24 horas
-    tags: ['composers', 'famous'],
-  }
-);
-
-// Count otimizado com cache
-export const getComposersCount = unstable_cache(
-  async ({ search, epochId }: CountParams) => {
-    const where = buildWhereClause(search, epochId);
-
-    const count = await prisma.composer.count({
-      where,
-    });
-
-    return count;
-  },
-  ['composers-count'],
-  {
-    revalidate: 1800, // 30 minutos
-    tags: ['composers'],
-  }
-);
-
-// Função para invalidar cache quando necessário
-export async function revalidateComposersCache() {
-  const { revalidateTag } = await import('next/cache');
-  revalidateTag('composers');
-  revalidateTag('epochs');
+function normalizeComposerCountParams(params: CountParams): CountParams {
+  return {
+    search: params.search?.trim() || undefined,
+    epochId: params.epochId?.trim() || undefined,
+  };
 }

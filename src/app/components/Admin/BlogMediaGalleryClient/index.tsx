@@ -35,7 +35,7 @@ import {
 } from '@/app/hooks/admin/useBlogMediaGallery';
 import Button from '@/app/components/Common/Button';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 
 const CATEGORY_TABS = [
   {

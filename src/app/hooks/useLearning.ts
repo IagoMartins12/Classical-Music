@@ -4,6 +4,7 @@
 import { useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { useLearningStore } from '../stores/useLearningStore';
+import { listLearned, listWantToLearn } from '@/app/requests/library';
 
 export function useLearning() {
   const { user, isAuthenticated } = useAuth();
@@ -23,19 +24,14 @@ export function useLearning() {
   const fetchLearningData = async () => {
     try {
       const [wantToLearnResponse, learnedResponse] = await Promise.all([
-        fetch('/api/learning/want-to-learn'),
-        fetch('/api/learning/learned'),
+        listWantToLearn(),
+        listLearned(),
       ]);
 
       if (wantToLearnResponse.ok && learnedResponse.ok) {
-        const [wantToLearnData, learnedData] = await Promise.all([
-          wantToLearnResponse.json(),
-          learnedResponse.json(),
-        ]);
-
         initializeLearning(
-          wantToLearnData.items || [],
-          learnedData.items || []
+          wantToLearnResponse.data.items || [],
+          learnedResponse.data.items || []
         );
       }
     } catch (error) {

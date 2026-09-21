@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { FaChevronLeft, FaChevronRight, FaClock, FaUser } from 'react-icons/fa';
 
 interface Article {

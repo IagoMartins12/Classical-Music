@@ -16,7 +16,7 @@ import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
 import ConfirmationModal from './ConfirmationModal';
 import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
-import { CONFIRMATION_KEYWORD } from '@/app/libs/database/databaseConfig';
+import { CONFIRMATION_KEYWORD } from './confirmations';
 
 interface RecordEditorModalProps {
   isOpen: boolean;

@@ -1,8 +1,5 @@
 // app/(admin)/layout.tsx - SEM html, head, body
 import type { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../libs/auth';
-import { redirect } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import { FavoritesProvider } from '../providers/FavoritesProvider';
 import AdsProvider from '../components/Ads/AdsProvider';
@@ -17,18 +14,13 @@ export const metadata: Metadata = {
   robots: 'noindex, nofollow',
 };
 
-export default async function AdminLayout({
+// O painel é CSR: a página não busca dado no servidor, e quem confere o
+// papel é a API na primeira chamada (o `AdminLayoutClient` trata o 403).
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
-
-  // Verificar se o usuário é admin (role 2)
-  if (!session?.user?.id || session.user.role !== 2) {
-    redirect('/access-denied');
-  }
-
   return (
     <AdsProvider>
       <FavoritesProvider>

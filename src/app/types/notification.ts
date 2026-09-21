@@ -1,6 +1,13 @@
 // app/types/notification.ts - TIPOS ATUALIZADOS COM NOVOS TIPOS DE NOTIFICAÇÃO
 
-import { JsonValue } from '@prisma/client/runtime/library';
+/** O que vem em campos JSON da API (o legado tipava pelo runtime do Prisma). */
+type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
 
 export type NotificationType =
   // NOTIFICAÇÕES AUTOMÁTICAS (mantidas no check/route.ts)

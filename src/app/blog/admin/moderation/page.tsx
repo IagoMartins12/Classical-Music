@@ -2,7 +2,6 @@
 
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth';
 import {
   BiComment,
   BiCheckCircle,
@@ -10,11 +9,12 @@ import {
   BiFlag,
   BiListUl,
 } from 'react-icons/bi';
-import prisma from '@/app/libs/prismadb';
-import { authOptions } from '@/app/libs/auth';
+import { getServerAccessToken } from '@/app/libs/api/server-session';
+import { loadModeration } from '@/app/requests/blog/admin';
 import { ModerationList } from '@/app/components/blog/admin/ModerationList';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
+import { getServerSession } from '@/app/libs/api/server-session';
 
 export const metadata: Metadata = {
   title: 'Moderação de Comentários - Blog Admin',
@@ -29,97 +29,9 @@ interface PageProps {
   }>;
 }
 
-async function getComments(filter: string) {
-  const where: any = {};
-
-  switch (filter) {
-    case 'pending':
-      where.status = 'PENDING';
-      break;
-    case 'approved':
-      where.status = 'APPROVED';
-      break;
-    case 'rejected':
-      where.status = 'REJECTED';
-      break;
-    case 'spam':
-      where.status = 'SPAM';
-      break;
-    case 'flagged':
-      where.status = 'FLAGGED';
-      break;
-    case 'replies':
-      where.parentId = { not: null }; // Apenas respostas
-      break;
-    case 'all':
-    default:
-      break;
-  }
-
-  // ✅ BUSCAR TODOS OS COMENTÁRIOS (não apenas top-level)
-  const comments = await prisma.blogComment.findMany({
-    where,
-    include: {
-      user: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          email: true,
-          image: true,
-        },
-      },
-      article: {
-        select: {
-          id: true,
-          title: true,
-          slug: true,
-        },
-      },
-      parent: {
-        select: {
-          id: true,
-          content: true,
-          user: {
-            select: {
-              firstName: true,
-              lastName: true,
-            },
-          },
-        },
-      },
-      // ✅ INCLUIR CONTAGEM DE RESPOSTAS
-      _count: {
-        select: {
-          replies: true,
-        },
-      },
-    },
-    orderBy: { createdAt: 'desc' },
-    take: 100,
-  });
-
-  return comments;
-}
-
-async function getStats() {
-  const [pending, approved, rejected, spam, flagged, total, replies] =
-    await Promise.all([
-      prisma.blogComment.count({ where: { status: 'PENDING' } }),
-      prisma.blogComment.count({ where: { status: 'APPROVED' } }),
-      prisma.blogComment.count({ where: { status: 'REJECTED' } }),
-      prisma.blogComment.count({ where: { status: 'SPAM' } }),
-      prisma.blogComment.count({ where: { status: 'FLAGGED' } }),
-      prisma.blogComment.count(),
-      prisma.blogComment.count({ where: { parentId: { not: null } } }), // ✅ CONTAR RESPOSTAS
-    ]);
-
-  return { pending, approved, rejected, spam, flagged, total, replies };
-}
-
 // ✅ Usar a interface PageProps correta
 export default async function ModerationPage({ searchParams }: PageProps) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user || (session.user.role !== 1 && session.user.role !== 2)) {
     redirect('/blog');
@@ -129,10 +41,10 @@ export default async function ModerationPage({ searchParams }: PageProps) {
   const resolvedParams = await searchParams;
   const filter = resolvedParams.filter || 'all';
 
-  const [comments, stats] = await Promise.all([
-    getComments(filter),
-    getStats(),
-  ]);
+  const { comments, stats } = await loadModeration(
+    filter,
+    await getServerAccessToken()
+  );
 
   return (
     <div className="min-h-screen">

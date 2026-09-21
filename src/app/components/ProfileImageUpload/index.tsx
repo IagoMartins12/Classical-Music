@@ -3,7 +3,7 @@
 
 import { useToast } from '@/app/hooks/useToast';
 import { useOnboardingModal } from '@/app/stores/authStore';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import React, { useRef, useState, useEffect } from 'react';
 import { FiCamera, FiEdit3, FiTrash2 } from 'react-icons/fi';
 

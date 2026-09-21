@@ -1,6 +1,7 @@
 // app/confirm-account/[token]/page.tsx
 'use client';
 
+import { legacyAuth } from '@/app/libs/api/compat';
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
@@ -102,8 +103,7 @@ export default function ConfirmAccountPage() {
         message: t('pages_token_jsx_h1_children_0__confirmando_sua_conta'),
       });
 
-      const response = await fetch(`/api/auth/confirm-account/${token}`);
-      const result = await response.json();
+      const result = await legacyAuth.confirmAccount(token);
 
       if (result.success) {
         setState({
@@ -149,15 +149,7 @@ export default function ConfirmAccountPage() {
     setResendSuccess(false);
 
     try {
-      const response = await fetch(`/api/auth/confirm-account/${token}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ action: 'resend' }),
-      });
-
-      const result = await response.json();
+      const result = await legacyAuth.resendAccountConfirmation(token);
 
       if (result.success) {
         setResendSuccess(true);

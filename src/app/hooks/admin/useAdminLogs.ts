@@ -1,6 +1,14 @@
 // app/hooks/admin/useAdminLogs.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { adminKeys, useAdminInfinite, useAdminQuery } from './query';
 import { LogCategory, LogLevel } from '@/app/libs/logging/systemLogger';
+import {
+  type ApiAuditEntry,
+  type AuditFilters,
+  exportAuditEntries,
+  getAuditSummary,
+  listAuditEntries,
+} from '@/app/requests/admin/operations';
 
 // Interfaces dos tipos de log
 export interface LogEntry {
@@ -86,7 +94,6 @@ export interface LogPagination {
   hasMore: boolean;
 }
 
-// Tipos de retorno para as operações
 export interface DeleteLogsResult {
   deletedCount: number;
   errors: string[];
@@ -102,215 +109,164 @@ export interface TestLoggingResult {
   message: string;
 }
 
+const RETENTION_MESSAGE =
+  'A trilha de auditoria tem retenção automática (tarefa de manutenção "audit.prune"); não se apaga pelo painel.';
+
+function toLogEntry(entry: ApiAuditEntry & { actorName?: string }): LogEntry {
+  const target = entry.entityType
+    ? `${entry.entityType}${entry.entityId ? ` ${entry.entityId}` : ''}`
+    : '';
+
+  return {
+    id: entry.id,
+    timestamp: entry.createdAt,
+    level: entry.success ? LogLevel.INFO : LogLevel.ERROR,
+    category: LogCategory.AUDIT,
+    message: [entry.action, target].filter(Boolean).join(' — '),
+    traceId: entry.requestId ?? undefined,
+    userId: entry.actorId ?? undefined,
+    userName: entry.actorName,
+    ipAddress: entry.ipAddress ?? undefined,
+    userAgent: entry.userAgent ?? undefined,
+    metadata: entry.metadata ?? undefined,
+  };
+}
+
+// Só existe a categoria "auditoria"; nível erro é "ação que falhou".
+const toAuditFilters = (filters: LogFilters): AuditFilters => ({
+  onlyFailures: filters.level === LogLevel.ERROR,
+  search: filters.search,
+  dateFrom: filters.dateFrom,
+  dateTo: filters.dateTo,
+  userId: filters.userId,
+});
+
+const hasNoMatch = (filters: LogFilters) =>
+  (filters.category !== undefined && filters.category !== LogCategory.AUDIT) ||
+  (filters.level !== undefined &&
+    filters.level !== LogLevel.ERROR &&
+    filters.level !== LogLevel.INFO);
+
+const zeros = <T extends string>(values: T[]) =>
+  Object.fromEntries(values.map((value) => [value, 0])) as Record<T, number>;
+
+/**
+ * Logs do painel = trilha de auditoria da API (`/admin/audit`). O log de
+ * aplicação da API vai para a saída padrão e para o Sentry, fora do painel.
+ */
+/** Entradas por página da trilha — o mesmo do legado. */
+const PAGE_SIZE = 50;
+
+/**
+ * Trilha de auditoria no painel.
+ *
+ * A lista é por cursor (`useAdminInfinite`): o "carregar mais" pede a fatia
+ * seguinte a partir do id do último registro mostrado, em vez de mandar a
+ * API reler todas as páginas anteriores. Trocar o filtro troca a chave, e a
+ * lista recomeça sozinha.
+ */
 export function useAdminLogs() {
-  const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [stats, setStats] = useState<LogStats | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [filters, setFiltersState] = useState<LogFilters>({});
-  const [pagination, setPagination] = useState<LogPagination>({
-    page: 1,
-    limit: 50,
-    total: 0,
-    hasMore: false,
-  });
 
-  // Função para buscar logs
-  const fetchLogs = useCallback(
-    async (reset = false) => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const params = new URLSearchParams();
-        params.set('page', reset ? '1' : pagination.page.toString());
-        params.set('limit', pagination.limit.toString());
-
-        if (filters.level) params.set('level', filters.level);
-        if (filters.category) params.set('category', filters.category);
-        if (filters.search) params.set('search', filters.search);
-        if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
-        if (filters.dateTo) params.set('dateTo', filters.dateTo);
-        if (filters.userId) params.set('userId', filters.userId);
-
-        const response = await fetch(`/api/admin/logs?${params}`);
-        if (!response.ok) {
-          throw new Error(`Erro ao buscar logs: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        if (reset) {
-          setLogs(data.logs);
-          setPagination({
-            page: 1,
-            limit: pagination.limit,
-            total: data.total,
-            hasMore: data.hasMore,
-          });
-        } else {
-          setLogs((prev) => [...prev, ...data.logs]);
-          setPagination((prev) => ({
-            ...prev,
-            page: prev.page + 1,
-            hasMore: data.hasMore,
-          }));
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
-      } finally {
-        setLoading(false);
+  const list = useAdminInfinite(
+    adminKeys.list('audit', filters),
+    async (cursor) => {
+      // Filtro que a trilha não tem: lista vazia, sem ir ao servidor.
+      if (hasNoMatch(filters)) {
+        return { items: [] as LogEntry[], total: 0, nextCursor: null };
       }
-    },
-    [filters, pagination.page, pagination.limit]
+
+      const data = await listAuditEntries(
+        PAGE_SIZE,
+        toAuditFilters(filters),
+        cursor
+      );
+      const entries = data.entries.map(toLogEntry);
+
+      return {
+        items:
+          filters.level === LogLevel.INFO
+            ? entries.filter((entry) => entry.level === LogLevel.INFO)
+            : entries,
+        total: data.total,
+        nextCursor: data.nextCursor,
+      };
+    }
   );
 
-  // Função para buscar estatísticas
-  const fetchStats = useCallback(async () => {
-    try {
-      const params = new URLSearchParams();
-      if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
-      if (filters.dateTo) params.set('dateTo', filters.dateTo);
+  const summary = useAdminQuery(
+    adminKeys.list('audit-summary', filters.dateFrom ?? null),
+    async () => {
+      const since = filters.dateFrom
+        ? new Date(filters.dateFrom).getTime()
+        : undefined;
+      const days = since
+        ? Math.min(365, Math.max(1, Math.ceil((Date.now() - since) / 86400000)))
+        : 30;
+      const data = await getAuditSummary(days);
 
-      const response = await fetch(`/api/admin/logs?${params}`);
-      if (!response.ok) {
-        throw new Error(`Erro ao buscar estatísticas: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      setStats(data);
-    } catch (err) {
-      console.error('Erro ao buscar estatísticas:', err);
+      return {
+        overview: {
+          totalLogs: data.total,
+          errorRate: data.failureRate ?? 0,
+          avgDuration: 0,
+          slowQueries: 0,
+          byLevel: {
+            ...zeros(Object.values(LogLevel) as LogLevel[]),
+            [LogLevel.ERROR]: data.failures,
+            [LogLevel.INFO]: data.total - data.failures,
+          },
+          byCategory: {
+            ...zeros(Object.values(LogCategory) as LogCategory[]),
+            [LogCategory.AUDIT]: data.total,
+          },
+          topErrors: [],
+        },
+        availableDates: [],
+        searchedDates: [],
+      } as LogStats;
     }
-  }, [filters.dateFrom, filters.dateTo]);
+  );
 
-  // Função para definir filtros e reiniciar busca
   const setFilters = useCallback((newFilters: Partial<LogFilters>) => {
-    setFiltersState((prev) => ({ ...prev, ...newFilters }));
-    setPagination((prev) => ({ ...prev, page: 1 }));
+    setFiltersState((previous) => ({ ...previous, ...newFilters }));
   }, []);
 
-  // Função para recarregar logs
   const refreshLogs = useCallback(async () => {
-    await Promise.all([fetchLogs(true), fetchStats()]);
-  }, [fetchLogs, fetchStats]);
+    await Promise.all([list.refetch(), summary.refetch()]);
+  }, [list, summary]);
 
-  // Função para carregar mais logs
   const loadMoreLogs = useCallback(async () => {
-    if (!pagination.hasMore || loading) return;
-    await fetchLogs(false);
-  }, [fetchLogs, pagination.hasMore, loading]);
+    list.loadMore();
+  }, [list]);
 
-  // Função para deletar logs
   const deleteLogs = useCallback(
-    async (dates: string[]): Promise<DeleteLogsResult> => {
-      try {
-        const response = await fetch('/api/admin/logs/cleanup', {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ dates }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Erro ao deletar logs: ${response.statusText}`);
-        }
-
-        const result = await response.json();
-        await refreshLogs(); // Atualizar logs após deletar
-        return result;
-      } catch (err) {
-        throw new Error(
-          err instanceof Error ? err.message : 'Erro desconhecido'
-        );
-      }
+    async (_dates: string[]): Promise<DeleteLogsResult> => {
+      throw new Error(RETENTION_MESSAGE);
     },
-    [refreshLogs]
+    []
   );
 
-  // Função para limpeza automática
   const cleanupOldLogs = useCallback(
-    async (days: number): Promise<CleanupResult> => {
-      try {
-        const response = await fetch('/api/admin/logs/cleanup/auto', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ days }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Erro na limpeza automática: ${response.statusText}`);
-        }
-
-        const result = await response.json();
-        await refreshLogs(); // Atualizar logs após limpeza
-        return result;
-      } catch (err) {
-        throw new Error(
-          err instanceof Error ? err.message : 'Erro desconhecido'
-        );
-      }
+    async (_days: number): Promise<CleanupResult> => {
+      throw new Error(RETENTION_MESSAGE);
     },
-    [refreshLogs]
+    []
   );
 
-  // Função para exportar logs
   const exportLogs = useCallback(
     async (format: 'csv' | 'json') => {
-      try {
-        const params = new URLSearchParams();
-        params.set('format', format);
-        if (filters.level) params.set('level', filters.level);
-        if (filters.category) params.set('category', filters.category);
-        if (filters.search) params.set('search', filters.search);
-        if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
-        if (filters.dateTo) params.set('dateTo', filters.dateTo);
-
-        const response = await fetch(`/api/admin/logs/export?${params}`);
-        if (!response.ok) {
-          throw new Error(`Erro ao exportar logs: ${response.statusText}`);
-        }
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `logs-${
-          new Date().toISOString().split('T')[0]
-        }.${format}`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      } catch (err) {
-        throw new Error(
-          err instanceof Error ? err.message : 'Erro desconhecido'
-        );
-      }
+      await exportAuditEntries(format, toAuditFilters(filters));
     },
     [filters]
   );
 
-  // Função para teste de logging
   const testLogging = useCallback(async (): Promise<TestLoggingResult> => {
-    try {
-      const response = await fetch('/api/admin/logs/test', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
+    throw new Error(
+      'O log de teste não existe na API: a trilha só registra ações reais.'
+    );
+  }, []);
 
-      if (!response.ok) {
-        throw new Error(`Erro ao criar log de teste: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      await refreshLogs(); // Atualizar logs após criar teste
-      return result;
-    } catch (err) {
-      throw new Error(err instanceof Error ? err.message : 'Erro desconhecido');
-    }
-  }, [refreshLogs]);
-
-  // Funções utilitárias para UI
   const getLevelIcon = (level: LogLevel) => {
     const icons = {
       [LogLevel.ERROR]: 'FiAlertTriangle',
@@ -351,10 +307,7 @@ export function useAdminLogs() {
   };
 
   const getRelativeTime = (timestamp: string) => {
-    const now = new Date();
-    const time = new Date(timestamp);
-    const diff = now.getTime() - time.getTime();
-
+    const diff = Date.now() - new Date(timestamp).getTime();
     const seconds = Math.floor(diff / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
@@ -372,18 +325,19 @@ export function useAdminLogs() {
     return `${(duration / 60000).toFixed(1)}m`;
   };
 
-  // Efeito para carregar dados iniciais
-  useEffect(() => {
-    refreshLogs();
-  }, [filters]);
-
   return {
-    logs,
-    stats,
-    loading,
-    error,
+    logs: list.items,
+    stats: summary.data ?? null,
+    loading: list.loading || list.fetching,
+    error: list.error ?? summary.error,
     filters,
-    pagination,
+    pagination: {
+      // "Página" é só quantas fatias já vieram; quem manda é o cursor.
+      page: Math.max(1, Math.ceil(list.items.length / PAGE_SIZE)),
+      limit: PAGE_SIZE,
+      total: list.total ?? list.items.length,
+      hasMore: list.hasMore,
+    } satisfies LogPagination,
     setFilters,
     refreshLogs,
     loadMoreLogs,

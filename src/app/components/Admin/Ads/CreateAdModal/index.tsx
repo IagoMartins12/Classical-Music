@@ -16,6 +16,7 @@ import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
+import { listInstruments } from '@/app/requests/admin/ads';
 
 interface CreateAdModalProps {
   showCreateModal: boolean;
@@ -113,9 +114,7 @@ export default function CreateAdModal({
   useEffect(() => {
     const fetchInstruments = async () => {
       try {
-        const response = await fetch('/api/instruments');
-        const data = await response.json();
-        setAvailableInstruments(data);
+        setAvailableInstruments(await listInstruments());
       } catch (error) {
         console.error('Erro ao buscar instrumentos:', error);
       }

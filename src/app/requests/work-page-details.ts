@@ -1,7 +1,15 @@
-// app/requests/work-page-details.ts - CORRIGIDO O TYPO NO CAMPO customAudioSource
-import prisma from '@/app/libs/prismadb';
-import { JsonValue } from '@prisma/client/runtime/library';
-import { unstable_cache } from 'next/cache';
+// app/requests/work-page-details.ts — página da obra, pela API (Etapa 3)
+import { ApiError, apiFetch } from '@/app/libs/api/client';
+import type { ApiSchema } from '@/app/libs/api/types';
+
+/** O mesmo formato do `JsonValue` do Prisma, sem depender dele. */
+type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
 
 export interface WorkDetails {
   id: string;
@@ -26,7 +34,6 @@ export interface WorkDetails {
   createdBy?: string | null;
   parentWorkId?: string | null;
 
-  // 🆕 NOVOS CAMPOS PARA RELAÇÕES DE COLEÇÃO
   parentWork?: {
     id: string;
     title: string;
@@ -42,13 +49,13 @@ export interface WorkDetails {
     title: string;
     subtitle?: string | null;
   }>;
-  // 🆕 Campos de mídia expandidos com thumbnail
+
   spotifyTrackId?: string | null;
   spotifyTrackUrl?: string | null;
-  spotifyDisplayTitle?: string | null; // 🆕 "Composer - Interpreter"
-  spotifyDuration?: number | null; // 🆕 Duração em ms
-  spotifyArtists?: JsonValue | null; // 🆕 JSON com array de artistas
-  spotifyThumbnail?: string | null; // 🆕 URL da thumbnail do Spotify
+  spotifyDisplayTitle?: string | null; // "Composer - Interpreter"
+  spotifyDuration?: number | null; // em ms
+  spotifyArtists?: JsonValue | null;
+  spotifyThumbnail?: string | null;
 
   youtubeVideoId?: string | null;
   youtubeVideoUrl?: string | null;
@@ -66,7 +73,7 @@ export interface WorkDetails {
   customAudioUrl?: string | null;
   customAudioFile?: string | null;
   customAudioMetadata?: JsonValue | null;
-  customAudioSource?: string | null; // 🔧 CORRIGIDO: era customAudioMSource
+  customAudioSource?: string | null;
 
   mediaSource?: string | null; // "auto", "manual", "none"
   lastMediaSearch?: Date | null;
@@ -96,411 +103,139 @@ export interface WorkDetails {
   workGenresArr: string[];
 }
 
-export interface WorkListItem {
-  id: string;
-  title: string;
-  subtitle?: string | null;
-  opOrCatalog?: string;
-  compositionYear?: string;
-  tone?: string;
-  mediaDuration?: string;
-  workType: string;
-  composer: {
-    id: string;
-    name: string;
-    epochName: string | null;
-  };
+type WorkDetailDto = ApiSchema<'WorkDetailDto'>;
 
-  instrument: {
-    name: string;
-  } | null;
-}
+/**
+ * Cache do `fetch` do Next: a página da obra é a mesma para todos (anotações e
+ * favoritos vêm à parte, no navegador). A API avisa pela tag `works` quando a
+ * obra muda — edição, mídia nova, partitura.
+ */
+const WORK_CACHE = { revalidate: 7200, tags: ['works'] };
 
-export interface WorksListResponse {
-  works: WorkListItem[];
-  totalCount: number;
-  hasMore: boolean;
-}
-
-// Cache dos dados da obra (sem anotações/favoritos) por 2 horas
-const getCachedWorkData = unstable_cache(
-  async (workId: string) => {
-    try {
-      const work = await prisma.work.findUnique({
-        where: {
-          id: workId,
-        },
-        select: {
-          id: true,
-          title: true,
-          opOrCatalog: true,
-          subtitle: true,
-          compositionYear: true,
-          firstPublishDate: true,
-          tone: true,
-          mediaDuration: true,
-          imslpPermlink: true,
-          imslpId: true,
-          videoUrl: true,
-          workStyle: true,
-          moviment: true,
-          dedicateTo: true,
-          instrumentation: true,
-          workType: true,
-          movementNumber: true,
-          createdAt: true,
-          instrumentId: true,
-          epochId: true,
-          categoryNames: true,
-          workGenresArr: true,
-          isVerified: true,
-          createdBy: true,
-          parentWorkId: true,
-
-          // 🆕 Campos de mídia expandidos com thumbnail
-          spotifyTrackId: true,
-          spotifyTrackUrl: true,
-          spotifyDisplayTitle: true, // 🆕
-          spotifyDuration: true, // 🆕
-          spotifyArtists: true, // 🆕
-          spotifyThumbnail: true, // 🆕 Thumbnail do Spotify
-
-          youtubeVideoId: true,
-          youtubeVideoUrl: true,
-          youtubeTitle: true,
-
-          videoAulaUrl: true,
-          videoAulaFile: true,
-          videoAulaMetadata: true,
-          videoAulaSource: true,
-          videoAulaTitle: true,
-          videoAulaType: true,
-          videoAulaAddedAt: true,
-          videoAulaAddedBy: true,
-
-          customAudioUrl: true,
-          customAudioFile: true,
-          customAudioMetadata: true,
-          customAudioSource: true, // 🔧 CORRIGIDO: era customAudioMSource
-
-          mediaSource: true, // "auto", "manual", "none"
-          lastMediaSearch: true,
-          mediaSearchError: true,
-          difficultyLevel: true,
-
-          composer: {
-            select: {
-              id: true,
-              name: true,
-              fullName: true,
-              epochName: true,
-              portraitUrl: true,
-            },
-          },
-        },
-      });
-
-      if (!work) return null;
-
-      // Buscar parentWork se existir
-      let parentWork = null;
-      if (work?.parentWorkId) {
-        parentWork = await prisma.work.findUnique({
-          where: { id: work.parentWorkId },
-          select: {
-            id: true,
-            title: true,
-            composer: {
-              select: {
-                id: true,
-                name: true,
-                fullName: true,
-              },
-            },
-          },
-        });
-      }
-
-      // Buscar instrument e epoch
-      const [instrument, epoch] = await Promise.all([
-        work.instrumentId
-          ? prisma.instrument.findUnique({
-              where: { id: work.instrumentId },
-              select: { id: true, name: true },
-            })
-          : null,
-        work.epochId
-          ? prisma.epoch.findUnique({
-              where: { id: work.epochId },
-              select: { id: true, name: true },
-            })
-          : null,
-      ]);
-
-      return {
-        ...work,
-        parentWork,
-        instrument,
-        epoch,
-      };
-    } catch (error) {
-      console.error('Erro ao buscar dados da obra:', error);
-      return null;
-    }
-  },
-  ['work-basic-data'],
-  {
-    revalidate: 7200, // 2 horas
-    tags: ['work-basic-data'],
-  }
-);
-
-// 🆕 NOVA FUNÇÃO para buscar obras filhas
-export const getChildWorks = unstable_cache(
-  async (parentWorkId: string) => {
-    try {
-      const childWorks = await prisma.work.findMany({
-        where: {
-          parentWorkId: parentWorkId,
-        },
-        select: {
-          id: true,
-          title: true,
-          subtitle: true,
-        },
-        orderBy: {
-          title: 'asc',
-        },
-      });
-
-      return childWorks;
-    } catch (error) {
-      console.error('Erro ao buscar obras filhas:', error);
-      return [];
-    }
-  },
-  ['child-works'],
-  {
-    revalidate: 3600, // 1 hora
-    tags: ['child-works'],
-  }
-);
-// Função principal para buscar obra por ID
-export const getWorkById = async (
-  workId: string
-): Promise<WorkDetails | null> => {
+/** A obra, ou `null` se ela não existe (a página responde "não encontrada"). */
+export async function getWorkById(workId: string): Promise<WorkDetails | null> {
   try {
-    const [work, childWorks] = await Promise.all([
-      getCachedWorkData(workId),
-      getChildWorks(workId),
-    ]);
-    if (!work) {
-      return null;
-    }
-
-    return {
-      id: work.id,
-      title: work.title,
-      opOrCatalog: work.opOrCatalog || undefined,
-      subtitle: work.subtitle,
-      compositionYear: work.compositionYear || undefined,
-      firstPublishDate: work.firstPublishDate || undefined,
-      tone: work.tone || undefined,
-      mediaDuration: work.mediaDuration || undefined,
-      imslpPermlink: work.imslpPermlink,
-      imslpId: work.imslpId,
-      videoUrl: work.videoUrl || undefined,
-      workStyle: work.workStyle || undefined,
-      moviment: work.moviment || undefined,
-      dedicateTo: work.dedicateTo || undefined,
-      instrumentation: work.instrumentation || undefined,
-      workType: work.workType,
-      movementNumber: work.movementNumber || undefined,
-      createdAt: work.createdAt,
-      composer: work.composer,
-      instrument: work.instrument,
-      epoch: work.epoch,
-      categoryNames: work.categoryNames,
-      workGenresArr: work.workGenresArr,
-      isVerified: work.isVerified,
-      createdBy: work.createdBy,
-      parentWorkId: work.parentWorkId,
-      parentWork: work.parentWork,
-      childWorks: childWorks,
-      // 🆕 Campos de mídia expandidos com thumbnail
-      spotifyTrackId: work.spotifyTrackId,
-      spotifyTrackUrl: work.spotifyTrackUrl,
-      spotifyDisplayTitle: work.spotifyDisplayTitle, // 🆕
-      spotifyDuration: work.spotifyDuration, // 🆕
-      spotifyArtists: work.spotifyArtists, // 🆕
-      spotifyThumbnail: work.spotifyThumbnail, // 🆕 Thumbnail do Spotify
-
-      youtubeVideoId: work.youtubeVideoId,
-      youtubeVideoUrl: work.youtubeVideoUrl,
-      youtubeTitle: work.youtubeTitle,
-
-      videoAulaUrl: work.videoAulaUrl,
-      videoAulaFile: work.videoAulaFile,
-      videoAulaMetadata: work.videoAulaMetadata,
-      videoAulaSource: work.videoAulaSource,
-      videoAulaTitle: work.videoAulaTitle,
-      videoAulaType: work.videoAulaType,
-      videoAulaAddedAt: work.videoAulaAddedAt,
-
-      videoAulaAddedBy: work.videoAulaAddedBy,
-      customAudioUrl: work.customAudioUrl,
-      customAudioFile: work.customAudioFile,
-      customAudioMetadata: work.customAudioMetadata,
-      customAudioSource: work.customAudioSource, // 🔧 CORRIGIDO
-
-      mediaSource: work.mediaSource, // "auto", "manual", "none"
-      lastMediaSearch: work.lastMediaSearch,
-      difficultyLevel: work.difficultyLevel,
-      mediaSearchError: work.mediaSearchError,
-    };
+    const work = await apiFetch<WorkDetailDto>(
+      `/works/${encodeURIComponent(workId)}`,
+      { next: WORK_CACHE }
+    );
+    return toWorkDetails(work);
   } catch (error) {
-    console.error('Erro ao buscar obra:', error);
-    return null;
-  }
-};
-
-// Buscar obras relacionadas (mesmo compositor, mesmo gênero, etc.)
-export const getRelatedWorks = unstable_cache(
-  async (workId: string, limit: number = 6): Promise<WorkListItem[]> => {
-    try {
-      const work = await prisma.work.findUnique({
-        where: { id: workId },
-        select: {
-          composerId: true,
-          instrumentId: true,
-        },
-      });
-
-      if (!work) return [];
-
-      const relatedWorks = await prisma.work.findMany({
-        where: {
-          AND: [
-            { id: { not: workId } },
-            {
-              OR: [
-                { composerId: work.composerId },
-                ...(work.instrumentId
-                  ? [{ instrumentId: work.instrumentId }]
-                  : []),
-              ],
-            },
-          ],
-        },
-        select: {
-          id: true,
-          title: true,
-          opOrCatalog: true,
-          subtitle: true,
-          compositionYear: true,
-          tone: true,
-          mediaDuration: true,
-          workType: true,
-          instrumentId: true,
-          composer: {
-            select: {
-              id: true,
-              name: true,
-              epochName: true,
-            },
-          },
-        },
-        orderBy: {
-          title: 'asc',
-        },
-        take: limit,
-      });
-
-      const instrumentIds = [
-        ...new Set(relatedWorks.map((w) => w.instrumentId).filter(Boolean)),
-      ];
-      const [instruments] = await Promise.all([
-        instrumentIds.length > 0
-          ? prisma.instrument.findMany({
-              where: { id: { in: instrumentIds } },
-              select: { id: true, name: true },
-            })
-          : [],
-      ]);
-
-      // Criar mapas para lookup rápido
-      const instrumentMap = new Map(instruments.map((i) => [i.id, i]));
-
-      return relatedWorks.map((work) => ({
-        id: work.id,
-        title: work.title,
-        opOrCatalog: work.opOrCatalog || undefined,
-        compositionYear: work.compositionYear || undefined,
-        tone: work.tone || undefined,
-        mediaDuration: work.mediaDuration || undefined,
-        workType: work.workType,
-        composer: work.composer,
-        instrument: work.instrumentId
-          ? instrumentMap.get(work.instrumentId) || null
-          : null,
-      }));
-    } catch (error) {
-      console.error('Erro ao buscar obras relacionadas:', error);
-      return [];
-    }
-  },
-  ['related-works'],
-  {
-    revalidate: 3600,
-    tags: ['related-works'],
-  }
-);
-
-// 🆕 Função para buscar estatísticas de mídia da obra
-export const getWorkMediaStats = unstable_cache(
-  async (workId: string) => {
-    try {
-      const work = await prisma.work.findUnique({
-        where: { id: workId },
-        select: {
-          spotifyTrackId: true,
-          spotifyDuration: true,
-          spotifyThumbnail: true,
-          youtubeVideoId: true,
-          customAudioFile: true,
-          customAudioUrl: true, // 🆕 Incluir URL customizada
-          customAudioSource: true, // 🆕 Incluir fonte
-          mediaSource: true,
-          lastMediaSearch: true,
-        },
-      });
-
-      if (!work) return null;
-
-      return {
-        hasSpotify: !!work.spotifyTrackId,
-        hasYoutube: !!work.youtubeVideoId,
-        hasCustomAudio: !!(work.customAudioFile || work.customAudioUrl),
-        hasThumbnail: !!work.spotifyThumbnail,
-        audioSource: work.customAudioSource, // 🆕 Incluir fonte do áudio
-        mediaSource: work.mediaSource,
-        lastSearched: work.lastMediaSearch,
-        completeness: calculateMediaCompleteness(work),
-      };
-    } catch (error) {
-      console.error('Erro ao buscar estatísticas de mídia:', error);
+    if (
+      error instanceof ApiError &&
+      (error.status === 404 || error.status === 400)
+    ) {
       return null;
     }
-  },
-  ['work-media-stats'],
-  {
-    revalidate: 1800, // 30 minutos
-    tags: ['work-media-stats'],
+    throw error;
   }
-);
+}
 
-// 🆕 Função para calcular completude da mídia
-function calculateMediaCompleteness(work: any): number {
+/**
+ * Resumo de mídia da obra. Sai do mesmo detalhe de `getWorkById` — o `fetch`
+ * do Next deduplica a chamada na mesma renderização.
+ */
+export async function getWorkMediaStats(workId: string) {
+  const work = await getWorkById(workId);
+
+  if (!work) return null;
+
+  return {
+    hasSpotify: !!work.spotifyTrackId,
+    hasYoutube: !!work.youtubeVideoId,
+    hasCustomAudio: !!(work.customAudioFile || work.customAudioUrl),
+    hasThumbnail: !!work.spotifyThumbnail,
+    audioSource: work.customAudioSource,
+    mediaSource: work.mediaSource,
+    lastSearched: work.lastMediaSearch,
+    completeness: calculateMediaCompleteness(work),
+  };
+}
+
+/** Limpa o cache das páginas de obra (usado por rota de envio do legado). */
+export async function revalidateWorkCache(workId?: string) {
+  const { revalidateTag } = await import('next/cache');
+  revalidateTag('works');
+  if (workId) {
+    revalidateTag(`work-${workId}`);
+  }
+}
+
+function toWorkDetails(work: WorkDetailDto): WorkDetails {
+  return {
+    id: work.id,
+    title: work.title,
+    subtitle: work.subtitle,
+    opOrCatalog: work.opOrCatalog || undefined,
+    compositionYear: work.compositionYear || undefined,
+    firstPublishDate: work.firstPublishDate || undefined,
+    tone: work.tone || undefined,
+    mediaDuration: work.mediaDuration || undefined,
+    imslpPermlink: work.imslpPermlink,
+    imslpId: work.imslpId,
+    videoUrl: work.videoUrl || undefined,
+    workStyle: work.workStyle || undefined,
+    moviment: work.moviment || undefined,
+    dedicateTo: work.dedicateTo || undefined,
+    instrumentation: work.instrumentation || undefined,
+    workType: work.workType,
+    movementNumber: work.movementNumber || undefined,
+    createdAt: new Date(work.createdAt),
+    isVerified: work.isVerified,
+    createdBy: work.createdBy,
+    parentWorkId: work.parentWorkId,
+    parentWork: work.parentWork ?? null,
+    childWorks: work.childWorks,
+
+    spotifyTrackId: work.spotifyTrackId,
+    spotifyTrackUrl: work.spotifyTrackUrl,
+    spotifyDisplayTitle: work.spotifyDisplayTitle,
+    spotifyDuration: work.spotifyDuration,
+    spotifyArtists: (work.spotifyArtists ?? null) as JsonValue | null,
+    spotifyThumbnail: work.spotifyThumbnail,
+
+    youtubeVideoId: work.youtubeVideoId,
+    youtubeVideoUrl: work.youtubeVideoUrl,
+    youtubeTitle: work.youtubeTitle,
+
+    videoAulaUrl: work.videoAulaUrl,
+    videoAulaFile: work.videoAulaFile,
+    videoAulaMetadata: (work.videoAulaMetadata ?? null) as JsonValue | null,
+    videoAulaSource: work.videoAulaSource,
+    videoAulaTitle: work.videoAulaTitle,
+    videoAulaType: work.videoAulaType,
+    videoAulaAddedAt: toDate(work.videoAulaAddedAt),
+    videoAulaAddedBy: work.videoAulaAddedBy,
+
+    customAudioUrl: work.customAudioUrl,
+    customAudioFile: work.customAudioFile,
+    customAudioMetadata: (work.customAudioMetadata ?? null) as JsonValue | null,
+    customAudioSource: work.customAudioSource,
+
+    mediaSource: work.mediaSource,
+    lastMediaSearch: toDate(work.lastMediaSearch),
+    mediaSearchError: work.mediaSearchError,
+    difficultyLevel: work.difficultyLevel,
+
+    composer: {
+      id: work.composer.id,
+      name: work.composer.name,
+      fullName: work.composer.fullName,
+      epochName: work.composer.epochName ?? null,
+      portraitUrl: work.composer.portraitUrl,
+    },
+    instrument: work.instrument ?? null,
+    epoch: work.epoch ?? null,
+    categoryNames: work.categoryNames,
+    workGenresArr: work.workGenresArr,
+  };
+}
+
+function toDate(value?: string | null): Date | null {
+  return value ? new Date(value) : null;
+}
+
+function calculateMediaCompleteness(work: WorkDetails): number {
   let score = 0;
   let maxScore = 0;
 
@@ -526,17 +261,4 @@ function calculateMediaCompleteness(work: any): number {
   }
 
   return Math.round((score / maxScore) * 100);
-}
-
-// Função para invalidar cache
-export async function revalidateWorkCache(workId?: string) {
-  const { revalidateTag } = await import('next/cache');
-  revalidateTag('works-list');
-  revalidateTag('work-basic-data');
-  revalidateTag('related-works');
-  revalidateTag('work-media-stats'); // 🆕
-  revalidateTag('instruments-list');
-  if (workId) {
-    revalidateTag(`work-${workId}`);
-  }
 }

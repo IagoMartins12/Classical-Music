@@ -2,7 +2,7 @@
 'use client';
 
 import { FiClock, FiUsers, FiMusic, FiChevronDown } from 'react-icons/fi';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import { useState } from 'react';
 import SectionTitle from '../Utils/SectionTitle';

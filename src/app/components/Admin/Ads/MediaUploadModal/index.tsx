@@ -25,6 +25,7 @@ import {
   validateMediaDimensions,
 } from '@/app/libs/ads/mediaUtils';
 import ImageNext from 'next/image';
+import { removeAdMedia, uploadAdMedia } from '@/app/requests/admin/ads';
 
 interface MediaUploadModalProps {
   ad: any;
@@ -190,32 +191,16 @@ export default function MediaUploadModal({
     setUploading(true);
 
     try {
-      const formData = new FormData();
-      formData.append('file', filePreview.file);
-      formData.append('type', uploadType);
-      formData.append('quality', quality);
-
-      const response = await fetch(`/api/admin/ads/${ad.id}/media`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro no upload');
-      }
+      // Imagem e vídeo pelo mesmo caminho: o arquivo sobe por `/uploads/file`
+      // e é ligado ao anúncio. O vídeo ia à rota do legado por um engano —
+      // a API o aceita desde sempre (ver `uploadAdMedia`).
+      await uploadAdMedia(ad.id, filePreview.file, uploadType);
 
       toast.success('✅ Mídia processada com sucesso!');
 
-      // Mostrar dicas baseadas no resultado
-      if (data.data?.recommendations) {
-        setTimeout(() => {
-          toast.success(`💡 ${data.data.recommendations.qualityTips[0]}`, {
-            duration: 4000,
-          });
-        }, 1000);
-      }
+      // As "dicas de qualidade" que apareciam aqui vinham da rota do legado,
+      // que analisava o arquivo no servidor do Next. A API não devolve isso, e
+      // o aviso saiu junto com a rota.
 
       // 🆕 Limpar preview corretamente
       clearPreview();
@@ -262,17 +247,7 @@ export default function MediaUploadModal({
     if (!confirm('Tem certeza que deseja remover esta mídia?')) return;
 
     try {
-      const response = await fetch(
-        `/api/admin/ads/${ad.id}/media?type=${type}`,
-        {
-          method: 'DELETE',
-        }
-      );
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Erro ao remover mídia');
-      }
+      await removeAdMedia(ad.id, type);
 
       toast.success('Mídia removida com sucesso!');
       onSuccess?.();

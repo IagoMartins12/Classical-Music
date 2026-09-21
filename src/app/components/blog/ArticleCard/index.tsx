@@ -1,6 +1,6 @@
 // app/components/blog/ArticleCard.tsx
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { FaClock, FaCommentDots, FaHeart, FaUser } from 'react-icons/fa';
 
 interface ArticleCardProps {

@@ -28,7 +28,7 @@ import {
   PageContainer,
 } from '../../../../components/animation/AnimatedComponents';
 import { CreateLessonData } from './pageServer';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { useRouter } from 'next/navigation';
@@ -40,6 +40,7 @@ import WorkSelectionSection, {
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
 import { translateNivel } from '@/app/utils';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { checkLessonConflicts } from '@/app/requests/portal/lesson-actions';
 
 interface CreateLessonPageClientProps {
   initialData: CreateLessonData;
@@ -606,31 +607,20 @@ export default function CreateLessonPageClient({
     setCheckingConflicts(true);
 
     try {
-      const response = await fetch('/api/lessons/check-conflicts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          studentUserId: formData.studentUserId,
-          scheduledAt: formData.scheduledAt,
-          duration: formData.duration,
-          maxLessonsPerWeek: selectedStudent.relationship.maxLessonsPerWeek,
-        }),
+      // Pré-checagem pela agenda da semana; a API confere de novo ao criar.
+      const result = await checkLessonConflicts({
+        studentUserId: formData.studentUserId,
+        studentName: selectedStudent.name,
+        scheduledAt: formData.scheduledAt,
+        duration: formData.duration,
+        maxLessonsPerWeek: selectedStudent.relationship.maxLessonsPerWeek,
       });
 
-      if (response.ok) {
-        const conflictData = await response.json();
+      setConflicts(result);
 
-        if (conflictData.success) {
-          setConflicts(conflictData.conflicts);
-
-          // Mostrar modal apenas se houver conflitos ou warnings
-          if (
-            conflictData.conflicts.hasTimeConflicts ||
-            conflictData.conflicts.hasWeeklyLimitExceeded
-          ) {
-            setShowConflictModal(true);
-          }
-        }
+      // Mostrar modal apenas se houver conflitos ou warnings
+      if (result.hasTimeConflicts || result.hasWeeklyLimitExceeded) {
+        setShowConflictModal(true);
       }
     } catch (error) {
       console.error('Erro ao verificar conflitos:', error);

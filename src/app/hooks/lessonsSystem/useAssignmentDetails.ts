@@ -1,6 +1,10 @@
 // app/hooks/lessonsSystem/useAssignmentDetails.ts - Hook para gerenciar detalhes da tarefa
 
 import { useState, useCallback } from 'react';
+import {
+  giveAssignmentFeedback,
+  updateAssignmentRequest,
+} from '@/app/requests/portal/assignment-actions';
 
 interface AssignmentData {
   id: string;
@@ -128,26 +132,7 @@ export function useAssignmentDetails(
       setError(null);
 
       try {
-        const response = await fetch('/api/assignments', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            assignmentId,
-            ...feedback,
-          }),
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || `Erro ${response.status}`);
-        }
-
-        if (!result.success) {
-          throw new Error(result.error || 'Erro ao atualizar feedback');
-        }
+        await giveAssignmentFeedback(assignmentId, feedback);
 
         // Update assignment in state
         setState((prev) => ({
@@ -187,41 +172,14 @@ export function useAssignmentDetails(
       setError(null);
 
       try {
-        const response = await fetch('/api/assignments', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            assignmentId,
-            isCompleted: true,
-            status: 'COMPLETED',
-            completedAt: new Date().toISOString(),
-            ...approvalData,
-          }),
-        });
+        // Na API quem conclui a tarefa é o aluno; a aprovação do professor é
+        // o feedback com a nota, que também avisa o aluno.
+        await giveAssignmentFeedback(assignmentId, approvalData);
 
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || `Erro ${response.status}`);
-        }
-
-        if (!result.success) {
-          throw new Error(result.error || 'Erro ao aprovar tarefa');
-        }
-
-        // Update assignment in state
         setState((prev) => ({
           ...prev,
           assignment: prev.assignment
-            ? {
-                ...prev.assignment,
-                isCompleted: true,
-                status: 'COMPLETED' as const,
-                completedAt: new Date(),
-                ...approvalData,
-              }
+            ? { ...prev.assignment, ...approvalData }
             : null,
         }));
 
@@ -246,26 +204,7 @@ export function useAssignmentDetails(
       setError(null);
 
       try {
-        const response = await fetch('/api/assignments', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            assignmentId,
-            ...updates,
-          }),
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || `Erro ${response.status}`);
-        }
-
-        if (!result.success) {
-          throw new Error(result.error || 'Erro ao atualizar tarefa');
-        }
+        await updateAssignmentRequest(assignmentId, updates);
 
         // Update assignment in state
         setState((prev) => ({

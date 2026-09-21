@@ -22,7 +22,7 @@ import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 
 interface LearnedVideoData {
   cloudinaryUrl: string;

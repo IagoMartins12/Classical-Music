@@ -31,11 +31,14 @@ import {
 } from '../../../../components/animation/AnimatedComponents';
 import { StudentLessonDetail } from './pageServer';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Modal from '@/app/components/Modal';
 import { useToast } from '@/app/hooks/useToast';
 import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSection';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { apiFetch } from '@/app/libs/api/client';
+import { loadStudentLesson } from '@/app/requests/portal/student';
+import { sendStudentLessonNotice } from '@/app/requests/portal/lesson-actions';
 
 interface StudentLessonDetailPageClientProps {
   initialData: StudentLessonDetail | null;
@@ -91,14 +94,8 @@ export default function StudentLessonDetailPageClient({
 
     setLoading(true);
     try {
-      const response = await fetch(`/api/lessons/${lesson.id}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setLesson(data.lesson);
-          setError(null);
-        }
-      }
+      setLesson(await loadStudentLesson(lesson.id));
+      setError(null);
       toast.success(t('refresh'));
     } catch (error) {
       toast.error(t('error_loading_lesson'));
@@ -114,24 +111,14 @@ export default function StudentLessonDetailPageClient({
 
     setLoadingFeedback(true);
     try {
-      const response = await fetch(`/api/lessons/${lesson.id}`, {
+      await apiFetch(`/lessons/${lesson.id}/feedback`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          studentFeedback: studentFeedback.trim(),
-        }),
+        body: { feedback: studentFeedback.trim() },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setLesson({ ...lesson, studentFeedback: studentFeedback.trim() });
-          setIsEditingFeedback(false);
-          toast.success('Feedback salvo com sucesso!');
-        }
-      }
+      setLesson({ ...lesson, studentFeedback: studentFeedback.trim() });
+      setIsEditingFeedback(false);
+      toast.success('Feedback salvo com sucesso!');
     } catch (error) {
       console.error('Erro ao salvar feedback:', error);
       toast.error('Erro ao salvar feedback.');
@@ -157,40 +144,30 @@ export default function StudentLessonDetailPageClient({
     setLoadingStudentAction(true);
 
     try {
-      const response = await fetch(`/api/lessons/${lesson.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          specialMessage: studentMessage.trim() || undefined,
-          messageType: studentActionType,
-        }),
-      });
+      // A API responde com erro quando algo dá errado; não há mais o
+      // `response.ok` do `fetch` cru para conferir aqui.
+      await sendStudentLessonNotice(
+        lesson.id,
+        studentActionType,
+        studentMessage.trim() || undefined
+      );
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setActionSent(true);
+      setActionSent(true);
 
-          const actionText =
-            studentActionType === 'absence'
-              ? t('absence_notified')
-              : t('reschedule_notified');
+      const actionText =
+        studentActionType === 'absence'
+          ? t('absence_notified')
+          : t('reschedule_notified');
 
-          toast.success(
-            `${t('message_sent')} ${t('professor_notified')} ${actionText}.`
-          );
+      toast.success(
+        `${t('message_sent')} ${t('professor_notified')} ${actionText}.`
+      );
 
-          // Fechar modal após 2 segundos
-          setTimeout(() => {
-            setShowStudentActionModal(false);
-            setActionSent(false);
-          }, 2000);
-        }
-      } else {
-        toast.error('Erro ao enviar mensagem.');
-      }
+      // Fechar modal após 2 segundos
+      setTimeout(() => {
+        setShowStudentActionModal(false);
+        setActionSent(false);
+      }, 2000);
     } catch (error) {
       console.error('Erro ao enviar ação:', error);
       toast.error('Erro ao enviar mensagem.');

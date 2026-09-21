@@ -17,6 +17,11 @@ import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import ComposerSearchInput from '../../ComposerSearchInput';
 import ScoreSelectionModal from '../../LearningModal/ScoreSelectionModal';
 import SimpleWorkSearchInput from '../../SimpleWorkSearchInput';
+import {
+  findComposers,
+  getWorkById,
+  searchWorks,
+} from '@/app/requests/catalog-search';
 
 // 🆕 Interface para dados das peças vinculadas
 export interface LessonWork {
@@ -89,17 +94,15 @@ export default function WorkSelectionSection({
 
   const loadPopularComposers = async () => {
     try {
-      const response = await fetch('/api/composers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ q: '', limit: 20 }),
-      });
-
-      if (response.ok) {
-        const composers = await response.json();
-        setPopularComposers(composers);
-        console.log('✅ Compositores populares carregados:', composers.length);
-      }
+      // Sem termo, a API devolve os compositores mais conhecidos.
+      const composers = await findComposers('', 20);
+      setPopularComposers(
+        composers.map((composer) => ({
+          id: composer.id,
+          name: composer.name,
+          fullName: composer.fullName ?? undefined,
+        }))
+      );
     } catch (error) {
       console.error('❌ Erro ao carregar compositores:', error);
     }
@@ -125,28 +128,8 @@ export default function WorkSelectionSection({
     try {
       setLoadingComposerWorks(true);
 
-      const params = new URLSearchParams({
-        q: '',
-        composer: composerId,
-        limit: '20',
-      });
-
-      const response = await fetch(`/api/works/search?${params.toString()}`);
-
-      if (response.ok) {
-        const data = await response.json();
-        setComposerWorks(data.works || []);
-        console.log(
-          '✅ [WORK-SELECTION] Obras do compositor carregadas:',
-          data.works?.length || 0
-        );
-      } else {
-        console.error(
-          '❌ [WORK-SELECTION] Erro ao carregar obras do compositor:',
-          response.status
-        );
-        setComposerWorks([]);
-      }
+      const data = await searchWorks({ composerId, limit: 20 });
+      setComposerWorks(data.works);
     } catch (error) {
       console.error(
         '❌ [WORK-SELECTION] Erro ao buscar obras do compositor:',
@@ -181,12 +164,10 @@ export default function WorkSelectionSection({
     console.log('selectedWorkId', selectedWorkId);
     try {
       // Buscar dados completos da obra
-      const response = await fetch(`/api/works/${selectedWorkId}`);
-      if (!response.ok) {
+      const workData = await getWorkById(selectedWorkId);
+      if (!workData) {
         throw new Error('Erro ao buscar dados da obra');
       }
-
-      const workData = await response.json();
 
       // Verificar se já não está na lista
       if (selectedWorks.some((w) => w.workId === selectedWorkId)) {

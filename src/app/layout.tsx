@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { ClientThemeWrapper } from './components/ClientThemeWrapper';
 import AuthProvider from './providers/AuthProvider';
-import { getServerLanguageStatic } from './utils/translations/serverTranslations';
+import { getBuildLanguage } from './utils/translations/serverTranslations';
 import Script from 'next/script';
 
 const inter = Inter({
@@ -14,8 +14,26 @@ const inter = Inter({
   preload: true, // 🚀 Precarregar fonte
 });
 
+/**
+ * **Por que o idioma aqui não vem do cookie.**
+ *
+ * `getServerLanguageStatic()` lê `cookies()` e `headers()`. Uma leitura dessas
+ * no layout raiz é uma API dinâmica no topo da árvore: ela desliga a
+ * renderização estática de **todas** as rotas do app — as 373, inclusive as do
+ * blog, que já declaravam `revalidate` e não dependiam de idioma nenhum. Era o
+ * motivo de o site inteiro renderizar do zero a cada visita anônima.
+ *
+ * O que este layout fazia com o idioma era `<html lang>` e os metadados. O
+ * primeiro o script anti-flash já reescreve antes da pintura, lendo a
+ * preferência do próprio navegador; os segundos passam a sair no idioma do
+ * build, com o `hreflang` de sempre apontando as duas versões.
+ *
+ * O idioma do conteúdo continua valendo e virou dimensão de cache: as páginas
+ * públicas vivem sob `[lang]`, e o middleware escolhe a variante sem mudar a
+ * URL (ver `middleware.ts` e `utils/translations/routeLanguage.ts`).
+ */
 export async function generateMetadata(): Promise<Metadata> {
-  const language = await getServerLanguageStatic();
+  const language = getBuildLanguage();
 
   const content = {
     pt: {
@@ -68,10 +86,8 @@ export async function generateMetadata(): Promise<Metadata> {
       description: t.ogDescription,
       type: 'website',
       locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      url:
-        language === 'pt'
-          ? 'https://opusatlas.com.br'
-          : 'https://opusatlas.com',
+      // Um domínio para os dois idiomas — ver `defaultMetadata.ts`.
+      url: 'https://opusatlas.com.br',
       siteName: 'Opus Atlas',
       images: [
         {
@@ -100,14 +116,7 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     alternates: {
-      canonical:
-        language === 'pt'
-          ? 'https://opusatlas.com.br'
-          : 'https://opusatlas.com',
-      languages: {
-        'pt-BR': 'https://opusatlas.com.br',
-        'en-US': 'https://opusatlas.com',
-      },
+      canonical: 'https://opusatlas.com.br',
     },
   };
 }
@@ -166,13 +175,14 @@ const themeScript = `(function(){
   }
 })();`;
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const serverLanguage = await getServerLanguageStatic();
-  const htmlLang = serverLanguage === 'pt' ? 'pt-BR' : 'en-US';
+  // O script anti-flash abaixo sobrescreve `lang` antes da pintura, a partir
+  // da preferência do navegador — este é o valor do HTML gerado.
+  const htmlLang = getBuildLanguage() === 'pt' ? 'pt-BR' : 'en-US';
 
   return (
     <html lang={htmlLang} suppressHydrationWarning>

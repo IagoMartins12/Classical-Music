@@ -38,7 +38,7 @@ import CreateAdModal from '../CreateAdModal';
 import CloneAdModal from '../CloneAdModal'; // 🆕 Novo modal
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import LoadingAdminState from '../../Common/LoadingState';
 
 interface FilterState {

@@ -9,7 +9,7 @@ import {
   FiTrash2,
   FiShield,
 } from 'react-icons/fi';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
 import ReportButton from '@/app/components/Report/ReportButton';
 import VerificationModal from '@/app/components/Verification/VerificationModal';
 

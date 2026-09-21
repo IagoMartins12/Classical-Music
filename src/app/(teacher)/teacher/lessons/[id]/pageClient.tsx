@@ -34,7 +34,7 @@ import {
 } from '../../../../components/animation/AnimatedComponents';
 import { LessonDetailsData } from './pageServer';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { useLessonDetails } from '@/app/hooks/lessonsSystem/useLessonDetails';
 import { useRouter } from 'next/navigation';
 import Input from '@/app/components/Common/Inputs';
@@ -46,6 +46,7 @@ import WorkSelectionSection, {
 import { translateNivel } from '@/app/utils';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { updateLessonRequest } from '@/app/requests/portal/lesson-actions';
 
 interface TeacherLessonDetailsPageClientProps {
   lessonData: LessonDetailsData | null;
@@ -324,26 +325,7 @@ export default function TeacherLessonDetailsPageClient({
         },
       });
 
-      const response = await fetch(`/api/lessons/${lesson.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          worksIds: worksIds,
-          workScoreIds: workScoreIds,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Erro ao atualizar peças musicais');
-      }
-
-      const result = await response.json();
-      if (!result.success) {
-        throw new Error(result.error || 'Erro ao atualizar peças musicais');
-      }
+      await updateLessonRequest(lesson.id, { worksIds, workScoreIds });
 
       // Atualizar o estado local da lesson
       setLesson({

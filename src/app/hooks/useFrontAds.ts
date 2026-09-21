@@ -1,6 +1,7 @@
 // app/hooks/useFrontAds.ts - Hook atualizado para buscar anúncios
 import { useState, useEffect, useCallback } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
+import { getAds, trackAdEvent } from '@/app/requests/ads';
 
 interface UseFrontAdsParams {
   placement: string;
@@ -87,17 +88,7 @@ export const useFrontAds = ({
         }
       }
 
-      const response = await fetch(`/api/ads?${params}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        cache: 'no-store',
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erro ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
+      const data = await getAds(params);
 
       if (data.success) {
         setAds(data.ads || []);
@@ -128,15 +119,7 @@ export const useFrontAds = ({
           referrer: document.referrer,
         };
 
-        await fetch('/api/ads', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            adId,
-            event,
-            data: trackingData,
-          }),
-        });
+        await trackAdEvent(adId, event, trackingData);
       } catch (error) {
         console.error('Erro ao registrar evento:', error);
         // Não propagar o erro para não quebrar a UX

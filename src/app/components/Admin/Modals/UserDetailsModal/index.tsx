@@ -22,7 +22,8 @@ import { AdminUser } from '@/app/hooks/admin/useAdminUsers';
 import Modal from '@/app/components/Modal';
 import LoadingAdminState from '../../Common/LoadingState';
 import { formatNumber } from '../../Utils';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
+import { getAdminUserDetails } from '@/app/requests/admin/users';
 
 interface UserDetailsModalProps {
   user: AdminUser;
@@ -180,22 +181,7 @@ export default function UserDetailsModal({
     setError(null);
 
     try {
-      const response = await fetch(
-        `/api/admin/users/details?userId=${user.id}`,
-        { cache: 'no-store' }
-      );
-
-      if (!response.ok) {
-        throw new Error('Erro ao carregar detalhes do usuário');
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        setDetailsData(data.user);
-      } else {
-        throw new Error(data.error || 'Erro desconhecido');
-      }
+      setDetailsData(await getAdminUserDetails(user.id));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
     } finally {

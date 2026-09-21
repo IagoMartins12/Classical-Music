@@ -1,5 +1,8 @@
 // app/hooks/useAdminModeration.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { adminKeys, useAdminQuery, useInvalidateAdmin } from './query';
+import { apiFetch } from '@/app/libs/api/client';
+import { listModerations, resolveModeration } from '@/app/requests/moderation';
 
 export interface ModerationStats {
   pending: number;
@@ -58,136 +61,124 @@ interface UseAdminModerationReturn {
   ) => Promise<boolean>;
 }
 
+interface ApiModerationStats {
+  byStatus: Record<string, number>;
+  pending: { total: number };
+  period: { resolved: number; avgResolutionHours: number | null };
+}
+
+const statusCount = (byStatus: Record<string, number>, status: string) =>
+  byStatus[status] ?? byStatus[status.toLowerCase()] ?? 0;
+
+/**
+ * A fila e as estatísticas vêm da moderação de contribuições da API
+ * (`/uploads/moderation`), a mesma de `/moderation` no site. Não há ranking de
+ * moderadores nem tendência de qualidade: ficam vazios.
+ */
 export const useAdminModeration = (): UseAdminModerationReturn => {
-  const [stats, setStats] = useState<ModerationStats | null>(null);
-  const [items, setItems] = useState<ModerationItem[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const invalidate = useInvalidateAdmin();
 
-  const fetchStats = useCallback(async () => {
-    try {
-      const response = await fetch('/api/admin/moderation?action=stats');
-      if (!response.ok) throw new Error('Erro ao carregar estatísticas');
+  const stats = useAdminQuery(adminKeys.area('moderation-stats'), async () => {
+    const data = await apiFetch<ApiModerationStats>(
+      '/uploads/moderation/stats',
+      { cache: 'no-store' }
+    );
 
-      const data = await response.json();
-      if (data.success) {
-        setStats(data.stats);
-      }
-    } catch (err) {
-      console.error('Erro ao buscar stats de moderação:', err);
-      setError(err instanceof Error ? err.message : 'Erro desconhecido');
+    return {
+      pending: data.pending.total,
+      processed: data.period.resolved,
+      approved: statusCount(data.byStatus, 'APPROVED'),
+      rejected: statusCount(data.byStatus, 'REJECTED'),
+      avgProcessingTime: data.period.avgResolutionHours ?? 0,
+      topModerators: [],
+      qualityTrends: [],
+    } as ModerationStats;
+  });
+
+  const queue = useAdminQuery(adminKeys.list('moderation', page), async () => {
+    const result = await listModerations(page, 'pending');
+
+    if (!result.ok) {
+      throw new Error(result.error);
     }
-  }, []);
 
-  const fetchItems = useCallback(async (filters = {}) => {
-    setLoading(true);
-    try {
-      const searchParams = new URLSearchParams({
-        action: 'items',
-        ...filters,
-      });
+    return result.data.moderations.map((moderation: any) => {
+      const entity = moderation.entityDetails ?? {};
 
-      const response = await fetch(`/api/admin/moderation?${searchParams}`);
-      if (!response.ok) throw new Error('Erro ao carregar itens');
+      return {
+        id: moderation.id,
+        type: moderation.entityType,
+        title:
+          entity.title ?? entity.fullName ?? entity.name ?? moderation.entityId,
+        uploader: {
+          id: moderation.reporter?.id ?? '',
+          name: moderation.reporter?.name ?? '',
+          email: '',
+          uploadScore: 0,
+        },
+        status: 'pending',
+        priority: String(moderation.priority ?? 'normal').toLowerCase(),
+        submittedAt: new Date(moderation.createdAt),
+        reportCount: 1,
+        issues: [moderation.reason].filter(Boolean),
+        content: { description: moderation.description ?? undefined },
+      } as ModerationItem;
+    });
+  });
 
-      const data = await response.json();
-      if (data.success) {
-        setItems(data.items);
+  const resolve = useCallback(
+    async (itemId: string, action: 'approve' | 'reject', notes?: string) => {
+      const result = await resolveModeration(itemId, action, notes);
+
+      if (!result.ok) {
+        console.error(
+          `Erro ao ${action === 'approve' ? 'aprovar' : 'rejeitar'} item:`,
+          result.error
+        );
+        setActionError(result.error);
+        return false;
       }
-    } catch (err) {
-      console.error('Erro ao buscar itens de moderação:', err);
-      setError(err instanceof Error ? err.message : 'Erro desconhecido');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+
+      setActionError(null);
+      // A fila e os números mudam juntos: os dois voltam do servidor.
+      await Promise.all([invalidate('moderation'), stats.refetch()]);
+      return true;
+    },
+    [invalidate, stats]
+  );
 
   const approveItem = useCallback(
-    async (itemId: string, notes?: string): Promise<boolean> => {
-      try {
-        const response = await fetch(
-          `/api/admin/moderation?action=approve&itemId=${itemId}`,
-          {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ notes }),
-          }
-        );
-
-        if (!response.ok) throw new Error('Erro ao aprovar item');
-
-        const data = await response.json();
-        if (data.success) {
-          // Atualizar lista local
-          setItems((prev) => prev.filter((item) => item.id !== itemId));
-          return true;
-        }
-        return false;
-      } catch (err) {
-        console.error('Erro ao aprovar item:', err);
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
-        return false;
-      }
-    },
-    []
+    (itemId: string, notes?: string) => resolve(itemId, 'approve', notes),
+    [resolve]
   );
 
+  // A API guarda uma nota só: motivo e observação vão juntos.
   const rejectItem = useCallback(
-    async (
-      itemId: string,
-      reason?: string,
-      notes?: string
-    ): Promise<boolean> => {
-      try {
-        const response = await fetch(
-          `/api/admin/moderation?action=reject&itemId=${itemId}`,
-          {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reason, notes }),
-          }
-        );
-
-        if (!response.ok) throw new Error('Erro ao rejeitar item');
-
-        const data = await response.json();
-        if (data.success) {
-          // Atualizar lista local
-          setItems((prev) => prev.filter((item) => item.id !== itemId));
-          return true;
-        }
-        return false;
-      } catch (err) {
-        console.error('Erro ao rejeitar item:', err);
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
-        return false;
-      }
-    },
-    []
+    (itemId: string, reason?: string, notes?: string) =>
+      resolve(itemId, 'reject', [reason, notes].filter(Boolean).join(' — ')),
+    [resolve]
   );
-
-  const refreshStats = useCallback(async () => {
-    return fetchStats();
-  }, [fetchStats]);
 
   const refreshItems = useCallback(
-    async (filters?: any) => {
-      return fetchItems(filters);
+    async (filters?: { page?: number }) => {
+      if (filters?.page && filters.page !== page) {
+        setPage(filters.page);
+        return;
+      }
+
+      await queue.refetch();
     },
-    [fetchItems]
+    [page, queue]
   );
 
-  useEffect(() => {
-    fetchStats();
-    fetchItems();
-  }, [fetchStats, fetchItems]);
-
   return {
-    stats,
-    items,
-    loading,
-    error,
-    refreshStats,
+    stats: stats.data ?? null,
+    items: queue.data ?? [],
+    loading: queue.loading,
+    error: queue.error ?? stats.error ?? actionError,
+    refreshStats: stats.refetch,
     refreshItems,
     approveItem,
     rejectItem,

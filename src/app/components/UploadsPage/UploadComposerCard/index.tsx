@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import {
   FiUser,
@@ -13,7 +13,7 @@ import {
   FiMusic,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
-import { UserUpload } from '@/app/requests/upload';
+import type { UserUpload } from '@/app/requests/my-uploads';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -333,8 +333,8 @@ const UploadComposerCard = ({
                     item.dataQuality === 'high'
                       ? 'text-accent-green bg-accent-green/10'
                       : item.dataQuality === 'medium'
-                      ? 'text-accent-amber bg-accent-amber/10'
-                      : 'text-accent-red bg-accent-red/10'
+                        ? 'text-accent-amber bg-accent-amber/10'
+                        : 'text-accent-red bg-accent-red/10'
                   }`}
                 >
                   {getDataQualityText(item.dataQuality)}

@@ -11,7 +11,8 @@ import {
   FiImage,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
+import { uploadComposerImage } from '@/app/requests/uploads-client';
 
 interface ComposerImageUploadProps {
   currentImage?: string | null;
@@ -89,17 +90,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
         await onImageUpload(file);
       } else {
         // Upload padrão via API
-        const formData = new FormData();
-        formData.append('file', file);
-        if (composerId) formData.append('composerId', composerId);
-        if (composerName) formData.append('composerName', composerName);
-
-        const response = await fetch('/api/uploads/composer-image', {
-          method: 'POST',
-          body: formData,
-        });
-
-        const result = await response.json();
+        const result = await uploadComposerImage(file, composerId);
 
         if (result.success) {
           onImageChange?.(result.imageUrl);

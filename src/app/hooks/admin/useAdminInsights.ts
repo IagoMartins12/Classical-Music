@@ -1,5 +1,7 @@
 // app/hooks/admin/useAdminInsights.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { adminKeys, useAdminQuery } from './query';
+import { getAdminInsightsData } from '@/app/requests/admin/metrics';
 
 // ===== INTERFACES ATUALIZADAS =====
 export interface PredictionInsight {
@@ -271,276 +273,87 @@ interface UseAdminInsightsReturn {
 }
 
 // ===== HOOK IMPLEMENTATION =====
+/**
+ * Insights pela API (`GET /admin/metrics/insights`). O legado gerava previsões,
+ * anomalias e coortes com `Math.random`; a API mede com amostra declarada. Os
+ * insights dela aparecem em "padrões" e no resumo; o resto fica vazio.
+ */
 export const useAdminInsights = (): UseAdminInsightsReturn => {
-  const [insights, setInsights] = useState<AdvancedInsights | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [processingTime, setProcessingTime] = useState<number | null>(null);
-  const [version, setVersion] = useState('2.0-advanced');
+  const [exportError, setExportError] = useState<string | null>(null);
 
-  // ===== FETCH INSIGHTS FUNCTION =====
-  const fetchInsights = useCallback(async () => {
-    if (loading) return;
+  // A API calcula na hora; o TanStack guarda o resultado e revalida de vinte
+  // em vinte minutos (o legado mantinha um `setInterval` sempre ligado).
+  const insights = useAdminQuery(
+    adminKeys.area('insights'),
+    async () => {
+      const startedAt = Date.now();
+      const data = await getAdminInsightsData();
+      setProcessingTime(Date.now() - startedAt);
+      return data;
+    },
+    { refetchInterval: 20 * 60 * 1000 }
+  );
 
-    setLoading(true);
-    setError(null);
+  const refreshInsights = insights.refetch;
 
+  // Não há previsão nem módulos na API: recalcular é buscar de novo.
+  const recompute = useCallback(async () => {
+    setIsGenerating(true);
     try {
-      console.log('🧠 Buscando insights avançados...');
-      const fetchStartTime = Date.now();
-
-      const response = await fetch('/api/admin/insights', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        cache: 'no-store',
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Acesso não autorizado');
-        }
-        if (response.status === 403) {
-          throw new Error('Permissão negada');
-        }
-        throw new Error(`Erro ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      if (data.success && data.insights) {
-        setInsights(data.insights);
-        setLastUpdated(new Date(data.timestamp));
-        setProcessingTime(data.processingTime || null);
-        setVersion(data.version || '2.0-advanced');
-
-        const fetchTime = Date.now() - fetchStartTime;
-        console.log(
-          `✅ Insights carregados em ${fetchTime}ms (processamento: ${data.processingTime}ms)`
-        );
-      } else {
-        throw new Error('Resposta inválida do servidor');
-      }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Erro desconhecido';
-      setError(errorMessage);
-      console.error('💥 Erro ao buscar insights:', err);
+      await insights.refetch();
     } finally {
-      setLoading(false);
-    }
-  }, [loading]);
-
-  // ===== GENERATE PREDICTION =====
-  const generatePrediction = useCallback(
-    async (metric: string, timeframe: string) => {
-      setIsGenerating(true);
-      setError(null);
-
-      try {
-        console.log(`🔮 Gerando previsão para ${metric} (${timeframe})`);
-
-        const response = await fetch('/api/admin/insights', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: 'generate-prediction',
-            metric,
-            timeframe,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          console.log('✅ Previsão gerada, atualizando insights...');
-          // Refresh insights after generating new prediction
-          await fetchInsights();
-        } else {
-          throw new Error(data.error || 'Erro ao gerar previsão');
-        }
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Erro desconhecido';
-        setError(errorMessage);
-        console.error('💥 Erro ao gerar previsão:', err);
-      } finally {
-        setIsGenerating(false);
-      }
-    },
-    [fetchInsights]
-  );
-
-  // ===== REFRESH MODULE =====
-  const refreshModule = useCallback(
-    async (module: string) => {
-      setIsGenerating(true);
-      setError(null);
-
-      try {
-        console.log(`🔄 Atualizando módulo: ${module}`);
-
-        const response = await fetch('/api/admin/insights', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: 'refresh-module',
-            module,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          console.log(`✅ Módulo ${module} atualizado`);
-          // Refresh all insights after module update
-          await fetchInsights();
-        } else {
-          throw new Error(data.error || 'Erro ao atualizar módulo');
-        }
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Erro desconhecido';
-        setError(errorMessage);
-        console.error(`💥 Erro ao atualizar módulo ${module}:`, err);
-      } finally {
-        setIsGenerating(false);
-      }
-    },
-    [fetchInsights]
-  );
-
-  // ===== EXPORT INSIGHTS =====
-  const exportInsights = useCallback(async () => {
-    if (!insights) {
-      setError('Nenhum insight disponível para exportar');
-      return;
-    }
-
-    try {
-      console.log('📥 Exportando insights...');
-
-      const response = await fetch('/api/admin/insights', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'export-insights',
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success && data.exportData) {
-        // Create and download the file
-        const jsonContent = JSON.stringify(data.exportData, null, 2);
-        const blob = new Blob([jsonContent], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `insights-advanced-${
-          new Date().toISOString().split('T')[0]
-        }.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        URL.revokeObjectURL(url);
-        console.log('✅ Insights exportados com sucesso');
-      } else {
-        throw new Error(data.error || 'Erro ao exportar insights');
-      }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Erro desconhecido';
-      setError(errorMessage);
-      console.error('💥 Erro ao exportar insights:', err);
+      setIsGenerating(false);
     }
   }, [insights]);
 
-  // ===== REFRESH INSIGHTS =====
-  const refreshInsights = useCallback(async () => {
-    return fetchInsights();
-  }, [fetchInsights]);
+  const generatePrediction = useCallback(
+    async (_metric: string, _timeframe: string) => recompute(),
+    [recompute]
+  );
 
-  // ===== INITIAL LOAD =====
-  useEffect(() => {
-    console.log('🚀 Inicializando hook de insights avançados...');
-    fetchInsights();
-  }, []);
+  const refreshModule = useCallback(
+    async (_module: string) => recompute(),
+    [recompute]
+  );
 
-  // ===== AUTO-REFRESH (mais inteligente) =====
-  useEffect(() => {
-    // Auto-refresh mais inteligente baseado no tipo de dados
-    const intervals = {
-      short: 10 * 60 * 1000, // 10 minutos para dados críticos
-      medium: 20 * 60 * 1000, // 20 minutos para dados normais
-      long: 30 * 60 * 1000, // 30 minutos para dados pesados
-    };
+  // Exporta o que a API devolveu, como JSON.
+  const exportInsights = useCallback(async () => {
+    const raw = insights.data?.raw;
 
-    // Usar intervalo médio por padrão
-    const interval = setInterval(() => {
-      if (!loading && !isGenerating && insights) {
-        console.log('🔄 Auto-refresh dos insights...');
-        fetchInsights();
-      }
-    }, intervals.medium);
-
-    return () => clearInterval(interval);
-  }, [loading, isGenerating, insights, fetchInsights]);
-
-  // ===== PERFORMANCE MONITORING =====
-  useEffect(() => {
-    if (insights && processingTime) {
-      // Log performance metrics for monitoring
-      console.log('📊 Performance Metrics:', {
-        processingTime,
-        predictionsCount: insights.predictions?.length || 0,
-        anomaliesCount: insights.anomalies?.length || 0,
-        riskUsersCount: insights.riskAssessment?.churnRiskUsers?.length || 0,
-        opportunitiesCount: insights.growthOpportunities?.length || 0,
-        healthScore: insights.summary?.healthScore || 0,
-        version,
-      });
+    if (!raw) {
+      setExportError('Nenhum insight disponível para exportar');
+      return;
     }
-  }, [insights, processingTime, version]);
 
-  // ===== ERROR RECOVERY =====
-  useEffect(() => {
-    if (error) {
-      // Auto-retry after error with exponential backoff
-      const retryTimeout = setTimeout(() => {
-        if (error && !loading && !isGenerating) {
-          console.log('🔄 Tentando recuperar de erro...');
-          setError(null);
-          fetchInsights();
-        }
-      }, 30000); // Retry after 30 seconds
-
-      return () => clearTimeout(retryTimeout);
-    }
-  }, [error, loading, isGenerating, fetchInsights]);
+    const blob = new Blob([JSON.stringify(raw, null, 2)], {
+      type: 'application/json',
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `insights-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    setExportError(null);
+  }, [insights.data]);
 
   return {
-    insights,
-    loading,
-    error,
+    insights: (insights.data?.insights as AdvancedInsights) ?? null,
+    loading: insights.loading,
+    error: insights.error ?? exportError,
     refreshInsights,
     generatePrediction,
     refreshModule,
     exportInsights,
-    lastUpdated,
+    lastUpdated: insights.data?.raw.generatedAt
+      ? new Date(insights.data.raw.generatedAt)
+      : insights.updatedAt,
     isGenerating,
     processingTime,
-    version,
+    version: 'api',
   };
 };

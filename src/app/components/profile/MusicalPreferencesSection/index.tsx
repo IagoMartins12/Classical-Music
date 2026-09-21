@@ -2,14 +2,16 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { User } from 'next-auth';
+// Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
+// objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
+import type { User } from '@/app/hooks/userStore';
 import { FiEdit3, FiSave, FiX, FiClock, FiHeart } from 'react-icons/fi';
 
 import { updateMusicalPreferences } from '@/app/actions/profile';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
 import Select from '../../Common/Select';
-import { getEpochs, getFamousComposers } from '@/app/actions/auth';
+import { legacyCatalog } from '@/app/libs/api/compat';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -80,17 +82,11 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
   const loadOptions = async () => {
     setIsLoadingData(true);
     try {
-      const [epochsData, composersData] = await Promise.all([
-        getEpochs(),
-        getFamousComposers(),
-      ]);
+      const { composers: composersData, epochs: epochsData } =
+        await legacyCatalog.musicalOptions();
 
-      if (epochsData && composersData) {
-        setComposers(composersData);
-        setEpochs(epochsData);
-      } else {
-        toast.error('Erro ao carregar opções');
-      }
+      setComposers(composersData);
+      setEpochs(epochsData);
     } catch (error) {
       console.error('Erro ao carregar opções:', error);
       toast.error('Erro ao carregar opções');

@@ -27,7 +27,7 @@ import {
   PageContainer,
 } from '../../../../components/animation/AnimatedComponents';
 import { CreateAssignmentData } from './pageServer';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { useRouter } from 'next/navigation';

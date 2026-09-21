@@ -15,7 +15,7 @@ import {
   FiShield,
   FiStar,
 } from 'react-icons/fi';
-import { UserUpload } from '@/app/requests/upload';
+import type { UserUpload } from '@/app/requests/my-uploads';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import { useTranslation } from '@/app/context/TranslationContext';
 

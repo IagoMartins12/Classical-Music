@@ -13,7 +13,7 @@ import {
   FiShield,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
-import { UserUpload } from '@/app/requests/upload';
+import type { UserUpload } from '@/app/requests/my-uploads';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import Link from 'next/link';
 import { useTranslation } from '@/app/context/TranslationContext';

@@ -1,9 +1,11 @@
 // app/learning/page.tsx - Aprendizado pessoal otimizado
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../libs/auth';
 import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 import LearningPageServer from './pageServer';
 import { redirect } from 'next/navigation';
+import { getServerSession } from '@/app/libs/api/server-session';
+
+// Página por pessoa: renderizada a cada pedido, sem cache de página.
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata() {
   const language = await getServerLanguageStatic();
@@ -58,7 +60,7 @@ export async function generateMetadata() {
 }
 
 export default async function LearningPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user?.id) {
     return redirect('/not-authenticated');

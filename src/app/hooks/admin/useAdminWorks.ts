@@ -1,6 +1,18 @@
 // app/hooks/admin/useAdminWorks.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import {
+  adminKeys,
+  errorMessage,
+  useAdminQuery,
+  useInvalidateAdmin,
+} from './query';
 import { TimePeriod } from '@/app/components/Admin/Common/PeriodSelector';
+import {
+  deleteAdminWork,
+  getAdminWorkStats,
+  listAdminWorks,
+  updateAdminWork,
+} from '@/app/requests/admin/catalog';
 
 export interface WorkItem {
   id: string;
@@ -101,137 +113,71 @@ interface UseAdminWorksReturn {
   deleteWork: (id: string) => Promise<boolean>;
 }
 
+/**
+ * Obras do painel. Lista e métricas pelo TanStack Query; editar ou apagar
+ * invalida as duas, em vez de mexer no array da tela.
+ */
 export const useAdminWorks = (): UseAdminWorksReturn => {
-  const [works, setWorks] = useState<WorkItem[]>([]);
-  const [stats, setStats] = useState<WorkStats | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [statsLoading, setStatsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [pagination, setPagination] = useState<any>(null);
-  const [period, setPeriod] = useState<TimePeriod>('7d'); // Padrão: última semana
+  const [filters, setFilters] = useState<WorkFilters>({});
+  // As métricas do catálogo da API são do acervo inteiro, não por período.
+  const [period, setPeriod] = useState<TimePeriod>('7d');
+  const [actionError, setActionError] = useState<string | null>(null);
+  const invalidate = useInvalidateAdmin();
 
-  const fetchStats = useCallback(async () => {
-    setStatsLoading(true);
-    try {
-      const response = await fetch(
-        `/api/admin/works?action=stats&period=${period}`
-      );
-      if (!response.ok) throw new Error('Erro ao carregar estatísticas');
-
-      const data = await response.json();
-      if (data.success) {
-        setStats(data.stats);
-      }
-    } catch (err) {
-      console.error('Erro ao buscar stats:', err);
-    } finally {
-      setStatsLoading(false);
-    }
-  }, [period]);
-
-  const fetchWorks = useCallback(
-    async (filters: WorkFilters = {}) => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const searchParams = new URLSearchParams({
-          action: 'list',
-          period: period,
-          ...Object.fromEntries(
-            Object.entries(filters).filter(
-              ([_, v]) => v !== undefined && v !== '' && v !== null
-            )
-          ),
-        });
-
-        const response = await fetch(`/api/admin/works?${searchParams}`);
-        if (!response.ok) throw new Error('Erro ao carregar obras');
-
-        const data = await response.json();
-        if (data.success) {
-          setWorks(data.works);
-          setPagination(data.pagination);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
-      } finally {
-        setLoading(false);
-      }
-    },
-    [period]
+  const list = useAdminQuery(adminKeys.list('works', filters), () =>
+    listAdminWorks(filters)
   );
+  const stats = useAdminQuery(adminKeys.area('work-stats'), getAdminWorkStats);
+
+  const fetchWorks = useCallback(async (nextFilters: WorkFilters = {}) => {
+    setFilters(nextFilters);
+  }, []);
+
+  const afterWrite = useCallback(async () => {
+    await Promise.all([invalidate('works'), stats.refetch()]);
+  }, [invalidate, stats]);
 
   const updateWork = useCallback(
     async (id: string, updateData: any): Promise<boolean> => {
       try {
-        const response = await fetch(`/api/admin/works?id=${id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updateData),
-        });
-
-        if (!response.ok) throw new Error('Erro ao atualizar obra');
-
-        const data = await response.json();
-        if (data.success) {
-          setWorks((prev) =>
-            prev.map((work) =>
-              work.id === id ? { ...work, ...updateData } : work
-            )
-          );
-          return true;
-        }
-        return false;
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro ao atualizar');
+        await updateAdminWork(id, updateData);
+        setActionError(null);
+        await afterWrite();
+        return true;
+      } catch (error) {
+        setActionError(errorMessage(error));
         return false;
       }
     },
-    []
+    [afterWrite]
   );
 
-  const deleteWork = useCallback(async (id: string): Promise<boolean> => {
-    try {
-      const response = await fetch(`/api/admin/works?id=${id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) throw new Error('Erro ao deletar obra');
-
-      const data = await response.json();
-      if (data.success) {
-        setWorks((prev) => prev.filter((work) => work.id !== id));
+  const deleteWork = useCallback(
+    async (id: string): Promise<boolean> => {
+      try {
+        await deleteAdminWork(id);
+        setActionError(null);
+        await afterWrite();
         return true;
+      } catch (error) {
+        setActionError(errorMessage(error));
+        return false;
       }
-      return false;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao deletar');
-      return false;
-    }
-  }, []);
-
-  const refreshStats = useCallback(async () => {
-    return fetchStats();
-  }, [fetchStats]);
-
-  // Refetch when period changes
-  useEffect(() => {
-    fetchStats();
-    fetchWorks();
-  }, [period, fetchStats, fetchWorks]);
+    },
+    [afterWrite]
+  );
 
   return {
-    works,
-    stats,
-    loading,
-    statsLoading,
-    error,
-    pagination,
+    works: list.data?.works ?? [],
+    stats: stats.data ?? null,
+    loading: list.loading,
+    statsLoading: stats.loading,
+    error: list.error ?? actionError,
+    pagination: list.data?.pagination ?? null,
     period,
     setPeriod,
     fetchWorks,
-    refreshStats,
+    refreshStats: stats.refetch,
     updateWork,
     deleteWork,
   };

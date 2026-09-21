@@ -3,8 +3,8 @@
 
 import { FiShuffle, FiUser, FiEye, FiMusic } from 'react-icons/fi';
 import { GiMusicalNotes, GiTreasureMap, GiPianoKeys } from 'react-icons/gi';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/app/components/SmartImage';
+import Link from '@/app/components/LocalizedLink';
 import { useState } from 'react';
 import SectionTitle from '../Utils/SectionTitle';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';

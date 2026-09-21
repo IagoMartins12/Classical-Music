@@ -3,9 +3,15 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { FiSave, FiX, FiUpload, FiTrash2, FiAlertCircle } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
+import {
+  createCategory,
+  removeCategoryImage,
+  updateCategory,
+  uploadCategoryImage,
+} from '@/app/requests/blog/admin-actions';
 
 interface CategoryFormProps {
   mode: 'create' | 'edit';
@@ -39,6 +45,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(
     category?.image || null
   );
+  const [pendingImage, setPendingImage] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -80,7 +87,17 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ CORRIGIDO: Upload usando rota específica de categoria
+  const clearImage = () => {
+    setFormData((prev) => ({ ...prev, image: '' }));
+    setImagePreview(null);
+    setPendingImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // A imagem sobe pela rota da categoria, que precisa do id: na criação ela
+  // fica guardada e sobe logo depois de a categoria existir.
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -95,67 +112,41 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
       return;
     }
 
+    if (!category?.id) {
+      setPendingImage(file);
+      setImagePreview(URL.createObjectURL(file));
+      return;
+    }
+
     setUploading(true);
 
     try {
-      const formDataUpload = new FormData();
-      formDataUpload.append('file', file);
+      const url = await uploadCategoryImage(category.id, file);
 
-      // Se está editando, passar o categoryId
-      if (category?.id) {
-        formDataUpload.append('categoryId', category.id);
-      }
-
-      console.log('categr', { formDataUpload, category, file });
-      // ✅ USAR ROTA ESPECÍFICA PARA CATEGORIAS
-      const response = await fetch('/api/blog/admin/categories/upload', {
-        method: 'POST',
-        body: formDataUpload,
-      });
-
-      // sempre tenta ler o JSON
-      const data = await response.json();
-
-      console.log('RESPONSE');
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Erro no upload');
-      }
-
-      setFormData((prev) => ({ ...prev, image: data.url }));
-      setImagePreview(data.url);
+      setFormData((prev) => ({ ...prev, image: url }));
+      setImagePreview(url);
       toast.success('Imagem enviada!');
-    } catch (error) {
-      toast.error('Erro ao enviar imagem');
-      console.error(error);
+    } catch (error: any) {
+      toast.error(error?.message || 'Erro ao enviar imagem');
     } finally {
       setUploading(false);
     }
   };
 
   const handleRemoveImage = async () => {
-    if (!formData.image) return;
+    if (pendingImage) {
+      clearImage();
+      return;
+    }
+
+    if (!formData.image || !category?.id) return;
 
     try {
-      // ✅ USAR ROTA ESPECÍFICA PARA DELETAR
-      const response = await fetch(
-        `/api/blog/admin/categories/upload?url=${encodeURIComponent(formData.image)}`,
-        { method: 'DELETE' }
-      );
-
-      const data = await response.json();
-
-      if (data.success) {
-        setFormData((prev) => ({ ...prev, image: '' }));
-        setImagePreview(null);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
-        toast.success('Imagem removida!');
-      } else {
-        throw new Error(data.error);
-      }
+      await removeCategoryImage(category.id);
+      clearImage();
+      toast.success('Imagem removida!');
     } catch (error: any) {
-      toast.error(error.message || 'Erro ao remover imagem');
+      toast.error(error?.message || 'Erro ao remover imagem');
     }
   };
 
@@ -170,23 +161,18 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
     setSubmitting(true);
 
     try {
-      const url =
-        mode === 'create'
-          ? '/api/blog/admin/categories/create'
-          : `/api/blog/admin/categories/${category?.id}`;
+      if (mode === 'create' || !category) {
+        const created = await createCategory(formData);
 
-      const method = mode === 'create' ? 'POST' : 'PUT';
-
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao salvar categoria');
+        if (pendingImage && created.id) {
+          try {
+            await uploadCategoryImage(created.id, pendingImage);
+          } catch {
+            toast.error('Categoria criada, mas a imagem não foi enviada');
+          }
+        }
+      } else {
+        await updateCategory(category.id, formData);
       }
 
       toast.success(

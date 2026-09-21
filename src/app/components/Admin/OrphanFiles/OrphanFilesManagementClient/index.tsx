@@ -34,17 +34,15 @@ import {
   AnimatedItem,
   PageContainer,
 } from '@/app/components/animation/AnimatedComponents';
-import { useOrphanFileManagement } from '@/app/hooks/admin/useOrphanFileManagement';
+import {
+  useOrphanFileManagement,
+  type CloudinaryFileCategory,
+  type CloudinaryOrphanFile,
+  type OrphanFile,
+  type OrphanFileCategory,
+} from '@/app/hooks/admin/useOrphanFileManagement';
 import Button from '@/app/components/Common/Button';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
-import {
-  OrphanFileCategory,
-  OrphanFile,
-} from '@/app/libs/orphanFiles/orphanFileScanner';
-import {
-  CloudinaryOrphanFile,
-  CloudinaryFileCategory,
-} from '@/app/libs/orphanFiles/cloudinaryOrphanScanner';
 import { IconType } from 'react-icons';
 
 // Tabs atualizadas com Cloudinary

@@ -1,7 +1,7 @@
 // components/blog/FocusModeModal.tsx - Modo Foco Imersivo
 'use client';
 
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { JSX, useEffect, useState } from 'react';
 import { FiX, FiMinus, FiPlus } from 'react-icons/fi';
 

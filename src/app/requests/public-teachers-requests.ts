@@ -1,7 +1,6 @@
-// app/requests/public-teachers-requests.ts - Queries diretas para professores públicos
-
-import { unstable_cache } from 'next/cache';
-import prisma from '@/app/libs/prismadb';
+// app/requests/public-teachers-requests.ts — diretório público de professores, pela API (Etapa 3)
+import { ApiError, apiFetch } from '@/app/libs/api/client';
+import type { ApiSchema } from '@/app/libs/api/types';
 
 // ====================================
 // TYPES AND INTERFACES
@@ -67,19 +66,17 @@ export interface PublicTeachersResponse {
 }
 
 export interface TeacherDetailedProfile extends PublicTeacher {
-  // Extended details
   fullBio: string;
   teachingPhilosophy?: string;
 
-  // Extended stats
+  // A API não devolve estes dois e nenhuma tela os usa; ficam vazios. No
+  // legado, a nota era sempre zero e "novos alunos" contava todos, todo mês.
   monthlyStats: Array<{
     month: string;
     year: number;
     newStudents: number;
     completedLessons: number;
   }>;
-
-  // Rating breakdown
   ratingBreakdown: {
     5: number;
     4: number;
@@ -88,7 +85,6 @@ export interface TeacherDetailedProfile extends PublicTeacher {
     1: number;
   };
 
-  // Contact preferences
   contactPreferences: {
     preferredMethod: 'whatsapp' | 'email' | 'both';
     responseTime: string;
@@ -98,514 +94,141 @@ export interface TeacherDetailedProfile extends PublicTeacher {
   };
 }
 
-// ====================================
-// DIRECT DATABASE QUERIES
-// ====================================
+type TeacherSummary = ApiSchema<'PublicTeacherSummaryDto'>;
 
-// Buscar lista de professores públicos com filtros
-export const getPublicTeachers = unstable_cache(
-  async (
-    filters: {
-      instrument?: string;
-      specialty?: string;
-      skillLevel?: string;
-      ageGroup?: string;
-      location?: string;
-      verified?: boolean;
-      sortBy?: 'rating' | 'students' | 'experience' | 'name';
-      limit?: number;
-      offset?: number;
-    } = {}
-  ): Promise<PublicTeachersResponse | null> => {
-    try {
-      console.log(
-        `👨‍🏫 [PUBLIC-TEACHERS] Loading public teachers with filters:`,
-        filters
-      );
+/**
+ * Cache do `fetch` do Next. O diretório é público e igual para todos; a API
+ * avisa pela tag `teachers` quando um perfil muda.
+ */
+const TEACHERS_CACHE = { revalidate: 300, tags: ['teachers'] };
 
-      const {
-        instrument,
-        specialty,
-        skillLevel,
-        ageGroup,
-        location,
-        verified = false,
-        sortBy = 'rating',
-        limit = 12,
-        offset = 0,
-      } = filters;
+function toPublicTeacher(teacher: TeacherSummary): PublicTeacher {
+  return {
+    id: teacher.id,
+    name: teacher.name,
+    profileImage: teacher.profileImage || undefined,
+    bio: teacher.bio || undefined,
+    publicBio: teacher.publicBio || undefined,
+    specialties: teacher.specialties,
+    instruments: teacher.instruments,
+    experience: teacher.experience || undefined,
+    education: teacher.education || undefined,
+    achievements: teacher.achievements || undefined,
+    website: teacher.website || undefined,
+    socialMedia: teacher.socialMedia,
+    highlightedWorks: teacher.highlightedWorks,
+    teachingMethod: teacher.teachingMethod || undefined,
+    ageGroups: teacher.ageGroups,
+    skillLevels: teacher.skillLevels,
+    email: teacher.email || undefined,
+    phone: teacher.phone || undefined,
+    location: teacher.location || undefined,
+    isVerified: teacher.isVerified,
+    averageRating: teacher.averageRating || undefined,
+    totalReviews: teacher.totalReviews,
+    totalStudents: teacher.totalStudents,
+    totalLessons: teacher.totalLessons,
+    completionRate: teacher.completionRate || undefined,
+    teachingSince: new Date(teacher.teachingSince),
+    yearsExperience: teacher.yearsExperience,
+  };
+}
 
-      // Build where clause
-      const whereClause: any = {
-        isPublicProfile: true,
-        status: 'ACTIVE',
-      };
+// Lista de professores públicos com filtros. `null` se a API falhar.
+export async function getPublicTeachers(
+  filters: {
+    instrument?: string;
+    specialty?: string;
+    skillLevel?: string;
+    ageGroup?: string;
+    location?: string;
+    verified?: boolean;
+    sortBy?: 'rating' | 'students' | 'experience' | 'name';
+    limit?: number;
+    offset?: number;
+  } = {}
+): Promise<PublicTeachersResponse | null> {
+  const {
+    instrument,
+    specialty,
+    skillLevel,
+    ageGroup,
+    location,
+    verified = false,
+    sortBy = 'rating',
+    limit = 12,
+    offset = 0,
+  } = filters;
 
-      if (verified) {
-        whereClause.isVerified = true;
-      }
-
-      // Apply filters
-      if (instrument) {
-        whereClause.instruments = {
-          has: instrument,
-        };
-      }
-
-      if (specialty) {
-        whereClause.specialties = {
-          has: specialty,
-        };
-      }
-
-      if (skillLevel) {
-        whereClause.skillLevels = {
-          has: skillLevel,
-        };
-      }
-
-      if (ageGroup) {
-        whereClause.ageGroups = {
-          has: ageGroup,
-        };
-      }
-
-      // Location filter (city or state)
-      if (location) {
-        whereClause.user = {
-          OR: [
-            { city: { contains: location, mode: 'insensitive' } },
-            { state: { contains: location, mode: 'insensitive' } },
-          ],
-        };
-      }
-
-      // Build order by
-      let orderBy: any = {};
-      switch (sortBy) {
-        case 'rating':
-          orderBy = [
-            { averageRating: 'desc' },
-            { totalReviews: 'desc' },
-            { isVerified: 'desc' },
-          ];
-          break;
-        case 'students':
-          orderBy = [{ totalStudents: 'desc' }, { averageRating: 'desc' }];
-          break;
-        case 'experience':
-          orderBy = [
-            { createdAt: 'asc' }, // Mais antigo = mais experiente
-            { averageRating: 'desc' },
-          ];
-          break;
-        case 'name':
-          orderBy = { user: { firstName: 'asc' } };
-          break;
-        default:
-          orderBy = [{ averageRating: 'desc' }];
-          break;
-      }
-
-      // Fetch teachers
-      const [teachers, totalCount] = await Promise.all([
-        prisma.teacher.findMany({
-          where: whereClause,
-          include: {
-            user: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-                phone: true,
-                city: true,
-                state: true,
-                image: true,
-                createdAt: true,
-              },
-            },
-          },
-          orderBy,
-          take: limit,
-          skip: offset,
-        }),
-        prisma.teacher.count({ where: whereClause }),
-      ]);
-
-      console.log(
-        `📊 [PUBLIC-TEACHERS] Found ${teachers.length} public teachers`
-      );
-
-      // Format teachers data
-      const formattedTeachers: PublicTeacher[] = teachers.map((teacher) => {
-        const yearsExperience = Math.floor(
-          (Date.now() - teacher.createdAt.getTime()) /
-            (1000 * 60 * 60 * 24 * 365)
-        );
-
-        return {
-          id: teacher.user.id,
-          name: `${teacher.user.firstName} ${teacher.user.lastName}`.trim(),
-          profileImage: teacher.profileImage || teacher.user.image || undefined,
-          bio: teacher.bio || undefined,
-          publicBio: teacher.publicBio || teacher.bio || undefined,
-          specialties: teacher.specialties || [],
-          instruments: teacher.instruments || [],
-          experience: teacher.experience || undefined,
-          education: teacher.education || undefined,
-          achievements: teacher.achievements || undefined,
-          website: teacher.website || undefined,
-          socialMedia: teacher.socialMedia,
-          highlightedWorks: teacher.highlightedWorks,
-          teachingMethod: teacher.teachingMethod || undefined,
-          ageGroups: teacher.ageGroups,
-          skillLevels: teacher.skillLevels,
-
-          // Contact info
-          email: teacher.user.email || undefined,
-          phone: teacher.user.phone || undefined,
-          location:
-            [teacher.user.city, teacher.user.state]
-              .filter(Boolean)
-              .join(', ') || undefined,
-
-          // Stats
-          isVerified: teacher.isVerified,
-          averageRating: teacher.averageRating || undefined,
-          totalReviews: teacher.totalReviews,
-          totalStudents: teacher.totalStudents,
-          totalLessons: teacher.totalLessons,
-          completionRate: teacher.completionRate || undefined,
-          teachingSince: teacher.createdAt,
-          yearsExperience: Math.max(1, yearsExperience),
-        };
-      });
-
-      // Generate filter options
-      console.log('🔍 [PUBLIC-TEACHERS] Generating filter options...');
-
-      const [
-        allInstruments,
-        allSpecialties,
-        allSkillLevels,
-        allAgeGroups,
-        allLocations,
-      ] = await Promise.all([
-        // Get all instruments with counts
-        prisma.teacher
-          .findMany({
-            where: { isPublicProfile: true, status: 'ACTIVE' },
-            select: { instruments: true },
-          })
-          .then((results) => {
-            const instrumentCount: Record<string, number> = {};
-            results.forEach((teacher) => {
-              teacher.instruments.forEach((instrument) => {
-                instrumentCount[instrument] =
-                  (instrumentCount[instrument] || 0) + 1;
-              });
-            });
-            return Object.entries(instrumentCount)
-              .map(([name, count]) => ({ name, count }))
-              .sort((a, b) => b.count - a.count);
-          }),
-
-        // Get all specialties with counts
-        prisma.teacher
-          .findMany({
-            where: { isPublicProfile: true, status: 'ACTIVE' },
-            select: { specialties: true },
-          })
-          .then((results) => {
-            const specialtyCount: Record<string, number> = {};
-            results.forEach((teacher) => {
-              teacher.specialties.forEach((specialty) => {
-                specialtyCount[specialty] =
-                  (specialtyCount[specialty] || 0) + 1;
-              });
-            });
-            return Object.entries(specialtyCount)
-              .map(([name, count]) => ({ name, count }))
-              .sort((a, b) => b.count - a.count);
-          }),
-
-        // Get all skill levels with counts
-        prisma.teacher
-          .findMany({
-            where: { isPublicProfile: true, status: 'ACTIVE' },
-            select: { skillLevels: true },
-          })
-          .then((results) => {
-            const skillCount: Record<string, number> = {};
-            results.forEach((teacher) => {
-              teacher.skillLevels.forEach((skill) => {
-                skillCount[skill] = (skillCount[skill] || 0) + 1;
-              });
-            });
-            return Object.entries(skillCount)
-              .map(([name, count]) => ({ name, count }))
-              .sort((a, b) => b.count - a.count);
-          }),
-
-        // Get all age groups with counts
-        prisma.teacher
-          .findMany({
-            where: { isPublicProfile: true, status: 'ACTIVE' },
-            select: { ageGroups: true },
-          })
-          .then((results) => {
-            const ageCount: Record<string, number> = {};
-            results.forEach((teacher) => {
-              teacher.ageGroups.forEach((age) => {
-                ageCount[age] = (ageCount[age] || 0) + 1;
-              });
-            });
-            return Object.entries(ageCount)
-              .map(([name, count]) => ({ name, count }))
-              .sort((a, b) => b.count - a.count);
-          }),
-
-        // Get all locations with counts
-        prisma.teacher
-          .findMany({
-            where: { isPublicProfile: true, status: 'ACTIVE' },
-            include: {
-              user: { select: { city: true, state: true } },
-            },
-          })
-          .then((results) => {
-            const locationCount: Record<string, number> = {};
-            results.forEach((teacher) => {
-              const location = [teacher.user.city, teacher.user.state]
-                .filter(Boolean)
-                .join(', ');
-              if (location) {
-                locationCount[location] = (locationCount[location] || 0) + 1;
-              }
-            });
-            return Object.entries(locationCount)
-              .map(([name, count]) => ({ name, count }))
-              .sort((a, b) => b.count - a.count);
-          }),
-      ]);
-
-      const teacherFilters: TeacherFilters = {
-        instruments: allInstruments,
-        specialties: allSpecialties,
-        skillLevels: allSkillLevels,
-        ageGroups: allAgeGroups,
-        locations: allLocations,
-      };
-
-      // Calculate global stats
-      const stats = {
-        totalTeachers: totalCount,
-        verifiedTeachers: formattedTeachers.filter((t) => t.isVerified).length,
-        averageRating:
-          formattedTeachers.length > 0
-            ? formattedTeachers.reduce(
-                (sum, t) => sum + (t.averageRating || 0),
-                0
-              ) / formattedTeachers.length
-            : 0,
-        totalActiveStudents: formattedTeachers.reduce(
-          (sum, t) => sum + t.totalStudents,
-          0
-        ),
-      };
-
-      console.log(
-        `✅ [PUBLIC-TEACHERS] Successfully loaded ${formattedTeachers.length} teachers`
-      );
-
-      return {
-        teachers: formattedTeachers,
-        filters: teacherFilters,
-        stats,
-        pagination: {
-          offset,
+  try {
+    // A lista e as opções de filtro são duas rotas na API.
+    const [list, filterOptions] = await Promise.all([
+      apiFetch<ApiSchema<'PublicTeachersListResponseDto'>>('/teachers', {
+        query: {
+          instrument,
+          specialty,
+          skillLevel,
+          ageGroup,
+          location,
+          verified: verified || undefined,
+          sortBy,
+          page: Math.floor(offset / limit) + 1,
           limit,
-          total: totalCount,
-          hasMore: offset + formattedTeachers.length < totalCount,
         },
-      };
-    } catch (error) {
-      console.error(
-        '❌ [PUBLIC-TEACHERS] Error loading public teachers:',
-        error
-      );
+        next: TEACHERS_CACHE,
+      }),
+      apiFetch<ApiSchema<'TeacherFilterOptionsResponseDto'>>(
+        '/teachers/filter-options',
+        { next: TEACHERS_CACHE }
+      ),
+    ]);
+
+    return {
+      teachers: list.teachers.map(toPublicTeacher),
+      filters: filterOptions,
+      stats: list.stats,
+      pagination: {
+        offset,
+        limit: list.pagination.limit,
+        total: list.pagination.total,
+        hasMore: list.pagination.hasMore,
+      },
+    };
+  } catch (error) {
+    console.error('❌ [PUBLIC-TEACHERS] Error loading public teachers:', error);
+    return null;
+  }
+}
+
+// Detalhes de um professor público; `null` se não existe ou não é público.
+export async function getPublicTeacherDetails(
+  teacherId: string
+): Promise<TeacherDetailedProfile | null> {
+  try {
+    const teacher = await apiFetch<ApiSchema<'PublicTeacherDetailDto'>>(
+      `/teachers/${encodeURIComponent(teacherId)}`,
+      { next: TEACHERS_CACHE }
+    );
+
+    return {
+      ...toPublicTeacher(teacher),
+      fullBio: teacher.fullBio,
+      teachingPhilosophy: teacher.teachingPhilosophy || undefined,
+      monthlyStats: [],
+      ratingBreakdown: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 },
+      contactPreferences: teacher.contactPreferences,
+    };
+  } catch (error) {
+    if (
+      error instanceof ApiError &&
+      (error.status === 404 || error.status === 400)
+    ) {
       return null;
     }
-  },
-  ['public-teachers-data'],
-  {
-    revalidate: 300, // 10 minutos
-    tags: ['public-teachers'],
+    console.error(
+      '❌ [PUBLIC-TEACHER-DETAILS] Error loading teacher details:',
+      error
+    );
+    return null;
   }
-);
-
-// Buscar detalhes completos de um professor específico
-export const getPublicTeacherDetails = unstable_cache(
-  async (teacherId: string): Promise<TeacherDetailedProfile | null> => {
-    try {
-      console.log(
-        `👨‍🏫 [PUBLIC-TEACHER-DETAILS] Loading details for teacher ${teacherId}`
-      );
-
-      const teacher = await prisma.teacher.findFirst({
-        where: {
-          userId: teacherId,
-          isPublicProfile: true,
-          status: 'ACTIVE',
-        },
-        include: {
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-              phone: true,
-              city: true,
-              state: true,
-              image: true,
-              createdAt: true,
-            },
-          },
-        },
-      });
-
-      if (!teacher) {
-        console.log(
-          `❌ [PUBLIC-TEACHER-DETAILS] Teacher ${teacherId} not found or not public`
-        );
-        return null;
-      }
-
-      // Calculate years of experience
-      const yearsExperience = Math.floor(
-        (Date.now() - teacher.createdAt.getTime()) / (1000 * 60 * 60 * 24 * 365)
-      );
-
-      // Calculate rating breakdown
-      const ratingBreakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-
-      // Get monthly stats for last 6 months
-      const monthlyStats = [];
-      for (let i = 5; i >= 0; i--) {
-        const monthStart = new Date();
-        monthStart.setMonth(monthStart.getMonth() - i);
-        monthStart.setDate(1);
-        monthStart.setHours(0, 0, 0, 0);
-
-        const monthEnd = new Date(monthStart);
-        monthEnd.setMonth(monthEnd.getMonth() + 1);
-        monthEnd.setDate(0);
-        monthEnd.setHours(23, 59, 59, 999);
-
-        const [newStudents, completedLessons] = await Promise.all([
-          prisma.teacherStudent.count({
-            where: {
-              teacherId: teacher.id,
-            },
-          }),
-          prisma.lesson.count({
-            where: {
-              teacherId: teacher.id,
-              status: 'COMPLETED',
-              scheduledAt: { gte: monthStart, lte: monthEnd },
-            },
-          }),
-        ]);
-
-        monthlyStats.push({
-          month: monthStart.toLocaleDateString('pt-BR', { month: 'short' }),
-          year: monthStart.getFullYear(),
-          newStudents,
-          completedLessons,
-        });
-      }
-
-      // Format detailed profile
-      const detailedProfile: TeacherDetailedProfile = {
-        id: teacher.user.id,
-        name: `${teacher.user.firstName} ${teacher.user.lastName}`.trim(),
-        profileImage: teacher.profileImage || teacher.user.image || undefined,
-        bio: teacher.bio || undefined,
-        publicBio: teacher.publicBio || teacher.bio || undefined,
-        fullBio:
-          teacher.publicBio || teacher.bio || 'Biografia não disponível.',
-        teachingPhilosophy: teacher.teachingMethod || undefined,
-        specialties: teacher.specialties || [],
-        instruments: teacher.instruments || [],
-        experience: teacher.experience || undefined,
-        education: teacher.education || undefined,
-        achievements: teacher.achievements || undefined,
-        website: teacher.website || undefined,
-        socialMedia: teacher.socialMedia,
-        highlightedWorks: teacher.highlightedWorks,
-        teachingMethod: teacher.teachingMethod || undefined,
-        ageGroups: teacher.ageGroups,
-        skillLevels: teacher.skillLevels,
-
-        // Contact info
-        email: teacher.user.email || undefined,
-        phone: teacher.user.phone || undefined,
-        location:
-          [teacher.user.city, teacher.user.state].filter(Boolean).join(', ') ||
-          undefined,
-
-        // Stats
-        isVerified: teacher.isVerified,
-        averageRating: teacher.averageRating || undefined,
-        totalReviews: teacher.totalReviews,
-        totalStudents: teacher.totalStudents,
-        totalLessons: teacher.totalLessons,
-        completionRate: teacher.completionRate || undefined,
-        teachingSince: teacher.createdAt,
-        yearsExperience: Math.max(1, yearsExperience),
-
-        monthlyStats,
-        ratingBreakdown,
-
-        // Contact preferences
-        contactPreferences: {
-          preferredMethod: teacher.user.phone ? 'whatsapp' : 'email',
-          responseTime: '24 horas',
-          acceptingStudents:
-            teacher.status === 'ACTIVE' &&
-            teacher.totalStudents < teacher.maxStudentsPerWeek,
-          maxStudentsPerWeek: teacher.maxStudentsPerWeek,
-          defaultLessonDuration: teacher.defaultLessonDuration,
-        },
-      };
-
-      console.log(
-        `✅ [PUBLIC-TEACHER-DETAILS] Teacher details loaded successfully`
-      );
-
-      return detailedProfile;
-    } catch (error) {
-      console.error(
-        '❌ [PUBLIC-TEACHER-DETAILS] Error loading teacher details:',
-        error
-      );
-      return null;
-    }
-  },
-  ['public-teacher-details-data'],
-  {
-    revalidate: 300, // 5 minutos
-    tags: ['public-teacher-details'],
-  }
-);
-
-// Cache invalidation
-export async function revalidatePublicTeachersCache() {
-  const { revalidateTag } = await import('next/cache');
-  revalidateTag('public-teachers');
-  revalidateTag('public-teachers-data');
-  revalidateTag('public-teacher-details');
-  revalidateTag('public-teacher-details-data');
 }

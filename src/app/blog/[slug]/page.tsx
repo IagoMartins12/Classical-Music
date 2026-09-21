@@ -1,15 +1,23 @@
-// app/artigo/[slug]/page.tsx - VERSÃO COMPLETA ATUALIZADA
+// app/blog/[slug]/page.tsx — página pública do artigo, pela API
+//
+// Estática (ISR): a API revalida a tag `blog-articles` quando o artigo muda, e
+// os 10 minutos são só a rede de segurança. Por isso a página não lê a sessão
+// no servidor — o que é de administrador (editar, visitas, áudio) se decide
+// no navegador, e a visita é contada de lá.
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import prisma from '@/app/libs/prismadb';
 import { ArticleHeader } from '@/app/components/blog/ArticleHeader';
 import { RelatedArticles } from '@/app/components/blog/RelatedArticles';
 import { Breadcrumb } from '@/app/components/blog/Breadcrumb';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
 import EditButton from '@/app/components/Common/EditButton';
-// ✅ NOVOS COMPONENTES
 import { ArticlePageClient } from '@/app/components/blog/ArticlePageClient';
+import { AdminOnly } from '@/app/components/blog/AdminOnly';
+import { ApiError } from '@/app/libs/api/client';
+import {
+  backgroundAudioType,
+  getArticle,
+  getRelatedArticles,
+} from '@/app/requests/blog/articles';
 
 export const revalidate = 600;
 
@@ -21,114 +29,24 @@ interface PageProps {
   params: Promise<slugProps>;
 }
 
-async function getArticle(slug: string) {
-  const article = await prisma.blogArticle.findUnique({
-    where: { slug, status: 'PUBLISHED' },
-    include: {
-      author: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          username: true,
-          image: true,
-          bio: true,
-        },
-      },
-      categories: {
-        include: {
-          category: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-              color: true,
-              icon: true,
-            },
-          },
-        },
-      },
-      tags: {
-        include: {
-          tag: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-              color: true,
-            },
-          },
-        },
-      },
-      media: {
-        orderBy: { order: 'asc' },
-      },
-      _count: {
-        select: {
-          comments: { where: { status: 'APPROVED' } },
-          likes: true,
-        },
-      },
-    },
-  });
-
-  if (!article) {
-    return null;
+/** Só artigo publicado; rascunho ou inexistente vira "não encontrado". */
+async function loadArticle(slug: string) {
+  try {
+    const article = await getArticle(slug, { revalidate });
+    return article.status === 'PUBLISHED' ? article : null;
+  } catch (error) {
+    if (error instanceof ApiError && [400, 403, 404].includes(error.status)) {
+      return null;
+    }
+    throw error;
   }
-
-  await prisma.blogArticle.update({
-    where: { id: article.id },
-    data: { viewCount: { increment: 1 } },
-  });
-
-  return article;
-}
-
-async function getRelatedArticles(articleId: string, categoryIds: string[]) {
-  if (categoryIds.length === 0) return [];
-
-  return await prisma.blogArticle.findMany({
-    where: {
-      id: { not: articleId },
-      status: 'PUBLISHED',
-      publishedAt: { lte: new Date() },
-      categories: {
-        some: {
-          categoryId: { in: categoryIds },
-        },
-      },
-    },
-    include: {
-      author: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          image: true,
-        },
-      },
-      categories: {
-        include: {
-          category: true,
-        },
-      },
-      _count: {
-        select: {
-          comments: { where: { status: 'APPROVED' } },
-          likes: true,
-        },
-      },
-    },
-    orderBy: { publishedAt: 'desc' },
-    take: 4,
-  });
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const resolvedParams = await params;
-  const article = await getArticle(resolvedParams.slug);
+  const article = await loadArticle(resolvedParams.slug);
 
   if (!article) {
     return { title: 'Artigo não encontrado' };
@@ -157,35 +75,33 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * **`generateStaticParams` vazio, e é isso que liga o cache.**
+ *
+ * No App Router, rota com segmento dinâmico e **sem** `generateStaticParams`
+ * é renderizada a cada pedido, e o `revalidate` acima não vale nada — era o
+ * caso aqui: cada visita a um artigo renderizava a página do zero, para os artigos publicados.
+ *
+ * Devolvendo uma lista vazia, nada é gerado no build (não faria sentido gerar
+ * centenas de milhares de páginas) mas a rota passa a ser guardada: a primeira
+ * visita de cada endereço renderiza, as seguintes vêm do Redis compartilhado,
+ * e a API revalida por tag quando o dado muda.
+ */
+export async function generateStaticParams() {
+  return [];
+}
+
 export default async function ArticlePage({ params }: PageProps) {
   const resolvedParams = await params;
-  const article = await getArticle(resolvedParams.slug);
+  const article = await loadArticle(resolvedParams.slug);
 
   if (!article) {
     notFound();
   }
 
-  const session = await getServerSession(authOptions);
-  const isAdmin = (session?.user?.id ?? 0 >= 1) ? true : false;
-  const categoryIds = article.categories.map((c) => c.category.id);
-  const relatedArticles = await getRelatedArticles(article.id, categoryIds);
+  const relatedArticles = await getRelatedArticles(article, 4, { revalidate });
 
-  // ✅ PREPARAR MÚSICA DE FUNDO
-  const hasBackgroundMusic =
-    article.backgroundMusicUrl && article.backgroundMusicUrl.trim() !== '';
-
-  // ✅ DETECTAR TIPO DE ÁUDIO (upload ou youtube)
-  let backgroundAudioType: 'upload' | 'youtube' | null = null;
-  if (hasBackgroundMusic) {
-    if (
-      article.backgroundMusicUrl!.includes('youtube.com') ||
-      article.backgroundMusicUrl!.includes('youtu.be')
-    ) {
-      backgroundAudioType = 'youtube';
-    } else {
-      backgroundAudioType = 'upload';
-    }
-  }
+  const audioType = backgroundAudioType(article.backgroundMusicUrl);
 
   return (
     <div className="min-h-screen relative">
@@ -204,7 +120,7 @@ export default async function ArticlePage({ params }: PageProps) {
           ]}
         />
 
-        {isAdmin && (
+        <AdminOnly>
           <EditButton
             entityId={article.id}
             variant="minimal"
@@ -212,13 +128,12 @@ export default async function ArticlePage({ params }: PageProps) {
             size="lg"
             showLabel={false}
           />
-        )}
+        </AdminOnly>
       </div>
 
       {/* Article Header */}
-      <ArticleHeader article={article} isAdmin={isAdmin} />
+      <ArticleHeader article={article} />
 
-      {/* ✅ COMPONENTE CLIENT-SIDE (com todos os recursos) */}
       <ArticlePageClient
         article={{
           id: article.id,
@@ -232,11 +147,10 @@ export default async function ArticlePage({ params }: PageProps) {
           categories: article.categories,
           ttsAudioUrl: article.ttsAudioUrl,
         }}
-        hasBackgroundMusic={hasBackgroundMusic}
+        hasBackgroundMusic={audioType !== null}
         backgroundMusicUrl={article.backgroundMusicUrl || ''}
         backgroundMusicTitle={article.backgroundMusicTitle || ''}
-        backgroundAudioType={backgroundAudioType}
-        isAdmin={isAdmin}
+        backgroundAudioType={audioType}
       />
 
       {/* Related Articles */}
@@ -248,20 +162,3 @@ export default async function ArticlePage({ params }: PageProps) {
     </div>
   );
 }
-
-// export async function generateStaticParams() {
-//   const articles = await prisma.blogArticle.findMany({
-//     where: {
-//       status: 'PUBLISHED',
-//     },
-//     select: {
-//       slug: true,
-//     },
-//     orderBy: { viewCount: 'desc' },
-//     take: 50,
-//   });
-
-//   return articles.map((article) => ({
-//     slug: article.slug,
-//   }));
-// }

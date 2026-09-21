@@ -51,14 +51,28 @@ export function TranslationLoadingModal({
     },
   ];
 
-  // Controlar visibilidade com delay de entrada
+  /**
+   * Abre quando pedem, **e fecha quando param de pedir**.
+   *
+   * O `else` faltava, e era metade do defeito: o modal só sabia fechar pelo
+   * cronômetro interno dele. Com duas instâncias montadas ao mesmo tempo (o
+   * `Navbar` renderizava um `LanguageToggle` no topo e outro dentro do menu
+   * mobile, que fica sempre no DOM), a primeira a terminar desligava
+   * `isTranslating` e a segunda continuava contando sozinha — daí o "abre,
+   * fecha e abre de novo". Agora há uma instância só (ver
+   * `TranslationLoadingGate`) e ela obedece a quem a abriu.
+   */
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
       setHasStarted(true);
       setProgress(0);
       setCurrentStep(0);
+      return;
     }
+
+    setIsVisible(false);
+    setHasStarted(false);
   }, [isOpen]);
 
   // ✅ Lógica de progresso MUITO mais rápida (2-3 segundos total)

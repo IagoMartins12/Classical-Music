@@ -3,7 +3,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { signOut, useSession } from 'next-auth/react';
+import { signOut, useSession } from '@/app/libs/session';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   FiMenu,
@@ -21,7 +21,7 @@ import {
 } from 'react-icons/fi';
 import { FaSearch } from 'react-icons/fa';
 import { BiComment } from 'react-icons/bi';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { toast } from 'react-hot-toast';
 import { ThemeToggle } from '../../ThemeToggle';
 import Button from '../../Common/Button';

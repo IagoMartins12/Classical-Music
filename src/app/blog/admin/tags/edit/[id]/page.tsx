@@ -1,11 +1,11 @@
 import { Metadata } from 'next';
 import { redirect, notFound } from 'next/navigation';
-import { getServerSession } from 'next-auth';
 import Link from 'next/link';
-import prisma from '@/app/libs/prismadb';
 import { TagForm } from '@/app/components/blog/admin/TagForm';
-import { authOptions } from '@/app/libs/auth';
+import { getServerAccessToken } from '@/app/libs/api/server-session';
+import { loadAdminTag } from '@/app/requests/blog/admin';
 import { FaArrowLeft } from 'react-icons/fa';
+import { getServerSession } from '@/app/libs/api/server-session';
 
 interface idProps {
   id: string;
@@ -16,14 +16,7 @@ interface PageProps {
 }
 
 async function getTag(id: string) {
-  return await prisma.blogTag.findUnique({
-    where: { id },
-    include: {
-      _count: {
-        select: { articles: true },
-      },
-    },
-  });
+  return loadAdminTag(id, await getServerAccessToken());
 }
 
 export async function generateMetadata({
@@ -40,7 +33,7 @@ export async function generateMetadata({
 }
 
 export default async function EditTagPage({ params }: PageProps) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user || (session.user.role !== 1 && session.user.role !== 2)) {
     redirect('/blog');

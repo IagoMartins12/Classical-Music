@@ -28,7 +28,7 @@ import {
   PageContainer,
 } from '../../../../components/animation/AnimatedComponents';
 import { AssignmentDetailsData } from './pageServer';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAssignmentDetails } from '@/app/hooks/lessonsSystem/useAssignmentDetails';

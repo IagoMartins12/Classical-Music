@@ -4,7 +4,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import {
   FiArrowLeft,
   FiShare2,
@@ -22,23 +22,6 @@ import {
   FiUser,
   FiChevronRight,
 } from 'react-icons/fi';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-} from 'recharts';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -61,6 +44,39 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import ShareReportModal, {
   ShareReportData,
 } from '@/app/components/TeacherSystem/ShareReportModal';
+import { shareProgressReport } from '@/app/requests/portal/progress-report';
+import dynamic from 'next/dynamic';
+
+/**
+ * Os gráficos descem à parte — ver `charts.tsx`.
+ */
+const MonthlyEvolutionChart = dynamic(
+  () => import('./charts').then((m) => m.MonthlyEvolutionChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-80 w-full rounded-xl bg-theme-elevated animate-pulse" />
+    ),
+  }
+);
+const BeforeAfterChart = dynamic(
+  () => import('./charts').then((m) => m.BeforeAfterChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-80 w-full rounded-xl bg-theme-elevated animate-pulse" />
+    ),
+  }
+);
+const SkillsRadarChart = dynamic(
+  () => import('./charts').then((m) => m.SkillsRadarChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-80 w-full rounded-xl bg-theme-elevated animate-pulse" />
+    ),
+  }
+);
 
 interface TeacherProgressPageClientProps {
   studentId: string;
@@ -112,32 +128,9 @@ export default function TeacherProgressPageClient({
     async (shareData: ShareReportData) => {
       setSharingReport(true);
       try {
-        // First, save the shared report to database
-        const response = await fetch(
-          `/api/teacher/students/${studentId}/progress-report/shared`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              title: shareData.title,
-              description: shareData.description,
-              teacherMessage: shareData.teacherMessage,
-              selectedSections: shareData.selectedSections,
-              allowComments: shareData.allowComments,
-              expiresInDays: shareData.expiresInDays,
-              reportData: reportData, // Full report data
-              periodStart: reportData?.reportMetadata.periodStart,
-              periodEnd: reportData?.reportMetadata.periodEnd,
-              periodLabel: reportData?.reportMetadata.periodLabel,
-            }),
-          }
-        );
-
-        const result = await response.json();
-
-        if (!response.ok || !result.success) {
-          throw new Error(result.error || 'Erro ao compartilhar relatório');
-        }
+        // A API gera o conteúdo compartilhado a partir dos dados do período;
+        // daqui vão só aluno, janela, seções e textos.
+        await shareProgressReport(studentId, currentPeriod, shareData);
 
         setShareSuccess('Relatório compartilhado com sucesso!');
         setTimeout(() => setShareSuccess(null), 5000);
@@ -149,31 +142,8 @@ export default function TeacherProgressPageClient({
         setSharingReport(false);
       }
     },
-    [studentId, reportData]
+    [studentId, currentPeriod]
   );
-
-  // Custom tooltip for charts
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-theme-elevated border border-theme-primary rounded-lg p-3 shadow-theme-medium">
-          <p className="text-theme-primary font-medium mb-2">{label}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} className="text-sm" style={{ color: entry.color }}>
-              {entry.name}: {entry.value}
-              {entry.name.includes('Rate') || entry.name.includes('Taxa')
-                ? '%'
-                : ''}
-              {entry.name.includes('Hours') || entry.name.includes('Horas')
-                ? 'h'
-                : ''}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
 
   // Error state
   if ((error || errorMessage) && !reportData) {
@@ -466,40 +436,7 @@ export default function TeacherProgressPageClient({
                   {t('monthly_progress')}
                 </h3>
                 <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={reportData.evolution.monthly}>
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        stroke="#374151"
-                        opacity={0.3}
-                      />
-                      <XAxis dataKey="month" stroke="#9CA3AF" fontSize={12} />
-                      <YAxis stroke="#9CA3AF" fontSize={12} />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Legend />
-                      <Line
-                        type="monotone"
-                        dataKey="lessonsCompleted"
-                        stroke={CHART_COLORS.primary}
-                        strokeWidth={3}
-                        name={t('chart_lessons_completed')}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="studyHours"
-                        stroke={CHART_COLORS.success}
-                        strokeWidth={3}
-                        name={t('chart_study_hours')}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="attendanceRate"
-                        stroke={CHART_COLORS.warning}
-                        strokeWidth={3}
-                        name={t('chart_attendance_rate')}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  <MonthlyEvolutionChart reportData={reportData} t={t} />
                 </div>
               </AnimatedCard>
 
@@ -509,66 +446,7 @@ export default function TeacherProgressPageClient({
                   {t('before_after_analysis')}
                 </h3>
                 <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={[
-                        {
-                          metric: 'Obras',
-                          [t('before_classes')]:
-                            reportData.evolution.beforeAfter.beforeClasses
-                              .totalWorks,
-                          [t('after_classes')]:
-                            reportData.evolution.beforeAfter.afterClasses
-                              .totalWorks,
-                        },
-                        {
-                          metric: 'Favoritas',
-                          [t('before_classes')]:
-                            reportData.evolution.beforeAfter.beforeClasses
-                              .favoriteWorks,
-                          [t('after_classes')]:
-                            reportData.evolution.beforeAfter.afterClasses
-                              .favoriteWorks,
-                        },
-                        {
-                          metric: 'Anotações',
-                          [t('before_classes')]:
-                            reportData.evolution.beforeAfter.beforeClasses
-                              .annotations,
-                          [t('after_classes')]:
-                            reportData.evolution.beforeAfter.afterClasses
-                              .annotations,
-                        },
-                        {
-                          metric: 'Prática (min)',
-                          [t('before_classes')]:
-                            reportData.evolution.beforeAfter.beforeClasses
-                              .practiceTime,
-                          [t('after_classes')]:
-                            reportData.evolution.beforeAfter.afterClasses
-                              .practiceTime,
-                        },
-                      ]}
-                    >
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        stroke="#374151"
-                        opacity={0.3}
-                      />
-                      <XAxis dataKey="metric" stroke="#9CA3AF" fontSize={12} />
-                      <YAxis stroke="#9CA3AF" fontSize={12} />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Legend />
-                      <Bar
-                        dataKey={t('before_classes')}
-                        fill={CHART_COLORS.secondary}
-                      />
-                      <Bar
-                        dataKey={t('after_classes')}
-                        fill={CHART_COLORS.primary}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
+                  <BeforeAfterChart reportData={reportData} t={t} />
                 </div>
               </AnimatedCard>
             </div>
@@ -638,58 +516,7 @@ export default function TeacherProgressPageClient({
                     Avaliação de Habilidades
                   </h3>
                   <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RadarChart
-                        data={[
-                          {
-                            skill: 'Técnica',
-                            value:
-                              reportData.insights.skillsAssessment.technique,
-                            fullMark: 5,
-                          },
-                          {
-                            skill: 'Interpretação',
-                            value:
-                              reportData.insights.skillsAssessment
-                                .interpretation,
-                            fullMark: 5,
-                          },
-                          {
-                            skill: 'Ritmo',
-                            value: reportData.insights.skillsAssessment.rhythm,
-                            fullMark: 5,
-                          },
-                          {
-                            skill: 'Afinação',
-                            value: reportData.insights.skillsAssessment.pitch,
-                            fullMark: 5,
-                          },
-                          {
-                            skill: 'Expressão',
-                            value:
-                              reportData.insights.skillsAssessment.expression,
-                            fullMark: 5,
-                          },
-                          {
-                            skill: 'Leitura',
-                            value:
-                              reportData.insights.skillsAssessment.sightReading,
-                            fullMark: 5,
-                          },
-                        ]}
-                      >
-                        <PolarGrid />
-                        <PolarAngleAxis dataKey="skill" />
-                        <PolarRadiusAxis angle={30} domain={[0, 5]} />
-                        <Radar
-                          name="Nível Atual"
-                          dataKey="value"
-                          stroke={CHART_COLORS.primary}
-                          fill={CHART_COLORS.primary}
-                          fillOpacity={0.3}
-                        />
-                      </RadarChart>
-                    </ResponsiveContainer>
+                    <SkillsRadarChart reportData={reportData} t={t} />
                   </div>
                 </AnimatedCard>
               </div>

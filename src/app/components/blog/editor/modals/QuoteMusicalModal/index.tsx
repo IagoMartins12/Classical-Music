@@ -3,6 +3,8 @@
 // ============================================
 'use client';
 
+import { uploadBlogMedia } from '@/app/requests/blog/interactions';
+
 import { useState } from 'react';
 import { Editor } from '@tiptap/react';
 import { FiUpload } from 'react-icons/fi';
@@ -50,31 +52,16 @@ export function QuoteMusicalModal({
 
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('folder', 'audio');
-
-      if (articleId) {
-        formData.append('articleId', articleId);
-      } else if (sessionId) {
-        formData.append('sessionId', sessionId);
-      }
-
-      const response = await fetch('/api/blog/media/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setAudioUrl(data.url);
-      } else {
-        alert('Erro ao fazer upload: ' + data.error);
-      }
+      setAudioUrl(
+        await uploadBlogMedia(file, { folder: 'audio', articleId, sessionId })
+      );
     } catch (error) {
       console.error('Erro ao fazer upload:', error);
-      alert('Erro ao fazer upload do áudio');
+      alert(
+        error instanceof Error
+          ? `Erro ao fazer upload: ${error.message}`
+          : 'Erro ao fazer upload do áudio'
+      );
     } finally {
       setUploading(false);
     }

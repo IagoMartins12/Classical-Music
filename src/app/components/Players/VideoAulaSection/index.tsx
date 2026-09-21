@@ -23,9 +23,14 @@ import { FaGraduationCap } from 'react-icons/fa';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import Select from '../../Common/Select';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/context/TranslationContext';
+import {
+  clearWorkMediaRequest,
+  updateWorkMediaRequest,
+  uploadWorkMediaFileRequest,
+} from '@/app/requests/work-media';
 
 interface VideoAulaSectionProps {
   work: {
@@ -489,16 +494,10 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
       if (editData.videoAulaFile) {
         console.log('📤 [VIDEO-AULA] Fazendo upload de arquivo...');
 
-        const formData = new FormData();
-        formData.append('file', editData.videoAulaFile);
-        formData.append('mediaType', 'videoAula');
-
-        const uploadResponse = await fetch(
-          `/api/works/${work.id}/media/upload`,
-          {
-            method: 'POST',
-            body: formData,
-          }
+        const uploadResponse = await uploadWorkMediaFileRequest(
+          work.id,
+          'WORK_VIDEO_LESSON',
+          editData.videoAulaFile
         );
 
         const uploadData = await uploadResponse.json();
@@ -527,11 +526,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
 
       console.log('💾 [VIDEO-AULA] Salvando na base de dados...');
 
-      const response = await fetch(`/api/works/${work.id}/media`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData),
-      });
+      const response = await updateWorkMediaRequest(work.id, updateData);
 
       const data = await response.json();
 
@@ -573,27 +568,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
         videoAulaSource: work.videoAulaSource,
       });
 
-      if (work.videoAulaFile && work.videoAulaSource === 'local') {
-        const fileName = work.videoAulaFile.split('/').pop();
-        if (fileName) {
-          const deleteFileResponse = await fetch(
-            `/api/works/${work.id}/media/upload?fileName=${fileName}&mediaType=videoAula`,
-            { method: 'DELETE' }
-          );
-
-          if (!deleteFileResponse.ok) {
-            console.warn('⚠️ [VIDEO-AULA] ' + t('video_aula_falha_deletar'));
-          } else {
-            console.log('✅ [VIDEO-AULA] ' + t('video_aula_arquivo_deletado'));
-          }
-        }
-      }
-
-      const response = await fetch(`/api/works/${work.id}/media`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'video-aula' }),
-      });
+      // O arquivo enviado fica no armazenamento, ligado à obra, e sai quando
+      // ela for removida — a API não apaga por nome; aqui só limpam os campos.
+      const response = await clearWorkMediaRequest(work.id, 'video-aula');
 
       const data = await response.json();
 

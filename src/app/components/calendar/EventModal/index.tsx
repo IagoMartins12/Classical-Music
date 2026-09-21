@@ -2,7 +2,7 @@
 
 'use client';
 
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 
 import Button from '../../Common/Button';

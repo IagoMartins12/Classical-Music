@@ -2,8 +2,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { useRouter, useSearchParams } from 'next/navigation';
+import {
+  deleteArticle,
+  duplicateArticle,
+} from '@/app/requests/blog/admin-actions';
 import {
   FiEdit,
   FiTrash2,
@@ -154,18 +158,7 @@ export function ArticleList({
   const handleDelete = async (id: string) => {
     setDeleting(true);
     try {
-      const response = await fetch(`/api/blog/articles?id=${id}`, {
-        method: 'DELETE',
-        body: JSON.stringify({
-          id,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao deletar');
-      }
+      await deleteArticle(id);
 
       toast.success('Artigo deletado com sucesso!');
       setDeleteModal(null);
@@ -179,16 +172,12 @@ export function ArticleList({
 
   const handleDuplicate = async (id: string) => {
     try {
-      const response = await fetch(`/api/blog/articles/${id}/duplicate`, {
-        method: 'POST',
-      });
-
-      if (!response.ok) throw new Error();
+      await duplicateArticle(id);
 
       toast.success('Artigo duplicado!');
       router.refresh();
-    } catch {
-      toast.error('Erro ao duplicar artigo');
+    } catch (error: any) {
+      toast.error(error?.message || 'Erro ao duplicar artigo');
     }
   };
 

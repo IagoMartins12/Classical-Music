@@ -2,10 +2,10 @@
 import { FiClock, FiDownload, FiFileText, FiUser } from 'react-icons/fi';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import FavoriteScoreButton from '../../FavoriteScoreButton';
 import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
-import { WorkScore } from '@prisma/client';
+import type { WorkScore } from '@/app/types/catalog';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface ScoreCardProps {

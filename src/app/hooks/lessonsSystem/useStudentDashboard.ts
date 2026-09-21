@@ -1,6 +1,7 @@
 // app/hooks/useStudentDashboard.ts - Hook específico para dashboard do aluno
 
-import { StudentDashboardData } from '@/app/(student)/student/pageServer';
+import type { StudentDashboardData } from '@/app/(student)/student/pageServer';
+import { loadStudentDashboard } from '@/app/requests/portal/student';
 import { useState, useCallback } from 'react';
 
 interface UseStudentDashboardState {
@@ -74,25 +75,11 @@ export function useStudentDashboard(
     setError(null);
 
     try {
-      const response = await fetch('/api/student/dashboard', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Dashboard API error: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (!data.success) {
-        throw new Error('Dashboard API returned error');
-      }
+      const dashboard = await loadStudentDashboard();
 
       setState((prev) => ({
         ...prev,
-        dashboardData: data,
+        dashboardData: { dashboard, timestamp: new Date().toISOString() },
       }));
     } catch (error) {
       console.error('Erro ao atualizar dashboard:', error);

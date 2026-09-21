@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import Checkbox from '../../Common/Checkbox';
+import { listCategories, listTags } from '@/app/requests/blog/taxonomy';
 
 interface SearchFiltersProps {
   currentParams: {
@@ -36,18 +37,13 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
 
   const fetchFilters = async () => {
     try {
-      const [categoriesRes, tagsRes] = await Promise.all([
-        fetch('/api/blog/categories'),
-        fetch('/api/blog/tags?limit=20'),
+      const [categoryList, tagList] = await Promise.all([
+        listCategories({ fresh: true }),
+        listTags({ limit: 20 }, { fresh: true }),
       ]);
 
-      const [categoriesData, tagsData] = await Promise.all([
-        categoriesRes.json(),
-        tagsRes.json(),
-      ]);
-
-      if (categoriesData.success) setCategories(categoriesData.categories);
-      if (tagsData.success) setTags(tagsData.tags);
+      setCategories(categoryList);
+      setTags(tagList);
     } catch (error) {
       console.error('Erro ao carregar filtros:', error);
     }

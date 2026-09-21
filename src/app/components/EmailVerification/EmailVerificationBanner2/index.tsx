@@ -2,10 +2,11 @@
 'use client';
 
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
 import { FiX, FiRefreshCw } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
+import { legacyAuth } from '@/app/libs/api/compat';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface EmailVerificationBannerProps {
@@ -43,14 +44,9 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
   const handleResendVerification = async () => {
     setIsResending(true);
     try {
-      // This would call an API to resend verification
-      const response = await fetch('/api/auth/resend-verification', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: user.email }),
-      });
-
-      const result = await response.json();
+      const result = await legacyAuth.resendConfirmationByEmail(
+        user.email ?? ''
+      );
 
       if (result.success) {
         toast.success('Email de verificação enviado!');

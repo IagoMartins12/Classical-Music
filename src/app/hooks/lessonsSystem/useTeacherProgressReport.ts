@@ -1,11 +1,15 @@
 // app/hooks/lessonsSystem/useTeacherProgressReport.ts - Hook para relatório detalhado
 
 import { useState, useCallback, useEffect } from 'react';
-import {
+import type {
   TeacherProgressReportResponse,
   PeriodOption,
   PeriodFilter,
 } from '@/app/types/teacherProgressReport';
+import {
+  loadTeacherProgressReport,
+  shareProgressReport,
+} from '@/app/requests/portal/progress-report';
 
 interface UseTeacherProgressReportState {
   reportData: TeacherProgressReportResponse | null;
@@ -128,80 +132,19 @@ export function useTeacherProgressReport(
       period: PeriodFilter
     ): Promise<TeacherProgressReportResponse | null> => {
       try {
-        const params = new URLSearchParams({
-          period: period.type,
-        });
-
-        if (period.startDate) {
-          params.append('startDate', period.startDate.toISOString());
-        }
-        if (period.endDate) {
-          params.append('endDate', period.endDate.toISOString());
-        }
-
-        const response = await fetch(
-          `/api/teacher/students/${studentId}/progress-report?${params}`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
+        const data = await loadTeacherProgressReport(
+          studentId,
+          period.type,
+          period.type === 'custom' && period.startDate && period.endDate
+            ? { start: period.startDate, end: period.endDate }
+            : undefined
         );
 
-        if (!response.ok) {
-          throw new Error(`Progress report API error: ${response.status}`);
+        if (!data) {
+          throw new Error('Aluno não está entre os seus vínculos');
         }
 
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error(data.error || 'Failed to load progress report');
-        }
-
-        return {
-          ...data.report,
-          reportMetadata: {
-            ...data.report.reportMetadata,
-            generatedAt: new Date(data.report.reportMetadata.generatedAt),
-            periodStart: new Date(data.report.reportMetadata.periodStart),
-            periodEnd: new Date(data.report.reportMetadata.periodEnd),
-          },
-          studentInfo: {
-            ...data.report.studentInfo,
-            startDate: new Date(data.report.studentInfo.startDate),
-          },
-          evolution: {
-            ...data.report.evolution,
-            beforeAfter: data.report.evolution.beforeAfter,
-          },
-          achievements: {
-            ...data.report.achievements,
-            learningMilestones:
-              data.report.achievements.learningMilestones?.map(
-                (milestone: any) => ({
-                  ...milestone,
-                  achievedAt: new Date(milestone.achievedAt),
-                })
-              ) || [],
-            consistencyAwards:
-              data.report.achievements.consistencyAwards?.map((award: any) => ({
-                ...award,
-                achievedAt: new Date(award.achievedAt),
-              })) || [],
-            skillBadges:
-              data.report.achievements.skillBadges?.map((badge: any) => ({
-                ...badge,
-                earnedAt: new Date(badge.earnedAt),
-              })) || [],
-            progressCertificates:
-              data.report.achievements.progressCertificates?.map(
-                (cert: any) => ({
-                  ...cert,
-                  signedAt: new Date(cert.signedAt),
-                })
-              ) || [],
-          },
-        };
+        return data;
       } catch (error) {
         console.error('Error fetching progress report:', error);
         throw error;
@@ -291,32 +234,8 @@ export function useTeacherProgressReport(
     setError(null);
 
     try {
-      const response = await fetch(
-        `/api/teacher/students/${studentId}/progress-report/share`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            reportId: state.reportData.reportMetadata.generatedAt.toISOString(),
-            periodStart:
-              state.reportData.reportMetadata.periodStart.toISOString(),
-            periodEnd: state.reportData.reportMetadata.periodEnd.toISOString(),
-            periodLabel: state.reportData.reportMetadata.periodLabel,
-          }),
-        }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Erro ao compartilhar relatório');
-      }
-
-      if (!result.success) {
-        throw new Error('Erro na operação de compartilhamento');
-      }
+      // A API gera o conteúdo compartilhado a partir dos dados do período.
+      await shareProgressReport(studentId, state.currentPeriod);
 
       console.log('Report shared with student successfully');
       return true;

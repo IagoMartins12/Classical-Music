@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import ViewModeToggle, { ViewMode } from '../../ViewModeToggle';
 import { ArticleCard } from '../ArticleCard';
 import { ArticleCardList } from '../ArticleCardList';
+import { loadMyLikes } from '@/app/requests/blog/interactions';
 import { FiSearch, FiFilter } from 'react-icons/fi';
 import Link from 'next/link';
 
@@ -69,29 +70,10 @@ export function LikedPageClient({ categories }: LikedPageClientProps) {
   const fetchLikedArticles = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: '12',
-      });
+      const data = await loadMyLikes(page, selectedCategory);
 
-      if (selectedCategory !== 'all') {
-        params.append('category', selectedCategory);
-      }
-
-      const res = await fetch(`/api/blog/interactions/my-likes?${params}`);
-      const data = await res.json();
-
-      if (data.success) {
-        // ✅ MAPEAMENTO CORRETO - Transformar array de categorias no formato esperado
-        const mappedArticles = data.likes.map((like: any) => ({
-          ...like.article,
-          categories: like.article.categories.map((cat: any) => ({
-            category: cat,
-          })),
-        }));
-        setArticles(mappedArticles);
-        setPagination(data.pagination);
-      }
+      setArticles(data.articles);
+      setPagination(data.pagination);
     } catch (error) {
       console.error('Erro ao buscar curtidos:', error);
     } finally {

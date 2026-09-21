@@ -44,6 +44,17 @@ import Checkbox from '@/app/components/Common/Checkbox';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { MdTranslate } from 'react-icons/md';
 import { GiSparkles } from 'react-icons/gi';
+import {
+  checkComposerDuplicateRequest,
+  saveComposerRequest,
+  uploadComposerImage,
+} from '@/app/requests/uploads-client';
+import { scrapeComposerPage } from '@/app/requests/external-sources';
+import {
+  draftComposerBiography,
+  loadComposerBiographies,
+  translateBiographyText,
+} from '@/app/requests/composer-biography';
 
 interface DuplicateCheckState {
   loading: boolean;
@@ -285,37 +296,36 @@ const CreateComposerModal = ({
     setBioMessage({ type: '', text: '' });
 
     try {
-      const response = await fetch(
-        `/api/composer/${editingComposer?.id || 'new'}/biography/generate`,
+      // Rascunho a partir do formulário, sem gravar: vai junto ao salvar.
+      const data = await draftComposerBiography(
         {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            composerName: formData.name,
-            fullName: formData.fullName,
-            birthDate: formData.birthDate,
-            deathDate: formData.deathDate,
-            epoch: formData.epochName,
-            role: roles.find((r) => r.id === formData.primaryRoleId)?.name,
-            language: lang,
-          }),
-        }
+          name: formData.name,
+          fullName: formData.fullName,
+          alternativeNames: formData.alternativeNames,
+          birthDate: formData.birthDate,
+          deathDate: formData.deathDate,
+          epochName: formData.epochName,
+          roleName: roles.find((r) => r.id === formData.primaryRoleId)?.name,
+          nationality: formData.nationality,
+          instruments: formData.instruments,
+        },
+        lang
       );
 
-      const data = await response.json();
-
-      if (data.success) {
-        setBiographies((prev) => ({
-          ...prev,
-          [lang]: data.biography,
-        }));
-        setBioMessage({
-          type: 'success',
-          text: `Biografia em ${lang === 'pt' ? 'português' : 'inglês'} gerada com sucesso!`,
-        });
-      } else {
-        throw new Error(data.error || 'Erro ao gerar biografia');
+      if (data.biography === null) {
+        throw new Error(
+          'A IA não tem informação confiável sobre este compositor'
+        );
       }
+
+      setBiographies((prev) => ({
+        ...prev,
+        [lang]: data.biography,
+      }));
+      setBioMessage({
+        type: 'success',
+        text: `Biografia em ${lang === 'pt' ? 'português' : 'inglês'} gerada com sucesso!`,
+      });
     } catch (error) {
       console.error('Erro ao gerar biografia:', error);
       setBioMessage({
@@ -341,37 +351,30 @@ const CreateComposerModal = ({
       return;
     }
 
+    // A API traduz só do português para o inglês (o legado usava o Google
+    // Tradutor nas duas direções).
+    if (from !== 'pt' || to !== 'en') {
+      setBioMessage({
+        type: 'error',
+        text: 'A tradução automática é só do português para o inglês',
+      });
+      return;
+    }
+
     setIsTranslatingBio(true);
     setBioMessage({ type: '', text: '' });
 
     try {
-      const response = await fetch(
-        `/api/composer/${editingComposer?.id || 'new'}/biography/translate`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            text: biographies[from],
-            from,
-            to,
-          }),
-        }
-      );
+      const translatedText = await translateBiographyText(biographies[from]);
 
-      const data = await response.json();
-
-      if (data.success) {
-        setBiographies((prev) => ({
-          ...prev,
-          [to]: data.translatedText,
-        }));
-        setBioMessage({
-          type: 'success',
-          text: `Biografia traduzida para ${to === 'pt' ? 'português' : 'inglês'}!`,
-        });
-      } else {
-        throw new Error(data.error || 'Erro ao traduzir biografia');
-      }
+      setBiographies((prev) => ({
+        ...prev,
+        [to]: translatedText,
+      }));
+      setBioMessage({
+        type: 'success',
+        text: 'Biografia traduzida para inglês!',
+      });
     } catch (error) {
       console.error('Erro ao traduzir biografia:', error);
       setBioMessage({
@@ -387,17 +390,13 @@ const CreateComposerModal = ({
   // 🆕 FUNÇÃO PARA CARREGAR BIOGRAFIAS DO JSON
   const loadBiographiesFromJson = async (composerId: string) => {
     try {
-      const response = await fetch(
-        `/api/composer/${composerId}/biography/load`
-      );
-      const data = await response.json();
+      // As duas biografias vêm do compositor (`bio` e `bioEn`), não de JSON.
+      const biographies = await loadComposerBiographies(composerId);
 
-      if (data.success) {
-        setBiographies({
-          pt: data.biographies.pt || formData.bio || '',
-          en: data.biographies.en || '',
-        });
-      }
+      setBiographies({
+        pt: biographies.pt || formData.bio || '',
+        en: biographies.en,
+      });
     } catch (error) {
       console.error('Erro ao carregar biografias:', error);
       // Fallback para o bio do banco
@@ -559,15 +558,11 @@ const CreateComposerModal = ({
     setDuplicateCheck({ loading: true, found: false });
 
     try {
-      const response = await fetch('/api/uploads/composer/check-duplicate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          url: url.trim(),
-          source,
-          excludeId: editingComposer?.id,
-          fullName: cleanName(composerFullName || formData.fullName || ''),
-        }),
+      const response = await checkComposerDuplicateRequest({
+        url: url.trim(),
+        source: source as 'imslp' | 'wikipedia',
+        excludeId: editingComposer?.id,
+        fullName: cleanName(composerFullName || formData.fullName || ''),
       });
 
       const data = await response.json();
@@ -630,19 +625,7 @@ const CreateComposerModal = ({
   const handleImageUpload = async (file: File) => {
     setIsUploadingImage(true);
     try {
-      const uploadFormData = new FormData();
-      uploadFormData.append('file', file);
-      uploadFormData.append(
-        'composerName',
-        formData.fullName || formData.name || 'Compositor'
-      );
-
-      const response = await fetch('/api/uploads/composer-image', {
-        method: 'POST',
-        body: uploadFormData,
-      });
-
-      const result = await response.json();
+      const result = await uploadComposerImage(file, editingComposer?.id);
 
       if (result.success) {
         setFormData((prev) => ({
@@ -676,31 +659,6 @@ const CreateComposerModal = ({
       ...prev,
       portraitUrl: imageUrl || '',
     }));
-  };
-
-  // 🆕 FUNÇÃO PARA SALVAR BIOGRAFIAS NO JSON
-  const saveBiographiesToJson = async (composerId: string) => {
-    try {
-      const response = await fetch(
-        `/api/composer/${composerId}/biography/save`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            composerName: formData.fullName || formData.name,
-            composerId: composerId,
-            pt: biographies.pt,
-            en: biographies.en,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        console.warn('Erro ao salvar biografias no JSON');
-      }
-    } catch (error) {
-      console.error('Erro ao salvar biografias no JSON:', error);
-    }
   };
 
   const handleValidation = () => {
@@ -753,12 +711,6 @@ const CreateComposerModal = ({
     setIsSubmitting(true);
 
     try {
-      const url = editingComposer
-        ? `/api/uploads/composer/${editingComposer.id}`
-        : '/api/uploads/composer';
-
-      const method = editingComposer ? 'PUT' : 'POST';
-
       const dataToSend = {
         ...formData,
         birthDate: formatDateForSave(formData.birthDate),
@@ -766,23 +718,19 @@ const CreateComposerModal = ({
         roles: formData.roles.join(', '),
         dataSource: formData.dataSource,
         bio: biographies.pt, // 🆕 Salvar bio PT no campo principal
+        // A versão em inglês é campo do compositor (o legado a guardava num
+        // JSON à parte, depois de salvar).
+        bioEn: biographies.en,
       };
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend),
-      });
+      const response = await saveComposerRequest(
+        editingComposer?.id,
+        dataToSend
+      );
 
       const data = await response.json();
 
       if (response.ok) {
-        // 🆕 SALVAR BIOGRAFIAS NO JSON
-        if (data.composerId || editingComposer?.id) {
-          await saveBiographiesToJson(data.composerId || editingComposer.id);
-        }
         router.refresh();
         onClose();
         toast.success(
@@ -847,33 +795,16 @@ const CreateComposerModal = ({
     setScrapingResult(null);
 
     try {
-      const response = await fetch('/api/uploads/external-sources/scraper', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          url: urlToScrape,
-          source: dataSource,
-        }),
-      });
+      const page = await scrapeComposerPage(urlToScrape, dataSource);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setScrapingResult(data);
-        fillFromScrapingResult(data.data);
-        toast.success(
-          t('toast_composer_data_extracted'),
-          t('toast_composer_data_extracted_message', {
-            completeness: data.data.dataCompleteness,
-          })
-        );
-      } else {
-        throw new Error(
-          data.error || t('toast_composer_scraping_error_message')
-        );
-      }
+      setScrapingResult({ success: true, data: page });
+      fillFromScrapingResult(page);
+      toast.success(
+        t('toast_composer_data_extracted'),
+        t('toast_composer_data_extracted_message', {
+          completeness: page.dataCompleteness,
+        })
+      );
     } catch (error) {
       console.error('Erro ao fazer scraping:', error);
       toast.error(

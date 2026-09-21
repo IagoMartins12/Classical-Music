@@ -1,8 +1,15 @@
 // app/hooks/useTeacherStudents.ts - Hook específico para gestão de alunos
 
-import { TeacherStudentsServerData } from '@/app/(teacher)/teacher/students/pageServer';
+import type { TeacherStudentsServerData } from '@/app/(teacher)/teacher/students/pageServer';
 import { useState, useCallback } from 'react';
 import { useToast } from '../useToast';
+import {
+  PAUSE_NOT_SUPPORTED,
+  inviteStudentRequest,
+  searchInvitableStudents,
+  updateRelationshipRequest,
+} from '@/app/requests/portal/relationship-actions';
+import { loadTeacherStudents } from '@/app/requests/portal/teacher';
 
 // 🆕 INTERFACE PARA O PLANO DE ESTUDOS
 interface StudyPlanData {
@@ -137,22 +144,12 @@ export function useTeacherStudents(
     try {
       console.log('🔄 [useTeacherStudents] Refreshing students data...');
 
-      const response = await fetch('/api/teacher/students');
-
-      if (!response.ok) {
-        throw new Error('Erro ao carregar alunos');
-      }
-
-      const data = await response.json();
-
-      if (!data.success) {
-        throw new Error(data.error || 'Erro na API de alunos');
-      }
+      const data = await loadTeacherStudents('all', 100, 0);
 
       setState((prev) => ({
         ...prev,
-        students: data.students || [],
-        summary: data.summary || { total: 0, active: 0, inactive: 0 },
+        students: data.students,
+        summary: data.summary,
       }));
 
       console.log('✅ [useTeacherStudents] Students refreshed successfully');
@@ -184,32 +181,12 @@ export function useTeacherStudents(
       try {
         console.log('🔍 [useTeacherStudents] Searching students:', email);
 
-        const response = await fetch(
-          `/api/teacher/students/search?email=${encodeURIComponent(
-            email
-          )}&limit=10`
-        );
+        const students = await searchInvitableStudents(email);
 
-        if (!response.ok) {
-          throw new Error('Erro na busca');
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          setState((prev) => ({
-            ...prev,
-            searchResults: data.students || [],
-          }));
-          console.log(
-            '✅ [useTeacherStudents] Search completed:',
-            data.students?.length || 0,
-            'results'
-          );
-        } else {
-          setState((prev) => ({ ...prev, searchResults: [] }));
-          console.log('⚠️ [useTeacherStudents] Search returned no success');
-        }
+        setState((prev) => ({
+          ...prev,
+          searchResults: students,
+        }));
       } catch (error) {
         console.error(
           '❌ [useTeacherStudents] Error searching students:',
@@ -250,59 +227,28 @@ export function useTeacherStudents(
             : null,
         });
 
-        // 🔥 PREPARAR PAYLOAD COM DADOS DO PLANO DE ESTUDOS OU VALORES PADRÃO
-        const payload = {
-          studentUserId,
+        // A API guarda o que tem campo (limite, duração, dias, horários,
+        // foco, plano e anotações); metas e instruções extras do formulário
+        // não têm onde ficar. O vínculo nasce como convite pendente.
+        await inviteStudentRequest(studentUserId, {
           maxLessonsPerWeek: studyPlan?.maxLessonsPerWeek || 1,
           lessonDuration: studyPlan?.lessonDuration || 60,
           preferredDays: studyPlan?.preferredDays || [],
           preferredTimes: studyPlan?.preferredTimes || [],
-          learningPlan: studyPlan?.learningPlan || '',
+          learningPlan: studyPlan?.learningPlan,
           currentFocus: studyPlan?.currentFocus || [],
-          teacherNotes: studyPlan?.teacherNotes || '',
-          // 🆕 CAMPOS ADICIONAIS DO PLANO
-          studyGoals: studyPlan?.studyGoals || '',
-          practiceFrequency: studyPlan?.practiceFrequency || '',
-          homeworkExpectation: studyPlan?.homeworkExpectation || '',
-          specialInstructions: studyPlan?.specialInstructions || '',
-        };
-
-        console.log('📤 [useTeacherStudents] Sending payload:', payload);
-
-        const response = await fetch('/api/teacher/students', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
+          teacherNotes: studyPlan?.teacherNotes,
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Erro ao adicionar aluno');
-        }
+        toast.success('Convite enviado ao aluno!');
 
-        const data = await response.json();
+        // Refresh data after adding student
+        await refreshStudents();
 
-        if (data.success) {
-          console.log('✅ [useTeacherStudents] Student added successfully!', {
-            relationship: data.relationship?.id,
-            inviteEmailSent: data.inviteEmailSent,
-            message: data.message,
-          });
+        // Clear search results
+        setState((prev) => ({ ...prev, searchResults: [] }));
 
-          toast.success(data.message || 'Aluno adicionado com sucesso!');
-
-          // Refresh data after adding student
-          await refreshStudents();
-
-          // Clear search results
-          setState((prev) => ({ ...prev, searchResults: [] }));
-
-          return true;
-        } else {
-          throw new Error(data.error || 'Erro desconhecido');
-        }
+        return true;
       } catch (error) {
         console.error('❌ [useTeacherStudents] Error adding student:', error);
         const message =
@@ -331,21 +277,7 @@ export function useTeacherStudents(
           relationshipId
         );
 
-        const response = await fetch('/api/teacher/students', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ relationshipId, ...updates }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Erro ao atualizar aluno');
-        }
-
-        if (!data.success) {
-          throw new Error(data.error || 'Erro na atualização');
-        }
+        await updateRelationshipRequest(relationshipId, updates);
 
         // Update local state
         setState((prev) => ({
@@ -394,31 +326,8 @@ export function useTeacherStudents(
           isPaused,
         });
 
-        const action = isPaused ? 'resume' : 'pause';
-        const response = await fetch(
-          `/api/teacher/students/${relationshipId}/${action}`,
-          {
-            method: 'PATCH',
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`Erro ao ${isPaused ? 'reativar' : 'pausar'} aluno`);
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          toast.success(data.message);
-          // Refresh data to get updated status
-          await refreshStudents();
-          console.log(
-            '✅ [useTeacherStudents] Student status toggled successfully'
-          );
-          return true;
-        } else {
-          throw new Error(data.error || 'Erro desconhecido');
-        }
+        // A API não tem pausa de vínculo (fica ativo ou é encerrado).
+        throw new Error(PAUSE_NOT_SUPPORTED);
       } catch (error) {
         console.error(
           '❌ [useTeacherStudents] Error toggling student status:',

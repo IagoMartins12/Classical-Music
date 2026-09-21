@@ -32,7 +32,7 @@ import {
 } from '../../../components/animation/AnimatedComponents';
 import { LessonData, TeacherLessonsData } from './pageServer';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Select from '@/app/components/Common/Select';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useTeacherLessons } from '@/app/hooks/lessonsSystem/useTeacherLessons';

@@ -1,13 +1,12 @@
 // app/blog/bookmarks/page.tsx
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
-import prisma from '@/app/libs/prismadb';
 import { FiBookmark } from 'react-icons/fi';
+import { listCategories } from '@/app/requests/blog/taxonomy';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { BookmarksPageClient } from '@/app/components/blog/BookmarksPageClient';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
+import { getServerSession } from '@/app/libs/api/server-session';
 
 export const metadata: Metadata = {
   title: 'Artigos Salvos - Blog Opus Atlas',
@@ -18,21 +17,18 @@ export const metadata: Metadata = {
 export const revalidate = 0; // Sempre fresh
 
 async function getCategories() {
-  return await prisma.blogCategory.findMany({
-    where: { isActive: true },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      color: true,
-      icon: true,
-    },
-    orderBy: { order: 'asc' },
-  });
+  const categories = await listCategories();
+  return categories.map(({ id, name, slug, color, icon }) => ({
+    id,
+    name,
+    slug,
+    color,
+    icon,
+  }));
 }
 
 export default async function BookmarksPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user) {
     redirect('/login?callbackUrl=/blog/bookmarks');

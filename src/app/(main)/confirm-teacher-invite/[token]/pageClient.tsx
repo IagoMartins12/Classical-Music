@@ -1,6 +1,7 @@
 // app/confirm-teacher-invite/[token]/page.tsx
 'use client';
 
+import { legacyAuth } from '@/app/libs/api/compat';
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
@@ -103,8 +104,7 @@ export default function ConfirmTeacherInvitePage() {
         ),
       });
 
-      const response = await fetch(`/api/invites/teacher/accept/${token}`);
-      const result = await response.json();
+      const result = await legacyAuth.acceptTeacherInvite(token);
 
       if (result.success) {
         setState({
@@ -150,15 +150,7 @@ export default function ConfirmTeacherInvitePage() {
     setResendSuccess(false);
 
     try {
-      const response = await fetch(`/api/invites/teacher/accept/${token}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ action: 'resend' }),
-      });
-
-      const result = await response.json();
+      const result = await legacyAuth.resendTeacherInvite(token);
 
       if (result.success) {
         setResendSuccess(true);

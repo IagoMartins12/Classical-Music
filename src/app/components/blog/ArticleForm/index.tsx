@@ -15,9 +15,14 @@ import {
   FaPlus,
   FaTrash,
 } from 'react-icons/fa';
-import { ArticleType, ArticleStatus } from '@prisma/client';
+import { ArticleType, ArticleStatus } from '@/app/types/blog';
+import { findComposerById, getWorkById } from '@/app/requests/catalog-search';
+import {
+  removeBlogMedia,
+  uploadBlogMedia,
+} from '@/app/requests/blog/interactions';
 import { BlogEditor } from '../editor/BlogEditor';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Select from '@/app/components/Common/Select';
 import MultiSelect from '@/app/components/Common/MultiSelect';
 import { useToast } from '@/app/hooks/useToast';
@@ -177,17 +182,7 @@ export function ArticleForm({
       if (formData.composerIds.length > 0) {
         try {
           const data = await Promise.all(
-            formData.composerIds.map(async (id) => {
-              const response = await fetch('/api/composers', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, fullData: true }),
-              });
-              if (response.ok) {
-                return await response.json();
-              }
-              return null;
-            })
+            formData.composerIds.map((id) => findComposerById(id))
           );
           setComposersData(data.filter((c) => c !== null));
         } catch (error) {
@@ -208,13 +203,7 @@ export function ArticleForm({
       if (formData.workIds.length > 0) {
         try {
           const data = await Promise.all(
-            formData.workIds.map(async (id) => {
-              const response = await fetch(`/api/works/${id}`);
-              if (response.ok) {
-                return await response.json();
-              }
-              return null;
-            })
+            formData.workIds.map((id) => getWorkById(id))
           );
           setWorksData(data.filter((w) => w !== null));
         } catch (error) {
@@ -308,42 +297,26 @@ export function ArticleForm({
     );
 
     try {
-      const formDataUpload = new FormData();
-      formDataUpload.append('file', file);
-      formDataUpload.append('folder', 'audio');
-
-      if (initialData?.id) {
-        formDataUpload.append('articleId', initialData.id);
-      } else {
-        formDataUpload.append('sessionId', sessionId);
-      }
-
-      const response = await fetch('/api/blog/media/upload', {
-        method: 'POST',
-        body: formDataUpload,
+      const url = await uploadBlogMedia(file, {
+        folder: 'audio',
+        articleId: initialData?.id,
+        sessionId,
       });
 
-      const data = await response.json();
-
-      if (data.success) {
-        setFormData((prev) => ({
-          ...prev,
-          backgroundMusic: {
-            ...prev.backgroundMusic,
-            url: data.url,
-            title:
-              prev.backgroundMusic?.title || file.name.replace(/\.[^/.]+$/, ''),
-          },
-        }));
-        toast.dismiss(uploadToast);
-        toast.upload(
-          'Upload concluído!',
-          'Áudio de fundo adicionado com sucesso.'
-        );
-      } else {
-        toast.dismiss(uploadToast);
-        toast.error('Erro ao fazer upload', data.error);
-      }
+      setFormData((prev) => ({
+        ...prev,
+        backgroundMusic: {
+          ...prev.backgroundMusic,
+          url,
+          title:
+            prev.backgroundMusic?.title || file.name.replace(/\.[^/.]+$/, ''),
+        },
+      }));
+      toast.dismiss(uploadToast);
+      toast.upload(
+        'Upload concluído!',
+        'Áudio de fundo adicionado com sucesso.'
+      );
     } catch (error) {
       toast.dismiss(uploadToast);
       toast.error(
@@ -401,38 +374,19 @@ export function ArticleForm({
     );
 
     try {
-      const formDataUpload = new FormData();
-      formDataUpload.append(
-        'file',
-        croppedBlob,
-        originalFile?.name || 'cover.jpg'
-      );
-      formDataUpload.append('folder', 'thumbnail');
-
-      if (initialData?.id) {
-        formDataUpload.append('articleId', initialData.id);
-      } else {
-        formDataUpload.append('sessionId', sessionId);
-      }
-
-      const response = await fetch('/api/blog/media/upload', {
-        method: 'POST',
-        body: formDataUpload,
+      const url = await uploadBlogMedia(croppedBlob, {
+        folder: 'thumbnail',
+        articleId: initialData?.id,
+        sessionId,
+        fileName: originalFile?.name || 'cover.jpg',
       });
 
-      const data = await response.json();
-
-      if (data.success) {
-        setFormData((prev) => ({ ...prev, coverImage: data.url }));
-        toast.dismiss(uploadToast);
-        toast.upload(
-          'Upload concluído!',
-          'Imagem de capa atualizada com sucesso.'
-        );
-      } else {
-        toast.dismiss(uploadToast);
-        toast.error('Erro ao fazer upload', data.error);
-      }
+      setFormData((prev) => ({ ...prev, coverImage: url }));
+      toast.dismiss(uploadToast);
+      toast.upload(
+        'Upload concluído!',
+        'Imagem de capa atualizada com sucesso.'
+      );
     } catch (error) {
       toast.dismiss(uploadToast);
       toast.error(
@@ -453,22 +407,17 @@ export function ArticleForm({
     if (!formData.coverImage) return;
 
     try {
-      const response = await fetch(
-        `/api/blog/media/upload?url=${encodeURIComponent(formData.coverImage)}`,
-        { method: 'DELETE' }
+      // A API só apaga o arquivo que ninguém usa; a capa sai do artigo de
+      // qualquer jeito.
+      const result = await removeBlogMedia(formData.coverImage);
+
+      setFormData((prev) => ({ ...prev, coverImage: '' }));
+      toast.success(
+        'Imagem removida',
+        result.deleted
+          ? 'A imagem de capa foi removida com sucesso.'
+          : 'A capa saiu do artigo.'
       );
-
-      const data = await response.json();
-
-      if (data.success) {
-        setFormData((prev) => ({ ...prev, coverImage: '' }));
-        toast.success(
-          'Imagem removida',
-          'A imagem de capa foi removida com sucesso.'
-        );
-      } else {
-        toast.error('Erro ao remover imagem', data.error);
-      }
     } catch (error) {
       toast.error(
         'Erro ao remover imagem',
@@ -588,23 +537,8 @@ export function ArticleForm({
     setFormData((prev) => ({ ...prev, types }));
   };
 
-  const handleTagsChange = async (values: string[]) => {
-    const newTags = values.filter((tag) => !formData.tags.includes(tag));
-
-    if (newTags.length > 0) {
-      for (const tagName of newTags) {
-        try {
-          await fetch('/api/blog/tags', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: tagName }),
-          });
-        } catch (error) {
-          console.error('Erro ao criar tag:', error);
-        }
-      }
-    }
-
+  // As tags vão pelo nome ao salvar o artigo; a API cria as que não existem.
+  const handleTagsChange = (values: string[]) => {
     setFormData((prev) => ({ ...prev, tags: values }));
   };
 

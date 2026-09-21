@@ -24,6 +24,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
+import { listAdminActivity } from '@/app/requests/admin/uploads';
 
 interface ActivityItem {
   id: string;
@@ -45,17 +46,6 @@ interface ActivityItem {
   status?: 'success' | 'warning' | 'error';
 }
 
-interface RecentActivityResponse {
-  success: boolean;
-  activities: ActivityItem[];
-  pagination?: {
-    page: number;
-    limit: number;
-    total: number;
-    hasMore: boolean;
-  };
-}
-
 export default function RecentActivity() {
   const router = useRouter();
   const [activities, setActivities] = useState<ActivityItem[]>([]);
@@ -73,27 +63,8 @@ export default function RecentActivity() {
     setError(null);
 
     try {
-      const searchParams = new URLSearchParams({
-        type: filter !== 'all' ? filter : '',
-        limit: '20',
-        page: '1',
-      });
-
-      const response = await fetch(`/api/admin/activity?${searchParams}`, {
-        cache: 'no-store',
-      });
-
-      if (!response.ok) {
-        throw new Error('Erro ao carregar atividades');
-      }
-
-      const data: RecentActivityResponse = await response.json();
-
-      if (data.success) {
-        setActivities(data.activities || []);
-      } else {
-        throw new Error('Resposta inválida do servidor');
-      }
+      const data = await listAdminActivity({ type: filter, limit: 20 });
+      setActivities(data.activities);
     } catch (err) {
       console.error('Erro ao buscar atividades:', err);
       setError(err instanceof Error ? err.message : 'Erro desconhecido');

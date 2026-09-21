@@ -1,4 +1,4 @@
-// app/(admin)/blog/admin/articles/[id]/edit/page.tsx - ATUALIZADO
+// app/blog/admin/articles/[id]/edit/page.tsx — edição do artigo, pela API
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,6 +7,12 @@ import Link from 'next/link';
 import { ArticleForm } from '@/app/components/blog/ArticleForm';
 import { BiTrash } from 'react-icons/bi';
 import { FaArrowLeft } from 'react-icons/fa';
+import {
+  deleteArticle,
+  loadArticleForEdit,
+  updateArticle,
+} from '@/app/requests/blog/admin-actions';
+import { listCategories } from '@/app/requests/blog/taxonomy';
 
 export default function EditArticlePage() {
   const router = useRouter();
@@ -14,7 +20,7 @@ export default function EditArticlePage() {
   const articleId = params.id as string;
 
   const [article, setArticle] = useState<any>(null);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
@@ -25,68 +31,47 @@ export default function EditArticlePage() {
 
   const fetchData = async () => {
     try {
-      const [articleRes, categoriesRes] = await Promise.all([
-        fetch(`/api/blog/articles/${articleId}`),
-        fetch('/api/blog/categories'),
+      const [article, categoryList] = await Promise.all([
+        loadArticleForEdit(articleId),
+        listCategories({ fresh: true }),
       ]);
 
-      const articleData = await articleRes.json();
-      const categoriesData = await categoriesRes.json();
+      // ✅ MONTAR backgroundMusic corretamente
+      const backgroundMusic = {
+        url: article.backgroundMusicUrl || '',
+        title: article.backgroundMusicTitle || '',
+        volume: article.backgroundMusicVolume ?? 0.3,
+        loop: article.backgroundMusicLoop ?? true,
+        autoplay: article.backgroundMusicAutoplay ?? true,
+      };
 
-      if (articleData.success) {
-        const article = articleData.article;
+      // A API manda categorias e tags planas.
+      const categoryIds = Array.isArray(article.categories)
+        ? article.categories.map((c: any) => c.id).filter(Boolean)
+        : [];
 
-        // ✅ MONTAR backgroundMusic corretamente
-        const backgroundMusic = {
-          url: article.backgroundMusicUrl || '',
-          title: article.backgroundMusicTitle || '',
-          volume: article.backgroundMusicVolume ?? 0.3,
-          loop: article.backgroundMusicLoop ?? true,
-          autoplay: article.backgroundMusicAutoplay ?? true,
-        };
+      const tags = Array.isArray(article.tags)
+        ? article.tags.map((t: any) => t.name).filter(Boolean)
+        : [];
 
-        // ✅ FIX: categories já vem como array de Category
-        const categoryIds = Array.isArray(article.categories)
-          ? article.categories.map((c: any) => c.id).filter(Boolean)
-          : [];
-
-        // ✅ FIX: tags já vem como array de Tag
-        const tags = Array.isArray(article.tags)
-          ? article.tags.map((t: any) => t.name).filter(Boolean)
-          : [];
-
-        console.log('✅ Dados mapeados:', {
-          categoryIds,
-          tags,
-          backgroundMusic,
-        });
-
-        const formData = {
-          ...article,
-          categoryIds,
-          tags,
-          backgroundMusic,
-          // ✅ Garantir que arrays sempre existam
-          composerIds: article.composerIds || [],
-          workIds: article.workIds || [],
-          scoreIds: article.scoreIds || [],
-          instrumentIds: article.instrumentIds || [],
-          epochIds: article.epochIds || [],
-          keywords: article.keywords || [],
-          types: article.types || [],
-          scheduledFor: article.scheduledFor
-            ? new Date(article.scheduledFor).toISOString().slice(0, 16)
-            : undefined,
-        };
-
-        console.log('📋 FormData final:', formData);
-
-        setArticle(formData);
-      }
-
-      if (categoriesData.success) {
-        setCategories(categoriesData.categories);
-      }
+      setArticle({
+        ...article,
+        categoryIds,
+        tags,
+        backgroundMusic,
+        // ✅ Garantir que arrays sempre existam
+        composerIds: article.composerIds || [],
+        workIds: article.workIds || [],
+        scoreIds: article.scoreIds || [],
+        instrumentIds: article.instrumentIds || [],
+        epochIds: article.epochIds || [],
+        keywords: article.keywords || [],
+        types: article.types || [],
+        scheduledFor: article.scheduledFor
+          ? new Date(article.scheduledFor).toISOString().slice(0, 16)
+          : undefined,
+      });
+      setCategories(categoryList);
     } catch (error) {
       console.error('Erro ao buscar dados:', error);
       alert('Erro ao carregar artigo');
@@ -95,33 +80,19 @@ export default function EditArticlePage() {
     }
   };
 
+  // O ArticleForm mostra o erro: aqui só se repassa.
   const handleSubmit = async (formData: any) => {
     setIsSubmitting(true);
     try {
-      const response = await fetch('/api/blog/articles', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: articleId, ...formData }),
-      });
+      const data = await updateArticle(articleId, formData);
+      const slug = data.article?.slug ?? formData.slug;
 
-      const data = await response.json();
-
-      if (data.success) {
-        // ✅ Se foi publicado diretamente, vai para artigo público
-        if (formData.status === 'PUBLISHED') {
-          router.push(`/blog/${data.article.slug}`);
-        } else {
-          // ✅ Caso contrário, vai para PREVIEW obrigatório
-          router.push(`/blog/preview/${data.article.slug}`);
-        }
-      } else {
-        alert('Erro ao atualizar artigo: ' + data.error);
-      }
-    } catch (error) {
-      console.error('Erro ao atualizar artigo:', error);
-      alert('Erro ao atualizar artigo');
+      // ✅ Se foi publicado diretamente, vai para artigo público; senão, preview
+      router.push(
+        formData.status === 'PUBLISHED'
+          ? `/blog/${slug}`
+          : `/blog/preview/${slug}`
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -138,21 +109,16 @@ export default function EditArticlePage() {
 
     setDeleting(true);
     try {
-      const response = await fetch(`/api/blog/articles?id=${articleId}`, {
-        method: 'DELETE',
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        alert('Artigo deletado com sucesso!');
-        router.push('/blog/admin/articles');
-      } else {
-        alert('Erro ao deletar artigo: ' + data.error);
-      }
+      await deleteArticle(articleId);
+      alert('Artigo deletado com sucesso!');
+      router.push('/blog/admin/articles');
     } catch (error) {
       console.error('Erro ao deletar artigo:', error);
-      alert('Erro ao deletar artigo');
+      alert(
+        error instanceof Error
+          ? `Erro ao deletar artigo: ${error.message}`
+          : 'Erro ao deletar artigo'
+      );
     } finally {
       setDeleting(false);
     }

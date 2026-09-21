@@ -1,7 +1,7 @@
 // hooks/useAuth.ts
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
 import { useEffect, useState, useRef } from 'react';
 import { useUserStore } from './userStore';
 
@@ -68,6 +68,8 @@ export function useAuth() {
           isStudent: session.user.isStudent,
           isTeacher: session.user.isTeacher,
           studentInviteStatus: session.user.studentInviteStatus,
+          name: session.user.name,
+          emailVerified: session.user.emailVerified,
         });
       }
     } else if (lastProcessedSessionId.current !== null) {

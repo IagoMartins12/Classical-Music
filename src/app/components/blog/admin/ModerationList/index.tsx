@@ -3,8 +3,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import {
+  askRejectionNotes,
+  moderateComment,
+  type ModerationAction,
+} from '@/app/requests/blog/admin-actions';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import {
   BiCheckCircle,
   BiXCircle,
@@ -92,17 +97,15 @@ export function ModerationList({
     { key: 'spam', label: 'Spam', icon: BiFlag, color: 'red' },
   ];
 
-  const handleAction = async (commentId: string, action: string) => {
+  const handleAction = async (commentId: string, action: ModerationAction) => {
+    // Reprovar exige justificativa na API.
+    const notes = action === 'reject' ? askRejectionNotes() : undefined;
+    if (notes === null) return;
+
     setProcessing(commentId);
 
     try {
-      const response = await fetch(`/api/blog/admin/moderation/${commentId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action }),
-      });
-
-      if (!response.ok) throw new Error();
+      await moderateComment(commentId, action, notes);
 
       toast.success(
         action === 'approve'
@@ -115,8 +118,8 @@ export function ModerationList({
       );
 
       router.refresh();
-    } catch {
-      toast.error('Erro ao processar ação');
+    } catch (error: any) {
+      toast.error(error?.message || 'Erro ao processar ação');
     } finally {
       setProcessing(null);
     }

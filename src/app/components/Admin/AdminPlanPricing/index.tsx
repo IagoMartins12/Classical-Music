@@ -1,6 +1,5 @@
 'use client';
 
-import { PlanPricing } from '@prisma/client';
 import React, { useState, useEffect } from 'react';
 import {
   FiDollarSign,
@@ -17,6 +16,30 @@ import { GiTeacher } from 'react-icons/gi';
 import { AnimatedItem } from '../../animation/AnimatedComponents';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
+import {
+  listPlanPricingRequest,
+  seedDefaultPlanPrices,
+  setPlanPricingRequest,
+} from '@/app/requests/admin/billing';
+
+/** Versão vigente do preço de um plano, como `GET /admin/plan-pricing` devolve. */
+interface PlanPricing {
+  id: string;
+  planType: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
+  monthlyPrice: number;
+  quarterlyPrice: number;
+  biannualPrice: number;
+  yearlyPrice: number;
+  quarterlyDiscount: number;
+  biannualDiscount: number;
+  yearlyDiscount: number;
+  trialDays: number;
+  displayOrder: number;
+  isActive: boolean;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const PLAN_ICONS = {
   FREE: FiUsers,
@@ -46,11 +69,7 @@ export default function AdminPlanPricingPage() {
   const loadPlans = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/plan-pricing');
-      const data = await res.json();
-      if (data.success) {
-        setPlans(data.data);
-      }
+      setPlans((await listPlanPricingRequest()) as PlanPricing[]);
     } catch (error) {
       console.error('Error loading plans:', error);
     } finally {
@@ -65,17 +84,10 @@ export default function AdminPlanPricingPage() {
 
     setSeeding(true);
     try {
-      const res = await fetch('/api/admin/plan-pricing/seed', {
-        method: 'POST',
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        alert('Planos populados com sucesso!');
-        loadPlans();
-      } else {
-        alert('Erro ao popular planos: ' + data.error);
-      }
+      // A API não tem "seed": grava os preços padrão um a um.
+      await seedDefaultPlanPrices();
+      alert('Planos populados com sucesso!');
+      loadPlans();
     } catch (error: any) {
       alert('Erro ao popular planos: ' + error.message);
     } finally {
@@ -108,20 +120,10 @@ export default function AdminPlanPricingPage() {
     setSaving(editingPlan.planType);
 
     try {
-      const res = await fetch('/api/admin/plan-pricing', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editingPlan),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        alert('Preços atualizados com sucesso!');
-        setEditingPlan(null);
-        loadPlans();
-      } else {
-        alert('Erro ao atualizar: ' + data.error);
-      }
+      await setPlanPricingRequest(editingPlan);
+      alert('Preços atualizados com sucesso!');
+      setEditingPlan(null);
+      loadPlans();
     } catch (error: any) {
       alert('Erro ao salvar: ' + error.message);
     } finally {

@@ -1,12 +1,14 @@
-// app/blog/preview/[slug]/page.tsx
+// app/blog/preview/[slug]/page.tsx — prévia do artigo (administrador), pela API
 import { notFound } from 'next/navigation';
-import { getServerSession } from 'next-auth';
-import prisma from '@/app/libs/prismadb';
-import { authOptions } from '@/app/libs/auth';
+import Link from 'next/link';
+import { FiEdit, FiAlertCircle } from 'react-icons/fi';
+import { ApiError } from '@/app/libs/api/client';
+import { getServerAccessToken } from '@/app/libs/api/server-session';
 import { ArticleHeader } from '@/app/components/blog/ArticleHeader';
 import { ArticlePageClient } from '@/app/components/blog/ArticlePageClient';
-import { FiCheck, FiEdit, FiAlertCircle } from 'react-icons/fi';
-import Link from 'next/link';
+import { ApproveArticleButton } from '@/app/components/blog/admin/ApproveArticleButton';
+import { backgroundAudioType, getArticle } from '@/app/requests/blog/articles';
+import { getServerSession } from '@/app/libs/api/server-session';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,62 +20,20 @@ interface PageProps {
   params: Promise<slugProps>;
 }
 
-async function getArticlePreview(slug: string) {
-  const article = await prisma.blogArticle.findUnique({
-    where: { slug },
-    include: {
-      author: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          username: true,
-          image: true,
-          bio: true,
-        },
-      },
-      categories: {
-        include: {
-          category: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-              color: true,
-              icon: true,
-            },
-          },
-        },
-      },
-      tags: {
-        include: {
-          tag: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-              color: true,
-            },
-          },
-        },
-      },
-      media: {
-        orderBy: { order: 'asc' },
-      },
-      _count: {
-        select: {
-          comments: { where: { status: 'APPROVED' } },
-          likes: true,
-        },
-      },
-    },
-  });
-
-  return article;
+/** Com o token de administrador, a API mostra o artigo em qualquer estado. */
+async function getArticlePreview(slug: string, token?: string) {
+  try {
+    return await getArticle(slug, { token });
+  } catch (error) {
+    if (error instanceof ApiError && [400, 403, 404].includes(error.status)) {
+      return null;
+    }
+    throw error;
+  }
 }
 
 export default async function ArticlePreviewPage({ params }: PageProps) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   // ✅ Apenas admins podem ver preview
   if (!session?.user || (session.user.role !== 1 && session.user.role !== 2)) {
@@ -81,27 +41,16 @@ export default async function ArticlePreviewPage({ params }: PageProps) {
   }
   const resolvedParams = await params;
 
-  const article = await getArticlePreview(resolvedParams.slug);
+  const article = await getArticlePreview(
+    resolvedParams.slug,
+    await getServerAccessToken()
+  );
 
   if (!article) {
     notFound();
   }
 
-  // ✅ PREPARAR MÚSICA DE FUNDO
-  const hasBackgroundMusic =
-    article.backgroundMusicUrl && article.backgroundMusicUrl.trim() !== '';
-
-  let backgroundAudioType: 'upload' | 'youtube' | null = null;
-  if (hasBackgroundMusic) {
-    if (
-      article.backgroundMusicUrl!.includes('youtube.com') ||
-      article.backgroundMusicUrl!.includes('youtu.be')
-    ) {
-      backgroundAudioType = 'youtube';
-    } else {
-      backgroundAudioType = 'upload';
-    }
-  }
+  const audioType = backgroundAudioType(article.backgroundMusicUrl);
 
   return (
     <div className="min-h-screen relative">
@@ -130,18 +79,10 @@ export default async function ArticlePreviewPage({ params }: PageProps) {
                 <span>Editar</span>
               </Link>
 
-              <form
-                action={`/api/blog/articles/${article.id}/approve`}
-                method="POST"
-              >
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-all flex items-center space-x-2"
-                >
-                  <FiCheck className="w-4 h-4" />
-                  <span>Aprovar e Publicar</span>
-                </button>
-              </form>
+              <ApproveArticleButton
+                articleId={article.id}
+                slug={article.slug}
+              />
             </div>
           </div>
         </div>
@@ -163,10 +104,10 @@ export default async function ArticlePreviewPage({ params }: PageProps) {
           _count: article._count,
           categories: article.categories,
         }}
-        hasBackgroundMusic={hasBackgroundMusic}
+        hasBackgroundMusic={audioType !== null}
         backgroundMusicUrl={article.backgroundMusicUrl || ''}
         backgroundMusicTitle={article.backgroundMusicTitle || ''}
-        backgroundAudioType={backgroundAudioType}
+        backgroundAudioType={audioType}
       />
     </div>
   );

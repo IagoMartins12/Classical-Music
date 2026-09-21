@@ -3,7 +3,7 @@ import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import { FaTrash } from 'react-icons/fa';
 

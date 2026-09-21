@@ -16,6 +16,7 @@ import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 import Modal from '@/app/components/Modal';
 import Checkbox from '@/app/components/Common/Checkbox';
+import { listInstruments } from '@/app/requests/admin/ads';
 
 interface EditAdModalProps {
   ad: any;
@@ -159,9 +160,7 @@ export default function EditAdModal({
   useEffect(() => {
     const fetchInstruments = async () => {
       try {
-        const response = await fetch('/api/instruments');
-        const data = await response.json();
-        setAvailableInstruments(data);
+        setAvailableInstruments(await listInstruments());
       } catch (error) {
         console.error('Erro ao buscar instrumentos:', error);
       }

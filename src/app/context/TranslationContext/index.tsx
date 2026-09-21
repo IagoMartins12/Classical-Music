@@ -12,6 +12,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -27,6 +28,8 @@ interface TranslationContextValue {
     key: string,
     params?: Record<string, string | number>
   ) => string;
+  /** Pede ao provider as seções que a página não trouxe. */
+  ensureSections: (sections: string[]) => void;
 }
 
 const TranslationContext = createContext<TranslationContextValue | null>(null);
@@ -38,14 +41,77 @@ interface TranslationProviderProps {
 }
 
 /**
- * Provider que injeta traduções do servidor nos componentes client
+ * Provider que injeta traduções do servidor nos componentes client.
+ *
+ * **O que mudou e por quê.** Ele recebia do servidor todas as seções, comuns
+ * e da página — inclusive o texto dos modais de login e de onboarding, 22,9 kB
+ * que nenhuma página mostra na primeira pintura e que iam no payload de toda
+ * visita, duas vezes (no HTML e no RSC).
+ *
+ * Agora o servidor manda só o que a página desenha. O que faltar, o navegador
+ * busca em `/translations/*.json` — arquivo estático, que ele guarda e
+ * reaproveita entre páginas. Quem precisa de uma seção já diz qual
+ * (`useTranslation({ sections: [...] })`), então o carregamento é dirigido
+ * pelo próprio componente, e não por uma lista que envelhece sozinha.
  */
 export function TranslationProvider({
   language,
   translations,
   children,
 }: TranslationProviderProps) {
+  const [loaded, setLoaded] = useState<TranslationsMap>({});
+  const requested = useRef(new Set<string>());
+
+  const ensureSections = useCallback(
+    (sections: string[]) => {
+      const faltando = sections.filter(
+        (section) =>
+          !translations[section] &&
+          !requested.current.has(`${language}:${section}`)
+      );
+
+      if (faltando.length === 0) return;
+
+      faltando.forEach((section) =>
+        requested.current.add(`${language}:${section}`)
+      );
+
+      void Promise.all(
+        faltando.map(async (section) => {
+          const data = await fetchSection(section, language);
+          return [section, data] as const;
+        })
+      ).then((entradas) => {
+        setLoaded((anterior) => {
+          const proximo = { ...anterior };
+          entradas.forEach(([section, data]) => {
+            proximo[section] = data;
+          });
+          return proximo;
+        });
+      });
+    },
+    [language, translations]
+  );
+
   const contextValue = useMemo(() => {
+    const todas: TranslationsMap = { ...loaded, ...translations };
+
+    // Função t() para seção específica
+    const tSection = (
+      section: string,
+      key: string,
+      params?: Record<string, string | number>
+    ): string => {
+      const sectionData = todas[section];
+
+      if (sectionData && sectionData[key]) {
+        return interpolateTranslation(sectionData[key], params);
+      }
+
+      return formatKeyAsFallback(key);
+    };
+
     // Função t() principal
     const t = (
       key: string,
@@ -58,7 +124,7 @@ export function TranslationProvider({
       }
 
       // Buscar em todas as seções carregadas
-      for (const sectionData of Object.values(translations)) {
+      for (const sectionData of Object.values(todas)) {
         if (sectionData[key]) {
           return interpolateTranslation(sectionData[key], params);
         }
@@ -68,34 +134,51 @@ export function TranslationProvider({
       return formatKeyAsFallback(key);
     };
 
-    // Função t() para seção específica
-    const tSection = (
-      section: string,
-      key: string,
-      params?: Record<string, string | number>
-    ): string => {
-      const sectionData = translations[section];
-
-      if (sectionData && sectionData[key]) {
-        return interpolateTranslation(sectionData[key], params);
-      }
-
-      return formatKeyAsFallback(key);
-    };
-
     return {
       language,
-      translations,
+      translations: todas,
       t,
       tSection,
+      ensureSections,
     };
-  }, [language, translations]);
+  }, [language, translations, loaded, ensureSections]);
 
   return (
     <TranslationContext.Provider value={contextValue}>
       {children}
     </TranslationContext.Provider>
   );
+}
+
+/** Uma seção lida do arquivo estático, já na língua pedida. */
+const fetchedSections = new Map<string, TranslationData>();
+
+async function fetchSection(
+  section: string,
+  language: Language
+): Promise<TranslationData> {
+  const chave = `${language}:${section}`;
+  const guardada = fetchedSections.get(chave);
+  if (guardada) return guardada;
+
+  try {
+    const response = await fetch(`/translations/${section}.json`);
+    if (!response.ok) throw new Error(String(response.status));
+
+    const data = (await response.json()) as {
+      ptBr?: TranslationData;
+      en?: TranslationData;
+    };
+    const escolhida =
+      (language === 'pt' ? data.ptBr : data.en) ?? data.ptBr ?? {};
+
+    fetchedSections.set(chave, escolhida);
+    return escolhida;
+  } catch {
+    // Sem a seção, `t()` devolve a chave formatada — como já fazia antes.
+    fetchedSections.set(chave, {});
+    return {};
+  }
 }
 
 /**
@@ -111,6 +194,17 @@ export function useTranslation(
 
   // Chama SEMPRE o hook original
   const original = useOriginalTranslation(options);
+
+  // Quem declara as seções que usa passa a ser quem dispara o carregamento
+  // delas — o provider não precisa adivinhar. `join` porque o array costuma
+  // ser um literal novo a cada render.
+  const pedidas = (options.sections ?? []).join('|');
+  const ensureSections = context?.ensureSections;
+
+  useEffect(() => {
+    if (!ensureSections || !pedidas) return;
+    ensureSections(pedidas.split('|'));
+  }, [ensureSections, pedidas]);
 
   // Se existir contexto (server translations), sobrescreve o retorno
   if (context) {

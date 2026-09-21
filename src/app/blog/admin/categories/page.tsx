@@ -1,13 +1,13 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth';
 import { FiPlus, FiGrid, FiTag, FiLayers } from 'react-icons/fi';
-import prisma from '@/app/libs/prismadb';
-import { authOptions } from '@/app/libs/auth';
+import { getServerAccessToken } from '@/app/libs/api/server-session';
+import { loadAdminCategoriesPage } from '@/app/requests/blog/admin';
 import { CategoryList } from '@/app/components/blog/admin/CategoryList';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
+import { getServerSession } from '@/app/libs/api/server-session';
 
 export const metadata: Metadata = {
   title: 'Gerenciar Categorias - Blog Admin',
@@ -15,43 +15,16 @@ export const metadata: Metadata = {
   robots: 'noindex, nofollow',
 };
 
-async function getCategories() {
-  return await prisma.blogCategory.findMany({
-    include: {
-      _count: {
-        select: {
-          articles: {
-            where: {
-              article: {
-                status: 'PUBLISHED',
-              },
-            },
-          },
-        },
-      },
-    },
-    orderBy: { order: 'asc' },
-  });
-}
-
-async function getStats() {
-  const [totalCategories, activeCategories, totalArticles] = await Promise.all([
-    prisma.blogCategory.count(),
-    prisma.blogCategory.count({ where: { isActive: true } }),
-    prisma.blogArticle.count({ where: { status: 'PUBLISHED' } }),
-  ]);
-
-  return { totalCategories, activeCategories, totalArticles };
-}
-
 export default async function CategoriesAdminPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user || (session.user.role !== 1 && session.user.role !== 2)) {
     redirect('/blog');
   }
 
-  const [categories, stats] = await Promise.all([getCategories(), getStats()]);
+  const { categories, stats } = await loadAdminCategoriesPage(
+    await getServerAccessToken()
+  );
 
   return (
     <div className="min-h-screen ">

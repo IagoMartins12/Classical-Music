@@ -2,13 +2,14 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
+import Link from '@/app/components/LocalizedLink';
 import { FiUser, FiCalendar, FiExternalLink } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
-import { ComposerImslp } from '@/app/(main)/composers/pageClient';
+import { ComposerImslp } from '@/app/[lang]/(main)/composers/pageClient';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface composerCardProps {
@@ -36,7 +37,20 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
   const hasExternalLinks = composer.wikipediaLink || composer.permLinkImslp;
 
   return (
-    <div className="group cursor-pointer select-none h-full">
+    /**
+     * O cartão inteiro é clicável por um link esticado sobre ele
+     * (`after:absolute after:inset-0` na âncora do nome), não por um `onClick`
+     * na `div`.
+     *
+     * **Por que isso importa:** um `onClick` não é seguido por buscador
+     * nenhum. A lista de compositores é a porta de entrada para as páginas de
+     * compositor, e sem `href` elas só eram descobertas pelo sitemap.
+     *
+     * O link envolve só o nome — envolver o cartão inteiro aninharia os links
+     * da Wikipedia e do IMSLP dentro de outra âncora, o que é HTML inválido.
+     * Eles sobem para `z-10` e continuam clicáveis por cima da área esticada.
+     */
+    <div className="group select-none h-full relative">
       <div className="classical-card h-full overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-theme-glow">
         {/* Portrait Section */}
         <div className="relative p-6 pb-4">
@@ -76,7 +90,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
           </div>
 
           {/* Floating action buttons */}
-          <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <div className="absolute top-4 right-4 z-10 flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
             <FavoriteButton
               id={composer.id}
               type="composer"
@@ -97,7 +111,12 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
             {/* Name */}
             <div className="text-center">
               <h3 className="text-lg font-bold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 line-clamp-2">
-                {composer.name}
+                <Link
+                  href={`/composer/${composer.id}`}
+                  className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary rounded"
+                >
+                  {composer.name}
+                </Link>
               </h3>
 
               {/* Full name if different */}
@@ -130,7 +149,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
 
             {/* External links */}
             {hasExternalLinks && (
-              <div className="flex justify-center space-x-2 pt-2">
+              <div className="relative z-10 flex justify-center space-x-2 pt-2">
                 {composer.wikipediaLink && (
                   <a
                     href={composer.wikipediaLink}

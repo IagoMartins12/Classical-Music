@@ -1,11 +1,15 @@
-// app/blog/search/page.tsx
+// app/blog/search/page.tsx — busca de artigos, pela API
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { FaSearch } from 'react-icons/fa';
-import prisma from '@/app/libs/prismadb';
 import { Breadcrumb } from '@/app/components/blog/Breadcrumb';
 import { SearchInput } from '@/app/components/blog/SearchInput';
 import { SearchResults } from '@/app/components/blog/SearchResults';
+import {
+  autocomplete,
+  searchArticles as searchBlog,
+  type SearchQuery,
+} from '@/app/requests/blog/taxonomy';
 
 export const revalidate = 0; // Sem cache para busca
 
@@ -19,6 +23,8 @@ interface PageProps {
     page?: string;
   }>;
 }
+
+type SearchParams = Awaited<PageProps['searchParams']>;
 
 interface TagSuggestion {
   id: string;
@@ -55,144 +61,61 @@ export async function generateMetadata({
   };
 }
 
-async function searchArticles(params: {
-  q?: string;
-  tipos?: string;
-  categorias?: string;
-  tags?: string;
-  ordenar?: string;
-  page?: string;
-}) {
-  const page = parseInt(params.page || '1');
-  const limit = 12;
-  const skip = (page - 1) * limit;
+/**
+ * Ordem da tela → ordem da API. A API não ordena por curtidas: "curtidas"
+ * vai pelos mais visitados.
+ */
+const SORT_BY: Record<string, NonNullable<SearchQuery['sortBy']>> = {
+  relevancia: 'relevance',
+  recente: 'newest',
+  popular: 'popular',
+  curtidas: 'popular',
+};
 
-  const query = params.q?.trim();
-  const tipos = params.tipos?.split(',').filter(Boolean);
-  const categorias = params.categorias?.split(',').filter(Boolean);
-  const tags = params.tags?.split(',').filter(Boolean);
-  const ordenar = params.ordenar || 'relevancia';
+const splitList = (value?: string) => value?.split(',').filter(Boolean);
 
-  const where: any = {
-    status: 'PUBLISHED',
-    publishedAt: { lte: new Date() },
-  };
-
-  if (query && query.length >= 2) {
-    where.OR = [
-      { title: { contains: query, mode: 'insensitive' } },
-      { description: { contains: query, mode: 'insensitive' } },
-      { keywords: { hasSome: [query] } },
-    ];
-  }
-
-  if (tipos && tipos.length > 0) {
-    where.types = { hasSome: tipos };
-  }
-
-  if (categorias && categorias.length > 0) {
-    where.categories = {
-      some: { category: { slug: { in: categorias } } },
-    };
-  }
-
-  if (tags && tags.length > 0) {
-    where.tags = {
-      some: { tag: { slug: { in: tags } } },
-    };
-  }
-
-  let orderBy: any;
-  switch (ordenar) {
-    case 'recente':
-      orderBy = { publishedAt: 'desc' };
-      break;
-    case 'popular':
-      orderBy = { viewCount: 'desc' };
-      break;
-    case 'curtidas':
-      orderBy = { likes: { _count: 'desc' } };
-      break;
-    default:
-      orderBy = { publishedAt: 'desc' };
-  }
-
-  const [articles, total] = await Promise.all([
-    prisma.blogArticle.findMany({
-      where,
-      include: {
-        author: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            image: true,
-          },
-        },
-        categories: {
-          include: { category: true },
-        },
-        tags: {
-          include: { tag: true },
-        },
-        _count: {
-          select: {
-            comments: { where: { status: 'APPROVED' } },
-            likes: true,
-          },
-        },
-      },
-      orderBy,
-      skip,
-      take: limit,
-    }),
-    prisma.blogArticle.count({ where }),
-  ]);
-
-  return {
-    articles: articles.map((a) => ({
-      ...a,
-      readTime: a.readTime ?? 0,
-    })),
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-    },
-  };
+function searchArticles(params: SearchParams) {
+  return searchBlog({
+    q: params.q,
+    types: splitList(params.tipos),
+    categories: splitList(params.categorias),
+    tags: splitList(params.tags),
+    sortBy: SORT_BY[params.ordenar || 'relevancia'] ?? 'relevance',
+    page: Math.max(1, parseInt(params.page || '1') || 1),
+    limit: 12,
+  });
 }
 
 async function getSearchSuggestions(query: string): Promise<SearchSuggestions> {
-  if (!query || query.length < 2) {
+  const term = query.trim();
+
+  if (term.length < 2) {
     return { relatedTags: [], relatedCategories: [] };
   }
 
-  const [relatedTags, relatedCategories] = await Promise.all([
-    prisma.blogTag.findMany({
-      where: {
-        name: { contains: query, mode: 'insensitive' },
-      },
-      orderBy: { articleCount: 'desc' },
-      take: 5,
-    }),
-    prisma.blogCategory.findMany({
-      where: {
-        name: { contains: query, mode: 'insensitive' },
-      },
-      orderBy: { order: 'asc' },
-      take: 5,
-    }),
-  ]);
+  try {
+    const suggestions = await autocomplete(term, 'all');
 
-  return { relatedTags, relatedCategories };
+    return {
+      relatedTags: suggestions.tags.slice(0, 5).map((tag) => ({
+        ...tag,
+        articleCount: tag.articleCount ?? 0,
+      })),
+      relatedCategories: suggestions.categories.slice(0, 5),
+    };
+  } catch {
+    // A sugestão é acessória: sem ela, a busca segue.
+    return { relatedTags: [], relatedCategories: [] };
+  }
 }
 
 export default async function SearchPage({ searchParams }: PageProps) {
   const resolvedParams = await searchParams;
   const query = resolvedParams.q || '';
-  const { articles, pagination } = await searchArticles(resolvedParams);
-  const suggestions = query ? await getSearchSuggestions(query) : null;
+  const [{ articles, pagination }, suggestions] = await Promise.all([
+    searchArticles(resolvedParams),
+    query ? getSearchSuggestions(query) : Promise.resolve(null),
+  ]);
 
   const hasFilters =
     resolvedParams.tipos ||

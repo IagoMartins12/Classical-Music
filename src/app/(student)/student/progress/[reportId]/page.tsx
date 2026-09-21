@@ -2,6 +2,9 @@
 import { Metadata } from 'next';
 import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 import StudentSharedReportPageClient from './pageClient';
+import { ApiError } from '@/app/libs/api/client';
+import { getServerAccessToken } from '@/app/libs/api/server-session';
+import { loadSharedReport } from '@/app/requests/portal/shared-reports';
 import {
   getServerLanguageStatic,
   loadPageTranslationsWithCommon,
@@ -80,43 +83,33 @@ export default async function StudentSharedReportPage({
   const { translations } = await loadPageTranslationsWithCommon(language, [
     'student/progressId',
   ]);
-  // Fetch initial data on server
-  let initialData = null;
-  let errorMessage = null;
+  // Relatório pela API, com o token do cookie da requisição.
+  let initialData: Awaited<ReturnType<typeof loadSharedReport>> | null = null;
+  let errorMessage: string | undefined;
 
-  try {
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
-    const response = await fetch(
-      `${baseUrl}/api/student/progress/${paramsResolved.reportId}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          // In production, you might need to handle cookies properly
-        },
-      }
-    );
+  const token = await getServerAccessToken();
 
-    if (response.ok) {
-      const data = await response.json();
-      if (data.success) {
-        initialData = data.report;
-      } else {
-        errorMessage = data.error;
-      }
-    } else {
-      if (response.status === 404) {
+  if (!token) {
+    errorMessage = 'Sessão expirada. Entre novamente.';
+  } else {
+    try {
+      initialData = await loadSharedReport(paramsResolved.reportId, token);
+    } catch (error) {
+      const status = error instanceof ApiError ? error.status : 0;
+
+      if (status === 404) {
         errorMessage = 'Relatório não encontrado';
-      } else if (response.status === 403) {
+      } else if (status === 403) {
         errorMessage = 'Acesso negado a este relatório';
-      } else if (response.status === 410) {
+      } else if (status === 410) {
         errorMessage = 'Este relatório expirou ou não está mais disponível';
+      } else if (status) {
+        errorMessage = `Erro ao carregar relatório: ${status}`;
       } else {
-        errorMessage = `Erro ao carregar relatório: ${response.status}`;
+        console.error('Error fetching shared report:', error);
+        errorMessage = 'Erro interno do servidor. Tente novamente mais tarde.';
       }
     }
-  } catch (error) {
-    console.error('Error fetching shared report:', error);
-    errorMessage = 'Erro interno do servidor. Tente novamente mais tarde.';
   }
 
   return (

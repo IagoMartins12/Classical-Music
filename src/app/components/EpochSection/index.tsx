@@ -23,6 +23,7 @@ interface Composer {
   portraitUrl: string | null;
   birthDate: string | null;
   deathDate: string | null;
+  /** Resumo, não o texto inteiro — o cartão mostra as primeiras linhas. */
   bio: string | null;
 }
 

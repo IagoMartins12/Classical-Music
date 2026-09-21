@@ -15,8 +15,10 @@ RUN npm ci
 RUN apk add --no-cache ffmpeg
 COPY . .
 
-# Gerar Prisma Client
-RUN npx prisma generate
+# O Prisma não é mais gerado aqui: nenhum arquivo da aplicação o importa
+# (Etapa 7). Ele segue no projeto como dependência de desenvolvimento, para os
+# scripts de manutenção e de raspagem que ainda leem o banco direto — e esses
+# não rodam dentro da imagem.
 
 # Configurações de build otimizadas - AUMENTANDO MEMÓRIA
 ENV NODE_OPTIONS="--max-old-space-size=3072"
@@ -27,6 +29,29 @@ ENV SKIP_ENV_VALIDATION=true
 ENV DATABASE_URL="mongodb://build:build@localhost:27017/build"
 ENV NEXTAUTH_SECRET="build-secret-temp"
 ENV NEXTAUTH_URL="http://localhost:3000"
+
+# ---------------------------------------------------------------------------
+# Endereço da API durante o build — obrigatório.
+#
+# O build gera as páginas públicas, e para isso ele **chama a API**. Sem um
+# endereço que responda, as páginas saem sem conteúdo — antes elas saíam assim
+# em silêncio; hoje o build falha, porque as páginas deixaram de engolir a
+# falha (ver os comentários em `[lang]/(main)/*/pageServer.tsx`). Falhar é o
+# comportamento correto: melhor um build quebrado que uma imagem inteira de
+# páginas vazias, servidas com `s-maxage` por horas.
+#
+#   docker build --build-arg NEST_API_URL=http://api:4000/api .
+#
+# `NEST_API_URL` é o endereço que o servidor do Next usa (rede interna);
+# `NEXT_PUBLIC_API_URL` é o que vai para o navegador e precisa ser público.
+# ---------------------------------------------------------------------------
+ARG NEST_API_URL
+ARG NEXT_PUBLIC_API_URL
+ENV NEST_API_URL=${NEST_API_URL}
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
+RUN test -n "$NEST_API_URL" || \
+    (echo "ERRO: NEST_API_URL não informado. O build gera as páginas públicas chamando a API." && exit 1)
 
 # Build da aplicação
 RUN npm run build
@@ -63,5 +88,11 @@ USER nextjs
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+
+# O balanceador precisa saber quando esta réplica parou de servir. `/api/health`
+# é a rota de saúde do próprio Next (não toca a API nem o banco de propósito:
+# é liveness, não readiness).
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD curl -fsS "http://localhost:${PORT:-3000}/api/health" || exit 1
 
 CMD ["node", "server.js"]

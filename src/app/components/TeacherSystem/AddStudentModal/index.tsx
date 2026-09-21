@@ -14,7 +14,7 @@ import { AnimatedCard } from '../../animation/AnimatedComponents';
 import Input from '../../Common/Inputs';
 import Select from '../../Common/Select';
 import Modal from '../../Modal';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { StudentSearchResult } from '@/app/(teacher)/teacher/pageClient';
 import { Dispatch, SetStateAction, useState } from 'react';
 import Button from '../../Common/Button';

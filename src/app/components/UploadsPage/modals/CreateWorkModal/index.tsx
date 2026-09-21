@@ -47,6 +47,16 @@ import { translateEpochName } from '@/app/utils/translations/epochTranslations';
 import { translateInstrument } from '@/app/utils/translations/instrumentsGenresTranslation';
 import { translateToneStatic } from '@/app/utils/translations/toneTranslation';
 import ParentWorkSuggestionModal from '../ParentWorkSuggestionModal';
+import {
+  checkWorkDuplicateRequest,
+  saveWorkRequest,
+} from '@/app/requests/uploads-client';
+import { getWorkById, searchWorks } from '@/app/requests/catalog-search';
+import { scrapeWorkPage } from '@/app/requests/external-sources';
+import {
+  updateWorkMediaRequest,
+  uploadWorkMediaFileRequest,
+} from '@/app/requests/work-media';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -137,6 +147,11 @@ const CreateWorkModal = ({
   });
   const [uploadingAudio, setUploadingAudio] = useState(false);
   const [uploadingVideoAula, setUploadingVideoAula] = useState(false);
+  // Arquivos escolhidos antes de a obra existir: sobem logo depois de criá-la.
+  const [pendingMedia, setPendingMedia] = useState<{
+    audio?: File | null;
+    videoAula?: File | null;
+  }>({});
 
   const { user } = useAuth();
   const toast = useToast();
@@ -379,9 +394,8 @@ const CreateWorkModal = ({
     try {
       console.log('🔍 Buscando dados da obra pai:', parentWorkId);
 
-      const response = await fetch(`/api/works/${parentWorkId}`);
-      if (response.ok) {
-        const data = await response.json();
+      const data = await getWorkById(parentWorkId);
+      if (data) {
         console.log('✅ Dados da obra pai carregados:', data.title);
         setParentWorkData(data);
 
@@ -391,7 +405,7 @@ const CreateWorkModal = ({
           setShowParentSuggestionModal(true);
         }
       } else {
-        console.error('❌ Erro ao buscar obra pai:', response.status);
+        console.error('❌ Obra pai não encontrada:', parentWorkId);
       }
     } catch (error) {
       console.error('❌ Erro ao buscar dados da obra pai:', error);
@@ -488,21 +502,14 @@ const CreateWorkModal = ({
     }
 
     try {
-      const response = await fetch(
-        `/api/works/search?composer=${composerId}&limit=50`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        // Filtrar apenas obras que podem ser coleções (não obras filhas)
-        const potentialParents = data.works.filter(
-          (work: any) => !work.parentWorkId
-        );
-        setParentWorks(potentialParents || []);
-        console.log(
-          '✅ Parent works carregadas:',
-          potentialParents?.length || 0
-        );
-      }
+      // A lista de obras do compositor na API não diz qual obra é filha de
+      // outra: todas aparecem como possível obra pai.
+      const { works: potentialParents } = await searchWorks({
+        composerId,
+        limit: 50,
+      });
+      setParentWorks(potentialParents);
+      console.log('✅ Parent works carregadas:', potentialParents.length);
     } catch (error) {
       console.error('❌ Erro ao carregar parent works:', error);
       setParentWorks([]);
@@ -536,27 +543,66 @@ const CreateWorkModal = ({
     [fetchParentWorkData]
   );
 
+  /**
+   * Envia o arquivo pela API e grava a URL nos campos da obra. Obra nova ainda
+   * não tem id para dono do arquivo: o arquivo fica guardado aqui e sobe assim
+   * que a obra é criada (o legado o jogava numa pasta temporária do servidor,
+   * sem ligar à obra).
+   */
+  const uploadMediaFile = async (
+    file: File,
+    mediaType: 'audio' | 'videoAula',
+    workId?: string
+  ) => {
+    const targetWorkId = workId ?? editingWork?.id;
+
+    if (!targetWorkId) {
+      setPendingMedia((prev) => ({ ...prev, [mediaType]: file }));
+      return;
+    }
+
+    const isAudio = mediaType === 'audio';
+    const upload = await uploadWorkMediaFileRequest(
+      targetWorkId,
+      isAudio ? 'WORK_AUDIO' : 'WORK_VIDEO_LESSON',
+      file
+    );
+    const { url, error } = await upload.json();
+
+    if (!upload.ok) {
+      throw new Error(error || t('toast_work_upload_error'));
+    }
+
+    const saved = await updateWorkMediaRequest(
+      targetWorkId,
+      isAudio
+        ? {
+            customAudioFile: url,
+            customAudioUrl: url,
+            customAudioSource: 'upload',
+            mediaSource: 'manual',
+          }
+        : {
+            videoAulaFile: url,
+            videoAulaUrl: url,
+            videoAulaSource: 'local',
+            mediaSource: 'manual',
+          }
+    );
+
+    if (!saved.ok) {
+      throw new Error(
+        (await saved.json()).error || t('toast_work_upload_error')
+      );
+    }
+  };
+
   const handleAudioUpload = async (file: File) => {
     if (!file) return;
 
     setUploadingAudio(true);
     try {
-      const formDataUpload = new FormData();
-      formDataUpload.append('file', file);
-      formDataUpload.append('mediaType', 'audio');
-
-      const workId = editingWork?.id || 'temp';
-
-      const response = await fetch(`/api/works/${workId}/media/upload`, {
-        method: 'POST',
-        body: formDataUpload,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || t('toast_work_upload_error'));
-      }
+      await uploadMediaFile(file, 'audio');
 
       setMediaData((prev) => ({ ...prev, audioFile: file }));
       toast.success(t('toast_success'), t('toast_work_audio_upload_success'));
@@ -576,22 +622,7 @@ const CreateWorkModal = ({
 
     setUploadingVideoAula(true);
     try {
-      const formDataUpload = new FormData();
-      formDataUpload.append('file', file);
-      formDataUpload.append('mediaType', 'videoAula');
-
-      const workId = editingWork?.id || 'temp';
-
-      const response = await fetch(`/api/works/${workId}/media/upload`, {
-        method: 'POST',
-        body: formDataUpload,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || t('toast_work_upload_error'));
-      }
+      await uploadMediaFile(file, 'videoAula');
 
       setMediaData((prev) => ({ ...prev, videoAulaFile: file }));
       toast.success(
@@ -618,15 +649,11 @@ const CreateWorkModal = ({
     setDuplicateCheck({ loading: true, found: false });
 
     try {
-      const response = await fetch('/api/uploads/work/check-duplicate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          url: url.trim() || undefined,
-          title: formData.title.trim() || undefined,
-          composerId: formData.composerId || undefined,
-          excludeId: editingWork?.id,
-        }),
+      const response = await checkWorkDuplicateRequest({
+        url: url.trim() || undefined,
+        title: formData.title.trim() || undefined,
+        composerId: formData.composerId || undefined,
+        excludeId: editingWork?.id,
       });
 
       const data = await response.json();
@@ -659,14 +686,10 @@ const CreateWorkModal = ({
     setDuplicateCheck({ loading: true, found: false });
 
     try {
-      const response = await fetch('/api/uploads/work/check-duplicate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: formData.title.trim(),
-          composerId: formData.composerId,
-          excludeId: editingWork?.id,
-        }),
+      const response = await checkWorkDuplicateRequest({
+        title: formData.title.trim(),
+        composerId: formData.composerId,
+        excludeId: editingWork?.id,
       });
 
       const data = await response.json();
@@ -765,23 +788,33 @@ const CreateWorkModal = ({
         }),
       };
 
-      const url = editingWork
-        ? `/api/uploads/work/${editingWork.id}`
-        : '/api/uploads/work';
-
-      const method = editingWork ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(submitData),
-      });
+      const response = await saveWorkRequest(editingWork?.id, submitData);
 
       const data = await response.json();
 
       if (response.ok) {
+        // Obra nova: o áudio e a videoaula escolhidos antes sobem agora, com
+        // o id que acabou de existir.
+        const savedWorkId = editingWork?.id || data.workId;
+
+        if (savedWorkId) {
+          for (const [mediaType, file] of [
+            ['audio', pendingMedia.audio],
+            ['videoAula', pendingMedia.videoAula],
+          ] as const) {
+            if (!file) continue;
+
+            try {
+              await uploadMediaFile(file, mediaType, savedWorkId);
+            } catch (uploadError) {
+              console.error('Erro ao enviar mídia da obra:', uploadError);
+              toast.error(t('toast_error'), t('toast_work_upload_error'));
+            }
+          }
+
+          setPendingMedia({});
+        }
+
         router.refresh();
         onClose();
         toast.success(
@@ -828,25 +861,11 @@ const CreateWorkModal = ({
     setScrapingResult(null);
 
     try {
-      const response = await fetch('/api/uploads/work/scraper', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          url: cleanedUrl,
-        }),
-      });
+      const page = await scrapeWorkPage(cleanedUrl);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setScrapingResult(data);
-        await fillFromScrapingResult(data.data);
-        toast.success(t('toast_success'), t('toast_work_scraping_success'));
-      } else {
-        throw new Error(data.error || t('toast_work_scraping_error'));
-      }
+      setScrapingResult({ success: true, data: page });
+      await fillFromScrapingResult(page);
+      toast.success(t('toast_success'), t('toast_work_scraping_success'));
     } catch (error) {
       console.error('❌ Erro ao fazer scraping:', error);
       toast.error(

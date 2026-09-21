@@ -2,8 +2,8 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
-import { signOut } from 'next-auth/react';
+import Link from '@/app/components/LocalizedLink';
+import { signOut } from '@/app/libs/session';
 import { usePathname } from 'next/navigation';
 import {
   FiMenu,
@@ -31,7 +31,7 @@ import {
   useRegisterModal,
 } from '@/app/stores/authStore';
 import Button from '../Common/Button';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useRouter } from 'next/navigation';
@@ -54,6 +54,8 @@ type MobileMenuView = 'main' | 'profile' | 'submenu';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  /** Uma vez aberto, o menu permanece montado — reabrir não recria nada. */
+  const [mobileMenuUsado, setMobileMenuUsado] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<MobileMenuView>('main');
@@ -81,6 +83,7 @@ const Navbar: React.FC = () => {
   const submenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const openMobileMenu = () => {
+    setMobileMenuUsado(true);
     setIsMenuOpen(true);
     setMobileView('main');
     setActiveSubmenuItems([]);
@@ -701,168 +704,414 @@ const Navbar: React.FC = () => {
           `}
           id="mobile-menu"
         >
-          <div className="classical-card p-4 mt-3 relative">
-            {/* Navigation Container with Slide Animation */}
-            <div className="relative overflow-hidden">
-              {/* Main Navigation View */}
-              <div
-                className={`
-                transition-transform duration-300 ease-in-out
-                ${mobileView === 'main' ? 'translate-x-0' : '-translate-x-full absolute top-0 left-0 w-full'}
-              `}
-              >
-                <ul className="space-y-2">
-                  {/* Navigation Links */}
-                  {optionsArr.map(({ label, href, active, submenu }, index) => (
-                    <li key={index}>
-                      {submenu ? (
-                        <div className="flex items-center justify-between">
-                          <Link
-                            href={href || '#'}
-                            className={`
-                              flex-1 block px-4 py-3 rounded-lg font-medium transition-all duration-300
+          {/* O conteúdo só entra no HTML depois da primeira abertura.
+              Ele ficava sempre montado, escondido só por CSS: 39 kB de
+              marcação e 31 ícones em toda página, para uma navegação que
+              o visitante de desktop nunca abre. Os links daqui já existem
+              no menu do topo e no rodapé, então nada some para o
+              buscador. O invólucro acima continua sempre presente, para a
+              transição de abertura não mudar. */}
+          {mobileMenuUsado && (
+            <div className="classical-card p-4 mt-3 relative">
+              {/* Navigation Container with Slide Animation */}
+              <div className="relative overflow-hidden">
+                {/* Main Navigation View */}
+                <div
+                  className={`
+                  transition-transform duration-300 ease-in-out
+                  ${mobileView === 'main' ? 'translate-x-0' : '-translate-x-full absolute top-0 left-0 w-full'}
+                `}
+                >
+                  <ul className="space-y-2">
+                    {/* Navigation Links */}
+                    {optionsArr.map(
+                      ({ label, href, active, submenu }, index) => (
+                        <li key={index}>
+                          {submenu ? (
+                            <div className="flex items-center justify-between">
+                              <Link
+                                href={href || '#'}
+                                className={`
+                                flex-1 block px-4 py-3 rounded-lg font-medium transition-all duration-300
+                                ${
+                                  active
+                                    ? 'text-brand-primary bg-interactive-active'
+                                    : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                }
+                              `}
+                                onClick={handleMobileNavClick}
+                              >
+                                {label}
+                              </Link>
+                              <button
+                                onClick={() => goToSubmenuView(label, submenu)}
+                                className="ml-2 p-2 text-theme-tertiary hover:text-brand-primary transition-colors"
+                              >
+                                <FiChevronRight className="w-5 h-5" />
+                              </button>
+                            </div>
+                          ) : (
+                            <Link
+                              href={href || '#'}
+                              className={`
+                              block px-4 py-3 rounded-lg font-medium transition-all duration-300
                               ${
                                 active
                                   ? 'text-brand-primary bg-interactive-active'
                                   : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
                               }
                             `}
-                            onClick={handleMobileNavClick}
-                          >
-                            {label}
-                          </Link>
-                          <button
-                            onClick={() => goToSubmenuView(label, submenu)}
-                            className="ml-2 p-2 text-theme-tertiary hover:text-brand-primary transition-colors"
-                          >
-                            <FiChevronRight className="w-5 h-5" />
-                          </button>
-                        </div>
-                      ) : (
-                        <Link
-                          href={href || '#'}
-                          className={`
-                            block px-4 py-3 rounded-lg font-medium transition-all duration-300
-                            ${
-                              active
-                                ? 'text-brand-primary bg-interactive-active'
-                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
-                            }
-                          `}
-                          onClick={handleMobileNavClick}
-                        >
-                          {label === 'Blog' ? (
-                            <span className="gold-shine">Blog</span>
-                          ) : (
-                            label
-                          )}{' '}
-                        </Link>
-                      )}
-                    </li>
-                  ))}
-
-                  {/* Profile Section */}
-                  {isAuthenticated && user ? (
-                    <>
-                      <hr className="my-4 border-theme-secondary" />
-
-                      <div
-                        className="flex items-center justify-between"
-                        onClick={goToProfileView}
-                      >
-                        <div className="flex items-center space-x-3 px-4 py-3 flex-1">
-                          {user.image ? (
-                            <Image
-                              src={user.image}
-                              width={32}
-                              height={32}
-                              alt={getUserDisplayName()}
-                              className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
-                            />
-                          ) : (
-                            <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary text-sm font-semibold">
-                              {getUserInitials()}
-                            </div>
+                              onClick={handleMobileNavClick}
+                            >
+                              {label === 'Blog' ? (
+                                <span className="gold-shine">Blog</span>
+                              ) : (
+                                label
+                              )}{' '}
+                            </Link>
                           )}
-                          <div>
-                            <p className="font-medium text-theme-primary text-sm">
-                              {getUserDisplayName()}
-                            </p>
-                            <p className="text-xs text-theme-tertiary">
-                              Perfil
-                            </p>
+                        </li>
+                      )
+                    )}
+
+                    {/* Profile Section */}
+                    {isAuthenticated && user ? (
+                      <>
+                        <hr className="my-4 border-theme-secondary" />
+
+                        <div
+                          className="flex items-center justify-between"
+                          onClick={goToProfileView}
+                        >
+                          <div className="flex items-center space-x-3 px-4 py-3 flex-1">
+                            {user.image ? (
+                              <Image
+                                src={user.image}
+                                width={32}
+                                height={32}
+                                alt={getUserDisplayName()}
+                                className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
+                              />
+                            ) : (
+                              <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary text-sm font-semibold">
+                                {getUserInitials()}
+                              </div>
+                            )}
+                            <div>
+                              <p className="font-medium text-theme-primary text-sm">
+                                {getUserDisplayName()}
+                              </p>
+                              <p className="text-xs text-theme-tertiary">
+                                Perfil
+                              </p>
+                            </div>
+                          </div>
+                          <div className="p-2 text-theme-tertiary hover:text-brand-primary transition-colors">
+                            <FiChevronRight className="w-5 h-5" />
                           </div>
                         </div>
-                        <div className="p-2 text-theme-tertiary hover:text-brand-primary transition-colors">
-                          <FiChevronRight className="w-5 h-5" />
+                      </>
+                    ) : (
+                      /* Guest Actions */
+                      <>
+                        <hr className="my-4 border-theme-secondary" />
+                        <li>
+                          <button
+                            onClick={() => {
+                              openLogin();
+                              closeMobileMenu();
+                            }}
+                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover transition-all"
+                          >
+                            {t('navbar_fazer_login')}
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            onClick={() => {
+                              openRegister();
+                              closeMobileMenu();
+                            }}
+                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-brand-primary bg-brand-primary bg-opacity-10 hover:bg-opacity-20 transition-all"
+                          >
+                            {t('navbar_button_criar')}
+                          </button>
+                        </li>
+                      </>
+                    )}
+
+                    {/* Settings */}
+                    {isAuthenticated && (
+                      <>
+                        <hr className="my-3 border-theme-secondary" />
+
+                        <li>
+                          <button
+                            onClick={handleLogout}
+                            className="flex items-center space-x-3 w-full px-4 py-3 text-accent-red hover:bg-accent-red rounded-lg l"
+                          >
+                            <FiLogOut className="w-5 h-5" />
+                            <span>{t('navbar_sair')}</span>
+                          </button>
+                        </li>
+                      </>
+                    )}
+                    <hr className="my-4 border-theme-secondary" />
+                    <li>
+                      <div className="flex items-center justify-center px-4 py-2">
+                        <div className="flex items-center space-x-3">
+                          <LanguageToggle />
+                          <ThemeToggle variant="default" />
                         </div>
                       </div>
-                    </>
-                  ) : (
-                    /* Guest Actions */
-                    <>
-                      <hr className="my-4 border-theme-secondary" />
-                      <li>
-                        <button
-                          onClick={() => {
-                            openLogin();
-                            closeMobileMenu();
-                          }}
-                          className="block w-full px-4 py-3 text-left rounded-lg font-medium text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover transition-all"
-                        >
-                          {t('navbar_fazer_login')}
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onClick={() => {
-                            openRegister();
-                            closeMobileMenu();
-                          }}
-                          className="block w-full px-4 py-3 text-left rounded-lg font-medium text-brand-primary bg-brand-primary bg-opacity-10 hover:bg-opacity-20 transition-all"
-                        >
-                          {t('navbar_button_criar')}
-                        </button>
-                      </li>
-                    </>
-                  )}
+                    </li>
+                  </ul>
+                </div>
 
-                  {/* Settings */}
-                  {isAuthenticated && (
-                    <>
-                      <hr className="my-3 border-theme-secondary" />
-
-                      <li>
+                {/* Profile View */}
+                <div
+                  className={`
+                  transition-transform duration-300 ease-in-out
+                  ${mobileView === 'profile' ? 'translate-x-0' : 'translate-x-full absolute top-0 left-0 w-full'}
+                `}
+                >
+                  {isAuthenticated && user && (
+                    <div>
+                      {/* Header */}
+                      <div className="flex items-center mb-4 pb-3 border-b border-theme-secondary">
                         <button
-                          onClick={handleLogout}
-                          className="flex items-center space-x-3 w-full px-4 py-3 text-accent-red hover:bg-accent-red rounded-lg l"
+                          onClick={goBackToMain}
+                          className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                         >
-                          <FiLogOut className="w-5 h-5" />
-                          <span>{t('navbar_sair')}</span>
+                          <FiChevronLeft className="w-5 h-5" />
                         </button>
-                      </li>
-                    </>
-                  )}
-                  <hr className="my-4 border-theme-secondary" />
-                  <li>
-                    <div className="flex items-center justify-center px-4 py-2">
-                      <div className="flex items-center space-x-3">
-                        <LanguageToggle />
-                        <ThemeToggle variant="default" />
+                        <h3 className="font-medium text-theme-primary">
+                          Perfil
+                        </h3>
                       </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
 
-              {/* Profile View */}
-              <div
-                className={`
-                transition-transform duration-300 ease-in-out
-                ${mobileView === 'profile' ? 'translate-x-0' : 'translate-x-full absolute top-0 left-0 w-full'}
-              `}
-              >
-                {isAuthenticated && user && (
+                      {/* User Info */}
+                      <div className="flex items-center space-x-3 px-4 py-3 mb-4 bg-interactive-hover rounded-lg">
+                        {user.image ? (
+                          <Image
+                            src={user.image}
+                            width={40}
+                            height={40}
+                            alt={getUserDisplayName()}
+                            className="w-10 h-10 rounded-full object-cover border-2 border-brand-primary"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary font-semibold">
+                            {getUserInitials()}
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-medium text-theme-primary">
+                            {getUserDisplayName()}
+                          </p>
+                          <p className="text-sm text-theme-tertiary">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+
+                      {!user.onboardingCompleted && (
+                        <button
+                          onClick={() => {
+                            open();
+                            closeMobileMenu();
+                          }}
+                          className="w-full mb-4 text-center py-3 px-4 bg-brand-primary bg-opacity-10 text-brand-primary rounded-lg font-medium hover:bg-opacity-20 transition-all"
+                        >
+                          {t('navbar_configure_seu_perfil')}
+                        </button>
+                      )}
+
+                      {/* Menu Items */}
+                      <ul className="space-y-1">
+                        {user.onboardingCompleted && (
+                          <li>
+                            <Link
+                              href="/profile"
+                              className={`
+                                flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
+                                ${
+                                  pathname === '/profile'
+                                    ? 'text-brand-primary bg-interactive-active'
+                                    : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                }
+                              `}
+                              onClick={handleMobileNavClick}
+                            >
+                              <FiUser className="w-5 h-5" />
+                              <span>{t('navbar_link_meu_perfil')}</span>
+                            </Link>
+                          </li>
+                        )}
+
+                        <li>
+                          <Link
+                            href="/favorites"
+                            className={`
+                              flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
+                              ${
+                                pathname === '/favorites'
+                                  ? 'text-brand-primary bg-interactive-active'
+                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              }
+                            `}
+                            onClick={handleMobileNavClick}
+                          >
+                            <FiHeart className="w-5 h-5" />
+                            <span>{t('navbar_link_favoritos')}</span>
+                          </Link>
+                        </li>
+
+                        <li>
+                          <Link
+                            href="/learning"
+                            className={`
+                              flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
+                              ${
+                                pathname === '/learning'
+                                  ? 'text-brand-primary bg-interactive-active'
+                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              }
+                            `}
+                            onClick={handleMobileNavClick}
+                          >
+                            <FiBookOpen className="w-5 h-5" />
+                            <span>{t('navbar_link_lições')}</span>
+                          </Link>
+                        </li>
+
+                        <li>
+                          <Link
+                            href="/annotations"
+                            className={`
+                              flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
+                              ${
+                                pathname === '/annotations'
+                                  ? 'text-brand-primary bg-interactive-active'
+                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              }
+                            `}
+                            onClick={handleMobileNavClick}
+                          >
+                            <FiFile className="w-5 h-5" />
+                            <span>{t('navbar_link_anotações')}</span>
+                          </Link>
+                        </li>
+
+                        <li>
+                          <Link
+                            href="/upload"
+                            className={`
+                              flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
+                              ${
+                                pathname === '/upload'
+                                  ? 'text-brand-primary bg-interactive-active'
+                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              }
+                            `}
+                            onClick={handleMobileNavClick}
+                          >
+                            <FiUpload className="w-5 h-5" />
+                            <span>{t('navbar_link_uploads')}</span>
+                          </Link>
+                        </li>
+
+                        {/* Admin/Teacher Links */}
+                        {user.role === 1 && (
+                          <li>
+                            <Link
+                              href="/teacher"
+                              className={`
+                                flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
+                                ${
+                                  pathname === '/teacher'
+                                    ? 'text-brand-primary bg-interactive-active'
+                                    : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                }
+                              `}
+                              onClick={handleMobileNavClick}
+                            >
+                              <FaGraduationCap className="w-5 h-5" />
+                              <span>{t('navbar_link_painel_professor')}</span>
+                            </Link>
+                          </li>
+                        )}
+
+                        {(user.isStudent || user.studentInviteStatus) && (
+                          <li>
+                            <Link
+                              href="/student"
+                              className={`
+                                flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
+                                ${
+                                  pathname === '/student'
+                                    ? 'text-brand-primary bg-interactive-active'
+                                    : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                }
+                              `}
+                              onClick={handleMobileNavClick}
+                            >
+                              <FaGraduationCap className="w-5 h-5" />
+                              <span>{t('navbar_link_painel_aluno')}</span>
+                            </Link>
+                          </li>
+                        )}
+
+                        {user.role === 2 && (
+                          <>
+                            <li>
+                              <Link
+                                href="/moderation"
+                                className={`
+                                  flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
+                                  ${
+                                    pathname === '/moderation'
+                                      ? 'text-brand-primary bg-interactive-active'
+                                      : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                  }
+                                `}
+                                onClick={handleMobileNavClick}
+                              >
+                                <FiShield className="w-5 h-5" />
+                                <span>{t('navbar_link_moderation')}</span>
+                              </Link>
+                            </li>
+                            <li>
+                              <Link
+                                href="/admin"
+                                className={`
+                                  flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
+                                  ${
+                                    pathname === '/admin'
+                                      ? 'text-brand-primary bg-interactive-active'
+                                      : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                  }
+                                `}
+                                onClick={handleMobileNavClick}
+                              >
+                                <FiSettings className="w-5 h-5" />
+                                <span>{t('navbar_link_admin')}</span>
+                              </Link>
+                            </li>
+                          </>
+                        )}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {/* Submenu View */}
+                <div
+                  className={`
+                  transition-transform duration-300 ease-in-out
+                  ${mobileView === 'submenu' ? 'translate-x-0' : 'translate-x-full absolute top-0 left-0 w-full'}
+                `}
+                >
                   <div>
                     {/* Header */}
                     <div className="flex items-center mb-4 pb-3 border-b border-theme-secondary">
@@ -872,270 +1121,37 @@ const Navbar: React.FC = () => {
                       >
                         <FiChevronLeft className="w-5 h-5" />
                       </button>
-                      <h3 className="font-medium text-theme-primary">Perfil</h3>
+                      <h3 className="font-medium text-theme-primary">
+                        {submenuTitle}
+                      </h3>
                     </div>
 
-                    {/* User Info */}
-                    <div className="flex items-center space-x-3 px-4 py-3 mb-4 bg-interactive-hover rounded-lg">
-                      {user.image ? (
-                        <Image
-                          src={user.image}
-                          width={40}
-                          height={40}
-                          alt={getUserDisplayName()}
-                          className="w-10 h-10 rounded-full object-cover border-2 border-brand-primary"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary font-semibold">
-                          {getUserInitials()}
-                        </div>
-                      )}
-                      <div>
-                        <p className="font-medium text-theme-primary">
-                          {getUserDisplayName()}
-                        </p>
-                        <p className="text-sm text-theme-tertiary">
-                          {user.email}
-                        </p>
-                      </div>
-                    </div>
-
-                    {!user.onboardingCompleted && (
-                      <button
-                        onClick={() => {
-                          open();
-                          closeMobileMenu();
-                        }}
-                        className="w-full mb-4 text-center py-3 px-4 bg-brand-primary bg-opacity-10 text-brand-primary rounded-lg font-medium hover:bg-opacity-20 transition-all"
-                      >
-                        {t('navbar_configure_seu_perfil')}
-                      </button>
-                    )}
-
-                    {/* Menu Items */}
+                    {/* Submenu Items */}
                     <ul className="space-y-1">
-                      {user.onboardingCompleted && (
-                        <li>
+                      {activeSubmenuItems.map((item, index) => (
+                        <li key={index}>
                           <Link
-                            href="/profile"
+                            href={item.href}
                             className={`
-                              flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
+                              block px-4 py-3 rounded-lg transition-all
                               ${
-                                pathname === '/profile'
+                                pathname === item.href
                                   ? 'text-brand-primary bg-interactive-active'
                                   : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
                               }
                             `}
                             onClick={handleMobileNavClick}
                           >
-                            <FiUser className="w-5 h-5" />
-                            <span>{t('navbar_link_meu_perfil')}</span>
+                            {item.label}
                           </Link>
                         </li>
-                      )}
-
-                      <li>
-                        <Link
-                          href="/favorites"
-                          className={`
-                            flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
-                            ${
-                              pathname === '/favorites'
-                                ? 'text-brand-primary bg-interactive-active'
-                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
-                            }
-                          `}
-                          onClick={handleMobileNavClick}
-                        >
-                          <FiHeart className="w-5 h-5" />
-                          <span>{t('navbar_link_favoritos')}</span>
-                        </Link>
-                      </li>
-
-                      <li>
-                        <Link
-                          href="/learning"
-                          className={`
-                            flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
-                            ${
-                              pathname === '/learning'
-                                ? 'text-brand-primary bg-interactive-active'
-                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
-                            }
-                          `}
-                          onClick={handleMobileNavClick}
-                        >
-                          <FiBookOpen className="w-5 h-5" />
-                          <span>{t('navbar_link_lições')}</span>
-                        </Link>
-                      </li>
-
-                      <li>
-                        <Link
-                          href="/annotations"
-                          className={`
-                            flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
-                            ${
-                              pathname === '/annotations'
-                                ? 'text-brand-primary bg-interactive-active'
-                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
-                            }
-                          `}
-                          onClick={handleMobileNavClick}
-                        >
-                          <FiFile className="w-5 h-5" />
-                          <span>{t('navbar_link_anotações')}</span>
-                        </Link>
-                      </li>
-
-                      <li>
-                        <Link
-                          href="/upload"
-                          className={`
-                            flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
-                            ${
-                              pathname === '/upload'
-                                ? 'text-brand-primary bg-interactive-active'
-                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
-                            }
-                          `}
-                          onClick={handleMobileNavClick}
-                        >
-                          <FiUpload className="w-5 h-5" />
-                          <span>{t('navbar_link_uploads')}</span>
-                        </Link>
-                      </li>
-
-                      {/* Admin/Teacher Links */}
-                      {user.role === 1 && (
-                        <li>
-                          <Link
-                            href="/teacher"
-                            className={`
-                              flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
-                              ${
-                                pathname === '/teacher'
-                                  ? 'text-brand-primary bg-interactive-active'
-                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
-                              }
-                            `}
-                            onClick={handleMobileNavClick}
-                          >
-                            <FaGraduationCap className="w-5 h-5" />
-                            <span>{t('navbar_link_painel_professor')}</span>
-                          </Link>
-                        </li>
-                      )}
-
-                      {(user.isStudent || user.studentInviteStatus) && (
-                        <li>
-                          <Link
-                            href="/student"
-                            className={`
-                              flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
-                              ${
-                                pathname === '/student'
-                                  ? 'text-brand-primary bg-interactive-active'
-                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
-                              }
-                            `}
-                            onClick={handleMobileNavClick}
-                          >
-                            <FaGraduationCap className="w-5 h-5" />
-                            <span>{t('navbar_link_painel_aluno')}</span>
-                          </Link>
-                        </li>
-                      )}
-
-                      {user.role === 2 && (
-                        <>
-                          <li>
-                            <Link
-                              href="/moderation"
-                              className={`
-                                flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
-                                ${
-                                  pathname === '/moderation'
-                                    ? 'text-brand-primary bg-interactive-active'
-                                    : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
-                                }
-                              `}
-                              onClick={handleMobileNavClick}
-                            >
-                              <FiShield className="w-5 h-5" />
-                              <span>{t('navbar_link_moderation')}</span>
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              href="/admin"
-                              className={`
-                                flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
-                                ${
-                                  pathname === '/admin'
-                                    ? 'text-brand-primary bg-interactive-active'
-                                    : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
-                                }
-                              `}
-                              onClick={handleMobileNavClick}
-                            >
-                              <FiSettings className="w-5 h-5" />
-                              <span>{t('navbar_link_admin')}</span>
-                            </Link>
-                          </li>
-                        </>
-                      )}
+                      ))}
                     </ul>
                   </div>
-                )}
-              </div>
-
-              {/* Submenu View */}
-              <div
-                className={`
-                transition-transform duration-300 ease-in-out
-                ${mobileView === 'submenu' ? 'translate-x-0' : 'translate-x-full absolute top-0 left-0 w-full'}
-              `}
-              >
-                <div>
-                  {/* Header */}
-                  <div className="flex items-center mb-4 pb-3 border-b border-theme-secondary">
-                    <button
-                      onClick={goBackToMain}
-                      className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
-                    >
-                      <FiChevronLeft className="w-5 h-5" />
-                    </button>
-                    <h3 className="font-medium text-theme-primary">
-                      {submenuTitle}
-                    </h3>
-                  </div>
-
-                  {/* Submenu Items */}
-                  <ul className="space-y-1">
-                    {activeSubmenuItems.map((item, index) => (
-                      <li key={index}>
-                        <Link
-                          href={item.href}
-                          className={`
-                            block px-4 py-3 rounded-lg transition-all
-                            ${
-                              pathname === item.href
-                                ? 'text-brand-primary bg-interactive-active'
-                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
-                            }
-                          `}
-                          onClick={handleMobileNavClick}
-                        >
-                          {item.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </nav>

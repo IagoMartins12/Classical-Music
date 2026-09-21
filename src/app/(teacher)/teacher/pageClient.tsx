@@ -3,7 +3,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import {
   FiUsers,
@@ -21,10 +21,14 @@ import {
   AnimatedItem,
   PageContainer,
 } from '../../components/animation/AnimatedComponents';
-import {
+import type {
   TeacherDashboardData,
   TeacherStudentsData,
 } from '@/app/requests/teacher-request';
+import {
+  inviteStudentRequest,
+  searchInvitableStudents,
+} from '@/app/requests/portal/relationship-actions';
 
 import AddStudentModal from '@/app/components/TeacherSystem/AddStudentModal';
 import { useToast } from '@/app/hooks/useToast';
@@ -177,23 +181,7 @@ export default function TeacherPageClient({
 
     setSearchLoading(true);
     try {
-      const response = await fetch(
-        `/api/teacher/students/search?email=${encodeURIComponent(
-          email
-        )}&limit=10`
-      );
-
-      if (!response.ok) {
-        throw new Error('Erro na busca');
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        setSearchResults(data.students || []);
-      } else {
-        setSearchResults([]);
-      }
+      setSearchResults(await searchInvitableStudents(email));
     } catch (error) {
       console.error('Erro ao buscar alunos:', error);
       setSearchResults([]);
@@ -239,53 +227,23 @@ export default function TeacherPageClient({
             : null,
         });
 
-        const payload = {
-          studentUserId,
+        // A API guarda o plano que tem campo; metas e instruções extras do
+        // formulário não têm onde ficar. O vínculo nasce como convite.
+        await inviteStudentRequest(studentUserId, {
           maxLessonsPerWeek: studyPlan?.maxLessonsPerWeek || 1,
           lessonDuration: studyPlan?.lessonDuration || 60,
           preferredDays: studyPlan?.preferredDays || [],
           preferredTimes: studyPlan?.preferredTimes || [],
-          learningPlan: studyPlan?.learningPlan || '',
+          learningPlan: studyPlan?.learningPlan,
           currentFocus: studyPlan?.currentFocus || [],
-          teacherNotes: studyPlan?.teacherNotes || '',
-          studyGoals: studyPlan?.studyGoals || '',
-          practiceFrequency: studyPlan?.practiceFrequency || '',
-          homeworkExpectation: studyPlan?.homeworkExpectation || '',
-          specialInstructions: studyPlan?.specialInstructions || '',
-        };
-
-        console.log('📤 [TEACHER-DASHBOARD] Enviando payload:', payload);
-
-        const response = await fetch('/api/teacher/students', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
+          teacherNotes: studyPlan?.teacherNotes,
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Erro ao adicionar aluno');
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          console.log('✅ [TEACHER-DASHBOARD] Aluno adicionado com sucesso!', {
-            relationship: data.relationship?.id,
-            inviteEmailSent: data.inviteEmailSent,
-            message: data.message,
-          });
-
-          toast.success(data.message || 'Aluno adicionado com sucesso!');
-          setShowAddStudent(false);
-          setSearchQuery('');
-          setSearchResults([]);
-          await refreshData(false);
-        } else {
-          throw new Error(data.error || 'Erro desconhecido');
-        }
+        toast.success('Convite enviado ao aluno!');
+        setShowAddStudent(false);
+        setSearchQuery('');
+        setSearchResults([]);
+        await refreshData(false);
       } catch (error) {
         console.error('❌ [TEACHER-DASHBOARD] Erro ao adicionar aluno:', error);
         const message =

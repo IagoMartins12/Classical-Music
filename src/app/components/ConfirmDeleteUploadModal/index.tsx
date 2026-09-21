@@ -12,6 +12,7 @@ import {
   FiLoader,
 } from 'react-icons/fi';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { getCascadeInfo } from '@/app/requests/uploads-client';
 import Button from '../Common/Button';
 
 interface CascadeInfo {
@@ -89,13 +90,7 @@ export default function ConfirmDeleteUploadModal({
 
     setLoadingCascadeInfo(true);
     try {
-      const response = await fetch(
-        `/api/uploads/${itemType}/${itemId}/cascade-info`
-      );
-      if (response.ok) {
-        const info = await response.json();
-        setCascadeInfo(info);
-      }
+      setCascadeInfo(await getCascadeInfo(itemType, itemId));
     } catch (error) {
       console.error('Erro ao carregar informações de cascata:', error);
     } finally {
@@ -111,7 +106,7 @@ export default function ConfirmDeleteUploadModal({
   // Corrigido para garantir que sempre retorna boolean
   const hasCascadeItems = Boolean(
     cascadeInfo &&
-      ((cascadeInfo.totalWorks ?? 0) > 0 || (cascadeInfo.totalScores ?? 0) > 0)
+    ((cascadeInfo.totalWorks ?? 0) > 0 || (cascadeInfo.totalScores ?? 0) > 0)
   );
 
   // Helper functions para textos traduzidos

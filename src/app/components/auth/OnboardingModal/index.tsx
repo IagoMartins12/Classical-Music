@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import { getOnboardingOptions, completeOnboarding } from '@/app/actions/auth';
+import { legacyOnboarding } from '@/app/libs/api/compat';
 import { toast } from 'react-hot-toast';
 import { FiAlertCircle, FiPhone } from 'react-icons/fi';
 
@@ -106,7 +106,7 @@ const OnboardingModal: React.FC = () => {
 
   const loadOptions = async () => {
     try {
-      const result = await getOnboardingOptions();
+      const result = await legacyOnboarding.options();
       if (result.success && result.data) {
         setOptions(result.data);
       } else {
@@ -135,7 +135,7 @@ const OnboardingModal: React.FC = () => {
     setLoading(true);
 
     try {
-      const result = await completeOnboarding(user.id, data);
+      const result = await legacyOnboarding.complete(data);
 
       if (result.success) {
         console.log('✅ Onboarding completado no backend:', result.user);

@@ -80,10 +80,10 @@ export default function ResetPasswordPage() {
   const validateToken = async () => {
     const result = await validateResetToken(token);
 
-    if (result.valid && result.user) {
+    if (result.valid) {
       setPageState({
         step: 'form',
-        tokenData: result.user,
+        tokenData: result.user ?? undefined,
       });
     } else {
       setPageState({
@@ -268,10 +268,10 @@ export default function ResetPasswordPage() {
                       passwordStrength.score <= 2
                         ? 'bg-accent-red'
                         : passwordStrength.score <= 3
-                        ? 'bg-accent-amber'
-                        : passwordStrength.score <= 4
-                        ? 'bg-accent-blue'
-                        : 'bg-accent-green'
+                          ? 'bg-accent-amber'
+                          : passwordStrength.score <= 4
+                            ? 'bg-accent-blue'
+                            : 'bg-accent-green'
                     }`}
                     style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
                   ></div>

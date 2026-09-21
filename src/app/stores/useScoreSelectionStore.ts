@@ -5,6 +5,7 @@ import {
   useLearningModalStore,
   type LearningType,
 } from './useLearningModalStore';
+import { workScoresRequest } from '@/app/requests/work-scores';
 
 // ✅ Interface mantida para compatibilidade
 export interface SelectedWorkScore {
@@ -126,15 +127,13 @@ export const useScoreSelectionStore = create<ScoreSelectionState>(
         );
 
         // ✅ BUSCAR WorkScore existente (não criar)
-        const response = await fetch(
-          `/api/work-scores?workId=${workId}&sourceId=${imslpScore.id}&source=IMSLP`
+        const result = await workScoresRequest(
+          new URLSearchParams({
+            workId,
+            sourceId: imslpScore.id,
+            source: 'IMSLP',
+          })
         );
-
-        if (!response.ok) {
-          throw new Error('Erro ao buscar partitura');
-        }
-
-        const result = await response.json();
 
         if (result.success && result.workScore) {
           const workScore: SelectedWorkScore = {

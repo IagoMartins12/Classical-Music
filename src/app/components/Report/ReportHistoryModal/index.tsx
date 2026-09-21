@@ -9,6 +9,7 @@ import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import ReportPriorityBadge from '../ReportPriorityBadge';
 import Modal from '../../Modal';
+import { getReportHistory } from '@/app/requests/moderation';
 
 interface ReportHistoryModalProps {
   isOpen: boolean;
@@ -57,12 +58,9 @@ export default function ReportHistoryModal({
   const fetchReports = async () => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `/api/reports/history?entityType=${entityType}&entityId=${entityId}`
-      );
+      const response = await getReportHistory(entityType, entityId);
       if (response.ok) {
-        const data = await response.json();
-        setReports(data.reports || []);
+        setReports((response.data.reports as ReportRecord[]) || []);
       }
     } catch (error) {
       console.error('Erro ao buscar histórico:', error);

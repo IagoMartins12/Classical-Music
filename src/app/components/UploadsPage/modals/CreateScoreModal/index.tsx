@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import {
   FiFile,
   FiUpload,
@@ -48,6 +48,12 @@ import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/context/TranslationContext';
 import GroupingSuggestions from '../../GroupingSuggestions';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
+import {
+  getMyWorks,
+  saveScoreRequest,
+  searchComposers,
+  uploadScoreFile,
+} from '@/app/requests/uploads-client';
 
 interface CreateScoreModalProps {
   isOpen: boolean;
@@ -182,16 +188,7 @@ const CreateScoreModal = ({
 
   const loadPopularComposers = async () => {
     try {
-      const response = await fetch('/api/composers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ q: '', limit: 20 }),
-      });
-
-      if (response.ok) {
-        const composers = await response.json();
-        setPopularComposers(composers);
-      }
+      setPopularComposers(await searchComposers('', 20));
     } catch (error) {
       console.error('Erro ao carregar compositores populares:', error);
     }
@@ -200,21 +197,8 @@ const CreateScoreModal = ({
   const loadUserWorks = async () => {
     setLoadingUserWorks(true);
     try {
-      const response = await fetch('/api/uploads?type=work&limit=100');
-
-      if (response.ok) {
-        const data = await response.json();
-        const works = data.works.map((work: any) => ({
-          id: work.id,
-          title: work.title,
-          composer: {
-            id: work.composer.id,
-            name: work.composer.name,
-            fullName: work.composer.fullName,
-          },
-        }));
-        setUserWorks(works);
-      }
+      const { works } = await getMyWorks(100);
+      setUserWorks(works);
     } catch (error) {
       console.error('❌ Erro ao carregar obras do usuário:', error);
     } finally {
@@ -398,18 +382,9 @@ const CreateScoreModal = ({
   const findComposerIdByName = async (composerName: string) => {
     console.log('CHAMOU ', composerName);
     try {
-      const response = await fetch('/api/composers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ q: composerName, limit: 1 }),
-      });
-
-      console.log('RESPONSE', { response, composerName });
-      if (response.ok) {
-        const composers = await response.json();
-        if (composers.length > 0) {
-          setComposerFilter(composers[0].id);
-        }
+      const composers = await searchComposers(composerName, 1);
+      if (composers.length > 0) {
+        setComposerFilter(composers[0].id);
       }
     } catch (error) {
       console.error('❌ Erro ao buscar compositor por nome:', error);
@@ -525,23 +500,9 @@ const CreateScoreModal = ({
         toast.info(t('toast_info'), t('toast_score_file_large_detected'));
       }
 
-      const tempId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      const uploadFormData = new FormData();
-      uploadFormData.append('file', file);
-      uploadFormData.append('type', 'score-temp');
-      uploadFormData.append('userId', '64f5b3a7e123456789abcdef');
-      uploadFormData.append('tempId', tempId);
-
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: uploadFormData,
-      });
-
-      if (!response.ok) {
-        throw new Error(t('toast_score_file_upload_error'));
-      }
-
-      const data = await response.json();
+      // O arquivo vai para o armazenamento da API; a partitura é criada depois
+      // com o id dele (o legado gravava numa pasta temporária do servidor).
+      const data = await uploadScoreFile(file, formData.workId);
 
       let thumbnailUrl: string | null = null;
       let tempThumbnailPath: string | null | undefined = null;
@@ -646,19 +607,9 @@ const CreateScoreModal = ({
         tempThumbnailPath: formData.tempThumbnailPath,
       };
 
-      const url = editingScore
-        ? `/api/uploads/score/${editingScore.id}`
-        : '/api/uploads/score';
-
-      const method = editingScore ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(submitData),
-      });
+      // Arquivo enviado ou link externo: a API aceita os dois (`assetId` ou
+      // `externalUrl`), e o request escolhe pelo que a tela tem.
+      const response = await saveScoreRequest(editingScore?.id, submitData);
 
       const data = await response.json();
 

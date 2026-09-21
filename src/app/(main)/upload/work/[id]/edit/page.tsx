@@ -1,15 +1,22 @@
 // app/uploads/work/[id]/edit/page.tsx - Editar obra específica
 import EditWorkClient from '@/app/(main)/upload/work/[id]/edit/pageClient';
 import { TranslationProvider } from '@/app/context/TranslationContext';
-import { authOptions } from '@/app/libs/auth';
-import prisma from '@/app/libs/prismadb';
-import { getFormData } from '@/app/requests/upload';
+import {
+  getComposerOptions,
+  getUploadForEdit,
+  getUploadFormData,
+} from '@/app/requests/my-uploads';
 import {
   getServerLanguageStatic,
   loadPageTranslationsWithCommon,
 } from '@/app/utils/translations/serverTranslations';
-import { getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation';
+import { getServerSession } from '@/app/libs/api/server-session';
+
+/**
+ * Nunca cacheada: o conteúdo é de quem está logado.
+ */
+export const dynamic = 'force-dynamic';
 
 interface EditWorkPageParams {
   id: string;
@@ -19,26 +26,29 @@ interface EditWorkPageProps {
   params: Promise<EditWorkPageParams>;
 }
 
+type WorkForEdit = { title?: string; composer?: { name?: string } };
+
 export async function generateMetadata({ params }: EditWorkPageProps) {
   const resolvedParams = await params;
   const language = await getServerLanguageStatic();
 
-  const work = await prisma.work.findUnique({
-    where: { id: resolvedParams.id },
-    select: { title: true, composer: { select: { name: true } } },
-  });
+  const lookup = await getUploadForEdit('work', resolvedParams.id).catch(
+    () => null
+  );
+  const work =
+    lookup?.status === 'ok' ? (lookup.data as WorkForEdit) : undefined;
 
   const content = {
     pt: {
       title: `Editar "${work?.title || 'Obra'}" - Opus Atlas`,
       description: `Editar informações da obra "${work?.title || ''}" de ${
-        work?.composer.name || ''
+        work?.composer?.name || ''
       }. Atualize detalhes, classificações e metadados.`,
     },
     en: {
       title: `Edit "${work?.title || 'Work'}" - Opus Atlas`,
       description: `Edit information for the work "${work?.title || ''}" by ${
-        work?.composer.name || ''
+        work?.composer?.name || ''
       }. Update details, classifications and metadata.`,
     },
   };
@@ -68,45 +78,28 @@ export async function generateMetadata({ params }: EditWorkPageProps) {
 
 export default async function EditWorkPage({ params }: EditWorkPageProps) {
   const resolvedParams = await params;
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user?.id) {
     redirect('/not-authenticated');
   }
 
-  const work = await prisma.work.findUnique({
-    where: { id: resolvedParams.id },
-    include: {
-      composer: {
-        select: { id: true, name: true, fullName: true, portraitUrl: true },
-      },
-      instrument: { select: { id: true, name: true, category: true } },
-      epoch: { select: { id: true, name: true } },
-    },
-  });
+  // A API confere se a obra existe (404) e se é da pessoa ou ela é
+  // administradora (403).
+  const work = await getUploadForEdit('work', resolvedParams.id);
 
-  if (!work) {
+  if (work.status === 'not-found') {
     notFound();
   }
 
-  const isAdmin = session.user.role === 2;
-  const isOwner = work.createdBy === session.user.id;
-
-  if (!isAdmin && !isOwner) {
+  if (work.status === 'forbidden') {
     redirect('/access-denied');
   }
 
-  const [formData, composers, instruments] = await Promise.all([
-    getFormData(),
-    prisma.composer.findMany({
-      select: { id: true, name: true, fullName: true },
-      orderBy: { name: 'asc' },
-      take: 50,
-    }),
-    prisma.instrument.findMany({
-      select: { id: true, name: true, category: true },
-      orderBy: { name: 'asc' },
-    }),
+  const isAdmin = session.user.role === 2;
+  const [formData, composers] = await Promise.all([
+    getUploadFormData(),
+    getComposerOptions(),
   ]);
 
   const language = await getServerLanguageStatic();
@@ -117,9 +110,9 @@ export default async function EditWorkPage({ params }: EditWorkPageProps) {
   return (
     <TranslationProvider language={language} translations={translations}>
       <EditWorkClient
-        work={work}
+        work={work.data}
         composers={composers}
-        instruments={instruments}
+        instruments={formData.instruments}
         epochs={formData.epochs}
         isAdmin={isAdmin}
         userId={session.user.id}

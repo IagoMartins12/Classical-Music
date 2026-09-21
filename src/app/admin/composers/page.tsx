@@ -1,9 +1,9 @@
 // app/admin/composers/page.tsx
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
-import { redirect } from 'next/navigation';
 import ComposersManagement from '@/app/components/Admin/Managements/ComposersManagement';
+
+// Painel em CSR: o dado vem da API pelo navegador.
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Gerenciar Compositores | Admin Panel',
@@ -11,12 +11,6 @@ export const metadata: Metadata = {
   robots: 'noindex, nofollow',
 };
 
-export default async function AdminComposersPage() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id || session.user.role !== 2) {
-    redirect('/');
-  }
-
+export default function AdminComposersPage() {
   return <ComposersManagement />;
 }

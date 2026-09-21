@@ -1,5 +1,6 @@
 // app/hooks/useReports.ts
 import { useState, useCallback } from 'react';
+import { getReportCounts } from '@/app/requests/admin/metrics';
 
 interface ReportStats {
   totalReports: number;
@@ -8,6 +9,10 @@ interface ReportStats {
   rejectedReports: number;
 }
 
+/**
+ * Denúncias pela moderação de contribuições da API (`/uploads/moderation/stats`):
+ * números, pendentes por tipo e as do período por motivo.
+ */
 export const useReports = () => {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState<ReportStats | null>(null);
@@ -15,12 +20,9 @@ export const useReports = () => {
   const fetchStats = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/reports/stats');
-      if (response.ok) {
-        const data = await response.json();
-        setStats(data.stats);
-        return data;
-      }
+      const data = await getReportCounts();
+      setStats(data.stats);
+      return data;
     } catch (error) {
       console.error('Erro ao buscar estatísticas:', error);
     } finally {

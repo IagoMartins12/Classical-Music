@@ -1,5 +1,10 @@
 // app/hooks/admin/useNewsletterAnalytics.ts
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { adminKeys, useAdminQuery } from './query';
+import {
+  exportNewsletterAnalytics,
+  getNewsletterAnalyticsRequest,
+} from '@/app/requests/admin/newsletter';
 
 interface SubscriberAnalytics {
   total: number;
@@ -56,69 +61,32 @@ interface UseNewsletterAnalyticsReturn {
   exportReport: () => Promise<void>;
 }
 
+/** Análises da newsletter, por período, guardadas pelo TanStack Query. */
 export const useNewsletterAnalytics = (): UseNewsletterAnalyticsReturn => {
-  const [analytics, setAnalytics] = useState<NewsletterAnalytics | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [dateRange, setDateRange] = useState('30d');
 
-  const fetchAnalytics = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const analytics = useAdminQuery(
+    adminKeys.list('newsletter-analytics', dateRange),
+    () => getNewsletterAnalyticsRequest(dateRange)
+  );
 
-    try {
-      const response = await fetch(
-        `/api/admin/newsletter/analytics?range=${dateRange}`
-      );
-      const result = await response.json();
-
-      if (result.success) {
-        setAnalytics(result.analytics);
-      } else {
-        setError(result.error || 'Erro ao carregar analytics');
-      }
-    } catch (err) {
-      console.error('Erro ao buscar analytics:', err);
-      setError('Erro de conexão');
-    } finally {
-      setLoading(false);
-    }
-  }, [dateRange]);
-
+  // A exportação da API é CSV (o legado nomeava .pdf).
   const exportReport = useCallback(async () => {
     try {
-      const response = await fetch(
-        `/api/admin/newsletter/analytics/export?range=${dateRange}`
-      );
-
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `newsletter-analytics-${dateRange}-${
-          new Date().toISOString().split('T')[0]
-        }.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      } else {
-        throw new Error('Erro no export');
-      }
-    } catch (err) {
-      console.error('Erro ao exportar relatório:', err);
-      throw err;
+      await exportNewsletterAnalytics(dateRange);
+    } catch (error) {
+      console.error('Erro ao exportar relatório:', error);
+      throw error;
     }
   }, [dateRange]);
 
   return {
-    analytics,
-    loading,
-    error,
+    analytics: analytics.data ?? null,
+    loading: analytics.loading,
+    error: analytics.error,
     dateRange,
     setDateRange,
-    fetchAnalytics,
+    fetchAnalytics: analytics.refetch,
     exportReport,
   };
 };

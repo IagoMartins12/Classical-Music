@@ -28,7 +28,9 @@ import { useIsMobile } from '@/app/hooks/useMobile';
 interface DeleteAccountModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  /** Recebe a senha atual quando `requirePassword` (a API a exige de quem tem senha). */
+  onConfirm: (currentPassword?: string) => void;
+  requirePassword?: boolean;
   onLoadCascadeInfo: () => void;
   isLoading: boolean;
   isCascadeLoading: boolean;
@@ -41,6 +43,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
+  requirePassword = false,
   onLoadCascadeInfo,
   isLoading,
   isCascadeLoading,
@@ -51,6 +54,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   const { t } = useTranslation({ sections: ['pages/profile'] });
   const [mounted, setMounted] = useState(false);
   const [confirmText, setConfirmText] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [currentStep, setCurrentStep] = useState<
     'warning' | 'cascade' | 'confirm'
   >('warning');
@@ -73,6 +77,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
     if (isLoading) return;
     setCurrentStep('warning');
     setConfirmText('');
+    setCurrentPassword('');
     onClose();
   };
 
@@ -93,13 +98,18 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
     }
   };
 
+  // A tela em inglês pede "delete"; antes só "deletar" era aceito.
+  const typedConfirmation = ['deletar', 'delete'].includes(
+    confirmText.trim().toLowerCase()
+  );
+  const canProceed =
+    typedConfirmation && (!requirePassword || currentPassword.length > 0);
+
   const handleConfirm = () => {
-    if (confirmText.toLowerCase() === 'deletar') {
-      onConfirm();
+    if (canProceed) {
+      onConfirm(requirePassword ? currentPassword : undefined);
     }
   };
-
-  const canProceed = confirmText.toLowerCase() === 'deletar';
 
   if (!mounted || !isOpen) return null;
 
@@ -448,12 +458,26 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   className="text-center font-mono"
                   autoFocus
                 />
-                {confirmText && !canProceed && (
+                {confirmText && !typedConfirmation && (
                   <p className="text-xs text-accent-red mt-1">
                     {t('delete_modal_type_exactly')}
                   </p>
                 )}
               </div>
+
+              {requirePassword && (
+                <div>
+                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                    {t('delete_modal_current_password')}
+                  </label>
+                  <Input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    autoComplete="current-password"
+                  />
+                </div>
+              )}
 
               {cascadeInfo && (
                 <div className="text-center p-3 bg-theme-secondary rounded-lg">

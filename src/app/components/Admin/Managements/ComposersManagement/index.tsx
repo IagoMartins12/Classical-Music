@@ -43,7 +43,7 @@ import StatsSkeleton, {
   ChartSkeleton,
   TopPerformersSkeleton,
 } from '@/app/components/Admin/Skeletons/StatsSkeleton';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { getPeriodLabel } from '@/app/utils/adminUtils';
 import PeriodSelector from '../../Common/PeriodSelector';
 import LoadingAdminState from '../../Common/LoadingState';

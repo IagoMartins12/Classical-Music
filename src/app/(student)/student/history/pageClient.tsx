@@ -37,6 +37,7 @@ import Select from '@/app/components/Common/Select';
 import Link from 'next/link';
 import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { loadSchoolActivities } from '@/app/requests/portal/school-activities';
 
 interface Activity {
   id: string;
@@ -137,36 +138,23 @@ const StudentHistoryClient = ({
     setError(null);
 
     try {
-      const params = new URLSearchParams({
-        page: page.toString(),
+      const data = await loadSchoolActivities({
+        as: 'student',
+        page,
+        action: selectedAction !== 'all' ? selectedAction : undefined,
+        entityType:
+          selectedEntityType !== 'all' ? selectedEntityType : undefined,
+        dateFrom: dateFrom || undefined,
+        dateTo: dateTo || undefined,
       });
 
-      if (selectedAction !== 'all') params.set('action', selectedAction);
-      if (selectedEntityType !== 'all')
-        params.set('entityType', selectedEntityType);
-      if (dateFrom) params.set('dateFrom', dateFrom);
-      if (dateTo) params.set('dateTo', dateTo);
-
-      const response = await fetch(`/api/school-activities?${params}`);
-
-      if (!response.ok) {
-        throw new Error('Erro ao carregar atividades');
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        setActivities(data.activities || []);
-        setTotalPages(data.pagination?.totalPages || 0);
-        setTotalCount(data.pagination?.totalCount || 0);
-        setStats(data.stats || {});
-        if (showToast) toast.success('Histórico atualizado!');
-      } else {
-        if (showToast) toast.error('Erro ao atualizar histórico.');
-
-        throw new Error(data.error || 'Erro desconhecido');
-      }
+      setActivities(data.activities);
+      setTotalPages(data.totalPages);
+      setTotalCount(data.totalCount);
+      setStats(data.stats);
+      if (showToast) toast.success('Histórico atualizado!');
     } catch (error) {
+      if (showToast) toast.error('Erro ao atualizar histórico.');
       console.error('Erro ao buscar atividades:', error);
       setError(error instanceof Error ? error.message : 'Erro desconhecido');
     } finally {

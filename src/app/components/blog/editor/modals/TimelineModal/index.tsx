@@ -4,12 +4,14 @@
 import { useState } from 'react';
 import { Editor } from '@tiptap/react';
 import { FiTrash2 } from 'react-icons/fi';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { BiPlus, BiUpload } from 'react-icons/bi';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Button from '@/app/components/Common/Button';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
+import { findComposerById } from '@/app/requests/catalog-search';
+import { uploadBlogMedia } from '@/app/requests/blog/interactions';
 
 interface TimelineModalProps {
   editor: Editor;
@@ -63,32 +65,20 @@ export function TimelineModal({
   const handleImageUpload = async (index: number, file: File) => {
     setUploadingIndex(index);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('folder', 'timeline');
-
       // Se tem articleId, usa. Se não, usa sessionId
-      if (articleId) {
-        formData.append('articleId', articleId);
-      } else if (sessionId) {
-        formData.append('sessionId', sessionId);
-      }
-
-      const response = await fetch('/api/blog/media/upload', {
-        method: 'POST',
-        body: formData,
+      const url = await uploadBlogMedia(file, {
+        folder: 'timeline',
+        articleId,
+        sessionId,
       });
-
-      const data = await response.json();
-
-      if (data.success) {
-        updateEvent(index, 'image', data.url);
-      } else {
-        alert('Erro ao fazer upload: ' + data.error);
-      }
+      updateEvent(index, 'image', url);
     } catch (error) {
       console.error('Erro ao fazer upload:', error);
-      alert('Erro ao fazer upload da imagem');
+      alert(
+        error instanceof Error
+          ? `Erro ao fazer upload: ${error.message}`
+          : 'Erro ao fazer upload da imagem'
+      );
     } finally {
       setUploadingIndex(null);
     }
@@ -99,16 +89,8 @@ export function TimelineModal({
 
     if (id) {
       try {
-        const response = await fetch('/api/composers', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id }),
-        });
-
-        if (response.ok) {
-          const composer = await response.json();
-          setComposerName(composer.fullName || composer.name);
-        }
+        const composer = await findComposerById(id);
+        if (composer) setComposerName(composer.fullName || composer.name);
       } catch (error) {
         console.error('Erro ao buscar compositor:', error);
       }

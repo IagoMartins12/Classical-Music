@@ -1,8 +1,8 @@
 // app/components/FeaturedComposer/FeaturedComposer.tsx
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/app/components/SmartImage';
+import Link from '@/app/components/LocalizedLink';
 import {
   FiUser,
   FiCalendar,

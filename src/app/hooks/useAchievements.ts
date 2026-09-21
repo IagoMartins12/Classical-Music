@@ -3,6 +3,11 @@
 
 import { useState, useCallback } from 'react';
 import { useAchievements } from '../components/achievement/AchievementToast';
+import {
+  checkAchievements,
+  listAchievements,
+  markAchievementViewed,
+} from '@/app/requests/achievements';
 
 // Tipos para rarity
 type AchievementRarity = 'COMMON' | 'RARE' | 'EPIC' | 'LEGENDARY';
@@ -46,11 +51,7 @@ export function useAchievementSystem() {
   const fetchAchievements = useCallback(async (category?: string) => {
     try {
       setLoading(true);
-      const params = new URLSearchParams();
-      if (category) params.set('category', category);
-
-      const response = await fetch(`/api/achievements?${params}`);
-      const data = await response.json();
+      const data = await listAchievements<Achievement>(category);
 
       if (data.success) {
         setAchievements(data.achievements);
@@ -67,13 +68,7 @@ export function useAchievementSystem() {
   const checkNewAchievements = useCallback(
     async (category: string) => {
       try {
-        const response = await fetch('/api/achievements/check', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ category }),
-        });
-
-        const data = await response.json();
+        const data = await checkAchievements(category);
 
         if (data.success && data.newAchievements.length > 0) {
           // Atualizar lista de achievements
@@ -116,7 +111,7 @@ export function useAchievementSystem() {
               description: achievement.description,
               icon: getBadgeIcon(achievement.badgeId),
               category: achievement.category.toLowerCase(),
-              rarity: achievement.rarity.toLowerCase(),
+              rarity: achievement.rarity,
               unlocked: true,
               color: rarityColors[achievement.rarity as AchievementRarity],
             });
@@ -140,9 +135,7 @@ export function useAchievementSystem() {
   // Marcar achievement como visto
   const markAsViewed = useCallback(async (badgeId: string) => {
     try {
-      await fetch(`/api/achievements/${badgeId}/viewed`, {
-        method: 'PATCH',
-      });
+      await markAchievementViewed(badgeId);
 
       // Atualizar estado local
       setAchievements((prev) =>

@@ -35,7 +35,7 @@ import {
   AnnotationCategory,
 } from '@/app/stores/useAnnotationsStore';
 import CreateAnnotationModal from '@/app/components/Annotations/CreateAnnotationModal';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import ConfirmDeleteModal from '../DeleteAnnotationModal';
 import { useTranslation } from '@/app/context/TranslationContext';
 

@@ -1,6 +1,4 @@
 // app/uploads/moderation/page.tsx - Moderação (admin only)
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
 import {
   getServerLanguageStatic,
@@ -8,6 +6,10 @@ import {
 } from '@/app/utils/translations/serverTranslations';
 import ModerationClient from '@/app/(main)/moderation/pageClient';
 import { TranslationProvider } from '@/app/context/TranslationContext';
+import { getServerSession } from '@/app/libs/api/server-session';
+
+// Fila de moderação, por pessoa e sempre mutável: sem cache de página.
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata() {
   const language = await getServerLanguageStatic();
@@ -61,7 +63,7 @@ export default async function ModerationPage({
     status?: string;
   }>;
 }) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user?.id || session.user.role !== 2) {
     redirect('/');

@@ -1,6 +1,6 @@
 // app/components/blog/CategoryCard.tsx
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { FiArrowRight } from 'react-icons/fi';
 
 interface CategoryCardProps {

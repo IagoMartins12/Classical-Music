@@ -32,7 +32,8 @@ import {
   LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Select from '@/app/components/Common/Select';
-import { formatChangesForDisplay } from '@/app/utils/historyUtils';
+import { formatChangesForDisplay } from '@/app/utils/historyFormat';
+import { getUploadHistory } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface HistoryRecord {
@@ -108,9 +109,9 @@ const HistoryClient = ({
         userId,
       });
 
-      const response = await fetch(`/api/uploads/history?${params}`);
+      const response = await getUploadHistory<HistoryRecord>(params);
       if (response.ok) {
-        const data = await response.json();
+        const data = response.data;
         setHistory(data.history);
         setTotalPages(data.pagination.totalPages);
         setTotalCount(data.pagination.totalCount);

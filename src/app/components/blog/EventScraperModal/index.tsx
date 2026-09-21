@@ -29,7 +29,7 @@ import Modal from '@/app/components/Modal';
 import { useToast } from '@/app/hooks/useToast';
 import { useProcessChanges } from '@/app/hooks/useFormChanges';
 import Checkbox from '@/app/components/Common/Checkbox';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { ScraperApiClient } from '@/app/services/scraper-api/scraper-api.client';
 import {
   ScrapedEvent,

@@ -16,7 +16,7 @@ import {
   FiBarChart2,
 } from 'react-icons/fi';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import FavoriteButton from '../../components/FavoriteButton';
 import EmptyStateFavorites from '../../components/favorites/EmptyStateFavorites';
 import ViewModeToggle, { ViewMode } from '../../components/ViewModeToggle';

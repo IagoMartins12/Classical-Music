@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, Suspense } from 'react';
-import { SessionProvider } from 'next-auth/react';
+import { ApiSessionProvider } from '../libs/session';
 import dynamic from 'next/dynamic';
 
 // Import modals
@@ -271,12 +271,9 @@ const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
 // Provider principal OTIMIZADO
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   return (
-    <SessionProvider
-      refetchWhenOffline={false}
-      // refetchInterval={10 * 60} // 10 minutos ao invés de 5
-    >
+    <ApiSessionProvider>
       <HydratedContent>{children}</HydratedContent>
-    </SessionProvider>
+    </ApiSessionProvider>
   );
 };
 

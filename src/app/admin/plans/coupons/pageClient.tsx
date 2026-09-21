@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
 import { useRouter } from 'next/navigation';
 import {
   FiPlus,
@@ -28,6 +28,12 @@ import {
   AnimatedItem,
 } from '@/app/components/animation/AnimatedComponents';
 import { FaIdCard } from 'react-icons/fa';
+import {
+  deleteCouponRequest,
+  listCouponsRequest,
+  saveCouponRequest,
+  toggleCouponRequest,
+} from '@/app/requests/admin/billing';
 
 interface Coupon {
   id: string;
@@ -92,7 +98,7 @@ export default function AdminCouponsPageClient() {
   const fetchCoupons = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/admin/coupons');
+      const response = await listCouponsRequest();
       const data = await response.json();
 
       if (response.ok) {
@@ -157,23 +163,15 @@ export default function AdminCouponsPageClient() {
   // Salvar cupom
   const handleSaveCoupon = async () => {
     try {
-      const url = editingCoupon
-        ? `/api/admin/coupons/${editingCoupon.id}`
-        : '/api/admin/coupons';
-
-      const response = await fetch(url, {
-        method: editingCoupon ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          maxDiscount: formData.maxDiscount
-            ? parseFloat(formData.maxDiscount)
-            : null,
-          maxUses: formData.maxUses ? parseInt(formData.maxUses) : null,
-          extraTrialDays: formData.extraTrialDays
-            ? parseInt(formData.extraTrialDays)
-            : null,
-        }),
+      const response = await saveCouponRequest(editingCoupon?.id, {
+        ...formData,
+        maxDiscount: formData.maxDiscount
+          ? parseFloat(formData.maxDiscount)
+          : null,
+        maxUses: formData.maxUses ? parseInt(formData.maxUses) : null,
+        extraTrialDays: formData.extraTrialDays
+          ? parseInt(formData.extraTrialDays)
+          : null,
       });
 
       const data = await response.json();
@@ -194,9 +192,7 @@ export default function AdminCouponsPageClient() {
   // Alternar status ativo/inativo
   const handleToggleActive = async (couponId: string) => {
     try {
-      const response = await fetch(`/api/admin/coupons/${couponId}/toggle`, {
-        method: 'PATCH',
-      });
+      const response = await toggleCouponRequest(couponId);
 
       const data = await response.json();
 
@@ -217,9 +213,7 @@ export default function AdminCouponsPageClient() {
     if (!confirm('Tem certeza que deseja deletar este cupom?')) return;
 
     try {
-      const response = await fetch(`/api/admin/coupons/${couponId}`, {
-        method: 'DELETE',
-      });
+      const response = await deleteCouponRequest(couponId);
 
       const data = await response.json();
 

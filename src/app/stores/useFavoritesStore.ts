@@ -1,6 +1,12 @@
 // stores/useFavoritesStore.ts - VERSÃO CORRIGIDA
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import {
+  toggleComposerFavoriteRequest,
+  toggleScoreFavoriteRequest,
+  toggleWorkFavoriteRequest,
+  updateScoreFavoriteRequest,
+} from '@/app/requests/library';
 
 export interface FavoriteComposer {
   id: string;
@@ -194,14 +200,10 @@ export const useFavoritesStore = create<FavoritesStore>()(
             });
           }
 
-          const response = await fetch('/api/favorites/composers', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              composerId,
-              action: isFavorited ? 'remove' : 'add',
-            }),
-          });
+          const response = await toggleComposerFavoriteRequest(
+            composerId,
+            isFavorited ? 'remove' : 'add'
+          );
 
           if (!response.ok) {
             // Reverter otimistic update em caso de erro
@@ -217,7 +219,7 @@ export const useFavoritesStore = create<FavoritesStore>()(
             throw new Error('Erro ao favoritar compositor');
           }
 
-          const result = await response.json();
+          const result = response.data;
 
           // Atualizar com dados corretos do servidor
           if (result.success) {
@@ -307,14 +309,10 @@ export const useFavoritesStore = create<FavoritesStore>()(
             });
           }
 
-          const response = await fetch('/api/favorites/works', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              workId,
-              action: isFavorited ? 'remove' : 'add',
-            }),
-          });
+          const response = await toggleWorkFavoriteRequest(
+            workId,
+            isFavorited ? 'remove' : 'add'
+          );
 
           if (!response.ok) {
             // Reverter otimistic update em caso de erro
@@ -330,7 +328,7 @@ export const useFavoritesStore = create<FavoritesStore>()(
             throw new Error('Erro ao favoritar obra');
           }
 
-          const result = await response.json();
+          const result = response.data;
 
           // Atualizar com dados corretos do servidor
           if (result.success) {
@@ -428,16 +426,12 @@ export const useFavoritesStore = create<FavoritesStore>()(
             });
           }
 
-          const response = await fetch('/api/favorites/scores', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              workId,
-              scoreId,
-              scoreSource,
-              action: isFavorited ? 'remove' : 'add',
-              scoreData,
-            }),
+          const response = await toggleScoreFavoriteRequest({
+            workId,
+            scoreId,
+            scoreSource,
+            action: isFavorited ? 'remove' : 'add',
+            scoreData,
           });
 
           if (!response.ok) {
@@ -459,12 +453,12 @@ export const useFavoritesStore = create<FavoritesStore>()(
             }
 
             // 🆕 Log do erro mais detalhado
-            const errorText = await response.text();
+            const errorText = response.error;
             console.error('Response error:', response.status, errorText);
             throw new Error(`Erro HTTP ${response.status}: ${errorText}`);
           }
 
-          const result = await response.json();
+          const result = response.data;
 
           // Atualizar com dados corretos do servidor
           if (result.success) {
@@ -494,16 +488,11 @@ export const useFavoritesStore = create<FavoritesStore>()(
         }
       ) => {
         try {
-          const response = await fetch('/api/favorites/scores', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              workId,
-              scoreId,
-              scoreSource,
-              action: 'update',
-              ...updates,
-            }),
+          const response = await updateScoreFavoriteRequest({
+            workId,
+            scoreId,
+            scoreSource,
+            ...updates,
           });
 
           if (!response.ok) {

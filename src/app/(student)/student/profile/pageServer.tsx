@@ -1,8 +1,10 @@
-// app/student/profile/pageServer.tsx - Server Component com queries diretas
+// app/student/profile/pageServer.tsx - Server Component do perfil do aluno (API, Etapa 4)
 
-import { getStudentProfileForPageServer } from '@/app/requests/student-requests';
+import {
+  getStudentProfileForPageServer,
+  getStudentStudyDataForPageServer,
+} from '@/app/requests/student-requests';
 import StudentProfilePageClient from './pageClient';
-import prisma from '@/app/libs/prismadb';
 import {
   getServerLanguageStatic,
   loadPageTranslationsWithCommon,
@@ -101,36 +103,6 @@ export interface UserProfile {
   role: number;
 }
 
-// 🔧 TIPOS ESPECÍFICOS PARA OS DADOS
-interface WantToLearnItem {
-  workId: string;
-  title: string;
-  composer: string;
-  addedAt: Date;
-  difficulty?: string | null;
-  selectedScore?: {
-    title: string;
-    type: string;
-  };
-}
-
-interface LearnedItem {
-  workId: string;
-  title: string;
-  composer: string;
-  learnedAt: Date;
-  mastery: number;
-  wouldRecommend: boolean;
-}
-
-interface AnnotationItem {
-  id: string;
-  workTitle: string;
-  title: string;
-  category: string;
-  createdAt: Date;
-}
-
 export default async function StudentProfilePageServer({
   userId,
   userEmail,
@@ -148,165 +120,50 @@ export default async function StudentProfilePageServer({
   const { translations } = await loadPageTranslationsWithCommon(language, [
     'student/profile',
   ]);
-  try {
-    // Buscar perfil do aluno
-    const profileData = await getStudentProfileForPageServer(userId);
 
-    if (!profileData || !profileData.profile) {
-      throw new Error('Falha ao carregar perfil do aluno');
-    }
+  const userProfile = {
+    id: userId,
+    name: userName,
+    email: userEmail,
+    image: userImage,
+    role: userRole,
+  };
 
-    // 📚 BUSCAR DADOS DE ESTUDO - QUERIES DIRETAS
-    console.log('📚 Carregando dados de estudo...');
+  // Perfil e dados de estudo (obras em estudo, aprendidas e anotações
+  // recentes — as mesmas do painel) em paralelo.
+  const [profileData, studyData] = await Promise.all([
+    getStudentProfileForPageServer(userId),
+    getStudentStudyDataForPageServer(userId),
+  ]);
 
-    // 1. Query direta: Obras que quer aprender
-    let wantToLearnData: WantToLearnItem[] = [];
-    try {
-      const wantToLearnItems = await prisma.wantToLearn.findMany({
-        where: { userId },
-        include: {
-          work: {
-            include: {
-              composer: {
-                select: { name: true },
-              },
-            },
-          },
-          selectedWorkScore: {
-            select: {
-              title: true,
-              type: true,
-            },
-          },
-        },
-        orderBy: { addedAt: 'desc' },
-        take: 10,
-      });
-
-      wantToLearnData = wantToLearnItems.map((item) => ({
-        workId: item.work.id,
-        title: item.work.title,
-        composer: item.work.composer.name,
-        addedAt: item.addedAt,
-        difficulty: item.difficulty,
-        selectedScore: item.selectedWorkScore
-          ? {
-              title: item.selectedWorkScore.title,
-              type: item.selectedWorkScore.type,
-            }
-          : undefined,
-      }));
-
-      console.log(`✅ Want-to-learn: ${wantToLearnData.length} items`);
-    } catch (error) {
-      console.warn('⚠️ Error loading want-to-learn data:', error);
-    }
-
-    // 2. Query direta: Obras já aprendidas
-    let learnedData: LearnedItem[] = [];
-    try {
-      const learnedItems = await prisma.learned.findMany({
-        where: { userId },
-        include: {
-          work: {
-            include: {
-              composer: {
-                select: { name: true },
-              },
-            },
-          },
-        },
-        orderBy: { learnedAt: 'desc' },
-        take: 10,
-      });
-
-      learnedData = learnedItems.map((item) => ({
-        workId: item.work.id,
-        title: item.work.title,
-        composer: item.work.composer.name,
-        learnedAt: item.learnedAt,
-        mastery: item.mastery,
-        wouldRecommend: item.wouldRecommend,
-      }));
-
-      console.log(`✅ Learned: ${learnedData.length} items`);
-    } catch (error) {
-      console.warn('⚠️ Error loading learned data:', error);
-    }
-
-    // 3. Query direta: Anotações recentes
-    let annotationsData: AnnotationItem[] = [];
-    try {
-      const recentAnnotations = await prisma.workAnnotation.findMany({
-        where: {
-          userId,
-          isPublic: true,
-        },
-        include: {
-          work: {
-            select: { title: true },
-          },
-        },
-        orderBy: { createdAt: 'desc' },
-        take: 5,
-      });
-
-      annotationsData = recentAnnotations.map((annotation) => ({
-        id: annotation.id,
-        workTitle: annotation.work.title,
-        title: annotation.title,
-        category: annotation.category,
-        createdAt: annotation.createdAt,
-      }));
-
-      console.log(`✅ Annotations: ${annotationsData.length} items`);
-    } catch (error) {
-      console.warn('⚠️ Error loading annotations data:', error);
-    }
-
-    // Montar dados finais
-    const studentProfileData: StudentProfileData = {
-      profile: profileData.profile,
-      studyData: {
-        wantToLearn: wantToLearnData,
-        learned: learnedData,
-        recentAnnotations: annotationsData,
-      },
-      isNew: profileData.isNew,
-    };
-
-    return (
-      <TranslationProvider language={language} translations={translations}>
-        <StudentProfilePageClient
-          initialData={studentProfileData}
-          userProfile={{
-            id: userId,
-            name: userName,
-            email: userEmail,
-            image: userImage,
-            role: userRole,
-          }}
-        />
-      </TranslationProvider>
-    );
-  } catch (error) {
-    console.error('❌ [STUDENT-PROFILE-PAGE-SERVER] Critical error:', error);
-
-    // Fallback com dados mínimos
+  if (!profileData?.profile) {
     return (
       <TranslationProvider language={language} translations={translations}>
         <StudentProfilePageClient
           initialData={null}
-          userProfile={{
-            id: userId,
-            name: userName,
-            email: userEmail,
-            image: userImage,
-            role: userRole,
-          }}
+          userProfile={userProfile}
           errorMessage="Erro ao carregar perfil. Tente recarregar a página."
         />
       </TranslationProvider>
     );
   }
+
+  const studentProfileData: StudentProfileData = {
+    profile: profileData.profile,
+    studyData: {
+      wantToLearn: studyData?.currentWorks ?? [],
+      learned: studyData?.learnedWorks ?? [],
+      recentAnnotations: studyData?.recentAnnotations ?? [],
+    },
+    isNew: profileData.isNew,
+  };
+
+  return (
+    <TranslationProvider language={language} translations={translations}>
+      <StudentProfilePageClient
+        initialData={studentProfileData}
+        userProfile={userProfile}
+      />
+    </TranslationProvider>
+  );
 }

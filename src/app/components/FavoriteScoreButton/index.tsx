@@ -2,7 +2,7 @@
 'use client';
 
 import { MouseEvent, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import {
   FiHeart,
@@ -14,7 +14,7 @@ import {
 } from 'react-icons/fi';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useLoginModal } from '@/app/stores/authStore';
-import { WorkScore } from '@prisma/client';
+import type { WorkScore } from '@/app/types/catalog';
 import { useToast } from '@/app/hooks/useToast';
 
 interface FavoriteWorkScore {

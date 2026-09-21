@@ -1,6 +1,4 @@
 // app/uploads/history/page.tsx - Histórico de uploads
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
 import {
   getServerLanguageStatic,
@@ -8,6 +6,12 @@ import {
 } from '@/app/utils/translations/serverTranslations';
 import HistoryClient from './pageClient';
 import { TranslationProvider } from '@/app/context/TranslationContext';
+import { getServerSession } from '@/app/libs/api/server-session';
+
+/**
+ * Nunca cacheada: o conteúdo é de quem está logado.
+ */
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata() {
   const language = await getServerLanguageStatic();
@@ -62,7 +66,7 @@ export default async function HistoryPage({
     action?: string;
   }>;
 }) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user?.id) {
     redirect('/not-authenticated');

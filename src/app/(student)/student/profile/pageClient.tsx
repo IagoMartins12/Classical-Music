@@ -28,7 +28,7 @@ import {
   PageContainer,
 } from '../../../components/animation/AnimatedComponents';
 import { StudentProfileData, UserProfile } from './pageServer';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import LocationSelector from '../../../components/Common/LocationSelector';
 import InternationalPhoneInput from '../../../components/Common/InternationalPhoneInput';
 import {

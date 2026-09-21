@@ -26,7 +26,7 @@ import {
   SequentialGrid,
   LoadingSpinner,
 } from '../../components/animation/AnimatedComponents';
-import { UserUpload } from '@/app/requests/upload';
+import type { UserUpload } from '@/app/requests/my-uploads';
 import Button from '../../components/Common/Button';
 import Select from '../../components/Common/Select';
 import ViewModeToggle, { ViewMode } from '../../components/ViewModeToggle';
@@ -37,6 +37,12 @@ import CreateComposerModal from '../../components/UploadsPage/modals/CreateCompo
 import BulkInsertWorksModal from '../../components/UploadsPage/modals/BulkInsertWorksModal';
 
 import { useToast } from '@/app/hooks/useToast';
+import {
+  deleteUpload,
+  getUploadEpochs,
+  getUploadFilterData,
+  getUploadFormLists,
+} from '@/app/requests/uploads-client';
 
 import UploadComposerCard from '../../components/UploadsPage/UploadComposerCard';
 import UploadWorkCard from '../../components/UploadsPage/UploadWorkCard';
@@ -196,12 +202,9 @@ const UploadsClient = ({
 
     setLoadingFilterData(true);
     try {
-      const response = await fetch('/api/uploads/filter-data');
-      if (response.ok) {
-        const data = await response.json();
-        setFilterComposers(data.composers || []);
-        setFilterWorks(data.works || []);
-      }
+      const data = await getUploadFilterData();
+      setFilterComposers(data.composers);
+      setFilterWorks(data.works);
     } catch (error) {
       console.error('Erro ao carregar dados para filtros:', error);
     } finally {
@@ -213,36 +216,18 @@ const UploadsClient = ({
     if (formData.roles.length > 0) return; // Já carregado
 
     try {
-      const response = await fetch('/api/uploads/form-data');
-      if (response.ok) {
-        const data = await response.json();
-        setFormData(data);
-      }
+      setFormData(await getUploadFormLists());
     } catch (error) {
       console.error('Erro ao carregar dados do formulário:', error);
       toast.error('Erro', 'Não foi possível carregar os dados do formulário');
     }
   }, [formData.roles.length, toast]);
 
-  const loadAvailableEpochs = useCallback(async (type: string) => {
+  const loadAvailableEpochs = useCallback(async (_type: string) => {
     setLoadingEpochs(true);
     try {
-      const typeParam =
-        type === 'composers'
-          ? 'composer'
-          : type === 'works'
-            ? 'work'
-            : type === 'scores'
-              ? 'score'
-              : 'all';
-
-      const response = await fetch(
-        `/api/uploads/available-epochs?type=${typeParam}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setAvailableEpochs(data.epochs || []);
-      }
+      // O legado recortava as épocas pelo tipo (`type`); a API lista todas.
+      setAvailableEpochs(await getUploadEpochs());
     } catch (error) {
       console.error('Erro ao carregar épocas disponíveis:', error);
     } finally {
@@ -254,17 +239,10 @@ const UploadsClient = ({
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
     try {
-      const response = await fetch('/api/uploads/refresh', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (response.ok) {
-        router.refresh();
-        toast.success('Sucesso', 'Lista atualizada!');
-      } else {
-        throw new Error('Erro ao atualizar');
-      }
+      // A rota do legado só limpava o cache do Next; a API invalida o dela a
+      // cada escrita, então basta recarregar a página.
+      router.refresh();
+      toast.success('Sucesso', 'Lista atualizada!');
     } catch (error) {
       console.error('Erro ao atualizar:', error);
       toast.error('Erro', 'Não foi possível atualizar a lista');
@@ -480,12 +458,10 @@ const UploadsClient = ({
       setDeletingItemId(item.id);
 
       try {
-        const response = await fetch(`/api/uploads/${item.type}/${item.id}`, {
-          method: 'DELETE',
-        });
+        const response = await deleteUpload(item.type, item.id);
 
         if (response.ok) {
-          const result = await response.json();
+          const result = response.data;
 
           if (result.details) {
             if (item.type === 'composer' && result.details.deletedWorks > 0) {
@@ -527,8 +503,7 @@ const UploadsClient = ({
 
           router.refresh();
         } else {
-          const error = await response.json();
-          throw new Error(error.error || 'Erro ao excluir item');
+          throw new Error(response.error || 'Erro ao excluir item');
         }
       } catch (error) {
         console.error('Erro ao excluir:', error);

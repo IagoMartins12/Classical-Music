@@ -15,7 +15,7 @@ import {
   AD_DIMENSIONS,
 } from '@/app/libs/ads/mediaUtils';
 import Button from '@/app/components/Common/Button';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 
 interface MediaPreviewProps {
   ad: any;
@@ -267,8 +267,8 @@ export default function MediaPreview({
               activeDevice === 'desktop'
                 ? 'border-accent-blue shadow-accent-blue/20'
                 : activeDevice === 'tablet'
-                ? 'border-accent-purple shadow-accent-purple/20'
-                : 'border-accent-green shadow-accent-green/20'
+                  ? 'border-accent-purple shadow-accent-purple/20'
+                  : 'border-accent-green shadow-accent-green/20'
             } shadow-lg
           `}
           >
@@ -346,8 +346,8 @@ export default function MediaPreview({
                 activeDevice === 'desktop'
                   ? 'bg-accent-blue/10 text-accent-blue'
                   : activeDevice === 'tablet'
-                  ? 'bg-accent-purple/10 text-accent-purple'
-                  : 'bg-accent-green/10 text-accent-green'
+                    ? 'bg-accent-purple/10 text-accent-purple'
+                    : 'bg-accent-green/10 text-accent-green'
               }
             `}
             >

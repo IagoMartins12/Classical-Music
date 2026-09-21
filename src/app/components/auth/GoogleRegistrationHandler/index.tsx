@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
 import { useSearchParams } from 'next/navigation';
 import { useOnboardingModal, usePromptModal } from '@/app/stores/authStore';
 import { toast } from 'react-hot-toast';

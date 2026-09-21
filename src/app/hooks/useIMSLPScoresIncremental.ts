@@ -10,6 +10,7 @@ import {
   TabStatistics,
   getTabStatistics,
 } from '@/app/utils/type-utils';
+import { fetchImslpScores } from '@/app/requests/imslp-scores';
 
 export interface UseIMSLPScoresIncrementalResult {
   scores: IMSLPWorkScoresIncremental | null;
@@ -103,7 +104,6 @@ export function useIMSLPScoresIncremental(
       }
       abortControllerRef.current = new AbortController();
 
-      const isInitialLoad = !isLoadMore;
       const limit = customLimit || (isLoadMore ? moreLimit : initialLimit);
 
       if (isLoadMore) {
@@ -120,43 +120,21 @@ export function useIMSLPScoresIncremental(
       const loadType = specificType
         ? `específico (${specificType})`
         : isLoadMore
-        ? 'mais partituras'
-        : 'carregamento inicial';
+          ? 'mais partituras'
+          : 'carregamento inicial';
 
       console.log(
         `🎼 [HOOK-FIXED] ${loadType}: limit=${limit}, specificType=${specificType}`
       );
 
       try {
-        const response = await fetch('/api/imslp-scores', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            imslpUrl,
-            workId: options.workId,
-            priorityScoreId,
-            forceRefresh: isInitialLoad ? forceRefresh : false,
-            pagination: {
-              limit,
-              offset: 0, // API gerencia offset automaticamente
-              loadMore: isLoadMore,
-              specificTypes: specificType ? [specificType] : undefined,
-              targetTabType: specificType, // 🆕 Passar targetTabType corretamente
-            },
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(
-            `Erro HTTP ${response.status}: ${response.statusText}`
-          );
+        // A API lê o IMSLP pela obra e devolve todas as partituras de uma vez;
+        // o link do IMSLP só decide se a busca roda.
+        if (!options.workId) {
+          throw new Error('Obra sem identificador');
         }
 
-        const data = await response.json();
-
-        if (data.error) {
-          throw new Error(data.details || data.error);
-        }
+        const data = await fetchImslpScores(options.workId);
 
         // 🆕 Interpretar a estratégia da API
         const apiStrategy = data._metadata?.strategy || 'unknown';
@@ -397,34 +375,11 @@ export function useIMSLPScoresIncremental(
       clearInterval(progressIntervalRef.current);
     }
 
-    console.log(
-      `📊 [HOOK-FIXED] Iniciando monitoramento de cache para ${workId}`
-    );
-
-    progressIntervalRef.current = setInterval(async () => {
-      try {
-        const response = await fetch(
-          `/api/imslp-scores?type=cache-progress&workId=${workId}`
-        );
-        const data = await response.json();
-
-        if (data.progress !== undefined) {
-          setCacheProgress(data.progress);
-
-          if (data.progress >= 100 || data.completed) {
-            setBackgroundCaching(false);
-            setCacheProgress(100);
-            clearInterval(progressIntervalRef.current!);
-            progressIntervalRef.current = null;
-            console.log(
-              `✅ [HOOK-FIXED] Cache em background concluído para ${workId}`
-            );
-          }
-        }
-      } catch (error) {
-        console.error(`❌ [HOOK-FIXED] Erro ao monitorar progresso:`, error);
-      }
-    }, 3000);
+    // A API guarda todas as partituras já na primeira consulta: não há cache
+    // em segundo plano para acompanhar.
+    setBackgroundCaching(false);
+    setCacheProgress(100);
+    console.log(`✅ [HOOK-FIXED] Cache completo para ${workId}`);
   }, []);
 
   // Effect principal

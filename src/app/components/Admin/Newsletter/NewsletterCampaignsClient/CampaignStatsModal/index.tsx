@@ -78,42 +78,15 @@ export function CampaignStatsModal({
     }
   };
 
-  // 🆕 Carregar dados de engajamento
+  // As rotas de engajamento e de linha do tempo por campanha nunca existiram
+  // (nem no legado nem na API): os gráficos ficam com os dados de exemplo, que
+  // já eram o que a tela mostrava.
   const loadEngagementData = async () => {
-    try {
-      const response = await fetch(
-        `/api/admin/newsletter/campaigns/${campaign.id}/engagement`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setEngagementData(data.engagementData || generateMockEngagementData());
-      } else {
-        // Fallback para dados mock
-        setEngagementData(generateMockEngagementData());
-      }
-    } catch {
-      // Fallback para dados mock
-      setEngagementData(generateMockEngagementData());
-    }
+    setEngagementData(generateMockEngagementData());
   };
 
-  // 🆕 Carregar dados de timeline
   const loadTimelineData = async () => {
-    try {
-      const response = await fetch(
-        `/api/admin/newsletter/campaigns/${campaign.id}/timeline`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setTimelineData(data.timelineData || generateMockTimelineData());
-      } else {
-        // Fallback para dados mock
-        setTimelineData(generateMockTimelineData());
-      }
-    } catch {
-      // Fallback para dados mock
-      setTimelineData(generateMockTimelineData());
-    }
+    setTimelineData(generateMockTimelineData());
   };
 
   // 🆕 Gerar dados mock de engajamento (baseado em padrões reais)
@@ -280,19 +253,19 @@ export function CampaignStatsModal({
                 campaign.status === 'SENT'
                   ? 'text-accent-green bg-accent-green/10'
                   : campaign.status === 'SENDING'
-                  ? 'text-accent-blue bg-accent-blue/10'
-                  : campaign.status === 'SCHEDULED'
-                  ? 'text-accent-purple bg-accent-purple/10'
-                  : 'text-theme-tertiary bg-theme-secondary'
+                    ? 'text-accent-blue bg-accent-blue/10'
+                    : campaign.status === 'SCHEDULED'
+                      ? 'text-accent-purple bg-accent-purple/10'
+                      : 'text-theme-tertiary bg-theme-secondary'
               }`}
             >
               {campaign.status === 'SENT'
                 ? 'Enviada'
                 : campaign.status === 'SENDING'
-                ? 'Enviando'
-                : campaign.status === 'SCHEDULED'
-                ? 'Agendada'
-                : campaign.status}
+                  ? 'Enviando'
+                  : campaign.status === 'SCHEDULED'
+                    ? 'Agendada'
+                    : campaign.status}
             </span>
           </div>
         </div>

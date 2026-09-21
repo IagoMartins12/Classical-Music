@@ -1,8 +1,8 @@
 'use client';
 
 import { useTranslation } from '@/app/context/TranslationContext';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/app/components/SmartImage';
+import Link from '@/app/components/LocalizedLink';
 
 const HeroMainPage = () => {
   const { t } = useTranslation({ sections: ['pages/home'] });

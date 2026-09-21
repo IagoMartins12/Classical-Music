@@ -1,6 +1,7 @@
 // app/decline-teacher-invite/[token]/page.tsx
 'use client';
 
+import { legacyAuth } from '@/app/libs/api/compat';
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
@@ -106,8 +107,7 @@ export default function DeclineTeacherInvitePage() {
         message: t('pages_token_jsx_p_children_0__processando_recusa_convite'),
       });
 
-      const response = await fetch(`/api/invites/teacher/decline/${token}`);
-      const result = await response.json();
+      const result = await legacyAuth.declineTeacherInvite(token);
 
       if (result.success) {
         setState({

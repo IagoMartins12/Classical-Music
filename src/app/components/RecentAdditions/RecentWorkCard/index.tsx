@@ -2,7 +2,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import Link from 'next/link';
+import Link from '@/app/components/LocalizedLink';
 import { FiClock, FiExternalLink, FiCalendar, FiMusic } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 

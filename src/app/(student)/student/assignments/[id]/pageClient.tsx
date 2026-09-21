@@ -34,7 +34,7 @@ import {
   PageContainer,
 } from '../../../../components/animation/AnimatedComponents';
 import { StudentAssignmentDetailsData } from './pageServer';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import { useStudentAssignments } from '@/app/hooks/lessonsSystem/useStudentAssignments';
 import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSection';
@@ -1306,7 +1306,9 @@ export default function StudentAssignmentDetailsPageClient({
                   <div className="flex items-center space-x-4 text-sm text-theme-secondary">
                     <span>{currentVideoSubmission.originalName}</span>
                     <span>
-                      {formatFileSize(currentVideoSubmission.fileSize)}
+                      {currentVideoSubmission.fileSize
+                        ? formatFileSize(currentVideoSubmission.fileSize)
+                        : ''}
                     </span>
                     <span>
                       {t('student_assignment_details_uploaded_at')}{' '}

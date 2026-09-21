@@ -3,11 +3,12 @@
 
 import { useState } from 'react';
 import { Editor } from '@tiptap/react';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import Checkbox from '@/app/components/Common/Checkbox';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
+import { findComposerById } from '@/app/requests/catalog-search';
 
 interface ComposerModalProps {
   editor: Editor;
@@ -37,20 +38,8 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
 
     if (composerId) {
       try {
-        const response = await fetch('/api/composers', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: composerId,
-            fullData: true, // ✅ Solicita dados completos
-          }),
-        });
-
-        if (response.ok) {
-          const composer = await response.json();
-          console.log('✅ Dados do compositor recebidos:', composer);
-          setComposerData(composer);
-        }
+        const composer = await findComposerById(composerId);
+        if (composer) setComposerData(composer);
       } catch (error) {
         console.error('Erro ao buscar compositor:', error);
       }

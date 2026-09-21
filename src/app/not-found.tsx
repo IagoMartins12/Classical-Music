@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
 import Link from 'next/link';
 import {
   FiHome,

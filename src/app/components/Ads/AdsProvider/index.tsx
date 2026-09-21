@@ -3,8 +3,9 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
 import AdModal from '../AdModal';
+import { getAds, trackAdEvent } from '@/app/requests/ads';
 
 interface AdsContextType {
   showModalAd: (ad: any) => void;
@@ -73,15 +74,7 @@ export default function AdsProvider({ children }: AdsProviderProps) {
         timestamp: new Date().toISOString(),
       };
 
-      await fetch('/api/ads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          adId,
-          event,
-          data: trackingData,
-        }),
-      });
+      await trackAdEvent(adId, event, trackingData);
     } catch (error) {
       console.error('Erro ao registrar evento:', error);
     }
@@ -116,10 +109,9 @@ export default function AdsProvider({ children }: AdsProviderProps) {
       if (session?.user?.role === 2) return;
 
       try {
-        const response = await fetch(
-          '/api/ads?placement=MODAL&targetType=GENERAL'
+        const data = await getAds(
+          new URLSearchParams({ placement: 'MODAL', targetType: 'GENERAL' })
         );
-        const data = await response.json();
 
         if (data.success && data.ads.length > 0) {
           const availableAds = data.ads.filter(
@@ -153,9 +145,12 @@ export default function AdsProvider({ children }: AdsProviderProps) {
 
   // Limpar sessão de modals mostrados periodicamente
   useEffect(() => {
-    const interval = setInterval(() => {
-      setModalShown(new Set());
-    }, 30 * 60 * 1000); // Limpar a cada 30 minutos
+    const interval = setInterval(
+      () => {
+        setModalShown(new Set());
+      },
+      30 * 60 * 1000
+    ); // Limpar a cada 30 minutos
 
     return () => clearInterval(interval);
   }, []);

@@ -34,7 +34,7 @@ import {
   PageContainer,
 } from '../../../components/animation/AnimatedComponents';
 import { TeacherAssignmentsData, TeacherAssignment } from './pageServer';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';

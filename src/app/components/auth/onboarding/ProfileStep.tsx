@@ -4,7 +4,9 @@
 import { useOnboardingModal } from '@/app/stores/authStore';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import { User } from 'next-auth';
+// Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
+// objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
+import type { User } from '@/app/hooks/userStore';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 
@@ -12,6 +14,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import LocationSelector, { LocationData } from '../../Common/LocationSelector';
 import ProfileImageUpload from '../../ProfileImageUpload';
 import InternationalPhoneInput from '../../Common/InternationalPhoneInput';
+import { uploadAvatarRequest } from '@/app/requests/account-client';
 
 const ProfileStep: React.FC = () => {
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -38,16 +41,8 @@ const ProfileStep: React.FC = () => {
     try {
       if (!user) return;
 
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('userId', user.id);
-
-      const response = await fetch('/api/upload/profile-image', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const result = await response.json();
+      // A foto vai para `POST /profile/avatar`; a API sabe de quem é pelo token.
+      const result = await uploadAvatarRequest(file);
 
       if (result.success) {
         const imageUpdate = { image: result.imageUrl };

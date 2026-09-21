@@ -3,6 +3,10 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { useAuth } from './useAuth';
+import {
+  sendExitHeartbeat,
+  sendHeartbeat as postHeartbeat,
+} from '@/app/requests/account-client';
 
 interface UseOnlineStatusOptions {
   updateInterval?: number; // Intervalo de atualização em ms (padrão: 5 minutos)
@@ -34,16 +38,7 @@ export function useOnlineStatus(options: UseOnlineStatusOptions = {}) {
     if (!isAuthenticated || !user?.id || !enabled) return;
 
     try {
-      await fetch('/api/user/heartbeat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: user.id,
-          timestamp: new Date().toISOString(),
-        }),
-      });
+      await postHeartbeat();
     } catch (error) {
       console.error('❌ Erro ao enviar heartbeat:', error);
     }
@@ -64,15 +59,9 @@ export function useOnlineStatus(options: UseOnlineStatusOptions = {}) {
       // Marcar que já fez refetch
       hasRefetchedRef.current = true;
 
-      // Invalidar cache e recarregar dados críticos
+      // O cache do Next não é mais limpo daqui: quem avisa que o dado mudou é
+      // a API (`POST /api/revalidate`, com segredo).
       if (typeof window !== 'undefined') {
-        // Revalidar cache do Next.js
-        fetch('/api/revalidate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ path: window.location.pathname }),
-        }).catch(console.error);
-
         // Disparar evento customizado para outros componentes
         window.dispatchEvent(
           new CustomEvent('user-reactivated', {
@@ -147,16 +136,8 @@ export function useOnlineStatus(options: UseOnlineStatusOptions = {}) {
     if (!enabled || !isAuthenticated) return;
 
     const handleBeforeUnload = () => {
-      // Enviar beacon para garantir que chegue mesmo se a página fechar
-      if (navigator.sendBeacon && user?.id) {
-        navigator.sendBeacon(
-          '/api/user/heartbeat',
-          JSON.stringify({
-            userId: user.id,
-            timestamp: new Date().toISOString(),
-            type: 'beforeunload',
-          })
-        );
+      if (user?.id) {
+        sendExitHeartbeat();
       }
     };
 

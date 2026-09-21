@@ -1,7 +1,12 @@
 // app/hooks/useTeacherStudentDetail.ts - Hook ATUALIZADO com edição de relacionamento
 
-import { StudentDetailData } from '@/app/(teacher)/teacher/students/[studentId]/pageServer';
+import type { StudentDetailData } from '@/app/(teacher)/teacher/students/[studentId]/pageServer';
 import { useState, useCallback } from 'react';
+import {
+  PAUSE_NOT_SUPPORTED,
+  updateRelationshipRequest,
+} from '@/app/requests/portal/relationship-actions';
+import { loadTeacherStudentDetail } from '@/app/requests/portal/teacher';
 
 interface UseTeacherStudentDetailState {
   studentData: StudentDetailData;
@@ -92,26 +97,17 @@ export function useTeacherStudentDetail(
     setError(null);
 
     try {
-      const response = await fetch(
-        `/api/teacher/students/${state.studentData.student.id}`,
-        {
-          headers: { 'Content-Type': 'application/json' },
-        }
+      const studentData = await loadTeacherStudentDetail(
+        state.studentData.student.id
       );
 
-      if (!response.ok) {
-        throw new Error('Erro ao carregar dados do aluno');
-      }
-
-      const data = await response.json();
-
-      if (!data.success) {
-        throw new Error('Erro na API de detalhes do aluno');
+      if (!studentData) {
+        throw new Error('Aluno não está mais entre os seus vínculos');
       }
 
       setState((prev) => ({
         ...prev,
-        studentData: data.student,
+        studentData,
       }));
     } catch (error) {
       console.error('Erro ao atualizar dados do aluno:', error);
@@ -128,24 +124,10 @@ export function useTeacherStudentDetail(
       setError(null);
 
       try {
-        const response = await fetch('/api/teacher/students', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            relationshipId: state.studentData.relationship.relationshipId,
-            teacherNotes: notes,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Erro ao atualizar anotações');
-        }
-
-        if (!data.success) {
-          throw new Error('Erro na atualização das anotações');
-        }
+        await updateRelationshipRequest(
+          state.studentData.relationship.relationshipId,
+          { teacherNotes: notes }
+        );
 
         // Update local state
         setState((prev) => ({
@@ -176,43 +158,9 @@ export function useTeacherStudentDetail(
     setLoading('toggleStatus', true);
     setError(null);
 
-    const isPaused = !!state.studentData.relationship.pausedAt;
-
     try {
-      const response = await fetch('/api/teacher/students', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          relationshipId: state.studentData.relationship.relationshipId,
-          pausedAt: isPaused ? null : new Date(),
-          pauseReason: isPaused ? null : 'Pausado pelo professor',
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao atualizar status');
-      }
-
-      if (!data.success) {
-        throw new Error('Erro na atualização do status');
-      }
-
-      // Update local state
-      setState((prev) => ({
-        ...prev,
-        studentData: {
-          ...prev.studentData,
-          relationship: {
-            ...prev.studentData.relationship,
-            pausedAt: isPaused ? null : new Date(),
-            pauseReason: isPaused ? null : 'Pausado pelo professor',
-          },
-        },
-      }));
-
-      return true;
+      // A API não tem pausa de vínculo (fica ativo ou é encerrado).
+      throw new Error(PAUSE_NOT_SUPPORTED);
     } catch (error) {
       console.error('Erro ao atualizar status:', error);
       setError(error instanceof Error ? error.message : 'Erro desconhecido');
@@ -231,26 +179,10 @@ export function useTeacherStudentDetail(
       try {
         console.log('🔄 [HOOK] Atualizando relação:', updates);
 
-        const response = await fetch('/api/teacher/students', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            relationshipId: state.studentData.relationship.relationshipId,
-            ...updates,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(
-            data.error || 'Erro ao atualizar configurações da relação'
-          );
-        }
-
-        if (!data.success) {
-          throw new Error('Erro na atualização das configurações');
-        }
+        await updateRelationshipRequest(
+          state.studentData.relationship.relationshipId,
+          updates
+        );
 
         console.log('✅ [HOOK] Relação atualizada com sucesso');
 

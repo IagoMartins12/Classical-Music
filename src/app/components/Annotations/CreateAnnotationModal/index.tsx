@@ -33,6 +33,7 @@ import Select from '@/app/components/Common/Select';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Input from '../../Common/Inputs';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { searchWorks as findWorks } from '@/app/requests/catalog-search';
 
 interface CreateAnnotationModalProps {
   isOpen: boolean;
@@ -485,13 +486,8 @@ export default function CreateAnnotationModal({
 
     setLoadingWorks(true);
     try {
-      const response = await fetch(
-        `/api/works/search?q=${encodeURIComponent(query)}&limit=10`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setWorkSearchResults(data.works || []);
-      }
+      const data = await findWorks({ q: query, limit: 10 });
+      setWorkSearchResults(data.works);
     } catch (error) {
       console.error('Erro ao buscar obras:', error);
     } finally {

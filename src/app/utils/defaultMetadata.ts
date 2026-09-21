@@ -82,9 +82,20 @@ export function generateDefaultMetadata(
       ? { width: 1200, height: 630 }
       : { width: 400, height: 400 };
 
-  // URL base baseada no idioma
-  const baseUrl =
-    language === 'pt' ? 'https://opusatlas.com.br' : 'https://opusatlas.com';
+  /**
+   * **Um domínio para os dois idiomas.**
+   *
+   * Havia um segundo endereço declarado para o inglês (`opusatlas.com`), que
+   * não existe: o `hreflang` afirmava ao buscador uma versão que ninguém
+   * serve. O idioma é escolhido no próprio site, e o endereço é um só.
+   *
+   * Consequência assumida: o robô chega sem cookie e sem preferência, recebe
+   * português, e **o inglês não é indexado**. É o preço de ter um endereço só
+   * por página. Para o inglês aparecer na busca, ele precisaria de endereço
+   * próprio (`/en/...`, que as rotas sob `app/[lang]/` já sabem servir) —
+   * decisão registrada no ROADMAP.
+   */
+  const baseUrl = 'https://opusatlas.com.br';
 
   return {
     title: title || content.defaultTitle,
@@ -128,12 +139,10 @@ export function generateDefaultMetadata(
       },
     },
 
+    // Sem `languages`: declarar um `hreflang` para endereço que não existe é
+    // pior do que não declarar nenhum.
     alternates: {
       canonical: canonical || baseUrl,
-      languages: {
-        'pt-BR': 'https://opusatlas.com.br',
-        'en-US': 'https://opusatlas.com',
-      },
     },
 
     verification: {
@@ -151,8 +160,7 @@ export function generatePageMetadata(
 ): Metadata {
   const { route, ...config } = pageConfig;
 
-  const baseUrl =
-    language === 'pt' ? 'https://opusatlas.com.br' : 'https://opusatlas.com';
+  const baseUrl = 'https://opusatlas.com.br';
 
   const canonical = route ? `${baseUrl}${route}` : undefined;
 

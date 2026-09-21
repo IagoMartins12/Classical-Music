@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { getMostFavoritedScores } from '@/app/requests/library';
 
 interface MostFavoritedData {
   scoreId: string | null;
@@ -37,18 +38,10 @@ export function useMostFavoritedScore(workId: string) {
       setLoading(true);
 
       try {
-        const response = await fetch(
-          `/api/favorites/scores?type=most-favorited&workId=${workId}`,
-          {
-            method: 'GET',
-            cache: 'no-store', // Evitar cache do browser
-          }
-        );
-
-        console.log('RESPONSE', response);
+        const response = await getMostFavoritedScores(workId);
 
         if (response.ok) {
-          const data = await response.json();
+          const data = response.data;
 
           // Extrair apenas o necessário
           const result: MostFavoritedData = {

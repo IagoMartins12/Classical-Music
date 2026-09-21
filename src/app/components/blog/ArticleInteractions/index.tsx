@@ -1,7 +1,8 @@
 'use client';
+import Link from 'next/link';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
 import {
   FaHeart,
   FaRegHeart,
@@ -13,6 +14,11 @@ import { BiComment } from 'react-icons/bi';
 import { FiShare2 } from 'react-icons/fi';
 import { useToast } from '@/app/hooks/useToast';
 import { useIsMobile } from '@/app/hooks/useMobile';
+import {
+  loadArticleInteractions,
+  setArticleBookmarked,
+  setArticleLiked,
+} from '@/app/requests/blog/interactions';
 
 interface ArticleInteractionsProps {
   articleId: string;
@@ -39,9 +45,7 @@ export function ArticleInteractions({
 
   const fetchInteractions = async () => {
     try {
-      const res = await fetch(`/api/blog/interactions/articles/${articleId}`);
-      if (!res.ok) return;
-      const data = await res.json();
+      const data = await loadArticleInteractions(articleId);
       setIsLiked(data.isLiked);
       setIsSaved(data.isBookmarked);
       setLikesCount(data.likesCount);
@@ -61,24 +65,14 @@ export function ArticleInteractions({
     setLoading(true);
 
     try {
-      const method = isLiked ? 'DELETE' : 'POST';
-      const response = await fetch(
-        `/api/blog/interactions/articles/${articleId}/like/`,
-        {
-          method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ articleId }),
-        }
-      );
+      await setArticleLiked(articleId, !isLiked);
 
-      if (response.ok) {
-        setIsLiked(!isLiked);
-        setLikesCount((prev) => (isLiked ? prev - 1 : prev + 1));
-        if (isLiked) {
-          toast.success('Artigo removido da sua lista.');
-        } else {
-          toast.success('Artigo adicionado da sua lista.');
-        }
+      setIsLiked(!isLiked);
+      setLikesCount((prev) => (isLiked ? prev - 1 : prev + 1));
+      if (isLiked) {
+        toast.success('Artigo removido da sua lista.');
+      } else {
+        toast.success('Artigo adicionado da sua lista.');
       }
     } catch (error) {
       console.error('Erro ao curtir:', error);
@@ -97,24 +91,14 @@ export function ArticleInteractions({
     setLoading(true);
 
     try {
-      const method = isSaved ? 'DELETE' : 'POST';
-      const response = await fetch(
-        `/api/blog/interactions/articles/${articleId}/bookmark/`,
-        {
-          method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ articleId }),
-        }
-      );
+      await setArticleBookmarked(articleId, !isSaved);
 
-      if (response.ok) {
-        setIsSaved(!isSaved);
-        setBookmarksCount((prev) => (isSaved ? prev - 1 : prev + 1));
-        if (isLiked) {
-          toast.success('Artigo removido da sua lista.');
-        } else {
-          toast.success('Artigo adicionado da sua lista.');
-        }
+      setIsSaved(!isSaved);
+      setBookmarksCount((prev) => (isSaved ? prev - 1 : prev + 1));
+      if (isLiked) {
+        toast.success('Artigo removido da sua lista.');
+      } else {
+        toast.success('Artigo adicionado da sua lista.');
       }
     } catch (error) {
       console.error('Erro ao salvar:', error);
@@ -241,9 +225,9 @@ export function ArticleInteractions({
       {!session && (
         <div className="mt-4 pt-4 border-t border-theme-secondary">
           <p className="text-sm text-theme-tertiary text-center">
-            <a href="/login" className="text-brand-primary hover:underline">
+            <Link href="/login" className="text-brand-primary hover:underline">
               Faça login
-            </a>{' '}
+            </Link>{' '}
             para curtir, comentar e salvar artigos
           </p>
         </div>

@@ -4,8 +4,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { signOut } from 'next-auth/react';
-import Image from 'next/image';
+import { signOut } from '@/app/libs/session';
+import Image from '@/app/components/SmartImage';
 import {
   FiMenu,
   FiX,

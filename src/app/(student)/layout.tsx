@@ -3,12 +3,11 @@ import type { Metadata } from 'next';
 import { FavoritesProvider } from '../providers/FavoritesProvider';
 import { Toaster } from 'react-hot-toast';
 import AdsProvider from '../components/Ads/AdsProvider';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
 import StudentNavigation from '../components/TeacherSystem/StudentNavigation';
 import NotificationManager from '../components/Notification/NotificationManager';
 import StudentVerificationRequired from '../components/VerificationsProviders/StudentVerificationRequired';
+import { getServerSession } from '@/app/libs/api/server-session';
 
 export const metadata: Metadata = {
   title: {
@@ -51,7 +50,7 @@ export default async function StudentLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   // Verificar se está logado
   if (!session?.user?.id) {

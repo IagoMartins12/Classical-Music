@@ -2,8 +2,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
 import { PlanType, BillingPeriod } from '@/app/libs/subscriptionConstants';
+import {
+  cancelSubscriptionRequest,
+  createSubscriptionRequest,
+  getCurrentSubscription,
+  reactivateSubscriptionRequest,
+  upgradeSubscriptionRequest,
+  validateCouponRequest,
+} from '@/app/requests/billing';
 
 interface SubscriptionData {
   subscription: any;
@@ -31,14 +39,9 @@ export function useSubscription() {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/subscription/current');
-      const result = await response.json();
+      const result = await getCurrentSubscription();
 
-      if (!response.ok) {
-        throw new Error(result.error || 'Erro ao buscar assinatura');
-      }
-
-      setData(result);
+      setData(result as unknown as SubscriptionData);
     } catch (err: any) {
       setError(err.message);
       console.error('[useSubscription] Error:', err);
@@ -51,24 +54,15 @@ export function useSubscription() {
     billingPeriod: BillingPeriod,
     couponCode?: string
   ) => {
-    const response = await fetch('/api/stripe/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        planType,
-        billingPeriod,
-        couponCode,
-      }),
-    });
+    const result = await createSubscriptionRequest(
+      planType,
+      billingPeriod,
+      couponCode
+    );
 
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.error || 'Erro ao iniciar pagamento');
-    }
-
-    if (result.url) {
-      window.location.href = result.url;
+    // A rota do legado respondia `url`; na API o checkout vem em `payment`.
+    if (result.payment?.checkoutUrl) {
+      window.location.href = result.payment.checkoutUrl;
     }
   };
 
@@ -79,21 +73,16 @@ export function useSubscription() {
     couponCode?: string
   ) => {
     try {
-      const response = await fetch('/api/subscription/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planType, billingPeriod, couponCode }),
-      });
+      const result = await createSubscriptionRequest(
+        planType,
+        billingPeriod,
+        couponCode
+      );
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Erro ao criar assinatura');
-      }
-
-      // Se tem payment initPoint, redirecionar para Mercado Pago
-      if (result.payment?.initPoint) {
-        window.location.href = result.payment.initPoint;
+      // Plano pago: redirecionar para o checkout do Stripe. O legado procurava
+      // `initPoint` (Mercado Pago), que a rota do Stripe nunca devolvia.
+      if (result.payment?.checkoutUrl) {
+        window.location.href = result.payment.checkoutUrl;
         return result;
       }
 
@@ -112,21 +101,15 @@ export function useSubscription() {
     billingPeriod: BillingPeriod
   ) => {
     try {
-      const response = await fetch('/api/subscription/upgrade', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ newPlanType, billingPeriod }),
-      });
+      const result = await upgradeSubscriptionRequest(
+        newPlanType,
+        billingPeriod
+      );
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Erro ao alterar plano');
-      }
-
-      // Se tem payment initPoint (upgrade), redirecionar
-      if (result.payment?.initPoint) {
-        window.location.href = result.payment.initPoint;
+      // Upgrade: redirecionar para o checkout do Stripe (mesmo caso do
+      // `initPoint` acima).
+      if (result.payment?.checkoutUrl) {
+        window.location.href = result.payment.checkoutUrl;
         return result;
       }
 
@@ -142,17 +125,7 @@ export function useSubscription() {
   // Cancel subscription
   const cancelSubscription = async (reason?: string, feedback?: string) => {
     try {
-      const response = await fetch('/api/subscription/cancel', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reason, feedback }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Erro ao cancelar assinatura');
-      }
+      const result = await cancelSubscriptionRequest(reason, feedback);
 
       await fetchSubscription();
       return result;
@@ -165,15 +138,8 @@ export function useSubscription() {
   // Reactivate subscription
   const reactivateSubscription = async () => {
     try {
-      const response = await fetch('/api/subscription/reactivate', {
-        method: 'POST',
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Erro ao reativar assinatura');
-      }
+      // A rota do legado nunca existiu; a API tem.
+      const result = await reactivateSubscriptionRequest();
 
       await fetchSubscription();
       return result;
@@ -190,19 +156,7 @@ export function useSubscription() {
     billingPeriod: BillingPeriod
   ) => {
     try {
-      const response = await fetch('/api/coupon/validate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, planType, billingPeriod }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Cupom inválido');
-      }
-
-      return result;
+      return await validateCouponRequest(code, planType, billingPeriod);
     } catch (err: any) {
       throw err;
     }

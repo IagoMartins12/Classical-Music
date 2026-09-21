@@ -7,6 +7,7 @@ import Link from 'next/link';
 import ViewModeToggle, { ViewMode } from '../../ViewModeToggle';
 import { ArticleCard } from '../ArticleCard';
 import { ArticleCardList } from '../ArticleCardList';
+import { loadMyBookmarks } from '@/app/requests/blog/interactions';
 interface Category {
   id: string;
   name: string;
@@ -68,29 +69,10 @@ export function BookmarksPageClient({ categories }: BookmarksPageClientProps) {
   const fetchBookmarks = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: '12',
-      });
+      const data = await loadMyBookmarks(page, selectedCategory);
 
-      if (selectedCategory !== 'all') {
-        params.append('category', selectedCategory);
-      }
-
-      const res = await fetch(`/api/blog/interactions/my-bookmarks?${params}`);
-      const data = await res.json();
-
-      if (data.success) {
-        // ✅ MAPEAMENTO CORRETO - Transformar array de categorias no formato esperado
-        const mappedArticles = data.bookmarks.map((bookmark: any) => ({
-          ...bookmark.article,
-          categories: bookmark.article.categories.map((cat: any) => ({
-            category: cat,
-          })),
-        }));
-        setArticles(mappedArticles);
-        setPagination(data.pagination);
-      }
+      setArticles(data.articles);
+      setPagination(data.pagination);
     } catch (error) {
       console.error('Erro ao buscar salvos:', error);
     } finally {

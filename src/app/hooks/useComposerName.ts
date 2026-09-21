@@ -1,5 +1,6 @@
 // hooks/useComposerName.ts
 import { useState, useEffect } from 'react';
+import { findComposerById } from '@/app/requests/catalog-search';
 
 interface Composer {
   id: string;
@@ -35,25 +36,11 @@ export function useComposerName(
       // Se não encontrou, busca na API
       setIsLoading(true);
       try {
-        const response = await fetch('/api/composers', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: composerId,
-          }),
-        });
-
-        if (response.ok) {
-          const composer = await response.json();
-          if (composer && composer.name) {
-            setComposerName(composer.name);
-          } else {
-            setComposerName(composerId); // Fallback para o ID se não encontrar
-          }
+        const composer = await findComposerById(composerId);
+        if (composer && composer.name) {
+          setComposerName(composer.name);
         } else {
-          setComposerName(composerId); // Fallback para o ID se houver erro
+          setComposerName(composerId); // Fallback para o ID se não encontrar
         }
       } catch (error) {
         console.error('Erro ao buscar nome do compositor:', error);

@@ -10,7 +10,8 @@ import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
-import Image from 'next/image';
+import { saveEvent } from '@/app/requests/calendar-requests';
+import Image from '@/app/components/SmartImage';
 
 interface CreateEventModalProps {
   isOpen: boolean;
@@ -254,37 +255,21 @@ export default function CreateEventModal({
     setIsSubmitting(true);
 
     try {
-      const submitData = {
-        ...formData,
-        duration: formData.duration ? parseInt(formData.duration) : undefined,
-      };
+      await saveEvent(formData, isEditing ? editingEvent.id : undefined);
 
-      const url = isEditing ? `/api/events/${editingEvent.id}` : '/api/events';
-      const method = isEditing ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submitData),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        toast.success(
-          isEditing
-            ? 'Evento atualizado com sucesso!'
-            : 'Evento criado com sucesso!',
-          { icon: '🎉' }
-        );
-        onSuccess?.();
-        onClose();
-      } else {
-        toast.error(data.error || 'Erro ao salvar evento');
-      }
+      toast.success(
+        isEditing
+          ? 'Evento atualizado com sucesso!'
+          : 'Evento criado com sucesso!',
+        { icon: '🎉' }
+      );
+      onSuccess?.();
+      onClose();
     } catch (error) {
       console.error('Erro ao salvar evento:', error);
-      toast.error('Erro ao salvar evento');
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao salvar evento'
+      );
     } finally {
       setIsSubmitting(false);
     }

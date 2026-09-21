@@ -1,7 +1,9 @@
 // app/hooks/lessonsSystem/useStudentAssignments.ts - Hook para gerenciar tarefas do aluno
 
-import { StudentAssignmentsData } from '@/app/(student)/student/assignments/pageServer';
+import type { StudentAssignmentsData } from '@/app/(student)/student/assignments/pageServer';
 import { useState, useCallback } from 'react';
+import { applyStudentAssignmentUpdate } from '@/app/requests/portal/assignment-actions';
+import { loadStudentAssignments } from '@/app/requests/portal/student';
 
 interface UseStudentAssignmentsState {
   assignments: StudentAssignmentsData['assignments'];
@@ -104,16 +106,7 @@ export function useStudentAssignments(
     setError(null);
 
     try {
-      const response = await fetch('/api/assignments?limit=50&offset=0');
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || `Erro ${response.status}`);
-      }
-
-      if (!data.success) {
-        throw new Error(data.error || 'Erro ao carregar assignments');
-      }
+      const data = await loadStudentAssignments({ limit: 50, offset: 0 });
 
       setState((prev) => ({
         ...prev,
@@ -140,18 +133,10 @@ export function useStudentAssignments(
 
     try {
       const nextOffset = state.pagination.offset + state.pagination.limit;
-      const response = await fetch(
-        `/api/assignments?limit=${state.pagination.limit}&offset=${nextOffset}`
-      );
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || `Erro ${response.status}`);
-      }
-
-      if (!data.success) {
-        throw new Error(data.error || 'Erro ao carregar mais assignments');
-      }
+      const data = await loadStudentAssignments({
+        limit: state.pagination.limit,
+        offset: nextOffset,
+      });
 
       setState((prev) => ({
         ...prev,
@@ -183,33 +168,17 @@ export function useStudentAssignments(
           }
         );
 
-        const response = await fetch('/api/assignments', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            assignmentId,
-            ...updates,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || `Erro ${response.status}`);
-        }
-
-        if (!data.success) {
-          throw new Error(data.error || 'Erro ao atualizar assignment');
-        }
+        const updated = await applyStudentAssignmentUpdate(
+          assignmentId,
+          updates
+        );
 
         // Update local state
         setState((prev) => ({
           ...prev,
           assignments: prev.assignments.map((assignment) =>
             assignment.id === assignmentId
-              ? { ...assignment, ...data.assignment }
+              ? { ...assignment, ...updated }
               : assignment
           ),
         }));
@@ -250,13 +219,13 @@ export function useStudentAssignments(
           ? progress >= 100
             ? 'COMPLETED'
             : progress > 0
-            ? 'IN_PROGRESS'
-            : 'PENDING'
+              ? 'IN_PROGRESS'
+              : 'PENDING'
           : undefined,
         // Se completou 100%, marcar como concluído
         isCompleted: progress ?? 0 >= 100,
         completedAt:
-          progress ?? 0 >= 100 ? new Date().toISOString() : undefined,
+          (progress ?? 0 >= 100) ? new Date().toISOString() : undefined,
       });
     },
     [updateAssignment]
@@ -317,8 +286,8 @@ export function useStudentAssignments(
           progress >= 100
             ? 'COMPLETED'
             : progress > 0
-            ? 'IN_PROGRESS'
-            : 'PENDING',
+              ? 'IN_PROGRESS'
+              : 'PENDING',
       };
 
       if (actualTime !== undefined) {

@@ -41,7 +41,8 @@ import {
   convertDatabaseToLocationData,
   convertLocationDataToDatabase,
 } from '@/app/utils/locationUtils';
-import { TeacherStatus } from '@prisma/client';
+import { TeacherStatus } from '@/app/types/portal';
+import { saveTeacherProfile } from '@/app/requests/portal/profile-actions';
 import Input from '@/app/components/Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
 
@@ -280,40 +281,23 @@ export default function TeacherProfilePageClient({
         country: locationForDatabase.country,
       };
 
-      const response = await fetch('/api/teacher/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userData,
+      const profile = await saveTeacherProfile({ account: userData });
+
+      // Atualizar estado imediatamente sem reload
+      setData(profile);
+      setEditingSection(null);
+      showSuccess(t('data_saved_success'));
+
+      // Atualizar forms com os novos dados
+      setPersonalForm((prev) => ({
+        ...prev,
+        phone: profile.user.phone || '',
+        location: convertDatabaseToLocationData({
+          country: profile.user.country,
+          state: profile.user.state,
+          city: profile.user.city,
         }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Erro ao salvar dados pessoais');
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        // Atualizar estado imediatamente sem reload
-        setData(result.profile);
-        setEditingSection(null);
-        showSuccess(t('data_saved_success'));
-
-        // Atualizar forms com os novos dados
-        setPersonalForm((prev) => ({
-          ...prev,
-          phone: result.profile.user.phone || '',
-          location: convertDatabaseToLocationData({
-            country: result.profile.user.country,
-            state: result.profile.user.state,
-            city: result.profile.user.city,
-          }),
-        }));
-      }
+      }));
     } catch (error) {
       console.error('❌ Erro ao salvar dados pessoais:', error);
       showError(
@@ -330,41 +314,22 @@ export default function TeacherProfilePageClient({
     setError('');
 
     try {
-      const response = await fetch('/api/teacher/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          teacherData: professionalForm,
-        }),
+      const profile = await saveTeacherProfile({ teacher: professionalForm });
+
+      // Atualizar estado imediatamente
+      setData(profile);
+      setEditingSection(null);
+      showSuccess(t('professional_data_saved'));
+
+      // Sincronizar form com dados atualizados
+      setProfessionalForm({
+        bio: profile.bio || '',
+        experience: profile.experience || '',
+        education: profile.education || '',
+        achievements: profile.achievements || '',
+        website: profile.website || '',
+        socialMedia: profile.socialMedia || {},
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.error || 'Erro ao salvar dados profissionais'
-        );
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        // Atualizar estado imediatamente
-        setData(result.profile);
-        setEditingSection(null);
-        showSuccess(t('professional_data_saved'));
-
-        // Sincronizar form com dados atualizados
-        setProfessionalForm({
-          bio: result.profile.bio || '',
-          experience: result.profile.experience || '',
-          education: result.profile.education || '',
-          achievements: result.profile.achievements || '',
-          website: result.profile.website || '',
-          socialMedia: result.profile.socialMedia || {},
-        });
-      }
     } catch (error) {
       console.error('❌ Erro ao salvar dados profissionais:', error);
       showError(
@@ -383,41 +348,24 @@ export default function TeacherProfilePageClient({
     setError('');
 
     try {
-      const response = await fetch('/api/teacher/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          teacherData: teachingForm,
-        }),
+      const profile = await saveTeacherProfile({ teacher: teachingForm });
+
+      // Atualizar estado imediatamente
+      setData(profile);
+      setEditingSection(null);
+      showSuccess(t('teaching_settings_saved'));
+
+      // Sincronizar form com dados atualizados
+      setTeachingForm({
+        instruments: profile.instruments || [],
+        specialties: profile.specialties || [],
+        teachingMethod: profile.teachingMethod || '',
+        ageGroups: profile.ageGroups || [],
+        skillLevels: profile.skillLevels || [],
+        defaultLessonDuration: profile.defaultLessonDuration || 60,
+        maxStudentsPerWeek: profile.maxStudentsPerWeek || 50,
+        timezone: profile.timezone || 'America/Sao_Paulo',
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Erro ao salvar dados de ensino');
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        // Atualizar estado imediatamente
-        setData(result.profile);
-        setEditingSection(null);
-        showSuccess(t('teaching_settings_saved'));
-
-        // Sincronizar form com dados atualizados
-        setTeachingForm({
-          instruments: result.profile.instruments || [],
-          specialties: result.profile.specialties || [],
-          teachingMethod: result.profile.teachingMethod || '',
-          ageGroups: result.profile.ageGroups || [],
-          skillLevels: result.profile.skillLevels || [],
-          defaultLessonDuration: result.profile.defaultLessonDuration || 60,
-          maxStudentsPerWeek: result.profile.maxStudentsPerWeek || 50,
-          timezone: result.profile.timezone || 'America/Sao_Paulo',
-        });
-      }
     } catch (error) {
       console.error('❌ Erro ao salvar dados de ensino:', error);
       showError(
@@ -436,36 +384,19 @@ export default function TeacherProfilePageClient({
     setError('');
 
     try {
-      const response = await fetch('/api/teacher/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          teacherData: publicForm,
-        }),
+      const profile = await saveTeacherProfile({ teacher: publicForm });
+
+      // Atualizar estado imediatamente
+      setData(profile);
+      setEditingSection(null);
+      showSuccess(t('public_profile_updated'));
+
+      // Sincronizar form com dados atualizados
+      setPublicForm({
+        isPublicProfile: profile.isPublicProfile || false,
+        publicBio: profile.publicBio || '',
+        highlightedWorks: profile.highlightedWorks || [],
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Erro ao salvar perfil público');
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        // Atualizar estado imediatamente
-        setData(result.profile);
-        setEditingSection(null);
-        showSuccess(t('public_profile_updated'));
-
-        // Sincronizar form com dados atualizados
-        setPublicForm({
-          isPublicProfile: result.profile.isPublicProfile || false,
-          publicBio: result.profile.publicBio || '',
-          highlightedWorks: result.profile.highlightedWorks || [],
-        });
-      }
     } catch (error) {
       console.error('❌ Erro ao salvar perfil público:', error);
       showError(

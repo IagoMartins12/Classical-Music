@@ -40,7 +40,7 @@ import {
 import { formatNumber } from '../../Utils';
 import { toast } from 'react-hot-toast';
 import { useAdminScores } from '@/app/hooks/admin/useAdminScores';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import LoadingAdminState from '../../Common/LoadingState';
 import Input from '@/app/components/Common/Inputs';
 
@@ -120,21 +120,12 @@ export default function ScoresManagement() {
     setRefreshing(false);
   };
 
-  // 🆕 Função para forçar recálculo das estatísticas
+  // A API conta as métricas do catálogo na hora: recalcular é só buscar de novo.
   const handleRecalculateStats = async () => {
     setRefreshing(true);
     try {
-      const response = await fetch(
-        '/api/admin/scores?action=recalculate-stats'
-      );
-      const data = await response.json();
-
-      if (data.success) {
-        toast.success('Estatísticas recalculadas com sucesso!');
-        await refreshStats();
-      } else {
-        toast.error('Erro ao recalcular estatísticas');
-      }
+      await refreshStats();
+      toast.success('Estatísticas recalculadas com sucesso!');
     } catch (error) {
       console.error('Erro ao recalcular:', error);
       toast.error('Erro ao recalcular estatísticas');

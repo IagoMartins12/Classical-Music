@@ -1,6 +1,6 @@
 // app/blog/page.tsx
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { BsClock } from 'react-icons/bs';
 import { BiTrendingUp } from 'react-icons/bi';
 import { HeroCarousel } from '@/app/components/blog/HeroCarousel';

@@ -24,6 +24,7 @@ import {
   LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
+import VirtualList from '@/app/components/Admin/Common/VirtualList';
 import Select from '@/app/components/Common/Select';
 import { useAdminActivity } from '@/app/hooks/admin/useAdminActivity';
 import { formatNumber } from '../../Utils';
@@ -49,6 +50,9 @@ interface ActivityItem {
   metadata?: any;
   status?: 'success' | 'warning' | 'error';
 }
+
+/** Altura aproximada da linha de atividade; a real é medida ao montar. */
+const ACTIVITY_ROW_HEIGHT = 120;
 
 export default function LogsAudit() {
   const {
@@ -314,79 +318,90 @@ export default function LogsAudit() {
               </div>
             ) : (
               <div className="space-y-3">
-                {activities.map((activity: ActivityItem) => {
-                  const ActivityIcon = getActivityIcon(activity.type);
+                <VirtualList
+                  items={activities}
+                  itemKey={(activity: ActivityItem) => activity.id}
+                  estimateHeight={ACTIVITY_ROW_HEIGHT}
+                  gap={12}
+                  className="space-y-3"
+                >
+                  {(activity: ActivityItem) => {
+                    const ActivityIcon = getActivityIcon(activity.type);
 
-                  return (
-                    <div
-                      key={activity.id}
-                      className="p-4 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors"
-                    >
-                      <div className="flex items-start space-x-4">
-                        <div
-                          className={`w-10 h-10 rounded-xl flex items-center justify-center bg-theme-primary ${getActivityColor(
-                            activity.type
-                          )} flex-shrink-0`}
-                        >
-                          <ActivityIcon className="w-5 h-5" />
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-3 mb-2">
-                            <span className="text-xs text-theme-tertiary flex items-center space-x-1">
-                              <FiClock className="w-3 h-3" />
-                              <span>
-                                {getRelativeTime(activity.timestamp.toString())}
-                              </span>
-                            </span>
-                            {activity.status && (
-                              <span
-                                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                                  activity.status
-                                )}`}
-                              >
-                                {activity.status === 'success'
-                                  ? 'Sucesso'
-                                  : activity.status === 'warning'
-                                    ? 'Aviso'
-                                    : 'Erro'}
-                              </span>
-                            )}
+                    return (
+                      <div
+                        key={activity.id}
+                        className="p-4 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors"
+                      >
+                        <div className="flex items-start space-x-4">
+                          <div
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center bg-theme-primary ${getActivityColor(
+                              activity.type
+                            )} flex-shrink-0`}
+                          >
+                            <ActivityIcon className="w-5 h-5" />
                           </div>
 
-                          <p className="text-theme-primary font-medium mb-2">
-                            <span className="font-bold">
-                              {activity.user.name}
-                            </span>{' '}
-                            {activity.action}
-                            {activity.target && (
-                              <span className="inline-flex items-center space-x-1 ml-1">
-                                <span className="font-semibold truncate">
-                                  {activity.target.name}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-3 mb-2">
+                              <span className="text-xs text-theme-tertiary flex items-center space-x-1">
+                                <FiClock className="w-3 h-3" />
+                                <span>
+                                  {getRelativeTime(
+                                    activity.timestamp.toString()
+                                  )}
                                 </span>
                               </span>
-                            )}
-                          </p>
-
-                          {/* 🔧 CORREÇÃO DO ERRO TYPESCRIPT */}
-                          {activity.metadata && (
-                            <div className="text-xs text-theme-tertiary">
-                              {Object.entries(activity.metadata)
-                                .filter(
-                                  ([_, value]) => value != null && value !== ''
-                                ) // Filtrar valores inválidos
-                                .map(([key, value]) => (
-                                  <span key={key} className="mr-2">
-                                    {key}: {String(value)}
-                                  </span>
-                                ))}
+                              {activity.status && (
+                                <span
+                                  className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                                    activity.status
+                                  )}`}
+                                >
+                                  {activity.status === 'success'
+                                    ? 'Sucesso'
+                                    : activity.status === 'warning'
+                                      ? 'Aviso'
+                                      : 'Erro'}
+                                </span>
+                              )}
                             </div>
-                          )}
+
+                            <p className="text-theme-primary font-medium mb-2">
+                              <span className="font-bold">
+                                {activity.user.name}
+                              </span>{' '}
+                              {activity.action}
+                              {activity.target && (
+                                <span className="inline-flex items-center space-x-1 ml-1">
+                                  <span className="font-semibold truncate">
+                                    {activity.target.name}
+                                  </span>
+                                </span>
+                              )}
+                            </p>
+
+                            {/* 🔧 CORREÇÃO DO ERRO TYPESCRIPT */}
+                            {activity.metadata && (
+                              <div className="text-xs text-theme-tertiary">
+                                {Object.entries(activity.metadata)
+                                  .filter(
+                                    ([_, value]) =>
+                                      value != null && value !== ''
+                                  ) // Filtrar valores inválidos
+                                  .map(([key, value]) => (
+                                    <span key={key} className="mr-2">
+                                      {key}: {String(value)}
+                                    </span>
+                                  ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  }}
+                </VirtualList>
 
                 {/* Load More */}
                 {activityPagination.hasMore && (

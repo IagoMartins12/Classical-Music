@@ -183,29 +183,17 @@ export default function NewsletterSubscribersClient() {
   };
 
   // 🆕 HANDLER PARA ENVIAR EMAIL
+  // O envio individual nunca existiu (a rota do legado não foi criada) e a API
+  // não o tem: o e-mail avulso sai por uma campanha com esse assinante.
   const handleSendIndividualEmail = async (
-    subscriberId: string,
-    emailData: any
+    _subscriberId: string,
+    _emailData: any
   ) => {
-    try {
-      // Implementar chamada para API de envio de email individual
-      const response = await fetch('/api/admin/newsletter/send-individual', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          subscriberId,
-          ...emailData,
-        }),
-      });
-
-      if (!response.ok) throw new Error('Erro ao enviar email');
-
-      alert('Email enviado com sucesso!');
-    } catch (error: any) {
-      console.error('Erro ao enviar email:', error);
-      alert('Erro ao enviar email. Tente novamente.');
-      throw error;
-    }
+    const error = new Error('Envio individual não existe na API');
+    alert(
+      'O envio de e-mail individual não está disponível. Crie uma campanha para enviar a este assinante.'
+    );
+    throw error;
   };
 
   const getEngagementLevel = (subscriber: any) => {

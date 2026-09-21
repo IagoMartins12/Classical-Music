@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useMemo, useCallback } from 'react';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import {
   FiUser,

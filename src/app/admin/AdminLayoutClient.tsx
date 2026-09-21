@@ -2,7 +2,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useSession } from '@/app/libs/session';
 import AdminHeader from '../components/Admin/AdminHeader';
 import AdminSidebar from '../components/Admin/AdminSidebar';
 
@@ -15,6 +16,21 @@ export default function AdminLayoutClient({
 }: AdminLayoutClientProps) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  // Quem confere o papel é a API: a sessão vem de `GET /profile`, a primeira
+  // chamada da página (o servidor do Next não olha mais a sessão do painel).
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.replace(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
+      return;
+    }
+
+    if (status === 'authenticated' && session?.user?.role !== 2) {
+      router.replace('/access-denied');
+    }
+  }, [status, session, router, pathname]);
 
   // Fechar sidebar em mobile quando a rota mudar
   useEffect(() => {

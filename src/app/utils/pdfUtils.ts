@@ -1,4 +1,6 @@
 // app/utils/pdfUtils.ts - VERSÃO ATUALIZADA PARA ACEITAR IMAGENS
+import { uploadScoreThumbnail } from '@/app/requests/uploads-client';
+
 interface FileInfo {
   isValid: boolean;
   fileSize?: string;
@@ -227,7 +229,8 @@ export async function validateAndExtractFileInfo(
  */
 export async function generateAndUploadTempThumbnail(
   file: File,
-  userId: string
+  // Ia para a rota do legado; a API sabe quem enviou pelo token.
+  _userId: string
 ): Promise<ThumbnailResult> {
   try {
     console.log('🖼️ Gerando thumbnail provisória para:', file.name);
@@ -274,30 +277,14 @@ export async function generateAndUploadTempThumbnail(
     const tempId = generateTempId();
     const thumbnailName = `temp-${tempId}-thumb.png`;
 
-    // Upload para pasta temporária do usuário
-    const formData = new FormData();
-    formData.append('file', blob, thumbnailName);
-    formData.append('type', 'score-temp');
-    formData.append('userId', userId);
-    formData.append('tempId', tempId);
-
-    const uploadResponse = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!uploadResponse.ok) {
-      throw new Error('Erro no upload do thumbnail provisório');
-    }
-
-    const uploadData = await uploadResponse.json();
-
-    console.log('✅ Thumbnail provisória gerada:', uploadData.url);
+    // Upload para o armazenamento da API; a partitura adota a miniatura ao ser
+    // criada (o legado gravava numa pasta temporária do servidor).
+    const uploadData = await uploadScoreThumbnail(blob, thumbnailName);
 
     return {
       success: true,
       thumbnailUrl: uploadData.url,
-      tempThumbnailPath: uploadData.tempPath,
+      tempThumbnailPath: undefined,
     };
   } catch (error) {
     console.error('❌ Erro ao gerar thumbnail provisória:', error);
@@ -307,90 +294,17 @@ export async function generateAndUploadTempThumbnail(
     };
   }
 }
-
 /**
- * Gera thumbnail DEFINITIVA para pasta final da obra
+ * `generateAndUploadFinalThumbnail` foi removida aqui.
+ *
+ * Ela era a última coisa no front a chamar `POST /api/upload`, a rota do
+ * legado que gravava arquivo no disco do servidor do Next — o que, com mais
+ * de uma réplica, guarda o arquivo numa máquina e o procura na outra. Não
+ * tinha nenhum chamador: quem sobe miniatura de partitura é
+ * `uploadScoreThumbnail` (`requests/uploads-client.ts`), que manda para o
+ * armazenamento pela API.
  */
-export async function generateAndUploadFinalThumbnail(
-  file: File,
-  workTitle: string,
-  scoreId?: string
-): Promise<
-  ThumbnailResult & { scoreId: string; scoreDir: string; thumbDir: string }
-> {
-  try {
-    console.log('🖼️ Gerando thumbnail definitiva para:', workTitle);
 
-    let thumbnailDataUrl: string | null = null;
-
-    if (file.type === 'application/pdf') {
-      thumbnailDataUrl = await generatePDFThumbnail(file);
-    } else if (file.type.startsWith('image/')) {
-      thumbnailDataUrl = await generateImageThumbnail(file);
-    }
-
-    if (!thumbnailDataUrl) {
-      return {
-        success: false,
-        error: 'Não foi possível gerar thumbnail',
-        scoreId: scoreId || '',
-        scoreDir: '',
-        thumbDir: '',
-      };
-    }
-
-    // Converter DataURL para Blob
-    const response = await fetch(thumbnailDataUrl);
-    const blob = await response.blob();
-
-    // Gerar estrutura de pastas com ID único
-    const structure = generateScoreDirectory(workTitle, scoreId);
-    const cleanTitle = sanitizeWorkTitle(workTitle);
-    const thumbnailName = `${cleanTitle}.png`;
-
-    // Upload para pasta definitiva
-    const formData = new FormData();
-    formData.append('file', blob, thumbnailName);
-    formData.append('type', 'score-final');
-    formData.append('scoreDir', structure.scoreDir);
-    formData.append('thumbDir', structure.thumbDir);
-    formData.append('isThumb', 'true');
-
-    const uploadResponse = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!uploadResponse.ok) {
-      throw new Error('Erro no upload do thumbnail definitivo');
-    }
-
-    const uploadData = await uploadResponse.json();
-
-    console.log('✅ Thumbnail definitiva gerada:', uploadData.url);
-
-    return {
-      success: true,
-      thumbnailUrl: uploadData.url,
-      scoreId: structure.scoreId,
-      scoreDir: structure.scoreDir,
-      thumbDir: structure.thumbDir,
-    };
-  } catch (error) {
-    console.error('❌ Erro ao gerar thumbnail definitiva:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Erro desconhecido',
-      scoreId: scoreId || '',
-      scoreDir: '',
-      thumbDir: '',
-    };
-  }
-}
-
-/**
- * 🆕 Gera thumbnail a partir de uma imagem
- */
 export async function generateImageThumbnail(
   file: File
 ): Promise<string | null> {

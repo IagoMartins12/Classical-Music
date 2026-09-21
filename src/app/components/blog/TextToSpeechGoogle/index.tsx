@@ -10,6 +10,7 @@ import {
   FiDownload,
   FiLoader,
 } from 'react-icons/fi';
+import { generateArticleAudio } from '@/app/requests/blog/interactions';
 
 interface TextToSpeechGoogleProps {
   content: any; // TipTap JSON
@@ -145,28 +146,20 @@ export function TextToSpeechGoogle({
         return;
       }
 
-      const response = await fetch('/api/blog/tts/google', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: fullText,
-          articleId,
+      // A API lê o texto do próprio artigo; o daqui só decide se há o que ler.
+      setAudioUrl(
+        await generateArticleAudio(articleId, {
           voiceName: 'pt-BR-Wavenet-B',
           speakingRate: 1.0,
-          regenerate: false,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setAudioUrl(data.audioUrl);
-      } else {
-        alert('Erro ao gerar áudio: ' + data.error);
-      }
+        })
+      );
     } catch (error) {
       console.error('Erro ao gerar áudio:', error);
-      alert('Erro ao gerar áudio. Tente novamente.');
+      alert(
+        error instanceof Error
+          ? `Erro ao gerar áudio: ${error.message}`
+          : 'Erro ao gerar áudio. Tente novamente.'
+      );
     } finally {
       setIsGenerating(false);
     }

@@ -1,6 +1,14 @@
 // app/hooks/admin/useBlogMediaGallery.ts
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import {
+  adminKeys,
+  errorMessage,
+  useAdminFetch,
+  useAdminQuery,
+  useInvalidateAdmin,
+} from './query';
 import { useToast } from '@/app/hooks/useToast';
+import { apiFetch } from '@/app/libs/api/client';
 
 export type MediaCategory =
   | 'all'
@@ -62,56 +70,180 @@ export interface MediaGalleryResult {
   scanDuration: string;
 }
 
+const GALLERY_CATEGORIES = [
+  'all',
+  'cover',
+  'content',
+  'audio',
+  'temp',
+  'gallery',
+  'category',
+  'legacy',
+];
+
+interface ApiGalleryFile {
+  id: string;
+  url: string;
+  source: 'cloud' | 'legacy-disk';
+  type: BlogMediaFile['type'];
+  category: string;
+  size: number;
+  formattedSize: string;
+  width: number | null;
+  height: number | null;
+  createdAt: string | null;
+  isTemporary: boolean;
+  deletable: boolean;
+  isUsed: boolean;
+  usedIn: BlogMediaFile['usedIn'];
+  usageCount: number;
+}
+
+const formatSize = (bytes: number) => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+};
+
+function toMediaFile(file: ApiGalleryFile): BlogMediaFile {
+  return {
+    id: file.id,
+    articleId: file.usedIn[0]?.articleId,
+    articleTitle: file.usedIn[0]?.articleTitle,
+    type: file.type,
+    url: file.url,
+    source: file.source === 'cloud' ? 'cloudinary' : 'local',
+    category: file.category as MediaCategory,
+    size: file.size,
+    formattedSize: file.formattedSize,
+    width: file.width ?? undefined,
+    height: file.height ?? undefined,
+    createdAt: file.createdAt ?? '',
+    folder: '',
+    isTemporary: file.isTemporary,
+    inGallery: file.category === 'gallery',
+    isUsed: file.isUsed,
+    usedIn: file.usedIn,
+    usageCount: file.usageCount,
+  };
+}
+
+/** As contas da tela saem da lista; a API devolve só totais simples. */
+function galleryStats(files: BlogMediaFile[]): MediaGalleryStats {
+  const byCategory = Object.fromEntries(
+    ['all', 'cover', 'content', 'audio', 'temp', 'gallery'].map((key) => [
+      key,
+      { count: 0, size: 0 },
+    ])
+  ) as MediaGalleryStats['byCategory'];
+  const byType: MediaGalleryStats['byType'] = {};
+
+  for (const file of files) {
+    const category = (byCategory[file.category] ??= { count: 0, size: 0 });
+    category.count += 1;
+    category.size += file.size;
+    byCategory.all.count += 1;
+    byCategory.all.size += file.size;
+    const type = (byType[file.type] ??= { count: 0, size: 0 });
+    type.count += 1;
+    type.size += file.size;
+  }
+
+  const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+  const temporary = files.filter((file) => file.isTemporary);
+
+  return {
+    totalFiles: files.length,
+    totalSize,
+    formattedTotalSize: formatSize(totalSize),
+    byCategory,
+    byType,
+    temporaryFiles: temporary.length,
+    temporarySize: temporary.reduce((sum, file) => sum + file.size, 0),
+    usedFiles: files.filter((file) => file.isUsed).length,
+    unusedFiles: files.filter((file) => !file.isUsed).length,
+    multiUseFiles: files.filter((file) => file.usageCount > 1).length,
+  };
+}
+
+export interface GalleryOptions {
+  category?: MediaCategory;
+  source?: MediaSource;
+  includeTemp?: boolean;
+}
+
+const galleryKey = (options: GalleryOptions) =>
+  adminKeys.list('blog-media', options);
+
+/** A galeria da API (`GET /blog/admin/media`); origem e temporários se filtram aqui. */
+async function fetchGallery(
+  options: GalleryOptions
+): Promise<MediaGalleryResult> {
+  const startedAt = Date.now();
+  const data = await apiFetch<{ data: { files: ApiGalleryFile[] } }>(
+    '/blog/admin/media',
+    {
+      query: {
+        category:
+          options.category && GALLERY_CATEGORIES.includes(options.category)
+            ? options.category
+            : undefined,
+      },
+      cache: 'no-store',
+    }
+  );
+
+  const files = data.data.files
+    .map(toMediaFile)
+    .filter(
+      (file) =>
+        (!options.source || file.source === options.source) &&
+        (options.includeTemp !== false || !file.isTemporary)
+    );
+
+  return {
+    files,
+    stats: galleryStats(files),
+    scanDuration: `${Date.now() - startedAt}ms`,
+  };
+}
+
+/**
+ * Galeria de mídia do blog no painel. O resultado é estado de servidor
+ * (TanStack Query, chave com os filtros); `loadGallery` continua devolvendo o
+ * que buscou, porque a tela usa o retorno — a busca passa pelo cache.
+ */
 export function useBlogMediaGallery() {
   const toast = useToast();
-  const [galleryResult, setGalleryResult] = useState<MediaGalleryResult | null>(
-    null
-  );
-  const [isLoading, setIsLoading] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [options, setOptions] = useState<GalleryOptions>({});
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const fetchAdmin = useAdminFetch();
+  const invalidate = useInvalidateAdmin();
 
-  // Carregar galeria
+  const gallery = useAdminQuery(galleryKey(options), () =>
+    fetchGallery(options)
+  );
+
   const loadGallery = useCallback(
-    async (options?: {
-      category?: MediaCategory;
-      source?: MediaSource;
-      includeTemp?: boolean;
-    }) => {
-      setIsLoading(true);
-      setError(null);
+    async (next: GalleryOptions = {}) => {
+      setOptions(next);
+      setActionError(null);
 
       try {
-        const params = new URLSearchParams({
-          ...(options?.category && { category: options.category }),
-          ...(options?.source && { source: options.source }),
-          includeTemp: options?.includeTemp !== false ? 'true' : 'false',
-        });
-
-        const response = await fetch(`/api/admin/blog/media/gallery?${params}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Erro ao carregar galeria');
-        }
-
-        setGalleryResult(data.data);
-        return data.data;
-      } catch (err) {
-        const message =
-          err instanceof Error ? err.message : 'Erro ao carregar galeria';
-        setError(message);
+        return await fetchAdmin(galleryKey(next), () => fetchGallery(next));
+      } catch (error) {
+        const message = errorMessage(error);
+        setActionError(message);
         toast.error('Erro', message);
         return null;
-      } finally {
-        setIsLoading(false);
       }
     },
-    [toast]
+    [fetchAdmin, toast]
   );
 
-  // Deletar arquivos selecionados
+  // Apagar os selecionados. A API só apaga arquivo registrado e fora de uso.
   const deleteSelectedFiles = useCallback(async () => {
     if (selectedFiles.length === 0) {
       toast.error('Erro', 'Nenhum arquivo selecionado');
@@ -128,81 +260,76 @@ export function useBlogMediaGallery() {
     setIsDeleting(true);
 
     try {
-      const response = await fetch('/api/admin/blog/media/gallery', {
+      const data = await apiFetch<any>('/blog/admin/media', {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fileUrls: selectedFiles }),
+        body: { fileUrls: selectedFiles },
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao deletar arquivos');
-      }
+      const payload = data?.data ?? data;
+      const removed = Array.isArray(payload?.removed)
+        ? payload.removed.length
+        : Number(payload?.removed ?? 0);
 
       toast.success(
         'Arquivos deletados!',
-        `${data.data.removed.length} arquivo(s) removido(s) com sucesso.`
+        `${removed} arquivo(s) removido(s) com sucesso.`
       );
 
-      // Limpar seleção
       setSelectedFiles([]);
-
-      // Recarregar galeria
-      await loadGallery();
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : 'Erro ao deletar arquivos';
+      await invalidate('blog-media');
+    } catch (error) {
+      const message = errorMessage(error);
+      setActionError(message);
       toast.error('Erro', message);
     } finally {
       setIsDeleting(false);
     }
-  }, [selectedFiles, toast, loadGallery]);
+  }, [selectedFiles, toast, invalidate]);
 
   // Toggle seleção de arquivo
   const toggleFileSelection = useCallback((url: string) => {
-    setSelectedFiles((prev) =>
-      prev.includes(url) ? prev.filter((f) => f !== url) : [...prev, url]
+    setSelectedFiles((previous) =>
+      previous.includes(url)
+        ? previous.filter((file) => file !== url)
+        : [...previous, url]
     );
   }, []);
 
   // Selecionar todos
   const selectAll = useCallback(() => {
-    if (galleryResult) {
-      setSelectedFiles(galleryResult.files.map((f) => f.url));
+    if (gallery.data) {
+      setSelectedFiles(gallery.data.files.map((file) => file.url));
     }
-  }, [galleryResult]);
+  }, [gallery.data]);
 
   // Limpar seleção
   const clearSelection = useCallback(() => {
     setSelectedFiles([]);
   }, []);
 
-  // ✅ Agora a função sempre retorna o tipo certo
-  const getCategoryStats = useCallback((): CategoryStats => {
-    return (
-      galleryResult?.stats.byCategory || {
+  const getCategoryStats = useCallback(
+    (): CategoryStats =>
+      gallery.data?.stats.byCategory || {
         all: { count: 0, size: 0 },
         cover: { count: 0, size: 0 },
         content: { count: 0, size: 0 },
         audio: { count: 0, size: 0 },
         temp: { count: 0, size: 0 },
         gallery: { count: 0, size: 0 },
-      }
-    );
-  }, [galleryResult]);
-  // Formatar tamanho selecionado
-  const getFormattedSelectedSize = useCallback(() => {
-    if (!galleryResult || selectedFiles.length === 0) return '0 B';
+      },
+    [gallery.data]
+  );
 
-    const totalSize = galleryResult.files
-      .filter((f) => selectedFiles.includes(f.url))
-      .reduce((sum, f) => sum + f.size, 0);
+  const getFormattedSelectedSize = useCallback(() => {
+    if (!gallery.data || selectedFiles.length === 0) return '0 B';
+
+    const totalSize = gallery.data.files
+      .filter((file) => selectedFiles.includes(file.url))
+      .reduce((sum, file) => sum + file.size, 0);
 
     if (totalSize < 1024) return `${totalSize} B`;
     if (totalSize < 1024 * 1024) return `${(totalSize / 1024).toFixed(2)} KB`;
     return `${(totalSize / (1024 * 1024)).toFixed(2)} MB`;
-  }, [galleryResult, selectedFiles]);
+  }, [gallery.data, selectedFiles]);
 
   // Get display name da categoria
   const getCategoryDisplayName = useCallback(
@@ -247,11 +374,11 @@ export function useBlogMediaGallery() {
   }, []);
 
   return {
-    galleryResult,
-    isLoading,
+    galleryResult: gallery.data ?? null,
+    isLoading: gallery.loading,
     isDeleting,
     selectedFiles,
-    error,
+    error: gallery.error ?? actionError,
     loadGallery,
     deleteSelectedFiles,
     toggleFileSelection,

@@ -1,5 +1,7 @@
-import prisma from '@/app/libs/prismadb';
-import { unstable_cache } from 'next/cache';
+// app/requests/music-history-translated.ts — história da música, pela API (Etapa 3)
+import { apiFetch } from '@/app/libs/api/client';
+import { bioTeaser } from '@/app/requests/bio-teaser';
+import type { ApiSchema } from '@/app/libs/api/types';
 import { Language } from '@/app/stores/useLanguageStore';
 import {
   EPOCH_CHRONOLOGICAL_ORDER_PT,
@@ -28,6 +30,7 @@ interface EpochComposersTranslated {
     portraitUrl: string | null;
     birthDate: string | null;
     deathDate: string | null;
+    /** Resumo, não a biografia inteira — ver `bioTeaser`. */
     bio: string | null;
   }[];
   historicalData?: (EpochDataTranslated & { id: string }) | null;
@@ -438,143 +441,66 @@ const epochsHistoricalDataTranslated: Record<
   },
 };
 
-// ✅ ATUALIZADO: Funções traduzidas com filtragem específica de compositores
-export const getComposersByEpochTranslated = unstable_cache(
-  async (language: Language): Promise<EpochComposersTranslated[]> => {
-    // ✅ ADICIONADO: Todos os nomes de compositores específicos em um array único
-    const allComposerNames = Object.values(composersByEpoch).flat();
+/**
+ * Cache do `fetch` do Next. A curadoria (a lista de `composersByEpoch`, o
+ * limite de 12 por época e a ordem cronológica) mora na API desde a Etapa 1;
+ * aqui ficam a tradução e o texto histórico, que é conteúdo do front. A API
+ * avisa pelas tags `composers` e `epochs` quando o dado muda.
+ */
+const MUSIC_HISTORY_CACHE = {
+  revalidate: 86400,
+  tags: ['composers', 'epochs'],
+};
 
-    // ✅ ATUALIZADO: Query com filtragem específica de compositores (igual ao arquivo original)
-    const composersData = await prisma.composer.findMany({
-      where: {
-        AND: [
-          {
-            epoch: {
-              name: { in: EPOCH_CHRONOLOGICAL_ORDER_PT }, // Busca em português
-            },
-          },
-          {
-            OR: allComposerNames.map((composerName) => ({
-              OR: [
-                {
-                  fullName: {
-                    equals: composerName,
-                    mode: 'insensitive',
-                  },
-                },
-                {
-                  name: {
-                    equals: composerName,
-                    mode: 'insensitive',
-                  },
-                },
-                // Fallback para contains se equals não encontrar
-                {
-                  fullName: {
-                    contains: composerName,
-                    mode: 'insensitive',
-                  },
-                },
-                {
-                  name: {
-                    contains: composerName,
-                    mode: 'insensitive',
-                  },
-                },
-              ],
-            })),
-          },
-        ],
-      },
-      select: {
-        id: true,
-        name: true,
-        fullName: true,
-        portraitUrl: true,
-        birthDate: true,
-        deathDate: true,
-        bio: true,
-        epoch: {
-          select: { id: true, name: true },
-        },
-      },
-      orderBy: [{ birthDate: 'asc' }, { name: 'asc' }],
-    });
+function historicalDataFor(epochNamePt: string, language: Language) {
+  const translatedData = epochsHistoricalDataTranslated[epochNamePt];
+  return language === 'en' ? translatedData?.en : translatedData?.pt;
+}
 
-    // Agrupar por época
-    const epochsMap = new Map<string, EpochComposersTranslated>();
+export async function getComposersByEpochTranslated(
+  language: Language
+): Promise<EpochComposersTranslated[]> {
+  const groups = await apiFetch<ApiSchema<'EpochComposersGroupDto'>[]>(
+    '/epochs/composers-by-epoch',
+    { next: MUSIC_HISTORY_CACHE }
+  );
 
-    // Inicializar épocas na ordem correta
-    EPOCH_CHRONOLOGICAL_ORDER_PT.forEach((epochNamePt) => {
-      const epochData = composersData.find((c) => c.epoch.name === epochNamePt);
-      if (epochData) {
-        const translatedData = epochsHistoricalDataTranslated[epochNamePt];
-        const langData =
-          language === 'en' ? translatedData?.en : translatedData?.pt;
+  return groups.map((group) => {
+    const langData = historicalDataFor(group.epochName, language);
 
-        epochsMap.set(epochNamePt, {
-          epochId: epochData.epoch.id,
-          epochName: translateEpochName(epochNamePt, language), // Nome traduzido
-          composers: [],
-          historicalData: langData
-            ? {
-                id: epochData.epoch.id,
-                ...langData,
-              }
-            : null,
-        });
-      }
-    });
+    return {
+      epochId: group.epochId,
+      epochName: translateEpochName(group.epochName, language),
+      composers: group.composers.map((composer) => ({
+        id: composer.id,
+        name: composer.name,
+        fullName: composer.fullName,
+        portraitUrl: composer.portraitUrl ?? null,
+        birthDate: composer.birthDate ?? null,
+        deathDate: composer.deathDate ?? null,
+        bio: bioTeaser(composer.bio),
+      })),
+      historicalData: langData ? { id: group.epochId, ...langData } : null,
+    };
+  });
+}
 
-    // ✅ ATUALIZADO: Distribuir compositores por época com limite de 12 (igual ao original)
-    composersData.forEach((composer) => {
-      const epochData = epochsMap.get(composer.epoch.name);
-      if (epochData && epochData.composers.length < 12) {
-        epochData.composers.push({
-          id: composer.id,
-          name: composer.name,
-          fullName: composer.fullName,
-          portraitUrl: composer.portraitUrl,
-          birthDate: composer.birthDate,
-          deathDate: composer.deathDate,
-          bio: composer.bio,
-        });
-      }
-    });
+export async function getEpochsHistoricalDataTranslated(
+  language: Language
+): Promise<(EpochDataTranslated & { id: string })[]> {
+  const epochs = await apiFetch<ApiSchema<'EpochItemDto'>[]>('/epochs', {
+    next: MUSIC_HISTORY_CACHE,
+  });
 
-    return Array.from(epochsMap.values());
-  },
-  ['composers-by-epoch-translated-v2'], // ✅ Versioning para nova implementação
-  {
-    revalidate: 3600,
-    tags: ['composers', 'epochs', 'music-history'],
-  }
-);
+  // Na ordem cronológica, só as épocas que existem no banco.
+  return EPOCH_CHRONOLOGICAL_ORDER_PT.flatMap((epochNamePt) => {
+    const epoch = epochs.find((e) => e.name === epochNamePt);
+    if (!epoch) return [];
 
-export const getEpochsHistoricalDataTranslated = unstable_cache(
-  async (
-    language: Language
-  ): Promise<(EpochDataTranslated & { id: string })[]> => {
-    // Buscar épocas em português (como estão no banco)
-    const epochs = await prisma.epoch.findMany({
-      where: {
-        name: { in: EPOCH_CHRONOLOGICAL_ORDER_PT }, // Busca em português
-      },
-      select: { id: true, name: true },
-    });
-
-    // Mapear na ordem cronológica com dados traduzidos
-    return EPOCH_CHRONOLOGICAL_ORDER_PT.map((epochNamePt) => {
-      const epoch = epochs.find((e) => e.name === epochNamePt);
-      if (!epoch) return null;
-
-      const translatedData = epochsHistoricalDataTranslated[epochNamePt];
-      const langData =
-        language === 'en' ? translatedData?.en : translatedData?.pt;
-
-      return {
+    return [
+      {
         id: epoch.id,
-        ...(langData || {
+        ...(historicalDataFor(epochNamePt, language) || {
           name: translateEpochName(epochNamePt, language),
           period:
             language === 'en' ? 'Period not defined' : 'Período não definido',
@@ -587,114 +513,28 @@ export const getEpochsHistoricalDataTranslated = unstable_cache(
           musicalForms: [],
           instruments: [],
         }),
-      };
-    }).filter(
-      (epoch): epoch is EpochDataTranslated & { id: string } => epoch !== null
-    );
-  },
-  ['epochs-historical-data-translated-v2'], // ✅ Versioning
-  {
-    revalidate: 86400,
-    tags: ['epochs', 'music-history'],
-  }
-);
-
-// ✅ ATUALIZADO: Timeline com filtragem específica de compositores
-export const getComposersTimelineTranslated = unstable_cache(
-  async (language: Language) => {
-    // ✅ ADICIONADO: Mesma lógica de filtragem específica
-    const allComposerNames = Object.values(composersByEpoch).flat();
-
-    // ✅ ATUALIZADO: Query com filtragem específica (igual ao getComposersByEpochTranslated)
-    const composers = await prisma.composer.findMany({
-      where: {
-        AND: [
-          {
-            epoch: {
-              name: { in: EPOCH_CHRONOLOGICAL_ORDER_PT }, // Busca em português
-            },
-          },
-          {
-            OR: allComposerNames.map((composerName) => ({
-              OR: [
-                {
-                  fullName: {
-                    equals: composerName,
-                    mode: 'insensitive',
-                  },
-                },
-                {
-                  name: {
-                    equals: composerName,
-                    mode: 'insensitive',
-                  },
-                },
-                // Fallback para contains se equals não encontrar
-                {
-                  fullName: {
-                    contains: composerName,
-                    mode: 'insensitive',
-                  },
-                },
-                {
-                  name: {
-                    contains: composerName,
-                    mode: 'insensitive',
-                  },
-                },
-              ],
-            })),
-          },
-        ],
       },
-      select: {
-        id: true,
-        name: true,
-        fullName: true,
-        portraitUrl: true,
-        birthDate: true,
-        deathDate: true,
-        bio: true,
-        epoch: { select: { name: true } },
-      },
-      orderBy: { birthDate: 'asc' },
-    });
+    ];
+  });
+}
 
-    return composers.map((composer) => ({
-      ...composer,
-      epochName: translateEpochName(composer.epoch.name, language), // Nome traduzido
-      birthYear: composer.birthDate
-        ? parseInt(composer.birthDate.split('-')[0])
-        : null,
-      deathYear: composer.deathDate
-        ? parseInt(composer.deathDate.split('-')[0])
-        : null,
-    }));
-  },
-  ['composers-timeline-translated-v2'], // ✅ Versioning
-  {
-    revalidate: 86400,
-    tags: ['composers', 'timeline', 'music-history'],
-  }
-);
+export async function getComposersTimelineTranslated(language: Language) {
+  const composers = await apiFetch<ApiSchema<'TimelineComposerItemDto'>[]>(
+    '/epochs/timeline',
+    { next: MUSIC_HISTORY_CACHE }
+  );
 
-// ✅ ADICIONADO: Função para limpar cache (igual ao arquivo original)
-export async function revalidateMusicHistoryTranslatedCache() {
-  const { revalidateTag } = await import('next/cache');
-
-  // Remove caches antigos
-  revalidateTag('music-history');
-  revalidateTag('composers');
-  revalidateTag('epochs');
-  revalidateTag('timeline');
-
-  // Remove caches das versões traduzidas
-  revalidateTag('composers-by-epoch-translated');
-  revalidateTag('epochs-historical-data-translated');
-  revalidateTag('composers-timeline-translated');
-
-  // Remove caches das versões otimizadas com filtragem específica
-  revalidateTag('composers-by-epoch-translated-v2');
-  revalidateTag('epochs-historical-data-translated-v2');
-  revalidateTag('composers-timeline-translated-v2');
+  return composers.map((composer) => ({
+    id: composer.id,
+    name: composer.name,
+    fullName: composer.fullName,
+    portraitUrl: composer.portraitUrl ?? null,
+    birthDate: composer.birthDate ?? null,
+    deathDate: composer.deathDate ?? null,
+    bio: bioTeaser(composer.bio),
+    epoch: { name: composer.epochName },
+    epochName: translateEpochName(composer.epochName, language),
+    birthYear: composer.birthYear ?? null,
+    deathYear: composer.deathYear ?? null,
+  }));
 }

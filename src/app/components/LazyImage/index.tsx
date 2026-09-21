@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 
 interface LazyImageProps {
   src: string | null;

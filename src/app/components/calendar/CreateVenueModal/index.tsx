@@ -9,7 +9,8 @@ import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
-import Image from 'next/image';
+import { saveVenue } from '@/app/requests/calendar-requests';
+import Image from '@/app/components/SmartImage';
 
 interface CreateVenueModalProps {
   isOpen: boolean;
@@ -176,37 +177,21 @@ export default function CreateVenueModal({
     setIsSubmitting(true);
 
     try {
-      const submitData = {
-        ...formData,
-        capacity: formData.capacity ? parseInt(formData.capacity) : undefined,
-      };
+      await saveVenue(formData, isEditing ? editingVenue.id : undefined);
 
-      const url = isEditing ? `/api/venues/${editingVenue.id}` : '/api/venues';
-      const method = isEditing ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submitData),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        toast.success(
-          isEditing
-            ? 'Venue atualizada com sucesso!'
-            : 'Venue criada com sucesso!',
-          { icon: '🏛️' }
-        );
-        onSuccess?.();
-        onClose();
-      } else {
-        toast.error(data.error || 'Erro ao salvar venue');
-      }
+      toast.success(
+        isEditing
+          ? 'Venue atualizada com sucesso!'
+          : 'Venue criada com sucesso!',
+        { icon: '🏛️' }
+      );
+      onSuccess?.();
+      onClose();
     } catch (error) {
       console.error('Erro ao salvar venue:', error);
-      toast.error('Erro ao salvar venue');
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao salvar venue'
+      );
     } finally {
       setIsSubmitting(false);
     }

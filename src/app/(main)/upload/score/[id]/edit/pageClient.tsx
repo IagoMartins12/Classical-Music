@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import {
   FiSave,
   FiTrash2,
@@ -31,6 +31,7 @@ import {
 import Button from '../../../../../components/Common/Button';
 import CreateScoreModal from '../../../../../components/UploadsPage/modals/CreateScoreModal';
 import { useToast } from '@/app/hooks/useToast';
+import { deleteUpload } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface EditScoreClientProps {
@@ -86,15 +87,12 @@ const EditScoreClient = ({
     setIsDeleting(true);
 
     try {
-      const response = await fetch(`/api/uploads/score/${score.id}`, {
-        method: 'DELETE',
-      });
+      const response = await deleteUpload('score', score.id);
 
       if (response.ok) {
         router.push('/upload');
       } else {
-        const data = await response.json();
-        throw new Error(data.error || 'Erro ao excluir partitura');
+        throw new Error(response.error || 'Erro ao excluir partitura');
       }
     } catch (error) {
       console.error('Erro ao excluir partitura:', error);

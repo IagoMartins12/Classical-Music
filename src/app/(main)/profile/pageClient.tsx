@@ -19,7 +19,9 @@ import MusicalPreferencesSection from '../../components/profile/MusicalPreferenc
 import PrivacySection from '../../components/profile/PrivacySection';
 import AccountSettingsSection from '../../components/profile/AccountSettingsSection';
 import { useAuth } from '@/app/hooks/useAuth';
-import { User } from 'next-auth';
+// Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
+// objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
+import type { User } from '@/app/hooks/userStore';
 import { useAuthStore } from '@/app/stores/authStore';
 import ProfileSkeleton from './loading';
 import { useTranslation } from '@/app/context/TranslationContext';

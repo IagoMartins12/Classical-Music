@@ -3,7 +3,7 @@
 
 import { CarouselCardProps } from '@/app/types/types';
 import LazyImage from '../../LazyImage';
-import Link from 'next/link';
+import Link from '@/app/components/LocalizedLink';
 import { FiUser, FiCalendar } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../../FavoriteButton';

@@ -1,6 +1,7 @@
 // app/confirm-student-invite/[token]/page.tsx
 'use client';
 
+import { legacyAuth } from '@/app/libs/api/compat';
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
@@ -111,8 +112,7 @@ export default function ConfirmStudentInvitePage() {
         message: t('pages_token_jsx_p_children_0__processando_convite_aluno'),
       });
 
-      const response = await fetch(`/api/invites/student/accept/${token}`);
-      const result = await response.json();
+      const result = await legacyAuth.acceptStudentInvite(token);
 
       if (result.success) {
         setState({
@@ -167,15 +167,7 @@ export default function ConfirmStudentInvitePage() {
     setResendSuccess(false);
 
     try {
-      const response = await fetch(`/api/invites/student/accept/${token}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ action: 'resend' }),
-      });
-
-      const result = await response.json();
+      const result = await legacyAuth.resendStudentInvite();
 
       if (result.success) {
         setResendSuccess(true);

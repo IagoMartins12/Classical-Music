@@ -1,5 +1,6 @@
 // app/hooks/useContactForm.ts
 import { useState, useCallback } from 'react';
+import { submitContact } from '@/app/requests/contact';
 
 interface ContactFormData {
   name: string;
@@ -39,15 +40,7 @@ export const useContactForm = (): UseContactFormReturn => {
     setSuccess(false);
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result: ContactFormResponse = await response.json();
+      const result: ContactFormResponse = await submitContact(data);
 
       if (result.success) {
         setSuccess(true);

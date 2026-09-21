@@ -4,6 +4,7 @@
 import React from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { getMostFavoritedScores } from '@/app/requests/library';
 
 interface MostFavoritedData {
   scoreId: string;
@@ -94,16 +95,10 @@ export const useMostFavoritedStore = create<MostFavoritedState>()(
         state.setLoading(workId, true);
 
         try {
-          const response = await fetch(
-            `/api/favorites/scores?type=most-favorited&workId=${workId}`,
-            {
-              method: 'GET',
-              cache: 'no-store',
-            }
-          );
+          const response = await getMostFavoritedScores(workId);
 
           if (response.ok) {
-            const data = await response.json();
+            const data = response.data;
 
             const result: MostFavoritedData = {
               scoreId: data[0]?.scoreId || '',
@@ -117,7 +112,7 @@ export const useMostFavoritedStore = create<MostFavoritedState>()(
           } else {
             console.error(
               'Erro ao buscar partitura mais favoritada:',
-              response.statusText
+              response.error
             );
           }
         } catch (error) {

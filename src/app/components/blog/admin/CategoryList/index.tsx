@@ -3,7 +3,12 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import {
+  deleteCategory,
+  reorderCategories,
+  setCategoryActive,
+} from '@/app/requests/blog/admin-actions';
+import Image from '@/app/components/SmartImage';
 import {
   FiEdit,
   FiTrash2,
@@ -135,14 +140,7 @@ export function CategoryList({
 
     setReordering(true);
     try {
-      const resp = await fetch('/api/blog/admin/categories/reorder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          categories: updated.map((it) => ({ id: it.id, order: it.order })),
-        }),
-      });
-      if (!resp.ok) throw new Error();
+      await reorderCategories(updated);
       toast.success('Ordem salva!');
       router.refresh();
     } catch {
@@ -155,13 +153,7 @@ export function CategoryList({
 
   const handleToggleActive = async (id: string, currentStatus: boolean) => {
     try {
-      const response = await fetch(`/api/blog/admin/categories/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isActive: !currentStatus }),
-      });
-
-      if (!response.ok) throw new Error();
+      await setCategoryActive(id, !currentStatus);
 
       toast.success(
         currentStatus ? 'Categoria desativada!' : 'Categoria ativada!'
@@ -175,15 +167,7 @@ export function CategoryList({
   const handleDelete = async (id: string) => {
     setDeleting(true);
     try {
-      const response = await fetch(`/api/blog/admin/categories/${id}`, {
-        method: 'DELETE',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao deletar');
-      }
+      await deleteCategory(id);
 
       toast.success('Categoria deletada com sucesso!');
       setDeleteModal(null);

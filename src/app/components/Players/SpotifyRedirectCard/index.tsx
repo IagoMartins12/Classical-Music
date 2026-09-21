@@ -5,7 +5,7 @@ import React from 'react';
 import { FiExternalLink, FiClock, FiMusic } from 'react-icons/fi';
 import { SiSpotify } from 'react-icons/si';
 import { AnimatedItem } from '../../animation/AnimatedComponents';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface SpotifyRedirectCardProps {

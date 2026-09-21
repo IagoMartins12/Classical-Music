@@ -4,7 +4,7 @@
 import React from 'react';
 import LazyImage from '@/app/components/LazyImage';
 import { composerHomeProps } from '@/app/components/PopularComposers';
-import Link from 'next/link';
+import Link from '@/app/components/LocalizedLink';
 import { FiCalendar } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '@/app/components/FavoriteButton';

@@ -2,7 +2,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
 import AdDisplay from '../AdDisplay';
 
 interface AdContainerProps {

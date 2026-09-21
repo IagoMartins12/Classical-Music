@@ -1,5 +1,9 @@
 import ScraperManager from '@/app/components/blog/ScraperManager';
 
+// Painel em CSR: o dado vem da API pelo navegador. Sem isto o Next tenta
+// pré-renderizar a página e para no `useSearchParams` do gerenciador.
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Scrapers - Admin',
   description: 'Gerenciar scrapers de eventos',

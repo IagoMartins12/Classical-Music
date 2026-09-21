@@ -1,7 +1,16 @@
 // app/hooks/useLessonDetails.ts - Hook ATUALIZADO com função DELETE real
 
-import { LessonDetailsData } from '@/app/(teacher)/teacher/lessons/[id]/pageServer';
+import type { LessonDetailsData } from '@/app/(teacher)/teacher/lessons/[id]/pageServer';
 import { useState, useCallback } from 'react';
+import {
+  createAssignmentRequest,
+  updateAssignmentRequest,
+} from '@/app/requests/portal/assignment-actions';
+import {
+  cancelLessonRequest,
+  updateLessonRequest,
+} from '@/app/requests/portal/lesson-actions';
+import { loadTeacherLessonDetails } from '@/app/requests/portal/teacher';
 
 interface UseLessonDetailsState {
   lesson: LessonDetailsData | null;
@@ -164,22 +173,7 @@ export function useLessonDetails(
     setError(null);
 
     try {
-      const response = await fetch(`/api/lessons/${state.lesson.id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Erro ao atualizar dados da aula');
-      }
-
-      const data = await response.json();
-
-      if (!data.success) {
-        throw new Error(data.error || 'Erro desconhecido');
-      }
+      const data = await loadTeacherLessonDetails(state.lesson.id);
 
       setLesson(data.lesson);
     } catch (error) {
@@ -202,23 +196,7 @@ export function useLessonDetails(
       setError(null);
 
       try {
-        const response = await fetch(`/api/lessons/${state.lesson.id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updates),
-        });
-
-        if (!response.ok) {
-          throw new Error('Erro ao atualizar aula');
-        }
-
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error(data.error || 'Erro ao atualizar aula');
-        }
+        await updateLessonRequest(state.lesson.id, updates);
 
         // Update lesson in state
         setState((prev) => ({
@@ -398,42 +376,12 @@ export function useLessonDetails(
       setError(null);
 
       try {
-        const params = new URLSearchParams();
-
-        if (options?.reason) {
-          params.append('reason', options.reason);
-        }
-        if (options?.deleteAll) {
-          params.append('deleteAll', 'true');
-        }
-        if (options?.futureOnly) {
-          params.append('futureOnly', 'true');
-        }
-
-        const url = `/api/lessons/${state.lesson.id}${
-          params.toString() ? `?${params.toString()}` : ''
-        }`;
-
-        const response = await fetch(url, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Erro ao apagar aula');
-        }
-
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error(data.error || 'Erro ao apagar aula');
-        }
-
-        console.log(
-          '✅ [useLessonDetails] Aula apagada com sucesso:',
-          data.message
+        // A API não apaga aula (o histórico do aluno depende dela): "apagar"
+        // vira cancelar, com a série inteira quando pedido.
+        await cancelLessonRequest(
+          state.lesson.id,
+          options?.reason || 'Aula removida pelo professor',
+          options?.deleteAll
         );
 
         return true;
@@ -465,27 +413,10 @@ export function useLessonDetails(
       setError(null);
 
       try {
-        const response = await fetch('/api/assignments', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            lessonId: state.lesson.id,
-            studentId: state.lesson.student.id,
-            ...data,
-          }),
+        const created = await createAssignmentRequest({
+          lessonId: state.lesson.id,
+          ...data,
         });
-
-        if (!response.ok) {
-          throw new Error('Erro ao criar tarefa');
-        }
-
-        const result = await response.json();
-
-        if (!result.success) {
-          throw new Error(result.error || 'Erro ao criar tarefa');
-        }
 
         // Add assignment to lesson state
         setState((prev) => ({
@@ -495,7 +426,16 @@ export function useLessonDetails(
                 ...prev.lesson,
                 assignments: [
                   ...(prev.lesson.assignments || []),
-                  result.assignment,
+                  {
+                    id: created.id,
+                    title: created.title,
+                    description: created.description,
+                    dueDate: created.dueDate
+                      ? new Date(created.dueDate)
+                      : undefined,
+                    status: created.status,
+                    isCompleted: created.isCompleted,
+                  },
                 ],
               }
             : null,
@@ -520,23 +460,7 @@ export function useLessonDetails(
       setError(null);
 
       try {
-        const response = await fetch('/api/assignments', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ assignmentId, ...updates }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Erro ao atualizar tarefa');
-        }
-
-        const result = await response.json();
-
-        if (!result.success) {
-          throw new Error(result.error || 'Erro ao atualizar tarefa');
-        }
+        await updateAssignmentRequest(assignmentId, updates);
 
         // Update assignment in lesson state
         setState((prev) => ({

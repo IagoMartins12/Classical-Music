@@ -1,5 +1,5 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/app/components/SmartImage';
+import Link from '@/app/components/LocalizedLink';
 import { useState } from 'react';
 import { FiClock, FiUser } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';

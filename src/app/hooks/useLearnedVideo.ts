@@ -1,6 +1,10 @@
 // hooks/useLearnedVideo.ts - CORRIGIDO
 import { useState, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
+import {
+  updateLearnedRequest,
+  uploadPerformanceVideo,
+} from '@/app/requests/library';
 
 export interface UseLearnedVideoResult {
   // Estados
@@ -103,45 +107,21 @@ export function useLearnedVideo(): UseLearnedVideoResult {
       setUploadError(null);
 
       try {
-        // Preparar FormData se tem vídeo, senão JSON
-        let body: FormData | string;
-        const headers: any = {};
+        // O vídeo sobe direto ao armazenamento; o item leva só o id do
+        // arquivo (o legado mandava o arquivo em multipart para o Next).
+        const videoAssetId = selectedVideo
+          ? await uploadPerformanceVideo(workId, selectedVideo)
+          : undefined;
 
-        if (selectedVideo) {
-          // Com upload de novo vídeo
-          const formData = new FormData();
-
-          // ✅ CORREÇÃO: Incluir workId nos dados
-          const dataToSend = {
-            workId,
-            ...learnedData,
-            isVideoPublic,
-          };
-          formData.append('data', JSON.stringify(dataToSend));
-          formData.append('videoFile', selectedVideo);
-
-          body = formData;
-        } else {
-          // Apenas atualizar dados (sem novo vídeo)
-          headers['Content-Type'] = 'application/json';
-          // ✅ CORREÇÃO: Incluir workId nos dados JSON também
-          body = JSON.stringify({
-            workId,
-            ...learnedData,
-            isVideoPublic,
-          });
-        }
-
-        // Enviar requisição
-        const response = await fetch('/api/learning/learned', {
-          method: 'PATCH',
-          headers,
-          body,
+        const result = await updateLearnedRequest(workId, {
+          ...learnedData,
+          isVideoPublic,
+          ...(videoAssetId
+            ? { videoAssetId, videoFileName: selectedVideo?.name }
+            : {}),
         });
 
-        const result = await response.json();
-
-        if (response.ok && result.success) {
+        if (result.ok) {
           // Limpar estado se foi upload de novo vídeo
           if (selectedVideo) {
             removeVideo();
@@ -173,20 +153,10 @@ export function useLearnedVideo(): UseLearnedVideoResult {
     setUploadError(null);
 
     try {
-      const response = await fetch('/api/learning/learned', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          workId,
-          deleteVideo: true,
-        }),
-      });
+      // A API tira o vídeo do item e apaga o arquivo do armazenamento.
+      const result = await updateLearnedRequest(workId, { removeVideo: true });
 
-      const result = await response.json();
-
-      if (response.ok && result.success) {
+      if (result.ok) {
         toast.success('Vídeo removido com sucesso!', {
           icon: '🗑️',
           duration: 3000,

@@ -33,6 +33,7 @@ import {
 import Select from '@/app/components/Common/Select';
 import Link from 'next/link';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { loadSchoolActivities } from '@/app/requests/portal/school-activities';
 
 interface Activity {
   id: string;
@@ -128,31 +129,19 @@ const TeacherHistoryClient = ({
     setError(null);
 
     try {
-      const params = new URLSearchParams({
-        page: page.toString(),
+      const data = await loadSchoolActivities({
+        as: 'teacher',
+        page,
+        action: selectedAction !== 'all' ? selectedAction : undefined,
+        entityType:
+          selectedEntityType !== 'all' ? selectedEntityType : undefined,
+        dateFrom: dateFrom || undefined,
+        dateTo: dateTo || undefined,
       });
 
-      if (selectedAction !== 'all') params.set('action', selectedAction);
-      if (selectedEntityType !== 'all')
-        params.set('entityType', selectedEntityType);
-      if (dateFrom) params.set('dateFrom', dateFrom);
-      if (dateTo) params.set('dateTo', dateTo);
-
-      const response = await fetch(`/api/school-activities?${params}`);
-
-      if (!response.ok) {
-        throw new Error(t('error_loading_activities'));
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        setActivities(data.activities || []);
-        setTotalPages(data.pagination?.totalPages || 0);
-        setTotalCount(data.pagination?.totalCount || 0);
-      } else {
-        throw new Error(data.error || t('error_loading_activities'));
-      }
+      setActivities(data.activities);
+      setTotalPages(data.totalPages);
+      setTotalCount(data.totalCount);
     } catch (error) {
       console.error('Erro ao buscar atividades:', error);
       setError(

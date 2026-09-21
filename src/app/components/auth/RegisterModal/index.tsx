@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { signIn } from 'next-auth/react';
+import { registerWithPassword, signInWithGoogle } from '@/app/libs/session';
 import {
   FiMail,
   FiLock,
@@ -12,7 +12,6 @@ import {
 } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { GiGrandPiano } from 'react-icons/gi';
-import { registerUser } from '@/app/actions/auth';
 import { toast } from 'react-hot-toast';
 import {
   useOnboardingModal,
@@ -284,7 +283,7 @@ const RegisterModal: React.FC = () => {
 
     if (!formData.password.trim()) {
       newErrors.password = t('register_modal_password_required');
-    } else if (formData.password.length < 6) {
+    } else if (formData.password.length < 8) {
       newErrors.password = t('register_modal_password_min_length');
     }
 
@@ -303,32 +302,6 @@ const RegisterModal: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const performAutoLogin = async (email: string, password: string) => {
-    try {
-      console.log('🔄 Fazendo login automático após registro...');
-
-      const result = await signIn('credentials', {
-        email: email.trim(),
-        password: password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        console.error('❌ Erro no login automático:', result.error);
-        toast.error(t('register_modal_auto_login_error'));
-        return false;
-      } else {
-        console.log('✅ Login automático realizado com sucesso!');
-        toast.success(t('register_modal_auto_login_success'));
-        return true;
-      }
-    } catch (error) {
-      console.error('❌ Erro no login automático:', error);
-      toast.error(t('register_modal_auto_login_error'));
-      return false;
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -338,17 +311,16 @@ const RegisterModal: React.FC = () => {
     setEmailConflictError(null);
 
     try {
-      const result = await registerUser({
-        username: formData.username.trim(),
+      // A API cria a conta, manda a confirmação e já abre a sessão.
+      const result = await registerWithPassword({
         email: formData.email.trim(),
         password: formData.password,
+        firstName: formData.username.trim(),
       });
 
-      if (result.success) {
-        const loginSuccess = await performAutoLogin(
-          formData.email.trim(),
-          formData.password
-        );
+      if (result.ok) {
+        const loginSuccess = true;
+        toast.success(t('register_modal_auto_login_success'));
 
         setRegisterStep({
           step: 'confirmation-sent',
@@ -361,8 +333,8 @@ const RegisterModal: React.FC = () => {
         });
       } else {
         if (
-          result.message.includes('já existe') ||
-          result.message.includes('já cadastrado')
+          result.message.toLowerCase().includes('já existe') ||
+          result.message.toLowerCase().includes('já cadastrado')
         ) {
           setEmailConflictError(result.message);
         } else {
@@ -403,47 +375,8 @@ const RegisterModal: React.FC = () => {
         Date.now().toString()
       );
 
-      // Fazer o signIn com redirect
-      const result = await signIn('google', {
-        redirect: true,
-        callbackUrl: window.location.origin + '/?google-register=true',
-      });
-
-      if (result?.error) {
-        console.error('❌ Erro no Google SignUp:', result.error);
-
-        // Limpar flags em caso de erro
-        sessionStorage.removeItem('google-register-pending');
-        sessionStorage.removeItem('google-register-timestamp');
-
-        switch (result.error) {
-          case 'Callback':
-            setEmailConflictError(
-              t('register_modal_email_conflict_credentials')
-            );
-            toast.error(t('register_modal_email_exists'));
-            break;
-          case 'OAuthCallback':
-            toast.error(t('register_modal_google_oauth_error'));
-            break;
-          case 'OAuthSignin':
-            toast.error(t('register_modal_google_signin_error'));
-            break;
-          case 'OAuthCreateAccount':
-            setEmailConflictError(t('register_modal_email_conflict_google'));
-            toast.error(t('register_modal_email_exists'));
-            break;
-          case 'EmailCreateAccount':
-            setEmailConflictError(t('register_modal_email_conflict_google'));
-            toast.error(t('register_modal_email_exists'));
-            break;
-          case 'AccessDenied':
-            toast.error(t('register_modal_google_access_denied'));
-            break;
-          default:
-            toast.error(t('register_modal_google_error'));
-        }
-      }
+      // A API conduz o login com o Google e devolve o navegador para cá.
+      signInWithGoogle('/?google-register=true');
     } catch (error) {
       console.error('❌ Erro no Google SignUp:', error);
 

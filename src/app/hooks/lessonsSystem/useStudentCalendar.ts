@@ -1,6 +1,8 @@
 // app/hooks/useStudentCalendar.ts - Hook específico para calendário do aluno
 
-import { StudentCalendarData } from '@/app/(student)/student/calendar/pageServer';
+import type { StudentCalendarData } from '@/app/(student)/student/calendar/pageServer';
+import { apiFetch } from '@/app/libs/api/client';
+import { loadStudentCalendar } from '@/app/requests/portal/student';
 import { useState, useCallback } from 'react';
 
 interface StudentCalendarEvent {
@@ -124,28 +126,10 @@ export function useStudentCalendar(
       setError(null);
 
       try {
-        const params = new URLSearchParams({
-          start: startDate.toISOString(),
-          end: endDate.toISOString(),
+        const data = await loadStudentCalendar(startDate, endDate, {
           view,
-          stats: 'true',
+          includeStats: true,
         });
-
-        const response = await fetch(`/api/student/calendar?${params}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Calendar API error: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error('Calendar API returned error');
-        }
 
         setState((prev) => ({
           ...prev,
@@ -172,33 +156,17 @@ export function useStudentCalendar(
     async (
       lessonId: string,
       feedback: string,
-      rating?: number
+      // A API guarda só o texto do feedback do aluno; nota não tem campo.
+      _rating?: number
     ): Promise<boolean> => {
       setLoading('addingFeedback', true);
       setError(null);
 
       try {
-        const response = await fetch('/api/student/calendar', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            lessonId,
-            feedback,
-            rating,
-          }),
+        await apiFetch(`/lessons/${lessonId}/feedback`, {
+          method: 'PATCH',
+          body: { feedback },
         });
-
-        if (!response.ok) {
-          throw new Error(`Feedback API error: ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        if (!result.success) {
-          throw new Error(result.error || 'Erro ao adicionar feedback');
-        }
 
         // Update local state
         setState((prev) => {

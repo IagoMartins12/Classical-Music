@@ -32,6 +32,7 @@ import { FaFlask } from 'react-icons/fa';
 import SendTestCampaignModal from './SendTestCampaignModal';
 import LoadingAdminState from '../../Common/LoadingState';
 import EditCampaignModal from '../EditCampaignModal';
+import { cancelCampaignRequest } from '@/app/requests/admin/newsletter';
 
 interface FilterState {
   status: string;
@@ -146,20 +147,22 @@ export default function NewsletterCampaignsClient() {
   };
 
   // 🆕 FUNÇÃO PARA PAUSAR/RETOMAR CAMPANHA
+  // A API não pausa nem retoma campanha: só cancela, e a cancelada não volta.
   const handleToggleCampaign = async (campaign: any) => {
-    const action = campaign.status === 'PAUSED' ? 'retomar' : 'pausar';
-    const newStatus = campaign.status === 'PAUSED' ? 'SCHEDULED' : 'PAUSED';
+    if (campaign.status === 'PAUSED') {
+      alert(
+        'A campanha não pode ser retomada pela API. Crie uma nova campanha para enviar de novo.'
+      );
+      return;
+    }
 
     if (
-      confirm(`Tem certeza que deseja ${action} a campanha "${campaign.name}"?`)
+      confirm(
+        `A API não pausa campanhas: "${campaign.name}" será cancelada e não poderá ser retomada. Continuar?`
+      )
     ) {
       try {
-        // Implementar chamada para atualizar status da campanha
-        await fetch(`/api/admin/newsletter/campaigns/${campaign.id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: newStatus }),
-        });
+        await cancelCampaignRequest(campaign.id);
 
         fetchCampaigns(campaignsPagination?.page || 1, filters);
       } catch (error: any) {

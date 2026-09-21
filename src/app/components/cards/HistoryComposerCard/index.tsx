@@ -2,8 +2,8 @@
 'use client';
 
 import { useComposerBiography } from '@/app/hooks/useComposerBiography';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/app/components/SmartImage';
+import Link from '@/app/components/LocalizedLink';
 import { FiUser, FiCalendar, FiExternalLink } from 'react-icons/fi';
 
 interface Composer {

@@ -12,6 +12,7 @@ import {
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import Modal from '../../Modal';
+import { legacyAuth } from '@/app/libs/api/compat';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface ForgotPasswordModalProps {
@@ -75,17 +76,8 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      const response = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: state.email.trim(),
-        }),
-      });
-
-      const result = await response.json();
+      const result = await legacyAuth.forgotPassword(state.email.trim());
+      const response = { status: result.rateLimited ? 429 : 200 };
 
       if (result.success) {
         setState((prev) => ({
@@ -271,20 +263,6 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             </li>
           </ul>
         </div>
-
-        {state.remainingAttempts !== undefined &&
-          state.remainingAttempts < 5 && (
-            <div className="bg-accent-amber bg-opacity-10 border border-accent-amber rounded-lg p-3">
-              <div className="flex items-center">
-                <FiAlertCircle className="w-4 h-4 text-accent-amber mr-2" />
-                <span className="text-sm text-accent-amber">
-                  {t('forgot_password_success_attempts_warning')}{' '}
-                  {state.remainingAttempts}{' '}
-                  {t('forgot_password_success_attempts_text')}
-                </span>
-              </div>
-            </div>
-          )}
 
         <div className="space-y-3">
           <Button

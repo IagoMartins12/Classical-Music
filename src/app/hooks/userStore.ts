@@ -1,5 +1,5 @@
 // hooks/userStore.ts - Interface User atualizada
-import { StudentInviteStatus } from '@prisma/client';
+import type { StudentInviteStatus } from '@/app/types/portal';
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 
@@ -42,6 +42,12 @@ export interface User {
   isTeacher?: boolean | null;
   isStudent?: boolean | null;
   studentInviteStatus?: null | StudentInviteStatus;
+
+  // Lidos pela tela de conta. Existiam só no tipo que o NextAuth aumentava
+  // (`types/next-auth.d.ts`), e o store nunca os guardou — a tela os lia como
+  // `undefined`. Agora vêm da sessão da API, que os traz de verdade.
+  name?: string | null;
+  emailVerified?: string | null;
 }
 
 interface UserState {

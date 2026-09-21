@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { Metadata } from 'next';
-import prisma from '@/app/libs/prismadb';
 import { FiGrid, FiArrowRight } from 'react-icons/fi';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
+import { listCategories } from '@/app/requests/blog/taxonomy';
 
 export const metadata: Metadata = {
   title: 'Categorias - Blog Opus Atlas',
@@ -12,29 +12,8 @@ export const metadata: Metadata = {
 
 export const revalidate = 600;
 
-async function getCategories() {
-  return await prisma.blogCategory.findMany({
-    where: { isActive: true },
-    include: {
-      _count: {
-        select: {
-          articles: {
-            where: {
-              article: {
-                status: 'PUBLISHED',
-                publishedAt: { lte: new Date() },
-              },
-            },
-          },
-        },
-      },
-    },
-    orderBy: { order: 'asc' },
-  });
-}
-
 export default async function CategoriesPage() {
-  const categories = await getCategories();
+  const categories = await listCategories({ revalidate });
 
   return (
     <div className="min-h-screen">

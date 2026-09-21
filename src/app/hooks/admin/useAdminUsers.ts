@@ -1,6 +1,20 @@
-import { UserListFilters } from '@/app/api/admin/users/route';
 import { TimePeriod } from '@/app/components/Admin/Common/PeriodSelector';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import {
+  adminKeys,
+  errorMessage,
+  useAdminInfinite,
+  useAdminQuery,
+} from './query';
+import {
+  type UserListFilters,
+  exportAdminUsers,
+  getAdminUserAnalytics,
+  listAdminUsers,
+  updateAdminUser,
+} from '@/app/requests/admin/users';
+
+export type { UserListFilters };
 
 export interface AdminUser {
   id: string;
@@ -95,6 +109,8 @@ interface UseAdminUsersReturn {
   analytics: UserAnalytics | null;
   loading: boolean;
   statsLoading: boolean;
+  /** Buscando a fatia seguinte, com a lista já na tela. */
+  loadingMore: boolean;
   error: string | null;
   pagination: {
     page: number;
@@ -113,333 +129,123 @@ interface UseAdminUsersReturn {
   exportUsers: (filters?: UserListFilters) => Promise<void>;
 }
 
-export const useAdminUsers = (): UseAdminUsersReturn => {
-  const [users, setUsers] = useState<AdminUser[]>([]);
-  const [analytics, setAnalytics] = useState<UserAnalytics | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [statsLoading, setStatsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [pagination, setPagination] = useState<any>(null);
-  const [period, setPeriod] = useState<TimePeriod>('all'); // Período padrão restaurado
+/** Usuários por fatia; o mesmo tamanho que a tela pedia antes. */
+const PAGE_SIZE = 50;
 
-  const fetchingUsersRef = useRef(false);
-  const fetchingAnalyticsRef = useRef(false);
-  const initialLoadedRef = useRef(false);
-  const lastPeriodRef = useRef<TimePeriod>(period);
+/**
+ * Usuários do painel.
+ *
+ * A lista é estado de servidor por cursor (`useAdminInfinite`): a chave leva
+ * os filtros, e o "carregar mais" pede a fatia seguinte a partir do id do
+ * último usuário já mostrado — a API não relê as páginas anteriores nem conta
+ * a base de novo. Trocar o filtro troca a chave, e a lista recomeça sozinha.
+ *
+ * `fetchUsers(filtros, página)` continua existindo porque a tela chama assim:
+ * com página maior que a atual, é o "carregar mais".
+ */
+export const useAdminUsers = (): UseAdminUsersReturn => {
+  const [filters, setFilters] = useState<UserListFilters>({});
+  const [period, setPeriod] = useState<TimePeriod>('all');
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  const list = useAdminInfinite(
+    adminKeys.list('users', filters),
+    async (cursor) => {
+      const data = await listAdminUsers(
+        { ...filters, limit: PAGE_SIZE },
+        cursor
+      );
+
+      return {
+        items: data.users,
+        total: data.total,
+        nextCursor: data.nextCursor,
+      };
+    }
+  );
+
+  // As análises se atualizam sozinhas de dez em dez minutos, como antes.
+  const analytics = useAdminQuery(
+    adminKeys.list('users-analytics', period),
+    () => getAdminUserAnalytics(period),
+    { refetchInterval: 10 * 60 * 1000 }
+  );
 
   const fetchUsers = useCallback(
-    async (filters: UserListFilters = {}, page: number = 1) => {
-      if (fetchingUsersRef.current) {
-        console.log('[useAdminUsers] Ignorando fetchUsers - já em andamento');
+    async (nextFilters: UserListFilters = {}, page: number = 1) => {
+      // Página maior que a primeira é o "carregar mais" da tela: o cursor
+      // sabe onde parou, então o número em si não importa.
+      if (page > 1) {
+        list.loadMore();
         return;
       }
 
-      fetchingUsersRef.current = true;
-      setLoading(true);
-      setError(null);
-
-      try {
-        const searchParams = new URLSearchParams({
-          action: 'list',
-          page: page.toString(),
-          limit: (filters.limit || 50).toString(),
-          period: filters.period || period, // Usar period dos filtros ou do estado
-        });
-
-        Object.entries(filters).forEach(([key, value]) => {
-          if (
-            value !== undefined &&
-            value !== null &&
-            value !== '' &&
-            value !== 'all' &&
-            key !== 'period'
-          ) {
-            searchParams.set(key, value.toString());
-          }
-        });
-
-        const response = await fetch(`/api/admin/users?${searchParams}`, {
-          cache: 'no-store',
-        });
-
-        if (!response.ok) {
-          if (response.status === 401) {
-            throw new Error('Acesso não autorizado');
-          }
-          throw new Error(
-            `Erro ${response.status}: Falha ao carregar usuários`
-          );
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          if (page === 1) {
-            setUsers(data.users || []);
-          } else {
-            setUsers((prev) => [...prev, ...(data.users || [])]);
-          }
-          setPagination(data.pagination || null);
-        } else {
-          throw new Error(
-            data.error || 'Erro desconhecido ao carregar usuários'
-          );
-        }
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Erro desconhecido';
-        setError(errorMessage);
-        console.error('Erro ao buscar usuários:', err);
-      } finally {
-        setLoading(false);
-        fetchingUsersRef.current = false;
-      }
+      setFilters(nextFilters);
     },
-    [period]
+    [list]
   );
 
   const fetchAnalytics = useCallback(async () => {
-    if (fetchingAnalyticsRef.current) {
-      console.log('[useAdminUsers] Ignorando fetchAnalytics - já em andamento');
-      return;
-    }
-
-    fetchingAnalyticsRef.current = true;
-    setStatsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(
-        `/api/admin/users?action=analytics&period=${period}`,
-        {
-          cache: 'no-store',
-        }
-      );
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Acesso não autorizado');
-        }
-        throw new Error(`Erro ${response.status}: Falha ao carregar analytics`);
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        const cleanAnalytics: UserAnalytics = {
-          totalUsers: data.analytics?.totalUsers || 0,
-          activeUsers: {
-            today: data.analytics?.activeUsers?.today || 0,
-            thisWeek: data.analytics?.activeUsers?.thisWeek || 0,
-            thisMonth: data.analytics?.activeUsers?.thisMonth || 0,
-            period: data.analytics?.activeUsers?.period || 0,
-            growthRate: data.analytics?.activeUsers?.growthRate || 0,
-          },
-          newUsers: {
-            today: data.analytics?.newUsers?.today || 0,
-            thisWeek: data.analytics?.newUsers?.thisWeek || 0,
-            thisMonth: data.analytics?.newUsers?.thisMonth || 0,
-            period: data.analytics?.newUsers?.period || 0,
-            recentlyAdded: data.analytics?.newUsers?.recentlyAdded || 0,
-            growthRate: data.analytics?.newUsers?.growthRate || 0,
-          },
-          userTypes: data.analytics?.userTypes || [],
-          topContributors: data.analytics?.topContributors || [],
-          userGrowth: data.analytics?.userGrowth || [],
-          engagementMetrics: {
-            averageAnnotationsPerUser:
-              data.analytics?.engagementMetrics?.averageAnnotationsPerUser || 0,
-            averageUploadsPerUser:
-              data.analytics?.engagementMetrics?.averageUploadsPerUser || 0,
-          },
-          retentionRate: data.analytics?.retentionRate || 0,
-          retentionGrowth: data.analytics?.retentionGrowth || 0,
-          activityRate: data.analytics?.activityRate || 0,
-          contributorsPercentage: data.analytics?.contributorsPercentage || 0,
-        };
-
-        setAnalytics(cleanAnalytics);
-      } else {
-        throw new Error(
-          data.error || 'Erro desconhecido ao carregar analytics'
-        );
-      }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Erro desconhecido';
-      setError(errorMessage);
-      console.error('Erro ao buscar analytics:', err);
-    } finally {
-      setStatsLoading(false);
-      fetchingAnalyticsRef.current = false;
-    }
-  }, [period]);
-
-  const refreshStats = useCallback(async () => {
-    return fetchAnalytics();
-  }, [fetchAnalytics]);
+    await analytics.refetch();
+  }, [analytics]);
 
   const updateUser = useCallback(
     async (userId: string, updateData: any): Promise<boolean> => {
       try {
-        const response = await fetch(`/api/admin/users?userId=${userId}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updateData),
-        });
-
-        if (!response.ok) {
-          if (response.status === 401) {
-            throw new Error('Acesso não autorizado');
-          }
-          throw new Error(
-            `Erro ${response.status}: Falha ao atualizar usuário`
-          );
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          setUsers((prev) =>
-            prev.map((user) =>
-              user.id === userId ? { ...user, ...data.user } : user
-            )
-          );
-          return true;
-        } else {
-          throw new Error(data.error || 'Erro ao atualizar usuário');
-        }
-      } catch (err) {
-        console.error('Erro ao atualizar usuário:', err);
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
+        await updateAdminUser(userId, updateData);
+        setActionError(null);
+        await list.refetch();
+        return true;
+      } catch (error) {
+        console.error('Erro ao atualizar usuário:', error);
+        setActionError(errorMessage(error));
         return false;
       }
     },
-    []
+    [list]
   );
 
   const exportUsers = useCallback(
-    async (filters: UserListFilters = {}) => {
+    async (exportFilters: UserListFilters = {}) => {
       try {
-        const searchParams = new URLSearchParams({
-          action: 'export',
-          format: 'csv',
-          period: filters.period || period,
-        });
-
-        Object.entries(filters).forEach(([key, value]) => {
-          if (
-            value !== undefined &&
-            value !== null &&
-            value !== '' &&
-            value !== 'all' &&
-            key !== 'period'
-          ) {
-            searchParams.set(key, value.toString());
-          }
-        });
-
-        const response = await fetch(`/api/admin/users?${searchParams}`, {
-          cache: 'no-store',
-        });
-
-        if (!response.ok) {
-          throw new Error('Erro ao exportar usuários');
-        }
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `usuarios-${filters.period || period}-${
-          new Date().toISOString().split('T')[0]
-        }.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      } catch (err) {
-        console.error('Erro ao exportar usuários:', err);
-        setError(err instanceof Error ? err.message : 'Erro ao exportar');
+        await exportAdminUsers(
+          exportFilters,
+          `usuarios-${exportFilters.period || period}-${
+            new Date().toISOString().split('T')[0]
+          }.csv`
+        );
+      } catch (error) {
+        console.error('Erro ao exportar usuários:', error);
+        setActionError(errorMessage(error));
       }
     },
     [period]
   );
 
   const refreshData = useCallback(async () => {
-    if (fetchingUsersRef.current && fetchingAnalyticsRef.current) {
-      console.log('[useAdminUsers] Ignorando refreshData - já em andamento');
-      return;
-    }
+    await Promise.all([list.refetch(), analytics.refetch()]);
+  }, [list, analytics]);
 
-    try {
-      const promises = [];
-      if (!fetchingUsersRef.current) {
-        promises.push(fetchUsers());
-      }
-      if (!fetchingAnalyticsRef.current) {
-        promises.push(fetchAnalytics());
-      }
+  const pagination = useMemo(() => {
+    const total = list.total ?? list.items.length;
 
-      await Promise.all(promises);
-    } catch (err) {
-      console.error('Erro ao atualizar dados:', err);
-    }
-  }, [fetchUsers, fetchAnalytics]);
-
-  // Carregamento inicial e mudança de período
-  useEffect(() => {
-    const periodChanged = lastPeriodRef.current !== period;
-
-    if (!initialLoadedRef.current || periodChanged) {
-      console.log('[useAdminUsers] Carregando dados:', {
-        initial: !initialLoadedRef.current,
-        periodChanged,
-        period,
-      });
-
-      if (periodChanged) {
-        fetchingUsersRef.current = false;
-        fetchingAnalyticsRef.current = false;
-        lastPeriodRef.current = period;
-      }
-
-      refreshData().then(() => {
-        initialLoadedRef.current = true;
-      });
-    }
-  }, [period, refreshData]);
-
-  // Auto-refresh
-  useEffect(() => {
-    if (!initialLoadedRef.current) return;
-
-    const interval = setInterval(
-      () => {
-        if (
-          !fetchingUsersRef.current &&
-          !fetchingAnalyticsRef.current &&
-          !loading &&
-          !statsLoading
-        ) {
-          console.log('[useAdminUsers] Auto-refresh executado');
-          fetchAnalytics();
-        }
-      },
-      10 * 60 * 1000
-    );
-
-    return () => clearInterval(interval);
-  }, [fetchAnalytics, loading, statsLoading]);
+    return {
+      // "Página" aqui é quantas fatias já vieram: a tela só a exibe.
+      page: Math.max(1, Math.ceil(list.items.length / PAGE_SIZE)),
+      limit: PAGE_SIZE,
+      total,
+      pages: Math.max(1, Math.ceil(total / PAGE_SIZE)),
+      hasMore: list.hasMore,
+    };
+  }, [list.total, list.items.length, list.hasMore]);
 
   return {
-    users,
-    analytics,
-    loading,
-    statsLoading,
-    error,
+    users: list.items,
+    analytics: analytics.data ?? null,
+    loading: list.loading,
+    statsLoading: analytics.loading,
+    loadingMore: list.loadingMore,
+    error: list.error ?? analytics.error ?? actionError,
     pagination,
     period,
     setPeriod,
@@ -447,7 +253,7 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
     fetchAnalytics,
     updateUser,
     refreshData,
-    refreshStats,
+    refreshStats: fetchAnalytics,
     exportUsers,
   };
 };

@@ -36,10 +36,8 @@ import FieldSelector from './FieldSelector';
 import FilterPanel from './FilterPanel';
 import ConfirmationModal from './ConfirmationModal';
 import { useDatabaseStudio } from '@/app/hooks/admin/useDatabaseStudio';
-import {
-  CONFIRMATION_KEYWORD,
-  CONFIRMATION_MESSAGES,
-} from '@/app/libs/database/databaseConfig';
+import { CONFIRMATION_MESSAGES } from './confirmations';
+import { deleteConfirmationPhrase } from '@/app/requests/admin/database';
 
 export default function DatabaseStudioClient() {
   const {
@@ -859,8 +857,15 @@ export default function DatabaseStudioClient() {
                   deleteTarget.ids.length
                 )
           }
-          keyword={CONFIRMATION_KEYWORD}
-          placeholder={CONFIRMATION_MESSAGES.delete.placeholder}
+          // A frase que a API exige, com o alvo: apagar 3 não confirma apagar 300.
+          keyword={deleteConfirmationPhrase(
+            selectedModel ?? '',
+            deleteTarget.ids.length
+          )}
+          placeholder={`Digite "${deleteConfirmationPhrase(
+            selectedModel ?? '',
+            deleteTarget.ids.length
+          )}" para confirmar`}
           type="danger"
         />
       )}

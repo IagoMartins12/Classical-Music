@@ -25,6 +25,11 @@ import {
   PageContainer,
 } from '../../../components/animation/AnimatedComponents';
 import { NotificationData } from '@/app/types/notification';
+import {
+  fetchNotificationsPage,
+  markAllNotificationsRead,
+  markNotificationRead,
+} from '@/app/requests/portal/notifications';
 import { useToast } from '@/app/hooks/useToast';
 import Select from '@/app/components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -54,7 +59,6 @@ export default function StudentNotificationsPageClient({
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<FilterType>('all');
   const [sort, setSort] = useState<SortType>('newest');
-  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
   const toast = useToast();
@@ -102,24 +106,17 @@ export default function StudentNotificationsPageClient({
   const markAsRead = useCallback(
     async (notificationId: string) => {
       try {
-        const response = await fetch(
-          `/api/student/notifications/${notificationId}/mark-read`,
-          {
-            method: 'POST',
-          }
-        );
+        await markNotificationRead(notificationId);
 
-        if (response.ok) {
-          setNotifications((prev) =>
-            prev.map((n) =>
-              n.id === notificationId
-                ? { ...n, status: 'READ' as const, readAt: new Date() }
-                : n
-            )
-          );
-          setUnreadCount((prev) => Math.max(0, prev - 1));
-          toast.success(t('notification_marked_read'));
-        }
+        setNotifications((prev) =>
+          prev.map((n) =>
+            n.id === notificationId
+              ? { ...n, status: 'READ' as const, readAt: new Date() }
+              : n
+          )
+        );
+        setUnreadCount((prev) => Math.max(0, prev - 1));
+        toast.success(t('notification_marked_read'));
       } catch {
         toast.error(t('error_mark_read'));
       }
@@ -130,21 +127,17 @@ export default function StudentNotificationsPageClient({
   const markAllAsRead = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/student/notifications/mark-all-read', {
-        method: 'POST',
-      });
+      await markAllNotificationsRead();
 
-      if (response.ok) {
-        setNotifications((prev) =>
-          prev.map((n) => ({
-            ...n,
-            status: 'READ' as const,
-            readAt: new Date(),
-          }))
-        );
-        setUnreadCount(0);
-        toast.success(t('all_notifications_marked_read'));
-      }
+      setNotifications((prev) =>
+        prev.map((n) => ({
+          ...n,
+          status: 'READ' as const,
+          readAt: new Date(),
+        }))
+      );
+      setUnreadCount(0);
+      toast.success(t('all_notifications_marked_read'));
     } catch {
       toast.error(t('error_mark_all_read'));
     } finally {
@@ -157,27 +150,26 @@ export default function StudentNotificationsPageClient({
 
     try {
       setLoading(true);
-      const response = await fetch(
-        `/api/student/notifications?page=${page + 1}&limit=20`
+      // A primeira carga traz até 50; a próxima página de 20 parte do que já
+      // está na tela, e as repetidas ficam de fora.
+      const newNotifications = await fetchNotificationsPage(
+        Math.floor(notifications.length / 20) + 1,
+        20
       );
+      const known = new Set(notifications.map((n) => n.id));
+      const fresh = newNotifications.filter((n) => !known.has(n.id));
 
-      if (response.ok) {
-        const data = await response.json();
-        const newNotifications = data.notifications;
-
-        if (newNotifications.length > 0) {
-          setNotifications((prev) => [...prev, ...newNotifications]);
-          setPage((prev) => prev + 1);
-        } else {
-          setHasMore(false);
-        }
+      if (fresh.length > 0) {
+        setNotifications((prev) => [...prev, ...fresh]);
+      } else {
+        setHasMore(false);
       }
     } catch {
       toast.error(t('error_load_more'));
     } finally {
       setLoading(false);
     }
-  }, [loading, hasMore, page, toast, t]);
+  }, [loading, hasMore, notifications, toast, t]);
 
   const formatTime = (date: Date | string) => {
     const now = new Date();

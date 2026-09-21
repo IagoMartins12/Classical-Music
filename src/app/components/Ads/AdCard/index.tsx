@@ -1,7 +1,7 @@
 // app/components/Ads/AdCard.tsx - Card de publicidade para sidebar
 'use client';
 
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { useState } from 'react';
 import { FiX, FiExternalLink } from 'react-icons/fi';
 

@@ -1,6 +1,7 @@
 // ==================== app/hooks/useCalendarManagement.ts ====================
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { apiFetch } from '@/app/libs/api/client';
 
 export function useCalendarManagement(onDataChange?: () => void) {
   // Event Management
@@ -50,22 +51,17 @@ export function useCalendarManagement(onDataChange?: () => void) {
     setIsDeletingEvent(true);
 
     try {
-      const response = await fetch(`/api/events/${deletingEvent.id}`, {
-        method: 'DELETE',
-      });
+      // O legado chamava `/api/events/:id`, rota que não existia.
+      await apiFetch(`/blog/events/${deletingEvent.id}`, { method: 'DELETE' });
 
-      const data = await response.json();
-
-      if (data.success) {
-        toast.success('Evento deletado com sucesso!', { icon: '🗑️' });
-        closeDeleteEventModal();
-        onDataChange?.();
-      } else {
-        toast.error(data.error || 'Erro ao deletar evento');
-      }
+      toast.success('Evento deletado com sucesso!', { icon: '🗑️' });
+      closeDeleteEventModal();
+      onDataChange?.();
     } catch (error) {
       console.error('Erro ao deletar evento:', error);
-      toast.error('Erro ao deletar evento');
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao deletar evento'
+      );
     } finally {
       setIsDeletingEvent(false);
     }
@@ -106,22 +102,17 @@ export function useCalendarManagement(onDataChange?: () => void) {
     setIsDeletingVenue(true);
 
     try {
-      const response = await fetch(`/api/venues/${deletingVenue.id}`, {
-        method: 'DELETE',
-      });
+      // O legado chamava `/api/venues/:id`, rota que não existia.
+      await apiFetch(`/blog/venues/${deletingVenue.id}`, { method: 'DELETE' });
 
-      const data = await response.json();
-
-      if (data.success) {
-        toast.success('Local deletado com sucesso!', { icon: '🗑️' });
-        closeDeleteVenueModal();
-        onDataChange?.();
-      } else {
-        toast.error(data.error || 'Erro ao deletar local');
-      }
+      toast.success('Local deletado com sucesso!', { icon: '🗑️' });
+      closeDeleteVenueModal();
+      onDataChange?.();
     } catch (error) {
       console.error('Erro ao deletar local:', error);
-      toast.error('Erro ao deletar local');
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao deletar local'
+      );
     } finally {
       setIsDeletingVenue(false);
     }

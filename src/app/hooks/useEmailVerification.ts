@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { resendAccountConfirmation } from '@/app/actions/auth';
+import { legacyAuth } from '@/app/libs/api/compat';
 import { useLanguageStore } from '../stores/useLanguageStore';
 
 interface UseEmailVerificationProps {
@@ -34,7 +34,7 @@ export function useEmailVerification({
     setIsSending(true);
 
     try {
-      const result = await resendAccountConfirmation(userEmail);
+      const result = await legacyAuth.resendConfirmationByEmail(userEmail);
 
       const message =
         language === 'pt'

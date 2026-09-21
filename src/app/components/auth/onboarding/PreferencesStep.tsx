@@ -4,11 +4,12 @@
 import { useOnboardingModal } from '@/app/stores/authStore';
 import React, { useState, useEffect } from 'react';
 import { FiSearch, FiHeart, FiLoader } from 'react-icons/fi';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Select from '../../Common/Select';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import Input from '../../Common/Inputs';
+import { findComposers } from '@/app/requests/catalog-search';
 
 interface Composer {
   id: string;
@@ -83,35 +84,21 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
       try {
         console.log('🔍 Buscando compositores na API para:', composerSearch);
 
-        const response = await fetch('/api/composers', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            q: composerSearch,
-            limit: 20,
-          }),
-        });
+        const apiComposers = (await findComposers(composerSearch, 20)).map(
+          (composer) => ({
+            ...composer,
+            fullName: composer.fullName ?? composer.name,
+          })
+        );
+        console.log('✅ Compositores encontrados na API:', apiComposers.length);
 
-        if (response.ok) {
-          const apiComposers = await response.json();
-          console.log(
-            '✅ Compositores encontrados na API:',
-            apiComposers.length
-          );
-
-          // Filtrar compositores que já não estão na lista inicial
-          const newComposers = apiComposers.filter(
-            (apiComposer: any) =>
-              !initialComposers.some((initial) => initial.id === apiComposer.id)
-          );
-          console.log('API ', apiComposers);
-          setSearchedComposers(newComposers);
-          setHasSearchedApi(true);
-        } else {
-          console.error('❌ Erro na busca de compositores:', response.status);
-        }
+        // Filtrar compositores que já não estão na lista inicial
+        const newComposers = apiComposers.filter(
+          (apiComposer) =>
+            !initialComposers.some((initial) => initial.id === apiComposer.id)
+        );
+        setSearchedComposers(newComposers);
+        setHasSearchedApi(true);
       } catch (error) {
         console.error('❌ Erro ao buscar compositores na API:', error);
       } finally {

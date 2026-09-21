@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { signOut, useSession } from 'next-auth/react';
+import { signOut, useSession } from '@/app/libs/session';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import {
@@ -158,42 +158,46 @@ export const useAccountManagement = () => {
     }
   }, [user?.id]);
 
-  // Delete account function
-  const deleteAccount = useCallback(async () => {
-    if (!user?.id) {
-      toast.error('Usuário não encontrado');
-      return { success: false };
-    }
-
-    setIsDeleting(true);
-    try {
-      const result = await deleteUserAccount(
-        user.id,
-        window.location.hostname,
-        navigator.userAgent
-      );
-
-      if (result.success) {
-        await signOut({ redirect: false });
-        toast.success(
-          'Sua conta foi excluída com sucesso. Sentiremos sua falta!'
-        );
-        router.push('/');
-        logout();
-
-        return { success: true, data: result.data };
-      } else {
-        toast.error(result.message);
-        return { success: false, error: result.message };
+  // Delete account function — a API pede a senha atual de quem tem senha
+  const deleteAccount = useCallback(
+    async (currentPassword?: string) => {
+      if (!user?.id) {
+        toast.error('Usuário não encontrado');
+        return { success: false };
       }
-    } catch (error) {
-      console.error('Error deleting account:', error);
-      toast.error('Erro ao deletar conta');
-      return { success: false, error: 'Erro interno' };
-    } finally {
-      setIsDeleting(false);
-    }
-  }, [user?.id, logout, router]);
+
+      setIsDeleting(true);
+      try {
+        const result = await deleteUserAccount(
+          user.id,
+          window.location.hostname,
+          navigator.userAgent,
+          currentPassword
+        );
+
+        if (result.success) {
+          await signOut({ redirect: false });
+          toast.success(
+            'Sua conta foi excluída com sucesso. Sentiremos sua falta!'
+          );
+          router.push('/');
+          logout();
+
+          return { success: true, data: result.data };
+        } else {
+          toast.error(result.message);
+          return { success: false, error: result.message };
+        }
+      } catch (error) {
+        console.error('Error deleting account:', error);
+        toast.error('Erro ao deletar conta');
+        return { success: false, error: 'Erro interno' };
+      } finally {
+        setIsDeleting(false);
+      }
+    },
+    [user?.id, logout, router]
+  );
 
   // Helper function to get user type label
   const getUserTypeLabel = useCallback(

@@ -11,7 +11,8 @@ import Checkbox from '@/app/components/Common/Checkbox';
 import Input from '@/app/components/Common/Inputs';
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
+import { workScoresRequest } from '@/app/requests/work-scores';
 
 interface ScoreModalProps {
   editor: Editor;
@@ -37,10 +38,10 @@ export function ScoreModal({ editor, onClose }: ScoreModalProps) {
   const loadScores = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/work-scores?workId=${selectedWork}`);
-      const data = await response.json();
+      const data = await workScoresRequest(
+        new URLSearchParams({ workId: selectedWork })
+      );
 
-      console.log('teste', data);
       setScores(data.workScores || []);
     } catch (error) {
       console.error('Erro ao buscar partituras:', error);

@@ -3,6 +3,10 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { FaStar, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import {
+  loadFeaturedArticles,
+  reorderFeaturedArticles,
+} from '@/app/requests/blog/admin-actions';
 
 interface FeaturedArticle {
   id: string;
@@ -75,12 +79,7 @@ export default function FeaturedArticlesManager({
 
   const fetchFeaturedArticles = async () => {
     try {
-      const response = await fetch('/api/blog/articles/featured');
-      const data = await response.json();
-
-      if (data.success) {
-        setFeaturedArticles(data.articles);
-      }
+      setFeaturedArticles(await loadFeaturedArticles());
     } catch (error) {
       console.error('Erro ao buscar destaques:', error);
     } finally {
@@ -143,16 +142,7 @@ export default function FeaturedArticlesManager({
     // Salvar no banco apenas artigos existentes
     if (articlesToSave.length > 0) {
       try {
-        await fetch('/api/blog/articles/featured/reorder', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            articles: articlesToSave.map((a) => ({
-              id: a.id,
-              featuredOrder: a.featuredOrder,
-            })),
-          }),
-        });
+        await reorderFeaturedArticles(articlesToSave);
       } catch (error) {
         console.error('Erro ao reordenar:', error);
         fetchFeaturedArticles(); // Recarregar em caso de erro

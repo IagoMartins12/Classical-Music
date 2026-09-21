@@ -1,11 +1,11 @@
 // app/components/ComposersClient/ComposerArticlesSection.tsx
 'use client';
 
-import Link from 'next/link';
-import Image from 'next/image';
+import Link from '@/app/components/LocalizedLink';
+import Image from '@/app/components/SmartImage';
 import { FiBookOpen, FiClock, FiArrowRight, FiUser } from 'react-icons/fi';
 import { AnimatedCard, AnimatedItem } from '../animation/AnimatedComponents';
-import { BlogArticlePreview } from '@/app/requests/blog/blog-requests';
+import type { BlogArticlePreview } from '@/app/requests/blog/composer-articles';
 import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ComposerArticlesSectionProps {

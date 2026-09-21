@@ -4,8 +4,10 @@
 import {
   ComposerWork,
   ComposerFilterOptions,
+  getComposerWorksWithFilters,
+  getComposerWorkTypeCounts,
 } from '@/app/requests/composer-details';
-import Link from 'next/link';
+import Link from '@/app/components/LocalizedLink';
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   FiMusic,
@@ -200,20 +202,8 @@ export default function ComposerWorks({
   useEffect(() => {
     const fetchWorkTypeCounts = async () => {
       try {
-        const response = await fetch('/api/composer-work-types', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            composerId,
-          }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setWorkTypeCounts(data.workTypeCounts || {});
-        }
+        const data = await getComposerWorkTypeCounts(composerId);
+        setWorkTypeCounts(data.workTypeCounts || {});
       } catch (error) {
         console.error('Erro ao buscar contagens dos workTypes:', error);
       }
@@ -282,21 +272,10 @@ export default function ComposerWorks({
           const workTypesToFilter = WORK_TYPE_GROUPS[selectedWorkType];
           if (workTypesToFilter && workTypesToFilter.length > 0) {
             const promises = workTypesToFilter.map((type) =>
-              fetch('/api/composer-works', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  composerId,
-                  page: 1,
-                  limit: 1000,
-                  filters: {
-                    ...filters,
-                    workType: type,
-                  },
-                }),
-              }).then((res) => res.json())
+              getComposerWorksWithFilters(composerId, 1, 1000, {
+                ...filters,
+                workType: type,
+              })
             );
 
             const results = await Promise.all(promises);
@@ -323,24 +302,12 @@ export default function ComposerWorks({
         }
 
         // Filtro normal
-        const response = await fetch('/api/composer-works', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            composerId,
-            page: 1,
-            limit: 50,
-            filters: Object.keys(filters).length > 0 ? filters : undefined,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Erro: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await getComposerWorksWithFilters(
+          composerId,
+          1,
+          50,
+          Object.keys(filters).length > 0 ? filters : undefined
+        );
         setWorks(data.works);
         setTotalCount(data.totalCount);
         setHasMore(data.hasMore);
@@ -398,24 +365,12 @@ export default function ComposerWorks({
         ...(selectedWorkType !== 'all' && { workType: selectedWorkType }),
       };
 
-      const response = await fetch('/api/composer-works', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          composerId,
-          page: currentPage + 1,
-          limit: 50,
-          filters: Object.keys(filters).length > 0 ? filters : undefined,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erro: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = await getComposerWorksWithFilters(
+        composerId,
+        currentPage + 1,
+        50,
+        Object.keys(filters).length > 0 ? filters : undefined
+      );
       setWorks((prev) => [...prev, ...data.works]);
       setHasMore(data.hasMore);
       setCurrentPage((prev) => prev + 1);

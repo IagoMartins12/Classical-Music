@@ -242,10 +242,27 @@ export async function loadPageTranslations(
 // Seções comuns que muitas páginas usam
 export const COMMON_TRANSLATION_SECTIONS = [
   'navbar',
-  'components/auth-modals',
   'pages/error',
-  'components/onboarding',
   'components/composerFilter',
+];
+
+/**
+ * Seções que **não** vão no payload da página.
+ *
+ * `components/auth-modals` e `components/onboarding` são 22,9 kB dos 25,4 kB
+ * que as seções comuns pesavam — e são texto de modal: nada disso aparece na
+ * primeira pintura de nenhuma página. Ir no payload significava mandar 23 kB
+ * de texto (o dobro contando HTML e RSC) em toda visita anônima para uma
+ * janela que a maioria nunca abre.
+ *
+ * Agora o navegador as busca em `/translations/*.json` — arquivo estático,
+ * guardado pelo navegador e reaproveitado entre páginas. Quem as usa já
+ * declara `useTranslation({ sections: [...] })`, e o `TranslationProvider`
+ * carrega o que for pedido (ver `context/TranslationContext`).
+ */
+export const DEFERRED_TRANSLATION_SECTIONS = [
+  'components/auth-modals',
+  'components/onboarding',
 ];
 
 /**
@@ -304,7 +321,7 @@ export function generateStaticMetadata(pageKey: string, additionalData?: any) {
         'music education',
       ],
       locale: 'en_US',
-      url: 'https://opusatlas.com',
+      url: 'https://opusatlas.com.br',
     },
   };
 

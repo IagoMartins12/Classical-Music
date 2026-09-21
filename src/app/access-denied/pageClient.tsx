@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
 import Link from 'next/link';
 import {
   FiShield,
@@ -30,7 +30,7 @@ import StudentNavigation from '../components/TeacherSystem/StudentNavigation';
 import Navbar from '../components/Navbar';
 import AdminHeader from '../components/Admin/AdminHeader';
 import AdminSidebar from '../components/Admin/AdminSidebar';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { LuPiano } from 'react-icons/lu';
 import { useTranslation } from '../context/TranslationContext';
 
@@ -211,7 +211,7 @@ export default function AccessDenied() {
         {
           title: t('acess_denied_suggestion_fazer_login'),
           description: t('acess_denied_suggestion_fazer_login_desc'),
-          href: '/api/auth/signin',
+          href: '/login',
           icon: FiUser,
           color: 'from-brand-primary to-brand-secondary',
         },

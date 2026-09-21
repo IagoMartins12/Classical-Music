@@ -1,6 +1,18 @@
 // app/hooks/admin/useAdminComposers.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import {
+  adminKeys,
+  errorMessage,
+  useAdminQuery,
+  useInvalidateAdmin,
+} from './query';
 import { TimePeriod } from '@/app/components/Admin/Common/PeriodSelector';
+import {
+  deleteAdminComposer,
+  getAdminComposerStats,
+  listAdminComposers,
+  updateAdminComposer,
+} from '@/app/requests/admin/catalog';
 
 export interface ComposerItem {
   id: string;
@@ -79,137 +91,79 @@ interface UseAdminComposersReturn {
   deleteComposer: (id: string) => Promise<boolean>;
 }
 
+/**
+ * Compositores do painel. Lista e métricas são estado de servidor (TanStack
+ * Query); a chave da lista leva os filtros, então trocar e voltar um filtro
+ * mostra o que está em cache enquanto revalida. Editar ou apagar invalida a
+ * lista e as métricas, em vez de remendar o array na mão.
+ */
 export const useAdminComposers = (): UseAdminComposersReturn => {
-  const [composers, setComposers] = useState<ComposerItem[]>([]);
-  const [stats, setStats] = useState<ComposerStats | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [statsLoading, setStatsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [pagination, setPagination] = useState<any>(null);
-  const [period, setPeriod] = useState<TimePeriod>('7d'); // Padrão: última semana
+  const [filters, setFilters] = useState<ComposerFilters>({});
+  // As métricas do catálogo da API são do acervo inteiro, não por período.
+  const [period, setPeriod] = useState<TimePeriod>('7d');
+  const [actionError, setActionError] = useState<string | null>(null);
+  const invalidate = useInvalidateAdmin();
 
-  const fetchStats = useCallback(async () => {
-    setStatsLoading(true);
-    try {
-      const response = await fetch(
-        `/api/admin/composers?action=stats&period=${period}`
-      );
-      if (!response.ok) throw new Error('Erro ao carregar estatísticas');
-
-      const data = await response.json();
-      if (data.success) {
-        setStats(data.stats);
-      }
-    } catch (err) {
-      console.error('Erro ao buscar stats:', err);
-    } finally {
-      setStatsLoading(false);
-    }
-  }, [period]);
-
-  const fetchComposers = useCallback(
-    async (filters: ComposerFilters = {}) => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const searchParams = new URLSearchParams({
-          action: 'list',
-          period: period,
-          ...Object.fromEntries(
-            Object.entries(filters).filter(
-              ([_, v]) => v !== undefined && v !== '' && v !== null
-            )
-          ),
-        });
-
-        const response = await fetch(`/api/admin/composers?${searchParams}`);
-        if (!response.ok) throw new Error('Erro ao carregar compositores');
-
-        const data = await response.json();
-        if (data.success) {
-          setComposers(data.composers);
-          setPagination(data.pagination);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
-      } finally {
-        setLoading(false);
-      }
-    },
-    [period]
+  const list = useAdminQuery(adminKeys.list('composers', filters), () =>
+    listAdminComposers(filters)
+  );
+  const stats = useAdminQuery(
+    adminKeys.area('composer-stats'),
+    getAdminComposerStats
   );
 
-  const updateComposer = useCallback(
-    async (id: string, updateData: any): Promise<boolean> => {
-      try {
-        const response = await fetch(`/api/admin/composers?id=${id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updateData),
-        });
-
-        if (!response.ok) throw new Error('Erro ao atualizar compositor');
-
-        const data = await response.json();
-        if (data.success) {
-          setComposers((prev) =>
-            prev.map((composer) =>
-              composer.id === id ? { ...composer, ...updateData } : composer
-            )
-          );
-          return true;
-        }
-        return false;
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro ao atualizar');
-        return false;
-      }
+  const fetchComposers = useCallback(
+    async (nextFilters: ComposerFilters = {}) => {
+      setFilters(nextFilters);
     },
     []
   );
 
-  const deleteComposer = useCallback(async (id: string): Promise<boolean> => {
-    try {
-      const response = await fetch(`/api/admin/composers?id=${id}`, {
-        method: 'DELETE',
-      });
+  const afterWrite = useCallback(async () => {
+    await Promise.all([invalidate('composers'), stats.refetch()]);
+  }, [invalidate, stats]);
 
-      if (!response.ok) throw new Error('Erro ao deletar compositor');
-
-      const data = await response.json();
-      if (data.success) {
-        setComposers((prev) => prev.filter((composer) => composer.id !== id));
+  const updateComposer = useCallback(
+    async (id: string, updateData: any): Promise<boolean> => {
+      try {
+        await updateAdminComposer(id, updateData);
+        setActionError(null);
+        await afterWrite();
         return true;
+      } catch (error) {
+        setActionError(errorMessage(error));
+        return false;
       }
-      return false;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao deletar');
-      return false;
-    }
-  }, []);
+    },
+    [afterWrite]
+  );
 
-  const refreshStats = useCallback(async () => {
-    return fetchStats();
-  }, [fetchStats]);
-
-  // Refetch when period changes
-  useEffect(() => {
-    fetchStats();
-    fetchComposers();
-  }, [period, fetchStats, fetchComposers]);
+  const deleteComposer = useCallback(
+    async (id: string): Promise<boolean> => {
+      try {
+        await deleteAdminComposer(id);
+        setActionError(null);
+        await afterWrite();
+        return true;
+      } catch (error) {
+        setActionError(errorMessage(error));
+        return false;
+      }
+    },
+    [afterWrite]
+  );
 
   return {
-    composers,
-    stats,
-    loading,
-    statsLoading,
-    error,
-    pagination,
+    composers: list.data?.composers ?? [],
+    stats: stats.data ?? null,
+    loading: list.loading,
+    statsLoading: stats.loading,
+    error: list.error ?? actionError,
+    pagination: list.data?.pagination ?? null,
     period,
     setPeriod,
     fetchComposers,
-    refreshStats,
+    refreshStats: stats.refetch,
     updateComposer,
     deleteComposer,
   };

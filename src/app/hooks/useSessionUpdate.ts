@@ -1,227 +1,87 @@
-// hooks/useSessionUpdate.ts (versão melhorada com novos campos)
+// hooks/useSessionUpdate.ts
 'use client';
 
-import { useSession } from 'next-auth/react';
 import { useCallback } from 'react';
-import { useUserStore } from './userStore';
-import { getUserById } from '@/app/actions/auth';
+import { useSession } from '@/app/libs/session';
+import { User, useUserStore } from './userStore';
 
+/**
+ * Relê a sessão depois de uma edição de perfil.
+ *
+ * A fonte agora é a API (`GET /profile?include=account`): não há sessão do
+ * NextAuth para reescrever à mão com os valores novos. Quem chama já gravou a
+ * mudança; aqui a sessão é relida, e o store local acompanha. As funções têm
+ * os mesmos nomes e retornos de antes, para as telas não mudarem.
+ */
 export function useSessionUpdate() {
-  const { data: session, update: updateSession } = useSession();
+  const { data: session, update } = useSession();
   const { setUser, updateUser } = useUserStore();
 
-  // 🔄 FUNÇÃO PARA ATUALIZAR SESSÃO COMPLETA
   const updateUserSession = useCallback(async (): Promise<boolean> => {
-    if (!session?.user?.id) {
-      console.warn('⚠️ Tentativa de atualizar sessão sem usuário autenticado');
-      return false;
-    }
-
     try {
-      console.log('🔄 Atualizando sessão do usuário:', session.user.id);
+      const fresh = await update();
 
-      // 1. Buscar dados atualizados do banco
-      const updatedUser = await getUserById(session.user.id);
-
-      if (!updatedUser) {
-        console.error('❌ Usuário não encontrado no banco');
+      if (!fresh?.user) {
         return false;
       }
 
-      console.log('✅ Dados atualizados obtidos do banco:', {
-        id: updatedUser.id,
-        onboardingCompleted: updatedUser.onboardingCompleted,
-        hasLocation: !!(
-          updatedUser.city ||
-          updatedUser.state ||
-          updatedUser.country
-        ),
-        hasPhone: !!updatedUser.phone,
-        phoneCountryCode: updatedUser.phoneCountryCode,
-      });
-
-      // 2. Atualizar sessão do NextAuth
-      await updateSession({
-        ...session,
-        user: {
-          ...session.user,
-          ...updatedUser,
-        },
-      });
-
-      // 3. Atualizar store local
-      setUser({
-        id: updatedUser.id,
-        firstName: updatedUser.firstName,
-        lastName: updatedUser.lastName,
-        email: updatedUser.email!,
-        image: updatedUser.image,
-        bio: updatedUser.bio,
-        role: updatedUser.role,
-        onboardingCompleted: updatedUser.onboardingCompleted,
-        userType: updatedUser.userType,
-
-        // 🆕 CAMPOS DE LOCALIZAÇÃO
-        city: updatedUser.city,
-        state: updatedUser.state,
-        country: updatedUser.country,
-
-        // 🆕 CAMPOS DE TELEFONE
-        phone: updatedUser.phone,
-        phoneCountryCode: updatedUser.phoneCountryCode,
-        phoneNumber: updatedUser.phoneNumber,
-
-        // Campos existentes
-        favoriteComposerId: updatedUser.favoriteComposerId,
-        favoriteEpochId: updatedUser.favoriteEpochId,
-        experienceLevel: updatedUser.experienceLevel,
-        practiceTimePerWeek: updatedUser.practiceTimePerWeek,
-        profilePublic: updatedUser.profilePublic,
-        showLocation: updatedUser.showLocation,
-      });
-
-      console.log('✅ Sessão e store atualizados com sucesso');
+      setUser(fresh.user as unknown as User);
       return true;
-    } catch (error) {
-      console.error('❌ Erro ao atualizar sessão:', error);
+    } catch {
       return false;
     }
-  }, [session, updateSession, setUser]);
+  }, [update, setUser]);
 
-  // 🔄 FUNÇÃO PARA ATUALIZAR APENAS CAMPOS ESPECÍFICOS
-  const updateUserField = useCallback(
-    async (field: string, value: any): Promise<boolean> => {
-      if (!session?.user?.id) {
-        console.warn('⚠️ Tentativa de atualizar campo sem usuário autenticado');
-        return false;
-      }
-
-      try {
-        console.log(`🔄 Atualizando campo ${field}:`, value);
-
-        // 1. Atualizar sessão
-        await updateSession({
-          ...session,
-          user: {
-            ...session.user,
-            [field]: value,
-          },
-        });
-
-        // 2. Atualizar store local
-        updateUser({ [field]: value });
-
-        console.log(`✅ Campo ${field} atualizado com sucesso`);
-        return true;
-      } catch (error) {
-        console.error(`❌ Erro ao atualizar campo ${field}:`, error);
-        return false;
-      }
-    },
-    [session, updateSession, updateUser]
-  );
-
-  // 🔄 FUNÇÃO PARA ATUALIZAR MÚLTIPLOS CAMPOS
   const updateUserFields = useCallback(
-    async (fields: Record<string, any>): Promise<boolean> => {
+    async (fields: Record<string, unknown>): Promise<boolean> => {
       if (!session?.user?.id) {
-        console.warn(
-          '⚠️ Tentativa de atualizar campos sem usuário autenticado'
-        );
         return false;
       }
 
-      try {
-        console.log('🔄 Atualizando múltiplos campos:', fields);
-
-        // 1. Atualizar sessão
-        await updateSession({
-          ...session,
-          user: {
-            ...session.user,
-            ...fields,
-          },
-        });
-
-        // 2. Atualizar store local
-        updateUser(fields);
-
-        console.log('✅ Múltiplos campos atualizados com sucesso');
-        return true;
-      } catch (error) {
-        console.error('❌ Erro ao atualizar múltiplos campos:', error);
-        return false;
-      }
+      // Otimista: a tela já mostra o novo valor enquanto a sessão é relida.
+      updateUser(fields as Partial<User>);
+      return updateUserSession();
     },
-    [session, updateSession, updateUser]
+    [session?.user?.id, updateUser, updateUserSession]
   );
 
-  // 🔄 FUNÇÃO ESPECÍFICA PARA ATUALIZAR LOCALIZAÇÃO
+  const updateUserField = useCallback(
+    (field: string, value: unknown): Promise<boolean> =>
+      updateUserFields({ [field]: value }),
+    [updateUserFields]
+  );
+
   const updateUserLocation = useCallback(
-    async (location: {
+    (location: {
       city?: string | null;
       state?: string | null;
       country?: string | null;
-    }): Promise<boolean> => {
-      console.log('📍 Atualizando localização do usuário:', location);
-      return await updateUserFields(location);
-    },
+    }): Promise<boolean> => updateUserFields(location),
     [updateUserFields]
   );
 
-  // 🔄 FUNÇÃO ESPECÍFICA PARA ATUALIZAR TELEFONE
   const updateUserPhone = useCallback(
-    async (phoneData: {
+    (phoneData: {
       phone?: string | null;
       phoneCountryCode?: string | null;
       phoneNumber?: string | null;
-    }): Promise<boolean> => {
-      console.log('📞 Atualizando telefone do usuário:', phoneData);
-      return await updateUserFields(phoneData);
-    },
+    }): Promise<boolean> => updateUserFields(phoneData),
     [updateUserFields]
   );
 
-  // 🔄 FUNÇÃO PARA MARCAR ONBOARDING COMO COMPLETO
-  const markOnboardingComplete = useCallback(async (): Promise<boolean> => {
-    console.log('🎉 Marcando onboarding como completo');
-    return await updateUserField('onboardingCompleted', true);
-  }, [updateUserField]);
-
-  // 🔄 FUNÇÃO PARA FORÇAR REFRESH COMPLETO
-  const forceRefreshSession = useCallback(async (): Promise<boolean> => {
-    try {
-      console.log('🔄 Forçando refresh completo da sessão');
-
-      // Força o NextAuth a buscar dados atualizados do banco
-      await updateSession();
-
-      // Em seguida, sincroniza com o store local
-      const success = await updateUserSession();
-
-      console.log('✅ Refresh completo da sessão finalizado');
-      return success;
-    } catch (error) {
-      console.error('❌ Erro no refresh completo da sessão:', error);
-      return false;
-    }
-  }, [updateSession, updateUserSession]);
+  const markOnboardingComplete = useCallback(
+    (): Promise<boolean> => updateUserField('onboardingCompleted', true),
+    [updateUserField]
+  );
 
   return {
-    // Funções principais
     updateUserSession,
     updateUserField,
     updateUserFields,
-
-    // Funções específicas
     updateUserLocation,
     updateUserPhone,
     markOnboardingComplete,
-
-    // Função de refresh
-    forceRefreshSession,
-
-    // Estado atual
+    forceRefreshSession: updateUserSession,
     isAuthenticated: !!session?.user?.id,
     currentUser: session?.user,
   };

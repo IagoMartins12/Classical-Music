@@ -1,7 +1,7 @@
 // components/blog/ArticlePreviewModal.tsx
 'use client';
 
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { ArticleContent } from '../ArticleContent';
 import Modal from '../../Modal';
 

@@ -1,6 +1,8 @@
 // app/hooks/useStudentLessons.ts - Hook para gerenciar aulas do aluno
 
 import { useState, useCallback } from 'react';
+import { apiFetch } from '@/app/libs/api/client';
+import { loadStudentLessons } from '@/app/requests/portal/student';
 
 interface StudentLesson {
   id: string;
@@ -120,30 +122,43 @@ export function useStudentLessons(): UseStudentLessonsState &
       setError(null);
 
       try {
-        const params = new URLSearchParams();
-
-        if (filters.teacherId) params.append('teacherId', filters.teacherId);
-        if (filters.status) params.append('status', filters.status);
-        if (filters.dateFrom) params.append('dateFrom', filters.dateFrom);
-        if (filters.dateTo) params.append('dateTo', filters.dateTo);
-        params.append('limit', (filters.limit || 20).toString());
-        params.append('offset', (filters.offset || 0).toString());
-
-        const response = await fetch(`/api/lessons?${params}`);
-
-        if (!response.ok) {
-          throw new Error(`Erro ${response.status}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error(data.error || 'Erro ao carregar aulas');
-        }
+        const data = await loadStudentLessons({
+          ...filters,
+          limit: filters.limit || 20,
+          offset: filters.offset || 0,
+        });
 
         setState((prev) => ({
           ...prev,
-          lessons: data.lessons,
+          lessons: data.lessons.map(
+            (lesson): StudentLesson => ({
+              id: lesson.id,
+              title: lesson.title,
+              description: lesson.description ?? undefined,
+              scheduledAt: lesson.scheduledAt,
+              duration: lesson.duration,
+              status: lesson.status,
+              type: lesson.type,
+              location: lesson.location ?? undefined,
+              objectives: lesson.objectives,
+              homework: lesson.homework ?? undefined,
+              publicNotes: lesson.publicNotes ?? undefined,
+              studentFeedback: lesson.studentFeedback ?? undefined,
+              lessonSummary: lesson.lessonSummary ?? undefined,
+              skillsWorked: lesson.skillsWorked,
+              improvements: lesson.improvements,
+              challenges: lesson.challenges,
+              teacher: {
+                id: lesson.teacher.id,
+                name: lesson.teacher.name,
+                email: lesson.teacher.email,
+                image: lesson.teacher.image ?? undefined,
+              },
+              createdAt: lesson.createdAt,
+              // A API não devolve a data de atualização da aula.
+              updatedAt: lesson.createdAt,
+            })
+          ),
           pagination: data.pagination,
         }));
       } catch (error) {
@@ -161,32 +176,17 @@ export function useStudentLessons(): UseStudentLessonsState &
     async (
       lessonId: string,
       feedback: string,
-      rating?: number
+      // A API guarda só o texto do feedback do aluno; nota não tem campo.
+      _rating?: number
     ): Promise<boolean> => {
       setLoading('addFeedback', true);
       setError(null);
 
       try {
-        const response = await fetch(`/api/lessons/${lessonId}`, {
+        await apiFetch(`/lessons/${lessonId}/feedback`, {
           method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            studentFeedback: feedback,
-            studentRating: rating,
-          }),
+          body: { feedback },
         });
-
-        if (!response.ok) {
-          throw new Error(`Erro ${response.status}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error(data.error || 'Erro ao adicionar feedback');
-        }
 
         // Update lesson in state
         setState((prev) => ({

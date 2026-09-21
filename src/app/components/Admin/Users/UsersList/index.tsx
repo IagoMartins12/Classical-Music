@@ -27,6 +27,7 @@ import {
   PageContainer,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
+import VirtualList from '@/app/components/Admin/Common/VirtualList';
 import { useAdminUsers, AdminUser } from '@/app/hooks/admin/useAdminUsers';
 import { formatNumber } from '../../Utils';
 import UserEditModal from '../../Modals/UserEditModal';
@@ -34,7 +35,7 @@ import UserDetailsModal from '../../Modals/UserDetailsModal';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 import LoadingAdminState from '../../Common/LoadingState';
-import { UserListFilters } from '@/app/api/admin/users/route';
+import type { UserListFilters } from '@/app/requests/admin/users';
 
 interface FilterOption {
   value: string;
@@ -69,6 +70,9 @@ const DIRECTION_OPTIONS: FilterOption[] = [
   { value: 'asc', label: 'Crescente' },
 ];
 
+/** Altura aproximada do cartão de usuário; a real é medida ao montar. */
+const USER_ROW_HEIGHT = 168;
+
 export default function UsersList() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -86,6 +90,7 @@ export default function UsersList() {
   const {
     users,
     loading,
+    loadingMore,
     error,
     pagination,
     fetchUsers,
@@ -497,178 +502,185 @@ export default function UsersList() {
           </AnimatedCard>
         ) : (
           <div className="space-y-3 md:space-y-4">
-            {users.map((user) => (
-              <AnimatedCard
-                key={user.id}
-                className="classical-card hover:shadow-theme-glow transition-all duration-300"
-              >
-                <div className="p-3 md:p-4">
-                  <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-0">
-                    {/* Linha Superior: Avatar + Info Básica */}
-                    <div className="flex items-start md:items-center space-x-3 md:space-x-4 flex-1 min-w-0">
-                      {/* Avatar */}
-                      <div className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center text-theme-primary font-bold text-base md:text-lg">
-                        {user.name?.charAt(0) || user.email?.charAt(0) || 'U'}
-                      </div>
-
-                      {/* Dados Básicos */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start flex-col gap-1 mb-1">
-                          <h3 className="font-bold text-theme-primary text-sm md:text-base truncate w-full">
-                            {user.name || 'Usuário Sem Nome'}
-                          </h3>
-
-                          {/* Badges */}
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            {/* Badge de Role */}
-                            {user.role === 1 && (
-                              <span className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium bg-accent-blue/20 text-accent-blue flex items-center gap-1">
-                                <FiAward className="w-2.5 h-2.5 md:w-3 md:h-3" />
-                                Professor
-                                {user.teacherProfile?.isVerified && (
-                                  <span className="text-accent-green">✓</span>
-                                )}
-                              </span>
-                            )}
-
-                            {user.role === 2 && (
-                              <span className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium bg-accent-red/20 text-accent-red flex items-center gap-1">
-                                <FiShield className="w-2.5 h-2.5 md:w-3 md:h-3" />
-                                Admin
-                              </span>
-                            )}
-
-                            {/* Badge de User Type */}
-                            {user.userType && (
-                              <span
-                                className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium ${
-                                  user.userType === 'TEACHER'
-                                    ? 'bg-accent-purple/20 text-accent-purple'
-                                    : user.userType === 'PROFESSIONAL'
-                                      ? 'bg-accent-green/20 text-accent-green'
-                                      : user.userType === 'MUSIC_STUDENT'
-                                        ? 'bg-accent-blue/20 text-accent-blue'
-                                        : 'bg-theme-secondary text-theme-tertiary'
-                                }`}
-                              >
-                                {user.userType === 'MUSIC_STUDENT'
-                                  ? 'Estudante'
-                                  : user.userType === 'CASUAL_USER'
-                                    ? 'Casual'
-                                    : user.userType === 'PROFESSIONAL'
-                                      ? 'Profissional'
-                                      : user.userType === 'TEACHER'
-                                        ? 'Professor'
-                                        : user.userType}
-                              </span>
-                            )}
-
-                            {/* Status do Teacher Profile */}
-                            {user.isTeacher && user.teacherProfile && (
-                              <span
-                                className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium ${
-                                  user.teacherProfile.status === 'ACTIVE'
-                                    ? 'bg-accent-green/20 text-accent-green'
-                                    : user.teacherProfile.status === 'PENDING'
-                                      ? 'bg-accent-yellow/20 text-accent-yellow'
-                                      : 'bg-theme-secondary text-theme-tertiary'
-                                }`}
-                              >
-                                {user.teacherProfile.status === 'ACTIVE' &&
-                                  'Ativo'}
-                                {user.teacherProfile.status === 'PENDING' &&
-                                  'Pendente'}
-                                {user.teacherProfile.status === 'INACTIVE' &&
-                                  'Inativo'}
-                              </span>
-                            )}
-                          </div>
+            <VirtualList
+              items={users}
+              itemKey={(user) => user.id}
+              estimateHeight={USER_ROW_HEIGHT}
+              gap={16}
+              className="space-y-3 md:space-y-4"
+            >
+              {(user) => (
+                <AnimatedCard
+                  key={user.id}
+                  className="classical-card hover:shadow-theme-glow transition-all duration-300"
+                >
+                  <div className="p-3 md:p-4">
+                    <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-0">
+                      {/* Linha Superior: Avatar + Info Básica */}
+                      <div className="flex items-start md:items-center space-x-3 md:space-x-4 flex-1 min-w-0">
+                        {/* Avatar */}
+                        <div className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center text-theme-primary font-bold text-base md:text-lg">
+                          {user.name?.charAt(0) || user.email?.charAt(0) || 'U'}
                         </div>
 
-                        {/* Info Secundária */}
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs md:text-sm text-theme-tertiary">
-                          <span className="flex items-center gap-1 truncate">
-                            <FiMail className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
-                            <span className="truncate">{user.email}</span>
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <FiClock className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
-                            {new Date(user.createdAt).toLocaleDateString(
-                              'pt-BR'
-                            )}
-                          </span>
+                        {/* Dados Básicos */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start flex-col gap-1 mb-1">
+                            <h3 className="font-bold text-theme-primary text-sm md:text-base truncate w-full">
+                              {user.name || 'Usuário Sem Nome'}
+                            </h3>
 
-                          {/* Info de Instrumentos para Professores */}
-                          {user.isTeacher &&
-                            user.teacherProfile &&
-                            user.teacherProfile.instruments &&
-                            user.teacherProfile.instruments.length > 0 && (
-                              <span className="hidden sm:flex items-center gap-1 text-accent-blue">
-                                <FiAward className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
-                                {user.teacherProfile.instruments
-                                  .slice(0, 2)
-                                  .join(', ')}
-                                {user.teacherProfile.instruments.length > 2 &&
-                                  ` +${
-                                    user.teacherProfile.instruments.length - 2
+                            {/* Badges */}
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              {/* Badge de Role */}
+                              {user.role === 1 && (
+                                <span className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium bg-accent-blue/20 text-accent-blue flex items-center gap-1">
+                                  <FiAward className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                                  Professor
+                                  {user.teacherProfile?.isVerified && (
+                                    <span className="text-accent-green">✓</span>
+                                  )}
+                                </span>
+                              )}
+
+                              {user.role === 2 && (
+                                <span className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium bg-accent-red/20 text-accent-red flex items-center gap-1">
+                                  <FiShield className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                                  Admin
+                                </span>
+                              )}
+
+                              {/* Badge de User Type */}
+                              {user.userType && (
+                                <span
+                                  className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium ${
+                                    user.userType === 'TEACHER'
+                                      ? 'bg-accent-purple/20 text-accent-purple'
+                                      : user.userType === 'PROFESSIONAL'
+                                        ? 'bg-accent-green/20 text-accent-green'
+                                        : user.userType === 'MUSIC_STUDENT'
+                                          ? 'bg-accent-blue/20 text-accent-blue'
+                                          : 'bg-theme-secondary text-theme-tertiary'
                                   }`}
-                              </span>
-                            )}
+                                >
+                                  {user.userType === 'MUSIC_STUDENT'
+                                    ? 'Estudante'
+                                    : user.userType === 'CASUAL_USER'
+                                      ? 'Casual'
+                                      : user.userType === 'PROFESSIONAL'
+                                        ? 'Profissional'
+                                        : user.userType === 'TEACHER'
+                                          ? 'Professor'
+                                          : user.userType}
+                                </span>
+                              )}
+
+                              {/* Status do Teacher Profile */}
+                              {user.isTeacher && user.teacherProfile && (
+                                <span
+                                  className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium ${
+                                    user.teacherProfile.status === 'ACTIVE'
+                                      ? 'bg-accent-green/20 text-accent-green'
+                                      : user.teacherProfile.status === 'PENDING'
+                                        ? 'bg-accent-yellow/20 text-accent-yellow'
+                                        : 'bg-theme-secondary text-theme-tertiary'
+                                  }`}
+                                >
+                                  {user.teacherProfile.status === 'ACTIVE' &&
+                                    'Ativo'}
+                                  {user.teacherProfile.status === 'PENDING' &&
+                                    'Pendente'}
+                                  {user.teacherProfile.status === 'INACTIVE' &&
+                                    'Inativo'}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Info Secundária */}
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs md:text-sm text-theme-tertiary">
+                            <span className="flex items-center gap-1 truncate">
+                              <FiMail className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                              <span className="truncate">{user.email}</span>
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <FiClock className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                              {new Date(user.createdAt).toLocaleDateString(
+                                'pt-BR'
+                              )}
+                            </span>
+
+                            {/* Info de Instrumentos para Professores */}
+                            {user.isTeacher &&
+                              user.teacherProfile &&
+                              user.teacherProfile.instruments &&
+                              user.teacherProfile.instruments.length > 0 && (
+                                <span className="hidden sm:flex items-center gap-1 text-accent-blue">
+                                  <FiAward className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                                  {user.teacherProfile.instruments
+                                    .slice(0, 2)
+                                    .join(', ')}
+                                  {user.teacherProfile.instruments.length > 2 &&
+                                    ` +${
+                                      user.teacherProfile.instruments.length - 2
+                                    }`}
+                                </span>
+                              )}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Linha Inferior Mobile: Estatísticas + Ações */}
-                    <div className="flex items-center justify-between md:justify-end gap-3 md:gap-6 mt-2 md:mt-0 pt-2 md:pt-0 border-t md:border-t-0 border-theme-primary">
-                      {/* Estatísticas */}
-                      <div className="flex items-center gap-3 md:gap-6">
-                        <div className="text-center">
-                          <div className="text-sm md:text-lg font-bold text-accent-green">
-                            {formatNumber(user.annotationsCount)}
+                      {/* Linha Inferior Mobile: Estatísticas + Ações */}
+                      <div className="flex items-center justify-between md:justify-end gap-3 md:gap-6 mt-2 md:mt-0 pt-2 md:pt-0 border-t md:border-t-0 border-theme-primary">
+                        {/* Estatísticas */}
+                        <div className="flex items-center gap-3 md:gap-6">
+                          <div className="text-center">
+                            <div className="text-sm md:text-lg font-bold text-accent-green">
+                              {formatNumber(user.annotationsCount)}
+                            </div>
+                            <div className="text-[10px] md:text-xs text-theme-tertiary">
+                              Anotações
+                            </div>
                           </div>
-                          <div className="text-[10px] md:text-xs text-theme-tertiary">
-                            Anotações
+
+                          <div className="text-center">
+                            <div className="text-sm md:text-lg font-bold text-accent-purple">
+                              {formatNumber(user.uploadsCount)}
+                            </div>
+                            <div className="text-[10px] md:text-xs text-theme-tertiary">
+                              Uploads
+                            </div>
                           </div>
                         </div>
 
-                        <div className="text-center">
-                          <div className="text-sm md:text-lg font-bold text-accent-purple">
-                            {formatNumber(user.uploadsCount)}
-                          </div>
-                          <div className="text-[10px] md:text-xs text-theme-tertiary">
-                            Uploads
-                          </div>
+                        {/* Ações */}
+                        <div className="flex items-center gap-1 md:gap-2">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            leftIcon={<FiEye />}
+                            onClick={() => setSelectedUser(user)}
+                            className="text-xs md:text-sm px-2 md:px-3"
+                          >
+                            <span className="hidden sm:inline">Ver</span>
+                          </Button>
+
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            leftIcon={<FiEdit3 />}
+                            onClick={() => setEditingUser(user)}
+                            className="text-xs md:text-sm px-2 md:px-3"
+                          >
+                            <span className="hidden sm:inline">Editar</span>
+                          </Button>
                         </div>
-                      </div>
-
-                      {/* Ações */}
-                      <div className="flex items-center gap-1 md:gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          leftIcon={<FiEye />}
-                          onClick={() => setSelectedUser(user)}
-                          className="text-xs md:text-sm px-2 md:px-3"
-                        >
-                          <span className="hidden sm:inline">Ver</span>
-                        </Button>
-
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          leftIcon={<FiEdit3 />}
-                          onClick={() => setEditingUser(user)}
-                          className="text-xs md:text-sm px-2 md:px-3"
-                        >
-                          <span className="hidden sm:inline">Editar</span>
-                        </Button>
                       </div>
                     </div>
                   </div>
-                </div>
-              </AnimatedCard>
-            ))}
-
+                </AnimatedCard>
+              )}
+            </VirtualList>
             {/* Botão Carregar Mais */}
             {pagination?.hasMore && (
               <div className="text-center pt-6">
@@ -676,10 +688,10 @@ export default function UsersList() {
                   variant="secondary"
                   leftIcon={<FiMoreHorizontal />}
                   onClick={loadMore}
-                  disabled={loading}
+                  disabled={loadingMore}
                   className="w-full sm:w-auto"
                 >
-                  {loading ? 'Carregando...' : 'Carregar Mais'}
+                  {loadingMore ? 'Carregando...' : 'Carregar Mais'}
                 </Button>
               </div>
             )}

@@ -1,6 +1,13 @@
 // app/hooks/admin/useAdminReports.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { adminKeys, errorMessage, useAdminQuery } from './query';
 import { toast } from 'react-hot-toast';
+import {
+  deleteReportRequest,
+  downloadReportRequest,
+  generateReportRequest,
+  listReports,
+} from '@/app/requests/admin/operations';
 
 export interface ReportResult {
   id: string;
@@ -56,11 +63,9 @@ interface UseAdminReportsReturn {
 }
 
 export const useAdminReports = (): UseAdminReportsReturn => {
-  const [results, setResults] = useState<ReportResult[]>([]);
-  const [metrics, setMetrics] = useState<MetricDefinition[]>([]);
-  const [stats, setStats] = useState<ReportStats | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  // Enquanto houver relatório em geração, a consulta se atualiza sozinha.
+  const [generating, setGenerating] = useState(false);
 
   // 🔄 FUNÇÃO PARA BUSCAR MÉTRICAS REAIS DO BANCO
   const fetchRealMetrics = useCallback(
@@ -315,80 +320,41 @@ export const useAdminReports = (): UseAdminReportsReturn => {
     []
   );
 
-  const fetchData = useCallback(async () => {
-    if (loading) return;
+  /**
+   * Relatórios e métricas numa consulta só (TanStack Query). Enquanto houver
+   * relatório sendo gerado, ela se atualiza de 30 em 30 s — como o legado
+   * fazia com `setInterval`, mas parando sozinha quando não há o que esperar.
+   */
+  const reports = useAdminQuery(
+    adminKeys.area('reports'),
+    async () => {
+      const data = await listReports();
+      const results: ReportResult[] = data.results.map((result) => ({
+        ...result,
+        size: result.size ?? undefined,
+        error: result.error ?? undefined,
+        downloadUrl: result.downloadUrl ?? undefined,
+        generatedAt: new Date(result.generatedAt),
+      }));
 
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/admin/reports', {
-        cache: 'no-store',
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Acesso não autorizado');
-        }
-        throw new Error(
-          `Erro ${response.status}: Falha ao carregar relatórios`
-        );
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        const reportsData =
-          data.results?.map((result: any) => ({
-            ...result,
-            generatedAt: new Date(result.generatedAt),
-          })) || [];
-
-        const statsData = data.stats || null;
-
-        setResults(reportsData);
-        setStats(statsData);
-
-        // 🔄 BUSCAR MÉTRICAS REAIS BASEADAS NOS DADOS
-        if (statsData) {
-          const realMetrics = await fetchRealMetrics(statsData);
-          setMetrics(realMetrics);
-        }
-      } else {
-        throw new Error(
-          data.error || 'Erro desconhecido ao carregar relatórios'
-        );
-      }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Erro desconhecido';
-      setError(errorMessage);
-      console.error('Erro ao buscar dados de relatórios:', err);
-
-      // 🔄 FALLBACK COM MÉTRICAS BÁSICAS
-      if (stats) {
-        const fallbackMetrics = await fetchRealMetrics(stats);
-        setMetrics(fallbackMetrics);
-      } else {
-        // Métricas básicas se não houver dados
-        setMetrics([
-          {
-            id: 'no_data',
-            name: 'Dados Indisponíveis',
-            description: 'Não foi possível carregar as métricas do sistema',
-            category: 'system',
-            type: 'count',
-            available: false,
-            currentValue: 'Erro ao carregar',
-            lastUpdated: new Date(),
-          },
-        ]);
-      }
-    } finally {
-      setLoading(false);
+      return {
+        results,
+        stats: data.stats,
+        metrics: await fetchRealMetrics(data.stats),
+      };
+    },
+    {
+      refetchInterval: generating ? 30_000 : false,
     }
-  }, [loading, stats, fetchRealMetrics]);
+  );
 
+  const results = reports.data?.results ?? [];
+
+  useEffect(() => {
+    setGenerating(results.some((result) => result.status === 'generating'));
+  }, [reports.data]);
+
+  // A API gera CSV (o formato pedido na tela não muda o arquivo).
   const generateReport = useCallback(
     async (
       type: string,
@@ -396,200 +362,71 @@ export const useAdminReports = (): UseAdminReportsReturn => {
       period: string
     ): Promise<boolean> => {
       try {
-        // Adicionar relatório temporário na lista
-        const tempId = `temp_${Date.now()}`;
-        const tempReport: ReportResult = {
-          id: tempId,
-          name: getReportDisplayName(type),
-          type,
-          format,
-          period,
-          generatedAt: new Date(),
-          status: 'generating',
-        };
+        const result = await generateReportRequest(type, period);
 
-        setResults((prev) => [tempReport, ...prev]);
-
-        const response = await fetch('/api/admin/reports', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'generate',
-            type,
-            format,
-            period,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Erro ao gerar relatório');
+        if (result.status === 'failed') {
+          throw new Error(result.error || 'Erro ao gerar relatório');
         }
 
-        const data = await response.json();
-
-        if (data.success && data.result) {
-          // Remover relatório temporário e adicionar o real
-          setResults((prev) => {
-            const filtered = prev.filter((r) => r.id !== tempId);
-            const newResult: ReportResult = {
-              id: data.result.id,
-              name: data.result.name,
-              type: data.result.type,
-              format: data.result.format,
-              period: data.result.period,
-              generatedAt: new Date(data.result.generatedAt),
-              status: data.result.status,
-              size: data.result.size,
-              downloadUrl: data.result.downloadUrl,
-            };
-            return [newResult, ...filtered];
-          });
-
-          toast.success('Relatório gerado com sucesso!');
-          return true;
-        } else {
-          throw new Error(data.error || 'Erro ao gerar relatório');
-        }
-      } catch (err) {
-        // Remover relatório temporário em caso de erro
-        setResults((prev) => prev.filter((r) => r.id !== `temp_${Date.now()}`));
-
-        const errorMessage =
-          err instanceof Error ? err.message : 'Erro ao gerar relatório';
-        setError(errorMessage);
-        toast.error(errorMessage);
-        console.error('Erro ao gerar relatório:', err);
+        setActionError(null);
+        await reports.refetch();
+        toast.success('Relatório gerado com sucesso!');
+        return true;
+      } catch (error) {
+        const message = errorMessage(error);
+        setActionError(message);
+        toast.error(message);
+        console.error('Erro ao gerar relatório:', error);
         return false;
       }
     },
-    []
+    [reports]
   );
 
   const deleteReport = useCallback(
     async (reportId: string): Promise<boolean> => {
       try {
-        const response = await fetch(`/api/admin/reports?id=${reportId}`, {
-          method: 'DELETE',
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Erro ao excluir relatório');
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          // Remover da lista local
-          setResults((prev) => prev.filter((r) => r.id !== reportId));
-          toast.success('Relatório excluído com sucesso!');
-          return true;
-        } else {
-          throw new Error(data.error || 'Erro ao excluir relatório');
-        }
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Erro ao excluir relatório';
-        setError(errorMessage);
-        toast.error(errorMessage);
-        console.error('Erro ao excluir relatório:', err);
+        await deleteReportRequest(reportId);
+        setActionError(null);
+        await reports.refetch();
+        toast.success('Relatório excluído com sucesso!');
+        return true;
+      } catch (error) {
+        const message = errorMessage(error);
+        setActionError(message);
+        toast.error(message);
+        console.error('Erro ao excluir relatório:', error);
         return false;
       }
     },
-    []
+    [reports]
   );
 
+  // O download passa pela API com a sessão (o link direto não levaria o cookie).
   const downloadReport = useCallback((result: ReportResult) => {
-    if (!result.downloadUrl) {
-      toast.error('URL de download não disponível');
+    if (result.status !== 'ready') {
+      toast.error('Relatório ainda não está pronto');
       return;
     }
 
-    try {
-      // Incrementar contador de download localmente
-      setResults((prev) =>
-        prev.map((r) =>
-          r.id === result.id
-            ? { ...r, downloadCount: (r.downloadCount || 0) + 1 }
-            : r
-        )
-      );
-
-      // 🔄 TRATAMENTO ESPECIAL PARA PDFs (que são HTMLs)
-      if (result.format === 'pdf' && result.downloadUrl.endsWith('.html')) {
-        // Abrir em nova aba para conversão manual para PDF
-        const newWindow = window.open(result.downloadUrl, '_blank');
-        if (newWindow) {
-          // Adicionar instruções para conversão
-          setTimeout(() => {
-            if (!newWindow.closed) {
-              toast.success('Para salvar como PDF: Ctrl+P → Salvar como PDF');
-            }
-          }, 1000);
-        }
-      } else {
-        // Download normal para Excel e CSV
-        const link = document.createElement('a');
-        link.href = result.downloadUrl;
-        link.download = `${result.name}_${result.period}.${result.format}`;
-        link.target = '_blank';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-
-      toast.success('Download iniciado!');
-    } catch (err) {
-      console.error('Erro ao fazer download:', err);
-      toast.error('Erro ao iniciar download');
-    }
+    downloadReportRequest(result)
+      .then(() => toast.success('Download iniciado!'))
+      .catch((error) => {
+        console.error('Erro ao fazer download:', error);
+        toast.error('Erro ao iniciar download');
+      });
   }, []);
-
-  const refreshData = useCallback(async () => {
-    return fetchData();
-  }, [fetchData]);
-
-  // Carregar dados iniciais
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // Auto-refresh a cada 30 segundos para verificar status dos relatórios
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!loading) {
-        const hasGenerating = results.some((r) => r.status === 'generating');
-        if (hasGenerating) {
-          fetchData(); // Atualizar status dos relatórios em geração
-        }
-      }
-    }, 30 * 1000); // 30 segundos
-
-    return () => clearInterval(interval);
-  }, [loading, results, fetchData]);
 
   return {
     results,
-    metrics,
-    stats,
-    loading,
-    error,
+    metrics: reports.data?.metrics ?? [],
+    stats: reports.data?.stats ?? null,
+    loading: reports.loading,
+    error: reports.error ?? actionError,
     generateReport,
     deleteReport,
     downloadReport,
-    refreshData,
+    refreshData: reports.refetch,
     templates: [], // Manter compatibilidade, mas vazio
   };
 };
-
-// Função auxiliar para obter nome de exibição do relatório
-function getReportDisplayName(type: string): string {
-  const names = {
-    'users-overview': 'Resumo de Usuários',
-    'content-analysis': 'Análise de Conteúdo',
-    'engagement-metrics': 'Métricas de Engajamento',
-    'growth-trends': 'Tendências de Crescimento',
-  };
-
-  return names[type as keyof typeof names] || 'Relatório Personalizado';
-}

@@ -1,327 +1,124 @@
-// app/requests/home-components.ts - VERSÃO SIMPLIFICADA E EFICIENTE
-import prisma from '@/app/libs/prismadb';
+// app/requests/home-request.ts — blocos da home, pela API (Etapa 3)
+import { apiFetch } from '@/app/libs/api/client';
+import type { ApiSchema } from '@/app/libs/api/types';
 import { unstable_cache } from 'next/cache';
-import {
-  allFamousNames,
-  getComposerCuriosities,
-  musicalFacts,
-} from '../utils/utils';
+import { getComposerCuriosities, musicalFacts } from '../utils/utils';
 
-// Compositor em destaque (muda a cada 24h)
-export const getFeaturedComposer = unstable_cache(
-  async () => {
-    try {
-      // Usar data para gerar um índice determinístico que muda a cada 24h
-      const today = new Date();
-      const dayOfYear = Math.floor(
-        (today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) /
-          (1000 * 60 * 60 * 24)
-      );
+/**
+ * Cache do `fetch` do Next. O dado vem do cache da API (Redis); ela avisa pelas
+ * tags quando algo muda. São blocos secundários da home: se a API falhar, o
+ * bloco some (vazio ou nulo), como no legado, e a página abre.
+ */
+const CACHE = {
+  // A escolha do dia é da API (muda à meia-noite); uma hora é o atraso máximo.
+  FEATURED: { revalidate: 3600, tags: ['composers'] },
+  DISCOVERIES: { revalidate: 3600, tags: ['discovery', 'composers', 'works'] },
+  RECENT: { revalidate: 600, tags: ['discovery', 'composers', 'works'] },
+};
 
-      // Tentar encontrar um compositor válido
-      let composer = null;
-      let attempts = 0;
-      const maxAttempts = allFamousNames.length;
+// Compositor em destaque (o mesmo para todos durante o dia)
+export async function getFeaturedComposer() {
+  try {
+    const composer = await apiFetch<ApiSchema<'FeaturedComposerResponseDto'>>(
+      '/composers/featured',
+      { next: CACHE.FEATURED }
+    );
 
-      while (!composer && attempts < maxAttempts) {
-        const selectedIndex = (dayOfYear + attempts) % allFamousNames.length;
-        const selectedName = allFamousNames[selectedIndex];
-
-        composer = await prisma.composer.findFirst({
-          where: {
-            fullName: selectedName,
-          },
-          select: {
-            id: true,
-            name: true,
-            fullName: true,
-            birthDate: true,
-            deathDate: true,
-            portraitUrl: true,
-            bio: true,
-            permLinkImslp: true,
-            wikipediaLink: true,
-            epochName: true,
-            isVerified: true,
-            works: {
-              select: {
-                id: true,
-                title: true,
-                imslpPermlink: true,
-              },
-              take: 3,
-              orderBy: {
-                title: 'asc',
-              },
-            },
-          },
-        });
-
-        if (composer) {
-          const curiosities = getComposerCuriosities(selectedName);
-          return {
-            ...composer,
-            epochName: composer.epochName || 'Clássico',
-            curiosities: curiosities || [],
-            works: composer.works || [],
-          };
-        }
-
-        attempts++;
-      }
-
-      // Fallback compositor
-      const fallbackComposer = await prisma.composer.findFirst({
-        where: {
-          OR: [
-            { primaryRoleId: '6839e5a5eba93979e36ad88b' },
-            { roles: { contains: '6839e5a5eba93979e36ad88b' } },
-          ],
-        },
-        select: {
-          id: true,
-          name: true,
-          fullName: true,
-          birthDate: true,
-          deathDate: true,
-          portraitUrl: true,
-          bio: true,
-          permLinkImslp: true,
-          wikipediaLink: true,
-          epoch: {
-            select: {
-              name: true,
-            },
-          },
-          works: {
-            select: {
-              id: true,
-              title: true,
-              imslpPermlink: true,
-            },
-            take: 3,
-            orderBy: {
-              title: 'asc',
-            },
-          },
-        },
-      });
-
-      if (fallbackComposer) {
-        const curiosities = getComposerCuriosities(fallbackComposer.fullName);
-        return {
-          ...fallbackComposer,
-          epochName: fallbackComposer.epoch?.name || 'Clássico',
-          curiosities: curiosities || [],
-          works: fallbackComposer.works || [],
-        };
-      }
-
-      return null;
-    } catch (error) {
-      console.error('Error in getFeaturedComposer:', error);
-      return null;
-    }
-  },
-  ['featured-composer'],
-  {
-    revalidate: 86400, // 24 horas
-    tags: ['composers', 'featured'],
+    return {
+      id: composer.id,
+      name: composer.name,
+      fullName: composer.fullName,
+      birthDate: composer.birthDate ?? null,
+      deathDate: composer.deathDate ?? null,
+      portraitUrl: composer.portraitUrl ?? null,
+      bio: composer.bio ?? null,
+      permLinkImslp: composer.permLinkImslp ?? null,
+      wikipediaLink: composer.wikipediaLink ?? null,
+      epochName: composer.epochName || 'Clássico',
+      isVerified: composer.isVerified,
+      works: composer.works,
+      // As curiosidades são conteúdo do front, pelo nome do compositor.
+      curiosities: getComposerCuriosities(composer.fullName) || [],
+    };
+  } catch (error) {
+    console.error('Error in getFeaturedComposer:', error);
+    return null;
   }
-);
+}
 
 // Descobertas aleatórias - compositores e obras menos conhecidos
-export const getRandomDiscoveries = unstable_cache(
-  async () => {
-    try {
-      const lesserKnownComposers = await prisma.composer.findMany({
-        where: {
-          AND: [
-            {
-              OR: [
-                { primaryRoleId: '6839e5a5eba93979e36ad88b' },
-                { roles: { contains: '6839e5a5eba93979e36ad88b' } },
-              ],
-            },
-            {
-              fullName: {
-                notIn: [
-                  'Ludwig van Beethoven',
-                  'Wolfgang Amadeus Mozart',
-                  'Johann Sebastian Bach',
-                  'Richard Wagner',
-                  'Joseph Haydn',
-                  'Johannes Brahms',
-                  'Franz Schubert',
-                  'Peter Ilyich Tchaikovsky',
-                  'George Frideric Handel',
-                  'Igor Stravinsky',
-                  'Robert Schumann',
-                  'Felix Mendelssohn',
-                  'Claude Debussy',
-                  'Gustav Mahler',
-                  'Franz Liszt',
-                  'Maurice Ravel',
-                  'Antonín Dvořák',
-                  'Antonio Vivaldi',
-                  'Dmitri Shostakovich',
-                  'Frédéric Chopin',
-                ],
-              },
-            },
-          ],
-        },
-        select: {
-          id: true,
-          name: true,
-          fullName: true,
-          portraitUrl: true,
-          epoch: {
-            select: {
-              name: true,
-            },
-          },
-        },
-        take: 50,
-      });
+export async function getRandomDiscoveries() {
+  try {
+    const discoveries = await apiFetch<ApiSchema<'DiscoveryResponseDto'>>(
+      '/catalog/discoveries',
+      { next: CACHE.DISCOVERIES }
+    );
 
-      const randomWorks = await prisma.work.findMany({
-        where: {
-          composer: {
-            OR: [
-              { primaryRoleId: '6839e5a5eba93979e36ad88b' },
-              { roles: { contains: '6839e5a5eba93979e36ad88b' } },
-            ],
-          },
+    return {
+      composers: discoveries.composers.map((composer) => ({
+        id: composer.id,
+        name: composer.name,
+        fullName: composer.fullName ?? composer.name,
+        portraitUrl: composer.portraitUrl ?? null,
+        epochName: composer.epochName,
+      })),
+      works: discoveries.works.map((work) => ({
+        id: work.id,
+        title: work.title,
+        imslpPermlink: work.imslpPermlink ?? '',
+        opOrCatalog: work.opOrCatalog ?? null,
+        tone: work.tone ?? null,
+        epochName: work.epochName,
+        instrumentName: work.instrumentName,
+        composerName: work.composer.name,
+        composer: {
+          id: work.composer.id,
+          name: work.composer.name,
+          fullName: work.composer.fullName ?? work.composer.name,
+          portraitUrl: work.composer.portraitUrl ?? null,
         },
-        select: {
-          id: true,
-          title: true,
-          imslpPermlink: true,
-          opOrCatalog: true,
-          tone: true,
-          composer: {
-            select: {
-              id: true,
-              name: true,
-              fullName: true,
-              portraitUrl: true,
-            },
-          },
-          epoch: {
-            select: {
-              name: true,
-            },
-          },
-          instrument: {
-            select: {
-              name: true,
-            },
-          },
-        },
-        take: 50,
-      });
-
-      // Randomizar e retornar
-      const shuffledComposers = lesserKnownComposers.sort(
-        () => 0.5 - Math.random()
-      );
-      const shuffledWorks = randomWorks.sort(() => 0.5 - Math.random());
-
-      return {
-        composers: shuffledComposers.slice(0, 6).map((composer) => ({
-          ...composer,
-          epochName: composer.epoch?.name || 'Clássico',
-        })),
-        works: shuffledWorks.slice(0, 6).map((work) => ({
-          ...work,
-          epochName: work.epoch?.name || 'Clássico',
-          instrumentName: work.instrument?.name || 'Piano',
-          composerName: work.composer?.name || 'Anônimo',
-        })),
-      };
-    } catch (error) {
-      console.error('Error in getRandomDiscoveries:', error);
-      return {
-        composers: [],
-        works: [],
-      };
-    }
-  },
-  ['random-discoveries'],
-  {
-    revalidate: 3600, // 1 hora
-    tags: ['composers', 'works', 'random'],
+      })),
+    };
+  } catch (error) {
+    console.error('Error in getRandomDiscoveries:', error);
+    return { composers: [], works: [] };
   }
-);
+}
 
 // Últimas adições
-export const getRecentAdditions = unstable_cache(
-  async () => {
-    try {
-      const recentComposers = await prisma.composer.findMany({
-        select: {
-          id: true,
-          name: true,
-          fullName: true,
-          portraitUrl: true,
-          createdAt: true,
-          epochName: true,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-        take: 4,
-      });
+export async function getRecentAdditions() {
+  try {
+    const recent = await apiFetch<ApiSchema<'RecentAdditionsResponseDto'>>(
+      '/catalog/recent',
+      { next: CACHE.RECENT }
+    );
 
-      const recentWorks = await prisma.work.findMany({
-        select: {
-          id: true,
-          title: true,
-          mediaDuration: true,
-          createdAt: true,
-          composer: {
-            select: {
-              fullName: true,
-            },
-          },
-          instrument: {
-            select: {
-              name: true,
-            },
-          },
-          epoch: {
-            select: {
-              name: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-        take: 4,
-      });
-
-      return {
-        composers: recentComposers,
-        works: recentWorks,
-      };
-    } catch (error) {
-      console.error('Error in getRecentAdditions:', error);
-      return {
-        composers: [],
-        works: [],
-      };
-    }
-  },
-  ['recent-additions'],
-  {
-    revalidate: 1800, // 30 minutos
-    tags: ['composers', 'recent'],
+    return {
+      composers: recent.composers.map((composer) => ({
+        id: composer.id,
+        name: composer.name,
+        fullName: composer.fullName ?? composer.name,
+        portraitUrl: composer.portraitUrl ?? null,
+        createdAt: new Date(composer.createdAt),
+        epochName: composer.epochName ?? null,
+      })),
+      works: recent.works.map((work) => ({
+        id: work.id,
+        title: work.title,
+        mediaDuration: work.mediaDuration ?? null,
+        createdAt: new Date(work.createdAt),
+        composer: { fullName: work.composerFullName ?? '' },
+        instrument: { name: work.instrumentName ?? '' },
+        epoch: { name: work.epochName ?? '' },
+      })),
+    };
+  } catch (error) {
+    console.error('Error in getRecentAdditions:', error);
+    return { composers: [], works: [] };
   }
-);
+}
 
-// Curiosidades musicais
+// Curiosidades musicais — conteúdo estático do front, sorteado a cada 6 h
 export const getMusicalFacts = unstable_cache(
   async () => {
     try {
@@ -337,13 +134,3 @@ export const getMusicalFacts = unstable_cache(
     tags: ['facts', 'curiosities'],
   }
 );
-
-// Função para invalidar caches
-export async function revalidateHomeComponentsCache() {
-  const { revalidateTag } = await import('next/cache');
-  revalidateTag('composers');
-  revalidateTag('featured');
-  revalidateTag('random');
-  revalidateTag('recent');
-  revalidateTag('facts');
-}

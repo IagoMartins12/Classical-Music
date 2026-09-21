@@ -2,14 +2,202 @@
 import { useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import {
-  OrphanScanResult,
-  OrphanFile,
-  OrphanFileCategory,
-} from '@/app/libs/orphanFiles/orphanFileScanner';
-import {
-  CloudinaryOrphanFile,
-  CloudinaryFileCategory,
-} from '@/app/libs/orphanFiles/cloudinaryOrphanScanner';
+  runMaintenanceTask,
+  waitForMaintenanceJob,
+} from '@/app/requests/admin/maintenance';
+
+// Tipos da tela (antes vinham das bibliotecas do legado, que leem o banco).
+export type OrphanFileCategory =
+  | 'profiles'
+  | 'composers'
+  | 'scores'
+  | 'advertisements'
+  | 'works'
+  | 'general'
+  | 'unknown'
+  | 'cloudinary';
+
+export interface OrphanFile {
+  path: string;
+  name: string;
+  size: number;
+  lastModified: Date;
+  category: OrphanFileCategory;
+  subCategory?: string;
+  relativePath: string;
+  directory: string;
+  extension: string;
+  isImage: boolean;
+  isVideo: boolean;
+  isAudio: boolean;
+  isPDF: boolean;
+  formattedSize: string;
+}
+
+export type CloudinaryFileCategory =
+  | 'assignments'
+  | 'learned'
+  | 'scores'
+  | 'works-audio'
+  | 'works-video'
+  | 'advertisements'
+  | 'profiles'
+  | 'composers'
+  | 'unknown';
+
+export interface CloudinaryOrphanFile {
+  publicId: string;
+  secureUrl: string;
+  format: string;
+  resourceType: 'image' | 'video' | 'raw';
+  bytes: number;
+  createdAt: string;
+  folder: string;
+  tags: string[];
+  category: CloudinaryFileCategory;
+  isOrphan: boolean;
+  formattedSize: string;
+  relativeAge: string;
+}
+
+export interface CloudinaryOrphanScanResult {
+  totalFiles: number;
+  orphanFiles: CloudinaryOrphanFile[];
+  referencedFiles: CloudinaryOrphanFile[];
+  totalSize: number;
+  formattedTotalSize: string;
+  categories: Record<
+    CloudinaryFileCategory,
+    { count: number; size: number; orphans: number }
+  >;
+  scanDuration: number;
+  scannedFolders: string[];
+  errors: string[];
+}
+
+export interface OrphanScanResult {
+  totalFiles: number;
+  orphanFiles: OrphanFile[];
+  totalSize: number;
+  formattedTotalSize: string;
+  categories: Record<OrphanFileCategory, number>;
+  scanDuration: number;
+  scannedDirectories: string[];
+  errors: string[];
+  cloudinaryData?: CloudinaryOrphanScanResult;
+  includesCloudinary: boolean;
+}
+
+// Dono do arquivo na API → categoria da tela.
+const OWNER_CATEGORY: Record<string, CloudinaryFileCategory> = {
+  user: 'profiles',
+  composer: 'composers',
+  workScore: 'scores',
+  work: 'works-audio',
+  assignment: 'assignments',
+  advertisement: 'advertisements',
+};
+
+const CLOUD_CATEGORIES: CloudinaryFileCategory[] = [
+  'assignments',
+  'learned',
+  'scores',
+  'works-audio',
+  'works-video',
+  'advertisements',
+  'profiles',
+  'composers',
+  'unknown',
+];
+
+const LOCAL_CATEGORIES: OrphanFileCategory[] = [
+  'profiles',
+  'composers',
+  'scores',
+  'advertisements',
+  'works',
+  'general',
+  'unknown',
+  'cloudinary',
+];
+
+const NOT_OWNER_KEYS = ['examinados', 'orfaos', 'semDonoDeclarado'];
+
+/**
+ * A varredura é a tarefa `storage.orphan-sweep` da API: confere, no registro
+ * de arquivos, quem tem dono que já não existe. Ela relata (contagem por tipo
+ * de dono e uma amostra), não apaga; não há mais arquivo local para varrer.
+ */
+async function runOrphanSweep(): Promise<OrphanScanResult> {
+  const startedAt = Date.now();
+  const { jobId } = await runMaintenanceTask('storage.orphan-sweep', false);
+  const outcome = await waitForMaintenanceJob(jobId);
+  const summary = outcome.summary ?? {};
+  const warnings = outcome.warnings ?? [];
+
+  const categories = Object.fromEntries(
+    CLOUD_CATEGORIES.map((category) => [
+      category,
+      { count: 0, size: 0, orphans: 0 },
+    ])
+  ) as CloudinaryOrphanScanResult['categories'];
+
+  for (const [owner, count] of Object.entries(summary)) {
+    if (NOT_OWNER_KEYS.includes(owner)) continue;
+    const category = categories[OWNER_CATEGORY[owner] ?? 'unknown'];
+    category.count += count;
+    category.orphans += count;
+  }
+
+  const orphanFiles: CloudinaryOrphanFile[] = (outcome.sample ?? []).map(
+    (line) => {
+      const [owner, publicId = ''] = line.split(' → ');
+      const ownerType = owner.split(':')[0];
+
+      return {
+        publicId,
+        secureUrl: '',
+        format: publicId.split('.').pop() ?? '',
+        resourceType: 'image',
+        bytes: 0,
+        createdAt: '',
+        folder: publicId.split('/').slice(0, -1).join('/'),
+        tags: [],
+        category: OWNER_CATEGORY[ownerType] ?? 'unknown',
+        isOrphan: true,
+        formattedSize: '—',
+        relativeAge: '',
+      };
+    }
+  );
+
+  const scanDuration = Date.now() - startedAt;
+
+  return {
+    totalFiles: summary.examinados ?? 0,
+    orphanFiles: [],
+    totalSize: 0,
+    formattedTotalSize: '0 B',
+    categories: Object.fromEntries(
+      LOCAL_CATEGORIES.map((category) => [category, 0])
+    ) as Record<OrphanFileCategory, number>,
+    scanDuration,
+    scannedDirectories: [],
+    errors: warnings,
+    includesCloudinary: true,
+    cloudinaryData: {
+      totalFiles: summary.examinados ?? 0,
+      orphanFiles,
+      referencedFiles: [],
+      totalSize: 0,
+      formattedTotalSize: '—',
+      categories,
+      scanDuration,
+      scannedFolders: [],
+      errors: warnings,
+    },
+  };
+}
 
 interface ScanOptions {
   category?: OrphanFileCategory;
@@ -118,7 +306,7 @@ export const useOrphanFileManagement = (): UseOrphanFileManagementReturn => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
-  const [isRemoving, setIsRemoving] = useState(false);
+  const [isRemoving] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [selectedCloudinaryFiles, setSelectedCloudinaryFiles] = useState<
     string[]
@@ -142,69 +330,30 @@ export const useOrphanFileManagement = (): UseOrphanFileManagementReturn => {
           scanType === 'cloudinary'
             ? 'Cloudinary'
             : scanType === 'local'
-            ? 'arquivos locais'
-            : 'arquivos híbridos'
+              ? 'arquivos locais'
+              : 'arquivos híbridos'
         }: ${categoryText}...`
       );
 
       try {
-        const params = new URLSearchParams({
-          action: 'scan',
-          scanType,
-          ...(options.category && { category: options.category }),
-          ...(options.includeTemp && { includeTemp: 'true' }),
-          ...(options.minSize && { minSize: options.minSize.toString() }),
-          ...(options.maxSize && { maxSize: options.maxSize.toString() }),
-          ...(options.includeCloudinary !== undefined && {
-            includeCloudinary: options.includeCloudinary.toString(),
-          }),
-        });
+        const result = await runOrphanSweep();
+        setScanResult(result);
+        setSelectedFiles([]);
+        setSelectedCloudinaryFiles([]);
 
-        const response = await fetch(`/api/admin/orphan-files?${params}`, {
-          method: 'GET',
-          cache: 'no-store',
-        });
+        const orphans = result.cloudinaryData?.categories
+          ? Object.values(result.cloudinaryData.categories).reduce(
+              (sum, category) => sum + category.orphans,
+              0
+            )
+          : 0;
 
-        if (!response.ok) {
-          throw new Error(`Erro ${response.status}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          setScanResult(data.data);
-          setSelectedFiles([]); // Limpar seleção anterior
-          setSelectedCloudinaryFiles([]); // 🆕 Limpar seleção do Cloudinary
-
-          const localOrphans = data.data.orphanFiles.length;
-          const cloudinaryOrphans =
-            data.data.cloudinaryData?.orphanFiles.length || 0;
-          const totalOrphans = localOrphans + cloudinaryOrphans;
-
-          let message: string;
-          if (scanType === 'cloudinary') {
-            message =
-              cloudinaryOrphans > 0
-                ? `${cloudinaryOrphans} arquivos órfãos no Cloudinary (${
-                    data.data.cloudinaryData?.formattedTotalSize || '0 B'
-                  })`
-                : 'Nenhum arquivo órfão no Cloudinary!';
-          } else if (scanType === 'local') {
-            message =
-              localOrphans > 0
-                ? `${localOrphans} arquivos órfãos locais (${data.data.formattedTotalSize})`
-                : 'Nenhum arquivo órfão local!';
-          } else {
-            message =
-              totalOrphans > 0
-                ? `${totalOrphans} arquivos órfãos encontrados (${localOrphans} locais, ${cloudinaryOrphans} Cloudinary)`
-                : 'Nenhum arquivo órfão encontrado!';
-          }
-
-          toast.success(message, { id: toastId });
-        } else {
-          throw new Error(data.error || 'Erro ao escanear arquivos');
-        }
+        toast.success(
+          orphans > 0
+            ? `${orphans} arquivos órfãos encontrados (amostra de ${result.cloudinaryData?.orphanFiles.length ?? 0})`
+            : 'Nenhum arquivo órfão encontrado!',
+          { id: toastId }
+        );
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'Erro desconhecido';
@@ -219,120 +368,14 @@ export const useOrphanFileManagement = (): UseOrphanFileManagementReturn => {
     [isScanning]
   );
 
+  // A varredura da API só relata; não há remoção de órfão pelo painel.
   const removeFiles = useCallback(
-    async (filePaths?: string[], cloudinaryPublicIds?: string[]) => {
-      if (isRemoving) return;
-
-      const localCount = filePaths?.length || 0;
-      const cloudinaryCount = cloudinaryPublicIds?.length || 0;
-      const totalCount = localCount + cloudinaryCount;
-
-      if (totalCount === 0) return;
-
-      setIsRemoving(true);
-      setError(null);
-
-      const toastId = toast.loading(
-        `Removendo ${totalCount} arquivos (${localCount} locais, ${cloudinaryCount} Cloudinary)...`
+    async (_filePaths?: string[], _cloudinaryPublicIds?: string[]) => {
+      toast.error(
+        'A API não apaga arquivo órfão pelo painel: a varredura só relata. O arquivo sai quando o registro dele é limpo.'
       );
-
-      try {
-        const response = await fetch('/api/admin/orphan-files', {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ filePaths, cloudinaryPublicIds }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Erro ${response.status}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          const { localResult, cloudinaryResult, summary } = data.data;
-
-          // Atualizar scan result removendo arquivos deletados
-          if (scanResult) {
-            let updatedOrphanFiles = [...scanResult.orphanFiles];
-            let updatedCloudinaryData = scanResult.cloudinaryData;
-
-            // Remover arquivos locais
-            if (localResult?.removed) {
-              updatedOrphanFiles = updatedOrphanFiles.filter(
-                (file) => !localResult.removed.includes(file.relativePath)
-              );
-            }
-
-            // Remover arquivos do Cloudinary
-            if (cloudinaryResult?.removed && updatedCloudinaryData) {
-              updatedCloudinaryData = {
-                ...updatedCloudinaryData,
-                orphanFiles: updatedCloudinaryData.orphanFiles.filter(
-                  (file) => !cloudinaryResult.removed.includes(file.publicId)
-                ),
-                totalSize:
-                  updatedCloudinaryData.totalSize -
-                  cloudinaryResult.totalSizeFreed,
-              };
-            }
-
-            setScanResult({
-              ...scanResult,
-              orphanFiles: updatedOrphanFiles,
-              totalSize:
-                scanResult.totalSize - (localResult?.totalSizeFreed || 0),
-              cloudinaryData: updatedCloudinaryData,
-            });
-          }
-
-          // Limpar seleções dos arquivos removidos
-          if (localResult?.removed) {
-            setSelectedFiles((prev) =>
-              prev.filter((path) => !localResult.removed.includes(path))
-            );
-          }
-
-          if (cloudinaryResult?.removed) {
-            setSelectedCloudinaryFiles((prev) =>
-              prev.filter((id) => !cloudinaryResult.removed.includes(id))
-            );
-          }
-
-          const totalRemoved = summary.totalRemoved;
-          const totalFailed = summary.totalFailed;
-
-          const message =
-            totalFailed > 0
-              ? `${totalRemoved} arquivos removidos, ${totalFailed} falharam`
-              : `${totalRemoved} arquivos removidos com sucesso`;
-
-          toast.success(message, { id: toastId });
-
-          if (totalFailed > 0) {
-            console.warn('Arquivos que falharam:', {
-              localResult,
-              cloudinaryResult,
-            });
-          }
-        } else {
-          throw new Error(data.error || 'Erro ao remover arquivos');
-        }
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Erro desconhecido';
-        setError(errorMessage);
-        toast.error(`Erro ao remover arquivos: ${errorMessage}`, {
-          id: toastId,
-        });
-        console.error('Erro ao remover arquivos:', err);
-      } finally {
-        setIsRemoving(false);
-      }
     },
-    [isRemoving, scanResult]
+    []
   );
 
   const removeSelectedFiles = useCallback(async () => {

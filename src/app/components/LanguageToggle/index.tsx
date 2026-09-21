@@ -3,7 +3,6 @@
 import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
 import React from 'react';
 import { FiGlobe } from 'react-icons/fi';
-import { TranslationLoadingModal } from '../TranslationLoadingModal';
 
 interface LanguageToggleProps {
   variant?: 'default' | 'compact' | 'navbar' | 'globe';
@@ -22,7 +21,6 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
     language,
     toggleLanguage,
     isTranslating,
-    onModalComplete,
     hasUserPreference, // 🆕 Nova propriedade
   } = useLanguageWithRefresh();
 
@@ -142,12 +140,9 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
 
   return (
     <>
-      {/* Modal de tradução */}
-      <TranslationLoadingModal
-        isOpen={isTranslating}
-        currentLanguage={language}
-        onComplete={onModalComplete}
-      />
+      {/* O aviso de "traduzindo" é desenhado uma vez só, na raiz
+          (`TranslationLoadingGate`): este componente aparece duas vezes no
+          Navbar e cada cópia abria o seu. */}
 
       {/* Toggle button */}
       <div className={`flex items-center gap-2 ${className}`}>

@@ -1,9 +1,9 @@
 // app/admin/newsletter/subscribers/page.tsx
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
-import { redirect } from 'next/navigation';
 import NewsletterSubscribersClient from '@/app/components/Admin/Newsletter/NewsletterSubscribersClient';
+
+// Painel em CSR: o dado vem da API pelo navegador.
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Subscribers | Newsletter Admin',
@@ -11,12 +11,6 @@ export const metadata: Metadata = {
   robots: 'noindex, nofollow',
 };
 
-export default async function NewsletterSubscribersPage() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id || session.user.role !== 2) {
-    redirect('/');
-  }
-
+export default function NewsletterSubscribersPage() {
   return <NewsletterSubscribersClient />;
 }

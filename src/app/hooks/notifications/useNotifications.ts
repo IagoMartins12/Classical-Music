@@ -6,8 +6,14 @@ import {
   NotificationData,
   NotificationCheckResult,
   NOTIFICATION_CONFIG,
-  mapPrismaNotificationToData,
 } from '@/app/types/notification';
+import {
+  checkPendingNotifications,
+  fetchNotificationsPage,
+  markAllNotificationsRead,
+  markNotificationRead,
+  markNotificationShown,
+} from '@/app/requests/portal/notifications';
 import { useToast } from '@/app/hooks/useToast';
 import { useSimplePageVisibility } from './usePageVisibility';
 import { useBrowserNotifications } from './useBrowserNotifications';
@@ -194,15 +200,8 @@ export const useNotifications = ({
           `📬 [NOTIFICATIONS] Verificando notificações para ${userRole} ${userId}`
         );
 
-        const response = await fetch(`/api/${userRole}/notifications/check`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            lastCheck: lastCheckRef.current?.toISOString(),
-            includeToast: true,
-            includeBrowser: !isPageVisible,
-          }),
-        });
+        const result: NotificationCheckResult =
+          await checkPendingNotifications(!isPageVisible);
 
         // Verificar se request ainda é válido
         if (requestId !== requestIdRef.current) {
@@ -211,12 +210,6 @@ export const useNotifications = ({
           );
           return null;
         }
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const result: NotificationCheckResult = await response.json();
 
         console.log('📬 [NOTIFICATIONS] Resultado:', {
           novas: result.newNotifications?.length || 0,
@@ -316,8 +309,8 @@ export const useNotifications = ({
               notification.priority === 'CRITICAL'
                 ? 'error'
                 : notification.priority === 'MEDIUM'
-                ? 'warning'
-                : 'info';
+                  ? 'warning'
+                  : 'info';
 
             const toastOptions = {
               duration:
@@ -374,14 +367,7 @@ export const useNotifications = ({
   const markAsShown = useCallback(
     async (notificationId: string, type: 'toast' | 'browser') => {
       try {
-        await fetch(
-          `/api/${userRole}/notifications/${notificationId}/mark-shown`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type }),
-          }
-        );
+        await markNotificationShown(notificationId, type);
       } catch (error) {
         console.warn(
           '📬 [MARK-SHOWN] Failed to mark notification as shown:',
@@ -396,23 +382,16 @@ export const useNotifications = ({
   const markAsRead = useCallback(
     async (notificationId: string) => {
       try {
-        const response = await fetch(
-          `/api/${userRole}/notifications/${notificationId}/mark-read`,
-          {
-            method: 'POST',
-          }
-        );
+        await markNotificationRead(notificationId);
 
-        if (response.ok) {
-          setNotifications((prev) =>
-            prev.map((n) =>
-              n.id === notificationId
-                ? { ...n, status: 'READ' as const, readAt: new Date() }
-                : n
-            )
-          );
-          setUnreadCount((prev) => Math.max(0, prev - 1));
-        }
+        setNotifications((prev) =>
+          prev.map((n) =>
+            n.id === notificationId
+              ? { ...n, status: 'READ' as const, readAt: new Date() }
+              : n
+          )
+        );
+        setUnreadCount((prev) => Math.max(0, prev - 1));
       } catch (error) {
         console.error(
           '📬 [MARK-READ] Error marking notification as read:',
@@ -426,23 +405,16 @@ export const useNotifications = ({
   // Mark all as read - função estável
   const markAllAsRead = useCallback(async () => {
     try {
-      const response = await fetch(
-        `/api/${userRole}/notifications/mark-all-read`,
-        {
-          method: 'POST',
-        }
-      );
+      await markAllNotificationsRead();
 
-      if (response.ok) {
-        setNotifications((prev) =>
-          prev.map((n) => ({
-            ...n,
-            status: 'READ' as const,
-            readAt: new Date(),
-          }))
-        );
-        setUnreadCount(0);
-      }
+      setNotifications((prev) =>
+        prev.map((n) => ({
+          ...n,
+          status: 'READ' as const,
+          readAt: new Date(),
+        }))
+      );
+      setUnreadCount(0);
     } catch (error) {
       console.error(
         '📬 [MARK-ALL-READ] Error marking all notifications as read:',
@@ -455,16 +427,7 @@ export const useNotifications = ({
   const fetchNotifications = useCallback(
     async (page = 1, limit = 20) => {
       try {
-        const response = await fetch(
-          `/api/${userRole}/notifications?page=${page}&limit=${limit}`
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          return data.notifications.map(
-            mapPrismaNotificationToData
-          ) as NotificationData[];
-        }
+        return await fetchNotificationsPage(page, limit);
       } catch (error) {
         console.error('📬 [FETCH] Error fetching notifications:', error);
       }

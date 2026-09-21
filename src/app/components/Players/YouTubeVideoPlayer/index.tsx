@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/app/context/TranslationContext';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import React, { useState } from 'react';
 import { FiPlay, FiExternalLink, FiCalendar, FiUser } from 'react-icons/fi';
 import { SiYoutube } from 'react-icons/si';

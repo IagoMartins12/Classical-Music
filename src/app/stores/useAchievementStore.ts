@@ -3,6 +3,11 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { Badge } from '../components/badges/BadgeSystem';
 import { useAchievements } from '../components/achievement/AchievementToast';
+import {
+  checkAchievements,
+  listAchievements,
+  markAchievementViewed,
+} from '@/app/requests/achievements';
 import { useEffect } from 'react';
 
 export interface UserAchievement {
@@ -108,21 +113,19 @@ export const useAchievementStore = create<AchievementStore>()(
       totalXP: 0,
       loading: false,
 
-      initializeAchievements: async (userId: string) => {
+      // O id vem da assinatura antiga do store; quem responde é a sessão da API.
+      initializeAchievements: async (_userId: string) => {
         set({ loading: true });
 
         try {
-          // Buscar conquistas do usuário no servidor
-          const response = await fetch(`/api/users/${userId}/achievements`);
+          // A API devolve as conquistas de quem está logado (o legado pedia
+          // pelo id do usuário na URL) e o total de XP já somado.
+          const data = await listAchievements<UserAchievement>();
 
-          if (response.ok) {
-            const data = await response.json();
-            set({
-              userAchievements: data.achievements || [],
-              totalXP: data.totalXP || 0,
-              achievementProgress: data.progress || {},
-            });
-          }
+          set({
+            userAchievements: data.achievements,
+            totalXP: data.stats.totalXP,
+          });
         } catch (error) {
           console.error('Erro ao inicializar conquistas:', error);
         } finally {
@@ -149,23 +152,26 @@ export const useAchievementStore = create<AchievementStore>()(
         };
 
         try {
-          // Salvar no servidor
-          const response = await fetch('/api/achievements', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newAchievement),
-          });
+          // Quem concede é o servidor: ele avalia as regras e devolve o que
+          // foi desbloqueado (o legado deixava o navegador gravar a conquista
+          // que quisesse).
+          const { newAchievements } = await checkAchievements(
+            achievementData.category
+          );
 
-          if (!response.ok) {
-            throw new Error('Erro ao salvar conquista');
+          const savedAchievement =
+            (newAchievements as unknown as UserAchievement[]).find(
+              (achievement) => achievement.badgeId === badgeId
+            ) ?? null;
+
+          if (!savedAchievement) {
+            return null;
           }
-
-          const savedAchievement = await response.json();
 
           // Atualizar store local
           set((state) => ({
             userAchievements: [...state.userAchievements, savedAchievement],
-            totalXP: state.totalXP + (newAchievement.xpReward ?? 0),
+            totalXP: state.totalXP + (savedAchievement.xpReward ?? 0),
           }));
 
           console.log(
@@ -183,9 +189,13 @@ export const useAchievementStore = create<AchievementStore>()(
 
       markAsViewed: async (achievementId: string) => {
         try {
-          await fetch(`/api/achievements/${achievementId}/viewed`, {
-            method: 'PATCH',
-          });
+          // A API marca pela conquista (`badgeId`), não pelo id da linha.
+          const badgeId =
+            get().userAchievements.find(
+              (achievement) => achievement.id === achievementId
+            )?.badgeId ?? achievementId;
+
+          await markAchievementViewed(badgeId);
 
           set((state) => ({
             userAchievements: state.userAchievements.map((achievement) =>
@@ -297,15 +307,21 @@ export const useAchievementStore = create<AchievementStore>()(
         const achievements = get().userAchievements;
         const total = achievements.length;
 
-        const byRarity = achievements.reduce((acc, achievement) => {
-          acc[achievement.rarity] = (acc[achievement.rarity] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
+        const byRarity = achievements.reduce(
+          (acc, achievement) => {
+            acc[achievement.rarity] = (acc[achievement.rarity] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>
+        );
 
-        const byCategory = achievements.reduce((acc, achievement) => {
-          acc[achievement.category] = (acc[achievement.category] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
+        const byCategory = achievements.reduce(
+          (acc, achievement) => {
+            acc[achievement.category] = (acc[achievement.category] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>
+        );
 
         // Conquistas dos últimos 7 dias
         const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);

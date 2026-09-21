@@ -1,6 +1,13 @@
 // stores/useAnnotationsStore.ts - VERSÃO COM SEPARAÇÃO DE FILTROS DE COMUNIDADE E USUÁRIO
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import {
+  createAnnotationRequest,
+  deleteAnnotationRequest,
+  listAnnotations,
+  updateAnnotationRequest,
+  voteAnnotationRequest,
+} from '@/app/requests/library';
 
 export type AnnotationCategory =
   | 'TECHNIQUE'
@@ -286,13 +293,13 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             searchParams.append('sortBy', filters.sortBy);
           }
 
-          const response = await fetch(`/api/annotations?${searchParams}`);
+          const response = await listAnnotations(searchParams);
 
           if (!response.ok) {
             throw new Error('Erro ao buscar anotações');
           }
 
-          const data = await response.json();
+          const data = response.data;
 
           set((state) => {
             const newAnnotations = { ...state.annotations };
@@ -412,13 +419,13 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             searchParams.append('sortBy', userFilters.sortBy);
           }
 
-          const response = await fetch(`/api/annotations?${searchParams}`);
+          const response = await listAnnotations(searchParams);
 
           if (!response.ok) {
             throw new Error('Erro ao buscar anotações do usuário');
           }
 
-          const data = await response.json();
+          const data = response.data;
 
           set((state) => {
             const newUserAnnotations = { ...state.userAnnotations };
@@ -533,17 +540,13 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         addOptimisticAnnotation(data.workId, optimisticAnnotation);
 
         try {
-          const response = await fetch('/api/annotations', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-          });
+          const response = await createAnnotationRequest(data);
 
           if (!response.ok) {
             throw new Error('Erro ao criar anotação');
           }
 
-          const result = await response.json();
+          const result = response.data;
 
           if (result.success && result.annotation) {
             removeOptimisticAnnotation(data.workId, optimisticId);
@@ -629,11 +632,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         });
 
         try {
-          const response = await fetch(`/api/annotations/${annotationId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-          });
+          const response = await updateAnnotationRequest(annotationId, data);
 
           if (!response.ok) {
             // Reverter se deu erro
@@ -672,7 +671,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             throw new Error('Erro ao atualizar anotação');
           }
 
-          const result = await response.json();
+          const result = response.data;
 
           if (result.success && result.annotation) {
             set((state) => {
@@ -745,9 +744,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         console.log('🗑️ [Otimista] Anotação removida da UI:', annotationId);
 
         try {
-          const response = await fetch(`/api/annotations/${annotationId}`, {
-            method: 'DELETE',
-          });
+          const response = await deleteAnnotationRequest(annotationId);
 
           if (!response.ok) {
             // Reverter se deu erro
@@ -812,14 +809,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         updateAnnotationVote(annotationId, newUserVote, newHelpfulCount);
 
         try {
-          const response = await fetch(
-            `/api/annotations/${annotationId}/vote`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ isHelpful }),
-            }
-          );
+          const response = await voteAnnotationRequest(annotationId, isHelpful);
 
           if (!response.ok) {
             updateAnnotationVote(
@@ -830,7 +820,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             throw new Error('Erro ao votar');
           }
 
-          const result = await response.json();
+          const result = response.data;
 
           if (result.success) {
             updateAnnotationVote(

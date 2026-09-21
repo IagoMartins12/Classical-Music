@@ -8,6 +8,7 @@ import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Modal from '../../Modal';
 import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { setVerificationRequest } from '@/app/requests/verification';
 
 interface VerificationModalProps {
   isOpen: boolean;
@@ -38,30 +39,12 @@ export default function VerificationModal({
     setIsSubmitting(true);
 
     try {
-      let response: Response;
-      if (currentItem === 'composer') {
-        response = await fetch(`/api/composers/${itemId}/verify`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            verified,
-            notes: notes.trim(),
-          }),
-        });
-      } else {
-        response = await fetch(`/api/works/${itemId}/verify`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            verified,
-            notes: notes.trim(),
-          }),
-        });
-      }
+      const response = await setVerificationRequest(
+        currentItem,
+        itemId,
+        verified,
+        notes.trim()
+      );
 
       if (response.ok) {
         const data = await response.json();

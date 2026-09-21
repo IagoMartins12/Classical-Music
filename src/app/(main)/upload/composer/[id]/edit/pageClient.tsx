@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import {
   FiSave,
   FiTrash2,
@@ -28,6 +28,7 @@ import Button from '../../../../../components/Common/Button';
 import CreateComposerModal from '../../../../../components/UploadsPage/modals/CreateComposerModal';
 import { getComposerNationalityDisplay } from '../../../../../components/Utils/nationalityFlags';
 import { useToast } from '@/app/hooks/useToast';
+import { deleteUpload } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface EditComposerClientProps {
@@ -146,15 +147,13 @@ const EditComposerClient = ({
     setIsDeleting(true);
 
     try {
-      const response = await fetch(`/api/uploads/composer/${composer.id}`, {
-        method: 'DELETE',
-      });
+      const response = await deleteUpload('composer', composer.id);
 
       if (response.ok) {
-        router.push('/uploads');
+        // O legado mandava para `/uploads`, que não existe.
+        router.push('/upload');
       } else {
-        const data = await response.json();
-        throw new Error(data.error || 'Erro ao excluir compositor');
+        throw new Error(response.error || 'Erro ao excluir compositor');
       }
     } catch (error) {
       console.error('Erro ao excluir compositor:', error);

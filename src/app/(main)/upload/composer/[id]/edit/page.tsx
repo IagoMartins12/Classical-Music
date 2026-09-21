@@ -1,16 +1,19 @@
 // app/uploads/composer/[id]/edit/page.tsx - Editar compositor específico
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
 import { notFound, redirect } from 'next/navigation';
-import prisma from '@/app/libs/prismadb';
-import { getComposerFormData } from '@/app/requests/upload';
 import EditComposerClient from '@/app/(main)/upload/composer/[id]/edit/pageClient';
 import { getComposerById } from '@/app/requests/composer-details';
+import { getUploadForEdit, getUploadFormData } from '@/app/requests/my-uploads';
 import {
   getServerLanguageStatic,
   loadPageTranslationsWithCommon,
 } from '@/app/utils/translations/serverTranslations';
 import { TranslationProvider } from '@/app/context/TranslationContext';
+import { getServerSession } from '@/app/libs/api/server-session';
+
+/**
+ * Nunca cacheada: o conteúdo é de quem está logado.
+ */
+export const dynamic = 'force-dynamic';
 
 interface EditComposerPageProps {
   params: Promise<{ id: string }>;
@@ -100,32 +103,27 @@ export default async function EditComposerPage({
   params,
 }: EditComposerPageProps) {
   const resolvedParams = await params;
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user?.id) {
     redirect('/not-authenticated');
   }
 
-  const composer = await prisma.composer.findUnique({
-    where: { id: resolvedParams.id },
-    include: {
-      epoch: { select: { id: true, name: true } },
-      primaryRole: { select: { id: true, name: true } },
-    },
-  });
+  // A API confere se o compositor existe (404) e se é da pessoa ou ela é
+  // administradora (403).
+  const composer = await getUploadForEdit('composer', resolvedParams.id);
 
-  if (!composer) {
+  if (composer.status === 'not-found') {
     notFound();
   }
 
-  const isAdmin = session.user.role === 2;
-  const isOwner = composer.createdBy === session.user.id;
-
-  if (!isAdmin && !isOwner) {
-    redirect('/uploads?error=unauthorized');
+  if (composer.status === 'forbidden') {
+    // O legado mandava para `/uploads`, que não existe.
+    redirect('/upload?error=unauthorized');
   }
 
-  const formData = await getComposerFormData();
+  const isAdmin = session.user.role === 2;
+  const formData = await getUploadFormData();
 
   const language = await getServerLanguageStatic();
   const { translations } = await loadPageTranslationsWithCommon(language, [
@@ -135,7 +133,7 @@ export default async function EditComposerPage({
   return (
     <TranslationProvider language={language} translations={translations}>
       <EditComposerClient
-        composer={composer}
+        composer={composer.data}
         epochs={formData.epochs}
         roles={formData.roles}
         isAdmin={isAdmin}

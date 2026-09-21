@@ -24,6 +24,11 @@ import Input from '../../Common/Inputs';
 import { useToast } from '@/app/hooks/useToast';
 import { WorkDetails } from '@/app/requests/work-page-details';
 import { useTranslation } from '@/app/context/TranslationContext';
+import {
+  searchWorkMediaRequest,
+  updateWorkMediaRequest,
+  uploadWorkMediaFileRequest,
+} from '@/app/requests/work-media';
 
 interface MediaData {
   spotify: {
@@ -208,16 +213,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     setSearchError(null);
 
     try {
-      const response = await fetch('/api/media-search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          workId: work.id,
-          forceRefresh,
-        }),
-      });
+      const response = await searchWorkMediaRequest(work.id, forceRefresh);
 
       const data = await response.json();
 
@@ -359,25 +355,11 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     try {
       setIsUploading(true);
 
-      // Deletar arquivo físico (se for upload local)
-      if (work.customAudioFile && work.customAudioSource === 'upload') {
-        const fileName = work.customAudioFile.split('/').pop();
-        if (fileName) {
-          await fetch(
-            `/api/works/${work.id}/media/upload?fileName=${fileName}&mediaType=audio`,
-            { method: 'DELETE' }
-          );
-        }
-      }
-
-      // Limpar campos no banco
-      const response = await fetch(`/api/works/${work.id}/media`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          removeCustomAudio: true,
-          mediaSource: 'manual',
-        }),
+      // Limpar campos no banco. O arquivo enviado fica no armazenamento, ligado
+      // à obra, e sai quando ela for removida — a API não apaga por nome.
+      const response = await updateWorkMediaRequest(work.id, {
+        removeCustomAudio: true,
+        mediaSource: 'manual',
       });
 
       const data = await response.json();
@@ -472,16 +454,10 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
       // Upload de áudio
       if (editData.audioFile) {
-        const formData = new FormData();
-        formData.append('file', editData.audioFile);
-        formData.append('mediaType', 'audio');
-
-        const uploadResponse = await fetch(
-          `/api/works/${work.id}/media/upload`,
-          {
-            method: 'POST',
-            body: formData,
-          }
+        const uploadResponse = await uploadWorkMediaFileRequest(
+          work.id,
+          'WORK_AUDIO',
+          editData.audioFile
         );
 
         const uploadData = await uploadResponse.json();
@@ -505,11 +481,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       updateData.mediaSource = 'manual';
 
       // Salvar no banco
-      const response = await fetch(`/api/works/${work.id}/media`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData),
-      });
+      const response = await updateWorkMediaRequest(work.id, updateData);
 
       const data = await response.json();
 

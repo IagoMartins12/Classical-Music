@@ -1,7 +1,9 @@
 // components/blog/ArticlePageClient.tsx - COMPONENTE CLIENT COMPLETO
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { apiFetch } from '@/app/libs/api/client';
+import { useIsBlogAdmin } from '../AdminOnly';
 import { ArticleContent } from '../ArticleContent';
 import { ReadingControls } from '../ReadingControls';
 import { ArticleInteractions } from '../ArticleInteractions';
@@ -50,9 +52,23 @@ export function ArticlePageClient({
   backgroundMusicTitle,
   backgroundAudioType,
   isPreview,
-  isAdmin,
+  isAdmin: isAdminProp,
 }: ArticlePageClientProps) {
   const [showShareModal, setShowShareModal] = useState(false);
+  // A página pública é estática (ISR): quem é administrador se decide aqui.
+  const sessionIsAdmin = useIsBlogAdmin();
+  const isAdmin = isAdminProp ?? sessionIsAdmin;
+
+  // A visita conta no navegador — o legado somava a cada render do servidor,
+  // o que não existe numa página estática. A API conta uma por leitor a cada
+  // 30 minutos; a prévia não conta.
+  useEffect(() => {
+    if (isPreview) return;
+
+    apiFetch(`/blog/articles/${article.id}/view`, { method: 'POST' }).catch(
+      () => undefined
+    );
+  }, [article.id, isPreview]);
   // const [showFocusMode, setShowFocusMode] = useState(false);
 
   const articleUrl =

@@ -2,7 +2,9 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { User } from 'next-auth';
+// Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
+// objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
+import type { User } from '@/app/hooks/userStore';
 import { FiEye, FiEyeOff, FiMapPin, FiSave } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';

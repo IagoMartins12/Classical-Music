@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
+import { getWorkScoreStats } from '@/app/requests/library';
 
 export interface ScoreFavoriteStats {
   scoreId: string;
@@ -93,18 +94,9 @@ async function fetchWorkStats(workId: string): Promise<any> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
-    const response = await fetch(
-      `/api/favorites/scores?type=work-stats&workId=${workId}`,
-      { signal: controller.signal }
+    const data = await getWorkScoreStats(workId, controller.signal).finally(
+      () => clearTimeout(timeoutId)
     );
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const data = await response.json();
 
     // Salvar no cache
     statsCache.set(cacheKey, {
@@ -324,95 +316,8 @@ export function clearScoreStatsCache(workId?: string) {
   }
 }
 
-// 🆕 Hook para estatísticas globais
-export function useGlobalScoreFavorites() {
-  const [globalStats, setGlobalStats] = useState({
-    totalScoreFavorites: 0,
-    topScores: [] as ScoreFavoriteStats[],
-    topWorks: [] as any[],
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+// `useGlobalScoreFavorites` foi removida: sem nenhum chamador, e chamava
+// `/api/favorites/scores?type=global-stats` — um modo que a API não tem.
 
-  const fetchGlobalStats = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/favorites/scores?type=global-stats');
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      setGlobalStats(data);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Erro ao buscar estatísticas globais:', errorMessage);
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchGlobalStats();
-  }, [fetchGlobalStats]);
-
-  return {
-    globalStats,
-    loading,
-    error,
-    refetch: fetchGlobalStats,
-  };
-}
-
-// 🆕 Hook para favoritos do usuário
-export function useUserScoreFavorites() {
-  const store = useFavoritesStore();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchUserFavorites = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/favorites/scores?type=user-favorites');
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      return data.favorites;
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Erro ao buscar favoritos do usuário:', errorMessage);
-      setError(errorMessage);
-      return [];
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const favoritesByWork = store.favoriteScores.reduce((acc, favorite) => {
-    if (!acc[favorite.workId]) {
-      acc[favorite.workId] = [];
-    }
-    acc[favorite.workId].push(favorite);
-    return acc;
-  }, {} as Record<string, typeof store.favoriteScores>);
-
-  return {
-    favorites: store.favoriteScores,
-    favoritesByWork,
-    count: store.getFavoriteScoresCount?.() ?? 0,
-    loading,
-    error,
-    refetch: fetchUserFavorites,
-  };
-}
+// `useUserScoreFavorites` foi removida pelo mesmo motivo: sem chamador, e
+// `type=user-favorites` não existe na API. As telas usam `useScoreFavorites`.

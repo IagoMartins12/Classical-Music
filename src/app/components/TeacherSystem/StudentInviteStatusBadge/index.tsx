@@ -1,5 +1,5 @@
 // app/components/teacher/StudentInviteStatusBadge.tsx
-import { StudentInviteStatus } from '@prisma/client';
+import type { StudentInviteStatus } from '@/app/types/portal';
 import React from 'react';
 import {
   FiClock,
@@ -166,8 +166,8 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
                   {status === 'PENDING'
                     ? 'Reenviar'
                     : status === 'DECLINED'
-                    ? 'Novo Convite'
-                    : 'Reenviar'}
+                      ? 'Novo Convite'
+                      : 'Reenviar'}
                 </span>
               </>
             )}

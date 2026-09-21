@@ -2,6 +2,7 @@
 'use client';
 
 import { useThemeStore } from '@/app/stores/themeStore';
+import { TranslationLoadingGate } from '../TranslationLoadingGate';
 import React, { useEffect, useState } from 'react';
 
 interface ClientThemeWrapperProps {
@@ -51,6 +52,7 @@ export const ClientThemeWrapper: React.FC<ClientThemeWrapperProps> = ({
   return (
     <div className="classical-theme transition-opacity duration-300 opacity-100">
       {children}
+      <TranslationLoadingGate />
     </div>
   );
 };

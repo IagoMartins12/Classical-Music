@@ -16,6 +16,7 @@ import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
+import { listInstruments } from '@/app/requests/admin/ads';
 
 interface CloneAdModalProps {
   ad: any;
@@ -111,9 +112,7 @@ export default function CloneAdModal({
   useEffect(() => {
     const fetchInstruments = async () => {
       try {
-        const response = await fetch('/api/instruments');
-        const data = await response.json();
-        setAvailableInstruments(data);
+        setAvailableInstruments(await listInstruments());
       } catch (error) {
         console.error('Erro ao buscar instrumentos:', error);
       }
@@ -254,7 +253,11 @@ export default function CloneAdModal({
       await cloneAd(ad.id, modifications);
 
       if (hasMedia) {
-        toast.success('✅ Anúncio clonado com mídia copiada!');
+        // A API não copia a mídia: dois anúncios no mesmo arquivo fariam a
+        // remoção de um levar a imagem do outro.
+        toast.success(
+          '✅ Anúncio clonado como rascunho. Envie a mídia de novo.'
+        );
       } else {
         toast.success('✅ Anúncio clonado! Adicione mídia se necessário.');
       }

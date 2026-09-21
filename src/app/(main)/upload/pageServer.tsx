@@ -1,6 +1,6 @@
 // app/uploads/pageServer.tsx - OTIMIZADO PARA PERFORMANCE
 import { TranslationProvider } from '@/app/context/TranslationContext';
-import { getEpochsCache, getUserUploads } from '@/app/requests/upload';
+import { getMyUploads, getUploadEpochs } from '@/app/requests/my-uploads';
 import {
   getServerLanguageStatic,
   loadPageTranslationsWithCommon,
@@ -33,10 +33,9 @@ export default async function UploadsPageServer({
 
   const language = await getServerLanguageStatic();
 
-  // 🚀 OTIMIZAÇÃO 1: Queries paralelas otimizadas
+  // O que a pessoa criou vem da API (`GET /uploads/mine`), em nome dela.
   const [uploadsData, epochsData, { translations }] = await Promise.all([
-    getUserUploads({
-      userId,
+    getMyUploads({
       page,
       limit: ITEMS_PER_PAGE,
       search,
@@ -46,11 +45,10 @@ export default async function UploadsPageServer({
       workId,
       limitPerType,
     }),
-    getEpochsCache(), // Só épocas básicas
+    getUploadEpochs(),
     loadPageTranslationsWithCommon(language, ['pages/uploads']),
   ]);
 
-  // 🚀 OTIMIZAÇÃO 2: Cálculo de páginas simplificado
   let totalPages = 1;
   if (type === 'all') {
     totalPages = Math.ceil(uploadsData.totalCount / ITEMS_PER_PAGE);
@@ -62,7 +60,7 @@ export default async function UploadsPageServer({
     totalPages = Math.ceil(uploadsData.scoreCount / ITEMS_PER_PAGE);
   }
 
-  // 🚀 OTIMIZAÇÃO 3: Form data vazio - será carregado via lazy loading
+  // Form data vazio - será carregado via lazy loading
   const formData = {
     epochs: [],
     instruments: [],
@@ -71,7 +69,7 @@ export default async function UploadsPageServer({
     works: [],
   };
 
-  // 🚀 OTIMIZAÇÃO 4: Filter data vazio - será carregado via lazy loading
+  // Filter data vazio - será carregado via lazy loading
   const filterData = {
     composers: [],
     works: [],

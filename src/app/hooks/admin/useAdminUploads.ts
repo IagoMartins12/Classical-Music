@@ -1,5 +1,10 @@
 import { TimePeriod } from '@/app/components/Admin/Common/PeriodSelector';
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { adminKeys, useAdminInfinite, useAdminQuery } from './query';
+import {
+  getAdminUploadStats,
+  listAdminUploads,
+} from '@/app/requests/admin/uploads';
 
 export interface UploadItem {
   id: string;
@@ -75,101 +80,71 @@ interface UseAdminUploadsReturn {
   stats: UploadStats | null;
   loading: boolean;
   statsLoading: boolean;
+  /** Buscando a fatia seguinte, com a lista já na tela. */
+  loadingMore: boolean;
   error: string | null;
-  pagination: any;
+  pagination: { shown: number; total: number; hasMore: boolean };
   period: TimePeriod;
   setPeriod: (period: TimePeriod) => void;
   fetchUploads: (filters?: UploadFilters) => Promise<void>;
+  loadMore: () => void;
   refreshStats: () => Promise<void>;
 }
 
+/** Envios por fatia; o mesmo tamanho que a tela pedia antes. */
+const PAGE_SIZE = 25;
+
+/**
+ * Envios da comunidade no painel: lista filtrada e métricas do período.
+ *
+ * A lista vem por cursor (`useAdminInfinite`), em vez de saltar de página em
+ * página: a API continua do id do último envio mostrado, sem reler o que já
+ * passou nem contar a base a cada rolagem.
+ */
 export const useAdminUploads = (): UseAdminUploadsReturn => {
-  const [uploads, setUploads] = useState<UploadItem[]>([]);
-  const [stats, setStats] = useState<UploadStats | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [statsLoading, setStatsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [pagination, setPagination] = useState<any>(null);
+  const [filters, setFilters] = useState<UploadFilters>({});
   const [period, setPeriod] = useState<TimePeriod>('30d');
 
-  const fetchStats = useCallback(async () => {
-    setStatsLoading(true);
-    try {
-      const response = await fetch(
-        `/api/admin/uploads?action=stats&period=${period}`
+  const list = useAdminInfinite(
+    adminKeys.list('uploads', { filters, period }),
+    async (cursor) => {
+      const data = await listAdminUploads(
+        { ...filters, limit: PAGE_SIZE },
+        filters.period ?? period,
+        cursor
       );
-      if (!response.ok) throw new Error('Erro ao carregar estatísticas');
 
-      const data = await response.json();
-      if (data.success) {
-        setStats(data.stats);
-      }
-    } catch (err) {
-      console.error('Erro ao buscar stats:', err);
-    } finally {
-      setStatsLoading(false);
+      return {
+        items: data.uploads,
+        total: data.total,
+        nextCursor: data.nextCursor,
+      };
     }
-  }, [period]);
-
-  const fetchUploads = useCallback(
-    async (filters: UploadFilters = {}) => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const searchParams = new URLSearchParams({
-          action: 'list',
-          period: period,
-          ...Object.fromEntries(
-            Object.entries(filters).filter(
-              ([_, v]) => v !== undefined && v !== ''
-            )
-          ),
-        });
-
-        const response = await fetch(`/api/admin/uploads?${searchParams}`);
-        if (!response.ok) throw new Error('Erro ao carregar uploads');
-
-        const data = await response.json();
-        if (data.success) {
-          setUploads(data.uploads);
-          setPagination(data.pagination);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
-      } finally {
-        setLoading(false);
-      }
-    },
-    [period]
+  );
+  const stats = useAdminQuery(adminKeys.list('upload-stats', period), () =>
+    getAdminUploadStats(period)
   );
 
-  const refreshStats = useCallback(async () => {
-    return fetchStats();
-  }, [fetchStats]);
-
-  // Recarregar dados quando período mudar
-  useEffect(() => {
-    fetchStats();
-    fetchUploads();
-  }, [period, fetchStats, fetchUploads]);
-
-  // Carregar dados iniciais
-  useEffect(() => {
-    fetchStats();
-    fetchUploads();
+  const fetchUploads = useCallback(async (nextFilters: UploadFilters = {}) => {
+    setFilters(nextFilters);
   }, []);
 
   return {
-    uploads,
-    stats,
-    loading,
-    statsLoading,
-    error,
-    pagination,
+    uploads: list.items,
+    stats: stats.data ?? null,
+    loading: list.loading,
+    statsLoading: stats.loading,
+    loadingMore: list.loadingMore,
+    error: list.error,
+    pagination: {
+      shown: list.items.length,
+      total: list.total ?? list.items.length,
+      hasMore: list.hasMore,
+    },
     period,
     setPeriod,
     fetchUploads,
-    refreshStats,
+    loadMore: list.loadMore,
+    refreshStats: stats.refetch,
   };
 };

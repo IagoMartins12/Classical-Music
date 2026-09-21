@@ -1,9 +1,10 @@
 // app/components/blog/CommentSection.tsx
 'use client';
+import Link from 'next/link';
 
 import { useState, useEffect, useCallback, memo } from 'react';
-import { useSession } from 'next-auth/react';
-import Image from 'next/image';
+import { useSession } from '@/app/libs/session';
+import Image from '@/app/components/SmartImage';
 import {
   BiComment,
   BiSend,
@@ -18,6 +19,14 @@ import { FaUser } from 'react-icons/fa';
 import { FiAlertTriangle } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import Modal from '@/app/components/Modal';
+import {
+  createComment,
+  deleteComment,
+  loadComments,
+  reportComment,
+  setCommentLiked,
+  updateComment,
+} from '@/app/requests/blog/interactions';
 
 interface Comment {
   id: string;
@@ -374,16 +383,7 @@ export function CommentSection({
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`/api/blog/comments/article/${articleId}`);
-      const data = await response.json();
-      if (data.success) {
-        console.log(
-          '📥 Comentários carregados:',
-          data.comments.length,
-          'top-level'
-        );
-        setComments(data.comments);
-      }
+      setComments(await loadComments(articleId));
     } catch (error) {
       console.error('Erro ao carregar comentários:', error);
     } finally {
@@ -397,28 +397,16 @@ export function CommentSection({
 
     setSubmitting(true);
     try {
-      const response = await fetch(`/api/blog/comments/article/${articleId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          articleId,
-          content: newComment.trim(),
-        }),
-      });
+      await createComment(articleId, newComment.trim());
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('✅ Comentário criado:', data.comment.id);
-        setNewComment('');
-        await fetchComments(); // Aguardar reload
-        toast.success('Comentário enviado!');
-      } else {
-        const data = await response.json();
-        toast.error(data.error || 'Erro ao enviar comentário');
-      }
+      setNewComment('');
+      await fetchComments(); // Aguardar reload
+      toast.success('Comentário enviado!');
     } catch (error) {
       console.error('Erro ao enviar comentário:', error);
-      toast.error('Erro ao enviar comentário');
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao enviar comentário'
+      );
     } finally {
       setSubmitting(false);
     }
@@ -445,33 +433,17 @@ export function CommentSection({
 
       setSubmitting(true);
       try {
-        const response = await fetch(
-          `/api/blog/comments/article/${articleId}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              articleId,
-              content: replyContent.trim(),
-              parentId,
-            }),
-          }
-        );
+        await createComment(articleId, replyContent.trim(), parentId);
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log('✅ Resposta criada:', data.comment.id);
-          setReplyContent('');
-          setReplyTo(null);
-          await fetchComments(); // Aguardar reload
-          toast.success('Resposta enviada!');
-        } else {
-          const data = await response.json();
-          toast.error(data.error || 'Erro ao enviar resposta');
-        }
+        setReplyContent('');
+        setReplyTo(null);
+        await fetchComments(); // Aguardar reload
+        toast.success('Resposta enviada!');
       } catch (error) {
         console.error('Erro ao enviar resposta:', error);
-        toast.error('Erro ao enviar resposta');
+        toast.error(
+          error instanceof Error ? error.message : 'Erro ao enviar resposta'
+        );
       } finally {
         setSubmitting(false);
       }
@@ -487,13 +459,8 @@ export function CommentSection({
       }
 
       try {
-        const response = await fetch(`/api/blog/comments/${commentId}/like`, {
-          method: isLiked ? 'DELETE' : 'POST',
-        });
-
-        if (response.ok) {
-          fetchComments();
-        }
+        await setCommentLiked(commentId, !isLiked);
+        fetchComments();
       } catch (error) {
         console.error('Erro ao curtir comentário:', error);
         toast.error('Erro ao processar ação');
@@ -517,21 +484,17 @@ export function CommentSection({
 
       setSubmitting(true);
       try {
-        const response = await fetch(`/api/blog/comments/${commentId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: editContent.trim() }),
-        });
+        await updateComment(commentId, editContent.trim());
 
-        if (response.ok) {
-          setEditingCommentId(null);
-          setEditContent('');
-          fetchComments();
-          toast.success('Comentário atualizado!');
-        }
+        setEditingCommentId(null);
+        setEditContent('');
+        fetchComments();
+        toast.success('Comentário atualizado!');
       } catch (error) {
         console.error('Erro ao editar comentário:', error);
-        toast.error('Erro ao editar comentário');
+        toast.error(
+          error instanceof Error ? error.message : 'Erro ao editar comentário'
+        );
       } finally {
         setSubmitting(false);
       }
@@ -553,20 +516,15 @@ export function CommentSection({
       return;
 
     try {
-      const response = await fetch(`/api/blog/comments/${commentId}`, {
-        method: 'DELETE',
-      });
+      await deleteComment(commentId);
 
-      if (response.ok) {
-        fetchComments();
-        toast.success('Comentário deletado!');
-      } else {
-        const data = await response.json();
-        toast.error(data.error || 'Erro ao deletar comentário');
-      }
+      fetchComments();
+      toast.success('Comentário deletado!');
     } catch (error) {
       console.error('Erro ao deletar comentário:', error);
-      toast.error('Erro ao deletar comentário');
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao deletar comentário'
+      );
     }
   }, []);
 
@@ -581,31 +539,18 @@ export function CommentSection({
 
     setReportingComment(true);
     try {
-      const response = await fetch(
-        `/api/blog/comments/${reportingCommentId}/flag`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ reason: reportReason.trim() }),
-        }
-      );
+      await reportComment(reportingCommentId, reportReason.trim());
 
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success(
-          'Comentário denunciado. Será analisado por um moderador.'
-        );
-        setReportModalOpen(false);
-        setReportingCommentId(null);
-        setReportReason('');
-        fetchComments();
-      } else {
-        toast.error(data.error || 'Erro ao denunciar comentário');
-      }
+      toast.success('Comentário denunciado. Será analisado por um moderador.');
+      setReportModalOpen(false);
+      setReportingCommentId(null);
+      setReportReason('');
+      fetchComments();
     } catch (error) {
       console.error('Erro ao denunciar comentário:', error);
-      toast.error('Erro ao denunciar comentário');
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao denunciar comentário'
+      );
     } finally {
       setReportingComment(false);
     }
@@ -646,9 +591,12 @@ export function CommentSection({
               <p className="text-theme-secondary mb-4">
                 Faça login para deixar um comentário
               </p>
-              <a href="/login" className="btn-classical-primary inline-block">
+              <Link
+                href="/login"
+                className="btn-classical-primary inline-block"
+              >
                 Fazer Login
-              </a>
+              </Link>
             </div>
           )}
 

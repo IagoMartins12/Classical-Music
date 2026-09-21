@@ -2,7 +2,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { signIn } from 'next-auth/react';
+import Link from '@/app/components/LocalizedLink';
+import { signInWithGoogle, signInWithPassword } from '@/app/libs/session';
 import { FiMail, FiLock, FiAlertTriangle } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { GiGrandPiano } from 'react-icons/gi';
@@ -159,15 +160,18 @@ const LoginModal: React.FC = () => {
     setEmailConflictError(null); // Limpar erro anterior
 
     try {
-      const result = await signIn('credentials', {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
-      });
+      const result = await signInWithPassword(
+        formData.email,
+        formData.password
+      );
 
-      if (result?.error) {
-        setErrors({ general: t('login_modal_credentials_error') });
-        toast.error(t('login_modal_credentials_error'));
+      if (!result.ok) {
+        const message =
+          result.status === 401
+            ? t('login_modal_credentials_error')
+            : result.message;
+        setErrors({ general: message });
+        toast.error(message);
       } else {
         toast.success(t('login_modal_success'));
         close();
@@ -187,45 +191,8 @@ const LoginModal: React.FC = () => {
     setEmailConflictError(null); // Limpar erro anterior
 
     try {
-      console.log('🔄 Iniciando login com Google...');
-
-      const result = await signIn('google', {
-        redirect: false,
-        callbackUrl: '/',
-      });
-
-      console.log('📊 Resultado do Google SignIn:', result);
-
-      if (result?.error) {
-        const message = getErrorMessage(result.error, language);
-
-        if (
-          ['Callback', 'OAuthCreateAccount', 'EmailCreateAccount'].includes(
-            result.error
-          )
-        ) {
-          setEmailConflictError(message);
-        } else {
-          toast.error(message);
-        }
-        return;
-      } else if (result?.url) {
-        // Login bem-sucedido
-        console.log('✅ Login Google bem-sucedido, redirecionando...');
-        toast.success(t('login_modal_success'));
-        close();
-
-        // Redirecionar ou recarregar
-        if (result.url !== window.location.href) {
-          router.push(result.url);
-        } else {
-          router.refresh();
-        }
-      } else {
-        // Caso não tenha erro nem URL, assume sucesso
-        close();
-        router.refresh();
-      }
+      // A API conduz o login com o Google e devolve o navegador a esta página.
+      signInWithGoogle();
     } catch (error) {
       console.error('❌ Erro no Google SignIn:', error);
       toast.error(t('login_modal_google_error'));
@@ -420,13 +387,16 @@ const LoginModal: React.FC = () => {
         <div className="mt-6 text-center">
           <p className="text-xs text-theme-tertiary">
             {t('login_modal_terms_text')}{' '}
-            <a href="/terms" className="text-brand-primary hover:underline">
+            <Link href="/terms" className="text-brand-primary hover:underline">
               {t('login_modal_terms_link')}
-            </a>{' '}
+            </Link>{' '}
             {t('login_modal_terms_and')}{' '}
-            <a href="/privacy" className="text-brand-primary hover:underline">
+            <Link
+              href="/privacy"
+              className="text-brand-primary hover:underline"
+            >
               {t('login_modal_privacy_link')}
-            </a>
+            </Link>
           </p>
         </div>
       </Modal>

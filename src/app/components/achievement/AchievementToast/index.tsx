@@ -4,6 +4,7 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { FiAward, FiX, FiStar, FiZap, FiShield } from 'react-icons/fi';
 import { AnimatedItem } from '../../animation/AnimatedComponents';
+import { markAchievementViewed } from '@/app/requests/achievements';
 
 // Interface para achievement
 interface AchievementData {
@@ -448,9 +449,7 @@ export const useBackendAchievements = () => {
 
     // Marcar como visto no backend após mostrar o toast
     try {
-      await fetch(`/api/achievements/${achievementData.badgeId}/viewed`, {
-        method: 'PATCH',
-      });
+      await markAchievementViewed(achievementData.badgeId);
     } catch (error) {
       console.error('Erro ao marcar achievement como visto:', error);
     }

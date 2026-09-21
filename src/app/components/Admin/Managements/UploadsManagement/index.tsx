@@ -28,6 +28,7 @@ import {
   PageContainer,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
+import VirtualList from '@/app/components/Admin/Common/VirtualList';
 import Select from '@/app/components/Common/Select';
 import {
   MetricCard,
@@ -314,6 +315,9 @@ const ActivityDetailModal = ({
   );
 };
 
+/** Altura aproximada do cartão de envio; a real é medida ao montar. */
+const UPLOAD_ROW_HEIGHT = 150;
+
 export default function UploadsManagement() {
   const router = useRouter();
   const {
@@ -321,10 +325,12 @@ export default function UploadsManagement() {
     stats,
     loading,
     statsLoading,
+    loadingMore,
     pagination,
     period,
     setPeriod,
     fetchUploads,
+    loadMore,
     refreshStats,
   } = useAdminUploads();
 
@@ -845,8 +851,14 @@ export default function UploadsManagement() {
             )}
 
             {/* Lista de Uploads */}
-            <div className="space-y-4">
-              {uploads.map((upload) => {
+            <VirtualList
+              items={uploads}
+              itemKey={(upload) => upload.id}
+              estimateHeight={UPLOAD_ROW_HEIGHT}
+              gap={16}
+              className="space-y-4"
+            >
+              {(upload) => {
                 const EntityIcon = getEntityIcon(upload.entityType);
 
                 return (
@@ -956,46 +968,25 @@ export default function UploadsManagement() {
                     </div>
                   </div>
                 );
-              })}
-            </div>
+              }}
+            </VirtualList>
 
-            {/* Pagination */}
-            {pagination && (
+            {/* Rolagem por cursor: a API continua do último envio mostrado. */}
+            {uploads.length > 0 && (
               <div className="flex items-center justify-between mt-6 pt-6 border-t border-theme-secondary">
                 <div className="text-sm text-theme-secondary">
-                  Mostrando {uploads.length} de {pagination.total} uploads
+                  Mostrando {pagination.shown} de {pagination.total} uploads
                 </div>
-                <div className="flex items-center space-x-2">
+                {pagination.hasMore && (
                   <Button
                     variant="ghost"
                     size="sm"
-                    disabled={pagination.page <= 1}
-                    onClick={() =>
-                      handleFilterChange(
-                        'page',
-                        (pagination.page - 1).toString()
-                      )
-                    }
+                    disabled={loadingMore}
+                    onClick={loadMore}
                   >
-                    Anterior
+                    {loadingMore ? 'Carregando...' : 'Carregar mais'}
                   </Button>
-                  <span className="text-sm text-theme-primary">
-                    Página {pagination.page} de {pagination.pages}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    disabled={!pagination.hasMore}
-                    onClick={() =>
-                      handleFilterChange(
-                        'page',
-                        (pagination.page + 1).toString()
-                      )
-                    }
-                  >
-                    Próxima
-                  </Button>
-                </div>
+                )}
               </div>
             )}
           </AnimatedCard>

@@ -1,13 +1,13 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth';
 import { FiPlus, FiTag, FiTrendingUp } from 'react-icons/fi';
-import prisma from '@/app/libs/prismadb';
-import { authOptions } from '@/app/libs/auth';
+import { getServerAccessToken } from '@/app/libs/api/server-session';
+import { loadAdminTagsPage } from '@/app/requests/blog/admin';
 import { TagList } from '@/app/components/blog/admin/TagList';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
+import { getServerSession } from '@/app/libs/api/server-session';
 
 export const metadata: Metadata = {
   title: 'Gerenciar Tags - Blog Admin',
@@ -22,54 +22,9 @@ interface PageProps {
   }>;
 }
 
-async function getTags(search?: string) {
-  const where = search
-    ? {
-        OR: [
-          { name: { contains: search, mode: 'insensitive' as const } },
-          { slug: { contains: search, mode: 'insensitive' as const } },
-        ],
-      }
-    : {};
-
-  return await prisma.blogTag.findMany({
-    where,
-    include: {
-      _count: {
-        select: {
-          articles: {
-            where: {
-              article: {
-                status: 'PUBLISHED',
-              },
-            },
-          },
-        },
-      },
-    },
-    orderBy: { articleCount: 'desc' },
-  });
-}
-
-async function getStats() {
-  const [totalTags, tagsWithArticles, totalArticles] = await Promise.all([
-    prisma.blogTag.count(),
-    prisma.blogTag.count({
-      where: {
-        articles: {
-          some: {},
-        },
-      },
-    }),
-    prisma.blogArticle.count({ where: { status: 'PUBLISHED' } }),
-  ]);
-
-  return { totalTags, tagsWithArticles, totalArticles };
-}
-
 // ✅ Usar a interface PageProps
 export default async function TagsAdminPage({ searchParams }: PageProps) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user || (session.user.role !== 1 && session.user.role !== 2)) {
     redirect('/blog');
@@ -78,10 +33,10 @@ export default async function TagsAdminPage({ searchParams }: PageProps) {
   // ✅ Resolver a Promise do searchParams
   const resolvedParams = await searchParams;
 
-  const [tags, stats] = await Promise.all([
-    getTags(resolvedParams.q),
-    getStats(),
-  ]);
+  const { tags, stats } = await loadAdminTagsPage(
+    resolvedParams.q,
+    await getServerAccessToken()
+  );
 
   return (
     <div className="min-h-screen">

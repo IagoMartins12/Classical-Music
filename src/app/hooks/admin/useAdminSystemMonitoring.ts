@@ -1,6 +1,13 @@
 // app/hooks/admin/useSystemMonitoring.ts
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useCallback, useState } from 'react';
+import { adminKeys, useAdminQuery } from './query';
 import toast from 'react-hot-toast';
+import {
+  type ApiMaintenanceHealth,
+  type ApiReadiness,
+  getMaintenanceHealth,
+  getReadiness,
+} from '@/app/requests/admin/operations';
 
 export interface SystemMetrics {
   server: {
@@ -93,308 +100,246 @@ export interface UseSystemMonitoringReturn extends SystemMonitoringState {
   formatPercentage: (value: number) => string;
 }
 
-export const useSystemMonitoring = (): UseSystemMonitoringReturn => {
-  const [state, setState] = useState<SystemMonitoringState>({
-    metrics: null,
-    alerts: [],
-    logs: [],
-    loading: false,
-    error: null,
-    lastUpdated: null,
-    isConnected: false,
-    autoRefresh: true,
-    refreshInterval: 30, // segundos
-  });
+/**
+ * Monta as métricas da tela com o que a API mede: prontidão do banco e do
+ * cache (`/health/ready`), tamanho do banco, disco do servidor do banco,
+ * registros e filas (`/admin/maintenance/health`). CPU, memória do processo,
+ * rede e sessões não são expostos ao painel e ficam zerados; os alertas saem
+ * de verificações que falharam, disco cheio, filas com falha e busca sem índice.
+ */
+const formatSize = (bytes: number) => {
+  if (!bytes) return '0 B';
+  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.min(
+    units.length - 1,
+    Math.floor(Math.log(bytes) / Math.log(1024))
+  );
+  return `${(bytes / 1024 ** i).toFixed(1)} ${units[i]}`;
+};
 
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
-
-  // Função para buscar métricas
-  const fetchMetrics = useCallback(
-    async (showLoading = true) => {
-      // Cancelar requisição anterior se existir
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      abortControllerRef.current = new AbortController();
-      const signal = abortControllerRef.current.signal;
-
-      if (showLoading) {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
-      }
-
-      try {
-        const response = await fetch('/api/admin/system', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          signal,
-          cache: 'no-store',
-        });
-
-        if (!response.ok) {
-          if (response.status === 401) {
-            throw new Error('Acesso não autorizado');
-          }
-          if (response.status === 403) {
-            throw new Error('Permissão negada');
-          }
-          throw new Error(`Erro ${response.status}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          setState((prev) => ({
-            ...prev,
-            metrics: data.metrics,
-            alerts: data.alerts || [],
-            logs: data.logs || [],
-            loading: false,
-            error: null,
-            lastUpdated: new Date(),
-            isConnected: true,
-          }));
-        } else {
-          throw new Error(data.error || 'Erro ao carregar métricas');
-        }
-      } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {
-          return; // Requisição cancelada, não é um erro
-        }
-
-        const errorMessage =
-          err instanceof Error ? err.message : 'Erro desconhecido';
-
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error: errorMessage,
-          isConnected: false,
-        }));
-
-        console.error('Erro ao buscar métricas:', err);
-
-        // Retry automático após erro
-        if (state.autoRefresh) {
-          retryTimeoutRef.current = setTimeout(() => {
-            fetchMetrics(false);
-          }, 10000); // Retry após 10 segundos
-        }
-      }
-    },
-    [state.autoRefresh]
+function buildMetrics(
+  ready: ApiReadiness,
+  health: ApiMaintenanceHealth
+): SystemMetrics {
+  const disk = health.databaseHostDisk;
+  const dbResponse =
+    ready.details?.database?.responseTimeMs ??
+    ready.info?.database?.responseTimeMs ??
+    0;
+  const failedJobs = health.queues.reduce(
+    (sum, queue) => sum + (queue.counts.failed ?? 0),
+    0
   );
 
-  // Função para limpar cache
-  const clearCache = useCallback(async () => {
-    try {
-      const response = await fetch('/api/admin/system', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ action: 'clear_cache' }),
+  return {
+    server: {
+      cpu: { usage: 0, cores: 0, load: [] },
+      memory: { used: 0, total: 0, percentage: 0 },
+      disk: {
+        used: disk?.usedBytes ?? 0,
+        total: disk?.totalBytes ?? 0,
+        percentage: disk?.usedPercent ?? 0,
+      },
+      uptime: 0,
+      processes: 0,
+      platform: '',
+      hostname: '',
+    },
+    database: {
+      connections: { active: 0, max: 0, percentage: 0 },
+      queries: { slow: 0, average: dbResponse, total: 0 },
+      size: {
+        tables: health.database.collections,
+        indexes: health.database.indexes,
+        total: formatSize(health.database.dataSizeBytes),
+      },
+      performance: { reads: 0, writes: 0, locks: 0 },
+      memory: { resident: 0, virtual: 0 },
+      cache: { hitRatio: 0, size: health.database.indexSizeBytes },
+    },
+    cache: {
+      application: { size: 0, entries: 0, hitRate: 0 },
+      cdn: { requests: 0, bandwidth: '', hitRate: 0 },
+    },
+    network: {
+      requests: { current: 0, peak: 0, avg: 0 },
+      bandwidth: { incoming: 0, outgoing: 0, total: 0 },
+      errors: { rate: 0, total: 0, codes: {} },
+      latency: { p50: 0, p95: 0, p99: 0 },
+      connections: 0,
+    },
+    application: {
+      users: { active: 0, peak: 0, concurrent: 0 },
+      sessions: { total: 0, avg_duration: 0, bounce_rate: 0 },
+      features: { uploads: 0, annotations: 0, studies: 0 },
+      errors: { count: failedJobs, rate: 0, critical: 0 },
+      performance: { avgResponseTime: dbResponse, slowQueries: 0 },
+    },
+  };
+}
+
+function buildAlerts(
+  ready: ApiReadiness,
+  health: ApiMaintenanceHealth
+): Alert[] {
+  const now = new Date();
+  const alerts: Alert[] = [];
+
+  for (const [name, check] of Object.entries({ ...ready.error })) {
+    alerts.push({
+      id: `health-${name}`,
+      type: 'critical',
+      title: `${name} fora do ar`,
+      message: check.message ?? `A verificação de ${name} falhou`,
+      timestamp: now,
+      resolved: false,
+      category: 'performance',
+    });
+  }
+
+  if ((health.databaseHostDisk?.usedPercent ?? 0) >= 80) {
+    alerts.push({
+      id: 'disk',
+      type:
+        (health.databaseHostDisk?.usedPercent ?? 0) >= 95
+          ? 'critical'
+          : 'warning',
+      title: 'Disco do banco quase cheio',
+      message: `${health.databaseHostDisk?.usedPercent}% em uso`,
+      timestamp: now,
+      resolved: false,
+      category: 'storage',
+    });
+  }
+
+  for (const queue of health.queues) {
+    if ((queue.counts.failed ?? 0) > 0) {
+      alerts.push({
+        id: `queue-${queue.queue}`,
+        type: 'warning',
+        title: `Fila ${queue.queue} com falhas`,
+        message: `${queue.counts.failed} job(s) falharam`,
+        timestamp: now,
+        resolved: false,
+        category: 'performance',
       });
-
-      const data = await response.json();
-
-      if (data.success) {
-        toast.success('Cache limpo com sucesso');
-        // Atualizar métricas após limpar cache
-        await fetchMetrics();
-      } else {
-        throw new Error(data.error || 'Erro ao limpar cache');
-      }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Erro desconhecido';
-      toast.error(`Erro ao limpar cache: ${errorMessage}`);
-      console.error('Erro ao limpar cache:', error);
     }
-  }, [fetchMetrics]);
+  }
 
-  // Função para obter estatísticas detalhadas
+  if (!health.search.allIndexed) {
+    alerts.push({
+      id: 'search-index',
+      type: 'warning',
+      title: 'Busca sem índice de texto',
+      message: 'Alguma coleção de busca está sem o índice de texto',
+      timestamp: now,
+      resolved: false,
+      category: 'performance',
+    });
+  }
+
+  return alerts;
+}
+
+async function loadSystemState() {
+  const [ready, health] = await Promise.all([
+    getReadiness(),
+    getMaintenanceHealth(),
+  ]);
+  return {
+    ready,
+    health,
+    metrics: buildMetrics(ready, health),
+    alerts: buildAlerts(ready, health),
+  };
+}
+
+/**
+ * Monitoramento do sistema. Uma consulta só (prontidão + saúde), guardada
+ * pelo TanStack Query e revalidada no intervalo escolhido na tela — sem o
+ * `setInterval` que corria mesmo com a aba escondida.
+ */
+export const useSystemMonitoring = (): UseSystemMonitoringReturn => {
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [refreshInterval, setRefreshInterval] = useState(30);
+
+  const system = useAdminQuery(adminKeys.area('system'), loadSystemState, {
+    refetchInterval:
+      autoRefresh && refreshInterval > 0 ? refreshInterval * 1000 : false,
+  });
+
+  const metrics = system.data?.metrics ?? null;
+  const alerts = system.data?.alerts ?? [];
+
+  // A API invalida o cache na escrita; não há limpeza manual.
+  const clearCache = useCallback(async () => {
+    toast.error(
+      'A API invalida o cache sozinha, a cada escrita; não há limpeza manual.'
+    );
+  }, []);
+
   const getDetailedStats = useCallback(async () => {
     try {
-      const response = await fetch('/api/admin/system', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ action: 'get_detailed_stats' }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        return data.stats;
-      } else {
-        throw new Error(data.error || 'Erro ao obter estatísticas');
-      }
+      return system.data?.health ?? (await getMaintenanceHealth());
     } catch (error) {
       console.error('Erro ao obter estatísticas detalhadas:', error);
       return null;
     }
-  }, []);
+  }, [system.data]);
 
-  // Função para atualizar auto-refresh
-  const setAutoRefresh = useCallback((enabled: boolean) => {
-    setState((prev) => ({ ...prev, autoRefresh: enabled }));
-  }, []);
-
-  // Função para atualizar intervalo de refresh
-  const setRefreshInterval = useCallback((interval: number) => {
-    setState((prev) => ({ ...prev, refreshInterval: interval }));
-  }, []);
-
-  // Função para obter status de saúde geral
   const getHealthStatus = useCallback(():
     | 'healthy'
     | 'warning'
     | 'critical' => {
-    if (!state.metrics) return 'warning';
-
-    const { metrics } = state;
-    const criticalAlerts = state.alerts.filter(
-      (a) => a.type === 'critical' && !a.resolved
-    );
-
-    if (criticalAlerts.length > 0) return 'critical';
-
-    // Verificar métricas críticas
-    if (
-      metrics.server.cpu.usage > 90 ||
-      metrics.server.memory.percentage > 95 ||
-      metrics.server.disk.percentage > 95 ||
-      metrics.database.connections.percentage > 95 ||
-      metrics.application.errors.critical > 0
-    ) {
+    if (!metrics) return 'warning';
+    if (alerts.some((alert) => alert.type === 'critical' && !alert.resolved))
       return 'critical';
-    }
-
-    // Verificar métricas de warning
-    if (
-      metrics.server.cpu.usage > 70 ||
-      metrics.server.memory.percentage > 80 ||
-      metrics.server.disk.percentage > 80 ||
-      metrics.database.connections.percentage > 80 ||
-      metrics.application.errors.count > 10
-    ) {
-      return 'warning';
-    }
-
+    if (alerts.some((alert) => !alert.resolved)) return 'warning';
     return 'healthy';
-  }, [state.metrics, state.alerts]);
+  }, [metrics, alerts]);
 
-  // Função para obter alertas ativos
-  const getActiveAlerts = useCallback((): Alert[] => {
-    return state.alerts.filter((alert) => !alert.resolved);
-  }, [state.alerts]);
+  const getActiveAlerts = useCallback(
+    (): Alert[] => alerts.filter((alert) => !alert.resolved),
+    [alerts]
+  );
 
-  // Função para obter alertas críticos
-  const getCriticalAlerts = useCallback((): Alert[] => {
-    return state.alerts.filter(
-      (alert) => alert.type === 'critical' && !alert.resolved
-    );
-  }, [state.alerts]);
+  const getCriticalAlerts = useCallback(
+    (): Alert[] =>
+      alerts.filter((alert) => alert.type === 'critical' && !alert.resolved),
+    [alerts]
+  );
 
-  // Utilitários de formatação
   const formatUptime = useCallback((seconds: number): string => {
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor((seconds % 86400) / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
 
-    if (days > 0) {
-      return `${days}d ${hours}h ${minutes}m`;
-    } else if (hours > 0) {
-      return `${hours}h ${minutes}m`;
-    } else {
-      return `${minutes}m`;
-    }
+    if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    return `${minutes}m`;
   }, []);
 
-  const formatBytes = useCallback((bytes: number): string => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }, []);
+  const formatBytes = useCallback(
+    (bytes: number): string => formatSize(bytes),
+    []
+  );
 
-  const formatPercentage = useCallback((value: number): string => {
-    return `${value.toFixed(1)}%`;
-  }, []);
-
-  // Função pública para refresh manual
-  const refreshMetrics = useCallback(async () => {
-    await fetchMetrics(true);
-  }, [fetchMetrics]);
-
-  // Configurar auto-refresh
-  useEffect(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-
-    if (state.autoRefresh && state.refreshInterval > 0) {
-      intervalRef.current = setInterval(() => {
-        fetchMetrics(false);
-      }, state.refreshInterval * 1000);
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [state.autoRefresh, state.refreshInterval, fetchMetrics]);
-
-  // Carregar métricas iniciais
-  useEffect(() => {
-    fetchMetrics(true);
-  }, []);
-
-  // Cleanup
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      if (retryTimeoutRef.current) {
-        clearTimeout(retryTimeoutRef.current);
-      }
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
-  }, []);
-
-  // Notificações para alertas críticos
-  useEffect(() => {
-    const criticalAlerts = getCriticalAlerts();
-
-    if (criticalAlerts.length > 0 && state.lastUpdated) {
-      const latestAlert = criticalAlerts[0];
-      const alertTime = new Date(latestAlert.timestamp).getTime();
-      const lastUpdate = state.lastUpdated.getTime();
-
-      // Mostrar notificação apenas para alertas novos (últimos 2 minutos)
-      if (alertTime > lastUpdate - 2 * 60 * 1000) {
-        toast.error(`Alerta Crítico: ${latestAlert.title}`, {
-          duration: 10000,
-          position: 'top-right',
-        });
-      }
-    }
-  }, [state.alerts, state.lastUpdated, getCriticalAlerts]);
+  const formatPercentage = useCallback(
+    (value: number): string => `${value.toFixed(1)}%`,
+    []
+  );
 
   return {
-    ...state,
-    refreshMetrics,
+    metrics,
+    alerts,
+    logs: [],
+    loading: system.loading,
+    error: system.error,
+    lastUpdated: system.updatedAt,
+    isConnected: system.data?.ready.status === 'ok',
+    autoRefresh,
+    refreshInterval,
+    refreshMetrics: system.refetch,
     clearCache,
     setAutoRefresh,
     setRefreshInterval,
@@ -408,37 +353,23 @@ export const useSystemMonitoring = (): UseSystemMonitoringReturn => {
   };
 };
 
-// Hook para estatísticas em tempo real (usando WebSocket se disponível)
+// Estado do sistema em intervalo curto (30 s: a medida do banco não é leve).
+// Divide a consulta com o painel acima: a chave é a mesma, então é uma
+// chamada só, não duas.
 export const useRealTimeStats = () => {
-  const [realtimeData, setRealtimeData] = useState<any>(null);
-  const [connected, setConnected] = useState(false);
-
-  useEffect(() => {
-    // Implementar WebSocket para dados em tempo real
-    // Por enquanto, usar polling mais frequente
-    const interval = setInterval(async () => {
-      try {
-        const response = await fetch('/api/admin/system', {
-          cache: 'no-store',
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setRealtimeData(data);
-          setConnected(true);
-        }
-      } catch (error) {
-              console.log('error', error);
-        setConnected(false);
-      }
-    }, 5000); // Atualizar a cada 5 segundos
-
-    return () => clearInterval(interval);
-  }, []);
+  const system = useAdminQuery(adminKeys.area('system'), loadSystemState, {
+    refetchInterval: 30_000,
+  });
 
   return {
-    data: realtimeData,
-    connected,
+    data: system.data
+      ? {
+          success: true,
+          metrics: system.data.metrics,
+          alerts: system.data.alerts,
+        }
+      : null,
+    connected: !system.error && !!system.data,
   };
 };
 

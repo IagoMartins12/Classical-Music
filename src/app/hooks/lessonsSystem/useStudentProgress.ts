@@ -1,7 +1,10 @@
 // app/hooks/useStudentProgress.ts - Hook para gerenciar progresso do aluno
 
 import { useState, useCallback, useEffect } from 'react';
-import { StudentProgressResponse } from '@/app/requests/student-progress-requests';
+import {
+  loadStudentProgress,
+  type StudentProgressResponse,
+} from '@/app/requests/portal/student-progress';
 
 interface UseStudentProgressState {
   progressData: StudentProgressResponse | null;
@@ -72,10 +75,10 @@ export function useStudentProgress(
       currentPeriod: data.period.label.includes('3 meses')
         ? '3months'
         : data.period.label.includes('6 meses')
-        ? '6months'
-        : data.period.label.includes('ano')
-        ? '1year'
-        : 'all',
+          ? '6months'
+          : data.period.label.includes('ano')
+            ? '1year'
+            : 'all',
     }));
   }, []);
 
@@ -85,48 +88,15 @@ export function useStudentProgress(
     setError(null);
 
     try {
-      const params = new URLSearchParams({
-        period: state.currentPeriod,
-      });
+      const data = await loadStudentProgress(state.currentPeriod);
 
-      const response = await fetch(`/api/student/progress?${params}`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Progress API error: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (!data.success) {
-        throw new Error(data.error || 'Failed to load progress data');
+      if (!data) {
+        throw new Error('Perfil de aluno não encontrado');
       }
 
       setState((prev) => ({
         ...prev,
-        progressData: {
-          stats: data.stats,
-          monthlyData: data.monthlyData,
-          teacherBreakdown: data.teacherBreakdown,
-          workProgress: data.workProgress,
-          assignmentBreakdown: data.assignmentBreakdown,
-          streakHistory: data.streakHistory?.map((item: any) => ({
-            ...item,
-            date: new Date(item.date),
-          })),
-          achievements: data.achievements?.map((item: any) => ({
-            ...item,
-            earnedAt: new Date(item.earnedAt),
-          })),
-          period: {
-            ...data.period,
-            start: new Date(data.period.start),
-            end: new Date(data.period.end),
-          },
-        },
+        progressData: data,
       }));
 
       console.log('✅ Progress data refreshed successfully');
@@ -147,49 +117,16 @@ export function useStudentProgress(
       setError(null);
 
       try {
-        const params = new URLSearchParams({
-          period,
-        });
+        const data = await loadStudentProgress(period);
 
-        const response = await fetch(`/api/student/progress?${params}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Progress API error: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error(data.error || 'Failed to load progress data');
+        if (!data) {
+          throw new Error('Perfil de aluno não encontrado');
         }
 
         setState((prev) => ({
           ...prev,
           currentPeriod: period,
-          progressData: {
-            stats: data.stats,
-            monthlyData: data.monthlyData,
-            teacherBreakdown: data.teacherBreakdown,
-            workProgress: data.workProgress,
-            assignmentBreakdown: data.assignmentBreakdown,
-            streakHistory: data.streakHistory?.map((item: any) => ({
-              ...item,
-              date: new Date(item.date),
-            })),
-            achievements: data.achievements?.map((item: any) => ({
-              ...item,
-              earnedAt: new Date(item.earnedAt),
-            })),
-            period: {
-              ...data.period,
-              start: new Date(data.period.start),
-              end: new Date(data.period.end),
-            },
-          },
+          progressData: data,
         }));
 
         console.log(`✅ Period changed to ${period} successfully`);

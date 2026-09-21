@@ -26,6 +26,17 @@ import { useToast } from '@/app/hooks/useToast';
 import { useProcessChanges } from '@/app/hooks/useFormChanges';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Checkbox from '@/app/components/Common/Checkbox';
+import {
+  discoverComposerWorks,
+  importComposerWorks,
+  type ImportOutcome,
+} from '@/app/requests/external-sources';
+
+/**
+ * Obras por chamada de importação. A API aceita até 100 e limita a 5 chamadas
+ * por minuto; lotes menores mostram o progresso andando.
+ */
+const IMPORT_CHUNK = 25;
 
 interface DiscoveredWork {
   id: string;
@@ -114,25 +125,19 @@ const BulkInsertWorksModal = ({
   const handleDiscoverWorks = async () => {
     setIsDiscovering(true);
     try {
-      const response = await fetch(
-        `/api/uploads/composer/${composer.id}/works/discover`
-      );
+      const data = await discoverComposerWorks(composer.id);
+      const works: DiscoveredWork[] = data.works.map((work) => ({
+        id: work.imslpId,
+        title: work.title,
+        imslpId: work.imslpId,
+        imslpUrl: work.imslpUrl,
+        selected: false,
+        alreadyExists: work.alreadyImported,
+      }));
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(
-          error.details || error.error || t('toast_bulk_discover_error')
-        );
-      }
-
-      const data = await response.json();
-      setDiscoveredWorks(data.works || []);
-      updateStats(data.works || []);
+      setDiscoveredWorks(works);
+      updateStats(works);
       setCurrentStep('select');
-
-      console.log(
-        t('toast_bulk_works_discovered', { count: data.works?.length || 0 })
-      );
     } catch (error) {
       console.error('❌ Erro ao descobrir obras:', error);
       toast.error(
@@ -205,16 +210,18 @@ const BulkInsertWorksModal = ({
     setWorkProgress(initialProgress);
 
     try {
-      // Processar uma obra por vez para mostrar progresso
       const results: ProcessResult[] = [];
 
-      for (let i = 0; i < selectedWorks.length; i++) {
-        const work = selectedWorks[i];
+      // A API lê e grava as obras no mesmo processo, em lote (o legado
+      // chamava a própria API sem cookie, obra a obra, e toda importação
+      // voltava 401 marcada como sucesso). O progresso anda de lote em lote.
+      for (let start = 0; start < selectedWorks.length; start += IMPORT_CHUNK) {
+        const chunk = selectedWorks.slice(start, start + IMPORT_CHUNK);
+        const inChunk = new Set(chunk.map((work) => work.id));
 
-        // Marcar como processando
         setWorkProgress((prev) =>
           prev.map((p) =>
-            p.tempId === work.id
+            inChunk.has(p.tempId)
               ? {
                   ...p,
                   status: 'processing',
@@ -224,103 +231,64 @@ const BulkInsertWorksModal = ({
           )
         );
 
+        let outcomes: ImportOutcome[] = [];
+        let chunkError: string | null = null;
+
         try {
-          // Processar obra individual
-          const response = await fetch(
-            `/api/uploads/composer/${composer.id}/works/process-single`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ work }),
-            }
+          const imported = await importComposerWorks(
+            composer.id,
+            chunk.map((work) => work.imslpUrl)
           );
-
-          const data = await response.json();
-
-          if (response.ok && data.success) {
-            // Sucesso
-            const result: ProcessResult = {
-              workId: work.imslpId,
-              tempId: work.id,
-              title: work.title,
-              status: 'success',
-              message: t('bulk_processing_success'),
-              createdWorkId: data.workId,
-              details: data.details,
-            };
-
-            results.push(result);
-
-            setWorkProgress((prev) =>
-              prev.map((p) =>
-                p.tempId === work.id
-                  ? {
-                      ...p,
-                      status: 'success',
-                      message: t('bulk_processing_success'),
-                      details: data.details,
-                    }
-                  : p
-              )
-            );
-          } else {
-            // Erro
-            const result: ProcessResult = {
-              workId: work.imslpId,
-              tempId: work.id,
-              title: work.title,
-              status: 'error',
-              message: data.error || t('toast_bulk_import_error'),
-              details: data.details,
-            };
-
-            results.push(result);
-
-            setWorkProgress((prev) =>
-              prev.map((p) =>
-                p.tempId === work.id
-                  ? {
-                      ...p,
-                      status: 'error',
-                      message: data.error || t('bulk_processing_error'),
-                      details: data.details,
-                    }
-                  : p
-              )
-            );
-          }
+          outcomes = imported.outcomes;
         } catch (error) {
-          // Erro na requisição
-          const result: ProcessResult = {
+          chunkError =
+            error instanceof Error
+              ? error.message
+              : t('bulk_processing_connection_error');
+        }
+
+        const byUrl = new Map(
+          outcomes.map((outcome) => [outcome.imslpUrl, outcome])
+        );
+
+        const chunkResults: ProcessResult[] = chunk.map((work, index) => {
+          const outcome = byUrl.get(work.imslpUrl) ?? outcomes[index];
+          const status: ProcessResult['status'] = !outcome
+            ? 'error'
+            : outcome.status === 'imported'
+              ? 'success'
+              : outcome.status === 'duplicate'
+                ? 'duplicate'
+                : 'error';
+
+          return {
             workId: work.imslpId,
             tempId: work.id,
             title: work.title,
-            status: 'error',
+            status,
             message:
-              error instanceof Error
-                ? error.message
-                : t('bulk_processing_connection_error'),
+              status === 'success'
+                ? t('bulk_processing_success')
+                : outcome?.reason || chunkError || t('toast_bulk_import_error'),
+            createdWorkId: outcome?.workId,
           };
+        });
 
-          results.push(result);
+        results.push(...chunkResults);
 
-          setWorkProgress((prev) =>
-            prev.map((p) =>
-              p.tempId === work.id
-                ? {
-                    ...p,
-                    status: 'error',
-                    message: t('bulk_processing_connection_error'),
-                  }
-                : p
-            )
-          );
-        }
+        setWorkProgress((prev) =>
+          prev.map((p) => {
+            const result = chunkResults.find((r) => r.tempId === p.tempId);
 
-        // Pequena pausa entre obras
-        if (i < selectedWorks.length - 1) {
-          await new Promise((resolve) => setTimeout(resolve, 500));
-        }
+            return result
+              ? {
+                  ...p,
+                  status: result.status === 'error' ? 'error' : 'success',
+                  message: result.message,
+                }
+              : p;
+          })
+        );
       }
 
       setProcessResults(results);
@@ -329,30 +297,8 @@ const BulkInsertWorksModal = ({
       // Refresh da página
       router.refresh();
 
-      // Log: Histórico de importação em lote
-      try {
-        await fetch('/api/uploads/history/bulk-import', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            composerId: composer.id,
-            composerName: composer.fullName || composer.name,
-            totalWorks: results.length,
-            successCount: results.filter((r) => r.status === 'success').length,
-            errorCount: results.filter((r) => r.status === 'error').length,
-            works: results.map((r) => ({
-              title: r.title,
-              status: r.status,
-              createdWorkId: r.createdWorkId,
-            })),
-          }),
-        });
-      } catch (logError) {
-        console.warn(
-          'Erro ao registrar importação em lote no histórico:',
-          logError
-        );
-      }
+      // O registro da importação fica na trilha de auditoria da API
+      // (`imslp.works.import`); a rota de histórico em lote do legado saiu.
     } catch (error) {
       console.error('❌ Erro no processamento:', error);
       toast.error(

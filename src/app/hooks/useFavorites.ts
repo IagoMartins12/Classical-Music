@@ -4,6 +4,10 @@
 import { useEffect } from 'react';
 import { useFavoritesStore } from '../stores/useFavoritesStore';
 import { useAuth } from './useAuth';
+import {
+  listComposerFavorites,
+  listWorkFavorites,
+} from '@/app/requests/library';
 
 // Hook para inicializar favoritos automaticamente
 export const useFavorites = () => {
@@ -30,19 +34,14 @@ export const useFavorites = () => {
       try {
         // Carregar favoritos do servidor
         const [composersResponse, worksResponse] = await Promise.all([
-          fetch('/api/favorites/composers'),
-          fetch('/api/favorites/works'),
+          listComposerFavorites(),
+          listWorkFavorites(),
         ]);
 
         if (composersResponse.ok && worksResponse.ok) {
-          const [composersData, worksData] = await Promise.all([
-            composersResponse.json(),
-            worksResponse.json(),
-          ]);
-
           initializeFavorites(
-            composersData.favorites || [],
-            worksData.favorites || []
+            composersResponse.data.favorites || [],
+            worksResponse.data.favorites || []
           );
         }
       } catch (error) {

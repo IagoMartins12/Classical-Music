@@ -1,15 +1,17 @@
 // app/uploads/page.tsx - Meus uploads otimizado
-import { getServerSession } from 'next-auth';
 import {
   getServerLanguageStatic,
   loadPageTranslationsWithCommon,
 } from '@/app/utils/translations/serverTranslations';
 import UploadsPageServer from './pageServer';
 import EmailVerificationRequired from '@/app/components/VerificationsProviders/EmailVerificationRequired';
-import { authOptions } from '@/app/libs/auth';
-import { getUserById } from '@/app/actions/auth';
+import { getCurrentAccount } from '@/app/requests/my-uploads';
 import { redirect } from 'next/navigation';
 import { TranslationProvider } from '@/app/context/TranslationContext';
+import { getServerSession } from '@/app/libs/api/server-session';
+
+// "Meus envios" é por pessoa: renderizada a cada pedido, sem cache de página.
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata() {
   const language = await getServerLanguageStatic();
@@ -72,13 +74,14 @@ export default async function UploadsPage({
     work?: string;
   }>;
 }) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user?.id) {
     return redirect('/not-authenticated');
   }
 
-  const userData = await getUserById(session.user.id);
+  // A conta vem da API, pelo token do cookie.
+  const userData = await getCurrentAccount();
 
   if (!userData) {
     return redirect('/not-authenticated');
@@ -89,8 +92,6 @@ export default async function UploadsPage({
     const { translations } = await loadPageTranslationsWithCommon(language, [
       'components/email-verification',
     ]);
-
-    console.log('trans', translations);
 
     return (
       <TranslationProvider language={language} translations={translations}>

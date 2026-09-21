@@ -1,6 +1,7 @@
 // app/hooks/assignmentSystem/useAssignmentVideo.ts - Hook para upload de vídeo em assignments
 
 import { useState, useCallback } from 'react';
+import { submitAssignmentVideo } from '@/app/requests/portal/assignment-actions';
 
 interface UseAssignmentVideoReturn {
   // Estados
@@ -110,39 +111,18 @@ export function useAssignmentVideo(): UseAssignmentVideoReturn {
           `🚀 [USE-ASSIGNMENT-VIDEO] Iniciando upload para assignment ${assignmentId}`
         );
 
-        // Preparar FormData
-        const formData = new FormData();
-        formData.append(
-          'data',
-          JSON.stringify({
-            assignmentId,
-            ...additionalData,
-          })
+        // Upload assinado direto ao armazenamento; a entrega entra na tarefa.
+        await submitAssignmentVideo(
+          assignmentId,
+          selectedVideo,
+          typeof additionalData?.note === 'string'
+            ? additionalData.note
+            : undefined
         );
-        formData.append('videoFile', selectedVideo);
 
-        // Fazer request
-        const response = await fetch('/api/assignments', {
-          method: 'PATCH',
-          body: formData,
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || `Erro ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        if (result.success) {
-          console.log(`✅ [USE-ASSIGNMENT-VIDEO] Upload concluído com sucesso`);
-
-          // Limpar estado após sucesso
-          removeVideo();
-          return true;
-        } else {
-          throw new Error(result.error || 'Erro desconhecido no upload');
-        }
+        // Limpar estado após sucesso
+        removeVideo();
+        return true;
       } catch (error) {
         console.error('❌ [USE-ASSIGNMENT-VIDEO] Erro no upload:', error);
         setUploadError(

@@ -1,5 +1,6 @@
 // app/hooks/usePasswordReset.ts
 import { useState, useCallback } from 'react';
+import { legacyAuth } from '@/app/libs/api/compat';
 
 interface PasswordResetState {
   loading: boolean;
@@ -48,15 +49,7 @@ export const usePasswordReset = () => {
     }));
 
     try {
-      const response = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
+      const result = await legacyAuth.forgotPassword(data.email);
 
       if (result.success) {
         setState((prev) => ({
@@ -88,50 +81,13 @@ export const usePasswordReset = () => {
     }
   }, []);
 
-  // Validar token de reset
+  // Validar token de reset. A API confere o link só no envio da nova senha —
+  // um GET que só validasse seria mais uma porta para testar tokens. A página
+  // mostra o formulário direto; link inválido ou vencido aparece no envio.
   const validateResetToken = useCallback(async (token: string) => {
-    setState((prev) => ({ ...prev, loading: true, error: null }));
-
-    try {
-      const response = await fetch(`/api/auth/reset-password?token=${token}`);
-      const result = await response.json();
-
-      if (result.valid) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          tokenValid: true,
-          tokenData: result.user
-            ? {
-                email: result.user.email,
-                firstName: result.user.firstName,
-                expiresAt: result.expiresAt,
-                minutesLeft: result.minutesLeft,
-              }
-            : undefined,
-        }));
-      } else {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          tokenValid: false,
-          error: result.error || 'Token inválido',
-        }));
-      }
-
-      return result;
-    } catch (error) {
-      console.log('error', error);
-      const errorMessage = 'Erro ao validar token';
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-        tokenValid: false,
-        error: errorMessage,
-      }));
-
-      return { valid: false, error: errorMessage };
-    }
+    void token;
+    setState((prev) => ({ ...prev, loading: false, tokenValid: true }));
+    return { valid: true, user: undefined, errorCode: undefined };
   }, []);
 
   // Processar reset de senha
@@ -144,15 +100,7 @@ export const usePasswordReset = () => {
     }));
 
     try {
-      const response = await fetch('/api/auth/reset-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
+      const result = await legacyAuth.resetPassword(data);
 
       if (result.success) {
         setState((prev) => ({

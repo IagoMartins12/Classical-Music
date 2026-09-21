@@ -1,6 +1,18 @@
 // app/hooks/admin/useMaintenanceSystem.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { adminKeys, errorMessage, useAdminQuery } from './query';
 import toast from 'react-hot-toast';
+import {
+  type ApiMaintenanceTask,
+  deleteMaintenanceSchedule,
+  listMaintenanceSchedules,
+  listMaintenanceTasks,
+  runMaintenanceTask,
+  setMaintenanceSchedule,
+  waitForMaintenanceJob,
+} from '@/app/requests/admin/maintenance';
+import { getMaintenanceHealth } from '@/app/requests/admin/operations';
+import { BACKUP_NOT_IN_API } from './useBackupManagement';
 
 export interface MaintenanceTask {
   id: string;
@@ -114,258 +126,217 @@ interface UseMaintenanceSystemReturn {
   getNextRunFormatted: (date: Date | undefined) => string;
 }
 
+const CATEGORY: Record<string, MaintenanceTask['category']> = {
+  storage: 'files',
+  database: 'database',
+  search: 'database',
+  audit: 'logs',
+  notifications: 'database',
+};
+
+const TYPE: Record<string, MaintenanceTask['type']> = {
+  storage: 'cleanup',
+  database: 'cleanup',
+  search: 'reindex',
+};
+
+const CRON_BY_FREQUENCY: Record<string, string> = {
+  daily: '0 4 * * *',
+  weekly: '0 5 * * 0',
+  monthly: '0 5 1 * *',
+};
+
+function frequencyOf(cron?: string | null): MaintenanceTask['frequency'] {
+  if (!cron) return 'manual';
+  const [, , dayOfMonth, , dayOfWeek] = cron.split(' ');
+  if (dayOfMonth && dayOfMonth !== '*') return 'monthly';
+  if (dayOfWeek && dayOfWeek !== '*') return 'weekly';
+  return 'daily';
+}
+
+function toTask(
+  task: ApiMaintenanceTask,
+  schedule: { cron: string | null; nextRunAt: string | null } | undefined,
+  running: boolean
+): MaintenanceTask {
+  return {
+    id: task.id,
+    name: task.name,
+    type: TYPE[task.category] ?? 'optimization',
+    category: CATEGORY[task.category] ?? 'system',
+    status: running ? 'running' : schedule ? 'scheduled' : 'pending',
+    lastRun: null,
+    nextRun: schedule?.nextRunAt ? new Date(schedule.nextRunAt) : null,
+    frequency: frequencyOf(schedule?.cron),
+    impact: task.impact,
+    estimatedDuration: 0,
+    description: task.description,
+    enabled: Boolean(schedule),
+  };
+}
+
+const outcomeText = (summary: Record<string, number>) =>
+  Object.entries(summary)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join(', ');
+
+/**
+ * Manutenção pela API: tarefas do catálogo (`/admin/maintenance/tasks`),
+ * agendamento por cron e saúde do banco. Agendamento de backup não existe —
+ * backup é da infraestrutura do banco.
+ */
+/**
+ * Manutenção do sistema. As tarefas, os agendamentos e a saúde vêm numa
+ * consulta só (TanStack Query), que se atualiza a cada 30 s — e para de se
+ * atualizar enquanto alguma tarefa está rodando, como antes.
+ */
 export const useMaintenanceSystem = (): UseMaintenanceSystemReturn => {
-  const [systemHealth, setSystemHealth] = useState<SystemHealth | null>(null);
-  const [maintenanceTasks, setMaintenanceTasks] = useState<MaintenanceTask[]>(
-    []
-  );
-  const [backupSchedules, setBackupSchedules] = useState<BackupSchedule[]>([]);
-  const [availableCollections, setAvailableCollections] = useState<
-    CollectionInfo[]
-  >([]);
   const [runningTasks, setRunningTasks] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
-  // Fetch all maintenance data
-  const fetchMaintenanceData = useCallback(async () => {
-    if (loading) return;
+  const maintenance = useAdminQuery(
+    adminKeys.area('maintenance'),
+    async () => {
+      const [tasks, schedules, health] = await Promise.all([
+        listMaintenanceTasks(),
+        listMaintenanceSchedules(),
+        getMaintenanceHealth(),
+      ]);
 
-    setLoading(true);
-    setError(null);
+      return {
+        tasks: tasks.tasks,
+        schedules: schedules.schedules,
+        health,
+      };
+    },
+    { refetchInterval: runningTasks.length === 0 ? 30_000 : false }
+  );
 
-    try {
-      const response = await fetch('/api/admin/maintenance?action=overview', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        cache: 'no-store',
-      });
+  const apiTasks = useMemo(
+    () => maintenance.data?.tasks ?? [],
+    [maintenance.data]
+  );
 
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Acesso não autorizado');
-        }
-        throw new Error(`Erro ${response.status}: ${response.statusText}`);
-      }
+  const maintenanceTasks = useMemo(() => {
+    const byTask = new Map(
+      (maintenance.data?.schedules ?? []).map((schedule) => [
+        schedule.taskId,
+        schedule,
+      ])
+    );
 
-      const data = await response.json();
+    return apiTasks.map((task) =>
+      toTask(task, byTask.get(task.id), runningTasks.includes(task.id))
+    );
+  }, [apiTasks, maintenance.data, runningTasks]);
 
-      if (data.success) {
-        setSystemHealth(data.systemHealth);
-        setMaintenanceTasks(data.maintenanceTasks);
-        setBackupSchedules(data.backupSchedules);
-        setRunningTasks(data.runningTasks);
-        setLastUpdated(new Date());
-      } else {
-        throw new Error(data.error || 'Erro ao carregar dados de manutenção');
-      }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Erro desconhecido';
-      setError(errorMessage);
-      console.error('Erro ao buscar dados de manutenção:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [loading]);
+  const systemHealth = useMemo<SystemHealth | null>(() => {
+    const health = maintenance.data?.health;
 
-  // Fetch available collections
-  const fetchCollections = useCallback(async () => {
-    try {
-      const response = await fetch('/api/admin/maintenance?action=collections');
-      const data = await response.json();
+    if (!health) return null;
 
-      if (data.success) {
-        setAvailableCollections(data.collections);
-      }
-    } catch (error) {
-      console.error('Error fetching collections:', error);
-    }
-  }, []);
+    const disk = health.databaseHostDisk;
 
-  // Run maintenance task
+    return {
+      diskSpace: {
+        total: disk?.totalBytes ?? 0,
+        used: disk?.usedBytes ?? 0,
+        available: (disk?.totalBytes ?? 0) - (disk?.usedBytes ?? 0),
+        percentage: disk?.usedPercent ?? 0,
+      },
+      database: {
+        size: health.database.dataSizeBytes,
+        collections: health.database.collections,
+        totalRecords: health.database.documents,
+        indexHealth: health.search.allIndexed ? 100 : 0,
+      },
+      cache: { size: 0, hitRate: 0, evictions: 0, memory: 0 },
+      logs: {
+        size: 0,
+        errorCount: 0,
+        warningCount: 0,
+        oldestEntry: new Date(),
+      },
+      backups: { count: 0, totalSize: '—', health: 'warning' },
+    };
+  }, [maintenance.data]);
+
+  const availableCollections = useMemo<CollectionInfo[]>(
+    () =>
+      (maintenance.data?.health.search.collections ?? []).map((item) => ({
+        name: item.collection,
+        displayName: item.collection,
+        estimatedRecords: 0,
+      })),
+    [maintenance.data]
+  );
+
+  // Executa de verdade (`confirm: true`), como o botão do legado; o
+  // resultado chega quando o job termina.
   const runTask = useCallback(
     async (taskId: string) => {
-      setError(null);
-      const toastId = toast.loading('Executando tarefa...');
+      setActionError(null);
+      const toastId = toast.loading('Enfileirando tarefa...');
 
       try {
-        const response = await fetch('/api/admin/maintenance', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: 'run-task',
-            taskId,
-          }),
+        const { jobId } = await runMaintenanceTask(taskId, true);
+        toast.loading('Tarefa em execução...', { id: toastId });
+        setRunningTasks((previous) => [...previous, taskId]);
+
+        const outcome = await waitForMaintenanceJob(jobId);
+        toast.success(`Tarefa concluída — ${outcomeText(outcome.summary)}`, {
+          id: toastId,
+          duration: 8000,
         });
-
-        const data = await response.json();
-
-        if (data.success) {
-          toast.success('Tarefa executada com sucesso!', { id: toastId });
-
-          // Update task status immediately
-          setMaintenanceTasks((prev) =>
-            prev.map((task) =>
-              task.id === taskId
-                ? { ...task, status: 'running', progress: 0 }
-                : task
-            )
-          );
-
-          // Refresh data after a delay
-          setTimeout(() => {
-            fetchMaintenanceData();
-          }, 2000);
-        } else {
-          throw new Error(data.error || 'Erro ao executar tarefa');
-        }
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Erro desconhecido';
-        setError(errorMessage);
-        toast.error(`Erro: ${errorMessage}`, { id: toastId });
+      } catch (error) {
+        const message = errorMessage(error);
+        setActionError(message);
+        toast.error(`Erro: ${message}`, { id: toastId });
+      } finally {
+        setRunningTasks((previous) => previous.filter((id) => id !== taskId));
+        await maintenance.refetch();
       }
     },
-    [fetchMaintenanceData]
+    [maintenance]
   );
 
-  // Update task configuration
+  // Ativar agenda pelo cron sugerido (ou pela frequência escolhida); desativar
+  // remove o agendamento.
   const updateTask = useCallback(
     async (taskId: string, updates: Partial<MaintenanceTask>) => {
-      setError(null);
+      setActionError(null);
 
       try {
-        const response = await fetch('/api/admin/maintenance', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: 'update-task',
-            taskId,
-            scheduleData: updates,
-          }),
-        });
+        const task = apiTasks.find((item) => item.id === taskId);
+        const current = maintenanceTasks.find((item) => item.id === taskId);
+        const enabled = updates.enabled ?? current?.enabled ?? false;
 
-        const data = await response.json();
-
-        if (data.success) {
-          setMaintenanceTasks((prev) =>
-            prev.map((task) =>
-              task.id === taskId ? { ...task, ...updates } : task
-            )
-          );
-          toast.success('Tarefa atualizada com sucesso!');
+        if (!enabled) {
+          await deleteMaintenanceSchedule(taskId);
         } else {
-          throw new Error(data.error || 'Erro ao atualizar tarefa');
+          const frequency = updates.frequency ?? current?.frequency;
+          const cron =
+            (frequency && CRON_BY_FREQUENCY[frequency]) ||
+            task?.suggestedCron ||
+            CRON_BY_FREQUENCY.daily;
+          await setMaintenanceSchedule(taskId, cron);
         }
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Erro desconhecido';
-        setError(errorMessage);
-        toast.error(`Erro: ${errorMessage}`);
+
+        toast.success('Tarefa atualizada com sucesso!');
+        await maintenance.refetch();
+      } catch (error) {
+        const message = errorMessage(error);
+        setActionError(message);
+        toast.error(`Erro: ${message}`);
       }
     },
-    []
+    [apiTasks, maintenanceTasks, maintenance]
   );
 
-  // Create backup schedule
-  const createBackupSchedule = useCallback(
-    async (scheduleData: Partial<BackupSchedule>) => {
-      setError(null);
-      const toastId = toast.loading('Criando agendamento...');
-
-      try {
-        const response = await fetch('/api/admin/maintenance', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: 'create-schedule',
-            scheduleData,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          setBackupSchedules((prev) => [...prev, data.schedule]);
-          toast.success('Agendamento criado com sucesso!', { id: toastId });
-        } else {
-          throw new Error(data.error || 'Erro ao criar agendamento');
-        }
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Erro desconhecido';
-        setError(errorMessage);
-        toast.error(`Erro: ${errorMessage}`, { id: toastId });
-      }
-    },
-    []
-  );
-
-  // Update backup schedule
-  const updateBackupSchedule = useCallback(
-    async (scheduleId: string, updates: Partial<BackupSchedule>) => {
-      setError(null);
-
-      try {
-        setBackupSchedules((prev) =>
-          prev.map((schedule) =>
-            schedule.id === scheduleId
-              ? { ...schedule, ...updates, updatedAt: new Date() }
-              : schedule
-          )
-        );
-        toast.success('Agendamento atualizado!');
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Erro desconhecido';
-        setError(errorMessage);
-        toast.error(`Erro: ${errorMessage}`);
-      }
-    },
-    []
-  );
-
-  // Delete backup schedule
-  const deleteBackupSchedule = useCallback(async (scheduleId: string) => {
-    setError(null);
-
-    try {
-      const response = await fetch(`/api/admin/maintenance?id=${scheduleId}`, {
-        method: 'DELETE',
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setBackupSchedules((prev) => prev.filter((s) => s.id !== scheduleId));
-        toast.success('Agendamento removido!');
-      } else {
-        throw new Error(data.error || 'Erro ao remover agendamento');
-      }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Erro desconhecido';
-      setError(errorMessage);
-      toast.error(`Erro: ${errorMessage}`);
-    }
+  const backupUnavailable = useCallback(async () => {
+    toast.error(BACKUP_NOT_IN_API);
   }, []);
 
-  // Refresh data wrapper
-  const refreshData = useCallback(async () => {
-    return fetchMaintenanceData();
-  }, [fetchMaintenanceData]);
-
-  // Utility functions
   const getStatusColor = useCallback((status: string): string => {
     switch (status) {
       case 'running':
@@ -391,10 +362,6 @@ export const useMaintenanceSystem = (): UseMaintenanceSystemReturn => {
         return 'FiCheckCircle';
       case 'failed':
         return 'FiX';
-      case 'scheduled':
-        return 'FiClock';
-      case 'pending':
-        return 'FiClock';
       default:
         return 'FiClock';
     }
@@ -424,79 +391,34 @@ export const useMaintenanceSystem = (): UseMaintenanceSystemReturn => {
   const getNextRunFormatted = useCallback((date: Date | undefined): string => {
     if (!date) return 'Não agendado';
 
-    const now = new Date();
-    const diff = date.getTime() - now.getTime();
+    const diff = date.getTime() - Date.now();
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const days = Math.floor(hours / 24);
 
-    if (days > 0) {
-      return `Em ${days} dia${days > 1 ? 's' : ''}`;
-    } else if (hours > 0) {
-      return `Em ${hours} hora${hours > 1 ? 's' : ''}`;
-    } else if (diff > 0) {
-      const minutes = Math.floor(diff / (1000 * 60));
-      return `Em ${minutes} min`;
-    } else {
-      return 'Vencido';
-    }
+    if (days > 0) return `Em ${days} dia${days > 1 ? 's' : ''}`;
+    if (hours > 0) return `Em ${hours} hora${hours > 1 ? 's' : ''}`;
+    if (diff > 0) return `Em ${Math.floor(diff / (1000 * 60))} min`;
+    return 'Vencido';
   }, []);
-
-  // Load data on mount
-  useEffect(() => {
-    fetchMaintenanceData();
-    fetchCollections();
-  }, []);
-
-  // Auto-refresh for running tasks
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if (runningTasks.length > 0) {
-      interval = setInterval(() => {
-        fetchMaintenanceData();
-      }, 5000); // Refresh every 5 seconds when tasks are running
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [runningTasks.length, fetchMaintenanceData]);
-
-  // General auto-refresh every 30 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!loading && runningTasks.length === 0) {
-        fetchMaintenanceData();
-      }
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, [loading, runningTasks.length, fetchMaintenanceData]);
 
   return {
-    // Data
     systemHealth,
     maintenanceTasks,
-    backupSchedules,
+    backupSchedules: [],
     availableCollections,
     runningTasks,
 
-    // State
-    loading,
-    error,
-    lastUpdated,
+    loading: maintenance.loading,
+    error: maintenance.error ?? actionError,
+    lastUpdated: maintenance.updatedAt,
 
-    // Actions
-    refreshData,
+    refreshData: maintenance.refetch,
     runTask,
     updateTask,
-    createBackupSchedule,
-    updateBackupSchedule,
-    deleteBackupSchedule,
+    createBackupSchedule: backupUnavailable,
+    updateBackupSchedule: backupUnavailable,
+    deleteBackupSchedule: backupUnavailable,
 
-    // Utilities
     getStatusColor,
     getStatusIcon,
     getImpactColor,

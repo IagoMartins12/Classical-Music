@@ -123,62 +123,6 @@ export const getEntityTypePlural = (type: string): string => {
   return plurals[type as keyof typeof plurals] || type;
 };
 
-// app/hooks/useReportAnalytics.ts
-import { useState, useEffect, useCallback } from 'react';
-
-interface ReportAnalytics {
-  summary: {
-    totalReports: number;
-    pendingReports: number;
-    resolvedReports: number;
-    resolutionRate: number;
-  };
-  breakdown: {
-    topReasons: Array<{ reason: string; _count: { id: number } }>;
-    topTypes: Array<{ entityType: string; _count: { id: number } }>;
-  };
-  recentActivity: any[];
-}
-
-export const useReportAnalytics = (period: string = '7d') => {
-  const [analytics, setAnalytics] = useState<ReportAnalytics | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchAnalytics = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(`/api/reports/summary?period=${period}`);
-
-      if (response.ok) {
-        const data = await response.json();
-        setAnalytics(data);
-      } else {
-        const errorData = await response.json();
-        setError(errorData.error || 'Erro ao carregar analytics');
-      }
-    } catch (err) {
-      console.error('Erro ao buscar analytics:', err);
-      setError('Erro ao carregar analytics');
-    } finally {
-      setLoading(false);
-    }
-  }, [period]);
-
-  useEffect(() => {
-    fetchAnalytics();
-  }, [fetchAnalytics]);
-
-  const refresh = useCallback(() => {
-    fetchAnalytics();
-  }, [fetchAnalytics]);
-
-  return {
-    analytics,
-    loading,
-    error,
-    refresh,
-  };
-};
+// `useReportAnalytics` foi removida: o único componente que a usava
+// (`components/Report/ReportAnalyticsCard`) não era alcançável por nenhuma
+// página, e ela chamava `/api/reports/summary` do legado.

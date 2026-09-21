@@ -1,5 +1,11 @@
 // app/hooks/useNewsletterSubscription.ts - VERSÃO ATUALIZADA
 import { useState, useCallback, useEffect } from 'react';
+import {
+  resendNewsletterConfirmation,
+  subscribeToNewsletter,
+  type NewsletterActionResult,
+} from '@/app/requests/newsletter';
+import { getNewsletterDashboardStats } from '@/app/requests/admin/newsletter';
 
 interface SubscribeData {
   email: string;
@@ -10,24 +16,6 @@ interface SubscribeData {
   frequency?: 'daily' | 'weekly' | 'monthly';
   sourceUrl?: string;
   utmSource?: string;
-}
-
-// 🆕 NOVO: Resposta expandida com verificação de duplicados
-interface SubscribeResponse {
-  success: boolean;
-  message: string;
-  status: string;
-  error?: string;
-  errorCode?: string;
-  subscribedAt?: string;
-  needsConfirmation?: boolean;
-  canResendConfirmation?: boolean;
-  existingToken?: string;
-  subscriber?: {
-    email: string;
-    firstName?: string;
-    subscribedAt: string;
-  };
 }
 
 interface UseNewsletterSubscriptionReturn {
@@ -62,19 +50,12 @@ export const useNewsletterSubscription =
       setCanResend(false);
 
       try {
-        const response = await fetch('/api/newsletter/subscribe', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        const result: SubscribeResponse = await response.json();
+        const result: NewsletterActionResult =
+          await subscribeToNewsletter(data);
 
         if (result.success) {
           setSuccess(true);
-          setStatus(result.status);
+          setStatus(result.status ?? null);
           setError(null);
         } else {
           setError(result.error || 'Erro na inscrição');
@@ -102,18 +83,7 @@ export const useNewsletterSubscription =
       setErrorCode(null);
 
       try {
-        const response = await fetch('/api/newsletter/subscribe', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: email.trim(),
-            action: 'resend-confirmation',
-          }),
-        });
-
-        const result = await response.json();
+        const result = await resendNewsletterConfirmation(email);
 
         if (result.success) {
           setSuccess(true);
@@ -155,69 +125,10 @@ export const useNewsletterSubscription =
   };
 
 // Hook para gerenciar preferências de newsletter (para usuários logados)
-interface NewsletterPreferences {
-  weekly_digest: boolean;
-  new_composers: boolean;
-  new_works: boolean;
-  study_reminders: boolean;
-  marketing: boolean;
-  frequency: 'daily' | 'weekly' | 'monthly';
-}
 
-interface UseNewsletterPreferencesReturn {
-  preferences: NewsletterPreferences | null;
-  updatePreferences: (
-    newPreferences: Partial<NewsletterPreferences>
-  ) => Promise<void>;
-  loading: boolean;
-  error: string | null;
-}
-
-export const useNewsletterPreferences = (): UseNewsletterPreferencesReturn => {
-  const [preferences, setPreferences] = useState<NewsletterPreferences | null>(
-    null
-  );
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const updatePreferences = useCallback(
-    async (newPreferences: Partial<NewsletterPreferences>) => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch('/api/newsletter/preferences', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newPreferences),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          setPreferences(result.preferences);
-        } else {
-          setError(result.error || 'Erro ao atualizar preferências');
-        }
-      } catch (err) {
-        console.error('Erro ao atualizar preferências:', err);
-        setError('Erro de conexão. Tente novamente.');
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
-
-  return {
-    preferences,
-    updatePreferences,
-    loading,
-    error,
-  };
-};
+// `useNewsletterPreferences` foi removida: nenhum componente a usava, e ela
+// chamava `PATCH /api/newsletter/preferences`, rota que nunca existiu nem no
+// legado. Quem precisar de preferências de newsletter deve pedir a rota à API.
 
 // Hook para estatísticas de newsletter (admin)
 interface NewsletterStats {
@@ -265,17 +176,12 @@ export const useNewsletterStats = (): UseNewsletterStatsReturn => {
     setError(null);
 
     try {
-      const response = await fetch('/api/admin/newsletter/stats');
-      const result = await response.json();
-
-      if (result.success) {
-        setStats(result.stats);
-      } else {
-        setError(result.error || 'Erro ao carregar estatísticas');
-      }
+      setStats(await getNewsletterDashboardStats());
     } catch (err) {
       console.error('Erro ao carregar estatísticas:', err);
-      setError('Erro de conexão. Tente novamente.');
+      setError(
+        err instanceof Error ? err.message : 'Erro de conexão. Tente novamente.'
+      );
     } finally {
       setLoading(false);
     }

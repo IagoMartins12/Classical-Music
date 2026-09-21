@@ -1,10 +1,9 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth';
 import Link from 'next/link';
-import { authOptions } from '@/app/libs/auth';
 import { TagForm } from '@/app/components/blog/admin/TagForm';
 import { FaArrowLeft } from 'react-icons/fa';
+import { getServerSession } from '@/app/libs/api/server-session';
 
 export const metadata: Metadata = {
   title: 'Nova Tag - Blog Admin',
@@ -13,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CreateTagPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user || (session.user.role !== 1 && session.user.role !== 2)) {
     redirect('/blog');

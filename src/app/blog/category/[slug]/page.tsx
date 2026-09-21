@@ -1,9 +1,13 @@
+// app/blog/category/[slug]/page.tsx — artigos de uma categoria, pela API
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import prisma from '@/app/libs/prismadb';
+import Image from '@/app/components/SmartImage';
 import { FiGrid } from 'react-icons/fi';
 import { CategoryArticles } from '@/app/components/blog/CategoryArticles';
+import {
+  getCategory,
+  listCategoryArticles,
+} from '@/app/requests/blog/taxonomy';
 
 export const revalidate = 600;
 
@@ -16,10 +20,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const category = await prisma.blogCategory.findUnique({
-    where: { slug },
-    select: { name: true, description: true },
-  });
+  const category = await getCategory(slug, { revalidate });
 
   if (!category) return { title: 'Categoria não encontrada' };
 
@@ -29,86 +30,20 @@ export async function generateMetadata({
   };
 }
 
-async function getCategory(slug: string) {
-  return await prisma.blogCategory.findUnique({
-    where: { slug, isActive: true },
-    include: {
-      _count: {
-        select: {
-          articles: {
-            where: {
-              article: {
-                status: 'PUBLISHED',
-                publishedAt: { lte: new Date() },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
-}
-
-async function getCategoryArticles(slug: string, page: number) {
-  const limit = 12;
-  const skip = (page - 1) * limit;
-
-  const [articles, total] = await Promise.all([
-    prisma.blogArticle.findMany({
-      where: {
-        status: 'PUBLISHED',
-        publishedAt: { lte: new Date() },
-        categories: {
-          some: {
-            category: { slug },
-          },
-        },
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            image: true,
-          },
-        },
-        categories: {
-          include: { category: true },
-        },
-        _count: {
-          select: {
-            comments: { where: { status: 'APPROVED' } },
-            likes: true,
-          },
-        },
-      },
-      orderBy: { publishedAt: 'desc' },
-      skip,
-      take: limit,
-    }),
-    prisma.blogArticle.count({
-      where: {
-        status: 'PUBLISHED',
-        publishedAt: { lte: new Date() },
-        categories: {
-          some: {
-            category: { slug },
-          },
-        },
-      },
-    }),
-  ]);
-
-  return {
-    articles: articles.map((a) => ({ ...a, readTime: a.readTime ?? 0 })),
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-    },
-  };
+/**
+ * **`generateStaticParams` vazio, e é isso que liga o cache.**
+ *
+ * No App Router, rota com segmento dinâmico e **sem** `generateStaticParams`
+ * é renderizada a cada pedido, e o `revalidate` acima não vale nada — era o
+ * caso aqui: cada visita a uma categoria renderizava a página do zero, para as categorias do blog.
+ *
+ * Devolvendo uma lista vazia, nada é gerado no build (não faria sentido gerar
+ * centenas de milhares de páginas) mas a rota passa a ser guardada: a primeira
+ * visita de cada endereço renderiza, as seguintes vêm do Redis compartilhado,
+ * e a API revalida por tag quando o dado muda.
+ */
+export async function generateStaticParams() {
+  return [];
 }
 
 export default async function CategoryPage({
@@ -118,15 +53,17 @@ export default async function CategoryPage({
   const { slug } = await params;
   const { page = '1' } = await searchParams;
 
-  const category = await getCategory(slug);
+  const category = await getCategory(slug, { revalidate });
 
   if (!category) {
     notFound();
   }
 
-  const { articles, pagination } = await getCategoryArticles(
+  const { articles, pagination } = await listCategoryArticles(
     slug,
-    parseInt(page)
+    Math.max(1, parseInt(page) || 1),
+    12,
+    { revalidate }
   );
 
   return (
@@ -148,18 +85,6 @@ export default async function CategoryPage({
 
         {/* Content */}
         <div className=" z-10 flex flex-col items-center justify-center text-center max-w-4xl mx-auto">
-          {/* Icon */}
-          {/* <div
-            className="w-24 h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center text-5xl shadow-theme-glow"
-            style={{
-              background: category.color
-                ? `linear-gradient(135deg, ${category.color}60, ${category.color})`
-                : 'var(--gradient-brand)',
-            }}
-          >
-            {category.icon || '📚'}
-          </div> */}
-
           {/* Title */}
           <h1 className="text-4xl md:text-6xl font-bold text-theme-primary classical-title mb-4">
             {category.name}

@@ -13,6 +13,7 @@ import {
 } from '../../../../components/animation/AnimatedComponents';
 import Input from '@/app/components/Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { unsubscribeFromNewsletter } from '@/app/requests/newsletter';
 
 export default function UnsubscribePage() {
   const router = useRouter();
@@ -40,23 +41,16 @@ export default function UnsubscribePage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/newsletter/unsubscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token,
-          reason,
-          feedback,
-        }),
+      const result = await unsubscribeFromNewsletter({
+        token,
+        reason,
+        feedback,
       });
 
-      if (response.ok) {
+      if (result.ok) {
         setStep('completed');
       } else {
-        const data = await response.json();
-        alert(data.error || t('error_unsubscribe_default'));
+        alert(result.error || t('error_unsubscribe_default'));
       }
     } catch (error) {
       console.error('Erro:', error);

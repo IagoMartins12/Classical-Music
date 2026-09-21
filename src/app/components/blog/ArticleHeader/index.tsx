@@ -1,6 +1,7 @@
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import { FaCalendar, FaClock, FaUser } from 'react-icons/fa';
+import { AdminOnly } from '../AdminOnly';
 
 interface ArticleHeaderProps {
   article: {
@@ -100,12 +101,12 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
           </div>
 
           {/* Views */}
-          {isAdmin && (
+          <AdminOnly show={isAdmin}>
             <div className="flex items-center space-x-2">
               <span>👁️</span>
               <span>{article.viewCount.toLocaleString()} visualizações</span>
             </div>
-          )}
+          </AdminOnly>
         </div>
 
         {/* Tags */}

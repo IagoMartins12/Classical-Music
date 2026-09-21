@@ -1,10 +1,12 @@
 // app/annotations/page.tsx - Página privada otimizada
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../libs/auth';
 import AnnotationsPageServer from './pageServer';
 import { redirect } from 'next/navigation';
 import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
+import { getServerSession } from '@/app/libs/api/server-session';
+
+// Página por pessoa: renderizada a cada pedido, sem cache de página.
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const language = await getServerLanguageStatic();
@@ -80,7 +82,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AnnotationsPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user?.id) {
     return redirect('/not-authenticated');

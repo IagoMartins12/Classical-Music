@@ -2,7 +2,8 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
+import Link from '@/app/components/LocalizedLink';
 import {
   FiUser,
   FiCalendar,
@@ -13,7 +14,7 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
-import { ComposerImslp } from '@/app/(main)/composers/pageClient';
+import { ComposerImslp } from '@/app/[lang]/(main)/composers/pageClient';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface composerCardListProps {
@@ -39,7 +40,8 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
   };
 
   return (
-    <div className="flex items-center justify-between w-full group">
+    // Link esticado sobre a linha inteira; ver o comentário em `ComposerCard`.
+    <div className="relative flex items-center justify-between w-full group">
       {/* Left section - Portrait and basic info */}
       <div className="flex items-center space-x-4 flex-1 min-w-0">
         {/* Portrait */}
@@ -73,7 +75,12 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
         {/* Main info */}
         <div className="flex-1 min-w-0">
           <h3 className="text-base font-bold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 truncate">
-            {composer.name}
+            <Link
+              href={`/composer/${composer.id}`}
+              className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary rounded"
+            >
+              {composer.name}
+            </Link>
           </h3>
 
           <span className="text-sm flex items-center gap-2 text-theme-secondary truncate mt-0.5">
@@ -102,7 +109,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
       </div>
 
       {/* Center section - External links */}
-      <div className="hidden sm:flex items-center  space-x-2 mx-4">
+      <div className="relative z-10 hidden sm:flex items-center  space-x-2 mx-4">
         {composer.wikipediaLink && (
           <a
             href={composer.wikipediaLink}

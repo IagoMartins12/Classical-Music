@@ -4,6 +4,7 @@
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { FiSearch, FiUser, FiX, FiTrendingUp } from 'react-icons/fi';
+import { findComposerById, findComposers } from '@/app/requests/catalog-search';
 
 interface Composer {
   id: string;
@@ -40,23 +41,10 @@ export default function ComposerSearchInput({
   // Função para buscar dados do compositor por ID
   const fetchComposerById = useCallback(async (composerId: string) => {
     try {
-      const response = await fetch('/api/composers', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: composerId,
-          limit: 20,
-        }),
-      });
-
-      if (response.ok) {
-        const composer = await response.json();
-        if (composer && composer.name) {
-          console.log('✅ Compositor encontrado:', composer.name);
-          return composer;
-        }
+      const composer = await findComposerById(composerId);
+      if (composer && composer.name) {
+        console.log('✅ Compositor encontrado:', composer.name);
+        return composer;
       }
 
       console.log('⚠️ Compositor não encontrado para ID:', composerId);
@@ -134,22 +122,7 @@ export default function ComposerSearchInput({
         try {
           console.log('🔍 Fazendo busca para:', term);
 
-          const response = await fetch('/api/composers', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              q: term,
-              limit: 20,
-            }),
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const results = await response.json();
+          const results = await findComposers(term, 20);
           console.log(
             '📊 Resultados recebidos:',
             results.length,
@@ -212,22 +185,9 @@ export default function ComposerSearchInput({
       // Carregar compositores populares se não tiver dados
       setIsLoading(true);
       try {
-        const response = await fetch('/api/composers', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            q: '',
-            limit: 20,
-          }),
-        });
-
-        if (response.ok) {
-          const results = await response.json();
-          setComposers(results);
-          console.log('📊 Compositores populares carregados:', results.length);
-        }
+        const results = await findComposers('', 20);
+        setComposers(results);
+        console.log('📊 Compositores populares carregados:', results.length);
       } catch (error) {
         console.error('❌ Erro ao carregar compositores populares:', error);
       } finally {

@@ -16,6 +16,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import { AdminUser } from '@/app/hooks/admin/useAdminUsers';
 import Modal from '@/app/components/Modal';
+import { updateAdminUser } from '@/app/requests/admin/users';
 
 interface UserEditModalProps {
   user: AdminUser;
@@ -105,36 +106,14 @@ export default function UserEditModal({
     setError(null);
 
     try {
-      const response = await fetch(`/api/admin/users?userId=${user.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(editData),
+      // O nível de experiência é da própria pessoa: a API não o edita pelo
+      // painel. A tela recebe o usuário como ficou na API.
+      const updated = await updateAdminUser(user.id, {
+        role: editData.role,
+        userType: editData.userType,
       });
 
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Acesso não autorizado');
-        }
-        throw new Error(`Erro ${response.status}: Falha ao atualizar usuário`);
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Criar objeto atualizado para callback
-        const updatedUser: AdminUser = {
-          ...user,
-          role: editData.role,
-          userType: editData.userType as any,
-          experienceLevel: editData.experienceLevel as any,
-        };
-
-        onSave(updatedUser);
-      } else {
-        throw new Error(data.error || 'Erro ao atualizar usuário');
-      }
+      onSave({ ...user, ...updated });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
     } finally {

@@ -11,6 +11,8 @@ import Input from '@/app/components/Common/Inputs';
 import Button from '@/app/components/Common/Button';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
+import { findComposerById, getWorkById } from '@/app/requests/catalog-search';
+import { uploadBlogMedia } from '@/app/requests/blog/interactions';
 
 interface AudioPlayerModalProps {
   editor: Editor;
@@ -56,32 +58,17 @@ export function AudioPlayerModal({
 
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('folder', 'audio');
-
-      if (articleId) {
-        formData.append('articleId', articleId);
-      } else if (sessionId) {
-        formData.append('sessionId', sessionId);
-      }
-
-      const response = await fetch('/api/blog/media/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setAudioUrl(data.url);
-        setAudioTitle(file.name.replace(/\.[^/.]+$/, '')); // Remove extensão
-      } else {
-        alert('Erro ao fazer upload: ' + data.error);
-      }
+      setAudioUrl(
+        await uploadBlogMedia(file, { folder: 'audio', articleId, sessionId })
+      );
+      setAudioTitle(file.name.replace(/\.[^/.]+$/, '')); // Remove extensão
     } catch (error) {
       console.error('Erro ao fazer upload:', error);
-      alert('Erro ao fazer upload do áudio');
+      alert(
+        error instanceof Error
+          ? `Erro ao fazer upload: ${error.message}`
+          : 'Erro ao fazer upload do áudio'
+      );
     } finally {
       setUploading(false);
     }
@@ -101,16 +88,8 @@ export function AudioPlayerModal({
 
     if (composerId) {
       try {
-        const response = await fetch('/api/composers', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: composerId }),
-        });
-
-        if (response.ok) {
-          const composer = await response.json();
-          setComposerData(composer);
-        }
+        const composer = await findComposerById(composerId);
+        if (composer) setComposerData(composer);
       } catch (error) {
         console.error('Erro ao buscar compositor:', error);
       }
@@ -125,11 +104,8 @@ export function AudioPlayerModal({
       setWorkData(data);
     } else if (workId) {
       try {
-        const response = await fetch(`/api/works/${workId}`);
-        if (response.ok) {
-          const work = await response.json();
-          setWorkData(work);
-        }
+        const work = await getWorkById(workId);
+        if (work) setWorkData(work);
       } catch (error) {
         console.error('Erro ao buscar obra:', error);
       }

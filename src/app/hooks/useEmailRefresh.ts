@@ -2,7 +2,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/app/libs/session';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useToast } from './useToast';
@@ -42,36 +42,8 @@ export function useEmailRefresh(): UseEmailRefreshReturn {
         return;
       }
 
-      // Método 2: Verificação via API como backup (opcional)
-      console.log('🔍 Email não confirmado na sessão, verificando via API...');
-
-      const apiResponse = await fetch('/api/auth/check-email-status', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (apiResponse.ok) {
-        const { emailVerified } = await apiResponse.json();
-
-        if (emailVerified) {
-          const messageSucessfull =
-            language === 'pt'
-              ? 'Email confirmado! Atualizando...'
-              : 'Email confirmed! Updating...';
-          toast.success(messageSucessfull);
-
-          // Forçar mais uma atualização da sessão
-          await update();
-
-          setTimeout(() => {
-            window.location.reload();
-          }, 1500);
-          return;
-        }
-      }
-
+      // A sessão vem da API: se `update()` não trouxe o e-mail confirmado,
+      // ele não está confirmado.
       const errorMensage =
         language === 'pt'
           ? 'Email ainda não foi confirmado. Verifique sua caixa de entrada e tente novamente.'

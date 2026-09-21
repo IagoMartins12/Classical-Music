@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth';
 import {
   FiPlus,
   FiFileText,
@@ -9,11 +8,15 @@ import {
   FiClock,
   FiCheckCircle,
 } from 'react-icons/fi';
-import prisma from '@/app/libs/prismadb';
-import { authOptions } from '@/app/libs/auth';
+import { getServerAccessToken } from '@/app/libs/api/server-session';
+import {
+  loadAdminArticleOverview,
+  loadAdminArticles,
+} from '@/app/requests/blog/admin';
 import { ArticleList } from '@/app/components/blog/admin/ArticleList';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
+import { getServerSession } from '@/app/libs/api/server-session';
 
 export const metadata: Metadata = {
   title: 'Gerenciar Artigos - Blog Admin',
@@ -32,160 +35,17 @@ interface PageProps {
   }>;
 }
 
-async function getArticles(searchParams: PageProps['searchParams']) {
-  const resolvedParams = await searchParams;
-  const page = parseInt(resolvedParams.page || '1');
-  const limit = 20;
-  const skip = (page - 1) * limit;
-
-  const where: any = {};
-
-  if (resolvedParams.search) {
-    where.OR = [
-      { title: { contains: resolvedParams.search, mode: 'insensitive' } },
-      { description: { contains: resolvedParams.search, mode: 'insensitive' } },
-    ];
-  }
-
-  if (resolvedParams.status) {
-    where.status = resolvedParams.status;
-  }
-
-  if (resolvedParams.category) {
-    where.categories = {
-      some: {
-        category: {
-          slug: resolvedParams.category,
-        },
-      },
-    };
-  }
-
-  if (resolvedParams.author) {
-    where.authorId = resolvedParams.author;
-  }
-
-  if (resolvedParams.type) {
-    where.types = {
-      has: resolvedParams.type,
-    };
-  }
-
-  const [articles, total] = await Promise.all([
-    prisma.blogArticle.findMany({
-      where,
-      include: {
-        author: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            image: true,
-          },
-        },
-        categories: {
-          include: {
-            category: {
-              select: {
-                id: true,
-                name: true,
-                slug: true,
-                color: true,
-                icon: true,
-              },
-            },
-          },
-        },
-        tags: {
-          include: {
-            tag: {
-              select: {
-                id: true,
-                name: true,
-                slug: true,
-                color: true,
-              },
-            },
-          },
-        },
-        _count: {
-          select: {
-            comments: { where: { status: 'APPROVED' } },
-            likes: true,
-          },
-        },
-      },
-      orderBy: { updatedAt: 'desc' },
-      skip,
-      take: limit,
-    }),
-    prisma.blogArticle.count({ where }),
-  ]);
-
-  return {
-    articles,
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-    },
-  };
-}
-
-async function getStats() {
-  const [total, published, draft, review, views] = await Promise.all([
-    prisma.blogArticle.count(),
-    prisma.blogArticle.count({ where: { status: 'PUBLISHED' } }),
-    prisma.blogArticle.count({ where: { status: 'DRAFT' } }),
-    prisma.blogArticle.count({ where: { status: 'REVIEW' } }),
-    prisma.blogArticle.aggregate({
-      _sum: { viewCount: true },
-      where: { status: 'PUBLISHED' },
-    }),
-  ]);
-
-  return {
-    total,
-    published,
-    draft,
-    review,
-    totalViews: views._sum.viewCount || 0,
-  };
-}
-
-async function getFilters() {
-  const [categories, authors] = await Promise.all([
-    prisma.blogCategory.findMany({
-      where: { isActive: true },
-      select: { id: true, name: true, slug: true, icon: true },
-      orderBy: { name: 'asc' },
-    }),
-    prisma.user.findMany({
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        image: true,
-      },
-      orderBy: { firstName: 'asc' },
-    }),
-  ]);
-
-  return { categories, authors };
-}
-
 export default async function ArticlesAdminPage({ searchParams }: PageProps) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   if (!session?.user || (session.user.role !== 1 && session.user.role !== 2)) {
     redirect('/blog');
   }
 
-  const [{ articles, pagination }, stats, filters] = await Promise.all([
-    getArticles(searchParams),
-    getStats(),
-    getFilters(),
+  const token = await getServerAccessToken();
+  const [{ articles, pagination }, { stats, filters }] = await Promise.all([
+    loadAdminArticles(await searchParams, token),
+    loadAdminArticleOverview(token),
   ]);
 
   return (

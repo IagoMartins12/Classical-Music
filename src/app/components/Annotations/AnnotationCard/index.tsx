@@ -31,7 +31,7 @@ import {
 import { useAuth } from '@/app/hooks/useAuth';
 import CreateAnnotationModal from '../CreateAnnotationModal';
 import { MdVerified } from 'react-icons/md';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import ConfirmDeleteModal from '../DeleteAnnotationModal';
 import { useTranslation } from '@/app/hooks/useTranslation';
 

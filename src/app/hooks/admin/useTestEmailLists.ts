@@ -1,5 +1,15 @@
 // app/hooks/useTestEmailLists.ts
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { adminKeys, errorMessage as queryError, useAdminQuery } from './query';
+import {
+  type ApiTestList,
+  createTestListRequest,
+  deleteTestListRequest,
+  listTemplatesRequest,
+  listTestListsRequest,
+  testListStats,
+  updateTestListRequest,
+} from '@/app/requests/admin/newsletter';
 
 interface TestEmailList {
   id: string;
@@ -15,28 +25,12 @@ interface TestEmailList {
   updatedAt: string;
 }
 
-interface TestEmailListStats {
-  total: number;
-  active: number;
-  inactive: number;
-  totalEmails: number;
-  totalUses: number;
-}
-
 interface CreateListData {
   name: string;
   description?: string;
   emails?: string[];
   color?: string;
   isActive?: boolean;
-}
-
-interface TestEmailListsState {
-  lists: TestEmailList[];
-  stats: TestEmailListStats | null;
-  loading: boolean;
-  error: string | null;
-  selectedLists: string[];
 }
 
 interface SendTestEmailData {
@@ -69,333 +63,236 @@ interface SendTestResult {
   };
 }
 
+const toList = (list: ApiTestList): TestEmailList => ({
+  ...list,
+  description: list.description ?? undefined,
+  lastUsed: list.lastUsed ?? undefined,
+  totalEmails: list.totalEmails ?? list.emails.length,
+  timesUsed: list.timesUsed ?? 0,
+});
+
+const errorMessage = (err: unknown) =>
+  err instanceof Error ? err.message : 'Erro de conexão';
+
+/**
+ * Listas de e-mails de teste pela API. A API tem criar, editar e remover; a
+ * busca, a ordem, o duplicar e as ações sobre os e-mails são feitos aqui, sobre
+ * a lista inteira que ela devolve.
+ */
+interface ListFilters {
+  search?: string;
+  isActive?: boolean;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+/**
+ * Listas de teste da newsletter. As listas vêm numa consulta só (TanStack
+ * Query) e a filtragem é feita aqui — a API devolve todas. Cada escrita
+ * (criar, editar, apagar, duplicar) invalida a consulta, em vez de mexer no
+ * array da tela.
+ */
 export const useTestEmailLists = () => {
-  const [state, setState] = useState<TestEmailListsState>({
-    lists: [],
-    stats: null,
-    loading: false,
-    error: null,
-    selectedLists: [],
-  });
+  const [filters, setFilters] = useState<ListFilters | undefined>();
+  const [selectedLists, setSelectedLists] = useState<string[]>([]);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
-  // Buscar todas as listas
+  const query = useAdminQuery(adminKeys.area('test-lists'), async () =>
+    (await listTestListsRequest()).map(toList)
+  );
+
+  const all = useMemo(() => query.data ?? [], [query.data]);
+
+  const lists = useMemo(() => {
+    const search = filters?.search?.toLowerCase();
+    let filtered = all.filter(
+      (list) =>
+        (!search ||
+          list.name.toLowerCase().includes(search) ||
+          list.emails.some((email) => email.includes(search))) &&
+        (filters?.isActive === undefined || list.isActive === filters.isActive)
+    );
+
+    if (filters?.sortBy) {
+      const key = filters.sortBy as keyof TestEmailList;
+      const direction = filters.sortOrder === 'desc' ? -1 : 1;
+      filtered = [...filtered].sort((a, b) =>
+        String(a[key] ?? '') > String(b[key] ?? '') ? direction : -direction
+      );
+    }
+
+    return filtered;
+  }, [all, filters]);
+
+  const stats = useMemo(
+    () => (query.data ? testListStats(query.data) : null),
+    [query.data]
+  );
+
+  const run = useCallback(
+    async <T>(
+      action: () => Promise<T>
+    ): Promise<{ success: boolean; value?: T; error?: string }> => {
+      setBusy(true);
+      setActionError(null);
+
+      try {
+        const value = await action();
+        await query.refetch();
+        return { success: true, value };
+      } catch (error) {
+        const message = queryError(error);
+        setActionError(message);
+        return { success: false, error: message };
+      } finally {
+        setBusy(false);
+      }
+    },
+    [query]
+  );
+
   const fetchLists = useCallback(
-    async (filters?: {
-      search?: string;
-      isActive?: boolean;
-      sortBy?: string;
-      sortOrder?: 'asc' | 'desc';
-    }) => {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-
-      try {
-        const searchParams = new URLSearchParams();
-
-        if (filters?.search) searchParams.set('search', filters.search);
-        if (filters?.isActive !== undefined)
-          searchParams.set('isActive', filters.isActive.toString());
-        if (filters?.sortBy) searchParams.set('sortBy', filters.sortBy);
-        if (filters?.sortOrder)
-          searchParams.set('sortOrder', filters.sortOrder);
-
-        const response = await fetch(
-          `/api/admin/newsletter/test-lists?${searchParams}`
-        );
-        const result = await response.json();
-
-        if (result.success) {
-          setState((prev) => ({
-            ...prev,
-            lists: result.lists,
-            stats: result.stats,
-            loading: false,
-          }));
-        } else {
-          setState((prev) => ({
-            ...prev,
-            error: result.error || 'Erro ao carregar listas',
-            loading: false,
-          }));
-        }
-      } catch (error) {
-        console.log('error', error);
-        setState((prev) => ({
-          ...prev,
-          error: 'Erro de conexão',
-          loading: false,
-        }));
-      }
+    async (nextFilters?: ListFilters) => {
+      setFilters(nextFilters);
+      await query.refetch();
     },
-    []
+    [query]
   );
 
-  // Buscar lista específica
   const fetchList = useCallback(
-    async (id: string): Promise<TestEmailList | null> => {
-      try {
-        const response = await fetch(`/api/admin/newsletter/test-lists/${id}`);
-        const result = await response.json();
-
-        if (result.success) {
-          return result.list;
-        } else {
-          setState((prev) => ({ ...prev, error: result.error }));
-          return null;
-        }
-      } catch (error) {
-        console.log('error', error);
-        setState((prev) => ({ ...prev, error: 'Erro de conexão' }));
-        return null;
-      }
-    },
-    []
+    async (id: string): Promise<TestEmailList | null> =>
+      all.find((list) => list.id === id) ?? null,
+    [all]
   );
 
-  // Criar nova lista
   const createList = useCallback(
-    async (
-      data: CreateListData
-    ): Promise<{ success: boolean; list?: TestEmailList; error?: string }> => {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
+    async (data: CreateListData) => {
+      const result = await run(async () =>
+        toList(
+          await createTestListRequest({ emails: [], isActive: true, ...data })
+        )
+      );
 
-      try {
-        const response = await fetch('/api/admin/newsletter/test-lists', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          // Adicionar nova lista ao estado
-          setState((prev) => ({
-            ...prev,
-            lists: [...prev.lists, result.list],
-            loading: false,
-          }));
-
-          return { success: true, list: result.list };
-        } else {
-          setState((prev) => ({
-            ...prev,
-            error: result.error || 'Erro ao criar lista',
-            loading: false,
-          }));
-
-          return { success: false, error: result.error };
-        }
-      } catch (error) {
-        console.log('error', error);
-        const errorMessage = 'Erro de conexão';
-        setState((prev) => ({
-          ...prev,
-          error: errorMessage,
-          loading: false,
-        }));
-
-        return { success: false, error: errorMessage };
-      }
+      return {
+        success: result.success,
+        list: result.value,
+        error: result.error,
+      };
     },
-    []
+    [run]
   );
 
-  // Atualizar lista
   const updateList = useCallback(
-    async (
-      id: string,
-      data: CreateListData
-    ): Promise<{ success: boolean; list?: TestEmailList; error?: string }> => {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
+    async (id: string, data: CreateListData) => {
+      const result = await run(async () =>
+        toList(await updateTestListRequest(id, { ...data }))
+      );
 
-      try {
-        const response = await fetch(`/api/admin/newsletter/test-lists/${id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          // Atualizar lista no estado
-          setState((prev) => ({
-            ...prev,
-            lists: prev.lists.map((list) =>
-              list.id === id ? result.list : list
-            ),
-            loading: false,
-          }));
-
-          return { success: true, list: result.list };
-        } else {
-          setState((prev) => ({
-            ...prev,
-            error: result.error || 'Erro ao atualizar lista',
-            loading: false,
-          }));
-
-          return { success: false, error: result.error };
-        }
-      } catch (error) {
-        console.log('error', error);
-        const errorMessage = 'Erro de conexão';
-        setState((prev) => ({
-          ...prev,
-          error: errorMessage,
-          loading: false,
-        }));
-
-        return { success: false, error: errorMessage };
-      }
+      return {
+        success: result.success,
+        list: result.value,
+        error: result.error,
+      };
     },
-    []
+    [run]
   );
 
-  // Deletar lista(s)
+  // A API remove uma lista por vez.
   const deleteLists = useCallback(
-    async (
-      listIds: string[]
-    ): Promise<{ success: boolean; deletedCount?: number; error?: string }> => {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-
-      try {
-        const response = await fetch('/api/admin/newsletter/test-lists', {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ listIds }),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          // Remover listas deletadas do estado
-          setState((prev) => ({
-            ...prev,
-            lists: prev.lists.filter((list) => !listIds.includes(list.id)),
-            selectedLists: prev.selectedLists.filter(
-              (id) => !listIds.includes(id)
-            ),
-            loading: false,
-          }));
-
-          return { success: true, deletedCount: result.deletedCount };
-        } else {
-          setState((prev) => ({
-            ...prev,
-            error: result.error || 'Erro ao deletar listas',
-            loading: false,
-          }));
-
-          return { success: false, error: result.error };
+    async (listIds: string[]) => {
+      const result = await run(async () => {
+        for (const id of listIds) {
+          await deleteTestListRequest(id);
         }
-      } catch (error) {
-        console.log('error', error);
-        const errorMessage = 'Erro de conexão';
-        setState((prev) => ({
-          ...prev,
-          error: errorMessage,
-          loading: false,
-        }));
+        return listIds.length;
+      });
 
-        return { success: false, error: errorMessage };
+      if (result.success) {
+        setSelectedLists((previous) =>
+          previous.filter((id) => !listIds.includes(id))
+        );
       }
+
+      return {
+        success: result.success,
+        deletedCount: result.value,
+        error: result.error,
+      };
     },
-    []
+    [run]
   );
 
-  // Ações especiais (duplicar, toggle status, etc.)
+  // Duplicar, ativar/desativar, limpar e adicionar e-mails: criar ou editar a lista.
   const performAction = useCallback(
     async (
       id: string,
       action: 'duplicate' | 'toggle-status' | 'clear-emails' | 'add-emails',
       payload?: any
-    ): Promise<{ success: boolean; list?: TestEmailList; error?: string }> => {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
+    ) => {
+      const current = all.find((list) => list.id === id);
 
-      try {
-        const response = await fetch(`/api/admin/newsletter/test-lists/${id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ action, ...payload }),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          if (action === 'duplicate') {
-            // Adicionar lista duplicada
-            setState((prev) => ({
-              ...prev,
-              lists: [...prev.lists, result.list],
-              loading: false,
-            }));
-          } else {
-            // Atualizar lista existente
-            setState((prev) => ({
-              ...prev,
-              lists: prev.lists.map((list) =>
-                list.id === id ? result.list : list
-              ),
-              loading: false,
-            }));
-          }
-
-          return { success: true, list: result.list };
-        } else {
-          setState((prev) => ({
-            ...prev,
-            error: result.error || 'Erro na ação',
-            loading: false,
-          }));
-
-          return { success: false, error: result.error };
-        }
-      } catch (error) {
-        console.log('error', error);
-        const errorMessage = 'Erro de conexão';
-        setState((prev) => ({
-          ...prev,
-          error: errorMessage,
-          loading: false,
-        }));
-
-        return { success: false, error: errorMessage };
+      if (!current) {
+        const error = 'Lista não encontrada';
+        setActionError(error);
+        return { success: false, error };
       }
+
+      const result = await run(async () => {
+        if (action === 'duplicate') {
+          return toList(
+            await createTestListRequest({
+              name: `${current.name} (Cópia)`,
+              description: current.description,
+              emails: current.emails,
+              color: current.color,
+              isActive: current.isActive,
+            })
+          );
+        }
+
+        const changes =
+          action === 'toggle-status'
+            ? { isActive: !current.isActive }
+            : action === 'clear-emails'
+              ? { emails: [] }
+              : {
+                  emails: [
+                    ...new Set([...current.emails, ...(payload?.emails ?? [])]),
+                  ],
+                };
+
+        return toList(await updateTestListRequest(id, changes));
+      });
+
+      return {
+        success: result.success,
+        list: result.value,
+        error: result.error,
+      };
     },
-    []
+    [all, run]
   );
 
-  // Gerenciar seleção de listas
   const selectList = useCallback((id: string) => {
-    setState((prev) => ({
-      ...prev,
-      selectedLists: prev.selectedLists.includes(id)
-        ? prev.selectedLists.filter((listId) => listId !== id)
-        : [...prev.selectedLists, id],
-    }));
+    setSelectedLists((previous) =>
+      previous.includes(id)
+        ? previous.filter((listId) => listId !== id)
+        : [...previous, id]
+    );
   }, []);
 
-  const selectAllLists = useCallback((select: boolean = true) => {
-    setState((prev) => ({
-      ...prev,
-      selectedLists: select ? prev.lists.map((list) => list.id) : [],
-    }));
-  }, []);
+  const selectAllLists = useCallback(
+    (select: boolean = true) => {
+      setSelectedLists(select ? lists.map((list) => list.id) : []);
+    },
+    [lists]
+  );
 
   const clearSelection = useCallback(() => {
-    setState((prev) => ({ ...prev, selectedLists: [] }));
+    setSelectedLists([]);
   }, []);
 
-  // Validar emails
   const validateEmails = useCallback(
     (emails: string[]): { valid: string[]; invalid: string[] } => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -416,31 +313,19 @@ export const useTestEmailLists = () => {
     []
   );
 
-  // Reset do estado
   const reset = useCallback(() => {
-    setState({
-      lists: [],
-      stats: null,
-      loading: false,
-      error: null,
-      selectedLists: [],
-    });
+    setFilters(undefined);
+    setSelectedLists([]);
+    setActionError(null);
   }, []);
 
-  // Carregar listas na inicialização
-  useEffect(() => {
-    fetchLists();
-  }, [fetchLists]);
-
   return {
-    // Estado
-    lists: state.lists,
-    stats: state.stats,
-    loading: state.loading,
-    error: state.error,
-    selectedLists: state.selectedLists,
+    lists,
+    stats,
+    loading: query.loading || busy,
+    error: query.error ?? actionError,
+    selectedLists,
 
-    // Ações CRUD
     fetchLists,
     fetchList,
     createList,
@@ -448,83 +333,53 @@ export const useTestEmailLists = () => {
     deleteLists,
     performAction,
 
-    // Seleção
     selectList,
     selectAllLists,
     clearSelection,
 
-    // Utilitários
     validateEmails,
     reset,
   };
 };
 
-// Hook separado para envio de emails de teste
+/**
+ * Envio de modelo para as listas de teste. A rota do legado nunca existiu
+ * (`/api/admin/newsletter/send-test`), e a API testa campanha, não modelo:
+ * o teste é feito pela campanha ("Enviar teste").
+ */
 export const useTestEmailSending = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [result, setResult] = useState<SendTestResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const sendTestEmails = useCallback(
-    async (data: SendTestEmailData): Promise<SendTestResult | null> => {
-      setLoading(true);
-      setError(null);
+    async (_data: SendTestEmailData): Promise<SendTestResult | null> => {
       setResult(null);
-
-      try {
-        const response = await fetch('/api/admin/newsletter/send-test', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          setResult(result);
-          setLoading(false);
-          return result;
-        } else {
-          setError(result.error || 'Erro ao enviar emails de teste');
-          setLoading(false);
-          return null;
-        }
-      } catch (error) {
-        console.log('error', error);
-        const errorMessage = 'Erro de conexão';
-        setError(errorMessage);
-        setLoading(false);
-        return null;
-      }
+      setError(
+        'O envio de modelo para listas de teste não existe na API. Use "Enviar teste" na campanha.'
+      );
+      return null;
     },
     []
   );
 
   const getAvailableTemplates = useCallback(async () => {
     try {
-      const response = await fetch('/api/admin/newsletter/send-test');
-      const result = await response.json();
-
-      if (result.success) {
-        return {
-          templates: result.templates,
-          stats: result.stats,
-        };
-      } else {
-        setError(result.error || 'Erro ao carregar templates');
-        return null;
-      }
-    } catch (error) {
-      console.log('error', error);
-      setError('Erro de conexão');
+      const templates = await listTemplatesRequest();
+      return {
+        templates,
+        stats: {
+          total: templates.length,
+          active: templates.filter((template) => template.isActive).length,
+        },
+      };
+    } catch (err) {
+      setError(errorMessage(err));
       return null;
     }
   }, []);
 
   const reset = useCallback(() => {
-    setLoading(false);
     setResult(null);
     setError(null);
   }, []);

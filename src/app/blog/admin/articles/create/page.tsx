@@ -1,4 +1,4 @@
-// app/(admin)/blog/admin/articles/create/page.tsx - ATUALIZADO
+// app/blog/admin/articles/create/page.tsx — novo artigo, pela API
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -6,10 +6,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArticleForm } from '@/app/components/blog/ArticleForm';
 import { FaArrowLeft } from 'react-icons/fa';
+import { createArticle } from '@/app/requests/blog/admin-actions';
+import { listCategories } from '@/app/requests/blog/taxonomy';
 
 export default function CreateArticlePage() {
   const router = useRouter();
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -19,11 +21,7 @@ export default function CreateArticlePage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('/api/blog/categories');
-      const data = await response.json();
-      if (data.success) {
-        setCategories(data.categories);
-      }
+      setCategories(await listCategories({ fresh: true }));
     } catch (error) {
       console.error('Erro ao buscar categorias:', error);
     } finally {
@@ -31,33 +29,19 @@ export default function CreateArticlePage() {
     }
   };
 
+  // O ArticleForm mostra o erro: aqui só se repassa.
   const handleSubmit = async (formData: any) => {
     setIsSubmitting(true);
     try {
-      const response = await fetch('/api/blog/articles', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const data = await createArticle(formData);
+      const slug = data.article?.slug ?? formData.slug;
 
-      const data = await response.json();
-
-      if (data.success) {
-        // ✅ Se foi publicado diretamente, vai para artigo público
-        if (formData.status === 'PUBLISHED') {
-          router.push(`/blog/${data.article.slug}`);
-        } else {
-          // ✅ Caso contrário, vai para PREVIEW obrigatório
-          router.push(`/blog/preview/${data.article.slug}`);
-        }
-      } else {
-        alert('Erro ao criar artigo: ' + data.error);
-      }
-    } catch (error) {
-      console.error('Erro ao criar artigo:', error);
-      alert('Erro ao criar artigo');
+      // ✅ Se foi publicado diretamente, vai para artigo público; senão, preview
+      router.push(
+        formData.status === 'PUBLISHED'
+          ? `/blog/${slug}`
+          : `/blog/preview/${slug}`
+      );
     } finally {
       setIsSubmitting(false);
     }

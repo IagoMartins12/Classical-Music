@@ -1,6 +1,9 @@
-// app/requests/composer-details.ts - Updated with moviment search
-import prisma from '@/app/libs/prismadb';
-import { unstable_cache } from 'next/cache';
+// app/requests/composer-details.ts — página do compositor, pela API (Etapa 3)
+//
+// Sem nada de servidor: o `ComposerWorks` (navegador) também chama daqui para
+// filtrar e paginar as obras.
+import { ApiError, apiFetch } from '@/app/libs/api/client';
+import type { ApiSchema } from '@/app/libs/api/types';
 
 export interface ComposerDetails {
   id: string;
@@ -8,10 +11,8 @@ export interface ComposerDetails {
   fullName: string;
 
   videoUrl?: string;
-  // 🆕 New name properties
   alternativeNames?: string;
 
-  // Enhanced date properties (can contain full dates now)
   birthDate?: string;
   deathDate?: string;
 
@@ -33,12 +34,10 @@ export interface ComposerDetails {
   verifiedAt?: Date;
   verificationNotes?: string;
 
-  // 🆕 New detailed information properties
   nationality?: string;
   instruments?: string;
   imslpCategories?: string;
 
-  // 🆕 New metadata properties
   lastModifiedImslp?: string;
   pageQuality?: string;
   lastVerified?: Date;
@@ -46,18 +45,17 @@ export interface ComposerDetails {
   hasValidImage?: boolean;
 }
 
-// Interface atualizada para incluir arrays de gêneros/categorias e workType
 export interface ComposerWork {
   id: string;
   title: string;
-  subtitle?: string; // 🆕 New property
+  subtitle?: string;
   opOrCatalog?: string;
   compositionYear?: string;
   tone?: string;
   mediaDuration?: string;
   imslpPermlink: string;
   videoUrl?: string;
-  moviment?: string; // 🆕 moviment field
+  moviment?: string;
   instrument?: {
     id: string;
     name: string;
@@ -66,13 +64,10 @@ export interface ComposerWork {
   workGenresArr?: string[];
   categoryNames?: string[];
   isVerified: boolean;
-
-  // 🆕 New work properties
   difficultyLevel?: string;
   imslpTags?: string[];
 }
 
-// Nova interface para resposta paginada
 export interface ComposerWorksResponse {
   works: ComposerWork[];
   totalCount: number;
@@ -80,519 +75,221 @@ export interface ComposerWorksResponse {
   currentPage: number;
 }
 
-// Interface para opções de filtros
 export interface ComposerFilterOptions {
   instruments: { id: string; name: string }[];
   workGenres: string[];
   categories: string[];
-  difficultyLevels: { value: string; label: string }[]; // 🆕 New filter
+  difficultyLevels: { value: string; label: string }[];
 }
 
-// Função OTIMIZADA para buscar obras do compositor com paginação e filtros (incluindo busca em movimentos)
-export const getComposerWorksWithFilters = async (
+export type ComposerWorksFilters = {
+  instrumentId?: string;
+  workGenresArr?: string;
+  categoryNames?: string;
+  search?: string;
+  workType?: string;
+  difficultyLevel?: string;
+};
+
+type ComposerWorksPage = ApiSchema<'ComposerWorksResponseDto'>;
+
+/**
+ * Cache do `fetch` do Next (no servidor; no navegador o `next` é ignorado).
+ * A API avisa pelas tags `composers` e `works` quando o dado muda.
+ */
+const CACHE = {
+  COMPOSER: { revalidate: 7200, tags: ['composers'] },
+  WORKS: { revalidate: 3600, tags: ['composers', 'works'] },
+};
+
+/** A API entrega no máximo 100 obras por página. */
+const API_PAGE_MAX = 100;
+
+const EMPTY_FILTER_OPTIONS: ComposerFilterOptions = {
+  instruments: [],
+  workGenres: [],
+  categories: [],
+  difficultyLevels: [
+    { value: 'BEGINNER', label: 'Iniciante' },
+    { value: 'INTERMEDIATE', label: 'Intermediário' },
+    { value: 'ADVANCED', label: 'Avançado' },
+  ],
+};
+
+/** O compositor, ou `null` se ele não existe. */
+export async function getComposerById(
+  composerId: string
+): Promise<ComposerDetails | null> {
+  try {
+    const composer = await apiFetch<ApiSchema<'ComposerDetailDto'>>(
+      composerPath(composerId),
+      { next: CACHE.COMPOSER }
+    );
+
+    return {
+      id: composer.id,
+      name: composer.name,
+      fullName: composer.fullName,
+      alternativeNames: composer.alternativeNames || undefined,
+      birthDate: composer.birthDate || undefined,
+      deathDate: composer.deathDate || undefined,
+      videoUrl: composer.videoUrl || undefined,
+      portraitUrl: composer.portraitUrl || undefined,
+      bio: composer.bio || undefined,
+      permLinkImslp: composer.permLinkImslp || undefined,
+      wikipediaLink: composer.wikipediaLink || undefined,
+      epochId: composer.epochId,
+      epochName: composer.epochName,
+      primaryRoleId: composer.primaryRoleId || undefined,
+      primaryRoleName: composer.primaryRoleName || undefined,
+      worksCount: composer.worksCount,
+      createdAt: new Date(composer.createdAt),
+      roleNames: composer.roleNames,
+      isVerified: composer.isVerified,
+      verificationStatus: composer.verificationStatus || 'pending',
+      verifiedBy: composer.verifiedBy || undefined,
+      verifiedAt: toDate(composer.verifiedAt),
+      verificationNotes: composer.verificationNotes || undefined,
+      nationality: composer.nationality || undefined,
+      instruments: composer.instruments || undefined,
+      imslpCategories: composer.imslpCategories || undefined,
+      pageQuality: composer.pageQuality || undefined,
+      lastVerified: toDate(composer.lastVerified),
+      dataCompleteness: composer.dataCompleteness || undefined,
+      hasValidImage: composer.hasValidImage,
+    };
+  } catch (error) {
+    if (
+      error instanceof ApiError &&
+      (error.status === 404 || error.status === 400)
+    ) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+/** Obras do compositor, com filtros e paginação (busca inclui movimentos). */
+export async function getComposerWorksWithFilters(
   composerId: string,
   page: number = 1,
   limit: number = 50,
-  filters?: {
-    instrumentId?: string;
-    workGenresArr?: string;
-    categoryNames?: string;
-    search?: string;
-    workType?: string;
-    difficultyLevel?: string;
-  }
-): Promise<ComposerWorksResponse> => {
-  try {
-    const skip = (page - 1) * limit;
+  filters?: ComposerWorksFilters
+): Promise<ComposerWorksResponse> {
+  const start = (page - 1) * limit;
 
-    // Construir filtros WHERE de forma eficiente
-    const whereClause: any = {
-      composerId: composerId,
-    };
-
-    if (filters?.instrumentId) {
-      whereClause.instrumentId = filters.instrumentId;
-    }
-
-    if (filters?.workGenresArr) {
-      whereClause.workGenresArr = {
-        has: filters.workGenresArr,
-      };
-    }
-
-    if (filters?.categoryNames) {
-      whereClause.categoryNames = {
-        has: filters.categoryNames,
-      };
-    }
-
-    if (filters?.workType) {
-      whereClause.workType = filters.workType;
-    }
-
-    // 🆕 New filter for difficulty level
-    if (filters?.difficultyLevel) {
-      whereClause.difficultyLevel = filters.difficultyLevel;
-    }
-
-    // 🆕 ENHANCED SEARCH - Now includes moviment
-    if (filters?.search) {
-      whereClause.OR = [
-        {
-          title: {
-            contains: filters.search,
-            mode: 'insensitive',
-          },
-        },
-        {
-          subtitle: {
-            contains: filters.search,
-            mode: 'insensitive',
-          },
-        },
-        {
-          opOrCatalog: {
-            contains: filters.search,
-            mode: 'insensitive',
-          },
-        },
-        {
-          tone: {
-            contains: filters.search,
-            mode: 'insensitive',
-          },
-        },
-        // 🆕 BUSCA EM MOVIMENTOS - Aqui é onde a mágica acontece
-        {
-          moviment: {
-            contains: filters.search,
-            mode: 'insensitive',
-          },
-        },
-      ];
-    }
-
-    // OTIMIZAÇÃO: Buscar obras e contagem total em paralelo
-    const [works, totalCount] = await Promise.all([
-      prisma.work.findMany({
-        where: whereClause,
-        select: {
-          id: true,
-          title: true,
-          subtitle: true,
-          opOrCatalog: true,
-          compositionYear: true,
-          tone: true,
-          mediaDuration: true,
-          imslpPermlink: true,
-          videoUrl: true,
-          moviment: true, // 🆕 Include moviment in selection
-          workType: true,
-          workGenresArr: true,
-          categoryNames: true,
-          isVerified: true,
-          // 🆕 New properties
-          difficultyLevel: true,
-          imslpTags: true,
-
-          // JOIN otimizado com instrument
-          instrument: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-        },
-        orderBy: [
-          {
-            title: 'asc',
-          },
-        ],
-        skip,
-        take: limit,
-      }),
-      // Contagem otimizada
-      prisma.work.count({
-        where: whereClause,
-      }),
-    ]);
-
+  if (limit <= API_PAGE_MAX) {
+    const response = await fetchWorksPage(composerId, page, limit, filters);
     return {
-      works: works.map((work) => ({
-        id: work.id,
-        title: work.title,
-        subtitle: work.subtitle || undefined,
-        opOrCatalog: work.opOrCatalog || undefined,
-        compositionYear: work.compositionYear || undefined,
-        tone: work.tone || undefined,
-        mediaDuration: work.mediaDuration || undefined,
-        imslpPermlink: work.imslpPermlink,
-        videoUrl: work.videoUrl || undefined,
-        moviment: work.moviment || undefined, // 🆕 Include moviment
-        workType: work.workType,
-        workGenresArr: work.workGenresArr,
-        categoryNames: work.categoryNames,
-        isVerified: work.isVerified,
-        instrument: work.instrument || undefined,
-        // 🆕 New properties
-        difficultyLevel: work.difficultyLevel || undefined,
-        imslpTags: work.imslpTags || undefined,
-      })),
-      totalCount,
-      hasMore: skip + works.length < totalCount,
-      currentPage: page,
-    };
-  } catch (error) {
-    console.error('Erro ao buscar obras do compositor com filtros:', error);
-    return {
-      works: [],
-      totalCount: 0,
-      hasMore: false,
+      works: response.works.map(toComposerWork),
+      totalCount: response.totalCount,
+      hasMore: response.hasMore,
       currentPage: page,
     };
   }
-};
 
-// 🆕 Difficulty levels for filtering
-const DIFFICULTY_LEVELS = [
-  { value: 'BEGINNER', label: 'Iniciante' },
-  { value: 'INTERMEDIATE', label: 'Intermediário' },
-  { value: 'ADVANCED', label: 'Avançado' },
-];
+  // Pedido maior que a página da API (o filtro por grupo de tipo pede 1000):
+  // junta as páginas de 100 que cobrem o intervalo pedido.
+  const firstApiPage = Math.floor(start / API_PAGE_MAX) + 1;
+  const first = await fetchWorksPage(
+    composerId,
+    firstApiPage,
+    API_PAGE_MAX,
+    filters
+  );
+  const lastApiPage = Math.min(
+    Math.ceil((start + limit) / API_PAGE_MAX),
+    Math.max(firstApiPage, Math.ceil(first.totalCount / API_PAGE_MAX))
+  );
+  const rest = await Promise.all(
+    Array.from({ length: lastApiPage - firstApiPage }, (_, index) =>
+      fetchWorksPage(
+        composerId,
+        firstApiPage + index + 1,
+        API_PAGE_MAX,
+        filters
+      )
+    )
+  );
 
-// Função SIMPLIFICADA para buscar opções de filtros específicas do compositor - UPDATED
-export const getComposerFilterOptions = unstable_cache(
-  async (composerId: string): Promise<ComposerFilterOptions> => {
-    try {
-      // Buscar todas as obras do compositor para processar localmente
-      const allWorks = await prisma.work.findMany({
-        where: {
-          composerId: composerId,
-        },
-        select: {
-          instrumentId: true,
-          workGenresArr: true,
-          categoryNames: true,
-          difficultyLevel: true,
-          instrument: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-        },
-      });
+  const offset = start - (firstApiPage - 1) * API_PAGE_MAX;
+  const works = [first, ...rest]
+    .flatMap((response) => response.works)
+    .slice(offset, offset + limit);
 
-      // Processar instrumentos únicos
-      const instrumentsMap = new Map<string, { id: string; name: string }>();
+  return {
+    works: works.map(toComposerWork),
+    totalCount: first.totalCount,
+    hasMore: start + works.length < first.totalCount,
+    currentPage: page,
+  };
+}
 
-      allWorks.forEach((work) => {
-        if (work.instrument && work.instrumentId) {
-          instrumentsMap.set(work.instrumentId, work.instrument);
-        }
-      });
-
-      const instruments = Array.from(instrumentsMap.values()).sort((a, b) =>
-        a.name.localeCompare(b.name)
-      );
-
-      // Processar gêneros únicos
-      const genresSet = new Set<string>();
-      allWorks.forEach((work) => {
-        if (work.workGenresArr && Array.isArray(work.workGenresArr)) {
-          work.workGenresArr.forEach((genre) => {
-            if (genre && typeof genre === 'string' && genre.trim().length > 0) {
-              genresSet.add(genre.trim());
-            }
-          });
-        }
-      });
-
-      // Processar categorias únicas
-      const categoriesSet = new Set<string>();
-      allWorks.forEach((work) => {
-        if (work.categoryNames && Array.isArray(work.categoryNames)) {
-          work.categoryNames.forEach((category) => {
-            if (
-              category &&
-              typeof category === 'string' &&
-              category.trim().length > 0
-            ) {
-              categoriesSet.add(category.trim());
-            }
-          });
-        }
-      });
-
-      return {
-        instruments,
-        workGenres: Array.from(genresSet).sort(),
-        categories: Array.from(categoriesSet).sort(),
-        difficultyLevels: DIFFICULTY_LEVELS,
-      };
-    } catch (error) {
-      console.error('Erro ao buscar opções de filtros do compositor:', error);
-      return {
-        instruments: [],
-        workGenres: [],
-        categories: [],
-        difficultyLevels: DIFFICULTY_LEVELS,
-      };
-    }
-  },
-  [`composer-filter-options`],
-  {
-    revalidate: 7200, // 2 horas - dados relativamente estáticos
-    tags: ['composer-filter-options'],
-  }
-);
-
-// Função original mantida para compatibilidade (agora usa a nova função)
-export const getComposerWorks = unstable_cache(
-  async (composerId: string): Promise<ComposerWork[]> => {
-    try {
-      const result = await getComposerWorksWithFilters(composerId, 1, 1000); // Buscar todas para compatibilidade
-      return result.works;
-    } catch (error) {
-      console.error('Erro ao buscar obras do compositor:', error);
-      return [];
-    }
-  },
-  ['composer-works'],
-  {
-    revalidate: 3600, // 1 hora
-    tags: ['composer-works'],
-  }
-);
-
-// Cache dos dados do compositor (exceto bio) por 2 horas - UPDATED with new properties
-const getCachedComposerData = unstable_cache(
-  async (composerId: string) => {
-    try {
-      const composer = await prisma.composer.findUnique({
-        where: {
-          id: composerId,
-        },
-        select: {
-          id: true,
-          name: true,
-          fullName: true,
-
-          // 🆕 New name properties
-          alternativeNames: true,
-          videoUrl: true,
-          // Enhanced date properties
-          birthDate: true,
-          deathDate: true,
-
-          portraitUrl: true,
-          roles: true,
-          // bio: true, // Removido do cache
-          permLinkImslp: true,
-          wikipediaLink: true,
-          epochId: true,
-          primaryRoleId: true,
-          createdAt: true,
-
-          // 🆕 New detailed information properties
-          nationality: true,
-          instruments: true,
-          imslpCategories: true,
-
-          isVerified: true,
-          verificationStatus: true,
-          verifiedBy: true,
-          verifiedAt: true,
-          verificationNotes: true,
-
-          // 🆕 New metadata properties
-          pageQuality: true,
-          lastVerified: true,
-          dataCompleteness: true,
-          hasValidImage: true,
-
-          epoch: {
-            select: {
-              name: true,
-            },
-          },
-          primaryRole: {
-            select: {
-              name: true,
-            },
-          },
-          _count: {
-            select: {
-              works: true,
-            },
-          },
-        },
-      });
-
-      if (!composer) {
-        return null;
-      }
-
-      // Converter string de IDs em array e buscar os nomes dos roles
-      let roleNames: string[] = [];
-      if (composer.roles) {
-        const roleIds = composer.roles.split(', ').map((id) => id.trim());
-
-        const roles = await prisma.role.findMany({
-          where: {
-            id: {
-              in: roleIds,
-            },
-          },
-          select: {
-            name: true,
-          },
-        });
-
-        roleNames = roles.map((role) => role.name);
-      }
-
-      return {
-        id: composer.id,
-        name: composer.name,
-        fullName: composer.fullName,
-
-        // 🆕 New name properties
-        alternativeNames: composer.alternativeNames || undefined,
-
-        // Enhanced date properties
-        birthDate: composer.birthDate || undefined,
-        deathDate: composer.deathDate || undefined,
-        videoUrl: composer.videoUrl || undefined,
-
-        portraitUrl: composer.portraitUrl || undefined,
-        permLinkImslp: composer.permLinkImslp || undefined,
-        wikipediaLink: composer.wikipediaLink || undefined,
-        epochId: composer.epochId,
-        epochName: composer.epoch.name,
-        primaryRoleId: composer.primaryRoleId || undefined,
-        primaryRoleName: composer.primaryRole?.name || undefined,
-        worksCount: composer._count.works,
-        createdAt: composer.createdAt,
-        roles: composer.roles, // IDs originais
-        roleNames: roleNames, // Nomes dos roles
-
-        // Novos campos de verificação
-        isVerified: composer.isVerified || false,
-        verificationStatus: composer.verificationStatus || 'pending',
-        verifiedBy: composer.verifiedBy || undefined,
-        verifiedAt: composer.verifiedAt || undefined,
-        verificationNotes: composer.verificationNotes || undefined,
-
-        // 🆕 New detailed information properties
-        nationality: composer.nationality || undefined,
-        instruments: composer.instruments || undefined,
-        imslpCategories: composer.imslpCategories || undefined,
-
-        // 🆕 New metadata properties
-        pageQuality: composer.pageQuality || undefined,
-        lastVerified: composer.lastVerified || undefined,
-        dataCompleteness: composer.dataCompleteness || undefined,
-        hasValidImage: composer.hasValidImage || false,
-      };
-    } catch (error) {
-      console.error('Erro ao buscar dados básicos do compositor:', error);
-      return null;
-    }
-  },
-  ['composer-basic-data'],
-  {
-    revalidate: 7200, // 2 horas
-    tags: ['composer-basic-data'],
-  }
-);
-
-// Função para buscar apenas a bio (sem cache)
-const getComposerBio = async (
+/** Opções de filtro das obras do compositor; vazias se a API falhar. */
+export async function getComposerFilterOptions(
   composerId: string
-): Promise<string | undefined> => {
+): Promise<ComposerFilterOptions> {
   try {
-    const composer = await prisma.composer.findUnique({
-      where: {
-        id: composerId,
-      },
-      select: {
-        bio: true,
-      },
-    });
-
-    return composer?.bio || undefined;
+    return await apiFetch<ApiSchema<'ComposerFilterOptionsResponseDto'>>(
+      `${composerPath(composerId)}/filter-options`,
+      { next: CACHE.WORKS }
+    );
   } catch (error) {
-    console.error('Erro ao buscar bio do compositor:', error);
-    return undefined;
-  }
-};
-
-// Função principal que combina dados cacheados com bio dinâmica - UPDATED
-export const getComposerById = async (
-  composerId: string
-): Promise<ComposerDetails | null> => {
-  try {
-    // Busca dados cacheados e bio em paralelo
-    const [cachedData, bio] = await Promise.all([
-      getCachedComposerData(composerId),
-      getComposerBio(composerId),
-    ]);
-
-    if (!cachedData) {
-      return null;
-    }
-
-    // Combina os dados cacheados com a bio sempre atualizada
-    return {
-      ...cachedData,
-      bio,
-    };
-  } catch (error) {
-    console.error('Erro ao buscar compositor:', error);
-    return null;
-  }
-};
-
-// Função para invalidar cache quando necessário
-export async function revalidateComposerCache(composerId?: string) {
-  const { revalidateTag } = await import('next/cache');
-  revalidateTag('composer-details');
-  revalidateTag('composer-works-filtered');
-  revalidateTag('composer-filter-options');
-  if (composerId) {
-    revalidateTag(`composer-${composerId}`);
+    console.error('Erro ao buscar opções de filtros do compositor:', error);
+    return EMPTY_FILTER_OPTIONS;
   }
 }
 
-export async function updateComposerBio(composerId: string, biography: string) {
-  try {
-    const composer = await prisma.composer.findUnique({
-      where: {
-        id: composerId,
-      },
-    });
+/** Quantas obras o compositor tem de cada tipo (as abas do `ComposerWorks`). */
+export async function getComposerWorkTypeCounts(composerId: string) {
+  const response = await apiFetch<
+    ApiSchema<'ComposerWorkTypeCountsResponseDto'>
+  >(`${composerPath(composerId)}/work-type-counts`, { next: CACHE.WORKS });
 
-    if (!composer) {
-      return null;
-    }
+  return {
+    workTypeCounts: response.workTypeCounts as Record<string, number>,
+    totalTypes: response.totalTypes,
+  };
+}
 
-    const updateBioComposer = await prisma.composer.update({
-      where: {
-        id: composerId,
-      },
-      data: {
-        bio: biography,
-      },
-    });
+function fetchWorksPage(
+  composerId: string,
+  page: number,
+  limit: number,
+  filters?: ComposerWorksFilters
+): Promise<ComposerWorksPage> {
+  return apiFetch<ComposerWorksPage>(`${composerPath(composerId)}/works`, {
+    query: { page, limit, ...filters },
+    next: CACHE.WORKS,
+  });
+}
 
-    if (updateBioComposer) {
-      return 'Biografia Atualizada';
-    }
+function toComposerWork(work: ApiSchema<'ComposerWorkItemDto'>): ComposerWork {
+  return {
+    id: work.id,
+    title: work.title,
+    subtitle: work.subtitle || undefined,
+    opOrCatalog: work.opOrCatalog || undefined,
+    compositionYear: work.compositionYear || undefined,
+    tone: work.tone || undefined,
+    mediaDuration: work.mediaDuration || undefined,
+    imslpPermlink: work.imslpPermlink,
+    videoUrl: work.videoUrl || undefined,
+    moviment: work.moviment || undefined,
+    instrument: work.instrument ?? undefined,
+    workType: work.workType,
+    workGenresArr: work.workGenresArr,
+    categoryNames: work.categoryNames,
+    isVerified: work.isVerified,
+    difficultyLevel: work.difficultyLevel || undefined,
+    imslpTags: work.imslpTags,
+  };
+}
 
-    return 'Erro ao Atualizar biografia';
-  } catch (error) {
-    console.error('Erro ao buscar compositor:', error);
-    return null;
-  }
+function composerPath(composerId: string): string {
+  return `/composers/${encodeURIComponent(composerId)}`;
+}
+
+function toDate(value?: string | null): Date | undefined {
+  return value ? new Date(value) : undefined;
 }

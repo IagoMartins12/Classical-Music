@@ -13,6 +13,7 @@ import {
   FiLock,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
+import { getScoreGroups } from '@/app/requests/uploads-client';
 
 interface ScoreGroup {
   groupIndex: number;
@@ -75,13 +76,13 @@ export default function GroupingSuggestions({
     try {
       console.log(`🔍 [GROUPING] Carregando grupos para obra: ${workId}`);
 
-      const response = await fetch(`/api/work-scores/groups?workId=${workId}`);
+      const response = await getScoreGroups(workId);
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = response.data;
 
       if (data.success) {
         setImslpGroups(data.groups || []); // Grupos IMSLP (apenas referência)

@@ -12,7 +12,7 @@ import {
   FiPause,
 } from 'react-icons/fi';
 import { getResponsiveImageUrl } from '@/app/libs/ads/mediaUtils';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 
 interface AdModalProps {
   ad: any;

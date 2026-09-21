@@ -3,7 +3,7 @@
 // ========================================
 
 import { useState, useCallback } from 'react';
-import {
+import type {
   CalendarConflict,
   CalendarEvent,
   CalendarStats,
@@ -12,7 +12,7 @@ import {
   createQuickLessonAPI,
   getTeacherCalendarAPI,
   moveLessonAPI,
-} from '../requests/teacher-request';
+} from '../requests/portal/teacher-actions';
 
 interface UseTeacherCalendarState {
   events: CalendarEvent[];

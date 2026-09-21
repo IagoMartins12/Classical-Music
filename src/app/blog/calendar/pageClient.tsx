@@ -16,6 +16,7 @@ import { useCalendarManagement } from '@/app/hooks/useCalendarManagement';
 import { useAuth } from '@/app/hooks/useAuth';
 import EventScraperModal from '@/app/components/blog/EventScraperModal';
 import DayEventsListModal from '@/app/components/calendar/DayEventsListModal';
+import { loadCalendar } from '@/app/requests/calendar-requests';
 
 interface CalendarPageClientProps {
   initialData: CalendarPageData;
@@ -63,26 +64,23 @@ export default function CalendarPageClient({
         start || new Date(now.getFullYear(), now.getMonth() - 1, 1);
       const endDate = end || new Date(now.getFullYear(), now.getMonth() + 2, 0);
 
-      const params = new URLSearchParams({
-        start: startDate.toISOString(),
-        end: endDate.toISOString(),
-      });
+      const data = await loadCalendar(
+        startDate,
+        endDate,
+        {
+          city: selectedCity,
+          state: selectedState,
+          venueId: selectedVenue,
+          type: selectedType,
+        },
+        { fresh: true }
+      );
 
-      if (selectedCity) params.append('city', selectedCity);
-      if (selectedState) params.append('state', selectedState);
-      if (selectedVenue) params.append('venueId', selectedVenue);
-      if (selectedType) params.append('type', selectedType);
+      setEvents(data.events);
 
-      const response = await fetch(`/api/blog/calendar?${params}`);
-      const data = await response.json();
-
-      if (data.success) {
-        setEvents(data.events);
-
-        // Atualizar venues também se necessário
-        if (data.filters?.venues) {
-          setVenues(data.filters.venues);
-        }
+      // Atualizar venues também se necessário
+      if (data.filters.venues.length > 0) {
+        setVenues(data.filters.venues);
       }
     } catch (error) {
       console.error('Error fetching events:', error);

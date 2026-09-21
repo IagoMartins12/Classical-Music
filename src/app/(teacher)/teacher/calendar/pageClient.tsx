@@ -31,13 +31,17 @@ import {
 } from '../../../components/animation/AnimatedComponents';
 import { TeacherCalendarData, CalendarEvent } from './pageServer';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import { useTeacherCalendar } from '@/app/hooks/useTeacherCalendar';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
 import { MdOutlineCancel } from 'react-icons/md';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useToast } from '@/app/hooks/useToast';
+import {
+  cancelLessonRequest,
+  updateLessonRequest,
+} from '@/app/requests/portal/lesson-actions';
 
 interface TeacherCalendarPageClientProps {
   initialData: TeacherCalendarData;
@@ -351,19 +355,9 @@ export default function TeacherCalendarPageClient({
     async (lessonId: string) => {
       if (confirm(t('confirm_cancel_lesson'))) {
         try {
-          const response = await fetch(`/api/lessons?id=${lessonId}`, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-
-          if (response.ok) {
-            await handleRefreshCalendar();
-            setShowDayEventsModal(false);
-          } else {
-            alert(t('error_cancel_lesson'));
-          }
+          await cancelLessonRequest(lessonId);
+          await handleRefreshCalendar();
+          setShowDayEventsModal(false);
         } catch (error) {
           console.error('Erro ao cancelar aula:', error);
           alert(t('error_cancel_lesson'));
@@ -445,37 +439,11 @@ export default function TeacherCalendarPageClient({
         `📝 [CALENDAR] Atualizando status da aula ${pendingStatusUpdate.lessonId} para ${pendingStatusUpdate.newStatus}`
       );
 
-      const response = await fetch(
-        `/api/lessons/${pendingStatusUpdate.lessonId}`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            status: pendingStatusUpdate.newStatus,
-            // Adicionar timestamps relevantes
-            ...(pendingStatusUpdate.newStatus === 'COMPLETED' && {
-              actualEndTime: new Date().toISOString(),
-            }),
-            ...(pendingStatusUpdate.newStatus === 'CANCELLED' && {
-              cancelledAt: new Date().toISOString(),
-              cancelledBy: 'teacher',
-            }),
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Erro ao atualizar status da aula');
-      }
-
-      const result = await response.json();
-
-      if (!result.success) {
-        throw new Error(result.error || 'Erro ao atualizar status da aula');
-      }
+      // Concluir, marcar falta e cancelar são rotas próprias na API; as
+      // datas de encerramento ela mesma registra.
+      await updateLessonRequest(pendingStatusUpdate.lessonId, {
+        status: pendingStatusUpdate.newStatus,
+      });
 
       console.log(
         `✅ [CALENDAR] Status atualizado com sucesso: ${pendingStatusUpdate.newStatus}`

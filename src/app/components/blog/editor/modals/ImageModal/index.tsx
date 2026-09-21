@@ -8,6 +8,7 @@ import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
+import { uploadBlogMedia } from '@/app/requests/blog/interactions';
 
 interface ImageModalProps {
   editor: Editor;
@@ -45,31 +46,16 @@ export function ImageModal({
 
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('folder', 'content');
-
-      if (articleId) {
-        formData.append('articleId', articleId);
-      } else if (sessionId) {
-        formData.append('sessionId', sessionId);
-      }
-
-      const response = await fetch('/api/blog/media/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setUrl(data.url);
-      } else {
-        alert('Erro ao fazer upload: ' + data.error);
-      }
+      setUrl(
+        await uploadBlogMedia(file, { folder: 'content', articleId, sessionId })
+      );
     } catch (error) {
       console.error('Erro ao fazer upload:', error);
-      alert('Erro ao fazer upload da imagem');
+      alert(
+        error instanceof Error
+          ? `Erro ao fazer upload: ${error.message}`
+          : 'Erro ao fazer upload da imagem'
+      );
     } finally {
       setUploading(false);
     }

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { deleteTag } from '@/app/requests/blog/admin-actions';
 import {
   FiEdit,
   FiTrash2,
@@ -45,15 +46,7 @@ export function TagList({ tags: tags }: TagListProps) {
   const handleDelete = async (id: string) => {
     setDeleting(true);
     try {
-      const response = await fetch(`/api/blog/admin/tags/${id}`, {
-        method: 'DELETE',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao deletar');
-      }
+      await deleteTag(id);
 
       toast.success('Tag deletada com sucesso!');
       setDeleteModal(null);

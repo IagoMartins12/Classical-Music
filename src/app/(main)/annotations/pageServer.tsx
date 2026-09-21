@@ -1,7 +1,5 @@
 // app/annotations/pageServer.tsx
 
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../libs/auth';
 import AnnotationsPageClient from './pageClient';
 import {
   getServerLanguageStatic,
@@ -9,9 +7,10 @@ import {
 } from '@/app/utils/translations/serverTranslations';
 import { TranslationProvider } from '@/app/context/TranslationContext';
 import { AchievementProvider } from '@/app/components/achievement/AchievementToast';
+import { getServerSession } from '@/app/libs/api/server-session';
 
 export default async function AnnotationsPageServer() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   const language = await getServerLanguageStatic();
   const { translations } = await loadPageTranslationsWithCommon(language, [
     'pages/annotations',

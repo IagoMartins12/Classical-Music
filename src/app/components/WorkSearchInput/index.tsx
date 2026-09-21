@@ -17,6 +17,7 @@ import {
   FiFilter,
   FiAlertCircle,
 } from 'react-icons/fi';
+import { searchWorks } from '@/app/requests/catalog-search';
 
 export interface WorkSearchInputWorkProp {
   id: string;
@@ -110,21 +111,8 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     try {
       setIsLoading(true);
 
-      const params = new URLSearchParams({
-        q: '',
-        composer: composerId,
-        limit: '20',
-      });
-
-      const response = await fetch(`/api/works/search?${params.toString()}`);
-
-      if (response.ok) {
-        const data = await response.json();
-        setComposerWorks(data.works || []);
-      } else {
-        console.error('Erro ao carregar obras do compositor:', response.status);
-        setComposerWorks([]);
-      }
+      const data = await searchWorks({ composerId, limit: 20 });
+      setComposerWorks(data.works);
     } catch (error) {
       console.error('Erro ao buscar obras do compositor:', error);
       setComposerWorks([]);
@@ -250,33 +238,21 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
 
       try {
         const startTime = Date.now();
-        const params = new URLSearchParams({
-          q: searchQuery,
-          limit: '12',
-        });
-
-        if (composerFilter && composerFilter.trim() !== '') {
-          params.append('composer', composerFilter);
-        }
-
         console.log('Buscando obras:', {
           query: searchQuery,
           filterByComposer: composerFilter,
         });
 
-        const response = await fetch(`/api/works/search?${params.toString()}`);
+        const data = await searchWorks({
+          q: searchQuery,
+          limit: 12,
+          composerId: composerFilter?.trim() || undefined,
+        });
         const endTime = Date.now();
 
         console.log(`Busca completada em ${endTime - startTime}ms`);
 
-        if (response.ok) {
-          const data = await response.json();
-          const combinedWorks = prioritizeUserWorks(data.works || []);
-          setWorks(combinedWorks);
-        } else {
-          console.error('Erro na busca:', response.status);
-          setWorks([]);
-        }
+        setWorks(prioritizeUserWorks(data.works));
       } catch (error) {
         console.error('Erro ao buscar obras:', error);
         setWorks([]);

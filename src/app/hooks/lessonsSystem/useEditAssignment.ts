@@ -1,6 +1,10 @@
 // app/hooks/lessonsSystem/useEditAssignment.ts - Hook para editar tarefa existente
 
 import { useState, useCallback } from 'react';
+import {
+  deleteAssignmentRequest,
+  updateAssignmentRequest,
+} from '@/app/requests/portal/assignment-actions';
 
 interface EditAssignmentData {
   title?: string;
@@ -76,33 +80,16 @@ export function useEditAssignment(): UseEditAssignmentState &
       setError(null);
 
       try {
-        const response = await fetch(`/api/assignments/${assignmentId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...data,
-            practiceGoals:
-              data.practiceGoals?.filter((goal) => goal.trim()) || [],
-            technicalGoals:
-              data.technicalGoals?.filter((goal) => goal.trim()) || [],
-            musicalGoals:
-              data.musicalGoals?.filter((goal) => goal.trim()) || [],
-            exercises: data.exercises?.filter((ex) => ex.trim()) || [],
-            dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : null,
-          }),
+        await updateAssignmentRequest(assignmentId, {
+          ...data,
+          practiceGoals:
+            data.practiceGoals?.filter((goal) => goal.trim()) || [],
+          technicalGoals:
+            data.technicalGoals?.filter((goal) => goal.trim()) || [],
+          musicalGoals: data.musicalGoals?.filter((goal) => goal.trim()) || [],
+          exercises: data.exercises?.filter((ex) => ex.trim()) || [],
+          dueDate: data.dueDate || null,
         });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || `Erro ${response.status}`);
-        }
-
-        if (!result.success) {
-          throw new Error(result.error || 'Erro ao atualizar tarefa');
-        }
 
         console.log('✅ Tarefa atualizada com sucesso!');
         return true;
@@ -124,19 +111,7 @@ export function useEditAssignment(): UseEditAssignmentState &
       setError(null);
 
       try {
-        const response = await fetch(`/api/assignments?id=${assignmentId}`, {
-          method: 'DELETE',
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || `Erro ${response.status}`);
-        }
-
-        if (!result.success) {
-          throw new Error(result.error || 'Erro ao deletar tarefa');
-        }
+        await deleteAssignmentRequest(assignmentId);
 
         return true;
       } catch (error) {

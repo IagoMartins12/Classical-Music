@@ -2,7 +2,7 @@
 'use client';
 
 import { WorkListItem } from '@/app/requests/work-details';
-import Link from 'next/link';
+import Link from '@/app/components/LocalizedLink';
 import {
   FiClock,
   FiMusic,

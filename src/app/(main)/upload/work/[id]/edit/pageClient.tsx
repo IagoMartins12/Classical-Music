@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import {
   FiSave,
   FiTrash2,
@@ -32,6 +32,7 @@ import {
 import Button from '../../../../../components/Common/Button';
 import CreateWorkModal from '../../../../../components/UploadsPage/modals/CreateWorkModal';
 import { useToast } from '@/app/hooks/useToast';
+import { deleteUpload } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface EditWorkClientProps {
@@ -93,15 +94,12 @@ const EditWorkClient = ({
     setIsDeleting(true);
 
     try {
-      const response = await fetch(`/api/uploads/work/${work.id}`, {
-        method: 'DELETE',
-      });
+      const response = await deleteUpload('work', work.id);
 
       if (response.ok) {
         router.push('/upload');
       } else {
-        const data = await response.json();
-        throw new Error(data.error || 'Erro ao excluir obra');
+        throw new Error(response.error || 'Erro ao excluir obra');
       }
     } catch (error) {
       console.error('Erro ao excluir obra:', error);

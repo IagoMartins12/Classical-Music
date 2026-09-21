@@ -1,10 +1,17 @@
 // app/hooks/lessonsSystem/useTeacherAssignments.ts - Hook específico para gerenciamento de tarefas
 
 import { useState, useCallback } from 'react';
-import {
+import type {
   TeacherAssignmentsData,
   TeacherAssignment,
 } from '@/app/(teacher)/teacher/assignments/pageServer';
+import {
+  createAssignmentRequest,
+  deleteAssignmentRequest,
+  updateAssignmentRequest,
+} from '@/app/requests/portal/assignment-actions';
+import { legacyAssignmentRow } from '@/app/requests/portal/records';
+import { loadTeacherAssignments } from '@/app/requests/portal/teacher';
 
 interface UseTeacherAssignmentsState {
   assignments: TeacherAssignment[];
@@ -111,17 +118,13 @@ export function useTeacherAssignments(
     setError(null);
 
     try {
-      const response = await fetch('/api/assignments?limit=50&offset=0');
-
-      if (!response.ok) {
-        throw new Error('Erro ao carregar tarefas');
-      }
-
-      const data = await response.json();
-
-      if (!data.success) {
-        throw new Error('Erro na API de tarefas');
-      }
+      const data = await loadTeacherAssignments(
+        undefined,
+        undefined,
+        undefined,
+        50,
+        0
+      );
 
       setState((prev) => ({
         ...prev,
@@ -144,49 +147,30 @@ export function useTeacherAssignments(
       setError(null);
 
       try {
-        console.log('🚀 [HOOK] Enviando dados para API:', assignmentData);
+        // Na API toda tarefa pertence a uma aula (o aluno vem dela).
+        if (!assignmentData.lessonId) {
+          throw new Error('Escolha a aula a que a tarefa pertence');
+        }
 
-        const response = await fetch('/api/assignments', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...assignmentData,
-            practiceGoals:
-              assignmentData.practiceGoals?.filter((g: string) => g.trim()) ||
-              [],
-            technicalGoals:
-              assignmentData.technicalGoals?.filter((g: string) => g.trim()) ||
-              [],
-            musicalGoals:
-              assignmentData.musicalGoals?.filter((g: string) => g.trim()) ||
-              [],
-            exercises:
-              assignmentData.exercises?.filter((ex: string) => ex.trim()) || [],
-            // 🆕 INCLUIR PEÇAS MUSICAIS
-            worksIds: assignmentData.worksIds || [], // IDs das obras
-            workScoreIds: assignmentData.workScoreIds || [], // IDs das partituras
-            dueDate: assignmentData.dueDate
-              ? new Date(assignmentData.dueDate).toISOString()
-              : null,
-          }),
+        const created = await createAssignmentRequest({
+          ...assignmentData,
+          practiceGoals:
+            assignmentData.practiceGoals?.filter((g: string) => g.trim()) || [],
+          technicalGoals:
+            assignmentData.technicalGoals?.filter((g: string) => g.trim()) ||
+            [],
+          musicalGoals:
+            assignmentData.musicalGoals?.filter((g: string) => g.trim()) || [],
+          exercises:
+            assignmentData.exercises?.filter((ex: string) => ex.trim()) || [],
+          worksIds: assignmentData.worksIds || [],
+          workScoreIds: assignmentData.workScoreIds || [],
         });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Erro ao criar tarefa');
-        }
-
-        if (!data.success) {
-          throw new Error('Erro na criação da tarefa');
-        }
-
-        console.log('✅ [HOOK] Tarefa criada com sucesso:', data.assignment);
 
         // Add to local state
         setState((prev) => ({
           ...prev,
-          assignments: [data.assignment, ...prev.assignments],
+          assignments: [legacyAssignmentRow(created), ...prev.assignments],
           stats: {
             ...prev.stats,
             total: prev.stats.total + 1,
@@ -213,31 +197,7 @@ export function useTeacherAssignments(
       setError(null);
 
       try {
-        console.log('🔄 [HOOK] Atualizando assignment:', assignmentId, updates);
-
-        const response = await fetch('/api/assignments', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            assignmentId,
-            ...updates,
-            // 🆕 INCLUIR PEÇAS MUSICAIS SE FORNECIDAS
-            ...(updates.worksIds && { worksIds: updates.worksIds }),
-            ...(updates.workScoreIds && { workScoreIds: updates.workScoreIds }),
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Erro ao atualizar tarefa');
-        }
-
-        if (!data.success) {
-          throw new Error('Erro na atualização da tarefa');
-        }
-
-        console.log('✅ [HOOK] Tarefa atualizada com sucesso');
+        await updateAssignmentRequest(assignmentId, updates);
 
         // Update local state
         setState((prev) => ({
@@ -268,21 +228,7 @@ export function useTeacherAssignments(
       setError(null);
 
       try {
-        console.log('🗑️ [HOOK] Deletando assignment:', assignmentId);
-
-        const response = await fetch(`/api/assignments?id=${assignmentId}`, {
-          method: 'DELETE',
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Erro ao deletar tarefa');
-        }
-
-        if (!data.success) {
-          throw new Error('Erro na exclusão da tarefa');
-        }
+        await deleteAssignmentRequest(assignmentId);
 
         // Remove from local state
         setState((prev) => ({

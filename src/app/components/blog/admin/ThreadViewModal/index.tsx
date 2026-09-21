@@ -2,7 +2,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
+import {
+  askRejectionNotes,
+  loadCommentThread,
+  moderateComment,
+  type ModerationAction,
+} from '@/app/requests/blog/admin-actions';
 import {
   BiUser,
   BiCheckCircle,
@@ -65,15 +71,7 @@ export function ThreadViewModal({
   const fetchThread = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/blog/comments/${commentId}/thread`);
-      const data = await response.json();
-
-      if (data.success) {
-        setThread(data.thread);
-      } else {
-        toast.error('Erro ao carregar thread');
-        onClose();
-      }
+      setThread(await loadCommentThread<ThreadComment>(commentId));
     } catch (error) {
       console.error('Erro ao carregar thread:', error);
       toast.error('Erro ao carregar thread');
@@ -83,17 +81,15 @@ export function ThreadViewModal({
     }
   };
 
-  const handleAction = async (commentId: string, action: string) => {
+  const handleAction = async (commentId: string, action: ModerationAction) => {
+    // Reprovar exige justificativa na API.
+    const notes = action === 'reject' ? askRejectionNotes() : undefined;
+    if (notes === null) return;
+
     setProcessing(commentId);
 
     try {
-      const response = await fetch(`/api/blog/admin/moderation/${commentId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action }),
-      });
-
-      if (!response.ok) throw new Error();
+      await moderateComment(commentId, action, notes);
 
       toast.success(
         action === 'approve'
@@ -106,8 +102,8 @@ export function ThreadViewModal({
       // Recarregar thread
       await fetchThread();
       onActionComplete();
-    } catch {
-      toast.error('Erro ao processar ação');
+    } catch (error: any) {
+      toast.error(error?.message || 'Erro ao processar ação');
     } finally {
       setProcessing(null);
     }

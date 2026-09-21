@@ -17,9 +17,12 @@ import ProfileImageUpload from '../../ProfileImageUpload';
 import LocationSelector, { LocationData } from '../../Common/LocationSelector';
 import InternationalPhoneInput from '../../Common/InternationalPhoneInput';
 import { updatePersonalInfo } from '@/app/actions/profile';
+import { ApiError, apiFetch } from '@/app/libs/api/client';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
-import { User } from 'next-auth';
+// Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
+// objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
+import type { User } from '@/app/hooks/userStore';
 import {
   convertDatabaseToLocationData,
   convertLocationDataToDatabase,
@@ -232,25 +235,23 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
     try {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('userId', user.id);
 
-      const response = await fetch('/api/upload/profile-image', {
-        method: 'POST',
-        body: formData,
-      });
+      // A API sobe a foto para o armazenamento em nuvem e já a grava na conta.
+      const { imageUrl } = await apiFetch<{ imageUrl: string }>(
+        '/profile/avatar',
+        { method: 'POST', body: formData }
+      );
 
-      const result = await response.json();
-
-      if (result.success) {
-        const imageUpdate = { image: result.imageUrl };
-        await syncUserData(imageUpdate);
-        setFormData((prev) => ({ ...prev, image: result.imageUrl }));
-        toast.success('Foto atualizada com sucesso!');
-      } else {
-        toast.error(result.message || 'Erro ao fazer upload da imagem');
-      }
+      const imageUpdate = { image: imageUrl };
+      await syncUserData(imageUpdate);
+      setFormData((prev) => ({ ...prev, image: imageUrl }));
+      toast.success('Foto atualizada com sucesso!');
     } catch (error: any) {
-      toast.error('Erro ao fazer upload da imagem');
+      toast.error(
+        error instanceof ApiError && error.message
+          ? error.message
+          : 'Erro ao fazer upload da imagem'
+      );
       console.error('Upload error:', error);
     } finally {
       setIsUploadingImage(false);

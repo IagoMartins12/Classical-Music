@@ -1,9 +1,10 @@
 // app/confirm-email-change/[token]/page.tsx
 'use client';
 
+import { legacyAuth } from '@/app/libs/api/compat';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { signOut } from 'next-auth/react';
+import { signOut } from '@/app/libs/session';
 import {
   FiCheckCircle,
   FiAlertTriangle,
@@ -61,11 +62,7 @@ export default function ConfirmEmailChangePage() {
   const confirmEmailChange = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/auth/confirm-email-change/${token}`, {
-        method: 'GET',
-      });
-
-      const data = await response.json();
+      const data = await legacyAuth.confirmEmailChange(token);
       setResult(data);
 
       console.log('data', data);
@@ -146,13 +143,7 @@ export default function ConfirmEmailChangePage() {
   const handleResendConfirmation = async () => {
     setIsResending(true);
     try {
-      const response = await fetch(`/api/auth/confirm-email-change/${token}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'resend' }),
-      });
-
-      const data = await response.json();
+      const data = await legacyAuth.resendEmailChange();
 
       if (data.success) {
         toast.success(data.message);
@@ -353,10 +344,10 @@ export default function ConfirmEmailChangePage() {
           {result.errorCode === 'EXPIRED_TOKEN'
             ? t('pages_token_jsx_h2_children_0__link_expirado')
             : result.errorCode === 'USED_TOKEN'
-            ? t('pages_token_jsx_h2_children_0__link_já_utilizado')
-            : result.errorCode === 'EMAIL_TAKEN'
-            ? t('pages_token_jsx_h2_children_0__email_indisponível')
-            : t('pages_token_jsx_h2_children_0__erro_na_confirmação_alt')}
+              ? t('pages_token_jsx_h2_children_0__link_já_utilizado')
+              : result.errorCode === 'EMAIL_TAKEN'
+                ? t('pages_token_jsx_h2_children_0__email_indisponível')
+                : t('pages_token_jsx_h2_children_0__erro_na_confirmação_alt')}
         </h2>
 
         <p className="text-theme-secondary mb-6">{result.message}</p>

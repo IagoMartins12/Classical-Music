@@ -25,7 +25,7 @@ import {
 } from '../../../components/animation/AnimatedComponents';
 import { StudentCalendarData } from './pageServer';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/app/components/SmartImage';
 import Select from '@/app/components/Common/Select';
 import { useStudentCalendar } from '@/app/hooks/lessonsSystem/useStudentCalendar';
 import Modal from '@/app/components/Modal';
