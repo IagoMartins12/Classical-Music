@@ -13,24 +13,29 @@ export enum BillingPeriod {
 }
 
 // ==================== PREÇOS DOS PLANOS ====================
+// Último recurso: a página de preços lê `GET /pricing` (coleção `plan_pricing`,
+// semeada por `seed:pricing` na API) e só cai aqui se a API não responder.
+// Como o fallback impede a página de quebrar, ele também esconde a falha —
+// então estes valores TÊM de acompanhar os do banco e os do painel do Stripe.
+// `YEARLY` é o equivalente mensal do plano anual, não um preço cobrado.
 export const PLAN_PRICES = {
   PLUS: {
     MONTHLY: 19.9,
-    YEARLY: 15.9, // 20% desconto
-    YEARLY_TOTAL: 191.04,
-    YEARLY_SAVINGS: 47.76,
+    YEARLY: 16.66, // 199,90 ÷ 12
+    YEARLY_TOTAL: 199.9,
+    YEARLY_SAVINGS: 38.9,
   },
   MENTOR: {
-    MONTHLY: 49.9,
-    YEARLY: 39.9, // 20% desconto
-    YEARLY_TOTAL: 479.04,
-    YEARLY_SAVINGS: 119.76,
+    MONTHLY: 39.9,
+    YEARLY: 33.33, // 399,90 ÷ 12
+    YEARLY_TOTAL: 399.9,
+    YEARLY_SAVINGS: 78.9,
   },
   MAESTRO: {
     MONTHLY: 79.9,
-    YEARLY: 63.92, // 20% desconto
-    YEARLY_TOTAL: 767.04,
-    YEARLY_SAVINGS: 191.76,
+    YEARLY: 66.66, // 799,90 ÷ 12
+    YEARLY_TOTAL: 799.9,
+    YEARLY_SAVINGS: 158.9,
   },
 } as const;
 

@@ -97,36 +97,44 @@ export function setPlanPricingRequest(data: Record<string, unknown>) {
 }
 
 /**
- * Os preços padrão que a rota "seed" do legado gravava. A API não tem seed:
- * cada preço vira uma versão por `POST /admin/plan-pricing`.
+ * Os preços padrão que a rota "seed" do legado gravava, atualizados para a
+ * tabela em vigor (mesma de `seed-plan-pricing.ts` na API e de `PLAN_PRICES`):
+ * anual por dez meses, ~16% de desconto nos três planos. Os valores do legado
+ * (29 / 79 / 149) não valem mais.
+ *
+ * **Por aqui o preço não é digitado, é derivado:** a rota só aceita o mensal e
+ * os descontos, e a API calcula os demais períodos (`monthly × meses ×
+ * (1 - desconto)`). Valores terminados em `,90` não saem exatos — 19,90 com
+ * 16,3% dá 199,85, não 199,90. Para bater com o Stripe no centavo, use
+ * `npm run seed:pricing:hml` na API, que grava cada período diretamente.
  */
 const DEFAULT_PLAN_PRICES = [
   {
     planType: 'PLUS',
-    monthlyPrice: 29.0,
-    quarterlyDiscount: 10,
-    biannualDiscount: 15,
-    yearlyDiscount: 20,
+    monthlyPrice: 19.9,
+    quarterlyDiscount: 9.7,
+    biannualDiscount: 14.7,
+    yearlyDiscount: 16.3,
     trialDays: 7,
     displayOrder: 1,
     description: 'Para alunos dedicados que querem acelerar sua evolução',
   },
   {
     planType: 'MENTOR',
-    monthlyPrice: 79.0,
-    quarterlyDiscount: 10,
-    biannualDiscount: 15,
-    yearlyDiscount: 20,
+    monthlyPrice: 39.9,
+    quarterlyDiscount: 9.9,
+    biannualDiscount: 14.8,
+    yearlyDiscount: 16.5,
     trialDays: 14,
     displayOrder: 2,
     description: 'Para professores iniciantes que querem organizar suas aulas',
   },
   {
     planType: 'MAESTRO',
-    monthlyPrice: 149.0,
-    quarterlyDiscount: 10,
-    biannualDiscount: 15,
-    yearlyDiscount: 20,
+    monthlyPrice: 79.9,
+    quarterlyDiscount: 9.9,
+    biannualDiscount: 14.9,
+    yearlyDiscount: 16.6,
     trialDays: 30,
     displayOrder: 3,
     description: 'Para professores profissionais com alunos ilimitados',
