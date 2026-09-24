@@ -57,8 +57,10 @@ export default async function TeacherLayout({
     redirect('/not-authenticated');
   }
 
-  // Verificar se tem role de professor (role 1)
-  if (!session.user.isTeacher || session.user.role !== 1) {
+  // Quem dá aula é `isTeacher`, não o papel. Exigir `role === 1` barrava
+  // duas pessoas de uma vez: o professor promovido pelo painel novo, que fica
+  // com `role: 0`, e o administrador que também dá aula, que tem `role: 2`.
+  if (!session.user.isTeacher) {
     redirect('/access-denied');
   }
 

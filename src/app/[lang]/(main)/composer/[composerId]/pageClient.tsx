@@ -43,6 +43,7 @@ import { translateRole } from '@/app/components/UploadsPage/modals/CreateCompose
 import type { BlogArticlePreview } from '@/app/requests/blog/composer-articles';
 import ComposerArticlesSection from '@/app/components/ComposerArticlesSection';
 import { useSession } from '@/app/libs/session';
+import { canEditCatalog, canVerifyCatalog } from '@/app/utils/permissions';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
@@ -64,7 +65,10 @@ export default function ComposerDetailsClient({
    * devolve a página ao cache.
    */
   const { data: session } = useSession();
-  const isAdmin = session?.user?.role === 2;
+  // Editar é de administrador e de professor aprovado; carimbar "verificado"
+  // é só da curadoria administrativa.
+  const podeEditar = canEditCatalog(session?.user);
+  const podeVerificar = canVerifyCatalog(session?.user);
 
   const [imageError, setImageError] = useState(false);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
@@ -327,7 +331,7 @@ export default function ComposerDetailsClient({
                             size="lg"
                             showLabel={false}
                           />
-                          {isAdmin && (
+                          {podeEditar && (
                             <EditButton
                               entityId={composer.id}
                               variant="minimal"
@@ -337,8 +341,8 @@ export default function ComposerDetailsClient({
                             />
                           )}
 
-                          {/* Admin verification button */}
-                          {isAdmin && (
+                          {/* Selo de verificação: só administrador */}
+                          {podeVerificar && (
                             <VerificationButton
                               entityType="composer"
                               variant="secondary"
@@ -701,7 +705,7 @@ export default function ComposerDetailsClient({
           />
         </AnimatedContainer>
       </div>
-      {isAdmin && (
+      {podeVerificar && (
         <VerificationModal
           isOpen={showVerificationModal}
           onClose={() => setShowVerificationModal(false)}

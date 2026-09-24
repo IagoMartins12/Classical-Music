@@ -59,6 +59,7 @@ import { translateEpochWithHook } from '@/app/utils/translations/epochTranslatio
 import { translateCategoryStatic } from '@/app/utils/translations/categoryTranslation';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useSession } from '@/app/libs/session';
+import { canEditCatalog, canVerifyCatalog } from '@/app/utils/permissions';
 import { workScoresRequest } from '@/app/requests/work-scores';
 
 // Interface para dados de áudio processados (mantida igual)
@@ -123,8 +124,11 @@ export default function WorkDetailsClient({
    * pública do artigo do blog (`components/blog/AdminOnly`).
    */
   const { data: session } = useSession();
-  const isAdmin = session?.user?.role === 2;
-  const canEditMedia = isAdmin || work.createdBy === session?.user?.id;
+  // Editar a obra é de administrador e de professor aprovado; o selo de
+  // verificado é só da curadoria administrativa.
+  const podeEditar = canEditCatalog(session?.user);
+  const podeVerificar = canVerifyCatalog(session?.user);
+  const canEditMedia = podeEditar || work.createdBy === session?.user?.id;
 
   // Estados seguros para SSR
   const [mounted, setMounted] = useState(false);
@@ -696,8 +700,7 @@ export default function WorkDetailsClient({
                           size="lg"
                           showLabel={false}
                         />
-                        {/* Admin verification button */}
-                        {(isAdmin || canEditMedia) && (
+                        {(podeEditar || canEditMedia) && (
                           <EditButton
                             entityId={work.id}
                             variant="minimal"
@@ -706,7 +709,7 @@ export default function WorkDetailsClient({
                             showLabel={false}
                           />
                         )}
-                        {isAdmin && (
+                        {podeVerificar && (
                           <VerificationButton
                             entityType="work"
                             variant="ghost"
@@ -1262,7 +1265,7 @@ export default function WorkDetailsClient({
             work={workForMediaSection}
             canEditMedia={canEditMedia}
             onMediaUpdate={handleMediaUpdate}
-            isAdmin={isAdmin}
+            isAdmin={podeEditar}
           />
 
           <VideoAulaSection
@@ -1276,7 +1279,7 @@ export default function WorkDetailsClient({
             composerName={work.composer.fullName}
           />
 
-          {isAdmin && (
+          {podeVerificar && (
             <VerificationModal
               isOpen={showVerificationModal}
               onClose={() => setShowVerificationModal(false)}
