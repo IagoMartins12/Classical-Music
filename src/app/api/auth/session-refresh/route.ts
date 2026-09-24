@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { apiUrl } from '@/app/libs/api/client';
+import {
+  ACCESS_TOKEN_COOKIE,
+  REFRESH_FAILED_COOKIE,
+  REFRESH_FAILED_MAX_AGE,
+  SESSION_HINT_COOKIE,
+  cookieDomains,
+} from '@/app/utils/authCookies';
 
 const LEGACY_SESSION_COOKIES = [
   'next-auth.session-token',
@@ -44,12 +51,43 @@ export async function GET(request: NextRequest) {
     for (const cookie of upstream.headers.getSetCookie()) {
       response.headers.append('set-cookie', cookie);
     }
+
+    // A sessão voltou: o marcador de falha não tem mais razão de existir.
+    response.cookies.delete(REFRESH_FAILED_COOKIE);
     return response;
+  }
+
+  /**
+   * A renovação falhou — a sessão acabou de verdade. **Apagar a dica de sessão
+   * aqui não é limpeza, é o que impede um laço de redirecionamento.** O
+   * middleware desvia para cá quem tem a dica sem token de acesso válido; se
+   * ela sobrevivesse à falha, a próxima navegação desviaria de novo, e a
+   * seguinte também: `ERR_TOO_MANY_REDIRECTS` com o site inteiro inacessível
+   * até o cookie vencer sozinho.
+   *
+   * Quem a gravou foi a API, com um `domain` que este lado não conhece — daí
+   * apagar em cada domínio possível. O refresh token fica: mora no domínio da
+   * API (`path=/api/auth`) e não é nosso para apagar; sem a dica, ninguém o
+   * tenta mais.
+   */
+  for (const domain of cookieDomains(request.nextUrl.hostname)) {
+    for (const name of [SESSION_HINT_COOKIE, ACCESS_TOKEN_COOKIE]) {
+      response.cookies.set(name, '', { path: '/', maxAge: 0, domain });
+    }
   }
 
   for (const name of LEGACY_SESSION_COOKIES) {
     response.cookies.delete(name);
   }
+
+  // Cinto de segurança: se alguma dica resistir (gravada num `domain` fora da
+  // lista), o middleware ainda assim não devolve a pessoa para cá.
+  response.cookies.set(REFRESH_FAILED_COOKIE, '1', {
+    path: '/',
+    maxAge: REFRESH_FAILED_MAX_AGE,
+    sameSite: 'lax',
+    secure: request.nextUrl.protocol === 'https:',
+  });
 
   return response;
 }

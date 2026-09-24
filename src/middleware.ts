@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
   ACCESS_TOKEN_COOKIE,
+  REFRESH_FAILED_COOKIE,
   SESSION_HINT_COOKIE,
 } from '@/app/utils/authCookies';
 import {
@@ -315,8 +316,20 @@ export function middleware(request: NextRequest) {
     request.cookies.has(SESSION_HINT_COOKIE) ||
     LEGACY_SESSION_COOKIES.some((name) => request.cookies.has(name));
 
+  /**
+   * A renovação já falhou há pouco: seguir em frente como visitante.
+   *
+   * **Sem isto, o site fica inacessível para quem volta com sessão vencida.**
+   * A dica de sessão dura o mesmo que o refresh token; quando o refresh também
+   * vence — um celular parado por semanas —, o desvio abaixo leva à renovação,
+   * que falha e devolve a pessoa à página, que desvia outra vez.
+   * `ERR_TOO_MANY_REDIRECTS`, em toda página, até o cookie vencer. A rota de
+   * renovação apaga a dica ao falhar; este marcador cobre o caso de ela ter
+   * sido gravada num `domain` que não conseguimos apagar.
+   */
   if (
     !hasSession ||
+    request.cookies.has(REFRESH_FAILED_COOKIE) ||
     isFreshAccessToken(request.cookies.get(ACCESS_TOKEN_COOKIE)?.value)
   ) {
     return localize(request, true) ?? NextResponse.next();

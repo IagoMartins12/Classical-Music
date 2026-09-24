@@ -89,6 +89,36 @@ describe('renovação de sessão', () => {
     expect(r.headers.get('location')).toContain('/api/auth/session-refresh');
   });
 
+  /**
+   * O laço que tirou o site do ar num celular: sessão parada tempo demais, o
+   * refresh token vencido junto com o de acesso, e a renovação devolvendo a
+   * pessoa a uma página que a mandava renovar de novo — `ERR_TOO_MANY_REDIRECTS`
+   * em toda navegação, só no aparelho que tinha o cookie velho.
+   */
+  it('depois de a renovação falhar, não manda renovar outra vez', () => {
+    const r = middleware(
+      visita('/favorites', {
+        opus_session: '1',
+        opus_access_token: tokenQueVence(-60),
+        opus_refresh_failed: '1',
+      })
+    ) as Response;
+
+    expect(r.headers.get('location')).toBeNull();
+  });
+
+  it('o marcador de falha não derruba quem tem token válido', () => {
+    const r = middleware(
+      visita('/favorites', {
+        opus_session: '1',
+        opus_access_token: tokenQueVence(600),
+        opus_refresh_failed: '1',
+      })
+    ) as Response;
+
+    expect(r.headers.get('location')).toBeNull();
+  });
+
   it('o painel sem sessão nenhuma vai para o login, com o destino guardado', () => {
     const r = middleware(visita('/admin/users', {})) as Response;
     const destino = r.headers.get('location') ?? '';
