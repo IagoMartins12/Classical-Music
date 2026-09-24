@@ -22,6 +22,20 @@ function safePath(value: string | null): string {
 }
 
 /**
+ * Um `Set-Cookie` que apaga: valor vazio e `Max-Age=0`.
+ *
+ * **Escrito à mão, e sempre por `headers.append`.** O `response.cookies` do
+ * Next é um mapa por nome que se reescreve inteiro a cada uso: dois cookies de
+ * mesmo nome em domínios diferentes viram um só — o último —, e um
+ * `cookies.set` depois de um `append` **apaga o que foi acrescentado antes**.
+ * Os dois detalhes juntos deixavam este arquivo mandando um cabeçalho onde
+ * deveria mandar sete, e o cookie que importa é justamente um dos calados.
+ */
+function apagar(name: string, domain?: string): string {
+  return `${name}=; Path=/; Max-Age=0${domain ? `; Domain=${domain}` : ''}`;
+}
+
+/**
  * Renova a sessão da API numa navegação de página (Etapa 2).
  *
  * **Mora sob `/api/auth/` de propósito:** o cookie de renovação da API tem
@@ -53,7 +67,7 @@ export async function GET(request: NextRequest) {
     }
 
     // A sessão voltou: o marcador de falha não tem mais razão de existir.
-    response.cookies.delete(REFRESH_FAILED_COOKIE);
+    response.headers.append('set-cookie', apagar(REFRESH_FAILED_COOKIE));
     return response;
   }
 
@@ -69,25 +83,30 @@ export async function GET(request: NextRequest) {
    * apagar em cada domínio possível. O refresh token fica: mora no domínio da
    * API (`path=/api/auth`) e não é nosso para apagar; sem a dica, ninguém o
    * tenta mais.
+   *
+   * **`headers.append`, não `cookies.set`:** `cookies` é um mapa por nome, e
+   * três chamadas com o mesmo nome e domínios diferentes deixam só a última —
+   * justamente a que menos importa. Um teste contra a homologação pegou isso:
+   * saía um único `Set-Cookie`, para `.opusatlas.com.br`, e o cookie de
+   * verdade, em `.hml.opusatlas.com.br`, ficava de pé.
    */
   for (const domain of cookieDomains(request.nextUrl.hostname)) {
     for (const name of [SESSION_HINT_COOKIE, ACCESS_TOKEN_COOKIE]) {
-      response.cookies.set(name, '', { path: '/', maxAge: 0, domain });
+      response.headers.append('set-cookie', apagar(name, domain));
     }
   }
 
   for (const name of LEGACY_SESSION_COOKIES) {
-    response.cookies.delete(name);
+    response.headers.append('set-cookie', apagar(name));
   }
 
   // Cinto de segurança: se alguma dica resistir (gravada num `domain` fora da
   // lista), o middleware ainda assim não devolve a pessoa para cá.
-  response.cookies.set(REFRESH_FAILED_COOKIE, '1', {
-    path: '/',
-    maxAge: REFRESH_FAILED_MAX_AGE,
-    sameSite: 'lax',
-    secure: request.nextUrl.protocol === 'https:',
-  });
+  const seguro = request.nextUrl.protocol === 'https:' ? '; Secure' : '';
+  response.headers.append(
+    'set-cookie',
+    `${REFRESH_FAILED_COOKIE}=1; Path=/; Max-Age=${REFRESH_FAILED_MAX_AGE}; SameSite=Lax${seguro}`
+  );
 
   return response;
 }
