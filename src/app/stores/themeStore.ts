@@ -2,14 +2,19 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import React from 'react';
-import { THEME_CONFIG, THEME_GRADIENTS, ThemeMode } from '../thema';
+import { flushSync } from 'react-dom';
+import { ThemeMode } from '../thema';
 
 interface ThemeState {
   mode: ThemeMode;
   isTransitioning: boolean;
   hasUserPreference: boolean; // 🆕 Flag para indicar se usuário fez escolha manual
-  toggleTheme: () => void;
-  setTheme: (mode: ThemeMode, isUserChoice?: boolean) => void;
+  toggleTheme: (origem?: OrigemDaTroca) => void;
+  setTheme: (
+    mode: ThemeMode,
+    isUserChoice?: boolean,
+    origem?: OrigemDaTroca
+  ) => void;
   applyTheme: (mode: ThemeMode) => void;
   initializeFromSystem: () => void; // 🆕 Método para inicializar do sistema
 }
@@ -23,66 +28,98 @@ function getSystemTheme(): ThemeMode {
     : 'light';
 }
 
-// Função para aplicar tema imediatamente (evita flash)
+/**
+ * Como o círculo da troca de tema se move.
+ *
+ * - `false`: o tema novo sempre cresce a partir do botão, nos dois sentidos.
+ * - `true`: pulsa. Indo para o claro, o círculo cresce a partir do botão;
+ *   voltando para o escuro, o claro encolhe de volta para dentro dele, com a
+ *   mesma curva espelhada.
+ */
+export const INVERSE_THEME_CIRCLE = true;
+
+/** Ponto da tela de onde a troca de tema parte: o botão que a pessoa apertou. */
+export interface OrigemDaTroca {
+  x: number;
+  y: number;
+}
+
+/**
+ * Aplica o tema trocando só o `data-theme`.
+ *
+ * Até a Etapa 7.8 esta função gravava ~40 variáveis de cor direto no `style`
+ * do `<html>`, lidas do `thema.ts`. Estilo inline vence qualquer folha de
+ * estilo: depois da hidratação, a paleta antiga cobria os tokens do
+ * `globals.css`. Hoje os dois temas vivem inteiros no CSS, sob `:root` e
+ * `[data-theme='light']`, e o atributo é tudo que precisa mudar.
+ */
 function applyThemeImmediate(mode: ThemeMode) {
   if (typeof document === 'undefined') return;
+  document.documentElement.setAttribute('data-theme', mode);
+}
 
-  const theme = THEME_CONFIG[mode];
-  const gradients = THEME_GRADIENTS[mode];
-  const root = document.documentElement;
+/**
+ * A troca feita pela pessoa: o tema novo se abre num círculo a partir do
+ * botão que ela apertou.
+ *
+ * **Por que View Transition, e não `transition` de cor.** A versão anterior
+ * ligava uma transição em todo elemento da página ao mesmo tempo — milhares
+ * de cores interpoladas quadro a quadro, que é o que travava. Aqui o
+ * navegador fotografa a página no tema antigo, aplica o novo de uma vez e
+ * anima só a máscara circular por cima: uma camada, na GPU.
+ *
+ * Sem suporte (Firefox antigo) ou com `prefers-reduced-motion`, a troca é
+ * instantânea — que é o comportamento certo nos dois casos.
+ */
+function trocarComRevelacao(
+  aplicar: () => void,
+  origem?: OrigemDaTroca,
+  encolher = false
+) {
+  const html = document.documentElement;
+  const doc = document as Document & {
+    startViewTransition?: (atualizar: () => void) => {
+      finished: Promise<void>;
+    };
+  };
+  const semMovimento = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
 
-  // Background colors
-  root.style.setProperty('--bg-primary', theme.background.primary);
-  root.style.setProperty('--bg-secondary', theme.background.secondary);
-  root.style.setProperty('--bg-tertiary', theme.background.tertiary);
-  root.style.setProperty('--bg-elevated', theme.background.elevated);
-  root.style.setProperty('--bg-overlay', theme.background.overlay);
+  // Cerca de 800 elementos têm `transition-all` próprio: sem esta trava, cada
+  // cor que muda com o tema vira uma animação, e foram elas — não a revelação —
+  // que travaram a troca (sete tarefas longas, ~850ms, medido em /works).
+  html.classList.add('trocando-tema');
+  const destravar = () =>
+    html.classList.remove('trocando-tema', 'tema-encolhe');
 
-  // Text colors
-  root.style.setProperty('--text-primary', theme.text.primary);
-  root.style.setProperty('--text-secondary', theme.text.secondary);
-  root.style.setProperty('--text-tertiary', theme.text.tertiary);
-  root.style.setProperty('--text-inverse', theme.text.inverse);
+  if (!doc.startViewTransition || semMovimento) {
+    aplicar();
+    // Dois quadros: o primeiro pinta o tema novo já sem transição.
+    requestAnimationFrame(() => requestAnimationFrame(destravar));
+    return;
+  }
 
-  // Brand colors
-  root.style.setProperty('--brand-primary', theme.brand.primary);
-  root.style.setProperty('--brand-secondary', theme.brand.secondary);
-  root.style.setProperty('--brand-gradient', theme.brand.gradient);
+  const x = origem?.x ?? window.innerWidth / 2;
+  const y = origem?.y ?? 0;
+  // O raio que alcança o canto mais distante: o círculo termina cobrindo tudo.
+  const raio = Math.hypot(
+    Math.max(x, window.innerWidth - x),
+    Math.max(y, window.innerHeight - y)
+  );
 
-  // Accent colors
-  root.style.setProperty('--accent-gold', theme.accent.gold);
-  root.style.setProperty('--accent-amber', theme.accent.amber);
-  root.style.setProperty('--accent-purple', theme.accent.purple);
-  root.style.setProperty('--accent-blue', theme.accent.blue);
-  root.style.setProperty('--accent-green', theme.accent.green);
-  root.style.setProperty('--accent-red', theme.accent.red);
+  html.style.setProperty('--tema-x', `${x}px`);
+  html.style.setProperty('--tema-y', `${y}px`);
+  html.style.setProperty('--tema-raio', `${raio}px`);
 
-  // Border colors
-  root.style.setProperty('--border-primary', theme.border.primary);
-  root.style.setProperty('--border-secondary', theme.border.secondary);
-  root.style.setProperty('--border-accent', theme.border.accent);
+  // `flushSync`: o React precisa pintar o estado novo (o ícone do botão)
+  // antes de o navegador fotografar o tema novo.
+  // Encolher: a foto do tema antigo fica por cima e se fecha no botão, em
+  // vez de o tema novo se abrir por cima dela (ver `globals.css`).
+  html.classList.toggle('tema-encolhe', encolher);
 
-  // Interactive states
-  root.style.setProperty('--interactive-hover', theme.interactive.hover);
-  root.style.setProperty('--interactive-active', theme.interactive.active);
-  root.style.setProperty('--interactive-focus', theme.interactive.focus);
-  root.style.setProperty('--interactive-disabled', theme.interactive.disabled);
-
-  // Shadows
-  root.style.setProperty('--shadow-small', theme.shadow.small);
-  root.style.setProperty('--shadow-medium', theme.shadow.medium);
-  root.style.setProperty('--shadow-large', theme.shadow.large);
-  root.style.setProperty('--shadow-glow', theme.shadow.glow);
-
-  // Gradients
-  root.style.setProperty('--gradient-primary', gradients.primary);
-  root.style.setProperty('--gradient-card', gradients.card);
-  root.style.setProperty('--gradient-card-2', gradients.card2);
-  root.style.setProperty('--gradient-hero', gradients.hero);
-  root.style.setProperty('--gradient-overlay', gradients.overlay);
-
-  // Update data attribute for CSS selectors
-  root.setAttribute('data-theme', mode);
+  const transicao = doc.startViewTransition(() => flushSync(aplicar));
+  transicao.finished.finally(destravar);
 }
 
 export const useThemeStore = create<ThemeState>()(
@@ -92,26 +129,35 @@ export const useThemeStore = create<ThemeState>()(
       isTransitioning: false,
       hasUserPreference: false,
 
-      toggleTheme: () => {
+      toggleTheme: (origem) => {
         const currentMode = get().mode;
         const newMode: ThemeMode = currentMode === 'dark' ? 'light' : 'dark';
-        get().setTheme(newMode, true); // 🆕 Sempre marca como escolha do usuário
+        get().setTheme(newMode, true, origem); // 🆕 Sempre marca como escolha do usuário
       },
 
-      setTheme: (mode: ThemeMode, isUserChoice = true) => {
+      setTheme: (mode: ThemeMode, isUserChoice = true, origem) => {
         const currentMode = get().mode;
         const currentHasUserPreference = get().hasUserPreference;
 
-        if (currentMode !== mode || currentHasUserPreference !== isUserChoice) {
-          set({ isTransitioning: true, hasUserPreference: isUserChoice });
+        if (currentMode === mode && currentHasUserPreference === isUserChoice) {
+          return;
+        }
 
-          // Delay para transição suave apenas se é escolha do usuário
-          const delay = isUserChoice ? 50 : 0;
+        const aplicar = () => {
+          get().applyTheme(mode);
+          set({ mode, hasUserPreference: isUserChoice });
+        };
 
-          setTimeout(() => {
-            get().applyTheme(mode);
-            set({ mode, isTransitioning: false });
-          }, delay);
+        // Só a escolha da pessoa é animada. Seguir o sistema ou restaurar a
+        // preferência salva acontece sem ninguém olhando para o botão.
+        if (isUserChoice && currentMode !== mode) {
+          trocarComRevelacao(
+            aplicar,
+            origem,
+            INVERSE_THEME_CIRCLE && mode === 'dark'
+          );
+        } else {
+          aplicar();
         }
       },
 

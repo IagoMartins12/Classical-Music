@@ -1,166 +1,44 @@
 @import 'tailwindcss';
 
-/* CSS Custom Properties - Tema escuro (padrão) e claro aprimorado */
-:root {
-  /* ===== TEMA ESCURO (PADRÃO) ===== */
-  /* Background colors */
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #1a1a2e;
-  --bg-tertiary: #16213e;
-  --bg-elevated: #2d3748;
-  --bg-overlay: rgba(0, 0, 0, 0.8);
+/* =========================================================================
+   Os tokens do sistema como utilitário do Tailwind.
+   Sem este bloco, `bg-fundo` e `text-ouro-texto` não existem: o Tailwind v4
+   ignora o `tailwind.config.js` (que por isso foi apagado), e os ~60 tokens
+   do projeto nunca chegaram a virar classe.
+   ========================================================================= */
+@theme inline {
+  --color-fundo: var(--fundo);
+  --color-linha: var(--linha);
+  --color-linha-forte: var(--linha-forte);
 
-  /* Text colors */
-  --text-primary: #ffffff;
-  --text-secondary: #e5e7eb;
-  --text-tertiary: #9ca3af;
-  --text-inverse: #0a0a0a;
+  --color-texto: var(--texto);
+  --color-texto-suave: var(--texto-suave);
+  --color-texto-fraco: var(--texto-fraco);
+  --color-sobre-ouro: var(--sobre-ouro);
 
-  /* Brand colors */
-  --brand-primary: #d4af37;
-  --brand-secondary: #fbbf24;
-  --brand-gradient: linear-gradient(135deg, #d4af37 0%, #fbbf24 100%);
+  --color-ouro: var(--ouro);
+  --color-ouro-texto: var(--ouro-texto);
 
-  /* Accent colors */
-  --accent-gold: #d4af37;
-  --accent-amber: #fbbf24;
-  --accent-purple: #6366f1;
-  --accent-blue: #3b82f6;
-  --accent-green: #10b981;
-  --accent-red: #ef4444;
+  --color-erro: var(--erro);
+  --color-ok: var(--ok);
+  --color-atencao: var(--atencao);
+  --color-aviso: var(--aviso);
 
-  /* Border colors */
-  --border-primary: rgba(212, 175, 55, 0.2);
-  --border-secondary: rgba(229, 231, 235, 0.1);
-  --border-accent: #d4af37;
+  --radius-controle: var(--r-controle);
+  --radius-card: var(--r-card);
+  --radius-folha: var(--r-folha);
 
-  /* Interactive states */
-  --interactive-hover: rgba(212, 175, 55, 0.1);
-  --interactive-active: rgba(212, 175, 55, 0.2);
-  --interactive-focus: rgba(212, 175, 55, 0.3);
-  --interactive-disabled: rgba(156, 163, 175, 0.3);
+  --font-display: var(--fonte-display);
+  --font-sans: var(--fonte-sans);
+  --font-mono: var(--fonte-mono);
 
-  /* Shadows */
-  --shadow-small: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --shadow-large: 0 20px 40px rgba(0, 0, 0, 0.4);
-  --shadow-glow: 0 8px 32px rgba(212, 175, 55, 0.2);
-
-  /* Gradients */
-  --gradient-primary: linear-gradient(
-    135deg,
-    #0a0a0a 0%,
-    #1a1a2e 50%,
-    #16213e 100%
-  );
-  --gradient-card: linear-gradient(
-    135deg,
-    rgba(45, 55, 72, 0.6) 0%,
-    rgba(26, 26, 46, 0.6) 100%
-  );
-  --gradient-card-2: linear-gradient(
-    90deg,
-    rgba(51, 65, 85, 0.3) 0%,
-    rgba(30, 41, 59, 0.3) 50%,
-    rgba(51, 65, 85, 0.3) 100%
-  );
-  --gradient-hero: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-  --gradient-overlay: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(0, 0, 0, 0.7) 100%
-  );
+  --ease-saida: var(--saida);
 }
 
-/* ===== TEMA CLARO APRIMORADO ===== */
-[data-theme='light'] {
-  /* Background colors - Tons cremosos e elegantes */
-  --bg-primary: #faf9f6; /* Cream muito suave em vez de branco puro */
-  --bg-secondary: #f4f1eb; /* Tom de papel antigo */
-  --bg-tertiary: #ede8df; /* Pergaminho suave */
-  --bg-elevated: #ffffff; /* Branco para elementos elevados */
-  --bg-overlay: rgba(45, 42, 35, 0.75); /* Overlay mais escuro e elegante */
-
-  /* Text colors - Contraste suave mas legível */
-  --text-primary: #2d2a23; /* Marrom escuro elegante em vez de preto */
-  --text-secondary: #4a453c; /* Tom intermediário aquecido */
-  --text-tertiary: #6b6358; /* Cinza aquecido */
-  --text-inverse: #faf9f6; /* Cream para texto em backgrounds escuros */
-
-  /* Brand colors - Dourado mais refinado no tema claro */
-  --brand-primary: #b8941f; /* Dourado mais profundo e elegante */
-  --brand-secondary: #d4af37; /* Dourado clássico */
-  --brand-gradient: linear-gradient(
-    135deg,
-    #b8941f 0%,
-    #d4af37 50%,
-    #e6c554 100%
-  );
-
-  /* Accent colors ajustados para o tema claro */
-  --accent-gold: #b8941f;
-  --accent-amber: #d4af37;
-  --accent-purple: #5b21b6; /* Roxo mais profundo */
-  --accent-blue: #1e40af; /* Azul mais elegante */
-  --accent-green: #059669; /* Verde mais sofisticado */
-  --accent-red: #dc2626; /* Vermelho mais refinado */
-
-  /* Border colors - Bordas sutis mas visíveis */
-  --border-primary: rgba(184, 148, 31, 0.25); /* Dourado suave */
-  --border-secondary: rgba(107, 99, 88, 0.15); /* Cinza aquecido muito suave */
-  --border-accent: #b8941f; /* Dourado para acentos */
-
-  /* Interactive states - Estados interativos elegantes */
-  --interactive-hover: rgba(184, 148, 31, 0.08); /* Hover dourado muito suave */
-  --interactive-active: rgba(
-    184,
-    148,
-    31,
-    0.15
-  ); /* Active um pouco mais visível */
-  --interactive-focus: rgba(184, 148, 31, 0.25); /* Focus bem visível */
-  --interactive-disabled: rgba(107, 99, 88, 0.25); /* Disabled cinza aquecido */
-
-  /* Shadows - Sombras suaves e elegantes */
-  --shadow-small: 0 2px 8px rgba(45, 42, 35, 0.08);
-  --shadow-medium: 0 8px 24px rgba(45, 42, 35, 0.12);
-  --shadow-large: 0 16px 40px rgba(45, 42, 35, 0.15);
-  --shadow-glow: 0 8px 32px rgba(184, 148, 31, 0.15);
-
-  /* Gradients elegantes para o tema claro */
-  --gradient-primary: linear-gradient(
-    135deg,
-    #faf9f6 0%,
-    #f4f1eb 50%,
-    #ede8df 100%
-  );
-  --gradient-card: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.8) 0%,
-    rgba(244, 241, 235, 0.6) 100%
-  );
-  --gradient-card-2: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.4) 0%,
-    rgba(244, 241, 235, 0.4) 50%,
-    rgba(255, 255, 255, 0.4) 100%
-  );
-  --gradient-hero: linear-gradient(135deg, #faf9f6 0%, #f4f1eb 100%);
-  --gradient-overlay: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(45, 42, 35, 0.4) 100%
-  );
-}
-
-/* ===== TRANSIÇÕES E ANIMAÇÕES TEMÁTICAS ===== */
+/* ===== PUBLICIDADE =====
+   A paleta antiga (--bg-*, --text-*, --accent-*...) que morava aqui saiu: ela
+   é redefinida inteira pelo sistema abaixo, que agora é a única fonte. */
 :root {
-  /* Transitions */
-  --transition-theme: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: all 0.15s ease-out;
-  --transition-smooth: all 0.3s ease-out;
-  --transition-slow: all 0.5s ease-out;
-
   /* Cores premium para publicidades */
   --ad-gold-primary: #d4af37;
   --ad-gold-secondary: #b8941f;
@@ -174,9 +52,9 @@
   --ad-glow-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
 
   /* Tipografia clássica */
-  --ad-font-serif: 'Playfair Display', 'Georgia', serif;
+  --ad-font-serif: var(--fonte-display);
   --ad-font-elegant: 'Cormorant Garamond', 'Times New Roman', serif;
-  --ad-font-modern: 'Inter', 'Segoe UI', sans-serif;
+  --ad-font-modern: var(--fonte-sans);
 
   /* Bordas e elementos decorativos */
   --ad-border-elegant: 1px solid rgba(212, 175, 55, 0.3);
@@ -215,10 +93,413 @@
   );
 }
 
-/* Base styles */
-* {
-  transition: var(--transition-theme);
+/* =========================================================================
+   SISTEMA DE DESIGN — Etapa 7.8, fase 1 (fundação)
+   =========================================================================
+   Direção "Pergaminho e ouro": a identidade que o Opus Atlas já tinha,
+   calibrada. Tudo abaixo é token; nenhuma tela escreve hex.
+
+   A camada antiga (--bg-*, --text-*, --border-*, --shadow-*) continua
+   existindo e passa a apontar para estes valores. É o que faz os 12.111 usos
+   de `bg-theme-*` e `text-theme-*` mudarem de paleta sem tocar em componente
+   nenhum.
+
+   Contrastes conferidos (WCAG 2.1):
+     ouro de texto sobre fundo escuro ......... 10,65:1
+     texto suave sobre fundo escuro ............ 9,26:1
+     ouro de texto sobre pergaminho ............ 4,58:1  (antes: 2,00:1)
+     texto suave sobre pergaminho .............. 6,54:1
+     texto escuro sobre botão de ouro .......... 9,23:1
+   ========================================================================= */
+
+:root {
+  /* --- Superfícies. O degradê é do produto; o ângulo é sempre o mesmo. --- */
+  --angulo: 135deg;
+
+  --fundo: #0c0d12;
+  --sup-1-a: #191a24;
+  --sup-1-b: #13141c;
+  --sup-2-a: #21222e;
+  --sup-2-b: #1a1b25;
+  --sup-alta-a: #2a2b39;
+  --sup-alta-b: #202130;
+
+  --sup-1: linear-gradient(var(--angulo), var(--sup-1-a), var(--sup-1-b));
+  --sup-2: linear-gradient(var(--angulo), var(--sup-2-a), var(--sup-2-b));
+  --sup-alta: linear-gradient(
+    var(--angulo),
+    var(--sup-alta-a),
+    var(--sup-alta-b)
+  );
+
+  /* --- Linhas e sombras. Uma espessura só: 1px. --- */
+  --linha: rgba(243, 241, 236, 0.1);
+  --linha-forte: rgba(243, 241, 236, 0.2);
+  --sombra-1: 0 10px 24px rgba(0, 0, 0, 0.32);
+  --sombra-2: 0 16px 36px rgba(0, 0, 0, 0.46);
+  --sombra-alta: 0 24px 60px rgba(0, 0, 0, 0.6);
+
+  /* --- Texto --- */
+  --texto: #f3f1ec;
+  --texto-suave: #b5b1c0;
+  --texto-fraco: #8f8b9c;
+  --sobre-ouro: #0c0d12;
+
+  /* --- Ouro: marca, hierarquia, e nada além. --- */
+  --ouro: #d4af37;
+  --ouro-texto: #e0bc5c;
+  --ouro-fill: linear-gradient(var(--angulo), #debc4c, #c9a32d);
+  --ouro-fill-hover: linear-gradient(var(--angulo), #e8c863, #d4af37);
+  --ouro-tint: linear-gradient(
+    var(--angulo),
+    rgba(212, 175, 55, 0.2),
+    rgba(212, 175, 55, 0.1)
+  );
+  /* Degradê para letra, não para fundo: as duas pontas passam no contraste.
+     Escuro: 11,90 e 10,60:1 sobre o fundo. */
+  --ouro-texto-grad: linear-gradient(var(--angulo), #e8c863, #d4af37);
+
+  /* --- Estados: quatro, não onze. --- */
+  --erro: #e8735a;
+  --ok: #6a9b6e;
+  --atencao: #d9a441;
+  --aviso: #6f8fbf;
+
+  /* --- Espaço: os seis degraus que o projeto já usava (94,9% dos usos). --- */
+  --e-1: 4px;
+  --e-2: 8px;
+  --e-3: 12px;
+  --e-4: 16px;
+  --e-6: 24px;
+  --e-8: 32px;
+  --e-12: 48px;
+  --e-16: 64px;
+
+  /* --- Forma. Raio interno sempre menor que o externo. --- */
+  --r-controle: 10px;
+  --r-card: 16px;
+  --r-folha: 20px;
+  --r-pilula: 9999px;
+  --alvo: 44px; /* altura mínima de toque, no site também */
+
+  /* --- Tempo. Decoração é lenta e por trás; interface é rápida e à frente. */
+  --saida: cubic-bezier(0.23, 1, 0.32, 1);
+  --t-toque: 120ms;
+  --t-resposta: 180ms;
+  --t-entrada: 240ms;
+
+  /* --- Camadas: cinco níveis nomeados, no lugar de z-[9999]. --- */
+  --z-conteudo: 10;
+  --z-barra: 20;
+  --z-menu: 30;
+  --z-dialogo: 40;
+  --z-aviso: 50;
+
+  /* --- Contêineres --- */
+  --largura-texto: 720px;
+  --largura-conteudo: 1120px;
+  --largura-catalogo: 1280px;
+
+  /* --- Foco: um anel só, em tudo que recebe teclado. --- */
+  --foco-anel: 0 0 0 3px rgba(212, 175, 55, 0.3);
+
+  /* =======================================================================
+     A camada anterior, agora apontando para os tokens acima.
+     ======================================================================= */
+  --bg-primary: var(--fundo);
+  --bg-secondary: var(--sup-1-b);
+  --bg-tertiary: var(--sup-2-b);
+  --bg-elevated: var(--sup-2-a);
+  --bg-overlay: rgba(6, 7, 10, 0.72);
+
+  --text-primary: var(--texto);
+  --text-secondary: var(--texto-suave);
+  --text-tertiary: var(--texto-fraco);
+  --text-inverse: var(--sobre-ouro);
+
+  --brand-primary: var(--ouro);
+  --brand-secondary: var(--ouro-texto);
+  --brand-gradient: var(--ouro-fill);
+
+  --accent-gold: var(--ouro);
+  --accent-amber: var(--ouro-texto);
+  /* Roxo e azul decorativos saem da paleta: viram os estados semânticos. */
+  --accent-purple: var(--aviso);
+  --accent-blue: var(--aviso);
+  --accent-green: var(--ok);
+  --accent-red: var(--erro);
+
+  --border-primary: var(--linha);
+  --border-secondary: var(--linha);
+  --border-accent: var(--ouro);
+
+  --interactive-hover: rgba(212, 175, 55, 0.1);
+  --interactive-active: rgba(212, 175, 55, 0.18);
+  --interactive-focus: rgba(212, 175, 55, 0.3);
+  --interactive-disabled: rgba(143, 139, 156, 0.3);
+
+  --shadow-small: var(--sombra-1);
+  --shadow-medium: var(--sombra-1);
+  --shadow-large: var(--sombra-2);
+  --shadow-glow: var(--sombra-2);
+
+  --gradient-primary: linear-gradient(
+    var(--angulo),
+    var(--fundo) 0%,
+    var(--sup-1-b) 100%
+  );
+  --gradient-card: var(--sup-1);
+  --gradient-card-2: var(--sup-2);
+  --gradient-hero: linear-gradient(
+    var(--angulo),
+    var(--fundo) 0%,
+    var(--sup-2-b) 100%
+  );
+  --gradient-overlay: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(6, 7, 10, 0.78) 100%
+  );
+
+  /* As transições nomeadas continuam, sem o `all`. */
+  --transition-theme: background-color var(--t-entrada) var(--saida),
+    color var(--t-entrada) var(--saida), border-color var(--t-entrada)
+    var(--saida);
+  --transition-fast: var(--t-toque) var(--saida);
+  --transition-smooth: var(--t-resposta) var(--saida);
+  --transition-slow: var(--t-entrada) var(--saida);
 }
+
+/* =========================================================================
+   Tema claro. Não é o escuro invertido: o ouro que funciona no escuro
+   reprova no pergaminho, então cada tema tem o seu.
+   ========================================================================= */
+[data-theme='light'] {
+  --fundo: #faf7f0;
+  --sup-1-a: #ffffff;
+  --sup-1-b: #fbf8f2;
+  --sup-2-a: #fbf8f2;
+  --sup-2-b: #f4ede0;
+  --sup-alta-a: #ffffff;
+  --sup-alta-b: #f7f1e6;
+
+  --linha: #e4dccb;
+  --linha-forte: #d6cbb4;
+  /* Sombra tingida do fundo. Preto sobre creme suja o papel. */
+  --sombra-1: 0 8px 20px rgba(70, 58, 32, 0.06);
+  --sombra-2: 0 10px 24px rgba(70, 58, 32, 0.07);
+  --sombra-alta: 0 22px 52px rgba(70, 58, 32, 0.14);
+
+  --texto: #1c1b22;
+  --texto-suave: #5b5766;
+  --texto-fraco: #6b6678;
+
+  /* Ouro vivo, por decisão de 26/09: o `#916800` (4,69:1) passava no
+     contraste mas lia quase como preto no creme. Este dá 3,01:1 — no limite
+     do mínimo para ícone e texto grande ou em negrito (3:1), ABAIXO do AA
+     para texto pequeno (4,5:1). Para voltar ao seguro: `#916800`. */
+  --ouro-texto: #bb860a;
+  /* Título em degradê metálico: 1,85 a 3,05:1. O degradê do botão, que era
+     usado aqui, dava 1,72 a 2,24:1. Versão segura: #b37f05 → #916800. */
+  --ouro-texto-grad: linear-gradient(var(--angulo), #ddb33e, #b58710);
+  --ouro-tint: linear-gradient(
+    var(--angulo),
+    rgba(212, 175, 55, 0.22),
+    rgba(212, 175, 55, 0.1)
+  );
+
+  --erro: #a8331f;
+  --ok: #41693f;
+  --atencao: #8a6416;
+  --aviso: #355789;
+
+  --bg-overlay: rgba(45, 38, 24, 0.5);
+  --interactive-disabled: rgba(107, 102, 120, 0.25);
+
+  --gradient-overlay: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(45, 38, 24, 0.55) 100%
+  );
+}
+
+/* =========================================================================
+   Tipografia. Três famílias, sete degraus.
+   A Inter era baixada e nunca aplicada: o CSS pedia a família pelo nome
+   literal, e o next/font a registra sob uma variável.
+   ========================================================================= */
+:root {
+  --fonte-display: var(--fonte-display-next), 'EB Garamond', Georgia, serif;
+  --fonte-sans: var(--fonte-sans-next), system-ui, -apple-system, sans-serif;
+  --fonte-mono: var(--fonte-mono-next), ui-monospace, monospace;
+}
+
+.t-display {
+  font-family: var(--fonte-display);
+  font-size: 3.75rem;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+}
+.t-titulo {
+  font-family: var(--fonte-display);
+  font-size: 2.25rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
+.t-subtitulo {
+  font-family: var(--fonte-display);
+  font-size: 1.5rem;
+  line-height: 1.25;
+  font-weight: 500;
+}
+.t-secao {
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-weight: 500;
+}
+.t-corpo {
+  font-size: 1.0625rem; /* 17px: o padrão de leitura */
+  line-height: 1.6;
+}
+.t-rotulo {
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+.t-legenda {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--texto-fraco);
+}
+.t-dado {
+  font-family: var(--fonte-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================================
+   Superfícies como utilitário. Degradê não é cor, então não entra no @theme.
+   ========================================================================= */
+.sup-1 {
+  background: var(--sup-1);
+  border: 1px solid var(--linha);
+  border-radius: var(--r-card);
+  box-shadow: var(--sombra-1);
+}
+.sup-2 {
+  background: var(--sup-2);
+  border: 1px solid var(--linha);
+  border-radius: var(--r-card);
+  box-shadow: var(--sombra-1);
+}
+.sup-alta {
+  background: var(--sup-alta);
+  border: 1px solid var(--linha-forte);
+  border-radius: var(--r-folha);
+  box-shadow: var(--sombra-alta);
+}
+
+/* Fundos sem moldura, para quando o componente já traz borda e raio.
+   `bg-[var(--sup-2)]` não serve: o utilitário do Tailwind gera
+   `background-color`, e degradê não é cor. */
+.fundo-sup-1 {
+  background: var(--sup-1);
+}
+.fundo-sup-2 {
+  background: var(--sup-2);
+}
+.fill-ouro {
+  background: var(--ouro-fill);
+}
+.fill-ouro:hover:not(:disabled) {
+  background: var(--ouro-fill-hover);
+}
+.tint-ouro {
+  background: var(--ouro-tint);
+}
+
+/* =========================================================================
+   Foco. 976 botões no produto e 42 arquivos com anel próprio: o resto
+   dependia do contorno do navegador, que não é do sistema de ninguém.
+   ========================================================================= */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  /* Contorno transparente em vez de `none`: no modo de alto contraste do
+     Windows a sombra some, e o contorno é o que sobra para mostrar o foco. */
+  outline: 2px solid transparent;
+  border-color: var(--ouro);
+  box-shadow: var(--foco-anel);
+}
+
+/* =========================================================================
+   Seleção, cursor e barra de rolagem: as partes que o navegador desenha
+   sozinho e que pertencem ao sistema do mesmo jeito.
+   ========================================================================= */
+::selection {
+  background: rgba(212, 175, 55, 0.28);
+  color: var(--texto);
+}
+
+:root {
+  accent-color: var(--ouro);
+  caret-color: var(--ouro);
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+}
+
+/* Troca de tema: o tema novo se abre num círculo a partir do botão
+   (`themeStore`, `trocarComRevelacao`). A foto do tema antigo fica parada
+   embaixo; só a máscara do novo anda. Sem movimento pedido, o store nem
+   inicia a transição. */
+/* Durante a troca, nenhum componente anima a própria cor: a revelação já é
+   o movimento. Ligada e desligada pelo `themeStore`. */
+.trocando-tema,
+.trocando-tema *,
+.trocando-tema *::before,
+.trocando-tema *::after {
+  transition: none !important;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: tema-revela 450ms var(--saida);
+}
+
+/* Variação `INVERSE_THEME_CIRCLE` (`themeStore`): voltando ao escuro, a foto
+   do claro fica por cima e se fecha no botão. `reverse` toca a mesma
+   animação de trás para frente, curva inclusive: o fechamento é o espelho
+   exato da abertura, e as duas juntas formam o pulso. */
+:root.tema-encolhe::view-transition-old(root) {
+  z-index: 1;
+  animation: tema-revela 450ms var(--saida) reverse both;
+}
+
+:root.tema-encolhe::view-transition-new(root) {
+  animation: none;
+}
+
+@keyframes tema-revela {
+  from {
+    clip-path: circle(0 at var(--tema-x, 50%) var(--tema-y, 0));
+  }
+  to {
+    clip-path: circle(
+      var(--tema-raio, 150vmax) at var(--tema-x, 50%) var(--tema-y, 0)
+    );
+  }
+}
+
+/* Base styles */
+/* O `* { transition }` saiu daqui: aplicava transição a todo elemento da
+   página, inclusive ao que nunca muda. A troca de tema agora é animada por
+   quem precisa (ver a troca de tema logo acima). */
 
 html {
   scroll-behavior: smooth;
@@ -227,7 +508,8 @@ html {
 body {
   background: var(--bg-primary);
   color: var(--text-primary);
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-family: var(--fonte-sans);
+  font-size: 1.0625rem;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -339,7 +621,9 @@ body {
 
 /* Texto com gradiente */
 .text-gradient-brand {
-  background: var(--brand-gradient);
+  /* Era `--brand-gradient`, o preenchimento do botão: bom sob texto escuro,
+     ilegível como letra no tema claro. */
+  background: var(--ouro-texto-grad);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -347,7 +631,9 @@ body {
 }
 
 .text-brand-primary {
-  color: var(--brand-primary);
+  /* Letra dourada usa o ouro de texto, não o de marca: o `#d4af37` dava
+     2,00:1 no creme. `--brand-primary` fica para fundo e borda. */
+  color: var(--ouro-texto);
 }
 
 .border-color-primary {
@@ -596,9 +882,12 @@ body {
 
 /* Typography */
 .classical-title {
-  font-family: 'Georgia', 'Times New Roman', serif;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-family: var(--fonte-display);
+  font-weight: 600;
+  /* Sem o -0,02em da Georgia: a Garamond já é compacta, e em 18–20px (nome de
+     obra no card, cabeçalho de painel) as letras chegavam a se tocar. O
+     aperto fica só nos degraus grandes (.t-display e .t-titulo). */
+  letter-spacing: normal;
   color: var(--text-primary);
 }
 
@@ -798,26 +1087,8 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Loading skeleton animation */
-@keyframes skeleton-loading {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-.loading-skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--bg-secondary) 25%,
-    var(--interactive-hover) 50%,
-    var(--bg-secondary) 75%
-  );
-  background-size: 200% 100%;
-  animation: skeleton-loading 1.5s infinite;
-}
+/* A segunda definição de `.loading-skeleton` saiu daqui: era idêntica à do
+   começo do arquivo, com outro nome de animação, e a apagava. */
 
 .ProseMirror img {
   position: relative;
@@ -936,6 +1207,9 @@ html {
   animation: shine 3s linear infinite;
 }
 
+/* O brilho do logo é o mesmo nos dois temas, com o clarão `#f7e9a4` que
+   passa pela palavra: é o pulso dourado da marca, e por decisão de 26/09 ele
+   fica como era, inclusive no creme (onde o clarão, sozinho, dá 1,14:1). */
 @keyframes shine {
   0% {
     background-position: 200% center;
@@ -960,10 +1234,12 @@ html {
   -webkit-text-fill-color: transparent;
   animation:
     shine 4s linear infinite,
-    glow 2s ease-in-out infinite alternate;
+    glow-texto 2s ease-in-out infinite alternate;
 }
 
-@keyframes glow {
+/* Renomeado: convivia com outro `glow` (box-shadow, acima) e o apagava em
+   silêncio, porque o último bloco de mesmo nome vence. */
+@keyframes glow-texto {
   from {
     text-shadow:
       0 0 6px rgba(212, 175, 55, 0.4),

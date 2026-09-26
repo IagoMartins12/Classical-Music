@@ -66,7 +66,15 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       )}
 
       <button
-        onClick={toggleTheme}
+        onClick={(evento) => {
+          // O círculo parte do centro do botão. Pelo teclado não há ponteiro
+          // (`clientX` = 0), então a posição vem do próprio botão.
+          const caixa = evento.currentTarget.getBoundingClientRect();
+          toggleTheme({
+            x: caixa.left + caixa.width / 2,
+            y: caixa.top + caixa.height / 2,
+          });
+        }}
         disabled={isTransitioning}
         className={`
           ${getVariantClasses()}
@@ -81,11 +89,6 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
           group
           disabled:opacity-50
           disabled:cursor-not-allowed
-          focus:outline-none
-          focus:ring-2
-          focus:ring-brand-primary/50
-          focus:ring-offset-2
-          focus:ring-offset-bg-primary
         `}
         aria-label={`Alternar para tema ${
           mode === 'dark' ? 'claro' : 'escuro'
