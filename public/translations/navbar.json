@@ -25,7 +25,8 @@
     "navbar_categorias_subtitle": "Navegue por gêneros musicais",
     "navbar_todas_as_obras": "Todas as Obras",
     "navbar_todas_as_obras_subtitle": "Explore nossa coleção completa",
-    "navbar_quem_somos": "Quem somos"
+    "navbar_quem_somos": "Quem somos",
+    "aria_navegacao_principal": "Navegação principal"
   },
   "en": {
     "navbar_link_opus_atlas": "Opus Atlas",
@@ -53,6 +54,7 @@
     "navbar_categorias_subtitle": "Explore by music genres",
     "navbar_todas_as_obras": "All Works",
     "navbar_todas_as_obras_subtitle": "Explore our complete collection",
-    "navbar_quem_somos": "About us"
+    "navbar_quem_somos": "About us",
+    "aria_navegacao_principal": "Main navigation"
   }
 }

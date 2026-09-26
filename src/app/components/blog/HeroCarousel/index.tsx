@@ -199,18 +199,27 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
 
       {/* Pagination Dots */}
       {articles.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center space-x-2">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center">
           {articles.map((_, index) => (
+            // O alvo é o botão de 24px; o ponto de 8px é só o desenho dentro
+            // dele. Com o ponto como botão, o alvo era de 8×8px, abaixo do
+            // mínimo da WCAG 2.2 (24px) e difícil de acertar no telefone.
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`transition-all ${
-                index === currentIndex
-                  ? 'w-8 h-2 bg-brand-primary'
-                  : 'w-2 h-2 bg-white/50 hover:bg-white/80'
-              } rounded-full`}
+              className="group flex h-6 min-w-6 items-center justify-center"
               aria-label={`Ir para slide ${index + 1}`}
-            />
+              aria-current={index === currentIndex ? 'true' : undefined}
+            >
+              <span
+                aria-hidden="true"
+                className={`transition-all ${
+                  index === currentIndex
+                    ? 'w-8 h-2 bg-brand-primary'
+                    : 'w-2 h-2 bg-white/50 group-hover:bg-white/80'
+                } rounded-full`}
+              />
+            </button>
           ))}
         </div>
       )}

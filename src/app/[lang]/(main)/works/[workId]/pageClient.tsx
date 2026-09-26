@@ -854,10 +854,10 @@ export default function WorkDetailsClient({
                   {(work.parentWork ||
                     (work.childWorks && work.childWorks.length > 0)) && (
                     <div className="border-t border-theme-secondary pt-6">
-                      <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                      <h2 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                         <FiLayers className="w-5 h-5 text-accent-purple" />
                         <span>{t('work_details_relacoes_colecao')}</span>
-                      </h3>
+                      </h2>
 
                       <div className="space-y-4">
                         {/* Obra Pai (Se esta obra faz parte de uma coleção) */}
@@ -938,10 +938,10 @@ export default function WorkDetailsClient({
                     work.dedicateTo ||
                     work.workStyle) && (
                     <div className="border-t border-theme-secondary pt-6">
-                      <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                      <h2 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                         <FiInfo className="w-5 h-5 text-accent-blue" />
                         <span>{t('work_details_informacoes_adicionais')}</span>
-                      </h3>
+                      </h2>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         {work.firstPublishDate && (
                           <div className="flex items-center space-x-2">
@@ -1004,10 +1004,10 @@ export default function WorkDetailsClient({
                     (work.categoryNames?.length > 0 ||
                       work.workGenresArr?.length > 0) && (
                       <div className="border-t border-theme-secondary pt-6">
-                        <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                        <h2 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                           <FiTag className="w-5 h-5 text-accent-green" />
                           <span>{t('work_details_categorias_generos')}</span>
-                        </h3>
+                        </h2>
                         <div className="space-y-4">
                           {work.categoryNames?.length > 0 && (
                             <div>

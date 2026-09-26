@@ -535,6 +535,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
 
     const progressBar = document.createElement('input');
     progressBar.type = 'range';
+    progressBar.setAttribute('aria-label', 'Posição do áudio');
     progressBar.min = '0';
     progressBar.max = '100';
     progressBar.value = '0';
@@ -560,7 +561,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
       <svg class="w-5 h-5 text-theme-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
       </svg>
-      <input type="range" min="0" max="100" value="70" class="audio-volume w-full h-1 rounded-lg appearance-none cursor-pointer" style="background: linear-gradient(to right, var(--accent-purple) 0%, var(--accent-purple) 70%, #e5e7eb 70%, #e5e7eb 100%);">
+      <input type="range" min="0" max="100" value="70" aria-label="Volume" class="audio-volume w-full h-1 rounded-lg appearance-none cursor-pointer" style="background: linear-gradient(to right, var(--accent-purple) 0%, var(--accent-purple) 70%, #e5e7eb 70%, #e5e7eb 100%);">
     `;
     controlsDiv.appendChild(volumeDiv);
 

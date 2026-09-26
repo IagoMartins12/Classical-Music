@@ -38,7 +38,10 @@
     "epochs_modernismo": "Modernismo",
     "epochs_desconhecido": "Desconhecido",
     "epochs_moderno": "Moderno",
-    "epochs_contemporaneo": "Contemporâneo"
+    "epochs_contemporaneo": "Contemporâneo",
+    "pagination_aria_nav": "Paginação",
+    "pagination_aria_anterior": "Página anterior",
+    "pagination_aria_proxima": "Próxima página"
   },
   "en": {
     "client_jsx_h1_children_0__compositores_classicos": "Classical Composers",
@@ -79,6 +82,9 @@
     "epochs_modernismo": "Modernism",
     "epochs_desconhecido": "Unknown",
     "epochs_moderno": "Modern",
-    "epochs_contemporaneo": "Contemporary"
+    "epochs_contemporaneo": "Contemporary",
+    "pagination_aria_nav": "Pagination",
+    "pagination_aria_anterior": "Previous page",
+    "pagination_aria_proxima": "Next page"
   }
 }

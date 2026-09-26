@@ -12,6 +12,7 @@ import { authApi, RegisterInput } from '../api/auth';
 import { ApiError, refreshSession, SESSION_EXPIRED_EVENT } from '../api/client';
 import { ProfileAccount, profileApi } from '../api/profile';
 import { getQueryClient } from '../query-client';
+import { SESSION_HINT_COOKIE } from '@/app/utils/authCookies';
 
 /**
  * Sessão do front, vinda da API (Etapa 2).
@@ -44,7 +45,26 @@ export type AuthResult =
   | { ok: true }
   | { ok: false; status: number; message: string };
 
+/**
+ * Há sessão para perguntar? O marcador (`<prefixo>_session`) é gravado pela
+ * API junto com o refresh token e apagado no logout; não é `httpOnly`
+ * justamente para o front poder ler.
+ *
+ * Sem ele, todo visitante anônimo fazia `GET /profile` (401) e, em seguida, a
+ * tentativa de renovar (`/auth/refresh`, 401 de novo): duas chamadas inúteis
+ * por visita e dois erros no console, que o Lighthouse cobra em "boas
+ * práticas".
+ */
+function temMarcadorDeSessao(): boolean {
+  if (typeof document === 'undefined') return true;
+  return document.cookie
+    .split(';')
+    .some((par) => par.trim().startsWith(`${SESSION_HINT_COOKIE}=`));
+}
+
 async function fetchAccount(): Promise<ProfileAccount | null> {
+  if (!temMarcadorDeSessao()) return null;
+
   try {
     const { account } = await profileApi.me();
     return account;

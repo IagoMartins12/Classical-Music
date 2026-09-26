@@ -11,8 +11,10 @@ interface SelectOption {
   disabled?: boolean;
 }
 
-interface SelectProps
-  extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'defaultValue'> {
+interface SelectProps extends Omit<
+  React.SelectHTMLAttributes<HTMLSelectElement>,
+  'defaultValue'
+> {
   label?: string;
   error?: string;
   options: SelectOption[];
@@ -95,6 +97,14 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <select
             ref={ref}
             id={finalId}
+            // Sem `label`, o nome vem do placeholder ou, sem ele, da primeira
+            // opção ("Todos os períodos"): na home e em `/composers` o select
+            // era usado sem rótulo nenhum, e o leitor de tela anunciava só
+            // "caixa de seleção". Um `aria-label` explícito de quem usa o
+            // componente continua vencendo (vem em `props`, depois).
+            aria-label={
+              label ? undefined : placeholder || memoizedOptions[0]?.label
+            }
             value={finalValue || ''}
             className={`
               input-classical w-full !pr-10 !pl-6 appearance-none cursor-pointer

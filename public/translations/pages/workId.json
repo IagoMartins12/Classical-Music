@@ -481,7 +481,8 @@
 
     "work_details_relacoes_colecao": "Coleção",
     "work_details_parte_de_colecao": "Esta peça faz parte da coleção:",
-    "work_details_possui_obras_relacionadas": "Esta coleção possui as seguintes obras:"
+    "work_details_possui_obras_relacionadas": "Esta coleção possui as seguintes obras:",
+    "youtube_abrir_no_youtube": "Abrir no YouTube"
   },
   "en": {
     "breadcrumb_obras": "Works",
@@ -965,6 +966,7 @@
 
     "work_details_relacoes_colecao": "Collection ",
     "work_details_parte_de_colecao": "This piece is part of the collection:",
-    "work_details_possui_obras_relacionadas": "This collection has the following works:"
+    "work_details_possui_obras_relacionadas": "This collection has the following works:",
+    "youtube_abrir_no_youtube": "Open on YouTube"
   }
 }

@@ -17,6 +17,7 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
         <li>
           <Link
             href="/blog"
+            aria-label="Início do blog"
             className="flex items-center text-theme-tertiary hover:text-brand-primary transition-colors"
           >
             <MdHome className="w-4 h-4" />
@@ -33,7 +34,10 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
                 {item.label}
               </Link>
             ) : (
-              <span className="text-theme-primary font-medium">
+              <span
+                aria-current="page"
+                className="text-theme-primary font-medium"
+              >
                 {item.label}
               </span>
             )}

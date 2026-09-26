@@ -626,9 +626,9 @@ const WorksClient = memo(
           >
             <div className="flex items-center mb-6">
               <div>
-                <h3 className="text-xl font-bold text-theme-primary classical-title">
+                <h2 className="text-xl font-bold text-theme-primary classical-title">
                   {t('client_jsx_h3_filters_title')}
-                </h3>
+                </h2>
                 <p className="text-theme-secondary text-sm">
                   {t('client_jsx_p_filters_description')}
                 </p>

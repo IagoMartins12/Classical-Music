@@ -454,6 +454,13 @@ export default async function HomePage({ params }: LangPageProps) {
 
   return (
     <div className="mx-auto py-6">
+      {/* A home não tinha título de página: abria direto num card de
+          destaque (h2). Leitor de tela e buscador leem este; a tela, não. */}
+      <h1 className="sr-only">
+        {language === 'en'
+          ? 'Opus Atlas — Classical Music Encyclopedia'
+          : 'Opus Atlas — Enciclopédia de Música Clássica'}
+      </h1>
       <PageServer language={language} />
     </div>
   );

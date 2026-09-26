@@ -355,7 +355,7 @@ export function BlogHeader() {
   return (
     <>
       <header className="navbar-classical sticky top-0 z-50">
-        <nav className="section-wrap-nav">
+        <nav aria-label="Navegação do blog" className="section-wrap-nav">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/blog" className="flex items-center group">
@@ -734,6 +734,7 @@ export function BlogHeader() {
                             </Link>
                             <button
                               onClick={() => goToSubmenuView(label, submenu)}
+                              aria-label={`Abrir ${label}`}
                               className="ml-2 p-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                             >
                               <FiChevronRight className="w-5 h-5" />
@@ -766,40 +767,49 @@ export function BlogHeader() {
                     {/* Profile Section */}
                     {isAuthenticated && user ? (
                       <>
-                        <hr className="my-4 border-theme-secondary" />
-                        <div
-                          className="flex items-center justify-between cursor-pointer"
-                          onClick={goToProfileView}
-                        >
-                          <div className="flex items-center space-x-3 px-4 py-3 flex-1">
-                            {user.image ? (
-                              <Image
-                                src={user.image}
-                                width={32}
-                                height={32}
-                                alt={getUserDisplayName()}
-                                className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
-                              />
-                            ) : (
-                              <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary text-sm font-semibold">
-                                {getUserInitials()}
-                              </div>
-                            )}
-                            <div>
-                              <p className="font-medium text-theme-primary text-sm">
-                                {getUserDisplayName()}
-                              </p>
-                              <p className="text-xs text-theme-tertiary">
-                                Perfil
-                              </p>
-                            </div>
-                          </div>
-                          <FiChevronRight className="w-5 h-5 text-theme-tertiary" />
-                        </div>
+                        <li role="separator" aria-hidden="true">
+                          <hr className="my-4 border-theme-secondary" />
+                        </li>
+                        {/* Era uma <div> com onClick: sem Tab, sem Enter, e
+                            solta dentro do <ul>. */}
+                        <li>
+                          <button
+                            type="button"
+                            className="flex w-full items-center justify-between cursor-pointer text-left"
+                            onClick={goToProfileView}
+                          >
+                            <span className="flex items-center space-x-3 px-4 py-3 flex-1">
+                              {user.image ? (
+                                <Image
+                                  src={user.image}
+                                  width={32}
+                                  height={32}
+                                  alt={getUserDisplayName()}
+                                  className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
+                                />
+                              ) : (
+                                <span className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary text-sm font-semibold">
+                                  {getUserInitials()}
+                                </span>
+                              )}
+                              <span>
+                                <span className="block font-medium text-theme-primary text-sm">
+                                  {getUserDisplayName()}
+                                </span>
+                                <span className="block text-xs text-theme-tertiary">
+                                  Perfil
+                                </span>
+                              </span>
+                            </span>
+                            <FiChevronRight className="w-5 h-5 text-theme-tertiary" />
+                          </button>
+                        </li>
                       </>
                     ) : (
                       <>
-                        <hr className="my-4 border-theme-secondary" />
+                        <li role="separator" aria-hidden="true">
+                          <hr className="my-4 border-theme-secondary" />
+                        </li>
                         <li>
                           <Link
                             href="/login"
@@ -822,7 +832,9 @@ export function BlogHeader() {
                     )}
 
                     {/* Theme Toggle Mobile */}
-                    <hr className="my-4 border-theme-secondary" />
+                    <li role="separator" aria-hidden="true">
+                      <hr className="my-4 border-theme-secondary" />
+                    </li>
                     <li>
                       <div className="flex items-center justify-center px-4 py-2">
                         <div className="flex items-center space-x-3">
@@ -845,6 +857,7 @@ export function BlogHeader() {
                       <div className="flex items-center mb-4 pb-3 border-b border-theme-secondary">
                         <button
                           onClick={goBackToMain}
+                          aria-label="Voltar ao menu"
                           className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                         >
                           <FiChevronLeft className="w-5 h-5" />
@@ -1019,6 +1032,7 @@ export function BlogHeader() {
                     <div className="flex items-center mb-4 pb-3 border-b border-theme-secondary">
                       <button
                         onClick={goBackToMain}
+                        aria-label="Voltar ao menu"
                         className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                       >
                         <FiChevronLeft className="w-5 h-5" />

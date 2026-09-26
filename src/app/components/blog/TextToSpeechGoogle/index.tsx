@@ -272,6 +272,7 @@ export function TextToSpeechGoogle({
               max={duration}
               value={currentTime}
               onChange={handleSeek}
+              aria-label="Posição da leitura"
               className="w-full h-2 rounded-lg appearance-none cursor-pointer"
               style={{
                 background: progressGradient,
@@ -328,6 +329,7 @@ export function TextToSpeechGoogle({
               max="1"
               step="0.01"
               value={volume}
+              aria-label="Volume"
               onChange={handleVolumeChange}
               className="flex-1 h-1 rounded-lg appearance-none cursor-pointer"
               style={{

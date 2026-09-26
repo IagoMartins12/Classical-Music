@@ -49,6 +49,25 @@ const nextConfig: NextConfig = withBundleAnalyzer({
    * réplica — mantê-la ligada devolveria o problema que o handler resolve.
    */
   cacheMaxMemorySize: onVercel ? undefined : 0,
+
+  /**
+   * Metadados sempre no `<head>`, nunca em streaming.
+   *
+   * No Next 15.5, a página de ISR **regenerada** (revalidação por tag ou por
+   * prazo) sai com `<title>`, description e Open Graph no fim do `<body>` — o
+   * próprio código do Next marca isso como bug conhecido
+   * (`build/templates/app-page.js`, "shouldServeStreamingMetadata always being
+   * true for a revalidate"). O HTML do build sai certo; o problema começa na
+   * primeira revalidação e é servido do cache a todo mundo, inclusive aos
+   * robôs de pré-visualização (WhatsApp, Facebook, X), que não executam
+   * JavaScript e só leem o `<head>`. O Lighthouse acusava "sem meta
+   * description" em todas as páginas por isso.
+   *
+   * `/.*\/` trata todo visitante como robô limitado, o que desliga o streaming.
+   * O custo é o metadado bloquear o começo da resposta, e ele é pequeno aqui:
+   * o `generateMetadata` lê o mesmo dado que a página, já em cache.
+   */
+  htmlLimitedBots: /.*/,
   /**
    * Otimização de imagem ligada — em produção ela estava **desligada**, e cada
    * visita baixava o arquivo original (retratos do IMSLP de 1 a 3 MB entre

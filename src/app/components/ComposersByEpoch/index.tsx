@@ -146,9 +146,9 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
 
       {/* Informações da época - sempre visível */}
       <div className="mt-4 text-center">
-        <h4 className="text-xl font-bold text-theme-primary classical-title mb-1">
+        <h3 className="text-xl font-bold text-theme-primary classical-title mb-1">
           {translateEpochWithHook(epoch.name, t)}
-        </h4>
+        </h3>
         <p className="text-sm text-theme-secondary mb-3">
           {language === 'pt'
             ? epochData.description.ptBR

@@ -4,6 +4,21 @@
 import { useThemeStore } from '@/app/stores/themeStore';
 import { TranslationLoadingGate } from '../TranslationLoadingGate';
 import React, { useEffect, useState } from 'react';
+import { IconContext } from 'react-icons';
+import type { IconContext as IconContextValue } from 'react-icons';
+
+/**
+ * Todo ícone do react-icons nasce decorativo (`aria-hidden`).
+ *
+ * O nome acessível mora no botão ou link que contém o ícone, nunca no desenho.
+ * Sem isto, os ícones da família Simple Icons (`react-icons/si`) chegavam com
+ * `role="img"` e sem texto, e o leitor de tela anunciava "imagem" solta; os
+ * das outras nove famílias eram lidos como nada, ou como gráfico sem nome.
+ * É o mesmo padrão do primitivo `ui/Icon`.
+ */
+const ICONES: IconContextValue = {
+  attr: { 'aria-hidden': true, focusable: false },
+};
 
 interface ClientThemeWrapperProps {
   children: React.ReactNode;
@@ -44,16 +59,18 @@ export const ClientThemeWrapper: React.FC<ClientThemeWrapperProps> = ({
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [applyTheme, isHydrated]);
 
-  // Previne flash durante hidratação
-  if (!isHydrated) {
-    return <div className="classical-theme opacity-0">{children}</div>;
-  }
-
+  // Sem `opacity-0` até hidratar. A trava existia contra o flash de tema, mas
+  // desde a Etapa 7.8 o tema é só CSS (`data-theme`), aplicado pelo script do
+  // `layout.tsx` antes da primeira pintura. Mantida, ela escondia o HTML que o
+  // servidor já mandou pronto: a maior imagem da tela esperava o JavaScript
+  // (LCP), e sem JavaScript a página ficava em branco.
   return (
-    <div className="classical-theme transition-opacity duration-300 opacity-100">
-      {children}
-      <TranslationLoadingGate />
-    </div>
+    <IconContext.Provider value={ICONES}>
+      <div className="classical-theme">
+        {children}
+        {isHydrated && <TranslationLoadingGate />}
+      </div>
+    </IconContext.Provider>
   );
 };
 

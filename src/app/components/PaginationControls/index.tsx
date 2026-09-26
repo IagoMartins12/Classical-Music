@@ -103,7 +103,10 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
         </div>
 
         {/* Navigation */}
-        <div className="flex items-center justify-center space-x-2">
+        <nav
+          aria-label={t('pagination_aria_nav')}
+          className="flex items-center justify-center space-x-2"
+        >
           {/* First page */}
           <button
             onClick={() => handlePageChange(1)}
@@ -117,9 +120,13 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1 || isPending}
+            aria-label={t('pagination_aria_anterior')}
             className="flex items-center justify-center w-10 h-10 text-theme-secondary hover:text-brand-primary bg-theme-elevated border border-theme-secondary hover:border-brand-primary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 group"
           >
-            <FiChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
+            <FiChevronLeft
+              aria-hidden="true"
+              className="w-4 h-4 transition-transform group-hover:-translate-x-0.5"
+            />
           </button>
 
           {/* Page numbers */}
@@ -131,7 +138,10 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
                     key={`dots-${index}`}
                     className="flex items-center justify-center w-10 h-10"
                   >
-                    <FiMoreHorizontal className="w-4 h-4 text-theme-tertiary" />
+                    <FiMoreHorizontal
+                      aria-hidden="true"
+                      className="w-4 h-4 text-theme-tertiary"
+                    />
                   </div>
                 );
               }
@@ -144,6 +154,8 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
                   key={pageNum}
                   onClick={() => handlePageChange(pageNum)}
                   disabled={isPending}
+                  aria-label={`${t('pagination_jsx_span_children_0__pagina')} ${pageNum}`}
+                  aria-current={isActive ? 'page' : undefined}
                   className={`
                     flex items-center justify-center w-10 h-10 text-sm font-medium rounded-lg transition-all duration-300 disabled:cursor-not-allowed hover:scale-105
                     ${
@@ -163,9 +175,13 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages || isPending}
+            aria-label={t('pagination_aria_proxima')}
             className="flex items-center justify-center w-10 h-10 text-theme-secondary hover:text-brand-primary bg-theme-elevated border border-theme-secondary hover:border-brand-primary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 group"
           >
-            <FiChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+            <FiChevronRight
+              aria-hidden="true"
+              className="w-4 h-4 transition-transform group-hover:translate-x-0.5"
+            />
           </button>
 
           {/* Last page */}
@@ -176,7 +192,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
           >
             {t('pagination_jsx_button_children_0__final')}
           </button>
-        </div>
+        </nav>
 
         {/* Quick jump (mobile hidden) */}
         <div className="hidden lg:flex items-center space-x-2 text-sm"></div>

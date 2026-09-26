@@ -55,6 +55,7 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
             href={video.videoUrl}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={`${t('youtube_abrir_no_youtube')}: ${workTitle}`}
             className="text-red-400 hover:text-red-300 transition-colors"
           >
             <FiExternalLink className="w-4 h-4" />

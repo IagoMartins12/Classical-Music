@@ -49,6 +49,11 @@ export default async function BlogHomePage() {
 
   return (
     <div>
+      {/* O blog abria direto no carrossel (h2): sem título de página. */}
+      <h1 className="sr-only">
+        Blog Opus Atlas — artigos sobre música clássica
+      </h1>
+
       {/* Hero Carousel */}
       <section className="section-wrap pt-8">
         <HeroCarousel articles={featuredArticles} />

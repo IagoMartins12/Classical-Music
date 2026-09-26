@@ -315,7 +315,10 @@ const Navbar: React.FC = () => {
   }, [isMenuOpen, isProfileOpen, activeSubmenu]);
 
   return (
-    <nav className="navbar-classical sticky top-0 z-50">
+    <nav
+      aria-label={t('aria_navegacao_principal')}
+      className="navbar-classical sticky top-0 z-50"
+    >
       <div className="section-wrap-nav pt-1 pb-2">
         <div className="flex items-center justify-between">
           {/* Logo */}
