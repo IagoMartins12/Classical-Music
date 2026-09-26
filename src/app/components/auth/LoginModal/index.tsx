@@ -3,10 +3,14 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from '@/app/components/LocalizedLink';
-import { signInWithGoogle, signInWithPassword } from '@/app/libs/session';
-import { FiMail, FiLock, FiAlertTriangle } from 'react-icons/fi';
+import {
+  signInWithGoogle,
+  signInWithPassword,
+  useSession,
+} from '@/app/libs/session';
 import { FcGoogle } from 'react-icons/fc';
 import { GiGrandPiano } from 'react-icons/gi';
+import { PiEnvelopeSimple, PiLock, PiWarning } from 'react-icons/pi';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { useLoginModal } from '@/app/stores/authStore';
@@ -66,8 +70,43 @@ const getErrorMessage = (errorCode: string | null, language: Language) => {
   return msg[language as 'pt' | 'en'];
 };
 
+/**
+ * O pedido de login que veio pela URL (`/?login=1&callbackUrl=…`), montado
+ * pelo middleware para `/login` e para o painel sem sessão.
+ *
+ * O destino só vale se for caminho **deste** site: `/perfil` sim,
+ * `//outro.com` ou `https://outro.com` não. Sem essa trava, qualquer um
+ * montaria um link do Opus Atlas que, depois do login, levaria a pessoa para
+ * fora — o redirecionamento aberto que o phishing usa.
+ */
+function pedidoDeLoginNaUrl(): { pedido: boolean; destino: string | null } {
+  if (typeof window === 'undefined') return { pedido: false, destino: null };
+  const params = new URLSearchParams(window.location.search);
+  const bruto = params.get('callbackUrl');
+  const destino =
+    bruto &&
+    bruto.startsWith('/') &&
+    !bruto.startsWith('//') &&
+    !bruto.startsWith('/\\')
+      ? bruto
+      : null;
+  return { pedido: params.get('login') === '1', destino };
+}
+
+/** Tira `login` e `callbackUrl` da barra de endereço, sem navegar. */
+function limparPedidoDeLogin() {
+  const url = new URL(window.location.href);
+  if (!url.searchParams.has('login') && !url.searchParams.has('callbackUrl')) {
+    return;
+  }
+  url.searchParams.delete('login');
+  url.searchParams.delete('callbackUrl');
+  window.history.replaceState({}, '', url.toString());
+}
+
 const LoginModal: React.FC = () => {
-  const { isOpen, close, switchToRegister } = useLoginModal();
+  const { isOpen, open, close, switchToRegister } = useLoginModal();
+  const { status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
@@ -86,6 +125,22 @@ const LoginModal: React.FC = () => {
     password: '',
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  // `/login` e o painel sem sessão chegam aqui como `/?login=1`: abre o modal
+  // para quem não entrou; quem já entrou (inclusive voltando do Google) segue
+  // direto para o destino.
+  useEffect(() => {
+    const { pedido, destino } = pedidoDeLoginNaUrl();
+    if (!pedido || status === 'loading') return;
+
+    if (status === 'authenticated') {
+      limparPedidoDeLogin();
+      if (destino) router.replace(destino);
+      return;
+    }
+
+    open();
+  }, [status]);
 
   // 🆕 NOVO: Verificar erros na URL quando o modal abrir
   useEffect(() => {
@@ -175,7 +230,13 @@ const LoginModal: React.FC = () => {
       } else {
         toast.success(t('login_modal_success'));
         close();
-        router.refresh();
+        const { destino } = pedidoDeLoginNaUrl();
+        limparPedidoDeLogin();
+        if (destino) {
+          router.push(destino);
+        } else {
+          router.refresh();
+        }
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -192,7 +253,8 @@ const LoginModal: React.FC = () => {
 
     try {
       // A API conduz o login com o Google e devolve o navegador a esta página.
-      signInWithGoogle();
+      // Com destino pedido, o Google devolve a pessoa direto para ele.
+      signInWithGoogle(pedidoDeLoginNaUrl().destino ?? undefined);
     } catch (error) {
       console.error('❌ Erro no Google SignIn:', error);
       toast.error(t('login_modal_google_error'));
@@ -205,6 +267,8 @@ const LoginModal: React.FC = () => {
     setFormData({ email: '', password: '' });
     setErrors({});
     setEmailConflictError(null); // Limpar erro de conflito
+    // Fechou sem entrar: o pedido da URL não deve reabrir o modal.
+    limparPedidoDeLogin();
     close();
   };
 
@@ -245,7 +309,7 @@ const LoginModal: React.FC = () => {
         {emailConflictError && (
           <div className="mb-6 p-4 rounded-lg bg-accent-amber bg-opacity-10 border border-accent-amber">
             <div className="flex items-start">
-              <FiAlertTriangle className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+              <PiWarning className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-accent-amber mb-1">
                   {t('login_modal_email_conflict_title')}
@@ -298,7 +362,7 @@ const LoginModal: React.FC = () => {
             name="email"
             value={formData.email}
             onChange={handleInputChange}
-            leftIcon={<FiMail className="w-4 h-4" />}
+            leftIcon={<PiEnvelopeSimple className="w-4 h-4" />}
             placeholder={t('login_modal_email_placeholder')}
             error={errors.email}
             disabled={isLoading || isGoogleLoading}
@@ -311,7 +375,7 @@ const LoginModal: React.FC = () => {
             name="password"
             value={formData.password}
             onChange={handleInputChange}
-            leftIcon={<FiLock className="w-4 h-4" />}
+            leftIcon={<PiLock className="w-4 h-4" />}
             placeholder={t('login_modal_password_placeholder')}
             isPassword
             error={errors.password}
