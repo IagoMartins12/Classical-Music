@@ -4,20 +4,20 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiArrowLeft,
-  FiCheck,
-  FiX,
-  FiUser,
-  FiCalendar,
-  FiEye,
-  FiDownload,
-  FiShare2,
-  FiAlertTriangle,
-  FiInfo,
-  FiFileText,
-  FiMusic,
-  FiUsers,
-} from 'react-icons/fi';
+  PiArrowLeft,
+  PiCalendarBlank,
+  PiCheck,
+  PiDownloadSimple,
+  PiEye,
+  PiFileText,
+  PiInfo,
+  PiMusicNotes,
+  PiShareNetwork,
+  PiUser,
+  PiUsers,
+  PiWarning,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -123,13 +123,13 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'composer':
-        return FiUsers;
+        return PiUsers;
       case 'work':
-        return FiMusic;
+        return PiMusicNotes;
       case 'score':
-        return FiFileText;
+        return PiFileText;
       default:
-        return FiFileText;
+        return PiFileText;
     }
   };
 
@@ -167,7 +167,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <FiAlertTriangle className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Item não encontrado
           </h2>
@@ -177,7 +177,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
           </p>
           <Button
             variant="primary"
-            leftIcon={<FiArrowLeft />}
+            leftIcon={<PiArrowLeft />}
             onClick={() => router.push('/uploads/moderation')}
           >
             Voltar à Moderação
@@ -198,7 +198,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
             <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
-                leftIcon={<FiArrowLeft />}
+                leftIcon={<PiArrowLeft />}
                 onClick={() => router.push('/uploads/moderation')}
               >
                 Voltar
@@ -237,10 +237,18 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
             </div>
 
             <div className="flex items-center space-x-3">
-              <Button variant="secondary" leftIcon={<FiShare2 />} size="sm">
+              <Button
+                variant="secondary"
+                leftIcon={<PiShareNetwork />}
+                size="sm"
+              >
                 Compartilhar
               </Button>
-              <Button variant="secondary" leftIcon={<FiDownload />} size="sm">
+              <Button
+                variant="secondary"
+                leftIcon={<PiDownloadSimple />}
+                size="sm"
+              >
                 Exportar
               </Button>
             </div>
@@ -287,7 +295,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                         key={index}
                         className="flex items-center space-x-2 p-3 bg-accent-amber/10 border border-accent-amber rounded-lg"
                       >
-                        <FiAlertTriangle className="w-4 h-4 text-accent-amber" />
+                        <PiWarning className="w-4 h-4 text-accent-amber" />
                         <span className="text-theme-primary">{issue}</span>
                       </div>
                     ))}
@@ -381,7 +389,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 <div className="flex items-center space-x-4 pt-4 border-t border-theme-secondary">
                   <Button
                     variant="primary"
-                    leftIcon={<FiCheck />}
+                    leftIcon={<PiCheck />}
                     onClick={handleApprove}
                     disabled={processing}
                     className="flex-1"
@@ -391,7 +399,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
 
                   <Button
                     variant="secondary"
-                    leftIcon={<FiX />}
+                    leftIcon={<PiX />}
                     onClick={handleReject}
                     disabled={processing || !rejectionReason}
                     className="flex-1 text-accent-red hover:bg-accent-red/10"
@@ -408,14 +416,14 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
             {/* Uploader Info */}
             <AnimatedCard className="classical-card p-6">
               <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-                <FiUser className="w-5 h-5 text-accent-blue" />
+                <PiUser className="w-5 h-5 text-accent-blue" />
                 <span>Informações do Uploader</span>
               </h3>
 
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
-                    <FiUser className="w-5 h-5 text-theme-primary" />
+                    <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
                     <p className="font-medium text-theme-primary">
@@ -446,7 +454,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                   variant="ghost"
                   size="sm"
                   className="w-full"
-                  leftIcon={<FiEye />}
+                  leftIcon={<PiEye />}
                   onClick={() =>
                     router.push(`/admin/users/${item.uploader.id}`)
                   }
@@ -459,7 +467,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
             {/* Timeline */}
             <AnimatedCard className="classical-card p-6">
               <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-                <FiCalendar className="w-5 h-5 text-accent-green" />
+                <PiCalendarBlank className="w-5 h-5 text-accent-green" />
                 <span>Timeline</span>
               </h3>
 
@@ -505,7 +513,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
             {/* Quick Stats */}
             <AnimatedCard className="classical-card p-6">
               <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-                <FiInfo className="w-5 h-5 text-accent-purple" />
+                <PiInfo className="w-5 h-5 text-accent-purple" />
                 <span>Estatísticas Rápidas</span>
               </h3>
 

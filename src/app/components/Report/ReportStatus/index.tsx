@@ -1,7 +1,7 @@
 // app/components/Common/ReportStatus.tsx - Exibir status de reports em cards
 'use client';
 
-import { FiFlag, FiClock, FiCheck, FiX } from 'react-icons/fi';
+import { PiCheck, PiClock, PiFlag, PiX } from 'react-icons/pi';
 
 interface ReportStatusProps {
   hasReports: boolean;
@@ -22,25 +22,25 @@ export default function ReportStatus({
     switch (status) {
       case 'pending':
         return {
-          icon: <FiClock className="w-3 h-3" />,
+          icon: <PiClock className="w-3 h-3" />,
           color: 'text-accent-amber bg-accent-amber/10 border-accent-amber/30',
           label: 'Pendente',
         };
       case 'approved':
         return {
-          icon: <FiCheck className="w-3 h-3" />,
+          icon: <PiCheck className="w-3 h-3" />,
           color: 'text-accent-green bg-accent-green/10 border-accent-green/30',
           label: 'Aprovado',
         };
       case 'rejected':
         return {
-          icon: <FiX className="w-3 h-3" />,
+          icon: <PiX className="w-3 h-3" />,
           color: 'text-accent-red bg-accent-red/10 border-accent-red/30',
           label: 'Rejeitado',
         };
       default:
         return {
-          icon: <FiFlag className="w-3 h-3" />,
+          icon: <PiFlag className="w-3 h-3" />,
           color: 'text-theme-tertiary bg-theme-secondary border-theme-primary',
           label: 'Reportado',
         };

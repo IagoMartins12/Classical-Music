@@ -3,18 +3,18 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiFilter,
-  FiX,
-  FiTarget,
-  FiLayers,
-  FiMusic,
-  FiBookOpen,
-  FiTrendingUp,
-  FiClock,
-  FiMapPin,
-  FiSearch,
-  FiRefreshCw,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiClock,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiMapPin,
+  PiMusicNotes,
+  PiStack,
+  PiTarget,
+  PiTrendUp,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnnotationFilters as Filters,
   AnnotationDifficulty,
@@ -46,22 +46,22 @@ export default function AnnotationFiltersComponent({
     {
       value: 'BEGINNER',
       label: t('annotation_difficulty_iniciante'),
-      icon: FiTarget,
+      icon: PiTarget,
     },
     {
       value: 'INTERMEDIATE',
       label: t('annotation_difficulty_intermediario'),
-      icon: FiTarget,
+      icon: PiTarget,
     },
     {
       value: 'ADVANCED',
       label: t('annotation_difficulty_avancado'),
-      icon: FiTarget,
+      icon: PiTarget,
     },
     {
       value: 'ALL_LEVELS',
       label: t('annotation_difficulty_todos_niveis'),
-      icon: FiTarget,
+      icon: PiTarget,
     },
   ];
 
@@ -70,18 +70,18 @@ export default function AnnotationFiltersComponent({
     {
       value: 'ENTIRE_WORK',
       label: t('annotation_scope_obra_inteira'),
-      icon: FiMusic,
+      icon: PiMusicNotes,
     },
     {
       value: 'MOVEMENT',
       label: t('annotation_scope_movimento'),
-      icon: FiLayers,
+      icon: PiStack,
     },
-    { value: 'SECTION', label: t('annotation_scope_secao'), icon: FiBookOpen },
+    { value: 'SECTION', label: t('annotation_scope_secao'), icon: PiBookOpen },
     {
       value: 'SPECIFIC_MEASURE',
       label: t('annotation_scope_compasso_especifico'),
-      icon: FiMapPin,
+      icon: PiMapPin,
     },
   ];
 
@@ -90,17 +90,17 @@ export default function AnnotationFiltersComponent({
     {
       value: 'helpful',
       label: t('annotation_sort_mais_uteis'),
-      icon: FiTrendingUp,
+      icon: PiTrendUp,
     },
     {
       value: 'recent',
       label: t('annotation_sort_mais_recentes'),
-      icon: FiClock,
+      icon: PiClock,
     },
     {
       value: 'oldest',
       label: t('annotation_sort_mais_antigas'),
-      icon: FiClock,
+      icon: PiClock,
     },
   ];
 
@@ -145,7 +145,7 @@ export default function AnnotationFiltersComponent({
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-              <FiFilter className="w-4 h-4 text-theme-primary" />
+              <PiFunnel className="w-4 h-4 text-theme-primary" />
             </div>
             <h3 className="text-lg font-semibold text-theme-primary classical-title">
               {t('annotation_filters_titulo')}
@@ -168,7 +168,7 @@ export default function AnnotationFiltersComponent({
             onClick={onClose}
             className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-primary/30 flex items-center justify-center text-theme-tertiary hover:text-theme-primary hover:border-accent-red/50 transition-all"
           >
-            <FiX className="w-4 h-4" />
+            <PiX className="w-4 h-4" />
           </button>
         </div>
 
@@ -176,7 +176,7 @@ export default function AnnotationFiltersComponent({
           {/* ✅ Dificuldade com traduções */}
           <div>
             <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
-              <FiTarget className="w-4 h-4" />
+              <PiTarget className="w-4 h-4" />
               <span>{t('annotation_filters_nivel_dificuldade')}</span>
             </label>
             <div className="space-y-2">
@@ -207,7 +207,7 @@ export default function AnnotationFiltersComponent({
                     >
                       <Icon className="w-4 h-4" />
                       <span>{option.label}</span>
-                      {isSelected && <FiX className="w-3 h-3 ml-auto" />}
+                      {isSelected && <PiX className="w-3 h-3 ml-auto" />}
                     </button>
                   </AnimatedItem>
                 );
@@ -218,7 +218,7 @@ export default function AnnotationFiltersComponent({
           {/* ✅ Abrangência com traduções */}
           <div>
             <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
-              <FiLayers className="w-4 h-4" />
+              <PiStack className="w-4 h-4" />
               <span>{t('annotation_filters_abrangencia')}</span>
             </label>
             <div className="space-y-2">
@@ -249,7 +249,7 @@ export default function AnnotationFiltersComponent({
                     >
                       <Icon className="w-4 h-4" />
                       <span>{option.label}</span>
-                      {isSelected && <FiX className="w-3 h-3 ml-auto" />}
+                      {isSelected && <PiX className="w-3 h-3 ml-auto" />}
                     </button>
                   </AnimatedItem>
                 );
@@ -260,7 +260,7 @@ export default function AnnotationFiltersComponent({
           {/* ✅ Ordenação com traduções */}
           <div>
             <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
-              <FiTrendingUp className="w-4 h-4" />
+              <PiTrendUp className="w-4 h-4" />
               <span>{t('annotation_filters_ordenar_por')}</span>
             </label>
             <div className="space-y-2">
@@ -296,7 +296,7 @@ export default function AnnotationFiltersComponent({
         {/* ✅ Filtros de busca avançada com traduções */}
         <div className="mt-6 pt-6 border-t border-theme-secondary">
           <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
-            <FiSearch className="w-4 h-4" />
+            <PiMagnifyingGlass className="w-4 h-4" />
             <span>{t('annotation_filters_busca_avancada')}</span>
           </label>
           <div className="grid grid-cols-1 gap-4">
@@ -319,7 +319,7 @@ export default function AnnotationFiltersComponent({
                     onClick={() => handleFilterChange('search', undefined)}
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-accent-red transition-colors"
                   >
-                    <FiX className="w-4 h-4" />
+                    <PiX className="w-4 h-4" />
                   </button>
                 )}
               </div>
@@ -331,7 +331,7 @@ export default function AnnotationFiltersComponent({
         {hasActiveFilters && (
           <div className="mt-6 pt-6 border-t border-theme-secondary">
             <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
-              <FiFilter className="w-4 h-4" />
+              <PiFunnel className="w-4 h-4" />
               <span>{t('annotation_filters_filtros_ativos')}</span>
             </label>
             <div className="flex flex-wrap gap-2">
@@ -349,7 +349,7 @@ export default function AnnotationFiltersComponent({
                     onClick={() => handleFilterChange('difficulty', undefined)}
                     className="text-accent-blue hover:text-accent-red transition-colors"
                   >
-                    <FiX className="w-3 h-3" />
+                    <PiX className="w-3 h-3" />
                   </button>
                 </span>
               )}
@@ -367,7 +367,7 @@ export default function AnnotationFiltersComponent({
                     onClick={() => handleFilterChange('scope', undefined)}
                     className="text-accent-green hover:text-accent-red transition-colors"
                   >
-                    <FiX className="w-3 h-3" />
+                    <PiX className="w-3 h-3" />
                   </button>
                 </span>
               )}
@@ -385,7 +385,7 @@ export default function AnnotationFiltersComponent({
                     onClick={() => handleFilterChange('sortBy', 'helpful')}
                     className="text-accent-purple hover:text-accent-red transition-colors"
                   >
-                    <FiX className="w-3 h-3" />
+                    <PiX className="w-3 h-3" />
                   </button>
                 </span>
               )}
@@ -400,7 +400,7 @@ export default function AnnotationFiltersComponent({
                     onClick={() => handleFilterChange('search', undefined)}
                     className="text-brand-primary hover:text-accent-red transition-colors"
                   >
-                    <FiX className="w-3 h-3" />
+                    <PiX className="w-3 h-3" />
                   </button>
                 </span>
               )}
@@ -413,7 +413,7 @@ export default function AnnotationFiltersComponent({
           <div className="flex items-center space-x-2">
             {hasActiveFilters ? (
               <span className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium flex items-center space-x-1">
-                <FiFilter className="w-3 h-3" />
+                <PiFunnel className="w-3 h-3" />
                 <span>
                   {
                     Object.entries(localFilters).filter(([key, value]) => {
@@ -428,7 +428,7 @@ export default function AnnotationFiltersComponent({
               </span>
             ) : (
               <span className="text-theme-tertiary text-sm flex items-center space-x-1">
-                <FiFilter className="w-3 h-3" />
+                <PiFunnel className="w-3 h-3" />
                 <span>{t('annotation_filters_nenhum_ativo')}</span>
               </span>
             )}
@@ -440,7 +440,7 @@ export default function AnnotationFiltersComponent({
                 onClick={clearAllFilters}
                 className="btn-classical-secondary text-sm flex items-center space-x-1"
               >
-                <FiRefreshCw className="w-4 h-4" />
+                <PiArrowsClockwise className="w-4 h-4" />
                 <span>{t('annotation_filters_limpar_todos')}</span>
               </button>
             )}
@@ -448,7 +448,7 @@ export default function AnnotationFiltersComponent({
               onClick={onClose}
               className="btn-classical-primary text-sm flex items-center space-x-2"
             >
-              <FiX className="w-4 h-4" />
+              <PiX className="w-4 h-4" />
               <span>{t('annotation_filters_fechar')}</span>
             </button>
           </div>
@@ -457,7 +457,7 @@ export default function AnnotationFiltersComponent({
         {/* ✅ Dica de uso com traduções */}
         <div className="mt-4 p-3 bg-theme-elevated/50 border border-theme-primary/20 rounded-xl">
           <div className="flex items-start space-x-2 text-xs text-theme-tertiary">
-            <FiSearch className="w-3 h-3 mt-0.5 flex-shrink-0" />
+            <PiMagnifyingGlass className="w-3 h-3 mt-0.5 flex-shrink-0" />
             <span>
               <strong>{t('annotation_filters_dica_strong')}: </strong>{' '}
               {t('annotation_filters_dica')}

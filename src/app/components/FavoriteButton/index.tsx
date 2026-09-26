@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiHeart } from 'react-icons/fi';
+import { PiHeart, PiHeartFill } from 'react-icons/pi';
 
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -236,7 +236,7 @@ const FavoriteButton = ({
             animationDuration: '0.6s',
           }}
         >
-          <FiHeart className="w-2 h-2 text-red-500" />
+          <PiHeart className="w-2 h-2 text-red-500" />
         </div>
       ))}
     </div>
@@ -259,7 +259,7 @@ const FavoriteButton = ({
         `}
         style={style}
       >
-        <FiHeart className={`${iconSizes[size]} opacity-50`} />
+        <PiHeart className={`${iconSizes[size]} opacity-50`} />
       </div>
     );
   }
@@ -295,8 +295,9 @@ const FavoriteButton = ({
       {isLoading && <LoadingSpinner />}
 
       {/* Ícone principal */}
-      <FiHeart
-        className={`
+      {isFavorited ? (
+        <PiHeartFill
+          className={`
           ${iconSizes[size]} 
           transition-all 
           duration-300 
@@ -304,7 +305,19 @@ const FavoriteButton = ({
           ${isLoading ? 'opacity-0' : 'opacity-100'}
           drop-shadow-sm
         `}
-      />
+        />
+      ) : (
+        <PiHeart
+          className={`
+          ${iconSizes[size]} 
+          transition-all 
+          duration-300 
+          ${isFavorited ? 'fill-current scale-110' : 'group-hover:scale-110'}
+          ${isLoading ? 'opacity-0' : 'opacity-100'}
+          drop-shadow-sm
+        `}
+        />
+      )}
 
       {/* Gradient overlay para efeito premium */}
       <div

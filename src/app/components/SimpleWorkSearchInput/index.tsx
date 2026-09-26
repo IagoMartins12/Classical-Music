@@ -1,14 +1,14 @@
 // app/components/SimpleWorkSearchInput.tsx - VERSÃO ATUALIZADA COM USER SUGGESTIONS
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
-  FiSearch,
-  FiMusic,
-  FiLoader,
-  FiCheck,
-  FiX,
-  FiAlertCircle,
-  FiStar,
-} from 'react-icons/fi';
+  PiCheck,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiSpinnerGap,
+  PiStar,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import { getWorkById, searchWorks } from '@/app/requests/catalog-search';
 
 interface Work {
@@ -309,7 +309,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center">
-                <FiCheck className="w-4 h-4 text-accent-blue" />
+                <PiCheck className="w-4 h-4 text-accent-blue" />
               </div>
               <div>
                 <p className="font-medium text-theme-primary text-sm">
@@ -327,7 +327,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                 onClick={handleClearSelection}
                 className="text-theme-tertiary hover:text-accent-red transition-colors p-1"
               >
-                <FiX className="w-4 h-4" />
+                <PiX className="w-4 h-4" />
               </button>
             )}
           </div>
@@ -336,7 +336,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
         <div className="relative">
           {/* Campo de busca */}
           <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4 z-10" />
+            <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4 z-10" />
             <input
               ref={inputRef}
               type="text"
@@ -356,7 +356,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
               } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             />
             {(isLoading || loadingUserSuggestions) && (
-              <FiLoader className="absolute right-3 top-1/2 transform -translate-y-1/2 text-brand-primary w-4 h-4 animate-spin" />
+              <PiSpinnerGap className="absolute right-3 top-1/2 transform -translate-y-1/2 text-brand-primary w-4 h-4 animate-spin" />
             )}
           </div>
 
@@ -369,7 +369,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
               {/* Loading */}
               {(isLoading || loadingUserSuggestions) && (
                 <div className="p-4 text-center">
-                  <FiLoader className="w-5 h-5 mx-auto animate-spin text-brand-primary mb-2" />
+                  <PiSpinnerGap className="w-5 h-5 mx-auto animate-spin text-brand-primary mb-2" />
                   <p className="text-sm text-theme-tertiary">
                     {loadingUserSuggestions
                       ? 'Carregando sugestões...'
@@ -385,11 +385,11 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                   <div className="px-3 py-2 text-xs font-medium text-theme-tertiary uppercase tracking-wide border-b border-theme-secondary mb-2">
                     <div className="flex items-center gap-2">
                       {query.length >= 2 ? (
-                        <FiSearch className="w-4 h-4" />
+                        <PiMagnifyingGlass className="w-4 h-4" />
                       ) : userSuggestions.length > 0 ? (
-                        <FiStar className="w-4 h-4 text-accent-purple" />
+                        <PiStar className="w-4 h-4 text-accent-purple" />
                       ) : (
-                        <FiMusic className="w-4 h-4" />
+                        <PiMusicNotes className="w-4 h-4" />
                       )}
                       {getHeaderLabel()}
                     </div>
@@ -414,9 +414,9 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                             }`}
                           >
                             {isUserWork ? (
-                              <FiStar className="w-4 h-4 text-accent-purple" />
+                              <PiStar className="w-4 h-4 text-accent-purple" />
                             ) : (
-                              <FiMusic className="w-4 h-4 text-accent-blue" />
+                              <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -444,7 +444,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
               {/* Empty state */}
               {!isLoading && !loadingUserSuggestions && works.length === 0 && (
                 <div className="p-4 text-center text-theme-tertiary">
-                  <FiSearch className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <PiMagnifyingGlass className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">
                     {query.length >= 2
                       ? `Nenhuma obra encontrada para "${query}"`
@@ -475,7 +475,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
       {error && (
         <div>
           <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
-            <FiAlertCircle className="w-4 h-4" />
+            <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>
           </p>
         </div>

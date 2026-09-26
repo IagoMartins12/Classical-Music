@@ -3,12 +3,12 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import {
-  BiComment,
-  BiCheckCircle,
-  BiXCircle,
-  BiFlag,
-  BiListUl,
-} from 'react-icons/bi';
+  PiChatCircle,
+  PiCheckCircle,
+  PiFlag,
+  PiListBullets,
+  PiXCircle,
+} from 'react-icons/pi';
 import { getServerAccessToken } from '@/app/libs/api/server-session';
 import { loadModeration } from '@/app/requests/blog/admin';
 import { ModerationList } from '@/app/components/blog/admin/ModerationList';
@@ -63,7 +63,7 @@ export default async function ModerationPage({ searchParams }: PageProps) {
               className="flex items-center justify-center mb-6"
             >
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-                <BiComment className="w-8 h-8 text-theme-primary" />
+                <PiChatCircle className="w-8 h-8 text-theme-primary" />
               </div>
             </AnimatedItem>
 
@@ -96,7 +96,7 @@ export default async function ModerationPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <BiListUl className="w-6 h-6 text-purple-500" />
+                    <PiListBullets className="w-6 h-6 text-purple-500" />
                   </div>
                 </div>
               </div>
@@ -114,7 +114,7 @@ export default async function ModerationPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <BiComment className="w-6 h-6 text-blue-500" />
+                    <PiChatCircle className="w-6 h-6 text-blue-500" />
                   </div>
                 </div>
               </div>
@@ -132,7 +132,7 @@ export default async function ModerationPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-orange-500/20 to-orange-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <BiFlag className="w-6 h-6 text-orange-500" />
+                    <PiFlag className="w-6 h-6 text-orange-500" />
                   </div>
                 </div>
               </div>
@@ -150,7 +150,7 @@ export default async function ModerationPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <BiComment className="w-6 h-6 text-indigo-500" />
+                    <PiChatCircle className="w-6 h-6 text-indigo-500" />
                   </div>
                 </div>
               </div>
@@ -168,7 +168,7 @@ export default async function ModerationPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <BiCheckCircle className="w-6 h-6 text-green-500" />
+                    <PiCheckCircle className="w-6 h-6 text-green-500" />
                   </div>
                 </div>
               </div>
@@ -186,7 +186,7 @@ export default async function ModerationPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-red-500/20 to-red-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <BiXCircle className="w-6 h-6 text-red-500" />
+                    <PiXCircle className="w-6 h-6 text-red-500" />
                   </div>
                 </div>
               </div>

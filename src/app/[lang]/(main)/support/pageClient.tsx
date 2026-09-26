@@ -1,26 +1,28 @@
 'use client';
 
 import React, { JSX, useState } from 'react';
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiTool,
-  FiSmartphone,
-  FiHeadphones,
-  FiRefreshCw,
-  FiSettings,
-  FiMessageCircle,
-  FiMail,
-  FiClock,
-  FiActivity,
-  FiServer,
-  FiUpload,
-  FiUser,
-  FiGlobe,
-  FiUserCheck,
-  FiHeart,
-  FiArrowRight,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano, GiScrollQuill } from 'react-icons/gi';
-import { LuComputer } from 'react-icons/lu';
+  PiArrowRight,
+  PiArrowsClockwise,
+  PiChatCircle,
+  PiClock,
+  PiDesktop,
+  PiDeviceMobile,
+  PiEnvelopeSimple,
+  PiGear,
+  PiGlobe,
+  PiHardDrives,
+  PiHeadphones,
+  PiHeart,
+  PiMusicNotes,
+  PiPulse,
+  PiScroll,
+  PiUploadSimple,
+  PiUser,
+  PiUserCheck,
+  PiWrench,
+} from 'react-icons/pi';
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Link from '@/app/components/LocalizedLink';
 import {
@@ -78,7 +80,7 @@ export default function SupportPage(): JSX.Element {
       id: 'login-account',
       title: t('support_category_login_account_title'),
       description: t('support_category_login_account_description'),
-      icon: FiSettings,
+      icon: PiGear,
       color: 'from-blue-500 to-purple-500',
       solutions: [
         {
@@ -135,7 +137,7 @@ export default function SupportPage(): JSX.Element {
       id: 'onboarding-profile',
       title: t('support_category_onboarding_profile_title'),
       description: t('support_category_onboarding_profile_description'),
-      icon: FiUser,
+      icon: PiUser,
       color: 'from-green-500 to-blue-500',
       solutions: [
         {
@@ -181,7 +183,7 @@ export default function SupportPage(): JSX.Element {
       id: 'search-navigation',
       title: t('support_category_search_navigation_title'),
       description: t('support_category_search_navigation_description'),
-      icon: FiGlobe,
+      icon: PiGlobe,
       color: 'from-purple-500 to-pink-500',
       solutions: [
         {
@@ -227,7 +229,7 @@ export default function SupportPage(): JSX.Element {
       id: 'media-players',
       title: t('support_category_media_players_title'),
       description: t('support_category_media_players_description'),
-      icon: FiHeadphones,
+      icon: PiHeadphones,
       color: 'from-orange-500 to-red-500',
       solutions: [
         {
@@ -274,7 +276,7 @@ export default function SupportPage(): JSX.Element {
       id: 'uploads-system',
       title: t('support_category_uploads_system_title'),
       description: t('support_category_uploads_system_description'),
-      icon: FiUpload,
+      icon: PiUploadSimple,
       color: 'from-red-500 to-purple-500',
       solutions: [
         {
@@ -335,7 +337,7 @@ export default function SupportPage(): JSX.Element {
       id: 'teacher-student',
       title: t('support_category_teacher_student_title'),
       description: t('support_category_teacher_student_description'),
-      icon: FiUserCheck,
+      icon: PiUserCheck,
       color: 'from-indigo-500 to-blue-500',
       solutions: [
         {
@@ -383,7 +385,7 @@ export default function SupportPage(): JSX.Element {
       id: 'favorites-annotations',
       title: t('support_category_favorites_annotations_title'),
       description: t('support_category_favorites_annotations_description'),
-      icon: FiHeart,
+      icon: PiHeart,
       color: 'from-pink-500 to-red-500',
       solutions: [
         {
@@ -431,7 +433,7 @@ export default function SupportPage(): JSX.Element {
       id: 'performance',
       title: t('support_category_performance_title'),
       description: t('support_category_performance_description'),
-      icon: FiActivity,
+      icon: PiPulse,
       color: 'from-yellow-500 to-orange-500',
       solutions: [
         {
@@ -480,7 +482,7 @@ export default function SupportPage(): JSX.Element {
       id: 'mobile-issues',
       title: t('support_category_mobile_issues_title'),
       description: t('support_category_mobile_issues_description'),
-      icon: FiSmartphone,
+      icon: PiDeviceMobile,
       color: 'from-teal-500 to-green-500',
       solutions: [
         {
@@ -539,7 +541,7 @@ export default function SupportPage(): JSX.Element {
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
-                  <FiTool className="w-5 h-5 text-brand-primary mr-2" />
+                  <PiWrench className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
                     {t(
                       'support_animatedcontainer_animateditem_suporte_técnico'
@@ -642,7 +644,7 @@ export default function SupportPage(): JSX.Element {
                           onClick={() => setSelectedCategory(null)}
                           className="inline-flex items-center text-brand-primary hover:text-brand-primary/80 mb-4 transition-colors"
                         >
-                          <FiArrowRight className="w-4 h-4 mr-2 rotate-180" />
+                          <PiArrowRight className="w-4 h-4 mr-2 rotate-180" />
                           {t('support_pagecontainer_animatedcontainer_voltar')}
                         </button>
                         <h3 className="text-2xl font-bold classical-title text-theme-primary mb-2">
@@ -725,7 +727,7 @@ export default function SupportPage(): JSX.Element {
                                   </div>
                                   <div className="flex-shrink-0 ml-4">
                                     <div className="flex flex-col items-center space-y-1">
-                                      <FiRefreshCw
+                                      <PiArrowsClockwise
                                         className={`w-5 h-5 text-brand-primary transition-transform duration-300 ${
                                           expandedSolution === solution.id
                                             ? 'rotate-180'
@@ -817,7 +819,7 @@ export default function SupportPage(): JSX.Element {
               className="classical-card p-12 text-center max-w-4xl mx-auto"
             >
               <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
-                <FiMessageCircle className="w-10 h-10 text-theme-primary" />
+                <PiChatCircle className="w-10 h-10 text-theme-primary" />
               </div>
 
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">
@@ -833,7 +835,7 @@ export default function SupportPage(): JSX.Element {
                   href="/contact"
                   className="btn-classical-primary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
                 >
-                  <FiMail className="w-5 h-5" />
+                  <PiEnvelopeSimple className="w-5 h-5" />
                   <span>{t('support_animatedcard_link_contatar_suporte')}</span>
                 </Link>
 
@@ -841,20 +843,20 @@ export default function SupportPage(): JSX.Element {
                   href="/help"
                   className="btn-classical-secondary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
                 >
-                  <FiTool className="w-5 h-5" />
+                  <PiWrench className="w-5 h-5" />
                   <span>{t('support_animatedcard_link_central_ajuda')}</span>
                 </Link>
               </div>
 
               <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
                 <div className="flex items-center space-x-2 text-theme-tertiary">
-                  <FiClock className="w-4 h-4" />
+                  <PiClock className="w-4 h-4" />
                   <span className="text-sm">
                     {t('support_jsx_span_children_0__resposta_2h')}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2 text-theme-tertiary">
-                  <FiServer className="w-4 h-4" />
+                  <PiHardDrives className="w-4 h-4" />
                   <span className="text-sm">
                     {t('support_jsx_span_children_0__monitoramento_24_7')}
                   </span>
@@ -870,7 +872,7 @@ export default function SupportPage(): JSX.Element {
         className="top-16 left-16 text-6xl text-brand-primary/5"
         delay={0}
       >
-        <GiMusicalNotes />
+        <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
         className="bottom-16 right-16 text-5xl text-accent-purple/5"
@@ -882,13 +884,13 @@ export default function SupportPage(): JSX.Element {
         className="top-1/3 right-24 text-4xl text-accent-blue/5"
         delay={1}
       >
-        <LuComputer />
+        <PiDesktop />
       </FloatingElement>
       <FloatingElement
         className="bottom-1/3 left-24 text-4xl text-brand-secondary/5"
         delay={3}
       >
-        <GiScrollQuill />
+        <PiScroll />
       </FloatingElement>
     </PageContainer>
   );

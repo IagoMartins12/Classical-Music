@@ -14,8 +14,8 @@
 // app/works/loading.tsx - Clean Skeleton Loading
 'use client';
 
-import { FiMusic, FiHeadphones, FiSearch } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+import { GiGrandPiano } from 'react-icons/gi';
+import { PiHeadphones, PiMagnifyingGlass, PiMusicNotes } from 'react-icons/pi';
 
 export default function WorksLoading() {
   return (
@@ -31,16 +31,16 @@ export default function WorksLoading() {
       {/* Floating musical notes - static */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-6 left-12 text-5xl text-brand-primary/10">
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
         <div className="absolute bottom-6 right-12 text-4xl text-brand-secondary/10">
-          <FiMusic />
+          <PiMusicNotes />
         </div>
         <div className="absolute top-12 right-24 text-3xl text-accent-purple/10">
           <GiGrandPiano />
         </div>
         <div className="absolute bottom-12 left-24 text-3xl text-accent-blue/10">
-          <FiHeadphones />
+          <PiHeadphones />
         </div>
       </div>
 
@@ -72,7 +72,7 @@ export default function WorksLoading() {
           {/* Search Bar */}
           <div className="mb-6">
             <div className="relative">
-              <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary/50" />
+              <PiMagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary/50" />
               <div className="h-12 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-xl pl-12 pr-12 animate-pulse"></div>
             </div>
           </div>
@@ -152,7 +152,7 @@ function WorkCardSkeleton() {
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-2 right-2 text-3xl text-brand-primary/10">
-            <GiMusicalNotes />
+            <PiMusicNotes />
           </div>
         </div>
 

@@ -1,17 +1,18 @@
 // app/teacher/students/loading.tsx - Loading para Gerenciar Alunos
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiUsers,
-  FiUser,
-  FiFilter,
-  FiStar,
-  FiCalendar,
-  FiClock,
-  FiTrendingUp,
-  FiBookOpen,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiBookOpen,
+  PiCalendarBlank,
+  PiClock,
+  PiFunnel,
+  PiMusicNotes,
+  PiStar,
+  PiTrendUp,
+  PiUser,
+  PiUsers,
+} from 'react-icons/pi';
 
 export default function TeacherStudentsLoading() {
   return (
@@ -36,13 +37,13 @@ export default function TeacherStudentsLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiUsers />
+          <PiUsers />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiUser />
+          <PiUser />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -54,7 +55,7 @@ export default function TeacherStudentsLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -76,11 +77,15 @@ export default function TeacherStudentsLoading() {
         {/* Stats Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {[
-            { icon: <FiUsers className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiCalendar className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiStar className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiUsers className="w-6 h-6 text-theme-inverse/20" /> },
             {
-              icon: <FiTrendingUp className="w-6 h-6 text-theme-inverse/20" />,
+              icon: (
+                <PiCalendarBlank className="w-6 h-6 text-theme-inverse/20" />
+              ),
+            },
+            { icon: <PiStar className="w-6 h-6 text-theme-inverse/20" /> },
+            {
+              icon: <PiTrendUp className="w-6 h-6 text-theme-inverse/20" />,
             },
           ].map((item, index) => (
             <div
@@ -118,7 +123,7 @@ export default function TeacherStudentsLoading() {
           {/* Filter Summary */}
           <div className="flex items-center justify-between pt-4 border-t border-theme-secondary mt-4">
             <div className="flex items-center space-x-2">
-              <FiFilter className="w-4 h-4 text-theme-tertiary/30" />
+              <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
               <div className="h-3 bg-theme-secondary/30 rounded w-48"></div>
             </div>
             <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
@@ -183,15 +188,15 @@ function StudentCardSkeleton() {
         {/* Details */}
         <div className="space-y-2 pt-2">
           <div className="flex items-center justify-center space-x-2">
-            <FiCalendar className="w-3 h-3 text-theme-tertiary/30" />
+            <PiCalendarBlank className="w-3 h-3 text-theme-tertiary/30" />
             <div className="h-3 bg-theme-elevated rounded w-20"></div>
           </div>
           <div className="flex items-center justify-center space-x-2">
-            <FiClock className="w-3 h-3 text-theme-tertiary/30" />
+            <PiClock className="w-3 h-3 text-theme-tertiary/30" />
             <div className="h-3 bg-theme-elevated rounded w-16"></div>
           </div>
           <div className="flex items-center justify-center space-x-2">
-            <FiBookOpen className="w-3 h-3 text-theme-tertiary/30" />
+            <PiBookOpen className="w-3 h-3 text-theme-tertiary/30" />
             <div className="h-3 bg-theme-elevated rounded w-12"></div>
           </div>
         </div>
@@ -215,7 +220,7 @@ function StudentCardSkeleton() {
         {/* Rating */}
         <div className="flex justify-center space-x-1 pt-2">
           {Array.from({ length: 5 }).map((_, i) => (
-            <FiStar key={i} className="w-3 h-3 text-accent-yellow/30" />
+            <PiStar key={i} className="w-3 h-3 text-accent-yellow/30" />
           ))}
         </div>
 

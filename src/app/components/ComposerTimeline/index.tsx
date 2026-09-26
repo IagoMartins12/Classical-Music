@@ -2,8 +2,8 @@
 'use client';
 
 import { useMemo } from 'react';
-import { FiClock } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+import { GiGrandPiano } from 'react-icons/gi';
+import { PiClock, PiMusicNotes } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { ComposerTimelineCard } from '../ComposerTimelineCard';
 
@@ -137,10 +137,10 @@ export function ComposersTimeline({ composers }: Props) {
       <div className="text-center mb-16 animate-fade-in-up">
         <div className="flex items-center justify-center space-x-3 mb-6">
           <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-            <FiClock className="w-6 h-6 text-theme-primary" />
+            <PiClock className="w-6 h-6 text-theme-primary" />
           </div>
           <div className="text-6xl text-brand-primary/10">
-            <GiMusicalNotes />
+            <PiMusicNotes />
           </div>
           <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center shadow-theme-glow">
             <GiGrandPiano className="w-6 h-6 text-theme-primary" />
@@ -181,7 +181,7 @@ export function ComposersTimeline({ composers }: Props) {
           style={{ animationDelay: `${timelineData.length * 0.1}s` }}
         >
           <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto shadow-theme-glow">
-            <FiClock className="w-6 h-6 text-theme-primary" />
+            <PiClock className="w-6 h-6 text-theme-primary" />
           </div>
           <p className="text-theme-tertiary text-sm mt-3 classical-caption">
             {t('timeline_jsx_p_children_0__fim_linha_tempo')}

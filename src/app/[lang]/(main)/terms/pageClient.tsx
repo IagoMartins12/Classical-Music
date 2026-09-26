@@ -1,22 +1,21 @@
 'use client';
 
 import React from 'react';
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiShield,
-  FiFileText,
-  FiUpload,
-  FiUser,
-  FiHeart,
-  FiAlertCircle,
-  FiCheck,
-  FiMail,
-} from 'react-icons/fi';
-import {
-  GiMusicalNotes,
-  GiGrandPiano,
-  GiScrollQuill,
-  GiGavel,
-} from 'react-icons/gi';
+  PiCheck,
+  PiEnvelopeSimple,
+  PiFileText,
+  PiGavel,
+  PiHeart,
+  PiMusicNotes,
+  PiScales,
+  PiScroll,
+  PiShield,
+  PiUploadSimple,
+  PiUser,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Link from '@/app/components/LocalizedLink';
 
@@ -28,7 +27,6 @@ import {
   AnimatedCard,
   FloatingElement,
 } from '../../../components/animation/AnimatedComponents';
-import { FaBalanceScale } from 'react-icons/fa';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface TermsSection {
@@ -45,7 +43,7 @@ export default function TermsPage() {
     {
       id: 'acceptance',
       title: t('terms_section_0_title'),
-      icon: FiCheck,
+      icon: PiCheck,
       content: [
         t('terms_section_0_content_0'),
         t('terms_section_0_content_1'),
@@ -55,7 +53,7 @@ export default function TermsPage() {
     {
       id: 'use',
       title: t('terms_section_1_title'),
-      icon: FiUser,
+      icon: PiUser,
       content: [
         t('terms_section_1_content_0'),
         t('terms_section_1_content_1'),
@@ -66,7 +64,7 @@ export default function TermsPage() {
     {
       id: 'content',
       title: t('terms_section_2_title'),
-      icon: FiFileText,
+      icon: PiFileText,
       content: [
         t('terms_section_2_content_0'),
         t('terms_section_2_content_1'),
@@ -77,7 +75,7 @@ export default function TermsPage() {
     {
       id: 'uploads',
       title: t('terms_section_3_title'),
-      icon: FiUpload,
+      icon: PiUploadSimple,
       content: [
         t('terms_section_3_content_0'),
         t('terms_section_3_content_1'),
@@ -89,7 +87,7 @@ export default function TermsPage() {
     {
       id: 'user-conduct',
       title: t('terms_section_4_title'),
-      icon: FiShield,
+      icon: PiShield,
       content: [
         t('terms_section_4_content_0'),
         t('terms_section_4_content_1'),
@@ -101,7 +99,7 @@ export default function TermsPage() {
     {
       id: 'favorites',
       title: t('terms_section_5_title'),
-      icon: FiHeart,
+      icon: PiHeart,
       content: [
         t('terms_section_5_content_0'),
         t('terms_section_5_content_1'),
@@ -112,7 +110,7 @@ export default function TermsPage() {
     {
       id: 'limitations',
       title: t('terms_section_6_title'),
-      icon: FiAlertCircle,
+      icon: PiWarningCircle,
       content: [
         t('terms_section_6_content_0'),
         t('terms_section_6_content_1'),
@@ -123,7 +121,7 @@ export default function TermsPage() {
     {
       id: 'termination',
       title: t('terms_section_7_title'),
-      icon: GiGavel,
+      icon: PiGavel,
       content: [
         t('terms_section_7_content_0'),
         t('terms_section_7_content_1'),
@@ -145,7 +143,7 @@ export default function TermsPage() {
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
-                  <FiFileText className="w-5 h-5 text-brand-primary mr-2" />
+                  <PiFileText className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
                     {t('terms_jsx_span_children_0__termos_legais')}
                   </span>
@@ -169,7 +167,7 @@ export default function TermsPage() {
 
               <AnimatedItem direction="up" springType="gentle">
                 <div className="mt-8 inline-flex items-center space-x-2 text-theme-tertiary">
-                  <FiShield className="w-4 h-4" />
+                  <PiShield className="w-4 h-4" />
                   <span className="text-sm">
                     {t('terms_jsx_span_children_0__última_atualização')}{' '}
                     {lastUpdated}
@@ -190,7 +188,7 @@ export default function TermsPage() {
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className="flex flex-col md:flex-row items-start space-x-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <FaBalanceScale className="w-8 h-8 text-theme-primary" />
+                    <PiScales className="w-8 h-8 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-xl md:text-2xl font-bold classical-title text-theme-primary mb-4">
@@ -258,7 +256,7 @@ export default function TermsPage() {
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className="flex items-start flex-col md:flex-row space-x-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-xl flex items-center justify-center flex-shrink-0">
-                    <FiAlertCircle className="w-6 h-6 text-theme-primary" />
+                    <PiWarningCircle className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold classical-title text-theme-primary mb-4">
@@ -266,7 +264,7 @@ export default function TermsPage() {
                     </h3>
                     <ul className="space-y-3 text-theme-secondary">
                       <li className="flex items-start space-x-2">
-                        <FiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'terms_jsx_span_children_0__opus_atlas_plataforma'
@@ -274,7 +272,7 @@ export default function TermsPage() {
                         </span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <FiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'terms_jsx_span_children_0__respeitamos_direitos_autorais'
@@ -282,13 +280,13 @@ export default function TermsPage() {
                         </span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <FiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
                         <span>
                           {t('terms_jsx_span_children_0__valorizar_qualidade')}
                         </span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <FiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'terms_jsx_span_children_0__promovemos_comunidade_colaborativa'
@@ -316,7 +314,7 @@ export default function TermsPage() {
                 className="classical-card p-12 text-center"
               >
                 <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
-                  <FiMail className="w-10 h-10 text-theme-primary" />
+                  <PiEnvelopeSimple className="w-10 h-10 text-theme-primary" />
                 </div>
 
                 <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">
@@ -332,7 +330,7 @@ export default function TermsPage() {
                     href="/contact"
                     className="btn-classical-primary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
                   >
-                    <FiMail className="w-5 h-5" />
+                    <PiEnvelopeSimple className="w-5 h-5" />
                     <span>{t('terms_jsx_span_children_0__entre_contato')}</span>
                   </Link>
 
@@ -340,7 +338,7 @@ export default function TermsPage() {
                     href="/privacy"
                     className="btn-classical-secondary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
                   >
-                    <FiShield className="w-5 h-5" />
+                    <PiShield className="w-5 h-5" />
                     <span>
                       {t('terms_jsx_span_children_0__política_privacidade')}
                     </span>
@@ -352,7 +350,7 @@ export default function TermsPage() {
                     href="/faq"
                     className="flex items-center space-x-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                   >
-                    <FiFileText className="w-4 h-4" />
+                    <PiFileText className="w-4 h-4" />
                     <span className="text-sm">
                       {t('terms_jsx_span_children_0__perguntas_frequentes')}
                     </span>
@@ -361,7 +359,7 @@ export default function TermsPage() {
                     href="/help"
                     className="flex items-center space-x-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                   >
-                    <FiUser className="w-4 h-4" />
+                    <PiUser className="w-4 h-4" />
                     <span className="text-sm">
                       {t('terms_jsx_span_children_0__central_ajuda')}
                     </span>
@@ -378,7 +376,7 @@ export default function TermsPage() {
         className="top-16 left-16 text-6xl text-brand-primary/5"
         delay={0}
       >
-        <GiMusicalNotes />
+        <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
         className="bottom-16 right-16 text-5xl text-accent-purple/5"
@@ -390,13 +388,13 @@ export default function TermsPage() {
         className="top-1/3 right-24 text-4xl text-accent-blue/5"
         delay={1}
       >
-        <FaBalanceScale />
+        <PiScales />
       </FloatingElement>
       <FloatingElement
         className="bottom-1/3 left-24 text-4xl text-brand-secondary/5"
         delay={3}
       >
-        <GiScrollQuill />
+        <PiScroll />
       </FloatingElement>
     </PageContainer>
   );

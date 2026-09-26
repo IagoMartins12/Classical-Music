@@ -3,23 +3,23 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiSearch,
-  FiPlay,
-  FiCheck,
-  FiX,
-  FiAlertCircle,
-  FiExternalLink,
-  FiLoader,
-  FiTrash2,
-  FiCalendar,
-  FiMapPin,
-  FiDollarSign,
-  FiMusic,
-  FiShoppingCart,
-  FiChevronDown,
-  FiChevronUp,
-  FiEye,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiCalendarBlank,
+  PiCaretDown,
+  PiCaretUp,
+  PiCheck,
+  PiCurrencyDollar,
+  PiEye,
+  PiMagnifyingGlass,
+  PiMapPin,
+  PiMusicNotes,
+  PiPlay,
+  PiShoppingCart,
+  PiSpinnerGap,
+  PiTrash,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedItem,
@@ -370,7 +370,7 @@ export default function EventScraperModal({
     return (
       <Modal isOpen={isOpen} onClose={onClose}>
         <div className="p-6 text-center">
-          <FiLoader className="w-8 h-8 text-brand-primary animate-spin mx-auto mb-4" />
+          <PiSpinnerGap className="w-8 h-8 text-brand-primary animate-spin mx-auto mb-4" />
           <p className="text-theme-secondary">Carregando scrapers...</p>
         </div>
       </Modal>
@@ -402,7 +402,7 @@ export default function EventScraperModal({
           <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
-                <FiSearch className="w-5 h-5 text-theme-primary" />
+                <PiMagnifyingGlass className="w-5 h-5 text-theme-primary" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -478,7 +478,7 @@ export default function EventScraperModal({
                             {scraper.description}
                           </p>
                           <div className="flex items-center text-xs text-theme-tertiary">
-                            <FiMapPin className="w-3 h-3 mr-1" />
+                            <PiMapPin className="w-3 h-3 mr-1" />
                             {scraper.venue}
                           </div>
                         </div>
@@ -490,7 +490,7 @@ export default function EventScraperModal({
                           }`}
                         >
                           {selectedScraperId === scraper.id && (
-                            <FiCheck className="w-3 h-3 text-white" />
+                            <PiCheck className="w-3 h-3 text-white" />
                           )}
                         </div>
                       </div>
@@ -502,7 +502,7 @@ export default function EventScraperModal({
                   <Button
                     variant="primary"
                     size="lg"
-                    leftIcon={<FiPlay />}
+                    leftIcon={<PiPlay />}
                     onClick={() => handleRunScraper()}
                     disabled={!selectedScraperId || isScraping}
                   >
@@ -516,7 +516,7 @@ export default function EventScraperModal({
             {currentStep === 'scraping' && (
               <div className="p-6 text-center">
                 <AnimatedCard className="classical-card-2 p-8 max-w-md mx-auto">
-                  <FiLoader className="w-16 h-16 text-brand-primary animate-spin mx-auto mb-4" />
+                  <PiSpinnerGap className="w-16 h-16 text-brand-primary animate-spin mx-auto mb-4" />
                   <h3 className="text-lg font-bold text-theme-primary mb-2">
                     Buscando Eventos...
                   </h3>
@@ -635,15 +635,15 @@ export default function EventScraperModal({
                       className="w-full classical-card-simple p-4 flex items-center justify-between hover:border-yellow-500/30 transition-colors"
                     >
                       <div className="flex items-center space-x-2">
-                        <FiEye className="w-4 h-4 text-yellow-500" />
+                        <PiEye className="w-4 h-4 text-yellow-500" />
                         <span className="text-sm font-medium text-theme-primary">
                           Ver eventos duplicados ({duplicateEvents.length})
                         </span>
                       </div>
                       {showDuplicates ? (
-                        <FiChevronUp className="w-5 h-5 text-theme-tertiary" />
+                        <PiCaretUp className="w-5 h-5 text-theme-tertiary" />
                       ) : (
-                        <FiChevronDown className="w-5 h-5 text-theme-tertiary" />
+                        <PiCaretDown className="w-5 h-5 text-theme-tertiary" />
                       )}
                     </button>
 
@@ -731,16 +731,16 @@ export default function EventScraperModal({
                             </div>
                           )}
                           {event.status === 'processing' && (
-                            <FiLoader className="w-5 h-5 text-brand-primary animate-spin" />
+                            <PiSpinnerGap className="w-5 h-5 text-brand-primary animate-spin" />
                           )}
                           {event.status === 'success' && (
                             <div className="w-5 h-5 rounded-full bg-accent-green flex items-center justify-center">
-                              <FiCheck className="w-3 h-3 text-white" />
+                              <PiCheck className="w-3 h-3 text-white" />
                             </div>
                           )}
                           {event.status === 'error' && (
                             <div className="w-5 h-5 rounded-full bg-accent-red flex items-center justify-center">
-                              <FiX className="w-3 h-3 text-white" />
+                              <PiX className="w-3 h-3 text-white" />
                             </div>
                           )}
                         </div>
@@ -775,7 +775,7 @@ export default function EventScraperModal({
               <div className="p-6">
                 <div className="text-center mb-6">
                   <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                    <FiCheck className="w-8 h-8 text-white" />
+                    <PiCheck className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-lg font-bold text-theme-primary mb-2">
                     Importação Concluída!
@@ -838,14 +838,14 @@ export default function EventScraperModal({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           {result.status === 'success' && (
-                            <FiCheck className="w-4 h-4 text-green-500" />
+                            <PiCheck className="w-4 h-4 text-green-500" />
                           )}
                           {result.status === 'error' && (
-                            <FiX className="w-4 h-4 text-red-500" />
+                            <PiX className="w-4 h-4 text-red-500" />
                           )}
                           {(result.status === 'duplicate' ||
                             result.status === 'skipped') && (
-                            <FiAlertCircle className="w-4 h-4 text-yellow-500" />
+                            <PiWarningCircle className="w-4 h-4 text-yellow-500" />
                           )}
                           <span className="text-sm text-theme-primary">
                             {result.title}
@@ -906,7 +906,7 @@ const EventCard = ({
       <div className="flex-shrink-0 pt-1">
         {isDuplicate ? (
           <div className="w-5 h-5 rounded bg-yellow-500/20 flex items-center justify-center">
-            <FiAlertCircle className="w-3 h-3 text-yellow-500" />
+            <PiWarningCircle className="w-3 h-3 text-yellow-500" />
           </div>
         ) : (
           <Checkbox
@@ -940,23 +940,23 @@ const EventCard = ({
 
         <div className="grid grid-cols-2 gap-2 text-xs text-theme-secondary mb-2">
           <div className="flex items-center">
-            <FiCalendar className="w-3 h-3 mr-1" />
+            <PiCalendarBlank className="w-3 h-3 mr-1" />
             {new Date(event.startDate).toLocaleDateString('pt-BR')}
             {event.startTime && ` às ${event.startTime}`}
           </div>
           <div className="flex items-center">
-            <FiMusic className="w-3 h-3 mr-1" />
+            <PiMusicNotes className="w-3 h-3 mr-1" />
             {event.type}
           </div>
           {event.venueDetails && (
             <div className="flex items-center">
-              <FiMapPin className="w-3 h-3 mr-1" />
+              <PiMapPin className="w-3 h-3 mr-1" />
               {event.venueDetails}
             </div>
           )}
           {event.ticketInfo && (
             <div className="flex items-center">
-              <FiDollarSign className="w-3 h-3 mr-1" />
+              <PiCurrencyDollar className="w-3 h-3 mr-1" />
               {event.ticketInfo}
             </div>
           )}
@@ -981,7 +981,7 @@ const EventCard = ({
           className="text-theme-tertiary hover:text-accent-blue"
           title="Ver evento"
         >
-          <FiExternalLink className="w-4 h-4" />
+          <PiArrowSquareOut className="w-4 h-4" />
         </a>
 
         {event.ticketUrl !== event.externalUrl && (
@@ -992,7 +992,7 @@ const EventCard = ({
             className="text-theme-tertiary hover:text-accent-green"
             title="Comprar ingresso"
           >
-            <FiShoppingCart className="w-4 h-4" />
+            <PiShoppingCart className="w-4 h-4" />
           </a>
         )}
 
@@ -1002,7 +1002,7 @@ const EventCard = ({
             className="text-theme-tertiary hover:text-accent-red"
             title="Remover"
           >
-            <FiTrash2 className="w-4 h-4" />
+            <PiTrash className="w-4 h-4" />
           </button>
         )}
       </div>

@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { FiGlobe, FiRefreshCw } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano, GiGClef } from 'react-icons/gi';
+import { GiGrandPiano, GiGClef } from 'react-icons/gi';
+import { PiArrowsClockwise, PiGlobe, PiMusicNotes } from 'react-icons/pi';
 import Modal from '../Modal';
 
 interface TranslationLoadingModalProps {
@@ -32,17 +32,17 @@ export function TranslationLoadingModal({
     {
       pt: 'Salvando preferência de idioma...',
       en: 'Saving language preference...',
-      icon: FiGlobe,
+      icon: PiGlobe,
     },
     {
       pt: 'Carregando dados traduzidos...',
       en: 'Loading translated data...',
-      icon: GiMusicalNotes,
+      icon: PiMusicNotes,
     },
     {
       pt: 'Atualizando interface...',
       en: 'Updating interface...',
-      icon: FiRefreshCw,
+      icon: PiArrowsClockwise,
     },
     {
       pt: 'Finalizando...',
@@ -143,7 +143,7 @@ export function TranslationLoadingModal({
             className="absolute bottom-4 left-4 text-4xl text-accent-purple animate-pulse"
             style={{ animationDelay: '1s' }}
           >
-            <GiMusicalNotes />
+            <PiMusicNotes />
           </div>
         </div>
 
@@ -173,13 +173,13 @@ export function TranslationLoadingModal({
                 className="absolute -top-2 -right-2 w-4 h-4 text-accent-purple animate-bounce"
                 style={{ animationDelay: '0.2s' }}
               >
-                <GiMusicalNotes />
+                <PiMusicNotes />
               </div>
               <div
                 className="absolute -bottom-2 -left-2 w-3 h-3 text-accent-blue animate-bounce"
                 style={{ animationDelay: '0.8s' }}
               >
-                <GiMusicalNotes />
+                <PiMusicNotes />
               </div>
             </div>
           </div>

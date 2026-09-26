@@ -5,9 +5,7 @@ import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
-import { BiPlay } from 'react-icons/bi';
-import { FiColumns } from 'react-icons/fi';
-import { FaTrash } from 'react-icons/fa';
+import { PiColumns, PiPlay, PiTrash } from 'react-icons/pi';
 
 const VideoComparisonComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -41,7 +39,7 @@ const VideoComparisonComponent = (props: any) => {
         <div className="bg-accent-red text-white px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <FiColumns className="w-6 h-6" />
+              <PiColumns className="w-6 h-6" />
               <div>
                 <h4 className="font-bold">
                   {title || 'Comparação de Performances'}
@@ -59,7 +57,7 @@ const VideoComparisonComponent = (props: any) => {
                 className="p-2 bg-white/20 rounded-lg hover:bg-red-700 transition-colors"
                 title="Remover"
               >
-                <FaTrash className="w-4 h-4" />
+                <PiTrash className="w-4 h-4" />
               </button>
             )}
           </div>
@@ -82,7 +80,7 @@ const VideoComparisonComponent = (props: any) => {
                   {video1.description}
                 </p>
               </div>
-              <BiPlay className="w-5 h-5 text-accent-red" />
+              <PiPlay className="w-5 h-5 text-accent-red" />
             </div>
 
             <div className="aspect-video rounded-lg overflow-hidden shadow-theme-medium">
@@ -108,7 +106,7 @@ const VideoComparisonComponent = (props: any) => {
                   {video2.description}
                 </p>
               </div>
-              <BiPlay className="w-5 h-5 text-accent-red" />
+              <PiPlay className="w-5 h-5 text-accent-red" />
             </div>
 
             <div className="aspect-video rounded-lg overflow-hidden shadow-theme-medium">

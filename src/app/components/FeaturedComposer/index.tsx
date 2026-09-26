@@ -4,13 +4,12 @@
 import Image from '@/app/components/SmartImage';
 import Link from '@/app/components/LocalizedLink';
 import {
-  FiUser,
-  FiCalendar,
-  FiExternalLink,
-  FiMusic,
-  FiStar,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiArrowSquareOut,
+  PiCalendarBlank,
+  PiMusicNotes,
+  PiStar,
+  PiUser,
+} from 'react-icons/pi';
 import FavoriteButton from '../FavoriteButton';
 import VerificationBadge from '../Verification/VerificationBadge';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
@@ -84,7 +83,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
           {/* Header */}
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 bg-brand-gradient rounded-2xl flex items-center justify-center">
-              <GiMusicalNotes className="w-6 h-6 text-theme-primary" />
+              <PiMusicNotes className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -122,7 +121,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                     </Link>
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center border-4 border-brand-primary/20 group-hover:border-brand-primary/40 transition-all duration-500 shadow-theme-medium group-hover:shadow-theme-glow">
-                      <FiUser className="w-16 h-16 text-theme-inverse" />
+                      <PiUser className="w-16 h-16 text-theme-inverse" />
                     </div>
                   )}
 
@@ -162,7 +161,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
 
                 <div className="">
                   <span className="inline-flex items-center px-4 py-2 classical-card-simple text-theme-primary rounded-2xl text-sm font-semibold shadow-theme-medium">
-                    <FiCalendar className="w-4 h-4 mr-2 text-theme-primary" />
+                    <PiCalendarBlank className="w-4 h-4 mr-2 text-theme-primary" />
                     {composer.epochName &&
                       translateEpochWithHook(composer.epochName, t)}
                   </span>
@@ -179,7 +178,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                     className="inline-flex items-center px-4 py-2 bg-accent-blue/10 border border-accent-blue/20 text-accent-blue rounded-xl text-sm font-medium hover:bg-accent-blue/20 hover:scale-105 transition-all duration-300 group/link"
                   >
                     Wikipedia
-                    <FiExternalLink className="w-3 h-3 ml-2 opacity-60 group-hover/link:opacity-100" />
+                    <PiArrowSquareOut className="w-3 h-3 ml-2 opacity-60 group-hover/link:opacity-100" />
                   </a>
                 )}
                 {composer.permLinkImslp && (
@@ -190,7 +189,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                     className="inline-flex items-center px-4 py-2 bg-accent-green/10 border border-accent-green/20 text-accent-green rounded-xl text-sm font-medium hover:bg-accent-green/20 hover:scale-105 transition-all duration-300 group/link"
                   >
                     IMSLP
-                    <FiExternalLink className="w-3 h-3 ml-2 opacity-60 group-hover/link:opacity-100" />
+                    <PiArrowSquareOut className="w-3 h-3 ml-2 opacity-60 group-hover/link:opacity-100" />
                   </a>
                 )}
               </div>
@@ -202,7 +201,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
               {composer.bio && (
                 <div className="space-y-4">
                   <h4 className="text-xl font-bold text-theme-primary classical-title flex items-center gap-2">
-                    <FiUser className="w-5 h-5 text-brand-primary" />
+                    <PiUser className="w-5 h-5 text-brand-primary" />
                     {t('featured_composer_biography')}
                   </h4>
                   <p className="text-theme-secondary leading-relaxed text-lg">
@@ -215,7 +214,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
               {composer.curiosities && composer.curiosities.length > 0 && (
                 <div className="space-y-4">
                   <h4 className="text-xl font-bold text-theme-primary classical-title flex items-center gap-2">
-                    <FiStar className="w-5 h-5 text-brand-primary" />
+                    <PiStar className="w-5 h-5 text-brand-primary" />
                     {t('featured_composer_curiosities')}
                   </h4>
                   <div className="flex flex-wrap gap-3">
@@ -245,7 +244,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
               {composer.works.length > 0 && (
                 <div className="space-y-4">
                   <h4 className="text-xl font-bold text-theme-primary classical-title flex items-center gap-2">
-                    <FiMusic className="w-5 h-5 text-brand-primary" />
+                    <PiMusicNotes className="w-5 h-5 text-brand-primary" />
                     {t('featured_composer_works')}
                   </h4>
                   <div className="grid gap-3">
@@ -259,7 +258,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                             </span>
                           </div>
                           <div className="text-theme-tertiary hover:text-brand-primary transition-colors">
-                            <FiExternalLink className="w-4 h-4" />
+                            <PiArrowSquareOut className="w-4 h-4" />
                           </div>
                         </div>
                       </Link>
@@ -295,7 +294,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
 
           {/* Floating decoration */}
           <div className="absolute top-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity duration-500">
-            <GiMusicalNotes className="w-8 h-8 text-brand-primary" />
+            <PiMusicNotes className="w-8 h-8 text-brand-primary" />
           </div>
         </div>
       </div>

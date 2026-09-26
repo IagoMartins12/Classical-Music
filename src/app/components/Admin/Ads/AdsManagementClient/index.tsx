@@ -3,24 +3,24 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiPlus,
-  FiSearch,
-  FiEye,
-  FiEdit,
-  FiTrash2,
-  FiPlay,
-  FiPause,
-  FiBarChart2,
-  FiImage,
-  FiVideo,
-  FiTarget,
-  FiTrendingUp,
-  FiRefreshCw,
-  FiMessageCircle,
-  FiUpload,
-  FiAlertTriangle,
-  FiCopy, // 🆕 Ícone de clonagem
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiChartBar,
+  PiChatCircle,
+  PiCopy,
+  PiEye,
+  PiImage,
+  PiMagnifyingGlass,
+  PiNotePencil,
+  PiPause,
+  PiPlay,
+  PiPlus,
+  PiTarget,
+  PiTrash,
+  PiTrendUp,
+  PiUploadSimple,
+  PiVideoCamera,
+  PiWarning,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -206,13 +206,13 @@ export default function AdsManagementClient() {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'VIDEO':
-        return FiVideo;
+        return PiVideoCamera;
       case 'BANNER':
-        return FiImage;
+        return PiImage;
       case 'CARD':
-        return FiTarget;
+        return PiTarget;
       default:
-        return FiImage;
+        return PiImage;
     }
   };
 
@@ -254,7 +254,7 @@ export default function AdsManagementClient() {
             <div className="text-center py-8">
               <div className="flex items-center justify-center mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-pink rounded-3xl flex items-center justify-center shadow-theme-glow">
-                  <FiTarget className="w-8 h-8 text-white" />
+                  <PiTarget className="w-8 h-8 text-white" />
                 </div>
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -280,7 +280,7 @@ export default function AdsManagementClient() {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-accent-blue/20 rounded-xl flex items-center justify-center">
-                    <FiTarget className="w-6 h-6 text-accent-blue" />
+                    <PiTarget className="w-6 h-6 text-accent-blue" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -294,7 +294,7 @@ export default function AdsManagementClient() {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-accent-green/20 rounded-xl flex items-center justify-center">
-                    <FiPlay className="w-6 h-6 text-accent-green" />
+                    <PiPlay className="w-6 h-6 text-accent-green" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -310,7 +310,7 @@ export default function AdsManagementClient() {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-accent-purple/20 rounded-xl flex items-center justify-center">
-                    <FiEye className="w-6 h-6 text-accent-purple" />
+                    <PiEye className="w-6 h-6 text-accent-purple" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -326,7 +326,7 @@ export default function AdsManagementClient() {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-accent-amber/20 rounded-xl flex items-center justify-center">
-                    <FiTrendingUp className="w-6 h-6 text-accent-amber" />
+                    <PiTrendUp className="w-6 h-6 text-accent-amber" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -339,7 +339,7 @@ export default function AdsManagementClient() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1">
                 {/* Search */}
                 <div className="relative flex-1 max-w-md">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                   <Input
                     type="text"
                     placeholder="Buscar anúncios..."
@@ -386,7 +386,9 @@ export default function AdsManagementClient() {
                   variant="ghost"
                   size="sm"
                   leftIcon={
-                    <FiRefreshCw className={loading ? 'animate-spin' : ''} />
+                    <PiArrowsClockwise
+                      className={loading ? 'animate-spin' : ''}
+                    />
                   }
                   onClick={() => {
                     fetchAds(1, filters);
@@ -399,7 +401,7 @@ export default function AdsManagementClient() {
 
                 <Button
                   variant="primary"
-                  leftIcon={<FiPlus />}
+                  leftIcon={<PiPlus />}
                   onClick={() => setShowCreateModal(true)}
                 >
                   Novo Anúncio
@@ -417,7 +419,7 @@ export default function AdsManagementClient() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    leftIcon={<FiPlay />}
+                    leftIcon={<PiPlay />}
                     onClick={() => handleBulkAction('ACTIVE')}
                   >
                     Ativar
@@ -425,7 +427,7 @@ export default function AdsManagementClient() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    leftIcon={<FiPause />}
+                    leftIcon={<PiPause />}
                     onClick={() => handleBulkAction('PAUSED')}
                   >
                     Pausar
@@ -433,7 +435,7 @@ export default function AdsManagementClient() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    leftIcon={<FiTrash2 />}
+                    leftIcon={<PiTrash />}
                     onClick={() => handleBulkAction('delete')}
                     className="text-accent-red hover:text-accent-red"
                   >
@@ -529,7 +531,7 @@ export default function AdsManagementClient() {
                                   {ad.title}
                                 </h3>
                                 {!hasMedia(ad) && (
-                                  <FiAlertTriangle
+                                  <PiWarning
                                     className="w-4 h-4 text-accent-amber"
                                     title="Sem mídia"
                                   />
@@ -542,7 +544,7 @@ export default function AdsManagementClient() {
                                 {ad.linkType === 'whatsapp' && (
                                   <>
                                     <span>•</span>
-                                    <FiMessageCircle className="w-3 h-3" />
+                                    <PiChatCircle className="w-3 h-3" />
                                   </>
                                 )}
                               </div>
@@ -566,10 +568,10 @@ export default function AdsManagementClient() {
                         <td className="py-3 px-2">
                           <div className="flex items-center space-x-1">
                             {ad.imageUrl && (
-                              <FiImage className="w-4 h-4 text-accent-green" />
+                              <PiImage className="w-4 h-4 text-accent-green" />
                             )}
                             {ad.videoUrl && (
-                              <FiVideo className="w-4 h-4 text-accent-blue" />
+                              <PiVideoCamera className="w-4 h-4 text-accent-blue" />
                             )}
                             {!hasMedia(ad) && (
                               <span className="text-xs text-accent-red">
@@ -594,7 +596,7 @@ export default function AdsManagementClient() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              leftIcon={<FiCopy />}
+                              leftIcon={<PiCopy />}
                               onClick={() => handleCloneAd(ad)}
                               title="Clonar anúncio"
                               className="text-accent-purple hover:text-accent-purple"
@@ -602,7 +604,7 @@ export default function AdsManagementClient() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              leftIcon={<FiUpload />}
+                              leftIcon={<PiUploadSimple />}
                               onClick={() => setMediaAd(ad)}
                               title="Gerenciar mídia"
                               className={
@@ -612,14 +614,14 @@ export default function AdsManagementClient() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              leftIcon={<FiBarChart2 />}
+                              leftIcon={<PiChartBar />}
                               onClick={() => setStatsAd(ad)}
                               title="Ver estatísticas"
                             />
                             <Button
                               variant="ghost"
                               size="sm"
-                              leftIcon={<FiEdit />}
+                              leftIcon={<PiNotePencil />}
                               onClick={() => setEditingAd(ad)}
                               title="Editar"
                             />
@@ -627,7 +629,7 @@ export default function AdsManagementClient() {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                leftIcon={<FiPause />}
+                                leftIcon={<PiPause />}
                                 onClick={() =>
                                   handleStatusChange(ad.id, 'PAUSED')
                                 }
@@ -637,7 +639,7 @@ export default function AdsManagementClient() {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                leftIcon={<FiPlay />}
+                                leftIcon={<PiPlay />}
                                 onClick={() =>
                                   handleStatusChange(ad.id, 'ACTIVE')
                                 }
@@ -648,7 +650,7 @@ export default function AdsManagementClient() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              leftIcon={<FiTrash2 />}
+                              leftIcon={<PiTrash />}
                               onClick={() => handleDeleteAd(ad.id)}
                               className="text-accent-red hover:text-accent-red"
                               title="Deletar"
@@ -663,7 +665,7 @@ export default function AdsManagementClient() {
 
               {ads.length === 0 && !loading && (
                 <div className="text-center py-12">
-                  <FiTarget className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                  <PiTarget className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                   <h3 className="text-xl font-medium text-theme-primary mb-2">
                     Nenhum anúncio encontrado
                   </h3>
@@ -674,7 +676,7 @@ export default function AdsManagementClient() {
                   </p>
                   <Button
                     variant="primary"
-                    leftIcon={<FiPlus />}
+                    leftIcon={<PiPlus />}
                     onClick={() => setShowCreateModal(true)}
                   >
                     Criar Anúncio

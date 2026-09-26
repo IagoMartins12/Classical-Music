@@ -5,13 +5,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { deleteTag } from '@/app/requests/blog/admin-actions';
 import {
-  FiEdit,
-  FiTrash2,
-  FiEye,
-  FiAlertCircle,
-  FiSearch,
-  FiTag,
-} from 'react-icons/fi';
+  PiEye,
+  PiMagnifyingGlass,
+  PiNotePencil,
+  PiTag,
+  PiTrash,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 
 interface Tag {
@@ -69,7 +69,7 @@ export function TagList({ tags: tags }: TagListProps) {
   if (tags.length === 0) {
     return (
       <div className="classical-card p-12 text-center">
-        <FiAlertCircle className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+        <PiWarningCircle className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
         <h3 className="text-xl font-semibold text-theme-primary mb-2">
           Nenhuma tag criada
         </h3>
@@ -80,7 +80,7 @@ export function TagList({ tags: tags }: TagListProps) {
           href="/blog/admin/tags/create"
           className="btn-classical-primary inline-flex items-center space-x-2"
         >
-          <FiTag className="w-4 h-4" />
+          <PiTag className="w-4 h-4" />
           <span>Criar Primeira Tag</span>
         </Link>
       </div>
@@ -92,7 +92,7 @@ export function TagList({ tags: tags }: TagListProps) {
       {/* Search Bar */}
       <div className="classical-card p-4 mb-6">
         <form onSubmit={handleSearch} className="relative">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+          <PiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
           <input
             type="text"
             value={searchTerm}
@@ -119,7 +119,7 @@ export function TagList({ tags: tags }: TagListProps) {
                   color: tag.color || '#d4af37',
                 }}
               >
-                <FiTag className="w-6 h-6" />
+                <PiTag className="w-6 h-6" />
               </div>
 
               <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -129,7 +129,7 @@ export function TagList({ tags: tags }: TagListProps) {
                   className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary hover:text-brand-primary transition-all"
                   title="Ver tag"
                 >
-                  <FiEye className="w-4 h-4" />
+                  <PiEye className="w-4 h-4" />
                 </Link>
 
                 <Link
@@ -137,7 +137,7 @@ export function TagList({ tags: tags }: TagListProps) {
                   className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary hover:text-blue-500 transition-all"
                   title="Editar"
                 >
-                  <FiEdit className="w-4 h-4" />
+                  <PiNotePencil className="w-4 h-4" />
                 </Link>
 
                 <button
@@ -146,7 +146,7 @@ export function TagList({ tags: tags }: TagListProps) {
                   title="Deletar"
                   disabled={tag._count.articles > 0}
                 >
-                  <FiTrash2 className="w-4 h-4" />
+                  <PiTrash className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -180,7 +180,7 @@ export function TagList({ tags: tags }: TagListProps) {
 
       {filteredTags.length === 0 && searchTerm && (
         <div className="classical-card p-12 text-center">
-          <FiSearch className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+          <PiMagnifyingGlass className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-theme-primary mb-2">
             Nenhuma tag encontrada
           </h3>
@@ -194,7 +194,7 @@ export function TagList({ tags: tags }: TagListProps) {
           <div className="bg-theme-secondary rounded-2xl max-w-md w-full p-6 shadow-2xl">
             <div className="flex items-start space-x-4">
               <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
-                <FiAlertCircle className="w-6 h-6 text-red-500" />
+                <PiWarningCircle className="w-6 h-6 text-red-500" />
               </div>
 
               <div className="flex-1">

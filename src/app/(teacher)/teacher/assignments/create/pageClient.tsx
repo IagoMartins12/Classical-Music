@@ -4,22 +4,22 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import {
-  FiUser,
-  FiSave,
-  FiX,
-  FiPlus,
-  FiTarget,
-  FiBookOpen,
-  FiAlertCircle,
-  FiRefreshCw,
-  FiArrowLeft,
-  FiCalendar,
-  FiClock,
-  FiMusic,
-  FiHeadphones,
-  FiEdit3,
-  FiMic,
-} from 'react-icons/fi';
+  PiArrowLeft,
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiClock,
+  PiFloppyDisk,
+  PiHeadphones,
+  PiMicrophone,
+  PiMusicNotes,
+  PiPencilLine,
+  PiPlus,
+  PiTarget,
+  PiUser,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -46,12 +46,12 @@ interface CreateAssignmentPageClientProps {
 }
 
 const typeIcons = {
-  practice: FiTarget,
-  theory: FiBookOpen,
-  listening: FiHeadphones,
-  composition: FiEdit3,
-  performance: FiMic,
-  reading: FiMusic,
+  practice: PiTarget,
+  theory: PiBookOpen,
+  listening: PiHeadphones,
+  composition: PiPencilLine,
+  performance: PiMicrophone,
+  reading: PiMusicNotes,
 };
 
 // const ASSIGNMENT_TYPES = {
@@ -391,7 +391,7 @@ export default function CreateAssignmentPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiAlertCircle className="w-8 h-8 text-theme-primary" />
+              <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('error_loading_data')}
@@ -419,7 +419,7 @@ export default function CreateAssignmentPageClient({
                 href="/teacher/assignments"
                 className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
               >
-                <FiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-gradient-brand classical-title">
@@ -700,7 +700,7 @@ export default function CreateAssignmentPageClient({
                         onClick={() => addArrayField('practiceGoals')}
                         className="text-brand-primary hover:text-brand-secondary text-sm flex items-center space-x-1"
                       >
-                        <FiPlus className="w-3 h-3" />
+                        <PiPlus className="w-3 h-3" />
                         <span>{t('add')}</span>
                       </button>
                     </div>
@@ -732,7 +732,7 @@ export default function CreateAssignmentPageClient({
                               }
                               className="text-accent-red"
                             >
-                              <FiX className="w-4 h-4" />
+                              <PiX className="w-4 h-4" />
                             </button>
                           )}
                         </div>
@@ -744,7 +744,7 @@ export default function CreateAssignmentPageClient({
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-bold text-theme-primary classical-title flex items-center space-x-2">
-                        <FiMusic className="w-5 h-5" />
+                        <PiMusicNotes className="w-5 h-5" />
                         <span>{t('musical_pieces')}</span>
                       </h3>
                       <div className="text-sm text-theme-secondary">
@@ -802,7 +802,7 @@ export default function CreateAssignmentPageClient({
                               onClick={() => addArrayField('technicalGoals')}
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
-                              <FiPlus className="w-3 h-3" />
+                              <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
                             </button>
                           </div>
@@ -834,7 +834,7 @@ export default function CreateAssignmentPageClient({
                                     }
                                     className="text-accent-red"
                                   >
-                                    <FiX className="w-4 h-4" />
+                                    <PiX className="w-4 h-4" />
                                   </button>
                                 )}
                               </div>
@@ -853,7 +853,7 @@ export default function CreateAssignmentPageClient({
                               onClick={() => addArrayField('musicalGoals')}
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
-                              <FiPlus className="w-3 h-3" />
+                              <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
                             </button>
                           </div>
@@ -885,7 +885,7 @@ export default function CreateAssignmentPageClient({
                                     }
                                     className="text-accent-red"
                                   >
-                                    <FiX className="w-4 h-4" />
+                                    <PiX className="w-4 h-4" />
                                   </button>
                                 )}
                               </div>
@@ -904,7 +904,7 @@ export default function CreateAssignmentPageClient({
                               onClick={() => addArrayField('exercises')}
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
-                              <FiPlus className="w-3 h-3" />
+                              <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
                             </button>
                           </div>
@@ -936,7 +936,7 @@ export default function CreateAssignmentPageClient({
                                     }
                                     className="text-accent-red"
                                   >
-                                    <FiX className="w-4 h-4" />
+                                    <PiX className="w-4 h-4" />
                                   </button>
                                 )}
                               </div>
@@ -951,7 +951,7 @@ export default function CreateAssignmentPageClient({
                   {error && (
                     <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
                       <div className="flex items-center space-x-3">
-                        <FiAlertCircle className="w-5 h-5 text-accent-red" />
+                        <PiWarningCircle className="w-5 h-5 text-accent-red" />
                         <div>
                           <p className="text-accent-red font-medium">
                             {t('error_creating')}
@@ -963,7 +963,7 @@ export default function CreateAssignmentPageClient({
                           onClick={clearError}
                           className="ml-auto text-accent-red"
                         >
-                          <FiX className="w-4 h-4" />
+                          <PiX className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -987,9 +987,9 @@ export default function CreateAssignmentPageClient({
                       className="btn-classical-primary flex items-center space-x-2"
                       leftIcon={
                         loading?.createAssignment ? (
-                          <FiRefreshCw className="w-4 h-4 animate-spin" />
+                          <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                         ) : (
-                          <FiSave className="w-4 h-4" />
+                          <PiFloppyDisk className="w-4 h-4" />
                         )
                       }
                     >
@@ -1029,7 +1029,7 @@ export default function CreateAssignmentPageClient({
                         </div>
                       ) : (
                         <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                          <FiUser className="w-6 h-6 text-theme-primary" />
+                          <PiUser className="w-6 h-6 text-theme-primary" />
                         </div>
                       )}
                       <div>
@@ -1078,7 +1078,7 @@ export default function CreateAssignmentPageClient({
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
                   <h3 className="text-lg font-bold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                    <FiMusic className="w-5 h-5" />
+                    <PiMusicNotes className="w-5 h-5" />
                     <span>{t('selected_pieces')}</span>
                   </h3>
 
@@ -1089,7 +1089,7 @@ export default function CreateAssignmentPageClient({
                         className="flex items-center space-x-3 p-3 bg-theme-elevated/50 rounded-lg"
                       >
                         <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <FiMusic className="w-4 h-4 text-accent-blue" />
+                          <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-theme-primary text-sm truncate">
@@ -1140,7 +1140,7 @@ export default function CreateAssignmentPageClient({
                   {initialData.assignmentTypes.map((type) => {
                     const IconComponent =
                       typeIcons[type.value as keyof typeof typeIcons] ||
-                      FiTarget;
+                      PiTarget;
                     const isSelected = formData.type === type.value;
 
                     return (
@@ -1188,23 +1188,23 @@ export default function CreateAssignmentPageClient({
                 </h3>
                 <div className="space-y-3 text-sm text-theme-secondary">
                   <div className="flex items-start space-x-2">
-                    <FiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('be_specific_goals')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <FiMusic className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiMusicNotes className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('link_musical_pieces')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <FiClock className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiClock className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('realistic_time')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <FiCalendar className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiCalendarBlank className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('clear_deadlines')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <FiAlertCircle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
+                    <PiWarningCircle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
                     <p>{t('fill_required_fields')}</p>
                   </div>
                 </div>

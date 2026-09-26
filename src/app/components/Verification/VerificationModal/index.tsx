@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiCheck, FiShield } from 'react-icons/fi';
+import { PiCheck, PiShield } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Modal from '../../Modal';
@@ -87,7 +87,7 @@ export default function VerificationModal({
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-accent-blue/20 rounded-xl flex items-center justify-center">
-                <FiShield className="w-5 h-5 text-accent-blue" />
+                <PiShield className="w-5 h-5 text-accent-blue" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
@@ -114,7 +114,7 @@ export default function VerificationModal({
                 >
                   {currentVerificationStatus ? (
                     <>
-                      <FiCheck className="w-3 h-3" />
+                      <PiCheck className="w-3 h-3" />
                       <span>{t('verification_modal_verificado')}</span>
                     </>
                   ) : (
@@ -164,7 +164,7 @@ export default function VerificationModal({
                 variant="primary"
                 onClick={() => handleSubmit(true)}
                 disabled={isSubmitting}
-                leftIcon={<FiCheck />}
+                leftIcon={<PiCheck />}
               >
                 {isSubmitting
                   ? t('verification_modal_verificando')

@@ -2,7 +2,7 @@
 import { useAuth } from '@/app/hooks/useAuth';
 import { useRegisterModal } from '@/app/stores/authStore';
 import { Language } from '@/app/utils/translations/serverTranslations';
-import { FiMusic, FiUsers } from 'react-icons/fi';
+import { PiMusicNotes, PiUsers } from 'react-icons/pi';
 
 interface buttonProps {
   language: Language;
@@ -22,7 +22,7 @@ const AboutUsButton: React.FC<buttonProps> = ({ action, language }) => {
           openRegisterModal();
         }}
       >
-        <FiMusic className="w-5 h-5" />
+        <PiMusicNotes className="w-5 h-5" />
         <span>{language === 'pt' ? 'Comece Agora' : 'Start now'}</span>
       </button>
     );
@@ -37,7 +37,7 @@ const AboutUsButton: React.FC<buttonProps> = ({ action, language }) => {
           openRegisterModal();
         }}
       >
-        <FiUsers className="w-5 h-5" />
+        <PiUsers className="w-5 h-5" />
         <span>
           {language === 'pt' ? 'Criar Conta Gratuita' : 'Create Free Account'}
         </span>

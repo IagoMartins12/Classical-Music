@@ -3,18 +3,18 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  FiZoomIn,
-  FiZoomOut,
-  FiMaximize2,
-  FiMonitor,
-  FiTablet,
-  FiSmartphone,
-  FiRotateCw,
-  FiMove,
-  FiX,
-} from 'react-icons/fi';
+  PiArrowClockwise,
+  PiArrowsOut,
+  PiArrowsOutCardinal,
+  PiCheck,
+  PiDeviceMobile,
+  PiDeviceTablet,
+  PiMagnifyingGlassMinus,
+  PiMagnifyingGlassPlus,
+  PiMonitor,
+  PiX,
+} from 'react-icons/pi';
 import Button from '../../Common/Button';
-import { BiCheck } from 'react-icons/bi';
 import Modal from '../../Modal';
 
 interface CoverCropperProps {
@@ -286,7 +286,7 @@ export default function CoverCropper({
                   onTouchEnd={handleMouseUp}
                 />
                 <div className="absolute top-4 left-4 text-white text-xs bg-black/60 px-3 py-1 rounded-full flex items-center space-x-2">
-                  <FiMove className="w-3 h-3" />
+                  <PiArrowsOutCardinal className="w-3 h-3" />
                   <span>Arraste para mover</span>
                 </div>
                 <div className="absolute top-4 right-4 text-white text-xs bg-black/60 px-3 py-1 rounded-full">
@@ -309,7 +309,7 @@ export default function CoverCropper({
                         className="p-2 bg-theme-classical hover:bg-interactive-hover rounded-lg transition-colors"
                         title="Diminuir zoom"
                       >
-                        <FiZoomOut className="w-4 h-4 text-theme-primary" />
+                        <PiMagnifyingGlassMinus className="w-4 h-4 text-theme-primary" />
                       </button>
                       <button
                         type="button"
@@ -317,7 +317,7 @@ export default function CoverCropper({
                         className="p-2 bg-theme-classical hover:bg-interactive-hover rounded-lg transition-colors"
                         title="Resetar"
                       >
-                        <FiMaximize2 className="w-4 h-4 text-theme-primary" />
+                        <PiArrowsOut className="w-4 h-4 text-theme-primary" />
                       </button>
                       <button
                         type="button"
@@ -325,7 +325,7 @@ export default function CoverCropper({
                         className="p-2 bg-theme-classical hover:bg-interactive-hover rounded-lg transition-colors"
                         title="Aumentar zoom"
                       >
-                        <FiZoomIn className="w-4 h-4 text-theme-primary" />
+                        <PiMagnifyingGlassPlus className="w-4 h-4 text-theme-primary" />
                       </button>
                     </div>
                   </div>
@@ -351,7 +351,7 @@ export default function CoverCropper({
                     onClick={handleRotate}
                     className="px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary-hover transition-colors flex items-center space-x-2"
                   >
-                    <FiRotateCw className="w-4 h-4" />
+                    <PiArrowClockwise className="w-4 h-4" />
                     <span>Girar 90°</span>
                   </button>
                 </div>
@@ -384,7 +384,7 @@ export default function CoverCropper({
                   }`}
                   title="Desktop"
                 >
-                  <FiMonitor className="w-5 h-5" />
+                  <PiMonitor className="w-5 h-5" />
                 </button>
                 <button
                   type="button"
@@ -396,7 +396,7 @@ export default function CoverCropper({
                   }`}
                   title="Tablet"
                 >
-                  <FiTablet className="w-5 h-5" />
+                  <PiDeviceTablet className="w-5 h-5" />
                 </button>
                 <button
                   type="button"
@@ -408,7 +408,7 @@ export default function CoverCropper({
                   }`}
                   title="Mobile"
                 >
-                  <FiSmartphone className="w-5 h-5" />
+                  <PiDeviceMobile className="w-5 h-5" />
                 </button>
               </div>
 
@@ -465,7 +465,7 @@ export default function CoverCropper({
               <Button
                 variant="primary"
                 onClick={handleConfirm}
-                leftIcon={<BiCheck className="w-4 h-4" />}
+                leftIcon={<PiCheck className="w-4 h-4" />}
                 className="w-full"
               >
                 <span>Confirmar Recorte</span>
@@ -474,7 +474,7 @@ export default function CoverCropper({
                 type="button"
                 variant="secondary"
                 onClick={onCancel}
-                leftIcon={<FiX className="w-4 h-4" />}
+                leftIcon={<PiX className="w-4 h-4" />}
                 className="w-full"
               >
                 <span>Cancelar</span>

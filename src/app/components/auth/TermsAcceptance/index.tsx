@@ -3,12 +3,12 @@
 
 import React, { useState } from 'react';
 import {
-  FiCheckSquare,
-  FiSquare,
-  FiShield,
-  FiFileText,
-  FiAlertCircle,
-} from 'react-icons/fi';
+  PiCheckSquare,
+  PiFileText,
+  PiShield,
+  PiSquare,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Modal from '../../Modal';
 
@@ -43,12 +43,12 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
 
   const privacyContent: TermsContent = {
     title: t('privacy_policy_title'),
-    icon: <FiShield className="w-5 h-5 text-brand-primary" />,
+    icon: <PiShield className="w-5 h-5 text-brand-primary" />,
     content: (
       <div className="space-y-6 text-sm text-theme-secondary leading-relaxed">
         <div className="rounded-lg p-4">
           <h4 className="font-semibold text-accent-blue mb-2 flex items-center">
-            <FiShield className="w-4 h-4 mr-2" />
+            <PiShield className="w-4 h-4 mr-2" />
             {t('privacy_policy_summary_title')}
           </h4>
           <p className="text-accent-blue/90">
@@ -134,12 +134,12 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
 
   const termsContent: TermsContent = {
     title: t('terms_of_use_title'),
-    icon: <FiFileText className="w-5 h-5 text-brand-primary" />,
+    icon: <PiFileText className="w-5 h-5 text-brand-primary" />,
     content: (
       <div className="space-y-6 text-sm text-theme-secondary leading-relaxed">
         <div className="bg-theme-elevated rounded-lg p-4">
           <h4 className="font-semibold text-accent-purple mb-2 flex items-center">
-            <FiFileText className="w-4 h-4 mr-2" />
+            <PiFileText className="w-4 h-4 mr-2" />
             {t('terms_of_use_summary_title')}
           </h4>
           <p className="text-accent-purple/90">
@@ -245,9 +245,9 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
         >
           <div className="flex items-center">
             {accepted ? (
-              <FiCheckSquare className="w-5 h-5 text-accent-green" />
+              <PiCheckSquare className="w-5 h-5 text-accent-green" />
             ) : (
-              <FiSquare className="w-5 h-5 text-theme-tertiary" />
+              <PiSquare className="w-5 h-5 text-theme-tertiary" />
             )}
           </div>
 
@@ -284,7 +284,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
         {/* Mensagem de Erro */}
         {error && (
           <div className="flex items-center space-x-2 text-red-500 text-sm">
-            <FiAlertCircle className="w-4 h-4 flex-shrink-0" />
+            <PiWarningCircle className="w-4 h-4 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}

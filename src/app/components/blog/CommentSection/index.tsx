@@ -6,17 +6,17 @@ import { useState, useEffect, useCallback, memo } from 'react';
 import { useSession } from '@/app/libs/session';
 import Image from '@/app/components/SmartImage';
 import {
-  BiComment,
-  BiSend,
-  BiLike,
-  BiSolidLike,
-  BiFlag,
-  BiEdit,
-  BiTrash,
-  BiInfoCircle,
-} from 'react-icons/bi';
-import { FaUser } from 'react-icons/fa';
-import { FiAlertTriangle } from 'react-icons/fi';
+  PiChatCircle,
+  PiFlag,
+  PiInfo,
+  PiNotePencil,
+  PiPaperPlaneRight,
+  PiThumbsUp,
+  PiThumbsUpFill,
+  PiTrash,
+  PiUser,
+  PiWarning,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import Modal from '@/app/components/Modal';
 import {
@@ -126,7 +126,7 @@ const CommentItem = memo(
         >
           <div className="bg-gray-100 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-300 dark:border-gray-700">
             <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
-              <FiAlertTriangle className="w-5 h-5" />
+              <PiWarning className="w-5 h-5" />
               <span className="text-sm font-medium">
                 {isRejected
                   ? 'Comentário removido por violar nossas diretrizes'
@@ -160,7 +160,7 @@ const CommentItem = memo(
               <div
                 className={`${isReply ? 'w-8 h-8' : 'w-10 h-10'} rounded-full bg-theme-classical flex items-center justify-center`}
               >
-                <FaUser
+                <PiUser
                   className={`${isReply ? 'w-4 h-4' : 'w-5 h-5'} text-brand-primary`}
                 />
               </div>
@@ -173,7 +173,7 @@ const CommentItem = memo(
             {isOwner && (isRejected || isSpam || isFlagged || isPending) && (
               <div className="mb-3 p-2 bg-yellow-50/50 dark:bg-yellow-900/10 rounded-lg border border-yellow-200 dark:border-yellow-800">
                 <div className="flex items-center space-x-2 text-yellow-700 dark:text-yellow-400">
-                  <BiInfoCircle className="w-4 h-4" />
+                  <PiInfo className="w-4 h-4" />
                   <span className="text-xs">
                     {isPending && 'Seu comentário está aguardando aprovação'}
                     {isFlagged &&
@@ -237,9 +237,9 @@ const CommentItem = memo(
                   className="flex items-center gap-1 text-xs text-theme-tertiary hover:text-brand-primary transition-colors"
                 >
                   {comment.userLiked ? (
-                    <BiSolidLike className="w-3.5 h-3.5" />
+                    <PiThumbsUpFill className="w-3.5 h-3.5" />
                   ) : (
-                    <BiLike className="w-3.5 h-3.5" />
+                    <PiThumbsUp className="w-3.5 h-3.5" />
                   )}
                   <span>{comment._count?.likes || 0}</span>
                 </button>
@@ -259,7 +259,7 @@ const CommentItem = memo(
                       onClick={() => onEdit(comment.id, comment.content)}
                       className="text-xs text-theme-tertiary hover:text-brand-primary transition-colors flex items-center gap-1"
                     >
-                      <BiEdit className="w-3.5 h-3.5" />
+                      <PiNotePencil className="w-3.5 h-3.5" />
 
                       <span className="hidden md:block">Editar</span>
                     </button>
@@ -267,7 +267,7 @@ const CommentItem = memo(
                       onClick={() => onDelete(comment.id)}
                       className="text-xs text-red-500 hover:text-red-600 transition-colors flex items-center gap-1"
                     >
-                      <BiTrash className="w-3.5 h-3.5" />
+                      <PiTrash className="w-3.5 h-3.5" />
                       <span className="hidden md:block">Deletar</span>
                     </button>
                   </>
@@ -278,7 +278,7 @@ const CommentItem = memo(
                     onClick={() => onReport(comment.id)}
                     className="text-xs text-theme-tertiary hover:text-red-500 transition-colors flex items-center gap-1"
                   >
-                    <BiFlag className="w-3.5 h-3.5" />
+                    <PiFlag className="w-3.5 h-3.5" />
                     Denunciar
                   </button>
                 )}
@@ -561,7 +561,7 @@ export function CommentSection({
       <section id="comments-section" className="scroll-mt-24">
         <div className="classical-card p-6 md:p-8">
           <h2 className="text-2xl font-bold text-theme-primary mb-6 flex items-center gap-2">
-            <BiComment className="text-brand-primary" />
+            <PiChatCircle className="text-brand-primary" />
             Comentários ({initialCount})
           </h2>
 
@@ -581,7 +581,7 @@ export function CommentSection({
                   disabled={!newComment.trim() || submitting}
                   className="btn-classical-primary flex items-center gap-2"
                 >
-                  <BiSend />
+                  <PiPaperPlaneRight />
                   {submitting ? 'Enviando...' : 'Comentar'}
                 </button>
               </div>
@@ -609,7 +609,7 @@ export function CommentSection({
             </div>
           ) : comments.length === 0 ? (
             <div className="text-center py-12">
-              <BiComment className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+              <PiChatCircle className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
               <p className="text-theme-secondary">
                 Nenhum comentário ainda. Seja o primeiro a comentar!
               </p>
@@ -711,7 +711,7 @@ export function CommentSection({
               disabled={!reportReason || reportingComment}
               className="btn-classical-primary flex items-center gap-2"
             >
-              <BiFlag />
+              <PiFlag />
               {reportingComment ? 'Enviando...' : 'Denunciar'}
             </button>
           </div>

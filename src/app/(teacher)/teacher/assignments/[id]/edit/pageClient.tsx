@@ -4,17 +4,17 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import {
-  FiUser,
-  FiSave,
-  FiX,
-  FiPlus,
-  FiAlertCircle,
-  FiRefreshCw,
-  FiArrowLeft,
-  FiCalendar,
-  FiTrash2,
-  FiMusic,
-} from 'react-icons/fi';
+  PiArrowLeft,
+  PiArrowsClockwise,
+  PiCalendarBlank,
+  PiFloppyDisk,
+  PiMusicNotes,
+  PiPlus,
+  PiTrash,
+  PiUser,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -303,7 +303,7 @@ export default function EditAssignmentPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiAlertCircle className="w-8 h-8 text-theme-primary" />
+              <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('error_loading')}
@@ -325,7 +325,7 @@ export default function EditAssignmentPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center">
-            <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
             <p className="text-theme-secondary">{t('loading_assignment')}</p>
           </div>
         </div>
@@ -346,7 +346,7 @@ export default function EditAssignmentPageClient({
                 href="/teacher/assignments"
                 className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
               >
-                <FiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-gradient-brand classical-title">
@@ -364,7 +364,7 @@ export default function EditAssignmentPageClient({
               onClick={() => setShowDeleteConfirm(true)}
               className="btn-classical-secondary text-accent-red border-accent-red/30 hover:bg-accent-red/10 flex items-center space-x-2"
             >
-              <FiTrash2 className="w-4 h-4" />
+              <PiTrash className="w-4 h-4" />
               <span>{t('delete')}</span>
             </button>
           </div>
@@ -515,7 +515,7 @@ export default function EditAssignmentPageClient({
                         onClick={() => addArrayField('practiceGoals')}
                         className="text-brand-primary hover:text-brand-secondary text-sm flex items-center space-x-1"
                       >
-                        <FiPlus className="w-3 h-3" />
+                        <PiPlus className="w-3 h-3" />
                         <span>{t('add')}</span>
                       </button>
                     </div>
@@ -548,7 +548,7 @@ export default function EditAssignmentPageClient({
                               }
                               className="text-accent-red"
                             >
-                              <FiX className="w-4 h-4" />
+                              <PiX className="w-4 h-4" />
                             </button>
                           )}
                         </div>
@@ -560,7 +560,7 @@ export default function EditAssignmentPageClient({
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-bold text-theme-primary classical-title flex items-center space-x-2">
-                        <FiMusic className="w-5 h-5" />
+                        <PiMusicNotes className="w-5 h-5" />
                         <span>{t('musical_pieces')}</span>
                       </h3>
                       <div className="text-sm text-theme-secondary">
@@ -618,7 +618,7 @@ export default function EditAssignmentPageClient({
                               onClick={() => addArrayField('technicalGoals')}
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
-                              <FiPlus className="w-3 h-3" />
+                              <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
                             </button>
                           </div>
@@ -650,7 +650,7 @@ export default function EditAssignmentPageClient({
                                     }
                                     className="text-accent-red"
                                   >
-                                    <FiX className="w-4 h-4" />
+                                    <PiX className="w-4 h-4" />
                                   </button>
                                 )}
                               </div>
@@ -669,7 +669,7 @@ export default function EditAssignmentPageClient({
                               onClick={() => addArrayField('musicalGoals')}
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
-                              <FiPlus className="w-3 h-3" />
+                              <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
                             </button>
                           </div>
@@ -701,7 +701,7 @@ export default function EditAssignmentPageClient({
                                     }
                                     className="text-accent-red"
                                   >
-                                    <FiX className="w-4 h-4" />
+                                    <PiX className="w-4 h-4" />
                                   </button>
                                 )}
                               </div>
@@ -720,7 +720,7 @@ export default function EditAssignmentPageClient({
                               onClick={() => addArrayField('exercises')}
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
-                              <FiPlus className="w-3 h-3" />
+                              <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
                             </button>
                           </div>
@@ -752,7 +752,7 @@ export default function EditAssignmentPageClient({
                                     }
                                     className="text-accent-red"
                                   >
-                                    <FiX className="w-4 h-4" />
+                                    <PiX className="w-4 h-4" />
                                   </button>
                                 )}
                               </div>
@@ -767,7 +767,7 @@ export default function EditAssignmentPageClient({
                   {error && (
                     <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
                       <div className="flex items-center space-x-3">
-                        <FiAlertCircle className="w-5 h-5 text-accent-red" />
+                        <PiWarningCircle className="w-5 h-5 text-accent-red" />
                         <div>
                           <p className="text-accent-red font-medium">
                             {t('error_updating')}
@@ -779,7 +779,7 @@ export default function EditAssignmentPageClient({
                           onClick={clearError}
                           className="ml-auto text-accent-red"
                         >
-                          <FiX className="w-4 h-4" />
+                          <PiX className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -803,9 +803,9 @@ export default function EditAssignmentPageClient({
                       className="btn-classical-primary flex items-center space-x-2"
                     >
                       {loading.updateAssignment ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                       ) : (
-                        <FiSave className="w-4 h-4" />
+                        <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>
                         {loading.updateAssignment
@@ -842,7 +842,7 @@ export default function EditAssignmentPageClient({
                       </div>
                     ) : (
                       <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                        <FiUser className="w-6 h-6 text-theme-primary" />
+                        <PiUser className="w-6 h-6 text-theme-primary" />
                       </div>
                     )}
                     <div>
@@ -914,7 +914,7 @@ export default function EditAssignmentPageClient({
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
                   <h3 className="text-lg font-bold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                    <FiMusic className="w-5 h-5" />
+                    <PiMusicNotes className="w-5 h-5" />
                     <span>{t('selected_pieces')}</span>
                   </h3>
 
@@ -925,7 +925,7 @@ export default function EditAssignmentPageClient({
                         className="flex items-center space-x-3 p-3 bg-theme-elevated/50 rounded-lg"
                       >
                         <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <FiMusic className="w-4 h-4 text-accent-blue" />
+                          <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-theme-primary text-sm truncate">
@@ -980,7 +980,7 @@ export default function EditAssignmentPageClient({
                     {assignment.lesson.title}
                   </div>
                   <div className="text-sm text-theme-secondary flex items-center">
-                    <FiCalendar className="w-4 h-4 mr-2" />
+                    <PiCalendarBlank className="w-4 h-4 mr-2" />
                     {new Date(assignment.lesson.scheduledAt).toLocaleDateString(
                       'pt-BR'
                     )}
@@ -1027,7 +1027,7 @@ export default function EditAssignmentPageClient({
             >
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-                  <FiTrash2 className="w-8 h-8 text-theme-primary" />
+                  <PiTrash className="w-8 h-8 text-theme-primary" />
                 </div>
                 <h2 className="text-xl font-bold text-theme-primary mb-4">
                   {t('confirm_deletion')}
@@ -1051,9 +1051,9 @@ export default function EditAssignmentPageClient({
                     className="btn-classical-primary bg-accent-red border-accent-red hover:bg-accent-red/90 flex-1 flex items-center justify-center space-x-2"
                   >
                     {loading.deleteAssignment ? (
-                      <FiRefreshCw className="w-4 h-4 animate-spin" />
+                      <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                     ) : (
-                      <FiTrash2 className="w-4 h-4" />
+                      <PiTrash className="w-4 h-4" />
                     )}
                     <span>
                       {loading.deleteAssignment ? t('deleting') : t('delete')}

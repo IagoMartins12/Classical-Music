@@ -2,20 +2,20 @@
 'use client';
 
 import {
-  FiFile,
-  FiDownload,
-  FiUser,
-  FiTag,
-  FiInfo,
-  FiFileText,
-  FiImage,
-  FiExternalLink,
-  FiMusic,
-  FiLayers,
-  FiEdit3,
-  FiSave,
-  FiTrash2,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiDownloadSimple,
+  PiFile,
+  PiFileText,
+  PiFloppyDisk,
+  PiImage,
+  PiInfo,
+  PiMusicNotes,
+  PiPencilLine,
+  PiStack,
+  PiTag,
+  PiTrash,
+  PiUser,
+} from 'react-icons/pi';
 
 export default function EditScoreLoading() {
   return (
@@ -73,7 +73,7 @@ export default function EditScoreLoading() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-4">
                         <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                          <FiEdit3 className="w-5 h-5 text-theme-primary/30" />
+                          <PiPencilLine className="w-5 h-5 text-theme-primary/30" />
                         </div>
                         <div className="space-y-2">
                           <div className="h-10 w-56 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded"></div>
@@ -96,12 +96,12 @@ export default function EditScoreLoading() {
                     {/* Action buttons */}
                     <div className="flex items-center space-x-3 ml-4">
                       <div className="h-10 w-20 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center space-x-2">
-                        <FiSave className="w-4 h-4 text-theme-primary/30" />
+                        <PiFloppyDisk className="w-4 h-4 text-theme-primary/30" />
                         <div className="w-8 h-4 bg-theme-primary/30 rounded"></div>
                       </div>
 
                       <div className="h-10 w-24 bg-accent-red/20 border border-accent-red/30 rounded-lg flex items-center justify-center space-x-2">
-                        <FiTrash2 className="w-4 h-4 text-accent-red/30" />
+                        <PiTrash className="w-4 h-4 text-accent-red/30" />
                         <div className="w-12 h-4 bg-accent-red/30 rounded"></div>
                       </div>
                     </div>
@@ -110,7 +110,7 @@ export default function EditScoreLoading() {
                   {/* Badge de Fonte */}
                   <div className="flex items-center space-x-3">
                     <div className="h-8 w-32 bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 rounded-full flex items-center justify-center space-x-2">
-                      <FiTag className="w-4 h-4 text-theme-primary/30" />
+                      <PiTag className="w-4 h-4 text-theme-primary/30" />
                       <div className="w-20 h-4 bg-theme-primary/30 rounded"></div>
                     </div>
                   </div>
@@ -121,35 +121,35 @@ export default function EditScoreLoading() {
                   {[
                     {
                       icon: (
-                        <FiLayers className="w-4 h-4 text-theme-primary/30" />
+                        <PiStack className="w-4 h-4 text-theme-primary/30" />
                       ),
                       gradient: 'from-accent-blue to-accent-purple',
                     },
                     {
                       icon: (
-                        <FiFile className="w-4 h-4 text-theme-primary/30" />
+                        <PiFile className="w-4 h-4 text-theme-primary/30" />
                       ),
                       gradient: 'from-accent-green to-accent-blue',
                     },
                     {
                       icon: (
-                        <FiDownload className="w-4 h-4 text-theme-primary/30" />
+                        <PiDownloadSimple className="w-4 h-4 text-theme-primary/30" />
                       ),
                       gradient: 'from-accent-purple to-accent-red',
                     },
                     {
                       icon: (
-                        <FiFileText className="w-4 h-4 text-theme-primary/30" />
+                        <PiFileText className="w-4 h-4 text-theme-primary/30" />
                       ),
                       gradient: 'from-brand-primary to-brand-secondary',
                     },
                     {
-                      icon: <FiTag className="w-4 h-4 text-theme-primary/30" />,
+                      icon: <PiTag className="w-4 h-4 text-theme-primary/30" />,
                       gradient: 'from-accent-green to-accent-purple',
                     },
                     {
                       icon: (
-                        <FiUser className="w-4 h-4 text-theme-primary/30" />
+                        <PiUser className="w-4 h-4 text-theme-primary/30" />
                       ),
                       gradient: 'from-accent-red to-accent-purple',
                     },
@@ -174,7 +174,7 @@ export default function EditScoreLoading() {
                 {/* Informações de Publicação */}
                 <div className="border-t border-theme-secondary pt-6">
                   <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                    <FiFileText className="w-5 h-5 text-accent-blue/30" />
+                    <PiFileText className="w-5 h-5 text-accent-blue/30" />
                     <div className="h-5 w-48 bg-theme-elevated rounded"></div>
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -199,7 +199,7 @@ export default function EditScoreLoading() {
                 {/* Notas */}
                 <div className="border-t border-theme-secondary pt-6">
                   <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                    <FiInfo className="w-5 h-5 text-accent-green/30" />
+                    <PiInfo className="w-5 h-5 text-accent-green/30" />
                     <div className="h-5 w-16 bg-theme-elevated rounded"></div>
                   </h3>
                   <div className="p-4 bg-gradient-to-r from-theme-elevated/50 to-interactive-hover/50 rounded-xl border border-theme-primary/20">
@@ -214,11 +214,11 @@ export default function EditScoreLoading() {
                 {/* Link de Download */}
                 <div className="border-t border-theme-secondary pt-6">
                   <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                    <FiExternalLink className="w-5 h-5 text-accent-blue/30" />
+                    <PiArrowSquareOut className="w-5 h-5 text-accent-blue/30" />
                     <div className="h-5 w-16 bg-theme-elevated rounded"></div>
                   </h3>
                   <div className="h-10 w-48 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center space-x-2">
-                    <FiDownload className="w-4 h-4 text-theme-primary/30" />
+                    <PiDownloadSimple className="w-4 h-4 text-theme-primary/30" />
                     <div className="w-32 h-4 bg-theme-primary/30 rounded"></div>
                   </div>
                 </div>
@@ -230,14 +230,14 @@ export default function EditScoreLoading() {
                 <div className="classical-card-simple p-6">
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                      <FiImage className="w-4 h-4 text-theme-primary/30" />
+                      <PiImage className="w-4 h-4 text-theme-primary/30" />
                     </div>
                     <div className="h-5 w-20 bg-theme-elevated rounded"></div>
                   </div>
 
                   <div className="text-center">
                     <div className="w-full aspect-[3/4] mx-auto bg-gradient-card border border-theme-primary/20 rounded-xl flex items-center justify-center">
-                      <FiFile className="w-12 h-12 text-theme-tertiary/30 opacity-50" />
+                      <PiFile className="w-12 h-12 text-theme-tertiary/30 opacity-50" />
                     </div>
                   </div>
                 </div>
@@ -246,7 +246,7 @@ export default function EditScoreLoading() {
                 <div className="classical-card-simple p-6">
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center">
-                      <FiMusic className="w-4 h-4 text-theme-primary/30" />
+                      <PiMusicNotes className="w-4 h-4 text-theme-primary/30" />
                     </div>
                     <div className="h-5 w-12 bg-theme-elevated rounded"></div>
                   </div>
@@ -263,7 +263,7 @@ export default function EditScoreLoading() {
                 <div className="classical-card-simple p-6">
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                      <FiInfo className="w-4 h-4 text-theme-primary/30" />
+                      <PiInfo className="w-4 h-4 text-theme-primary/30" />
                     </div>
                     <div className="h-5 w-32 bg-theme-elevated rounded"></div>
                   </div>

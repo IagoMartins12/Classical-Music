@@ -5,13 +5,13 @@ import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import {
-  FiUser,
-  FiCalendar,
-  FiEye,
-  FiPause,
-  FiPlay,
-  FiRefreshCw,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCalendarBlank,
+  PiEye,
+  PiPause,
+  PiPlay,
+  PiUser,
+} from 'react-icons/pi';
 import { translateNivel } from '@/app/utils';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { ViewMode } from '../../ViewModeToggle';
@@ -99,7 +99,7 @@ export default function StudentCard({
               </div>
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20">
-                <FiUser className="w-6 h-6 text-theme-primary" />
+                <PiUser className="w-6 h-6 text-theme-primary" />
               </div>
             )}
           </div>
@@ -184,11 +184,11 @@ export default function StudentCard({
                 title={isPaused ? translations.reactivate : translations.pause}
               >
                 {isToggling ? (
-                  <FiRefreshCw className="w-4 h-4 animate-spin" />
+                  <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                 ) : isPaused ? (
-                  <FiPlay className="w-4 h-4" />
+                  <PiPlay className="w-4 h-4" />
                 ) : (
-                  <FiPause className="w-4 h-4" />
+                  <PiPause className="w-4 h-4" />
                 )}
               </button>
 
@@ -197,7 +197,7 @@ export default function StudentCard({
                 className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
                 title={translations.viewDetails}
               >
-                <FiEye className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiEye className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </Link>
             </div>
           </div>
@@ -225,7 +225,7 @@ export default function StudentCard({
               </div>
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20">
-                <FiUser className="w-8 h-8 text-theme-primary" />
+                <PiUser className="w-8 h-8 text-theme-primary" />
               </div>
             )}
           </div>
@@ -295,7 +295,7 @@ export default function StudentCard({
                 {formatTime(nextLesson.scheduledAt)}
               </div>
             </div>
-            <FiCalendar className="w-4 h-4 text-brand-primary" />
+            <PiCalendarBlank className="w-4 h-4 text-brand-primary" />
           </div>
         </div>
       )}
@@ -312,11 +312,11 @@ export default function StudentCard({
           }`}
         >
           {isToggling ? (
-            <FiRefreshCw className="w-4 h-4 animate-spin" />
+            <PiArrowsClockwise className="w-4 h-4 animate-spin" />
           ) : isPaused ? (
-            <FiPlay className="w-4 h-4" />
+            <PiPlay className="w-4 h-4" />
           ) : (
-            <FiPause className="w-4 h-4" />
+            <PiPause className="w-4 h-4" />
           )}
           <span>
             {isToggling
@@ -331,7 +331,7 @@ export default function StudentCard({
           href={`/teacher/students/${student.id}`}
           className="flex-1 btn-classical-primary text-sm flex items-center justify-center space-x-2"
         >
-          <FiEye className="w-4 h-4" />
+          <PiEye className="w-4 h-4" />
           <span>{translations.viewDetails}</span>
         </Link>
       </div>

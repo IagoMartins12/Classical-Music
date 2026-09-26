@@ -1,23 +1,23 @@
 // app/student/lessons/[id]/loading.tsx - Loading para Detalhes da Aula do Aluno
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiArrowLeft,
-  FiCalendar,
-  FiClock,
-  FiUser,
-  FiMapPin,
-  FiTarget,
-  FiBookOpen,
-  FiMusic,
-  FiRefreshCw,
-  FiRepeat,
-  FiUserX,
-  FiEdit3,
-  FiDownload,
-  FiExternalLink,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiArrowLeft,
+  PiArrowSquareOut,
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiClock,
+  PiDownloadSimple,
+  PiMapPin,
+  PiMusicNotes,
+  PiPencilLine,
+  PiRepeat,
+  PiTarget,
+  PiUser,
+  PiUserMinus,
+} from 'react-icons/pi';
 
 export default function StudentLessonDetailsLoading() {
   return (
@@ -42,13 +42,13 @@ export default function StudentLessonDetailsLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiBookOpen />
+          <PiBookOpen />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiCalendar />
+          <PiCalendarBlank />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -60,7 +60,7 @@ export default function StudentLessonDetailsLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -69,7 +69,7 @@ export default function StudentLessonDetailsLoading() {
         <div className="flex items-center justify-between mb-8 animate-pulse">
           <div className="flex items-center space-x-4">
             <div className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary flex items-center justify-center">
-              <FiArrowLeft className="w-5 h-5 text-theme-tertiary/30" />
+              <PiArrowLeft className="w-5 h-5 text-theme-tertiary/30" />
             </div>
             <div>
               <div className="h-8 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-2xl w-64 mb-2"></div>
@@ -83,17 +83,17 @@ export default function StudentLessonDetailsLoading() {
             {/* Student Actions */}
             <div className="flex items-center space-x-2">
               <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-accent-red/30 rounded-lg px-4 flex items-center space-x-2">
-                <FiUserX className="w-4 h-4 text-accent-red/30" />
+                <PiUserMinus className="w-4 h-4 text-accent-red/30" />
                 <div className="h-4 w-32 bg-theme-tertiary/20 rounded"></div>
               </div>
               <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-accent-blue/30 rounded-lg px-4 flex items-center space-x-2">
-                <FiCalendar className="w-4 h-4 text-accent-blue/30" />
+                <PiCalendarBlank className="w-4 h-4 text-accent-blue/30" />
                 <div className="h-4 w-20 bg-theme-tertiary/20 rounded"></div>
               </div>
             </div>
 
             <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
-              <FiRefreshCw className="w-4 h-4 text-theme-tertiary/30" />
+              <PiArrowsClockwise className="w-4 h-4 text-theme-tertiary/30" />
               <div className="h-4 w-16 bg-theme-tertiary/20 rounded"></div>
             </div>
           </div>
@@ -115,24 +115,24 @@ export default function StudentLessonDetailsLoading() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center space-x-2">
-                    <FiCalendar className="w-4 h-4 text-theme-tertiary/30" />
+                    <PiCalendarBlank className="w-4 h-4 text-theme-tertiary/30" />
                     <div className="h-3 bg-theme-secondary/30 rounded w-32"></div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <FiClock className="w-4 h-4 text-theme-tertiary/30" />
+                    <PiClock className="w-4 h-4 text-theme-tertiary/30" />
                     <div className="h-3 bg-theme-secondary/30 rounded w-20"></div>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <FiMapPin className="w-4 h-4 text-theme-tertiary/30" />
+                  <PiMapPin className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="h-3 bg-theme-secondary/30 rounded w-28"></div>
                 </div>
 
                 {/* Recurrence Info */}
                 <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4">
                   <div className="flex items-center space-x-2 mb-2">
-                    <FiRepeat className="w-4 h-4 text-accent-blue/30" />
+                    <PiRepeat className="w-4 h-4 text-accent-blue/30" />
                     <div className="h-4 bg-accent-blue/30 rounded w-32"></div>
                   </div>
                   <div className="h-3 bg-theme-secondary/30 rounded w-full"></div>
@@ -145,7 +145,7 @@ export default function StudentLessonDetailsLoading() {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-lg flex items-center justify-center">
-                    <FiMusic className="w-5 h-5 text-theme-inverse/30" />
+                    <PiMusicNotes className="w-5 h-5 text-theme-inverse/30" />
                   </div>
                   <div className="h-5 bg-theme-primary/30 rounded w-32"></div>
                 </div>
@@ -160,8 +160,8 @@ export default function StudentLessonDetailsLoading() {
                     <div className="flex items-center justify-between mb-3">
                       <div className="h-5 bg-theme-primary/30 rounded w-28"></div>
                       <div className="flex items-center space-x-2">
-                        <FiDownload className="w-4 h-4 text-theme-tertiary/30" />
-                        <FiExternalLink className="w-4 h-4 text-theme-tertiary/30" />
+                        <PiDownloadSimple className="w-4 h-4 text-theme-tertiary/30" />
+                        <PiArrowSquareOut className="w-4 h-4 text-theme-tertiary/30" />
                       </div>
                     </div>
                     <div className="h-3 bg-theme-tertiary/30 rounded w-24 mb-2"></div>
@@ -266,7 +266,7 @@ export default function StudentLessonDetailsLoading() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="h-4 bg-theme-primary/30 rounded w-24"></div>
                     <div className="h-8 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-3 flex items-center space-x-1">
-                      <FiEdit3 className="w-3 h-3 text-theme-tertiary/30" />
+                      <PiPencilLine className="w-3 h-3 text-theme-tertiary/30" />
                       <div className="h-3 w-10 bg-theme-tertiary/20 rounded"></div>
                     </div>
                   </div>
@@ -316,7 +316,7 @@ export default function StudentLessonDetailsLoading() {
 
               <div className="p-4 bg-accent-green/10 border border-accent-green/30 rounded-lg">
                 <div className="flex items-center space-x-2 mb-2">
-                  <FiUser className="w-5 h-5 text-accent-green/30" />
+                  <PiUser className="w-5 h-5 text-accent-green/30" />
                   <div className="h-4 bg-accent-green/30 rounded w-16"></div>
                 </div>
 
@@ -398,7 +398,7 @@ export default function StudentLessonDetailsLoading() {
               <div className="space-y-3 text-sm">
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="flex items-start space-x-2">
-                    <FiTarget className="w-4 h-4 text-brand-primary/30 mt-0.5 flex-shrink-0" />
+                    <PiTarget className="w-4 h-4 text-brand-primary/30 mt-0.5 flex-shrink-0" />
                     <div className="h-3 bg-theme-secondary/30 rounded flex-1"></div>
                   </div>
                 ))}

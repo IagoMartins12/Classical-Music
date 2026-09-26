@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiFlag, FiAlertTriangle } from 'react-icons/fi';
+import { PiFlag, PiWarning } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Modal from '../../Modal';
@@ -140,7 +140,7 @@ export default function ReportModal({
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-accent-red/20 rounded-xl flex items-center justify-center">
-                <FiFlag className="w-5 h-5 text-accent-red" />
+                <PiFlag className="w-5 h-5 text-accent-red" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
@@ -211,7 +211,7 @@ export default function ReportModal({
             {/* Warning */}
             <div className="p-4 bg-accent-amber/10 border border-accent-amber/30 rounded-lg">
               <div className="flex items-start space-x-3">
-                <FiAlertTriangle className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
+                <PiWarning className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
                 <div className="text-sm">
                   <p className="font-medium text-accent-amber mb-1">
                     {t('report_modal_importante')}
@@ -237,7 +237,7 @@ export default function ReportModal({
                 type="submit"
                 variant="primary"
                 disabled={isSubmitting || !selectedReason}
-                leftIcon={<FiFlag />}
+                leftIcon={<PiFlag />}
               >
                 {isSubmitting
                   ? t('report_modal_enviando')

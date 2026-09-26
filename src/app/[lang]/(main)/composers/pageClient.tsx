@@ -4,11 +4,10 @@ import { useLocalizedRouter } from '@/app/hooks/useLocalizedRouter';
 
 import { useState, useTransition, useCallback } from 'react';
 
-import { FiSearch, FiClock } from 'react-icons/fi';
+import { PiClock, PiMagnifyingGlass, PiUser } from 'react-icons/pi';
 import ComposerCard from '../../../components/ComposersClient/ComposerCard';
 import ComposerCardList from '../../../components/ComposersClient/ComposerCardList';
 import PaginationControls from '../../../components/PaginationControls';
-import { FaRegUser } from 'react-icons/fa';
 import AnimatedMusicalNotes2 from '../../../components/AnimatedMusicalNotes2';
 import ViewModeToggle from '../../../components/ViewModeToggle';
 import {
@@ -171,7 +170,7 @@ export default function ComposersClient({
               className="flex items-center justify-center mb-6"
             >
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-                <FaRegUser className="w-8 h-8 text-theme-primary" />
+                <PiUser className="w-8 h-8 text-theme-primary" />
               </div>
             </AnimatedItem>
 
@@ -214,7 +213,7 @@ export default function ComposersClient({
                 {t('client_jsx_label_children_0__pesquisar_por_nome')}
               </label>
               <div className="relative mt-2">
-                <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+                <PiMagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
                 <input
                   type="text"
                   placeholder={t(
@@ -241,7 +240,7 @@ export default function ComposersClient({
                 {t('client_jsx_label_children_0__filtrar_por_periodo')}
               </label>
               <div className="relative mt-2">
-                <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+                <PiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
                 <Select
                   options={[
                     {
@@ -381,7 +380,7 @@ export default function ComposersClient({
             >
               <div className="classical-card p-12 text-center">
                 <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <FiSearch className="w-8 h-8 text-theme-tertiary" />
+                  <PiMagnifyingGlass className="w-8 h-8 text-theme-tertiary" />
                 </div>
 
                 <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">

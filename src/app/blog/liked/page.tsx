@@ -5,7 +5,7 @@ import { listCategories } from '@/app/requests/blog/taxonomy';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { LikedPageClient } from '@/app/components/blog/LikedPageClient';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
-import { FiHeart } from 'react-icons/fi';
+import { PiHeart } from 'react-icons/pi';
 import { getServerSession } from '@/app/libs/api/server-session';
 
 export const metadata: Metadata = {
@@ -53,7 +53,7 @@ export default async function LikedPage() {
               className="flex items-center justify-center mb-6"
             >
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-                <FiHeart className="w-8 h-8 text-theme-primary" />
+                <PiHeart className="w-8 h-8 text-theme-primary" />
               </div>
             </AnimatedItem>
 

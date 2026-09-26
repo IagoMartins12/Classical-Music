@@ -2,7 +2,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FiUser, FiBarChart2, FiEdit, FiSend } from 'react-icons/fi';
+import {
+  PiChartBar,
+  PiNotePencil,
+  PiPaperPlaneRight,
+  PiUser,
+} from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
@@ -40,7 +45,7 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
         {/* Header */}
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
-            <FiUser className="w-8 h-8 text-white" />
+            <PiUser className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
             Detalhes do Subscriber
@@ -52,7 +57,7 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-theme-secondary p-6 rounded-lg">
             <h3 className="font-bold text-theme-primary mb-4 flex items-center">
-              <FiUser className="w-5 h-5 mr-2" />
+              <PiUser className="w-5 h-5 mr-2" />
               Informações Pessoais
             </h3>
             <div className="space-y-3">
@@ -73,17 +78,17 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
                     subscriber.status === 'ACTIVE'
                       ? 'text-accent-green bg-accent-green/10'
                       : subscriber.status === 'PENDING'
-                      ? 'text-accent-amber bg-accent-amber/10'
-                      : 'text-accent-red bg-accent-red/10'
+                        ? 'text-accent-amber bg-accent-amber/10'
+                        : 'text-accent-red bg-accent-red/10'
                   }`}
                 >
                   {subscriber.status === 'ACTIVE'
                     ? 'Ativo'
                     : subscriber.status === 'PENDING'
-                    ? 'Pendente'
-                    : subscriber.status === 'UNSUBSCRIBED'
-                    ? 'Cancelado'
-                    : subscriber.status}
+                      ? 'Pendente'
+                      : subscriber.status === 'UNSUBSCRIBED'
+                        ? 'Cancelado'
+                        : subscriber.status}
                 </p>
               </div>
               <div>
@@ -109,7 +114,7 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
 
           <div className="bg-theme-secondary p-6 rounded-lg">
             <h3 className="font-bold text-theme-primary mb-4 flex items-center">
-              <FiBarChart2 className="w-5 h-5 mr-2" />
+              <PiChartBar className="w-5 h-5 mr-2" />
               Engajamento
             </h3>
             <div className="space-y-3">
@@ -206,8 +211,8 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
                 {subscriber.user.role === 0
                   ? 'Usuário'
                   : subscriber.user.role === 1
-                  ? 'Professor'
-                  : 'Admin'}
+                    ? 'Professor'
+                    : 'Admin'}
               </p>
             </div>
           </div>
@@ -291,7 +296,7 @@ export const EditSubscriberModal: React.FC<EditSubscriberModalProps> = ({
         {/* Header */}
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
-            <FiEdit className="w-8 h-8 text-white" />
+            <PiNotePencil className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
             Editar Subscriber
@@ -459,7 +464,7 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
         {/* Header */}
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
-            <FiSend className="w-8 h-8 text-white" />
+            <PiPaperPlaneRight className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
             Enviar Email Individual
@@ -557,7 +562,7 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
               variant="primary"
               size="lg"
               isLoading={loading}
-              leftIcon={<FiSend />}
+              leftIcon={<PiPaperPlaneRight />}
               className="flex-1"
               disabled={!formData.subject.trim() || !formData.content.trim()}
             >

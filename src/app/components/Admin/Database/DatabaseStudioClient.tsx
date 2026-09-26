@@ -3,24 +3,24 @@
 
 import { useState } from 'react';
 import {
-  FiDatabase,
-  FiSearch,
-  FiPlus,
-  FiEdit2,
-  FiTrash2,
-  FiRefreshCw,
-  FiDownload,
-  FiFilter,
-  FiX,
-  FiChevronLeft,
-  FiChevronRight,
-  FiGrid,
-  FiList,
-  FiLayers,
-  FiEye,
-  FiColumns,
-  FiLock,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCaretLeft,
+  PiCaretRight,
+  PiColumns,
+  PiDatabase,
+  PiDownloadSimple,
+  PiEye,
+  PiFunnel,
+  PiListBullets,
+  PiLock,
+  PiMagnifyingGlass,
+  PiPencilSimple,
+  PiPlus,
+  PiSquaresFour,
+  PiStack,
+  PiTrash,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedItem,
@@ -206,7 +206,7 @@ export default function DatabaseStudioClient() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
                     <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center shadow-theme-glow">
-                      <FiDatabase className="w-5 h-5 text-white" />
+                      <PiDatabase className="w-5 h-5 text-white" />
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-theme-primary">
@@ -221,7 +221,9 @@ export default function DatabaseStudioClient() {
                     variant="ghost"
                     size="sm"
                     leftIcon={
-                      <FiRefreshCw className={loading ? 'animate-spin' : ''} />
+                      <PiArrowsClockwise
+                        className={loading ? 'animate-spin' : ''}
+                      />
                     }
                     onClick={refreshModels}
                     disabled={loading}
@@ -230,7 +232,7 @@ export default function DatabaseStudioClient() {
 
                 {/* Busca de models */}
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                   <Input
                     type="text"
                     placeholder="Buscar tabela..."
@@ -266,7 +268,7 @@ export default function DatabaseStudioClient() {
                             }`}
                           >
                             <div className="flex items-center space-x-2 flex-1 min-w-0">
-                              <FiLayers className="w-4 h-4 flex-shrink-0" />
+                              <PiStack className="w-4 h-4 flex-shrink-0" />
                               <span className="text-sm font-medium truncate">
                                 {model.displayName}
                               </span>
@@ -302,7 +304,7 @@ export default function DatabaseStudioClient() {
                     <div className="flex items-center space-x-4 flex-1 min-w-0">
                       {/* Busca */}
                       <div className="relative flex-1 max-w-md">
-                        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                        <PiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                         <Input
                           type="text"
                           placeholder="Buscar registros..."
@@ -321,7 +323,7 @@ export default function DatabaseStudioClient() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            leftIcon={<FiTrash2 />}
+                            leftIcon={<PiTrash />}
                             onClick={handleDeleteMultipleClick}
                             className="text-accent-red hover:bg-accent-red/10"
                           >
@@ -330,7 +332,7 @@ export default function DatabaseStudioClient() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            leftIcon={<FiX />}
+                            leftIcon={<PiX />}
                             onClick={clearSelection}
                           >
                             Limpar
@@ -344,7 +346,7 @@ export default function DatabaseStudioClient() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiColumns />}
+                        leftIcon={<PiColumns />}
                         onClick={() => setShowFieldSelector(true)}
                         className={
                           selectedFields.length > 0
@@ -363,7 +365,7 @@ export default function DatabaseStudioClient() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiFilter />}
+                        leftIcon={<PiFunnel />}
                         onClick={() => setShowFilterPanel(true)}
                         className={
                           activeFilterCount > 0
@@ -388,7 +390,7 @@ export default function DatabaseStudioClient() {
                               : 'text-theme-tertiary hover:text-theme-primary'
                           }`}
                         >
-                          <FiList className="w-4 h-4" />
+                          <PiListBullets className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setViewMode('grid')}
@@ -398,14 +400,14 @@ export default function DatabaseStudioClient() {
                               : 'text-theme-tertiary hover:text-theme-primary'
                           }`}
                         >
-                          <FiGrid className="w-4 h-4" />
+                          <PiSquaresFour className="w-4 h-4" />
                         </button>
                       </div>
 
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiDownload />}
+                        leftIcon={<PiDownloadSimple />}
                         onClick={() => exportData('json')}
                       >
                         Exportar
@@ -414,7 +416,7 @@ export default function DatabaseStudioClient() {
                       <Button
                         variant="primary"
                         size="sm"
-                        leftIcon={<FiPlus />}
+                        leftIcon={<PiPlus />}
                         onClick={handleCreate}
                       >
                         Novo
@@ -424,7 +426,7 @@ export default function DatabaseStudioClient() {
                         variant="ghost"
                         size="sm"
                         leftIcon={
-                          <FiRefreshCw
+                          <PiArrowsClockwise
                             className={loadingRecords ? 'animate-spin' : ''}
                           />
                         }
@@ -455,7 +457,7 @@ export default function DatabaseStudioClient() {
                             onClick={() => removeFilter(field)}
                             className="hover:text-accent-red transition-colors"
                           >
-                            <FiX className="w-3 h-3" />
+                            <PiX className="w-3 h-3" />
                           </button>
                         </div>
                       ))}
@@ -483,7 +485,7 @@ export default function DatabaseStudioClient() {
                       <div className="flex items-center space-x-6">
                         <div className="flex items-center space-x-2">
                           <div className="w-8 h-8 bg-brand-primary/10 rounded-lg flex items-center justify-center">
-                            <FiDatabase className="w-4 h-4 text-brand-primary" />
+                            <PiDatabase className="w-4 h-4 text-brand-primary" />
                           </div>
                           <div>
                             <p className="text-xs text-theme-tertiary">
@@ -499,7 +501,7 @@ export default function DatabaseStudioClient() {
 
                         <div className="flex items-center space-x-2">
                           <div className="w-8 h-8 bg-green-500/10 rounded-lg flex items-center justify-center">
-                            <FiEye className="w-4 h-4 text-green-500" />
+                            <PiEye className="w-4 h-4 text-green-500" />
                           </div>
                           <div>
                             <p className="text-xs text-theme-tertiary">
@@ -515,7 +517,7 @@ export default function DatabaseStudioClient() {
 
                         <div className="flex items-center space-x-2">
                           <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                            <FiEdit2 className="w-4 h-4 text-blue-500" />
+                            <PiPencilSimple className="w-4 h-4 text-blue-500" />
                           </div>
                           <div>
                             <p className="text-xs text-theme-tertiary">
@@ -531,7 +533,7 @@ export default function DatabaseStudioClient() {
 
                         <div className="flex items-center space-x-2">
                           <div className="w-8 h-8 bg-purple-500/10 rounded-lg flex items-center justify-center">
-                            <FiSearch className="w-4 h-4 text-purple-500" />
+                            <PiMagnifyingGlass className="w-4 h-4 text-purple-500" />
                           </div>
                           <div>
                             <p className="text-xs text-theme-tertiary">
@@ -569,7 +571,7 @@ export default function DatabaseStudioClient() {
                   {loadingRecords ? (
                     <div className="flex-1 flex items-center justify-center">
                       <div className="text-center">
-                        <FiRefreshCw className="w-12 h-12 text-brand-primary animate-spin mx-auto mb-4" />
+                        <PiArrowsClockwise className="w-12 h-12 text-brand-primary animate-spin mx-auto mb-4" />
                         <p className="text-theme-secondary">
                           Carregando registros...
                         </p>
@@ -578,7 +580,7 @@ export default function DatabaseStudioClient() {
                   ) : records.length === 0 ? (
                     <div className="flex-1 flex items-center justify-center">
                       <div className="text-center py-12">
-                        <FiDatabase className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                        <PiDatabase className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                         <h3 className="text-xl font-bold text-theme-primary mb-2">
                           Nenhum registro encontrado
                         </h3>
@@ -590,7 +592,7 @@ export default function DatabaseStudioClient() {
                         {!searchQuery && activeFilterCount === 0 && (
                           <Button
                             variant="primary"
-                            leftIcon={<FiPlus />}
+                            leftIcon={<PiPlus />}
                             onClick={handleCreate}
                           >
                             Criar Primeiro Registro
@@ -636,7 +638,7 @@ export default function DatabaseStudioClient() {
                                   >
                                     <div className="flex items-center space-x-1">
                                       {isSensitive && (
-                                        <FiLock className="w-3 h-3 text-red-500" />
+                                        <PiLock className="w-3 h-3 text-red-500" />
                                       )}
                                       <span>{fieldName}</span>
                                       {sortField === fieldName && (
@@ -696,13 +698,13 @@ export default function DatabaseStudioClient() {
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      leftIcon={<FiEdit2 />}
+                                      leftIcon={<PiPencilSimple />}
                                       onClick={() => handleEdit(record)}
                                     />
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      leftIcon={<FiTrash2 />}
+                                      leftIcon={<PiTrash />}
                                       onClick={() =>
                                         handleDeleteClick(record.id)
                                       }
@@ -751,14 +753,14 @@ export default function DatabaseStudioClient() {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                leftIcon={<FiChevronLeft />}
+                                leftIcon={<PiCaretLeft />}
                                 onClick={() => loadRecords(currentPage - 1)}
                                 disabled={currentPage === 1}
                               />
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                leftIcon={<FiChevronRight />}
+                                leftIcon={<PiCaretRight />}
                                 onClick={() => loadRecords(currentPage + 1)}
                                 disabled={currentPage === totalPages}
                               />
@@ -777,7 +779,7 @@ export default function DatabaseStudioClient() {
               <AnimatedCard className="classical-card h-full flex items-center justify-center">
                 <div className="text-center py-12">
                   <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow mx-auto mb-6">
-                    <FiDatabase className="w-10 h-10 text-white" />
+                    <PiDatabase className="w-10 h-10 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold text-theme-primary mb-2">
                     Selecione uma Tabela

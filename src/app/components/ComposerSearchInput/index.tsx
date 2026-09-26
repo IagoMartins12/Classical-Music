@@ -3,7 +3,7 @@
 
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { FiSearch, FiUser, FiX, FiTrendingUp } from 'react-icons/fi';
+import { PiMagnifyingGlass, PiTrendUp, PiUser, PiX } from 'react-icons/pi';
 import { findComposerById, findComposers } from '@/app/requests/catalog-search';
 
 interface Composer {
@@ -228,7 +228,7 @@ export default function ComposerSearchInput({
   return (
     <div className={`relative ${isOpen ? 'z-[9999]' : 'z-[200]'}`}>
       <div className="relative">
-        <FiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary z-10" />
+        <PiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary z-10" />
 
         <input
           ref={inputRef}
@@ -251,12 +251,12 @@ export default function ComposerSearchInput({
             className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors z-10"
             disabled={isDisabled}
           >
-            <FiX className="w-4 h-4" />
+            <PiX className="w-4 h-4" />
           </button>
         )}
 
         {!searchTerm && !selectedComposer && (
-          <FiSearch className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+          <PiMagnifyingGlass className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
         )}
       </div>
 
@@ -273,7 +273,7 @@ export default function ComposerSearchInput({
           {/* Header com label */}
           {showPopularLabel && (
             <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
-              <FiTrendingUp className="w-4 h-4 text-brand-primary" />
+              <PiTrendUp className="w-4 h-4 text-brand-primary" />
               <span className="text-sm font-medium text-theme-secondary">
                 {t('composer_search_jsx_popular_label')}
               </span>
@@ -342,7 +342,7 @@ export default function ComposerSearchInput({
           {!isLoading &&
             (!displayComposers || displayComposers.length === 0) && (
               <div className="px-4 py-8 text-center">
-                <FiUser className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
+                <PiUser className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                 <p className="text-sm text-theme-secondary">
                   {searchTerm
                     ? `${t(

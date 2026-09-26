@@ -4,17 +4,17 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import {
-  FiFileText,
-  FiMusic,
-  FiUser,
-  FiCalendar,
-  FiDownload,
-  FiEdit,
-  FiTrash2,
-  FiExternalLink,
-  FiShield,
-  FiStar,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiCalendarBlank,
+  PiDownloadSimple,
+  PiFileText,
+  PiMusicNotes,
+  PiNotePencil,
+  PiShield,
+  PiStar,
+  PiTrash,
+  PiUser,
+} from 'react-icons/pi';
 import type { UserUpload } from '@/app/requests/my-uploads';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -68,7 +68,7 @@ const UploadScoreCard = ({
           <div className="flex items-center space-x-4 flex-1 min-w-0">
             {/* Icon */}
             <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-amber rounded-xl flex items-center justify-center flex-shrink-0">
-              <FiFileText className="w-6 h-6 text-theme-primary" />
+              <PiFileText className="w-6 h-6 text-theme-primary" />
             </div>
 
             {/* Main info */}
@@ -86,14 +86,14 @@ const UploadScoreCard = ({
                       className="inline-flex items-center text-sm text-accent-blue font-medium hover:text-brand-primary transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <FiMusic className="w-3 h-3 mr-1" />
+                      <PiMusicNotes className="w-3 h-3 mr-1" />
                       <span className="hover:underline">{item.workTitle}</span>
                     </Link>
                   )}
 
                   {!item.workId && (
                     <span className="inline-flex items-center text-sm text-theme-tertiary">
-                      <FiMusic className="w-3 h-3 mr-1" />
+                      <PiMusicNotes className="w-3 h-3 mr-1" />
                       {t('card_work_not_linked')}
                     </span>
                   )}
@@ -104,7 +104,7 @@ const UploadScoreCard = ({
                       className="inline-flex items-center text-xs text-theme-tertiary hover:text-accent-blue transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <FiUser className="w-3 h-3 mr-1" />
+                      <PiUser className="w-3 h-3 mr-1" />
                       <span className="hover:underline">
                         {item.composerName}
                       </span>
@@ -113,7 +113,7 @@ const UploadScoreCard = ({
 
                   {!item.composerId && item.composerName && (
                     <span className="inline-flex items-center text-xs text-theme-tertiary">
-                      <FiUser className="w-3 h-3 mr-1" />
+                      <PiUser className="w-3 h-3 mr-1" />
                       {item.composerName}
                     </span>
                   )}
@@ -137,7 +137,7 @@ const UploadScoreCard = ({
 
                   {item.verificationStatus === 'verified' && (
                     <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
-                      <FiShield className="w-3 h-3" />
+                      <PiShield className="w-3 h-3" />
                       <span>{t('card_verified_badge')}</span>
                     </span>
                   )}
@@ -157,7 +157,7 @@ const UploadScoreCard = ({
                 onClick={(e) => e.stopPropagation()}
               >
                 IMSLP
-                <FiExternalLink className="w-2.5 h-2.5 ml-1" />
+                <PiArrowSquareOut className="w-2.5 h-2.5 ml-1" />
               </a>
             )}
 
@@ -166,7 +166,7 @@ const UploadScoreCard = ({
                 onClick={onEdit}
                 className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center"
               >
-                <FiEdit className="w-4 h-4" />
+                <PiNotePencil className="w-4 h-4" />
               </button>
 
               <button
@@ -176,7 +176,7 @@ const UploadScoreCard = ({
                   isDeleting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
-                <FiTrash2 className="w-4 h-4" />
+                <PiTrash className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -196,7 +196,7 @@ const UploadScoreCard = ({
               onClick={onEdit}
               className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center shadow-theme-medium"
             >
-              <FiEdit className="w-4 h-4" />
+              <PiNotePencil className="w-4 h-4" />
             </button>
 
             <button
@@ -206,7 +206,7 @@ const UploadScoreCard = ({
                 isDeleting ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
-              <FiTrash2 className="w-4 h-4" />
+              <PiTrash className="w-4 h-4" />
             </button>
           </div>
 
@@ -214,7 +214,7 @@ const UploadScoreCard = ({
             {/* Icon */}
             <div className="flex justify-center mb-4">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-amber rounded-xl flex items-center justify-center">
-                <FiFileText className="w-8 h-8 text-theme-primary" />
+                <PiFileText className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
 
@@ -237,14 +237,14 @@ const UploadScoreCard = ({
                   className="flex items-center justify-center group/link hover:scale-105 transition-transform"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <FiMusic className="w-4 h-4 text-accent-blue mr-2" />
+                  <PiMusicNotes className="w-4 h-4 text-accent-blue mr-2" />
                   <span className="text-sm text-accent-blue font-medium hover:text-brand-primary transition-colors hover:underline">
                     {item.workTitle}
                   </span>
                 </Link>
               ) : (
                 <div className="flex items-center justify-center">
-                  <FiMusic className="w-4 h-4 text-theme-tertiary mr-2" />
+                  <PiMusicNotes className="w-4 h-4 text-theme-tertiary mr-2" />
                   <span className="text-sm text-theme-tertiary">
                     {t('card_work_not_linked')}
                   </span>
@@ -257,14 +257,14 @@ const UploadScoreCard = ({
                   className="flex items-center justify-center group/link hover:scale-105 transition-transform"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <FiUser className="w-4 h-4 text-theme-tertiary mr-2 group-hover/link:text-accent-blue transition-colors" />
+                  <PiUser className="w-4 h-4 text-theme-tertiary mr-2 group-hover/link:text-accent-blue transition-colors" />
                   <span className="text-sm text-theme-tertiary group-hover/link:text-accent-blue transition-colors hover:underline">
                     {item.composerName}
                   </span>
                 </Link>
               ) : item.composerName ? (
                 <div className="flex items-center justify-center">
-                  <FiUser className="w-4 h-4 text-theme-tertiary mr-2" />
+                  <PiUser className="w-4 h-4 text-theme-tertiary mr-2" />
                   <span className="text-sm text-theme-tertiary">
                     {item.composerName}
                   </span>
@@ -276,7 +276,7 @@ const UploadScoreCard = ({
             {(item.fileSize || item.pageCount) && (
               <div className="text-center">
                 <div className="flex items-center justify-center">
-                  <FiDownload className="w-4 h-4 text-brand-primary mr-2" />
+                  <PiDownloadSimple className="w-4 h-4 text-brand-primary mr-2" />
                   <span className="text-sm text-theme-secondary">
                     {item.fileSize}
                     {item.pageCount && ` • ${item.pageCount} páginas`}
@@ -297,7 +297,7 @@ const UploadScoreCard = ({
                         : 'bg-accent-red/10 text-accent-red border border-accent-red/30'
                   }`}
                 >
-                  <FiStar className="w-2.5 h-2.5 mr-1" />
+                  <PiStar className="w-2.5 h-2.5 mr-1" />
                   {getDataQualityLabel(item.dataQuality)}
                 </span>
               </div>
@@ -308,14 +308,14 @@ const UploadScoreCard = ({
           <div className="flex flex-wrap justify-center gap-2 mb-4">
             {item.isIMSLP && (
               <span className="inline-flex items-center px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-xs font-medium">
-                <FiExternalLink className="w-2.5 h-2.5 mr-1" />
+                <PiArrowSquareOut className="w-2.5 h-2.5 mr-1" />
                 IMSLP
               </span>
             )}
 
             {item.verificationStatus === 'verified' && (
               <span className="inline-flex items-center px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
-                <FiShield className="w-2.5 h-2.5 mr-1" />
+                <PiShield className="w-2.5 h-2.5 mr-1" />
                 {t('card_verified_badge')}
               </span>
             )}
@@ -326,7 +326,7 @@ const UploadScoreCard = ({
             {/* Secondary Actions */}
             <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
               <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
-                <FiCalendar className="w-3 h-3" />
+                <PiCalendarBlank className="w-3 h-3" />
                 <span>
                   {t('card_added_on')}{' '}
                   {new Date(item.createdAt).toLocaleDateString('pt-BR')}
@@ -344,7 +344,7 @@ const UploadScoreCard = ({
                     onClick={(e) => e.stopPropagation()}
                     title={t('card_download_score')}
                   >
-                    <FiDownload className="w-3 h-3" />
+                    <PiDownloadSimple className="w-3 h-3" />
                     <span>{t('card_download')}</span>
                   </a>
                 )}
@@ -359,7 +359,7 @@ const UploadScoreCard = ({
                     onClick={(e) => e.stopPropagation()}
                   >
                     <span>IMSLP</span>
-                    <FiExternalLink className="w-3 h-3" />
+                    <PiArrowSquareOut className="w-3 h-3" />
                   </a>
                 )}
               </div>

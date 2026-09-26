@@ -1,23 +1,21 @@
 'use client';
 
 import React from 'react';
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiShield,
-  FiLock,
-  FiEye,
-  FiDatabase,
-  FiShare2,
-  FiSettings,
-  FiMail,
-  FiCheck,
-  FiUser,
-} from 'react-icons/fi';
-import {
-  GiMusicalNotes,
-  GiGrandPiano,
-  GiScrollQuill,
-  GiShield,
-} from 'react-icons/gi';
+  PiCheck,
+  PiCookie,
+  PiDatabase,
+  PiEnvelopeSimple,
+  PiEye,
+  PiGear,
+  PiLock,
+  PiMusicNotes,
+  PiScroll,
+  PiShareNetwork,
+  PiShield,
+  PiUser,
+} from 'react-icons/pi';
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Link from '@/app/components/LocalizedLink';
 
@@ -30,7 +28,6 @@ import {
   SequentialGrid,
   FloatingElement,
 } from '../../../components/animation/AnimatedComponents';
-import { BiCookie } from 'react-icons/bi';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface PrivacySection {
@@ -47,7 +44,7 @@ export default function PrivacyPage() {
     {
       id: 'collection',
       title: t('privacy_section_0_title'),
-      icon: FiDatabase,
+      icon: PiDatabase,
       content: [
         t('privacy_section_0_content_0'),
         t('privacy_section_0_content_1'),
@@ -59,7 +56,7 @@ export default function PrivacyPage() {
     {
       id: 'usage',
       title: t('privacy_section_1_title'),
-      icon: FiEye,
+      icon: PiEye,
       content: [
         t('privacy_section_1_content_0'),
         t('privacy_section_1_content_1'),
@@ -72,7 +69,7 @@ export default function PrivacyPage() {
     {
       id: 'sharing',
       title: t('privacy_section_2_title'),
-      icon: FiShare2,
+      icon: PiShareNetwork,
       content: [
         t('privacy_section_2_content_0'),
         t('privacy_section_2_content_1'),
@@ -84,7 +81,7 @@ export default function PrivacyPage() {
     {
       id: 'cookies',
       title: t('privacy_section_3_title'),
-      icon: BiCookie,
+      icon: PiCookie,
       content: [
         t('privacy_section_3_content_0'),
         t('privacy_section_3_content_1'),
@@ -96,7 +93,7 @@ export default function PrivacyPage() {
     {
       id: 'security',
       title: t('privacy_section_4_title'),
-      icon: FiLock,
+      icon: PiLock,
       content: [
         t('privacy_section_4_content_0'),
         t('privacy_section_4_content_1'),
@@ -108,7 +105,7 @@ export default function PrivacyPage() {
     {
       id: 'rights',
       title: t('privacy_section_5_title'),
-      icon: FiUser,
+      icon: PiUser,
       content: [
         t('privacy_section_5_content_0'),
         t('privacy_section_5_content_1'),
@@ -121,7 +118,7 @@ export default function PrivacyPage() {
     {
       id: 'retention',
       title: t('privacy_section_6_title'),
-      icon: FiSettings,
+      icon: PiGear,
       content: [
         t('privacy_section_6_content_0'),
         t('privacy_section_6_content_1'),
@@ -133,7 +130,7 @@ export default function PrivacyPage() {
     {
       id: 'children',
       title: t('privacy_section_7_title'),
-      icon: FiShield,
+      icon: PiShield,
       content: [
         t('privacy_section_7_content_0'),
         t('privacy_section_7_content_1'),
@@ -145,25 +142,25 @@ export default function PrivacyPage() {
 
   const dataTypes = [
     {
-      icon: FiUser,
+      icon: PiUser,
       title: t('privacy_data_type_0_title'),
       description: t('privacy_data_type_0_description'),
       retention: t('privacy_data_type_0_retention'),
     },
     {
-      icon: FiSettings,
+      icon: PiGear,
       title: t('privacy_data_type_1_title'),
       description: t('privacy_data_type_1_description'),
       retention: t('privacy_data_type_1_retention'),
     },
     {
-      icon: FiDatabase,
+      icon: PiDatabase,
       title: t('privacy_data_type_2_title'),
       description: t('privacy_data_type_2_description'),
       retention: t('privacy_data_type_2_retention'),
     },
     {
-      icon: FiShare2,
+      icon: PiShareNetwork,
       title: t('privacy_data_type_3_title'),
       description: t('privacy_data_type_3_description'),
       retention: t('privacy_data_type_3_retention'),
@@ -182,7 +179,7 @@ export default function PrivacyPage() {
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
-                  <FiShield className="w-5 h-5 text-brand-primary mr-2" />
+                  <PiShield className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
                     {t('privacy_jsx_span_children_0__proteção_dados')}
                   </span>
@@ -206,7 +203,7 @@ export default function PrivacyPage() {
 
               <AnimatedItem direction="up" springType="gentle">
                 <div className="mt-8 inline-flex items-center space-x-2 text-theme-tertiary">
-                  <FiLock className="w-4 h-4" />
+                  <PiLock className="w-4 h-4" />
                   <span className="text-sm">
                     {t('privacy_jsx_span_children_0__última_atualização')}
                     {lastUpdated}
@@ -227,7 +224,7 @@ export default function PrivacyPage() {
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className="flex items-start flex-col md:flex-row space-x-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <GiShield className="w-8 h-8 text-theme-primary" />
+                    <PiShield className="w-8 h-8 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold classical-title text-theme-primary mb-4">
@@ -345,7 +342,7 @@ export default function PrivacyPage() {
               <AnimatedCard hover="lift" className="classical-card !p-8">
                 <div className="flex items-start flex-col md:flex-row space-x-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center flex-shrink-0">
-                    <FiCheck className="w-6 h-6 text-theme-primary" />
+                    <PiCheck className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold classical-title text-theme-primary mb-4">
@@ -356,13 +353,13 @@ export default function PrivacyPage() {
                     </p>
                     <div className="space-y-3">
                       <div className="flex items-center space-x-3">
-                        <FiMail className="w-4 h-4 text-brand-primary" />
+                        <PiEnvelopeSimple className="w-4 h-4 text-brand-primary" />
                         <span className="text-theme-secondary">
                           privacidade@opusatlas.com
                         </span>
                       </div>
                       <div className="flex items-center space-x-3">
-                        <FiSettings className="w-4 h-4 text-brand-primary" />
+                        <PiGear className="w-4 h-4 text-brand-primary" />
                         <span className="text-theme-secondary">
                           {t('privacy_jsx_span_children_0__profile')}
                         </span>
@@ -388,7 +385,7 @@ export default function PrivacyPage() {
                 className="classical-card p-12 text-center"
               >
                 <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
-                  <FiMail className="w-10 h-10 text-theme-primary" />
+                  <PiEnvelopeSimple className="w-10 h-10 text-theme-primary" />
                 </div>
 
                 <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">
@@ -404,7 +401,7 @@ export default function PrivacyPage() {
                     href="/contact"
                     className="btn-classical-primary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
                   >
-                    <FiMail className="w-5 h-5" />
+                    <PiEnvelopeSimple className="w-5 h-5" />
                     <span>
                       {t('privacy_jsx_span_children_0__contatar_dpo')}
                     </span>
@@ -414,20 +411,20 @@ export default function PrivacyPage() {
                     href="/terms"
                     className="btn-classical-secondary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
                   >
-                    <FiShield className="w-5 h-5" />
+                    <PiShield className="w-5 h-5" />
                     <span>{t('privacy_jsx_span_children_0__termos_uso')}</span>
                   </Link>
                 </div>
 
                 <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
                   <div className="flex items-center space-x-2 text-theme-tertiary">
-                    <FiShield className="w-4 h-4" />
+                    <PiShield className="w-4 h-4" />
                     <span className="text-sm">
                       {t('privacy_jsx_span_children_0__conformidade_lgpd')}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2 text-theme-tertiary">
-                    <FiLock className="w-4 h-4" />
+                    <PiLock className="w-4 h-4" />
                     <span className="text-sm">
                       {t('privacy_jsx_span_children_0__dados_criptografados')}
                     </span>
@@ -444,7 +441,7 @@ export default function PrivacyPage() {
         className="top-16 left-16 text-6xl text-brand-primary/5"
         delay={0}
       >
-        <GiMusicalNotes />
+        <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
         className="bottom-16 right-16 text-5xl text-accent-purple/5"
@@ -456,13 +453,13 @@ export default function PrivacyPage() {
         className="top-1/3 right-24 text-4xl text-accent-blue/5"
         delay={1}
       >
-        <GiShield />
+        <PiShield />
       </FloatingElement>
       <FloatingElement
         className="bottom-1/3 left-24 text-4xl text-brand-secondary/5"
         delay={3}
       >
-        <GiScrollQuill />
+        <PiScroll />
       </FloatingElement>
     </PageContainer>
   );

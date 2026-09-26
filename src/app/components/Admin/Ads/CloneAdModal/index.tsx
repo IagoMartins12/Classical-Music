@@ -3,12 +3,12 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiCopy,
-  FiTarget,
-  FiMessageCircle,
-  FiInfo,
-  FiAlertTriangle,
-} from 'react-icons/fi';
+  PiChatCircle,
+  PiCopy,
+  PiInfo,
+  PiTarget,
+  PiWarning,
+} from 'react-icons/pi';
 import toast from 'react-hot-toast';
 import { useAds } from '@/app/hooks/admin/useAds';
 import Button from '@/app/components/Common/Button';
@@ -307,7 +307,7 @@ export default function CloneAdModal({
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center">
-              <FiCopy className="w-5 h-5 text-white" />
+              <PiCopy className="w-5 h-5 text-white" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-theme-primary">
@@ -324,7 +324,7 @@ export default function CloneAdModal({
         {hasMedia && (
           <div className="p-4 bg-accent-green/10 border-l-4 border-accent-green mx-6 mt-4 rounded">
             <div className="flex items-start space-x-3">
-              <FiInfo className="w-5 h-5 text-accent-green mt-0.5" />
+              <PiInfo className="w-5 h-5 text-accent-green mt-0.5" />
               <div>
                 <h4 className="font-medium text-theme-primary">
                   Mídia será clonada
@@ -342,7 +342,7 @@ export default function CloneAdModal({
         {!hasMedia && (
           <div className="p-4 bg-accent-amber/10 border-l-4 border-accent-amber mx-6 mt-4 rounded">
             <div className="flex items-start space-x-3">
-              <FiAlertTriangle className="w-5 h-5 text-accent-amber mt-0.5" />
+              <PiWarning className="w-5 h-5 text-accent-amber mt-0.5" />
               <div>
                 <h4 className="font-medium text-theme-primary">
                   Sem mídia para clonar
@@ -360,7 +360,7 @@ export default function CloneAdModal({
         {conflictInfo && (
           <div className="p-4 bg-accent-red/10 border-l-4 border-accent-red mx-6 mt-4 rounded">
             <div className="flex items-start space-x-3">
-              <FiTarget className="w-5 h-5 text-accent-red mt-0.5" />
+              <PiTarget className="w-5 h-5 text-accent-red mt-0.5" />
               <div className="flex-1">
                 <h4 className="font-medium text-accent-red mb-2">
                   Conflitos Detectados
@@ -439,7 +439,7 @@ export default function CloneAdModal({
           {/* Informações Básicas */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
-              <FiTarget className="w-5 h-5" />
+              <PiTarget className="w-5 h-5" />
               <span>Informações Básicas</span>
             </h3>
 
@@ -513,7 +513,7 @@ export default function CloneAdModal({
           {/* Segmentação */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
-              <FiTarget className="w-5 h-5" />
+              <PiTarget className="w-5 h-5" />
               <span>Segmentação</span>
             </h3>
 
@@ -569,7 +569,7 @@ export default function CloneAdModal({
           {/* Link e Call-to-Action */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
-              <FiMessageCircle className="w-5 h-5" />
+              <PiChatCircle className="w-5 h-5" />
               <span>Call-to-Action</span>
             </h3>
 
@@ -713,7 +713,7 @@ export default function CloneAdModal({
             <Button
               type="submit"
               variant="primary"
-              leftIcon={<FiCopy />}
+              leftIcon={<PiCopy />}
               disabled={loading || (conflictInfo && conflictInfo.hasConflict)}
               isLoading={loading}
             >

@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, createContext, useContext } from 'react';
-import { FiAward, FiX, FiStar, FiZap, FiShield } from 'react-icons/fi';
+import { PiLightning, PiMedal, PiShield, PiStar, PiX } from 'react-icons/pi';
 import { AnimatedItem } from '../../animation/AnimatedComponents';
 import { markAchievementViewed } from '@/app/requests/achievements';
 
@@ -169,25 +169,25 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
   const rarityConfig = {
     COMMON: {
       gradient: 'from-slate-400 to-slate-600',
-      icon: FiAward,
+      icon: PiMedal,
       label: 'Comum',
       border: 'border-slate-400/30',
     },
     RARE: {
       gradient: 'from-blue-400 to-blue-600',
-      icon: FiStar,
+      icon: PiStar,
       label: 'Raro',
       border: 'border-blue-400/30',
     },
     EPIC: {
       gradient: 'from-purple-400 to-purple-600',
-      icon: FiZap,
+      icon: PiLightning,
       label: 'Épico',
       border: 'border-purple-400/30',
     },
     LEGENDARY: {
       gradient: 'from-amber-400 to-amber-600',
-      icon: FiShield,
+      icon: PiShield,
       label: 'Lendário',
       border: 'border-amber-400/30',
     },
@@ -216,7 +216,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
             ) : Icon ? (
               <Icon className="w-7 h-7 text-theme-primary " />
             ) : (
-              <FiAward className="w-7 h-7 text-theme-primary " />
+              <PiMedal className="w-7 h-7 text-theme-primary " />
             )}
           </div>
 
@@ -228,7 +228,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
               {achievement.rarity === 'LEGENDARY' && (
                 <div className="flex space-x-1">
                   {[...Array(3)].map((_, i) => (
-                    <FiStar
+                    <PiStar
                       key={i}
                       className="w-3 h-3 text-amber-400 animate-pulse"
                     />
@@ -245,7 +245,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
             onClick={handleClose}
             className="w-7 h-7 rounded-full bg-theme-secondary hover:bg-theme-primary flex items-center justify-center transition-colors text-theme-tertiary hover:text-theme-primary"
           >
-            <FiX className="w-4 h-4" />
+            <PiX className="w-4 h-4" />
           </button>
         </div>
 
@@ -335,7 +335,7 @@ export const useAchievementDemo = () => {
         id: 'demo-common',
         name: 'Primeiro Passo',
         description: 'Você deu seus primeiros passos na jornada musical!',
-        icon: FiAward,
+        icon: PiMedal,
         category: 'milestone',
         rarity: 'COMMON' as const,
         unlocked: true,
@@ -351,7 +351,7 @@ export const useAchievementDemo = () => {
         name: 'Colecionador Dedicado',
         description:
           'Você acumulou 25 favoritos e mostra verdadeira paixão pela música clássica!',
-        icon: FiStar,
+        icon: PiStar,
         category: 'collection',
         rarity: 'RARE' as const,
         unlocked: true,
@@ -367,7 +367,7 @@ export const useAchievementDemo = () => {
         name: 'Mestre do Conhecimento',
         description:
           'Sua contribuição para a comunidade é excepcional - 50+ anotações úteis!',
-        icon: FiZap,
+        icon: PiLightning,
         category: 'expertise',
         rarity: 'EPIC' as const,
         unlocked: true,
@@ -383,7 +383,7 @@ export const useAchievementDemo = () => {
         name: 'Lenda Musical',
         description:
           'Você alcançou o ápice - um verdadeiro virtuoso em todos os aspectos!',
-        icon: FiShield,
+        icon: PiShield,
         category: 'milestone',
         rarity: 'LEGENDARY' as const,
         unlocked: true,
@@ -463,13 +463,13 @@ function getIconForBadgeId(
   badgeId: string
 ): React.ComponentType<{ className?: string }> {
   const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-    'first-goal': FiAward,
-    'first-completion': FiAward,
-    'dedicated-student': FiAward,
-    'first-favorite': FiAward,
-    'collector-bronze': FiStar,
-    'first-contribution': FiAward,
+    'first-goal': PiMedal,
+    'first-completion': PiMedal,
+    'dedicated-student': PiMedal,
+    'first-favorite': PiMedal,
+    'collector-bronze': PiStar,
+    'first-contribution': PiMedal,
   };
 
-  return iconMap[badgeId] || FiAward;
+  return iconMap[badgeId] || PiMedal;
 }

@@ -1,17 +1,16 @@
 // app/learning/LearningPageLoading.tsx - Clean Skeleton Loading
 'use client';
 
-import {
-  FiTarget,
-  FiCheckCircle,
-  FiGrid,
-  FiList,
-  FiFilter,
-  FiBookOpen,
-  FiSearch,
-} from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
-import { PiTarget } from 'react-icons/pi';
+import {
+  PiBookOpen,
+  PiCheckCircle,
+  PiFunnel,
+  PiListBullets,
+  PiMagnifyingGlass,
+  PiSquaresFour,
+  PiTarget,
+} from 'react-icons/pi';
 
 export default function LearningPageLoading() {
   return (
@@ -27,16 +26,16 @@ export default function LearningPageLoading() {
       {/* Floating musical notes - static */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10">
-          <FiBookOpen />
+          <PiBookOpen />
         </div>
         <div className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10">
-          <FiTarget />
+          <PiTarget />
         </div>
         <div className="absolute top-1/3 right-24 text-3xl text-accent-purple/10">
           <GiGrandPiano />
         </div>
         <div className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10">
-          <FiCheckCircle />
+          <PiCheckCircle />
         </div>
       </div>
 
@@ -58,9 +57,9 @@ export default function LearningPageLoading() {
         {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {[
             { icon: <FiMusic className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiTarget className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiTarget className="w-6 h-6 text-theme-inverse/20" /> },
             {
-              icon: <FiCheckCircle className="w-6 h-6 text-theme-inverse/20" />,
+              icon: <PiCheckCircle className="w-6 h-6 text-theme-inverse/20" />,
             },
           ].map((item, index) => (
             <div
@@ -99,13 +98,13 @@ export default function LearningPageLoading() {
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search Skeleton */}
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary/50 w-4 h-4" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary/50 w-4 h-4" />
                   <div className="h-12 w-32 md:w-96 max-w-full bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg pl-12 animate-pulse"></div>
                 </div>
 
                 {/* Filter Button Skeleton */}
                 <div className="h-12 w-24 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center space-x-2 animate-pulse">
-                  <FiFilter className="w-4 h-4 text-theme-tertiary/30" />
+                  <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="w-12 h-4 bg-theme-tertiary/30 rounded"></div>
                 </div>
 
@@ -114,10 +113,10 @@ export default function LearningPageLoading() {
                   <span className="text-sm text-theme-secondary">Vista:</span>
                   <div className="bg-theme-secondary border border-theme-primary rounded-lg p-1 flex">
                     <div className="p-2 rounded bg-theme-elevated">
-                      <FiList className="w-4 h-4 text-theme-tertiary/50" />
+                      <PiListBullets className="w-4 h-4 text-theme-tertiary/50" />
                     </div>
                     <div className="p-2 rounded bg-brand-gradient/20">
-                      <FiGrid className="w-4 h-4 text-brand-primary/50" />
+                      <PiSquaresFour className="w-4 h-4 text-brand-primary/50" />
                     </div>
                   </div>
                 </div>
@@ -130,7 +129,7 @@ export default function LearningPageLoading() {
         <div>
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
-              <FiTarget className="w-5 h-5 text-theme-inverse/20" />
+              <PiTarget className="w-5 h-5 text-theme-inverse/20" />
             </div>
             <div className="space-y-2">
               <div className="h-8 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
@@ -150,7 +149,7 @@ export default function LearningPageLoading() {
         <div>
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-              <FiCheckCircle className="w-5 h-5 text-theme-inverse/20" />
+              <PiCheckCircle className="w-5 h-5 text-theme-inverse/20" />
             </div>
             <div className="space-y-2">
               <div className="h-8 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>

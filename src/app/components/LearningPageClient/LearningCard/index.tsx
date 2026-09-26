@@ -5,23 +5,24 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import {
-  FiStar,
-  FiEdit3,
-  FiCalendar,
-  FiClock,
-  FiTrendingUp,
-  FiHeart,
-  FiAward,
-  FiUsers,
-  FiPlay,
-  FiX,
-  FiTrash2,
-  FiAlertTriangle,
-  FiBookOpen,
-  FiDownload,
-  FiFileText,
-  FiMusic,
-} from 'react-icons/fi';
+  PiBookOpen,
+  PiCalendarBlank,
+  PiClock,
+  PiDownloadSimple,
+  PiFileText,
+  PiHeart,
+  PiMedal,
+  PiMusicNotes,
+  PiPencilLine,
+  PiPlay,
+  PiStar,
+  PiStarFill,
+  PiTrash,
+  PiTrendUp,
+  PiUsers,
+  PiWarning,
+  PiX,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import {
   WantToLearnItem,
@@ -96,7 +97,7 @@ const ConfirmDeleteModal = ({
       >
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center">
-            <FiAlertTriangle className="w-6 h-6 text-accent-red" />
+            <PiWarning className="w-6 h-6 text-accent-red" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-theme-primary">
@@ -136,7 +137,7 @@ const ConfirmDeleteModal = ({
               </>
             ) : (
               <>
-                <FiTrash2 className="w-4 h-4" />
+                <PiTrash className="w-4 h-4" />
                 <span>{t('remove_button')}</span>
               </>
             )}
@@ -262,7 +263,7 @@ export const LearningCard = ({
                         className="w-5 h-5 bg-accent-purple/20 border border-accent-purple/40 rounded-full flex items-center justify-center"
                         title={t('has_linked_score')}
                       >
-                        <FiFileText className="w-3 h-3 text-accent-purple" />
+                        <PiFileText className="w-3 h-3 text-accent-purple" />
                       </div>
                     )}
                   </div>
@@ -290,7 +291,7 @@ export const LearningCard = ({
                     }
                   >
                     {[...Array(5)].map((_, i) => (
-                      <FiStar
+                      <PiStar
                         key={i}
                         className={`w-4 h-4 transition-colors ${
                           i <
@@ -324,7 +325,7 @@ export const LearningCard = ({
                     {isWantToLearn ? (
                       <>
                         {wantToLearnItem.targetDate && (
-                          <FiCalendar
+                          <PiCalendarBlank
                             className="w-4 h-4"
                             title={`${t('target_date')} ${formatDate(
                               wantToLearnItem.targetDate
@@ -340,13 +341,13 @@ export const LearningCard = ({
                     ) : (
                       <>
                         {learnedItem.wouldRecommend && (
-                          <FiUsers
+                          <PiUsers
                             className="w-4 h-4 text-accent-green"
                             title={t('recommends')}
                           />
                         )}
                         {learnedItem.publicPerformance && (
-                          <FiPlay
+                          <PiPlay
                             className="w-4 h-4 text-accent-blue"
                             title={t('public_performance')}
                           />
@@ -358,7 +359,7 @@ export const LearningCard = ({
                               learnedItem.enjoyment
                             }/5`}
                           >
-                            <FiHeart className="w-4 h-4" />
+                            <PiHeart className="w-4 h-4" />
                             <span>{learnedItem.enjoyment}</span>
                           </div>
                         )}
@@ -380,7 +381,7 @@ export const LearningCard = ({
                           item.selectedWorkScore?.title
                         }`}
                       >
-                        <FiDownload className="w-4 h-4" />
+                        <PiDownloadSimple className="w-4 h-4" />
                       </a>
                     </AnimatedItem>
                   )}
@@ -390,14 +391,14 @@ export const LearningCard = ({
                     className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
                     title={t('edit_button')}
                   >
-                    <FiEdit3 className="w-4 h-4" />
+                    <PiPencilLine className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setShowDeleteModal(true)}
                     className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
                     title={t('remove_button')}
                   >
-                    <FiX className="w-4 h-4" />
+                    <PiX className="w-4 h-4" />
                   </button>
                   {((isWantToLearn && wantToLearnItem.notes) ||
                     (!isWantToLearn && learnedItem.notes)) && (
@@ -405,7 +406,7 @@ export const LearningCard = ({
                       className="w-6 h-6 flex items-center justify-center"
                       title={t('has_notes')}
                     >
-                      <FiBookOpen className="w-3 h-3 text-accent-purple" />
+                      <PiBookOpen className="w-3 h-3 text-accent-purple" />
                     </div>
                   )}
                 </div>
@@ -444,7 +445,7 @@ export const LearningCard = ({
                   className="w-6 h-6 b rounded-lg flex items-center justify-center"
                   title={t('has_linked_score')}
                 >
-                  <FiMusic className="w-3 h-3 text-accent-purple" />
+                  <PiMusicNotes className="w-3 h-3 text-accent-purple" />
                 </div>
               )}
             </div>
@@ -471,7 +472,7 @@ export const LearningCard = ({
                     item.selectedWorkScore?.title
                   }`}
                 >
-                  <FiDownload className="w-4 h-4" />
+                  <PiDownloadSimple className="w-4 h-4" />
                 </button>
               </AnimatedItem>
             )}
@@ -481,14 +482,14 @@ export const LearningCard = ({
               className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
               title={t('edit_button')}
             >
-              <FiEdit3 className="w-4 h-4" />
+              <PiPencilLine className="w-4 h-4" />
             </button>
             <button
               onClick={() => setShowDeleteModal(true)}
               className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
               title={t('remove_button')}
             >
-              <FiX className="w-4 h-4" />
+              <PiX className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -498,7 +499,7 @@ export const LearningCard = ({
           <div className="mb-4 p-3 classical-card-simple rounded-xl">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-accent-purple/20 rounded-lg flex items-center justify-center">
-                <FiFileText className="w-4 h-4 text-accent-purple" />
+                <PiFileText className="w-4 h-4 text-accent-purple" />
               </div>
               <div className="flex-1">
                 <h4 className="text-sm font-semibold text-theme-primary">
@@ -520,7 +521,7 @@ export const LearningCard = ({
                 }}
                 className="btn-classical-secondary-sm flex items-center space-x-1 text-xs"
               >
-                <FiDownload className="w-3 h-3" />
+                <PiDownloadSimple className="w-3 h-3" />
                 <span>{t('download_button')}</span>
               </button>
             </div>
@@ -533,19 +534,22 @@ export const LearningCard = ({
             {isWantToLearn ? t('priority_label_card') : t('mastery_label_card')}
           </span>
           <div className="flex items-center space-x-1">
-            {[...Array(5)].map((_, i) => (
-              <FiStar
-                key={i}
-                className={`w-4 h-4 transition-colors ${
-                  i <
-                  (isWantToLearn
-                    ? wantToLearnItem.priority
-                    : learnedItem.mastery)
-                    ? `fill-current text-yellow-400`
-                    : 'text-theme-tertiary/30'
-                }`}
-              />
-            ))}
+            {[...Array(5)].map((_, i) =>
+              i <
+              (isWantToLearn
+                ? wantToLearnItem.priority
+                : learnedItem.mastery) ? (
+                <PiStarFill
+                  key={i}
+                  className="w-4 h-4 transition-colors text-yellow-400"
+                />
+              ) : (
+                <PiStar
+                  key={i}
+                  className="w-4 h-4 transition-colors text-theme-tertiary/30"
+                />
+              )
+            )}
           </div>
         </div>
 
@@ -553,7 +557,7 @@ export const LearningCard = ({
         <div className="space-y-3">
           {item.difficulty && (
             <div className="flex items-center space-x-2">
-              <FiTrendingUp className="w-4 h-4 text-theme-tertiary" />
+              <PiTrendUp className="w-4 h-4 text-theme-tertiary" />
               <span
                 className={`text-xs px-2 py-1 rounded-full border transition-colors ${getDifficultyColor(
                   item.difficulty
@@ -568,7 +572,7 @@ export const LearningCard = ({
             <>
               {wantToLearnItem.targetDate && (
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
-                  <FiCalendar className="w-4 h-4" />
+                  <PiCalendarBlank className="w-4 h-4" />
                   <span>
                     {t('target_date')} {formatDate(wantToLearnItem.targetDate)}
                   </span>
@@ -577,7 +581,7 @@ export const LearningCard = ({
 
               {wantToLearnItem.estimatedStudyTime && (
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
-                  <FiClock className="w-4 h-4" />
+                  <PiClock className="w-4 h-4" />
                   <span>
                     {wantToLearnItem.estimatedStudyTime}
                     {t('estimated_hours')}
@@ -587,7 +591,7 @@ export const LearningCard = ({
 
               {wantToLearnItem.context && (
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
-                  <FiUsers className="w-4 h-4" />
+                  <PiUsers className="w-4 h-4" />
                   <span>
                     {t('context_label')} {wantToLearnItem.context}
                   </span>
@@ -597,7 +601,7 @@ export const LearningCard = ({
               {wantToLearnItem.motivation && (
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-blue">
                   <div className="flex items-center space-x-2 mb-1">
-                    <FiHeart className="w-4 h-4 text-accent-blue" />
+                    <PiHeart className="w-4 h-4 text-accent-blue" />
                     <span className="text-sm font-medium text-theme-secondary">
                       {t('motivation_section')}
                     </span>
@@ -611,7 +615,7 @@ export const LearningCard = ({
               {wantToLearnItem.notes && (
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-purple">
                   <div className="flex items-center space-x-2 mb-1">
-                    <FiBookOpen className="w-4 h-4 text-accent-purple" />
+                    <PiBookOpen className="w-4 h-4 text-accent-purple" />
                     <span className="text-sm font-medium text-theme-secondary">
                       {t('notes_section')}
                     </span>
@@ -626,7 +630,7 @@ export const LearningCard = ({
             <>
               {learnedItem.studyStartDate && (
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
-                  <FiCalendar className="w-4 h-4" />
+                  <PiCalendarBlank className="w-4 h-4" />
                   <span>
                     {t('study_start')} {formatDate(learnedItem.studyStartDate)}
                   </span>
@@ -635,7 +639,7 @@ export const LearningCard = ({
 
               {learnedItem.studyDuration && (
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
-                  <FiClock className="w-4 h-4" />
+                  <PiClock className="w-4 h-4" />
                   <span>
                     {learnedItem.studyDuration} {t('study_days')}
                   </span>
@@ -644,7 +648,7 @@ export const LearningCard = ({
 
               {learnedItem.enjoyment && (
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
-                  <FiHeart className="w-4 h-4" />
+                  <PiHeart className="w-4 h-4" />
                   <span>
                     {t('satisfaction_label')} {learnedItem.enjoyment}/5
                   </span>
@@ -654,13 +658,13 @@ export const LearningCard = ({
               <div className="flex items-center space-x-4 text-sm">
                 {learnedItem.wouldRecommend && (
                   <span className="flex items-center space-x-1 text-accent-green">
-                    <FiUsers className="w-4 h-4" />
+                    <PiUsers className="w-4 h-4" />
                     <span>{t('recommends')}</span>
                   </span>
                 )}
                 {learnedItem.publicPerformance && (
                   <span className="flex items-center space-x-1 text-accent-blue">
-                    <FiPlay className="w-4 h-4" />
+                    <PiPlay className="w-4 h-4" />
                     <span>{t('public_performance')}</span>
                   </span>
                 )}
@@ -669,7 +673,7 @@ export const LearningCard = ({
               {learnedItem.technicalChallenges && (
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-red">
                   <div className="flex items-center space-x-2 mb-1">
-                    <FiTrendingUp className="w-4 h-4 text-accent-red" />
+                    <PiTrendUp className="w-4 h-4 text-accent-red" />
                     <span className="text-sm font-medium text-theme-secondary">
                       {t('technical_challenges')}
                     </span>
@@ -683,7 +687,7 @@ export const LearningCard = ({
               {learnedItem.musicalInsights && (
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-green">
                   <div className="flex items-center space-x-2 mb-1">
-                    <FiAward className="w-4 h-4 text-accent-green" />
+                    <PiMedal className="w-4 h-4 text-accent-green" />
                     <span className="text-sm font-medium text-theme-secondary">
                       {t('musical_insights')}
                     </span>
@@ -697,7 +701,7 @@ export const LearningCard = ({
               {learnedItem.notes && (
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-purple">
                   <div className="flex items-center space-x-2 mb-1">
-                    <FiBookOpen className="w-4 h-4 text-accent-purple" />
+                    <PiBookOpen className="w-4 h-4 text-accent-purple" />
                     <span className="text-sm font-medium text-theme-secondary">
                       {t('notes_section')}
                     </span>

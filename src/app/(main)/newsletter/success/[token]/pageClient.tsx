@@ -4,15 +4,15 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiCheckCircle,
-  FiMail,
-  FiHeart,
-  FiMusic,
-  FiArrowRight,
-  FiHome,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiArrowRight,
+  PiCheckCircle,
+  PiEnvelopeSimple,
+  PiHeart,
+  PiHouse,
+  PiMusicNotes,
+} from 'react-icons/pi';
 import {
   PageContainer,
   AnimatedContainer,
@@ -39,7 +39,7 @@ export default function NewsletterSuccessContent() {
     switch (type) {
       case 'confirmed':
         return {
-          icon: <FiCheckCircle className="w-16 h-16 text-accent-green" />,
+          icon: <PiCheckCircle className="w-16 h-16 text-accent-green" />,
           title: t('success_confirmed_title'),
           subtitle: t('success_confirmed_subtitle'),
           message: t('success_confirmed_message'),
@@ -49,7 +49,7 @@ export default function NewsletterSuccessContent() {
 
       case 'subscribed':
         return {
-          icon: <FiMail className="w-16 h-16 text-accent-blue" />,
+          icon: <PiEnvelopeSimple className="w-16 h-16 text-accent-blue" />,
           title: t('success_subscribed_title'),
           subtitle: t('success_subscribed_subtitle'),
           message: t('success_subscribed_message'),
@@ -60,7 +60,7 @@ export default function NewsletterSuccessContent() {
 
       case 'already_unsubscribed':
         return {
-          icon: <FiMail className="w-16 h-16 text-accent-amber" />,
+          icon: <PiEnvelopeSimple className="w-16 h-16 text-accent-amber" />,
           title: t('success_already_unsubscribed_title'),
           subtitle: t('success_already_unsubscribed_subtitle'),
           message: t('success_already_unsubscribed_message'),
@@ -70,7 +70,7 @@ export default function NewsletterSuccessContent() {
 
       default:
         return {
-          icon: <FiCheckCircle className="w-16 h-16 text-accent-green" />,
+          icon: <PiCheckCircle className="w-16 h-16 text-accent-green" />,
           title: t('success_default_title'),
           subtitle: t('success_default_subtitle'),
           message: t('success_default_message'),
@@ -134,7 +134,7 @@ export default function NewsletterSuccessContent() {
                     className="btn-classical-primary inline-flex items-center space-x-3 px-8 py-4"
                   >
                     <span>{content.buttonText}</span>
-                    <FiArrowRight className="w-5 h-5" />
+                    <PiArrowRight className="w-5 h-5" />
                   </Link>
 
                   {content.showResend && (
@@ -160,7 +160,7 @@ export default function NewsletterSuccessContent() {
                       href="/composers"
                       className="group classical-card p-6 hover:bg-theme-secondary transition-all"
                     >
-                      <FiMusic className="w-8 h-8 text-brand-primary mb-3 mx-auto group-hover:scale-110 transition-transform" />
+                      <PiMusicNotes className="w-8 h-8 text-brand-primary mb-3 mx-auto group-hover:scale-110 transition-transform" />
                       <h3 className="font-semibold text-theme-primary mb-2">
                         {t('success_explore_composers_title')}
                       </h3>
@@ -186,7 +186,7 @@ export default function NewsletterSuccessContent() {
                       href="/"
                       className="group classical-card p-6 hover:bg-theme-secondary transition-all"
                     >
-                      <FiHome className="w-8 h-8 text-accent-blue mb-3 mx-auto group-hover:scale-110 transition-transform" />
+                      <PiHouse className="w-8 h-8 text-accent-blue mb-3 mx-auto group-hover:scale-110 transition-transform" />
                       <h3 className="font-semibold text-theme-primary mb-2">
                         {t('success_home_title')}
                       </h3>
@@ -207,13 +207,13 @@ export default function NewsletterSuccessContent() {
         className="top-20 left-20 text-6xl text-brand-primary/5"
         delay={0}
       >
-        <GiMusicalNotes />
+        <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
         className="bottom-20 right-20 text-5xl text-accent-green/5"
         delay={2}
       >
-        <FiHeart />
+        <PiHeart />
       </FloatingElement>
     </PageContainer>
   );

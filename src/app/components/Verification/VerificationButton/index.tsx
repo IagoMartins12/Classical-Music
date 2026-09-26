@@ -1,7 +1,7 @@
 // app/components/Report/VerificationButton.tsx
 'use client';
 
-import { FiShield } from 'react-icons/fi';
+import { PiShield } from 'react-icons/pi';
 import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface VerificationButtonProps {
@@ -56,7 +56,7 @@ export default function VerificationButton({
         `}
         title={t(titleKey)}
       >
-        <FiShield
+        <PiShield
           className={`${iconSizes[size]} group-hover:rotate-12 transition-transform duration-300`}
         />
         {showLabel && (

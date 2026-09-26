@@ -4,20 +4,20 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiBarChart2,
-  FiTrendingUp,
-  FiUsers,
-  FiDatabase,
-  FiActivity,
-  FiRefreshCw,
-  FiDownload,
-  FiAlertTriangle,
-  FiCheckCircle,
-  FiInfo,
-  FiZap,
-  FiTarget,
-  FiEye,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiChartBar,
+  PiCheckCircle,
+  PiDatabase,
+  PiDownloadSimple,
+  PiEye,
+  PiInfo,
+  PiLightning,
+  PiPulse,
+  PiTarget,
+  PiTrendUp,
+  PiUsers,
+  PiWarning,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -98,11 +98,11 @@ export default function AdminAnalytics() {
   const getRecommendationIcon = (type: string) => {
     switch (type) {
       case 'warning':
-        return FiAlertTriangle;
+        return PiWarning;
       case 'success':
-        return FiCheckCircle;
+        return PiCheckCircle;
       default:
-        return FiInfo;
+        return PiInfo;
     }
   };
 
@@ -129,14 +129,14 @@ export default function AdminAnalytics() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <FiAlertTriangle className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Analytics
           </h2>
           <p className="text-theme-secondary mb-6">{error}</p>
           <Button
             variant="primary"
-            leftIcon={<FiRefreshCw />}
+            leftIcon={<PiArrowsClockwise />}
             onClick={handleRefresh}
           >
             Tentar Novamente
@@ -158,7 +158,7 @@ export default function AdminAnalytics() {
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiBarChart2 className="w-8 h-8 text-theme-primary" />
+                <PiChartBar className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -178,7 +178,7 @@ export default function AdminAnalytics() {
               </div>
               {lastUpdated && (
                 <div className="flex items-center space-x-2">
-                  <FiRefreshCw className="w-4 h-4 text-theme-secondary" />
+                  <PiArrowsClockwise className="w-4 h-4 text-theme-secondary" />
                   <span className="text-theme-secondary">
                     Atualizado há{' '}
                     {Math.round((Date.now() - lastUpdated.getTime()) / 60000)}{' '}
@@ -191,7 +191,9 @@ export default function AdminAnalytics() {
                   variant="ghost"
                   size="sm"
                   leftIcon={
-                    <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                    <PiArrowsClockwise
+                      className={refreshing ? 'animate-spin' : ''}
+                    />
                   }
                   onClick={handleRefresh}
                   disabled={refreshing}
@@ -201,7 +203,7 @@ export default function AdminAnalytics() {
                 <Button
                   variant="secondary"
                   size="sm"
-                  leftIcon={<FiDownload />}
+                  leftIcon={<PiDownloadSimple />}
                   onClick={handleExportReport}
                 >
                   Exportar
@@ -215,7 +217,7 @@ export default function AdminAnalytics() {
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard className="classical-card p-6 mb-8">
             <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-              <FiTarget className="w-5 h-5 text-accent-blue" />
+              <PiTarget className="w-5 h-5 text-accent-blue" />
               <span>Insights Principais</span>
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -248,7 +250,7 @@ export default function AdminAnalytics() {
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mb-8">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                <FiActivity className="w-5 h-5 text-accent-green" />
+                <PiPulse className="w-5 h-5 text-accent-green" />
                 <span>Visão Geral do Engajamento</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -421,7 +423,7 @@ export default function AdminAnalytics() {
           {/* Top Works */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-              <FiDatabase className="w-5 h-5 text-accent-blue" />
+              <PiDatabase className="w-5 h-5 text-accent-blue" />
               <span>Obras Populares</span>
             </h3>
             <div className="space-y-3">
@@ -450,7 +452,7 @@ export default function AdminAnalytics() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      leftIcon={<FiEye />}
+                      leftIcon={<PiEye />}
                       onClick={() => router.push(`/admin/works/${work.id}`)}
                     />
                   </div>
@@ -461,7 +463,7 @@ export default function AdminAnalytics() {
           {/* Top Composers */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-              <FiUsers className="w-5 h-5 text-accent-green" />
+              <PiUsers className="w-5 h-5 text-accent-green" />
               <span>Compositores Populares</span>
             </h3>
             <div className="space-y-3">
@@ -487,7 +489,7 @@ export default function AdminAnalytics() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      leftIcon={<FiEye />}
+                      leftIcon={<PiEye />}
                       onClick={() =>
                         router.push(`/admin/composers/${composer.id}`)
                       }
@@ -500,7 +502,7 @@ export default function AdminAnalytics() {
           {/* Top Users */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-              <FiActivity className="w-5 h-5 text-accent-purple" />
+              <PiPulse className="w-5 h-5 text-accent-purple" />
               <span>Usuários Ativos</span>
             </h3>
             <div className="space-y-3">
@@ -526,7 +528,7 @@ export default function AdminAnalytics() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      leftIcon={<FiEye />}
+                      leftIcon={<PiEye />}
                       onClick={() => router.push(`/admin/users/${user.id}`)}
                     />
                   </div>
@@ -540,7 +542,7 @@ export default function AdminAnalytics() {
           <AnimatedItem direction="up" springType="gentle" className="my-4">
             <AnimatedCard className="classical-card p-6">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                <FiTarget className="w-5 h-5 text-accent-amber" />
+                <PiTarget className="w-5 h-5 text-accent-amber" />
                 <span>Recomendações</span>
               </h3>
               <div className="space-y-4">
@@ -581,7 +583,7 @@ export default function AdminAnalytics() {
               onClick={() => router.push('/admin/users')}
             >
               <div className="flex flex-col items-center justify-center">
-                <FiUsers className="w-8 h-8 mb-3 text-accent-blue" />
+                <PiUsers className="w-8 h-8 mb-3 text-accent-blue" />
                 <span className="font-bold mb-2">Gerenciar Usuários</span>
                 <span className="text-sm text-theme-tertiary text-center">
                   {formatNumber(analytics.overview.users.total)} usuários
@@ -596,7 +598,7 @@ export default function AdminAnalytics() {
               onClick={() => router.push('/admin/content')}
             >
               <div className="flex flex-col items-center justify-center">
-                <FiDatabase className="w-8 h-8 mb-3 text-accent-green" />
+                <PiDatabase className="w-8 h-8 mb-3 text-accent-green" />
                 <span className="font-bold mb-2">Gerenciar Conteúdo</span>
                 <span className="text-sm text-theme-tertiary text-center">
                   {formatNumber(analytics.overview.content.works)} obras
@@ -612,7 +614,7 @@ export default function AdminAnalytics() {
             >
               <div className="flex flex-col items-center justify-center">
                 {' '}
-                <FiTrendingUp className="w-8 h-8 mb-3 text-accent-purple" />
+                <PiTrendUp className="w-8 h-8 mb-3 text-accent-purple" />
                 <span className="font-bold mb-2">Insights Avançados</span>
                 <span className="text-sm text-theme-tertiary text-center">
                   Análises e predições
@@ -626,7 +628,7 @@ export default function AdminAnalytics() {
               onClick={() => router.push('/admin/system')}
             >
               <div className="flex flex-col items-center justify-center">
-                <FiZap className="w-8 h-8 mb-3 text-accent-amber" />
+                <PiLightning className="w-8 h-8 mb-3 text-accent-amber" />
                 <span className="font-bold mb-2">Sistema</span>
                 <span className="text-sm text-theme-tertiary text-center">
                   Performance {analytics.overview.system.performance.toFixed(1)}

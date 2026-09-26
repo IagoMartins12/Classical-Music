@@ -1,7 +1,7 @@
 // app/blog/bookmarks/page.tsx
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { FiBookmark } from 'react-icons/fi';
+import { PiBookmarkSimple } from 'react-icons/pi';
 import { listCategories } from '@/app/requests/blog/taxonomy';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { BookmarksPageClient } from '@/app/components/blog/BookmarksPageClient';
@@ -53,7 +53,7 @@ export default async function BookmarksPage() {
               className="flex items-center justify-center mb-6"
             >
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-                <FiBookmark className="w-8 h-8 text-theme-primary" />
+                <PiBookmarkSimple className="w-8 h-8 text-theme-primary" />
               </div>
             </AnimatedItem>
 

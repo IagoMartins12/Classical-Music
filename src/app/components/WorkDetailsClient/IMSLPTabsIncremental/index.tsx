@@ -3,17 +3,16 @@
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
-  FiMusic,
-  FiFileText,
-  FiRefreshCw,
-  FiAlertCircle,
-  FiBookOpen,
-  FiMoreHorizontal,
-  FiLayers,
-  FiDownload,
-  FiTarget,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiDotsThree,
+  PiDownloadSimple,
+  PiFileText,
+  PiMusicNotes,
+  PiStack,
+  PiTarget,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import ScoreCard from '../ScoreCard';
 import { IMSLPWorkScoresIncremental } from '@/app/libs/imslp-score-scraper-incremental';
 import { WorkScore } from '@/app/hooks/useWorkScores';
@@ -102,42 +101,42 @@ const TABS = [
   {
     id: 'scores',
     labelKey: 'imslp_tabs_partituras',
-    icon: FiMusic,
+    icon: PiMusicNotes,
     type: 'scores',
     gradient: 'from-brand-primary to-brand-secondary',
   },
   {
     id: 'parts',
     labelKey: 'imslp_tabs_partes',
-    icon: FiFileText,
+    icon: PiFileText,
     type: 'parts',
     gradient: 'from-accent-blue to-accent-purple',
   },
   {
     id: 'arrangements',
     labelKey: 'imslp_tabs_arranjos',
-    icon: GiMusicalNotes,
+    icon: PiMusicNotes,
     type: 'arrangements',
     gradient: 'from-accent-green to-accent-blue',
   },
   {
     id: 'librettos',
     labelKey: 'imslp_tabs_libretos',
-    icon: FiFileText,
+    icon: PiFileText,
     type: 'librettos',
     gradient: 'from-accent-purple to-accent-red',
   },
   {
     id: 'others',
     labelKey: 'imslp_tabs_outros',
-    icon: FiFileText,
+    icon: PiFileText,
     type: 'others',
     gradient: 'from-accent-red to-accent-purple',
   },
   {
     id: 'sources',
     labelKey: 'imslp_tabs_arquivos_fonte',
-    icon: FiFileText,
+    icon: PiFileText,
     type: 'sources',
     gradient: 'from-accent-purple to-accent-blue',
   },
@@ -149,7 +148,7 @@ const SourceBadge = React.memo(
     if (source === 'IMSLP') {
       return (
         <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-          <FiBookOpen className="w-3 h-3 mr-1" />
+          <PiBookOpen className="w-3 h-3 mr-1" />
           IMSLP
         </div>
       );
@@ -157,7 +156,7 @@ const SourceBadge = React.memo(
 
     return (
       <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-        <FiTarget className="w-3 h-3 mr-1" />
+        <PiTarget className="w-3 h-3 mr-1" />
         Opus Atlas
       </div>
     );
@@ -640,7 +639,7 @@ export default function IMSLPTabsIncremental({
         <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <FiTarget className="w-8 h-8 text-theme-primary" />
+              <PiTarget className="w-8 h-8 text-theme-primary" />
             </div>
             <h3 className="text-lg font-semibold text-theme-primary mb-2">
               {t('imslp_tabs_todas_carregadas', {
@@ -676,7 +675,7 @@ export default function IMSLPTabsIncremental({
             </>
           ) : (
             <>
-              <FiMoreHorizontal className="w-4 h-4" />
+              <PiDotsThree className="w-4 h-4" />
               <span>
                 {t('imslp_tabs_carregar_mais', {
                   tipo: getTabLabelTranslated(activeTab),
@@ -699,7 +698,7 @@ export default function IMSLPTabsIncremental({
           disabled={imslpLoadingMore}
           className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <FiDownload className="w-4 h-4" />
+          <PiDownloadSimple className="w-4 h-4" />
           <span>
             {t('imslp_tabs_carregar_todas', {
               tipo: getTabLabelTranslated(activeTab),
@@ -719,7 +718,7 @@ export default function IMSLPTabsIncremental({
           disabled={imslpLoadingMore}
           className="btn-classical-accent flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <FiLayers className="w-4 h-4" />
+          <PiStack className="w-4 h-4" />
           <span>
             {t('imslp_tabs_carregar_todas_partituras', {
               remaining: globalRemaining,
@@ -773,7 +772,7 @@ export default function IMSLPTabsIncremental({
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
-                    <FiMusic className="w-6 h-6 text-theme-primary" />
+                    <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -891,7 +890,7 @@ export default function IMSLPTabsIncremental({
                         <div className="border-b border-theme-secondary pb-3">
                           <div className="flex items-center space-x-3">
                             <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                              <GiMusicalNotes className="w-4 h-4 text-theme-primary" />
+                              <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                             </div>
                             <h3 className="text-lg font-semibold text-theme-primary classical-title">
                               {scoreGroup.groupTitle}
@@ -1012,7 +1011,7 @@ export default function IMSLPTabsIncremental({
                           </>
                         ) : (
                           <>
-                            <FiMoreHorizontal className="w-4 h-4" />
+                            <PiDotsThree className="w-4 h-4" />
                             <span>{t('imslp_tabs_carregar_mais_20')}</span>
                           </>
                         )}
@@ -1030,7 +1029,7 @@ export default function IMSLPTabsIncremental({
                     <div className="classical-card-2 p-6">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
-                          <FiBookOpen className="w-5 h-5 text-accent-blue" />
+                          <PiBookOpen className="w-5 h-5 text-accent-blue" />
                           <span>{t('imslp_tabs_preview_partitura')}</span>
                         </h3>
                         <SourceBadge source={selectedScore.source} t={t} />
@@ -1045,7 +1044,7 @@ export default function IMSLPTabsIncremental({
                               onClick={() => handleScoreSelect(selectedScore)}
                               className="btn-classical-secondary flex items-center space-x-2"
                             >
-                              <FiMusic className="w-4 h-4" />
+                              <PiMusicNotes className="w-4 h-4" />
                               <span>{t('imslp_tabs_desselecionar')}</span>
                             </button>
                           </div>
@@ -1071,7 +1070,7 @@ const LoadingState = React.memo(({ t }: { t: any }) => (
     <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
       <div className="flex items-center space-x-3">
         <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
-          <FiMusic className="w-6 h-6 text-theme-primary" />
+          <PiMusicNotes className="w-6 h-6 text-theme-primary" />
         </div>
         <div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -1115,7 +1114,7 @@ const ErrorState = React.memo(
       <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
         <div className="flex items-center space-x-3">
           <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-2xl flex items-center justify-center">
-            <FiAlertCircle className="w-6 h-6 text-theme-primary" />
+            <PiWarningCircle className="w-6 h-6 text-theme-primary" />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -1131,7 +1130,7 @@ const ErrorState = React.memo(
         <div className="bg-gradient-to-r from-accent-red/10 to-accent-red/5 border border-accent-red/30 rounded-2xl p-6">
           <div className="flex items-start space-x-4">
             <div className="w-10 h-10 bg-accent-red/20 border border-accent-red/40 rounded-xl flex items-center justify-center flex-shrink-0">
-              <FiAlertCircle className="w-5 h-5 text-accent-red" />
+              <PiWarningCircle className="w-5 h-5 text-accent-red" />
             </div>
             <div className="flex-1">
               <p className="text-accent-red font-medium mb-2">{error}</p>
@@ -1140,7 +1139,7 @@ const ErrorState = React.memo(
                   onClick={onRefetch}
                   className="btn-classical-secondary flex items-center space-x-2 group"
                 >
-                  <FiRefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+                  <PiArrowsClockwise className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
                   <span>{t('imslp_tabs_tentar_novamente')}</span>
                 </button>
               )}
@@ -1157,7 +1156,7 @@ const EmptyState = React.memo(({ t }: { t: any }) => (
   <div className="classical-card p-8">
     <div className="text-center py-16">
       <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-        <FiMusic className="w-8 h-8 text-theme-tertiary" />
+        <PiMusicNotes className="w-8 h-8 text-theme-tertiary" />
       </div>
       <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
         {t('imslp_tabs_nenhuma_partitura_encontrada')}
@@ -1173,7 +1172,7 @@ EmptyState.displayName = 'EmptyState';
 const EmptyTabState = React.memo(({ t }: { t: any }) => (
   <div className="text-center py-16">
     <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-      <FiMusic className="w-8 h-8 text-theme-tertiary" />
+      <PiMusicNotes className="w-8 h-8 text-theme-tertiary" />
     </div>
     <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
       {t('imslp_tabs_nenhuma_disponivel')}

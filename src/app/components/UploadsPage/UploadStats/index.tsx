@@ -3,15 +3,15 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiTrendingUp,
-  FiUsers,
-  FiMusic,
-  FiUser,
-  FiFile,
-  FiCalendar,
-  FiActivity,
-  FiAward,
-} from 'react-icons/fi';
+  PiCalendarBlank,
+  PiFile,
+  PiMedal,
+  PiMusicNotes,
+  PiPulse,
+  PiTrendUp,
+  PiUser,
+  PiUsers,
+} from 'react-icons/pi';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 
 interface UploadStatsProps {
@@ -64,7 +64,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
       <AnimatedCard className="classical-card p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
-            <FiTrendingUp className="w-5 h-5 text-theme-primary" />
+            <PiTrendUp className="w-5 h-5 text-theme-primary" />
           </div>
           <span className="text-xs text-theme-tertiary">Total</span>
         </div>
@@ -82,7 +82,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
       <AnimatedCard className="classical-card p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-            <FiUser className="w-5 h-5 text-theme-primary" />
+            <PiUser className="w-5 h-5 text-theme-primary" />
           </div>
           <span className="text-xs text-theme-tertiary">Compositores</span>
         </div>
@@ -100,7 +100,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
       <AnimatedCard className="classical-card p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
-            <FiMusic className="w-5 h-5 text-theme-primary" />
+            <PiMusicNotes className="w-5 h-5 text-theme-primary" />
           </div>
           <span className="text-xs text-theme-tertiary">Obras</span>
         </div>
@@ -118,7 +118,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
       <AnimatedCard className="classical-card p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-amber rounded-xl flex items-center justify-center">
-            <FiFile className="w-5 h-5 text-theme-primary" />
+            <PiFile className="w-5 h-5 text-theme-primary" />
           </div>
           <span className="text-xs text-theme-tertiary">Partituras</span>
         </div>
@@ -138,7 +138,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
           <AnimatedCard className="classical-card p-4">
             <div className="flex items-center justify-between mb-2">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-amber to-accent-red rounded-xl flex items-center justify-center">
-                <FiUsers className="w-5 h-5 text-theme-primary" />
+                <PiUsers className="w-5 h-5 text-theme-primary" />
               </div>
               <span className="text-xs text-theme-tertiary">Usuários</span>
             </div>
@@ -156,7 +156,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
           <AnimatedCard className="classical-card p-4">
             <div className="flex items-center justify-between mb-2">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-red to-brand-primary rounded-xl flex items-center justify-center">
-                <FiActivity className="w-5 h-5 text-theme-primary" />
+                <PiPulse className="w-5 h-5 text-theme-primary" />
               </div>
               <span className="text-xs text-theme-tertiary">Atividade</span>
             </div>
@@ -174,7 +174,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
           <AnimatedCard className="classical-card p-4">
             <div className="flex items-center justify-between mb-2">
               <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-accent-purple rounded-xl flex items-center justify-center">
-                <FiAward className="w-5 h-5 text-theme-primary" />
+                <PiMedal className="w-5 h-5 text-theme-primary" />
               </div>
               <span className="text-xs text-theme-tertiary">Qualidade</span>
             </div>
@@ -192,7 +192,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
           <AnimatedCard className="classical-card p-4">
             <div className="flex items-center justify-between mb-2">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                <FiCalendar className="w-5 h-5 text-theme-primary" />
+                <PiCalendarBlank className="w-5 h-5 text-theme-primary" />
               </div>
               <span className="text-xs text-theme-tertiary">Pendências</span>
             </div>

@@ -2,7 +2,7 @@
 'use client';
 
 import { useLoginModal } from '@/app/stores/authStore';
-import { FiHeart } from 'react-icons/fi';
+import { PiHeart } from 'react-icons/pi';
 
 interface AuthCheckProps {
   title:
@@ -18,7 +18,7 @@ export default function AuthCheck({ title }: AuthCheckProps) {
   return (
     <div className=" bg-gradient-primary min-h-[70vh] flex items-center justify-center">
       <div className="text-center classical-card p-8 max-w-md">
-        <FiHeart className="w-16 h-16 text-brand-primary mx-auto mb-4" />
+        <PiHeart className="w-16 h-16 text-brand-primary mx-auto mb-4" />
         <h1 className="text-2xl font-bold text-theme-primary mb-2">
           Acesso Necessário
         </h1>

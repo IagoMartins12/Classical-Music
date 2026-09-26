@@ -1,16 +1,17 @@
 // app/loading.tsx - Home Page Loading Skeleton
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiUser,
-  FiMusic,
-  FiTrendingUp,
-  FiAward,
-  FiPlus,
-  FiBookOpen,
-  FiClock,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano, GiTreasureMap } from 'react-icons/gi';
+  PiBookOpen,
+  PiClock,
+  PiMapTrifold,
+  PiMedal,
+  PiMusicNotes,
+  PiPlus,
+  PiTrendUp,
+  PiUser,
+} from 'react-icons/pi';
 
 export default function HomeLoading() {
   return (
@@ -35,13 +36,13 @@ export default function HomeLoading() {
       {/* Floating musical notes */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiMusic />
+          <PiMusicNotes />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -53,7 +54,7 @@ export default function HomeLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <FiUser />
+          <PiUser />
         </div>
       </div>
 
@@ -108,7 +109,7 @@ export default function HomeLoading() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center animate-shimmer">
-                <FiTrendingUp className="w-6 h-6 text-brand-primary/50" />
+                <PiTrendUp className="w-6 h-6 text-brand-primary/50" />
               </div>
               <div>
                 <div className="h-8 w-64 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
@@ -148,7 +149,7 @@ export default function HomeLoading() {
             {/* Header */}
             <div className="flex items-center gap-3 mb-8">
               <div className="w-12 h-12 bg-brand-gradient rounded-2xl flex items-center justify-center">
-                <GiMusicalNotes className="w-6 h-6 text-theme-primary/50" />
+                <PiMusicNotes className="w-6 h-6 text-theme-primary/50" />
               </div>
               <div>
                 <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
@@ -198,7 +199,7 @@ export default function HomeLoading() {
           {/* Section Header */}
           <div className="flex items-center space-x-4 mb-8">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-              <FiClock className="w-6 h-6 text-accent-purple/50" />
+              <PiClock className="w-6 h-6 text-accent-purple/50" />
             </div>
             <div>
               <div className="h-8 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
@@ -227,7 +228,7 @@ export default function HomeLoading() {
           {/* Section Header */}
           <div className="flex items-center space-x-4 mb-8">
             <div className="w-12 h-12 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-xl flex items-center justify-center">
-              <GiTreasureMap className="w-6 h-6 text-orange-400/50" />
+              <PiMapTrifold className="w-6 h-6 text-orange-400/50" />
             </div>
             <div>
               <div className="h-8 w-56 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
@@ -270,7 +271,7 @@ export default function HomeLoading() {
                   style={{ animationDelay: `${0.7 + i * 0.05}s` }}
                 >
                   <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full mx-auto mb-3 flex items-center justify-center">
-                    <FiMusic className="w-6 h-6 text-purple-400/50" />
+                    <PiMusicNotes className="w-6 h-6 text-purple-400/50" />
                   </div>
                   <div className="space-y-2">
                     <div className="h-4 bg-theme-primary/20 rounded"></div>
@@ -287,7 +288,7 @@ export default function HomeLoading() {
           {/* Section Header */}
           <div className="flex items-center space-x-4 mb-8">
             <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl flex items-center justify-center">
-              <FiPlus className="w-6 h-6 text-green-400/50" />
+              <PiPlus className="w-6 h-6 text-green-400/50" />
             </div>
             <div>
               <div className="h-8 w-44 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
@@ -324,7 +325,7 @@ export default function HomeLoading() {
           {/* Section Header */}
           <div className="flex items-center space-x-4 mb-8">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
-              <FiBookOpen className="w-6 h-6 text-accent-blue/50" />
+              <PiBookOpen className="w-6 h-6 text-accent-blue/50" />
             </div>
             <div>
               <div className="h-8 w-52 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
@@ -364,7 +365,7 @@ export default function HomeLoading() {
           {/* Section Header */}
           <div className="flex items-center space-x-4 mb-8">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-              <FiAward className="w-6 h-6 text-accent-purple/50" />
+              <PiMedal className="w-6 h-6 text-accent-purple/50" />
             </div>
             <div>
               <div className="h-8 w-60 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>

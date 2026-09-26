@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { FiCheck, FiLock, FiAlertTriangle, FiSearch } from 'react-icons/fi';
+import { PiCheck, PiLock, PiMagnifyingGlass, PiWarning } from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
@@ -124,7 +124,7 @@ export default function FieldSelector({
     if ((field as any).isSensitive) {
       return (
         <span className="px-2 py-0.5 bg-red-500/20 text-red-500 text-xs rounded-full flex items-center space-x-1">
-          <FiLock className="w-3 h-3" />
+          <PiLock className="w-3 h-3" />
           <span>Sensível</span>
         </span>
       );
@@ -133,7 +133,7 @@ export default function FieldSelector({
     if (field.isRequired && !(field as any).isEditableByConfig) {
       return (
         <span className="px-2 py-0.5 bg-amber-500/20 text-amber-500 text-xs rounded-full flex items-center space-x-1">
-          <FiAlertTriangle className="w-3 h-3" />
+          <PiWarning className="w-3 h-3" />
           <span>Somente leitura</span>
         </span>
       );
@@ -207,7 +207,7 @@ export default function FieldSelector({
         <div className="space-y-4">
           {/* Busca */}
           <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+            <PiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
             <Input
               type="text"
               placeholder="Buscar campos..."
@@ -324,7 +324,7 @@ export default function FieldSelector({
                         </div>
                       </div>
                       {isSelected && (
-                        <FiCheck className="w-5 h-5 text-brand-primary" />
+                        <PiCheck className="w-5 h-5 text-brand-primary" />
                       )}
                     </div>
                   </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import Modal from '@/app/components/Modal';
-import { FiClock, FiMapPin, FiMusic } from 'react-icons/fi';
+import { PiClock, PiMapPin, PiMusicNotes } from 'react-icons/pi';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 
 interface DayEventsListModalProps {
@@ -45,7 +45,7 @@ export default function DayEventsListModal({
         {/* Header */}
         <div className="mb-6 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl mb-4">
-            <FiMusic className="w-8 h-8 text-white" />
+            <PiMusicNotes className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
             Eventos do Dia
@@ -81,7 +81,7 @@ export default function DayEventsListModal({
                   <div className="flex-1 min-w-0">
                     {/* Horário */}
                     <div className="flex items-center space-x-2 mb-2">
-                      <FiClock className="w-4 h-4 text-theme-tertiary flex-shrink-0" />
+                      <PiClock className="w-4 h-4 text-theme-tertiary flex-shrink-0" />
                       <span className="text-sm font-medium text-theme-secondary">
                         {formatEventTime(event.start)}
                       </span>
@@ -99,7 +99,7 @@ export default function DayEventsListModal({
 
                     {/* Local */}
                     <div className="flex items-center space-x-2 text-sm text-theme-tertiary mb-2">
-                      <FiMapPin className="w-3 h-3 flex-shrink-0" />
+                      <PiMapPin className="w-3 h-3 flex-shrink-0" />
                       <span className="truncate">
                         {event.venue.name}
                         {event.venueDetails && ` - ${event.venueDetails}`}

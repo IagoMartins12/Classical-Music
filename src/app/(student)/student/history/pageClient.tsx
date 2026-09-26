@@ -5,24 +5,24 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiActivity,
-  FiCalendar,
-  FiFilter,
-  FiChevronDown,
-  FiChevronUp,
-  FiRefreshCw,
-  FiUpload,
-  FiCheckCircle,
-  FiMessageSquare,
-  FiX,
-  FiUser,
-  FiClock,
-  FiVideo,
-  FiFile,
-  FiEdit,
-  FiEye,
-  FiChevronRight,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCalendarBlank,
+  PiCaretDown,
+  PiCaretRight,
+  PiCaretUp,
+  PiChatCenteredText,
+  PiCheckCircle,
+  PiClock,
+  PiEye,
+  PiFile,
+  PiFunnel,
+  PiNotePencil,
+  PiPulse,
+  PiUploadSimple,
+  PiUser,
+  PiVideoCamera,
+  PiX,
+} from 'react-icons/pi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import {
@@ -199,23 +199,23 @@ const StudentHistoryClient = ({
     switch (action) {
       case 'ASSIGNMENT_SUBMISSION':
         if (metadata?.submissionType === 'video') {
-          return <FiVideo className="w-5 h-5" />;
+          return <PiVideoCamera className="w-5 h-5" />;
         } else if (metadata?.submissionType === 'file') {
-          return <FiFile className="w-5 h-5" />;
+          return <PiFile className="w-5 h-5" />;
         }
-        return <FiUpload className="w-5 h-5" />;
+        return <PiUploadSimple className="w-5 h-5" />;
       case 'ASSIGNMENT_COMPLETED':
-        return <FiCheckCircle className="w-5 h-5" />;
+        return <PiCheckCircle className="w-5 h-5" />;
       case 'LESSON_FEEDBACK_GIVEN':
-        return <FiMessageSquare className="w-5 h-5" />;
+        return <PiChatCenteredText className="w-5 h-5" />;
       case 'LESSON_RESCHEDULE_REQUESTED':
-        return <FiCalendar className="w-5 h-5" />;
+        return <PiCalendarBlank className="w-5 h-5" />;
       case 'LESSON_ABSENCE_INFORMED':
-        return <FiX className="w-5 h-5" />;
+        return <PiX className="w-5 h-5" />;
       case 'STUDENT_PROFILE_UPDATED':
-        return <FiUser className="w-5 h-5" />;
+        return <PiUser className="w-5 h-5" />;
       default:
-        return <FiActivity className="w-5 h-5" />;
+        return <PiPulse className="w-5 h-5" />;
     }
   };
 
@@ -299,7 +299,7 @@ const StudentHistoryClient = ({
     return (
       <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
         <h5 className="text-sm font-medium text-blue-700 mb-2 flex items-center">
-          <FiEdit className="w-4 h-4 mr-1" />
+          <PiNotePencil className="w-4 h-4 mr-1" />
           {t('student_history_changes_title')}
         </h5>
         <div className="space-y-2">
@@ -352,7 +352,7 @@ const StudentHistoryClient = ({
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-green rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiActivity className="w-8 h-8 text-theme-primary" />
+                <PiPulse className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -378,7 +378,7 @@ const StudentHistoryClient = ({
                 className="classical-card p-6 text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiActivity className="w-6 h-6 text-theme-primary" />
+                  <PiPulse className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.totalActivities || 0}
@@ -393,7 +393,7 @@ const StudentHistoryClient = ({
                 className="classical-card p-6 text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiUpload className="w-6 h-6 text-theme-primary" />
+                  <PiUploadSimple className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.breakdown?.byAction?.ASSIGNMENT_SUBMISSION || 0}
@@ -408,7 +408,7 @@ const StudentHistoryClient = ({
                 className="classical-card p-6 text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiCheckCircle className="w-6 h-6 text-theme-primary" />
+                  <PiCheckCircle className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.breakdown?.byAction?.ASSIGNMENT_COMPLETED || 0}
@@ -423,7 +423,7 @@ const StudentHistoryClient = ({
                 className="classical-card p-6 text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiClock className="w-6 h-6 text-theme-primary" />
+                  <PiClock className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.recentActivity || 0}
@@ -453,12 +453,12 @@ const StudentHistoryClient = ({
                   onClick={() => setShowFilters(!showFilters)}
                   className="flex items-center space-x-2 px-4 py-2 bg-theme-secondary hover:bg-theme-tertiary text-theme-primary rounded-lg transition-colors"
                 >
-                  <FiFilter className="w-4 h-4" />
+                  <PiFunnel className="w-4 h-4" />
                   <span>{t('student_history_filters_title')}</span>
                   {showFilters ? (
-                    <FiChevronUp className="w-4 h-4" />
+                    <PiCaretUp className="w-4 h-4" />
                   ) : (
-                    <FiChevronDown className="w-4 h-4" />
+                    <PiCaretDown className="w-4 h-4" />
                   )}
                 </button>
               </div>
@@ -535,7 +535,7 @@ const StudentHistoryClient = ({
                       disabled={loading}
                       className="btn-classical-secondary flex items-center space-x-2"
                     >
-                      <FiRefreshCw
+                      <PiArrowsClockwise
                         className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                       />
                       <span>{t('student_history_refresh')}</span>
@@ -552,7 +552,7 @@ const StudentHistoryClient = ({
           <div className="space-y-6">
             {error ? (
               <div className="classical-card p-12 text-center">
-                <FiActivity className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                <PiPulse className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
                   {t('student_history_error_title')}
                 </h3>
@@ -568,7 +568,7 @@ const StudentHistoryClient = ({
               </div>
             ) : activities.length === 0 ? (
               <div className="classical-card p-12 text-center">
-                <FiActivity className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                <PiPulse className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
                   {t('student_history_empty_title')}
                 </h3>
@@ -630,9 +630,9 @@ const StudentHistoryClient = ({
                                   className="w-6 h-6 rounded-full bg-theme-secondary hover:bg-theme-tertiary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
                                 >
                                   {expandedItems.has(activity.id) ? (
-                                    <FiChevronUp className="w-3 h-3" />
+                                    <PiCaretUp className="w-3 h-3" />
                                   ) : (
-                                    <FiEye className="w-3 h-3" />
+                                    <PiEye className="w-3 h-3" />
                                   )}
                                 </button>
                               )}
@@ -642,7 +642,7 @@ const StudentHistoryClient = ({
                                   href={getEntityLink(activity)!}
                                   className="w-6 h-6 rounded-full bg-theme-secondary hover:bg-interactive-hover transition-colors flex items-center justify-center"
                                 >
-                                  <FiChevronRight className="w-3 h-3 text-theme-tertiary" />
+                                  <PiCaretRight className="w-3 h-3 text-theme-tertiary" />
                                 </Link>
                               )}
                             </div>

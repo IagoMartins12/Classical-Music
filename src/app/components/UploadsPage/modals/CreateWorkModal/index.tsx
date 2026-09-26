@@ -4,20 +4,25 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiMusic,
-  FiExternalLink,
-  FiSave,
-  FiLoader,
-  FiInfo,
-  FiTag,
-  FiDatabase,
-  FiLink,
-  FiCheck,
-  FiAlertCircle,
-  FiSearch,
-  FiLock,
-  FiLayers,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiCheck,
+  PiDatabase,
+  PiFloppyDisk,
+  PiGraduationCap,
+  PiInfo,
+  PiInstagramLogo,
+  PiLink,
+  PiLock,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiSpinnerGap,
+  PiSpotifyLogo,
+  PiStack,
+  PiTag,
+  PiTiktokLogo,
+  PiWarningCircle,
+  PiYoutubeLogo,
+} from 'react-icons/pi';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 import MultiSelect from '@/app/components/Common/MultiSelect';
@@ -37,8 +42,6 @@ import {
 } from '@/app/utils/valid-categories-and-genres';
 import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { SiInstagram, SiSpotify, SiTiktok, SiYoutube } from 'react-icons/si';
-import { FaGraduationCap } from 'react-icons/fa';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Checkbox from '@/app/components/Common/Checkbox';
@@ -1029,7 +1032,7 @@ const CreateWorkModal = ({
             <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
-                  <FiMusic className="w-5 h-5 text-theme-primary" />
+                  <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -1056,13 +1059,13 @@ const CreateWorkModal = ({
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-2">
-                      <FiDatabase className="w-4 h-4 text-theme-tertiary" />
+                      <PiDatabase className="w-4 h-4 text-theme-tertiary" />
                       <span className="text-sm font-medium text-theme-primary">
                         {t('modal_work_scraping_title')}
                       </span>
                       {isEditingExternalSource && (
                         <div className="flex items-center space-x-1 text-xs text-blue-600">
-                          <FiLock className="w-3 h-3" />
+                          <PiLock className="w-3 h-3" />
                           <span>Fonte IMSLP detectada automaticamente</span>
                         </div>
                       )}
@@ -1075,14 +1078,14 @@ const CreateWorkModal = ({
                       value={urlToScrape}
                       onChange={(e) => setUrlToScrape(e.target.value)}
                       placeholder="https://imslp.org/wiki/Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
-                      leftIcon={<FiLink />}
+                      leftIcon={<PiLink />}
                       disabled={isEditingExternalSource}
                     />
 
                     {duplicateCheck.loading && (
                       <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
                         <div className="flex items-center space-x-2">
-                          <FiLoader className="w-4 h-4 animate-spin text-blue-600" />
+                          <PiSpinnerGap className="w-4 h-4 animate-spin text-blue-600" />
                           <span className="text-sm text-blue-800">
                             {t('modal_work_scraping_checking_duplicates')}
                           </span>
@@ -1093,7 +1096,7 @@ const CreateWorkModal = ({
                     {duplicateCheck.found && (
                       <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                         <div className="flex items-center space-x-2 mb-2">
-                          <FiAlertCircle className="w-4 h-4 text-red-600" />
+                          <PiWarningCircle className="w-4 h-4 text-red-600" />
                           <span className="text-sm font-medium text-red-800">
                             {duplicateCheck.duplicateType === 'url'
                               ? 'Duplicata encontrada por URL do IMSLP'
@@ -1134,9 +1137,9 @@ const CreateWorkModal = ({
                           size="sm"
                           leftIcon={
                             scrapingUrl ? (
-                              <FiLoader className="animate-spin" />
+                              <PiSpinnerGap className="animate-spin" />
                             ) : (
-                              <FiSearch />
+                              <PiMagnifyingGlass />
                             )
                           }
                           onClick={handleScrapeUrl}
@@ -1151,7 +1154,7 @@ const CreateWorkModal = ({
                     {scrapingResult && (
                       <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                         <div className="flex items-center space-x-2 mb-2">
-                          <FiCheck className="w-4 h-4 text-green-600" />
+                          <PiCheck className="w-4 h-4 text-green-600" />
                           <span className="text-sm font-medium text-green-800">
                             {t('modal_work_scraping_success')}
                           </span>
@@ -1169,7 +1172,7 @@ const CreateWorkModal = ({
                     {isEditingExternalSource && (
                       <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                         <div className="flex items-center space-x-2">
-                          <FiInfo className="w-4 h-4 text-blue-600" />
+                          <PiInfo className="w-4 h-4 text-blue-600" />
                           <span className="text-sm text-blue-800">
                             {t('modal_work_scraping_external_detected')}
                           </span>
@@ -1185,7 +1188,7 @@ const CreateWorkModal = ({
                   hover="none"
                 >
                   <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                    <FiInfo className="w-5 h-5" />
+                    <PiInfo className="w-5 h-5" />
                     <span>{t('modal_work_basic_title')}</span>
                   </h3>
 
@@ -1221,7 +1224,7 @@ const CreateWorkModal = ({
                       />
                       {errors.composerId && (
                         <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
-                          <FiAlertCircle className="w-4 h-4" />
+                          <PiWarningCircle className="w-4 h-4" />
                           <span>{errors.composerId}</span>
                         </p>
                       )}
@@ -1306,7 +1309,7 @@ const CreateWorkModal = ({
                 >
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0 mb-4">
                     <div className="flex items-center space-x-2">
-                      <FiLayers className="w-4 h-4 text-theme-tertiary" />
+                      <PiStack className="w-4 h-4 text-theme-tertiary" />
                       <span className="text-sm font-medium text-theme-primary">
                         Coleção
                       </span>
@@ -1339,7 +1342,7 @@ const CreateWorkModal = ({
                       {/* Informação sobre compositor */}
                       <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
                         <div className="flex items-center space-x-2">
-                          <FiInfo className="w-4 h-4 text-blue-600" />
+                          <PiInfo className="w-4 h-4 text-blue-600" />
                           <span className="text-sm text-blue-800">
                             <strong>Importante:</strong> A obra da coleção deve
                             ser do mesmo compositor (
@@ -1374,7 +1377,7 @@ const CreateWorkModal = ({
                           />
                           {loadingParentWork && (
                             <div className="mt-2 flex items-center space-x-2 text-sm text-blue-600">
-                              <FiLoader className="w-4 h-4 animate-spin" />
+                              <PiSpinnerGap className="w-4 h-4 animate-spin" />
                               <span>Verificando dados da obra pai...</span>
                             </div>
                           )}
@@ -1396,7 +1399,7 @@ const CreateWorkModal = ({
                   hover="none"
                 >
                   <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                    <FiTag className="w-5 h-5" />
+                    <PiTag className="w-5 h-5" />
                     <span>{t('modal_work_catalog_title')}</span>
                   </h3>
 
@@ -1472,7 +1475,7 @@ const CreateWorkModal = ({
                   hover="none"
                 >
                   <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                    <FiMusic className="w-5 h-5" />
+                    <PiMusicNotes className="w-5 h-5" />
                     <span>{t('modal_work_musical_title')}</span>
                   </h3>
 
@@ -1521,7 +1524,7 @@ const CreateWorkModal = ({
                   hover="none"
                 >
                   <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                    <FiTag className="w-5 h-5" />
+                    <PiTag className="w-5 h-5" />
                     <span>{t('modal_work_categories_title')}</span>
                   </h3>
 
@@ -1556,7 +1559,7 @@ const CreateWorkModal = ({
                   hover="none"
                 >
                   <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                    <FiExternalLink className="w-5 h-5" />
+                    <PiArrowSquareOut className="w-5 h-5" />
                     <span>{t('modal_work_external_links_title')}</span>
                   </h3>
 
@@ -1568,7 +1571,7 @@ const CreateWorkModal = ({
                         handleInputChange('imslpId', e.target.value)
                       }
                       placeholder="Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
-                      leftIcon={<FiExternalLink />}
+                      leftIcon={<PiArrowSquareOut />}
                       disabled={scrapingResult}
                       className={
                         scrapingResult ? 'bg-gray-50 cursor-not-allowed' : ''
@@ -1577,7 +1580,7 @@ const CreateWorkModal = ({
 
                     {scrapingResult && (
                       <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
-                        <FiLock className="w-3 h-3" />
+                        <PiLock className="w-3 h-3" />
                         <span>
                           Campo bloqueado pois foi extraído via scraping do
                           IMSLP
@@ -1594,7 +1597,7 @@ const CreateWorkModal = ({
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-2">
-                      <FiMusic className="w-4 h-4 text-theme-tertiary" />
+                      <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                       <span className="text-sm font-medium text-theme-primary">
                         {t('modal_work_media_title')}
                       </span>
@@ -1615,7 +1618,7 @@ const CreateWorkModal = ({
                       {/* Spotify */}
                       <div className="space-y-3">
                         <div className="flex items-center space-x-2">
-                          <SiSpotify className="w-5 h-5 text-green-400" />
+                          <PiSpotifyLogo className="w-5 h-5 text-green-400" />
                           <h4 className="text-lg font-semibold text-theme-primary">
                             {t('modal_work_media_spotify_title')}
                           </h4>
@@ -1630,14 +1633,14 @@ const CreateWorkModal = ({
                             }))
                           }
                           placeholder="https://open.spotify.com/track/..."
-                          leftIcon={<SiSpotify />}
+                          leftIcon={<PiSpotifyLogo />}
                         />
                       </div>
 
                       {/* YouTube */}
                       <div className="space-y-3">
                         <div className="flex items-center space-x-2">
-                          <SiYoutube className="w-5 h-5 text-red-400" />
+                          <PiYoutubeLogo className="w-5 h-5 text-red-400" />
                           <h4 className="text-lg font-semibold text-theme-primary">
                             {t('modal_work_media_youtube_title')}
                           </h4>
@@ -1652,14 +1655,14 @@ const CreateWorkModal = ({
                             }))
                           }
                           placeholder="https://www.youtube.com/watch?v=..."
-                          leftIcon={<SiYoutube />}
+                          leftIcon={<PiYoutubeLogo />}
                         />
                       </div>
 
                       {/* Custom Audio */}
                       <div className="space-y-3">
                         <div className="flex items-center space-x-2">
-                          <FiMusic className="w-5 h-5 text-blue-400" />
+                          <PiMusicNotes className="w-5 h-5 text-blue-400" />
                           <h4 className="text-lg font-semibold text-theme-primary">
                             {t('modal_work_media_audio_title')}
                           </h4>
@@ -1688,7 +1691,7 @@ const CreateWorkModal = ({
                           />
                           {uploadingAudio && (
                             <p className="text-sm text-blue-400 mt-1 flex items-center space-x-1">
-                              <FiLoader className="w-4 h-4 animate-spin" />
+                              <PiSpinnerGap className="w-4 h-4 animate-spin" />
                               <span>
                                 {t('modal_work_media_audio_uploading')}
                               </span>
@@ -1707,7 +1710,7 @@ const CreateWorkModal = ({
                         <div className="space-y-4">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-2">
-                              <FaGraduationCap className="w-5 h-5 text-purple-400" />
+                              <PiGraduationCap className="w-5 h-5 text-purple-400" />
                               <h4 className="text-lg font-semibold text-theme-primary">
                                 {t('modal_work_media_video_lesson_title')}
                               </h4>
@@ -1801,15 +1804,15 @@ const CreateWorkModal = ({
                                   }
                                   leftIcon={
                                     mediaData.videoAulaSource === 'youtube' ? (
-                                      <SiYoutube />
+                                      <PiYoutubeLogo />
                                     ) : mediaData.videoAulaSource ===
                                       'instagram' ? (
-                                      <SiInstagram />
+                                      <PiInstagramLogo />
                                     ) : mediaData.videoAulaSource ===
                                       'tiktok' ? (
-                                      <SiTiktok />
+                                      <PiTiktokLogo />
                                     ) : (
-                                      <FiExternalLink />
+                                      <PiArrowSquareOut />
                                     )
                                   }
                                 />
@@ -1838,7 +1841,7 @@ const CreateWorkModal = ({
                                   />
                                   {uploadingVideoAula && (
                                     <p className="text-sm text-purple-400 mt-1 flex items-center space-x-1">
-                                      <FiLoader className="w-4 h-4 animate-spin" />
+                                      <PiSpinnerGap className="w-4 h-4 animate-spin" />
                                       <span>
                                         {t('modal_work_media_video_uploading')}
                                       </span>
@@ -1875,9 +1878,9 @@ const CreateWorkModal = ({
                     variant="primary"
                     leftIcon={
                       isSubmitting || uploadingAudio || uploadingVideoAula ? (
-                        <FiLoader className="animate-spin" />
+                        <PiSpinnerGap className="animate-spin" />
                       ) : (
-                        <FiSave />
+                        <PiFloppyDisk />
                       )
                     }
                     disabled={

@@ -4,7 +4,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { legacyOnboarding } from '@/app/libs/api/compat';
 import { toast } from 'react-hot-toast';
-import { FiAlertCircle, FiPhone } from 'react-icons/fi';
+import { PiPhone, PiWarningCircle } from 'react-icons/pi';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import Button from '../../Common/Button';
@@ -341,7 +341,7 @@ const OnboardingModal: React.FC = () => {
       {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE (se houver erro) */}
       {step === 5 && validationErrors.phone && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3">
-          <FiPhone className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <PiPhone className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <div>
             <h4 className="text-sm font-medium text-red-800">
               {t('onboarding_modal_phone_invalid_title')}
@@ -410,7 +410,7 @@ const OnboardingModal: React.FC = () => {
               onClick={handleStartOver}
               className="text-xs text-theme-tertiary hover:text-accent-red transition-colors flex items-center space-x-1"
             >
-              <FiAlertCircle className="w-3 h-3" />
+              <PiWarningCircle className="w-3 h-3" />
               <span>{t('onboarding_modal_start_over')}</span>
             </button>
           </div>

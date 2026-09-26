@@ -1,7 +1,7 @@
 // app/components/Common/VerificationIndicator.tsx - Indicador compacto para listas
 'use client';
 
-import { FiCheck } from 'react-icons/fi';
+import { PiCheck } from 'react-icons/pi';
 
 interface VerificationIndicatorProps {
   verified: boolean;
@@ -19,7 +19,7 @@ export default function VerificationIndicator({
       className={`inline-flex items-center px-2 py-1 bg-accent-blue/10 text-accent-blue rounded-full text-xs font-medium ${className}`}
       title="Verificado"
     >
-      <FiCheck className="w-3 h-3 mr-1" />
+      <PiCheck className="w-3 h-3 mr-1" />
       Verificado
     </div>
   );

@@ -1,7 +1,7 @@
 // app/blog/preview/[slug]/page.tsx — prévia do artigo (administrador), pela API
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { FiEdit, FiAlertCircle } from 'react-icons/fi';
+import { PiNotePencil, PiWarningCircle } from 'react-icons/pi';
 import { ApiError } from '@/app/libs/api/client';
 import { getServerAccessToken } from '@/app/libs/api/server-session';
 import { ArticleHeader } from '@/app/components/blog/ArticleHeader';
@@ -59,7 +59,7 @@ export default async function ArticlePreviewPage({ params }: PageProps) {
         <div className="section-wrap">
           <div className="py-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <FiAlertCircle className="w-6 h-6 text-yellow-900" />
+              <PiWarningCircle className="w-6 h-6 text-yellow-900" />
               <div>
                 <p className="text-sm font-bold text-yellow-900">
                   MODO PREVIEW
@@ -75,7 +75,7 @@ export default async function ArticlePreviewPage({ params }: PageProps) {
                 href={`/blog/admin/articles/${article.id}/edit`}
                 className="px-4 py-2 bg-white text-yellow-900 rounded-lg font-medium hover:bg-yellow-50 transition-all flex items-center space-x-2"
               >
-                <FiEdit className="w-4 h-4" />
+                <PiNotePencil className="w-4 h-4" />
                 <span>Editar</span>
               </Link>
 

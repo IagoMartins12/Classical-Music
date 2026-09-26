@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiPlay, FiMapPin } from 'react-icons/fi';
+import { PiMapPin, PiPlay } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import { AnimatedCard } from '@/app/components/animation/AnimatedComponents';
 import { getEnabledScrapers } from '@/app/services/scraper-api/scappers/base-scraper.config';
@@ -30,7 +30,7 @@ export default function ScraperManager() {
           >
             <div className="flex items-start justify-between mb-4">
               <div className="text-4xl">{scraper.icon}</div>
-              <Button size="sm" variant="primary" leftIcon={<FiPlay />}>
+              <Button size="sm" variant="primary" leftIcon={<PiPlay />}>
                 Executar
               </Button>
             </div>
@@ -42,7 +42,7 @@ export default function ScraperManager() {
               {scraper.description}
             </p>
             <div className="flex items-center text-xs text-theme-tertiary">
-              <FiMapPin className="w-3 h-3 mr-1" />
+              <PiMapPin className="w-3 h-3 mr-1" />
               {scraper.venue}
             </div>
           </AnimatedCard>

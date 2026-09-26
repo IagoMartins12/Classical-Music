@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiFlag } from 'react-icons/fi';
+import { PiFlag } from 'react-icons/pi';
 import ReportModal from '@/app/components/Report/ReportModal';
 
 interface QuickReportButtonProps {
@@ -27,7 +27,7 @@ export default function QuickReportButton({
         className={`p-2 rounded-lg text-theme-tertiary hover:text-accent-red hover:bg-accent-red/10 transition-all ${className}`}
         title="Reportar"
       >
-        <FiFlag className="w-4 h-4" />
+        <PiFlag className="w-4 h-4" />
       </button>
 
       <ReportModal

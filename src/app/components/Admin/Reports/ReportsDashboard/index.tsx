@@ -4,19 +4,19 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiFlag,
-  FiTrendingUp,
-  FiUsers,
-  FiFileText,
-  FiMusic,
-  FiUser,
-  FiClock,
-  FiCheckCircle,
-  FiXCircle,
-  FiAlertCircle,
-  FiFilter,
-  FiRefreshCw,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCheckCircle,
+  PiClock,
+  PiFileText,
+  PiFlag,
+  PiFunnel,
+  PiMusicNotes,
+  PiTrendUp,
+  PiUser,
+  PiUsers,
+  PiWarningCircle,
+  PiXCircle,
+} from 'react-icons/pi';
 import { useReports } from '@/app/hooks/useReports';
 import {
   AnimatedCard,
@@ -99,13 +99,13 @@ export default function ReportsDashboard() {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'composer':
-        return <FiUser className="w-5 h-5" />;
+        return <PiUser className="w-5 h-5" />;
       case 'work':
-        return <FiMusic className="w-5 h-5" />;
+        return <PiMusicNotes className="w-5 h-5" />;
       case 'score':
-        return <FiFileText className="w-5 h-5" />;
+        return <PiFileText className="w-5 h-5" />;
       default:
-        return <FiFlag className="w-5 h-5" />;
+        return <PiFlag className="w-5 h-5" />;
     }
   };
 
@@ -117,7 +117,7 @@ export default function ReportsDashboard() {
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiFlag className="w-8 h-8 text-theme-primary" />
+                <PiFlag className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -148,7 +148,9 @@ export default function ReportsDashboard() {
                 variant="ghost"
                 size="sm"
                 leftIcon={
-                  <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                  <PiArrowsClockwise
+                    className={refreshing ? 'animate-spin' : ''}
+                  />
                 }
                 onClick={loadStats}
                 disabled={refreshing}
@@ -160,14 +162,14 @@ export default function ReportsDashboard() {
             <div className="flex items-center space-x-3">
               <Button
                 variant="secondary"
-                leftIcon={<FiFilter />}
+                leftIcon={<PiFunnel />}
                 onClick={() => router.push('moderation/moderate')}
               >
                 Moderação
               </Button>
               <Button
                 variant="primary"
-                leftIcon={<FiTrendingUp />}
+                leftIcon={<PiTrendUp />}
                 onClick={() => router.push('/admin/analytics')}
               >
                 Analytics
@@ -182,7 +184,7 @@ export default function ReportsDashboard() {
             <AnimatedCard className="classical-card p-6 text-center">
               <div className="flex items-center justify-center mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
-                  <FiFlag className="w-6 h-6 text-theme-primary" />
+                  <PiFlag className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
               <div className="text-3xl font-bold text-theme-primary mb-2">
@@ -196,7 +198,7 @@ export default function ReportsDashboard() {
             <AnimatedCard className="classical-card p-6 text-center">
               <div className="flex items-center justify-center mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-2xl flex items-center justify-center">
-                  <FiClock className="w-6 h-6 text-theme-primary" />
+                  <PiClock className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
               <div className="text-3xl font-bold text-theme-primary mb-2">
@@ -208,7 +210,7 @@ export default function ReportsDashboard() {
             <AnimatedCard className="classical-card p-6 text-center">
               <div className="flex items-center justify-center mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
-                  <FiCheckCircle className="w-6 h-6 text-theme-primary" />
+                  <PiCheckCircle className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
               <div className="text-3xl font-bold text-theme-primary mb-2">
@@ -220,7 +222,7 @@ export default function ReportsDashboard() {
             <AnimatedCard className="classical-card p-6 text-center">
               <div className="flex items-center justify-center mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-2xl flex items-center justify-center">
-                  <FiXCircle className="w-6 h-6 text-theme-primary" />
+                  <PiXCircle className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
               <div className="text-3xl font-bold text-theme-primary mb-2">
@@ -236,7 +238,7 @@ export default function ReportsDashboard() {
           {/* Reports by Type */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-              <FiUsers className="w-5 h-5 text-accent-blue" />
+              <PiUsers className="w-5 h-5 text-accent-blue" />
               <span>Reports por Tipo</span>
             </h3>
 
@@ -276,7 +278,7 @@ export default function ReportsDashboard() {
               </div>
             ) : (
               <div className="text-center py-8 text-theme-tertiary">
-                <FiFlag className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <PiFlag className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Nenhum report pendente</p>
               </div>
             )}
@@ -285,7 +287,7 @@ export default function ReportsDashboard() {
           {/* Reports by Reason */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-              <FiAlertCircle className="w-5 h-5 text-accent-red" />
+              <PiWarningCircle className="w-5 h-5 text-accent-red" />
               <span>Reports por Motivo</span>
             </h3>
 
@@ -298,7 +300,7 @@ export default function ReportsDashboard() {
                   >
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-amber rounded-lg flex items-center justify-center">
-                        <FiFlag className="w-4 h-4 text-theme-primary" />
+                        <PiFlag className="w-4 h-4 text-theme-primary" />
                       </div>
                       <span className="font-medium text-theme-primary">
                         {getReasonLabel(item.reason)}
@@ -325,7 +327,7 @@ export default function ReportsDashboard() {
               </div>
             ) : (
               <div className="text-center py-8 text-theme-tertiary">
-                <FiAlertCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <PiWarningCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Nenhum report pendente</p>
               </div>
             )}
@@ -337,7 +339,7 @@ export default function ReportsDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <AnimatedCard className="classical-card p-6 text-center">
               <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-amber rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FiClock className="w-6 h-6 text-theme-primary" />
+                <PiClock className="w-6 h-6 text-theme-primary" />
               </div>
               <h3 className="text-lg font-bold text-theme-primary mb-2">
                 Reports Pendentes
@@ -356,7 +358,7 @@ export default function ReportsDashboard() {
 
             <AnimatedCard className="classical-card p-6 text-center">
               <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FiUsers className="w-6 h-6 text-theme-primary" />
+                <PiUsers className="w-6 h-6 text-theme-primary" />
               </div>
               <h3 className="text-lg font-bold text-theme-primary mb-2">
                 Usuários Reportados
@@ -377,7 +379,7 @@ export default function ReportsDashboard() {
 
             <AnimatedCard className="classical-card p-6 text-center">
               <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FiTrendingUp className="w-6 h-6 text-theme-primary" />
+                <PiTrendUp className="w-6 h-6 text-theme-primary" />
               </div>
               <h3 className="text-lg font-bold text-theme-primary mb-2">
                 Relatórios Avançados

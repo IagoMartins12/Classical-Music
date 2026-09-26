@@ -4,19 +4,18 @@
 import { useState, useTransition, useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
-  FiSearch,
-  FiFilter,
-  FiPlus,
-  FiX,
-  FiMusic,
-  FiUser,
-  FiUpload,
-  FiSettings,
-  FiFileText,
-  FiArrowRight,
-  FiRefreshCw,
-} from 'react-icons/fi';
-import { MdUpload } from 'react-icons/md';
+  PiArrowRight,
+  PiArrowsClockwise,
+  PiFileText,
+  PiFunnel,
+  PiGear,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiPlus,
+  PiUploadSimple,
+  PiUser,
+  PiX,
+} from 'react-icons/pi';
 
 import {
   PageContainer,
@@ -686,7 +685,7 @@ const UploadsClient = ({
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <MdUpload className="w-8 h-8 text-theme-primary" />
+                <PiUploadSimple className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -751,7 +750,7 @@ const UploadsClient = ({
                 <Button
                   variant="primary"
                   size="md"
-                  leftIcon={<FiPlus />}
+                  leftIcon={<PiPlus />}
                   onClick={() => handleCreateNew('composer')}
                 >
                   {t('actions_new_composer')}
@@ -759,7 +758,7 @@ const UploadsClient = ({
                 <Button
                   variant="secondary"
                   size="md"
-                  leftIcon={<FiPlus />}
+                  leftIcon={<PiPlus />}
                   onClick={() => handleCreateNew('work')}
                 >
                   {t('actions_new_work')}
@@ -767,7 +766,7 @@ const UploadsClient = ({
                 <Button
                   variant="secondary"
                   size="md"
-                  leftIcon={<FiPlus />}
+                  leftIcon={<PiPlus />}
                   onClick={() => handleCreateNew('score')}
                 >
                   {t('actions_new_score')}
@@ -778,7 +777,7 @@ const UploadsClient = ({
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search */}
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                   <input
                     type="text"
                     placeholder={t('search_placeholder')}
@@ -797,7 +796,7 @@ const UploadsClient = ({
                     className="flex items-center space-x-2 px-4 py-3 rounded-lg transition-all font-medium bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover disabled:opacity-50"
                     title="Atualizar lista"
                   >
-                    <FiRefreshCw
+                    <PiArrowsClockwise
                       className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`}
                     />
                   </button>
@@ -812,7 +811,7 @@ const UploadsClient = ({
                           : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
                     }`}
                   >
-                    <FiFilter className="w-4 h-4" />
+                    <PiFunnel className="w-4 h-4" />
                     <span className="text-sm">
                       {t('filters_button')}
                       {hasActiveFilters && (
@@ -845,7 +844,7 @@ const UploadsClient = ({
                 <div className="bg-theme-secondary rounded-xl p-4 border border-theme-primary mt-4">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-semibold text-theme-primary flex items-center space-x-2">
-                      <FiFilter className="w-4 h-4" />
+                      <PiFunnel className="w-4 h-4" />
                       <span>
                         {selectedType === 'all'
                           ? t('filters_general')
@@ -869,7 +868,7 @@ const UploadsClient = ({
                         onClick={() => setShowFilters(false)}
                         className="w-6 h-6 rounded-full bg-theme-primary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
                       >
-                        <FiX className="w-4 h-4" />
+                        <PiX className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -920,7 +919,7 @@ const UploadsClient = ({
               <Button
                 variant="ghost"
                 size="sm"
-                leftIcon={<FiSettings />}
+                leftIcon={<PiGear />}
                 onClick={() => router.push('/upload/history')}
               >
                 {t('action_history')}
@@ -943,7 +942,7 @@ const UploadsClient = ({
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                        <FiUser className="w-5 h-5 text-theme-primary" />
+                        <PiUser className="w-5 h-5 text-theme-primary" />
                       </div>
                       <div>
                         <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -965,7 +964,7 @@ const UploadsClient = ({
                       <Button
                         variant="ghost"
                         size="sm"
-                        rightIcon={<FiArrowRight />}
+                        rightIcon={<PiArrowRight />}
                         onClick={() => handleSeeMore('composers')}
                       >
                         {t('action_see_more_composers')}
@@ -1027,7 +1026,7 @@ const UploadsClient = ({
                   <AnimatedItem direction="scale" springType="bouncy">
                     <div className="classical-card p-12 text-center">
                       <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <FiUser className="w-8 h-8 text-theme-tertiary" />
+                        <PiUser className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
                         {t('empty_composers_title')}
@@ -1039,7 +1038,7 @@ const UploadsClient = ({
                       </p>
                       <Button
                         variant="primary"
-                        leftIcon={<FiPlus />}
+                        leftIcon={<PiPlus />}
                         onClick={() => handleCreateNew('composer')}
                       >
                         {t('actions_new_composer')}
@@ -1063,7 +1062,7 @@ const UploadsClient = ({
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                        <FiMusic className="w-5 h-5 text-theme-primary" />
+                        <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                       </div>
                       <div>
                         <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -1085,7 +1084,7 @@ const UploadsClient = ({
                       <Button
                         variant="ghost"
                         size="sm"
-                        rightIcon={<FiArrowRight />}
+                        rightIcon={<PiArrowRight />}
                         onClick={() => handleSeeMore('works')}
                       >
                         {t('action_see_more_works')}
@@ -1143,7 +1142,7 @@ const UploadsClient = ({
                   <AnimatedItem direction="scale" springType="bouncy">
                     <div className="classical-card p-12 text-center">
                       <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <FiMusic className="w-8 h-8 text-theme-tertiary" />
+                        <PiMusicNotes className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
                         {t('empty_works_title')}
@@ -1155,7 +1154,7 @@ const UploadsClient = ({
                       </p>
                       <Button
                         variant="primary"
-                        leftIcon={<FiPlus />}
+                        leftIcon={<PiPlus />}
                         onClick={() => handleCreateNew('work')}
                       >
                         {t('actions_new_work')}
@@ -1179,7 +1178,7 @@ const UploadsClient = ({
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                        <FiFileText className="w-5 h-5 text-theme-primary" />
+                        <PiFileText className="w-5 h-5 text-theme-primary" />
                       </div>
                       <div>
                         <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -1201,7 +1200,7 @@ const UploadsClient = ({
                       <Button
                         variant="ghost"
                         size="sm"
-                        rightIcon={<FiArrowRight />}
+                        rightIcon={<PiArrowRight />}
                         onClick={() => handleSeeMore('scores')}
                       >
                         {t('action_see_more_scores')}
@@ -1259,7 +1258,7 @@ const UploadsClient = ({
                   <AnimatedItem direction="scale" springType="bouncy">
                     <div className="classical-card p-12 text-center">
                       <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <FiFileText className="w-8 h-8 text-theme-tertiary" />
+                        <PiFileText className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
                         {t('empty_scores_title')}
@@ -1271,7 +1270,7 @@ const UploadsClient = ({
                       </p>
                       <Button
                         variant="primary"
-                        leftIcon={<FiPlus />}
+                        leftIcon={<PiPlus />}
                         onClick={() => handleCreateNew('score')}
                       >
                         {t('actions_new_score')}
@@ -1298,7 +1297,7 @@ const UploadsClient = ({
               >
                 <div className="classical-card p-12 text-center">
                   <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <FiSearch className="w-8 h-8 text-theme-tertiary" />
+                    <PiMagnifyingGlass className="w-8 h-8 text-theme-tertiary" />
                   </div>
                   <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
                     {t('empty_no_results_title')}
@@ -1321,7 +1320,7 @@ const UploadsClient = ({
             <AnimatedItem direction="scale" springType="bouncy">
               <div className="classical-card p-12 text-center">
                 <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <FiUpload className="w-8 h-8 text-theme-tertiary" />
+                  <PiUploadSimple className="w-8 h-8 text-theme-tertiary" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
                   {t('empty_no_uploads_title')}
@@ -1332,14 +1331,14 @@ const UploadsClient = ({
                 <div className="flex justify-center space-x-2">
                   <Button
                     variant="primary"
-                    leftIcon={<FiPlus />}
+                    leftIcon={<PiPlus />}
                     onClick={() => handleCreateNew('composer')}
                   >
                     {t('actions_new_composer')}
                   </Button>
                   <Button
                     variant="secondary"
-                    leftIcon={<FiPlus />}
+                    leftIcon={<PiPlus />}
                     onClick={() => handleCreateNew('work')}
                   >
                     {t('actions_new_work')}

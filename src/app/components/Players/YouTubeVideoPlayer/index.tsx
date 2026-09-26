@@ -3,8 +3,13 @@
 import { useTranslation } from '@/app/context/TranslationContext';
 import Image from '@/app/components/SmartImage';
 import React, { useState } from 'react';
-import { FiPlay, FiExternalLink, FiCalendar, FiUser } from 'react-icons/fi';
-import { SiYoutube } from 'react-icons/si';
+import {
+  PiArrowSquareOut,
+  PiCalendarBlank,
+  PiPlay,
+  PiUser,
+  PiYoutubeLogo,
+} from 'react-icons/pi';
 
 interface YouTubePlayerProps {
   video: {
@@ -45,7 +50,7 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
       <div className="p-4 border-b border-red-700/30">
         <div className="flex items-start space-x-3">
           <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-            <SiYoutube className="w-6 h-6 text-white" />
+            <PiYoutubeLogo className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-white font-semibold text-sm">{workTitle}</h3>
@@ -58,7 +63,7 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
             aria-label={`${t('youtube_abrir_no_youtube')}: ${workTitle}`}
             className="text-red-400 hover:text-red-300 transition-colors"
           >
-            <FiExternalLink className="w-4 h-4" />
+            <PiArrowSquareOut className="w-4 h-4" />
           </a>
         </div>
       </div>
@@ -79,14 +84,14 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <SiYoutube className="w-16 h-16 text-red-600" />
+                  <PiYoutubeLogo className="w-16 h-16 text-red-600" />
                 </div>
               )}
 
               {/* Overlay com botão play */}
               <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center group-hover:bg-opacity-30 transition-all">
                 <div className="w-16 h-16 bg-red-600 hover:bg-red-700 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform">
-                  <FiPlay className="w-8 h-8 text-white ml-1" />
+                  <PiPlay className="w-8 h-8 text-white ml-1" />
                 </div>
               </div>
             </div>
@@ -116,12 +121,12 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
 
         <div className="flex items-center justify-between text-xs text-gray-400">
           <div className="flex items-center space-x-1">
-            <FiUser className="w-3 h-3" />
+            <PiUser className="w-3 h-3" />
             <span className="truncate">{video.channel}</span>
           </div>
 
           <div className="flex items-center space-x-1">
-            <FiCalendar className="w-3 h-3" />
+            <PiCalendarBlank className="w-3 h-3" />
             <span>{formatDate(video.publishedAt)}</span>
           </div>
         </div>
@@ -131,7 +136,7 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
             onClick={showPlayer}
             className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2"
           >
-            <FiPlay className="w-4 h-4" />
+            <PiPlay className="w-4 h-4" />
             <span>{t('youtube_button_span')}</span>
           </button>
         )}

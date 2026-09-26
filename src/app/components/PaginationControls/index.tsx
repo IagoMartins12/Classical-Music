@@ -1,11 +1,7 @@
 // app/components/PaginationControls.tsx - Com scroll automático garantido
 'use client';
 
-import {
-  FiChevronLeft,
-  FiChevronRight,
-  FiMoreHorizontal,
-} from 'react-icons/fi';
+import { PiCaretLeft, PiCaretRight, PiDotsThree } from 'react-icons/pi';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { useCallback } from 'react';
 
@@ -123,7 +119,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
             aria-label={t('pagination_aria_anterior')}
             className="flex items-center justify-center w-10 h-10 text-theme-secondary hover:text-brand-primary bg-theme-elevated border border-theme-secondary hover:border-brand-primary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 group"
           >
-            <FiChevronLeft
+            <PiCaretLeft
               aria-hidden="true"
               className="w-4 h-4 transition-transform group-hover:-translate-x-0.5"
             />
@@ -138,7 +134,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
                     key={`dots-${index}`}
                     className="flex items-center justify-center w-10 h-10"
                   >
-                    <FiMoreHorizontal
+                    <PiDotsThree
                       aria-hidden="true"
                       className="w-4 h-4 text-theme-tertiary"
                     />
@@ -178,7 +174,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
             aria-label={t('pagination_aria_proxima')}
             className="flex items-center justify-center w-10 h-10 text-theme-secondary hover:text-brand-primary bg-theme-elevated border border-theme-secondary hover:border-brand-primary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 group"
           >
-            <FiChevronRight
+            <PiCaretRight
               aria-hidden="true"
               className="w-4 h-4 transition-transform group-hover:translate-x-0.5"
             />

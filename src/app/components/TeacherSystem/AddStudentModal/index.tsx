@@ -1,15 +1,17 @@
 // Substituir o AddStudentModal existente
 
 import {
-  FiMapPin,
-  FiPlus,
-  FiSearch,
-  FiUser,
-  FiUserPlus,
-  FiCalendar,
-  FiBookOpen,
-  FiRefreshCw,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCaretLeft,
+  PiMagnifyingGlass,
+  PiMapPin,
+  PiPlus,
+  PiUser,
+  PiUserPlus,
+  PiWarning,
+} from 'react-icons/pi';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import Input from '../../Common/Inputs';
 import Select from '../../Common/Select';
@@ -18,9 +20,7 @@ import Image from '@/app/components/SmartImage';
 import { StudentSearchResult } from '@/app/(teacher)/teacher/pageClient';
 import { Dispatch, SetStateAction, useState } from 'react';
 import Button from '../../Common/Button';
-import { FaChevronLeft } from 'react-icons/fa';
 import Checkbox from '../../Common/Checkbox';
-import { BiError } from 'react-icons/bi';
 
 interface AddStudentModalProps {
   onClose: () => void;
@@ -207,7 +207,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                 }}
                 className="text-theme-primary "
               >
-                <FaChevronLeft className="w-4 h-4" />
+                <PiCaretLeft className="w-4 h-4" />
               </button>
             )}
             <div>
@@ -226,7 +226,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
             <>
               {/* Search Input */}
               <div className="relative mb-6">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                 <Input
                   type="email"
                   placeholder="Digite o email completo do aluno..."
@@ -267,7 +267,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                               </div>
                             ) : (
                               <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20">
-                                <FiUser className="w-5 h-5 text-theme-primary" />
+                                <PiUser className="w-5 h-5 text-theme-primary" />
                               </div>
                             )}
                           </div>
@@ -282,7 +282,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                             </div>
                             {student.location && (
                               <div className="text-xs text-theme-tertiary flex items-center">
-                                <FiMapPin className="w-3 h-3 mr-1" />
+                                <PiMapPin className="w-3 h-3 mr-1" />
                                 {student.location}
                               </div>
                             )}
@@ -307,7 +307,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                               >
                                 <span>
                                   {loading ? (
-                                    <FiRefreshCw
+                                    <PiArrowsClockwise
                                       className={`w-4 h-4 ${
                                         loading ? 'animate-spin' : ''
                                       }`}
@@ -329,7 +329,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                   loading ? 'opacity-25' : ''
                                 } text-sm px-4 py-2 flex items-center space-x-2`}
                               >
-                                <FiPlus className="w-4 h-4" />
+                                <PiPlus className="w-4 h-4" />
                                 <span>Com Plano</span>
                               </button>
                             </div>
@@ -346,7 +346,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                 {/* 🔄 BUSCANDO */}
                 {isSearching && (
                   <div className="text-center py-10">
-                    <FiSearch className="w-12 h-12 text-theme-tertiary mx-auto mb-4 animate-pulse" />
+                    <PiMagnifyingGlass className="w-12 h-12 text-theme-tertiary mx-auto mb-4 animate-pulse" />
                     <h3 className="font-semibold text-theme-primary mb-2">
                       Buscando aluno…
                     </h3>
@@ -359,7 +359,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                 {/* ❌ NENHUM RESULTADO */}
                 {hasSearched && searchResults.length === 0 && (
                   <div className="text-center py-10">
-                    <BiError className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                    <PiWarning className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                     <h3 className="font-semibold text-theme-primary mb-2">
                       Nenhum aluno encontrado
                     </h3>
@@ -373,7 +373,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                 {/* 🧭 INSTRUÇÕES */}
                 {searchQuery.length < 3 && (
                   <div className="text-center py-10">
-                    <FiUserPlus className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                    <PiUserPlus className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                     <h3 className="font-semibold text-theme-primary mb-2">
                       Como adicionar um aluno
                     </h3>
@@ -394,7 +394,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                      <FiUser className="w-6 h-6 text-theme-primary" />
+                      <PiUser className="w-6 h-6 text-theme-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-brand-primary text-lg">
@@ -412,7 +412,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                 {/* Configurações Básicas */}
                 <AnimatedCard className="classical-card p-4">
                   <h4 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                    <FiCalendar className="w-5 h-5 text-brand-primary" />
+                    <PiCalendarBlank className="w-5 h-5 text-brand-primary" />
                     Configurações de Aulas
                   </h4>
 
@@ -537,7 +537,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                 {/* Configurações de Estudo */}
                 <AnimatedCard className="classical-card p-4">
                   <h4 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                    <FiBookOpen className="w-5 h-5 text-brand-primary" />
+                    <PiBookOpen className="w-5 h-5 text-brand-primary" />
                     Plano de Estudos
                   </h4>
 
@@ -726,7 +726,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                     </>
                   ) : (
                     <>
-                      <FiPlus className="w-4 h-4" />
+                      <PiPlus className="w-4 h-4" />
                       <span>Adicionar Aluno</span>
                     </>
                   )}

@@ -3,7 +3,7 @@
 
 import Image from '@/app/components/SmartImage';
 import { useState } from 'react';
-import { FiX, FiExternalLink } from 'react-icons/fi';
+import { PiArrowSquareOut, PiX } from 'react-icons/pi';
 
 interface AdCardProps {
   ad: any;
@@ -49,7 +49,7 @@ export default function AdCard({
         className="absolute top-2 right-2 w-6 h-6 bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
         title="Fechar"
       >
-        <FiX className="w-3 h-3" />
+        <PiX className="w-3 h-3" />
       </button>
 
       {/* Card Content */}
@@ -87,7 +87,7 @@ export default function AdCard({
             {ad.ctaText && (
               <div className="flex items-center space-x-1 text-brand-primary text-sm font-medium">
                 <span>{ad.ctaText}</span>
-                {ad.isExternal && <FiExternalLink className="w-3 h-3" />}
+                {ad.isExternal && <PiArrowSquareOut className="w-3 h-3" />}
               </div>
             )}
           </div>

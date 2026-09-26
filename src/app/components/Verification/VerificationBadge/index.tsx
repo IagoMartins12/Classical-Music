@@ -1,7 +1,7 @@
 // app/components/Verification/VerificationBadge.tsx
 'use client';
 
-import { MdVerified } from 'react-icons/md';
+import { PiSealCheck } from 'react-icons/pi';
 import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface VerificationBadgeProps {
@@ -41,7 +41,7 @@ export default function VerificationBadge({
         className={`${sizeClasses[size]}${className} self-end mb-2`}
         title={t('verification_badge_verificado')}
       >
-        <MdVerified className={`${iconSizeClasses[size]}`} />
+        <PiSealCheck className={`${iconSizeClasses[size]}`} />
       </div>
     );
   }
@@ -51,7 +51,7 @@ export default function VerificationBadge({
       <div
         className={`inline-flex items-center space-x-1 px-2 py-1 bg-accent-blue/10 text-accent-blue rounded-full border border-accent-blue/30 ${className}`}
       >
-        <MdVerified className={`${iconSizeClasses[size]}`} />
+        <PiSealCheck className={`${iconSizeClasses[size]}`} />
         <span className="text-xs font-medium">
           {t('verification_badge_verificado')}
         </span>
@@ -69,7 +69,7 @@ export default function VerificationBadge({
       <div
         className={`inline-flex items-center space-x-1 text-accent-blue ${className}`}
       >
-        <MdVerified className={`${iconSizeClasses[size]}`} />
+        <PiSealCheck className={`${iconSizeClasses[size]}`} />
         <span className="hidden md:block md:text-sm font-medium">
           {verifiedText}
         </span>

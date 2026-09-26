@@ -1,5 +1,5 @@
-import { FiBookOpen, FiHeadphones, FiMusic } from 'react-icons/fi';
-import { GiGrandPiano, GiMusicalNotes } from 'react-icons/gi';
+import { GiGrandPiano } from 'react-icons/gi';
+import { PiBookOpen, PiHeadphones, PiMusicNotes } from 'react-icons/pi';
 
 {
   /* Floating Icons */
@@ -9,13 +9,13 @@ const AnimatedMusicalNotes2 = () => {
   return (
     <div className="absolute  flex lg:flex  inset-0 pointer-events-none">
       <div className="absolute top-6 left-12 text-5xl text-brand-primary/20 animate-float">
-        <GiMusicalNotes />
+        <PiMusicNotes />
       </div>
       <div
         className="absolute bottom-6 right-12 text-4xl text-brand-secondary/20 animate-float"
         style={{ animationDelay: '1s' }}
       >
-        <FiMusic />
+        <PiMusicNotes />
       </div>
       <div
         className="absolute top-12 right-24 text-3xl text-accent-purple/20 animate-float"
@@ -27,19 +27,19 @@ const AnimatedMusicalNotes2 = () => {
         className="absolute bottom-6 sm:bottom-12 left-24 text-3xl text-accent-blue/20 animate-float"
         style={{ animationDelay: '0.5s' }}
       >
-        <FiHeadphones />
+        <PiHeadphones />
       </div>
       <div
         className="absolute hidden sm:flex top-1/2 left-8 text-2xl text-accent-green/20 animate-float"
         style={{ animationDelay: '1.5s' }}
       >
-        <FiBookOpen />
+        <PiBookOpen />
       </div>
       <div
         className="absolute top-1/3 right-8 text-2xl text-brand-primary/15 animate-float"
         style={{ animationDelay: '2.5s' }}
       >
-        <GiMusicalNotes />
+        <PiMusicNotes />
       </div>
 
       <style jsx>{`

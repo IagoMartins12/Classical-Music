@@ -2,12 +2,12 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import {
-  FiPlus,
-  FiFileText,
-  FiEye,
-  FiClock,
-  FiCheckCircle,
-} from 'react-icons/fi';
+  PiCheckCircle,
+  PiClock,
+  PiEye,
+  PiFileText,
+  PiPlus,
+} from 'react-icons/pi';
 import { getServerAccessToken } from '@/app/libs/api/server-session';
 import {
   loadAdminArticleOverview,
@@ -65,7 +65,7 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
               className="flex items-center justify-center mb-6"
             >
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-                <FiFileText className="w-8 h-8 text-theme-primary" />
+                <PiFileText className="w-8 h-8 text-theme-primary" />
               </div>
             </AnimatedItem>
 
@@ -87,7 +87,7 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
                 href="/blog/admin/articles/create"
                 className="btn-classical-primary inline-flex items-center space-x-2 shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                <FiPlus className="w-5 h-5" />
+                <PiPlus className="w-5 h-5" />
                 <span>Novo Artigo</span>
               </Link>
             </AnimatedItem>
@@ -109,7 +109,7 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiFileText className="w-6 h-6 text-blue-500" />
+                    <PiFileText className="w-6 h-6 text-blue-500" />
                   </div>
                 </div>
               </div>
@@ -127,7 +127,7 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiCheckCircle className="w-6 h-6 text-green-500" />
+                    <PiCheckCircle className="w-6 h-6 text-green-500" />
                   </div>
                 </div>
               </div>
@@ -145,7 +145,7 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiClock className="w-6 h-6 text-yellow-500" />
+                    <PiClock className="w-6 h-6 text-yellow-500" />
                   </div>
                 </div>
               </div>
@@ -163,7 +163,7 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-orange-500/20 to-orange-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiEye className="w-6 h-6 text-orange-500" />
+                    <PiEye className="w-6 h-6 text-orange-500" />
                   </div>
                 </div>
               </div>

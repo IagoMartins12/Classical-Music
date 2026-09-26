@@ -5,14 +5,13 @@ import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import {
-  FiUser,
-  FiCalendar,
-  FiExternalLink,
-  FiEdit,
-  FiTrash2,
-  FiMusic,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiArrowSquareOut,
+  PiCalendarBlank,
+  PiMusicNotes,
+  PiNotePencil,
+  PiTrash,
+  PiUser,
+} from 'react-icons/pi';
 import type { UserUpload } from '@/app/requests/my-uploads';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import VerificationBadge from '../../Verification/VerificationBadge';
@@ -98,13 +97,13 @@ const UploadComposerCard = ({
                   />
                   {!imageLoaded && (
                     <div className="absolute inset-0 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                      <FiUser className="w-5 h-5 text-theme-inverse" />
+                      <PiUser className="w-5 h-5 text-theme-inverse" />
                     </div>
                   )}
                 </div>
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all duration-300">
-                  <FiUser className="w-5 h-5 text-theme-inverse" />
+                  <PiUser className="w-5 h-5 text-theme-inverse" />
                 </div>
               )}
             </div>
@@ -128,7 +127,7 @@ const UploadComposerCard = ({
                 {/* Period */}
                 {item.epochName && (
                   <span className="inline-flex items-center text-xs text-brand-primary font-medium">
-                    <GiMusicalNotes className="w-3 h-3 mr-1" />
+                    <PiMusicNotes className="w-3 h-3 mr-1" />
                     {item.epochName}
                   </span>
                 )}
@@ -136,7 +135,7 @@ const UploadComposerCard = ({
                 {/* Date */}
                 {formatDates() && (
                   <span className="inline-flex items-center text-xs text-theme-tertiary">
-                    <FiCalendar className="w-3 h-3 mr-1" />
+                    <PiCalendarBlank className="w-3 h-3 mr-1" />
                     {formatDates()}
                   </span>
                 )}
@@ -144,7 +143,7 @@ const UploadComposerCard = ({
                 {/* Badge para compositor com obras importáveis */}
                 {item.isIMSLP && (
                   <span className="text-xs font-medium text-accent-green md:px-2 md:py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
-                    <FiMusic className="w-3 h-3" />
+                    <PiMusicNotes className="w-3 h-3" />
                     <span>{t('card_works_badge')}</span>
                   </span>
                 )}
@@ -169,7 +168,7 @@ const UploadComposerCard = ({
                 onClick={(e) => e.stopPropagation()}
               >
                 IMSLP
-                <FiExternalLink className="w-2.5 h-2.5 ml-1" />
+                <PiArrowSquareOut className="w-2.5 h-2.5 ml-1" />
               </a>
             )}
 
@@ -181,7 +180,7 @@ const UploadComposerCard = ({
                   className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-green/10 text-theme-tertiary hover:text-accent-green transition-colors flex items-center justify-center"
                   title={t('card_import_all_works')}
                 >
-                  <FiMusic className="w-4 h-4" />
+                  <PiMusicNotes className="w-4 h-4" />
                 </button>
               )}
 
@@ -189,7 +188,7 @@ const UploadComposerCard = ({
                 onClick={onEdit}
                 className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center"
               >
-                <FiEdit className="w-4 h-4" />
+                <PiNotePencil className="w-4 h-4" />
               </button>
 
               <button
@@ -199,7 +198,7 @@ const UploadComposerCard = ({
                   isDeleting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
-                <FiTrash2 className="w-4 h-4" />
+                <PiTrash className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -240,13 +239,13 @@ const UploadComposerCard = ({
                     />
                     {!imageLoaded && (
                       <div className="absolute inset-0 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                        <FiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
+                        <PiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
                       </div>
                     )}
                   </div>
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-3 border-brand-primary/20 group-hover/portrait:border-brand-primary/50 transition-all duration-500 group-hover/portrait:scale-110">
-                    <FiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
+                    <PiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
                   </div>
                 )}
               </div>
@@ -262,7 +261,7 @@ const UploadComposerCard = ({
                 className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-green/10 text-theme-tertiary hover:text-accent-green transition-colors flex items-center justify-center shadow-theme-medium"
                 title={t('card_import_all_works')}
               >
-                <FiMusic className="w-4 h-4" />
+                <PiMusicNotes className="w-4 h-4" />
               </button>
             )}
 
@@ -270,7 +269,7 @@ const UploadComposerCard = ({
               onClick={onEdit}
               className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center shadow-theme-medium"
             >
-              <FiEdit className="w-4 h-4" />
+              <PiNotePencil className="w-4 h-4" />
             </button>
 
             <button
@@ -280,7 +279,7 @@ const UploadComposerCard = ({
                 isDeleting ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
-              <FiTrash2 className="w-4 h-4" />
+              <PiTrash className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -308,7 +307,7 @@ const UploadComposerCard = ({
             <div className="flex justify-center space-x-2">
               {item.isIMSLP && (
                 <span className="text-xs font-medium text-accent-blue px-2 py-1 bg-accent-blue/10 rounded-full flex items-center space-x-1">
-                  <FiExternalLink className="w-3 h-3" />
+                  <PiArrowSquareOut className="w-3 h-3" />
                   <span>IMSLP</span>
                 </span>
               )}
@@ -316,7 +315,7 @@ const UploadComposerCard = ({
               {/* Badge para compositor com obras importáveis */}
               {item.isIMSLP && (
                 <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
-                  <FiMusic className="w-3 h-3" />
+                  <PiMusicNotes className="w-3 h-3" />
                   <span>{t('card_works_badge')}</span>
                 </span>
               )}
@@ -346,7 +345,7 @@ const UploadComposerCard = ({
             {item.epochName && (
               <div className="text-center">
                 <span className="inline-flex items-center px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary rounded-full text-xs font-medium hover:bg-brand-primary/20 transition-colors duration-300">
-                  <GiMusicalNotes className="w-3 h-3 mr-1" />
+                  <PiMusicNotes className="w-3 h-3 mr-1" />
                   {item.epochName}
                 </span>
               </div>
@@ -363,7 +362,7 @@ const UploadComposerCard = ({
                   onClick={(e) => e.stopPropagation()}
                 >
                   IMSLP
-                  <FiExternalLink className="w-2.5 h-2.5 ml-1 opacity-60 group-hover/link:opacity-100 transition-opacity" />
+                  <PiArrowSquareOut className="w-2.5 h-2.5 ml-1 opacity-60 group-hover/link:opacity-100 transition-opacity" />
                 </a>
               </div>
             )}
@@ -371,7 +370,7 @@ const UploadComposerCard = ({
             {/* Date info */}
             <div className="flex items-center justify-center pt-4 border-t border-theme-secondary mt-4">
               <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
-                <FiCalendar className="w-3 h-3" />
+                <PiCalendarBlank className="w-3 h-3" />
                 <span>
                   {t('card_added_on')}{' '}
                   {new Date(item.createdAt).toLocaleDateString('pt-BR')}

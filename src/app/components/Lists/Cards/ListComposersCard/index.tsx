@@ -5,8 +5,7 @@ import React from 'react';
 import LazyImage from '@/app/components/LazyImage';
 import { composerHomeProps } from '@/app/components/PopularComposers';
 import Link from '@/app/components/LocalizedLink';
-import { FiCalendar } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+import { PiCalendarBlank, PiMusicNotes } from 'react-icons/pi';
 import FavoriteButton from '@/app/components/FavoriteButton';
 import VerificationBadge from '@/app/components/Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -76,7 +75,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
             {composer.epochName && (
               <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0">
                 <span className="inline-flex items-center px-2 py-1 bg-brand-primary/20 backdrop-blur-md border border-brand-primary/30 rounded-full text-xs font-medium text-white">
-                  <FiCalendar className="w-2.5 h-2.5 mr-1" />
+                  <PiCalendarBlank className="w-2.5 h-2.5 mr-1" />
                   {translateEpochWithHook(composer.epochName, t)}
                 </span>
               </div>
@@ -84,7 +83,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
 
             {/* Musical Note Decoration */}
             <div className="absolute bottom-3 left-3 opacity-0 group-hover:opacity-30 transition-all duration-500 transform scale-150 group-hover:scale-100">
-              <GiMusicalNotes className="w-4 h-4 text-brand-primary" />
+              <PiMusicNotes className="w-4 h-4 text-brand-primary" />
             </div>
           </div>
 

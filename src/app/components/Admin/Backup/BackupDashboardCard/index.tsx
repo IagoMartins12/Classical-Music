@@ -1,12 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  FiAlertTriangle,
-  FiCheckCircle,
-  FiHardDrive,
-  FiX,
-} from 'react-icons/fi';
+import { PiCheckCircle, PiHardDrive, PiWarning, PiX } from 'react-icons/pi';
 import { useBackup } from '@/app/hooks/admin/useBackup';
 
 /**
@@ -34,7 +29,7 @@ export default function BackupDashboardCard() {
     <div className="classical-card p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-theme-primary font-semibold flex items-center gap-2">
-          <FiHardDrive className="w-4 h-4" />
+          <PiHardDrive className="w-4 h-4" />
           Backup
         </h3>
 
@@ -48,13 +43,13 @@ export default function BackupDashboardCard() {
 
       {impedimento ? (
         <p className="text-theme-secondary text-sm flex gap-2">
-          <FiAlertTriangle className="w-4 h-4 text-accent-amber shrink-0 mt-0.5" />
+          <PiWarning className="w-4 h-4 text-accent-amber shrink-0 mt-0.5" />
           {impedimento}
         </p>
       ) : ultimo ? (
         <div className="space-y-1">
           <p className="text-theme-primary flex items-center gap-2">
-            <FiCheckCircle className="w-4 h-4 text-accent-green" />
+            <PiCheckCircle className="w-4 h-4 text-accent-green" />
             <span className="font-medium">
               {desdeUltimo !== null && desdeUltimo < 24
                 ? `há ${desdeUltimo}h`
@@ -71,14 +66,14 @@ export default function BackupDashboardCard() {
         </div>
       ) : (
         <p className="text-theme-secondary text-sm flex gap-2">
-          <FiAlertTriangle className="w-4 h-4 text-accent-amber shrink-0 mt-0.5" />
+          <PiWarning className="w-4 h-4 text-accent-amber shrink-0 mt-0.5" />
           Nenhum backup verificado ainda.
         </p>
       )}
 
       {ultimaFalha && (
         <p className="text-accent-red text-xs mt-3 flex gap-1.5">
-          <FiX className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+          <PiX className="w-3.5 h-3.5 shrink-0 mt-0.5" />
           Última falha em{' '}
           {new Date(ultimaFalha.startedAt).toLocaleDateString('pt-BR')}
         </p>

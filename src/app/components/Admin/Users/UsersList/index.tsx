@@ -3,23 +3,23 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, useMemo } from 'react';
 import {
-  FiUsers,
-  FiSearch,
-  FiFilter,
-  FiEye,
-  FiEdit3,
-  FiActivity,
-  FiUpload,
-  FiFileText,
-  FiClock,
-  FiMail,
-  FiRefreshCw,
-  FiDownload,
-  FiMoreHorizontal,
-  FiX,
-  FiShield,
-  FiAward,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiClock,
+  PiDotsThree,
+  PiDownloadSimple,
+  PiEnvelopeSimple,
+  PiEye,
+  PiFileText,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiMedal,
+  PiPencilLine,
+  PiPulse,
+  PiShield,
+  PiUploadSimple,
+  PiUsers,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -220,14 +220,14 @@ export default function UsersList() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <FiUsers className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiUsers className="w-16 h-16 text-accent-red mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Usuários
           </h2>
           <p className="text-theme-secondary mb-6">{error}</p>
           <Button
             variant="primary"
-            leftIcon={<FiRefreshCw />}
+            leftIcon={<PiArrowsClockwise />}
             onClick={refreshData}
           >
             Tentar Novamente
@@ -245,7 +245,7 @@ export default function UsersList() {
           <div className="text-center mb-8 py-8 md:py-12">
             <div className="flex items-center justify-center mb-4 md:mb-6">
               <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl md:rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiUsers className="w-6 h-6 md:w-8 md:h-8 text-theme-primary" />
+                <PiUsers className="w-6 h-6 md:w-8 md:h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold text-gradient-brand classical-title mb-2 md:mb-4">
@@ -270,7 +270,7 @@ export default function UsersList() {
             <div className="flex flex-col gap-3 md:gap-4 mb-4">
               {/* Busca */}
               <div className="flex-1 relative">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
+                <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
                 <Input
                   type="text"
                   placeholder="Buscar por nome ou email..."
@@ -283,7 +283,7 @@ export default function UsersList() {
                     onClick={() => handleSearch('')}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary"
                   >
-                    <FiX className="w-5 h-5" />
+                    <PiX className="w-5 h-5" />
                   </button>
                 )}
               </div>
@@ -292,7 +292,7 @@ export default function UsersList() {
               <div className="flex flex-wrap gap-2">
                 <Button
                   variant={showFilters ? 'primary' : 'secondary'}
-                  leftIcon={<FiFilter />}
+                  leftIcon={<PiFunnel />}
                   rightIcon={
                     activeFiltersCount > 0 && (
                       <span
@@ -313,7 +313,7 @@ export default function UsersList() {
                 {activeFiltersCount > 0 && (
                   <Button
                     variant="ghost"
-                    leftIcon={<FiX />}
+                    leftIcon={<PiX />}
                     onClick={clearFilters}
                     className="flex-1 sm:flex-none"
                   >
@@ -323,7 +323,7 @@ export default function UsersList() {
 
                 <Button
                   variant="ghost"
-                  leftIcon={<FiRefreshCw />}
+                  leftIcon={<PiArrowsClockwise />}
                   onClick={refreshData}
                   disabled={loading}
                   className="flex-1 sm:flex-none"
@@ -409,7 +409,7 @@ export default function UsersList() {
                   <Button
                     size="sm"
                     variant={localFilters.isActive ? 'primary' : 'ghost'}
-                    leftIcon={<FiActivity />}
+                    leftIcon={<PiPulse />}
                     onClick={() =>
                       applyFilters({
                         isActive: localFilters.isActive ? undefined : true,
@@ -422,7 +422,7 @@ export default function UsersList() {
                   <Button
                     size="sm"
                     variant={localFilters.hasUploads ? 'primary' : 'ghost'}
-                    leftIcon={<FiUpload />}
+                    leftIcon={<PiUploadSimple />}
                     onClick={() =>
                       applyFilters({
                         hasUploads: localFilters.hasUploads ? undefined : true,
@@ -435,7 +435,7 @@ export default function UsersList() {
                   <Button
                     size="sm"
                     variant={localFilters.hasAnnotations ? 'primary' : 'ghost'}
-                    leftIcon={<FiFileText />}
+                    leftIcon={<PiFileText />}
                     onClick={() =>
                       applyFilters({
                         hasAnnotations: localFilters.hasAnnotations
@@ -450,7 +450,7 @@ export default function UsersList() {
                   <Button
                     size="sm"
                     variant={localFilters.hasModerations ? 'primary' : 'ghost'}
-                    leftIcon={<FiShield />}
+                    leftIcon={<PiShield />}
                     onClick={() =>
                       applyFilters({
                         hasModerations: localFilters.hasModerations
@@ -485,7 +485,7 @@ export default function UsersList() {
           <LoadingAdminState loadingName="usuários" />
         ) : users.length === 0 ? (
           <AnimatedCard className="classical-card p-8 text-center">
-            <FiUsers className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+            <PiUsers className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
             <h3 className="text-xl font-bold text-theme-primary mb-2">
               Nenhum usuário encontrado
             </h3>
@@ -494,7 +494,7 @@ export default function UsersList() {
             </p>
             <Button
               variant="secondary"
-              leftIcon={<FiX />}
+              leftIcon={<PiX />}
               onClick={clearFilters}
             >
               Limpar Filtros
@@ -535,7 +535,7 @@ export default function UsersList() {
                               {/* Badge de Role */}
                               {user.role === 1 && (
                                 <span className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium bg-accent-blue/20 text-accent-blue flex items-center gap-1">
-                                  <FiAward className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                                  <PiMedal className="w-2.5 h-2.5 md:w-3 md:h-3" />
                                   Professor
                                   {user.teacherProfile?.isVerified && (
                                     <span className="text-accent-green">✓</span>
@@ -545,7 +545,7 @@ export default function UsersList() {
 
                               {user.role === 2 && (
                                 <span className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium bg-accent-red/20 text-accent-red flex items-center gap-1">
-                                  <FiShield className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                                  <PiShield className="w-2.5 h-2.5 md:w-3 md:h-3" />
                                   Admin
                                 </span>
                               )}
@@ -600,11 +600,11 @@ export default function UsersList() {
                           {/* Info Secundária */}
                           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs md:text-sm text-theme-tertiary">
                             <span className="flex items-center gap-1 truncate">
-                              <FiMail className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                              <PiEnvelopeSimple className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                               <span className="truncate">{user.email}</span>
                             </span>
                             <span className="flex items-center gap-1">
-                              <FiClock className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                              <PiClock className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                               {new Date(user.createdAt).toLocaleDateString(
                                 'pt-BR'
                               )}
@@ -616,7 +616,7 @@ export default function UsersList() {
                               user.teacherProfile.instruments &&
                               user.teacherProfile.instruments.length > 0 && (
                                 <span className="hidden sm:flex items-center gap-1 text-accent-blue">
-                                  <FiAward className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                                  <PiMedal className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                                   {user.teacherProfile.instruments
                                     .slice(0, 2)
                                     .join(', ')}
@@ -658,7 +658,7 @@ export default function UsersList() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            leftIcon={<FiEye />}
+                            leftIcon={<PiEye />}
                             onClick={() => setSelectedUser(user)}
                             className="text-xs md:text-sm px-2 md:px-3"
                           >
@@ -668,7 +668,7 @@ export default function UsersList() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            leftIcon={<FiEdit3 />}
+                            leftIcon={<PiPencilLine />}
                             onClick={() => setEditingUser(user)}
                             className="text-xs md:text-sm px-2 md:px-3"
                           >
@@ -686,7 +686,7 @@ export default function UsersList() {
               <div className="text-center pt-6">
                 <Button
                   variant="secondary"
-                  leftIcon={<FiMoreHorizontal />}
+                  leftIcon={<PiDotsThree />}
                   onClick={loadMore}
                   disabled={loadingMore}
                   className="w-full sm:w-auto"
@@ -703,7 +703,7 @@ export default function UsersList() {
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-6 md:pt-8 border-t border-theme-secondary">
             <Button
               variant="primary"
-              leftIcon={<FiUsers />}
+              leftIcon={<PiUsers />}
               onClick={() => router.push('/admin/users')}
               className="flex-1"
             >
@@ -712,7 +712,7 @@ export default function UsersList() {
 
             <Button
               variant="secondary"
-              leftIcon={<FiDownload />}
+              leftIcon={<PiDownloadSimple />}
               onClick={() =>
                 exportUsers({ ...localFilters, period: FORCED_PERIOD })
               }

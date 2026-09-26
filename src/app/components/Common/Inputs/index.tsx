@@ -2,8 +2,7 @@
 'use client';
 
 import React, { forwardRef, useId, useState, useEffect } from 'react';
-import { FiEye, FiEyeOff } from 'react-icons/fi';
-import { MdErrorOutline } from 'react-icons/md';
+import { PiEye, PiEyeSlash, PiWarningCircle } from 'react-icons/pi';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -115,9 +114,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                   tabIndex={-1}
                 >
                   {showPassword ? (
-                    <FiEyeOff className="w-4 h-4" />
+                    <PiEyeSlash className="w-4 h-4" />
                   ) : (
-                    <FiEye className="w-4 h-4" />
+                    <PiEye className="w-4 h-4" />
                   )}
                 </button>
               ) : (
@@ -129,7 +128,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
         {error && (
           <div className="flex gap-2 items-center mt-1">
-            <MdErrorOutline className="text-red-500" />
+            <PiWarningCircle className="text-red-500" />
             <p className="mt-1 text-sm text-red-400">{error}</p>
           </div>
         )}

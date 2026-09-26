@@ -5,9 +5,13 @@ import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import { NodeViewWrapper } from '@tiptap/react';
 import { useState, useRef, useEffect } from 'react';
-import { BiPause, BiPlay } from 'react-icons/bi';
-import { FiVolume2, FiMusic } from 'react-icons/fi';
-import { FaTrash } from 'react-icons/fa';
+import {
+  PiMusicNotes,
+  PiPause,
+  PiPlay,
+  PiSpeakerHigh,
+  PiTrash,
+} from 'react-icons/pi';
 import Link from 'next/link';
 
 // Declaração do tipo para YouTube Player API
@@ -206,7 +210,7 @@ const AudioPlayerComponent = (props: any) => {
               className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
               title="Remover"
             >
-              <FaTrash className="w-4 h-4" />
+              <PiTrash className="w-4 h-4" />
             </button>
           </div>
         )}
@@ -215,7 +219,7 @@ const AudioPlayerComponent = (props: any) => {
           {/* Header */}
           <div className="flex items-center space-x-3 mb-4">
             <div className="w-14 h-14 bg-gradient-to-br from-accent-purple to-brand-primary rounded-lg flex items-center justify-center shadow-md">
-              <FiMusic className="w-7 h-7 text-white" />
+              <PiMusicNotes className="w-7 h-7 text-white" />
             </div>
 
             <div className="flex-1">
@@ -272,9 +276,9 @@ const AudioPlayerComponent = (props: any) => {
                 className="p-3 bg-accent-purple text-white rounded-full hover:opacity-90 transition-opacity shadow-md"
               >
                 {isPlaying ? (
-                  <BiPause className="w-6 h-6" />
+                  <PiPause className="w-6 h-6" />
                 ) : (
-                  <BiPlay className="w-6 h-6" />
+                  <PiPlay className="w-6 h-6" />
                 )}
               </button>
 
@@ -301,7 +305,7 @@ const AudioPlayerComponent = (props: any) => {
 
               {/* Volume Control */}
               <div className="flex items-center space-x-2 w-24">
-                <FiVolume2 className="w-5 h-5 text-theme-secondary" />
+                <PiSpeakerHigh className="w-5 h-5 text-theme-secondary" />
                 <input
                   type="range"
                   min="0"

@@ -4,17 +4,17 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiMusic,
-  FiSearch,
-  FiPlay,
-  FiCheck,
-  FiX,
-  FiAlertCircle,
-  FiExternalLink,
-  FiInfo,
-  FiLoader,
-  FiTrash2,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiCheck,
+  PiInfo,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiPlay,
+  PiSpinnerGap,
+  PiTrash,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedItem,
@@ -349,7 +349,7 @@ const BulkInsertWorksModal = ({
             <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
-                  <FiMusic className="w-5 h-5 text-theme-primary" />
+                  <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -393,7 +393,7 @@ const BulkInsertWorksModal = ({
                 <div className="p-6 text-center">
                   <AnimatedCard className="classical-card-2 p-8 max-w-md mx-auto">
                     <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-green rounded-full flex items-center justify-center mx-auto mb-6">
-                      <FiSearch className="w-8 h-8 text-theme-primary" />
+                      <PiMagnifyingGlass className="w-8 h-8 text-theme-primary" />
                     </div>
 
                     <h3 className="text-lg font-bold text-theme-primary mb-4">
@@ -409,7 +409,7 @@ const BulkInsertWorksModal = ({
                     <div className="space-y-3">
                       <div className="text-xs text-theme-tertiary p-3 bg-theme-secondary/10 rounded-lg">
                         <div className="flex items-center space-x-2 mb-1">
-                          <FiInfo className="w-3 h-3" />
+                          <PiInfo className="w-3 h-3" />
                           <span className="font-medium">
                             {t('bulk_step_discover_how_title')}
                           </span>
@@ -427,9 +427,9 @@ const BulkInsertWorksModal = ({
                         size="lg"
                         leftIcon={
                           isDiscovering ? (
-                            <FiLoader className="animate-spin" />
+                            <PiSpinnerGap className="animate-spin" />
                           ) : (
-                            <FiSearch />
+                            <PiMagnifyingGlass />
                           )
                         }
                         onClick={handleDiscoverWorks}
@@ -505,7 +505,7 @@ const BulkInsertWorksModal = ({
 
                       <Button
                         variant="primary"
-                        leftIcon={<FiPlay />}
+                        leftIcon={<PiPlay />}
                         onClick={handleProcessWorks}
                         disabled={stats.selected === 0}
                       >
@@ -577,7 +577,7 @@ const BulkInsertWorksModal = ({
                                   rel="noopener noreferrer"
                                   className="text-theme-tertiary hover:text-accent-blue"
                                 >
-                                  <FiExternalLink className="w-4 h-4" />
+                                  <PiArrowSquareOut className="w-4 h-4" />
                                 </a>
 
                                 <button
@@ -585,7 +585,7 @@ const BulkInsertWorksModal = ({
                                   className="text-theme-tertiary hover:text-accent-red"
                                   title={t('bulk_remove_work')}
                                 >
-                                  <FiTrash2 className="w-4 h-4" />
+                                  <PiTrash className="w-4 h-4" />
                                 </button>
                               </div>
                             </div>
@@ -660,16 +660,16 @@ const BulkInsertWorksModal = ({
                               </div>
                             )}
                             {work.status === 'processing' && (
-                              <FiLoader className="w-5 h-5 text-brand-primary animate-spin" />
+                              <PiSpinnerGap className="w-5 h-5 text-brand-primary animate-spin" />
                             )}
                             {work.status === 'success' && (
                               <div className="w-5 h-5 rounded-full bg-accent-green flex items-center justify-center">
-                                <FiCheck className="w-3 h-3 text-white" />
+                                <PiCheck className="w-3 h-3 text-white" />
                               </div>
                             )}
                             {work.status === 'error' && (
                               <div className="w-5 h-5 rounded-full bg-accent-red flex items-center justify-center">
-                                <FiX className="w-3 h-3 text-white" />
+                                <PiX className="w-3 h-3 text-white" />
                               </div>
                             )}
                           </div>
@@ -792,13 +792,13 @@ const BulkInsertWorksModal = ({
                         <div className="flex items-center space-x-3">
                           <div className="flex-shrink-0 mt-0.5">
                             {result.status === 'success' && (
-                              <FiCheck className="w-4 h-4 text-accent-green" />
+                              <PiCheck className="w-4 h-4 text-accent-green" />
                             )}
                             {result.status === 'error' && (
-                              <FiX className="w-4 h-4 text-accent-red" />
+                              <PiX className="w-4 h-4 text-accent-red" />
                             )}
                             {result.status === 'duplicate' && (
-                              <FiAlertCircle className="w-4 h-4 text-accent-amber" />
+                              <PiWarningCircle className="w-4 h-4 text-accent-amber" />
                             )}
                           </div>
 

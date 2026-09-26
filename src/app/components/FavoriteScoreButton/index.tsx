@@ -5,13 +5,15 @@ import { MouseEvent, useState } from 'react';
 import { useSession } from '@/app/libs/session';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import {
-  FiHeart,
-  FiStar,
-  FiEdit3,
-  FiX,
-  FiCheck,
-  FiLoader,
-} from 'react-icons/fi';
+  PiCheck,
+  PiHeart,
+  PiHeartFill,
+  PiPencilLine,
+  PiSpinnerGap,
+  PiStar,
+  PiStarFill,
+  PiX,
+} from 'react-icons/pi';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useLoginModal } from '@/app/stores/authStore';
 import type { WorkScore } from '@/app/types/catalog';
@@ -109,7 +111,7 @@ const FavoriteModal = ({
             onClick={onClose}
             className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-xl flex items-center justify-center hover:bg-interactive-hover transition-colors"
           >
-            <FiX className="w-4 h-4 text-theme-tertiary" />
+            <PiX className="w-4 h-4 text-theme-tertiary" />
           </button>
         </div>
 
@@ -132,11 +134,19 @@ const FavoriteModal = ({
                       : 'bg-theme-elevated border border-theme-secondary text-theme-tertiary hover:bg-interactive-hover'
                   }`}
                 >
-                  <FiStar
-                    className={`w-4 h-4 ${
-                      star <= personalRating ? 'fill-current' : ''
-                    }`}
-                  />
+                  {star <= personalRating ? (
+                    <PiStarFill
+                      className={`w-4 h-4 ${
+                        star <= personalRating ? 'fill-current' : ''
+                      }`}
+                    />
+                  ) : (
+                    <PiStar
+                      className={`w-4 h-4 ${
+                        star <= personalRating ? 'fill-current' : ''
+                      }`}
+                    />
+                  )}
                 </button>
               ))}
               {personalRating > 0 && (
@@ -180,7 +190,7 @@ const FavoriteModal = ({
                     onClick={() => removeTag(tag)}
                     className="w-4 h-4 hover:bg-brand-primary/20 rounded-full flex items-center justify-center"
                   >
-                    <FiX className="w-3 h-3" />
+                    <PiX className="w-3 h-3" />
                   </button>
                 </span>
               ))}
@@ -217,7 +227,7 @@ const FavoriteModal = ({
             onClick={handleSave}
             className="px-6 py-2 bg-gradient-to-r from-brand-primary to-brand-secondary text-theme-primary rounded-xl font-medium hover:shadow-theme-glow transition-all duration-300 flex items-center space-x-2"
           >
-            <FiCheck className="w-4 h-4" />
+            <PiCheck className="w-4 h-4" />
             <span>Salvar</span>
           </button>
         </div>
@@ -358,11 +368,17 @@ export default function FavoriteScoreButton({
 
   const getIcon = () => {
     if (isLoading) {
-      return <FiLoader className="w-4 h-4 animate-spin" />;
+      return <PiSpinnerGap className="w-4 h-4 animate-spin" />;
     }
 
-    return (
-      <FiHeart
+    return isFavorited ? (
+      <PiHeartFill
+        className={`w-4 h-4 transition-all duration-300 ${
+          isFavorited ? 'fill-current scale-110' : ''
+        }`}
+      />
+    ) : (
+      <PiHeart
         className={`w-4 h-4 transition-all duration-300 ${
           isFavorited ? 'fill-current scale-110' : ''
         }`}
@@ -397,7 +413,7 @@ export default function FavoriteScoreButton({
             className="absolute -bottom-2 -right-2 w-6 h-6 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-theme-medium"
             title="Editar favorito"
           >
-            <FiEdit3 className="w-3 h-3 text-theme-primary" />
+            <PiPencilLine className="w-3 h-3 text-theme-primary" />
           </button>
         )}
 

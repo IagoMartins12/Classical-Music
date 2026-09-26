@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FaSearch } from 'react-icons/fa';
+import { PiMagnifyingGlass } from 'react-icons/pi';
 
 export function SearchInput() {
   const router = useRouter();
@@ -37,7 +37,7 @@ export function SearchInput() {
   return (
     <div className="relative mb-6 flex gap-2">
       <div className="relative flex-1">
-        <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-tertiary pointer-events-none" />
+        <PiMagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-tertiary pointer-events-none" />
         <input
           type="text"
           placeholder="Buscar artigos, compositores, obras..."
@@ -51,7 +51,7 @@ export function SearchInput() {
         onClick={() => doSearch(value)}
         className="btn-classical-primary px-4"
       >
-        <FaSearch />
+        <PiMagnifyingGlass />
       </button>
     </div>
   );

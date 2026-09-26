@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import { FiUser, FiArrowRight, FiX } from 'react-icons/fi';
+import { PiArrowRight, PiUser, PiX } from 'react-icons/pi';
 import { useOnboardingModal, usePromptModal } from '@/app/stores/authStore';
 import { useUser } from '@/app/hooks/userStore';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -33,7 +33,7 @@ const OnboardingPrompt = () => {
     >
       <div className="flex items-start space-x-3">
         <div className="w-10 h-10 bg-accent-amber bg-opacity-20 rounded-full flex items-center justify-center flex-shrink-0">
-          <FiUser className="w-5 h-5 text-accent-amber" />
+          <PiUser className="w-5 h-5 text-accent-amber" />
         </div>
 
         <div className="flex-1">
@@ -66,7 +66,7 @@ const OnboardingPrompt = () => {
                 closePrompt();
                 openOnboarding();
               }}
-              rightIcon={<FiArrowRight />}
+              rightIcon={<PiArrowRight />}
             >
               {t('prompt_configure_now')}
             </Button>
@@ -80,7 +80,7 @@ const OnboardingPrompt = () => {
           onClick={closePrompt}
           className="p-1 text-theme-tertiary hover:text-theme-secondary transition-colors"
         >
-          <FiX className="w-4 h-4" />
+          <PiX className="w-4 h-4" />
         </button>
       </div>
     </div>

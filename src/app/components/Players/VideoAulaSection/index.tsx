@@ -3,23 +3,25 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  FiPlay,
-  FiExternalLink,
-  FiUser,
-  FiClock,
-  FiVideo,
-  FiDownload,
-  FiEdit3,
-  FiX,
-  FiSave,
-  FiTrash2,
-  FiLoader,
-  FiMusic,
-  FiPlus,
-} from 'react-icons/fi';
-import { SiYoutube, SiInstagram, SiTiktok } from 'react-icons/si';
+  PiArrowSquareOut,
+  PiClock,
+  PiDownloadSimple,
+  PiFloppyDisk,
+  PiGraduationCap,
+  PiInstagramLogo,
+  PiMusicNotes,
+  PiPencilLine,
+  PiPlay,
+  PiPlus,
+  PiSpinnerGap,
+  PiTiktokLogo,
+  PiTrash,
+  PiUser,
+  PiVideoCamera,
+  PiX,
+  PiYoutubeLogo,
+} from 'react-icons/pi';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
-import { FaGraduationCap } from 'react-icons/fa';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import Select from '../../Common/Select';
@@ -665,17 +667,17 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
   const getPlatformIcon = (platform: string) => {
     switch (platform) {
       case 'youtube':
-        return <SiYoutube className="w-4 h-4 text-red-400" />;
+        return <PiYoutubeLogo className="w-4 h-4 text-red-400" />;
       case 'instagram':
       case 'instagram-reel':
-        return <SiInstagram className="w-4 h-4 text-pink-400" />;
+        return <PiInstagramLogo className="w-4 h-4 text-pink-400" />;
       case 'tiktok':
-        return <SiTiktok className="w-4 h-4 text-black dark:text-white" />;
+        return <PiTiktokLogo className="w-4 h-4 text-black dark:text-white" />;
       case 'local':
       case 'direct':
-        return <FiVideo className="w-4 h-4 text-blue-400" />;
+        return <PiVideoCamera className="w-4 h-4 text-blue-400" />;
       default:
-        return <FiExternalLink className="w-4 h-4 text-theme-tertiary" />;
+        return <PiArrowSquareOut className="w-4 h-4 text-theme-tertiary" />;
     }
   };
 
@@ -794,7 +796,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                <FiMusic className="w-5 h-5 text-theme-primary" />
+                <PiMusicNotes className="w-5 h-5 text-theme-primary" />
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -810,7 +812,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               <Button
                 variant="primary"
                 size="sm"
-                leftIcon={<FiPlus />}
+                leftIcon={<PiPlus />}
                 onClick={() => setShowEditMode(true)}
               >
                 {t('video_aula_adicionar')}
@@ -887,13 +889,13 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     }
                     leftIcon={
                       editData.videoAulaSource === 'youtube' ? (
-                        <SiYoutube />
+                        <PiYoutubeLogo />
                       ) : editData.videoAulaSource === 'instagram' ? (
-                        <SiInstagram />
+                        <PiInstagramLogo />
                       ) : editData.videoAulaSource === 'tiktok' ? (
-                        <SiTiktok />
+                        <PiTiktokLogo />
                       ) : (
-                        <FiExternalLink />
+                        <PiArrowSquareOut />
                       )
                     }
                   />
@@ -928,9 +930,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     size="sm"
                     leftIcon={
                       isUploading ? (
-                        <FiLoader className="animate-spin" />
+                        <PiSpinnerGap className="animate-spin" />
                       ) : (
-                        <FiSave />
+                        <PiFloppyDisk />
                       )
                     }
                     onClick={saveVideoAula}
@@ -947,7 +949,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   <Button
                     variant="secondary"
                     size="sm"
-                    leftIcon={<FiX />}
+                    leftIcon={<PiX />}
                     onClick={() => setShowEditMode(false)}
                   >
                     {t('video_aula_cancelar')}
@@ -961,7 +963,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
           <div className="p-0 md:p-6">
             <div className="text-center py-12">
               <div className="w-24 h-24 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <FaGraduationCap className="w-12 h-12 text-theme-primary" />
+                <PiGraduationCap className="w-12 h-12 text-theme-primary" />
               </div>
 
               <h3 className="text-xl font-semibold text-theme-primary mb-2">
@@ -978,7 +980,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 <Button
                   variant="primary"
                   size="md"
-                  leftIcon={<FiPlus />}
+                  leftIcon={<PiPlus />}
                   onClick={() => setShowEditMode(true)}
                   className="hover:scale-105 transition-transform duration-300"
                 >
@@ -1000,7 +1002,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-              <FiMusic className="w-5 h-5 text-theme-primary" />
+              <PiMusicNotes className="w-5 h-5 text-theme-primary" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -1017,7 +1019,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               <Button
                 variant="secondary"
                 size="sm"
-                leftIcon={<FiEdit3 />}
+                leftIcon={<PiPencilLine />}
                 onClick={() => setShowEditMode(!showEditMode)}
               >
                 {showEditMode
@@ -1042,7 +1044,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   className="text-blue-400 hover:text-blue-300 transition-colors p-2 hover:bg-blue-400/10 rounded-lg"
                   title={t('video_aula_abrir_nova_aba')}
                 >
-                  <FiExternalLink className="w-5 h-5" />
+                  <PiArrowSquareOut className="w-5 h-5" />
                 </button>
               )}
           </div>
@@ -1062,7 +1064,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 <Button
                   variant="ghost"
                   size="sm"
-                  leftIcon={<FiTrash2 />}
+                  leftIcon={<PiTrash />}
                   onClick={deleteVideoAula}
                   disabled={isUploading}
                   className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
@@ -1134,13 +1136,13 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   }
                   leftIcon={
                     editData.videoAulaSource === 'youtube' ? (
-                      <SiYoutube />
+                      <PiYoutubeLogo />
                     ) : editData.videoAulaSource === 'instagram' ? (
-                      <SiInstagram />
+                      <PiInstagramLogo />
                     ) : editData.videoAulaSource === 'tiktok' ? (
-                      <SiTiktok />
+                      <PiTiktokLogo />
                     ) : (
-                      <FiExternalLink />
+                      <PiArrowSquareOut />
                     )
                   }
                 />
@@ -1181,9 +1183,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   size="sm"
                   leftIcon={
                     isUploading ? (
-                      <FiLoader className="animate-spin" />
+                      <PiSpinnerGap className="animate-spin" />
                     ) : (
-                      <FiSave />
+                      <PiFloppyDisk />
                     )
                   }
                   onClick={saveVideoAula}
@@ -1200,7 +1202,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 <Button
                   variant="secondary"
                   size="sm"
-                  leftIcon={<FiX />}
+                  leftIcon={<PiX />}
                   onClick={() => {
                     setShowEditMode(false);
                     setEditData({
@@ -1259,7 +1261,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900">
                       <div className="text-center">
-                        <FaGraduationCap className="w-16 h-16 lg:w-20 lg:h-20 text-blue-400 mx-auto mb-4 animate-pulse" />
+                        <PiGraduationCap className="w-16 h-16 lg:w-20 lg:h-20 text-blue-400 mx-auto mb-4 animate-pulse" />
                         <p className="text-sm font-medium text-blue-600 dark:text-blue-300">
                           {videoInfo.displayType}
                         </p>
@@ -1270,9 +1272,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   <div className={getOverlayClasses()}>
                     <div className={getPlayButtonClasses()}>
                       {videoInfo.canEmbed ? (
-                        <FiPlay className="w-6 h-6 lg:w-8 lg:h-8 text-blue-600 ml-1" />
+                        <PiPlay className="w-6 h-6 lg:w-8 lg:h-8 text-blue-600 ml-1" />
                       ) : (
-                        <FiExternalLink className="w-5 h-5 lg:w-6 lg:h-6 text-blue-600" />
+                        <PiArrowSquareOut className="w-5 h-5 lg:w-6 lg:h-6 text-blue-600" />
                       )}
                     </div>
                   </div>
@@ -1364,7 +1366,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-all duration-300 z-10"
                   title={t('video_aula_fechar_player')}
                 >
-                  <FiX className="w-4 h-4" />
+                  <PiX className="w-4 h-4" />
                 </button>
               </div>
             )}
@@ -1385,14 +1387,14 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               <div className="flex items-center space-x-4">
                 {work.videoAulaAddedAt && (
                   <div className="flex items-center space-x-1">
-                    <FiUser className="w-4 h-4" />
+                    <PiUser className="w-4 h-4" />
                     <span>{formatDate(work.videoAulaAddedAt)}</span>
                   </div>
                 )}
 
                 {work.videoAulaMetadata?.duration && (
                   <div className="flex items-center space-x-1">
-                    <FiClock className="w-4 h-4" />
+                    <PiClock className="w-4 h-4" />
                     <span>{work.videoAulaMetadata.duration}</span>
                   </div>
                 )}
@@ -1405,7 +1407,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   className="flex items-center space-x-1 text-blue-400 hover:text-blue-300 transition-colors hover:bg-blue-400/10 px-2 py-1 rounded"
                   title={t('video_aula_download')}
                 >
-                  <FiDownload className="w-4 h-4" />
+                  <PiDownloadSimple className="w-4 h-4" />
                   <span>{t('video_aula_download')}</span>
                 </a>
               )}
@@ -1418,7 +1420,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   variant="primary"
                   size="md"
                   leftIcon={
-                    videoInfo.canEmbed ? <FiPlay /> : <FiExternalLink />
+                    videoInfo.canEmbed ? <PiPlay /> : <PiArrowSquareOut />
                   }
                   className="w-full relative overflow-hidden group"
                 >
@@ -1436,14 +1438,14 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 <div className="flex items-center justify-center space-x-4 text-xs text-theme-tertiary">
                   {!videoInfo.canEmbed && (
                     <div className="flex items-center space-x-1">
-                      <FiExternalLink className="w-3 h-3" />
+                      <PiArrowSquareOut className="w-3 h-3" />
                       <span>{t('video_aula_abre_nova_aba')}</span>
                     </div>
                   )}
 
                   {videoInfo.platform === 'local' && (
                     <div className="flex items-center space-x-1">
-                      <FiDownload className="w-3 h-3" />
+                      <PiDownloadSimple className="w-3 h-3" />
                       <span>{t('video_aula_download_disponivel')}</span>
                     </div>
                   )}
@@ -1468,7 +1470,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   onClick={() => setIsPlayerVisible(false)}
                   variant="secondary"
                   size="sm"
-                  leftIcon={<FiX />}
+                  leftIcon={<PiX />}
                 >
                   {t('video_aula_fechar_player')}
                 </Button>
@@ -1481,7 +1483,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                       download
                       className="flex items-center space-x-1 text-blue-400 hover:text-blue-300 transition-colors hover:bg-blue-400/10 px-3 py-2 rounded text-sm"
                     >
-                      <FiDownload className="w-4 h-4" />
+                      <PiDownloadSimple className="w-4 h-4" />
                       <span>{t('video_aula_download')}</span>
                     </a>
                   )}

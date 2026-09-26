@@ -5,28 +5,28 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { signOut, useSession } from '@/app/libs/session';
 import { usePathname, useRouter } from 'next/navigation';
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiMenu,
-  FiX,
-  FiUser,
-  FiLogOut,
-  FiHeart,
-  FiSettings,
-  FiChevronDown,
-  FiChevronRight,
-  FiChevronLeft,
-  FiEdit,
-  FiList,
-  FiBookmark, // 🆕 NOVO ÍCONE
-} from 'react-icons/fi';
-import { FaSearch } from 'react-icons/fa';
-import { BiComment } from 'react-icons/bi';
+  PiBookmarkSimple,
+  PiCaretDown,
+  PiCaretLeft,
+  PiCaretRight,
+  PiChatCircle,
+  PiGear,
+  PiHeart,
+  PiList,
+  PiListBullets,
+  PiMagnifyingGlass,
+  PiNotePencil,
+  PiSignOut,
+  PiUser,
+  PiX,
+} from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
 import { toast } from 'react-hot-toast';
 import { ThemeToggle } from '../../ThemeToggle';
 import Button from '../../Common/Button';
 import { useLoginModal, useRegisterModal } from '@/app/stores/authStore';
-import { GiGrandPiano } from 'react-icons/gi';
 import { SearchModal } from '../SearchModal';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
@@ -399,7 +399,7 @@ export function BlogHeader() {
                         `}
                       >
                         <span>{label}</span>
-                        <FiChevronDown
+                        <PiCaretDown
                           className={`w-4 h-4 transition-transform duration-200 ${
                             activeSubmenu === label ? 'rotate-180' : ''
                           }`}
@@ -483,7 +483,7 @@ export function BlogHeader() {
                 className="w-11 h-10 p-1.5 rounded-xl bg-theme-elevated hover:bg-theme-classical transition-all group flex items-center justify-center"
                 aria-label="Buscar (Ctrl+K)"
               >
-                <FaSearch className="w-4 h-4 text-theme-secondary group-hover:text-brand-primary transition-colors" />
+                <PiMagnifyingGlass className="w-4 h-4 text-theme-secondary group-hover:text-brand-primary transition-colors" />
               </button>
 
               <ThemeToggle variant="navbar" className="hidden sm:block" />
@@ -541,7 +541,7 @@ export function BlogHeader() {
                         `}
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        <FiUser className="w-4 h-4" />
+                        <PiUser className="w-4 h-4" />
                         <span>Meu Perfil</span>
                       </Link>
 
@@ -558,7 +558,7 @@ export function BlogHeader() {
                         `}
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        <FiHeart className="w-4 h-4" />
+                        <PiHeart className="w-4 h-4" />
                         <span>Artigos Curtidos</span>
                       </Link>
 
@@ -575,7 +575,7 @@ export function BlogHeader() {
                         `}
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        <FiBookmark className="w-4 h-4" />
+                        <PiBookmarkSimple className="w-4 h-4" />
                         <span>Artigos Salvos</span>
                       </Link>
 
@@ -595,7 +595,7 @@ export function BlogHeader() {
                             `}
                             onClick={() => setIsProfileOpen(false)}
                           >
-                            <FiEdit className="w-4 h-4" />
+                            <PiNotePencil className="w-4 h-4" />
                             <span>Criar Artigo</span>
                           </Link>
 
@@ -611,7 +611,7 @@ export function BlogHeader() {
                             `}
                             onClick={() => setIsProfileOpen(false)}
                           >
-                            <FiList className="w-4 h-4" />
+                            <PiListBullets className="w-4 h-4" />
                             <span>Gerenciar Artigos</span>
                           </Link>
 
@@ -627,7 +627,7 @@ export function BlogHeader() {
                             `}
                             onClick={() => setIsProfileOpen(false)}
                           >
-                            <BiComment className="w-4 h-4" />
+                            <PiChatCircle className="w-4 h-4" />
                             <span>Moderação</span>
                           </Link>
                         </>
@@ -646,7 +646,7 @@ export function BlogHeader() {
                           `}
                           onClick={() => setIsProfileOpen(false)}
                         >
-                          <FiSettings className="w-4 h-4" />
+                          <PiGear className="w-4 h-4" />
                           <span>Admin</span>
                         </Link>
                       )}
@@ -657,7 +657,7 @@ export function BlogHeader() {
                         onClick={handleLogout}
                         className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-accent-red hover:bg-interactive-hover rounded-lg transition-all"
                       >
-                        <FiLogOut className="w-4 h-4" />
+                        <PiSignOut className="w-4 h-4" />
                         <span>Sair</span>
                       </button>
                     </div>
@@ -688,9 +688,9 @@ export function BlogHeader() {
                 aria-label="Menu"
               >
                 {isMenuOpen ? (
-                  <FiX className="w-6 h-6" />
+                  <PiX className="w-6 h-6" />
                 ) : (
-                  <FiMenu className="w-6 h-6" />
+                  <PiList className="w-6 h-6" />
                 )}
               </button>
             </div>
@@ -737,7 +737,7 @@ export function BlogHeader() {
                               aria-label={`Abrir ${label}`}
                               className="ml-2 p-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                             >
-                              <FiChevronRight className="w-5 h-5" />
+                              <PiCaretRight className="w-5 h-5" />
                             </button>
                           </div>
                         ) : (
@@ -801,7 +801,7 @@ export function BlogHeader() {
                                 </span>
                               </span>
                             </span>
-                            <FiChevronRight className="w-5 h-5 text-theme-tertiary" />
+                            <PiCaretRight className="w-5 h-5 text-theme-tertiary" />
                           </button>
                         </li>
                       </>
@@ -860,7 +860,7 @@ export function BlogHeader() {
                           aria-label="Voltar ao menu"
                           className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                         >
-                          <FiChevronLeft className="w-5 h-5" />
+                          <PiCaretLeft className="w-5 h-5" />
                         </button>
                         <h3 className="font-medium text-theme-primary">
                           Perfil
@@ -905,7 +905,7 @@ export function BlogHeader() {
                           `}
                             onClick={handleMobileNavClick}
                           >
-                            <FiUser className="w-5 h-5" />
+                            <PiUser className="w-5 h-5" />
                             <span>Meu Perfil</span>
                           </Link>
                         </li>
@@ -924,7 +924,7 @@ export function BlogHeader() {
                           `}
                             onClick={handleMobileNavClick}
                           >
-                            <FiHeart className="w-5 h-5" />
+                            <PiHeart className="w-5 h-5" />
                             <span>Artigos Curtidos</span>
                           </Link>
                         </li>
@@ -943,7 +943,7 @@ export function BlogHeader() {
                           `}
                             onClick={handleMobileNavClick}
                           >
-                            <FiBookmark className="w-5 h-5" />
+                            <PiBookmarkSimple className="w-5 h-5" />
                             <span>Artigos Salvos</span>
                           </Link>
                         </li>
@@ -964,7 +964,7 @@ export function BlogHeader() {
                               `}
                                 onClick={handleMobileNavClick}
                               >
-                                <FiEdit className="w-5 h-5" />
+                                <PiNotePencil className="w-5 h-5" />
                                 <span>Criar Artigo</span>
                               </Link>
                             </li>
@@ -982,7 +982,7 @@ export function BlogHeader() {
                               `}
                                 onClick={handleMobileNavClick}
                               >
-                                <FiList className="w-5 h-5" />
+                                <PiListBullets className="w-5 h-5" />
                                 <span>Gerenciar Artigos</span>
                               </Link>
                             </li>
@@ -1000,7 +1000,7 @@ export function BlogHeader() {
                               `}
                                 onClick={handleMobileNavClick}
                               >
-                                <BiComment className="w-5 h-5" />
+                                <PiChatCircle className="w-5 h-5" />
                                 <span>Moderação</span>
                               </Link>
                             </li>
@@ -1012,7 +1012,7 @@ export function BlogHeader() {
                             onClick={handleLogout}
                             className="flex items-center space-x-3 w-full px-4 py-3 text-accent-red hover:bg-interactive-hover rounded-lg transition-all"
                           >
-                            <FiLogOut className="w-5 h-5" />
+                            <PiSignOut className="w-5 h-5" />
                             <span>Sair</span>
                           </button>
                         </li>
@@ -1035,7 +1035,7 @@ export function BlogHeader() {
                         aria-label="Voltar ao menu"
                         className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                       >
-                        <FiChevronLeft className="w-5 h-5" />
+                        <PiCaretLeft className="w-5 h-5" />
                       </button>
                       <h3 className="font-medium text-theme-primary">
                         {submenuTitle}

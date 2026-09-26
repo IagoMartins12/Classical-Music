@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { FiPlus, FiGrid, FiTag, FiLayers } from 'react-icons/fi';
+import { PiPlus, PiSquaresFour, PiStack, PiTag } from 'react-icons/pi';
 import { getServerAccessToken } from '@/app/libs/api/server-session';
 import { loadAdminCategoriesPage } from '@/app/requests/blog/admin';
 import { CategoryList } from '@/app/components/blog/admin/CategoryList';
@@ -44,7 +44,7 @@ export default async function CategoriesAdminPage() {
               className="flex items-center justify-center mb-6"
             >
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-                <FiLayers className="w-8 h-8 text-theme-primary" />
+                <PiStack className="w-8 h-8 text-theme-primary" />
               </div>
             </AnimatedItem>
 
@@ -66,7 +66,7 @@ export default async function CategoriesAdminPage() {
                 href="/blog/admin/categories/create"
                 className="btn-classical-primary inline-flex items-center space-x-2 shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                <FiPlus className="w-5 h-5" />
+                <PiPlus className="w-5 h-5" />
                 <span>Nova Categoria</span>
               </Link>
             </AnimatedItem>
@@ -89,7 +89,7 @@ export default async function CategoriesAdminPage() {
                     </p>
                   </div>
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiGrid className="w-8 h-8 text-blue-500" />
+                    <PiSquaresFour className="w-8 h-8 text-blue-500" />
                   </div>
                 </div>
               </div>
@@ -108,7 +108,7 @@ export default async function CategoriesAdminPage() {
                     </p>
                   </div>
                   <div className="w-16 h-16 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiTag className="w-8 h-8 text-green-500" />
+                    <PiTag className="w-8 h-8 text-green-500" />
                   </div>
                 </div>
               </div>
@@ -127,7 +127,7 @@ export default async function CategoriesAdminPage() {
                     </p>
                   </div>
                   <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiGrid className="w-8 h-8 text-purple-500" />
+                    <PiSquaresFour className="w-8 h-8 text-purple-500" />
                   </div>
                 </div>
               </div>

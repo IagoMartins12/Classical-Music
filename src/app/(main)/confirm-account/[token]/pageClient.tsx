@@ -4,14 +4,14 @@
 import { legacyAuth } from '@/app/libs/api/compat';
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import {
-  FiCheckCircle,
-  FiAlertCircle,
-  FiLoader,
-  FiArrowRight,
-  FiRefreshCw,
-} from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
+import {
+  PiArrowRight,
+  PiArrowsClockwise,
+  PiCheckCircle,
+  PiSpinnerGap,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
 import { useOnboardingModal } from '@/app/stores/authStore';
@@ -183,7 +183,7 @@ export default function ConfirmAccountPage() {
         return (
           <div className="text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-accent-purple rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
-              <FiLoader className="w-10 h-10 text-white animate-spin" />
+              <PiSpinnerGap className="w-10 h-10 text-white animate-spin" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
               {t('pages_token_jsx_h1_children_0__confirmando_sua_conta')}
@@ -201,7 +201,7 @@ export default function ConfirmAccountPage() {
         return (
           <div className="text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-bounce">
-              <FiCheckCircle className="w-10 h-10 text-white" />
+              <PiCheckCircle className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
               {t('pages_token_jsx_h1_children_0__conta_confirmada')}
@@ -229,7 +229,7 @@ export default function ConfirmAccountPage() {
               <Button
                 variant="primary"
                 size="lg"
-                rightIcon={<FiArrowRight />}
+                rightIcon={<PiArrowRight />}
                 onClick={() => {
                   if (state.user?.onboardingCompleted) {
                     router.push('/');
@@ -269,7 +269,7 @@ export default function ConfirmAccountPage() {
         return (
           <div className="text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
-              <FiCheckCircle className="w-10 h-10 text-white" />
+              <PiCheckCircle className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
               {t('pages_token_jsx_h1_children_0__já_confirmado')}
@@ -293,7 +293,7 @@ export default function ConfirmAccountPage() {
               <Button
                 variant="primary"
                 size="lg"
-                rightIcon={<FiArrowRight />}
+                rightIcon={<PiArrowRight />}
                 onClick={() => router.push('/')}
               >
                 {t('pages_token_jsx_button_children_0__fazer_login')}
@@ -314,7 +314,7 @@ export default function ConfirmAccountPage() {
         return (
           <div className="text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-accent-red to-accent-amber rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
-              <FiAlertCircle className="w-10 h-10 text-white" />
+              <PiWarningCircle className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
               {t('pages_token_jsx_h1_children_0__erro_na_confirmação')}
@@ -323,7 +323,7 @@ export default function ConfirmAccountPage() {
 
             <div className="bg-accent-red bg-opacity-10 border border-accent-red rounded-xl p-6 mb-8">
               <div className="flex items-center justify-center mb-3">
-                <FiAlertCircle className="w-5 h-5 text-accent-red mr-2" />
+                <PiWarningCircle className="w-5 h-5 text-accent-red mr-2" />
                 <span className="font-medium text-accent-red">
                   {getErrorTitle(state.errorCode, t)}
                 </span>
@@ -338,7 +338,9 @@ export default function ConfirmAccountPage() {
                 <Button
                   variant="primary"
                   size="lg"
-                  leftIcon={resendSuccess ? <FiCheckCircle /> : <FiRefreshCw />}
+                  leftIcon={
+                    resendSuccess ? <PiCheckCircle /> : <PiArrowsClockwise />
+                  }
                   onClick={handleResendConfirmation}
                   isLoading={resendLoading}
                   disabled={resendSuccess}
@@ -364,7 +366,7 @@ export default function ConfirmAccountPage() {
                 <Button
                   variant="outline"
                   size="lg"
-                  leftIcon={<FiRefreshCw />}
+                  leftIcon={<PiArrowsClockwise />}
                   onClick={confirmAccount}
                 >
                   {t('pages_token_jsx_button_children_0__tentar_novamente')}

@@ -3,16 +3,16 @@
 
 import React, { useState, useEffect, useRef, useCallback, JSX } from 'react';
 import {
-  FiPlay,
-  FiPause,
-  FiVolume2,
-  FiVolumeX,
-  FiAlertTriangle,
-  FiMusic,
-  FiUpload,
-  FiDatabase,
-} from 'react-icons/fi';
-import { SiYoutube } from 'react-icons/si';
+  PiDatabase,
+  PiMusicNotes,
+  PiPause,
+  PiPlay,
+  PiSpeakerHigh,
+  PiSpeakerX,
+  PiUploadSimple,
+  PiWarning,
+  PiYoutubeLogo,
+} from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 // Importar componente Waveform e tipos
@@ -331,15 +331,15 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   const getSourceIcon = (source: AudioSource): JSX.Element => {
     switch (source.type) {
       case 'youtube-audio':
-        return <SiYoutube className="w-4 h-4 text-red-400" />;
+        return <PiYoutubeLogo className="w-4 h-4 text-red-400" />;
       case 'custom-audio':
-        return <FiUpload className="w-4 h-4 text-blue-400" />;
+        return <PiUploadSimple className="w-4 h-4 text-blue-400" />;
       case 'alternative-saved':
-        return <FiDatabase className="w-4 h-4 text-green-400" />;
+        return <PiDatabase className="w-4 h-4 text-green-400" />;
       case 'alternative-fresh':
-        return <FiMusic className="w-4 h-4 text-purple-400" />;
+        return <PiMusicNotes className="w-4 h-4 text-purple-400" />;
       default:
-        return <FiMusic className="w-4 h-4 text-gray-400" />;
+        return <PiMusicNotes className="w-4 h-4 text-gray-400" />;
     }
   };
 
@@ -347,7 +347,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     if (currentSource?.type === 'custom-audio') {
       return (
         <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-          <FiUpload className="w-8 h-8 text-white" />
+          <PiUploadSimple className="w-8 h-8 text-white" />
         </div>
       );
     }
@@ -355,7 +355,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     if (currentSource?.type === 'alternative-saved') {
       return (
         <div className="w-20 h-20 bg-gradient-to-br from-green-600 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
-          <FiDatabase className="w-8 h-8 text-white" />
+          <PiDatabase className="w-8 h-8 text-white" />
         </div>
       );
     }
@@ -363,14 +363,14 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     if (currentSource?.type === 'alternative-fresh') {
       return (
         <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
-          <FiMusic className="w-8 h-8 text-white" />
+          <PiMusicNotes className="w-8 h-8 text-white" />
         </div>
       );
     }
 
     return (
       <div className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-600 rounded-lg flex items-center justify-center">
-        <FiMusic className="w-8 h-8 text-gray-400" />
+        <PiMusicNotes className="w-8 h-8 text-gray-400" />
       </div>
     );
   };
@@ -392,13 +392,13 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     return (
       <div className="bg-theme-elevated rounded-xl p-8 border-2 border-dashed border-theme-secondary text-center">
         <div className="text-center">
-          <FiAlertTriangle className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
+          <PiWarning className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
           <p className="text-theme-secondary">
             {isSearching
               ? t('universal_audio_player_procurando')
               : searchError
-              ? t('universal_audio_player_sem_audio')
-              : t('universal_audio_player_nenhum_encontrado')}
+                ? t('universal_audio_player_sem_audio')
+                : t('universal_audio_player_nenhum_encontrado')}
           </p>
         </div>
       </div>
@@ -452,7 +452,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
                 {getSourceIcon(source)}
                 <span>{source.label}</span>
                 {source.isPersistent && (
-                  <FiDatabase
+                  <PiDatabase
                     className="w-3 h-3 text-green-400"
                     title={t('universal_audio_player_banco')}
                   />
@@ -490,9 +490,9 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
             {isLoading ? (
               <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : isPlaying ? (
-              <FiPause className="w-7 h-7" />
+              <PiPause className="w-7 h-7" />
             ) : (
-              <FiPlay className="w-7 h-7 ml-1" />
+              <PiPlay className="w-7 h-7 ml-1" />
             )}
           </button>
 
@@ -513,9 +513,9 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
               className="p-2 text-gray-400 hover:text-white transition-colors"
             >
               {isMuted ? (
-                <FiVolumeX className="w-4 h-4" />
+                <PiSpeakerX className="w-4 h-4" />
               ) : (
-                <FiVolume2 className="w-4 h-4" />
+                <PiSpeakerHigh className="w-4 h-4" />
               )}
             </button>
             <input

@@ -1,16 +1,16 @@
 // app/teacher/assignments/[id]/loading.tsx - Loading para Detalhes da Tarefa
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiClipboard,
-  FiTarget,
-  FiBookOpen,
-  FiCalendar,
-  FiClock,
-  FiMusic,
-  FiStar,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiBookOpen,
+  PiCalendarBlank,
+  PiClipboardText,
+  PiClock,
+  PiMusicNotes,
+  PiStar,
+  PiTarget,
+} from 'react-icons/pi';
 
 export default function AssignmentDetailsLoading() {
   return (
@@ -35,13 +35,13 @@ export default function AssignmentDetailsLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiClipboard />
+          <PiClipboardText />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiTarget />
+          <PiTarget />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -53,7 +53,7 @@ export default function AssignmentDetailsLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -98,7 +98,7 @@ export default function AssignmentDetailsLoading() {
                   <div>
                     <div className="h-3 bg-theme-tertiary/30 rounded mb-2 w-12"></div>
                     <div className="flex items-center space-x-2">
-                      <FiCalendar className="w-4 h-4 text-theme-tertiary/30" />
+                      <PiCalendarBlank className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="h-4 bg-theme-primary/30 rounded w-24"></div>
                       <div className="h-4 bg-accent-yellow/30 rounded w-20"></div>
                     </div>
@@ -107,7 +107,7 @@ export default function AssignmentDetailsLoading() {
                   <div>
                     <div className="h-3 bg-theme-tertiary/30 rounded mb-2 w-24"></div>
                     <div className="flex items-center space-x-2">
-                      <FiClock className="w-4 h-4 text-theme-tertiary/30" />
+                      <PiClock className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="h-4 bg-theme-primary/30 rounded w-20"></div>
                       <div className="h-4 bg-theme-tertiary/30 rounded w-16"></div>
                     </div>
@@ -130,7 +130,7 @@ export default function AssignmentDetailsLoading() {
                   <div className="space-y-2">
                     {Array.from({ length: 3 }).map((_, i) => (
                       <div key={i} className="flex items-center space-x-2">
-                        <FiTarget className="w-4 h-4 text-accent-blue/30" />
+                        <PiTarget className="w-4 h-4 text-accent-blue/30" />
                         <div className="h-3 bg-theme-primary/20 rounded flex-1"></div>
                       </div>
                     ))}
@@ -142,7 +142,7 @@ export default function AssignmentDetailsLoading() {
                   <div className="space-y-2">
                     {Array.from({ length: 2 }).map((_, i) => (
                       <div key={i} className="flex items-center space-x-2">
-                        <FiTarget className="w-4 h-4 text-accent-green/30" />
+                        <PiTarget className="w-4 h-4 text-accent-green/30" />
                         <div className="h-3 bg-theme-primary/20 rounded flex-1"></div>
                       </div>
                     ))}
@@ -154,7 +154,7 @@ export default function AssignmentDetailsLoading() {
                   <div className="space-y-2">
                     {Array.from({ length: 2 }).map((_, i) => (
                       <div key={i} className="flex items-center space-x-2">
-                        <FiBookOpen className="w-4 h-4 text-accent-purple/30" />
+                        <PiBookOpen className="w-4 h-4 text-accent-purple/30" />
                         <div className="h-3 bg-theme-primary/20 rounded flex-1"></div>
                       </div>
                     ))}
@@ -179,7 +179,7 @@ export default function AssignmentDetailsLoading() {
             {/* Musical Pieces Section */}
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-2 mb-4">
-                <FiMusic className="w-5 h-5 text-theme-primary/30" />
+                <PiMusicNotes className="w-5 h-5 text-theme-primary/30" />
                 <div className="h-6 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-48"></div>
               </div>
 
@@ -214,7 +214,7 @@ export default function AssignmentDetailsLoading() {
                 <div className="flex items-center space-x-2">
                   <div className="flex space-x-2">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <FiStar
+                      <PiStar
                         key={i}
                         className="w-5 h-5 text-accent-yellow/30"
                       />
@@ -256,7 +256,7 @@ export default function AssignmentDetailsLoading() {
                   <div className="flex items-center space-x-2">
                     <div className="flex space-x-2">
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <FiStar
+                        <PiStar
                           key={i}
                           className="w-6 h-6 text-accent-yellow/30"
                         />

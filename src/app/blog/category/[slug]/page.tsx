@@ -2,7 +2,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from '@/app/components/SmartImage';
-import { FiGrid } from 'react-icons/fi';
+import { PiSquaresFour } from 'react-icons/pi';
 import { CategoryArticles } from '@/app/components/blog/CategoryArticles';
 import {
   getCategory,
@@ -100,7 +100,7 @@ export default async function CategoryPage({
           {/* Meta */}
           <div className="flex items-center justify-center space-x-6 text-theme-tertiary">
             <div className="flex items-center space-x-2">
-              <FiGrid className="w-5 h-5" />
+              <PiSquaresFour className="w-5 h-5" />
               <span>
                 {category._count.articles}{' '}
                 {category._count.articles === 1 ? 'artigo' : 'artigos'}

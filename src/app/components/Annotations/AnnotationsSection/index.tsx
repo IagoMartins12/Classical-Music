@@ -3,19 +3,18 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiMessageSquare,
-  FiPlus,
-  FiFilter,
-  FiSearch,
-  FiTarget,
-  FiLayers,
-  FiMusic,
-  FiBookOpen,
-  FiAward,
-  FiEye,
-  FiX,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiBookOpen,
+  PiChatCenteredText,
+  PiEye,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiMedal,
+  PiMusicNotes,
+  PiPlus,
+  PiStack,
+  PiTarget,
+  PiX,
+} from 'react-icons/pi';
 import {
   useAnnotationsStore,
   AnnotationCategory,
@@ -76,43 +75,43 @@ export default function AnnotationsSection({
   const CATEGORY_CONFIG = {
     TECHNIQUE: {
       label: t('annotations_categoria_tecnica'),
-      icon: FiTarget,
+      icon: PiTarget,
       color: 'from-accent-red to-accent-purple',
       description: t('annotations_categoria_tecnica_desc'),
     },
     INTERPRETATION: {
       label: t('annotations_categoria_interpretacao'),
-      icon: GiMusicalNotes,
+      icon: PiMusicNotes,
       color: 'from-accent-blue to-accent-purple',
       description: t('annotations_categoria_interpretacao_desc'),
     },
     PRACTICE_TIP: {
       label: t('annotations_categoria_dicas_estudo'),
-      icon: FiBookOpen,
+      icon: PiBookOpen,
       color: 'from-accent-green to-accent-blue',
       description: t('annotations_categoria_dicas_estudo_desc'),
     },
     THEORY: {
       label: t('annotations_categoria_teoria'),
-      icon: FiLayers,
+      icon: PiStack,
       color: 'from-accent-purple to-accent-blue',
       description: t('annotations_categoria_teoria_desc'),
     },
     PERFORMANCE: {
       label: t('annotations_categoria_performance'),
-      icon: FiMusic,
+      icon: PiMusicNotes,
       color: 'from-brand-primary to-brand-secondary',
       description: t('annotations_categoria_performance_desc'),
     },
     HISTORICAL: {
       label: t('annotations_categoria_contexto'),
-      icon: FiAward,
+      icon: PiMedal,
       color: 'from-accent-purple to-accent-red',
       description: t('annotations_categoria_contexto_desc'),
     },
     GENERAL: {
       label: t('annotations_categoria_geral'),
-      icon: FiMessageSquare,
+      icon: PiChatCenteredText,
       color: 'from-theme-primary to-theme-secondary',
       description: t('annotations_categoria_geral_desc'),
     },
@@ -274,7 +273,7 @@ export default function AnnotationsSection({
             <div className="flex items-center justify-between mb-6 gap-4">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
-                  <FiMessageSquare className="w-6 h-6 text-theme-primary" />
+                  <PiChatCenteredText className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div>
                   <h2 className="text-lg md:text-2xl font-bold text-theme-primary classical-title">
@@ -297,7 +296,7 @@ export default function AnnotationsSection({
                 }}
                 className="btn-classical-primary hidden md:flex items-center space-x-2"
               >
-                <FiPlus className="w-4 h-4" />
+                <PiPlus className="w-4 h-4" />
                 <span>{t('annotations_nova_anotacao')}</span>
               </button>
             </div>
@@ -315,7 +314,7 @@ export default function AnnotationsSection({
                 }}
                 className="btn-classical-primary w-full text-center justify-center flex md:hidden items-center space-x-2"
               >
-                <FiPlus className="w-4 h-4" />
+                <PiPlus className="w-4 h-4" />
                 <span>{t('annotations_nova_anotacao')}</span>
               </button>
 
@@ -329,7 +328,7 @@ export default function AnnotationsSection({
                         : t('annotations_buscar')
                     }
                     value={localSearchTerm}
-                    leftIcon={<FiSearch />}
+                    leftIcon={<PiMagnifyingGlass />}
                     onChange={(e) => handleLocalSearch(e.target.value)}
                     disabled={hasAdvancedFilters ? true : false}
                     className={`w-full pl-10 pr-4 py-3 bg-theme-elevated border border-theme-primary/30 rounded-xl text-theme-primary placeholder-theme-tertiary focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition-all ${
@@ -352,7 +351,7 @@ export default function AnnotationsSection({
                       : ''
                   }`}
                 >
-                  <FiFilter className="w-4 h-4" />
+                  <PiFunnel className="w-4 h-4" />
                   <span>{t('annotations_filtros_avancados')}</span>
                   {hasAdvancedFilters && (
                     <span className="bg-brand-primary text-theme-primary rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
@@ -424,7 +423,7 @@ export default function AnnotationsSection({
               {hasAnyFilters && (
                 <div className="flex items-center justify-between bg-theme-elevated/50 classical-card-simple rounded-xl px-4 py-3">
                   <div className="flex items-center space-x-2 text-sm">
-                    <FiFilter className="w-4 h-4 text-theme-tertiary" />
+                    <PiFunnel className="w-4 h-4 text-theme-tertiary" />
                     <span className="text-theme-primary">
                       {t('annotations_filtros_ativos')}:
                     </span>
@@ -479,7 +478,7 @@ export default function AnnotationsSection({
                     onClick={handleClearAllFilters}
                     className="text-accent-red hover:text-accent-red/80 text-sm font-medium flex items-center space-x-1 transition-colors"
                   >
-                    <FiX className="w-4 h-4" />
+                    <PiX className="w-4 h-4" />
                     <span>{t('annotations_limpar_todos')}</span>
                   </button>
                 </div>
@@ -548,7 +547,7 @@ export default function AnnotationsSection({
                         </>
                       ) : (
                         <>
-                          <FiEye className="w-4 h-4" />
+                          <PiEye className="w-4 h-4" />
                           <span>{t('annotations_ver_mais')}</span>
                         </>
                       )}
@@ -560,7 +559,7 @@ export default function AnnotationsSection({
           ) : (
             <div className="text-center py-16">
               <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <FiMessageSquare className="w-8 h-8 text-theme-tertiary" />
+                <PiChatCenteredText className="w-8 h-8 text-theme-tertiary" />
               </div>
               <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
                 {hasAnyFilters
@@ -577,7 +576,7 @@ export default function AnnotationsSection({
                   onClick={() => setShowCreateModal(true)}
                   className="btn-classical-primary flex items-center space-x-2 mx-auto"
                 >
-                  <FiPlus className="w-4 h-4" />
+                  <PiPlus className="w-4 h-4" />
                   <span>{t('annotations_criar_primeira')}</span>
                 </button>
               )}

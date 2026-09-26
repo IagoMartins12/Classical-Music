@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { z } from 'zod';
-import { FiCalendar } from 'react-icons/fi';
+import { PiCalendarBlank } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
@@ -290,7 +290,7 @@ export default function CreateEventModal({
       <div className="px-6 py-4 border-b border-theme-secondary">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center shadow-theme-glow">
-            <FiCalendar className="w-5 h-5 text-theme-primary" />
+            <PiCalendarBlank className="w-5 h-5 text-theme-primary" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-theme-primary classical-title">

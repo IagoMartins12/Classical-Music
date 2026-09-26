@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { FiPlus, FiTag, FiTrendingUp } from 'react-icons/fi';
+import { PiPlus, PiTag, PiTrendUp } from 'react-icons/pi';
 import { getServerAccessToken } from '@/app/libs/api/server-session';
 import { loadAdminTagsPage } from '@/app/requests/blog/admin';
 import { TagList } from '@/app/components/blog/admin/TagList';
@@ -55,7 +55,7 @@ export default async function TagsAdminPage({ searchParams }: PageProps) {
               className="flex items-center justify-center mb-6"
             >
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-                <FiTag className="w-8 h-8 text-theme-primary" />
+                <PiTag className="w-8 h-8 text-theme-primary" />
               </div>
             </AnimatedItem>
 
@@ -77,7 +77,7 @@ export default async function TagsAdminPage({ searchParams }: PageProps) {
                 href="/blog/admin/tags/create"
                 className="btn-classical-primary inline-flex items-center space-x-2 shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                <FiPlus className="w-5 h-5" />
+                <PiPlus className="w-5 h-5" />
                 <span>Nova Tag</span>
               </Link>
             </AnimatedItem>
@@ -99,7 +99,7 @@ export default async function TagsAdminPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiTag className="w-8 h-8 text-purple-500" />
+                    <PiTag className="w-8 h-8 text-purple-500" />
                   </div>
                 </div>
                 <div className="h-2 bg-gradient-to-r from-purple-500 to-purple-600 rounded-b-xl"></div>
@@ -118,7 +118,7 @@ export default async function TagsAdminPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="w-16 h-16 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiTrendingUp className="w-8 h-8 text-green-500" />
+                    <PiTrendUp className="w-8 h-8 text-green-500" />
                   </div>
                 </div>
                 <div className="h-2 bg-gradient-to-r from-green-500 to-green-600 rounded-b-xl"></div>
@@ -137,7 +137,7 @@ export default async function TagsAdminPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiTag className="w-8 h-8 text-blue-500" />
+                    <PiTag className="w-8 h-8 text-blue-500" />
                   </div>
                 </div>
                 <div className="h-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-b-xl"></div>

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import { Metadata } from 'next';
-import { FiGrid, FiArrowRight } from 'react-icons/fi';
+import { PiArrowRight, PiSquaresFour } from 'react-icons/pi';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { listCategories } from '@/app/requests/blog/taxonomy';
 import { tolerarApiForaNoBuild } from '@/app/libs/api/build-tolerance';
@@ -26,7 +26,7 @@ export default async function CategoriesPage() {
       <div className="section-wrap relative !py-16 text-center">
         <div className="flex items-center justify-center mb-6">
           <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-            <FiGrid className="w-8 h-8 text-white" />
+            <PiSquaresFour className="w-8 h-8 text-white" />
           </div>
         </div>
 
@@ -117,7 +117,7 @@ export default async function CategoriesPage() {
                   {/* CTA */}
                   <div className="flex items-center text-brand-primary font-medium group-hover:translate-x-2 transition-transform">
                     <span className="mr-2">Explorar</span>
-                    <FiArrowRight className="w-5 h-5" />
+                    <PiArrowRight className="w-5 h-5" />
                   </div>
                 </div>
               </Link>

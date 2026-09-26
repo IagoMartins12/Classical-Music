@@ -5,8 +5,13 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useSession } from '@/app/libs/session';
 import Link from 'next/link';
-import { FiAlertTriangle, FiHome, FiRefreshCw, FiMusic } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+import { GiGrandPiano } from 'react-icons/gi';
+import {
+  PiArrowsClockwise,
+  PiHouse,
+  PiMusicNotes,
+  PiWarning,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -211,7 +216,7 @@ export default function Error({ error, reset }: ErrorProps) {
             <AnimatedItem direction="scale" springType="bouncy">
               <div className="relative mb-8">
                 <div className="w-32 h-32 mx-auto bg-gradient-to-br from-accent-red/20 to-accent-purple/20 rounded-full flex items-center justify-center classical-card border-2 border-accent-red/30 shadow-theme-glow">
-                  <FiAlertTriangle className="w-16 h-16 text-accent-red" />
+                  <PiWarning className="w-16 h-16 text-accent-red" />
                 </div>
               </div>
             </AnimatedItem>
@@ -240,7 +245,7 @@ export default function Error({ error, reset }: ErrorProps) {
                   onClick={reset}
                   className="btn-classical-primary w-full justify-center flex items-center space-x-3 group text-lg px-8 py-4"
                 >
-                  <FiRefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
+                  <PiArrowsClockwise className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
                   <span>
                     {t('error_jsx_span_children_0__tentar_novamente')}
                   </span>
@@ -252,7 +257,7 @@ export default function Error({ error, reset }: ErrorProps) {
                   href={getHomeLink()}
                   className="btn-classical-secondary justify-center flex items-center space-x-3 group text-lg px-8 py-4"
                 >
-                  <FiHome className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                  <PiHouse className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                   <span>
                     {t('error_jsx_span_children_0__voltar_ao')} {getAreaTitle()}
                   </span>
@@ -267,7 +272,7 @@ export default function Error({ error, reset }: ErrorProps) {
             >
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-green/20 rounded-xl flex items-center justify-center">
-                  <FiMusic className="w-5 h-5 text-accent-blue" />
+                  <PiMusicNotes className="w-5 h-5 text-accent-blue" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title">
                   {t('error_jsx_h3_children_0__que_voce_pode_fazer')}
@@ -322,7 +327,7 @@ export default function Error({ error, reset }: ErrorProps) {
 
         {/* Decorative Elements */}
         <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
-          <GiMusicalNotes className="w-8 h-8 text-brand-primary" />
+          <PiMusicNotes className="w-8 h-8 text-brand-primary" />
         </div>
       </div>
     </>

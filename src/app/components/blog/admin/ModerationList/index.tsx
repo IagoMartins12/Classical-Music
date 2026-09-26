@@ -11,15 +11,17 @@ import {
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import {
-  BiCheckCircle,
-  BiXCircle,
-  BiFlag,
-  BiComment,
-  BiUser,
-  BiListUl,
-} from 'react-icons/bi';
-import { FiExternalLink, FiEye, FiAlertTriangle } from 'react-icons/fi';
-import { HiReply } from 'react-icons/hi';
+  PiArrowBendUpLeft,
+  PiArrowSquareOut,
+  PiChatCircle,
+  PiCheckCircle,
+  PiEye,
+  PiFlag,
+  PiListBullets,
+  PiUser,
+  PiWarning,
+  PiXCircle,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import Button from '@/app/components/Common/Button';
 import { ThreadViewModal } from '../ThreadViewModal';
@@ -78,23 +80,28 @@ export function ModerationList({
   const [selectedArticleTitle, setSelectedArticleTitle] = useState<string>('');
 
   const filters = [
-    { key: 'all', label: 'Todos', icon: BiListUl, color: 'purple' },
-    { key: 'pending', label: 'Pendentes', icon: BiComment, color: 'blue' },
+    { key: 'all', label: 'Todos', icon: PiListBullets, color: 'purple' },
+    { key: 'pending', label: 'Pendentes', icon: PiChatCircle, color: 'blue' },
     {
       key: 'flagged',
       label: 'Denunciados',
-      icon: FiAlertTriangle,
+      icon: PiWarning,
       color: 'orange',
     },
-    { key: 'replies', label: 'Respostas', icon: HiReply, color: 'indigo' }, // ✅ NOVO FILTRO
+    {
+      key: 'replies',
+      label: 'Respostas',
+      icon: PiArrowBendUpLeft,
+      color: 'indigo',
+    }, // ✅ NOVO FILTRO
     {
       key: 'approved',
       label: 'Aprovados',
-      icon: BiCheckCircle,
+      icon: PiCheckCircle,
       color: 'green',
     },
-    { key: 'rejected', label: 'Rejeitados', icon: BiXCircle, color: 'red' },
-    { key: 'spam', label: 'Spam', icon: BiFlag, color: 'red' },
+    { key: 'rejected', label: 'Rejeitados', icon: PiXCircle, color: 'red' },
+    { key: 'spam', label: 'Spam', icon: PiFlag, color: 'red' },
   ];
 
   const handleAction = async (commentId: string, action: ModerationAction) => {
@@ -195,7 +202,7 @@ export function ModerationList({
 
       {initialComments.length === 0 ? (
         <div className="classical-card p-12 text-center">
-          <BiComment className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+          <PiChatCircle className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-theme-primary mb-2">
             Nenhum comentário
           </h3>
@@ -233,7 +240,7 @@ export function ModerationList({
                 {isReply && (
                   <div className="bg-theme-tertiary border-l-4  px-4 py-2">
                     <div className="flex items-center space-x-2 ">
-                      <HiReply className="w-4 h-4" />
+                      <PiArrowBendUpLeft className="w-4 h-4" />
                       <span className="text-sm font-medium">
                         Esta é uma resposta
                       </span>
@@ -245,7 +252,7 @@ export function ModerationList({
                 {comment.isFlagged && (
                   <div className="bg-yellow-500/10 border-b border-yellow-500/20 p-3">
                     <div className="flex items-start space-x-2">
-                      <FiAlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                      <PiWarning className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
                         <p className="text-sm text-theme-primary font-bold">
                           Comentário denunciado
@@ -275,7 +282,7 @@ export function ModerationList({
                         />
                       ) : (
                         <div className="w-10 h-10 bg-theme-classical rounded-full flex items-center justify-center">
-                          <BiUser className="w-5 h-5 text-brand-primary" />
+                          <PiUser className="w-5 h-5 text-brand-primary" />
                         </div>
                       )}
 
@@ -303,7 +310,7 @@ export function ModerationList({
                         {/* ✅ MOSTRAR CONTADOR DE RESPOSTAS */}
                         {hasReplies && (
                           <div className="flex items-center space-x-1 mt-1">
-                            <HiReply className="w-4 h-4 0" />
+                            <PiArrowBendUpLeft className="w-4 h-4 0" />
                             <span className="text-xs font-medium">
                               {comment._count!.replies}{' '}
                               {comment._count!.replies === 1
@@ -363,7 +370,7 @@ export function ModerationList({
                       <span className="line-clamp-1">
                         {comment.article.title}
                       </span>
-                      <FiExternalLink className="w-3 h-3 flex-shrink-0" />
+                      <PiArrowSquareOut className="w-3 h-3 flex-shrink-0" />
                     </Link>
                   </div>
 
@@ -375,7 +382,7 @@ export function ModerationList({
                         target="_blank"
                         className="btn-classical-secondary text-sm flex items-center space-x-1"
                       >
-                        <FiEye className="w-4 h-4" />
+                        <PiEye className="w-4 h-4" />
                         <span>Ver no Artigo</span>
                       </Link>
 
@@ -387,7 +394,7 @@ export function ModerationList({
                           }
                           className="btn-classical-secondary text-sm flex items-center space-x-1"
                         >
-                          <HiReply className="w-4 h-4" />
+                          <PiArrowBendUpLeft className="w-4 h-4" />
                           <span>Ver Thread</span>
                         </button>
                       )}
@@ -399,7 +406,7 @@ export function ModerationList({
                           onClick={() => handleAction(comment.id, 'approve')}
                           disabled={processing === comment.id}
                           variant="success"
-                          leftIcon={<BiCheckCircle className="w-4 h-4" />}
+                          leftIcon={<PiCheckCircle className="w-4 h-4" />}
                         >
                           <span>Aprovar</span>
                         </Button>
@@ -410,7 +417,7 @@ export function ModerationList({
                           onClick={() => handleAction(comment.id, 'reject')}
                           disabled={processing === comment.id}
                           variant="delete"
-                          leftIcon={<BiXCircle className="w-4 h-4" />}
+                          leftIcon={<PiXCircle className="w-4 h-4" />}
                         >
                           <span>Rejeitar</span>
                         </Button>
@@ -420,7 +427,7 @@ export function ModerationList({
                         <Button
                           onClick={() => handleAction(comment.id, 'spam')}
                           disabled={processing === comment.id}
-                          leftIcon={<BiFlag className="w-4 h-4" />}
+                          leftIcon={<PiFlag className="w-4 h-4" />}
                           variant="outline"
                         >
                           <span>Spam</span>

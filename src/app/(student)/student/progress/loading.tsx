@@ -1,23 +1,23 @@
 // app/student/progress/loading.tsx - Loading para Progresso do Aluno
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiTrendingUp,
-  FiBookOpen,
-  FiClock,
-  FiAward,
-  FiTarget,
-  FiUsers,
-  FiCalendar,
-  FiBarChart2,
-  FiRefreshCw,
-  FiCheckCircle,
-  FiMusic,
-  FiHeart,
-  FiStar,
-} from 'react-icons/fi';
-import { FaFire } from 'react-icons/fa';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiChartBar,
+  PiCheckCircle,
+  PiClock,
+  PiFire,
+  PiHeart,
+  PiMedal,
+  PiMusicNotes,
+  PiStar,
+  PiTarget,
+  PiTrendUp,
+  PiUsers,
+} from 'react-icons/pi';
 
 export default function StudentProgressLoading() {
   return (
@@ -42,13 +42,13 @@ export default function StudentProgressLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiTrendingUp />
+          <PiTrendUp />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiBarChart2 />
+          <PiChartBar />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -60,7 +60,7 @@ export default function StudentProgressLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -89,7 +89,7 @@ export default function StudentProgressLoading() {
           <div className="flex items-center space-x-3">
             <div className="h-10 w-48 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
             <div className="w-12 h-12 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center">
-              <FiRefreshCw className="w-5 h-5 text-theme-tertiary/30" />
+              <PiArrowsClockwise className="w-5 h-5 text-theme-tertiary/30" />
             </div>
           </div>
         </div>
@@ -97,10 +97,12 @@ export default function StudentProgressLoading() {
         {/* Main Stats Grid Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {[
-            { icon: <FiBookOpen className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiClock className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiMusic className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FaFire className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiBookOpen className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiClock className="w-6 h-6 text-theme-inverse/20" /> },
+            {
+              icon: <PiMusicNotes className="w-6 h-6 text-theme-inverse/20" />,
+            },
+            { icon: <PiFire className="w-6 h-6 text-theme-inverse/20" /> },
           ].map((item, index) => (
             <div key={index} className="classical-card p-6 animate-pulse">
               <div className="flex items-center justify-between">
@@ -120,9 +122,13 @@ export default function StudentProgressLoading() {
         {/* Secondary Stats Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {[
-            { icon: <FiTarget className="w-5 h-5 text-theme-inverse/20" /> },
-            { icon: <FiCalendar className="w-5 h-5 text-theme-inverse/20" /> },
-            { icon: <FiBookOpen className="w-5 h-5 text-theme-inverse/20" /> },
+            { icon: <PiTarget className="w-5 h-5 text-theme-inverse/20" /> },
+            {
+              icon: (
+                <PiCalendarBlank className="w-5 h-5 text-theme-inverse/20" />
+              ),
+            },
+            { icon: <PiBookOpen className="w-5 h-5 text-theme-inverse/20" /> },
           ].map((item, index) => (
             <div key={index} className="classical-card p-6 animate-pulse">
               <div className="flex items-center justify-between mb-4">
@@ -156,13 +162,13 @@ export default function StudentProgressLoading() {
           <div className="classical-card p-6 animate-pulse">
             <div className="flex items-center justify-between mb-6">
               <div className="h-5 bg-theme-primary/30 rounded w-32"></div>
-              <FiBarChart2 className="w-6 h-6 text-brand-primary/30" />
+              <PiChartBar className="w-6 h-6 text-brand-primary/30" />
             </div>
 
             <div className="h-80 bg-gradient-to-r from-theme-elevated/30 to-interactive-hover/30 rounded-lg border border-theme-secondary/20 flex items-center justify-center">
               <div className="text-center">
                 <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <FiBarChart2 className="w-8 h-8 text-theme-tertiary/30" />
+                  <PiChartBar className="w-8 h-8 text-theme-tertiary/30" />
                 </div>
                 <div className="h-4 bg-theme-tertiary/20 rounded w-32 mx-auto"></div>
               </div>
@@ -173,13 +179,13 @@ export default function StudentProgressLoading() {
           <div className="classical-card p-6 animate-pulse">
             <div className="flex items-center justify-between mb-6">
               <div className="h-5 bg-theme-primary/30 rounded w-40"></div>
-              <FiTarget className="w-6 h-6 text-brand-primary/30" />
+              <PiTarget className="w-6 h-6 text-brand-primary/30" />
             </div>
 
             <div className="h-80 bg-gradient-to-r from-theme-elevated/30 to-interactive-hover/30 rounded-lg border border-theme-secondary/20 flex items-center justify-center">
               <div className="text-center">
                 <div className="w-24 h-24 bg-theme-tertiary/20 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <FiTarget className="w-12 h-12 text-theme-tertiary/30" />
+                  <PiTarget className="w-12 h-12 text-theme-tertiary/30" />
                 </div>
                 <div className="h-4 bg-theme-tertiary/20 rounded w-36 mx-auto"></div>
               </div>
@@ -191,7 +197,7 @@ export default function StudentProgressLoading() {
         <div className="classical-card p-6 mb-8 animate-pulse">
           <div className="flex items-center justify-between mb-6">
             <div className="h-5 bg-theme-primary/30 rounded w-48"></div>
-            <FiUsers className="w-6 h-6 text-brand-primary/30" />
+            <PiUsers className="w-6 h-6 text-brand-primary/30" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -222,7 +228,7 @@ export default function StudentProgressLoading() {
                     <div className="h-3 bg-theme-secondary/30 rounded w-16"></div>
                     <div className="flex items-center space-x-1">
                       <div className="h-3 bg-accent-yellow/30 rounded w-6"></div>
-                      <FiStar className="w-3 h-3 text-accent-yellow/30" />
+                      <PiStar className="w-3 h-3 text-accent-yellow/30" />
                     </div>
                   </div>
                 </div>
@@ -245,7 +251,7 @@ export default function StudentProgressLoading() {
         <div className="classical-card p-6 mb-8 animate-pulse">
           <div className="flex items-center justify-between mb-6">
             <div className="h-5 bg-theme-primary/30 rounded w-24"></div>
-            <FiAward className="w-6 h-6 text-brand-primary/30" />
+            <PiMedal className="w-6 h-6 text-brand-primary/30" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -257,7 +263,7 @@ export default function StudentProgressLoading() {
               >
                 <div className="flex items-center space-x-3 mb-2">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-full flex items-center justify-center">
-                    <FiAward className="w-4 h-4 text-theme-inverse/20" />
+                    <PiMedal className="w-4 h-4 text-theme-inverse/20" />
                   </div>
                   <div className="h-4 bg-theme-primary/30 rounded w-32"></div>
                 </div>
@@ -279,7 +285,7 @@ export default function StudentProgressLoading() {
             {/* Learned Works */}
             <div>
               <div className="h-4 bg-theme-primary/30 rounded w-40 mb-4 flex items-center">
-                <FiCheckCircle className="w-5 h-5 mr-2 text-accent-green/30" />
+                <PiCheckCircle className="w-5 h-5 mr-2 text-accent-green/30" />
               </div>
 
               <div className="space-y-3 max-h-64 overflow-y-auto">
@@ -297,7 +303,7 @@ export default function StudentProgressLoading() {
                       </div>
                       <div className="flex items-center space-x-1 ml-3">
                         <div className="h-3 bg-theme-secondary/30 rounded w-6"></div>
-                        <FiStar className="w-3 h-3 text-accent-yellow/30" />
+                        <PiStar className="w-3 h-3 text-accent-yellow/30" />
                       </div>
                     </div>
                     <div className="h-3 bg-accent-green/20 rounded w-28 mt-2"></div>
@@ -309,7 +315,7 @@ export default function StudentProgressLoading() {
             {/* Want to Learn */}
             <div>
               <div className="h-4 bg-theme-primary/30 rounded w-32 mb-4 flex items-center">
-                <FiHeart className="w-5 h-5 mr-2 text-accent-blue/30" />
+                <PiHeart className="w-5 h-5 mr-2 text-accent-blue/30" />
               </div>
 
               <div className="space-y-3 max-h-64 overflow-y-auto">

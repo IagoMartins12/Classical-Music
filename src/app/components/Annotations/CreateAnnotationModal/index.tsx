@@ -4,20 +4,19 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { z } from 'zod';
 import {
-  FiMessageSquare,
-  FiMusic,
-  FiTarget,
-  FiLayers,
-  FiBookOpen,
-  FiAward,
-  FiTag,
-  FiEye,
-  FiEyeOff,
-  FiX,
-  FiPlus,
-  FiSearch,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiBookOpen,
+  PiChatCenteredText,
+  PiEye,
+  PiEyeSlash,
+  PiMagnifyingGlass,
+  PiMedal,
+  PiMusicNotes,
+  PiPlus,
+  PiStack,
+  PiTag,
+  PiTarget,
+  PiX,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import {
   useAnnotationsStore,
@@ -404,43 +403,43 @@ export default function CreateAnnotationModal({
       {
         value: 'TECHNIQUE',
         label: t('category_technique'),
-        icon: FiTarget,
+        icon: PiTarget,
         description: 'Dedilhado, articulação, postura',
       },
       {
         value: 'INTERPRETATION',
         label: t('category_interpretation'),
-        icon: GiMusicalNotes,
+        icon: PiMusicNotes,
         description: 'Dinâmica, fraseado, expressão',
       },
       {
         value: 'PRACTICE_TIP',
         label: t('category_practice_tip'),
-        icon: FiBookOpen,
+        icon: PiBookOpen,
         description: 'Métodos e estratégias de prática',
       },
       {
         value: 'THEORY',
         label: t('category_theory'),
-        icon: FiLayers,
+        icon: PiStack,
         description: 'Análise harmônica e formal',
       },
       {
         value: 'PERFORMANCE',
         label: t('category_performance'),
-        icon: FiMusic,
+        icon: PiMusicNotes,
         description: 'Apresentação e palco',
       },
       {
         value: 'HISTORICAL',
         label: t('category_historical'),
-        icon: FiAward,
+        icon: PiMedal,
         description: 'História e contexto cultural',
       },
       {
         value: 'GENERAL',
         label: t('category_general'),
-        icon: FiMessageSquare,
+        icon: PiChatCenteredText,
         description: 'Comentários gerais',
       },
     ],
@@ -786,7 +785,7 @@ export default function CreateAnnotationModal({
       <div className="px-0 md:px-6 py-4 border-b border-theme-secondary">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-green to-accent-blue flex items-center justify-center shadow-theme-glow">
-            <FiMessageSquare className="w-5 h-5 text-theme-primary" />
+            <PiChatCenteredText className="w-5 h-5 text-theme-primary" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -808,7 +807,7 @@ export default function CreateAnnotationModal({
         {selectedWork ? (
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <FiMusic className="w-5 h-5 text-theme-tertiary" />
+              <PiMusicNotes className="w-5 h-5 text-theme-tertiary" />
               <div>
                 <h3 className="font-semibold text-theme-primary">
                   {selectedWork.title}
@@ -822,7 +821,7 @@ export default function CreateAnnotationModal({
         ) : (
           <div>
             <div className="flex items-center space-x-2 mb-3">
-              <FiSearch className="w-4 h-4 text-theme-tertiary" />
+              <PiMagnifyingGlass className="w-4 h-4 text-theme-tertiary" />
               <span className="text-sm font-medium text-theme-primary">
                 {t('create_modal_select_work')}
               </span>
@@ -1139,7 +1138,7 @@ export default function CreateAnnotationModal({
                   onClick={() => removeTag(tag)}
                   className="text-brand-primary hover:text-accent-red transition-colors"
                 >
-                  <FiX className="w-3 h-3" />
+                  <PiX className="w-3 h-3" />
                 </button>
               </span>
             ))}
@@ -1162,7 +1161,7 @@ export default function CreateAnnotationModal({
               disabled={!newTag.trim() || formData.tags.length >= 10}
               className="btn-classical-secondary flex items-center space-x-1"
             >
-              <FiTag className="w-4 h-4" />
+              <PiTag className="w-4 h-4" />
               <span>{t('create_modal_add_tag')}</span>
             </button>
           </div>
@@ -1171,7 +1170,7 @@ export default function CreateAnnotationModal({
           {availableSuggestedTags.length > 0 && formData.tags.length < 10 && (
             <div className="mb-3">
               <div className="flex items-center space-x-2 mb-2">
-                <FiPlus className="w-4 h-4 text-theme-tertiary" />
+                <PiPlus className="w-4 h-4 text-theme-tertiary" />
                 <span className="text-sm font-medium text-theme-secondary">
                   {t('create_modal_suggested_tags').replace(
                     '{category}',
@@ -1188,7 +1187,7 @@ export default function CreateAnnotationModal({
                     onClick={() => addTag(tag)}
                     className="px-2 py-1 bg-theme-elevated hover:bg-brand-primary/10 border border-theme-secondary hover:border-brand-primary/30 text-theme-secondary hover:text-brand-primary rounded-md text-xs transition-all duration-200 flex items-center space-x-1"
                   >
-                    <FiPlus className="w-3 h-3" />
+                    <PiPlus className="w-3 h-3" />
                     <span>#{tag}</span>
                   </button>
                 ))}
@@ -1217,9 +1216,9 @@ export default function CreateAnnotationModal({
             }`}
           >
             {formData.isPublic ? (
-              <FiEye className="w-4 h-4" />
+              <PiEye className="w-4 h-4" />
             ) : (
-              <FiEyeOff className="w-4 h-4" />
+              <PiEyeSlash className="w-4 h-4" />
             )}
 
             <div>
@@ -1230,9 +1229,9 @@ export default function CreateAnnotationModal({
                     : t('create_modal_private_annotation')}
                 </span>
                 {formData.isPublic ? (
-                  <FiEye className="w-4 h-4 text-accent-green" />
+                  <PiEye className="w-4 h-4 text-accent-green" />
                 ) : (
-                  <FiEyeOff className="w-4 h-4 text-accent-red" />
+                  <PiEyeSlash className="w-4 h-4 text-accent-red" />
                 )}
               </div>
               <p className="text-sm text-start text-theme-secondary">

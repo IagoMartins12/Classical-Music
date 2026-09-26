@@ -5,11 +5,17 @@ import React, { useState, useEffect, useCallback } from 'react';
 // Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
 // objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
 import type { User } from '@/app/hooks/userStore';
-import { FiPlus, FiX, FiEdit3, FiSave, FiTrash2 } from 'react-icons/fi';
+import {
+  PiFloppyDisk,
+  PiMusicNotes,
+  PiPencilLine,
+  PiPlus,
+  PiTrash,
+  PiX,
+} from 'react-icons/pi';
 
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
-import { GiMusicalNotes } from 'react-icons/gi';
 import Select from '../../Common/Select';
 import {
   getAvailableInstruments,
@@ -306,7 +312,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
             variant="outline"
             size="sm"
             onClick={() => setIsEditing(true)}
-            leftIcon={<FiEdit3 />}
+            leftIcon={<PiPencilLine />}
           >
             {t('instruments_edit')}
           </Button>
@@ -316,7 +322,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
               variant="outline"
               size="sm"
               onClick={handleCancel}
-              leftIcon={<FiX />}
+              leftIcon={<PiX />}
               disabled={isLoading}
             >
               {t('instruments_cancel')}
@@ -326,7 +332,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
               size="sm"
               onClick={handleSave}
               isLoading={isLoading}
-              leftIcon={<FiSave />}
+              leftIcon={<PiFloppyDisk />}
             >
               {t('instruments_save')}
             </Button>
@@ -338,7 +344,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       <div className="space-y-4">
         {userInstruments.length === 0 ? (
           <div className="text-center py-8">
-            <GiMusicalNotes className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
+            <PiMusicNotes className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
             <p className="text-theme-secondary">{t('instruments_none')}</p>
             {!isEditing && (
               <Button
@@ -357,7 +363,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="w-10 h-10 bg-brand-gradient rounded-full flex items-center justify-center">
-                    <GiMusicalNotes className="w-5 h-5 text-theme-primary" />
+                    <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                   </div>
 
                   <div>
@@ -439,7 +445,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                     className="p-2 text-theme-tertiary hover:text-accent-red transition-colors"
                     title="Remover instrumento"
                   >
-                    <FiTrash2 className="w-4 h-4" />
+                    <PiTrash className="w-4 h-4" />
                   </button>
                 )}
               </div>
@@ -455,7 +461,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
             <Button
               variant="outline"
               onClick={() => setShowAddForm(true)}
-              leftIcon={<FiPlus />}
+              leftIcon={<PiPlus />}
               className="w-full"
               disabled={filteredInstruments.length === 0}
             >

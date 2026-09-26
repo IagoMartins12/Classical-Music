@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import {
-  FiSave,
-  FiUser,
-  FiAward,
-  FiShield,
-  FiSettings,
-  FiAlertTriangle,
-} from 'react-icons/fi';
+  PiFloppyDisk,
+  PiGear,
+  PiMedal,
+  PiShield,
+  PiUser,
+  PiWarning,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   LoadingSpinner,
@@ -137,13 +137,13 @@ export default function UserEditModal({
   const getRoleIcon = (role: number) => {
     switch (role) {
       case 0:
-        return FiUser;
+        return PiUser;
       case 1:
-        return FiAward;
+        return PiMedal;
       case 2:
-        return FiShield;
+        return PiShield;
       default:
-        return FiUser;
+        return PiUser;
     }
   };
 
@@ -160,7 +160,7 @@ export default function UserEditModal({
       <div className="flex items-center justify-between p-6 border-b border-theme-primary">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center">
-            <FiSettings className="w-5 h-5 text-theme-primary" />
+            <PiGear className="w-5 h-5 text-theme-primary" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-theme-primary">
@@ -176,7 +176,7 @@ export default function UserEditModal({
         {error && (
           <div className="mb-6 p-4 bg-accent-red/10 border border-accent-red/20 rounded-lg">
             <div className="flex items-center gap-2 text-accent-red">
-              <FiAlertTriangle className="w-5 h-5" />
+              <PiWarning className="w-5 h-5" />
               <span className="font-medium">Erro</span>
             </div>
             <p className="text-accent-red mt-1">{error}</p>
@@ -187,7 +187,7 @@ export default function UserEditModal({
           {/* Role do Usuário */}
           <AnimatedCard className="classical-card p-4">
             <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-              <FiShield className="w-5 h-5 text-accent-blue" />
+              <PiShield className="w-5 h-5 text-accent-blue" />
               Role do Sistema
             </h3>
 
@@ -252,7 +252,7 @@ export default function UserEditModal({
           {hasChanges && (
             <AnimatedCard className="classical-card p-4 border-accent-blue">
               <h3 className="text-lg font-bold text-accent-blue mb-3 flex items-center gap-2">
-                <FiSettings className="w-5 h-5" />
+                <PiGear className="w-5 h-5" />
                 Alterações Pendentes
               </h3>
 
@@ -321,7 +321,7 @@ export default function UserEditModal({
 
         <Button
           variant="primary"
-          leftIcon={loading ? <LoadingSpinner size="sm" /> : <FiSave />}
+          leftIcon={loading ? <LoadingSpinner size="sm" /> : <PiFloppyDisk />}
           onClick={handleSave}
           disabled={loading || !hasChanges}
         >

@@ -5,7 +5,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 // Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
 // objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
 import type { User } from '@/app/hooks/userStore';
-import { FiEye, FiEyeOff, FiMapPin, FiSave } from 'react-icons/fi';
+import { PiEye, PiEyeSlash, PiFloppyDisk, PiMapPin } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
 import { updatePrivacySettings } from '@/app/actions/profile';
@@ -128,7 +128,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
           size="sm"
           onClick={handleSave}
           isLoading={isLoading}
-          leftIcon={<FiSave />}
+          leftIcon={<PiFloppyDisk />}
         >
           {t('privacy_save')}
         </Button>
@@ -141,9 +141,9 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               {settings.profilePublic ? (
-                <FiEye className="w-5 h-5 text-brand-primary" />
+                <PiEye className="w-5 h-5 text-brand-primary" />
               ) : (
-                <FiEyeOff className="w-5 h-5 text-theme-tertiary" />
+                <PiEyeSlash className="w-5 h-5 text-theme-tertiary" />
               )}
               <div>
                 <h4 className="font-medium text-theme-primary">
@@ -166,7 +166,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         <div className="classical-card-2 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <FiMapPin className="w-5 h-5 text-brand-primary" />
+              <PiMapPin className="w-5 h-5 text-brand-primary" />
               <div>
                 <h4 className="font-medium text-theme-primary">
                   {t('privacy_show_location')}
@@ -195,7 +195,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         <div className="classical-card-2 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <FiEye className="w-5 h-5 text-brand-primary" />
+              <PiEye className="w-5 h-5 text-brand-primary" />
               <div>
                 <h4 className="font-medium text-theme-primary">
                   {t('privacy_show_instruments')}
@@ -224,7 +224,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         <div className="classical-card-2 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <FiEye className="w-5 h-5 text-brand-primary" />
+              <PiEye className="w-5 h-5 text-brand-primary" />
               <div>
                 <h4 className="font-medium text-theme-primary">
                   {t('privacy_show_activity')}

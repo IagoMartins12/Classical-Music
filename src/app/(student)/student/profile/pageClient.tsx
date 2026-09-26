@@ -4,23 +4,23 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import {
-  FiUser,
-  FiSave,
-  FiEdit3,
-  FiBookOpen,
-  FiHeart,
-  FiShield,
-  FiMessageSquare,
-  FiMusic,
-  FiRefreshCw,
-  FiX,
-  FiCheck,
-  FiMapPin,
-  FiPhone,
-  FiMail,
-  FiAlertCircle,
-  FiTarget,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiChatCenteredText,
+  PiCheck,
+  PiEnvelopeSimple,
+  PiFloppyDisk,
+  PiHeart,
+  PiMapPin,
+  PiMusicNotes,
+  PiPencilLine,
+  PiPhone,
+  PiShield,
+  PiTarget,
+  PiUser,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -405,7 +405,7 @@ export default function StudentProfilePageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiAlertCircle className="w-8 h-8 text-theme-primary" />
+              <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('error_loading_profile')}
@@ -427,7 +427,7 @@ export default function StudentProfilePageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center">
-            <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
             <p className="text-theme-secondary">{t('loading_profile')}</p>
           </div>
         </div>
@@ -453,11 +453,11 @@ export default function StudentProfilePageClient({
                       className="w-24 h-24 rounded-full object-cover"
                     />
                   ) : (
-                    <FiUser className="w-12 h-12 text-theme-primary" />
+                    <PiUser className="w-12 h-12 text-theme-primary" />
                   )}
                 </div>
                 <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center">
-                  <FiBookOpen className="w-4 h-4 text-theme-primary" />
+                  <PiBookOpen className="w-4 h-4 text-theme-primary" />
                 </div>
               </div>
             </div>
@@ -479,7 +479,7 @@ export default function StudentProfilePageClient({
             >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-accent-green/10 rounded-full flex items-center justify-center">
-                  <FiCheck className="w-4 h-4 text-accent-green" />
+                  <PiCheck className="w-4 h-4 text-accent-green" />
                 </div>
                 <div className="text-accent-green font-medium">
                   {successMessage}
@@ -499,7 +499,7 @@ export default function StudentProfilePageClient({
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-accent-red/10 rounded-full flex items-center justify-center">
-                    <FiX className="w-4 h-4 text-accent-red" />
+                    <PiX className="w-4 h-4 text-accent-red" />
                   </div>
                   <div className="text-accent-red font-medium">{error}</div>
                 </div>
@@ -507,7 +507,7 @@ export default function StudentProfilePageClient({
                   onClick={clearError}
                   className="text-accent-red hover:text-accent-red/70 transition-colors"
                 >
-                  <FiX className="w-4 h-4" />
+                  <PiX className="w-4 h-4" />
                 </button>
               </div>
             </AnimatedCard>
@@ -522,7 +522,7 @@ export default function StudentProfilePageClient({
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
-                    <FiUser className="w-5 h-5 text-theme-primary" />
+                    <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -543,7 +543,7 @@ export default function StudentProfilePageClient({
                   disabled={saving}
                   className="btn-classical-secondary flex items-center space-x-2"
                 >
-                  <FiEdit3 className="w-4 h-4" />
+                  <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'personal' ? t('cancel') : t('edit')}
                   </span>
@@ -607,7 +607,7 @@ export default function StudentProfilePageClient({
                       phoneValidation.showError &&
                       phoneValidation.error && (
                         <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3 mt-4">
-                          <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                          <PiWarningCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                           <div>
                             <h4 className="text-sm font-medium text-red-800">
                               {t('invalid_phone_title')}
@@ -628,7 +628,7 @@ export default function StudentProfilePageClient({
                   {/* Localização */}
                   <div>
                     <div className="flex items-center space-x-2 mb-4">
-                      <FiMapPin className="w-4 h-4 text-brand-primary" />
+                      <PiMapPin className="w-4 h-4 text-brand-primary" />
                       <h4 className="font-medium text-theme-primary">
                         {t('location')}
                       </h4>
@@ -664,9 +664,9 @@ export default function StudentProfilePageClient({
                       }
                     >
                       {saving ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                       ) : (
-                        <FiSave className="w-4 h-4" />
+                        <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
                     </button>
@@ -689,7 +689,7 @@ export default function StudentProfilePageClient({
                         {t('email')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2">
-                        <FiMail className="w-4 h-4" />
+                        <PiEnvelopeSimple className="w-4 h-4" />
                         <span>{profile?.user.email}</span>
                       </div>
                     </div>
@@ -699,7 +699,7 @@ export default function StudentProfilePageClient({
                         {t('phone')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2">
-                        <FiPhone className="w-4 h-4" />
+                        <PiPhone className="w-4 h-4" />
                         <span>{profile?.user.phone || t('not_informed')}</span>
                       </div>
                     </div>
@@ -711,7 +711,7 @@ export default function StudentProfilePageClient({
                         {t('location')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2">
-                        <FiMapPin className="w-4 h-4" />
+                        <PiMapPin className="w-4 h-4" />
                         <span>
                           {profile?.user.city && profile?.user.state
                             ? `${profile.user.city}, ${profile.user.state}`
@@ -744,7 +744,7 @@ export default function StudentProfilePageClient({
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
-                    <FiBookOpen className="w-5 h-5 text-theme-primary" />
+                    <PiBookOpen className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -765,7 +765,7 @@ export default function StudentProfilePageClient({
                   disabled={saving}
                   className="btn-classical-secondary flex items-center space-x-2"
                 >
-                  <FiEdit3 className="w-4 h-4" />
+                  <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'study' ? t('cancel') : t('edit')}
                   </span>
@@ -904,9 +904,9 @@ export default function StudentProfilePageClient({
                       className="btn-classical-primary flex items-center space-x-2"
                     >
                       {saving ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                       ) : (
-                        <FiSave className="w-4 h-4" />
+                        <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
                     </button>
@@ -985,7 +985,7 @@ export default function StudentProfilePageClient({
 
                   {!profile?.musicalGoals && !profile?.musicalBackground && (
                     <div className="text-center py-8">
-                      <FiBookOpen className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                      <PiBookOpen className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                       <h3 className="text-lg font-bold text-theme-primary mb-2">
                         {t('complete_study_settings')}
                       </h3>
@@ -1011,7 +1011,7 @@ export default function StudentProfilePageClient({
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-pink rounded-lg flex items-center justify-center">
-                    <FiHeart className="w-5 h-5 text-theme-primary" />
+                    <PiHeart className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -1032,7 +1032,7 @@ export default function StudentProfilePageClient({
                   disabled={saving}
                   className="btn-classical-secondary flex items-center space-x-2"
                 >
-                  <FiEdit3 className="w-4 h-4" />
+                  <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'preferences' ? t('cancel') : t('edit')}
                   </span>
@@ -1081,9 +1081,9 @@ export default function StudentProfilePageClient({
                       className="btn-classical-primary flex items-center space-x-2"
                     >
                       {saving ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                       ) : (
-                        <FiSave className="w-4 h-4" />
+                        <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
                     </button>
@@ -1105,7 +1105,7 @@ export default function StudentProfilePageClient({
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <FiHeart className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                      <PiHeart className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                       <h3 className="text-lg font-bold text-theme-primary mb-2">
                         {t('add_favorite_genres')}
                       </h3>
@@ -1131,7 +1131,7 @@ export default function StudentProfilePageClient({
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
-                    <FiShield className="w-5 h-5 text-theme-primary" />
+                    <PiShield className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -1152,7 +1152,7 @@ export default function StudentProfilePageClient({
                   disabled={saving}
                   className="btn-classical-secondary flex items-center space-x-2"
                 >
-                  <FiEdit3 className="w-4 h-4" />
+                  <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'privacy' ? t('cancel') : t('edit')}
                   </span>
@@ -1266,9 +1266,9 @@ export default function StudentProfilePageClient({
                       className="btn-classical-primary flex items-center space-x-2"
                     >
                       {saving ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                       ) : (
-                        <FiSave className="w-4 h-4" />
+                        <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
                     </button>
@@ -1333,7 +1333,7 @@ export default function StudentProfilePageClient({
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-orange to-accent-red rounded-lg flex items-center justify-center">
-                    <FiMessageSquare className="w-5 h-5 text-theme-primary" />
+                    <PiChatCenteredText className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -1356,7 +1356,7 @@ export default function StudentProfilePageClient({
                   disabled={saving}
                   className="btn-classical-secondary flex items-center space-x-2"
                 >
-                  <FiEdit3 className="w-4 h-4" />
+                  <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'communication'
                       ? t('cancel')
@@ -1404,9 +1404,9 @@ export default function StudentProfilePageClient({
                       className="btn-classical-primary flex items-center space-x-2"
                     >
                       {saving ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                       ) : (
-                        <FiSave className="w-4 h-4" />
+                        <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
                     </button>
@@ -1433,7 +1433,7 @@ export default function StudentProfilePageClient({
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-lg flex items-center justify-center">
-                    <FiMusic className="w-5 h-5 text-theme-primary" />
+                    <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -1450,7 +1450,7 @@ export default function StudentProfilePageClient({
                   disabled={loading.refreshStudyData}
                   className="btn-classical-secondary flex items-center space-x-2"
                 >
-                  <FiRefreshCw
+                  <PiArrowsClockwise
                     className={`w-4 h-4 ${
                       loading.refreshStudyData ? 'animate-spin' : ''
                     }`}
@@ -1464,7 +1464,7 @@ export default function StudentProfilePageClient({
                   {/* Want to Learn */}
                   <div>
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center">
-                      <FiTarget className="w-5 h-5 mr-2" />
+                      <PiTarget className="w-5 h-5 mr-2" />
                       {t('want_to_learn')} ({studyData.wantToLearn.length})
                     </h3>
                     <div className="space-y-2">
@@ -1500,7 +1500,7 @@ export default function StudentProfilePageClient({
                   {/* Learned */}
                   <div>
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center">
-                      <FiCheck className="w-5 h-5 mr-2" />
+                      <PiCheck className="w-5 h-5 mr-2" />
                       {t('already_learned')} ({studyData.learned.length})
                     </h3>
                     <div className="space-y-2">
@@ -1544,7 +1544,7 @@ export default function StudentProfilePageClient({
                 studyData.recentAnnotations.length > 0 && (
                   <div className="mt-8 pt-6 border-t border-theme-secondary">
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center">
-                      <FiEdit3 className="w-5 h-5 mr-2" />
+                      <PiPencilLine className="w-5 h-5 mr-2" />
                       {t('recent_annotations')}
                     </h3>
                     <div className="space-y-2">
@@ -1591,7 +1591,7 @@ export default function StudentProfilePageClient({
                             </div>
                           ) : (
                             <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                              <FiUser className="w-5 h-5 text-theme-primary" />
+                              <PiUser className="w-5 h-5 text-theme-primary" />
                             </div>
                           )}
                           <div className="flex-1">

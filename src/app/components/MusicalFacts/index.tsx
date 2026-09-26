@@ -2,8 +2,12 @@
 'use client';
 
 import React from 'react';
-import { FiBookOpen, FiRefreshCw, FiFilter } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+import {
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiFunnel,
+  PiMusicNotes,
+} from 'react-icons/pi';
 import SectionTitle from '../Utils/SectionTitle';
 
 import Select from '../Common/Select';
@@ -176,7 +180,7 @@ const FactCard = ({
 
       {/* Floating decoration */}
       <div className="absolute top-4 right-4 opacity-20 group-hover:opacity-40 transition-opacity duration-500">
-        <GiMusicalNotes className={`w-5 h-5 ${style.accent}`} />
+        <PiMusicNotes className={`w-5 h-5 ${style.accent}`} />
       </div>
     </div>
   );
@@ -292,7 +296,7 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
       <SectionTitle
         title={t('musical_facts_title')}
         subtitle={t('musical_facts_subtitle')}
-        icon={<FiBookOpen className="w-6 h-6" />}
+        icon={<PiBookOpen className="w-6 h-6" />}
         accent="blue"
       />
 
@@ -301,7 +305,7 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
         {/* Category Filter */}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 text-theme-secondary">
-            <FiFilter className="w-4 h-4" />
+            <PiFunnel className="w-4 h-4" />
             <span className="text-sm font-medium">
               {t('musical_facts_filter_label')}
             </span>
@@ -327,7 +331,7 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
           disabled={isLoading}
           className="btn-classical-secondary flex items-center gap-2 text-sm"
         >
-          <FiRefreshCw
+          <PiArrowsClockwise
             className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}
           />
           {t('musical_facts_shuffle')}

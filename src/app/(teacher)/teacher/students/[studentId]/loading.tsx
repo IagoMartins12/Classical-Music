@@ -1,20 +1,21 @@
 // app/teacher/students/[studentId]/loading.tsx - Loading para Detalhes do Aluno
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiUser,
-  FiCalendar,
-  FiClock,
-  FiBookOpen,
-  FiBarChart2,
-  FiMessageSquare,
-  FiTarget,
-  FiTrendingUp,
-  FiAward,
-  FiActivity,
-  FiSettings,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiBookOpen,
+  PiCalendarBlank,
+  PiChartBar,
+  PiChatCenteredText,
+  PiClock,
+  PiGear,
+  PiMedal,
+  PiMusicNotes,
+  PiPulse,
+  PiTarget,
+  PiTrendUp,
+  PiUser,
+} from 'react-icons/pi';
 
 export default function TeacherStudentDetailLoading() {
   return (
@@ -39,13 +40,13 @@ export default function TeacherStudentDetailLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiUser />
+          <PiUser />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiBarChart2 />
+          <PiChartBar />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -57,7 +58,7 @@ export default function TeacherStudentDetailLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -160,15 +161,13 @@ export default function TeacherStudentDetailLoading() {
               {[
                 {
                   icon: (
-                    <FiBookOpen className="w-6 h-6 text-theme-inverse/20" />
+                    <PiBookOpen className="w-6 h-6 text-theme-inverse/20" />
                   ),
                 },
-                { icon: <FiAward className="w-6 h-6 text-theme-inverse/20" /> },
-                { icon: <FiClock className="w-6 h-6 text-theme-inverse/20" /> },
+                { icon: <PiMedal className="w-6 h-6 text-theme-inverse/20" /> },
+                { icon: <PiClock className="w-6 h-6 text-theme-inverse/20" /> },
                 {
-                  icon: (
-                    <FiActivity className="w-6 h-6 text-theme-inverse/20" />
-                  ),
+                  icon: <PiPulse className="w-6 h-6 text-theme-inverse/20" />,
                 },
               ].map((item, index) => (
                 <div
@@ -189,7 +188,7 @@ export default function TeacherStudentDetailLoading() {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                    <FiClock className="w-5 h-5 text-theme-inverse/20" />
+                    <PiClock className="w-5 h-5 text-theme-inverse/20" />
                   </div>
                   <div>
                     <div className="h-5 bg-theme-primary/30 rounded w-32 mb-1"></div>
@@ -241,7 +240,7 @@ export default function TeacherStudentDetailLoading() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-xl flex items-center justify-center">
-                    <FiMessageSquare className="w-5 h-5 text-theme-inverse/20" />
+                    <PiChatCenteredText className="w-5 h-5 text-theme-inverse/20" />
                   </div>
                   <div>
                     <div className="h-5 bg-theme-primary/30 rounded w-40 mb-1"></div>
@@ -267,7 +266,7 @@ export default function TeacherStudentDetailLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-lg flex items-center justify-center">
-                  <FiCalendar className="w-4 h-4 text-theme-inverse/20" />
+                  <PiCalendarBlank className="w-4 h-4 text-theme-inverse/20" />
                 </div>
                 <div>
                   <div className="h-4 bg-theme-primary/30 rounded w-28 mb-1"></div>
@@ -296,7 +295,7 @@ export default function TeacherStudentDetailLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-lg flex items-center justify-center">
-                  <FiTarget className="w-4 h-4 text-theme-inverse/20" />
+                  <PiTarget className="w-4 h-4 text-theme-inverse/20" />
                 </div>
                 <div>
                   <div className="h-4 bg-theme-primary/30 rounded w-24 mb-1"></div>
@@ -329,7 +328,7 @@ export default function TeacherStudentDetailLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-lg flex items-center justify-center">
-                  <FiSettings className="w-4 h-4 text-theme-inverse/20" />
+                  <PiGear className="w-4 h-4 text-theme-inverse/20" />
                 </div>
                 <div>
                   <div className="h-4 bg-theme-primary/30 rounded w-28"></div>
@@ -353,7 +352,7 @@ export default function TeacherStudentDetailLoading() {
 
             {/* Refresh Button Skeleton */}
             <div className="w-full h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg animate-pulse flex items-center justify-center space-x-2">
-              <FiTrendingUp className="w-4 h-4 text-theme-inverse/20" />
+              <PiTrendUp className="w-4 h-4 text-theme-inverse/20" />
               <div className="h-4 w-24 bg-theme-tertiary/30 rounded"></div>
             </div>
           </div>

@@ -6,7 +6,7 @@ import ViewModeToggle, { ViewMode } from '../../ViewModeToggle';
 import { ArticleCard } from '../ArticleCard';
 import { ArticleCardList } from '../ArticleCardList';
 import { loadMyLikes } from '@/app/requests/blog/interactions';
-import { FiSearch, FiFilter } from 'react-icons/fi';
+import { PiFunnel, PiMagnifyingGlass } from 'react-icons/pi';
 import Link from 'next/link';
 
 interface Category {
@@ -126,7 +126,7 @@ export function LikedPageClient({ categories }: LikedPageClientProps) {
         {/* Category Filter */}
         <div className="mt-6 pt-6 border-t border-theme-secondary">
           <div className="flex items-center gap-2 mb-3">
-            <FiFilter className="w-4 h-4 text-theme-tertiary" />
+            <PiFunnel className="w-4 h-4 text-theme-tertiary" />
             <span className="text-sm font-medium text-theme-secondary">
               Filtrar por categoria:
             </span>
@@ -177,7 +177,7 @@ export function LikedPageClient({ categories }: LikedPageClientProps) {
       {/* Articles */}
       {articles.length === 0 ? (
         <div className="classical-card p-12 text-center">
-          <FiSearch className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+          <PiMagnifyingGlass className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-theme-primary mb-2">
             {selectedCategory === 'all'
               ? 'Nenhum artigo curtido ainda'

@@ -2,10 +2,9 @@
 
 'use client';
 
-import { FiX, FiInfo, FiAward } from 'react-icons/fi';
+import { PiGraduationCap, PiInfo, PiMedal, PiX } from 'react-icons/pi';
 import { DIFFICULTY_INFO } from '@/app/requests/difficulty-details';
 import { AnimatedItem, AnimatedCard } from '../animation/AnimatedComponents';
-import { FaGraduationCap } from 'react-icons/fa';
 
 interface DifficultyInfoProps {
   onClose: () => void;
@@ -17,7 +16,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
           <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center mr-4">
-            <FiInfo className="w-6 h-6 text-theme-primary" />
+            <PiInfo className="w-6 h-6 text-theme-primary" />
           </div>
           <div>
             <h3 className="text-xl font-bold text-theme-primary classical-title">
@@ -32,7 +31,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
           onClick={onClose}
           className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg flex items-center justify-center hover:border-brand-primary hover:bg-brand-primary/10 transition-all duration-300"
         >
-          <FiX className="w-4 h-4 text-theme-secondary" />
+          <PiX className="w-4 h-4 text-theme-secondary" />
         </button>
       </div>
 
@@ -42,7 +41,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
           <div className="bg-theme-elevated rounded-xl p-6 border border-theme-secondary">
             <div className="flex items-center mb-4">
               <div className="w-10 h-10 bg-brand-primary/20 rounded-lg flex items-center justify-center mr-3">
-                <FiAward className="w-5 h-5 text-brand-primary" />
+                <PiMedal className="w-5 h-5 text-brand-primary" />
               </div>
               <div>
                 <h4 className="text-lg font-bold text-theme-primary">
@@ -86,7 +85,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
           <div className="bg-theme-elevated rounded-xl p-6 border border-theme-secondary">
             <div className="flex items-center mb-4">
               <div className="w-10 h-10 bg-accent-purple/20 rounded-lg flex items-center justify-center mr-3">
-                <FaGraduationCap className="w-5 h-5 text-accent-purple" />
+                <PiGraduationCap className="w-5 h-5 text-accent-purple" />
               </div>
               <div>
                 <h4 className="text-lg font-bold text-theme-primary">
@@ -130,7 +129,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
       <AnimatedItem direction="up" delay={0.2}>
         <div className="mt-6 p-4 bg-brand-primary/5 border border-brand-primary/20 rounded-xl">
           <div className="flex items-start space-x-3">
-            <FiInfo className="w-5 h-5 text-brand-primary mt-0.5 flex-shrink-0" />
+            <PiInfo className="w-5 h-5 text-brand-primary mt-0.5 flex-shrink-0" />
             <div>
               <h5 className="text-sm font-semibold text-brand-primary mb-2">
                 Nossa Base de Dados

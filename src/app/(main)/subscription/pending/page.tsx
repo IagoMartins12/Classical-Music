@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { FiClock, FiMail } from 'react-icons/fi';
+import { PiClock, PiEnvelopeSimple } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 
 export default function SubscriptionPendingPage() {
@@ -14,7 +14,7 @@ export default function SubscriptionPendingPage() {
         <div className="bg-theme-elevated rounded-2xl shadow-theme-large p-8 md:p-12 text-center">
           {/* Pending Icon */}
           <div className="w-24 h-24 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-8 animate-pulse">
-            <FiClock className="w-12 h-12 text-white" />
+            <PiClock className="w-12 h-12 text-white" />
           </div>
 
           {/* Title */}
@@ -30,7 +30,7 @@ export default function SubscriptionPendingPage() {
           <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-6 mb-8 text-left">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 bg-amber-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                <FiMail className="w-6 h-6 text-amber-500" />
+                <PiEnvelopeSimple className="w-6 h-6 text-amber-500" />
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-theme-primary mb-2">

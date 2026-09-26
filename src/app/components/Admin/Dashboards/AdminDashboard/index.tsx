@@ -4,23 +4,23 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiUsers,
-  FiMusic,
-  FiFileText,
-  FiHeart,
-  FiMessageSquare,
-  FiUpload,
-  FiShield,
-  FiRefreshCw,
-  FiActivity,
-  FiTarget,
-  FiAward,
-  FiPieChart,
-  FiArrowUp,
-  FiArrowDown,
-  FiDatabase,
-  FiBarChart2,
-} from 'react-icons/fi';
+  PiArrowDown,
+  PiArrowUp,
+  PiArrowsClockwise,
+  PiChartBar,
+  PiChartPie,
+  PiChatCenteredText,
+  PiDatabase,
+  PiFileText,
+  PiHeart,
+  PiMedal,
+  PiMusicNotes,
+  PiPulse,
+  PiShield,
+  PiTarget,
+  PiUploadSimple,
+  PiUsers,
+} from 'react-icons/pi';
 
 import {
   AnimatedCard,
@@ -55,11 +55,11 @@ interface SectionTab {
 }
 
 const SECTION_TABS: SectionTab[] = [
-  { id: 'overview', label: 'Visão Geral', icon: FiBarChart2 },
-  { id: 'users', label: 'Usuários', icon: FiUsers },
-  { id: 'content', label: 'Conteúdo', icon: FiMusic },
-  { id: 'engagement', label: 'Engajamento', icon: FiActivity },
-  { id: 'quality', label: 'Qualidade', icon: FiShield },
+  { id: 'overview', label: 'Visão Geral', icon: PiChartBar },
+  { id: 'users', label: 'Usuários', icon: PiUsers },
+  { id: 'content', label: 'Conteúdo', icon: PiMusicNotes },
+  { id: 'engagement', label: 'Engajamento', icon: PiPulse },
+  { id: 'quality', label: 'Qualidade', icon: PiShield },
 ];
 
 const TIMEFRAME_OPTIONS = [
@@ -136,7 +136,7 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-center min-h-[50vh]">
           <AnimatedCard className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-3xl flex items-center justify-center mx-auto mb-4">
-              <FiShield className="w-8 h-8 text-theme-primary" />
+              <PiShield className="w-8 h-8 text-theme-primary" />
             </div>
             <h3 className="text-xl font-bold text-theme-primary mb-2">
               Erro ao Carregar Dados
@@ -151,7 +151,9 @@ export default function AdminDashboard() {
               onClick={handleRefresh}
               disabled={refreshing}
               leftIcon={
-                <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                <PiArrowsClockwise
+                  className={refreshing ? 'animate-spin' : ''}
+                />
               }
             >
               {refreshing ? 'Carregando...' : 'Tentar Novamente'}
@@ -170,7 +172,7 @@ export default function AdminDashboard() {
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-20 h-20 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiBarChart2 className="w-10 h-10 text-theme-primary" />
+                <PiChartBar className="w-10 h-10 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-5xl md:text-6xl font-bold text-gradient-brand classical-title mb-4">
@@ -196,7 +198,9 @@ export default function AdminDashboard() {
                   variant="ghost"
                   size="sm"
                   leftIcon={
-                    <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                    <PiArrowsClockwise
+                      className={refreshing ? 'animate-spin' : ''}
+                    />
                   }
                   onClick={handleRefresh}
                   disabled={refreshing || loading}
@@ -235,7 +239,7 @@ export default function AdminDashboard() {
                   <div className="relative">
                     <div className="flex items-center justify-center mb-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
-                        <FiUsers className="w-6 h-6 text-theme-primary" />
+                        <PiUsers className="w-6 h-6 text-theme-primary" />
                       </div>
                     </div>
                     <div className="text-3xl font-bold text-theme-primary mb-2">
@@ -253,9 +257,9 @@ export default function AdminDashboard() {
                           <>
                             <span className={growthData.color}>
                               {growthData.isPositive ? (
-                                <FiArrowUp className="w-3 h-3" />
+                                <PiArrowUp className="w-3 h-3" />
                               ) : (
-                                <FiArrowDown className="w-3 h-3" />
+                                <PiArrowDown className="w-3 h-3" />
                               )}
                             </span>
                             <span className={`text-xs ${growthData.color}`}>
@@ -274,7 +278,7 @@ export default function AdminDashboard() {
                   <div className="relative">
                     <div className="flex items-center justify-center mb-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
-                        <FiMusic className="w-6 h-6 text-theme-primary" />
+                        <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                       </div>
                     </div>
                     <div className="text-3xl font-bold text-theme-primary mb-2">
@@ -292,9 +296,9 @@ export default function AdminDashboard() {
                           <>
                             <span className={growthData.color}>
                               {growthData.isPositive ? (
-                                <FiArrowUp className="w-3 h-3" />
+                                <PiArrowUp className="w-3 h-3" />
                               ) : (
-                                <FiArrowDown className="w-3 h-3" />
+                                <PiArrowDown className="w-3 h-3" />
                               )}
                             </span>
                             <span className={`text-xs ${growthData.color}`}>
@@ -313,7 +317,7 @@ export default function AdminDashboard() {
                   <div className="relative">
                     <div className="flex items-center justify-center mb-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-2xl flex items-center justify-center">
-                        <FiMessageSquare className="w-6 h-6 text-theme-primary" />
+                        <PiChatCenteredText className="w-6 h-6 text-theme-primary" />
                       </div>
                     </div>
                     <div className="text-3xl font-bold text-theme-primary mb-2">
@@ -333,9 +337,9 @@ export default function AdminDashboard() {
                           <>
                             <span className={growthData.color}>
                               {growthData.isPositive ? (
-                                <FiArrowUp className="w-3 h-3" />
+                                <PiArrowUp className="w-3 h-3" />
                               ) : (
-                                <FiArrowDown className="w-3 h-3" />
+                                <PiArrowDown className="w-3 h-3" />
                               )}
                             </span>
                             <span className={`text-xs ${growthData.color}`}>
@@ -376,7 +380,7 @@ export default function AdminDashboard() {
                 {/* Most Active Users */}
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiActivity className="w-5 h-5 text-accent-blue" />
+                    <PiPulse className="w-5 h-5 text-accent-blue" />
                     <span>Usuários Mais Ativos</span>
                   </h3>
                   <div className="space-y-4">
@@ -419,7 +423,7 @@ export default function AdminDashboard() {
                 {/* Top Contributors */}
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiUpload className="w-5 h-5 text-accent-green" />
+                    <PiUploadSimple className="w-5 h-5 text-accent-green" />
                     <span>Maiores Contribuidores</span>
                   </h3>
                   <div className="space-y-4">
@@ -457,7 +461,7 @@ export default function AdminDashboard() {
                 {/* Top Annotators */}
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiMessageSquare className="w-5 h-5 text-accent-amber" />
+                    <PiChatCenteredText className="w-5 h-5 text-accent-amber" />
                     <span>Maiores Anotadores</span>
                   </h3>
                   <div className="space-y-4">
@@ -501,7 +505,7 @@ export default function AdminDashboard() {
                 {/* Popular Works */}
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiMusic className="w-5 h-5 text-accent-blue" />
+                    <PiMusicNotes className="w-5 h-5 text-accent-blue" />
                     <span>Obras Mais Populares</span>
                   </h3>
                   <div className="space-y-4">
@@ -524,19 +528,19 @@ export default function AdminDashboard() {
                             </p>
                             <div className="flex items-center space-x-4 mt-2">
                               <div className="flex items-center space-x-1">
-                                <FiHeart className="w-3 h-3 text-accent-red" />
+                                <PiHeart className="w-3 h-3 text-accent-red" />
                                 <span className="text-xs text-theme-tertiary">
                                   {work?.favoritesCount || 0}
                                 </span>
                               </div>
                               <div className="flex items-center space-x-1">
-                                <FiMessageSquare className="w-3 h-3 text-accent-blue" />
+                                <PiChatCenteredText className="w-3 h-3 text-accent-blue" />
                                 <span className="text-xs text-theme-tertiary">
                                   {work?.annotationsCount || 0}
                                 </span>
                               </div>
                               <div className="flex items-center space-x-1">
-                                <FiFileText className="w-3 h-3 text-accent-green" />
+                                <PiFileText className="w-3 h-3 text-accent-green" />
                                 <span className="text-xs text-theme-tertiary">
                                   {work?.scoreCount || 0}
                                 </span>
@@ -551,7 +555,7 @@ export default function AdminDashboard() {
                 {/* Popular Composers */}
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiUsers className="w-5 h-5 text-accent-green" />
+                    <PiUsers className="w-5 h-5 text-accent-green" />
                     <span>Compositores Mais Populares</span>
                   </h3>
                   <div className="space-y-4">
@@ -595,7 +599,7 @@ export default function AdminDashboard() {
                 {/* User Activity */}
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiActivity className="w-5 h-5 text-accent-blue" />
+                    <PiPulse className="w-5 h-5 text-accent-blue" />
                     <span>Atividade de Usuários</span>
                   </h3>
                   <div className="space-y-4">
@@ -650,7 +654,7 @@ export default function AdminDashboard() {
                 {/* Most Studied Works */}
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiTarget className="w-5 h-5 text-accent-amber" />
+                    <PiTarget className="w-5 h-5 text-accent-amber" />
                     <span>Obras Mais Estudadas</span>
                   </h3>
                   <div className="space-y-3">
@@ -688,7 +692,7 @@ export default function AdminDashboard() {
                 {/* Engagement Metrics */}
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiPieChart className="w-5 h-5 text-accent-green" />
+                    <PiChartPie className="w-5 h-5 text-accent-green" />
                     <span>Métricas de Engajamento</span>
                   </h3>
                   <div className="space-y-4">
@@ -762,7 +766,7 @@ export default function AdminDashboard() {
                 {/* Upload Quality */}
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiShield className="w-5 h-5 text-accent-green" />
+                    <PiShield className="w-5 h-5 text-accent-green" />
                     <span>Qualidade dos Uploads</span>
                   </h3>
                   <div className="space-y-4">
@@ -793,13 +797,13 @@ export default function AdminDashboard() {
                 {/* Verified Content */}
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiAward className="w-5 h-5 text-accent-amber" />
+                    <PiMedal className="w-5 h-5 text-accent-amber" />
                     <span>Conteúdo Verificado</span>
                   </h3>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                       <div className="flex items-center space-x-2">
-                        <FiUsers className="w-4 h-4 text-accent-blue" />
+                        <PiUsers className="w-4 h-4 text-accent-blue" />
                         <span className="text-sm font-medium text-theme-primary">
                           Compositores
                         </span>
@@ -813,7 +817,7 @@ export default function AdminDashboard() {
 
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                       <div className="flex items-center space-x-2">
-                        <FiMusic className="w-4 h-4 text-accent-green" />
+                        <PiMusicNotes className="w-4 h-4 text-accent-green" />
                         <span className="text-sm font-medium text-theme-primary">
                           Obras
                         </span>
@@ -827,7 +831,7 @@ export default function AdminDashboard() {
 
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                       <div className="flex items-center space-x-2">
-                        <FiFileText className="w-4 h-4 text-accent-amber" />
+                        <PiFileText className="w-4 h-4 text-accent-amber" />
                         <span className="text-sm font-medium text-theme-primary">
                           Partituras
                         </span>
@@ -844,7 +848,7 @@ export default function AdminDashboard() {
                 {/* Content Completeness */}
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiDatabase className="w-5 h-5 text-accent-purple" />
+                    <PiDatabase className="w-5 h-5 text-accent-purple" />
                     <span>Completude do Conteúdo</span>
                   </h3>
                   <div className="space-y-4">
@@ -947,7 +951,7 @@ export default function AdminDashboard() {
                   className="h-auto p-6 flex-col"
                   onClick={() => router.push('/uploads/moderation')}
                 >
-                  <FiShield className="w-8 h-8 mb-3 text-accent-red" />
+                  <PiShield className="w-8 h-8 mb-3 text-accent-red" />
                   <span className="font-bold mb-2">Moderação</span>
                   <span className="text-sm text-theme-tertiary text-center">
                     Gerenciar uploads e reports pendentes
@@ -959,7 +963,7 @@ export default function AdminDashboard() {
                   className="h-auto p-6 flex-col"
                   onClick={() => router.push('/admin/users')}
                 >
-                  <FiUsers className="w-8 h-8 mb-3 text-accent-blue" />
+                  <PiUsers className="w-8 h-8 mb-3 text-accent-blue" />
                   <span className="font-bold mb-2">Usuários</span>
                   <span className="text-sm text-theme-tertiary text-center">
                     Visualizar e gerenciar usuários
@@ -971,7 +975,7 @@ export default function AdminDashboard() {
                   className="h-auto p-6 flex-col"
                   onClick={() => router.push('/admin/reports')}
                 >
-                  <FiBarChart2 className="w-8 h-8 mb-3 text-accent-green" />
+                  <PiChartBar className="w-8 h-8 mb-3 text-accent-green" />
                   <span className="font-bold mb-2">Relatórios</span>
                   <span className="text-sm text-theme-tertiary text-center">
                     Análises detalhadas e métricas
@@ -984,7 +988,7 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-center min-h-[50vh]">
             <AnimatedCard className="classical-card p-8 text-center max-w-md">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-amber to-accent-red rounded-3xl flex items-center justify-center mx-auto mb-4">
-                <FiDatabase className="w-8 h-8 text-theme-primary" />
+                <PiDatabase className="w-8 h-8 text-theme-primary" />
               </div>
               <h3 className="text-xl font-bold text-theme-primary mb-2">
                 Sem Dados Disponíveis
@@ -997,7 +1001,9 @@ export default function AdminDashboard() {
                 onClick={handleRefresh}
                 disabled={refreshing}
                 leftIcon={
-                  <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                  <PiArrowsClockwise
+                    className={refreshing ? 'animate-spin' : ''}
+                  />
                 }
               >
                 {refreshing ? 'Carregando...' : 'Tentar Novamente'}

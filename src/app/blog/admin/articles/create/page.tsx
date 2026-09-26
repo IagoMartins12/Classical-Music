@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArticleForm } from '@/app/components/blog/ArticleForm';
-import { FaArrowLeft } from 'react-icons/fa';
+import { PiArrowLeft } from 'react-icons/pi';
 import { createArticle } from '@/app/requests/blog/admin-actions';
 import { listCategories } from '@/app/requests/blog/taxonomy';
 
@@ -64,7 +64,7 @@ export default function CreateArticlePage() {
             href="/blog/admin/articles"
             className="inline-flex items-center text-sm text-theme-secondary hover:text-brand-primary mb-4 transition-colors"
           >
-            <FaArrowLeft className="w-4 h-4 mr-2" />
+            <PiArrowLeft className="w-4 h-4 mr-2" />
             Voltar para artigos
           </Link>
           <h1 className="text-3xl font-bold text-theme-primary classical-title">

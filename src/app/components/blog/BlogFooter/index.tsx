@@ -2,13 +2,13 @@
 
 import Link from 'next/link';
 import {
-  FaFacebook,
-  FaTwitter,
-  FaInstagram,
-  FaYoutube,
-  FaEnvelope,
-  FaMusic,
-} from 'react-icons/fa';
+  PiEnvelopeSimple,
+  PiFacebookLogo,
+  PiInstagramLogo,
+  PiMusicNotes,
+  PiTwitterLogo,
+  PiYoutubeLogo,
+} from 'react-icons/pi';
 
 export function BlogFooter() {
   const currentYear = new Date().getFullYear();
@@ -47,11 +47,19 @@ export function BlogFooter() {
   ];
 
   const socialLinks = [
-    { icon: FaFacebook, href: 'https://facebook.com', label: 'Facebook' },
-    { icon: FaTwitter, href: 'https://twitter.com', label: 'Twitter' },
-    { icon: FaInstagram, href: 'https://instagram.com', label: 'Instagram' },
-    { icon: FaYoutube, href: 'https://youtube.com', label: 'YouTube' },
-    { icon: FaEnvelope, href: 'mailto:contato@opusatlas.com', label: 'Email' },
+    { icon: PiFacebookLogo, href: 'https://facebook.com', label: 'Facebook' },
+    { icon: PiTwitterLogo, href: 'https://twitter.com', label: 'Twitter' },
+    {
+      icon: PiInstagramLogo,
+      href: 'https://instagram.com',
+      label: 'Instagram',
+    },
+    { icon: PiYoutubeLogo, href: 'https://youtube.com', label: 'YouTube' },
+    {
+      icon: PiEnvelopeSimple,
+      href: 'mailto:contato@opusatlas.com',
+      label: 'Email',
+    },
   ];
 
   return (
@@ -62,7 +70,7 @@ export function BlogFooter() {
           {/* Brand Column */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <FaMusic className="w-8 h-8 text-brand-primary" />
+              <PiMusicNotes className="w-8 h-8 text-brand-primary" />
               <div>
                 <h3 className="text-xl font-bold text-gradient-brand">
                   Opus Atlas

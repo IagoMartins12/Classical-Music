@@ -2,17 +2,17 @@
 'use client';
 
 import {
-  FiClock,
-  FiPlus,
-  FiEdit,
-  FiTrash2,
-  FiFilter,
-  FiCalendar,
-  FiChevronDown,
-  FiEye,
-  FiMapPin,
-  FiMonitor,
-} from 'react-icons/fi';
+  PiCalendarBlank,
+  PiCaretDown,
+  PiClock,
+  PiEye,
+  PiFunnel,
+  PiMapPin,
+  PiMonitor,
+  PiNotePencil,
+  PiPlus,
+  PiTrash,
+} from 'react-icons/pi';
 
 export default function HistoryLoading() {
   return (
@@ -29,7 +29,7 @@ export default function HistoryLoading() {
         <div className="text-center mb-8 py-16">
           <div className="flex items-center justify-center mb-6">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-3xl flex items-center justify-center shadow-theme-glow">
-              <FiClock className="w-8 h-8 text-theme-primary/30" />
+              <PiClock className="w-8 h-8 text-theme-primary/30" />
             </div>
           </div>
           <div className="h-12 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-2xl mx-auto max-w-md mb-4"></div>
@@ -46,9 +46,9 @@ export default function HistoryLoading() {
                 <div className="h-4 w-32 bg-theme-elevated rounded"></div>
               </div>
               <div className="h-10 w-24 bg-theme-secondary rounded-lg flex items-center justify-center space-x-2">
-                <FiFilter className="w-4 h-4 text-theme-tertiary/30" />
+                <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="w-12 h-4 bg-theme-tertiary/30 rounded"></div>
-                <FiChevronDown className="w-4 h-4 text-theme-tertiary/30" />
+                <PiCaretDown className="w-4 h-4 text-theme-tertiary/30" />
               </div>
             </div>
 
@@ -106,17 +106,17 @@ export default function HistoryLoading() {
 function HistoryRecordSkeleton({ index }: { index: number }) {
   const actionTypes = [
     {
-      icon: <FiPlus className="w-5 h-5 text-theme-primary/30" />,
+      icon: <PiPlus className="w-5 h-5 text-theme-primary/30" />,
       gradient: 'from-green-400 to-green-600',
       borderColor: 'border-l-green-500',
     },
     {
-      icon: <FiEdit className="w-5 h-5 text-theme-primary/30" />,
+      icon: <PiNotePencil className="w-5 h-5 text-theme-primary/30" />,
       gradient: 'from-blue-400 to-blue-600',
       borderColor: 'border-l-blue-500',
     },
     {
-      icon: <FiTrash2 className="w-5 h-5 text-theme-primary/30" />,
+      icon: <PiTrash className="w-5 h-5 text-theme-primary/30" />,
       gradient: 'from-red-400 to-red-600',
       borderColor: 'border-l-red-500',
     },
@@ -146,12 +146,12 @@ function HistoryRecordSkeleton({ index }: { index: number }) {
 
             <div className="flex items-center space-x-2">
               <div className="flex items-center space-x-2 text-xs">
-                <FiCalendar className="w-3 h-3 text-theme-tertiary/30" />
+                <PiCalendarBlank className="w-3 h-3 text-theme-tertiary/30" />
                 <div className="h-3 w-16 bg-theme-elevated rounded"></div>
               </div>
 
               <div className="w-6 h-6 rounded-full bg-theme-secondary/50 flex items-center justify-center">
-                <FiEye className="w-3 h-3 text-theme-tertiary/30" />
+                <PiEye className="w-3 h-3 text-theme-tertiary/30" />
               </div>
             </div>
           </div>
@@ -165,7 +165,7 @@ function HistoryRecordSkeleton({ index }: { index: number }) {
           {/* Changes Summary */}
           <div className="mt-3 p-3 bg-blue-50/10 border border-blue-200/20 rounded-lg">
             <div className="flex items-center mb-2">
-              <FiEdit className="w-4 h-4 text-theme-primary/30 mr-1" />
+              <PiNotePencil className="w-4 h-4 text-theme-primary/30 mr-1" />
               <div className="h-4 w-20 bg-blue-700/20 rounded"></div>
             </div>
             <div className="space-y-2">
@@ -190,12 +190,12 @@ function HistoryRecordSkeleton({ index }: { index: number }) {
             <div className="mt-3 pt-3 border-t border-theme-secondary">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                 <div className="flex items-center space-x-2">
-                  <FiMapPin className="w-3 h-3 text-theme-tertiary/30" />
+                  <PiMapPin className="w-3 h-3 text-theme-tertiary/30" />
                   <div className="h-3 w-24 bg-theme-elevated rounded"></div>
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <FiMonitor className="w-3 h-3 text-theme-tertiary/30" />
+                  <PiMonitor className="w-3 h-3 text-theme-tertiary/30" />
                   <div className="h-3 w-32 bg-theme-elevated rounded"></div>
                 </div>
               </div>

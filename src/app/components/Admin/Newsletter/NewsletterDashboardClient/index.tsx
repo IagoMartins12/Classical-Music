@@ -3,19 +3,19 @@
 
 import { useState } from 'react';
 import {
-  FiMail,
-  FiUsers,
-  FiTrendingUp,
-  FiEye,
-  FiMousePointer,
-  FiPlus,
-  FiSend,
-  FiRefreshCw,
-  FiBarChart2,
-  FiFileText,
-  FiAlertCircle,
-  FiCheckCircle,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiChartBar,
+  PiCheckCircle,
+  PiCursor,
+  PiEnvelopeSimple,
+  PiEye,
+  PiFileText,
+  PiPaperPlaneRight,
+  PiPlus,
+  PiTrendUp,
+  PiUsers,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -51,14 +51,14 @@ export default function NewsletterDashboardClient() {
     {
       title: 'Nova Campanha',
       description: 'Criar campanha de email',
-      icon: FiPlus,
+      icon: PiPlus,
       href: '/admin/newsletter/campaigns',
       color: 'from-brand-primary to-brand-secondary',
     },
     {
       title: 'Gerenciar Subscribers',
       description: 'Ver e gerenciar inscritos',
-      icon: FiUsers,
+      icon: PiUsers,
       href: '/admin/newsletter/subscribers',
       color: 'from-accent-blue to-accent-purple',
       badge: stats?.activeSubscribers || 0,
@@ -66,21 +66,21 @@ export default function NewsletterDashboardClient() {
     {
       title: 'Templates',
       description: 'Criar e editar templates',
-      icon: FiFileText,
+      icon: PiFileText,
       href: '/admin/newsletter/templates',
       color: 'from-accent-green to-accent-blue',
     },
     {
       title: 'Campanhas',
       description: 'Ver campanhas enviadas',
-      icon: FiSend,
+      icon: PiPaperPlaneRight,
       href: '/admin/newsletter/campaigns',
       color: 'from-accent-purple to-accent-pink',
     },
     {
       title: 'Analytics',
       description: 'Relatórios detalhados',
-      icon: FiBarChart2,
+      icon: PiChartBar,
       href: '/admin/newsletter/analytics',
       color: 'from-accent-amber to-accent-red',
     },
@@ -98,14 +98,14 @@ export default function NewsletterDashboardClient() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <FiAlertCircle className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiWarningCircle className="w-16 h-16 text-accent-red mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Dashboard
           </h2>
           <p className="text-theme-secondary mb-6">{error}</p>
           <Button
             variant="primary"
-            leftIcon={<FiRefreshCw />}
+            leftIcon={<PiArrowsClockwise />}
             onClick={handleRefresh}
           >
             Tentar Novamente
@@ -128,7 +128,7 @@ export default function NewsletterDashboardClient() {
             <div className="text-center py-8">
               <div className="flex items-center justify-center mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
-                  <FiMail className="w-8 h-8 text-white" />
+                  <PiEnvelopeSimple className="w-8 h-8 text-white" />
                 </div>
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -143,7 +143,9 @@ export default function NewsletterDashboardClient() {
                   variant="ghost"
                   size="sm"
                   leftIcon={
-                    <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                    <PiArrowsClockwise
+                      className={refreshing ? 'animate-spin' : ''}
+                    />
                   }
                   onClick={handleRefresh}
                   disabled={refreshing}
@@ -152,7 +154,7 @@ export default function NewsletterDashboardClient() {
                 </Button>
                 <Button
                   variant="primary"
-                  leftIcon={<FiPlus />}
+                  leftIcon={<PiPlus />}
                   onClick={() =>
                     (window.location.href = '/admin/newsletter/campaigns')
                   }
@@ -183,7 +185,7 @@ export default function NewsletterDashboardClient() {
                     </div>
                   </div>
                   <div className="w-12 h-12 bg-accent-blue/20 rounded-xl flex items-center justify-center">
-                    <FiUsers className="w-6 h-6 text-accent-blue" />
+                    <PiUsers className="w-6 h-6 text-accent-blue" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -205,7 +207,7 @@ export default function NewsletterDashboardClient() {
                     </div>
                   </div>
                   <div className="w-12 h-12 bg-accent-green/20 rounded-xl flex items-center justify-center">
-                    <FiCheckCircle className="w-6 h-6 text-accent-green" />
+                    <PiCheckCircle className="w-6 h-6 text-accent-green" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -220,14 +222,14 @@ export default function NewsletterDashboardClient() {
                       {(stats.avgOpenRate * 100).toFixed(1)}%
                     </p>
                     <div className="flex items-center mt-2">
-                      <FiTrendingUp className="w-3 h-3 text-accent-green mr-1" />
+                      <PiTrendUp className="w-3 h-3 text-accent-green mr-1" />
                       <span className="text-xs text-accent-green">
                         +2.3% vs mês anterior
                       </span>
                     </div>
                   </div>
                   <div className="w-12 h-12 bg-accent-purple/20 rounded-xl flex items-center justify-center">
-                    <FiEye className="w-6 h-6 text-accent-purple" />
+                    <PiEye className="w-6 h-6 text-accent-purple" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -242,14 +244,14 @@ export default function NewsletterDashboardClient() {
                       {(stats.avgClickRate * 100).toFixed(1)}%
                     </p>
                     <div className="flex items-center mt-2">
-                      <FiMousePointer className="w-3 h-3 text-accent-amber mr-1" />
+                      <PiCursor className="w-3 h-3 text-accent-amber mr-1" />
                       <span className="text-xs text-theme-tertiary">
                         CTR médio
                       </span>
                     </div>
                   </div>
                   <div className="w-12 h-12 bg-accent-amber/20 rounded-xl flex items-center justify-center">
-                    <FiMousePointer className="w-6 h-6 text-accent-amber" />
+                    <PiCursor className="w-6 h-6 text-accent-amber" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -370,7 +372,7 @@ export default function NewsletterDashboardClient() {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <FiUsers className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                  <PiUsers className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                   <p className="text-theme-tertiary">
                     Nenhum subscriber recente
                   </p>
@@ -420,11 +422,11 @@ export default function NewsletterDashboardClient() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4 text-xs">
                             <span className="flex items-center">
-                              <FiEye className="w-3 h-3 mr-1 text-accent-purple" />
+                              <PiEye className="w-3 h-3 mr-1 text-accent-purple" />
                               {(campaign.openRate * 100).toFixed(1)}%
                             </span>
                             <span className="flex items-center">
-                              <FiMousePointer className="w-3 h-3 mr-1 text-accent-amber" />
+                              <PiCursor className="w-3 h-3 mr-1 text-accent-amber" />
                               {(campaign.clickRate * 100).toFixed(1)}%
                             </span>
                           </div>
@@ -437,7 +439,7 @@ export default function NewsletterDashboardClient() {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <FiSend className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                  <PiPaperPlaneRight className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                   <p className="text-theme-tertiary">
                     Nenhuma campanha enviada ainda
                   </p>
@@ -445,7 +447,7 @@ export default function NewsletterDashboardClient() {
                     href="/admin/newsletter/campaigns/create"
                     className="inline-flex items-center space-x-2 mt-4 text-brand-primary hover:text-brand-secondary font-medium text-sm"
                   >
-                    <FiPlus className="w-4 h-4" />
+                    <PiPlus className="w-4 h-4" />
                     <span>Criar primeira campanha</span>
                   </Link>
                 </div>

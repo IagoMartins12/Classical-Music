@@ -3,24 +3,24 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiUpload,
-  FiSearch,
-  FiFilter,
-  FiRefreshCw,
-  FiDownload,
-  FiEye,
-  FiUser,
-  FiFileText,
-  FiMusic,
-  FiUsers,
-  FiTrendingUp,
-  FiTarget,
-  FiMessageSquare,
-  FiX,
-  FiCalendar,
-  FiClock,
-  FiEdit,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCalendarBlank,
+  PiChatCenteredText,
+  PiClock,
+  PiDownloadSimple,
+  PiEye,
+  PiFileText,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiNotePencil,
+  PiTarget,
+  PiTrendUp,
+  PiUploadSimple,
+  PiUser,
+  PiUsers,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -72,15 +72,15 @@ const ActivityDetailModal = ({
   const getEntityIcon = (entityType: string) => {
     switch (entityType) {
       case 'composer':
-        return FiUsers;
+        return PiUsers;
       case 'work':
-        return FiMusic;
+        return PiMusicNotes;
       case 'score':
-        return FiFileText;
+        return PiFileText;
       case 'annotation':
-        return FiMessageSquare;
+        return PiChatCenteredText;
       default:
-        return FiFileText;
+        return PiFileText;
     }
   };
 
@@ -136,7 +136,7 @@ const ActivityDetailModal = ({
           <Button
             variant="ghost"
             size="sm"
-            leftIcon={<FiX />}
+            leftIcon={<PiX />}
             onClick={onClose}
           />
         </div>
@@ -150,7 +150,7 @@ const ActivityDetailModal = ({
                 Usuário
               </label>
               <div className="flex items-center space-x-2 mt-1">
-                <FiUser className="w-4 h-4 text-theme-tertiary" />
+                <PiUser className="w-4 h-4 text-theme-tertiary" />
                 <span className="text-theme-primary">{activity.user.name}</span>
               </div>
             </div>
@@ -160,7 +160,7 @@ const ActivityDetailModal = ({
                 Data
               </label>
               <div className="flex items-center space-x-2 mt-1">
-                <FiCalendar className="w-4 h-4 text-theme-tertiary" />
+                <PiCalendarBlank className="w-4 h-4 text-theme-tertiary" />
                 <span className="text-theme-primary">
                   {new Date(activity.createdAt).toLocaleString('pt-BR')}
                 </span>
@@ -184,7 +184,7 @@ const ActivityDetailModal = ({
                 Ação
               </label>
               <div className="flex items-center space-x-2 mt-1">
-                <FiEdit className="w-4 h-4 text-theme-tertiary" />
+                <PiNotePencil className="w-4 h-4 text-theme-tertiary" />
                 <span className="text-theme-primary">
                   {getActionLabel(activity.action)}
                 </span>
@@ -296,7 +296,7 @@ const ActivityDetailModal = ({
           </Button>
           <Button
             variant="primary"
-            leftIcon={<FiEye />}
+            leftIcon={<PiEye />}
             onClick={() => {
               // Navegar para a entidade
               if (activity.entityType === 'composer') {
@@ -391,15 +391,15 @@ export default function UploadsManagement() {
   const getEntityIcon = (entityType: string) => {
     switch (entityType) {
       case 'composer':
-        return FiUsers;
+        return PiUsers;
       case 'work':
-        return FiMusic;
+        return PiMusicNotes;
       case 'score':
-        return FiFileText;
+        return PiFileText;
       case 'annotation':
-        return FiMessageSquare;
+        return PiChatCenteredText;
       default:
-        return FiFileText;
+        return PiFileText;
     }
   };
 
@@ -481,7 +481,7 @@ export default function UploadsManagement() {
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiUpload className="w-8 h-8 text-theme-primary" />
+                <PiUploadSimple className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -518,7 +518,7 @@ export default function UploadsManagement() {
                 title="Total de Uploads"
                 value={formatNumber(stats.total)}
                 change={{ value: 15.2, isPositive: true }}
-                icon={FiUpload}
+                icon={PiUploadSimple}
                 color="#8B5CF6"
                 subtitle={`${getPeriodLabel(period)}`}
               />
@@ -527,7 +527,7 @@ export default function UploadsManagement() {
                 title="Criações"
                 value={formatNumber(stats.recentCreations || 0)}
                 change={{ value: 12.3, isPositive: true }}
-                icon={FiUsers}
+                icon={PiUsers}
                 color="#10B981"
                 subtitle={`novas entidades`}
               />
@@ -536,7 +536,7 @@ export default function UploadsManagement() {
                 title="Atualizações"
                 value={formatNumber(stats.recentUpdates || 0)}
                 change={{ value: 8.7, isPositive: true }}
-                icon={FiEdit}
+                icon={PiNotePencil}
                 color="#3B82F6"
                 subtitle={`modificações`}
               />
@@ -545,7 +545,7 @@ export default function UploadsManagement() {
                 title="Usuários Ativos"
                 value={formatNumber(stats.activeUsers || 0)}
                 change={{ value: 5.2, isPositive: true }}
-                icon={FiTrendingUp}
+                icon={PiTrendUp}
                 color="#F59E0B"
                 subtitle={`contribuidores`}
               />
@@ -594,7 +594,7 @@ export default function UploadsManagement() {
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mb-8">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                <FiTarget className="w-5 h-5 text-accent-purple" />
+                <PiTarget className="w-5 h-5 text-accent-purple" />
                 <span>
                   Principais Contribuidores ({getPeriodLabel(period)})
                 </span>
@@ -634,7 +634,7 @@ export default function UploadsManagement() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiEye />}
+                        leftIcon={<PiEye />}
                         onClick={() =>
                           router.push(`/admin/users/${user.userId}`)
                         }
@@ -653,7 +653,7 @@ export default function UploadsManagement() {
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mb-8">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                <FiClock className="w-5 h-5 text-accent-blue" />
+                <PiClock className="w-5 h-5 text-accent-blue" />
                 <span>Atividade Recente</span>
               </h3>
               <div className="space-y-3">
@@ -691,7 +691,7 @@ export default function UploadsManagement() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiEye />}
+                        leftIcon={<PiEye />}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleActivityClick(activity);
@@ -716,7 +716,7 @@ export default function UploadsManagement() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  leftIcon={<FiFilter />}
+                  leftIcon={<PiFunnel />}
                   onClick={() => setShowFilters(!showFilters)}
                 >
                   Filtros
@@ -725,14 +725,20 @@ export default function UploadsManagement() {
                   variant="ghost"
                   size="sm"
                   leftIcon={
-                    <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                    <PiArrowsClockwise
+                      className={refreshing ? 'animate-spin' : ''}
+                    />
                   }
                   onClick={handleRefresh}
                   disabled={refreshing}
                 >
                   Atualizar
                 </Button>
-                <Button variant="secondary" size="sm" leftIcon={<FiDownload />}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  leftIcon={<PiDownloadSimple />}
+                >
                   Exportar
                 </Button>
               </div>
@@ -744,7 +750,7 @@ export default function UploadsManagement() {
             >
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                   <Input
                     type="text"
                     placeholder="Buscar uploads..."
@@ -816,7 +822,7 @@ export default function UploadsManagement() {
                 <Button
                   variant="primary"
                   size="sm"
-                  leftIcon={<FiSearch />}
+                  leftIcon={<PiMagnifyingGlass />}
                   onClick={handleSearch}
                 >
                   Buscar
@@ -834,7 +840,7 @@ export default function UploadsManagement() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    leftIcon={<FiDownload />}
+                    leftIcon={<PiDownloadSimple />}
                     onClick={() => handleBulkAction('export')}
                   >
                     Exportar
@@ -932,12 +938,12 @@ export default function UploadsManagement() {
 
                         <div className="flex items-center space-x-4 text-sm text-theme-secondary">
                           <div className="flex items-center space-x-1">
-                            <FiUser className="w-4 h-4" />
+                            <PiUser className="w-4 h-4" />
                             <span>{upload.user.name}</span>
                           </div>
 
                           <div className="flex items-center space-x-1">
-                            <FiClock className="w-4 h-4" />
+                            <PiClock className="w-4 h-4" />
                             <span>
                               {new Date(upload.createdAt).toLocaleString(
                                 'pt-BR'
@@ -947,7 +953,7 @@ export default function UploadsManagement() {
 
                           {upload.reason && (
                             <div className="flex items-center space-x-1">
-                              <FiFileText className="w-4 h-4" />
+                              <PiFileText className="w-4 h-4" />
                               <span className="truncate max-w-xs">
                                 {upload.reason}
                               </span>
@@ -960,7 +966,7 @@ export default function UploadsManagement() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={<FiEye />}
+                          leftIcon={<PiEye />}
                           onClick={() => handleActivityClick(upload)}
                           title="Ver detalhes"
                         />

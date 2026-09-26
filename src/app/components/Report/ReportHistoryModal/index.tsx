@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiUser, FiFlag } from 'react-icons/fi';
+import { PiFlag, PiUser } from 'react-icons/pi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
@@ -118,7 +118,7 @@ export default function ReportHistoryModal({
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-accent-blue/20 rounded-xl flex items-center justify-center">
-                <FiFlag className="w-5 h-5 text-accent-blue" />
+                <PiFlag className="w-5 h-5 text-accent-blue" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
@@ -137,7 +137,7 @@ export default function ReportHistoryModal({
             </div>
           ) : reports.length === 0 ? (
             <div className="text-center py-8">
-              <FiFlag className="w-12 h-12 text-theme-tertiary mx-auto mb-4 opacity-50" />
+              <PiFlag className="w-12 h-12 text-theme-tertiary mx-auto mb-4 opacity-50" />
               <p className="text-theme-secondary">Nenhum report encontrado</p>
             </div>
           ) : (
@@ -176,7 +176,7 @@ export default function ReportHistoryModal({
 
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center space-x-1 text-theme-tertiary">
-                      <FiUser className="w-4 h-4" />
+                      <PiUser className="w-4 h-4" />
                       <span>
                         {report.reporter.firstName || report.reporter.email}
                       </span>

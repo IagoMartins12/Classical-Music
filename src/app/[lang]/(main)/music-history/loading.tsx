@@ -1,14 +1,14 @@
 // LoadingSkeleton.tsx - Premium version with theme system
 'use client';
 import {
-  FiChevronDown,
-  FiMusic,
-  FiGlobe,
-  FiUser,
-  FiBookOpen,
-  FiLock,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiScrollQuill } from 'react-icons/gi';
+  PiBookOpen,
+  PiCaretDown,
+  PiGlobe,
+  PiLock,
+  PiMusicNotes,
+  PiScroll,
+  PiUser,
+} from 'react-icons/pi';
 
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 
@@ -17,43 +17,43 @@ const DetailedMusicHistorySkeleton = () => {
   const skeletonSections = [
     {
       id: 'timeline-overview',
-      icon: <FiLock className="w-6 h-6 text-theme-primary" />,
+      icon: <PiLock className="w-6 h-6 text-theme-primary" />,
     },
     {
       id: 'origins',
-      icon: <GiScrollQuill className="w-6 h-6 text-theme-primary" />,
+      icon: <PiScroll className="w-6 h-6 text-theme-primary" />,
     },
     {
       id: 'medieval',
-      icon: <GiMusicalNotes className="w-6 h-6 text-theme-primary" />,
+      icon: <PiMusicNotes className="w-6 h-6 text-theme-primary" />,
     },
     {
       id: 'renaissance',
-      icon: <FiGlobe className="w-6 h-6 text-theme-primary" />,
+      icon: <PiGlobe className="w-6 h-6 text-theme-primary" />,
     },
     {
       id: 'baroque',
-      icon: <FiMusic className="w-6 h-6 text-theme-primary" />,
+      icon: <PiMusicNotes className="w-6 h-6 text-theme-primary" />,
     },
     {
       id: 'classical',
-      icon: <FiUser className="w-6 h-6 text-theme-primary" />,
+      icon: <PiUser className="w-6 h-6 text-theme-primary" />,
     },
     {
       id: 'romantic',
-      icon: <FiMusic className="w-6 h-6 text-theme-primary" />,
+      icon: <PiMusicNotes className="w-6 h-6 text-theme-primary" />,
     },
     {
       id: 'modern',
-      icon: <FiBookOpen className="w-6 h-6 text-theme-primary" />,
+      icon: <PiBookOpen className="w-6 h-6 text-theme-primary" />,
     },
     {
       id: 'contemporary',
-      icon: <FiGlobe className="w-6 h-6 text-theme-primary" />,
+      icon: <PiGlobe className="w-6 h-6 text-theme-primary" />,
     },
     {
       id: 'popular-music',
-      icon: <FiMusic className="w-6 h-6 text-theme-primary" />,
+      icon: <PiMusicNotes className="w-6 h-6 text-theme-primary" />,
     },
   ];
 
@@ -87,7 +87,7 @@ const DetailedMusicHistorySkeleton = () => {
                     <div
                       className={`w-8 h-8 bg-gradient-to-br rounded-xl flex items-center justify-center`}
                     >
-                      <FiChevronDown className="w-4 h-4 text-theme-primary" />
+                      <PiCaretDown className="w-4 h-4 text-theme-primary" />
                     </div>
                   </div>
                 </div>

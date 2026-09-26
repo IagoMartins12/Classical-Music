@@ -3,12 +3,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import {
-  FiVolume2,
-  FiPause,
-  FiPlay,
-  FiSquare,
-  FiSettings,
-} from 'react-icons/fi';
+  PiGear,
+  PiPause,
+  PiPlay,
+  PiSpeakerHigh,
+  PiSquare,
+} from 'react-icons/pi';
 
 interface TextToSpeechWebAPIProps {
   content: any; // TipTap JSON
@@ -190,7 +190,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
           <div className="p-3 bg-brand-primary rounded-lg">
-            <FiVolume2 className="w-6 h-6 text-white" />
+            <PiSpeakerHigh className="w-6 h-6 text-white" />
           </div>
           <div>
             <h3 className="font-bold text-theme-primary">Ouvir Artigo</h3>
@@ -205,7 +205,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
           className="p-2 hover:bg-theme-classical rounded-lg transition-colors"
           title="Configurações"
         >
-          <FiSettings className="w-5 h-5 text-theme-secondary" />
+          <PiGear className="w-5 h-5 text-theme-secondary" />
         </button>
       </div>
 
@@ -289,7 +289,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
             onClick={handleSpeak}
             className="btn-classical-primary flex items-center space-x-2 px-6"
           >
-            <FiPlay className="w-5 h-5" />
+            <PiPlay className="w-5 h-5" />
             <span>Ouvir Artigo</span>
           </button>
         ) : (
@@ -300,12 +300,12 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
             >
               {isPaused ? (
                 <>
-                  <FiPlay className="w-5 h-5" />
+                  <PiPlay className="w-5 h-5" />
                   <span>Continuar</span>
                 </>
               ) : (
                 <>
-                  <FiPause className="w-5 h-5" />
+                  <PiPause className="w-5 h-5" />
                   <span>Pausar</span>
                 </>
               )}
@@ -315,7 +315,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
               onClick={handleStop}
               className="btn-classical-secondary flex items-center space-x-2 !bg-red-500 hover:!bg-red-600 !text-white"
             >
-              <FiSquare className="w-5 h-5" />
+              <PiSquare className="w-5 h-5" />
               <span>Parar</span>
             </button>
           </>

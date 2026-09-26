@@ -3,13 +3,13 @@
 
 import React, { useState, useRef } from 'react';
 import {
-  FiCamera,
-  FiLoader,
-  FiX,
-  FiLink,
-  FiUpload,
-  FiImage,
-} from 'react-icons/fi';
+  PiCamera,
+  PiImage,
+  PiLink,
+  PiSpinnerGap,
+  PiUploadSimple,
+  PiX,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import Image from '@/app/components/SmartImage';
 import { uploadComposerImage } from '@/app/requests/uploads-client';
@@ -168,7 +168,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
               : 'text-theme-primary hover:bg-theme-primary hover:text-theme-secondary'
           }`}
         >
-          <FiUpload className="w-4 h-4" />
+          <PiUploadSimple className="w-4 h-4" />
           <span className="text-sm font-medium">Upload</span>
         </button>
         <button
@@ -182,7 +182,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
               : 'text-theme-primary hover:bg-theme-primary hover:text-theme-secondary'
           }`}
         >
-          <FiLink className="w-4 h-4" />
+          <PiLink className="w-4 h-4" />
           <span className="text-sm font-medium">URL</span>
         </button>
       </div>
@@ -213,7 +213,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
             />
           ) : (
             <div className="text-center">
-              <FiImage
+              <PiImage
                 className={`${iconSizeClasses[size]} text-theme-tertiary mx-auto mb-2`}
               />
             </div>
@@ -222,7 +222,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
           {/* Loading Overlay */}
           {currentUploading && (
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-              <FiLoader className="w-8 h-8 text-white animate-spin" />
+              <PiSpinnerGap className="w-8 h-8 text-white animate-spin" />
             </div>
           )}
 
@@ -233,7 +233,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
               className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
               title="Remover imagem"
             >
-              <FiX className="w-3 h-3" />
+              <PiX className="w-3 h-3" />
             </button>
           )}
         </div>
@@ -245,7 +245,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
             className="absolute -bottom-2 -right-2 w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center hover:bg-brand-secondary transition-colors shadow-lg"
             title="Fazer upload de imagem"
           >
-            <FiCamera className="w-5 h-5" />
+            <PiCamera className="w-5 h-5" />
           </button>
         )}
       </div>
@@ -262,7 +262,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
             disabled={currentUploading}
             className="flex items-center space-x-2 px-6 py-3 bg-brand-primary text-white rounded-lg hover:bg-brand-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <FiUpload className="w-4 h-4" />
+            <PiUploadSimple className="w-4 h-4" />
             <span>Selecionar Arquivo</span>
           </button>
           <p className="text-xs text-theme-tertiary mt-2">

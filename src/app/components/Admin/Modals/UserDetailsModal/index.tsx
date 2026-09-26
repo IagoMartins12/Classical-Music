@@ -2,20 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiUser,
-  FiActivity,
-  FiFileText,
-  FiHeart,
-  FiMusic,
-  FiAward,
-  FiClock,
-  FiMapPin,
-  FiPhone,
-  FiBookOpen,
-  FiTarget,
-  FiCheckCircle,
-  FiUsers,
-} from 'react-icons/fi';
+  PiBookOpen,
+  PiCheckCircle,
+  PiClock,
+  PiFileText,
+  PiHeart,
+  PiMapPin,
+  PiMedal,
+  PiMusicNotes,
+  PiPhone,
+  PiPulse,
+  PiTarget,
+  PiUser,
+  PiUsers,
+} from 'react-icons/pi';
 import { AnimatedCard } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import { AdminUser } from '@/app/hooks/admin/useAdminUsers';
@@ -239,7 +239,7 @@ export default function UserDetailsModal({
             <p className="text-theme-tertiary">{user.email}</p>
             {detailsData && (
               <p className="text-sm text-theme-quaternary flex items-center gap-2 mt-1">
-                <FiClock className="w-4 h-4" />
+                <PiClock className="w-4 h-4" />
                 {detailsData.isOnline
                   ? '🟢 Online agora'
                   : formatLastSeen(detailsData.lastSeenMinutesAgo)}
@@ -252,12 +252,12 @@ export default function UserDetailsModal({
       {/* Tabs */}
       <div className="flex overflow-x-auto border-b border-theme-primary bg-theme-secondary">
         {[
-          { id: 'overview', label: 'Visão Geral', icon: FiUser },
-          { id: 'favorites', label: 'Favoritos', icon: FiHeart },
-          { id: 'learning', label: 'Aprendizado', icon: FiBookOpen },
-          { id: 'annotations', label: 'Anotações', icon: FiFileText },
-          { id: 'instruments', label: 'Instrumentos', icon: FiMusic },
-          { id: 'profiles', label: 'Perfis', icon: FiUsers },
+          { id: 'overview', label: 'Visão Geral', icon: PiUser },
+          { id: 'favorites', label: 'Favoritos', icon: PiHeart },
+          { id: 'learning', label: 'Aprendizado', icon: PiBookOpen },
+          { id: 'annotations', label: 'Anotações', icon: PiFileText },
+          { id: 'instruments', label: 'Instrumentos', icon: PiMusicNotes },
+          { id: 'profiles', label: 'Perfis', icon: PiUsers },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -280,7 +280,7 @@ export default function UserDetailsModal({
           <LoadingAdminState loadingName="detalhes" />
         ) : error ? (
           <div className="text-center py-12">
-            <FiUser className="w-12 h-12 text-accent-red mx-auto mb-4" />
+            <PiUser className="w-12 h-12 text-accent-red mx-auto mb-4" />
             <h3 className="text-lg font-bold text-theme-primary mb-2">
               Erro ao Carregar
             </h3>
@@ -296,7 +296,7 @@ export default function UserDetailsModal({
               <div className="space-y-6">
                 <AnimatedCard className="classical-card p-5">
                   <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                    <FiUser className="w-5 h-5 text-accent-blue" />
+                    <PiUser className="w-5 h-5 text-accent-blue" />
                     Informações Pessoais
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -331,7 +331,7 @@ export default function UserDetailsModal({
                       {detailsData.phone && (
                         <div>
                           <p className="text-xs text-theme-tertiary mb-1 flex items-center gap-1">
-                            <FiPhone className="w-3 h-3" /> Telefone
+                            <PiPhone className="w-3 h-3" /> Telefone
                           </p>
                           <p className="text-theme-primary font-medium">
                             {detailsData.phone}
@@ -361,7 +361,7 @@ export default function UserDetailsModal({
                         detailsData.country) && (
                         <div>
                           <p className="text-xs text-theme-tertiary mb-1 flex items-center gap-1">
-                            <FiMapPin className="w-3 h-3" /> Localização
+                            <PiMapPin className="w-3 h-3" /> Localização
                           </p>
                           <p className="text-theme-primary font-medium">
                             {[
@@ -400,7 +400,7 @@ export default function UserDetailsModal({
                   detailsData.favoriteEpoch) && (
                   <AnimatedCard className="classical-card p-5">
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                      <FiAward className="w-5 h-5 text-accent-purple" />
+                      <PiMedal className="w-5 h-5 text-accent-purple" />
                       Preferências Musicais
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -448,7 +448,7 @@ export default function UserDetailsModal({
 
                 <AnimatedCard className="classical-card p-5">
                   <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                    <FiActivity className="w-5 h-5 text-accent-green" />
+                    <PiPulse className="w-5 h-5 text-accent-green" />
                     Estatísticas de Atividade
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -499,7 +499,7 @@ export default function UserDetailsModal({
                 {detailsData.favoriteComposers.length > 0 && (
                   <AnimatedCard className="classical-card p-5">
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                      <FiMusic className="w-5 h-5 text-accent-blue" />
+                      <PiMusicNotes className="w-5 h-5 text-accent-blue" />
                       Compositores Favoritos (
                       {detailsData.favoriteComposers.length})
                     </h3>
@@ -537,7 +537,7 @@ export default function UserDetailsModal({
                 {detailsData.favoriteWorks.length > 0 && (
                   <AnimatedCard className="classical-card p-5">
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                      <FiHeart className="w-5 h-5 text-accent-red" />
+                      <PiHeart className="w-5 h-5 text-accent-red" />
                       Obras Favoritas ({detailsData.favoriteWorks.length})
                     </h3>
                     <div className="space-y-2">
@@ -561,7 +561,7 @@ export default function UserDetailsModal({
                 {detailsData.favoriteScores.length > 0 && (
                   <AnimatedCard className="classical-card p-5">
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                      <FiFileText className="w-5 h-5 text-accent-purple" />
+                      <PiFileText className="w-5 h-5 text-accent-purple" />
                       Partituras Favoritas ({detailsData.favoriteScores.length})
                     </h3>
                     <div className="space-y-2">
@@ -599,7 +599,7 @@ export default function UserDetailsModal({
                   detailsData.favoriteWorks.length === 0 &&
                   detailsData.favoriteScores.length === 0 && (
                     <div className="text-center py-12">
-                      <FiHeart className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                      <PiHeart className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                       <p className="text-theme-secondary">
                         Este usuário ainda não favoritou nada
                       </p>
@@ -614,7 +614,7 @@ export default function UserDetailsModal({
                 {detailsData.wantToLearn.length > 0 && (
                   <AnimatedCard className="classical-card p-5">
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                      <FiTarget className="w-5 h-5 text-accent-amber" />
+                      <PiTarget className="w-5 h-5 text-accent-amber" />
                       Quer Aprender ({detailsData.wantToLearn.length})
                     </h3>
                     <div className="space-y-2">
@@ -643,7 +643,7 @@ export default function UserDetailsModal({
                 {detailsData.learned.length > 0 && (
                   <AnimatedCard className="classical-card p-5">
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                      <FiCheckCircle className="w-5 h-5 text-accent-green" />
+                      <PiCheckCircle className="w-5 h-5 text-accent-green" />
                       Já Aprendeu ({detailsData.learned.length})
                     </h3>
                     <div className="space-y-2">
@@ -672,7 +672,7 @@ export default function UserDetailsModal({
                 {detailsData.wantToLearn.length === 0 &&
                   detailsData.learned.length === 0 && (
                     <div className="text-center py-12">
-                      <FiBookOpen className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                      <PiBookOpen className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                       <p className="text-theme-secondary">
                         Este usuário ainda não marcou nenhuma obra para aprender
                       </p>
@@ -685,7 +685,7 @@ export default function UserDetailsModal({
             {activeTab === 'annotations' && (
               <AnimatedCard className="classical-card p-5">
                 <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                  <FiFileText className="w-5 h-5 text-accent-green" />
+                  <PiFileText className="w-5 h-5 text-accent-green" />
                   Anotações ({detailsData.annotations.length})
                 </h3>
                 {detailsData.annotations.length > 0 ? (
@@ -728,7 +728,7 @@ export default function UserDetailsModal({
             {activeTab === 'instruments' && (
               <AnimatedCard className="classical-card p-5">
                 <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                  <FiMusic className="w-5 h-5 text-accent-blue" />
+                  <PiMusicNotes className="w-5 h-5 text-accent-blue" />
                   Instrumentos ({detailsData.instruments.length})
                 </h3>
                 {detailsData.instruments.length > 0 ? (
@@ -773,7 +773,7 @@ export default function UserDetailsModal({
                 {detailsData.isTeacher && detailsData.teacherProfile && (
                   <AnimatedCard className="classical-card p-5">
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                      <FiAward className="w-5 h-5 text-accent-blue" />
+                      <PiMedal className="w-5 h-5 text-accent-blue" />
                       Perfil de Professor
                     </h3>
                     <div className="space-y-4">
@@ -791,7 +791,7 @@ export default function UserDetailsModal({
                         </div>
                         {detailsData.teacherProfile.isVerified && (
                           <div className="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-medium flex items-center gap-1">
-                            <FiCheckCircle className="w-4 h-4" />
+                            <PiCheckCircle className="w-4 h-4" />
                             Verificado
                           </div>
                         )}
@@ -843,7 +843,7 @@ export default function UserDetailsModal({
                 {detailsData.isStudent && detailsData.studentProfile && (
                   <AnimatedCard className="classical-card p-5">
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                      <FiBookOpen className="w-5 h-5 text-accent-green" />
+                      <PiBookOpen className="w-5 h-5 text-accent-green" />
                       Perfil de Estudante
                     </h3>
                     <div className="space-y-4">
@@ -886,7 +886,7 @@ export default function UserDetailsModal({
 
                 {!detailsData.isTeacher && !detailsData.isStudent && (
                   <div className="text-center py-12">
-                    <FiUsers className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                    <PiUsers className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                     <p className="text-theme-secondary text-lg mb-2">
                       Sem Perfis Especiais
                     </p>

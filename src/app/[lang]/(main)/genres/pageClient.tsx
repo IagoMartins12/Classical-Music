@@ -5,14 +5,14 @@ import { useLocalizedRouter } from '@/app/hooks/useLocalizedRouter';
 import { useState, useMemo } from 'react';
 
 import {
-  FiTag,
-  FiSearch,
-  FiX,
-  FiArrowLeft,
-  FiMusic,
-  FiChevronDown,
-  FiChevronUp,
-} from 'react-icons/fi';
+  PiArrowLeft,
+  PiCaretDown,
+  PiCaretUp,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiTag,
+  PiX,
+} from 'react-icons/pi';
 import AnimatedMusicalNotes2 from '../../../components/AnimatedMusicalNotes2';
 import ViewModeToggle from '../../../components/ViewModeToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -136,7 +136,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
           <div className="relative z-10">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-                <FiTag className="w-8 h-8 text-theme-primary" />
+                <PiTag className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
 
@@ -156,7 +156,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
               onClick={goBack}
               className="btn-classical-secondary flex items-center space-x-2"
             >
-              <FiArrowLeft className="w-4 h-4" />
+              <PiArrowLeft className="w-4 h-4" />
               <span className="">{t('back_button')}</span>
             </button>
 
@@ -169,12 +169,12 @@ export default function GenresClient({ genres }: GenresClientProps) {
                 >
                   {areAllSectionsCollapsed() ? (
                     <>
-                      <FiChevronDown className="w-4 h-4" />
+                      <PiCaretDown className="w-4 h-4" />
                       <span>{t('expand_all')}</span>
                     </>
                   ) : (
                     <>
-                      <FiChevronUp className="w-4 h-4" />
+                      <PiCaretUp className="w-4 h-4" />
                       <span>{t('collapse_all')}</span>
                     </>
                   )}
@@ -185,7 +185,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
 
           {/* Search Bar */}
           <div className="relative mb-6">
-            <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+            <PiMagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
             <input
               type="text"
               placeholder={t('search_placeholder')}
@@ -198,7 +198,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
                 onClick={clearSearch}
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
               >
-                <FiX className="w-5 h-5" />
+                <PiX className="w-5 h-5" />
               </button>
             )}
           </div>
@@ -270,9 +270,9 @@ export default function GenresClient({ genres }: GenresClientProps) {
                   </div>
                   <div className="ml-4 transition-transform duration-300 group-hover:scale-110">
                     {isSectionCollapsed(letter) ? (
-                      <FiChevronDown className="w-5 h-5 text-theme-secondary" />
+                      <PiCaretDown className="w-5 h-5 text-theme-secondary" />
                     ) : (
-                      <FiChevronUp className="w-5 h-5 text-theme-secondary" />
+                      <PiCaretUp className="w-5 h-5 text-theme-secondary" />
                     )}
                   </div>
                 </button>
@@ -296,7 +296,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
                           >
                             <div className="flex cursor-pointer items-center">
                               <div className="w-10 h-10 bg-accent-purple/20 rounded-lg flex items-center justify-center mr-3 group-hover:bg-accent-purple/30 transition-colors">
-                                <FiMusic className="w-5 h-5 text-accent-purple" />
+                                <PiMusicNotes className="w-5 h-5 text-accent-purple" />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <h3 className="font-medium capitalize text-theme-primary group-hover:text-brand-primary transition-colors truncate">
@@ -337,7 +337,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
                             }}
                           >
                             <div className="flex items-center">
-                              <FiMusic className="w-5 h-5 text-accent-purple mr-4" />
+                              <PiMusicNotes className="w-5 h-5 text-accent-purple mr-4" />
                               <span className="font-medium capitalize text-theme-primary group-hover:text-brand-primary transition-colors">
                                 {genre.name}
                               </span>
@@ -370,7 +370,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
           // Empty State
           <div className="classical-card p-12 text-center">
             <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <FiTag className="w-8 h-8 text-theme-tertiary" />
+              <PiTag className="w-8 h-8 text-theme-tertiary" />
             </div>
             <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
               {t('empty_title')}

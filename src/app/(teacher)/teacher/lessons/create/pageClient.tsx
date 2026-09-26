@@ -4,23 +4,23 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import {
-  FiClock,
-  FiUser,
-  FiSave,
-  FiX,
-  FiPlus,
-  FiTarget,
-  FiRepeat,
-  FiAlertCircle,
-  FiRefreshCw,
-  FiArrowLeft,
-  FiCalendar,
-  FiCheckCircle,
-  FiInfo,
-  FiMusic,
-  FiAlertTriangle,
-  FiXCircle,
-} from 'react-icons/fi';
+  PiArrowLeft,
+  PiArrowsClockwise,
+  PiCalendarBlank,
+  PiCheckCircle,
+  PiClock,
+  PiFloppyDisk,
+  PiInfo,
+  PiMusicNotes,
+  PiPlus,
+  PiRepeat,
+  PiTarget,
+  PiUser,
+  PiWarning,
+  PiWarningCircle,
+  PiX,
+  PiXCircle,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -176,9 +176,9 @@ function ConflictModal({
             }`}
           >
             {conflicts.hasTimeConflicts ? (
-              <FiXCircle className="w-6 h-6 " />
+              <PiXCircle className="w-6 h-6 " />
             ) : (
-              <FiAlertTriangle className="w-6 h-6 " />
+              <PiWarning className="w-6 h-6 " />
             )}
           </div>
           <div>
@@ -200,7 +200,7 @@ function ConflictModal({
           {conflicts.hasTimeConflicts && conflicts.timeConflicts.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                <FiAlertCircle className="w-5 h-5" />
+                <PiWarningCircle className="w-5 h-5" />
                 <span>
                   {t('time_conflicts')} ({conflicts.timeConflicts.length})
                 </span>
@@ -225,7 +225,7 @@ function ConflictModal({
                           {t('student')}: {conflict.studentName}
                         </p>
                       </div>
-                      <FiAlertCircle className="w-5 h-5 text-accent-red" />
+                      <PiWarningCircle className="w-5 h-5 text-accent-red" />
                     </div>
                   </div>
                 ))}
@@ -233,7 +233,7 @@ function ConflictModal({
 
               <div className="bg-theme-tertiary rounded-lg p-4 mt-4">
                 <div className="flex items-start space-x-3">
-                  <FiInfo className="w-5 h-5 text-accent-red mt-0.5" />
+                  <PiInfo className="w-5 h-5 text-accent-red mt-0.5" />
                   <div className="text-sm">
                     <p className="font-medium text-accent-red mb-1">
                       ⚠️ {t('cannot_create_lesson')}
@@ -251,7 +251,7 @@ function ConflictModal({
           {conflicts.hasWeeklyLimitExceeded && conflicts.weeklyLimitWarning && (
             <div>
               <h3 className="text-lg font-semibold text-accent-yellow mb-4 flex items-center space-x-2">
-                <FiAlertTriangle className="w-5 h-5" />
+                <PiWarning className="w-5 h-5" />
                 <span>{t('weekly_limit_exceeded')}</span>
               </h3>
 
@@ -300,7 +300,7 @@ function ConflictModal({
 
               <div className="bg-theme-tertiary rounded-lg p-4 mt-4">
                 <div className="flex items-start space-x-3">
-                  <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+                  <PiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
                   <div className="text-sm">
                     <p className="font-medium text-accent-blue mb-1">
                       ℹ️ {t('can_proceed')}
@@ -328,7 +328,7 @@ function ConflictModal({
                     key={index}
                     className="flex items-center space-x-3 text-sm text-theme-secondary"
                   >
-                    <FiInfo className="w-4 h-4 text-accent-blue" />
+                    <PiInfo className="w-4 h-4 text-accent-blue" />
                     <span>{warning}</span>
                   </div>
                 ))}
@@ -354,9 +354,9 @@ function ConflictModal({
               className="btn-classical-primary bg-accent-yellow hover:bg-accent-yellow/80 flex items-center space-x-2"
             >
               {loading ? (
-                <FiRefreshCw className="w-4 h-4 animate-spin" />
+                <PiArrowsClockwise className="w-4 h-4 animate-spin" />
               ) : (
-                <FiCheckCircle className="w-4 h-4" />
+                <PiCheckCircle className="w-4 h-4" />
               )}
               <span>{loading ? t('creating') : t('create_anyway')}</span>
             </button>
@@ -867,7 +867,7 @@ export default function CreateLessonPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiAlertCircle className="w-8 h-8 text-theme-primary" />
+              <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('error_loading_data')}
@@ -895,7 +895,7 @@ export default function CreateLessonPageClient({
                 href="/teacher/lessons"
                 className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
               >
-                <FiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-gradient-brand classical-title">
@@ -963,7 +963,7 @@ export default function CreateLessonPageClient({
                             </div>
                           ) : (
                             <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                              <FiUser className="w-6 h-6 text-theme-primary" />
+                              <PiUser className="w-6 h-6 text-theme-primary" />
                             </div>
                           )}
                           <div>
@@ -1046,7 +1046,7 @@ export default function CreateLessonPageClient({
                     {checkingConflicts && (
                       <div className=" rounded-lg p-3">
                         <div className="flex items-center space-x-3">
-                          <FiRefreshCw className="w-4 h-4 animate-spin text-accent-blue" />
+                          <PiArrowsClockwise className="w-4 h-4 animate-spin text-accent-blue" />
                           <span className="text-sm text-accent-blue">
                             {t('checking_conflicts')}
                           </span>
@@ -1060,7 +1060,7 @@ export default function CreateLessonPageClient({
                         {conflicts.hasTimeConflicts && (
                           <div className="border-red-400 rounded-lg p-3">
                             <div className="flex items-center space-x-3">
-                              <FiXCircle className="w-4 h-4 text-accent-red" />
+                              <PiXCircle className="w-4 h-4 text-accent-red" />
                               <div className="text-sm">
                                 <p className="font-medium text-accent-red">
                                   {t('time_conflict_detected')}
@@ -1078,7 +1078,7 @@ export default function CreateLessonPageClient({
                           !conflicts.hasTimeConflicts && (
                             <div className=" border border-yellow-400 rounded-lg p-3">
                               <div className="flex items-center space-x-3">
-                                <FiAlertTriangle className="w-4 h-4 text-accent-yellow" />
+                                <PiWarning className="w-4 h-4 text-accent-yellow" />
                                 <div className="text-sm">
                                   <p className="font-medium text-accent-yellow">
                                     {t('weekly_limit_reached')}
@@ -1101,7 +1101,7 @@ export default function CreateLessonPageClient({
                           !conflicts.hasWeeklyLimitExceeded && (
                             <div className=" rounded-lg p-3">
                               <div className="flex items-center space-x-3">
-                                <FiCheckCircle className="w-4 h-4 text-green-400" />
+                                <PiCheckCircle className="w-4 h-4 text-green-400" />
                                 <span className="text-sm text-green-300">
                                   {t('no_conflicts_detected')}
                                 </span>
@@ -1131,7 +1131,7 @@ export default function CreateLessonPageClient({
                         />
                         {validationErrors.scheduledAt && (
                           <p className="text-red-500 text-sm mt-1 flex items-center space-x-1">
-                            <FiAlertCircle className="w-3 h-3" />
+                            <PiWarningCircle className="w-3 h-3" />
                             <span>{validationErrors.scheduledAt}</span>
                           </p>
                         )}
@@ -1197,7 +1197,7 @@ export default function CreateLessonPageClient({
                           htmlFor="isRecurring"
                           className="text-theme-primary font-medium flex items-center space-x-2"
                         >
-                          <FiRepeat className="w-4 h-4" />
+                          <PiRepeat className="w-4 h-4" />
                           <span>{t('recurring_lesson')}</span>
                         </label>
                       </div>
@@ -1205,7 +1205,7 @@ export default function CreateLessonPageClient({
                       {formData.isRecurring && (
                         <div className="space-y-4 p-6 bg-gradient-to-br from-brand-primary/5 to-brand-secondary/5 border border-brand-primary/20 rounded-lg">
                           <div className="flex items-center space-x-3 mb-4">
-                            <FiInfo className="w-5 h-5 text-brand-primary" />
+                            <PiInfo className="w-5 h-5 text-brand-primary" />
                             <div className="text-sm text-theme-secondary">
                               <p className="font-medium">
                                 {t('intelligent_recurrence_system')}
@@ -1284,7 +1284,7 @@ export default function CreateLessonPageClient({
                             formData.recurrenceType !== 'NONE' && (
                               <div className="bg-theme-elevated/50 rounded-lg p-4 border border-theme-secondary/30">
                                 <div className="flex items-center space-x-3">
-                                  <FiCalendar className="w-5 h-5 text-brand-primary" />
+                                  <PiCalendarBlank className="w-5 h-5 text-brand-primary" />
                                   <div>
                                     <p className="font-medium text-theme-primary">
                                       {t('lessons_will_be_created')}{' '}
@@ -1313,7 +1313,7 @@ export default function CreateLessonPageClient({
                           {/* Renovação fácil info */}
                           <div className="bg-accent-green/10 border border-accent-green/30 rounded-lg p-4">
                             <div className="flex items-start space-x-3">
-                              <FiCheckCircle className="w-5 h-5 text-accent-green mt-0.5" />
+                              <PiCheckCircle className="w-5 h-5 text-accent-green mt-0.5" />
                               <div className="text-sm">
                                 <p className="font-medium text-accent-green mb-1">
                                   {t('simplified_renewal')}
@@ -1333,7 +1333,7 @@ export default function CreateLessonPageClient({
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-bold text-theme-primary classical-title flex items-center space-x-2">
-                        <FiMusic className="w-5 h-5" />
+                        <PiMusicNotes className="w-5 h-5" />
                         <span>{t('musical_works')}</span>
                       </h3>
                       <div className="text-sm text-theme-secondary">
@@ -1360,7 +1360,7 @@ export default function CreateLessonPageClient({
                         onClick={() => addArrayField('objectives')}
                         className="text-brand-primary hover:text-brand-secondary text-sm flex items-center space-x-1"
                       >
-                        <FiPlus className="w-3 h-3" />
+                        <PiPlus className="w-3 h-3" />
                         <span>{t('add')}</span>
                       </button>
                     </div>
@@ -1393,7 +1393,7 @@ export default function CreateLessonPageClient({
                               }
                               className="text-accent-red"
                             >
-                              <FiX className="w-4 h-4" />
+                              <PiX className="w-4 h-4" />
                             </button>
                           )}
                         </div>
@@ -1443,7 +1443,7 @@ export default function CreateLessonPageClient({
                               onClick={() => addArrayField('topics')}
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
-                              <FiPlus className="w-3 h-3" />
+                              <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
                             </button>
                           </div>
@@ -1475,7 +1475,7 @@ export default function CreateLessonPageClient({
                                     }
                                     className="text-accent-red"
                                   >
-                                    <FiX className="w-4 h-4" />
+                                    <PiX className="w-4 h-4" />
                                   </button>
                                 )}
                               </div>
@@ -1539,7 +1539,7 @@ export default function CreateLessonPageClient({
                   {error && (
                     <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
                       <div className="flex items-center space-x-3">
-                        <FiAlertCircle className="w-5 h-5 text-accent-red" />
+                        <PiWarningCircle className="w-5 h-5 text-accent-red" />
                         <div>
                           <p className="text-accent-red font-medium">
                             {t('error_creating_lesson')}
@@ -1551,7 +1551,7 @@ export default function CreateLessonPageClient({
                           onClick={clearError}
                           className="ml-auto text-accent-red"
                         >
-                          <FiX className="w-4 h-4" />
+                          <PiX className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -1575,11 +1575,11 @@ export default function CreateLessonPageClient({
                       className="btn-classical-primary flex items-center space-x-2"
                     >
                       {loading.createLesson || pendingSubmission ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                       ) : checkingConflicts ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                       ) : (
-                        <FiSave className="w-4 h-4" />
+                        <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>
                         {loading.createLesson || pendingSubmission
@@ -1625,7 +1625,7 @@ export default function CreateLessonPageClient({
                         </div>
                       ) : (
                         <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                          <FiUser className="w-6 h-6 text-theme-primary" />
+                          <PiUser className="w-6 h-6 text-theme-primary" />
                         </div>
                       )}
                       <div>
@@ -1683,7 +1683,7 @@ export default function CreateLessonPageClient({
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6 ">
                   <h3 className="text-lg font-bold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                    <FiMusic className="w-5 h-5" />
+                    <PiMusicNotes className="w-5 h-5" />
                     <span>{t('selected_works_title')}</span>
                   </h3>
 
@@ -1694,7 +1694,7 @@ export default function CreateLessonPageClient({
                         className="flex items-center space-x-3 p-3 bg-theme-elevated/50 rounded-lg"
                       >
                         <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <FiMusic className="w-4 h-4 text-accent-blue" />
+                          <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-theme-primary text-sm truncate">
@@ -1742,27 +1742,27 @@ export default function CreateLessonPageClient({
                 </h3>
                 <div className="space-y-3 text-sm text-theme-secondary">
                   <div className="flex items-start space-x-2">
-                    <FiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('tip_clear_objectives')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <FiMusic className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiMusicNotes className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('tip_link_musical_works')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <FiRepeat className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiRepeat className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('tip_use_recurring')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <FiClock className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiClock className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('tip_respect_limits')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <FiCalendar className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiCalendarBlank className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('tip_recurrence_works')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <FiAlertCircle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
+                    <PiWarningCircle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
                     <p>{t('tip_required_fields')}</p>
                   </div>
                 </div>

@@ -3,26 +3,28 @@
 
 import React, { useState } from 'react';
 import Link from '@/app/components/LocalizedLink';
-import {
-  FiMail,
-  FiPhone,
-  FiMapPin,
-  FiHeart,
-  FiBookOpen,
-  FiMusic,
-  FiUsers,
-  FiInfo,
-  FiShield,
-  FiGlobe,
-  FiCheck,
-  FiAlertCircle,
-  FiLoader,
-  FiRefreshCw,
-} from 'react-icons/fi';
-import { FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa';
-import { FaXTwitter } from 'react-icons/fa6';
-
 import { GiGrandPiano, GiViolin } from 'react-icons/gi';
+import {
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCheck,
+  PiEnvelopeSimple,
+  PiGlobe,
+  PiHeart,
+  PiInfo,
+  PiInstagramLogo,
+  PiLinkedinLogo,
+  PiMapPin,
+  PiMusicNotes,
+  PiPhone,
+  PiShield,
+  PiSpinnerGap,
+  PiTiktokLogo,
+  PiUsers,
+  PiWarningCircle,
+  PiXLogo,
+} from 'react-icons/pi';
+
 import {
   useNewsletterSubscription,
   useNewsletterForm,
@@ -55,20 +57,24 @@ const Footer: React.FC = () => {
     {
       label: t('footer_quicklinks_0__label'),
       href: '/music-history',
-      icon: FiBookOpen,
+      icon: PiBookOpen,
     },
     {
       label: t('footer_quicklinks_1__label'),
       href: '/composers',
-      icon: FiUsers,
+      icon: PiUsers,
     },
-    { label: t('footer_quicklinks_2__label'), href: '/works', icon: FiMusic },
+    {
+      label: t('footer_quicklinks_2__label'),
+      href: '/works',
+      icon: PiMusicNotes,
+    },
     {
       label: t('footer_quicklinks_3__label'),
       href: '/instruments',
       icon: GiViolin,
     },
-    { label: t('footer_quicklinks_4__label'), href: '/genres', icon: FiGlobe },
+    { label: t('footer_quicklinks_4__label'), href: '/genres', icon: PiGlobe },
   ];
 
   const supportLinks = [
@@ -86,25 +92,25 @@ const Footer: React.FC = () => {
 
   const socialLinks = [
     {
-      icon: FaXTwitter,
+      icon: PiXLogo,
       href: 'https://x.com/Opus_Atlas',
       label: 'Twitter / X',
       color: 'hover:text-sky-500',
     },
     {
-      icon: FaInstagram,
+      icon: PiInstagramLogo,
       href: 'https://www.instagram.com/opusatlas/',
       label: 'Instagram',
       color: 'hover:text-pink-500',
     },
     {
-      icon: FaLinkedin,
+      icon: PiLinkedinLogo,
       href: 'https://www.linkedin.com/company/opus-atlas/about/',
       label: 'LinkedIn',
       color: 'hover:text-blue-600',
     },
     {
-      icon: FaTiktok,
+      icon: PiTiktokLogo,
       href: 'https://www.tiktok.com/@opusatlas5',
       label: 'Tik tok',
       color: 'hover:text-blue-600',
@@ -154,7 +160,7 @@ const Footer: React.FC = () => {
       return (
         <div className="space-y-3">
           <div className="flex items-center space-x-2 text-accent-green">
-            <FiCheck className="w-4 h-4" />
+            <PiCheck className="w-4 h-4" />
             <span className="text-sm font-medium">
               {status === 'RESUBSCRIBED'
                 ? 'Bem-vindo de volta!'
@@ -184,7 +190,7 @@ const Footer: React.FC = () => {
       return (
         <div className="space-y-3">
           <div className="flex items-center space-x-2 text-accent-red">
-            <FiAlertCircle className="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" />
+            <PiWarningCircle className="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" />
             <p className="text-sm text-red-500 mt-1">{error}</p>
           </div>
 
@@ -196,7 +202,7 @@ const Footer: React.FC = () => {
                 disabled={loading}
                 className="text-xs bg-accent-amber bg-opacity-20 text-accent-amber px-2 py-1 rounded hover:bg-opacity-30 transition-colors disabled:opacity-50"
               >
-                <FiRefreshCw className="w-3 h-3 inline mr-1" />
+                <PiArrowsClockwise className="w-3 h-3 inline mr-1" />
                 {t('footer_jsx_button_children_2__send')}
               </button>
             )}
@@ -239,15 +245,15 @@ const Footer: React.FC = () => {
               {/* Contact Info */}
               <div className="space-y-3">
                 <div className="flex items-center space-x-3 text-sm text-theme-tertiary">
-                  <FiMail className="w-4 h-4 text-brand-primary" />
+                  <PiEnvelopeSimple className="w-4 h-4 text-brand-primary" />
                   <span>opusatlas@gmail.com</span>
                 </div>
                 <div className="flex items-center space-x-3 text-sm text-theme-tertiary">
-                  <FiPhone className="w-4 h-4 text-brand-primary" />
+                  <PiPhone className="w-4 h-4 text-brand-primary" />
                   <span>{t('footer_jsx_span_children_0__text')}</span>
                 </div>
                 <div className="flex items-center space-x-3 text-sm text-theme-tertiary">
-                  <FiMapPin className="w-4 h-4 text-brand-primary" />
+                  <PiMapPin className="w-4 h-4 text-brand-primary" />
                   <span>
                     {t('footer_jsx_span_children_0__são_paulo_brasil')}
                   </span>
@@ -258,7 +264,7 @@ const Footer: React.FC = () => {
             {/* Quick Links */}
             <div className="space-y-6">
               <h3 className="text-lg font-semibold text-theme-primary flex items-center">
-                <FiBookOpen className="w-5 h-5 mr-2 text-brand-primary" />
+                <PiBookOpen className="w-5 h-5 mr-2 text-brand-primary" />
                 {t('footer_jsx_h3_children_2__explorar')}
               </h3>
               <ul className="space-y-3">
@@ -280,7 +286,7 @@ const Footer: React.FC = () => {
             {/* Support Links */}
             <div className="space-y-6">
               <h3 className="text-lg font-semibold text-theme-primary flex items-center">
-                <FiInfo className="w-5 h-5 mr-2 text-brand-primary" />
+                <PiInfo className="w-5 h-5 mr-2 text-brand-primary" />
                 {t('footer_jsx_h3_children_2__suporte')}
               </h3>
               <ul className="space-y-3">
@@ -300,7 +306,7 @@ const Footer: React.FC = () => {
             {/* Legal & Social */}
             <div className="space-y-6">
               <h3 className="text-lg font-semibold text-theme-primary flex items-center">
-                <FiShield className="w-5 h-5 mr-2 text-brand-primary" />
+                <PiShield className="w-5 h-5 mr-2 text-brand-primary" />
                 {t('footer_jsx_h3_children_2__legal')}
               </h3>
               <ul className="space-y-3">
@@ -345,7 +351,7 @@ const Footer: React.FC = () => {
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between space-y-6 lg:space-y-0 lg:space-x-8">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-theme-primary flex items-center mb-2">
-                    <FiHeart className="w-5 h-5 mr-2 text-brand-primary" />
+                    <PiHeart className="w-5 h-5 mr-2 text-brand-primary" />
                     {t('footer_jsx_h3_children_2__music')}
                   </h3>
                   <p className="text-sm text-theme-tertiary mb-4">
@@ -393,7 +399,7 @@ const Footer: React.FC = () => {
                       >
                         {loading ? (
                           <div className="flex gap-2">
-                            <FiLoader className="w-4 h-4 animate-spin" />
+                            <PiSpinnerGap className="w-4 h-4 animate-spin" />
                             <span>
                               {t('footer_jsx_span_children_0__enviando')}
                             </span>
@@ -442,7 +448,7 @@ const Footer: React.FC = () => {
               <div className="flex items-center space-x-6 text-sm text-theme-tertiary">
                 <span className="flex items-center">
                   {t('footer_jsx_span_children_0__feito')}
-                  <FiHeart className="w-4 h-4 mx-1 text-accent-red" />{' '}
+                  <PiHeart className="w-4 h-4 mx-1 text-accent-red" />{' '}
                   {t('footer_jsx_span_children_3__music')}
                 </span>
               </div>

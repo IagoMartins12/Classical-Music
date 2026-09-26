@@ -1,6 +1,6 @@
 import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
-import { FaCalendar, FaClock, FaUser } from 'react-icons/fa';
+import { PiCalendarBlank, PiClock, PiUser } from 'react-icons/pi';
 import { AdminOnly } from '../AdminOnly';
 
 interface ArticleHeaderProps {
@@ -69,7 +69,7 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
               />
             ) : (
               <div className="w-12 h-12 rounded-full bg-theme-classical flex items-center justify-center">
-                <FaUser className="w-6 h-6 text-brand-primary" />
+                <PiUser className="w-6 h-6 text-brand-primary" />
               </div>
             )}
             <div>
@@ -83,7 +83,7 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
           {/* Date */}
           {article.publishedAt && (
             <div className="flex items-center space-x-2">
-              <FaCalendar className="w-5 h-5" />
+              <PiCalendarBlank className="w-5 h-5" />
               <span>
                 {new Date(article.publishedAt).toLocaleDateString('pt-BR', {
                   day: 'numeric',
@@ -96,7 +96,7 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
 
           {/* Read Time */}
           <div className="flex items-center space-x-2">
-            <FaClock className="w-5 h-5" />
+            <PiClock className="w-5 h-5" />
             <span>{article.readTime} min de leitura</span>
           </div>
 

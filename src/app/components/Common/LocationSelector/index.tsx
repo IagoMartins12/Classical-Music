@@ -3,15 +3,16 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
-  FiMapPin,
-  FiChevronDown,
-  FiX,
-  FiGlobe,
-  FiMap,
-  FiHome,
-  FiTrendingUp,
-} from 'react-icons/fi';
-import { FaGlobeAmericas, FaMapPin, FaCity } from 'react-icons/fa';
+  PiBuildings,
+  PiCaretDown,
+  PiGlobe,
+  PiGlobeHemisphereWest,
+  PiHouse,
+  PiMapPin,
+  PiMapTrifold,
+  PiTrendUp,
+  PiX,
+} from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface LocationData {
@@ -329,10 +330,10 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
               onClick={handleClear}
               className="p-1 hover:bg-theme-secondary hover:bg-opacity-30 rounded-full transition-colors"
             >
-              <FiX className="w-3 h-3 text-theme-tertiary hover:text-theme-primary" />
+              <PiX className="w-3 h-3 text-theme-tertiary hover:text-theme-primary" />
             </button>
           )}
-          <FiChevronDown
+          <PiCaretDown
             className={`w-4 h-4 text-theme-tertiary transition-transform duration-200 ${
               isOpen ? 'rotate-180' : ''
             }`}
@@ -417,7 +418,7 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
                 ))
               ) : (
                 <div className="px-4 py-8 text-center">
-                  <FiMapPin className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
+                  <PiMapPin className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                   <p className="text-sm text-theme-secondary">
                     {emptyMessage ||
                       (searchTerm
@@ -723,7 +724,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       <div>
         {showLabels && (
           <label className="block text-sm font-medium text-theme-secondary mb-2">
-            <FaGlobeAmericas className="w-4 h-4 inline mr-2" />
+            <PiGlobeHemisphereWest className="w-4 h-4 inline mr-2" />
             País
           </label>
         )}
@@ -738,12 +739,12 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
             value.country?.flag ? (
               <span className="text-lg">{value.country.flag}</span>
             ) : (
-              <FiGlobe className="w-4 h-4 text-theme-tertiary" />
+              <PiGlobe className="w-4 h-4 text-theme-tertiary" />
             )
           }
           onClear={value.country ? handleClearCountry : undefined}
           headerLabel="Países Disponíveis"
-          headerIcon={<FiTrendingUp className="w-4 h-4 text-brand-primary" />}
+          headerIcon={<PiTrendUp className="w-4 h-4 text-brand-primary" />}
           emptyMessage="Nenhum país encontrado"
           isLoading={isLoading || isLoadingAllCountries}
           onSearchWithNoResults={handleSearchWithNoResults}
@@ -754,7 +755,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       <div>
         {showLabels && (
           <label className="block text-sm font-medium text-theme-secondary mb-2">
-            <FaMapPin className="w-4 h-4 inline mr-2" />
+            <PiMapPin className="w-4 h-4 inline mr-2" />
             Estado/Região
           </label>
         )}
@@ -767,12 +768,12 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
           }
           searchPlaceholder="Buscar estado..."
           disabled={disabled || !value.country}
-          leftIcon={<FiMap className="w-4 h-4 text-theme-tertiary" />}
+          leftIcon={<PiMapTrifold className="w-4 h-4 text-theme-tertiary" />}
           onClear={value.state ? handleClearState : undefined}
           headerLabel={
             value.country ? `Estados de ${value.country.name}` : 'Estados'
           }
-          headerIcon={<FiMap className="w-4 h-4 text-brand-primary" />}
+          headerIcon={<PiMapTrifold className="w-4 h-4 text-brand-primary" />}
           emptyMessage={
             value.country
               ? 'Nenhum estado encontrado'
@@ -791,7 +792,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       <div>
         {showLabels && (
           <label className="block text-sm font-medium text-theme-secondary mb-2">
-            <FaCity className="w-4 h-4 inline mr-2" />
+            <PiBuildings className="w-4 h-4 inline mr-2" />
             Cidade
           </label>
         )}
@@ -806,12 +807,12 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
           }
           searchPlaceholder="Buscar cidade..."
           disabled={disabled || !value.state}
-          leftIcon={<FiHome className="w-4 h-4 text-theme-tertiary" />}
+          leftIcon={<PiHouse className="w-4 h-4 text-theme-tertiary" />}
           onClear={value.city ? handleClearCity : undefined}
           headerLabel={
             value.state ? `Cidades de ${value.state.name}` : 'Cidades'
           }
-          headerIcon={<FiHome className="w-4 h-4 text-brand-primary" />}
+          headerIcon={<PiHouse className="w-4 h-4 text-brand-primary" />}
           emptyMessage={
             value.state
               ? 'Nenhuma cidade encontrada'

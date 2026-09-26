@@ -1,8 +1,7 @@
 import Image from '@/app/components/SmartImage';
 import Link from '@/app/components/LocalizedLink';
 import { useState } from 'react';
-import { FiClock, FiUser } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+import { PiClock, PiMusicNotes, PiUser } from 'react-icons/pi';
 import { RecentComposerProps } from '..';
 
 const RecentComposerCard = ({
@@ -42,7 +41,7 @@ const RecentComposerCard = ({
           {/* Time indicator */}
           <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300">
             <div className="bg-theme-elevated/80 border border-theme-primary/20 backdrop-blur-md rounded-full px-2 py-1 text-xs text-theme-tertiary flex items-center gap-1">
-              <FiClock className="w-2.5 h-2.5" />
+              <PiClock className="w-2.5 h-2.5" />
               {formatTimeAgo(String(composer.createdAt))}
             </div>
           </div>
@@ -75,7 +74,7 @@ const RecentComposerCard = ({
                     </div>
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br  rounded-full flex items-center justify-center border-2 border-green-400/20 group-hover:border-green-400/50 transition-all duration-500">
-                      <FiUser className="w-6 h-6 text-theme-primary" />
+                      <PiUser className="w-6 h-6 text-theme-primary" />
                     </div>
                   )}
 
@@ -99,7 +98,7 @@ const RecentComposerCard = ({
 
                 {/* Period */}
                 <div className="flex items-center gap-1 mt-2">
-                  <GiMusicalNotes className="w-3 h-3 text-theme-tertiary" />
+                  <PiMusicNotes className="w-3 h-3 text-theme-tertiary" />
                   <span className="text-xs text-theme-tertiary font-medium">
                     {composer.epochName}
                   </span>

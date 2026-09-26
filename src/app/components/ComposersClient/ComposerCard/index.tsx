@@ -4,8 +4,12 @@
 import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
 import Link from '@/app/components/LocalizedLink';
-import { FiUser, FiCalendar, FiExternalLink } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+import {
+  PiArrowSquareOut,
+  PiCalendarBlank,
+  PiMusicNotes,
+  PiUser,
+} from 'react-icons/pi';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
@@ -83,7 +87,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
               ) : (
                 // Fallback avatar
                 <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-3 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all duration-500 group-hover:scale-110">
-                  <FiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
+                  <PiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
                 </div>
               )}
             </div>
@@ -132,7 +136,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
             {/* Dates */}
             {formatDates() && (
               <div className="flex items-center justify-center text-theme-tertiary text-sm">
-                <FiCalendar className="w-3 h-3 mr-1" />
+                <PiCalendarBlank className="w-3 h-3 mr-1" />
                 {formatDates()}
               </div>
             )}
@@ -141,7 +145,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
             {composer.epochName && (
               <div className="text-center">
                 <span className="inline-flex items-center px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary rounded-full text-xs font-medium hover:bg-brand-primary/20 transition-colors duration-300">
-                  <GiMusicalNotes className="w-3 h-3 mr-1" />
+                  <PiMusicNotes className="w-3 h-3 mr-1" />
                   {translateEpochWithHook(composer.epochName, t)}
                 </span>
               </div>
@@ -159,7 +163,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
                     onClick={(e) => e.stopPropagation()}
                   >
                     Wikipedia
-                    <FiExternalLink className="w-2.5 h-2.5 ml-1 opacity-60 group-hover/link:opacity-100 transition-opacity" />
+                    <PiArrowSquareOut className="w-2.5 h-2.5 ml-1 opacity-60 group-hover/link:opacity-100 transition-opacity" />
                   </a>
                 )}
                 {composer.permLinkImslp && (
@@ -171,7 +175,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
                     onClick={(e) => e.stopPropagation()}
                   >
                     IMSLP
-                    <FiExternalLink className="w-2.5 h-2.5 ml-1 opacity-60 group-hover/link:opacity-100 transition-opacity" />
+                    <PiArrowSquareOut className="w-2.5 h-2.5 ml-1 opacity-60 group-hover/link:opacity-100 transition-opacity" />
                   </a>
                 )}
               </div>

@@ -10,16 +10,16 @@ import {
   ComposerFilterOptions,
 } from '@/app/requests/composer-details';
 import {
-  FiCalendar,
-  FiMapPin,
-  FiUser,
-  FiExternalLink,
-  FiBookOpen,
-  FiUsers,
-  FiMusic,
-  FiHeart,
-  FiInfo,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiHeart,
+  PiInfo,
+  PiMapPin,
+  PiMusicNotes,
+  PiUser,
+  PiUsers,
+} from 'react-icons/pi';
 import ComposerBiography from '../../../../components/ComposerBiography';
 import ComposerWorks from '../../../../components/ComposersClient/ComposerWorks';
 import ComposerVideo from '../../../../components/ComposerVideo';
@@ -377,7 +377,7 @@ export default function ComposerDetailsClient({
                       {composer.birthDate && (
                         <div className="flex items-start space-x-3 group">
                           <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                            <FiCalendar className="w-4 h-4 text-theme-primary" />
+                            <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
@@ -394,7 +394,7 @@ export default function ComposerDetailsClient({
                       {composer.deathDate ? (
                         <div className="flex items-start space-x-3 group">
                           <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                            <FiCalendar className="w-4 h-4 text-theme-primary" />
+                            <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
@@ -414,7 +414,7 @@ export default function ComposerDetailsClient({
                         composer.birthDate && (
                           <div className="flex items-start space-x-3 group">
                             <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                              <FiHeart className="w-4 h-4 text-theme-primary" />
+                              <PiHeart className="w-4 h-4 text-theme-primary" />
                             </div>
                             <div>
                               <p className="text-sm font-medium text-theme-tertiary">
@@ -434,7 +434,7 @@ export default function ComposerDetailsClient({
                       {/* Época */}
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiMapPin className="w-4 h-4 text-theme-primary" />
+                          <PiMapPin className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -450,7 +450,7 @@ export default function ComposerDetailsClient({
                       {composer.primaryRoleName && (
                         <div className="flex items-start space-x-3 group">
                           <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                            <FiUser className="w-4 h-4 text-theme-primary" />
+                            <PiUser className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
@@ -485,7 +485,7 @@ export default function ComposerDetailsClient({
                       {composer.instruments && (
                         <div className="flex items-start space-x-3 group">
                           <div className="w-8 h-8 pl-2 pr-2 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                            <FiUser className="w-4 h-4 text-theme-primary" />
+                            <PiUser className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div className="flex flex-col ">
                             <p className="text-sm font-medium text-theme-tertiary">
@@ -511,7 +511,7 @@ export default function ComposerDetailsClient({
                             rel="noopener noreferrer"
                             className="btn-classical-primary flex items-center space-x-2 group/btn"
                           >
-                            <FiExternalLink className="w-4 h-4" />
+                            <PiArrowSquareOut className="w-4 h-4" />
                             <span>{t('wikipedia_link')}</span>
                             <svg
                               className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
@@ -536,7 +536,7 @@ export default function ComposerDetailsClient({
                             rel="noopener noreferrer"
                             className="btn-classical-secondary flex items-center space-x-2 group/btn"
                           >
-                            <FiBookOpen className="w-4 h-4" />
+                            <PiBookOpen className="w-4 h-4" />
                             <span>{t('imslp_link')}</span>
                             <svg
                               className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
@@ -581,7 +581,7 @@ export default function ComposerDetailsClient({
                     ) : (
                       <div className="w-64 h-80 bg-gradient-card border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <div className="text-center text-theme-tertiary">
-                          <FiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                          <PiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
                           <p className="text-sm">{t('no_image_available')}</p>
                         </div>
                       </div>
@@ -601,7 +601,7 @@ export default function ComposerDetailsClient({
               <AnimatedItem direction="up" springType="bouncy">
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center">
-                    <FiUsers className="w-6 h-6 text-theme-primary" />
+                    <PiUsers className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -619,7 +619,7 @@ export default function ComposerDetailsClient({
                   <AnimatedItem key={index} hover="scale" springType="bouncy">
                     <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-blue/10 to-accent-purple/10 border border-accent-blue/30 rounded-full text-sm font-medium text-accent-blue shadow-theme-small hover:shadow-theme-medium transition-all duration-300 hover:scale-105 group">
                       <div className="w-4 h-4 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
-                        <FiMusic className="w-3 h-3 text-theme-primary" />
+                        <PiMusicNotes className="w-3 h-3 text-theme-primary" />
                       </div>
 
                       {translateRole(role, language)}
@@ -652,7 +652,7 @@ export default function ComposerDetailsClient({
             <AnimatedItem direction="left" springType="smooth">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
-                  <FiBookOpen className="w-6 h-6 text-theme-primary" />
+                  <PiBookOpen className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="flex-1">
                   <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -661,7 +661,7 @@ export default function ComposerDetailsClient({
                 </div>
                 <div className="relative group">
                   <div className="w-8 h-8 bg-interactive-hover rounded-full flex items-center justify-center cursor-help">
-                    <FiInfo className="w-4 h-4 text-theme-tertiary" />
+                    <PiInfo className="w-4 h-4 text-theme-tertiary" />
                   </div>
                   {/* Tooltip */}
                   <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-theme-elevated border border-theme-primary text-theme-primary text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-theme-medium">

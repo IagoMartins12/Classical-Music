@@ -5,9 +5,7 @@ import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
-import { BiDownload } from 'react-icons/bi';
-import { FiFile, FiMaximize2 } from 'react-icons/fi';
-import { FaTrash } from 'react-icons/fa';
+import { PiArrowsOut, PiDownloadSimple, PiFile, PiTrash } from 'react-icons/pi';
 
 const ScoreViewerComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -41,7 +39,7 @@ const ScoreViewerComponent = (props: any) => {
         <div className="bg-accent-green text-white px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <FiFile className="w-6 h-6" />
+              <PiFile className="w-6 h-6" />
               <div>
                 <h4 className="font-bold">{scoreTitle || 'Partitura'}</h4>
                 <p className="text-sm opacity-90">
@@ -58,7 +56,7 @@ const ScoreViewerComponent = (props: any) => {
                   className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                   title="Remover"
                 >
-                  <FaTrash className="w-4 h-4" />
+                  <PiTrash className="w-4 h-4" />
                 </button>
               )}
 
@@ -70,7 +68,7 @@ const ScoreViewerComponent = (props: any) => {
                   className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
                   title="Download"
                 >
-                  <BiDownload className="w-5 h-5" />
+                  <PiDownloadSimple className="w-5 h-5" />
                 </a>
               )}
               <button
@@ -78,7 +76,7 @@ const ScoreViewerComponent = (props: any) => {
                 className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
                 title="Tela cheia"
               >
-                <FiMaximize2 className="w-5 h-5" />
+                <PiArrowsOut className="w-5 h-5" />
               </button>
             </div>
           </div>

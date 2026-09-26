@@ -5,7 +5,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { useOnboardingModal } from '@/app/stores/authStore';
 import Image from '@/app/components/SmartImage';
 import React, { useRef, useState, useEffect } from 'react';
-import { FiCamera, FiEdit3, FiTrash2 } from 'react-icons/fi';
+import { PiCamera, PiPencilLine, PiTrash } from 'react-icons/pi';
 
 interface ProfileImageUploadProps {
   currentImage?: string | null;
@@ -123,7 +123,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
       );
     }
 
-    return <FiCamera className={iconSizes[size]} />;
+    return <PiCamera className={iconSizes[size]} />;
   };
 
   return (
@@ -165,7 +165,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
 
         {/* Upload Overlay Hint */}
         <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 flex items-center justify-center transition-all opacity-0 hover:opacity-100">
-          <FiEdit3 className="text-white text-lg" />
+          <PiPencilLine className="text-white text-lg" />
         </div>
       </div>
 
@@ -185,7 +185,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
           `}
           title="Remover foto"
         >
-          <FiTrash2 className="w-3 h-3" />
+          <PiTrash className="w-3 h-3" />
         </button>
       )}
 

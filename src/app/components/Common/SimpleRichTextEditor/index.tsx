@@ -3,17 +3,17 @@
 
 import { useRef, forwardRef, useState, useEffect } from 'react';
 import {
-  FiBold,
-  FiItalic,
-  FiUnderline,
-  FiList,
-  FiAlignLeft,
-  FiAlignCenter,
-  FiAlignRight,
-  FiType,
-  FiLink,
-  FiCode,
-} from 'react-icons/fi';
+  PiCode,
+  PiLink,
+  PiListBullets,
+  PiTextAlignCenter,
+  PiTextAlignLeft,
+  PiTextAlignRight,
+  PiTextB,
+  PiTextItalic,
+  PiTextT,
+  PiTextUnderline,
+} from 'react-icons/pi';
 
 interface SimpleRichTextEditorProps {
   value: string;
@@ -187,19 +187,19 @@ const SimpleRichTextEditor = forwardRef<
             <div className="flex gap-1">
               <ToolbarButton
                 onClick={() => handleCommand('bold')}
-                icon={FiBold}
+                icon={PiTextB}
                 isActive={isActive.bold}
                 title="Negrito"
               />
               <ToolbarButton
                 onClick={() => handleCommand('italic')}
-                icon={FiItalic}
+                icon={PiTextItalic}
                 isActive={isActive.italic}
                 title="Itálico"
               />
               <ToolbarButton
                 onClick={() => handleCommand('underline')}
-                icon={FiUnderline}
+                icon={PiTextUnderline}
                 isActive={isActive.underline}
                 title="Sublinhado"
               />
@@ -211,12 +211,12 @@ const SimpleRichTextEditor = forwardRef<
             <div className="flex gap-1">
               <ToolbarButton
                 onClick={() => handleCommand('insertUnorderedList')}
-                icon={FiList}
+                icon={PiListBullets}
                 title="Lista com marcadores"
               />
               <ToolbarButton
                 onClick={() => handleCommand('insertOrderedList')}
-                icon={FiType}
+                icon={PiTextT}
                 title="Lista numerada"
               />
             </div>
@@ -227,17 +227,17 @@ const SimpleRichTextEditor = forwardRef<
             <div className="flex gap-1">
               <ToolbarButton
                 onClick={() => handleCommand('justifyLeft')}
-                icon={FiAlignLeft}
+                icon={PiTextAlignLeft}
                 title="Alinhar à esquerda"
               />
               <ToolbarButton
                 onClick={() => handleCommand('justifyCenter')}
-                icon={FiAlignCenter}
+                icon={PiTextAlignCenter}
                 title="Centralizar"
               />
               <ToolbarButton
                 onClick={() => handleCommand('justifyRight')}
-                icon={FiAlignRight}
+                icon={PiTextAlignRight}
                 title="Alinhar à direita"
               />
             </div>
@@ -248,12 +248,12 @@ const SimpleRichTextEditor = forwardRef<
             <div className="flex gap-1">
               <ToolbarButton
                 onClick={insertLink}
-                icon={FiLink}
+                icon={PiLink}
                 title="Inserir link"
               />
               <ToolbarButton
                 onClick={() => handleCommand('formatBlock', 'blockquote')}
-                icon={FiCode}
+                icon={PiCode}
                 title="Citação"
               />
             </div>

@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { FiCheck, FiArrowRight } from 'react-icons/fi';
-import { GiPartyPopper } from 'react-icons/gi';
+import { PiArrowRight, PiCheck, PiConfetti } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 
 export default function SubscriptionSuccessPage() {
@@ -44,7 +43,7 @@ export default function SubscriptionSuccessPage() {
         <div className="bg-theme-elevated rounded-2xl shadow-theme-large p-8 md:p-12 text-center">
           {/* Success Icon */}
           <div className="w-24 h-24 bg-gradient-to-br from-accent-green to-green-600 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
-            <FiCheck className="w-12 h-12 text-white" />
+            <PiCheck className="w-12 h-12 text-white" />
           </div>
 
           {/* Title */}
@@ -60,7 +59,7 @@ export default function SubscriptionSuccessPage() {
           <div className="bg-theme-secondary rounded-xl p-6 mb-8 text-left">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 bg-brand-gradient rounded-lg flex items-center justify-center flex-shrink-0">
-                <GiPartyPopper className="w-6 h-6 text-white" />
+                <PiConfetti className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-theme-primary mb-2">
@@ -68,18 +67,18 @@ export default function SubscriptionSuccessPage() {
                 </h3>
                 <ul className="space-y-2 text-theme-secondary">
                   <li className="flex items-center gap-2">
-                    <FiCheck className="w-4 h-4 text-accent-green flex-shrink-0" />
+                    <PiCheck className="w-4 h-4 text-accent-green flex-shrink-0" />
                     <span>
                       Você tem acesso imediato a todas as funcionalidades do seu
                       plano
                     </span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <FiCheck className="w-4 h-4 text-accent-green flex-shrink-0" />
+                    <PiCheck className="w-4 h-4 text-accent-green flex-shrink-0" />
                     <span>Um email de confirmação foi enviado para você</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <FiCheck className="w-4 h-4 text-accent-green flex-shrink-0" />
+                    <PiCheck className="w-4 h-4 text-accent-green flex-shrink-0" />
                     <span>A nota fiscal está disponível no seu painel</span>
                   </li>
                 </ul>
@@ -94,7 +93,7 @@ export default function SubscriptionSuccessPage() {
               className="flex-1 flex items-center justify-center gap-2"
             >
               <span>Ir para o Dashboard</span>
-              <FiArrowRight className="w-5 h-5" />
+              <PiArrowRight className="w-5 h-5" />
             </Button>
             <Button
               onClick={() => router.push('/subscription')}

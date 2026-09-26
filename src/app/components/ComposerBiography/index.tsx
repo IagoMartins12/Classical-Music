@@ -2,8 +2,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiRefreshCw, FiAlertCircle, FiX } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+import {
+  PiArrowsClockwise,
+  PiMusicNotes,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useBiographyWithLanguage } from '@/app/hooks/useBiographyWithLanguage';
 
@@ -90,11 +94,11 @@ export default function ComposerBiography({
       <div className="rounded-2xl p-6 flex justify-center">
         <div className="flex flex-col gap-4 justify-center items-center space-x-4">
           <div className="w-10 h-10 bg-accent-red/20 border border-accent-red/40 rounded-xl flex items-center justify-center flex-shrink-0">
-            <FiAlertCircle className="w-5 h-5 text-accent-red" />
+            <PiWarningCircle className="w-5 h-5 text-accent-red" />
           </div>
           <div className="flex-1 items-center justify-center">
             <div className="flex items-center space-x-2 mb-2">
-              <FiX className="w-4 h-4 text-accent-red" />
+              <PiX className="w-4 h-4 text-accent-red" />
               <p className="text-accent-red font-semibold">
                 {t('error_generating_bio')}
               </p>
@@ -105,7 +109,7 @@ export default function ComposerBiography({
                 onClick={handleRetry}
                 className="btn-classical-secondary flex items-center space-x-2 group"
               >
-                <FiRefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+                <PiArrowsClockwise className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
                 <span>{t('try_again')}</span>
               </button>
             </div>
@@ -144,7 +148,7 @@ export default function ComposerBiography({
             className="ml-2 p-1 rounded-md hover:bg-accent-green/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title="Refresh biography"
           >
-            <FiRefreshCw
+            <PiArrowsClockwise
               className={`w-3 h-3 text-accent-green ${
                 isGenerating ? 'animate-spin' : 'hover:rotate-180'
               } transition-transform duration-500`}
@@ -157,7 +161,7 @@ export default function ComposerBiography({
       {warning && (
         <div className="mb-6 p-3 bg-gradient-to-r from-accent-orange/10 to-accent-red/10 border border-accent-orange/30 rounded-xl">
           <div className="flex items-center space-x-2">
-            <FiAlertCircle className="w-4 h-4 text-accent-orange" />
+            <PiWarningCircle className="w-4 h-4 text-accent-orange" />
             <span className="text-accent-orange text-sm font-medium">
               {warning}
             </span>
@@ -170,7 +174,7 @@ export default function ComposerBiography({
         <div className="mb-6 p-3 bg-gradient-to-r from-accent-orange/10 to-accent-red/10 border border-accent-orange/30 rounded-xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <FiAlertCircle className="w-4 h-4 text-accent-orange" />
+              <PiWarningCircle className="w-4 h-4 text-accent-orange" />
               <span className="text-accent-orange text-sm font-medium">
                 Translation error - showing previous version
               </span>
@@ -206,7 +210,7 @@ export default function ComposerBiography({
       <div className="mt-6 pt-6 border-t border-theme-secondary">
         <div className="flex items-center justify-center space-x-2 text-theme-tertiary">
           <div className="w-1 h-1 bg-brand-primary rounded-full animate-pulse"></div>
-          <GiMusicalNotes className="w-4 h-4" />
+          <PiMusicNotes className="w-4 h-4" />
           <div
             className="w-1 h-1 bg-brand-primary rounded-full animate-pulse"
             style={{ animationDelay: '0.5s' }}

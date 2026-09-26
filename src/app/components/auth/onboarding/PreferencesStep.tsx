@@ -3,7 +3,7 @@
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import React, { useState, useEffect } from 'react';
-import { FiSearch, FiHeart, FiLoader } from 'react-icons/fi';
+import { PiHeart, PiMagnifyingGlass, PiSpinnerGap } from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Select from '../../Common/Select';
@@ -158,7 +158,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
         {/* Favorite Epoch */}
         <div>
           <label className="block text-sm font-medium text-theme-secondary mb-3">
-            <FiHeart className="w-4 h-4 inline mr-2" />
+            <PiHeart className="w-4 h-4 inline mr-2" />
             {t('preferences_step_favorite_epoch')}
           </label>
 
@@ -200,10 +200,10 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
               placeholder={t('preferences_step_search_composer')}
               value={composerSearch}
               onChange={(e) => setComposerSearch(e.target.value)}
-              leftIcon={<FiSearch className="w-4 h-4" />}
+              leftIcon={<PiMagnifyingGlass className="w-4 h-4" />}
               rightIcon={
                 isSearchingComposers ? (
-                  <FiLoader className="w-4 h-4 animate-spin text-theme-tertiary" />
+                  <PiSpinnerGap className="w-4 h-4 animate-spin text-theme-tertiary" />
                 ) : undefined
               }
             />
@@ -277,7 +277,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
           {isSearchingComposers && (
             <div className="text-center py-4">
               <div className="flex items-center justify-center space-x-2">
-                <FiLoader className="w-4 h-4 animate-spin text-theme-tertiary" />
+                <PiSpinnerGap className="w-4 h-4 animate-spin text-theme-tertiary" />
                 <span className="text-sm text-theme-tertiary">
                   {t('preferences_step_searching_composers')}
                 </span>

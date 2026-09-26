@@ -2,20 +2,20 @@
 'use client';
 
 import {
-  FiFileText,
-  FiActivity,
-  FiUser,
-  FiSearch,
-  FiRefreshCw,
-  FiFilter,
-  FiLoader,
-  FiClock,
-  FiUpload,
-  FiMessageSquare,
-  FiHeart,
-  FiMusic,
-  FiX,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiChatCenteredText,
+  PiClock,
+  PiFileText,
+  PiFunnel,
+  PiHeart,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiPulse,
+  PiSpinnerGap,
+  PiUploadSimple,
+  PiUser,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -76,30 +76,30 @@ export default function LogsAudit() {
 
   const getActivityIcon = (type: string) => {
     const iconMap: Record<string, any> = {
-      UPLOAD: FiUpload, // 🆕 Ícone para uploads
-      FAVORITE_COMPOSER: FiHeart,
-      UNFAVORITE_COMPOSER: FiHeart,
-      FAVORITE_WORK: FiMusic,
-      UNFAVORITE_WORK: FiMusic,
-      FAVORITE_SCORE: FiFileText,
-      UNFAVORITE_SCORE: FiFileText,
-      ADD_WANT_TO_LEARN: FiUpload,
-      REMOVE_WANT_TO_LEARN: FiUpload,
-      UPDATE_WANT_TO_LEARN: FiUpload,
-      ADD_LEARNED: FiActivity,
-      REMOVE_LEARNED: FiActivity,
-      UPDATE_LEARNED: FiActivity,
-      CREATE_ANNOTATION: FiMessageSquare,
-      UPDATE_ANNOTATION: FiMessageSquare,
-      DELETE_ANNOTATION: FiMessageSquare,
-      VOTE_ANNOTATION_HELPFUL: FiMessageSquare,
-      VOTE_ANNOTATION_NOT_HELPFUL: FiMessageSquare,
-      REPORT_UPLOAD: FiActivity,
-      UPLOAD_VIDEO: FiUpload,
-      DELETE_VIDEO: FiUpload,
-      UPDATE_PROFILE: FiUser,
+      UPLOAD: PiUploadSimple, // 🆕 Ícone para uploads
+      FAVORITE_COMPOSER: PiHeart,
+      UNFAVORITE_COMPOSER: PiHeart,
+      FAVORITE_WORK: PiMusicNotes,
+      UNFAVORITE_WORK: PiMusicNotes,
+      FAVORITE_SCORE: PiFileText,
+      UNFAVORITE_SCORE: PiFileText,
+      ADD_WANT_TO_LEARN: PiUploadSimple,
+      REMOVE_WANT_TO_LEARN: PiUploadSimple,
+      UPDATE_WANT_TO_LEARN: PiUploadSimple,
+      ADD_LEARNED: PiPulse,
+      REMOVE_LEARNED: PiPulse,
+      UPDATE_LEARNED: PiPulse,
+      CREATE_ANNOTATION: PiChatCenteredText,
+      UPDATE_ANNOTATION: PiChatCenteredText,
+      DELETE_ANNOTATION: PiChatCenteredText,
+      VOTE_ANNOTATION_HELPFUL: PiChatCenteredText,
+      VOTE_ANNOTATION_NOT_HELPFUL: PiChatCenteredText,
+      REPORT_UPLOAD: PiPulse,
+      UPLOAD_VIDEO: PiUploadSimple,
+      DELETE_VIDEO: PiUploadSimple,
+      UPDATE_PROFILE: PiUser,
     };
-    return iconMap[type] || FiActivity;
+    return iconMap[type] || PiPulse;
   };
 
   const getActivityColor = (type: string) => {
@@ -175,7 +175,7 @@ export default function LogsAudit() {
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiActivity className="w-8 h-8 text-theme-primary" />
+                <PiPulse className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -232,7 +232,7 @@ export default function LogsAudit() {
 
               {/* Busca */}
               <div className="relative flex-1 min-w-64">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                 <Input
                   type="text"
                   placeholder="Buscar por usuário, ação..."
@@ -249,7 +249,7 @@ export default function LogsAudit() {
                 variant="ghost"
                 size="sm"
                 leftIcon={
-                  <FiRefreshCw
+                  <PiArrowsClockwise
                     className={activitiesLoading ? 'animate-spin' : ''}
                   />
                 }
@@ -266,7 +266,7 @@ export default function LogsAudit() {
               activityFilters.period) && (
               <div className="flex items-center justify-between p-3 mt-4 bg-accent-blue/10 border border-accent-blue rounded-lg">
                 <div className="flex items-center space-x-2 text-sm text-accent-blue">
-                  <FiFilter className="w-4 h-4" />
+                  <PiFunnel className="w-4 h-4" />
                   <span>
                     Filtros ativos:{' '}
                     {[
@@ -285,7 +285,7 @@ export default function LogsAudit() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setActivityFilters({})}
-                  leftIcon={<FiX />}
+                  leftIcon={<PiX />}
                 >
                   Limpar Filtros
                 </Button>
@@ -308,7 +308,7 @@ export default function LogsAudit() {
               </div>
             ) : activities.length === 0 ? (
               <div className="text-center py-12">
-                <FiActivity className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                <PiPulse className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-theme-primary mb-2">
                   Nenhuma atividade encontrada
                 </h3>
@@ -345,7 +345,7 @@ export default function LogsAudit() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-3 mb-2">
                               <span className="text-xs text-theme-tertiary flex items-center space-x-1">
-                                <FiClock className="w-3 h-3" />
+                                <PiClock className="w-3 h-3" />
                                 <span>
                                   {getRelativeTime(
                                     activity.timestamp.toString()
@@ -412,7 +412,7 @@ export default function LogsAudit() {
                       disabled={activitiesLoading}
                       leftIcon={
                         activitiesLoading ? (
-                          <FiLoader className="animate-spin" />
+                          <PiSpinnerGap className="animate-spin" />
                         ) : undefined
                       }
                     >

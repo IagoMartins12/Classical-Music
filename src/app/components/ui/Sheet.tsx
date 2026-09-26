@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useId, useRef } from 'react';
-import { FiX } from 'react-icons/fi';
+import { PiX } from 'react-icons/pi';
 import type { ReactNode } from 'react';
 import { cx } from './cx';
 import { Button } from './Button';
@@ -112,7 +112,7 @@ export function Sheet({
               a faixa de fundo que sobra acima da folha. */}
           <Button
             variante="fantasma"
-            icone={FiX}
+            icone={PiX}
             rotulo="Fechar"
             onClick={aoFechar}
             className="-mr-2 -mt-2"

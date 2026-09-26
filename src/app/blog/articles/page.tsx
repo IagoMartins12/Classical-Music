@@ -1,7 +1,7 @@
 // app/blog/articles/page.tsx — todos os artigos, pela API (ISR)
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { FiTrendingUp, FiClock, FiArrowRight } from 'react-icons/fi';
+import { PiArrowRight, PiClock, PiTrendUp } from 'react-icons/pi';
 import { ArticleCarousel } from '@/app/components/blog/ArticleCarousel';
 import SectionTitle from '@/app/components/Utils/SectionTitle';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
@@ -79,7 +79,7 @@ export default async function ArticlesPage() {
           <SectionTitle
             title="Últimos Artigos"
             subtitle="Os artigos mais recentes do blog"
-            icon={<FiClock className="w-6 h-6" />}
+            icon={<PiClock className="w-6 h-6" />}
             accent="gold"
           />
           {publishedCount > 12 && (
@@ -88,7 +88,7 @@ export default async function ArticlesPage() {
               className="flex items-center gap-2 text-brand-primary hover:text-brand-secondary transition-colors font-medium"
             >
               <span>Ver todos</span>
-              <FiArrowRight className="w-5 h-5" />
+              <PiArrowRight className="w-5 h-5" />
             </Link>
           )}
         </div>
@@ -101,7 +101,7 @@ export default async function ArticlesPage() {
           <SectionTitle
             title="Artigos em Alta"
             subtitle="Os mais lidos pela comunidade"
-            icon={<FiTrendingUp className="w-6 h-6" />}
+            icon={<PiTrendUp className="w-6 h-6" />}
             accent="gold"
           />
           {publishedCount > 12 && (
@@ -110,7 +110,7 @@ export default async function ArticlesPage() {
               className="flex items-center gap-2 text-brand-primary hover:text-brand-secondary transition-colors font-medium"
             >
               <span>Ver todos</span>
-              <FiArrowRight className="w-5 h-5" />
+              <PiArrowRight className="w-5 h-5" />
             </Link>
           )}
         </div>
@@ -135,7 +135,7 @@ export default async function ArticlesPage() {
                 className="flex items-center gap-2 text-brand-primary hover:text-brand-secondary transition-colors font-medium"
               >
                 <span>Ver todos</span>
-                <FiArrowRight className="w-5 h-5" />
+                <PiArrowRight className="w-5 h-5" />
               </Link>
             )}
           </div>

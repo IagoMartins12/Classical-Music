@@ -5,7 +5,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 // Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
 // objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
 import type { User } from '@/app/hooks/userStore';
-import { FiEdit3, FiSave, FiX, FiClock, FiHeart } from 'react-icons/fi';
+import {
+  PiClock,
+  PiFloppyDisk,
+  PiHeart,
+  PiPencilLine,
+  PiX,
+} from 'react-icons/pi';
 
 import { updateMusicalPreferences } from '@/app/actions/profile';
 import { toast } from 'react-hot-toast';
@@ -231,7 +237,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
             variant="outline"
             size="sm"
             onClick={() => setIsEditing(true)}
-            leftIcon={<FiEdit3 />}
+            leftIcon={<PiPencilLine />}
           >
             {t('preferences_edit')}
           </Button>
@@ -241,7 +247,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
               variant="outline"
               size="sm"
               onClick={handleCancel}
-              leftIcon={<FiX />}
+              leftIcon={<PiX />}
               disabled={isLoading}
             >
               {t('preferences_cancel')}
@@ -251,7 +257,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
               size="sm"
               onClick={handleSave}
               isLoading={isLoading}
-              leftIcon={<FiSave />}
+              leftIcon={<PiFloppyDisk />}
             >
               {t('preferences_save')}
             </Button>
@@ -263,7 +269,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <div className="flex items-center space-x-2 mb-3">
-            <FiClock className="w-4 h-4 text-brand-primary" />
+            <PiClock className="w-4 h-4 text-brand-primary" />
             <label className="text-sm font-medium text-theme-secondary">
               {t('preferences_experience_level')}
             </label>
@@ -280,7 +286,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 
         <div>
           <div className="flex items-center space-x-2 mb-3">
-            <FiClock className="w-4 h-4 text-brand-primary" />
+            <PiClock className="w-4 h-4 text-brand-primary" />
             <label className="text-sm font-medium text-theme-secondary">
               {t('preferences_practice_time')}
             </label>
@@ -299,7 +305,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       {/* Favorites */}
       <div className="pt-6 border-t border-theme-secondary">
         <div className="flex items-center space-x-2 mb-6">
-          <FiHeart className="w-4 h-4 text-brand-primary" />
+          <PiHeart className="w-4 h-4 text-brand-primary" />
           <h4 className="font-medium text-theme-primary">
             {t('preferences_favorites')}
           </h4>

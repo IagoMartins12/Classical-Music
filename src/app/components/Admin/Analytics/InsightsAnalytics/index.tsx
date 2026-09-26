@@ -3,31 +3,31 @@
 
 import { useState } from 'react';
 import {
-  FiTrendingUp,
-  FiTrendingDown,
-  FiZap,
-  FiTarget,
-  FiActivity,
-  FiUsers,
-  FiRefreshCw,
-  FiDownload,
-  FiAlertTriangle,
-  FiCheckCircle,
-  FiInfo,
-  FiBarChart2,
-  FiClock,
-  FiEye,
-  FiMapPin,
-  FiShield,
-  FiTrendingUp as FiGrowth,
-  FiDollarSign,
-  FiCpu,
-  FiHeart,
-  FiAward,
-  FiFlag,
-  FiFilter,
-  FiPieChart,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiBrain,
+  PiChartBar,
+  PiChartPie,
+  PiCheckCircle,
+  PiClock,
+  PiCpu,
+  PiCurrencyDollar,
+  PiDownloadSimple,
+  PiEye,
+  PiFlag,
+  PiFunnel,
+  PiHeart,
+  PiInfo,
+  PiLightning,
+  PiMapPin,
+  PiMedal,
+  PiPulse,
+  PiShield,
+  PiTarget,
+  PiTrendDown,
+  PiTrendUp,
+  PiUsers,
+  PiWarning,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -41,7 +41,6 @@ import { useAdminInsights } from '@/app/hooks/admin/useAdminInsights';
 import toast from 'react-hot-toast';
 import { formatNumber } from '../../Utils';
 import LoadingAdminState from '../../Common/LoadingState';
-import { BiBrain } from 'react-icons/bi';
 
 // ===== UTILITY FUNCTIONS (Moved outside component for reusability) =====
 const getSeverityColor = (severity: string) => {
@@ -75,11 +74,11 @@ const getImpactColor = (impact: string) => {
 const getTrendIcon = (trend: string) => {
   switch (trend) {
     case 'up':
-      return FiTrendingUp;
+      return PiTrendUp;
     case 'down':
-      return FiTrendingDown;
+      return PiTrendDown;
     default:
-      return FiActivity;
+      return PiPulse;
   }
 };
 
@@ -163,7 +162,7 @@ export default function AdvancedInsightsAnalytics() {
         <div className="flex items-center justify-center min-h-[50vh]">
           <AnimatedCard className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-3xl flex items-center justify-center mx-auto mb-4">
-              <FiAlertTriangle className="w-8 h-8 text-theme-primary" />
+              <PiWarning className="w-8 h-8 text-theme-primary" />
             </div>
             <h3 className="text-xl font-bold text-theme-primary mb-2">
               Erro ao Carregar Analytics IA
@@ -172,7 +171,7 @@ export default function AdvancedInsightsAnalytics() {
             <Button
               variant="primary"
               onClick={handleRefresh}
-              leftIcon={<FiRefreshCw />}
+              leftIcon={<PiArrowsClockwise />}
               disabled={loading}
             >
               Tentar Novamente
@@ -187,7 +186,7 @@ export default function AdvancedInsightsAnalytics() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <BiBrain className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+          <PiBrain className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Nenhum Insight Disponível
           </h2>
@@ -197,7 +196,7 @@ export default function AdvancedInsightsAnalytics() {
           <Button
             variant="primary"
             onClick={handleRefresh}
-            leftIcon={<FiRefreshCw />}
+            leftIcon={<PiArrowsClockwise />}
           >
             Inicializar Análise IA
           </Button>
@@ -214,7 +213,7 @@ export default function AdvancedInsightsAnalytics() {
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <BiBrain className="w-8 h-8 text-theme-primary" />
+                <PiBrain className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -301,7 +300,7 @@ export default function AdvancedInsightsAnalytics() {
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mb-8 border-l-4 border-accent-red">
               <div className="flex items-center space-x-3 mb-4">
-                <FiAlertTriangle className="w-6 h-6 text-accent-red" />
+                <PiWarning className="w-6 h-6 text-accent-red" />
                 <h3 className="text-xl font-bold text-theme-primary">
                   ⚠️ Alertas Críticos Detectados
                 </h3>
@@ -336,7 +335,7 @@ export default function AdvancedInsightsAnalytics() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
             <AnimatedCard className="classical-card p-6 text-center">
-              <FiUsers className="w-8 h-8 text-accent-blue mx-auto mb-3" />
+              <PiUsers className="w-8 h-8 text-accent-blue mx-auto mb-3" />
               <div className="text-2xl font-bold text-theme-primary">
                 {insights.riskAssessment.churnRiskUsers.length}
               </div>
@@ -346,7 +345,7 @@ export default function AdvancedInsightsAnalytics() {
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
-              <FiGrowth className="w-8 h-8 text-accent-green mx-auto mb-3" />
+              <PiTrendUp className="w-8 h-8 text-accent-green mx-auto mb-3" />
               <div className="text-2xl font-bold text-theme-primary">
                 {
                   insights.growthOpportunities.filter(
@@ -360,7 +359,7 @@ export default function AdvancedInsightsAnalytics() {
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
-              <FiFlag className="w-8 h-8 text-accent-amber mx-auto mb-3" />
+              <PiFlag className="w-8 h-8 text-accent-amber mx-auto mb-3" />
               <div className="text-2xl font-bold text-theme-primary">
                 {insights.anomalies.length}
               </div>
@@ -370,7 +369,7 @@ export default function AdvancedInsightsAnalytics() {
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
-              <FiAward className="w-8 h-8 text-accent-purple mx-auto mb-3" />
+              <PiMedal className="w-8 h-8 text-accent-purple mx-auto mb-3" />
               <div className="text-2xl font-bold text-theme-primary">
                 {insights.educationalEngagement.learningProgressions.length}
               </div>
@@ -439,7 +438,7 @@ export default function AdvancedInsightsAnalytics() {
                 variant="ghost"
                 size="sm"
                 leftIcon={
-                  <FiRefreshCw
+                  <PiArrowsClockwise
                     className={loading || isGenerating ? 'animate-spin' : ''}
                   />
                 }
@@ -452,7 +451,7 @@ export default function AdvancedInsightsAnalytics() {
               <Button
                 variant="secondary"
                 size="sm"
-                leftIcon={<FiDownload />}
+                leftIcon={<PiDownloadSimple />}
                 onClick={handleExportInsights}
                 disabled={isGenerating}
               >
@@ -462,7 +461,7 @@ export default function AdvancedInsightsAnalytics() {
               <Button
                 variant="primary"
                 size="sm"
-                leftIcon={<FiZap />}
+                leftIcon={<PiLightning />}
                 onClick={() => handleGeneratePrediction('overall')}
                 disabled={isGenerating}
               >
@@ -558,7 +557,7 @@ export default function AdvancedInsightsAnalytics() {
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mt-8">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                <FiClock className="w-5 h-5 text-accent-purple" />
+                <PiClock className="w-5 h-5 text-accent-purple" />
                 <span>🎯 Próximas Ações Prioritárias</span>
               </h3>
 
@@ -630,7 +629,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
     <div className="space-y-8">
       <AnimatedItem direction="up" springType="gentle">
         <h2 className="text-2xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-          <FiEye className="w-6 h-6 text-accent-blue" />
+          <PiEye className="w-6 h-6 text-accent-blue" />
           <span>📊 Visão Geral Executiva</span>
         </h2>
       </AnimatedItem>
@@ -639,7 +638,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
       {insights.summary.keyFindings.length > 0 && (
         <AnimatedCard className="classical-card p-6">
           <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-            <BiBrain className="w-5 h-5 text-accent-purple" />
+            <PiBrain className="w-5 h-5 text-accent-purple" />
             <span>🔍 Principais Descobertas da IA</span>
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -668,7 +667,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
         <AnimatedCard className="classical-card p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-theme-primary flex items-center space-x-2">
-              <FiAward className="w-5 h-5 text-accent-green" />
+              <PiMedal className="w-5 h-5 text-accent-green" />
               <span>📚 Performance Educacional</span>
             </h3>
             <Button
@@ -677,7 +676,9 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               onClick={() => onRefreshModule('educational')}
               disabled={isGenerating}
             >
-              <FiRefreshCw className={isGenerating ? 'animate-spin' : ''} />
+              <PiArrowsClockwise
+                className={isGenerating ? 'animate-spin' : ''}
+              />
             </Button>
           </div>
 
@@ -728,7 +729,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
         <AnimatedCard className="classical-card p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-theme-primary flex items-center space-x-2">
-              <FiShield className="w-5 h-5 text-accent-amber" />
+              <PiShield className="w-5 h-5 text-accent-amber" />
               <span>⚠️ Monitoramento de Riscos</span>
             </h3>
             <Button
@@ -737,7 +738,9 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               onClick={() => onRefreshModule('risk')}
               disabled={isGenerating}
             >
-              <FiRefreshCw className={isGenerating ? 'animate-spin' : ''} />
+              <PiArrowsClockwise
+                className={isGenerating ? 'animate-spin' : ''}
+              />
             </Button>
           </div>
 
@@ -794,7 +797,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
         <AnimatedCard className="classical-card p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-theme-primary flex items-center space-x-2">
-              <FiGrowth className="w-5 h-5 text-accent-purple" />
+              <PiTrendUp className="w-5 h-5 text-accent-purple" />
               <span>🚀 Potencial de Crescimento</span>
             </h3>
             <Button
@@ -803,7 +806,9 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               onClick={() => onRefreshModule('growth')}
               disabled={isGenerating}
             >
-              <FiRefreshCw className={isGenerating ? 'animate-spin' : ''} />
+              <PiArrowsClockwise
+                className={isGenerating ? 'animate-spin' : ''}
+              />
             </Button>
           </div>
 
@@ -843,7 +848,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
       {/* Real-time System Status */}
       <AnimatedCard className="classical-card p-6">
         <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-          <FiCpu className="w-5 h-5 text-accent-blue" />
+          <PiCpu className="w-5 h-5 text-accent-blue" />
           <span>⚡ Status do Sistema em Tempo Real</span>
         </h3>
 
@@ -891,13 +896,13 @@ function PredictionsSection({
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
-            <FiTarget className="w-6 h-6 text-accent-purple" />
+            <PiTarget className="w-6 h-6 text-accent-purple" />
             <span>🔮 Previsões Inteligentes</span>
           </h2>
           <Button
             variant="primary"
             size="sm"
-            leftIcon={<FiZap />}
+            leftIcon={<PiLightning />}
             onClick={() => onGeneratePrediction('comprehensive')}
             disabled={isGenerating}
           >
@@ -1025,14 +1030,16 @@ function EducationalEngagementSection({
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
-            <FiAward className="w-6 h-6 text-accent-green" />
+            <PiMedal className="w-6 h-6 text-accent-green" />
             <span>📚 Engajamento Educacional</span>
           </h2>
           <Button
             variant="secondary"
             size="sm"
             leftIcon={
-              <FiRefreshCw className={isGenerating ? 'animate-spin' : ''} />
+              <PiArrowsClockwise
+                className={isGenerating ? 'animate-spin' : ''}
+              />
             }
             onClick={() => onRefreshModule('educational')}
             disabled={isGenerating}
@@ -1045,7 +1052,7 @@ function EducationalEngagementSection({
       {/* Learning Progressions */}
       <AnimatedCard className="classical-card p-6">
         <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-          <FiTarget className="w-5 h-5 text-accent-blue" />
+          <PiTarget className="w-5 h-5 text-accent-blue" />
           <span>🎯 Progressões de Aprendizado</span>
         </h3>
 
@@ -1121,7 +1128,7 @@ function EducationalEngagementSection({
       {/* Composer Discovery Patterns */}
       <AnimatedCard className="classical-card p-6">
         <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-          <FiMapPin className="w-5 h-5 text-accent-purple" />
+          <PiMapPin className="w-5 h-5 text-accent-purple" />
           <span>🗺️ Padrões de Descoberta Musical</span>
         </h3>
 
@@ -1170,7 +1177,7 @@ function EducationalEngagementSection({
         {/* Annotation Quality */}
         <AnimatedCard className="classical-card p-6">
           <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-            <FiHeart className="w-5 h-5 text-accent-red" />
+            <PiHeart className="w-5 h-5 text-accent-red" />
             <span>⭐ Qualidade das Anotações</span>
           </h3>
 
@@ -1220,7 +1227,7 @@ function EducationalEngagementSection({
         {/* Study Session Analysis */}
         <AnimatedCard className="classical-card p-6">
           <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-            <FiClock className="w-5 h-5 text-accent-amber" />
+            <PiClock className="w-5 h-5 text-accent-amber" />
             <span>⏰ Padrões de Estudo</span>
           </h3>
 
@@ -1301,14 +1308,16 @@ function UserJourneySection({
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
-            <FiMapPin className="w-6 h-6 text-accent-blue" />
+            <PiMapPin className="w-6 h-6 text-accent-blue" />
             <span>🗺️ Jornadas de Usuário</span>
           </h2>
           <Button
             variant="secondary"
             size="sm"
             leftIcon={
-              <FiRefreshCw className={isGenerating ? 'animate-spin' : ''} />
+              <PiArrowsClockwise
+                className={isGenerating ? 'animate-spin' : ''}
+              />
             }
             onClick={() => onRefreshModule('user-journey')}
             disabled={isGenerating}
@@ -1321,7 +1330,7 @@ function UserJourneySection({
       {/* Typical User Journeys */}
       <AnimatedCard className="classical-card p-6">
         <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-          <FiUsers className="w-5 h-5 text-accent-green" />
+          <PiUsers className="w-5 h-5 text-accent-green" />
           <span>👥 Jornadas Típicas por Perfil</span>
         </h3>
 
@@ -1406,7 +1415,7 @@ function UserJourneySection({
       {/* Conversion Funnels */}
       <AnimatedCard className="classical-card p-6">
         <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-          <FiFilter className="w-5 h-5 text-accent-purple" />
+          <PiFunnel className="w-5 h-5 text-accent-purple" />
           <span>🔄 Funis de Conversão</span>
         </h3>
 
@@ -1479,7 +1488,7 @@ function UserJourneySection({
       {/* User Segments */}
       <AnimatedCard className="classical-card p-6">
         <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-          <FiPieChart className="w-5 h-5 text-accent-amber" />
+          <PiChartPie className="w-5 h-5 text-accent-amber" />
           <span>🎯 Segmentação de Usuários</span>
         </h3>
 
@@ -1557,14 +1566,16 @@ function RiskAssessmentSection({
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
-            <FiShield className="w-6 h-6 text-accent-red" />
+            <PiShield className="w-6 h-6 text-accent-red" />
             <span>⚠️ Avaliação de Riscos</span>
           </h2>
           <Button
             variant="secondary"
             size="sm"
             leftIcon={
-              <FiRefreshCw className={isGenerating ? 'animate-spin' : ''} />
+              <PiArrowsClockwise
+                className={isGenerating ? 'animate-spin' : ''}
+              />
             }
             onClick={() => onRefreshModule('risk')}
             disabled={isGenerating}
@@ -1577,13 +1588,13 @@ function RiskAssessmentSection({
       {/* High Risk Users */}
       <AnimatedCard className="classical-card p-6">
         <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-          <FiUsers className="w-5 h-5 text-accent-red" />
+          <PiUsers className="w-5 h-5 text-accent-red" />
           <span>🚨 Usuários em Alto Risco de Churn</span>
         </h3>
 
         {riskAssessment.churnRiskUsers.length === 0 ? (
           <div className="text-center py-8">
-            <FiCheckCircle className="w-12 h-12 text-accent-green mx-auto mb-4" />
+            <PiCheckCircle className="w-12 h-12 text-accent-green mx-auto mb-4" />
             <p className="text-theme-secondary">
               Nenhum usuário em alto risco detectado!
             </p>
@@ -1662,7 +1673,7 @@ function RiskAssessmentSection({
       {/* System Health Indicators */}
       <AnimatedCard className="classical-card p-6">
         <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-          <FiActivity className="w-5 h-5 text-accent-blue" />
+          <PiPulse className="w-5 h-5 text-accent-blue" />
           <span>💚 Indicadores de Saúde do Sistema</span>
         </h3>
 
@@ -1759,14 +1770,16 @@ function GrowthOpportunitiesSection({
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
-            <FiGrowth className="w-6 h-6 text-accent-purple" />
+            <PiTrendUp className="w-6 h-6 text-accent-purple" />
             <span>🚀 Oportunidades de Crescimento</span>
           </h2>
           <Button
             variant="secondary"
             size="sm"
             leftIcon={
-              <FiRefreshCw className={isGenerating ? 'animate-spin' : ''} />
+              <PiArrowsClockwise
+                className={isGenerating ? 'animate-spin' : ''}
+              />
             }
             onClick={() => onRefreshModule('growth')}
             disabled={isGenerating}
@@ -1884,14 +1897,16 @@ function MonetizationSection({
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
-            <FiDollarSign className="w-6 h-6 text-accent-green" />
+            <PiCurrencyDollar className="w-6 h-6 text-accent-green" />
             <span>💰 Insights de Monetização</span>
           </h2>
           <Button
             variant="secondary"
             size="sm"
             leftIcon={
-              <FiRefreshCw className={isGenerating ? 'animate-spin' : ''} />
+              <PiArrowsClockwise
+                className={isGenerating ? 'animate-spin' : ''}
+              />
             }
             onClick={() => onRefreshModule('monetization')}
             disabled={isGenerating}
@@ -1904,7 +1919,7 @@ function MonetizationSection({
       {/* Ad Performance Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <AnimatedCard className="classical-card p-6 text-center">
-          <FiBarChart2 className="w-8 h-8 text-accent-blue mx-auto mb-3" />
+          <PiChartBar className="w-8 h-8 text-accent-blue mx-auto mb-3" />
           <div className="text-2xl font-bold text-theme-primary">
             {monetization.adPerformance.overallCTR.toFixed(2)}%
           </div>
@@ -1912,7 +1927,7 @@ function MonetizationSection({
         </AnimatedCard>
 
         <AnimatedCard className="classical-card p-6 text-center">
-          <FiDollarSign className="w-8 h-8 text-accent-green mx-auto mb-3" />
+          <PiCurrencyDollar className="w-8 h-8 text-accent-green mx-auto mb-3" />
           <div className="text-2xl font-bold text-theme-primary">
             ${monetization.adPerformance.revenuePerUser.toFixed(2)}
           </div>
@@ -1920,7 +1935,7 @@ function MonetizationSection({
         </AnimatedCard>
 
         <AnimatedCard className="classical-card p-6 text-center">
-          <FiTrendingUp className="w-8 h-8 text-accent-purple mx-auto mb-3" />
+          <PiTrendUp className="w-8 h-8 text-accent-purple mx-auto mb-3" />
           <div className="text-2xl font-bold text-theme-primary">
             {monetization.adPerformance.topPerformingAds.length}
           </div>
@@ -1933,7 +1948,7 @@ function MonetizationSection({
       {/* User Value Segmentation */}
       <AnimatedCard className="classical-card p-6">
         <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-          <FiUsers className="w-5 h-5 text-accent-blue" />
+          <PiUsers className="w-5 h-5 text-accent-blue" />
           <span>👥 Segmentação por Valor do Usuário</span>
         </h3>
 
@@ -1982,7 +1997,7 @@ function MonetizationSection({
       {/* Monetization Opportunities */}
       <AnimatedCard className="classical-card p-6">
         <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-          <FiZap className="w-5 h-5 text-accent-amber" />
+          <PiLightning className="w-5 h-5 text-accent-amber" />
           <span>⚡ Oportunidades de Monetização</span>
         </h3>
 
@@ -2036,14 +2051,16 @@ function BehaviorPatternsSection({
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
-            <BiBrain className="w-6 h-6 text-accent-purple" />
+            <PiBrain className="w-6 h-6 text-accent-purple" />
             <span>🧠 Padrões de Comportamento</span>
           </h2>
           <Button
             variant="secondary"
             size="sm"
             leftIcon={
-              <FiRefreshCw className={isGenerating ? 'animate-spin' : ''} />
+              <PiArrowsClockwise
+                className={isGenerating ? 'animate-spin' : ''}
+              />
             }
             onClick={() => onRefreshModule('patterns')}
             disabled={isGenerating}
@@ -2118,14 +2135,16 @@ function ContentPerformanceSection({
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
-            <FiBarChart2 className="w-6 h-6 text-accent-blue" />
+            <PiChartBar className="w-6 h-6 text-accent-blue" />
             <span>📊 Performance de Conteúdo</span>
           </h2>
           <Button
             variant="secondary"
             size="sm"
             leftIcon={
-              <FiRefreshCw className={isGenerating ? 'animate-spin' : ''} />
+              <PiArrowsClockwise
+                className={isGenerating ? 'animate-spin' : ''}
+              />
             }
             onClick={() => onRefreshModule('content')}
             disabled={isGenerating}
@@ -2140,7 +2159,7 @@ function ContentPerformanceSection({
         {/* Top Performers */}
         <AnimatedCard className="classical-card p-6">
           <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-            <FiAward className="w-5 h-5 text-accent-green" />
+            <PiMedal className="w-5 h-5 text-accent-green" />
             <span>🏆 Top Performers</span>
           </h3>
           <div className="space-y-3">
@@ -2185,7 +2204,7 @@ function ContentPerformanceSection({
         {/* Underperformers */}
         <AnimatedCard className="classical-card p-6">
           <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-            <FiTrendingDown className="w-5 h-5 text-accent-amber" />
+            <PiTrendDown className="w-5 h-5 text-accent-amber" />
             <span>📈 Oportunidades de Melhoria</span>
           </h3>
           <div className="space-y-4">
@@ -2243,7 +2262,7 @@ function ContentPerformanceSection({
       {/* Content Optimization Recommendations */}
       <AnimatedCard className="classical-card p-6">
         <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-          <FiZap className="w-5 h-5 text-accent-purple" />
+          <PiLightning className="w-5 h-5 text-accent-purple" />
           <span>🎯 Recomendações de Otimização</span>
         </h3>
         <div className="space-y-3">
@@ -2295,14 +2314,16 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
-            <FiAlertTriangle className="w-6 h-6 text-accent-red" />
+            <PiWarning className="w-6 h-6 text-accent-red" />
             <span>🔍 Detecção de Anomalias</span>
           </h2>
           <Button
             variant="secondary"
             size="sm"
             leftIcon={
-              <FiRefreshCw className={isGenerating ? 'animate-spin' : ''} />
+              <PiArrowsClockwise
+                className={isGenerating ? 'animate-spin' : ''}
+              />
             }
             onClick={() => onRefreshModule('anomalies')}
             disabled={isGenerating}
@@ -2314,7 +2335,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
 
       {anomalies.length === 0 ? (
         <AnimatedCard className="classical-card p-8 text-center">
-          <FiCheckCircle className="w-16 h-16 text-accent-green mx-auto mb-4" />
+          <PiCheckCircle className="w-16 h-16 text-accent-green mx-auto mb-4" />
           <h3 className="text-lg font-bold text-theme-primary mb-2">
             ✅ Sistema Operando Normalmente
           </h3>
@@ -2327,10 +2348,10 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
           {anomalies.map((anomaly: any, index: number) => {
             const severityIcon =
               anomaly.severity === 'critical'
-                ? FiAlertTriangle
+                ? PiWarning
                 : anomaly.severity === 'warning'
-                  ? FiInfo
-                  : FiCheckCircle;
+                  ? PiInfo
+                  : PiCheckCircle;
             const SeverityIcon = severityIcon;
 
             return (

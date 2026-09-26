@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MdHome, MdChevronRight } from 'react-icons/md';
+import { PiCaretRight, PiHouse } from 'react-icons/pi';
 
 interface BreadcrumbItem {
   label: string;
@@ -20,12 +20,12 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
             aria-label="Início do blog"
             className="flex items-center text-theme-tertiary hover:text-brand-primary transition-colors"
           >
-            <MdHome className="w-4 h-4" />
+            <PiHouse className="w-4 h-4" />
           </Link>
         </li>
         {items.map((item, index) => (
           <li key={index} className="flex items-center gap-2">
-            <MdChevronRight className="w-4 h-4 text-theme-tertiary" />
+            <PiCaretRight className="w-4 h-4 text-theme-tertiary" />
             {item.href ? (
               <Link
                 href={item.href}

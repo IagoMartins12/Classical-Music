@@ -3,11 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  FiMusic,
-  FiDownload,
-  FiExternalLink,
-  FiBookOpen,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiBookOpen,
+  PiDownloadSimple,
+  PiMusicNotes,
+} from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 
 interface WorkScore {
@@ -43,7 +43,7 @@ export default function MusicalPiecesSection({
         <AnimatedCard hover="none" className={cardClassName}>
           <div className="flex items-center mb-4">
             <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
-              <FiMusic className="w-5 h-5" />
+              <PiMusicNotes className="w-5 h-5" />
               <span>{title}</span>
             </h2>
           </div>
@@ -58,7 +58,7 @@ export default function MusicalPiecesSection({
       <AnimatedCard hover="none" className={cardClassName}>
         <div className="flex items-center mb-4">
           <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
-            <FiMusic className="w-5 h-5" />
+            <PiMusicNotes className="w-5 h-5" />
             <span>{title}</span>
           </h2>
         </div>
@@ -72,7 +72,7 @@ export default function MusicalPiecesSection({
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-3 flex-1">
                   <div className="w-10 h-10 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <FiMusic className="w-5 h-5 text-accent-blue" />
+                    <PiMusicNotes className="w-5 h-5 text-accent-blue" />
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -95,7 +95,7 @@ export default function MusicalPiecesSection({
                       className="text-sm text-accent-blue hover:text-accent-blue/80 font-medium inline-flex items-center space-x-1 mb-2"
                     >
                       <span>{workScore.composer}</span>
-                      <FiExternalLink className="w-3 h-3" />
+                      <PiArrowSquareOut className="w-3 h-3" />
                     </Link>
 
                     <div className="space-y-2">
@@ -105,9 +105,9 @@ export default function MusicalPiecesSection({
                           href={`/works/${workScore.id}`}
                           className="text-sm text-accent-purple hover:text-accent-purple/80 inline-flex items-center space-x-1"
                         >
-                          <FiBookOpen className="w-3 h-3" />
+                          <PiBookOpen className="w-3 h-3" />
                           <span>Ver obra completa</span>
-                          <FiExternalLink className="w-3 h-3" />
+                          <PiArrowSquareOut className="w-3 h-3" />
                         </Link>
                       </div>
 
@@ -135,7 +135,7 @@ export default function MusicalPiecesSection({
                       rel="noopener noreferrer"
                       className="btn-classical-secondary flex items-center space-x-2 text-sm bg-accent-green/10 border-accent-green/30 text-accent-green hover:bg-accent-green/20"
                     >
-                      <FiDownload className="w-4 h-4" />
+                      <PiDownloadSimple className="w-4 h-4" />
                       <span>Download</span>
                     </a>
                   </div>

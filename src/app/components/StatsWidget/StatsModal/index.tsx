@@ -3,13 +3,13 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiX,
-  FiMaximize2,
-  FiMinimize2,
-  FiShare2,
-  FiDownload,
-  FiBarChart2,
-} from 'react-icons/fi';
+  PiArrowsIn,
+  PiArrowsOut,
+  PiChartBar,
+  PiDownloadSimple,
+  PiShareNetwork,
+  PiX,
+} from 'react-icons/pi';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 
 interface StatsModalProps {
@@ -197,7 +197,7 @@ export default function StatsModal({
                 <div
                   className={`w-10 h-10 bg-gradient-to-br ${colors.gradient} rounded-xl flex items-center justify-center`}
                 >
-                  <FiBarChart2 className="w-5 h-5 text-white" />
+                  <PiChartBar className="w-5 h-5 text-white" />
                 </div>
                 <div>
                   <h3 className="font-bold text-theme-primary">{title}</h3>
@@ -213,7 +213,7 @@ export default function StatsModal({
                   onClick={handleShare}
                   className="w-10 h-10 bg-theme-secondary rounded-xl flex items-center justify-center hover:bg-theme-primary transition-colors"
                 >
-                  <FiShare2 className="w-4 h-4 text-theme-tertiary" />
+                  <PiShareNetwork className="w-4 h-4 text-theme-tertiary" />
                 </button>
 
                 <button
@@ -221,9 +221,9 @@ export default function StatsModal({
                   className="w-10 h-10 bg-theme-secondary rounded-xl flex items-center justify-center hover:bg-theme-primary transition-colors"
                 >
                   {isFullscreen ? (
-                    <FiMinimize2 className="w-4 h-4 text-theme-tertiary" />
+                    <PiArrowsIn className="w-4 h-4 text-theme-tertiary" />
                   ) : (
-                    <FiMaximize2 className="w-4 h-4 text-theme-tertiary" />
+                    <PiArrowsOut className="w-4 h-4 text-theme-tertiary" />
                   )}
                 </button>
 
@@ -231,7 +231,7 @@ export default function StatsModal({
                   onClick={onClose}
                   className="w-10 h-10 bg-theme-secondary rounded-xl flex items-center justify-center hover:bg-accent-red/20 transition-colors group"
                 >
-                  <FiX className="w-4 h-4 text-theme-tertiary group-hover:text-accent-red" />
+                  <PiX className="w-4 h-4 text-theme-tertiary group-hover:text-accent-red" />
                 </button>
               </div>
             </div>
@@ -250,7 +250,7 @@ export default function StatsModal({
                   onClick={handleDownload}
                   className="flex items-center justify-center space-x-2 py-3 bg-theme-secondary rounded-xl hover:bg-theme-primary transition-colors"
                 >
-                  <FiDownload className="w-4 h-4 text-theme-tertiary" />
+                  <PiDownloadSimple className="w-4 h-4 text-theme-tertiary" />
                   <span className="text-sm text-theme-tertiary">Exportar</span>
                 </button>
 
@@ -258,7 +258,7 @@ export default function StatsModal({
                   onClick={handleShare}
                   className={`flex items-center justify-center space-x-2 py-3 ${colors.bg} rounded-xl transition-colors`}
                 >
-                  <FiShare2 className={`w-4 h-4 ${colors.accent}`} />
+                  <PiShareNetwork className={`w-4 h-4 ${colors.accent}`} />
                   <span className={`text-sm ${colors.accent} font-medium`}>
                     Compartilhar
                   </span>

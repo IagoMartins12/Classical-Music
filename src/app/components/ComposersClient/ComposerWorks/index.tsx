@@ -10,29 +10,28 @@ import {
 import Link from '@/app/components/LocalizedLink';
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import {
-  FiMusic,
-  FiSearch,
-  FiFilter,
-  FiClock,
-  FiX,
-  FiBookOpen,
-  FiRefreshCw,
-  FiCalendar,
-  FiLoader,
-  FiPlus,
-  FiLayers,
-} from 'react-icons/fi';
-import {
   GiViolin,
   GiFlute,
   GiTrumpet,
   GiSaxophone,
   GiHarp,
   GiDrum,
-  GiMusicalNotes,
   GiGrandPiano,
 } from 'react-icons/gi';
-import { MdLibraryMusic } from 'react-icons/md';
+import {
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiClock,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiPlaylist,
+  PiPlus,
+  PiSpinnerGap,
+  PiStack,
+  PiX,
+} from 'react-icons/pi';
 import FavoriteButton from '../../FavoriteButton';
 import ViewModeToggle from '../../ViewModeToggle';
 import {
@@ -114,7 +113,7 @@ const getInstrumentIcon = (instrumentName: string) => {
     instrument.includes('violão') ||
     instrument.includes('guitarra')
   )
-    return <GiMusicalNotes className="w-5 h-5" />;
+    return <PiMusicNotes className="w-5 h-5" />;
   if (
     instrument.includes('drum') ||
     instrument.includes('bateria') ||
@@ -122,9 +121,9 @@ const getInstrumentIcon = (instrumentName: string) => {
   )
     return <GiDrum className="w-5 h-5" />;
   if (instrument.includes('orchestra') || instrument.includes('orquestra'))
-    return <GiMusicalNotes className="w-5 h-5" />;
+    return <PiMusicNotes className="w-5 h-5" />;
 
-  return <FiMusic className="w-5 h-5" />;
+  return <PiMusicNotes className="w-5 h-5" />;
 };
 
 // Função para formatar duração
@@ -419,7 +418,7 @@ export default function ComposerWorks({
         <AnimatedItem direction="up" springType="bouncy">
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
-              <FiBookOpen className="w-6 h-6 text-theme-primary" />
+              <PiBookOpen className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -432,7 +431,7 @@ export default function ComposerWorks({
         <AnimatedItem direction="scale" springType="gentle">
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <MdLibraryMusic className="w-8 h-8 text-theme-tertiary" />
+              <PiPlaylist className="w-8 h-8 text-theme-tertiary" />
             </div>
             <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
               {t('no_works_cataloged_title')}
@@ -457,7 +456,7 @@ export default function ComposerWorks({
         >
           <div className="flex items-center space-x-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
-              <FiBookOpen className="w-6 h-6 text-theme-primary" />
+              <PiBookOpen className="w-6 h-6 text-theme-primary" />
             </div>
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -474,7 +473,7 @@ export default function ComposerWorks({
           {availableWorkTypes.length > 0 && (
             <div className="mb-6">
               <div className="flex items-center space-x-2 mb-3">
-                <FiLayers className="w-4 h-4 text-theme-primary" />
+                <PiStack className="w-4 h-4 text-theme-primary" />
                 <span className="text-sm font-medium text-theme-primary">
                   {t('filter_by_work_type')}
                 </span>
@@ -529,7 +528,7 @@ export default function ComposerWorks({
 
           {/* Barra de busca */}
           <div className="relative mb-4">
-            <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
+            <PiMagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
             <input
               type="text"
               placeholder={t('search_placeholder')}
@@ -546,7 +545,7 @@ export default function ComposerWorks({
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
                 disabled={loading}
               >
-                <FiX className="w-5 h-5" />
+                <PiX className="w-5 h-5" />
               </button>
             )}
           </div>
@@ -560,7 +559,7 @@ export default function ComposerWorks({
               }`}
               disabled={loading}
             >
-              <FiFilter className="w-4 h-4" />
+              <PiFunnel className="w-4 h-4" />
               <span>{showFilters ? t('hide_filters') : t('show_filters')}</span>
               <div
                 className={`transition-transform duration-300 ${
@@ -602,7 +601,7 @@ export default function ComposerWorks({
                     {filterOptions.instruments.length})
                   </label>
                   <div className="relative">
-                    <FiMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                    <PiMusicNotes className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                     <Select
                       options={[
                         { label: t('all_instruments'), value: '' },
@@ -626,7 +625,7 @@ export default function ComposerWorks({
                     )
                   </label>
                   <div className="relative">
-                    <MdLibraryMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                    <PiPlaylist className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                     <Select
                       options={[
                         { label: t('all_genres'), value: '' },
@@ -650,7 +649,7 @@ export default function ComposerWorks({
                     {filterOptions.categories.length})
                   </label>
                   <div className="relative">
-                    <FiBookOpen className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                    <PiBookOpen className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                     <Select
                       options={[
                         { label: t('all_categories'), value: '' },
@@ -687,7 +686,7 @@ export default function ComposerWorks({
                     className="hover:text-brand-secondary transition-colors"
                     disabled={loading}
                   >
-                    <FiX className="w-3 h-3" />
+                    <PiX className="w-3 h-3" />
                   </button>
                 </div>
               )}
@@ -703,7 +702,7 @@ export default function ComposerWorks({
                     className="hover:text-accent-blue/80 transition-colors"
                     disabled={loading}
                   >
-                    <FiX className="w-3 h-3" />
+                    <PiX className="w-3 h-3" />
                   </button>
                 </div>
               )}
@@ -723,7 +722,7 @@ export default function ComposerWorks({
                     className="hover:text-accent-green/80 transition-colors"
                     disabled={loading}
                   >
-                    <FiX className="w-3 h-3" />
+                    <PiX className="w-3 h-3" />
                   </button>
                 </div>
               )}
@@ -738,7 +737,7 @@ export default function ComposerWorks({
                     className="hover:text-accent-purple/80 transition-colors"
                     disabled={loading}
                   >
-                    <FiX className="w-3 h-3" />
+                    <PiX className="w-3 h-3" />
                   </button>
                 </div>
               )}
@@ -753,7 +752,7 @@ export default function ComposerWorks({
                     className="hover:text-accent-orange/80 transition-colors"
                     disabled={loading}
                   >
-                    <FiX className="w-3 h-3" />
+                    <PiX className="w-3 h-3" />
                   </button>
                 </div>
               )}
@@ -846,21 +845,21 @@ export default function ComposerWorks({
                             <div className="flex flex-col gap-4 text-sm text-theme-secondary">
                               {work.instrument?.name && (
                                 <div className="flex items-center space-x-2">
-                                  <FiMusic className="w-4 h-4 text-theme-tertiary" />
+                                  <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                                   <span>{work.instrument.name}</span>
                                 </div>
                               )}
 
                               {work.tone && (
                                 <div className="flex items-center space-x-2">
-                                  <GiMusicalNotes className="w-4 h-4 text-theme-tertiary" />
+                                  <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                                   <span>{work.tone}</span>
                                 </div>
                               )}
 
                               {work.mediaDuration && (
                                 <div className="flex items-center space-x-2">
-                                  <FiClock className="w-4 h-4 text-theme-tertiary" />
+                                  <PiClock className="w-4 h-4 text-theme-tertiary" />
                                   <span>
                                     {formatDuration(work.mediaDuration)}
                                   </span>
@@ -869,7 +868,7 @@ export default function ComposerWorks({
 
                               {work.compositionYear && (
                                 <div className="flex items-center space-x-2">
-                                  <FiCalendar className="w-4 h-4 text-theme-tertiary" />
+                                  <PiCalendarBlank className="w-4 h-4 text-theme-tertiary" />
                                   <span>{work.compositionYear}</span>
                                 </div>
                               )}
@@ -959,21 +958,21 @@ export default function ComposerWorks({
                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-theme-secondary">
                                 {work.instrument?.name && (
                                   <div className="flex items-center space-x-2">
-                                    <FiMusic className="w-4 h-4 text-theme-tertiary" />
+                                    <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                                     <span>{work.instrument.name}</span>
                                   </div>
                                 )}
 
                                 {work.tone && (
                                   <div className="flex items-center space-x-2">
-                                    <GiMusicalNotes className="w-4 h-4 text-theme-tertiary" />
+                                    <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                                     <span>{work.tone}</span>
                                   </div>
                                 )}
 
                                 {work.mediaDuration && (
                                   <div className="flex items-center space-x-2">
-                                    <FiClock className="w-4 h-4 text-theme-tertiary" />
+                                    <PiClock className="w-4 h-4 text-theme-tertiary" />
                                     <span>
                                       {formatDuration(work.mediaDuration)}
                                     </span>
@@ -982,7 +981,7 @@ export default function ComposerWorks({
 
                                 {work.compositionYear && (
                                   <div className="flex items-center space-x-2">
-                                    <FiCalendar className="w-4 h-4 text-theme-tertiary" />
+                                    <PiCalendarBlank className="w-4 h-4 text-theme-tertiary" />
                                     <span>{work.compositionYear}</span>
                                   </div>
                                 )}
@@ -1046,9 +1045,9 @@ export default function ComposerWorks({
                     className="btn-classical-primary flex items-center space-x-3 px-8 py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed group hover:scale-105 transition-all duration-300"
                   >
                     {loadingMore ? (
-                      <FiLoader className="w-5 h-5 animate-spin" />
+                      <PiSpinnerGap className="w-5 h-5 animate-spin" />
                     ) : (
-                      <FiPlus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+                      <PiPlus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
                     )}
                     <span>
                       {loadingMore
@@ -1066,7 +1065,7 @@ export default function ComposerWorks({
             <AnimatedItem direction="scale" springType="gentle">
               <div className="text-center py-16">
                 <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <FiSearch className="w-8 h-8 text-theme-tertiary" />
+                  <PiMagnifyingGlass className="w-8 h-8 text-theme-tertiary" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
                   {t('no_works_found_title')}
@@ -1080,7 +1079,7 @@ export default function ComposerWorks({
                       onClick={clearFilters}
                       className="btn-classical-primary flex items-center space-x-2 mx-auto group"
                     >
-                      <FiRefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+                      <PiArrowsClockwise className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
                       <span>{t('clear_filters')}</span>
                     </button>
                   </AnimatedItem>

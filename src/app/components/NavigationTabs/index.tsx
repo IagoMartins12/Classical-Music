@@ -2,8 +2,7 @@
 'use client';
 
 import { useTranslation } from '@/app/context/TranslationContext';
-import { FiBookOpen, FiClock } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+import { PiBookOpen, PiClock, PiMusicNotes } from 'react-icons/pi';
 
 interface Props {
   activeTab: 'history' | 'timeline';
@@ -18,14 +17,14 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
       id: 'history' as const,
       label: t('navigation_tabs_0__label'),
       description: t('navigation_tabs_0__description'),
-      icon: FiBookOpen,
+      icon: PiBookOpen,
       gradient: 'from-brand-primary to-brand-secondary',
     },
     {
       id: 'timeline' as const,
       label: t('navigation_tabs_1__label'),
       description: t('navigation_tabs_1__description'),
-      icon: FiClock,
+      icon: PiClock,
       gradient: 'from-accent-purple to-accent-blue',
     },
   ];
@@ -37,7 +36,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-4">
             <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center shadow-theme-glow">
-              <GiMusicalNotes className="w-5 h-5 text-theme-primary" />
+              <PiMusicNotes className="w-5 h-5 text-theme-primary" />
             </div>
             <h2 className="text-2xl font-bold text-theme-primary classical-title">
               {t('navigation_jsx_h2_children_0__navegue_historia')}

@@ -4,26 +4,27 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiFileText,
-  FiSearch,
-  FiFilter,
-  FiPlus,
-  FiEdit,
-  FiEye,
-  FiRefreshCw,
-  FiDownload,
-  FiStar,
-  FiPlay,
-  FiPause,
-  FiCheckCircle,
-  FiXCircle,
-  FiUser,
-  FiCalendar,
-  FiHardDrive,
-  FiTrendingUp,
-  FiTarget,
-  FiAlertCircle,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCalendarBlank,
+  PiCheckCircle,
+  PiDownloadSimple,
+  PiEye,
+  PiFileText,
+  PiFunnel,
+  PiHardDrive,
+  PiMagnifyingGlass,
+  PiNotePencil,
+  PiPause,
+  PiPlay,
+  PiPlus,
+  PiStar,
+  PiStarFill,
+  PiTarget,
+  PiTrendUp,
+  PiUser,
+  PiWarningCircle,
+  PiXCircle,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -220,16 +221,27 @@ export default function ScoresManagement() {
     const stars = Math.round(score / 2); // Convert 0-10 to 0-5 stars
     return (
       <div className="flex items-center space-x-1">
-        {[...Array(5)].map((_, i) => (
-          <FiStar
-            key={i}
-            className={`w-3 h-3 ${
-              i < stars
-                ? 'text-accent-amber fill-current'
-                : 'text-theme-tertiary'
-            }`}
-          />
-        ))}
+        {[...Array(5)].map((_, i) =>
+          i < stars ? (
+            <PiStarFill
+              key={i}
+              className={`w-3 h-3 ${
+                i < stars
+                  ? 'text-accent-amber fill-current'
+                  : 'text-theme-tertiary'
+              }`}
+            />
+          ) : (
+            <PiStar
+              key={i}
+              className={`w-3 h-3 ${
+                i < stars
+                  ? 'text-accent-amber fill-current'
+                  : 'text-theme-tertiary'
+              }`}
+            />
+          )
+        )}
         <span className={`text-xs ml-1 ${getQualityColor(score)}`}>
           {score.toFixed(1)}
         </span>
@@ -269,7 +281,7 @@ export default function ScoresManagement() {
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-amber to-accent-red rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiFileText className="w-8 h-8 text-theme-primary" />
+                <PiFileText className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -283,7 +295,7 @@ export default function ScoresManagement() {
               <Button
                 variant="ghost"
                 size="sm"
-                leftIcon={<FiAlertCircle />}
+                leftIcon={<PiWarningCircle />}
                 onClick={() => setShowDebug(!showDebug)}
               >
                 {showDebug ? 'Ocultar' : 'Debug'}
@@ -297,7 +309,7 @@ export default function ScoresManagement() {
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mb-8 border-2 border-accent-amber/30">
               <h3 className="text-lg font-bold text-accent-amber mb-4 flex items-center space-x-2">
-                <FiAlertCircle className="w-5 h-5" />
+                <PiWarningCircle className="w-5 h-5" />
                 <span>Debug das Estatísticas</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -339,7 +351,7 @@ export default function ScoresManagement() {
                 <Button
                   variant="secondary"
                   size="sm"
-                  leftIcon={<FiRefreshCw />}
+                  leftIcon={<PiArrowsClockwise />}
                   onClick={handleRecalculateStats}
                   disabled={refreshing}
                 >
@@ -358,7 +370,7 @@ export default function ScoresManagement() {
                 title="Total de Partituras"
                 value={formatNumber(stats.total)}
                 change={{ value: stats.recentlyAdded, isPositive: true }}
-                icon={FiFileText}
+                icon={PiFileText}
                 color="#F59E0B"
                 subtitle="Todas as partituras cadastradas"
               />
@@ -371,7 +383,7 @@ export default function ScoresManagement() {
                     stats.total > 0 ? (stats.active / stats.total) * 100 : 0,
                   isPositive: true,
                 }}
-                icon={FiCheckCircle}
+                icon={PiCheckCircle}
                 color="#10B981"
                 subtitle={`${
                   stats.total > 0
@@ -384,7 +396,7 @@ export default function ScoresManagement() {
                 title="Tamanho Total"
                 value={stats.totalSize}
                 change={{ value: 8.3, isPositive: true }}
-                icon={FiHardDrive}
+                icon={PiHardDrive}
                 color="#8B5CF6"
                 subtitle="Baseado em arquivos reais"
               />
@@ -393,7 +405,7 @@ export default function ScoresManagement() {
                 title="Por Obra"
                 value={stats.averagePerWork.toFixed(1)}
                 change={{ value: 12.4, isPositive: true }}
-                icon={FiTrendingUp}
+                icon={PiTrendUp}
                 color="#3B82F6"
                 subtitle="Média de partituras por obra"
               />
@@ -419,7 +431,7 @@ export default function ScoresManagement() {
                 />
               ) : (
                 <div className="text-center p-8 text-theme-tertiary">
-                  <FiAlertCircle className="w-8 h-8 mx-auto mb-2" />
+                  <PiWarningCircle className="w-8 h-8 mx-auto mb-2" />
                   <p>Nenhum dado de fonte disponível</p>
                   <Button
                     variant="ghost"
@@ -448,7 +460,7 @@ export default function ScoresManagement() {
                 />
               ) : (
                 <div className="text-center p-8 text-theme-tertiary">
-                  <FiAlertCircle className="w-8 h-8 mx-auto mb-2" />
+                  <PiWarningCircle className="w-8 h-8 mx-auto mb-2" />
                   <p>Nenhum dado de tipo disponível</p>
                   <Button
                     variant="ghost"
@@ -469,7 +481,7 @@ export default function ScoresManagement() {
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mb-8">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                <FiTarget className="w-5 h-5 text-accent-amber" />
+                <PiTarget className="w-5 h-5 text-accent-amber" />
                 <span>Partituras Mais Acessadas</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -493,13 +505,13 @@ export default function ScoresManagement() {
                     </div>
                     <div className="flex items-center justify-between text-xs text-theme-secondary">
                       <span className="flex items-center space-x-1">
-                        <FiEye className="w-3 h-3" />
+                        <PiEye className="w-3 h-3" />
                         <span>{formatNumber(score.accessCount)}</span>
                       </span>
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiEye />}
+                        leftIcon={<PiEye />}
                         onClick={() => router.push(`/admin/scores/${score.id}`)}
                       />
                     </div>
@@ -521,7 +533,7 @@ export default function ScoresManagement() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  leftIcon={<FiFilter />}
+                  leftIcon={<PiFunnel />}
                   onClick={() => setShowFilters(!showFilters)}
                 >
                   Filtros
@@ -530,20 +542,26 @@ export default function ScoresManagement() {
                   variant="ghost"
                   size="sm"
                   leftIcon={
-                    <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                    <PiArrowsClockwise
+                      className={refreshing ? 'animate-spin' : ''}
+                    />
                   }
                   onClick={handleRefresh}
                   disabled={refreshing}
                 >
                   Atualizar
                 </Button>
-                <Button variant="secondary" size="sm" leftIcon={<FiDownload />}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  leftIcon={<PiDownloadSimple />}
+                >
                   Exportar
                 </Button>
                 <Button
                   variant="primary"
                   size="sm"
-                  leftIcon={<FiPlus />}
+                  leftIcon={<PiPlus />}
                   onClick={() => router.push('/admin/scores/create')}
                 >
                   Nova Partitura
@@ -557,7 +575,7 @@ export default function ScoresManagement() {
             >
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                   <Input
                     type="text"
                     placeholder="Buscar partituras..."
@@ -621,7 +639,7 @@ export default function ScoresManagement() {
                 <Button
                   variant="primary"
                   size="sm"
-                  leftIcon={<FiSearch />}
+                  leftIcon={<PiMagnifyingGlass />}
                   onClick={handleSearch}
                 >
                   Buscar
@@ -639,7 +657,7 @@ export default function ScoresManagement() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    leftIcon={<FiCheckCircle />}
+                    leftIcon={<PiCheckCircle />}
                     onClick={() => handleBulkAction('activate')}
                   >
                     Ativar
@@ -647,7 +665,7 @@ export default function ScoresManagement() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    leftIcon={<FiXCircle />}
+                    leftIcon={<PiXCircle />}
                     onClick={() => handleBulkAction('deactivate')}
                   >
                     Desativar
@@ -655,7 +673,7 @@ export default function ScoresManagement() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    leftIcon={<FiDownload />}
+                    leftIcon={<PiDownloadSimple />}
                     onClick={() => handleBulkAction('download')}
                   >
                     Download
@@ -720,9 +738,9 @@ export default function ScoresManagement() {
                           {score.source}
                         </span>
                         {score.isActive ? (
-                          <FiCheckCircle className="w-5 h-5 text-accent-green" />
+                          <PiCheckCircle className="w-5 h-5 text-accent-green" />
                         ) : (
-                          <FiPause className="w-5 h-5 text-accent-red" />
+                          <PiPause className="w-5 h-5 text-accent-red" />
                         )}
                       </div>
 
@@ -740,23 +758,23 @@ export default function ScoresManagement() {
 
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-theme-secondary">
                         <div className="flex items-center space-x-1">
-                          <FiEye className="w-4 h-4" />
+                          <PiEye className="w-4 h-4" />
                           <span>{formatNumber(score.accessCount)} acessos</span>
                         </div>
                         {score.fileSize && (
                           <div className="flex items-center space-x-1">
-                            <FiHardDrive className="w-4 h-4" />
+                            <PiHardDrive className="w-4 h-4" />
                             <span>{formatFileSize(score.fileSize)}</span>
                           </div>
                         )}
                         {score.pageCount && (
                           <div className="flex items-center space-x-1">
-                            <FiFileText className="w-4 h-4" />
+                            <PiFileText className="w-4 h-4" />
                             <span>{score.pageCount} páginas</span>
                           </div>
                         )}
                         <div className="flex items-center space-x-1">
-                          <FiCalendar className="w-4 h-4" />
+                          <PiCalendarBlank className="w-4 h-4" />
                           <span>
                             {new Date(score.createdAt).toLocaleDateString(
                               'pt-BR'
@@ -767,7 +785,7 @@ export default function ScoresManagement() {
 
                       {score.uploader && (
                         <div className="mt-2 text-xs text-theme-tertiary flex items-center space-x-1">
-                          <FiUser className="w-3 h-3" />
+                          <PiUser className="w-3 h-3" />
                           <span>Adicionada por: {score.uploader}</span>
                         </div>
                       )}
@@ -778,7 +796,7 @@ export default function ScoresManagement() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={<FiDownload />}
+                          leftIcon={<PiDownloadSimple />}
                           onClick={() =>
                             window.open(score.downloadUrl, '_blank')
                           }
@@ -788,14 +806,14 @@ export default function ScoresManagement() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiEye />}
+                        leftIcon={<PiEye />}
                         onClick={() => router.push(`/admin/scores/${score.id}`)}
                         title="Ver detalhes"
                       />
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiEdit />}
+                        leftIcon={<PiNotePencil />}
                         onClick={() =>
                           router.push(`/uploads/score/${score.id}/edit`)
                         }
@@ -804,7 +822,7 @@ export default function ScoresManagement() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={score.isActive ? <FiPause /> : <FiPlay />}
+                        leftIcon={score.isActive ? <PiPause /> : <PiPlay />}
                         onClick={() =>
                           handleToggleActive(score.id, score.isActive)
                         }

@@ -3,9 +3,8 @@
 
 import { useState } from 'react';
 import { Editor } from '@tiptap/react';
-import { FiTrash2 } from 'react-icons/fi';
+import { PiPlus, PiTrash, PiUploadSimple } from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
-import { BiPlus, BiUpload } from 'react-icons/bi';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Button from '@/app/components/Common/Button';
@@ -160,7 +159,7 @@ export function TimelineModal({
                     variant="ghost"
                     size="sm"
                     onClick={() => removeEvent(index)}
-                    leftIcon={<FiTrash2 />}
+                    leftIcon={<PiTrash />}
                   >
                     Remover
                   </Button>
@@ -222,7 +221,7 @@ export function TimelineModal({
                       onClick={() => updateEvent(index, 'image', '')}
                       className="absolute top-2 right-2 p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors shadow-theme-medium"
                     >
-                      <FiTrash2 className="w-4 h-4" />
+                      <PiTrash className="w-4 h-4" />
                     </button>
                   </div>
                 ) : (
@@ -242,7 +241,7 @@ export function TimelineModal({
                       htmlFor={`event-image-${index}`}
                       className="cursor-pointer"
                     >
-                      <BiUpload className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
+                      <PiUploadSimple className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                       <span className="text-sm text-theme-secondary">
                         {uploadingIndex === index
                           ? 'Enviando...'
@@ -260,7 +259,7 @@ export function TimelineModal({
           type="button"
           variant="outline"
           onClick={addEvent}
-          leftIcon={<BiPlus className="w-5 h-5" />}
+          leftIcon={<PiPlus className="w-5 h-5" />}
           className="w-full"
         >
           Adicionar Evento

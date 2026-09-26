@@ -7,24 +7,24 @@ import Image from '@/app/components/SmartImage';
 import Link from '@/app/components/LocalizedLink';
 import { TeacherDetailedProfile } from '@/app/requests/public-teachers-requests';
 import {
-  FiCalendar,
-  FiMapPin,
-  FiUser,
-  FiExternalLink,
-  FiUsers,
-  FiMusic,
-  FiStar,
-  FiClock,
-  FiMessageCircle,
-  FiMail,
-  FiCheckCircle,
-  FiInfo,
-  FiTrendingUp,
-  FiTarget,
-  FiBookOpen,
-  FiShare2,
-  FiFlag,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiChatCircle,
+  PiCheckCircle,
+  PiClock,
+  PiEnvelopeSimple,
+  PiFlag,
+  PiInfo,
+  PiMapPin,
+  PiMusicNotes,
+  PiShareNetwork,
+  PiStar,
+  PiTarget,
+  PiTrendUp,
+  PiUser,
+  PiUsers,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -155,7 +155,7 @@ export default function PublicTeacherDetailsPageClient({
                             </h1>
                             {teacher.isVerified && (
                               <div className="w-8 h-8 bg-accent-green rounded-full flex items-center justify-center">
-                                <FiCheckCircle className="w-5 h-5 text-theme-primary" />
+                                <PiCheckCircle className="w-5 h-5 text-theme-primary" />
                               </div>
                             )}
                           </div>
@@ -177,10 +177,10 @@ export default function PublicTeacherDetailsPageClient({
                             className="btn-classical-secondary flex items-center justify-center"
                             title="Compartilhar perfil"
                           >
-                            <FiShare2 className="w-5 h-5" />
+                            <PiShareNetwork className="w-5 h-5" />
                           </button>
                           <button className="btn-classical-secondary flex items-center justify-center text-accent-red border-accent-red/30 hover:bg-accent-red/10">
-                            <FiFlag className="w-5 h-5" />
+                            <PiFlag className="w-5 h-5" />
                           </button>
                         </div>
                       </div>
@@ -193,7 +193,7 @@ export default function PublicTeacherDetailsPageClient({
                       {/* Experiência */}
                       <div className="flex items-start space-x-3 group">
                         <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiClock className="w-5 h-5 text-theme-primary" />
+                          <PiClock className="w-5 h-5 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-lg font-bold text-theme-primary">
@@ -208,7 +208,7 @@ export default function PublicTeacherDetailsPageClient({
                       {/* Alunos */}
                       <div className="flex items-start space-x-3 group">
                         <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiUsers className="w-5 h-5 text-theme-primary" />
+                          <PiUsers className="w-5 h-5 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-lg font-bold text-theme-primary">
@@ -222,7 +222,7 @@ export default function PublicTeacherDetailsPageClient({
                       {teacher.averageRating && (
                         <div className="flex items-start space-x-3 group">
                           <div className="w-10 h-10 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                            <FiStar className="w-5 h-5 text-theme-primary" />
+                            <PiStar className="w-5 h-5 text-theme-primary" />
                           </div>
                           <div>
                             <p className="text-lg font-bold text-theme-primary">
@@ -238,7 +238,7 @@ export default function PublicTeacherDetailsPageClient({
                       {/* Aulas */}
                       <div className="flex items-start space-x-3 group">
                         <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiMusic className="w-5 h-5 text-theme-primary" />
+                          <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-lg font-bold text-theme-primary">
@@ -257,7 +257,7 @@ export default function PublicTeacherDetailsPageClient({
                       {teacher.location && (
                         <div className="flex items-start space-x-3 group">
                           <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                            <FiMapPin className="w-4 h-4 text-theme-primary" />
+                            <PiMapPin className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
@@ -273,7 +273,7 @@ export default function PublicTeacherDetailsPageClient({
                       {/* Desde quando ensina */}
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiCalendar className="w-4 h-4 text-theme-primary" />
+                          <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -289,7 +289,7 @@ export default function PublicTeacherDetailsPageClient({
                       {teacher.completionRate && (
                         <div className="flex items-start space-x-3 group">
                           <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                            <FiTrendingUp className="w-4 h-4 text-theme-primary" />
+                            <PiTrendUp className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
@@ -305,7 +305,7 @@ export default function PublicTeacherDetailsPageClient({
                       {/* Responde em */}
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiMessageCircle className="w-4 h-4 text-theme-primary" />
+                          <PiChatCircle className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -328,7 +328,7 @@ export default function PublicTeacherDetailsPageClient({
                             onClick={handleWhatsAppContact}
                             className="btn-classical-primary flex items-center space-x-2 group/btn"
                           >
-                            <FiMessageCircle className="w-5 h-5" />
+                            <PiChatCircle className="w-5 h-5" />
                             <span>WhatsApp</span>
                             <svg
                               className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
@@ -351,7 +351,7 @@ export default function PublicTeacherDetailsPageClient({
                             onClick={handleEmailContact}
                             className="btn-classical-secondary flex items-center space-x-2 group/btn"
                           >
-                            <FiMail className="w-5 h-5" />
+                            <PiEnvelopeSimple className="w-5 h-5" />
                             <span>Email</span>
                             <svg
                               className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
@@ -376,7 +376,7 @@ export default function PublicTeacherDetailsPageClient({
                             rel="noopener noreferrer"
                             className="btn-classical-secondary flex items-center space-x-2 group/btn"
                           >
-                            <FiExternalLink className="w-5 h-5" />
+                            <PiArrowSquareOut className="w-5 h-5" />
                             <span>Website</span>
                             <svg
                               className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
@@ -437,7 +437,7 @@ export default function PublicTeacherDetailsPageClient({
                     ) : (
                       <div className="w-64 h-80 bg-gradient-card border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <div className="text-center text-theme-tertiary">
-                          <FiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                          <PiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
                           <p className="text-sm">Sem imagem disponível</p>
                         </div>
                       </div>
@@ -456,7 +456,7 @@ export default function PublicTeacherDetailsPageClient({
                 <AnimatedItem direction="up" springType="bouncy">
                   <div className="flex items-center space-x-3 mb-6">
                     <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center">
-                      <FiMusic className="w-6 h-6 text-theme-primary" />
+                      <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                     </div>
                     <div>
                       <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -474,7 +474,7 @@ export default function PublicTeacherDetailsPageClient({
                     <AnimatedItem key={index} hover="scale" springType="bouncy">
                       <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/30 rounded-full text-sm font-medium text-brand-primary shadow-theme-small hover:shadow-theme-medium transition-all duration-300 hover:scale-105 group">
                         <div className="w-4 h-4 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
-                          <FiMusic className="w-3 h-3 text-theme-primary" />
+                          <PiMusicNotes className="w-3 h-3 text-theme-primary" />
                         </div>
                         {specialty}
                       </span>
@@ -489,7 +489,7 @@ export default function PublicTeacherDetailsPageClient({
                     >
                       <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-blue/10 to-accent-purple/10 border border-accent-blue/30 rounded-full text-sm font-medium text-accent-blue shadow-theme-small hover:shadow-theme-medium transition-all duration-300 hover:scale-105 group">
                         <div className="w-4 h-4 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
-                          <FiTarget className="w-3 h-3 text-theme-primary" />
+                          <PiTarget className="w-3 h-3 text-theme-primary" />
                         </div>
                         {instrument}
                       </span>
@@ -506,7 +506,7 @@ export default function PublicTeacherDetailsPageClient({
               <AnimatedItem direction="left" springType="smooth">
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
-                    <FiBookOpen className="w-6 h-6 text-theme-primary" />
+                    <PiBookOpen className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -557,7 +557,7 @@ export default function PublicTeacherDetailsPageClient({
               <AnimatedItem direction="up" springType="bouncy">
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
-                    <FiMessageCircle className="w-6 h-6 text-theme-primary" />
+                    <PiChatCircle className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -580,7 +580,7 @@ export default function PublicTeacherDetailsPageClient({
 
                     <div className="space-y-3">
                       <div className="flex items-center space-x-3">
-                        <FiClock className="w-5 h-5 text-accent-blue" />
+                        <PiClock className="w-5 h-5 text-accent-blue" />
                         <span className="text-theme-secondary">
                           Responde em até{' '}
                           <strong>
@@ -590,7 +590,7 @@ export default function PublicTeacherDetailsPageClient({
                       </div>
 
                       <div className="flex items-center space-x-3">
-                        <FiMessageCircle className="w-5 h-5 text-accent-green" />
+                        <PiChatCircle className="w-5 h-5 text-accent-green" />
                         <span className="text-theme-secondary">
                           Prefere contato por{' '}
                           <strong>
@@ -606,7 +606,7 @@ export default function PublicTeacherDetailsPageClient({
                       </div>
 
                       <div className="flex items-center space-x-3">
-                        <FiClock className="w-5 h-5 text-accent-purple" />
+                        <PiClock className="w-5 h-5 text-accent-purple" />
                         <span className="text-theme-secondary">
                           Aulas de{' '}
                           <strong>
@@ -632,7 +632,7 @@ export default function PublicTeacherDetailsPageClient({
                           onClick={handleWhatsAppContact}
                           className="w-full btn-classical-primary flex items-center justify-center space-x-2"
                         >
-                          <FiMessageCircle className="w-5 h-5" />
+                          <PiChatCircle className="w-5 h-5" />
                           <span>Conversar pelo WhatsApp</span>
                         </button>
                       )}
@@ -642,7 +642,7 @@ export default function PublicTeacherDetailsPageClient({
                           onClick={handleEmailContact}
                           className="w-full btn-classical-secondary flex items-center justify-center space-x-2"
                         >
-                          <FiMail className="w-5 h-5" />
+                          <PiEnvelopeSimple className="w-5 h-5" />
                           <span>Enviar Email</span>
                         </button>
                       )}
@@ -654,7 +654,7 @@ export default function PublicTeacherDetailsPageClient({
                           rel="noopener noreferrer"
                           className="w-full btn-classical-secondary flex items-center justify-center space-x-2"
                         >
-                          <FiExternalLink className="w-5 h-5" />
+                          <PiArrowSquareOut className="w-5 h-5" />
                           <span>Visitar Website</span>
                         </a>
                       )}
@@ -667,7 +667,7 @@ export default function PublicTeacherDetailsPageClient({
               <AnimatedItem direction="up" springType="gentle">
                 <div className="mt-6 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
                   <div className="flex items-start space-x-3">
-                    <FiInfo className="w-5 h-5 text-brand-primary mt-1" />
+                    <PiInfo className="w-5 h-5 text-brand-primary mt-1" />
                     <div>
                       <p className="text-sm text-theme-secondary">
                         <strong className="text-brand-primary">

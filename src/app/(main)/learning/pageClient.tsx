@@ -3,14 +3,14 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import {
-  FiTarget,
-  FiCheckCircle,
-  FiSearch,
-  FiFilter,
-  FiX,
-  FiMusic,
-  FiBarChart2,
-} from 'react-icons/fi';
+  PiChartBar,
+  PiCheckCircle,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiTarget,
+  PiX,
+} from 'react-icons/pi';
 import {
   useLearningStore,
   WantToLearnItem,
@@ -24,7 +24,6 @@ import { EmptyState } from '../../components/LearningPageClient/EmptyState';
 import { LearningCard } from '../../components/LearningPageClient/LearningCard';
 import Select from '../../components/Common/Select';
 import ViewModeToggle, { ViewMode } from '../../components/ViewModeToggle';
-import { PiTarget } from 'react-icons/pi';
 import {
   PageContainer,
   AnimatedContainer,
@@ -391,7 +390,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                 <div className="flex flex-col sm:flex-row gap-3">
                   {/* Search */}
                   <div className="relative">
-                    <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                    <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                     <input
                       type="text"
                       placeholder={t('search_placeholder')}
@@ -412,7 +411,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                           : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
                     }`}
                   >
-                    <FiFilter className="w-4 h-4" />
+                    <PiFunnel className="w-4 h-4" />
                     <span className="text-sm">
                       {t('filters_button')}
                       {hasActiveFilters && (
@@ -433,7 +432,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                   <Button
                     variant="outline"
                     onClick={toggleStats}
-                    leftIcon={<FiBarChart2 className="w-4 h-4" />}
+                    leftIcon={<PiChartBar className="w-4 h-4" />}
                   >
                     <span className="text-sm">
                       {isMobile
@@ -460,7 +459,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                   <div className="bg-theme-secondary rounded-xl p-4 border border-theme-primary">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-sm font-semibold text-theme-primary flex items-center space-x-2">
-                        <FiFilter className="w-4 h-4" />
+                        <PiFunnel className="w-4 h-4" />
                         <span>{t('advanced_filters_title')}</span>
                       </h3>
                       <div className="flex items-center space-x-2">
@@ -476,7 +475,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                           onClick={() => setShowFilters(false)}
                           className="w-6 h-6 rounded-full bg-theme-primary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
                         >
-                          <FiX className="w-4 h-4" />
+                          <PiX className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -549,7 +548,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                 href={'/works'}
                 className="btn-classical-primary max-w-[250px] flex items-center justify-center space-x-2 group mx-auto"
               >
-                <FiMusic className="w-4 h-4" />
+                <PiMusicNotes className="w-4 h-4" />
                 <span>{t('discover_works_button')}</span>
                 <svg
                   className="w-4 h-4 transition-transform group-hover:translate-x-1"
@@ -592,7 +591,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                     >
                       <div className="flex items-center space-x-3 mb-6">
                         <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                          <FiTarget className="w-5 h-5 text-theme-primary" />
+                          <PiTarget className="w-5 h-5 text-theme-primary" />
                         </div>
                         <div>
                           <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -672,7 +671,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                     >
                       <div className="flex items-center space-x-3 mb-6">
                         <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                          <FiCheckCircle className="w-5 h-5 text-theme-primary" />
+                          <PiCheckCircle className="w-5 h-5 text-theme-primary" />
                         </div>
                         <div>
                           <h2 className="text-2xl font-bold text-theme-primary classical-title">

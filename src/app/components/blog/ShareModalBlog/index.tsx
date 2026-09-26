@@ -4,14 +4,14 @@
 import { useState } from 'react';
 import Modal from '@/app/components/Modal';
 import {
-  FaWhatsapp,
-  FaFacebook,
-  FaTwitter,
-  FaLinkedin,
-  FaEnvelope,
-  FaLink,
-  FaCheck,
-} from 'react-icons/fa';
+  PiCheck,
+  PiEnvelopeSimple,
+  PiFacebookLogo,
+  PiLink,
+  PiLinkedinLogo,
+  PiTwitterLogo,
+  PiWhatsappLogo,
+} from 'react-icons/pi';
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -34,7 +34,7 @@ export function ShareModalBlog({
   const shareOptions = [
     {
       name: 'WhatsApp',
-      icon: FaWhatsapp,
+      icon: PiWhatsappLogo,
       color: 'bg-green-500 hover:bg-green-600',
       action: () => {
         window.open(
@@ -45,7 +45,7 @@ export function ShareModalBlog({
     },
     {
       name: 'Facebook',
-      icon: FaFacebook,
+      icon: PiFacebookLogo,
       color: 'bg-blue-600 hover:bg-blue-700',
       action: () => {
         window.open(
@@ -57,7 +57,7 @@ export function ShareModalBlog({
     },
     {
       name: 'Twitter',
-      icon: FaTwitter,
+      icon: PiTwitterLogo,
       color: 'bg-sky-500 hover:bg-sky-600',
       action: () => {
         window.open(
@@ -69,7 +69,7 @@ export function ShareModalBlog({
     },
     {
       name: 'LinkedIn',
-      icon: FaLinkedin,
+      icon: PiLinkedinLogo,
       color: 'bg-blue-700 hover:bg-blue-800',
       action: () => {
         window.open(
@@ -81,7 +81,7 @@ export function ShareModalBlog({
     },
     {
       name: 'Email',
-      icon: FaEnvelope,
+      icon: PiEnvelopeSimple,
       color: 'bg-gray-600 hover:bg-gray-700',
       action: () => {
         window.location.href = `mailto:?subject=${encodedTitle}&body=${encodedTitle}%0A%0A${encodedUrl}`;
@@ -146,12 +146,12 @@ export function ShareModalBlog({
             >
               {copied ? (
                 <div className="flex items-center space-x-2">
-                  <FaCheck className="w-4 h-4" />
+                  <PiCheck className="w-4 h-4" />
                   <span className="hidden sm:inline">Copiado!</span>
                 </div>
               ) : (
                 <div className="flex items-center space-x-2">
-                  <FaLink className="w-4 h-4" />
+                  <PiLink className="w-4 h-4" />
                   <span className="hidden sm:inline">Copiar</span>
                 </div>
               )}

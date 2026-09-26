@@ -1,7 +1,7 @@
 // app/components/EssentialComposers.tsx - Updated for list layout with theme system
 'use client';
 
-import { FiAward } from 'react-icons/fi';
+import { PiMedal } from 'react-icons/pi';
 import SectionTitle from '../Utils/SectionTitle';
 import ListComposers from '../Lists/ListComposers';
 import { pageComposersInterface } from '../PopularComposers';
@@ -19,7 +19,7 @@ const EssentialComposers: React.FC<pageComposersInterface> = ({
         subtitle={t('essential_composers_subtitle')}
         linkText={t('essential_composers_link_text')}
         linkHref="/composers"
-        icon={<FiAward className="w-6 h-6" />}
+        icon={<PiMedal className="w-6 h-6" />}
         accent="purple"
       />
 

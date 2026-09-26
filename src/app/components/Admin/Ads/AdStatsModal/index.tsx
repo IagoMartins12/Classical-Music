@@ -5,13 +5,13 @@ import Button from '@/app/components/Common/Button';
 import { useAds } from '@/app/hooks/admin/useAds';
 import { useState, useEffect } from 'react';
 import {
-  FiBarChart2,
-  FiTrendingUp,
-  FiEye,
-  FiMousePointer,
-  FiClock,
-  FiDownload,
-} from 'react-icons/fi';
+  PiChartBar,
+  PiClock,
+  PiCursor,
+  PiDownloadSimple,
+  PiEye,
+  PiTrendUp,
+} from 'react-icons/pi';
 import { AdminPieChart, TrendAreaChart } from '../../Charts/AdminCharts';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
@@ -123,7 +123,7 @@ export default function AdStatsModal({
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-              <FiBarChart2 className="w-5 h-5 text-white" />
+              <PiChartBar className="w-5 h-5 text-white" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-theme-primary">
@@ -136,7 +136,7 @@ export default function AdStatsModal({
             <Button
               variant="ghost"
               size="sm"
-              leftIcon={<FiDownload />}
+              leftIcon={<PiDownloadSimple />}
               onClick={exportStats}
               disabled={!stats}
             >
@@ -188,7 +188,7 @@ export default function AdStatsModal({
                     <span className="text-sm text-theme-tertiary">
                       Impressões
                     </span>
-                    <FiEye className="w-4 h-4 text-accent-blue" />
+                    <PiEye className="w-4 h-4 text-accent-blue" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary">
                     {formatNumber(stats.totals?.impressions)}
@@ -198,7 +198,7 @@ export default function AdStatsModal({
                 <div className="bg-theme-secondary rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-theme-tertiary">Cliques</span>
-                    <FiMousePointer className="w-4 h-4 text-accent-green" />
+                    <PiCursor className="w-4 h-4 text-accent-green" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary">
                     {formatNumber(stats.totals?.clicks)}
@@ -208,7 +208,7 @@ export default function AdStatsModal({
                 <div className="bg-theme-secondary rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-theme-tertiary">CTR</span>
-                    <FiTrendingUp className="w-4 h-4 text-accent-purple" />
+                    <PiTrendUp className="w-4 h-4 text-accent-purple" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary">
                     {formatPercentage(stats.totals?.ctr)}%
@@ -223,7 +223,7 @@ export default function AdStatsModal({
                     <span className="text-sm text-theme-tertiary">
                       Tempo Médio de Hover
                     </span>
-                    <FiClock className="w-4 h-4 text-accent-amber" />
+                    <PiClock className="w-4 h-4 text-accent-amber" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary">
                     {formatHoverTime(stats.totals.avgHoverTime)}
@@ -246,8 +246,8 @@ export default function AdStatsModal({
                     period === 'week'
                       ? 'Última semana'
                       : period === 'month'
-                      ? 'Último mês'
-                      : 'Último ano'
+                        ? 'Último mês'
+                        : 'Último ano'
                   }`}
                   color="#3B82F6"
                   height={300}
@@ -404,7 +404,7 @@ export default function AdStatsModal({
             </div>
           ) : (
             <div className="text-center py-12">
-              <FiBarChart2 className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+              <PiChartBar className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
               <h3 className="text-xl font-medium text-theme-primary mb-2">
                 Nenhuma estatística disponível
               </h3>

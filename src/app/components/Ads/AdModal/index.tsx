@@ -3,14 +3,14 @@
 
 import { useEffect, useState } from 'react';
 import {
-  FiX,
-  FiExternalLink,
-  FiMessageCircle,
-  FiStar,
-  FiMusic,
-  FiPlay,
-  FiPause,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiChatCircle,
+  PiMusicNotes,
+  PiPause,
+  PiPlay,
+  PiStar,
+  PiX,
+} from 'react-icons/pi';
 import { getResponsiveImageUrl } from '@/app/libs/ads/mediaUtils';
 import Image from '@/app/components/SmartImage';
 
@@ -163,7 +163,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
           title="Fechar"
           aria-label="Fechar anúncio"
         >
-          <FiX className="w-4 h-4 text-white" />
+          <PiX className="w-4 h-4 text-white" />
         </button>
 
         {/* Media Section */}
@@ -214,9 +214,9 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
                     className="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
                   >
                     {videoPlaying ? (
-                      <FiPause className="w-6 h-6 text-white" />
+                      <PiPause className="w-6 h-6 text-white" />
                     ) : (
-                      <FiPlay className="w-6 h-6 text-white ml-1" />
+                      <PiPlay className="w-6 h-6 text-white ml-1" />
                     )}
                   </button>
                 </div>
@@ -228,10 +228,10 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
 
             {/* Ornamentos flutuantes */}
             <div className="absolute top-4 right-4 opacity-20">
-              <FiMusic className="w-6 h-6 text-white animate-pulse" />
+              <PiMusicNotes className="w-6 h-6 text-white animate-pulse" />
             </div>
             <div className="absolute top-8 right-12 opacity-10">
-              <FiStar
+              <PiStar
                 className="w-4 h-4 text-white animate-pulse"
                 style={{ animationDelay: '1s' }}
               />
@@ -268,7 +268,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
           {/* Advertiser info */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center space-x-2 px-4 py-2 bg-theme-secondary/50 rounded-full backdrop-blur">
-              <FiMusic className="w-4 h-4 text-brand-primary" />
+              <PiMusicNotes className="w-4 h-4 text-brand-primary" />
               <span className="text-sm font-medium text-theme-primary">
                 {ad.advertiserName}
               </span>
@@ -283,7 +283,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
                     onTrackEvent('modal_website_click');
                   }}
                 >
-                  <FiExternalLink className="w-3 h-3" />
+                  <PiArrowSquareOut className="w-3 h-3" />
                 </a>
               )}
             </div>
@@ -296,15 +296,15 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
                 <span className="flex items-center justify-center space-x-2">
                   {ad.linkType === 'whatsapp' ? (
                     <>
-                      <FiMessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                      <PiChatCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
                       <span>{ad.ctaText}</span>
                     </>
                   ) : (
                     <>
-                      <FiStar className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                      <PiStar className="w-5 h-5 group-hover:scale-110 transition-transform" />
                       <span>{ad.ctaText}</span>
                       {ad.isExternal && (
-                        <FiExternalLink className="w-4 h-4 ml-1 opacity-80" />
+                        <PiArrowSquareOut className="w-4 h-4 ml-1 opacity-80" />
                       )}
                     </>
                   )}
@@ -334,7 +334,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
                 }}
               >
                 <span>Saiba mais</span>
-                <FiExternalLink className="w-3 h-3" />
+                <PiArrowSquareOut className="w-3 h-3" />
               </a>
             )}
           </div>

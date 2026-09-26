@@ -4,29 +4,30 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import {
-  FiUser,
-  FiStar,
-  FiX,
-  FiCheck,
-  FiAlertCircle,
-  FiRefreshCw,
-  FiArrowLeft,
-  FiCalendar,
-  FiClock,
-  FiTarget,
-  FiBookOpen,
-  FiSave,
-  FiUpload,
-  FiPlay,
-  FiMusic,
-  FiTrendingUp,
-  FiCheckCircle,
-  FiCircle,
-  FiUsers,
-  FiAlertTriangle,
-  FiVideo,
-  FiTrash2,
-} from 'react-icons/fi';
+  PiArrowLeft,
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCheck,
+  PiCheckCircle,
+  PiCircle,
+  PiClock,
+  PiFloppyDisk,
+  PiMusicNotes,
+  PiPlay,
+  PiStar,
+  PiStarFill,
+  PiTarget,
+  PiTrash,
+  PiTrendUp,
+  PiUploadSimple,
+  PiUser,
+  PiUsers,
+  PiVideoCamera,
+  PiWarning,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -73,49 +74,49 @@ const PROGRESS_MILESTONES = [
   {
     key: 'learnedLeftHand',
     labelKey: 'student_assignment_details_milestone_learned_left_hand',
-    icon: FiPlay,
+    icon: PiPlay,
     color: 'text-accent-blue',
     weight: 15,
   },
   {
     key: 'learnedRightHand',
     labelKey: 'student_assignment_details_milestone_learned_right_hand',
-    icon: FiPlay,
+    icon: PiPlay,
     color: 'text-accent-blue',
     weight: 15,
   },
   {
     key: 'playedWithMetronome',
     labelKey: 'student_assignment_details_milestone_metronome',
-    icon: FiClock,
+    icon: PiClock,
     color: 'text-accent-purple',
     weight: 20,
   },
   {
     key: 'memorized',
     labelKey: 'student_assignment_details_milestone_memorized',
-    icon: FiTarget,
+    icon: PiTarget,
     color: 'text-accent-green',
     weight: 15,
   },
   {
     key: 'playedAtTempo',
     labelKey: 'student_assignment_details_milestone_tempo',
-    icon: FiTrendingUp,
+    icon: PiTrendUp,
     color: 'text-accent-yellow',
     weight: 20,
   },
   {
     key: 'masteredDynamics',
     labelKey: 'student_assignment_details_milestone_dynamics',
-    icon: FiMusic,
+    icon: PiMusicNotes,
     color: 'text-accent-purple',
     weight: 10,
   },
   {
     key: 'performedForOthers',
     labelKey: 'student_assignment_details_milestone_performed',
-    icon: FiUsers,
+    icon: PiUsers,
     color: 'text-accent-red',
     weight: 5,
   },
@@ -413,7 +414,7 @@ export default function StudentAssignmentDetailsPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiAlertCircle className="w-8 h-8 text-theme-primary" />
+              <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('student_assignment_details_error_title')}
@@ -445,7 +446,7 @@ export default function StudentAssignmentDetailsPageClient({
                 href="/student/assignments"
                 className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
               >
-                <FiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-gradient-brand classical-title">
@@ -475,9 +476,9 @@ export default function StudentAssignmentDetailsPageClient({
                   className="btn-classical-secondary flex items-center space-x-2 bg-accent-blue border-accent-blue text-white hover:bg-accent-blue/90"
                 >
                   {isSaving ? (
-                    <FiRefreshCw className="w-4 h-4 animate-spin" />
+                    <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                   ) : (
-                    <FiSave className="w-4 h-4" />
+                    <PiFloppyDisk className="w-4 h-4" />
                   )}
                   <span>
                     {isSaving
@@ -492,7 +493,7 @@ export default function StudentAssignmentDetailsPageClient({
                   onClick={() => setShowCompleteModal(true)}
                   className="btn-classical-primary flex items-center space-x-2 bg-accent-green border-accent-green hover:bg-accent-green/90"
                 >
-                  <FiCheck className="w-4 h-4" />
+                  <PiCheck className="w-4 h-4" />
                   <span>
                     {t('student_assignment_details_complete_assignment')}
                   </span>
@@ -506,7 +507,7 @@ export default function StudentAssignmentDetailsPageClient({
         {hasUnsavedChanges && (
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-6 p-4 bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg flex items-center space-x-3">
-              <FiAlertTriangle className="w-5 h-5 text-accent-yellow" />
+              <PiWarning className="w-5 h-5 text-accent-yellow" />
               <div className="flex-1">
                 <p className="text-accent-yellow font-medium">
                   {t('student_assignment_details_unsaved_changes_title')}
@@ -570,7 +571,7 @@ export default function StudentAssignmentDetailsPageClient({
                           {t('student_assignment_details_due_date')}
                         </label>
                         <div className="flex items-center space-x-2 text-theme-primary">
-                          <FiCalendar className="w-4 h-4" />
+                          <PiCalendarBlank className="w-4 h-4" />
                           <span>{formatDate(assignment.dueDate)}</span>
                           {assignment.daysUntilDue !== null && (
                             <span
@@ -642,7 +643,7 @@ export default function StudentAssignmentDetailsPageClient({
                       onClick={() => setShowProgressModal(true)}
                       className="btn-classical-secondary flex items-center mt-4 space-x-2"
                     >
-                      <FiTarget className="w-4 h-4" />
+                      <PiTarget className="w-4 h-4" />
                       <span>
                         {t('student_assignment_details_mark_achievements')}
                       </span>
@@ -661,7 +662,7 @@ export default function StudentAssignmentDetailsPageClient({
                             key={index}
                             className="flex items-center space-x-2 text-theme-primary"
                           >
-                            <FiTarget className="w-4 h-4 text-accent-blue" />
+                            <PiTarget className="w-4 h-4 text-accent-blue" />
                             <span>{goal}</span>
                           </div>
                         ))}
@@ -680,7 +681,7 @@ export default function StudentAssignmentDetailsPageClient({
                             key={index}
                             className="flex items-center space-x-2 text-theme-primary"
                           >
-                            <FiTarget className="w-4 h-4 text-accent-green" />
+                            <PiTarget className="w-4 h-4 text-accent-green" />
                             <span>{goal}</span>
                           </div>
                         ))}
@@ -699,7 +700,7 @@ export default function StudentAssignmentDetailsPageClient({
                             key={index}
                             className="flex items-center space-x-2 text-theme-primary"
                           >
-                            <FiBookOpen className="w-4 h-4 text-accent-purple" />
+                            <PiBookOpen className="w-4 h-4 text-accent-purple" />
                             <span>{exercise}</span>
                           </div>
                         ))}
@@ -741,7 +742,7 @@ export default function StudentAssignmentDetailsPageClient({
                           onClick={() => setShowVideoModal(true)}
                           className="btn-classical-secondary flex items-center space-x-2"
                         >
-                          <FiPlay className="w-4 h-4" />
+                          <PiPlay className="w-4 h-4" />
                           <span>
                             {t('student_assignment_details_view_video')}
                           </span>
@@ -773,7 +774,7 @@ export default function StudentAssignmentDetailsPageClient({
                             className="cursor-pointer"
                           >
                             <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center mx-auto mb-4">
-                              <FiVideo className="w-8 h-8 text-theme-primary" />
+                              <PiVideoCamera className="w-8 h-8 text-theme-primary" />
                             </div>
                             <h4 className="text-lg font-medium text-theme-primary mb-2">
                               {t('student_assignment_details_click_to_choose')}
@@ -788,7 +789,7 @@ export default function StudentAssignmentDetailsPageClient({
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-3">
                               <div className="w-12 h-12 bg-accent-blue/10 border border-accent-blue/30 rounded-lg flex items-center justify-center">
-                                <FiVideo className="w-6 h-6 text-accent-blue" />
+                                <PiVideoCamera className="w-6 h-6 text-accent-blue" />
                               </div>
                               <div>
                                 <div className="font-medium text-theme-primary">
@@ -803,7 +804,7 @@ export default function StudentAssignmentDetailsPageClient({
                               onClick={removeVideo}
                               className="text-accent-red hover:text-accent-red/80 transition-colors"
                             >
-                              <FiTrash2 className="w-4 h-4" />
+                              <PiTrash className="w-4 h-4" />
                             </button>
                           </div>
 
@@ -823,7 +824,7 @@ export default function StudentAssignmentDetailsPageClient({
                     {/* Error Display */}
                     {uploadError && (
                       <div className="p-3 bg-accent-red/10 border border-accent-red/30 rounded-lg flex items-center space-x-2">
-                        <FiAlertCircle className="w-4 h-4 text-accent-red" />
+                        <PiWarningCircle className="w-4 h-4 text-accent-red" />
                         <span className="text-accent-red text-sm">
                           {uploadError}
                         </span>
@@ -831,7 +832,7 @@ export default function StudentAssignmentDetailsPageClient({
                           onClick={clearVideoError}
                           className="ml-auto text-accent-red hover:text-accent-red/80"
                         >
-                          <FiX className="w-4 h-4" />
+                          <PiX className="w-4 h-4" />
                         </button>
                       </div>
                     )}
@@ -852,9 +853,9 @@ export default function StudentAssignmentDetailsPageClient({
                           className="btn-classical-primary flex items-center space-x-2"
                         >
                           {isUploading ? (
-                            <FiRefreshCw className="w-4 h-4 animate-spin" />
+                            <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                           ) : (
-                            <FiUpload className="w-4 h-4" />
+                            <PiUploadSimple className="w-4 h-4" />
                           )}
                           <span>
                             {isUploading
@@ -902,16 +903,27 @@ export default function StudentAssignmentDetailsPageClient({
                         <span className="text-sm font-medium text-theme-tertiary">
                           {t('student_assignment_details_teacher_rating')}
                         </span>
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <FiStar
-                            key={star}
-                            className={`w-5 h-5 ${
-                              star <= assignment.teacherRating!
-                                ? 'text-accent-yellow fill-current'
-                                : 'text-theme-tertiary'
-                            }`}
-                          />
-                        ))}
+                        {[1, 2, 3, 4, 5].map((star) =>
+                          star <= assignment.teacherRating! ? (
+                            <PiStarFill
+                              key={star}
+                              className={`w-5 h-5 ${
+                                star <= assignment.teacherRating!
+                                  ? 'text-accent-yellow fill-current'
+                                  : 'text-theme-tertiary'
+                              }`}
+                            />
+                          ) : (
+                            <PiStar
+                              key={star}
+                              className={`w-5 h-5 ${
+                                star <= assignment.teacherRating!
+                                  ? 'text-accent-yellow fill-current'
+                                  : 'text-theme-tertiary'
+                              }`}
+                            />
+                          )
+                        )}
                         <span className="text-theme-primary ml-2">
                           {assignment.teacherRating}/5
                         </span>
@@ -951,13 +963,23 @@ export default function StudentAssignmentDetailsPageClient({
                           onClick={() => setStudentRating(star)}
                           className="w-6 h-6 hover:scale-110 transition-transform"
                         >
-                          <FiStar
-                            className={`w-6 h-6 ${
-                              star <= studentRating
-                                ? 'text-accent-yellow fill-current'
-                                : 'text-theme-tertiary'
-                            }`}
-                          />
+                          {star <= studentRating ? (
+                            <PiStarFill
+                              className={`w-6 h-6 ${
+                                star <= studentRating
+                                  ? 'text-accent-yellow fill-current'
+                                  : 'text-theme-tertiary'
+                              }`}
+                            />
+                          ) : (
+                            <PiStar
+                              className={`w-6 h-6 ${
+                                star <= studentRating
+                                  ? 'text-accent-yellow fill-current'
+                                  : 'text-theme-tertiary'
+                              }`}
+                            />
+                          )}
                         </button>
                       ))}
                       <span className="text-theme-primary ml-2">
@@ -1004,7 +1026,7 @@ export default function StudentAssignmentDetailsPageClient({
                     </div>
                   ) : (
                     <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                      <FiUser className="w-6 h-6 text-theme-primary" />
+                      <PiUser className="w-6 h-6 text-theme-primary" />
                     </div>
                   )}
                   <div>
@@ -1095,9 +1117,9 @@ export default function StudentAssignmentDetailsPageClient({
                         }`}
                       >
                         {isCompleted ? (
-                          <FiCheckCircle className="w-4 h-4 text-accent-green" />
+                          <PiCheckCircle className="w-4 h-4 text-accent-green" />
                         ) : (
-                          <FiCircle className="w-4 h-4" />
+                          <PiCircle className="w-4 h-4" />
                         )}
                         <span>{t(milestone.labelKey)}</span>
                       </div>
@@ -1123,7 +1145,7 @@ export default function StudentAssignmentDetailsPageClient({
         {error && (
           <div className="fixed bottom-6 right-6 bg-accent-red/90 backdrop-blur-sm text-white p-4 rounded-lg shadow-lg max-w-md">
             <div className="flex items-center space-x-3">
-              <FiAlertCircle className="w-5 h-5 text-white" />
+              <PiWarningCircle className="w-5 h-5 text-white" />
               <div>
                 <p className="font-medium">Erro</p>
                 <p className="text-sm opacity-90">{error}</p>
@@ -1132,7 +1154,7 @@ export default function StudentAssignmentDetailsPageClient({
                 onClick={clearError}
                 className="ml-auto text-white hover:text-gray-200"
               >
-                <FiX className="w-4 h-4" />
+                <PiX className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -1171,9 +1193,9 @@ export default function StudentAssignmentDetailsPageClient({
                     className="btn-classical-primary bg-accent-green border-accent-green hover:bg-accent-green/90 flex items-center space-x-2"
                   >
                     {loading.updateAssignment ? (
-                      <FiRefreshCw className="w-4 h-4 animate-spin" />
+                      <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                     ) : (
-                      <FiCheck className="w-4 h-4" />
+                      <PiCheck className="w-4 h-4" />
                     )}
                     <span>
                       {loading.updateAssignment
@@ -1246,7 +1268,7 @@ export default function StudentAssignmentDetailsPageClient({
                       >
                         <div className={`flex-shrink-0 ${milestone.color}`}>
                           {isCompleted ? (
-                            <FiCheckCircle className="w-5 h-5 text-accent-green" />
+                            <PiCheckCircle className="w-5 h-5 text-accent-green" />
                           ) : (
                             <Icon className="w-5 h-5" />
                           )}
@@ -1264,9 +1286,9 @@ export default function StudentAssignmentDetailsPageClient({
                         </div>
                         <div className="flex-shrink-0">
                           {isCompleted ? (
-                            <FiCheckCircle className="w-5 h-5 text-accent-green" />
+                            <PiCheckCircle className="w-5 h-5 text-accent-green" />
                           ) : (
-                            <FiCircle className="w-5 h-5 text-theme-tertiary" />
+                            <PiCircle className="w-5 h-5 text-theme-tertiary" />
                           )}
                         </div>
                       </div>

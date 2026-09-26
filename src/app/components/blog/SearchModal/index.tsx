@@ -4,13 +4,15 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/Modal';
 import {
-  FaSearch,
-  FaTimes,
-  FaClock,
-  FaHashtag,
-  FaFolder,
-} from 'react-icons/fa';
-import { FiArrowRight, FiRefreshCw, FiTrendingUp } from 'react-icons/fi';
+  PiArrowRight,
+  PiArrowsClockwise,
+  PiClock,
+  PiFolder,
+  PiHash,
+  PiMagnifyingGlass,
+  PiTrendUp,
+  PiX,
+} from 'react-icons/pi';
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import debounce from 'lodash/debounce';
@@ -171,7 +173,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
       <div className="p-6">
         {/* Header com campo de busca */}
         <div className="relative mb-6">
-          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-tertiary pointer-events-none" />
+          <PiMagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-tertiary pointer-events-none" />
           <input
             ref={inputRef}
             type="text"
@@ -189,14 +191,14 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             onClick={onClose}
             className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-theme-tertiary hover:text-theme-primary transition-colors"
           >
-            <FaTimes className="w-5 h-5" />
+            <PiX className="w-5 h-5" />
           </button>
         </div>
 
         {/* Loading */}
         {isLoading && (
           <div className="flex items-center justify-center py-12">
-            <FiRefreshCw className={`w-12 h-12 animate-spin`} />{' '}
+            <PiArrowsClockwise className={`w-12 h-12 animate-spin`} />{' '}
           </div>
         )}
 
@@ -234,7 +236,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                           {article.title}
                         </p>
                       </div>
-                      <FiArrowRight className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all group-hover:translate-x-1" />
+                      <PiArrowRight className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all group-hover:translate-x-1" />
                     </Link>
                   ))}
                 </div>
@@ -253,7 +255,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             {suggestions.categories.length > 0 && (
               <div>
                 <h3 className="text-sm font-semibold text-theme-tertiary mb-3 uppercase tracking-wider">
-                  <FaFolder className="inline-block mr-2" />
+                  <PiFolder className="inline-block mr-2" />
                   Categorias
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -275,7 +277,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             {suggestions.tags.length > 0 && (
               <div>
                 <h3 className="text-sm font-semibold text-theme-tertiary mb-3 uppercase tracking-wider">
-                  <FaHashtag className="inline-block mr-2" />
+                  <PiHash className="inline-block mr-2" />
                   Tags
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -317,7 +319,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-sm font-semibold text-theme-tertiary uppercase tracking-wider">
-                    <FaClock className="inline-block mr-2" />
+                    <PiClock className="inline-block mr-2" />
                     Recentes
                   </h3>
                   <button
@@ -344,7 +346,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             {/* Sugestões populares */}
             <div>
               <h3 className="text-sm font-semibold text-theme-tertiary mb-3 uppercase tracking-wider">
-                <FiTrendingUp className="inline-block mr-2" />
+                <PiTrendUp className="inline-block mr-2" />
                 Populares
               </h3>
               <div className="flex flex-wrap gap-2">

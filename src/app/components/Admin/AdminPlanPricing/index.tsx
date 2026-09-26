@@ -2,17 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  FiDollarSign,
-  FiSave,
-  FiRefreshCw,
-  FiInfo,
-  FiTrendingUp,
-  FiZap,
-  FiAward,
-  FiUsers,
-  FiDatabase,
-} from 'react-icons/fi';
-import { GiTeacher } from 'react-icons/gi';
+  PiArrowsClockwise,
+  PiChalkboardTeacher,
+  PiCurrencyDollar,
+  PiDatabase,
+  PiFloppyDisk,
+  PiInfo,
+  PiLightning,
+  PiMedal,
+  PiTrendUp,
+  PiUsers,
+} from 'react-icons/pi';
 import { AnimatedItem } from '../../animation/AnimatedComponents';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
@@ -42,10 +42,10 @@ interface PlanPricing {
 }
 
 const PLAN_ICONS = {
-  FREE: FiUsers,
-  PLUS: FiZap,
-  MENTOR: GiTeacher,
-  MAESTRO: FiAward,
+  FREE: PiUsers,
+  PLUS: PiLightning,
+  MENTOR: PiChalkboardTeacher,
+  MAESTRO: PiMedal,
 };
 
 const PLAN_COLORS = {
@@ -134,7 +134,7 @@ export default function AdminPlanPricingPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <FiRefreshCw className="w-8 h-8 animate-spin text-blue-500" />
+        <PiArrowsClockwise className="w-8 h-8 animate-spin text-blue-500" />
       </div>
     );
   }
@@ -148,7 +148,7 @@ export default function AdminPlanPricingPage() {
         <div className="text-center mb-8 py-12">
           <div className="flex items-center justify-center mb-6">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
-              <FiDollarSign className="w-8 h-8 text-theme-primary" />
+              <PiCurrencyDollar className="w-8 h-8 text-theme-primary" />
             </div>
           </div>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -166,7 +166,7 @@ export default function AdminPlanPricingPage() {
           <div className="classical-card rounded-xl p-12 text-center">
             <div className="flex items-center justify-center mb-6">
               <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
-                <FiDatabase className="w-10 h-10 text-blue-500" />
+                <PiDatabase className="w-10 h-10 text-blue-500" />
               </div>
             </div>
             <h3 className="text-2xl font-bold mb-3">Nenhum plano encontrado</h3>
@@ -180,9 +180,9 @@ export default function AdminPlanPricingPage() {
               size="lg"
               leftIcon={
                 seeding ? (
-                  <FiRefreshCw className="w-5 h-5 animate-spin" />
+                  <PiArrowsClockwise className="w-5 h-5 animate-spin" />
                 ) : (
-                  <FiDatabase className="w-5 h-5" />
+                  <PiDatabase className="w-5 h-5" />
                 )
               }
             >
@@ -192,7 +192,7 @@ export default function AdminPlanPricingPage() {
             {/* Info sobre os planos que serão criados */}
             <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto text-left">
               <div className="flex gap-3">
-                <FiInfo className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                <PiInfo className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                 <div className="text-sm text-blue-900">
                   <p className="font-semibold mb-2">
                     Os seguintes planos serão criados:
@@ -278,7 +278,7 @@ export default function AdminPlanPricingPage() {
                   {/* Descontos */}
                   <div className="space-y-3">
                     <h4 className="text-sm font-semibold flex items-center gap-2">
-                      <FiTrendingUp className="w-4 h-4" />
+                      <PiTrendUp className="w-4 h-4" />
                       Descontos Progressivos
                     </h4>
 
@@ -423,9 +423,9 @@ export default function AdminPlanPricingPage() {
                           className="w-full"
                           leftIcon={
                             saving === plan.planType ? (
-                              <FiRefreshCw className="w-4 h-4 animate-spin" />
+                              <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                             ) : (
-                              <FiSave className="w-4 h-4" />
+                              <PiFloppyDisk className="w-4 h-4" />
                             )
                           }
                         >
@@ -457,7 +457,7 @@ export default function AdminPlanPricingPage() {
       {/* Info Box */}
       {activePlans.length > 0 && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex gap-3">
-          <FiInfo className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+          <PiInfo className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-blue-900">
             <p className="font-semibold mb-1">Como funciona:</p>
             <ul className="list-disc list-inside space-y-1 text-blue-800">

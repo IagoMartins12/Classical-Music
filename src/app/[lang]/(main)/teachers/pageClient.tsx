@@ -5,23 +5,23 @@ import { useLocalizedRouter } from '@/app/hooks/useLocalizedRouter';
 
 import { useState, useCallback, useMemo } from 'react';
 import {
-  FiUsers,
-  FiStar,
-  FiMapPin,
-  FiMail,
-  FiExternalLink,
-  FiFilter,
-  FiX,
-  FiSearch,
-  FiChevronDown,
-  FiCheckCircle,
-  FiMusic,
-  FiClock,
-  FiMessageCircle,
-  FiRefreshCw,
-  FiAlertCircle,
-  FiUser,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiArrowsClockwise,
+  PiCaretDown,
+  PiChatCircle,
+  PiCheckCircle,
+  PiClock,
+  PiEnvelopeSimple,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiMapPin,
+  PiMusicNotes,
+  PiStar,
+  PiUser,
+  PiUsers,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -161,7 +161,7 @@ export default function PublicTeachersPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiAlertCircle className="w-8 h-8 text-theme-primary" />
+              <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               Erro ao Carregar Professores
@@ -173,7 +173,7 @@ export default function PublicTeachersPageClient({
               onClick={() => window.location.reload()}
               className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
             >
-              <FiRefreshCw className="w-4 h-4" />
+              <PiArrowsClockwise className="w-4 h-4" />
               <span>Tentar Novamente</span>
             </button>
           </div>
@@ -187,7 +187,7 @@ export default function PublicTeachersPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center">
-            <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
             <p className="text-theme-secondary">Carregando professores...</p>
           </div>
         </div>
@@ -208,7 +208,7 @@ export default function PublicTeachersPageClient({
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiUsers className="w-8 h-8 text-theme-primary" />
+                <PiUsers className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -234,7 +234,7 @@ export default function PublicTeachersPageClient({
               className="classical-card p-6 text-center"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiUsers className="w-6 h-6 text-theme-primary" />
+                <PiUsers className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.totalTeachers}
@@ -249,7 +249,7 @@ export default function PublicTeachersPageClient({
               className="classical-card p-6 text-center"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCheckCircle className="w-6 h-6 text-theme-primary" />
+                <PiCheckCircle className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.verifiedTeachers}
@@ -264,7 +264,7 @@ export default function PublicTeachersPageClient({
               className="classical-card p-6 text-center"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiStar className="w-6 h-6 text-theme-primary" />
+                <PiStar className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.averageRating.toFixed(1)}
@@ -277,7 +277,7 @@ export default function PublicTeachersPageClient({
               className="classical-card p-6 text-center"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiMusic className="w-6 h-6 text-theme-primary" />
+                <PiMusicNotes className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.totalActiveStudents}
@@ -294,7 +294,7 @@ export default function PublicTeachersPageClient({
               {/* Search */}
               <div className="flex-1 max-w-md">
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
                   <Input
                     type="text"
                     placeholder="Buscar por nome, instrumento ou especialidade..."
@@ -323,12 +323,12 @@ export default function PublicTeachersPageClient({
                       : ''
                   }`}
                 >
-                  <FiFilter className="w-4 h-4" />
+                  <PiFunnel className="w-4 h-4" />
                   <span>Filtros</span>
                   {hasActiveFilters && (
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                   )}
-                  <FiChevronDown
+                  <PiCaretDown
                     className={`w-4 h-4 transition-transform ${
                       isFiltersOpen ? 'rotate-180' : ''
                     }`}
@@ -341,7 +341,7 @@ export default function PublicTeachersPageClient({
                     disabled={isLoading}
                     className="btn-classical-secondary text-accent-red border-accent-red/30 hover:bg-accent-red/10"
                   >
-                    <FiX className="w-4 h-4" />
+                    <PiX className="w-4 h-4" />
                   </button>
                 )}
               </div>
@@ -487,7 +487,7 @@ export default function PublicTeachersPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-16">
               <div className="w-20 h-20 bg-gradient-to-br from-theme-secondary to-theme-tertiary rounded-3xl flex items-center justify-center mx-auto mb-6">
-                <FiUsers className="w-10 h-10 text-theme-primary" />
+                <PiUsers className="w-10 h-10 text-theme-primary" />
               </div>
               <h3 className="text-xl font-bold text-theme-primary mb-2">
                 Nenhum professor encontrado
@@ -584,7 +584,7 @@ export default function PublicTeachersPageClient({
       {isLoading && (
         <div className="fixed inset-0 bg-bg-overlay backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="classical-card p-8 text-center">
-            <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
             <p className="text-theme-secondary">Carregando professores...</p>
           </div>
         </div>
@@ -625,7 +625,7 @@ function TeacherCard({
               </div>
             ) : (
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center flex-shrink-0">
-                <FiUser className="w-8 h-8 text-theme-primary" />
+                <PiUser className="w-8 h-8 text-theme-primary" />
               </div>
             )}
 
@@ -636,7 +636,7 @@ function TeacherCard({
                 </h3>
                 {teacher.isVerified && (
                   <div className="w-5 h-5 bg-accent-green rounded-full flex items-center justify-center">
-                    <FiCheckCircle className="w-3 h-3 text-theme-primary" />
+                    <PiCheckCircle className="w-3 h-3 text-theme-primary" />
                   </div>
                 )}
               </div>
@@ -645,7 +645,7 @@ function TeacherCard({
               {teacher.averageRating && teacher.totalReviews > 0 && (
                 <div className="flex items-center space-x-2 mt-1">
                   <div className="flex items-center space-x-1">
-                    <FiStar className="w-4 h-4 text-accent-yellow" />
+                    <PiStar className="w-4 h-4 text-accent-yellow" />
                     <span className="text-sm font-medium text-theme-primary">
                       {teacher.averageRating.toFixed(1)}
                     </span>
@@ -659,7 +659,7 @@ function TeacherCard({
               {/* Location */}
               {teacher.location && (
                 <div className="flex items-center space-x-1 mt-1">
-                  <FiMapPin className="w-3 h-3 text-theme-tertiary" />
+                  <PiMapPin className="w-3 h-3 text-theme-tertiary" />
                   <span className="text-xs text-theme-tertiary">
                     {teacher.location}
                   </span>
@@ -678,11 +678,11 @@ function TeacherCard({
           {/* Experience */}
           <div className="flex items-center justify-between text-xs text-theme-tertiary mb-4">
             <div className="flex items-center space-x-1">
-              <FiClock className="w-3 h-3" />
+              <PiClock className="w-3 h-3" />
               <span>{teacher.yearsExperience} anos de experiência</span>
             </div>
             <div className="flex items-center space-x-1">
-              <FiUsers className="w-3 h-3" />
+              <PiUsers className="w-3 h-3" />
               <span>{teacher.totalStudents} alunos</span>
             </div>
           </div>
@@ -715,7 +715,7 @@ function TeacherCard({
               href={`/teachers/${teacher.id}`}
               className="btn-classical-primary w-full text-center flex items-center justify-center space-x-2"
             >
-              <FiExternalLink className="w-4 h-4" />
+              <PiArrowSquareOut className="w-4 h-4" />
               <span>Ver Perfil Completo</span>
             </Link>
 
@@ -726,7 +726,7 @@ function TeacherCard({
                   onClick={() => onWhatsAppContact(teacher)}
                   className="btn-classical-secondary flex-1 flex items-center justify-center space-x-2 text-accent-green border-accent-green/30 hover:bg-accent-green/10"
                 >
-                  <FiMessageCircle className="w-4 h-4" />
+                  <PiChatCircle className="w-4 h-4" />
                   <span>WhatsApp</span>
                 </button>
               )}
@@ -736,7 +736,7 @@ function TeacherCard({
                   onClick={() => onEmailContact(teacher)}
                   className="btn-classical-secondary flex-1 flex items-center justify-center space-x-2"
                 >
-                  <FiMail className="w-4 h-4" />
+                  <PiEnvelopeSimple className="w-4 h-4" />
                   <span>Email</span>
                 </button>
               )}

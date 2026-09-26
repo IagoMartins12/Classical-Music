@@ -3,14 +3,14 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatedCard } from '../animation/AnimatedComponents';
 import {
-  FiAlertTriangle,
-  FiTrash2,
-  FiUser,
-  FiMusic,
-  FiFileText,
-  FiInfo,
-  FiLoader,
-} from 'react-icons/fi';
+  PiFileText,
+  PiInfo,
+  PiMusicNotes,
+  PiSpinnerGap,
+  PiTrash,
+  PiUser,
+  PiWarning,
+} from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { getCascadeInfo } from '@/app/requests/uploads-client';
 import Button from '../Common/Button';
@@ -38,15 +38,15 @@ interface ConfirmDeleteUploadModalProps {
 
 const TYPE_CONFIG = {
   composer: {
-    icon: FiUser,
+    icon: PiUser,
     color: 'from-accent-purple to-accent-blue',
   },
   work: {
-    icon: FiMusic,
+    icon: PiMusicNotes,
     color: 'from-accent-blue to-accent-green',
   },
   score: {
-    icon: FiFileText,
+    icon: PiFileText,
     color: 'from-accent-green to-accent-amber',
   },
 };
@@ -139,7 +139,7 @@ export default function ConfirmDeleteUploadModal({
       >
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center relative">
-            <FiAlertTriangle className="w-6 h-6 text-accent-red" />
+            <PiWarning className="w-6 h-6 text-accent-red" />
             {/* Ícone do tipo no canto */}
             <div
               className={`absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br ${typeConfig.color} rounded-full flex items-center justify-center`}
@@ -169,7 +169,7 @@ export default function ConfirmDeleteUploadModal({
           {/* Loading cascade info */}
           {loadingCascadeInfo ? (
             <div className="flex items-center space-x-2 p-3 bg-accent-blue/10 rounded-lg border border-accent-blue/20">
-              <FiLoader className="w-4 h-4 text-accent-blue animate-spin" />
+              <PiSpinnerGap className="w-4 h-4 text-accent-blue animate-spin" />
               <span className="text-sm text-accent-blue">
                 {t('delete_modal_checking_related')}
               </span>
@@ -180,7 +180,7 @@ export default function ConfirmDeleteUploadModal({
           {!loadingCascadeInfo && hasCascadeItems ? (
             <div className="p-4 bg-accent-amber/10 rounded-lg border border-accent-amber/20">
               <div className="flex items-start space-x-2 mb-3">
-                <FiInfo className="w-4 h-4 text-accent-amber mt-0.5 flex-shrink-0" />
+                <PiInfo className="w-4 h-4 text-accent-amber mt-0.5 flex-shrink-0" />
                 <div>
                   <div className="text-sm font-medium text-accent-amber mb-1">
                     {t('delete_modal_cascade_warning')}
@@ -312,7 +312,7 @@ export default function ConfirmDeleteUploadModal({
           (itemType === 'composer' || itemType === 'work') ? (
             <div className="p-3 bg-accent-green/10 rounded-lg border border-accent-green/20">
               <div className="flex items-center space-x-2">
-                <FiInfo className="w-4 h-4 text-accent-green" />
+                <PiInfo className="w-4 h-4 text-accent-green" />
                 <span className="text-sm text-accent-green">
                   {t('delete_modal_no_related_items')}
                 </span>
@@ -324,7 +324,7 @@ export default function ConfirmDeleteUploadModal({
           {itemType === 'score' ? (
             <div className="bg-accent-red/5 border border-accent-red/20 rounded-lg p-3">
               <div className="flex items-start space-x-2">
-                <FiAlertTriangle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
+                <PiWarning className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
                 <div className="text-sm text-accent-red">
                   <p className="font-medium">
                     {t('delete_modal_score_warning_title')}
@@ -349,7 +349,7 @@ export default function ConfirmDeleteUploadModal({
           <Button
             variant="delete"
             onClick={onConfirm}
-            leftIcon={<FiTrash2 />}
+            leftIcon={<PiTrash />}
             disabled={isLoading || loadingCascadeInfo}
           >
             {isLoading ? (

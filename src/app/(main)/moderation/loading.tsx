@@ -2,24 +2,22 @@
 'use client';
 
 import {
-  FiUpload,
-  FiDatabase,
-  FiUser,
-  FiMusic,
-  FiFileText,
-  FiFile,
-  FiSearch,
-  FiFilter,
-  FiPlus,
-  FiSettings,
-  FiList,
-  FiGrid,
-  FiEdit,
-  FiTrash2,
-  FiExternalLink,
-} from 'react-icons/fi';
-import { MdUpload } from 'react-icons/md';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiArrowSquareOut,
+  PiDatabase,
+  PiFile,
+  PiFileText,
+  PiFunnel,
+  PiGear,
+  PiListBullets,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiNotePencil,
+  PiPlus,
+  PiSquaresFour,
+  PiTrash,
+  PiUploadSimple,
+  PiUser,
+} from 'react-icons/pi';
 
 export default function UploadsPageLoading() {
   return (
@@ -36,7 +34,7 @@ export default function UploadsPageLoading() {
         <div className="text-center mb-8 py-16">
           <div className="flex items-center justify-center mb-6">
             <div className="w-16 h-16 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-3xl flex items-center justify-center shadow-theme-glow">
-              <MdUpload className="w-8 h-8 text-theme-primary/30" />
+              <PiUploadSimple className="w-8 h-8 text-theme-primary/30" />
             </div>
           </div>
           <div className="h-12 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-2xl mx-auto max-w-md mb-4"></div>
@@ -47,27 +45,29 @@ export default function UploadsPageLoading() {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           {[
             {
-              icon: <FiDatabase className="w-5 h-5 text-theme-primary/30" />,
+              icon: <PiDatabase className="w-5 h-5 text-theme-primary/30" />,
               gradient: 'from-brand-primary to-brand-secondary',
             },
             {
-              icon: <FiUser className="w-5 h-5 text-theme-primary/30" />,
+              icon: <PiUser className="w-5 h-5 text-theme-primary/30" />,
               gradient: 'from-accent-purple to-accent-blue',
             },
             {
-              icon: <FiMusic className="w-5 h-5 text-theme-primary/30" />,
+              icon: <PiMusicNotes className="w-5 h-5 text-theme-primary/30" />,
               gradient: 'from-accent-blue to-accent-green',
             },
             {
-              icon: <FiFileText className="w-5 h-5 text-theme-primary/30" />,
+              icon: <PiFileText className="w-5 h-5 text-theme-primary/30" />,
               gradient: 'from-accent-green to-accent-amber',
             },
             {
-              icon: <FiFile className="w-5 h-5 text-theme-primary/30" />,
+              icon: <PiFile className="w-5 h-5 text-theme-primary/30" />,
               gradient: 'from-accent-amber to-accent-red',
             },
             {
-              icon: <FiUpload className="w-5 h-5 text-theme-primary/30" />,
+              icon: (
+                <PiUploadSimple className="w-5 h-5 text-theme-primary/30" />
+              ),
               gradient: 'from-accent-red to-brand-primary',
             },
           ].map((item, index) => (
@@ -89,15 +89,15 @@ export default function UploadsPageLoading() {
             {/* Create Buttons */}
             <div className="flex flex-wrap gap-2">
               <div className="h-10 w-36 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center space-x-2">
-                <FiPlus className="w-4 h-4 text-theme-primary/30" />
+                <PiPlus className="w-4 h-4 text-theme-primary/30" />
                 <div className="w-20 h-4 bg-theme-primary/30 rounded"></div>
               </div>
               <div className="h-10 w-28 bg-theme-secondary rounded-lg flex items-center justify-center space-x-2">
-                <FiPlus className="w-4 h-4 text-theme-tertiary/30" />
+                <PiPlus className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="w-16 h-4 bg-theme-tertiary/30 rounded"></div>
               </div>
               <div className="h-10 w-32 bg-theme-secondary rounded-lg flex items-center justify-center space-x-2">
-                <FiPlus className="w-4 h-4 text-theme-tertiary/30" />
+                <PiPlus className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="w-20 h-4 bg-theme-tertiary/30 rounded"></div>
               </div>
             </div>
@@ -106,23 +106,23 @@ export default function UploadsPageLoading() {
             <div className="flex flex-col sm:flex-row gap-3">
               {/* Search */}
               <div className="relative">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary/30 w-4 h-4" />
+                <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary/30 w-4 h-4" />
                 <div className="h-12 w-80 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
               </div>
 
               {/* Action Buttons */}
               <div className="flex items-center space-x-2">
                 <div className="h-12 w-24 bg-theme-secondary border border-theme-secondary rounded-lg flex items-center justify-center space-x-2">
-                  <FiFilter className="w-4 h-4 text-theme-tertiary/30" />
+                  <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="w-12 h-4 bg-theme-tertiary/30 rounded"></div>
                 </div>
 
                 <div className="bg-theme-secondary border border-theme-primary rounded-lg p-1 flex">
                   <div className="p-2 rounded bg-theme-elevated">
-                    <FiList className="w-4 h-4 text-theme-tertiary/30" />
+                    <PiListBullets className="w-4 h-4 text-theme-tertiary/30" />
                   </div>
                   <div className="p-2 rounded bg-brand-gradient/20">
-                    <FiGrid className="w-4 h-4 text-brand-primary/30" />
+                    <PiSquaresFour className="w-4 h-4 text-brand-primary/30" />
                   </div>
                 </div>
               </div>
@@ -152,7 +152,7 @@ export default function UploadsPageLoading() {
 
           <div className="flex items-center space-x-2">
             <div className="h-8 w-20 bg-theme-secondary rounded flex items-center justify-center space-x-1">
-              <FiSettings className="w-4 h-4 text-theme-tertiary/30" />
+              <PiGear className="w-4 h-4 text-theme-tertiary/30" />
               <div className="w-12 h-3 bg-theme-tertiary/30 rounded"></div>
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function UploadsPageLoading() {
           <div>
             <div className="flex items-center space-x-3 mb-6">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                <FiUser className="w-5 h-5 text-theme-primary/30" />
+                <PiUser className="w-5 h-5 text-theme-primary/30" />
               </div>
               <div className="space-y-2">
                 <div className="h-8 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
@@ -183,7 +183,7 @@ export default function UploadsPageLoading() {
           <div>
             <div className="flex items-center space-x-3 mb-6">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                <FiMusic className="w-5 h-5 text-theme-primary/30" />
+                <PiMusicNotes className="w-5 h-5 text-theme-primary/30" />
               </div>
               <div className="space-y-2">
                 <div className="h-8 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
@@ -202,7 +202,7 @@ export default function UploadsPageLoading() {
           <div>
             <div className="flex items-center space-x-3 mb-6">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                <FiFileText className="w-5 h-5 text-theme-primary/30" />
+                <PiFileText className="w-5 h-5 text-theme-primary/30" />
               </div>
               <div className="space-y-2">
                 <div className="h-8 w-40 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
@@ -245,7 +245,7 @@ function ComposerCardSkeleton() {
         <div className="flex justify-center mb-4">
           <div className="relative w-24 h-24 md:w-28 md:h-28">
             <div className="w-full h-full bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-full border-3 border-brand-primary/20 flex items-center justify-center">
-              <FiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse/20" />
+              <PiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse/20" />
             </div>
           </div>
         </div>
@@ -253,10 +253,10 @@ function ComposerCardSkeleton() {
         {/* Floating action buttons */}
         <div className="absolute top-4 right-4 flex flex-col space-y-2">
           <div className="w-8 h-8 bg-theme-elevated/50 rounded-lg flex items-center justify-center">
-            <FiEdit className="w-4 h-4 text-theme-tertiary/30" />
+            <PiNotePencil className="w-4 h-4 text-theme-tertiary/30" />
           </div>
           <div className="w-8 h-8 bg-theme-elevated/50 rounded-lg flex items-center justify-center">
-            <FiTrash2 className="w-4 h-4 text-theme-tertiary/30" />
+            <PiTrash className="w-4 h-4 text-theme-tertiary/30" />
           </div>
         </div>
       </div>
@@ -284,7 +284,7 @@ function ComposerCardSkeleton() {
           <div className="flex justify-center space-x-2 pt-2">
             <div className="h-6 w-16 bg-accent-green/10 border border-accent-green/20 rounded-full flex items-center justify-center space-x-1">
               <div className="w-8 h-3 bg-accent-green/20 rounded"></div>
-              <FiExternalLink className="w-2.5 h-2.5 text-accent-green/30" />
+              <PiArrowSquareOut className="w-2.5 h-2.5 text-accent-green/30" />
             </div>
           </div>
 
@@ -306,10 +306,10 @@ function WorkCardSkeleton() {
         {/* Floating action buttons */}
         <div className="absolute top-4 right-4 z-50 flex flex-col space-y-2">
           <div className="w-8 h-8 bg-theme-elevated/50 rounded-lg flex items-center justify-center">
-            <FiEdit className="w-4 h-4 text-theme-tertiary/30" />
+            <PiNotePencil className="w-4 h-4 text-theme-tertiary/30" />
           </div>
           <div className="w-8 h-8 bg-theme-elevated/50 rounded-lg flex items-center justify-center">
-            <FiTrash2 className="w-4 h-4 text-theme-tertiary/30" />
+            <PiTrash className="w-4 h-4 text-theme-tertiary/30" />
           </div>
         </div>
 
@@ -330,12 +330,12 @@ function WorkCardSkeleton() {
         {/* Work Details */}
         <div className="space-y-3 mb-4 flex-1">
           <div className="flex items-center">
-            <FiMusic className="w-4 h-4 text-brand-primary/30 mr-2 flex-shrink-0" />
+            <PiMusicNotes className="w-4 h-4 text-brand-primary/30 mr-2 flex-shrink-0" />
             <div className="h-4 w-24 bg-theme-elevated rounded"></div>
           </div>
 
           <div className="flex items-center">
-            <GiMusicalNotes className="w-4 h-4 text-brand-secondary/30 mr-2 flex-shrink-0" />
+            <PiMusicNotes className="w-4 h-4 text-brand-secondary/30 mr-2 flex-shrink-0" />
             <div className="h-4 w-20 bg-theme-elevated rounded"></div>
           </div>
         </div>
@@ -350,7 +350,7 @@ function WorkCardSkeleton() {
         <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
           <div className="h-3 w-28 bg-theme-elevated rounded"></div>
           <div className="h-4 w-12 bg-accent-green/20 rounded flex items-center justify-center space-x-1">
-            <FiExternalLink className="w-3 h-3 text-accent-green/30" />
+            <PiArrowSquareOut className="w-3 h-3 text-accent-green/30" />
           </div>
         </div>
       </div>
@@ -366,10 +366,10 @@ function ScoreCardSkeleton() {
         {/* Floating action buttons */}
         <div className="absolute top-4 right-4 z-50 flex flex-col space-y-2">
           <div className="w-8 h-8 bg-theme-elevated/50 rounded-lg flex items-center justify-center">
-            <FiEdit className="w-4 h-4 text-theme-tertiary/30" />
+            <PiNotePencil className="w-4 h-4 text-theme-tertiary/30" />
           </div>
           <div className="w-8 h-8 bg-theme-elevated/50 rounded-lg flex items-center justify-center">
-            <FiTrash2 className="w-4 h-4 text-theme-tertiary/30" />
+            <PiTrash className="w-4 h-4 text-theme-tertiary/30" />
           </div>
         </div>
 
@@ -377,7 +377,7 @@ function ScoreCardSkeleton() {
           {/* Icon */}
           <div className="flex justify-center mb-4">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-green/20 to-accent-amber/20 rounded-xl flex items-center justify-center">
-              <FiFileText className="w-8 h-8 text-theme-primary/30" />
+              <PiFileText className="w-8 h-8 text-theme-primary/30" />
             </div>
           </div>
 
@@ -393,12 +393,12 @@ function ScoreCardSkeleton() {
           {/* Work info */}
           <div className="text-center space-y-2">
             <div className="flex items-center justify-center">
-              <FiMusic className="w-4 h-4 text-accent-blue/30 mr-2" />
+              <PiMusicNotes className="w-4 h-4 text-accent-blue/30 mr-2" />
               <div className="h-4 w-32 bg-accent-blue/20 rounded"></div>
             </div>
 
             <div className="flex items-center justify-center">
-              <FiUser className="w-4 h-4 text-theme-tertiary/30 mr-2" />
+              <PiUser className="w-4 h-4 text-theme-tertiary/30 mr-2" />
               <div className="h-4 w-28 bg-theme-elevated rounded"></div>
             </div>
           </div>
@@ -425,7 +425,7 @@ function ScoreCardSkeleton() {
               <div className="w-8 h-3 bg-brand-primary/30 rounded"></div>
             </div>
             <div className="h-4 w-12 bg-accent-green/20 rounded flex items-center justify-center space-x-1">
-              <FiExternalLink className="w-3 h-3 text-accent-green/30" />
+              <PiArrowSquareOut className="w-3 h-3 text-accent-green/30" />
             </div>
           </div>
         </div>

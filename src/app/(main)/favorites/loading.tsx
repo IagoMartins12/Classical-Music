@@ -1,16 +1,16 @@
 // app/favorites/FavoritesLoading.tsx - Clean Skeleton Loading
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiHeart,
-  FiUser,
-  FiMusic,
-  FiList,
-  FiGrid,
-  FiSearch,
-  FiExternalLink,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiArrowSquareOut,
+  PiHeart,
+  PiListBullets,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiSquaresFour,
+  PiUser,
+} from 'react-icons/pi';
 
 export default function FavoritesLoading() {
   return (
@@ -35,13 +35,13 @@ export default function FavoritesLoading() {
       {/* Floating musical notes */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiHeart />
+          <PiHeart />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiMusic />
+          <PiMusicNotes />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -53,7 +53,7 @@ export default function FavoritesLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -93,7 +93,7 @@ export default function FavoritesLoading() {
             <div className="flex flex-col sm:flex-row gap-3">
               {/* Search Skeleton */}
               <div className="relative">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary/50 w-4 h-4" />
+                <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary/50 w-4 h-4" />
                 <div className="h-12 w-32 md:w-96 max-w-full bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg pl-12 animate-pulse"></div>
               </div>
 
@@ -101,10 +101,10 @@ export default function FavoritesLoading() {
               <div className="flex items-center space-x-3">
                 <div className="bg-theme-secondary border border-theme-primary rounded-lg p-1 flex">
                   <div className="p-2 rounded bg-theme-elevated">
-                    <FiList className="w-4 h-4 text-theme-tertiary/50" />
+                    <PiListBullets className="w-4 h-4 text-theme-tertiary/50" />
                   </div>
                   <div className="p-2 rounded bg-brand-gradient/20">
-                    <FiGrid className="w-4 h-4 text-brand-primary/50" />
+                    <PiSquaresFour className="w-4 h-4 text-brand-primary/50" />
                   </div>
                 </div>
               </div>
@@ -116,7 +116,7 @@ export default function FavoritesLoading() {
         <div>
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-              <FiUser className="w-5 h-5 text-theme-primary/30" />
+              <PiUser className="w-5 h-5 text-theme-primary/30" />
             </div>
             <div className="space-y-2">
               <div className="h-8 w-56 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
@@ -136,7 +136,7 @@ export default function FavoritesLoading() {
         <div>
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-              <FiMusic className="w-5 h-5 text-theme-primary/30" />
+              <PiMusicNotes className="w-5 h-5 text-theme-primary/30" />
             </div>
             <div className="space-y-2">
               <div className="h-8 w-40 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
@@ -169,7 +169,7 @@ function ComposerCardSkeleton() {
         {/* Portrait */}
         <div className="relative w-16 h-16">
           <div className="w-full h-full bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-full border-3 border-brand-primary/20 flex items-center justify-center">
-            <FiUser className="w-8 h-8 text-theme-primary" />
+            <PiUser className="w-8 h-8 text-theme-primary" />
           </div>
         </div>
 
@@ -189,7 +189,7 @@ function ComposerCardSkeleton() {
         {/* Favorite Button Area */}
         <div className="absolute top-4 right-4">
           <div className="w-8 h-8 bg-theme-secondary/50 rounded-full flex items-center justify-center">
-            <FiHeart className="w-4 h-4 text-theme-tertiary/30" />
+            <PiHeart className="w-4 h-4 text-theme-tertiary/30" />
           </div>
         </div>
       </div>
@@ -198,7 +198,7 @@ function ComposerCardSkeleton() {
       <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-end">
         <div className="flex items-center space-x-1">
           <div className="h-4 w-16 bg-brand-primary/20 rounded"></div>
-          <FiExternalLink className="w-3 h-3 text-theme-tertiary/30" />
+          <PiArrowSquareOut className="w-3 h-3 text-theme-tertiary/30" />
         </div>
       </div>
     </div>
@@ -226,7 +226,7 @@ function WorkCardSkeleton() {
           {/* Favorite Button Area */}
           <div className="absolute top-4 right-4">
             <div className="w-8 h-8 bg-theme-secondary/50 rounded-full flex items-center justify-center">
-              <FiHeart className="w-4 h-4 text-theme-tertiary/30" />
+              <PiHeart className="w-4 h-4 text-theme-tertiary/30" />
             </div>
           </div>
         </div>
@@ -244,7 +244,7 @@ function WorkCardSkeleton() {
       <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-end">
         <div className="flex items-center space-x-1">
           <div className="h-4 w-16 bg-brand-primary/20 rounded"></div>
-          <FiExternalLink className="w-3 h-3 text-theme-tertiary/30" />
+          <PiArrowSquareOut className="w-3 h-3 text-theme-tertiary/30" />
         </div>
       </div>
     </div>

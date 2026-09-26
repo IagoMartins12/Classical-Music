@@ -6,18 +6,18 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import {
-  FiSave,
-  FiTrash2,
-  FiLoader,
-  FiCalendar,
-  FiMapPin,
-  FiUser,
-  FiExternalLink,
-  FiBookOpen,
-  FiEdit3,
-  FiInfo,
-  FiEye,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiEye,
+  PiFloppyDisk,
+  PiInfo,
+  PiMapPin,
+  PiPencilLine,
+  PiSpinnerGap,
+  PiTrash,
+  PiUser,
+} from 'react-icons/pi';
 
 import {
   AnimatedContainer,
@@ -239,7 +239,7 @@ const EditComposerClient = ({
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-4">
                             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                              <FiEdit3 className="w-5 h-5 text-theme-primary" />
+                              <PiPencilLine className="w-5 h-5 text-theme-primary" />
                             </div>
                             <div>
                               <h1 className="text-3xl md:text-4xl font-bold text-gradient-brand classical-title leading-tight">
@@ -255,7 +255,7 @@ const EditComposerClient = ({
                         {/* Action buttons */}
                         <div className="flex flex-wrap justify-center gap-3 items-center space-x-3 ml-4">
                           <Link href={`/composer/${composer.id}`}>
-                            <Button variant="primary" leftIcon={<FiEye />}>
+                            <Button variant="primary" leftIcon={<PiEye />}>
                               {t('see_composer')}
                             </Button>
                           </Link>
@@ -263,7 +263,7 @@ const EditComposerClient = ({
                             <>
                               <Button
                                 variant="primary"
-                                leftIcon={<FiSave />}
+                                leftIcon={<PiFloppyDisk />}
                                 onClick={() => setShowEditModal(true)}
                               >
                                 {t('edit_button')}
@@ -273,9 +273,9 @@ const EditComposerClient = ({
                                 variant="delete"
                                 leftIcon={
                                   isDeleting ? (
-                                    <FiLoader className="animate-spin" />
+                                    <PiSpinnerGap className="animate-spin" />
                                   ) : (
-                                    <FiTrash2 />
+                                    <PiTrash />
                                   )
                                 }
                                 onClick={handleDelete}
@@ -298,7 +298,7 @@ const EditComposerClient = ({
                       {/* Nome */}
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiUser className="w-4 h-4 text-theme-primary" />
+                          <PiUser className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -315,7 +315,7 @@ const EditComposerClient = ({
                         composer.fullName !== composer.name && (
                           <div className="flex items-start space-x-3 group">
                             <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                              <FiUser className="w-4 h-4 text-theme-primary" />
+                              <PiUser className="w-4 h-4 text-theme-primary" />
                             </div>
                             <div>
                               <p className="text-sm font-medium text-theme-tertiary">
@@ -332,7 +332,7 @@ const EditComposerClient = ({
                       {composer.birthDate && (
                         <div className="flex items-start space-x-3 group">
                           <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                            <FiCalendar className="w-4 h-4 text-theme-primary" />
+                            <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
@@ -349,7 +349,7 @@ const EditComposerClient = ({
                       {composer.deathDate && (
                         <div className="flex items-start space-x-3 group">
                           <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                            <FiCalendar className="w-4 h-4 text-theme-primary" />
+                            <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
@@ -365,7 +365,7 @@ const EditComposerClient = ({
                       {/* Época */}
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiMapPin className="w-4 h-4 text-theme-primary" />
+                          <PiMapPin className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -380,7 +380,7 @@ const EditComposerClient = ({
                       {/* Papel Principal */}
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiUser className="w-4 h-4 text-theme-primary" />
+                          <PiUser className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -413,7 +413,7 @@ const EditComposerClient = ({
                       {composer.instruments && (
                         <div className="md:col-span-2 flex items-start space-x-3 group">
                           <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                            <FiUser className="w-4 h-4 text-theme-primary" />
+                            <PiUser className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
@@ -433,7 +433,7 @@ const EditComposerClient = ({
                     <AnimatedItem direction="right" springType="smooth">
                       <div className="border-t border-theme-secondary pt-6">
                         <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                          <FiExternalLink className="w-5 h-5 text-accent-blue" />
+                          <PiArrowSquareOut className="w-5 h-5 text-accent-blue" />
                           <span>{t('composer_info_external_links')}</span>
                         </h3>
                         <div className="flex flex-wrap gap-3">
@@ -444,7 +444,7 @@ const EditComposerClient = ({
                               rel="noopener noreferrer"
                               className="btn-classical-primary flex items-center space-x-2 group/btn"
                             >
-                              <FiExternalLink className="w-4 h-4" />
+                              <PiArrowSquareOut className="w-4 h-4" />
                               <span>{t('composer_info_wikipedia')}</span>
                               <svg
                                 className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
@@ -469,7 +469,7 @@ const EditComposerClient = ({
                               rel="noopener noreferrer"
                               className="btn-classical-secondary flex items-center space-x-2 group/btn"
                             >
-                              <FiBookOpen className="w-4 h-4" />
+                              <PiBookOpen className="w-4 h-4" />
                               <span>{t('composer_info_imslp')}</span>
                               <svg
                                 className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
@@ -515,7 +515,7 @@ const EditComposerClient = ({
                     ) : (
                       <div className="w-64 h-80 bg-gradient-card border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <div className="text-center text-theme-tertiary">
-                          <FiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                          <PiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
                           <p className="text-sm">{t('composer_no_image')}</p>
                         </div>
                       </div>
@@ -532,7 +532,7 @@ const EditComposerClient = ({
               <AnimatedItem direction="left" springType="smooth">
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
-                    <FiBookOpen className="w-6 h-6 text-theme-primary" />
+                    <PiBookOpen className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -541,7 +541,7 @@ const EditComposerClient = ({
                   </div>
                   <div className="relative group">
                     <div className="w-8 h-8 bg-interactive-hover rounded-full flex items-center justify-center cursor-help">
-                      <FiInfo className="w-4 h-4 text-theme-tertiary" />
+                      <PiInfo className="w-4 h-4 text-theme-tertiary" />
                     </div>
                     <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-theme-elevated border border-theme-primary text-theme-primary text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-theme-medium">
                       Biografia cadastrada no sistema

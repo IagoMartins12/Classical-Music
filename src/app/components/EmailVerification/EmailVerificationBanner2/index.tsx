@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useSession } from '@/app/libs/session';
-import { FiX, FiRefreshCw } from 'react-icons/fi';
+import { PiArrowsClockwise, PiX } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
 import { legacyAuth } from '@/app/libs/api/compat';
@@ -130,7 +130,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
                   size="sm"
                   onClick={handleResendVerification}
                   isLoading={isResending}
-                  leftIcon={<FiRefreshCw />}
+                  leftIcon={<PiArrowsClockwise />}
                   className={`border-accent-amber text-accent-amber hover:bg-accent-amber hover:text-black`}
                 >
                   {t('email_banner_resend')}
@@ -157,7 +157,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
           onClick={handleDismiss}
           className={`${textColor} hover:opacity-60 transition-opacity p-1`}
         >
-          <FiX className="w-4 h-4" />
+          <PiX className="w-4 h-4" />
         </button>
       </div>
 

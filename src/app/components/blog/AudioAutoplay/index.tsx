@@ -2,7 +2,13 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { FiVolume2, FiVolumeX, FiX, FiPlay, FiPause } from 'react-icons/fi';
+import {
+  PiPause,
+  PiPlay,
+  PiSpeakerHigh,
+  PiSpeakerX,
+  PiX,
+} from 'react-icons/pi';
 
 interface AudioAutoplayProps {
   audioUrl: string;
@@ -465,9 +471,9 @@ export function AudioAutoplay({
           title={status === 'playing' ? 'Pausar' : 'Tocar'}
         >
           {status === 'playing' ? (
-            <FiPause className="w-5 h-5" />
+            <PiPause className="w-5 h-5" />
           ) : (
-            <FiPlay className="w-5 h-5 ml-0.5" />
+            <PiPlay className="w-5 h-5 ml-0.5" />
           )}
         </button>
 
@@ -509,9 +515,9 @@ export function AudioAutoplay({
           title={status === 'muted' ? 'Ativar som' : 'Silenciar'}
         >
           {status === 'muted' ? (
-            <FiVolumeX className="w-5 h-5 text-theme-secondary" />
+            <PiSpeakerX className="w-5 h-5 text-theme-secondary" />
           ) : (
-            <FiVolume2 className="w-5 h-5 text-brand-primary" />
+            <PiSpeakerHigh className="w-5 h-5 text-brand-primary" />
           )}
         </button>
       </div>
@@ -526,7 +532,7 @@ export function AudioAutoplay({
           <div className="bg-gradient-to-r from-brand-primary to-accent-purple text-theme-primary p-4 rounded-lg shadow-2xl backdrop-blur-sm">
             <div className="flex items-start space-x-3">
               <div className="flex-shrink-0 mt-0.5">
-                <FiVolume2 className="w-6 h-6" />
+                <PiSpeakerHigh className="w-6 h-6" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold mb-1">
@@ -546,7 +552,7 @@ export function AudioAutoplay({
                 onClick={() => setShowBanner(false)}
                 className="flex-shrink-0 text-theme-primary transition-colors"
               >
-                <FiX className="w-5 h-5" />
+                <PiX className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -634,7 +640,7 @@ export function AudioAutoplay({
                   onClick={() => setShowPlayer(false)}
                   className="text-theme-tertiary hover:text-theme-primary transition-colors"
                 >
-                  <FiX className="w-5 h-5" />
+                  <PiX className="w-5 h-5" />
                 </button>
               </div>
               <AudioPlayer />
@@ -661,9 +667,9 @@ export function AudioAutoplay({
                 title={status === 'muted' ? 'Ativar som' : 'Silenciar'}
               >
                 {status === 'muted' ? (
-                  <FiVolumeX className="w-5 h-5 text-theme-secondary" />
+                  <PiSpeakerX className="w-5 h-5 text-theme-secondary" />
                 ) : (
-                  <FiVolume2 className="w-5 h-5 text-brand-primary" />
+                  <PiSpeakerHigh className="w-5 h-5 text-brand-primary" />
                 )}
               </button>
 

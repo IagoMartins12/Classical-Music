@@ -3,14 +3,14 @@
 
 import Link from 'next/link';
 import {
-  FiMail,
-  FiShield,
-  FiHome,
-  FiRefreshCw,
-  FiCheckCircle,
-  FiAlertTriangle,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiArrowsClockwise,
+  PiCheckCircle,
+  PiEnvelopeSimple,
+  PiHouse,
+  PiMusicNotes,
+  PiShield,
+  PiWarning,
+} from 'react-icons/pi';
 import {
   PageContainer,
   AnimatedContainer,
@@ -52,7 +52,7 @@ export default function EmailVerificationRequired({
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiShield className="w-8 h-8 text-theme-primary" />
+                <PiShield className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -72,7 +72,7 @@ export default function EmailVerificationRequired({
           >
             <div className="flex items-start space-x-4">
               <div className="w-12 h-12 bg-gradient-to-br from-accent-blue/20 to-accent-green/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                <FiMail className="w-6 h-6 text-accent-blue" />
+                <PiEnvelopeSimple className="w-6 h-6 text-accent-blue" />
               </div>
               <div className="text-left flex-1">
                 <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
@@ -101,7 +101,7 @@ export default function EmailVerificationRequired({
           <AnimatedItem direction="up" springType="bouncy">
             <div className="bg-theme-elevated border-accent-green rounded-lg p-4 mb-6 max-w-2xl mx-auto">
               <div className="flex items-center justify-center space-x-3">
-                <FiCheckCircle className="w-5 h-5 text-accent-green" />
+                <PiCheckCircle className="w-5 h-5 text-accent-green" />
                 <p className="text-accent-green font-medium">
                   {t('email_sent_success')}
                 </p>
@@ -122,7 +122,7 @@ export default function EmailVerificationRequired({
               size="lg"
               isLoading={isSending}
               leftIcon={
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-5 h-5 ${
                     isSending ? 'animate-spin' : 'group-hover:rotate-180'
                   } transition-transform duration-500`}
@@ -137,7 +137,7 @@ export default function EmailVerificationRequired({
               variant="secondary"
               size="lg"
               isLoading={isRefreshing}
-              leftIcon={<FiCheckCircle />}
+              leftIcon={<PiCheckCircle />}
             >
               {isRefreshing
                 ? t('button_verifying')
@@ -149,7 +149,7 @@ export default function EmailVerificationRequired({
                 className="w-full"
                 size="lg"
                 leftIcon={
-                  <FiHome className="w-5 h-5 group-hover:scale-110 self-center transition-transform duration-300" />
+                  <PiHouse className="w-5 h-5 group-hover:scale-110 self-center transition-transform duration-300" />
                 }
               >
                 {t('button_back_home')}
@@ -165,7 +165,7 @@ export default function EmailVerificationRequired({
             <AnimatedCard hover="lift" className="classical-card p-6">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                  <FiCheckCircle className="w-5 h-5 text-accent-green" />
+                  <PiCheckCircle className="w-5 h-5 text-accent-green" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title">
                   {t('current_permissions_title')}
@@ -206,7 +206,7 @@ export default function EmailVerificationRequired({
             <AnimatedCard hover="lift" className="classical-card p-6">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-amber/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
-                  <FiShield className="w-5 h-5 text-accent-amber" />
+                  <PiShield className="w-5 h-5 text-accent-amber" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title">
                   {t('after_verification_title')}
@@ -251,7 +251,7 @@ export default function EmailVerificationRequired({
           >
             <div className="flex items-start space-x-4">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                <FiAlertTriangle className="w-5 h-5 text-accent-blue" />
+                <PiWarning className="w-5 h-5 text-accent-blue" />
               </div>
               <div className="text-left flex-1">
                 <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
@@ -283,11 +283,11 @@ export default function EmailVerificationRequired({
 
       {/* Decorative Elements */}
       <div className="absolute top-4 left-4 w-12 h-12 bg-accent-amber/10 rounded-2xl flex items-center justify-center opacity-40">
-        <GiMusicalNotes className="w-6 h-6 text-accent-amber" />
+        <PiMusicNotes className="w-6 h-6 text-accent-amber" />
       </div>
 
       <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
-        <FiMail className="w-8 h-8 text-brand-primary" />
+        <PiEnvelopeSimple className="w-8 h-8 text-brand-primary" />
       </div>
     </PageContainer>
   );

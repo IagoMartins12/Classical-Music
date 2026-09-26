@@ -1,19 +1,19 @@
 // app/teacher/lessons/loading.tsx - Loading para Gerenciar Aulas
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiBookOpen,
-  FiCalendar,
-  FiUser,
-  FiFilter,
-  FiClock,
-  FiMapPin,
-  FiTarget,
-  FiMusic,
-  FiCheckCircle,
-  FiUsers,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCheckCircle,
+  PiClock,
+  PiFunnel,
+  PiMapPin,
+  PiMusicNotes,
+  PiTarget,
+  PiUser,
+  PiUsers,
+} from 'react-icons/pi';
 
 export default function TeacherLessonsLoading() {
   return (
@@ -38,13 +38,13 @@ export default function TeacherLessonsLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiBookOpen />
+          <PiBookOpen />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiCalendar />
+          <PiCalendarBlank />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -56,7 +56,7 @@ export default function TeacherLessonsLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -78,12 +78,16 @@ export default function TeacherLessonsLoading() {
         {/* Stats Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {[
-            { icon: <FiBookOpen className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiCalendar className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiBookOpen className="w-6 h-6 text-theme-inverse/20" /> },
             {
-              icon: <FiCheckCircle className="w-6 h-6 text-theme-inverse/20" />,
+              icon: (
+                <PiCalendarBlank className="w-6 h-6 text-theme-inverse/20" />
+              ),
             },
-            { icon: <FiUsers className="w-6 h-6 text-theme-inverse/20" /> },
+            {
+              icon: <PiCheckCircle className="w-6 h-6 text-theme-inverse/20" />,
+            },
+            { icon: <PiUsers className="w-6 h-6 text-theme-inverse/20" /> },
           ].map((item, index) => (
             <div
               key={index}
@@ -121,7 +125,7 @@ export default function TeacherLessonsLoading() {
           {/* Filter Summary */}
           <div className="flex items-center justify-between pt-4 border-t border-theme-secondary mt-4">
             <div className="flex items-center space-x-2">
-              <FiFilter className="w-4 h-4 text-theme-tertiary/30" />
+              <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
               <div className="h-3 bg-theme-secondary/30 rounded w-56"></div>
             </div>
             <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
@@ -172,19 +176,19 @@ function LessonCardSkeleton() {
 
                   <div className="flex items-center space-x-4 mb-3">
                     <div className="flex items-center space-x-2">
-                      <FiUser className="w-4 h-4 text-theme-tertiary/30" />
+                      <PiUser className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="h-3 bg-theme-elevated rounded w-20"></div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <FiCalendar className="w-4 h-4 text-theme-tertiary/30" />
+                      <PiCalendarBlank className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="h-3 bg-theme-elevated rounded w-24"></div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <FiClock className="w-4 h-4 text-theme-tertiary/30" />
+                      <PiClock className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="h-3 bg-theme-elevated rounded w-16"></div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <FiMapPin className="w-4 h-4 text-theme-tertiary/30" />
+                      <PiMapPin className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="h-3 bg-theme-elevated rounded w-20"></div>
                     </div>
                   </div>
@@ -217,7 +221,7 @@ function LessonCardSkeleton() {
               {/* Works */}
               <div className="mb-4">
                 <div className="flex items-center space-x-2 mb-2">
-                  <FiMusic className="w-4 h-4 text-theme-tertiary/30" />
+                  <PiMusicNotes className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -233,7 +237,7 @@ function LessonCardSkeleton() {
               {/* Homework */}
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <FiTarget className="w-4 h-4 text-theme-tertiary/30" />
+                  <PiTarget className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
                 </div>
                 <div className="space-y-1">
@@ -256,15 +260,15 @@ function LessonCardSkeleton() {
               {/* Stats */}
               <div className="flex items-center space-x-6 text-sm text-theme-tertiary mt-4">
                 <div className="flex items-center space-x-2">
-                  <FiCalendar className="w-4 h-4 text-theme-tertiary/30" />
+                  <PiCalendarBlank className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <FiClock className="w-4 h-4 text-theme-tertiary/30" />
+                  <PiClock className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="h-3 bg-theme-tertiary/30 rounded w-16"></div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <FiTarget className="w-4 h-4 text-theme-tertiary/30" />
+                  <PiTarget className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="h-3 bg-theme-tertiary/30 rounded w-12"></div>
                 </div>
               </div>

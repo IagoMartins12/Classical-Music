@@ -2,7 +2,7 @@
 
 import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
 import React from 'react';
-import { FiGlobe } from 'react-icons/fi';
+import { PiGlobe } from 'react-icons/pi';
 
 interface LanguageToggleProps {
   variant?: 'default' | 'compact' | 'navbar' | 'globe';
@@ -65,7 +65,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
     if (variant === 'globe') {
       return (
         <div className="relative flex items-center justify-center">
-          <FiGlobe
+          <PiGlobe
             className={`${getGlobeIconSize()} text-brand-primary transition-all duration-300`}
           />
           <div className="absolute -bottom-0.5 -right-0.5 flex items-center justify-center w-3 h-3 bg-theme-elevated rounded-full border border-theme-secondary">
@@ -237,7 +237,7 @@ export const LanguageDropdown: React.FC<{
         className="flex items-center space-x-2 px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg hover:bg-interactive-hover transition-colors duration-200 disabled:opacity-50"
       >
         <div className="relative">
-          <FiGlobe className="w-4 h-4 text-brand-primary" />
+          <PiGlobe className="w-4 h-4 text-brand-primary" />
           {/* 🆕 Indicador de sistema */}
           {showSystemIndicator && !hasUserPreference && (
             <div className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-accent-blue rounded-full opacity-75" />

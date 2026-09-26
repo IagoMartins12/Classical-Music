@@ -7,16 +7,16 @@ import React, {
   useMemo,
 } from 'react';
 import {
-  FiSearch,
-  FiMusic,
-  FiLoader,
-  FiCheck,
-  FiTrendingUp,
-  FiUser,
-  FiStar,
-  FiFilter,
-  FiAlertCircle,
-} from 'react-icons/fi';
+  PiCheck,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiSpinnerGap,
+  PiStar,
+  PiTrendUp,
+  PiUser,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import { searchWorks } from '@/app/requests/catalog-search';
 
 export interface WorkSearchInputWorkProp {
@@ -459,14 +459,14 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
             (w) => w.composer.id === stableFilterByComposer
           ))
       ) {
-        return { icon: FiUser, color: 'text-accent-purple' };
+        return { icon: PiUser, color: 'text-accent-purple' };
       }
 
       if (hasComposerFilter) {
-        return { icon: FiFilter, color: 'text-accent-blue' };
+        return { icon: PiFunnel, color: 'text-accent-blue' };
       }
 
-      return { icon: FiTrendingUp, color: 'text-brand-primary' };
+      return { icon: PiTrendUp, color: 'text-brand-primary' };
     };
 
     return {
@@ -489,7 +489,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center">
-                <FiCheck className="w-4 h-4 text-accent-blue" />
+                <PiCheck className="w-4 h-4 text-accent-blue" />
               </div>
               <div>
                 <p className="font-medium text-theme-primary text-sm">
@@ -516,7 +516,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
         <div className="relative">
           {/* Campo de busca */}
           <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4 z-10" />
+            <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4 z-10" />
             <input
               ref={inputRef}
               type="text"
@@ -530,7 +530,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
               } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             />
             {isLoading && (
-              <FiLoader className="absolute right-3 top-1/2 transform -translate-y-1/2 text-brand-primary w-4 h-4 animate-spin" />
+              <PiSpinnerGap className="absolute right-3 top-1/2 transform -translate-y-1/2 text-brand-primary w-4 h-4 animate-spin" />
             )}
           </div>
 
@@ -543,7 +543,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
               {/* Loading */}
               {(isLoading || loadingUserSuggestions) && (
                 <div className="p-4 text-center">
-                  <FiLoader className="w-5 h-5 mx-auto animate-spin text-brand-primary mb-2" />
+                  <PiSpinnerGap className="w-5 h-5 mx-auto animate-spin text-brand-primary mb-2" />
                   <p className="text-sm text-theme-tertiary">
                     {loadingUserSuggestions
                       ? 'Carregando suas obras...'
@@ -584,9 +584,9 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                             }`}
                           >
                             {isUserWork ? (
-                              <FiStar className="w-4 h-4 text-accent-purple" />
+                              <PiStar className="w-4 h-4 text-accent-purple" />
                             ) : (
-                              <FiMusic className="w-4 h-4 text-accent-blue" />
+                              <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -614,7 +614,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
               {/* Empty state */}
               {!isLoading && !loadingUserSuggestions && works.length === 0 && (
                 <div className="p-4 text-center text-theme-tertiary">
-                  <FiSearch className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <PiMagnifyingGlass className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">
                     {query.length >= 2
                       ? `Nenhuma obra encontrada para "${query}"`
@@ -643,7 +643,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       {error && (
         <div>
           <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
-            <FiAlertCircle className="w-4 h-4" />
+            <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>
           </p>
         </div>
@@ -655,13 +655,13 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
           <div className="flex items-center space-x-2">
             {stableFilterByComposer && stableFilterByComposer.trim() !== '' && (
               <span className="flex items-center space-x-1">
-                <FiFilter className="w-3 h-3" />
+                <PiFunnel className="w-3 h-3" />
                 <span>Filtrado por compositor</span>
               </span>
             )}
             {stableUserSuggestions.length > 0 && (
               <span className="flex items-center space-x-1">
-                <FiUser className="w-3 h-3 text-accent-purple" />
+                <PiUser className="w-3 h-3 text-accent-purple" />
                 <span>{stableUserSuggestions.length} obra(s) sua(s)</span>
               </span>
             )}

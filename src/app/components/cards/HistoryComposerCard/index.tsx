@@ -4,7 +4,7 @@
 import { useComposerBiography } from '@/app/hooks/useComposerBiography';
 import Image from '@/app/components/SmartImage';
 import Link from '@/app/components/LocalizedLink';
-import { FiUser, FiCalendar, FiExternalLink } from 'react-icons/fi';
+import { PiArrowSquareOut, PiCalendarBlank, PiUser } from 'react-icons/pi';
 
 interface Composer {
   id: string;
@@ -77,7 +77,7 @@ export function HistoryComposerCard({ composer }: Props) {
                 height={20}
               />
             ) : null}
-            <FiUser
+            <PiUser
               className={`text-theme-inverse text-sm ${
                 composer.portraitUrl ? 'hidden' : ''
               }`}
@@ -91,7 +91,7 @@ export function HistoryComposerCard({ composer }: Props) {
             </h4>
             {lifespan && (
               <div className="flex items-center text-theme-tertiary text-xs mt-1">
-                <FiCalendar className="w-3 h-3 mr-1" />
+                <PiCalendarBlank className="w-3 h-3 mr-1" />
                 <span>{lifespan}</span>
               </div>
             )}
@@ -99,7 +99,7 @@ export function HistoryComposerCard({ composer }: Props) {
 
           {/* Link indicator */}
           <div className="w-6 h-6 bg-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-brand-primary/10 group-hover:border-brand-primary/30 group-hover:text-brand-primary transition-all duration-300">
-            <FiExternalLink className="w-3 h-3" />
+            <PiArrowSquareOut className="w-3 h-3" />
           </div>
         </div>
 

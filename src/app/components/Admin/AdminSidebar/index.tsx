@@ -5,33 +5,33 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
-  // Nova importação para backup,
-  FiActivity,
-  FiBarChart2,
-  FiChevronDown,
-  FiChevronRight,
-  FiClock,
-  FiDatabase,
-  FiFileText,
-  FiFlag,
-  FiHardDrive,
-  FiMail,
-  FiMessageSquare,
-  FiMusic,
-  FiPercent,
-  FiSend,
-  FiSettings,
-  FiShield,
-  FiTarget,
-  FiTrendingUp,
-  FiUpload,
-  FiUsers,
-} from 'react-icons/fi';
-import { BiDollar, BiTestTube } from 'react-icons/bi';
-import { LuUser } from 'react-icons/lu';
-import { GiBroom } from 'react-icons/gi';
-import { MdOutlineTextSnippet } from 'react-icons/md';
-import { SiWebauthn } from 'react-icons/si';
+  PiArticle,
+  PiBroom,
+  PiCaretDown,
+  PiCaretRight,
+  PiChartBar,
+  PiChatCenteredText,
+  PiClock,
+  PiCurrencyDollar,
+  PiDatabase,
+  PiEnvelopeSimple,
+  PiFileText,
+  PiFingerprint,
+  PiFlag,
+  PiGear,
+  PiHardDrive,
+  PiMusicNotes,
+  PiPaperPlaneRight,
+  PiPercent,
+  PiPulse,
+  PiShield,
+  PiTarget,
+  PiTestTube,
+  PiTrendUp,
+  PiUploadSimple,
+  PiUser,
+  PiUsers,
+} from 'react-icons/pi';
 
 interface SidebarSection {
   title: string;
@@ -74,7 +74,7 @@ export default function AdminSidebar() {
         {
           href: '/admin',
           label: 'Dashboard',
-          icon: FiBarChart2,
+          icon: PiChartBar,
           isActive: pathname === '/admin',
         },
       ],
@@ -85,13 +85,13 @@ export default function AdminSidebar() {
         {
           href: '/admin/users',
           label: 'Usuários',
-          icon: FiUsers,
+          icon: PiUsers,
           isActive: pathname === '/admin/users',
         },
         {
           href: '/admin/users/list',
           label: 'Todos',
-          icon: LuUser,
+          icon: PiUser,
           isActive:
             pathname === '/admin/users/list' &&
             !hasAnnotations &&
@@ -101,21 +101,21 @@ export default function AdminSidebar() {
         {
           href: '/admin/users/list?hasAnnotations=true',
           label: 'Anotadores',
-          icon: FiMessageSquare,
+          icon: PiChatCenteredText,
           isActive:
             pathname === '/admin/users/list' && hasAnnotations ? true : false,
         },
         {
           href: '/admin/users/list?hasUploads=true',
           label: 'Contribuidores',
-          icon: FiUpload,
+          icon: PiUploadSimple,
           isActive:
             pathname === '/admin/users/list' && hasUploads ? true : false,
         },
         {
           href: '/admin/users/list?isActive=true',
           label: 'Usuários Ativos',
-          icon: FiActivity,
+          icon: PiPulse,
           isActive: pathname === '/admin/users/list' && isActive ? true : false,
         },
       ],
@@ -126,25 +126,25 @@ export default function AdminSidebar() {
         {
           href: '/admin/composers',
           label: 'Compositores',
-          icon: FiUsers,
+          icon: PiUsers,
           isActive: pathname.startsWith('/admin/composers'),
         },
         {
           href: '/admin/works',
           label: 'Obras',
-          icon: FiMusic,
+          icon: PiMusicNotes,
           isActive: pathname.startsWith('/admin/works'),
         },
         {
           href: '/admin/scores',
           label: 'Partituras',
-          icon: FiFileText,
+          icon: PiFileText,
           isActive: pathname.startsWith('/admin/scores'),
         },
         {
           href: '/admin/uploads',
           label: 'Uploads',
-          icon: FiUpload,
+          icon: PiUploadSimple,
           isActive: pathname.startsWith('/admin/uploads'),
         },
       ],
@@ -155,14 +155,14 @@ export default function AdminSidebar() {
         {
           href: '/admin/moderation',
           label: 'Moderação',
-          icon: FiShield,
+          icon: PiShield,
 
           isActive: pathname.startsWith('/uploads/moderation'),
         },
         {
           href: '/admin/reports-metric',
           label: 'Reports',
-          icon: FiFlag,
+          icon: PiFlag,
 
           isActive: pathname.startsWith('/admin/reports-metric'),
         },
@@ -175,38 +175,38 @@ export default function AdminSidebar() {
         {
           href: '/admin/newsletter',
           label: 'Dashboard',
-          icon: FiMail,
+          icon: PiEnvelopeSimple,
 
           isActive: pathname === '/admin/newsletter',
         },
         {
           href: '/admin/newsletter/subscribers',
           label: 'Subscribers',
-          icon: FiUsers,
+          icon: PiUsers,
           isActive: pathname.startsWith('/admin/newsletter/subscribers'),
         },
         {
           href: '/admin/newsletter/campaigns',
           label: 'Campanhas',
-          icon: FiSend,
+          icon: PiPaperPlaneRight,
           isActive: pathname.startsWith('/admin/newsletter/campaigns'),
         },
         {
           href: '/admin/newsletter/templates',
           label: 'Templates',
-          icon: FiFileText,
+          icon: PiFileText,
           isActive: pathname.startsWith('/admin/newsletter/templates'),
         },
         {
           href: '/admin/newsletter/analytics',
           label: 'Analytics',
-          icon: FiTrendingUp,
+          icon: PiTrendUp,
           isActive: pathname.startsWith('/admin/newsletter/analytics'),
         },
         {
           label: 'Listas de Teste',
           href: '/admin/newsletter/test-lists',
-          icon: BiTestTube,
+          icon: PiTestTube,
           isActive: pathname.startsWith('/admin/newsletter/test-lists'),
         },
       ],
@@ -217,28 +217,28 @@ export default function AdminSidebar() {
         {
           href: '/admin/backup',
           label: 'Gerenciar Backup',
-          icon: FiHardDrive,
+          icon: PiHardDrive,
           isActive: pathname.startsWith('/admin/backup'),
         },
 
         {
           href: '/admin/cron',
           label: 'Tarefas Agendadas',
-          icon: FiClock,
+          icon: PiClock,
           isActive: pathname.startsWith('/admin/cron'),
         },
 
         {
           href: '/admin/system',
           label: 'Sistema',
-          icon: FiSettings,
+          icon: PiGear,
           isActive: pathname.startsWith('/admin/system'),
         },
 
         {
           href: '/admin/database',
           label: 'Database Studio',
-          icon: FiDatabase,
+          icon: PiDatabase,
           isActive: pathname.startsWith('/admin/database'),
         },
       ],
@@ -249,7 +249,7 @@ export default function AdminSidebar() {
         {
           href: '/admin/ads',
           label: 'Gerenciar Ads',
-          icon: FiTarget, // Adicionar ao imports: FiTarget
+          icon: PiTarget, // Adicionar ao imports: PiTarget
           isActive: pathname.startsWith('/admin/ads'),
         },
       ],
@@ -260,7 +260,7 @@ export default function AdminSidebar() {
         {
           href: '/admin/orphan-files',
           label: 'Limpar Arquivos',
-          icon: GiBroom, // Adicionar ao imports: FiTarget
+          icon: PiBroom, // Adicionar ao imports: PiTarget
           isActive: pathname.startsWith('/admin/orphan-files'),
         },
       ],
@@ -271,13 +271,13 @@ export default function AdminSidebar() {
         {
           href: '/admin/analytics',
           label: 'Analytics',
-          icon: FiActivity,
+          icon: PiPulse,
           isActive: pathname.startsWith('/admin/analytics'),
         },
         {
           href: '/admin/insights',
           label: 'Insights',
-          icon: FiTrendingUp,
+          icon: PiTrendUp,
           isActive: pathname.startsWith('/admin/insights'),
         },
       ],
@@ -288,13 +288,13 @@ export default function AdminSidebar() {
         {
           href: '/admin/blog/media',
           label: 'Gerenciar Media do blog',
-          icon: MdOutlineTextSnippet, // Adicionar ao imports: FiTarget
+          icon: PiArticle, // Adicionar ao imports: PiTarget
           isActive: pathname.startsWith('/admin/blog/media'),
         },
         {
           href: '/admin/scrapers',
           label: 'Ver Scrapers de eventos',
-          icon: SiWebauthn, // Adicionar ao imports: FiTarget
+          icon: PiFingerprint, // Adicionar ao imports: PiTarget
           isActive: pathname.startsWith('/admin/scrapers'),
         },
       ],
@@ -305,19 +305,19 @@ export default function AdminSidebar() {
         {
           href: '/admin/plans/pricing',
           label: 'Gerenciar Planos',
-          icon: BiDollar, // Adicionar ao imports: FiTarget
+          icon: PiCurrencyDollar, // Adicionar ao imports: PiTarget
           isActive: pathname.startsWith('/admin/plans/pricing'),
         },
         {
           href: '/admin/plans/subscribers',
           label: 'Gerenciar Assinantes',
-          icon: BiDollar, // Adicionar ao imports: FiTarget
+          icon: PiCurrencyDollar, // Adicionar ao imports: PiTarget
           isActive: pathname.startsWith('/admin/plans/subscribers'),
         },
         {
           href: '/admin/plans/coupons',
           label: 'Gerenciar Cupons do site',
-          icon: FiPercent, // Adicionar ao imports: FiTarget
+          icon: PiPercent, // Adicionar ao imports: PiTarget
           isActive: pathname.startsWith('/admin/plans/coupons'),
         },
       ],
@@ -346,9 +346,9 @@ export default function AdminSidebar() {
               <span className="font-medium truncate">{item.label}</span>
             </div>
             {isExpanded ? (
-              <FiChevronDown className="w-3 h-3 lg:w-4 lg:h-4 flex-shrink-0" />
+              <PiCaretDown className="w-3 h-3 lg:w-4 lg:h-4 flex-shrink-0" />
             ) : (
-              <FiChevronRight className="w-3 h-3 lg:w-4 lg:h-4 flex-shrink-0" />
+              <PiCaretRight className="w-3 h-3 lg:w-4 lg:h-4 flex-shrink-0" />
             )}
           </button>
         ) : (
@@ -402,9 +402,9 @@ export default function AdminSidebar() {
               >
                 <span>{section.title}</span>
                 {expandedSections.includes(section.title) ? (
-                  <FiChevronDown className="w-3 h-3" />
+                  <PiCaretDown className="w-3 h-3" />
                 ) : (
-                  <FiChevronRight className="w-3 h-3" />
+                  <PiCaretRight className="w-3 h-3" />
                 )}
               </button>
 

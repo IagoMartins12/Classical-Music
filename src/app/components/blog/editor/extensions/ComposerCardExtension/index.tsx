@@ -5,7 +5,7 @@ import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
-import { FaTrash } from 'react-icons/fa';
+import { PiTrash } from 'react-icons/pi';
 
 const ComposerCardComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -46,7 +46,7 @@ const ComposerCardComponent = (props: any) => {
             className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
             title="Remover"
           >
-            <FaTrash className="w-4 h-4" />
+            <PiTrash className="w-4 h-4" />
           </button>
         </div>
       )}

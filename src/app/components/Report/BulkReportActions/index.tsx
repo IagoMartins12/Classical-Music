@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiCheck, FiX, FiTrash2, FiMoreHorizontal } from 'react-icons/fi';
+import { PiCheck, PiDotsThree, PiTrash, PiX } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import { useToast } from '@/app/hooks/useToast';
 import { resolveModerations } from '@/app/requests/moderation';
@@ -57,7 +57,7 @@ export default function BulkReportActions({
           <Button
             variant="secondary"
             size="sm"
-            leftIcon={<FiCheck />}
+            leftIcon={<PiCheck />}
             onClick={() => handleBulkAction('approve')}
             disabled={isProcessing}
           >
@@ -67,7 +67,7 @@ export default function BulkReportActions({
           <Button
             variant="secondary"
             size="sm"
-            leftIcon={<FiX />}
+            leftIcon={<PiX />}
             onClick={() => handleBulkAction('reject')}
             disabled={isProcessing}
           >
@@ -77,7 +77,7 @@ export default function BulkReportActions({
           <Button
             variant="delete"
             size="sm"
-            leftIcon={<FiTrash2 />}
+            leftIcon={<PiTrash />}
             onClick={() => handleBulkAction('delete')}
             disabled={isProcessing}
           >
@@ -87,7 +87,7 @@ export default function BulkReportActions({
           <Button
             variant="ghost"
             size="sm"
-            leftIcon={<FiMoreHorizontal />}
+            leftIcon={<PiDotsThree />}
             onClick={onClearSelection}
           >
             Cancelar

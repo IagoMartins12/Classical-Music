@@ -4,20 +4,20 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiActivity,
-  FiUsers,
-  FiUpload,
-  FiMessageSquare,
-  FiHeart,
-  FiShield,
-  FiEye,
-  FiClock,
-  FiUser,
-  FiDatabase,
-  FiMusic,
-  FiFileText,
-  FiRefreshCw,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiChatCenteredText,
+  PiClock,
+  PiDatabase,
+  PiEye,
+  PiFileText,
+  PiHeart,
+  PiMusicNotes,
+  PiPulse,
+  PiShield,
+  PiUploadSimple,
+  PiUser,
+  PiUsers,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedItem,
@@ -82,29 +82,29 @@ export default function RecentActivity() {
 
   const getActivityIcon = (type: string) => {
     // Mapear tipos específicos do ActivityLog
-    if (type === 'UPLOAD') return FiUpload;
-    if (type.includes('FAVORITE')) return FiHeart;
-    if (type.includes('ANNOTATION')) return FiMessageSquare;
+    if (type === 'UPLOAD') return PiUploadSimple;
+    if (type.includes('FAVORITE')) return PiHeart;
+    if (type.includes('ANNOTATION')) return PiChatCenteredText;
     if (type.includes('LEARNED') || type.includes('WANT_TO_LEARN'))
-      return FiActivity;
-    if (type === 'REPORT_UPLOAD') return FiShield;
-    if (type.includes('VIDEO')) return FiUpload;
-    if (type === 'UPDATE_PROFILE') return FiUser;
-    return FiActivity;
+      return PiPulse;
+    if (type === 'REPORT_UPLOAD') return PiShield;
+    if (type.includes('VIDEO')) return PiUploadSimple;
+    if (type === 'UPDATE_PROFILE') return PiUser;
+    return PiPulse;
   };
 
   const getTargetIcon = (type?: string) => {
     switch (type) {
       case 'composer':
-        return FiUsers;
+        return PiUsers;
       case 'work':
-        return FiMusic;
+        return PiMusicNotes;
       case 'score':
-        return FiFileText;
+        return PiFileText;
       case 'user':
-        return FiUser;
+        return PiUser;
       default:
-        return FiDatabase;
+        return PiDatabase;
     }
   };
 
@@ -176,7 +176,7 @@ export default function RecentActivity() {
     <AnimatedCard className="classical-card p-4 lg:p-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <h2 className="text-xl lg:text-2xl font-bold text-theme-primary flex items-center space-x-3">
-          <FiActivity className="w-5 h-5 lg:w-6 lg:h-6 text-accent-blue" />
+          <PiPulse className="w-5 h-5 lg:w-6 lg:h-6 text-accent-blue" />
           <span>Atividade Recente</span>
         </h2>
 
@@ -191,7 +191,9 @@ export default function RecentActivity() {
           <Button
             variant="ghost"
             size="sm"
-            leftIcon={<FiRefreshCw className={loading ? 'animate-spin' : ''} />}
+            leftIcon={
+              <PiArrowsClockwise className={loading ? 'animate-spin' : ''} />
+            }
             onClick={handleRefresh}
             disabled={loading}
             className="w-full sm:w-auto"
@@ -256,7 +258,7 @@ export default function RecentActivity() {
 
                         <div className="flex items-center space-x-3 mt-1">
                           <div className="flex items-center space-x-1 text-xs text-theme-tertiary">
-                            <FiClock className="w-3 h-3" />
+                            <PiClock className="w-3 h-3" />
                             <span>{formatTimeAgo(activity.timestamp)}</span>
                           </div>
 
@@ -305,7 +307,7 @@ export default function RecentActivity() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            leftIcon={<FiEye />}
+                            leftIcon={<PiEye />}
                             onClick={(e) => {
                               e.stopPropagation();
                               const path =
@@ -326,7 +328,7 @@ export default function RecentActivity() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            leftIcon={<FiShield />}
+                            leftIcon={<PiShield />}
                             onClick={(e) => {
                               e.stopPropagation();
                               router.push('/moderation');
@@ -343,7 +345,7 @@ export default function RecentActivity() {
           })
         ) : (
           <div className="text-center py-8">
-            <FiActivity className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+            <PiPulse className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
             <h3 className="text-lg font-medium text-theme-primary mb-2">
               Nenhuma atividade encontrada
             </h3>

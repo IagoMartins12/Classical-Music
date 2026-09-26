@@ -7,7 +7,7 @@ import { uploadBlogMedia } from '@/app/requests/blog/interactions';
 
 import { useState } from 'react';
 import { Editor } from '@tiptap/react';
-import { FiUpload } from 'react-icons/fi';
+import { PiUploadSimple } from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Button from '@/app/components/Common/Button';
@@ -233,7 +233,7 @@ export function QuoteMusicalModal({
                       htmlFor="audio-upload-quote"
                       className="cursor-pointer"
                     >
-                      <FiUpload className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
+                      <PiUploadSimple className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                       <span className="text-sm text-theme-secondary">
                         {uploading ? 'Enviando...' : 'Clique para fazer upload'}
                       </span>

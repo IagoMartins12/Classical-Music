@@ -1,7 +1,7 @@
 // app/learning/components/EmptyState.tsx
 
 import Link from 'next/link';
-import { FiCheckCircle, FiSearch, FiTarget } from 'react-icons/fi';
+import { PiCheckCircle, PiMagnifyingGlass, PiTarget } from 'react-icons/pi';
 import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface EmptyStateProps {
@@ -20,7 +20,7 @@ export const EmptyState = ({
   const config = {
     'want-to-learn': {
       icon: (
-        <FiTarget className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
+        <PiTarget className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
       ),
       title: hasFilters ? t('empty_no_works_found') : t('empty_list_empty'),
       description: hasFilters
@@ -30,7 +30,7 @@ export const EmptyState = ({
     },
     learned: {
       icon: (
-        <FiCheckCircle className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
+        <PiCheckCircle className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
       ),
       title: hasFilters ? t('empty_no_works_found') : t('empty_list_empty'),
       description: hasFilters
@@ -40,7 +40,7 @@ export const EmptyState = ({
     },
     search: {
       icon: (
-        <FiSearch className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
+        <PiMagnifyingGlass className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
       ),
       title: t('empty_no_results'),
       description: `${t('empty_no_results_for')} "${searchQuery}"`,

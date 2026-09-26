@@ -4,15 +4,15 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import {
-  FiBell,
-  FiX,
-  FiCheck,
-  FiCheckCircle,
-  FiClock,
-  FiAlertTriangle,
-  FiInfo,
-  FiExternalLink,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiBell,
+  PiCheck,
+  PiCheckCircle,
+  PiClock,
+  PiInfo,
+  PiWarning,
+  PiX,
+} from 'react-icons/pi';
 import { useNotifications } from '@/app/hooks/notifications/useNotifications';
 import { NotificationData } from '@/app/types/notification';
 
@@ -113,11 +113,11 @@ export default function NotificationBell({
 
   const getNotificationIcon = useCallback((type: string, priority: string) => {
     if (priority === 'HIGH' || priority === 'CRITICAL') {
-      return <FiAlertTriangle className="w-4 h-4 text-accent-red" />;
+      return <PiWarning className="w-4 h-4 text-accent-red" />;
     } else if (priority === 'MEDIUM') {
-      return <FiClock className="w-4 h-4 text-accent-amber" />;
+      return <PiClock className="w-4 h-4 text-accent-amber" />;
     } else {
-      return <FiInfo className="w-4 h-4 text-accent-blue" />;
+      return <PiInfo className="w-4 h-4 text-accent-blue" />;
     }
   }, []);
 
@@ -181,7 +181,7 @@ export default function NotificationBell({
         className="relative p-2 rounded-lg hover:bg-interactive-hover transition-colors group"
         title="Notificações"
       >
-        <FiBell
+        <PiBell
           className={`w-5 h-5 transition-colors ${bellAppearance.iconColor}`}
         />
 
@@ -222,7 +222,7 @@ export default function NotificationBell({
                     className="text-xs text-brand-primary hover:text-brand-secondary transition-colors flex items-center space-x-1"
                     title="Marcar todas como lidas"
                   >
-                    <FiCheckCircle className="w-3 h-3" />
+                    <PiCheckCircle className="w-3 h-3" />
                     <span>Marcar todas</span>
                   </button>
                 )}
@@ -231,7 +231,7 @@ export default function NotificationBell({
                   onClick={() => setIsOpen(false)}
                   className="p-1 rounded hover:bg-interactive-hover transition-colors"
                 >
-                  <FiX className="w-4 h-4 text-theme-tertiary" />
+                  <PiX className="w-4 h-4 text-theme-tertiary" />
                 </button>
               </div>
             </div>
@@ -304,7 +304,7 @@ export default function NotificationBell({
                                     <span>
                                       {notification.actionText || 'Ver'}
                                     </span>
-                                    <FiExternalLink className="w-3 h-3" />
+                                    <PiArrowSquareOut className="w-3 h-3" />
                                   </Link>
                                 )}
 
@@ -316,7 +316,7 @@ export default function NotificationBell({
                                     className="text-xs text-theme-tertiary hover:text-accent-green transition-colors"
                                     title="Marcar como lida"
                                   >
-                                    <FiCheck className="w-3 h-3" />
+                                    <PiCheck className="w-3 h-3" />
                                   </button>
                                 )}
                               </div>
@@ -330,7 +330,7 @@ export default function NotificationBell({
               </div>
             ) : (
               <div className="p-8 text-center">
-                <FiBell className="w-12 h-12 text-theme-tertiary mx-auto mb-3 opacity-50" />
+                <PiBell className="w-12 h-12 text-theme-tertiary mx-auto mb-3 opacity-50" />
                 <p className="text-theme-tertiary">Nenhuma notificação</p>
               </div>
             )}

@@ -3,12 +3,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import {
-  FiTag,
-  FiSearch,
-  FiX,
-  FiExternalLink,
-  FiChevronDown,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiCaretDown,
+  PiMagnifyingGlass,
+  PiTag,
+  PiX,
+} from 'react-icons/pi';
 import { useRouter } from 'next/navigation';
 import { searchGenresAction } from '@/app/actions/genre-actions';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -219,7 +219,7 @@ export default function GenreSearchInput({
     <div className={`relative ${isOpen ? 'z-[9999]' : 'z-[200]'}`}>
       {/* Input Field */}
       <div className="relative">
-        <FiTag className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+        <PiTag className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
 
         <input
           ref={inputRef}
@@ -239,7 +239,7 @@ export default function GenreSearchInput({
               className="text-theme-tertiary hover:text-theme-primary transition-colors"
               title="Limpar seleção"
             >
-              <FiX className="w-4 h-4" />
+              <PiX className="w-4 h-4" />
             </button>
           )}
 
@@ -247,7 +247,7 @@ export default function GenreSearchInput({
             onClick={() => setIsOpen(!isOpen)}
             className="text-theme-tertiary hover:text-theme-primary transition-colors"
           >
-            <FiChevronDown
+            <PiCaretDown
               className={`w-4 h-4 transition-transform ${
                 isOpen ? 'rotate-180' : ''
               }`}
@@ -281,7 +281,7 @@ export default function GenreSearchInput({
           {searchTerm && (
             <div className="px-4 py-2 border-b border-theme-secondary bg-theme-elevated">
               <div className="flex items-center text-sm text-theme-secondary">
-                <FiSearch className="w-4 h-4 mr-2" />
+                <PiMagnifyingGlass className="w-4 h-4 mr-2" />
                 {t('genre_search_jsx_searching_for')}{' '}
                 <span className="font-medium text-theme-primary ml-1">
                   &quot;{searchTerm}&quot;
@@ -334,7 +334,7 @@ export default function GenreSearchInput({
                     className="w-full px-4 py-3 text-left hover:bg-interactive-hover transition-colors border-t border-theme-secondary bg-theme-elevated"
                   >
                     <div className="flex items-center text-brand-primary">
-                      <FiExternalLink className="w-4 h-4 mr-3" />
+                      <PiArrowSquareOut className="w-4 h-4 mr-3" />
                       <span className="font-medium">
                         {t('genre_search_jsx_view_all')}
                       </span>
@@ -343,7 +343,7 @@ export default function GenreSearchInput({
                 </>
               ) : (
                 <div className="px-4 py-8 text-center text-theme-secondary">
-                  <FiTag className="w-8 h-8 mx-auto mb-2 text-theme-tertiary" />
+                  <PiTag className="w-8 h-8 mx-auto mb-2 text-theme-tertiary" />
                   <p className="font-medium">
                     {t('genre_search_jsx_no_results')}
                   </p>

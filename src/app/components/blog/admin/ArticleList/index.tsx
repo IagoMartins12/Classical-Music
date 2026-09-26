@@ -9,21 +9,21 @@ import {
   duplicateArticle,
 } from '@/app/requests/blog/admin-actions';
 import {
-  FiEdit,
-  FiTrash2,
-  FiEye,
-  FiSearch,
-  FiFilter,
-  FiX,
-  FiAlertCircle,
-  FiClock,
-  FiCalendar,
-  FiUser,
-  FiHeart,
-  FiMessageSquare,
-  FiMoreVertical,
-  FiCopy,
-} from 'react-icons/fi';
+  PiCalendarBlank,
+  PiChatCenteredText,
+  PiClock,
+  PiCopy,
+  PiDotsThreeVertical,
+  PiEye,
+  PiFunnel,
+  PiHeart,
+  PiMagnifyingGlass,
+  PiNotePencil,
+  PiTrash,
+  PiUser,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import Modal from '@/app/components/Modal';
 import Select from '@/app/components/Common/Select';
@@ -205,7 +205,7 @@ export function ArticleList({
   if (articles.length === 0 && !hasActiveFilters) {
     return (
       <div className="classical-card p-12 text-center">
-        <FiAlertCircle className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+        <PiWarningCircle className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
         <h3 className="text-xl font-semibold text-theme-primary mb-2">
           Nenhum artigo criado
         </h3>
@@ -216,7 +216,7 @@ export function ArticleList({
           href="/blog/admin/articles/create"
           className="btn-classical-primary inline-flex items-center space-x-2"
         >
-          <FiEdit className="w-4 h-4" />
+          <PiNotePencil className="w-4 h-4" />
           <span>Criar Primeiro Artigo</span>
         </Link>
       </div>
@@ -231,7 +231,7 @@ export function ArticleList({
           {/* Search Bar */}
           <div className="flex items-center space-x-2">
             <form onSubmit={handleSearch} className="flex-1 relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+              <PiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
               <input
                 type="text"
                 value={searchTerm}
@@ -247,7 +247,7 @@ export function ArticleList({
                 hasActiveFilters ? '' : ''
               }`}
             >
-              <FiFilter className="w-4 h-4" />
+              <PiFunnel className="w-4 h-4" />
               <span>Filtros</span>
               {hasActiveFilters && (
                 <span className="w-2 h-2 bg-brand-primary rounded-full"></span>
@@ -260,7 +260,7 @@ export function ArticleList({
                 className="btn-classical-secondary text-red-500"
                 title="Limpar filtros"
               >
-                <FiX className="w-5 h-5" />
+                <PiX className="w-5 h-5" />
               </button>
             )}
           </div>
@@ -346,7 +346,7 @@ export function ArticleList({
       {/* Articles Grid */}
       {articles.length === 0 ? (
         <div className="classical-card p-12 text-center">
-          <FiSearch className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+          <PiMagnifyingGlass className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-theme-primary mb-2">
             Nenhum artigo encontrado
           </h3>
@@ -377,7 +377,7 @@ export function ArticleList({
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-theme-tertiary">
-                        <FiEdit className="w-12 h-12" />
+                        <PiNotePencil className="w-12 h-12" />
                       </div>
                     )}
 
@@ -452,7 +452,7 @@ export function ArticleList({
                           }
                           className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary transition-all"
                         >
-                          <FiMoreVertical className="w-4 h-4" />
+                          <PiDotsThreeVertical className="w-4 h-4" />
                         </button>
 
                         {actionMenu === article.id && (
@@ -461,7 +461,7 @@ export function ArticleList({
                               href={`/blog/admin/articles/${article.id}/edit`}
                               className="flex items-center space-x-2 px-4 py-2 hover:bg-interactive-hover text-theme-secondary"
                             >
-                              <FiEdit className="w-4 h-4" />
+                              <PiNotePencil className="w-4 h-4" />
                               <span>Editar</span>
                             </Link>
 
@@ -471,7 +471,7 @@ export function ArticleList({
                                 target="_blank"
                                 className="flex items-center space-x-2 px-4 py-2 hover:bg-interactive-hover text-theme-secondary"
                               >
-                                <FiEye className="w-4 h-4" />
+                                <PiEye className="w-4 h-4" />
                                 <span>Ver Publicado</span>
                               </Link>
                             )}
@@ -480,7 +480,7 @@ export function ArticleList({
                               onClick={() => handleDuplicate(article.id)}
                               className="flex items-center space-x-2 w-full px-4 py-2 hover:bg-interactive-hover text-theme-secondary"
                             >
-                              <FiCopy className="w-4 h-4" />
+                              <PiCopy className="w-4 h-4" />
                               <span>Duplicar</span>
                             </button>
 
@@ -488,7 +488,7 @@ export function ArticleList({
                               onClick={() => setDeleteModal(article.id)}
                               className="flex items-center space-x-2 w-full px-4 py-2 hover:bg-red-500/10 text-red-500 rounded-b-lg"
                             >
-                              <FiTrash2 className="w-4 h-4" />
+                              <PiTrash className="w-4 h-4" />
                               <span>Deletar</span>
                             </button>
                           </div>
@@ -508,12 +508,12 @@ export function ArticleList({
                       {/* Author & Date */}
                       <div className="flex items-center space-x-3 text-xs text-theme-tertiary mb-3">
                         <div className="flex items-center space-x-1">
-                          <FiUser className="w-3 h-3" />
+                          <PiUser className="w-3 h-3" />
                           <span>{getAuthorName(article.author)}</span>
                         </div>
 
                         <div className="flex items-center space-x-1">
-                          <FiCalendar className="w-3 h-3" />
+                          <PiCalendarBlank className="w-3 h-3" />
                           <span>
                             {new Date(article.updatedAt).toLocaleDateString(
                               'pt-BR'
@@ -522,7 +522,7 @@ export function ArticleList({
                         </div>
 
                         <div className="flex items-center space-x-1">
-                          <FiClock className="w-3 h-3" />
+                          <PiClock className="w-3 h-3" />
                           <span>{article.readTime} min</span>
                         </div>
                       </div>
@@ -531,17 +531,17 @@ export function ArticleList({
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center space-x-3 text-theme-tertiary">
                           <div className="flex items-center space-x-1">
-                            <FiEye className="w-4 h-4" />
+                            <PiEye className="w-4 h-4" />
                             <span>{article.viewCount}</span>
                           </div>
 
                           <div className="flex items-center space-x-1">
-                            <FiHeart className="w-4 h-4" />
+                            <PiHeart className="w-4 h-4" />
                             <span>{article._count.likes}</span>
                           </div>
 
                           <div className="flex items-center space-x-1">
-                            <FiMessageSquare className="w-4 h-4" />
+                            <PiChatCenteredText className="w-4 h-4" />
                             <span>{article._count.comments}</span>
                           </div>
                         </div>
@@ -553,7 +553,7 @@ export function ArticleList({
                             className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary hover:text-blue-500 transition-all"
                             title="Editar"
                           >
-                            <FiEdit className="w-4 h-4" />
+                            <PiNotePencil className="w-4 h-4" />
                           </Link>
 
                           {article.status === 'PUBLISHED' && (
@@ -563,7 +563,7 @@ export function ArticleList({
                               className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary hover:text-green-500 transition-all"
                               title="Ver"
                             >
-                              <FiEye className="w-4 h-4" />
+                              <PiEye className="w-4 h-4" />
                             </Link>
                           )}
 
@@ -572,7 +572,7 @@ export function ArticleList({
                             className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary hover:text-red-500 transition-all"
                             title="Deletar"
                           >
-                            <FiTrash2 className="w-4 h-4" />
+                            <PiTrash className="w-4 h-4" />
                           </button>
                         </div>
                       </div>
@@ -661,7 +661,7 @@ export function ArticleList({
           <div className=" rounded-2xl max-w-md w-full p-6 ">
             <div className="flex items-start space-x-4">
               <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
-                <FiAlertCircle className="w-6 h-6 text-red-500" />
+                <PiWarningCircle className="w-6 h-6 text-red-500" />
               </div>
 
               <div className="flex-1">

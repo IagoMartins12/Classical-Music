@@ -4,25 +4,25 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import {
-  FiCalendar,
-  FiClock,
-  FiUser,
-  FiArrowLeft,
-  FiMapPin,
-  FiBookOpen,
-  FiMessageSquare,
-  FiTarget,
-  FiRefreshCw,
-  FiRepeat,
-  FiInfo,
-  FiMusic,
-  FiX,
-  FiUserX,
-  FiEdit3,
-  FiSave,
-  FiSend,
-  FiCheck,
-} from 'react-icons/fi';
+  PiArrowLeft,
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiChatCenteredText,
+  PiCheck,
+  PiClock,
+  PiFloppyDisk,
+  PiInfo,
+  PiMapPin,
+  PiMusicNotes,
+  PiPaperPlaneRight,
+  PiPencilLine,
+  PiRepeat,
+  PiTarget,
+  PiUser,
+  PiUserMinus,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -231,7 +231,7 @@ export default function StudentLessonDetailPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiBookOpen className="w-8 h-8 text-theme-primary" />
+              <PiBookOpen className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('error_loading_lesson')}
@@ -245,7 +245,7 @@ export default function StudentLessonDetailPageClient({
                 disabled={loading}
                 className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
               >
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                 />
                 <span>{loading ? t('loading') : t('try_again')}</span>
@@ -268,7 +268,7 @@ export default function StudentLessonDetailPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center">
-            <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
             <p className="text-theme-secondary">{t('loading_lesson')}</p>
           </div>
         </div>
@@ -287,7 +287,7 @@ export default function StudentLessonDetailPageClient({
                 href="/student/lessons"
                 className="w-10 h-10 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
               >
-                <FiArrowLeft className="w-5 h-5 text-theme-tertiary" />
+                <PiArrowLeft className="w-5 h-5 text-theme-tertiary" />
               </Link>
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-theme-primary classical-title">
@@ -314,14 +314,14 @@ export default function StudentLessonDetailPageClient({
                     onClick={() => handleStudentAction('absence')}
                     className="btn-classical-secondary text-accent-red border-accent-red/30 hover:bg-accent-red/10 flex items-center space-x-2 text-sm"
                   >
-                    <FiUserX className="w-4 h-4" />
+                    <PiUserMinus className="w-4 h-4" />
                     <span>{t('cannot_attend')}</span>
                   </button>
                   <button
                     onClick={() => handleStudentAction('reschedule')}
                     className="btn-classical-secondary text-accent-blue border-accent-blue/30 hover:bg-accent-blue/10 flex items-center space-x-2 text-sm"
                   >
-                    <FiCalendar className="w-4 h-4" />
+                    <PiCalendarBlank className="w-4 h-4" />
                     <span>{t('reschedule')}</span>
                   </button>
                 </div>
@@ -332,7 +332,7 @@ export default function StudentLessonDetailPageClient({
                 disabled={loading}
                 className="btn-classical-secondary flex items-center space-x-2"
               >
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                 />
                 <span>{t('refresh')}</span>
@@ -350,7 +350,7 @@ export default function StudentLessonDetailPageClient({
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center mb-4">
                   <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
-                    <FiCalendar className="w-5 h-5" />
+                    <PiCalendarBlank className="w-5 h-5" />
                     <span>{t('lesson_info')}</span>
                   </h2>
                 </div>
@@ -365,18 +365,18 @@ export default function StudentLessonDetailPageClient({
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex items-center space-x-2 text-theme-secondary">
-                      <FiCalendar className="w-4 h-4" />
+                      <PiCalendarBlank className="w-4 h-4" />
                       <span>{formatDateTime(lesson.scheduledAt)}</span>
                     </div>
                     <div className="flex items-center space-x-2 text-theme-secondary">
-                      <FiClock className="w-4 h-4" />
+                      <PiClock className="w-4 h-4" />
                       <span>{formatDuration(lesson.duration)}</span>
                     </div>
                   </div>
 
                   {lesson.location && (
                     <div className="flex items-center space-x-2 text-theme-secondary">
-                      <FiMapPin className="w-4 h-4" />
+                      <PiMapPin className="w-4 h-4" />
                       <span>{lesson.location}</span>
                     </div>
                   )}
@@ -385,7 +385,7 @@ export default function StudentLessonDetailPageClient({
                   {lesson.isRecurring && (
                     <div className="bg-theme-elevated rounded-lg p-4">
                       <div className="flex items-center space-x-2 text-accent-blue mb-2">
-                        <FiRepeat className="w-4 h-4" />
+                        <PiRepeat className="w-4 h-4" />
                         <span className="font-medium">
                           {t('recurring_lesson')}
                         </span>
@@ -413,7 +413,7 @@ export default function StudentLessonDetailPageClient({
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center mb-4">
                   <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
-                    <FiTarget className="w-5 h-5" />
+                    <PiTarget className="w-5 h-5" />
                     <span>{t('lesson_objectives')}</span>
                   </h2>
                 </div>
@@ -442,7 +442,7 @@ export default function StudentLessonDetailPageClient({
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center mb-4">
                   <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
-                    <FiBookOpen className="w-5 h-5" />
+                    <PiBookOpen className="w-5 h-5" />
                     <span>{t('topics_techniques')}</span>
                   </h2>
                 </div>
@@ -500,7 +500,7 @@ export default function StudentLessonDetailPageClient({
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
-                    <FiMessageSquare className="w-5 h-5" />
+                    <PiChatCenteredText className="w-5 h-5" />
                     <span>{t('notes_observations')}</span>
                   </h2>
                 </div>
@@ -557,7 +557,7 @@ export default function StudentLessonDetailPageClient({
                             onClick={() => setIsEditingFeedback(true)}
                             className="btn-classical-secondary flex items-center space-x-1 text-sm"
                           >
-                            <FiEdit3 className="w-3 h-3" />
+                            <PiPencilLine className="w-3 h-3" />
                             <span>{t('edit')}</span>
                           </button>
                         ) : null}
@@ -580,9 +580,9 @@ export default function StudentLessonDetailPageClient({
                               className="btn-classical-primary flex items-center space-x-1 text-sm"
                             >
                               {loadingFeedback ? (
-                                <FiRefreshCw className="w-3 h-3 animate-spin" />
+                                <PiArrowsClockwise className="w-3 h-3 animate-spin" />
                               ) : (
-                                <FiSave className="w-3 h-3" />
+                                <PiFloppyDisk className="w-3 h-3" />
                               )}
                               <span>{t('save')}</span>
                             </button>
@@ -590,7 +590,7 @@ export default function StudentLessonDetailPageClient({
                               onClick={() => setIsEditingFeedback(false)}
                               className="btn-classical-secondary flex items-center space-x-1 text-sm"
                             >
-                              <FiX className="w-3 h-3" />
+                              <PiX className="w-3 h-3" />
                               <span>{t('cancel')}</span>
                             </button>
                           </div>
@@ -663,7 +663,7 @@ export default function StudentLessonDetailPageClient({
                     </div>
                   ) : (
                     <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                      <FiUser className="w-8 h-8 text-theme-primary" />
+                      <PiUser className="w-8 h-8 text-theme-primary" />
                     </div>
                   )}
                   <div>
@@ -707,9 +707,9 @@ export default function StudentLessonDetailPageClient({
                   >
                     <div className="flex items-center space-x-2 mb-2">
                       {lesson.studentPresent ? (
-                        <FiUser className="w-5 h-5 text-accent-green" />
+                        <PiUser className="w-5 h-5 text-accent-green" />
                       ) : (
-                        <FiUserX className="w-5 h-5 text-accent-red" />
+                        <PiUserMinus className="w-5 h-5 text-accent-red" />
                       )}
                       <span
                         className={`font-medium ${
@@ -875,19 +875,19 @@ export default function StudentLessonDetailPageClient({
                 </h3>
                 <div className="space-y-3 text-sm text-theme-secondary">
                   <div className="flex items-start space-x-2">
-                    <FiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('practice_objectives')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <FiMusic className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiMusicNotes className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('use_sheet_links')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <FiMessageSquare className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiChatCenteredText className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('leave_feedback')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <FiBookOpen className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiBookOpen className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('explore_composers')}</p>
                   </div>
                 </div>
@@ -914,9 +914,9 @@ export default function StudentLessonDetailPageClient({
                 }`}
               >
                 {studentActionType === 'absence' ? (
-                  <FiUserX className="w-6 h-6 text-accent-red" />
+                  <PiUserMinus className="w-6 h-6 text-accent-red" />
                 ) : (
-                  <FiCalendar className="w-6 h-6 text-accent-blue" />
+                  <PiCalendarBlank className="w-6 h-6 text-accent-blue" />
                 )}
               </div>
               <div>
@@ -954,7 +954,7 @@ export default function StudentLessonDetailPageClient({
 
                 <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4 mb-6">
                   <div className="flex items-start space-x-3">
-                    <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+                    <PiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
                     <div className="text-sm">
                       <p className="font-medium text-accent-blue mb-1">
                         {t('confirmation')}
@@ -986,9 +986,9 @@ export default function StudentLessonDetailPageClient({
                     }`}
                   >
                     {loadingStudentAction ? (
-                      <FiRefreshCw className="w-4 h-4 animate-spin" />
+                      <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                     ) : (
-                      <FiSend className="w-4 h-4" />
+                      <PiPaperPlaneRight className="w-4 h-4" />
                     )}
                     <span>
                       {loadingStudentAction
@@ -1001,7 +1001,7 @@ export default function StudentLessonDetailPageClient({
             ) : (
               <div className="text-center py-6">
                 <div className="w-16 h-16 bg-accent-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FiCheck className="w-8 h-8 text-accent-green" />
+                  <PiCheck className="w-8 h-8 text-accent-green" />
                 </div>
                 <h3 className="text-lg font-bold text-theme-primary mb-2">
                   {t('message_sent')}

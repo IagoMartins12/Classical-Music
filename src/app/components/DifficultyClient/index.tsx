@@ -3,7 +3,7 @@
 'use client';
 import { useState, useCallback, useTransition, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiSearch, FiTrendingUp, FiX, FiInfo } from 'react-icons/fi';
+import { PiInfo, PiMagnifyingGlass, PiTrendUp, PiX } from 'react-icons/pi';
 import { DifficultyResponse } from '@/app/requests/difficulty-details';
 import DifficultyTabs from '../../components/DifficultyTabs';
 import DifficultyTable from '../../components/DifficultyTable';
@@ -168,7 +168,7 @@ export default function DifficultyClient({
           <div className="relative z-10">
             <div className="flex items-center justify-center mb-6">
               <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiTrendingUp className="w-10 h-10 text-theme-primary" />
+                <PiTrendUp className="w-10 h-10 text-theme-primary" />
               </div>
             </div>
 
@@ -186,7 +186,7 @@ export default function DifficultyClient({
                 onClick={() => setShowInfo(!showInfo)}
                 className="inline-flex items-center space-x-2 px-4 py-2 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm font-medium hover:bg-accent-blue/20 transition-all duration-300"
               >
-                <FiInfo className="w-4 h-4" />
+                <PiInfo className="w-4 h-4" />
                 <span>Sobre os Níveis de Dificuldade</span>
               </button>
             </AnimatedItem>
@@ -241,7 +241,7 @@ export default function DifficultyClient({
           {/* Search Bar */}
           <form onSubmit={handleSearchSubmit} className="mb-6">
             <div className="relative">
-              <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+              <PiMagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
               <input
                 type="text"
                 placeholder="Buscar por título, compositor ou opus..."
@@ -256,7 +256,7 @@ export default function DifficultyClient({
                   onClick={() => setSearchTerm('')}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
                 >
-                  <FiX className="w-5 h-5" />
+                  <PiX className="w-5 h-5" />
                 </button>
               )}
             </div>
@@ -312,7 +312,7 @@ export default function DifficultyClient({
                     onClick={() => updateSearchParams({ search: undefined })}
                     className="hover:text-brand-secondary transition-colors"
                   >
-                    <FiX className="w-3 h-3" />
+                    <PiX className="w-3 h-3" />
                   </button>
                 </span>
               )}

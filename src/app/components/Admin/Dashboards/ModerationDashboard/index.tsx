@@ -4,25 +4,25 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiShield,
-  FiFlag,
-  FiEye,
-  FiCheck,
-  FiX,
-  FiClock,
-  FiUsers,
-  FiFileText,
-  FiMusic,
-  FiFilter,
-  FiRefreshCw,
-  FiSearch,
-  FiMoreHorizontal,
-  FiAward,
-  FiTarget,
-  FiActivity,
-  FiTrendingUp,
-  FiMessageSquare,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiChatCenteredText,
+  PiCheck,
+  PiClock,
+  PiDotsThree,
+  PiEye,
+  PiFileText,
+  PiFlag,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiMedal,
+  PiMusicNotes,
+  PiPulse,
+  PiShield,
+  PiTarget,
+  PiTrendUp,
+  PiUsers,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -209,15 +209,15 @@ export default function ModerationDashboard() {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'composer':
-        return FiUsers;
+        return PiUsers;
       case 'work':
-        return FiMusic;
+        return PiMusicNotes;
       case 'score':
-        return FiFileText;
+        return PiFileText;
       case 'annotation':
-        return FiMessageSquare;
+        return PiChatCenteredText;
       default:
-        return FiFileText;
+        return PiFileText;
     }
   };
 
@@ -258,7 +258,7 @@ export default function ModerationDashboard() {
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiShield className="w-8 h-8 text-theme-primary" />
+                <PiShield className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -277,7 +277,7 @@ export default function ModerationDashboard() {
               title="Itens Pendentes"
               value={stats?.pending || 0}
               change={{ value: -12.3, isPositive: false }}
-              icon={FiClock}
+              icon={PiClock}
               color="#F59E0B"
             />
 
@@ -285,7 +285,7 @@ export default function ModerationDashboard() {
               title="Processados Hoje"
               value={stats?.processed || 0}
               change={{ value: 8.7, isPositive: true }}
-              icon={FiCheck}
+              icon={PiCheck}
               color="#10B981"
             />
 
@@ -296,7 +296,7 @@ export default function ModerationDashboard() {
                 100
               ).toFixed(1)}%`}
               change={{ value: 5.2, isPositive: true }}
-              icon={FiAward}
+              icon={PiMedal}
               color="#3B82F6"
             />
 
@@ -304,7 +304,7 @@ export default function ModerationDashboard() {
               title="Tempo Médio"
               value={`${stats?.avgProcessingTime.toFixed(1)}h`}
               change={{ value: -15.4, isPositive: true }}
-              icon={FiActivity}
+              icon={PiPulse}
               color="#8B5CF6"
             />
           </div>
@@ -316,7 +316,7 @@ export default function ModerationDashboard() {
             {/* Left side filters */}
             <div className="flex flex-wrap items-center gap-4">
               <div className="relative">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                 <input
                   type="text"
                   placeholder="Buscar itens..."
@@ -376,7 +376,7 @@ export default function ModerationDashboard() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    leftIcon={<FiCheck />}
+                    leftIcon={<PiCheck />}
                     onClick={() => handleBulkAction('approve')}
                   >
                     Aprovar
@@ -384,7 +384,7 @@ export default function ModerationDashboard() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    leftIcon={<FiX />}
+                    leftIcon={<PiX />}
                     onClick={() => handleBulkAction('reject')}
                   >
                     Rejeitar
@@ -396,14 +396,16 @@ export default function ModerationDashboard() {
                 variant="ghost"
                 size="sm"
                 leftIcon={
-                  <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                  <PiArrowsClockwise
+                    className={refreshing ? 'animate-spin' : ''}
+                  />
                 }
                 onClick={() => setRefreshing(!refreshing)}
               >
                 Atualizar
               </Button>
 
-              <Button variant="primary" size="sm" leftIcon={<FiFilter />}>
+              <Button variant="primary" size="sm" leftIcon={<PiFunnel />}>
                 Filtros Avançados
               </Button>
             </div>
@@ -490,7 +492,7 @@ export default function ModerationDashboard() {
 
                               {item.reportCount > 0 && (
                                 <div className="flex items-center space-x-1">
-                                  <FiFlag className="w-3 h-3 text-accent-red" />
+                                  <PiFlag className="w-3 h-3 text-accent-red" />
                                   <span className="text-xs text-accent-red font-medium">
                                     {item.reportCount} reports
                                   </span>
@@ -547,7 +549,7 @@ export default function ModerationDashboard() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={<FiEye />}
+                          leftIcon={<PiEye />}
                           onClick={() =>
                             router.push(`/admin/moderate/${item.id}`)
                           }
@@ -561,7 +563,7 @@ export default function ModerationDashboard() {
                             <Button
                               variant="secondary"
                               size="sm"
-                              leftIcon={<FiCheck />}
+                              leftIcon={<PiCheck />}
                               onClick={() => handleApprove(item.id)}
                               className="text-accent-green hover:bg-accent-green/10"
                             >
@@ -570,7 +572,7 @@ export default function ModerationDashboard() {
                             <Button
                               variant="secondary"
                               size="sm"
-                              leftIcon={<FiX />}
+                              leftIcon={<PiX />}
                               onClick={() => handleReject(item.id)}
                               className="text-accent-red hover:bg-accent-red/10"
                             >
@@ -581,7 +583,7 @@ export default function ModerationDashboard() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            leftIcon={<FiMoreHorizontal />}
+                            leftIcon={<PiDotsThree />}
                           >
                             Ações
                           </Button>
@@ -595,7 +597,7 @@ export default function ModerationDashboard() {
 
             {filteredItems.length === 0 && (
               <div className="p-12 text-center">
-                <FiShield className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                <PiShield className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-theme-primary mb-2">
                   Nenhum item encontrado
                 </h3>
@@ -612,7 +614,7 @@ export default function ModerationDashboard() {
           {/* Top Moderators */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-              <FiTarget className="w-5 h-5 text-accent-green" />
+              <PiTarget className="w-5 h-5 text-accent-green" />
               <span>Top Moderadores</span>
             </h3>
             <div className="space-y-4">
@@ -641,7 +643,7 @@ export default function ModerationDashboard() {
           {/* Quality Metrics */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-              <FiTrendingUp className="w-5 h-5 text-accent-blue" />
+              <PiTrendUp className="w-5 h-5 text-accent-blue" />
               <span>Métricas de Qualidade</span>
             </h3>
             <div className="space-y-4">

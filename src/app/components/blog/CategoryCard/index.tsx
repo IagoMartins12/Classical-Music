@@ -1,7 +1,7 @@
 // app/components/blog/CategoryCard.tsx
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
-import { FiArrowRight } from 'react-icons/fi';
+import { PiArrowRight } from 'react-icons/pi';
 
 interface CategoryCardProps {
   category: {
@@ -102,7 +102,7 @@ export function CategoryCard({
                 <span className="text-white/90 text-sm font-medium">
                   {category._count.articles} artigos
                 </span>
-                <FiArrowRight className="w-6 h-6 text-white group-hover:translate-x-2 transition-transform" />
+                <PiArrowRight className="w-6 h-6 text-white group-hover:translate-x-2 transition-transform" />
               </div>
             </div>
           </div>
@@ -180,7 +180,7 @@ export function CategoryCard({
         {/* CTA */}
         <div className="flex items-center text-brand-primary text-sm font-medium group-hover:translate-x-2 transition-transform">
           <span className="mr-1">Explorar</span>
-          <FiArrowRight className="w-4 h-4" />
+          <PiArrowRight className="w-4 h-4" />
         </div>
       </div>
     </Link>

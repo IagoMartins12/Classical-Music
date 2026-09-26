@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
-import { FiCheck } from 'react-icons/fi';
+import { PiCheck } from 'react-icons/pi';
 import { approveArticle } from '@/app/requests/blog/admin-actions';
 
 interface ApproveArticleButtonProps {
@@ -38,7 +38,7 @@ export function ApproveArticleButton({
       disabled={approving}
       className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-all flex items-center space-x-2 disabled:opacity-60"
     >
-      <FiCheck className="w-4 h-4" />
+      <PiCheck className="w-4 h-4" />
       <span>{approving ? 'Publicando...' : 'Aprovar e Publicar'}</span>
     </button>
   );

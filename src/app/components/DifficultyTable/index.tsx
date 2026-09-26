@@ -2,12 +2,12 @@
 
 import Link from 'next/link';
 import {
-  FiExternalLink,
-  FiDownload,
-  FiUser,
-  FiMusic,
-  FiAward,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiDownloadSimple,
+  PiMedal,
+  PiMusicNotes,
+  PiUser,
+} from 'react-icons/pi';
 import { DifficultyWork } from '@/app/requests/difficulty-details'; // ✅ Import atualizado
 import { AnimatedItem } from '../animation/AnimatedComponents';
 
@@ -26,7 +26,7 @@ export default function DifficultyTable({
     return (
       <div className="classical-card p-12 text-center">
         <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-          <FiMusic className="w-8 h-8 text-theme-tertiary" />
+          <PiMusicNotes className="w-8 h-8 text-theme-tertiary" />
         </div>
         <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
           Nenhuma obra encontrada
@@ -66,7 +66,7 @@ export default function DifficultyTable({
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-accent-green rounded-xl flex items-center justify-center mr-3">
-              <FiAward className="w-5 h-5 text-theme-primary" />
+              <PiMedal className="w-5 h-5 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-theme-primary classical-title">
@@ -134,7 +134,7 @@ export default function DifficultyTable({
                     {/* Badge Detalhado (IMSLP) - Se disponível */}
                     {work.imslpDifficultyLevel && (
                       <div className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border-2 border-dashed border-gray-300 text-gray-600 bg-gray-50 max-w-fit">
-                        <FiAward className="w-3 h-3 mr-1" />
+                        <PiMedal className="w-3 h-3 mr-1" />
                         {work.imslpDifficultySystem || 'IMSLP'}{' '}
                         {work.imslpDifficultyLevel}
                       </div>
@@ -168,7 +168,7 @@ export default function DifficultyTable({
                 <td className="py-4 px-6">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-2">
-                      <FiUser className="w-3 h-3 text-theme-primary" />
+                      <PiUser className="w-3 h-3 text-theme-primary" />
                     </div>
                     <div>
                       <Link
@@ -189,7 +189,7 @@ export default function DifficultyTable({
                 {/* Instrumento */}
                 <td className="py-4 px-6">
                   <div className="flex items-center">
-                    <FiMusic className="w-4 h-4 text-brand-primary mr-2" />
+                    <PiMusicNotes className="w-4 h-4 text-brand-primary mr-2" />
                     <span className="text-sm text-theme-secondary font-medium">
                       {work.instrument.name}
                     </span>
@@ -209,7 +209,7 @@ export default function DifficultyTable({
                             rel="noopener noreferrer"
                             className="inline-flex items-center px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs font-medium hover:bg-accent-green/20 transition-all duration-300"
                           >
-                            <FiDownload className="w-3 h-3 mr-1" />
+                            <PiDownloadSimple className="w-3 h-3 mr-1" />
                             {score.fileFormat}
                           </Link>
                         ))}
@@ -226,7 +226,7 @@ export default function DifficultyTable({
                         rel="noopener noreferrer"
                         className="inline-flex items-center px-2 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded text-xs font-medium hover:bg-brand-primary/20 transition-all duration-300"
                       >
-                        <FiExternalLink className="w-3 h-3 mr-1" />
+                        <PiArrowSquareOut className="w-3 h-3 mr-1" />
                         IMSLP
                       </Link>
                     )}

@@ -2,8 +2,13 @@
 'use client';
 
 import { useEffect, useMemo } from 'react';
-import { FiTarget, FiZap, FiMusic, FiUsers, FiBookOpen } from 'react-icons/fi';
-import { PiTarget } from 'react-icons/pi';
+import {
+  PiBookOpen,
+  PiLightning,
+  PiMusicNotes,
+  PiTarget,
+  PiUsers,
+} from 'react-icons/pi';
 import Link from 'next/link';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
@@ -176,14 +181,14 @@ export default function LearningStatsWidget({
               href="/works"
               className="btn-classical-primary flex items-center justify-center space-x-2 py-3"
             >
-              <FiMusic className="w-4 h-4" />
+              <PiMusicNotes className="w-4 h-4" />
               <span>{t('find_works_button')}</span>
             </Link>
             <Link
               href="/composers"
               className="btn-classical-secondary flex items-center justify-center space-x-2 py-3"
             >
-              <FiBookOpen className="w-4 h-4" />
+              <PiBookOpen className="w-4 h-4" />
               <span>{t('explore_composers_button')}</span>
             </Link>
           </div>
@@ -209,7 +214,7 @@ export default function LearningStatsWidget({
         {nextAchievements.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <FiTarget className="w-5 h-5 text-accent-green" />
+              <PiTarget className="w-5 h-5 text-accent-green" />
               <h4 className="font-semibold text-theme-primary">
                 {t('next_achievements')}
               </h4>
@@ -263,7 +268,7 @@ export default function LearningStatsWidget({
         {smartCTAs.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <FiZap className="w-5 h-5 text-brand-primary" />
+              <PiLightning className="w-5 h-5 text-brand-primary" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_recommendations')}
               </h4>
@@ -325,7 +330,7 @@ export default function LearningStatsWidget({
           {/* Diversidade */}
           <AnimatedCard hover="lift" className="classical-card p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <FiMusic className="w-5 h-5 text-accent-blue" />
+              <PiMusicNotes className="w-5 h-5 text-accent-blue" />
               <h4 className="font-semibold text-theme-primary">
                 {t('diversity_title')}
               </h4>
@@ -354,7 +359,7 @@ export default function LearningStatsWidget({
           {stats.publicPerformances > 0 && (
             <AnimatedCard hover="lift" className="classical-card p-6">
               <div className="flex items-center space-x-3 mb-4">
-                <FiUsers className="w-5 h-5 text-accent-purple" />
+                <PiUsers className="w-5 h-5 text-accent-purple" />
                 <h4 className="font-semibold text-theme-primary">
                   {t('performance_title')}
                 </h4>

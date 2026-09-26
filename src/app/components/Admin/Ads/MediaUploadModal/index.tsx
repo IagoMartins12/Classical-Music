@@ -3,20 +3,20 @@
 
 import { useState, useRef, useCallback } from 'react';
 import {
-  FiUpload,
-  FiImage,
-  FiVideo,
-  FiTrash2,
-  FiX,
-  FiCheck,
-  FiAlertTriangle,
-  FiInfo,
-  FiSettings,
-  FiEye,
-  FiMonitor,
-  FiTablet,
-  FiSmartphone,
-} from 'react-icons/fi';
+  PiCheck,
+  PiDeviceMobile,
+  PiDeviceTablet,
+  PiEye,
+  PiGear,
+  PiImage,
+  PiInfo,
+  PiMonitor,
+  PiTrash,
+  PiUploadSimple,
+  PiVideoCamera,
+  PiWarning,
+  PiX,
+} from 'react-icons/pi';
 import toast from 'react-hot-toast';
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
@@ -311,7 +311,7 @@ export default function MediaUploadModal({
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
-              <FiUpload className="w-6 h-6 text-white" />
+              <PiUploadSimple className="w-6 h-6 text-white" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary">
@@ -331,7 +331,7 @@ export default function MediaUploadModal({
                   : 'text-theme-secondary hover:text-theme-primary'
               }`}
             >
-              <FiEye className="w-4 h-4 inline mr-2" />
+              <PiEye className="w-4 h-4 inline mr-2" />
               Atual
             </button>
             <button
@@ -342,7 +342,7 @@ export default function MediaUploadModal({
                   : 'text-theme-secondary hover:text-theme-primary'
               }`}
             >
-              <FiUpload className="w-4 h-4 inline mr-2" />
+              <PiUploadSimple className="w-4 h-4 inline mr-2" />
               Upload
             </button>
           </div>
@@ -354,14 +354,14 @@ export default function MediaUploadModal({
               {/* Info sobre dimensões ideais */}
               <div className="classical-card p-4 bg-accent-blue/5 border border-accent-blue/20">
                 <h3 className="font-semibold text-theme-primary mb-3 flex items-center">
-                  <FiSettings className="w-5 h-5 mr-2" />
+                  <PiGear className="w-5 h-5 mr-2" />
                   Dimensões para {ad.placement}
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center">
                     <div className="w-12 h-12 bg-accent-blue/20 rounded-xl flex items-center justify-center mx-auto mb-2">
-                      <FiMonitor className="w-6 h-6 text-accent-blue" />
+                      <PiMonitor className="w-6 h-6 text-accent-blue" />
                     </div>
                     <div className="text-sm">
                       <div className="font-medium text-theme-primary">
@@ -379,7 +379,7 @@ export default function MediaUploadModal({
 
                   <div className="text-center">
                     <div className="w-12 h-12 bg-accent-purple/20 rounded-xl flex items-center justify-center mx-auto mb-2">
-                      <FiTablet className="w-6 h-6 text-accent-purple" />
+                      <PiDeviceTablet className="w-6 h-6 text-accent-purple" />
                     </div>
                     <div className="text-sm">
                       <div className="font-medium text-theme-primary">
@@ -397,7 +397,7 @@ export default function MediaUploadModal({
 
                   <div className="text-center">
                     <div className="w-12 h-12 bg-accent-green/20 rounded-xl flex items-center justify-center mx-auto mb-2">
-                      <FiSmartphone className="w-6 h-6 text-accent-green" />
+                      <PiDeviceMobile className="w-6 h-6 text-accent-green" />
                     </div>
                     <div className="text-sm">
                       <div className="font-medium text-theme-primary">
@@ -421,14 +421,14 @@ export default function MediaUploadModal({
                 <div className="classical-card p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-theme-primary flex items-center space-x-2">
-                      <FiImage className="w-5 h-5 text-accent-blue" />
+                      <PiImage className="w-5 h-5 text-accent-blue" />
                       <span>Imagem</span>
                     </h3>
                     {(ad.imageUrl || ad.imageVersions) && (
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiTrash2 />}
+                        leftIcon={<PiTrash />}
                         onClick={() => removeMedia('image')}
                         className="text-accent-red hover:text-accent-red"
                       >
@@ -455,7 +455,7 @@ export default function MediaUploadModal({
 
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center space-x-2 text-accent-green">
-                          <FiCheck className="w-4 h-4" />
+                          <PiCheck className="w-4 h-4" />
                           <span>Imagem configurada</span>
                         </div>
 
@@ -476,7 +476,7 @@ export default function MediaUploadModal({
                   ) : (
                     <div className="aspect-video border-2 border-dashed border-theme-primary rounded-lg flex items-center justify-center">
                       <div className="text-center text-theme-tertiary">
-                        <FiImage className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                        <PiImage className="w-12 h-12 mx-auto mb-2 opacity-50" />
                         <p className="text-sm">Nenhuma imagem</p>
                       </div>
                     </div>
@@ -487,14 +487,14 @@ export default function MediaUploadModal({
                 <div className="classical-card p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-theme-primary flex items-center space-x-2">
-                      <FiVideo className="w-5 h-5 text-accent-purple" />
+                      <PiVideoCamera className="w-5 h-5 text-accent-purple" />
                       <span>Vídeo</span>
                     </h3>
                     {(ad.videoUrl || ad.videoVersions) && (
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiTrash2 />}
+                        leftIcon={<PiTrash />}
                         onClick={() => removeMedia('video')}
                         className="text-accent-red hover:text-accent-red"
                       >
@@ -520,7 +520,7 @@ export default function MediaUploadModal({
 
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center space-x-2 text-accent-green">
-                          <FiCheck className="w-4 h-4" />
+                          <PiCheck className="w-4 h-4" />
                           <span>Vídeo configurado</span>
                         </div>
 
@@ -534,7 +534,7 @@ export default function MediaUploadModal({
                   ) : (
                     <div className="aspect-video border-2 border-dashed border-theme-primary rounded-lg flex items-center justify-center">
                       <div className="text-center text-theme-tertiary">
-                        <FiVideo className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                        <PiVideoCamera className="w-12 h-12 mx-auto mb-2 opacity-50" />
                         <p className="text-sm">Nenhum vídeo</p>
                       </div>
                     </div>
@@ -564,7 +564,7 @@ export default function MediaUploadModal({
                         }
                         className="text-brand-primary focus:ring-brand-primary"
                       />
-                      <FiImage className="w-5 h-5 text-accent-blue" />
+                      <PiImage className="w-5 h-5 text-accent-blue" />
                       <span className="text-theme-primary font-medium">
                         Imagem
                       </span>
@@ -580,7 +580,7 @@ export default function MediaUploadModal({
                         }
                         className="text-brand-primary focus:ring-brand-primary"
                       />
-                      <FiVideo className="w-5 h-5 text-accent-purple" />
+                      <PiVideoCamera className="w-5 h-5 text-accent-purple" />
                       <span className="text-theme-primary font-medium">
                         Vídeo
                       </span>
@@ -618,7 +618,7 @@ export default function MediaUploadModal({
                       variant="ghost"
                       size="sm"
                       onClick={clearPreview}
-                      leftIcon={<FiX />}
+                      leftIcon={<PiX />}
                     />
                   </div>
 
@@ -681,9 +681,9 @@ export default function MediaUploadModal({
                         >
                           <div className="flex items-center gap-2 mb-1">
                             {filePreview.validation.isValid ? (
-                              <FiCheck className="w-3 h-3" />
+                              <PiCheck className="w-3 h-3" />
                             ) : (
-                              <FiAlertTriangle className="w-3 h-3" />
+                              <PiWarning className="w-3 h-3" />
                             )}
                             <span className="font-medium">
                               {filePreview.validation.isValid
@@ -746,9 +746,9 @@ export default function MediaUploadModal({
                   <div className="space-y-4">
                     <div className="w-20 h-20 bg-gradient-to-br from-brand-primary/20 to-accent-blue/20 rounded-2xl flex items-center justify-center mx-auto">
                       {uploadType === 'image' ? (
-                        <FiImage className="w-10 h-10 text-brand-primary" />
+                        <PiImage className="w-10 h-10 text-brand-primary" />
                       ) : (
-                        <FiVideo className="w-10 h-10 text-brand-primary" />
+                        <PiVideoCamera className="w-10 h-10 text-brand-primary" />
                       )}
                     </div>
 
@@ -798,7 +798,7 @@ export default function MediaUploadModal({
               {/* Info sobre processamento */}
               <div className="classical-card p-4 bg-accent-blue/5">
                 <div className="flex items-start space-x-3">
-                  <FiInfo className="w-5 h-5 text-accent-blue mt-0.5 flex-shrink-0" />
+                  <PiInfo className="w-5 h-5 text-accent-blue mt-0.5 flex-shrink-0" />
                   <div>
                     <h4 className="font-medium text-theme-primary mb-2">
                       🚀 Processamento Inteligente
@@ -848,7 +848,7 @@ export default function MediaUploadModal({
                 onClick={uploadFile}
                 disabled={uploading}
                 isLoading={uploading}
-                leftIcon={<FiUpload />}
+                leftIcon={<PiUploadSimple />}
               >
                 {uploading ? 'Processando...' : 'Fazer Upload'}
               </Button>

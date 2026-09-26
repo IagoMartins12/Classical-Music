@@ -3,15 +3,15 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiTrendingUp,
-  FiUsers,
-  FiMail,
-  FiBarChart2,
-  FiRefreshCw,
-  FiDownload,
-  FiEye,
-  FiMousePointer,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiChartBar,
+  PiCursor,
+  PiDownloadSimple,
+  PiEnvelopeSimple,
+  PiEye,
+  PiTrendUp,
+  PiUsers,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -44,9 +44,9 @@ export default function NewsletterAnalyticsClient() {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
-    { id: 'overview', label: 'Visão Geral', icon: FiBarChart2 },
-    { id: 'campaigns', label: 'Campanhas', icon: FiMail },
-    { id: 'subscribers', label: 'Subscribers', icon: FiUsers },
+    { id: 'overview', label: 'Visão Geral', icon: PiChartBar },
+    { id: 'campaigns', label: 'Campanhas', icon: PiEnvelopeSimple },
+    { id: 'subscribers', label: 'Subscribers', icon: PiUsers },
   ];
 
   const dateRangeOptions = [
@@ -80,7 +80,7 @@ export default function NewsletterAnalyticsClient() {
               : analytics.subscribers.growth < 0
                 ? 'decrease'
                 : 'neutral',
-          icon: FiUsers,
+          icon: PiUsers,
           color: 'accent-blue',
         },
         {
@@ -89,7 +89,7 @@ export default function NewsletterAnalyticsClient() {
           change: analytics.campaigns.sentGrowth,
           changeType:
             analytics.campaigns.sentGrowth > 0 ? 'increase' : 'neutral',
-          icon: FiMail,
+          icon: PiEnvelopeSimple,
           color: 'accent-green',
         },
         {
@@ -102,7 +102,7 @@ export default function NewsletterAnalyticsClient() {
               : analytics.engagement.openRateChange < 0
                 ? 'decrease'
                 : 'neutral',
-          icon: FiEye,
+          icon: PiEye,
           color: 'accent-purple',
         },
         {
@@ -115,7 +115,7 @@ export default function NewsletterAnalyticsClient() {
               : analytics.engagement.clickRateChange < 0
                 ? 'decrease'
                 : 'neutral',
-          icon: FiMousePointer,
+          icon: PiCursor,
           color: 'accent-amber',
         },
       ]
@@ -134,7 +134,7 @@ export default function NewsletterAnalyticsClient() {
             <div className="text-center py-8">
               <div className="flex items-center justify-center mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
-                  <FiTrendingUp className="w-8 h-8 text-white" />
+                  <PiTrendUp className="w-8 h-8 text-white" />
                 </div>
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -173,7 +173,9 @@ export default function NewsletterAnalyticsClient() {
                   variant="ghost"
                   size="sm"
                   leftIcon={
-                    <FiRefreshCw className={loading ? 'animate-spin' : ''} />
+                    <PiArrowsClockwise
+                      className={loading ? 'animate-spin' : ''}
+                    />
                   }
                   onClick={fetchAnalytics}
                   disabled={loading}
@@ -183,7 +185,7 @@ export default function NewsletterAnalyticsClient() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  leftIcon={<FiDownload />}
+                  leftIcon={<PiDownloadSimple />}
                   onClick={exportReport}
                 >
                   Exportar
@@ -341,7 +343,7 @@ export default function NewsletterAnalyticsClient() {
                   </h3>
                   <div className="h-64 flex items-center justify-center text-theme-tertiary">
                     <div className="text-center">
-                      <FiBarChart2 className="w-16 h-16 mx-auto mb-4" />
+                      <PiChartBar className="w-16 h-16 mx-auto mb-4" />
                       <p>Gráfico de crescimento seria implementado aqui</p>
                       <p className="text-sm">
                         Usando bibliotecas como Chart.js ou Recharts

@@ -2,7 +2,7 @@
 
 'use client';
 
-import { FiMusic, FiGrid } from 'react-icons/fi';
+import { PiMusicNotes, PiSquaresFour } from 'react-icons/pi';
 import { AnimatedItem } from '../animation/AnimatedComponents';
 
 interface DifficultyTabsProps {
@@ -24,7 +24,7 @@ export default function DifficultyTabs({
     <div className="classical-card p-6">
       <div className="flex items-center mb-6">
         <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mr-3">
-          <FiMusic className="w-5 h-5 text-theme-primary" />
+          <PiMusicNotes className="w-5 h-5 text-theme-primary" />
         </div>
         <div>
           <h3 className="text-lg font-bold text-theme-primary classical-title">
@@ -48,7 +48,7 @@ export default function DifficultyTabs({
                 : 'bg-theme-elevated border-theme-secondary text-theme-secondary hover:border-brand-primary hover:text-brand-primary hover:bg-brand-primary/5'
             } ${isPending ? 'cursor-not-allowed opacity-50' : ''}`}
           >
-            <FiGrid className="w-4 h-4" />
+            <PiSquaresFour className="w-4 h-4" />
             <span>Todos</span>
             <span className="px-2 py-0.5 text-xs bg-theme-overlay rounded-full">
               {totalWorks}
@@ -75,7 +75,7 @@ export default function DifficultyTabs({
                   : 'bg-theme-elevated border-theme-secondary text-theme-secondary hover:border-brand-primary hover:text-brand-primary hover:bg-brand-primary/5'
               } ${isPending ? 'cursor-not-allowed opacity-50' : ''}`}
             >
-              <FiMusic className="w-4 h-4" />
+              <PiMusicNotes className="w-4 h-4" />
               <span>{instrument.name}</span>
               <span className="px-2 py-0.5 text-xs bg-theme-overlay rounded-full">
                 {instrument.workCount}

@@ -3,18 +3,19 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  FiMusic,
-  FiRefreshCw,
-  FiSearch,
-  FiAlertCircle,
-  FiEdit3,
-  FiX,
-  FiCheck,
-  FiLoader,
-  FiDatabase,
-  FiTrash2,
-} from 'react-icons/fi';
-import { SiSpotify, SiYoutube } from 'react-icons/si';
+  PiArrowsClockwise,
+  PiCheck,
+  PiDatabase,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiPencilLine,
+  PiSpinnerGap,
+  PiSpotifyLogo,
+  PiTrash,
+  PiWarningCircle,
+  PiX,
+  PiYoutubeLogo,
+} from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import UniversalAudioPlayer from '../UniversalAudioPlayer';
 import YouTubeVideoPlayer from '../YouTubeVideoPlayer';
@@ -610,7 +611,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         <div className="flex flex-col sm:flex-row  items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-              <FiMusic className="w-5 h-5 text-theme-primary" />
+              <PiMusicNotes className="w-5 h-5 text-theme-primary" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -628,7 +629,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               <Button
                 variant="secondary"
                 size="sm"
-                leftIcon={<FiEdit3 />}
+                leftIcon={<PiPencilLine />}
                 onClick={() => setShowEditMode(!showEditMode)}
               >
                 {showEditMode ? t('media_cancelar') : t('media_editar')}
@@ -642,9 +643,9 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 size="sm"
                 leftIcon={
                   isSearching ? (
-                    <FiRefreshCw className="animate-spin" />
+                    <PiArrowsClockwise className="animate-spin" />
                   ) : (
-                    <FiSearch />
+                    <PiMagnifyingGlass />
                   )
                 }
                 onClick={() => searchMedia(false)}
@@ -672,7 +673,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
             {/* ALERTA MELHORADO - Mais claro sobre a necessidade da busca */}
             {!hasSearchBeenMade && (
               <div className="mb-4 bg-amber-900/20 border border-amber-700/30 rounded-xl p-4 flex items-start space-x-3">
-                <FiAlertCircle className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
+                <PiWarningCircle className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-amber-300 font-medium">
                     {t('media_busca_necessaria')}
@@ -699,7 +700,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     }))
                   }
                   placeholder="https://open.spotify.com/track/..."
-                  leftIcon={<SiSpotify />}
+                  leftIcon={<PiSpotifyLogo />}
                   disabled={!hasSearchBeenMade}
                 />
 
@@ -713,7 +714,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     }))
                   }
                   placeholder="https://www.youtube.com/watch?v=..."
-                  leftIcon={<SiYoutube />}
+                  leftIcon={<PiYoutubeLogo />}
                   disabled={!hasSearchBeenMade}
                 />
               </div>
@@ -729,7 +730,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   <div className="mb-3 p-3 bg-green-900/20 border border-green-700/30 rounded-lg">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <FiDatabase className="w-4 h-4 text-green-400" />
+                        <PiDatabase className="w-4 h-4 text-green-400" />
                         <span className="text-sm text-green-300">
                           {work.customAudioSource === 'upload'
                             ? t('media_audio_salvo')
@@ -745,7 +746,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                           disabled={isUploading || !hasSearchBeenMade}
                           className="text-xs px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 flex items-center space-x-1"
                         >
-                          <FiTrash2 className="w-3 h-3" />
+                          <PiTrash className="w-3 h-3" />
                           <span>{t('media_deletar')}</span>
                         </button>
                       </div>
@@ -792,9 +793,9 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   size="sm"
                   leftIcon={
                     isUploading ? (
-                      <FiLoader className="animate-spin" />
+                      <PiSpinnerGap className="animate-spin" />
                     ) : (
-                      <FiCheck />
+                      <PiCheck />
                     )
                   }
                   onClick={saveManualMedia}
@@ -816,7 +817,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 <Button
                   variant="secondary"
                   size="sm"
-                  leftIcon={<FiX />}
+                  leftIcon={<PiX />}
                   onClick={() => {
                     setShowEditMode(false);
                     // Restaurar campos com dados existentes
@@ -850,7 +851,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           <AnimatedItem direction="up" delay={0.1}>
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <FiRefreshCw className="w-8 h-8 text-theme-primary animate-spin" />
+                <PiArrowsClockwise className="w-8 h-8 text-theme-primary animate-spin" />
               </div>
               <h3 className="text-xl font-semibold text-theme-primary mb-3">
                 {t('media_buscando')}
@@ -864,7 +865,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           <AnimatedItem direction="up" delay={0.1}>
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <FiSearch className="w-8 h-8 text-theme-primary" />
+                <PiMagnifyingGlass className="w-8 h-8 text-theme-primary" />
               </div>
               <h3 className="text-xl font-semibold text-theme-primary mb-3">
                 {t('media_buscar_multimidia')}
@@ -875,7 +876,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               <Button
                 variant="primary"
                 size="md"
-                leftIcon={<FiSearch />}
+                leftIcon={<PiMagnifyingGlass />}
                 onClick={() => searchMedia(false)}
                 disabled={isSearching}
               >
@@ -890,7 +891,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           <AnimatedItem direction="up" delay={0.1}>
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-gradient-to-br from-gray-600 to-gray-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <FiMusic className="w-8 h-8 text-gray-300" />
+                <PiMusicNotes className="w-8 h-8 text-gray-300" />
               </div>
               <h3 className="text-xl font-semibold text-theme-primary mb-3">
                 {t('media_sem_midia')}
@@ -902,7 +903,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 <Button
                   variant="secondary"
                   size="sm"
-                  leftIcon={<FiRefreshCw />}
+                  leftIcon={<PiArrowsClockwise />}
                   onClick={() => searchMedia(true)}
                   disabled={isSearching}
                 >
@@ -924,7 +925,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   <AnimatedItem direction="up" delay={0.1}>
                     <div className="space-y-4">
                       <div className="flex items-center space-x-2">
-                        <SiSpotify className="w-5 h-5 text-green-400" />
+                        <PiSpotifyLogo className="w-5 h-5 text-green-400" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {t('media_spotify')}
                         </h3>
@@ -954,7 +955,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   <AnimatedItem direction="up" delay={0.2}>
                     <div className="space-y-4">
                       <div className="flex items-center space-x-2">
-                        <FiMusic className="w-5 h-5 text-accent-green" />
+                        <PiMusicNotes className="w-5 h-5 text-accent-green" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {t('media_reproducao_audio')}
                         </h3>
@@ -975,7 +976,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   <AnimatedItem direction="up" delay={0.3}>
                     <div className="space-y-4">
                       <div className="flex items-center space-x-2">
-                        <SiYoutube className="w-5 h-5 text-red-400" />
+                        <PiYoutubeLogo className="w-5 h-5 text-red-400" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {t('media_youtube')}
                         </h3>
@@ -1008,7 +1009,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     <AnimatedItem direction="up" delay={0.2}>
                       <div className="space-y-4">
                         <div className="flex items-center space-x-2">
-                          <SiSpotify className="w-5 h-5 text-green-400" />
+                          <PiSpotifyLogo className="w-5 h-5 text-green-400" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
                             {t('media_spotify')}
                           </h3>
@@ -1039,7 +1040,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     <AnimatedItem direction="up" delay={0.1}>
                       <div className="space-y-4">
                         <div className="flex items-center space-x-2">
-                          <FiMusic className="w-5 h-5 text-accent-green" />
+                          <PiMusicNotes className="w-5 h-5 text-accent-green" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
                             {t('media_reproducao_audio')}
                           </h3>
@@ -1062,7 +1063,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     <AnimatedItem direction="up" delay={0.3}>
                       <div className="space-y-4">
                         <div className="flex items-center space-x-2">
-                          <SiYoutube className="w-5 h-5 text-red-400" />
+                          <PiYoutubeLogo className="w-5 h-5 text-red-400" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
                             {t('media_youtube')}
                           </h3>
@@ -1092,7 +1093,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {isSearching && hasAnyMedia && (
           <AnimatedItem direction="up" delay={0.1}>
             <div className="mt-6 bg-blue-900/20 border border-blue-700/30 rounded-xl p-4 flex items-center space-x-3">
-              <FiRefreshCw className="w-5 h-5 text-blue-400 animate-spin" />
+              <PiArrowsClockwise className="w-5 h-5 text-blue-400 animate-spin" />
               <div className="flex-1">
                 <p className="text-blue-300 text-sm font-medium">
                   {t('media_atualizando_para')} &quot;{work.title}&quot;...
@@ -1109,7 +1110,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {searchError && hasSearchBeenMade && (
           <AnimatedItem direction="up" delay={0.5}>
             <div className="mt-6 bg-red-900/20 border border-red-700/30 rounded-xl p-4 flex items-start space-x-3">
-              <FiAlertCircle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
+              <PiWarningCircle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-red-300 text-sm font-medium">
                   {t('media_erro_busca')}
@@ -1135,28 +1136,28 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 <div className="flex items-center space-x-4">
                   {mediaData.spotify && (
                     <div className="flex items-center space-x-1 text-green-400">
-                      <SiSpotify className="w-3 h-3" />
+                      <PiSpotifyLogo className="w-3 h-3" />
                       <span>Spotify</span>
                     </div>
                   )}
 
                   {mediaData.youtube && (
                     <div className="flex items-center space-x-1 text-red-400">
-                      <SiYoutube className="w-3 h-3" />
+                      <PiYoutubeLogo className="w-3 h-3" />
                       <span>YouTube</span>
                     </div>
                   )}
 
                   {mediaData.customAudio && (
                     <div className="flex items-center space-x-1 text-blue-400">
-                      <FiMusic className="w-3 h-3" />
+                      <PiMusicNotes className="w-3 h-3" />
                       <span>Áudio</span>
                     </div>
                   )}
 
                   {mediaData.alternativeAudio.length > 0 && (
                     <div className="flex items-center space-x-1 text-purple-400">
-                      <FiMusic className="w-3 h-3" />
+                      <PiMusicNotes className="w-3 h-3" />
                       <span>
                         {mediaData.alternativeAudio.length}{' '}
                         {t('media_temporarias')}

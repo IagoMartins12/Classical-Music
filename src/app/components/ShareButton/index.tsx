@@ -2,8 +2,16 @@
 'use client';
 
 import { useState } from 'react';
-import { FiShare2, FiCopy, FiCheck, FiX } from 'react-icons/fi';
-import { FaWhatsapp, FaTwitter, FaTelegram, FaFacebook } from 'react-icons/fa';
+import {
+  PiCheck,
+  PiCopy,
+  PiFacebookLogo,
+  PiShareNetwork,
+  PiTelegramLogo,
+  PiTwitterLogo,
+  PiWhatsappLogo,
+  PiX,
+} from 'react-icons/pi';
 import Input from '../Common/Inputs';
 import { useTranslation } from '@/app/hooks/useTranslation';
 
@@ -118,7 +126,7 @@ export default function ShareButton({
         `}
         title={t('share_compartilhar')}
       >
-        <FiShare2
+        <PiShareNetwork
           className={`${iconSizes[size]} group-hover:rotate-12 transition-transform duration-300`}
         />
       </button>
@@ -142,7 +150,7 @@ export default function ShareButton({
                 onClick={() => setIsOpen(false)}
                 className="w-8 h-8 bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-theme-primary transition-colors"
               >
-                <FiX className="w-4 h-4" />
+                <PiX className="w-4 h-4" />
               </button>
             </div>
 
@@ -182,15 +190,15 @@ export default function ShareButton({
                   `}
                 >
                   {copied ? (
-                    <FiCheck className="w-5 h-5" />
+                    <PiCheck className="w-5 h-5" />
                   ) : (
-                    <FiCopy className="w-5 h-5" />
+                    <PiCopy className="w-5 h-5" />
                   )}
                 </button>
               </div>
               {copied && (
                 <p className="text-accent-green text-xs mt-1 flex items-center">
-                  <FiCheck className="w-3 h-3 mr-1" />
+                  <PiCheck className="w-3 h-3 mr-1" />
                   {t('share_link_copiado')}
                 </p>
               )}
@@ -206,7 +214,7 @@ export default function ShareButton({
                   onClick={() => handleShare('whatsapp')}
                   className="flex items-center space-x-3 p-3 bg-green-500/10 border border-green-500/30 rounded-xl text-green-500 hover:bg-green-500/20 transition-all duration-300 group"
                 >
-                  <FaWhatsapp className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <PiWhatsappLogo className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium">
                     {t('share_whatsapp')}
                   </span>
@@ -216,7 +224,7 @@ export default function ShareButton({
                   onClick={() => handleShare('twitter')}
                   className="flex items-center space-x-3 p-3 bg-blue-400/10 border border-blue-400/30 rounded-xl text-blue-400 hover:bg-blue-400/20 transition-all duration-300 group"
                 >
-                  <FaTwitter className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <PiTwitterLogo className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium">
                     {t('share_twitter')}
                   </span>
@@ -226,7 +234,7 @@ export default function ShareButton({
                   onClick={() => handleShare('facebook')}
                   className="flex items-center space-x-3 p-3 bg-blue-600/10 border border-blue-600/30 rounded-xl text-blue-600 hover:bg-blue-600/20 transition-all duration-300 group"
                 >
-                  <FaFacebook className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <PiFacebookLogo className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium">
                     {t('share_facebook')}
                   </span>
@@ -236,7 +244,7 @@ export default function ShareButton({
                   onClick={() => handleShare('telegram')}
                   className="flex items-center space-x-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl text-blue-500 hover:bg-blue-500/20 transition-all duration-300 group"
                 >
-                  <FaTelegram className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <PiTelegramLogo className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium">
                     {t('share_telegram')}
                   </span>

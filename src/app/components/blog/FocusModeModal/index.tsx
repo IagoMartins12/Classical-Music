@@ -3,7 +3,7 @@
 
 import Image from '@/app/components/SmartImage';
 import { JSX, useEffect, useState } from 'react';
-import { FiX, FiMinus, FiPlus } from 'react-icons/fi';
+import { PiMinus, PiPlus, PiX } from 'react-icons/pi';
 
 interface FocusModeModalProps {
   isOpen: boolean;
@@ -71,7 +71,7 @@ export function FocusModeModal({
             className="p-1 hover:bg-theme-classical rounded-full transition-colors"
             title="Diminuir fonte"
           >
-            <FiMinus className="w-4 h-4 text-theme-primary" />
+            <PiMinus className="w-4 h-4 text-theme-primary" />
           </button>
           <span className="text-sm font-medium text-theme-primary min-w-[3rem] text-center">
             {fontSize}px
@@ -81,7 +81,7 @@ export function FocusModeModal({
             className="p-1 hover:bg-theme-classical rounded-full transition-colors"
             title="Aumentar fonte"
           >
-            <FiPlus className="w-4 h-4 text-theme-primary" />
+            <PiPlus className="w-4 h-4 text-theme-primary" />
           </button>
         </div>
 
@@ -91,7 +91,7 @@ export function FocusModeModal({
           className="p-3 bg-red-500 text-white rounded-full shadow-2xl hover:bg-red-600 transition-all"
           title="Fechar (ESC)"
         >
-          <FiX className="w-5 h-5" />
+          <PiX className="w-5 h-5" />
         </button>
       </div>
 

@@ -3,12 +3,12 @@
 
 import { useState } from 'react';
 import {
-  FiX,
-  FiSave,
-  FiDownload,
-  FiDatabase,
-  FiHardDrive,
-} from 'react-icons/fi';
+  PiDatabase,
+  PiDownloadSimple,
+  PiFloppyDisk,
+  PiHardDrive,
+  PiX,
+} from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
@@ -70,7 +70,7 @@ export default function CreateBackupModal({
         <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-              <FiDownload className="w-5 h-5 text-theme-primary" />
+              <PiDownloadSimple className="w-5 h-5 text-theme-primary" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-theme-primary">
@@ -85,7 +85,7 @@ export default function CreateBackupModal({
             onClick={onClose}
             className="p-2 rounded-lg text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary transition-all"
           >
-            <FiX className="w-5 h-5" />
+            <PiX className="w-5 h-5" />
           </button>
         </div>
 
@@ -157,7 +157,7 @@ export default function CreateBackupModal({
                   }
                   className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2"
                 />
-                <FiDatabase className="w-5 h-5 text-accent-blue" />
+                <PiDatabase className="w-5 h-5 text-accent-blue" />
                 <div>
                   <div className="font-medium text-theme-primary">Database</div>
                   <div className="text-xs text-theme-tertiary">
@@ -178,7 +178,7 @@ export default function CreateBackupModal({
                   }
                   className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2"
                 />
-                <FiHardDrive className="w-5 h-5 text-accent-green" />
+                <PiHardDrive className="w-5 h-5 text-accent-green" />
                 <div>
                   <div className="font-medium text-theme-primary">Arquivos</div>
                   <div className="text-xs text-theme-tertiary">
@@ -306,7 +306,7 @@ export default function CreateBackupModal({
             <Button
               type="submit"
               variant="primary"
-              leftIcon={<FiSave />}
+              leftIcon={<PiFloppyDisk />}
               disabled={submitting}
             >
               Criar Backup

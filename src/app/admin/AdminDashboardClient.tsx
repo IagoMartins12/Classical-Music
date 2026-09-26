@@ -3,17 +3,17 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiUsers,
-  FiDatabase,
-  FiActivity,
-  FiShield,
-  FiRefreshCw,
-  FiAlertTriangle,
-  FiCheckCircle,
-  FiClock,
-  FiBarChart2,
-  FiTrendingUp,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiChartBar,
+  PiCheckCircle,
+  PiClock,
+  PiDatabase,
+  PiPulse,
+  PiShield,
+  PiTrendUp,
+  PiUsers,
+  PiWarning,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -68,14 +68,14 @@ export default function AdminDashboardClient() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <FiAlertTriangle className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Dashboard
           </h2>
           <p className="text-theme-secondary mb-6">{error}</p>
           <Button
             variant="primary"
-            leftIcon={<FiRefreshCw />}
+            leftIcon={<PiArrowsClockwise />}
             onClick={handleRefresh}
           >
             Tentar Novamente
@@ -122,7 +122,7 @@ export default function AdminDashboardClient() {
             <div className="text-center py-8 lg:py-12">
               <div className="flex items-center justify-center mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                  <FiBarChart2 className="w-8 h-8 text-white" />
+                  <PiChartBar className="w-8 h-8 text-white" />
                 </div>
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -141,7 +141,7 @@ export default function AdminDashboardClient() {
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <FiClock className="w-4 h-4 text-theme-secondary" />
+                  <PiClock className="w-4 h-4 text-theme-secondary" />
                   <span className="text-theme-secondary">
                     {mounted
                       ? getMinutesSinceUpdate() === 0
@@ -154,7 +154,9 @@ export default function AdminDashboardClient() {
                   variant="ghost"
                   size="sm"
                   leftIcon={
-                    <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                    <PiArrowsClockwise
+                      className={refreshing ? 'animate-spin' : ''}
+                    />
                   }
                   onClick={handleRefresh}
                   disabled={refreshing}
@@ -175,7 +177,7 @@ export default function AdminDashboardClient() {
                   value: stats.overview.growthRate?.users || 0,
                   isPositive: (stats.overview.growthRate?.users || 0) >= 0,
                 }}
-                icon={FiUsers}
+                icon={PiUsers}
                 color="#3B82F6"
               />
 
@@ -183,7 +185,7 @@ export default function AdminDashboardClient() {
                 title="Usuários Ativos"
                 value={stats.engagement.dailyActiveUsers || 0}
                 change={{ value: 12.8, isPositive: true }}
-                icon={FiActivity}
+                icon={PiPulse}
                 color="#10B981"
               />
 
@@ -194,7 +196,7 @@ export default function AdminDashboardClient() {
                   value: stats.overview.growthRate?.works || 0,
                   isPositive: (stats.overview.growthRate?.works || 0) >= 0,
                 }}
-                icon={FiDatabase}
+                icon={PiDatabase}
                 color="#F59E0B"
               />
 
@@ -202,7 +204,7 @@ export default function AdminDashboardClient() {
                 title="Partituras"
                 value={stats.overview.totalScores || 0}
                 change={{ value: 3.1, isPositive: true }}
-                icon={FiCheckCircle}
+                icon={PiCheckCircle}
                 color="#8B5CF6"
               />
             </div>
@@ -256,7 +258,7 @@ export default function AdminDashboardClient() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                   <div className="flex items-center space-x-3">
-                    <FiShield className="w-5 h-5 text-accent-amber" />
+                    <PiShield className="w-5 h-5 text-accent-amber" />
                     <span className="text-theme-primary text-sm lg:text-base">
                       Pendentes
                     </span>
@@ -268,7 +270,7 @@ export default function AdminDashboardClient() {
 
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                   <div className="flex items-center space-x-3">
-                    <FiDatabase className="w-5 h-5 text-accent-purple" />
+                    <PiDatabase className="w-5 h-5 text-accent-purple" />
                     <span className="text-theme-primary text-sm lg:text-base">
                       Compositores
                     </span>
@@ -280,7 +282,7 @@ export default function AdminDashboardClient() {
 
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                   <div className="flex items-center space-x-3">
-                    <FiTrendingUp className="w-5 h-5 text-accent-green" />
+                    <PiTrendUp className="w-5 h-5 text-accent-green" />
                     <span className="text-theme-primary text-sm lg:text-base">
                       Anotações
                     </span>

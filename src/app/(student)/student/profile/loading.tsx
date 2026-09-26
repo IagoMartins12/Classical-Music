@@ -1,22 +1,22 @@
 // app/student/profile/loading.tsx - Loading para Perfil do Aluno
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiUser,
-  FiEdit3,
-  FiBookOpen,
-  FiHeart,
-  FiShield,
-  FiMessageSquare,
-  FiMusic,
-  FiMapPin,
-  FiPhone,
-  FiMail,
-  FiTarget,
-  FiTrendingUp,
-  FiCheck,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiBookOpen,
+  PiChatCenteredText,
+  PiCheck,
+  PiEnvelopeSimple,
+  PiHeart,
+  PiMapPin,
+  PiMusicNotes,
+  PiPencilLine,
+  PiPhone,
+  PiShield,
+  PiTarget,
+  PiTrendUp,
+  PiUser,
+} from 'react-icons/pi';
 
 export default function StudentProfileLoading() {
   return (
@@ -41,13 +41,13 @@ export default function StudentProfileLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiUser />
+          <PiUser />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiBookOpen />
+          <PiBookOpen />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -59,7 +59,7 @@ export default function StudentProfileLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -87,7 +87,7 @@ export default function StudentProfileLoading() {
         <div className="space-y-8">
           {/* Personal Information */}
           <ProfileSectionSkeleton
-            icon={<FiUser className="w-5 h-5 text-theme-inverse/20" />}
+            icon={<PiUser className="w-5 h-5 text-theme-inverse/20" />}
             iconColor="from-brand-primary/20 to-brand-secondary/20"
             title="Informações Pessoais"
             subtitle="Seus dados básicos e informações de contato"
@@ -96,21 +96,21 @@ export default function StudentProfileLoading() {
               <div className="space-y-4">
                 <ProfileFieldSkeleton
                   label="Nome"
-                  icon={<FiUser className="w-4 h-4" />}
+                  icon={<PiUser className="w-4 h-4" />}
                 />
                 <ProfileFieldSkeleton
                   label="Email"
-                  icon={<FiMail className="w-4 h-4" />}
+                  icon={<PiEnvelopeSimple className="w-4 h-4" />}
                 />
                 <ProfileFieldSkeleton
                   label="Telefone"
-                  icon={<FiPhone className="w-4 h-4" />}
+                  icon={<PiPhone className="w-4 h-4" />}
                 />
               </div>
               <div className="space-y-4">
                 <ProfileFieldSkeleton
                   label="Localização"
-                  icon={<FiMapPin className="w-4 h-4" />}
+                  icon={<PiMapPin className="w-4 h-4" />}
                 />
                 <ProfileFieldSkeleton label="Aluno desde" />
                 <ProfileFieldSkeleton label="Status" />
@@ -120,7 +120,7 @@ export default function StudentProfileLoading() {
 
           {/* Study Configuration */}
           <ProfileSectionSkeleton
-            icon={<FiBookOpen className="w-5 h-5 text-theme-inverse/20" />}
+            icon={<PiBookOpen className="w-5 h-5 text-theme-inverse/20" />}
             iconColor="from-accent-blue/20 to-accent-purple/20"
             title="Configurações de Estudo"
             subtitle="Seus objetivos e preferências de aprendizado"
@@ -143,7 +143,7 @@ export default function StudentProfileLoading() {
 
           {/* Musical Preferences */}
           <ProfileSectionSkeleton
-            icon={<FiHeart className="w-5 h-5 text-theme-inverse/20" />}
+            icon={<PiHeart className="w-5 h-5 text-theme-inverse/20" />}
             iconColor="from-accent-purple/20 to-accent-pink/20"
             title="Preferências Musicais"
             subtitle="Seus gêneros musicais favoritos"
@@ -160,7 +160,7 @@ export default function StudentProfileLoading() {
 
           {/* Privacy Settings */}
           <ProfileSectionSkeleton
-            icon={<FiShield className="w-5 h-5 text-theme-inverse/20" />}
+            icon={<PiShield className="w-5 h-5 text-theme-inverse/20" />}
             iconColor="from-accent-green/20 to-accent-blue/20"
             title="Configurações de Privacidade"
             subtitle="Controle a visibilidade do seu progresso"
@@ -183,7 +183,9 @@ export default function StudentProfileLoading() {
 
           {/* Communication Settings */}
           <ProfileSectionSkeleton
-            icon={<FiMessageSquare className="w-5 h-5 text-theme-inverse/20" />}
+            icon={
+              <PiChatCenteredText className="w-5 h-5 text-theme-inverse/20" />
+            }
             iconColor="from-accent-orange/20 to-accent-red/20"
             title="Configurações de Comunicação"
             subtitle="Como você prefere ser contatado"
@@ -196,7 +198,7 @@ export default function StudentProfileLoading() {
 
           {/* My Repertoire */}
           <ProfileSectionSkeleton
-            icon={<FiMusic className="w-5 h-5 text-theme-inverse/20" />}
+            icon={<PiMusicNotes className="w-5 h-5 text-theme-inverse/20" />}
             iconColor="from-accent-yellow/20 to-accent-orange/20"
             title="Meu Repertório"
             subtitle="Suas obras favoritas e progresso de estudo"
@@ -205,7 +207,7 @@ export default function StudentProfileLoading() {
               {/* Want to Learn */}
               <div>
                 <div className="h-6 bg-theme-primary/30 rounded w-40 mb-4 flex items-center">
-                  <FiTarget className="w-5 h-5 mr-2 text-theme-tertiary/30" />
+                  <PiTarget className="w-5 h-5 mr-2 text-theme-tertiary/30" />
                 </div>
                 <div className="space-y-2">
                   {Array.from({ length: 3 }).map((_, i) => (
@@ -224,7 +226,7 @@ export default function StudentProfileLoading() {
               {/* Learned */}
               <div>
                 <div className="h-6 bg-theme-primary/30 rounded w-32 mb-4 flex items-center">
-                  <FiCheck className="w-5 h-5 mr-2 text-theme-tertiary/30" />
+                  <PiCheck className="w-5 h-5 mr-2 text-theme-tertiary/30" />
                 </div>
                 <div className="space-y-2">
                   {Array.from({ length: 3 }).map((_, i) => (
@@ -247,7 +249,7 @@ export default function StudentProfileLoading() {
             {/* Statistics */}
             <div className="mt-8 pt-6 border-t border-theme-secondary">
               <div className="h-6 bg-theme-primary/30 rounded w-24 mb-4 flex items-center">
-                <FiTrendingUp className="w-5 h-5 mr-2 text-theme-tertiary/30" />
+                <PiTrendUp className="w-5 h-5 mr-2 text-theme-tertiary/30" />
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {Array.from({ length: 4 }).map((_, i) => (
@@ -318,7 +320,7 @@ function ProfileSectionSkeleton({
           </div>
 
           <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
-            <FiEdit3 className="w-4 h-4 text-theme-tertiary/30" />
+            <PiPencilLine className="w-4 h-4 text-theme-tertiary/30" />
             <div className="h-4 w-12 bg-theme-tertiary/20 rounded"></div>
           </div>
         </div>

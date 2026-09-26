@@ -2,24 +2,23 @@
 'use client';
 
 import {
-  FiTarget,
-  FiLayers,
-  FiMusic,
-  FiBookOpen,
-  FiAward,
-  FiMessageSquare,
-  FiTrendingUp,
-  FiThumbsUp,
-  FiEye,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiBookOpen,
+  PiChatCenteredText,
+  PiEye,
+  PiMedal,
+  PiMusicNotes,
+  PiSealCheck,
+  PiStack,
+  PiTarget,
+  PiThumbsUp,
+  PiTrendUp,
+  PiTrophy,
+} from 'react-icons/pi';
 import Link from 'next/link';
 import {
   AnimatedCard,
   AnimatedItem,
 } from '@/app/components/animation/AnimatedComponents';
-import { BiTrophy } from 'react-icons/bi';
-import { MdVerified } from 'react-icons/md';
 
 interface AnnotationsStatsWidgetProps {
   stats: any;
@@ -30,43 +29,43 @@ interface AnnotationsStatsWidgetProps {
 const CATEGORY_CONFIG = {
   TECHNIQUE: {
     label: 'Técnica',
-    icon: FiTarget,
+    icon: PiTarget,
     color: 'from-accent-red to-accent-purple',
     bgColor: 'bg-accent-red/10 border-accent-red/30 text-accent-red',
   },
   INTERPRETATION: {
     label: 'Interpretação',
-    icon: GiMusicalNotes,
+    icon: PiMusicNotes,
     color: 'from-accent-blue to-accent-purple',
     bgColor: 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue',
   },
   PRACTICE_TIP: {
     label: 'Dicas',
-    icon: FiBookOpen,
+    icon: PiBookOpen,
     color: 'from-accent-green to-accent-blue',
     bgColor: 'bg-accent-green/10 border-accent-green/30 text-accent-green',
   },
   THEORY: {
     label: 'Teoria',
-    icon: FiLayers,
+    icon: PiStack,
     color: 'from-accent-purple to-accent-blue',
     bgColor: 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple',
   },
   PERFORMANCE: {
     label: 'Performance',
-    icon: FiMusic,
+    icon: PiMusicNotes,
     color: 'from-brand-primary to-brand-secondary',
     bgColor: 'bg-brand-primary/10 border-brand-primary/30 text-brand-primary',
   },
   HISTORICAL: {
     label: 'Contexto',
-    icon: FiAward,
+    icon: PiMedal,
     color: 'from-accent-purple to-accent-red',
     bgColor: 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple',
   },
   GENERAL: {
     label: 'Geral',
-    icon: FiMessageSquare,
+    icon: PiChatCenteredText,
     color: 'from-theme-primary to-theme-secondary',
     bgColor: 'bg-theme-primary/10 border-theme-primary/30 text-theme-primary',
   },
@@ -97,7 +96,7 @@ export default function AnnotationsStatsWidget({
         <AnimatedCard hover="lift" className="classical-card-2">
           <div className="p-6">
             <h4 className="text-sm font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-              <FiTrendingUp className="w-4 h-4" />
+              <PiTrendUp className="w-4 h-4" />
               <span>Suas Categorias Favoritas</span>
             </h4>
             <div className="space-y-3">
@@ -106,7 +105,7 @@ export default function AnnotationsStatsWidget({
                   CATEGORY_CONFIG[
                     category.category as keyof typeof CATEGORY_CONFIG
                   ];
-                const Icon = config?.icon || FiMessageSquare;
+                const Icon = config?.icon || PiChatCenteredText;
                 const percentage =
                   totalAnnotations > 0
                     ? (category._count.category / totalAnnotations) * 100
@@ -162,7 +161,7 @@ export default function AnnotationsStatsWidget({
         <AnimatedCard hover="lift" className="classical-card-2">
           <div className="p-6">
             <h4 className="text-sm font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-              <BiTrophy className="w-4 h-4" />
+              <PiTrophy className="w-4 h-4" />
               <span>Suas Anotações Mais Populares</span>
             </h4>
             <div className="space-y-3">
@@ -171,7 +170,7 @@ export default function AnnotationsStatsWidget({
                   CATEGORY_CONFIG[
                     annotation.category as keyof typeof CATEGORY_CONFIG
                   ];
-                const Icon = categoryConfig?.icon || FiMessageSquare;
+                const Icon = categoryConfig?.icon || PiChatCenteredText;
 
                 return (
                   <AnimatedItem
@@ -188,7 +187,7 @@ export default function AnnotationsStatsWidget({
                           <Icon className="w-4 h-4" />
                         </div>
                         {annotation.isVerified && (
-                          <MdVerified className="w-4 h-4 text-accent-green" />
+                          <PiSealCheck className="w-4 h-4 text-accent-green" />
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -201,11 +200,11 @@ export default function AnnotationsStatsWidget({
                         </div>
                         <div className="flex items-center space-x-3 text-xs text-theme-tertiary mt-1">
                           <span className="flex items-center space-x-1">
-                            <FiThumbsUp className="w-3 h-3" />
+                            <PiThumbsUp className="w-3 h-3" />
                             <span>{annotation.helpfulCount}</span>
                           </span>
                           <span className="flex items-center space-x-1">
-                            <FiEye className="w-3 h-3" />
+                            <PiEye className="w-3 h-3" />
                             <span>{annotation.viewCount}</span>
                           </span>
                         </div>
@@ -224,7 +223,7 @@ export default function AnnotationsStatsWidget({
         <AnimatedCard hover="lift" className="classical-card-2">
           <div className="p-6">
             <h4 className="text-sm font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-              <FiMusic className="w-4 h-4" />
+              <PiMusicNotes className="w-4 h-4" />
               <span>Obras Que Você Mais Anota</span>
             </h4>
             <div className="space-y-3">
@@ -269,7 +268,7 @@ export default function AnnotationsStatsWidget({
       <AnimatedCard hover="lift" className="classical-card-2">
         <div className="p-6">
           <h4 className="text-sm font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-            <FiBookOpen className="w-4 h-4" />
+            <PiBookOpen className="w-4 h-4" />
             <span>Dicas para Anotar</span>
           </h4>
           <div className="space-y-3 text-sm text-theme-secondary">
@@ -298,7 +297,7 @@ export default function AnnotationsStatsWidget({
         <AnimatedCard hover="lift" className="classical-card-2">
           <div className="p-6 text-center">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <FiMessageSquare className="w-6 h-6 text-theme-primary" />
+              <PiChatCenteredText className="w-6 h-6 text-theme-primary" />
             </div>
             <h4 className="font-semibold text-theme-primary mb-2">
               Continue Anotando!
@@ -312,7 +311,7 @@ export default function AnnotationsStatsWidget({
               className="inline-flex items-center space-x-2 text-sm text-brand-primary hover:text-brand-secondary font-medium transition-colors"
             >
               <span>Explorar Obras</span>
-              <FiMusic className="w-4 h-4" />
+              <PiMusicNotes className="w-4 h-4" />
             </Link>
           </div>
         </AnimatedCard>

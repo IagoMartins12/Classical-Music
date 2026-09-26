@@ -182,18 +182,16 @@ export default function InstrumentsLoading() {
 
 // 'use client';
 
-// import { FaMusic, FaGuitar, FaUsers } from 'react-icons/fa';
 // import { GiViolin, GiGrandPiano, GiHarp, GiPipeOrgan } from 'react-icons/gi';
-// import { LuPiano } from 'react-icons/lu';
-
+// //
 // const instruments = [
 //   { icon: GiGrandPiano, name: 'Piano', delay: 0 },
 //   { icon: GiViolin, name: 'Violoncelo', delay: 150 },
-//   { icon: FaGuitar, name: 'Violino', delay: 300 },
+//   { icon: PiGuitar, name: 'Violino', delay: 300 },
 //   { icon: GiPipeOrgan, name: 'Órgão', delay: 450 },
-//   { icon: FaUsers, name: 'Orquestra', delay: 600 },
+//   { icon: PiUsers, name: 'Orquestra', delay: 600 },
 //   { icon: GiHarp, name: 'Harpa', delay: 750 },
-//   { icon: LuPiano, name: 'Clavicórdio', delay: 900 },
+//   { icon: PiPianoKeys, name: 'Clavicórdio', delay: 900 },
 // ];
 
 // export default function InstrumentsLoading() {
@@ -204,7 +202,7 @@ export default function InstrumentsLoading() {
 //         <div className="relative mb-12 mx-auto w-fit animate-pulse">
 //           <div className="w-40 h-40 border-4 border-amber-500/20 rounded-full flex items-center justify-center backdrop-blur-sm">
 //             <div className="w-24 h-24 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full flex items-center justify-center animate-spin shadow-2xl">
-//               <FaMusic className="w-12 h-12 text-gray-900" />
+//               <PiMusicNotes className="w-12 h-12 text-gray-900" />
 //             </div>
 //           </div>
 

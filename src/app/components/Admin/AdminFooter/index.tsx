@@ -3,12 +3,12 @@
 
 import { useEffect, useState } from 'react';
 import {
-  FiDatabase,
-  FiServer,
-  FiClock,
-  FiUsers,
-  FiHardDrive,
-} from 'react-icons/fi';
+  PiClock,
+  PiDatabase,
+  PiHardDrive,
+  PiHardDrives,
+  PiUsers,
+} from 'react-icons/pi';
 
 interface SystemMetric {
   label: string;
@@ -24,25 +24,25 @@ export default function AdminFooter() {
       label: 'API Response',
       value: '45ms',
       status: 'good',
-      icon: FiServer,
+      icon: PiHardDrives,
     },
     {
       label: 'Database',
       value: '12ms',
       status: 'good',
-      icon: FiDatabase,
+      icon: PiDatabase,
     },
     {
       label: 'Active Users',
       value: '234',
       status: 'good',
-      icon: FiUsers,
+      icon: PiUsers,
     },
     {
       label: 'Memory Usage',
       value: '67%',
       status: 'warning',
-      icon: FiHardDrive,
+      icon: PiHardDrive,
     },
   ]);
 
@@ -65,12 +65,12 @@ export default function AdminFooter() {
             metric.label === 'API Response'
               ? `${Math.floor(Math.random() * 50) + 20}ms`
               : metric.label === 'Database'
-              ? `${Math.floor(Math.random() * 20) + 5}ms`
-              : metric.label === 'Active Users'
-              ? `${Math.floor(Math.random() * 100) + 200}`
-              : metric.label === 'Memory Usage'
-              ? `${Math.floor(Math.random() * 30) + 50}%`
-              : metric.value,
+                ? `${Math.floor(Math.random() * 20) + 5}ms`
+                : metric.label === 'Active Users'
+                  ? `${Math.floor(Math.random() * 100) + 200}`
+                  : metric.label === 'Memory Usage'
+                    ? `${Math.floor(Math.random() * 30) + 50}%`
+                    : metric.value,
         }))
       );
     }, 5000);
@@ -157,7 +157,7 @@ export default function AdminFooter() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-6 space-y-2 sm:space-y-0">
               {/* Current Time */}
               <div className="flex items-center space-x-2 text-theme-secondary">
-                <FiClock className="w-4 h-4" />
+                <PiClock className="w-4 h-4" />
                 <div className="text-sm">
                   <span className="font-mono font-bold">
                     {formatTime(currentTime)}

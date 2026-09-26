@@ -1,21 +1,24 @@
 'use client';
 
 import React from 'react';
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiShield,
-  FiFileText,
-  FiUpload,
-  FiAlertCircle,
-  FiCheck,
-  FiMail,
-  FiFlag,
-  FiGlobe,
-  FiUsers,
-  FiBook,
-  FiEye,
-  FiLock,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano, GiScrollQuill } from 'react-icons/gi';
+  PiBook,
+  PiCheck,
+  PiEnvelopeSimple,
+  PiEye,
+  PiFileText,
+  PiFlag,
+  PiGlobe,
+  PiLock,
+  PiMusicNotes,
+  PiScales,
+  PiScroll,
+  PiShield,
+  PiUploadSimple,
+  PiUsers,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Link from '@/app/components/LocalizedLink';
 
@@ -27,7 +30,6 @@ import {
   AnimatedCard,
   FloatingElement,
 } from '../../../components/animation/AnimatedComponents';
-import { FaBalanceScale } from 'react-icons/fa';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 interface CopyrightSection {
@@ -44,7 +46,7 @@ export default function CopyrightPage() {
     {
       id: 'our-commitment',
       title: t('copyright_section_0_title'),
-      icon: FiShield,
+      icon: PiShield,
       content: [
         t('copyright_section_0_content_0'),
         t('copyright_section_0_content_1'),
@@ -55,7 +57,7 @@ export default function CopyrightPage() {
     {
       id: 'public-domain',
       title: t('copyright_section_1_title'),
-      icon: FiGlobe,
+      icon: PiGlobe,
       content: [
         t('copyright_section_1_content_0'),
         t('copyright_section_1_content_1'),
@@ -66,7 +68,7 @@ export default function CopyrightPage() {
     {
       id: 'user-uploads',
       title: t('copyright_section_2_title'),
-      icon: FiUpload,
+      icon: PiUploadSimple,
       content: [
         t('copyright_section_2_content_0'),
         t('copyright_section_2_content_1'),
@@ -78,7 +80,7 @@ export default function CopyrightPage() {
     {
       id: 'moderation',
       title: t('copyright_section_3_title'),
-      icon: FiUsers,
+      icon: PiUsers,
       content: [
         t('copyright_section_3_content_0'),
         t('copyright_section_3_content_1'),
@@ -90,7 +92,7 @@ export default function CopyrightPage() {
     {
       id: 'reporting',
       title: t('copyright_section_4_title'),
-      icon: FiFlag,
+      icon: PiFlag,
       content: [
         t('copyright_section_4_content_0'),
         t('copyright_section_4_content_1'),
@@ -102,7 +104,7 @@ export default function CopyrightPage() {
     {
       id: 'dmca',
       title: t('copyright_section_5_title'),
-      icon: FiFileText,
+      icon: PiFileText,
       content: [
         t('copyright_section_5_content_0'),
         t('copyright_section_5_content_1'),
@@ -114,7 +116,7 @@ export default function CopyrightPage() {
     {
       id: 'fair-use',
       title: t('copyright_section_6_title'),
-      icon: FiBook,
+      icon: PiBook,
       content: [
         t('copyright_section_6_content_0'),
         t('copyright_section_6_content_1'),
@@ -126,7 +128,7 @@ export default function CopyrightPage() {
     {
       id: 'permissions',
       title: t('copyright_section_7_title'),
-      icon: FiLock,
+      icon: PiLock,
       content: [
         t('copyright_section_7_content_0'),
         t('copyright_section_7_content_1'),
@@ -204,7 +206,7 @@ export default function CopyrightPage() {
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
-                  <FiShield className="w-5 h-5 text-brand-primary mr-2" />
+                  <PiShield className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
                     {t('copyright_jsx_span_children_0__proteção_legal')}
                   </span>
@@ -228,7 +230,7 @@ export default function CopyrightPage() {
 
               <AnimatedItem direction="up" springType="gentle">
                 <div className="mt-8 inline-flex items-center space-x-2 text-theme-tertiary">
-                  <FiFileText className="w-4 h-4" />
+                  <PiFileText className="w-4 h-4" />
                   <span className="text-sm">
                     {t('copyright_jsx_span_children_0__última_atualização')}
                     {lastUpdated}
@@ -249,7 +251,7 @@ export default function CopyrightPage() {
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className=" flex flex-col md:flex-row items-start space-x-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <FaBalanceScale className="w-8 h-8 text-theme-primary" />
+                    <PiScales className="w-8 h-8 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold classical-title text-theme-primary mb-4">
@@ -404,7 +406,7 @@ export default function CopyrightPage() {
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className=" flex flex-col md:flex-row items-start space-x-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-xl flex items-center justify-center flex-shrink-0">
-                    <FiAlertCircle className="w-6 h-6 text-theme-primary" />
+                    <PiWarningCircle className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold classical-title text-theme-primary mb-4">
@@ -412,7 +414,7 @@ export default function CopyrightPage() {
                     </h3>
                     <ul className="space-y-3 text-theme-secondary">
                       <li className="flex items-start space-x-2">
-                        <FiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'copyright_jsx_span_children_0__sempre_verifique_direitos'
@@ -420,7 +422,7 @@ export default function CopyrightPage() {
                         </span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <FiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'copyright_jsx_span_children_0__não_assumimos_responsabilidade'
@@ -428,7 +430,7 @@ export default function CopyrightPage() {
                         </span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <FiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'copyright_jsx_span_children_0__removemos_conteúdo_imediatamente'
@@ -436,7 +438,7 @@ export default function CopyrightPage() {
                         </span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <FiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'copyright_jsx_span_children_0__cooperamos_integralmente_detentores'
@@ -464,7 +466,7 @@ export default function CopyrightPage() {
                 className="classical-card p-12 text-center"
               >
                 <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
-                  <FiMail className="w-10 h-10 text-theme-primary" />
+                  <PiEnvelopeSimple className="w-10 h-10 text-theme-primary" />
                 </div>
 
                 <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">
@@ -479,13 +481,13 @@ export default function CopyrightPage() {
 
                 <div className="space-y-4 mb-12">
                   <div className="flex items-center justify-center space-x-3">
-                    <FiMail className="w-5 h-5 text-brand-primary" />
+                    <PiEnvelopeSimple className="w-5 h-5 text-brand-primary" />
                     <span className="text-theme-primary font-medium">
                       opusatlas@gmail.com
                     </span>
                   </div>
                   <div className="flex items-center justify-center space-x-3">
-                    <FiFlag className="w-5 h-5 text-brand-primary" />
+                    <PiFlag className="w-5 h-5 text-brand-primary" />
                     <span className="text-theme-primary font-medium">
                       {t(
                         'copyright_jsx_span_children_0__sistema_reports_plataforma'
@@ -499,7 +501,7 @@ export default function CopyrightPage() {
                     href="/contact"
                     className="btn-classical-primary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
                   >
-                    <FiMail className="w-5 h-5" />
+                    <PiEnvelopeSimple className="w-5 h-5" />
                     <span>
                       {t('copyright_jsx_span_children_0__contatar_dmca_agent')}
                     </span>
@@ -509,7 +511,7 @@ export default function CopyrightPage() {
                     href="/terms"
                     className="btn-classical-secondary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
                   >
-                    <FiFileText className="w-5 h-5" />
+                    <PiFileText className="w-5 h-5" />
                     <span>
                       {t('copyright_jsx_span_children_0__termos_uso')}
                     </span>
@@ -518,13 +520,13 @@ export default function CopyrightPage() {
 
                 <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
                   <div className="flex items-center space-x-2 text-theme-tertiary">
-                    <FiEye className="w-4 h-4" />
+                    <PiEye className="w-4 h-4" />
                     <span className="text-sm">
                       {t('copyright_jsx_span_children_0__resposta')}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2 text-theme-tertiary">
-                    <FiShield className="w-4 h-4" />
+                    <PiShield className="w-4 h-4" />
                     <span className="text-sm">
                       {t('copyright_jsx_span_children_0__legal')}
                     </span>
@@ -541,7 +543,7 @@ export default function CopyrightPage() {
         className="top-16 left-16 text-6xl text-brand-primary/5"
         delay={0}
       >
-        <GiMusicalNotes />
+        <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
         className="bottom-16 right-16 text-5xl text-accent-purple/5"
@@ -553,13 +555,13 @@ export default function CopyrightPage() {
         className="top-1/3 right-24 text-4xl text-accent-blue/5"
         delay={1}
       >
-        <FaBalanceScale />
+        <PiScales />
       </FloatingElement>
       <FloatingElement
         className="bottom-1/3 left-24 text-4xl text-brand-secondary/5"
         delay={3}
       >
-        <GiScrollQuill />
+        <PiScroll />
       </FloatingElement>
     </PageContainer>
   );

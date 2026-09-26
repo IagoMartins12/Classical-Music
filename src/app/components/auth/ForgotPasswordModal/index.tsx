@@ -3,12 +3,12 @@
 
 import React, { useState } from 'react';
 import {
-  FiMail,
-  FiArrowLeft,
-  FiCheckCircle,
-  FiAlertCircle,
-  FiClock,
-} from 'react-icons/fi';
+  PiArrowLeft,
+  PiCheckCircle,
+  PiClock,
+  PiEnvelopeSimple,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import Modal from '../../Modal';
@@ -137,7 +137,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center shadow-theme-glow">
-            <FiMail className="w-8 h-8 text-white" />
+            <PiEnvelopeSimple className="w-8 h-8 text-white" />
           </div>
         </div>
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -152,7 +152,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         {state.error && (
           <div className="p-3 rounded-lg bg-accent-red bg-opacity-10 border border-accent-red text-accent-red text-sm">
             <div className="flex items-center">
-              <FiAlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+              <PiWarningCircle className="w-4 h-4 mr-2 flex-shrink-0" />
               <span>{state.error}</span>
             </div>
           </div>
@@ -164,7 +164,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           name="email"
           value={state.email}
           onChange={handleInputChange}
-          leftIcon={<FiMail className="w-4 h-4" />}
+          leftIcon={<PiEnvelopeSimple className="w-4 h-4" />}
           placeholder={t('forgot_password_modal_email_placeholder')}
           disabled={state.isLoading}
           autoComplete="email"
@@ -189,7 +189,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             variant="ghost"
             size="lg"
             className="w-full items-center justify-center flex"
-            leftIcon={<FiArrowLeft />}
+            leftIcon={<PiArrowLeft />}
             onClick={handleBackToLogin}
             disabled={state.isLoading}
           >
@@ -216,7 +216,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center shadow-theme-glow">
-            <FiCheckCircle className="w-8 h-8 text-white" />
+            <PiCheckCircle className="w-8 h-8 text-white" />
           </div>
         </div>
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -230,7 +230,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       <div className="space-y-6">
         <div className="bg-accent-green bg-opacity-10 border border-accent-green rounded-lg p-4">
           <div className="flex items-start">
-            <FiMail className="w-5 h-5 text-accent-green mr-3 mt-0.5 flex-shrink-0" />
+            <PiEnvelopeSimple className="w-5 h-5 text-accent-green mr-3 mt-0.5 flex-shrink-0" />
             <div>
               <h4 className="font-medium text-accent-green mb-1">
                 {t('forgot_password_success_check_title')}
@@ -245,7 +245,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
         <div className="bg-theme-secondary rounded-lg p-4 space-y-3">
           <h4 className="text-sm font-medium text-theme-primary flex items-center">
-            <FiClock className="w-4 h-4 mr-2" />
+            <PiClock className="w-4 h-4 mr-2" />
             {t('forgot_password_success_steps_title')}
           </h4>
           <ul className="text-sm text-theme-tertiary space-y-2">
@@ -269,7 +269,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             variant="ghost"
             size="lg"
             className="w-full"
-            leftIcon={<FiArrowLeft />}
+            leftIcon={<PiArrowLeft />}
             onClick={handleBackToLogin}
           >
             {t('forgot_password_modal_back_button')}
@@ -291,7 +291,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-full flex items-center justify-center shadow-theme-glow">
-            <FiAlertCircle className="w-8 h-8 text-white" />
+            <PiWarningCircle className="w-8 h-8 text-white" />
           </div>
         </div>
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -309,7 +309,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       <div className="space-y-6">
         <div className="bg-accent-red bg-opacity-10 border border-accent-red rounded-lg p-4">
           <div className="flex items-start">
-            <FiAlertCircle className="w-5 h-5 text-accent-red mr-3 mt-0.5 flex-shrink-0" />
+            <PiWarningCircle className="w-5 h-5 text-accent-red mr-3 mt-0.5 flex-shrink-0" />
             <div>
               <h4 className="font-medium text-accent-red mb-1">
                 {state.rateLimited
@@ -354,7 +354,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             variant="ghost"
             size="lg"
             className="w-full"
-            leftIcon={<FiArrowLeft />}
+            leftIcon={<PiArrowLeft />}
             onClick={handleBackToLogin}
           >
             {t('forgot_password_modal_back_button')}

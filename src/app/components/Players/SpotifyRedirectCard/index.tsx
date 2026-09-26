@@ -2,8 +2,12 @@
 'use client';
 
 import React from 'react';
-import { FiExternalLink, FiClock, FiMusic } from 'react-icons/fi';
-import { SiSpotify } from 'react-icons/si';
+import {
+  PiArrowSquareOut,
+  PiClock,
+  PiMusicNotes,
+  PiSpotifyLogo,
+} from 'react-icons/pi';
 import { AnimatedItem } from '../../animation/AnimatedComponents';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -79,7 +83,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-[#1db954] rounded-lg flex items-center justify-center">
-                <SiSpotify className="w-5 h-5 text-white" />
+                <PiSpotifyLogo className="w-5 h-5 text-white" />
               </div>
               <div>
                 <h4 className="text-theme-primary font-semibold text-sm">
@@ -96,7 +100,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
               {/* Duração */}
               {spotify.duration > 0 && (
                 <div className="flex items-center space-x-1 text-green-400">
-                  <FiClock className="w-3 h-3" />
+                  <PiClock className="w-3 h-3" />
                   <span className="text-xs font-medium">
                     {formatDuration(spotify.duration)}
                   </span>
@@ -138,7 +142,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                 </div>
               ) : (
                 <div className="w-20 h-20 bg-gradient-to-br from-green-800/50 to-green-700/50 rounded-lg flex items-center justify-center border border-green-700/30">
-                  <SiSpotify className="w-8 h-8 text-green-400" />
+                  <PiSpotifyLogo className="w-8 h-8 text-green-400" />
                 </div>
               )}
             </div>
@@ -186,7 +190,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
             <div className="mt-4 p-3 bg-green-900/10 rounded-lg border border-green-700/20">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-                  <FiMusic className="w-4 h-4 text-white" />
+                  <PiMusicNotes className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
@@ -222,9 +226,9 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
               rel="noopener noreferrer"
               className="w-full bg-[#1db954] hover:bg-[#1ed760] text-white rounded-lg py-3 px-4 flex items-center justify-center space-x-2 font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg group"
             >
-              <SiSpotify className="w-4 h-4" />
+              <PiSpotifyLogo className="w-4 h-4" />
               <span>{t('spotify_card_ouvir_spotify')}</span>
-              <FiExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <PiArrowSquareOut className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </a>
 
             {/* 🆕 Link direto para o álbum (se disponível) */}

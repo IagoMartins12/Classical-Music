@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { FaStar, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { PiArrowDown, PiArrowUp, PiStarFill } from 'react-icons/pi';
 import {
   loadFeaturedArticles,
   reorderFeaturedArticles,
@@ -168,7 +168,7 @@ export default function FeaturedArticlesManager({
     <div className="classical-card-simple p-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-medium text-theme-primary flex items-center">
-          <FaStar className="w-4 h-4 mr-2 text-yellow-500" />
+          <PiStarFill className="w-4 h-4 mr-2 text-yellow-500" />
           Artigos em Destaque
         </h3>
         <span className="text-xs text-theme-tertiary">
@@ -243,7 +243,7 @@ export default function FeaturedArticlesManager({
                     }`}
                     title="Mover para cima"
                   >
-                    <FaArrowUp className="w-3 h-3" />
+                    <PiArrowUp className="w-3 h-3" />
                   </button>
                   <button
                     type="button"
@@ -256,7 +256,7 @@ export default function FeaturedArticlesManager({
                     }`}
                     title="Mover para baixo"
                   >
-                    <FaArrowDown className="w-3 h-3" />
+                    <PiArrowDown className="w-3 h-3" />
                   </button>
                 </div>
               </div>

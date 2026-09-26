@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { TagForm } from '@/app/components/blog/admin/TagForm';
-import { FaArrowLeft } from 'react-icons/fa';
+import { PiArrowLeft } from 'react-icons/pi';
 import { getServerSession } from '@/app/libs/api/server-session';
 
 export const metadata: Metadata = {
@@ -27,7 +27,7 @@ export default async function CreateTagPage() {
             href="/blog/admin/tags"
             className="inline-flex items-center text-sm text-theme-secondary hover:text-brand-primary mb-4 transition-colors"
           >
-            <FaArrowLeft className="w-4 h-4 mr-2" />
+            <PiArrowLeft className="w-4 h-4 mr-2" />
             Voltar para tags
           </Link>
           <h1 className="text-3xl font-bold text-theme-primary classical-title">

@@ -1,17 +1,18 @@
 // app/student/calendar/loading.tsx - Loading para Calendário do Aluno
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiCalendar,
-  FiClock,
-  FiCheck,
-  FiX,
-  FiAlertCircle,
-  FiChevronLeft,
-  FiChevronRight,
-  FiRefreshCw,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiArrowsClockwise,
+  PiCalendarBlank,
+  PiCaretLeft,
+  PiCaretRight,
+  PiCheck,
+  PiClock,
+  PiMusicNotes,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 
 const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
@@ -38,13 +39,13 @@ export default function StudentCalendarLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiCalendar />
+          <PiCalendarBlank />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiClock />
+          <PiClock />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -56,7 +57,7 @@ export default function StudentCalendarLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -78,12 +79,18 @@ export default function StudentCalendarLoading() {
         {/* Stats Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
           {[
-            { icon: <FiCalendar className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiClock className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiCheck className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiX className="w-6 h-6 text-theme-inverse/20" /> },
             {
-              icon: <FiAlertCircle className="w-6 h-6 text-theme-inverse/20" />,
+              icon: (
+                <PiCalendarBlank className="w-6 h-6 text-theme-inverse/20" />
+              ),
+            },
+            { icon: <PiClock className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiCheck className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiX className="w-6 h-6 text-theme-inverse/20" /> },
+            {
+              icon: (
+                <PiWarningCircle className="w-6 h-6 text-theme-inverse/20" />
+              ),
             },
           ].map((item, index) => (
             <div
@@ -106,7 +113,7 @@ export default function StudentCalendarLoading() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <div className="w-10 h-10 bg-theme-elevated border border-theme-secondary rounded-lg flex items-center justify-center">
-                  <FiChevronLeft className="w-5 h-5 text-theme-tertiary/30" />
+                  <PiCaretLeft className="w-5 h-5 text-theme-tertiary/30" />
                 </div>
 
                 <div className="text-center min-w-48">
@@ -114,14 +121,14 @@ export default function StudentCalendarLoading() {
                 </div>
 
                 <div className="w-10 h-10 bg-theme-elevated border border-theme-secondary rounded-lg flex items-center justify-center">
-                  <FiChevronRight className="w-5 h-5 text-theme-tertiary/30" />
+                  <PiCaretRight className="w-5 h-5 text-theme-tertiary/30" />
                 </div>
               </div>
 
               <div className="h-10 w-16 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
 
               <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
-                <FiRefreshCw className="w-4 h-4 text-theme-tertiary/30" />
+                <PiArrowsClockwise className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="h-4 w-16 bg-theme-tertiary/20 rounded"></div>
               </div>
             </div>
@@ -199,8 +206,8 @@ function CalendarDaySkeleton({ delay = 0 }: { delay?: number }) {
               i % 3 === 0
                 ? 'bg-accent-blue/20 border border-accent-blue/30'
                 : i % 3 === 1
-                ? 'bg-accent-green/20 border border-accent-green/30'
-                : 'bg-accent-purple/20 border border-accent-purple/30'
+                  ? 'bg-accent-green/20 border border-accent-green/30'
+                  : 'bg-accent-purple/20 border border-accent-purple/30'
             }`}
           ></div>
         ))}

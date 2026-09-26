@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { FiX, FiChevronDown, FiSearch, FiCheck } from 'react-icons/fi';
+import { PiCaretDown, PiCheck, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 
 interface Option {
   id: string;
@@ -154,7 +154,7 @@ export default function MultiSelectWithId({
                     className="hover:bg-brand-primary/20 rounded p-0.5 transition-colors"
                     disabled={isDisabled}
                   >
-                    <FiX className="w-3 h-3" />
+                    <PiX className="w-3 h-3" />
                   </button>
                 </span>
               );
@@ -178,7 +178,7 @@ export default function MultiSelectWithId({
                       className="hover:bg-brand-primary/20 rounded p-0.5 transition-colors"
                       disabled={isDisabled}
                     >
-                      <FiX className="w-3 h-3" />
+                      <PiX className="w-3 h-3" />
                     </button>
                   </span>
                 );
@@ -198,10 +198,10 @@ export default function MultiSelectWithId({
               className="p-1 hover:bg-theme-secondary/20 rounded transition-colors"
               disabled={isDisabled}
             >
-              <FiX className="w-4 h-4 text-theme-tertiary" />
+              <PiX className="w-4 h-4 text-theme-tertiary" />
             </button>
           )}
-          <FiChevronDown
+          <PiCaretDown
             className={`w-4 h-4 text-theme-tertiary transition-transform ${
               isOpen ? 'rotate-180' : ''
             }`}
@@ -218,7 +218,7 @@ export default function MultiSelectWithId({
         >
           <div className="p-3 border-b border-theme-secondary">
             <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+              <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
               <input
                 ref={inputRef}
                 type="text"
@@ -264,7 +264,7 @@ export default function MultiSelectWithId({
                   >
                     <span className="text-sm capitalize">{opt.label}</span>
                     {isSelected && (
-                      <FiCheck className="w-4 h-4 text-brand-primary" />
+                      <PiCheck className="w-4 h-4 text-brand-primary" />
                     )}
                   </button>
                 );

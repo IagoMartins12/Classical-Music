@@ -5,18 +5,20 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useSession } from '@/app/libs/session';
 import Link from 'next/link';
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiShield,
-  FiHome,
-  FiUsers,
-  FiBookOpen,
-  FiMail,
-  FiUser,
-  FiSettings,
-  FiCompass,
-  FiLock,
-} from 'react-icons/fi';
-import { GiGrandPiano, GiMusicalNotes } from 'react-icons/gi';
+  PiBookOpen,
+  PiCompass,
+  PiEnvelopeSimple,
+  PiGear,
+  PiHouse,
+  PiLock,
+  PiMusicNotes,
+  PiPianoKeys,
+  PiShield,
+  PiUser,
+  PiUsers,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -31,7 +33,6 @@ import Navbar from '../components/Navbar';
 import AdminHeader from '../components/Admin/AdminHeader';
 import AdminSidebar from '../components/Admin/AdminSidebar';
 import Image from '@/app/components/SmartImage';
-import { LuPiano } from 'react-icons/lu';
 import { useTranslation } from '../context/TranslationContext';
 
 interface SuggestionCard {
@@ -212,21 +213,21 @@ export default function AccessDenied() {
           title: t('acess_denied_suggestion_fazer_login'),
           description: t('acess_denied_suggestion_fazer_login_desc'),
           href: '/login',
-          icon: FiUser,
+          icon: PiUser,
           color: 'from-brand-primary to-brand-secondary',
         },
         {
           title: t('acess_denied_suggestion_explorar_enciclopedia'),
           description: t('acess_denied_suggestion_explorar_enciclopedia_desc'),
           href: '/composers',
-          icon: FiBookOpen,
+          icon: PiBookOpen,
           color: 'from-accent-blue to-accent-purple',
         },
         {
           title: t('acess_denied_suggestion_pagina_inicial'),
           description: t('acess_denied_suggestion_pagina_inicial_desc'),
           href: '/',
-          icon: FiHome,
+          icon: PiHouse,
           color: 'from-accent-green to-accent-blue',
         },
       ];
@@ -242,7 +243,7 @@ export default function AccessDenied() {
           title: t('acess_denied_suggestion_explorar_pecas'),
           description: t('acess_denied_suggestion_explorar_pecas_desc'),
           href: '/student',
-          icon: LuPiano,
+          icon: PiPianoKeys,
           color: 'from-accent-green to-accent-blue',
         });
 
@@ -253,7 +254,7 @@ export default function AccessDenied() {
               'acess_denied_suggestion_solicitar_acesso_professor_desc'
             ),
             href: '/contact',
-            icon: FiMail,
+            icon: PiEnvelopeSimple,
             color: 'from-accent-purple to-accent-red',
           });
         }
@@ -264,7 +265,7 @@ export default function AccessDenied() {
           title: t('acess_denied_suggestion_area_professor'),
           description: t('acess_denied_suggestion_area_professor_desc'),
           href: '/teacher',
-          icon: FiUsers,
+          icon: PiUsers,
           color: 'from-brand-primary to-brand-secondary',
         });
 
@@ -275,7 +276,7 @@ export default function AccessDenied() {
               'acess_denied_suggestion_solicitar_acesso_admin_desc'
             ),
             href: '/contact',
-            icon: FiMail,
+            icon: PiEnvelopeSimple,
             color: 'from-accent-red to-accent-purple',
           });
         }
@@ -286,7 +287,7 @@ export default function AccessDenied() {
           title: t('acess_denied_suggestion_painel_admin'),
           description: t('acess_denied_suggestion_painel_admin_desc'),
           href: '/admin',
-          icon: FiSettings,
+          icon: PiGear,
           color: 'from-accent-red to-accent-purple',
         });
         break;
@@ -297,7 +298,7 @@ export default function AccessDenied() {
       title: t('acess_denied_suggestion_explorar_enciclopedia'),
       description: t('acess_denied_suggestion_explorar_enciclopedia_desc'),
       href: '/composers',
-      icon: FiBookOpen,
+      icon: PiBookOpen,
       color: 'from-accent-blue to-accent-purple',
     });
 
@@ -306,7 +307,7 @@ export default function AccessDenied() {
         title: t('acess_denied_suggestion_pagina_inicial'),
         description: t('acess_denied_suggestion_pagina_inicial_desc'),
         href: '/',
-        icon: FiHome,
+        icon: PiHouse,
         color: 'from-accent-green to-accent-blue',
       });
     }
@@ -405,7 +406,7 @@ export default function AccessDenied() {
             <AnimatedItem direction="scale" springType="bouncy">
               <div className="relative mb-8">
                 <div className="w-32 h-32 mx-auto bg-gradient-to-br from-accent-red/20 to-accent-purple/20 rounded-full flex items-center justify-center classical-card border-2 border-accent-red/30 shadow-theme-glow">
-                  <FiLock className={`w-16 h-16 ${getIconColor()}`} />
+                  <PiLock className={`w-16 h-16 ${getIconColor()}`} />
                 </div>
               </div>
             </AnimatedItem>
@@ -501,7 +502,7 @@ export default function AccessDenied() {
                   href={getHomeLink()}
                   className="btn-classical-primary flex items-center space-x-3 group text-lg px-8 py-4"
                 >
-                  <FiHome className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                  <PiHouse className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                   <span>
                     {t('acess_denied_jsx_span_children_0__voltar')}{' '}
                     {getAreaTitle()}
@@ -515,7 +516,7 @@ export default function AccessDenied() {
                     href="/"
                     className="btn-classical-secondary flex items-center space-x-3 group text-lg px-8 py-4"
                   >
-                    <FiCompass className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+                    <PiCompass className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
                     <span>{t('acess_denied_jsx_span_children_0__page')}</span>
                   </Link>
                 </AnimatedItem>
@@ -529,7 +530,7 @@ export default function AccessDenied() {
             >
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-green/20 rounded-xl flex items-center justify-center">
-                  <FiMail className="w-5 h-5 text-accent-blue" />
+                  <PiEnvelopeSimple className="w-5 h-5 text-accent-blue" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title">
                   {t('acess_denied_jsx_h3_children_0__precisa_ajuda')}
@@ -604,11 +605,11 @@ export default function AccessDenied() {
 
         {/* Decorative Elements */}
         <div className="absolute top-4 left-4 w-12 h-12 bg-accent-red/10 rounded-2xl flex items-center justify-center opacity-40">
-          <FiShield className="w-6 h-6 text-accent-red" />
+          <PiShield className="w-6 h-6 text-accent-red" />
         </div>
 
         <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
-          <GiMusicalNotes className="w-8 h-8 text-brand-primary" />
+          <PiMusicNotes className="w-8 h-8 text-brand-primary" />
         </div>
       </div>
     </>

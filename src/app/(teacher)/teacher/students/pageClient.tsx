@@ -3,12 +3,12 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import {
-  FiUsers,
-  FiSearch,
-  FiXCircle,
-  FiUserPlus,
-  FiRefreshCw,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiMagnifyingGlass,
+  PiUserPlus,
+  PiUsers,
+  PiXCircle,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -287,7 +287,7 @@ export default function TeacherStudentsPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiXCircle className="w-8 h-8 text-theme-primary" />
+              <PiXCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('error_title')}
@@ -301,7 +301,7 @@ export default function TeacherStudentsPageClient({
                 disabled={loading.students}
                 className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
               >
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-4 h-4 ${
                     loading.students ? 'animate-spin' : ''
                   }`}
@@ -333,7 +333,7 @@ export default function TeacherStudentsPageClient({
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiUsers className="w-8 h-8 text-theme-primary" />
+                <PiUsers className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -401,7 +401,7 @@ export default function TeacherStudentsPageClient({
                     onClick={() => setShowAddStudent(true)}
                     className="btn-classical-primary flex items-center space-x-2"
                   >
-                    <FiUserPlus className="w-4 h-4" />
+                    <PiUserPlus className="w-4 h-4" />
                     <span>{t('add_student_button')}</span>
                   </button>
 
@@ -410,7 +410,7 @@ export default function TeacherStudentsPageClient({
                     disabled={loading.students}
                     className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
                   >
-                    <FiRefreshCw
+                    <PiArrowsClockwise
                       className={`w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all ${
                         loading.students ? 'animate-spin' : ''
                       }`}
@@ -423,7 +423,7 @@ export default function TeacherStudentsPageClient({
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search */}
                 <div className="relative flex-1">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                   <Input
                     type="text"
                     placeholder={t('search_placeholder')}
@@ -463,7 +463,7 @@ export default function TeacherStudentsPageClient({
         {loading.students && (
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
-              <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+              <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
               <p className="text-theme-secondary">{t('loading_students')}</p>
             </div>
           </AnimatedItem>
@@ -475,7 +475,7 @@ export default function TeacherStudentsPageClient({
             {filteredAndSortedStudents.length === 0 ? (
               <div className="text-center py-16">
                 <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <FiUsers className="w-8 h-8 text-theme-tertiary" />
+                  <PiUsers className="w-8 h-8 text-theme-tertiary" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
                   {searchQuery || activeTab !== 'all'
@@ -492,7 +492,7 @@ export default function TeacherStudentsPageClient({
                     onClick={() => setShowAddStudent(true)}
                     className="btn-classical-primary flex items-center space-x-2 mx-auto"
                   >
-                    <FiUserPlus className="w-4 h-4" />
+                    <PiUserPlus className="w-4 h-4" />
                     <span>{t('add_first_student')}</span>
                   </button>
                 )}

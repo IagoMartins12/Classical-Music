@@ -5,26 +5,26 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  FiActivity,
-  FiPlus,
-  FiEdit,
-  FiUser,
-  FiCalendar,
-  FiFileText,
-  FiMessageSquare,
-  FiRefreshCw,
-  FiChevronRight,
-  FiEye,
-  FiUpload,
-  FiCheckCircle,
-  FiX,
-  FiRotateCcw,
-  FiUserPlus,
-  FiVideo,
-  FiFile,
-  FiStar,
-  FiAward,
-} from 'react-icons/fi';
+  PiArrowCounterClockwise,
+  PiArrowsClockwise,
+  PiCalendarBlank,
+  PiCaretRight,
+  PiChatCenteredText,
+  PiCheckCircle,
+  PiEye,
+  PiFile,
+  PiFileText,
+  PiMedal,
+  PiNotePencil,
+  PiPlus,
+  PiPulse,
+  PiStar,
+  PiUploadSimple,
+  PiUser,
+  PiUserPlus,
+  PiVideoCamera,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedItem,
@@ -91,30 +91,30 @@ const RecentActivities = ({
       switch (action) {
         // Para professores
         case 'WELCOME_NEW_TEACHER':
-          return <FiAward className="w-4 h-4" />; // Precisará importar FiAward
+          return <PiMedal className="w-4 h-4" />; // Precisará importar PiMedal
         case 'STUDENT_DECLINED_INVITE':
-          return <FiX className="w-4 h-4" />;
+          return <PiX className="w-4 h-4" />;
         case 'STUDENT_ADDED':
-          return <FiUserPlus className="w-4 h-4" />;
+          return <PiUserPlus className="w-4 h-4" />;
         case 'LESSON_CREATED':
-          return <FiPlus className="w-4 h-4 " />;
+          return <PiPlus className="w-4 h-4 " />;
         case 'LESSON_UPDATED':
-          return <FiEdit className="w-4 h-4 " />;
+          return <PiNotePencil className="w-4 h-4 " />;
         case 'LESSON_STATUS_CHANGED':
-          return <FiRotateCcw className="w-4 h-4" />;
+          return <PiArrowCounterClockwise className="w-4 h-4" />;
         case 'ASSIGNMENT_CREATED':
-          return <FiFileText className="w-4 h-4 " />;
+          return <PiFileText className="w-4 h-4 " />;
         case 'ASSIGNMENT_UPDATED':
-          return <FiEdit className="w-4 h-4 " />;
+          return <PiNotePencil className="w-4 h-4 " />;
         case 'ASSIGNMENT_FEEDBACK_GIVEN':
-          return <FiStar className="w-4 h-4 " />;
+          return <PiStar className="w-4 h-4 " />;
         case 'LESSON_NOTES_ADDED':
-          return <FiMessageSquare className="w-4 h-4" />;
+          return <PiChatCenteredText className="w-4 h-4" />;
         case 'TEACHER_PROFILE_UPDATED':
         case 'USER_PROFILE_UPDATED':
-          return <FiUser className="w-4 h-4 text-theme-primary" />;
+          return <PiUser className="w-4 h-4 text-theme-primary" />;
         default:
-          return <FiActivity className="w-4 h-4 text-theme-primary" />;
+          return <PiPulse className="w-4 h-4 text-theme-primary" />;
       }
     }
 
@@ -123,29 +123,29 @@ const RecentActivities = ({
       switch (action) {
         case 'ASSIGNMENT_SUBMISSION':
           if (metadata?.submissionType === 'video') {
-            return <FiVideo className="w-4 h-4" />;
+            return <PiVideoCamera className="w-4 h-4" />;
           } else if (metadata?.submissionType === 'file') {
-            return <FiFile className="w-4 h-4 text-blue-600" />;
+            return <PiFile className="w-4 h-4 text-blue-600" />;
           }
-          return <FiUpload className="w-4 h-4" />;
+          return <PiUploadSimple className="w-4 h-4" />;
         case 'WELCOME_NEW_STUDENT':
-          return <FiStar className="w-4 h-4 " />;
+          return <PiStar className="w-4 h-4 " />;
         case 'ASSIGNMENT_COMPLETED':
-          return <FiCheckCircle className="w-4 h-4" />;
+          return <PiCheckCircle className="w-4 h-4" />;
         case 'LESSON_FEEDBACK_GIVEN':
-          return <FiMessageSquare className="w-4 h-4 " />;
+          return <PiChatCenteredText className="w-4 h-4 " />;
         case 'LESSON_RESCHEDULE_REQUESTED':
-          return <FiCalendar className="w-4 h-4 " />;
+          return <PiCalendarBlank className="w-4 h-4 " />;
         case 'LESSON_ABSENCE_INFORMED':
-          return <FiX className="w-4 h-4" />;
+          return <PiX className="w-4 h-4" />;
         case 'STUDENT_PROFILE_UPDATED':
-          return <FiUser className="w-4 h-4 text-theme-primary" />;
+          return <PiUser className="w-4 h-4 text-theme-primary" />;
         default:
-          return <FiActivity className="w-4 h-4 text-theme-primary" />;
+          return <PiPulse className="w-4 h-4 text-theme-primary" />;
       }
     }
 
-    return <FiActivity className="w-4 h-4 text-theme-primary" />;
+    return <PiPulse className="w-4 h-4 text-theme-primary" />;
   };
 
   // Função para obter rótulo amigável da ação
@@ -246,7 +246,7 @@ const RecentActivities = ({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-orange rounded-lg flex items-center justify-center">
-              <FiActivity className="w-4 h-4 text-theme-primary" />
+              <PiPulse className="w-4 h-4 text-theme-primary" />
             </div>
             <div>
               <h3 className="font-bold text-theme-primary">
@@ -259,7 +259,7 @@ const RecentActivities = ({
             onClick={fetchRecentActivities}
             className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-accent-red transition-all flex items-center justify-center group"
           >
-            <FiRefreshCw className="w-4 h-4 text-theme-tertiary group-hover:text-accent-red transition-colors" />
+            <PiArrowsClockwise className="w-4 h-4 text-theme-tertiary group-hover:text-accent-red transition-colors" />
           </button>
         </div>
 
@@ -281,7 +281,7 @@ const RecentActivities = ({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center">
-            <FiActivity className="w-4 h-4 text-theme-primary" />
+            <PiPulse className="w-4 h-4 text-theme-primary" />
           </div>
           <div>
             <h3 className="font-bold text-theme-primary">
@@ -299,7 +299,7 @@ const RecentActivities = ({
             disabled={loading}
             className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
           >
-            <FiRefreshCw
+            <PiArrowsClockwise
               className={`w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all ${
                 loading ? 'animate-spin' : ''
               }`}
@@ -312,7 +312,7 @@ const RecentActivities = ({
               className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
             >
               <span>Ver todas</span>
-              <FiChevronRight className="w-4 h-4" />
+              <PiCaretRight className="w-4 h-4" />
             </Link>
           )}
         </div>
@@ -321,7 +321,7 @@ const RecentActivities = ({
       <div className="space-y-3">
         {activities.length === 0 ? (
           <div className="text-center py-6">
-            <FiActivity className="w-12 h-12 text-theme-tertiary mx-auto mb-2" />
+            <PiPulse className="w-12 h-12 text-theme-tertiary mx-auto mb-2" />
             <p className="text-sm text-theme-tertiary">
               Nenhuma atividade nos últimos 7 dias
             </p>
@@ -391,7 +391,7 @@ const RecentActivities = ({
                           href={getEntityLink(activity)!}
                           className="w-6 h-6 rounded bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"
                         >
-                          <FiEye className="w-3 h-3 text-theme-tertiary" />
+                          <PiEye className="w-3 h-3 text-theme-tertiary" />
                         </Link>
                       )}
                     </div>

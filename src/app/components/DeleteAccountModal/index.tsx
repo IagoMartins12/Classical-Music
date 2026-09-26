@@ -4,23 +4,23 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  FiAlertTriangle,
-  FiTrash2,
-  FiX,
-  FiInfo,
-  FiLoader,
-  FiMail,
-  FiUser,
-  FiMusic,
-  FiFileText,
-  FiHeart,
-  FiEdit3,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiBookBookmark,
+  PiBookOpen,
+  PiEnvelopeSimple,
+  PiFileText,
+  PiHeart,
+  PiInfo,
+  PiMusicNotes,
+  PiPencilLine,
+  PiSpinnerGap,
+  PiTrash,
+  PiUser,
+  PiWarning,
+  PiX,
+} from 'react-icons/pi';
 import Button from '../Common/Button';
 import Input from '../Common/Inputs';
 import { AnimatedCard } from '../animation/AnimatedComponents';
-import { BiBookContent, BiBookOpen } from 'react-icons/bi';
 import { CascadeInfo } from '@/app/hooks/useAccountManagement';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useIsMobile } from '@/app/hooks/useMobile';
@@ -115,54 +115,54 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
 
   const dataItems = [
     {
-      icon: FiUser,
+      icon: PiUser,
       label: t('delete_modal_composers'),
       count: cascadeInfo?.composersCount || 0,
       color: 'from-accent-purple to-accent-blue',
       samples: cascadeInfo?.sampleComposers,
     },
     {
-      icon: FiMusic,
+      icon: PiMusicNotes,
       label: t('delete_modal_works'),
       count: cascadeInfo?.worksCount || 0,
       color: 'from-accent-blue to-accent-green',
       samples: cascadeInfo?.sampleWorks,
     },
     {
-      icon: FiFileText,
+      icon: PiFileText,
       label: t('delete_modal_scores'),
       count: cascadeInfo?.scoresCount || 0,
       color: 'from-accent-green to-accent-amber',
     },
     {
-      icon: FiEdit3,
+      icon: PiPencilLine,
       label: t('delete_modal_annotations'),
       count: cascadeInfo?.annotationsCount || 0,
       color: 'from-accent-amber to-accent-red',
       samples: cascadeInfo?.sampleAnnotations,
     },
     {
-      icon: FiHeart,
+      icon: PiHeart,
       label: t('delete_modal_favorites'),
       count: cascadeInfo?.favoritesCount || 0,
       color: 'from-accent-red to-accent-purple',
     },
 
     {
-      icon: GiMusicalNotes,
+      icon: PiMusicNotes,
       label: t('delete_modal_instruments'),
       count: cascadeInfo?.instrumentsCount || 0,
       color: 'from-accent-blue to-accent-green',
     },
 
     {
-      icon: BiBookOpen,
+      icon: PiBookOpen,
       label: t('delete_modal_learned_works'),
       count: cascadeInfo?.learnedWorksCount || 0,
       color: 'from-accent-green to-accent-amber',
     },
     {
-      icon: BiBookContent,
+      icon: PiBookBookmark,
       label: t('delete_modal_want_to_learn'),
       count: cascadeInfo?.wantToLearnCount || 0,
       color: 'from-accent-green to-accent-amber',
@@ -193,7 +193,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
         <div className="flex items-center justify-between p-6 border-b border-theme-secondary bg-accent-red/5">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center">
-              <FiAlertTriangle className="w-6 h-6 text-accent-red" />
+              <PiWarning className="w-6 h-6 text-accent-red" />
             </div>
             <div>
               <h3 className="text-xl font-bold text-theme-primary">
@@ -210,7 +210,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             disabled={isLoading}
             className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-theme-tertiary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center disabled:opacity-50"
           >
-            <FiX className="w-4 h-4" />
+            <PiX className="w-4 h-4" />
           </button>
         </div>
 
@@ -221,7 +221,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             <div className="space-y-6">
               <div className="text-center">
                 <div className="w-16 h-16 bg-accent-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FiAlertTriangle className="w-8 h-8 text-red-500" />
+                  <PiWarning className="w-8 h-8 text-red-500" />
                 </div>
                 <h4 className="text-lg font-semibold text-theme-primary mb-2">
                   {t('delete_modal_sure')}
@@ -233,7 +233,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
 
               <div className="bg-accent-red/10 border border-red-400 rounded-lg p-4">
                 <h5 className="font-medium text-accent-red mb-2 flex items-center">
-                  <FiInfo className="w-4 h-4 mr-2" />
+                  <PiInfo className="w-4 h-4 mr-2" />
                   {t('delete_modal_what_happens')}
                 </h5>
                 <ul className="text-sm text-accent-red opacity-90 space-y-1">
@@ -287,7 +287,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               {isCascadeLoading ? (
                 <div className="flex items-center justify-center py-12">
                   <div className="text-center">
-                    <FiLoader className="w-8 h-8 text-brand-primary animate-spin mx-auto mb-4" />
+                    <PiSpinnerGap className="w-8 h-8 text-brand-primary animate-spin mx-auto mb-4" />
                     <p className="text-theme-secondary">
                       {t('delete_modal_analyzing')}
                     </p>
@@ -338,7 +338,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                     cascadeInfo.sampleAnnotations.length > 0) && (
                     <div className="bg-theme-secondary rounded-lg p-4">
                       <h5 className="font-medium text-theme-primary mb-3 flex items-center">
-                        <FiInfo className="w-4 h-4 mr-2" />
+                        <PiInfo className="w-4 h-4 mr-2" />
                         {t('delete_modal_examples')}
                       </h5>
                       <div className="space-y-3 max-h-32 overflow-y-auto">
@@ -349,7 +349,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                               key={composer.id}
                               className="flex items-center space-x-2 text-sm"
                             >
-                              <FiUser className="w-3 h-3 text-accent-purple flex-shrink-0" />
+                              <PiUser className="w-3 h-3 text-accent-purple flex-shrink-0" />
                               <span className="text-theme-primary">
                                 {composer.name}
                                 {composer.epochName && (
@@ -366,7 +366,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                             key={work.id}
                             className="flex items-center space-x-2 text-sm"
                           >
-                            <FiMusic className="w-3 h-3 text-accent-blue flex-shrink-0" />
+                            <PiMusicNotes className="w-3 h-3 text-accent-blue flex-shrink-0" />
                             <span className="text-theme-primary">
                               {work.title}
                               <span className="text-theme-tertiary">
@@ -383,7 +383,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                               key={annotation.id}
                               className="flex items-center space-x-2 text-sm"
                             >
-                              <FiEdit3 className="w-3 h-3 text-accent-green flex-shrink-0" />
+                              <PiPencilLine className="w-3 h-3 text-accent-green flex-shrink-0" />
                               <span className="text-theme-primary">
                                 {annotation.title}
                                 <span className="text-theme-tertiary">
@@ -400,7 +400,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   {/* Additional Info */}
                   <div className="bg-theme-elevated rounded-lg p-4">
                     <div className="flex items-start space-x-2">
-                      <FiMail className="w-4 h-4 text-accent-blue mt-0.5 flex-shrink-0" />
+                      <PiEnvelopeSimple className="w-4 h-4 text-accent-blue mt-0.5 flex-shrink-0" />
                       <div className="text-sm text-accent-blue">
                         <p className="font-medium mb-1">
                           {t('delete_modal_goodbye_email_info')}
@@ -414,7 +414,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <FiInfo className="w-8 h-8 text-theme-tertiary mx-auto mb-4" />
+                  <PiInfo className="w-8 h-8 text-theme-tertiary mx-auto mb-4" />
                   <p className="text-theme-secondary">
                     {t('delete_modal_error_loading')}
                   </p>
@@ -428,7 +428,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             <div className="space-y-6">
               <div className="text-center">
                 <div className="w-16 h-16 bg-accent-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FiTrash2 className="w-8 h-8 text-accent-red" />
+                  <PiTrash className="w-8 h-8 text-accent-red" />
                 </div>
                 <h4 className="text-lg font-semibold text-theme-primary mb-2">
                   {t('delete_modal_final_confirmation')}
@@ -548,7 +548,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 onClick={handleConfirm}
                 isLoading={isLoading}
                 disabled={!canProceed}
-                leftIcon={<FiTrash2 />}
+                leftIcon={<PiTrash />}
               >
                 {isLoading
                   ? t('delete_modal_deleting')

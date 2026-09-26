@@ -3,27 +3,27 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import {
-  FiTarget,
-  FiCheckCircle,
-  FiCalendar,
-  FiClock,
-  FiMusic,
-  FiHeart,
-  FiUsers,
-  FiBookOpen,
-  FiAward,
-  FiTrendingUp,
-  FiFileText,
-  FiPlus,
-  FiEdit3,
-  FiArrowRight,
-  FiDownload,
-  FiTrash,
-  FiX,
-  FiVideo,
-  FiAlertCircle,
-  FiCircle,
-} from 'react-icons/fi';
+  PiArrowRight,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCheckCircle,
+  PiCircle,
+  PiClock,
+  PiDownloadSimple,
+  PiFileText,
+  PiHeart,
+  PiMedal,
+  PiMusicNotes,
+  PiPencilLine,
+  PiPlus,
+  PiTarget,
+  PiTrashSimple,
+  PiTrendUp,
+  PiUsers,
+  PiVideoCamera,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -628,7 +628,7 @@ const LearningModal = () => {
           subtitle: isCurrentlyActive
             ? t('edit_study_subtitle')
             : t('add_study_subtitle'),
-          icon: FiTarget,
+          icon: PiTarget,
           color: 'blue',
           emoji: '🎯',
         }
@@ -639,7 +639,7 @@ const LearningModal = () => {
           subtitle: isCurrentlyActive
             ? t('edit_learned_subtitle')
             : t('mark_learned_subtitle'),
-          icon: FiCheckCircle,
+          icon: PiCheckCircle,
           color: 'green',
           emoji: '🎉',
         };
@@ -715,7 +715,7 @@ const LearningModal = () => {
         {/* Work Info */}
         <div className="px-0 md:px-6 py-4 classical-card !rounded-2xl !shadow-none !border-none !transform-none border-b border-theme-secondary">
           <div className="flex items-center space-x-3">
-            <FiMusic className="w-5 h-5 text-theme-tertiary" />
+            <PiMusicNotes className="w-5 h-5 text-theme-tertiary" />
             <div>
               <h3 className="font-semibold text-theme-primary">{workTitle}</h3>
               <p className="text-sm text-theme-secondary">{composerName}</p>
@@ -748,7 +748,7 @@ const LearningModal = () => {
 
               <FormField
                 label={t('motivation_modal')}
-                icon={FiHeart}
+                icon={PiHeart}
                 description={t('motivation_description')}
               >
                 <textarea
@@ -765,7 +765,7 @@ const LearningModal = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   label={t('target_date_modal')}
-                  icon={FiCalendar}
+                  icon={PiCalendarBlank}
                   description={t('target_date_description')}
                 >
                   <Input
@@ -780,7 +780,7 @@ const LearningModal = () => {
 
                 <FormField
                   label={t('estimated_time_modal')}
-                  icon={FiClock}
+                  icon={PiClock}
                   description={t('estimated_time_description')}
                 >
                   <input
@@ -800,7 +800,7 @@ const LearningModal = () => {
                 </FormField>
               </div>
 
-              <FormField label={t('difficulty_estimated')} icon={FiTrendingUp}>
+              <FormField label={t('difficulty_estimated')} icon={PiTrendUp}>
                 <Select
                   options={difficultyOptions.map((option) => ({
                     label: option.label,
@@ -819,7 +819,7 @@ const LearningModal = () => {
 
               <FormField
                 label={t('context_modal')}
-                icon={FiUsers}
+                icon={PiUsers}
                 description={t('context_description')}
               >
                 <Input
@@ -833,7 +833,7 @@ const LearningModal = () => {
                 />
               </FormField>
 
-              <FormField label={t('personal_notes')} icon={FiBookOpen}>
+              <FormField label={t('personal_notes')} icon={PiBookOpen}>
                 <textarea
                   value={wantToLearnForm.notes || ''}
                   onChange={(e) =>
@@ -861,7 +861,10 @@ const LearningModal = () => {
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField label={t('study_start_modal')} icon={FiCalendar}>
+                <FormField
+                  label={t('study_start_modal')}
+                  icon={PiCalendarBlank}
+                >
                   <Input
                     type="date"
                     value={learnedForm.studyStartDate || ''}
@@ -874,7 +877,7 @@ const LearningModal = () => {
 
                 <FormField
                   label={t('study_duration_modal')}
-                  icon={FiClock}
+                  icon={PiClock}
                   description={t('study_duration_description')}
                 >
                   <input
@@ -893,7 +896,7 @@ const LearningModal = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField label={t('real_difficulty')} icon={FiTrendingUp}>
+                <FormField label={t('real_difficulty')} icon={PiTrendUp}>
                   <Select
                     options={difficultyOptions.map((option) => ({
                       label: option.label,
@@ -930,7 +933,7 @@ const LearningModal = () => {
 
               <FormField
                 label={t('technical_challenges_modal')}
-                icon={FiTarget}
+                icon={PiTarget}
                 description={t('technical_challenges_description')}
               >
                 <textarea
@@ -946,7 +949,7 @@ const LearningModal = () => {
 
               <FormField
                 label={t('musical_insights_modal')}
-                icon={FiAward}
+                icon={PiMedal}
                 description={t('musical_insights_description')}
               >
                 <textarea
@@ -996,7 +999,7 @@ const LearningModal = () => {
                 </div>
               </div>
 
-              <FormField label={t('general_notes')} icon={FiBookOpen}>
+              <FormField label={t('general_notes')} icon={PiBookOpen}>
                 <textarea
                   value={learnedForm.notes || ''}
                   onChange={(e) => updateLearnedForm({ notes: e.target.value })}
@@ -1014,7 +1017,7 @@ const LearningModal = () => {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
-                    <FiTarget className="w-4 h-4 text-theme-primary" />
+                    <PiTarget className="w-4 h-4 text-theme-primary" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-theme-primary">
@@ -1031,7 +1034,7 @@ const LearningModal = () => {
                   onClick={() => setShowProgressModal(true)}
                   className="btn-classical-secondary flex items-center space-x-2"
                 >
-                  <FiEdit3 className="w-4 h-4" />
+                  <PiPencilLine className="w-4 h-4" />
                   <span className="text-theme-primary text-sm">
                     {t('mark_progress_button')}
                   </span>
@@ -1062,7 +1065,7 @@ const LearningModal = () => {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                    <FiVideo className="w-4 h-4 text-theme-primary" />
+                    <PiVideoCamera className="w-4 h-4 text-theme-primary" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-theme-primary">
@@ -1100,7 +1103,7 @@ const LearningModal = () => {
                           onClick={handleDeleteVideo}
                           className="text-accent-red hover:text-accent-red/80 text-sm"
                         >
-                          <FiTrash className="w-4 h-4" />
+                          <PiTrashSimple className="w-4 h-4" />
                         </button>
                       )}
                     </div>
@@ -1148,7 +1151,7 @@ const LearningModal = () => {
                   >
                     <div className="flex flex-col items-center space-y-2">
                       <div className="w-12 h-12 shadow-md border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <FiPlus className="w-6 h-6 text-brand-primary" />
+                        <PiPlus className="w-6 h-6 text-brand-primary" />
                       </div>
                       <div>
                         <p className="font-semibold text-theme-primary">
@@ -1178,13 +1181,13 @@ const LearningModal = () => {
               {/* Error display */}
               {uploadError && (
                 <div className="mt-4 p-3 border border-red-400 rounded-lg flex items-center space-x-2">
-                  <FiAlertCircle className="w-4 h-4 text-red-400" />
+                  <PiWarningCircle className="w-4 h-4 text-red-400" />
                   <span className="text-accent-red text-sm">{uploadError}</span>
                   <button
                     onClick={clearVideoError}
                     className="ml-auto text-red-400 hover:text-accent-red/80"
                   >
-                    <FiX className="w-4 h-4" />
+                    <PiX className="w-4 h-4" />
                   </button>
                 </div>
               )}
@@ -1196,7 +1199,7 @@ const LearningModal = () => {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                  <FiFileText className="w-4 h-4 text-theme-primary" />
+                  <PiFileText className="w-4 h-4 text-theme-primary" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-theme-primary">
@@ -1216,7 +1219,7 @@ const LearningModal = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
-                      <FiMusic className="w-5 h-5 text-theme-primary" />
+                      <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                     </div>
                     <div className="flex-1">
                       <h4 className="font-semibold text-theme-primary text-sm">
@@ -1243,7 +1246,7 @@ const LearningModal = () => {
                         title={t('download_button')}
                         className="btn-classical-secondary-sm flex items-center space-x-2 text-accent-purple border-accent-purple/30 hover:bg-accent-purple/10"
                       >
-                        <FiDownload className="w-5 h-5 text-theme-primary" />
+                        <PiDownloadSimple className="w-5 h-5 text-theme-primary" />
                       </a>
                     )}
 
@@ -1256,14 +1259,14 @@ const LearningModal = () => {
                       onClick={handleAddScore}
                       className="btn-classical-secondary-sm flex items-center space-x-2"
                     >
-                      <FiEdit3 className="w-5 h-5 text-theme-primary" />
+                      <PiPencilLine className="w-5 h-5 text-theme-primary" />
                     </button>
                     <button
                       title={t('remove_button')}
                       onClick={handleRemoveScore}
                       className="btn-classical-outline-sm text-accent-red border-accent-red hover:bg-accent-red hover:text-theme-primary"
                     >
-                      <FiX className="w-5 h-5 text-theme-primary" />
+                      <PiX className="w-5 h-5 text-theme-primary" />
                     </button>
                   </div>
                 </div>
@@ -1294,7 +1297,7 @@ const LearningModal = () => {
               >
                 <div className="flex flex-col items-center space-y-2">
                   <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border-2 border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiPlus className="w-6 h-6 text-brand-primary" />
+                    <PiPlus className="w-6 h-6 text-brand-primary" />
                   </div>
                   <div>
                     <p className="font-semibold text-theme-primary">
@@ -1351,7 +1354,7 @@ const LearningModal = () => {
 
                 <Button
                   variant="delete"
-                  leftIcon={<FiTrash />}
+                  leftIcon={<PiTrashSimple />}
                   onClick={handleRemove}
                   className="w-full"
                 >
@@ -1375,7 +1378,7 @@ const LearningModal = () => {
               <div className="flex items-center space-x-3">
                 <Button
                   variant="delete"
-                  leftIcon={<FiTrash />}
+                  leftIcon={<PiTrashSimple />}
                   onClick={handleRemove}
                 >
                   {t('delete_button')}
@@ -1463,7 +1466,7 @@ const LearningModal = () => {
         <div className="p-4 px-0 md:p-6">
           <div className="flex items-center space-x-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-brand-primary rounded-xl flex items-center justify-center">
-              <FiArrowRight className="w-6 h-6 text-theme-primary" />
+              <PiArrowRight className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-theme-primary">
@@ -1573,7 +1576,7 @@ const LearningModal = () => {
                   >
                     <div className={`flex-shrink-0 ${milestone.color}`}>
                       {isCompleted ? (
-                        <FiCheckCircle className="w-6 h-6 text-accent-green" />
+                        <PiCheckCircle className="w-6 h-6 text-accent-green" />
                       ) : (
                         <Icon className="w-6 h-6" />
                       )}
@@ -1589,9 +1592,9 @@ const LearningModal = () => {
                     </div>
                     <div className="flex-shrink-0">
                       {isCompleted ? (
-                        <FiCheckCircle className="w-5 h-5 text-brand-primary" />
+                        <PiCheckCircle className="w-5 h-5 text-brand-primary" />
                       ) : (
-                        <FiCircle className="w-5 h-5 text-theme-tertiary" />
+                        <PiCircle className="w-5 h-5 text-theme-tertiary" />
                       )}
                     </div>
                   </div>

@@ -6,23 +6,23 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import {
-  FiSave,
-  FiTrash2,
-  FiLoader,
-  FiExternalLink,
-  FiEdit3,
-  FiCalendar,
-  FiMusic,
-  FiClock,
-  FiMapPin,
-  FiUser,
-  FiTarget,
-  FiTag,
-  FiLayers,
-  FiBookOpen,
-  FiEye,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiMetronome } from 'react-icons/gi';
+  PiArrowSquareOut,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiClock,
+  PiEye,
+  PiFloppyDisk,
+  PiMapPin,
+  PiMetronome,
+  PiMusicNotes,
+  PiPencilLine,
+  PiSpinnerGap,
+  PiStack,
+  PiTag,
+  PiTarget,
+  PiTrash,
+  PiUser,
+} from 'react-icons/pi';
 
 import {
   AnimatedContainer,
@@ -188,7 +188,7 @@ const EditWorkClient = ({
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-4">
                           <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                            <FiEdit3 className="w-5 h-5 text-theme-primary" />
+                            <PiPencilLine className="w-5 h-5 text-theme-primary" />
                           </div>
                           <div>
                             <h1 className="text-3xl md:text-4xl font-bold text-gradient-brand classical-title leading-tight">
@@ -227,7 +227,7 @@ const EditWorkClient = ({
                       {/* Action buttons */}
                       <div className="flex flex-wrap justify-center gap-3 sm:gap-0 items-center space-x-3 mt-4 sm:mt-0 ml-4">
                         <Link href={`/works/${work.id}`} className="ml-2">
-                          <Button variant="primary" leftIcon={<FiEye />}>
+                          <Button variant="primary" leftIcon={<PiEye />}>
                             {t('view_work_button')}
                           </Button>
                         </Link>
@@ -236,7 +236,7 @@ const EditWorkClient = ({
                           <>
                             <Button
                               variant="primary"
-                              leftIcon={<FiSave />}
+                              leftIcon={<PiFloppyDisk />}
                               onClick={() => setShowEditModal(true)}
                             >
                               {t('edit_button')}
@@ -245,9 +245,9 @@ const EditWorkClient = ({
                               variant="delete"
                               leftIcon={
                                 isDeleting ? (
-                                  <FiLoader className="animate-spin" />
+                                  <PiSpinnerGap className="animate-spin" />
                                 ) : (
-                                  <FiTrash2 />
+                                  <PiTrash />
                                 )
                               }
                               onClick={handleDelete}
@@ -270,7 +270,7 @@ const EditWorkClient = ({
                             work.difficultyLevel
                           )} rounded-full flex items-center space-x-2 shadow-lg`}
                         >
-                          <FiTarget className="w-4 h-4 text-theme-primary" />
+                          <PiTarget className="w-4 h-4 text-theme-primary" />
                           <span className="text-theme-primary font-semibold text-sm">
                             {t('work_difficulty_level')}:{' '}
                             {getDifficultyLabel(work.difficultyLevel)}
@@ -286,7 +286,7 @@ const EditWorkClient = ({
                     {work.compositionYear && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiCalendar className="w-4 h-4 text-theme-primary" />
+                          <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -303,7 +303,7 @@ const EditWorkClient = ({
                     {work.mediaDuration && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiClock className="w-4 h-4 text-theme-primary" />
+                          <PiClock className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -320,7 +320,7 @@ const EditWorkClient = ({
                     {work.tone && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiMusic className="w-4 h-4 text-theme-primary" />
+                          <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -337,7 +337,7 @@ const EditWorkClient = ({
                     {work.tempoMarking && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <GiMetronome className="w-4 h-4 text-theme-primary" />
+                          <PiMetronome className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -353,7 +353,7 @@ const EditWorkClient = ({
                     {/* Instrumento */}
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                        <GiMusicalNotes className="w-4 h-4 text-theme-primary" />
+                        <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
@@ -368,7 +368,7 @@ const EditWorkClient = ({
                     {/* Época */}
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                        <FiMapPin className="w-4 h-4 text-theme-primary" />
+                        <PiMapPin className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
@@ -383,7 +383,7 @@ const EditWorkClient = ({
                     {/* Tipo de Obra */}
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                        <FiLayers className="w-4 h-4 text-theme-primary" />
+                        <PiStack className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
@@ -403,7 +403,7 @@ const EditWorkClient = ({
                     work.instrumentation) && (
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                        <FiBookOpen className="w-5 h-5 text-accent-blue" />
+                        <PiBookOpen className="w-5 h-5 text-accent-blue" />
                         <span>{t('work_info_additional_info')}</span>
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -456,7 +456,7 @@ const EditWorkClient = ({
                     work.workGenresArr?.length > 0) && (
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                        <FiTag className="w-5 h-5 text-accent-green" />
+                        <PiTag className="w-5 h-5 text-accent-green" />
                         <span>{t('work_info_categories_genres')}</span>
                       </h3>
                       <div className="space-y-4">
@@ -507,7 +507,7 @@ const EditWorkClient = ({
                   {work.imslpPermlink && (
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                        <FiExternalLink className="w-5 h-5 text-accent-blue" />
+                        <PiArrowSquareOut className="w-5 h-5 text-accent-blue" />
                         <span>{t('work_info_external_link')}</span>
                       </h3>
                       <a
@@ -516,7 +516,7 @@ const EditWorkClient = ({
                         rel="noopener noreferrer"
                         className="btn-classical-primary flex items-center space-x-2 group/btn w-fit"
                       >
-                        <FiBookOpen className="w-4 h-4" />
+                        <PiBookOpen className="w-4 h-4" />
                         <span>{t('work_info_view_imslp')}</span>
                         <svg
                           className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
@@ -542,7 +542,7 @@ const EditWorkClient = ({
                   <div className="classical-card-simple p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
-                        <FiUser className="w-4 h-4 text-theme-primary" />
+                        <PiUser className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
                         {t('work_info_composer')}
@@ -563,7 +563,7 @@ const EditWorkClient = ({
                         </div>
                       ) : (
                         <div className="w-32 h-40 mx-auto bg-gradient-card border border-theme-primary rounded-xl flex items-center justify-center">
-                          <FiUser className="w-8 h-8 text-theme-tertiary opacity-50" />
+                          <PiUser className="w-8 h-8 text-theme-tertiary opacity-50" />
                         </div>
                       )}
 
@@ -585,7 +585,7 @@ const EditWorkClient = ({
                   <div className="classical-card-simple p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                        <FiBookOpen className="w-4 h-4 text-theme-primary" />
+                        <PiBookOpen className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
                         {t('work_info_technical_details')}

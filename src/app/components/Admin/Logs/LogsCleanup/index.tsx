@@ -3,16 +3,16 @@
 
 import { useState } from 'react';
 import {
-  FiTrash2,
-  FiDownload,
-  FiCalendar,
-  FiClock,
-  FiAlertTriangle,
-  FiCheck,
-  FiX,
-  FiLoader,
-  FiFilter,
-} from 'react-icons/fi';
+  PiCalendarBlank,
+  PiCheck,
+  PiClock,
+  PiDownloadSimple,
+  PiFunnel,
+  PiSpinnerGap,
+  PiTrash,
+  PiWarning,
+  PiX,
+} from 'react-icons/pi';
 import {
   useAdminLogs,
   DeleteLogsResult,
@@ -174,7 +174,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
         </div>
 
         {onClose && (
-          <Button variant="ghost" onClick={onClose} leftIcon={<FiX />}>
+          <Button variant="ghost" onClick={onClose} leftIcon={<PiX />}>
             Fechar
           </Button>
         )}
@@ -184,7 +184,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
       <AnimatedCard className="classical-card p-6">
         <div className="flex items-start space-x-4">
           <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-xl flex items-center justify-center">
-            <FiClock className="w-6 h-6 text-theme-primary" />
+            <PiClock className="w-6 h-6 text-theme-primary" />
           </div>
 
           <div className="flex-1">
@@ -218,9 +218,9 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                 variant="primary"
                 leftIcon={
                   actionLoading === 'cleanup' ? (
-                    <FiLoader className="animate-spin" />
+                    <PiSpinnerGap className="animate-spin" />
                   ) : (
-                    <FiTrash2 />
+                    <PiTrash />
                   )
                 }
                 onClick={handleAutoCleanup}
@@ -256,7 +256,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
               variant="secondary"
               size="sm"
               onClick={selectAllDates}
-              leftIcon={<FiCheck />}
+              leftIcon={<PiCheck />}
             >
               Selecionar Todas
             </Button>
@@ -265,7 +265,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
               variant="secondary"
               size="sm"
               onClick={clearSelection}
-              leftIcon={<FiX />}
+              leftIcon={<PiX />}
             >
               Limpar Seleção
             </Button>
@@ -274,7 +274,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
               variant="secondary"
               size="sm"
               onClick={() => selectOldDates(30)}
-              leftIcon={<FiFilter />}
+              leftIcon={<PiFunnel />}
             >
               Selecionar +30 dias
             </Button>
@@ -283,7 +283,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
               variant="secondary"
               size="sm"
               onClick={() => selectOldDates(14)}
-              leftIcon={<FiFilter />}
+              leftIcon={<PiFunnel />}
             >
               Selecionar +14 dias
             </Button>
@@ -293,7 +293,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
           <div className="max-h-64 overflow-y-auto space-y-2">
             {availableDates.length === 0 ? (
               <div className="text-center py-8 text-theme-tertiary">
-                <FiCalendar className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                <PiCalendarBlank className="w-12 h-12 mx-auto mb-2 opacity-50" />
                 <p>Nenhum arquivo de log encontrado</p>
               </div>
             ) : (
@@ -361,9 +361,9 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                   size="sm"
                   leftIcon={
                     actionLoading === 'export' ? (
-                      <FiLoader className="animate-spin" />
+                      <PiSpinnerGap className="animate-spin" />
                     ) : (
-                      <FiDownload />
+                      <PiDownloadSimple />
                     )
                   }
                   onClick={handleExportBeforeDelete}
@@ -375,7 +375,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                 <Button
                   variant="primary"
                   size="sm"
-                  leftIcon={<FiTrash2 />}
+                  leftIcon={<PiTrash />}
                   onClick={() => setShowConfirmDialog(true)}
                   disabled={!!actionLoading}
                   className="bg-accent-red hover:bg-accent-red/80"
@@ -394,7 +394,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
           <AnimatedCard className="classical-card p-6 max-w-md mx-4">
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-full flex items-center justify-center mx-auto mb-4">
-                <FiAlertTriangle className="w-8 h-8 text-theme-primary" />
+                <PiWarning className="w-8 h-8 text-theme-primary" />
               </div>
 
               <h3 className="text-xl font-bold text-theme-primary mb-2">
@@ -424,9 +424,9 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                   variant="primary"
                   leftIcon={
                     actionLoading === 'delete' ? (
-                      <FiLoader className="animate-spin" />
+                      <PiSpinnerGap className="animate-spin" />
                     ) : (
-                      <FiTrash2 />
+                      <PiTrash />
                     )
                   }
                   onClick={handleDeleteSelected}

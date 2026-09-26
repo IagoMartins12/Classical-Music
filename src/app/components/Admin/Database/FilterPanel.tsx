@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiPlus, FiTrash2, FiAlertCircle } from 'react-icons/fi';
+import { PiPlus, PiTrash, PiWarningCircle } from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
@@ -270,7 +270,7 @@ export default function FilterPanel({
                     onClick={() => onRemoveFilter(field)}
                     className="p-2 hover:bg-accent-red/10 text-accent-red rounded transition-colors"
                   >
-                    <FiTrash2 className="w-4 h-4" />
+                    <PiTrash className="w-4 h-4" />
                   </button>
                 </div>
               ))}
@@ -286,7 +286,7 @@ export default function FilterPanel({
 
           {filterableFields.length === 0 ? (
             <div className="text-center py-8 text-theme-tertiary">
-              <FiAlertCircle className="w-12 h-12 mx-auto mb-2 opacity-50" />
+              <PiWarningCircle className="w-12 h-12 mx-auto mb-2 opacity-50" />
               <p>Nenhum campo disponível para filtrar</p>
               <p className="text-xs mt-1">
                 Todos os campos já possuem filtros ou são sensíveis
@@ -342,7 +342,7 @@ export default function FilterPanel({
                 <Button
                   variant="primary"
                   size="sm"
-                  leftIcon={<FiPlus />}
+                  leftIcon={<PiPlus />}
                   onClick={handleAddFilter}
                   className="w-full"
                 >

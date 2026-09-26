@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FaUser, FaMusic, FaFileAlt } from 'react-icons/fa';
+import { PiFileText, PiMusicNotes, PiUser } from 'react-icons/pi';
 
 interface RelatedEntitiesProps {
   composerIds: string[];
@@ -46,7 +46,7 @@ export async function RelatedEntities({
   return (
     <div className="space-y-8">
       <h2 className="text-2xl font-bold text-theme-primary flex items-center gap-2">
-        <FaMusic className="text-brand-primary" />
+        <PiMusicNotes className="text-brand-primary" />
         Vinculações
       </h2>
 
@@ -55,7 +55,7 @@ export async function RelatedEntities({
         {composers.length > 0 && (
           <div className="classical-card p-6">
             <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
-              <FaUser className="text-brand-primary" />
+              <PiUser className="text-brand-primary" />
               Compositores Mencionados
             </h3>
             <div className="space-y-3">
@@ -81,7 +81,7 @@ export async function RelatedEntities({
         {works.length > 0 && (
           <div className="classical-card p-6">
             <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
-              <FaMusic className="text-brand-primary" />
+              <PiMusicNotes className="text-brand-primary" />
               Obras Mencionadas
             </h3>
             <div className="space-y-3">
@@ -107,7 +107,7 @@ export async function RelatedEntities({
         {scores.length > 0 && (
           <div className="classical-card p-6">
             <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
-              <FaFileAlt className="text-brand-primary" />
+              <PiFileText className="text-brand-primary" />
               Partituras Relacionadas
             </h3>
             <div className="space-y-3">

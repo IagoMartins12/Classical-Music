@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { ArticleCard } from '@/app/components/blog/ArticleCard';
 import { ArticleCardList } from '@/app/components/blog/ArticleCardList';
-import { FiSearch } from 'react-icons/fi';
+import { PiMagnifyingGlass } from 'react-icons/pi';
 
 interface Article {
   id: string;
@@ -72,7 +72,7 @@ export function CategoryArticles({
   if (articles.length === 0) {
     return (
       <div className="classical-card p-12 text-center">
-        <FiSearch className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+        <PiMagnifyingGlass className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
         <h3 className="text-xl font-semibold text-theme-primary mb-2">
           Nenhum artigo publicado ainda
         </h3>

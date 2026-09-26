@@ -2,12 +2,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import {
-  FiEdit2,
-  FiSettings,
-  FiAlertTriangle,
-  FiClock,
-} from 'react-icons/fi';
+import { PiClock, PiGear, PiPencilSimple, PiWarning } from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
@@ -234,39 +229,39 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
     switch (campaign?.status) {
       case 'DRAFT':
         return {
-          icon: FiEdit2,
+          icon: PiPencilSimple,
           color: 'text-accent-blue',
           message: 'Campanha em rascunho - todos os campos podem ser editados',
         };
       case 'SCHEDULED':
         return {
-          icon: FiClock,
+          icon: PiClock,
           color: 'text-accent-purple',
           message:
             'Campanha agendada - apenas data de envio e notas podem ser alteradas',
         };
       case 'PAUSED':
         return {
-          icon: FiAlertTriangle,
+          icon: PiWarning,
           color: 'text-accent-amber',
           message: 'Campanha pausada - pode reagendar ou adicionar notas',
         };
       case 'CANCELLED':
       case 'FAILED':
         return {
-          icon: FiAlertTriangle,
+          icon: PiWarning,
           color: 'text-accent-red',
           message: 'Campanha pode ser editada para reenvio',
         };
       case 'SENT':
         return {
-          icon: FiSettings,
+          icon: PiGear,
           color: 'text-accent-green',
           message: 'Campanha enviada - apenas notas podem ser adicionadas',
         };
       default:
         return {
-          icon: FiSettings,
+          icon: PiGear,
           color: 'text-theme-tertiary',
           message: 'Edição limitada baseada no status da campanha',
         };
@@ -288,7 +283,7 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
         {/* Header */}
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
-            <FiEdit2 className="w-8 h-8 text-white" />
+            <PiPencilSimple className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
             Editar Campanha
@@ -492,10 +487,10 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
                     campaign.status === 'SENT'
                       ? 'text-accent-green'
                       : campaign.status === 'SCHEDULED'
-                      ? 'text-accent-purple'
-                      : campaign.status === 'DRAFT'
-                      ? 'text-accent-blue'
-                      : 'text-theme-primary'
+                        ? 'text-accent-purple'
+                        : campaign.status === 'DRAFT'
+                          ? 'text-accent-blue'
+                          : 'text-theme-primary'
                   }`}
                 >
                   {campaign.status}
@@ -533,7 +528,7 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
               variant="primary"
               size="lg"
               isLoading={loading}
-              leftIcon={<FiEdit2 />}
+              leftIcon={<PiPencilSimple />}
               className="flex-1"
               disabled={Object.values(editableFields).every((field) => !field)}
             >

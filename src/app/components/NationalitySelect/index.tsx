@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { FiGlobe, FiSearch, FiX, FiChevronDown } from 'react-icons/fi';
+import { PiCaretDown, PiGlobe, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import {
   NATIONALITIES,
   filterNationalities,
@@ -107,7 +107,7 @@ export default function NationalitySelect({
     <div ref={containerRef} className={`relative ${className}`}>
       {/* Input */}
       <div className="relative">
-        <FiGlobe className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary z-10" />
+        <PiGlobe className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary z-10" />
 
         <input
           ref={inputRef}
@@ -132,12 +132,12 @@ export default function NationalitySelect({
               onClick={handleClear}
               className="p-1 text-theme-tertiary hover:text-theme-primary transition-colors"
             >
-              <FiX className="w-4 h-4" />
+              <PiX className="w-4 h-4" />
             </button>
           )}
 
           <div className="p-1 text-theme-tertiary">
-            <FiChevronDown
+            <PiCaretDown
               className={`w-4 h-4 transition-transform duration-200 ${
                 isOpen ? 'rotate-180' : ''
               }`}
@@ -157,7 +157,7 @@ export default function NationalitySelect({
         >
           {/* Search header */}
           <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
-            <FiSearch className="w-4 h-4 text-brand-primary" />
+            <PiMagnifyingGlass className="w-4 h-4 text-brand-primary" />
             <span className="text-sm font-medium text-theme-secondary">
               {searchTerm ? getMessage(searchTerm) : getMessage()}
             </span>
@@ -201,7 +201,7 @@ export default function NationalitySelect({
               ))
             ) : (
               <div className="px-4 py-8 text-center">
-                <FiGlobe className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
+                <PiGlobe className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                 <p className="text-sm text-theme-secondary">
                   {searchTerm
                     ? `Nenhuma nacionalidade encontrada para "${searchTerm}"`

@@ -3,16 +3,16 @@
 
 import { useState } from 'react';
 import {
-  FiMaximize2,
-  FiMinimize2,
-  FiDownload,
-  FiClock,
-  FiEye,
-  FiUser,
-  FiCalendar,
-  FiFileText,
-  FiX,
-} from 'react-icons/fi';
+  PiArrowsIn,
+  PiArrowsOut,
+  PiCalendarBlank,
+  PiClock,
+  PiDownloadSimple,
+  PiEye,
+  PiFileText,
+  PiUser,
+  PiX,
+} from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import { formatDistanceToNow } from 'date-fns';
@@ -84,7 +84,7 @@ export default function AssignmentVideoViewer({
       <Modal isOpen={isOpen} maxWidth="2xl" onClose={onClose}>
         <div className="bg-theme-elevated p-6 text-center">
           <div className="mb-4">
-            <FiFileText className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+            <PiFileText className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
             <h3 className="text-xl font-bold text-theme-primary mb-2">
               Nenhum Vídeo Encontrado
             </h3>
@@ -146,11 +146,11 @@ export default function AssignmentVideoViewer({
               </h3>
               <div className="flex items-center space-x-4 text-sm text-theme-secondary">
                 <span className="flex items-center space-x-1">
-                  <FiUser className="w-3 h-3" />
+                  <PiUser className="w-3 h-3" />
                   <span>{assignment.student.name}</span>
                 </span>
                 <span className="flex items-center space-x-1">
-                  <FiCalendar className="w-3 h-3" />
+                  <PiCalendarBlank className="w-3 h-3" />
                   <span>
                     {formatDistanceToNow(new Date(videoSubmission.uploadedAt), {
                       addSuffix: true,
@@ -165,7 +165,7 @@ export default function AssignmentVideoViewer({
               <Button
                 variant="ghost"
                 size="sm"
-                leftIcon={<FiEye />}
+                leftIcon={<PiEye />}
                 onClick={() => setShowDetails(!showDetails)}
               >
                 Detalhes
@@ -175,7 +175,7 @@ export default function AssignmentVideoViewer({
                 <Button
                   variant="ghost"
                   size="sm"
-                  leftIcon={<FiX />}
+                  leftIcon={<PiX />}
                   onClick={onClose}
                 >
                   Fechar
@@ -210,7 +210,7 @@ export default function AssignmentVideoViewer({
               <Button
                 variant="secondary"
                 size="sm"
-                leftIcon={isFullscreen ? <FiMinimize2 /> : <FiMaximize2 />}
+                leftIcon={isFullscreen ? <PiArrowsIn /> : <PiArrowsOut />}
                 onClick={toggleFullscreen}
                 className="bg-black/50 text-white border-white/20 hover:bg-black/70"
               >
@@ -278,8 +278,8 @@ export default function AssignmentVideoViewer({
                         assignment.status === 'COMPLETED'
                           ? 'bg-green-100 text-green-800'
                           : assignment.status === 'IN_PROGRESS'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-red-100 text-red-800'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-red-100 text-red-800'
                       }`}
                     >
                       {assignment.status === 'COMPLETED' && 'Concluída'}
@@ -318,7 +318,7 @@ export default function AssignmentVideoViewer({
             <div className="flex items-center justify-between">
               <div className="text-sm text-theme-secondary">
                 <span className="flex items-center space-x-1">
-                  <FiClock className="w-3 h-3" />
+                  <PiClock className="w-3 h-3" />
                   <span>
                     Enviado{' '}
                     {formatDistanceToNow(new Date(videoSubmission.uploadedAt), {
@@ -334,7 +334,7 @@ export default function AssignmentVideoViewer({
                   <Button
                     variant="secondary"
                     size="sm"
-                    leftIcon={<FiDownload />}
+                    leftIcon={<PiDownloadSimple />}
                     onClick={handleDownload}
                   >
                     Download

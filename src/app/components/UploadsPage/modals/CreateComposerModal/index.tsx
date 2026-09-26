@@ -4,24 +4,26 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiUser,
-  FiSearch,
-  FiExternalLink,
-  FiSave,
-  FiLoader,
-  FiImage,
-  FiCalendar,
-  FiGlobe,
-  FiTag,
-  FiInfo,
-  FiLink,
-  FiCheck,
-  FiAlertCircle,
-  FiDatabase,
-  FiLock,
-  FiPlay,
-  FiBookOpen,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCheck,
+  PiDatabase,
+  PiFloppyDisk,
+  PiGlobe,
+  PiImage,
+  PiInfo,
+  PiLink,
+  PiLock,
+  PiMagnifyingGlass,
+  PiPlay,
+  PiSparkle,
+  PiSpinnerGap,
+  PiTag,
+  PiTranslate,
+  PiUser,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedItem,
@@ -42,8 +44,6 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
-import { MdTranslate } from 'react-icons/md';
-import { GiSparkles } from 'react-icons/gi';
 import {
   checkComposerDuplicateRequest,
   saveComposerRequest,
@@ -914,7 +914,7 @@ const CreateComposerModal = ({
           <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                <FiUser className="w-5 h-5 text-theme-primary" />
+                <PiUser className="w-5 h-5 text-theme-primary" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -938,13 +938,13 @@ const CreateComposerModal = ({
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
-                    <FiDatabase className="w-4 h-4 text-theme-tertiary" />
+                    <PiDatabase className="w-4 h-4 text-theme-tertiary" />
                     <span className="text-sm font-medium text-theme-primary">
                       {t('modal_composer_scraping_title')}
                     </span>
                     {isEditingExternalSource && (
                       <div className="flex items-center space-x-1 text-xs text-theme-primary font-bold">
-                        <FiLock className="w-3 h-3" />
+                        <PiLock className="w-3 h-3" />
                         <span>{t('modal_composer_scraping_detected')}</span>
                       </div>
                     )}
@@ -982,14 +982,14 @@ const CreateComposerModal = ({
                             ? 'https://imslp.org/wiki/Category:Mozart,_Wolfgang_Amadeus'
                             : 'https://en.wikipedia.org/wiki/Wolfgang_Amadeus_Mozart'
                         }
-                        leftIcon={<FiLink />}
+                        leftIcon={<PiLink />}
                         disabled={isEditingExternalSource}
                       />
 
                       {duplicateCheck.loading && (
                         <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
                           <div className="flex items-center space-x-2">
-                            <FiLoader className="w-4 h-4 animate-spin text-theme-primary font-bold" />
+                            <PiSpinnerGap className="w-4 h-4 animate-spin text-theme-primary font-bold" />
                             <span className="text-sm text-blue-800">
                               {t('modal_composer_scraping_checking_duplicates')}
                             </span>
@@ -1000,7 +1000,7 @@ const CreateComposerModal = ({
                       {duplicateCheck.found && (
                         <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                           <div className="flex items-center space-x-2 mb-2">
-                            <FiAlertCircle className="w-4 h-4 text-red-600" />
+                            <PiWarningCircle className="w-4 h-4 text-red-600" />
                             <span className="text-sm font-medium text-red-800">
                               {t('modal_composer_scraping_duplicate_found')}
                             </span>
@@ -1080,9 +1080,9 @@ const CreateComposerModal = ({
                             size="sm"
                             leftIcon={
                               scrapingUrl ? (
-                                <FiLoader className="animate-spin" />
+                                <PiSpinnerGap className="animate-spin" />
                               ) : (
-                                <FiSearch />
+                                <PiMagnifyingGlass />
                               )
                             }
                             onClick={handleScrapeUrl}
@@ -1098,7 +1098,7 @@ const CreateComposerModal = ({
                       {scrapingResult && (
                         <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                           <div className="flex items-center space-x-2 mb-2">
-                            <FiCheck className="w-4 h-4 text-green-600" />
+                            <PiCheck className="w-4 h-4 text-green-600" />
                             <span className="text-sm font-medium text-green-800">
                               {t('modal_composer_scraping_success')}
                             </span>
@@ -1117,7 +1117,7 @@ const CreateComposerModal = ({
                       {isEditingExternalSource && (
                         <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                           <div className="flex items-center space-x-2">
-                            <FiInfo className="w-4 h-4 text-blue-600" />
+                            <PiInfo className="w-4 h-4 text-blue-600" />
                             <span className="text-sm text-blue-800">
                               {t('modal_composer_scraping_external_edit', {
                                 source:
@@ -1137,7 +1137,7 @@ const CreateComposerModal = ({
               {/* Basic Information */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiInfo className="w-5 h-5" />
+                  <PiInfo className="w-5 h-5" />
                   <span>{t('modal_composer_basic_title')}</span>
                 </h3>
 
@@ -1191,7 +1191,7 @@ const CreateComposerModal = ({
               {/* Dates */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiCalendar className="w-5 h-5" />
+                  <PiCalendarBlank className="w-5 h-5" />
                   <span>{t('modal_composer_dates_title')}</span>
                 </h3>
 
@@ -1239,7 +1239,7 @@ const CreateComposerModal = ({
               {/* Image */}
               <AnimatedCard className="classical-card-simple p-6" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-6 flex items-center space-x-2">
-                  <FiImage className="w-5 h-5" />
+                  <PiImage className="w-5 h-5" />
                   <span>{t('modal_composer_image_title')}</span>
                 </h3>
 
@@ -1265,7 +1265,7 @@ const CreateComposerModal = ({
               {/* Classification */}
               <AnimatedCard className="classical-card-simple p-4 " hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiTag className="w-5 h-5" />
+                  <PiTag className="w-5 h-5" />
                   <span>{t('modal_composer_classification_title')}</span>
                 </h3>
 
@@ -1405,7 +1405,7 @@ const CreateComposerModal = ({
               {/* External Links */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiGlobe className="w-5 h-5" />
+                  <PiGlobe className="w-5 h-5" />
                   <span>{t('modal_composer_external_title')}</span>
                 </h3>
 
@@ -1419,7 +1419,7 @@ const CreateComposerModal = ({
                         handleInputChange('wikipediaLink', e.target.value)
                       }
                       placeholder="https://en.wikipedia.org/wiki/..."
-                      leftIcon={<FiExternalLink />}
+                      leftIcon={<PiArrowSquareOut />}
                       disabled={isFieldLocked('wikipediaLink')}
                       className={
                         isFieldLocked('wikipediaLink')
@@ -1429,7 +1429,7 @@ const CreateComposerModal = ({
                     />
                     {isFieldLocked('wikipediaLink') && (
                       <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
-                        <FiLock className="w-3 h-3" />
+                        <PiLock className="w-3 h-3" />
                         <span>
                           {t('modal_composer_external_field_locked', {
                             source: 'Wikipedia',
@@ -1448,7 +1448,7 @@ const CreateComposerModal = ({
                         handleInputChange('permLinkImslp', e.target.value)
                       }
                       placeholder="https://imslp.org/wiki/Category:Mozart,_Wolfgang_Amadeus"
-                      leftIcon={<FiExternalLink />}
+                      leftIcon={<PiArrowSquareOut />}
                       disabled={isFieldLocked('permLinkImslp')}
                       className={
                         isFieldLocked('permLinkImslp')
@@ -1458,7 +1458,7 @@ const CreateComposerModal = ({
                     />
                     {isFieldLocked('permLinkImslp') && (
                       <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
-                        <FiLock className="w-3 h-3" />
+                        <PiLock className="w-3 h-3" />
                         <span>
                           {t('modal_composer_external_field_locked', {
                             source: 'IMSLP',
@@ -1477,7 +1477,7 @@ const CreateComposerModal = ({
                         handleInputChange('videoUrl', e.target.value)
                       }
                       placeholder="https://www.youtube.com/watch?v=... ou outro vídeo"
-                      leftIcon={<FiPlay />}
+                      leftIcon={<PiPlay />}
                     />
                     <p className="text-xs text-theme-tertiary mt-1">
                       {t('modal_composer_external_video_description')}
@@ -1489,7 +1489,7 @@ const CreateComposerModal = ({
               {/* Biography */}
               {/* <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiUser className="w-5 h-5" />
+                  <PiUser className="w-5 h-5" />
                   <span>{t('modal_composer_bio_title')}</span>
                 </h3>
 
@@ -1512,7 +1512,7 @@ const CreateComposerModal = ({
               {/* 🆕 NOVO CARD: Biography Management */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiBookOpen className="w-5 h-5" />
+                  <PiBookOpen className="w-5 h-5" />
                   <span>{t('modal_composer_bio_title')}</span>
                 </h3>
 
@@ -1552,9 +1552,9 @@ const CreateComposerModal = ({
                     }`}
                   >
                     {bioMessage.type === 'success' ? (
-                      <FiCheck className="w-4 h-4 flex-shrink-0" />
+                      <PiCheck className="w-4 h-4 flex-shrink-0" />
                     ) : (
-                      <FiAlertCircle className="w-4 h-4 flex-shrink-0" />
+                      <PiWarningCircle className="w-4 h-4 flex-shrink-0" />
                     )}
                     <span className="text-sm font-medium">
                       {bioMessage.text}
@@ -1571,9 +1571,9 @@ const CreateComposerModal = ({
                     className="btn-classical-primary flex items-center space-x-2"
                   >
                     {isGeneratingBio ? (
-                      <FiLoader className="w-4 h-4 animate-spin" />
+                      <PiSpinnerGap className="w-4 h-4 animate-spin" />
                     ) : (
-                      <GiSparkles className="w-4 h-4" />
+                      <PiSparkle className="w-4 h-4" />
                     )}
                     <span>Gerar com IA</span>
                   </button>
@@ -1586,9 +1586,9 @@ const CreateComposerModal = ({
                       className="btn-classical-secondary flex items-center space-x-2"
                     >
                       {isTranslatingBio ? (
-                        <FiLoader className="w-4 h-4 animate-spin" />
+                        <PiSpinnerGap className="w-4 h-4 animate-spin" />
                       ) : (
-                        <MdTranslate className="w-4 h-4" />
+                        <PiTranslate className="w-4 h-4" />
                       )}
                       <span>Traduzir para Inglês</span>
                     </button>
@@ -1600,9 +1600,9 @@ const CreateComposerModal = ({
                       className="btn-classical-secondary flex items-center space-x-2"
                     >
                       {isTranslatingBio ? (
-                        <FiLoader className="w-4 h-4 animate-spin" />
+                        <PiSpinnerGap className="w-4 h-4 animate-spin" />
                       ) : (
-                        <MdTranslate className="w-4 h-4" />
+                        <PiTranslate className="w-4 h-4" />
                       )}
                       <span>Traduzir para Português</span>
                     </button>
@@ -1672,7 +1672,7 @@ const CreateComposerModal = ({
                         </div>
                       </div>
                       {biographies.pt && (
-                        <FiCheck className="w-5 h-5 text-accent-green" />
+                        <PiCheck className="w-5 h-5 text-accent-green" />
                       )}
                     </div>
                   </div>
@@ -1689,7 +1689,7 @@ const CreateComposerModal = ({
                         </div>
                       </div>
                       {biographies.en && (
-                        <FiCheck className="w-5 h-5 text-accent-green" />
+                        <PiCheck className="w-5 h-5 text-accent-green" />
                       )}
                     </div>
                   </div>
@@ -1712,9 +1712,9 @@ const CreateComposerModal = ({
                   variant="primary"
                   leftIcon={
                     isSubmitting ? (
-                      <FiLoader className="animate-spin" />
+                      <PiSpinnerGap className="animate-spin" />
                     ) : (
-                      <FiSave />
+                      <PiFloppyDisk />
                     )
                   }
                   disabled={isSubmitting}

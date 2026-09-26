@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { FiX, FiCheck, FiArrowRight } from 'react-icons/fi';
+import { PiArrowRight, PiCheck, PiX } from 'react-icons/pi';
 import {
   PageContainer,
   AnimatedContainer,
@@ -78,7 +78,7 @@ export default function UnsubscribePage() {
               <div className="max-w-2xl mx-auto text-center">
                 <AnimatedItem direction="scale" springType="bouncy">
                   <div className="inline-flex items-center justify-center w-20 h-20 bg-accent-green/10 rounded-full mb-8">
-                    <FiCheck className="w-10 h-10 text-accent-green" />
+                    <PiCheck className="w-10 h-10 text-accent-green" />
                   </div>
                 </AnimatedItem>
 
@@ -95,7 +95,7 @@ export default function UnsubscribePage() {
                   className="btn-classical-primary inline-flex items-center space-x-3"
                 >
                   <span>{t('unsubscribe_completed_button')}</span>
-                  <FiArrowRight className="w-5 h-5" />
+                  <PiArrowRight className="w-5 h-5" />
                 </button>
               </div>
             </div>
@@ -115,7 +115,7 @@ export default function UnsubscribePage() {
               <div className="text-center mb-12">
                 <AnimatedItem direction="scale" springType="bouncy">
                   <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-accent-red/10 to-accent-amber/10 rounded-full mb-6">
-                    <FiX className="w-10 h-10 text-accent-red" />
+                    <PiX className="w-10 h-10 text-accent-red" />
                   </div>
                 </AnimatedItem>
 

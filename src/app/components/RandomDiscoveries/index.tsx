@@ -1,8 +1,14 @@
 // app/components/RandomDiscoveries/RandomDiscoveries.tsx
 'use client';
 
-import { FiShuffle, FiUser, FiEye, FiMusic } from 'react-icons/fi';
-import { GiMusicalNotes, GiTreasureMap, GiPianoKeys } from 'react-icons/gi';
+import {
+  PiEye,
+  PiMapTrifold,
+  PiMusicNotes,
+  PiPianoKeys,
+  PiShuffle,
+  PiUser,
+} from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
 import Link from '@/app/components/LocalizedLink';
 import { useState } from 'react';
@@ -51,7 +57,7 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
           {/* Discovery badge */}
           <div className="absolute top-3 left-3 z-10">
             <div className="bg-gradient-to-r from-orange-500/20 to-yellow-500/20 border border-orange-500/30 backdrop-blur-md rounded-full px-2 py-1 text-xs font-medium text-orange-400 flex items-center gap-1">
-              <GiTreasureMap className="w-2.5 h-2.5" />
+              <PiMapTrifold className="w-2.5 h-2.5" />
               {t('random_discoveries_composer_badge')}
             </div>
           </div>
@@ -83,7 +89,7 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
                   </div>
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-orange-500 to-yellow-500 rounded-full flex items-center justify-center border-2 border-orange-400/20 group-hover:border-orange-400/50 transition-all duration-500">
-                    <FiUser className="w-6 h-6 text-white" />
+                    <PiUser className="w-6 h-6 text-white" />
                   </div>
                 )}
               </div>
@@ -101,7 +107,7 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
               {/* Period info */}
               <div className="flex justify-center">
                 <span className="inline-flex items-center px-2 py-0.5 bg-theme-tertiary/10 border border-theme-tertiary/20 text-theme-tertiary rounded-full text-xs font-medium">
-                  <GiMusicalNotes className="w-2 h-2 mr-1" />
+                  <PiMusicNotes className="w-2 h-2 mr-1" />
                   {translateEpochWithHook(composer.epochName, t)}
                 </span>
               </div>
@@ -113,7 +119,7 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
                   <span className="font-medium">
                     {t('random_discoveries_explore')}
                   </span>
-                  <FiEye className="w-2.5 h-2.5" />
+                  <PiEye className="w-2.5 h-2.5" />
                 </div>
               </div>
             </div>
@@ -141,7 +147,7 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
           {/* Discovery badge */}
           <div className="absolute top-3 left-3 z-10">
             <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/30 backdrop-blur-md rounded-full px-2 py-1 text-xs font-medium text-purple-400 flex items-center gap-1">
-              <GiPianoKeys className="w-2.5 h-2.5" />
+              <PiPianoKeys className="w-2.5 h-2.5" />
               {t('random_discoveries_work_badge')}
             </div>
           </div>
@@ -150,7 +156,7 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
           <div className="relative p-5 pb-3">
             <div className="flex justify-center mb-3">
               <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center border-2 border-purple-400/20 group-hover:border-purple-400/50 transition-all duration-500 group-hover:scale-110">
-                <FiMusic className="w-6 h-6 text-white" />
+                <PiMusicNotes className="w-6 h-6 text-white" />
               </div>
             </div>
           </div>
@@ -187,7 +193,7 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
                   <span className="font-medium">
                     {t('random_discoveries_study')}
                   </span>
-                  <FiMusic className="w-2.5 h-2.5" />
+                  <PiMusicNotes className="w-2.5 h-2.5" />
                 </div>
               </div>
             </div>
@@ -214,14 +220,14 @@ const RandomDiscoveries: React.FC<RandomDiscoveriesProps> = ({
         subtitle={t('random_discoveries_subtitle')}
         linkText={t('random_discoveries_link_text')}
         linkHref="/composers?random=true"
-        icon={<FiShuffle className="w-6 h-6" />}
+        icon={<PiShuffle className="w-6 h-6" />}
       />
 
       {/* Seção de Compositores */}
       <div className="mb-12">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center">
-            <FiUser className="w-4 h-4 text-white" />
+            <PiUser className="w-4 h-4 text-white" />
           </div>
           <h3 className="text-xl font-bold text-theme-primary classical-title">
             {t('random_discoveries_composers_section')}
@@ -240,7 +246,7 @@ const RandomDiscoveries: React.FC<RandomDiscoveriesProps> = ({
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
-            <FiMusic className="w-4 h-4 text-white" />
+            <PiMusicNotes className="w-4 h-4 text-white" />
           </div>
           <h3 className="text-xl font-bold text-theme-primary classical-title">
             {t('random_discoveries_works_section')}

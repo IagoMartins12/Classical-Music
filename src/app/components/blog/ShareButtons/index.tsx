@@ -2,15 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FaFacebook,
-  FaTwitter,
-  FaLinkedin,
-  FaWhatsapp,
-  FaTelegram,
-  FaEnvelope,
-  FaLink,
-  FaCheck,
-} from 'react-icons/fa';
+  PiCheck,
+  PiEnvelopeSimple,
+  PiFacebookLogo,
+  PiLink,
+  PiLinkedinLogo,
+  PiTelegramLogo,
+  PiTwitterLogo,
+  PiWhatsappLogo,
+} from 'react-icons/pi';
 
 interface ShareButtonsProps {
   // Permite receber URL e título como props (opcional)
@@ -79,7 +79,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
   const shareLinks = [
     {
       name: 'Facebook',
-      icon: FaFacebook,
+      icon: PiFacebookLogo,
       url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
         currentUrl
       )}`,
@@ -87,7 +87,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
     },
     {
       name: 'Twitter',
-      icon: FaTwitter,
+      icon: PiTwitterLogo,
       url: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
         currentUrl
       )}&text=${encodeURIComponent(currentTitle)}`,
@@ -95,7 +95,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
     },
     {
       name: 'LinkedIn',
-      icon: FaLinkedin,
+      icon: PiLinkedinLogo,
       url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
         currentUrl
       )}`,
@@ -103,7 +103,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
     },
     {
       name: 'WhatsApp',
-      icon: FaWhatsapp,
+      icon: PiWhatsappLogo,
       url: `https://api.whatsapp.com/send?text=${encodeURIComponent(
         currentTitle + ' ' + currentUrl
       )}`,
@@ -111,7 +111,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
     },
     {
       name: 'Telegram',
-      icon: FaTelegram,
+      icon: PiTelegramLogo,
       url: `https://t.me/share/url?url=${encodeURIComponent(
         currentUrl
       )}&text=${encodeURIComponent(currentTitle)}`,
@@ -119,7 +119,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
     },
     {
       name: 'Email',
-      icon: FaEnvelope,
+      icon: PiEnvelopeSimple,
       url: `mailto:?subject=${encodeURIComponent(
         currentTitle
       )}&body=${encodeURIComponent(currentUrl)}`,
@@ -167,9 +167,9 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
           title="Copiar link"
         >
           {copied ? (
-            <FaCheck className="w-5 h-5 text-green-500" />
+            <PiCheck className="w-5 h-5 text-green-500" />
           ) : (
-            <FaLink className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+            <PiLink className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
           )}
           {copied && (
             <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-green-500 text-white text-xs rounded whitespace-nowrap">

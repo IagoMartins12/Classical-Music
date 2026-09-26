@@ -4,7 +4,13 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from '@/app/components/SmartImage';
-import { FiSave, FiX, FiUpload, FiTrash2, FiAlertCircle } from 'react-icons/fi';
+import {
+  PiFloppyDisk,
+  PiTrash,
+  PiUploadSimple,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import {
   createCategory,
@@ -216,7 +222,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
             />
             {errors.name && (
               <p className="text-sm text-red-500 mt-1 flex items-center space-x-1">
-                <FiAlertCircle className="w-4 h-4" />
+                <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.name}</span>
               </p>
             )}
@@ -249,7 +255,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
             </div>
             {errors.slug && (
               <p className="text-sm text-red-500 mt-1 flex items-center space-x-1">
-                <FiAlertCircle className="w-4 h-4" />
+                <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.slug}</span>
               </p>
             )}
@@ -359,7 +365,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
             </div>
             {errors.color && (
               <p className="text-sm text-red-500 mt-1 flex items-center space-x-1">
-                <FiAlertCircle className="w-4 h-4" />
+                <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.color}</span>
               </p>
             )}
@@ -403,7 +409,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                 onClick={handleRemoveImage}
                 className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all"
               >
-                <FiTrash2 className="w-4 h-4" />
+                <PiTrash className="w-4 h-4" />
               </button>
             </div>
           ) : (
@@ -422,7 +428,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                 </div>
               ) : (
                 <div className="flex flex-col items-center space-y-2">
-                  <FiUpload className="w-8 h-8 text-theme-tertiary" />
+                  <PiUploadSimple className="w-8 h-8 text-theme-tertiary" />
                   <p className="text-sm text-theme-secondary">
                     Clique para selecionar uma imagem
                   </p>
@@ -481,7 +487,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
           className="btn-classical-secondary flex items-center space-x-2"
           disabled={submitting}
         >
-          <FiX className="w-4 h-4" />
+          <PiX className="w-4 h-4" />
           <span>Cancelar</span>
         </button>
 
@@ -490,7 +496,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
           className="btn-classical-primary flex items-center space-x-2"
           disabled={submitting}
         >
-          <FiSave className="w-4 h-4" />
+          <PiFloppyDisk className="w-4 h-4" />
           <span>
             {submitting
               ? 'Salvando...'

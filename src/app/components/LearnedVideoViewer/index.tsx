@@ -3,21 +3,22 @@
 
 import { useState } from 'react';
 import {
-  FiMaximize2,
-  FiMinimize2,
-  FiDownload,
-  FiClock,
-  FiEye,
-  FiUser,
-  FiCalendar,
-  FiX,
-  FiMusic,
-  FiStar,
-  FiTrendingUp,
-  FiEdit3,
-  FiLock,
-  FiUnlock,
-} from 'react-icons/fi';
+  PiArrowsIn,
+  PiArrowsOut,
+  PiCalendarBlank,
+  PiClock,
+  PiDownloadSimple,
+  PiEye,
+  PiLock,
+  PiLockOpen,
+  PiMusicNotes,
+  PiPencilLine,
+  PiStar,
+  PiStarFill,
+  PiTrendUp,
+  PiUser,
+  PiX,
+} from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import { formatDistanceToNow } from 'date-fns';
@@ -113,7 +114,7 @@ export default function LearnedVideoViewer({
       <Modal isOpen={isOpen} maxWidth="2xl" onClose={onClose}>
         <div className="bg-theme-elevated p-6 text-center">
           <div className="mb-4">
-            <FiMusic className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+            <PiMusicNotes className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
             <h3 className="text-xl font-bold text-theme-primary mb-2">
               Nenhum Vídeo de Performance
             </h3>
@@ -248,11 +249,11 @@ export default function LearnedVideoViewer({
 
                 <div className="flex items-center space-x-4 text-xs text-theme-secondary">
                   <span className="flex items-center space-x-1">
-                    <FiUser className="w-3 h-3" />
+                    <PiUser className="w-3 h-3" />
                     <span>{userName}</span>
                   </span>
                   <span className="flex items-center space-x-1">
-                    <FiCalendar className="w-3 h-3" />
+                    <PiCalendarBlank className="w-3 h-3" />
                     <span>
                       Aprendida{' '}
                       {formatDistanceToNow(new Date(learned.learnedAt), {
@@ -262,7 +263,7 @@ export default function LearnedVideoViewer({
                     </span>
                   </span>
                   <span className="flex items-center space-x-1">
-                    <FiTrendingUp className="w-3 h-3" />
+                    <PiTrendUp className="w-3 h-3" />
                     <span>Maestria: {learned.mastery}%</span>
                   </span>
                 </div>
@@ -274,7 +275,7 @@ export default function LearnedVideoViewer({
                 <Button
                   variant="ghost"
                   size="sm"
-                  leftIcon={videoData.isPublic ? <FiUnlock /> : <FiLock />}
+                  leftIcon={videoData.isPublic ? <PiLockOpen /> : <PiLock />}
                   onClick={handleToggleVisibility}
                   disabled={isUpdating}
                   title={
@@ -288,7 +289,7 @@ export default function LearnedVideoViewer({
               <Button
                 variant="ghost"
                 size="sm"
-                leftIcon={<FiEye />}
+                leftIcon={<PiEye />}
                 onClick={() => setShowDetails(!showDetails)}
               >
                 Detalhes
@@ -298,7 +299,7 @@ export default function LearnedVideoViewer({
                 <Button
                   variant="ghost"
                   size="sm"
-                  leftIcon={<FiX />}
+                  leftIcon={<PiX />}
                   onClick={onClose}
                 >
                   Fechar
@@ -334,7 +335,7 @@ export default function LearnedVideoViewer({
                 <Button
                   variant="secondary"
                   size="sm"
-                  leftIcon={isFullscreen ? <FiMinimize2 /> : <FiMaximize2 />}
+                  leftIcon={isFullscreen ? <PiArrowsIn /> : <PiArrowsOut />}
                   onClick={toggleFullscreen}
                   className="bg-black/50 text-white border-white/20 hover:bg-black/70"
                 >
@@ -434,16 +435,27 @@ export default function LearnedVideoViewer({
                     <div className="flex justify-between">
                       <span className="text-theme-secondary">Diversão:</span>
                       <div className="flex items-center space-x-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <FiStar
-                            key={star}
-                            className={`w-3 h-3 ${
-                              star <= learned.enjoyment!
-                                ? 'text-yellow-400 fill-current'
-                                : 'text-gray-300'
-                            }`}
-                          />
-                        ))}
+                        {[1, 2, 3, 4, 5].map((star) =>
+                          star <= learned.enjoyment! ? (
+                            <PiStarFill
+                              key={star}
+                              className={`w-3 h-3 ${
+                                star <= learned.enjoyment!
+                                  ? 'text-yellow-400 fill-current'
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                          ) : (
+                            <PiStar
+                              key={star}
+                              className={`w-3 h-3 ${
+                                star <= learned.enjoyment!
+                                  ? 'text-yellow-400 fill-current'
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                          )
+                        )}
                       </div>
                     </div>
                   )}
@@ -495,7 +507,7 @@ export default function LearnedVideoViewer({
                     <Button
                       variant="ghost"
                       size="sm"
-                      leftIcon={<FiEdit3 />}
+                      leftIcon={<PiPencilLine />}
                       onClick={() => setEditingNotes(!editingNotes)}
                     >
                       Editar
@@ -588,7 +600,7 @@ export default function LearnedVideoViewer({
             <div className="flex items-center justify-between">
               <div className="text-sm text-theme-secondary">
                 <span className="flex items-center space-x-1">
-                  <FiClock className="w-3 h-3" />
+                  <PiClock className="w-3 h-3" />
                   <span>
                     Vídeo enviado{' '}
                     {formatDistanceToNow(new Date(videoData.uploadedAt), {
@@ -604,7 +616,7 @@ export default function LearnedVideoViewer({
                   <Button
                     variant="secondary"
                     size="sm"
-                    leftIcon={<FiDownload />}
+                    leftIcon={<PiDownloadSimple />}
                     onClick={handleDownload}
                   >
                     Download

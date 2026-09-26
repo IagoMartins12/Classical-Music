@@ -3,16 +3,15 @@
 
 import { useState } from 'react';
 import {
-  FiClock,
-  FiMusic,
-  FiUser,
-  FiCalendar,
-  FiBookOpen,
-  FiEdit,
-  FiTrash2,
-  FiShield,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiBookOpen,
+  PiCalendarBlank,
+  PiClock,
+  PiMusicNotes,
+  PiNotePencil,
+  PiShield,
+  PiTrash,
+  PiUser,
+} from 'react-icons/pi';
 import type { UserUpload } from '@/app/requests/my-uploads';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import Link from 'next/link';
@@ -65,7 +64,7 @@ const UploadWorkCard = ({
           <div className="flex items-center space-x-4 flex-1 min-w-0">
             {/* Icon */}
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center flex-shrink-0">
-              <FiMusic className="w-6 h-6 text-theme-primary" />
+              <PiMusicNotes className="w-6 h-6 text-theme-primary" />
             </div>
 
             {/* Main info */}
@@ -78,7 +77,7 @@ const UploadWorkCard = ({
                 {/* Composer */}
                 {item.composerName && (
                   <span className="inline-flex items-center text-sm text-accent-blue font-medium">
-                    <FiUser className="w-3 h-3 mr-1" />
+                    <PiUser className="w-3 h-3 mr-1" />
                     {item.composerName}
                   </span>
                 )}
@@ -86,7 +85,7 @@ const UploadWorkCard = ({
                 {/* Instrument */}
                 {item.instrumentName && (
                   <span className="inline-flex items-center text-xs text-theme-tertiary">
-                    <FiMusic className="w-3 h-3 mr-1" />
+                    <PiMusicNotes className="w-3 h-3 mr-1" />
                     {item.instrumentName}
                   </span>
                 )}
@@ -94,7 +93,7 @@ const UploadWorkCard = ({
                 {/* Epoch */}
                 {item.epochName && (
                   <span className="inline-flex items-center text-xs text-brand-primary font-medium">
-                    <GiMusicalNotes className="w-3 h-3 mr-1" />
+                    <PiMusicNotes className="w-3 h-3 mr-1" />
                     {item.epochName}
                   </span>
                 )}
@@ -108,7 +107,7 @@ const UploadWorkCard = ({
 
                 {item.verificationStatus === 'verified' && (
                   <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
-                    <FiShield className="w-3 h-3" />
+                    <PiShield className="w-3 h-3" />
                     <span>{t('card_verified_badge')}</span>
                   </span>
                 )}
@@ -133,7 +132,7 @@ const UploadWorkCard = ({
                 onClick={handleEditClick}
                 className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center"
               >
-                <FiEdit className="w-4 h-4" />
+                <PiNotePencil className="w-4 h-4" />
               </button>
 
               <button
@@ -143,7 +142,7 @@ const UploadWorkCard = ({
                   isDeleting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
-                <FiTrash2 className="w-4 h-4" />
+                <PiTrash className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -167,7 +166,7 @@ const UploadWorkCard = ({
                 onClick={handleEditClick}
                 className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center shadow-theme-medium"
               >
-                <FiEdit className="w-4 h-4" />
+                <PiNotePencil className="w-4 h-4" />
               </button>
 
               <button
@@ -177,7 +176,7 @@ const UploadWorkCard = ({
                   isDeleting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
-                <FiTrash2 className="w-4 h-4" />
+                <PiTrash className="w-4 h-4" />
               </button>
             </div>
 
@@ -191,7 +190,7 @@ const UploadWorkCard = ({
               {item.composerName && (
                 <div className="flex items-center mb-4">
                   <div className="w-6 h-6 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-2">
-                    <FiUser className="w-3 h-3 text-theme-primary" />
+                    <PiUser className="w-3 h-3 text-theme-primary" />
                   </div>
                   <span className="text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium">
                     {item.composerName}
@@ -208,7 +207,7 @@ const UploadWorkCard = ({
               {/* Instrument */}
               {item.instrumentName && (
                 <div className="flex items-center">
-                  <FiMusic className="w-4 h-4 text-brand-primary mr-2 flex-shrink-0" />
+                  <PiMusicNotes className="w-4 h-4 text-brand-primary mr-2 flex-shrink-0" />
                   <span className="text-sm text-theme-secondary">
                     {item.instrumentName}
                   </span>
@@ -218,7 +217,7 @@ const UploadWorkCard = ({
               {/* Epoch */}
               {item.epochName && (
                 <div className="flex items-center">
-                  <GiMusicalNotes className="w-4 h-4 text-brand-secondary mr-2 flex-shrink-0" />
+                  <PiMusicNotes className="w-4 h-4 text-brand-secondary mr-2 flex-shrink-0" />
                   <span className="text-sm text-theme-secondary">
                     {item.epochName}
                   </span>
@@ -228,7 +227,7 @@ const UploadWorkCard = ({
               {/* Genres */}
               {item.workGenres && item.workGenres.length > 0 && (
                 <div className="flex items-center">
-                  <FiBookOpen className="w-4 h-4 text-brand-secondary mr-2 flex-shrink-0" />
+                  <PiBookOpen className="w-4 h-4 text-brand-secondary mr-2 flex-shrink-0" />
                   <span className="text-sm text-theme-secondary capitalize">
                     {item.workGenres.slice(0, 2).join(', ')}
                     {item.workGenres.length > 2 &&
@@ -242,7 +241,7 @@ const UploadWorkCard = ({
             <div className="flex flex-wrap gap-2 mb-4">
               {item.epochName && (
                 <span className="inline-flex items-center px-2 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium">
-                  <FiClock className="w-2.5 h-2.5 mr-1" />
+                  <PiClock className="w-2.5 h-2.5 mr-1" />
                   {item.epochName}
                 </span>
               )}
@@ -255,7 +254,7 @@ const UploadWorkCard = ({
 
               {item.verificationStatus === 'verified' && (
                 <span className="inline-flex items-center px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
-                  <FiShield className="w-2.5 h-2.5 mr-1" />
+                  <PiShield className="w-2.5 h-2.5 mr-1" />
                   {t('card_verified_badge')}
                 </span>
               )}
@@ -266,7 +265,7 @@ const UploadWorkCard = ({
               {/* Secondary Actions */}
               <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
                 <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
-                  <FiCalendar className="w-3 h-3" />
+                  <PiCalendarBlank className="w-3 h-3" />
                   <span>
                     {t('card_added_on')}{' '}
                     {new Date(item.createdAt).toLocaleDateString('pt-BR')}

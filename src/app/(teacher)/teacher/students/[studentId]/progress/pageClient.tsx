@@ -6,22 +6,22 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import {
-  FiArrowLeft,
-  FiShare2,
-  FiRefreshCw,
-  FiTrendingUp,
-  FiTarget,
-  FiBookOpen,
-  FiClock,
-  FiAward,
-  FiBarChart2,
-  FiHeart,
-  FiMusic,
-  FiCheckCircle,
-  FiAlertCircle,
-  FiUser,
-  FiChevronRight,
-} from 'react-icons/fi';
+  PiArrowLeft,
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCaretRight,
+  PiChartBar,
+  PiCheckCircle,
+  PiClock,
+  PiHeart,
+  PiMedal,
+  PiMusicNotes,
+  PiShareNetwork,
+  PiTarget,
+  PiTrendUp,
+  PiUser,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -152,7 +152,7 @@ export default function TeacherProgressPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiAlertCircle className="w-8 h-8 text-theme-primary" />
+              <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('error_loading_report')}
@@ -166,7 +166,7 @@ export default function TeacherProgressPageClient({
                 disabled={loading.refreshing}
                 className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
               >
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-4 h-4 ${
                     loading.refreshing ? 'animate-spin' : ''
                   }`}
@@ -195,7 +195,7 @@ export default function TeacherProgressPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center">
-            <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
             <p className="text-theme-secondary">{t('loading_report')}</p>
           </div>
         </div>
@@ -215,21 +215,21 @@ export default function TeacherProgressPageClient({
             >
               {t('breadcrumb_dashboard')}
             </Link>
-            <FiChevronRight className="w-4 h-4" />
+            <PiCaretRight className="w-4 h-4" />
             <Link
               href="/teacher/students"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_students')}
             </Link>
-            <FiChevronRight className="w-4 h-4" />
+            <PiCaretRight className="w-4 h-4" />
             <Link
               href={`/teacher/students/${studentId}`}
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_student_detail')}
             </Link>
-            <FiChevronRight className="w-4 h-4" />
+            <PiCaretRight className="w-4 h-4" />
             <span className="text-theme-primary font-medium">
               {t('breadcrumb_progress_report')}
             </span>
@@ -244,7 +244,7 @@ export default function TeacherProgressPageClient({
                 href={`/teacher/students/${studentId}`}
                 className="w-12 h-12 rounded-xl bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
               >
-                <FiArrowLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiArrowLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </Link>
 
               <div className="flex items-center space-x-4">
@@ -260,7 +260,7 @@ export default function TeacherProgressPageClient({
                   </div>
                 ) : (
                   <div className="w-14 h-14 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                    <FiUser className="w-7 h-7 text-theme-primary" />
+                    <PiUser className="w-7 h-7 text-theme-primary" />
                   </div>
                 )}
 
@@ -303,7 +303,7 @@ export default function TeacherProgressPageClient({
                   className="btn-classical-secondary p-3"
                   title={t('btn_refresh_data')}
                 >
-                  <FiRefreshCw
+                  <PiArrowsClockwise
                     className={`w-5 h-5 ${
                       loading.refreshing ? 'animate-spin' : ''
                     }`}
@@ -315,7 +315,7 @@ export default function TeacherProgressPageClient({
                   disabled={!reportData}
                   className="btn-classical-primary flex items-center space-x-2"
                 >
-                  <FiShare2 className="w-4 h-4" />
+                  <PiShareNetwork className="w-4 h-4" />
                   <span>{t('btn_share_with_student')}</span>
                 </button>
               </div>
@@ -328,7 +328,7 @@ export default function TeacherProgressPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <div className="classical-card p-4 border-l-4 border-accent-green mb-6">
               <div className="flex items-center space-x-3">
-                <FiCheckCircle className="w-5 h-5 text-accent-green" />
+                <PiCheckCircle className="w-5 h-5 text-accent-green" />
                 <span className="text-accent-green font-medium">
                   {shareSuccess}
                 </span>
@@ -341,7 +341,7 @@ export default function TeacherProgressPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
-              <FiBarChart2 className="w-6 h-6 mr-3 text-brand-primary" />
+              <PiChartBar className="w-6 h-6 mr-3 text-brand-primary" />
               {t('overview_section')}
             </h2>
 
@@ -351,7 +351,7 @@ export default function TeacherProgressPageClient({
                 className="classical-card p-6 text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiBookOpen className="w-6 h-6 text-theme-primary" />
+                  <PiBookOpen className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {reportData.overview.completedLessons}
@@ -369,7 +369,7 @@ export default function TeacherProgressPageClient({
                 className="classical-card p-6 text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiClock className="w-6 h-6 text-theme-primary" />
+                  <PiClock className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {reportData.overview.totalStudyHours}h
@@ -387,7 +387,7 @@ export default function TeacherProgressPageClient({
                 className="classical-card p-6 text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiMusic className="w-6 h-6 text-theme-primary" />
+                  <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {reportData.overview.piecesStudied}
@@ -405,7 +405,7 @@ export default function TeacherProgressPageClient({
                 className="classical-card p-6 text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-orange to-accent-red rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiAward className="w-6 h-6 text-theme-primary" />
+                  <PiMedal className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {reportData.overview.currentStreak}
@@ -425,7 +425,7 @@ export default function TeacherProgressPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
-              <FiTrendingUp className="w-6 h-6 mr-3 text-brand-primary" />
+              <PiTrendUp className="w-6 h-6 mr-3 text-brand-primary" />
               {t('progress_evolution')}
             </h2>
 
@@ -458,7 +458,7 @@ export default function TeacherProgressPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
-                <FiHeart className="w-6 h-6 mr-3 text-brand-primary" />
+                <PiHeart className="w-6 h-6 mr-3 text-brand-primary" />
                 {t('musical_preferences')}
               </h2>
 
@@ -528,7 +528,7 @@ export default function TeacherProgressPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
-              <FiTarget className="w-6 h-6 mr-3 text-brand-primary" />
+              <PiTarget className="w-6 h-6 mr-3 text-brand-primary" />
               {t('pedagogical_insights')}
             </h2>
 

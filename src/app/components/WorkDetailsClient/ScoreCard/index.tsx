@@ -1,5 +1,5 @@
 // ScoreCard.tsx - VERSÃO OTIMIZADA com Portal para thumbnail sempre no topo
-import { FiClock, FiDownload, FiFileText, FiUser } from 'react-icons/fi';
+import { PiClock, PiDownloadSimple, PiFileText, PiUser } from 'react-icons/pi';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import Image from '@/app/components/SmartImage';
@@ -167,7 +167,7 @@ const ScoreCard = ({
                     className="flex items-center gap-2 bg-brand-gradient text-theme-primary px-0 md:px-4 py-2 rounded-xl text-sm font-medium hover:scale-105 hover:shadow-theme-glow transition-all duration-300 group/download"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <FiDownload className="w-3  hidden md:block h-3 group-hover/download:animate-bounce" />
+                    <PiDownloadSimple className="w-3  hidden md:block h-3 group-hover/download:animate-bounce" />
                     <span className="text-xs md:text-md">Download</span>
                     <div className="">
                       <svg
@@ -194,7 +194,7 @@ const ScoreCard = ({
               {score.fileSize && (
                 <div className="flex items-center gap-2 text-theme-secondary">
                   <div className="w-5 h-5 bg-accent-blue/20 border border-accent-blue/30 rounded-lg flex items-center justify-center">
-                    <FiFileText className="w-3 h-3 text-accent-blue" />
+                    <PiFileText className="w-3 h-3 text-accent-blue" />
                   </div>
                   <span>
                     {score.fileSize}
@@ -207,7 +207,7 @@ const ScoreCard = ({
               {shouldShowThumbnail && score.uploader && (
                 <div className="flex items-center gap-2 text-theme-secondary">
                   <div className="w-5 h-5 bg-accent-green/20 border border-accent-green/30 rounded-lg flex items-center justify-center">
-                    <FiUser className="w-3 h-3 text-accent-green" />
+                    <PiUser className="w-3 h-3 text-accent-green" />
                   </div>
                   <span>
                     {score.uploader}
@@ -219,7 +219,7 @@ const ScoreCard = ({
               {shouldShowThumbnail && score.uploadDate && (
                 <div className="flex items-center gap-2 text-theme-secondary">
                   <div className="w-5 h-5 bg-brand-primary/20 border border-brand-primary/30 rounded-lg flex items-center justify-center">
-                    <FiClock className="w-3 h-3 text-theme-primary" />
+                    <PiClock className="w-3 h-3 text-theme-primary" />
                   </div>
                   <span>{score.uploadDate}</span>
                 </div>

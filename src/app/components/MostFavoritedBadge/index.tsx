@@ -2,8 +2,7 @@
 
 'use client';
 
-import { FiAward, FiStar, FiTrendingUp } from 'react-icons/fi';
-import { BiCrown } from 'react-icons/bi';
+import { PiCrown, PiMedal, PiStar, PiTrendUp } from 'react-icons/pi';
 import { useIsMostFavorited } from '@/app/hooks/useMostFavoritedScore';
 
 interface MostFavoritedBadgeProps {
@@ -47,7 +46,7 @@ export default function MostFavoritedBadge({
 
   const variants = {
     crown: {
-      icon: BiCrown,
+      icon: PiCrown,
       gradient: 'from-yellow-400 to-yellow-600',
       bgGradient: 'from-yellow-400/20 to-yellow-600/20',
       borderColor: 'border-yellow-500/40',
@@ -56,7 +55,7 @@ export default function MostFavoritedBadge({
       label: 'Mais Favoritada',
     },
     star: {
-      icon: FiStar,
+      icon: PiStar,
       gradient: 'from-amber-400 to-orange-500',
       bgGradient: 'from-amber-400/20 to-orange-500/20',
       borderColor: 'border-amber-500/40',
@@ -65,7 +64,7 @@ export default function MostFavoritedBadge({
       label: 'Favorita da Comunidade',
     },
     award: {
-      icon: FiAward,
+      icon: PiMedal,
       gradient: 'from-purple-400 to-pink-500',
       bgGradient: 'from-purple-400/20 to-pink-500/20',
       borderColor: 'border-purple-500/40',
@@ -74,7 +73,7 @@ export default function MostFavoritedBadge({
       label: 'Top Favorita',
     },
     trending: {
-      icon: FiTrendingUp,
+      icon: PiTrendUp,
       gradient: 'from-green-400 to-emerald-500',
       bgGradient: 'from-green-400/20 to-emerald-500/20',
       borderColor: 'border-green-500/40',
@@ -169,9 +168,7 @@ export default function MostFavoritedBadge({
 // // components/MostFavoritedBadge.tsx - VERSÃO OTIMIZADA com props opcionais
 // 'use client';
 
-// import { FiAward, FiStar, FiTrendingUp } from 'react-icons/fi';
-// import { BiCrown } from 'react-icons/bi';
-// import { useIsMostFavorited } from '@/app/hooks/useMostFavoritedScore';
+// // // import { useIsMostFavorited } from '@/app/hooks/useMostFavoritedScore';
 
 // interface MostFavoritedBadgeProps {
 //   workId: string;
@@ -220,7 +217,7 @@ export default function MostFavoritedBadge({
 //   // Configurações visuais por variante
 //   const variants = {
 //     crown: {
-//       icon: BiCrown,
+//       icon: PiCrown,
 //       gradient: 'from-yellow-400 to-yellow-600',
 //       bgGradient: 'from-yellow-400/20 to-yellow-600/20',
 //       borderColor: 'border-yellow-500/40',
@@ -229,7 +226,7 @@ export default function MostFavoritedBadge({
 //       label: 'Mais Favoritada',
 //     },
 //     star: {
-//       icon: FiStar,
+//       icon: PiStar,
 //       gradient: 'from-amber-400 to-orange-500',
 //       bgGradient: 'from-amber-400/20 to-orange-500/20',
 //       borderColor: 'border-amber-500/40',
@@ -238,7 +235,7 @@ export default function MostFavoritedBadge({
 //       label: 'Favorita da Comunidade',
 //     },
 //     award: {
-//       icon: FiAward,
+//       icon: PiMedal,
 //       gradient: 'from-purple-400 to-pink-500',
 //       bgGradient: 'from-purple-400/20 to-pink-500/20',
 //       borderColor: 'border-purple-500/40',
@@ -247,7 +244,7 @@ export default function MostFavoritedBadge({
 //       label: 'Top Favorita',
 //     },
 //     trending: {
-//       icon: FiTrendingUp,
+//       icon: PiTrendUp,
 //       gradient: 'from-green-400 to-emerald-500',
 //       bgGradient: 'from-green-400/20 to-emerald-500/20',
 //       borderColor: 'border-green-500/40',

@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FiSearch, FiFilter, FiX } from 'react-icons/fi';
+import { PiFunnel, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { ArticleCard } from '@/app/components/blog/ArticleCard';
 import { ArticleCardList } from '@/app/components/blog/ArticleCardList';
@@ -107,7 +107,7 @@ export function ArticlesFilter({
           {/* Search & View Toggle */}
           <div className="flex items-center gap-3">
             <form onSubmit={handleSearch} className="flex-1 relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+              <PiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
               <input
                 type="text"
                 value={searchTerm}
@@ -123,7 +123,7 @@ export function ArticlesFilter({
                 hasActiveFilters ? 'ring-2 ring-brand-primary' : ''
               }`}
             >
-              <FiFilter className="w-4 h-4" />
+              <PiFunnel className="w-4 h-4" />
               <span>Filtros</span>
               {hasActiveFilters && (
                 <span className="w-2 h-2 bg-brand-primary rounded-full"></span>
@@ -136,7 +136,7 @@ export function ArticlesFilter({
                 className="btn-classical-secondary text-red-500"
                 title="Limpar filtros"
               >
-                <FiX className="w-5 h-5" />
+                <PiX className="w-5 h-5" />
               </button>
             )}
 
@@ -204,7 +204,7 @@ export function ArticlesFilter({
       {/* Articles */}
       {articles.length === 0 ? (
         <div className="classical-card p-12 text-center">
-          <FiSearch className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+          <PiMagnifyingGlass className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-theme-primary mb-2">
             Nenhum artigo encontrado
           </h3>

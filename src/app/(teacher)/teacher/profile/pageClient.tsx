@@ -3,24 +3,24 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import {
-  FiUser,
-  FiSave,
-  FiEdit3,
-  FiGlobe,
-  FiAward,
-  FiMusic,
-  FiClock,
-  FiUsers,
-  FiEye,
-  FiEyeOff,
-  FiX,
-  FiCheck,
-  FiRefreshCw,
-  FiMapPin,
-  FiMail,
-  FiPhone,
-  FiAlertCircle,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCheck,
+  PiClock,
+  PiEnvelopeSimple,
+  PiEye,
+  PiEyeSlash,
+  PiFloppyDisk,
+  PiGlobe,
+  PiMapPin,
+  PiMedal,
+  PiMusicNotes,
+  PiPencilLine,
+  PiPhone,
+  PiUser,
+  PiUsers,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -451,7 +451,7 @@ export default function TeacherProfilePageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiUser className="w-8 h-8 text-theme-primary" />
+              <PiUser className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('error_loading_profile')}
@@ -463,7 +463,7 @@ export default function TeacherProfilePageClient({
               onClick={() => window.location.reload()}
               className="btn-classical-primary flex mx-auto items-center space-x-2"
             >
-              <FiRefreshCw className="w-4 h-4" />
+              <PiArrowsClockwise className="w-4 h-4" />
               <span>{t('reload_page')}</span>
             </button>
           </div>
@@ -480,7 +480,7 @@ export default function TeacherProfilePageClient({
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiUser className="w-8 h-8 text-theme-primary" />
+                <PiUser className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -501,7 +501,7 @@ export default function TeacherProfilePageClient({
             >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-accent-green/10 rounded-full flex items-center justify-center">
-                  <FiCheck className="w-4 h-4 text-accent-green" />
+                  <PiCheck className="w-4 h-4 text-accent-green" />
                 </div>
                 <div className="text-accent-green font-medium">
                   {successMessage}
@@ -521,7 +521,7 @@ export default function TeacherProfilePageClient({
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-accent-red/10 rounded-full flex items-center justify-center">
-                    <FiX className="w-4 h-4 text-accent-red" />
+                    <PiX className="w-4 h-4 text-accent-red" />
                   </div>
                   <div className="text-accent-red font-medium">{error}</div>
                 </div>
@@ -529,7 +529,7 @@ export default function TeacherProfilePageClient({
                   onClick={() => setError('')}
                   className="text-accent-red hover:text-accent-red/70 transition-colors"
                 >
-                  <FiX className="w-4 h-4" />
+                  <PiX className="w-4 h-4" />
                 </button>
               </div>
             </AnimatedCard>
@@ -544,7 +544,7 @@ export default function TeacherProfilePageClient({
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
-                    <FiUser className="w-5 h-5 text-theme-primary" />
+                    <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -565,7 +565,7 @@ export default function TeacherProfilePageClient({
                   disabled={saving}
                   className="btn-classical-secondary flex items-center space-x-2"
                 >
-                  <FiEdit3 className="w-4 h-4" />
+                  <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'personal' ? t('cancel') : t('edit')}
                   </span>
@@ -629,7 +629,7 @@ export default function TeacherProfilePageClient({
                       phoneValidation.showError &&
                       phoneValidation.error && (
                         <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3 mt-4">
-                          <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                          <PiWarningCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                           <div>
                             <h4 className="text-sm font-medium text-red-800">
                               {t('phone_invalid')}
@@ -650,7 +650,7 @@ export default function TeacherProfilePageClient({
                   {/* Localização */}
                   <div>
                     <div className="flex items-center space-x-2 mb-4">
-                      <FiMapPin className="w-4 h-4 text-brand-primary" />
+                      <PiMapPin className="w-4 h-4 text-brand-primary" />
                       <h4 className="font-medium text-theme-primary">
                         {t('location')}
                       </h4>
@@ -686,9 +686,9 @@ export default function TeacherProfilePageClient({
                       }
                     >
                       {saving ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                       ) : (
-                        <FiSave className="w-4 h-4" />
+                        <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
                     </button>
@@ -711,7 +711,7 @@ export default function TeacherProfilePageClient({
                         {t('email_label')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2">
-                        <FiMail className="w-4 h-4" />
+                        <PiEnvelopeSimple className="w-4 h-4" />
                         <span>{data?.user.email}</span>
                       </div>
                     </div>
@@ -721,7 +721,7 @@ export default function TeacherProfilePageClient({
                         {t('phone_label')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2">
-                        <FiPhone className="w-4 h-4" />
+                        <PiPhone className="w-4 h-4" />
                         <span>{data?.user.phone || t('not_informed')}</span>
                       </div>
                     </div>
@@ -733,7 +733,7 @@ export default function TeacherProfilePageClient({
                         {t('location_label')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2">
-                        <FiMapPin className="w-4 h-4" />
+                        <PiMapPin className="w-4 h-4" />
                         <span>
                           {data?.user.city && data?.user.state
                             ? `${data.user.city}, ${data.user.state}`
@@ -776,7 +776,7 @@ export default function TeacherProfilePageClient({
                         )}
                         {data?.isVerified && (
                           <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-accent-green/10 text-accent-green">
-                            <FiCheck className="w-3 h-3 mr-1" />
+                            <PiCheck className="w-3 h-3 mr-1" />
                             {t('verified')}
                           </div>
                         )}
@@ -794,7 +794,7 @@ export default function TeacherProfilePageClient({
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center">
-                    <FiAward className="w-5 h-5 text-theme-primary" />
+                    <PiMedal className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -815,7 +815,7 @@ export default function TeacherProfilePageClient({
                   disabled={saving}
                   className="btn-classical-secondary flex items-center space-x-2"
                 >
-                  <FiEdit3 className="w-4 h-4" />
+                  <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'professional'
                       ? t('cancel')
@@ -940,9 +940,9 @@ export default function TeacherProfilePageClient({
                       className="btn-classical-primary flex items-center space-x-2"
                     >
                       {saving ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                       ) : (
-                        <FiSave className="w-4 h-4" />
+                        <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
                     </button>
@@ -1008,7 +1008,7 @@ export default function TeacherProfilePageClient({
                           rel="noopener noreferrer"
                           className="text-brand-primary hover:text-brand-secondary transition-colors flex items-center space-x-2"
                         >
-                          <FiGlobe className="w-4 h-4" />
+                          <PiGlobe className="w-4 h-4" />
                           <span>{data.website}</span>
                         </a>
                       </div>
@@ -1021,7 +1021,7 @@ export default function TeacherProfilePageClient({
                     !data?.achievements &&
                     !data?.website && (
                       <div className="text-center py-8">
-                        <FiAward className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                        <PiMedal className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                         <h3 className="text-lg font-bold text-theme-primary mb-2">
                           {t('complete_professional_profile')}
                         </h3>
@@ -1047,7 +1047,7 @@ export default function TeacherProfilePageClient({
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
-                    <FiMusic className="w-5 h-5 text-theme-primary" />
+                    <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -1068,7 +1068,7 @@ export default function TeacherProfilePageClient({
                   disabled={saving}
                   className="btn-classical-secondary flex items-center space-x-2"
                 >
-                  <FiEdit3 className="w-4 h-4" />
+                  <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'teaching' ? t('cancel') : t('edit')}
                   </span>
@@ -1095,7 +1095,7 @@ export default function TeacherProfilePageClient({
                             className="text-accent-blue/70 hover:text-accent-red transition-colors"
                             disabled={saving}
                           >
-                            <FiX className="w-3 h-3" />
+                            <PiX className="w-3 h-3" />
                           </button>
                         </span>
                       ))}
@@ -1140,7 +1140,7 @@ export default function TeacherProfilePageClient({
                             className="text-accent-purple/70 hover:text-accent-red transition-colors"
                             disabled={saving}
                           >
-                            <FiX className="w-3 h-3" />
+                            <PiX className="w-3 h-3" />
                           </button>
                         </span>
                       ))}
@@ -1347,9 +1347,9 @@ export default function TeacherProfilePageClient({
                       className="btn-classical-primary flex items-center space-x-2"
                     >
                       {saving ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                       ) : (
-                        <FiSave className="w-4 h-4" />
+                        <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
                     </button>
@@ -1474,7 +1474,7 @@ export default function TeacherProfilePageClient({
                         {t('default_duration')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2 mt-1">
-                        <FiClock className="w-4 h-4" />
+                        <PiClock className="w-4 h-4" />
                         <span>
                           {data?.defaultLessonDuration} {t('minutes')}
                         </span>
@@ -1486,7 +1486,7 @@ export default function TeacherProfilePageClient({
                         {t('weekly_capacity')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2 mt-1">
-                        <FiUsers className="w-4 h-4" />
+                        <PiUsers className="w-4 h-4" />
                         <span>
                           {data?.maxStudentsPerWeek} {t('students')}
                         </span>
@@ -1512,7 +1512,7 @@ export default function TeacherProfilePageClient({
                   {(!data?.instruments || data.instruments.length === 0) &&
                     (!data?.specialties || data.specialties.length === 0) && (
                       <div className="text-center py-8">
-                        <FiMusic className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                        <PiMusicNotes className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                         <h3 className="text-lg font-bold text-theme-primary mb-2">
                           {t('configure_specialties')}
                         </h3>
@@ -1538,7 +1538,7 @@ export default function TeacherProfilePageClient({
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-lg flex items-center justify-center">
-                    <FiGlobe className="w-5 h-5 text-theme-primary" />
+                    <PiGlobe className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -1559,7 +1559,7 @@ export default function TeacherProfilePageClient({
                   disabled={saving}
                   className="btn-classical-secondary flex items-center space-x-2"
                 >
-                  <FiEdit3 className="w-4 h-4" />
+                  <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'public' ? t('cancel') : t('edit')}
                   </span>
@@ -1578,9 +1578,9 @@ export default function TeacherProfilePageClient({
                         }`}
                       >
                         {publicForm.isPublicProfile ? (
-                          <FiEye className="w-5 h-5 text-accent-green" />
+                          <PiEye className="w-5 h-5 text-accent-green" />
                         ) : (
-                          <FiEyeOff className="w-5 h-5 text-theme-tertiary" />
+                          <PiEyeSlash className="w-5 h-5 text-theme-tertiary" />
                         )}
                       </div>
                       <div>
@@ -1649,9 +1649,9 @@ export default function TeacherProfilePageClient({
                       className="btn-classical-primary flex items-center space-x-2"
                     >
                       {saving ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                       ) : (
-                        <FiSave className="w-4 h-4" />
+                        <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
                     </button>
@@ -1669,9 +1669,9 @@ export default function TeacherProfilePageClient({
                         }`}
                       >
                         {data?.isPublicProfile ? (
-                          <FiEye className="w-5 h-5 text-accent-green" />
+                          <PiEye className="w-5 h-5 text-accent-green" />
                         ) : (
-                          <FiEyeOff className="w-5 h-5 text-theme-tertiary" />
+                          <PiEyeSlash className="w-5 h-5 text-theme-tertiary" />
                         )}
                       </div>
                       <div>
@@ -1711,7 +1711,7 @@ export default function TeacherProfilePageClient({
 
                       <div className="bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 rounded-lg bg-theme-elevated border-brand-primary/20 p-4">
                         <div className="flex items-center space-x-3 mb-2">
-                          <FiGlobe className="w-5 h-5 text-brand-primary" />
+                          <PiGlobe className="w-5 h-5 text-brand-primary" />
                           <div className="font-medium text-theme-primary">
                             {t('profile_is_public')}
                           </div>
@@ -1733,7 +1733,7 @@ export default function TeacherProfilePageClient({
 
                   {!data?.isPublicProfile && (
                     <div className="text-center py-8">
-                      <FiEyeOff className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                      <PiEyeSlash className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                       <h3 className="text-lg font-bold text-theme-primary mb-2">
                         {t('profile_private_title')}
                       </h3>

@@ -4,19 +4,19 @@
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import {
-  FiBell,
-  FiCheck,
-  FiCheckCircle,
-  FiClock,
-  FiAlertTriangle,
-  FiInfo,
-  FiFilter,
-  FiRefreshCw,
-  FiExternalLink,
-  FiCalendar,
-  FiUser,
-  FiFileText,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiArrowsClockwise,
+  PiBell,
+  PiCalendarBlank,
+  PiCheck,
+  PiCheckCircle,
+  PiClock,
+  PiFileText,
+  PiFunnel,
+  PiInfo,
+  PiUser,
+  PiWarning,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -183,16 +183,16 @@ export default function TeacherNotificationsPageClient({
   };
 
   const getNotificationIcon = (type: string, priority: string) => {
-    if (type.includes('LESSON')) return <FiCalendar className="w-5 h-5" />;
-    if (type.includes('ASSIGNMENT')) return <FiFileText className="w-5 h-5" />;
-    if (type.includes('STUDENT')) return <FiUser className="w-5 h-5" />;
+    if (type.includes('LESSON')) return <PiCalendarBlank className="w-5 h-5" />;
+    if (type.includes('ASSIGNMENT')) return <PiFileText className="w-5 h-5" />;
+    if (type.includes('STUDENT')) return <PiUser className="w-5 h-5" />;
 
     if (priority === 'HIGH' || priority === 'CRITICAL') {
-      return <FiAlertTriangle className="w-5 h-5 text-accent-red" />;
+      return <PiWarning className="w-5 h-5 text-accent-red" />;
     } else if (priority === 'MEDIUM') {
-      return <FiClock className="w-5 h-5 text-accent-amber" />;
+      return <PiClock className="w-5 h-5 text-accent-amber" />;
     } else {
-      return <FiInfo className="w-5 h-5 text-accent-blue" />;
+      return <PiInfo className="w-5 h-5 text-accent-blue" />;
     }
   };
 
@@ -211,15 +211,15 @@ export default function TeacherNotificationsPageClient({
   const getFilterIcon = (filterType: FilterType) => {
     switch (filterType) {
       case 'lessons':
-        return <FiCalendar className="w-4 h-4" />;
+        return <PiCalendarBlank className="w-4 h-4" />;
       case 'assignments':
-        return <FiFileText className="w-4 h-4" />;
+        return <PiFileText className="w-4 h-4" />;
       case 'students':
-        return <FiUser className="w-4 h-4" />;
+        return <PiUser className="w-4 h-4" />;
       case 'unread':
-        return <FiBell className="w-4 h-4" />;
+        return <PiBell className="w-4 h-4" />;
       default:
-        return <FiFilter className="w-4 h-4" />;
+        return <PiFunnel className="w-4 h-4" />;
     }
   };
 
@@ -241,7 +241,7 @@ export default function TeacherNotificationsPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
-            <FiAlertTriangle className="w-16 h-16 text-accent-red mx-auto mb-4" />
+            <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
             <h1 className="text-xl font-bold text-theme-primary mb-2">
               {t('error_loading')}
             </h1>
@@ -266,7 +266,7 @@ export default function TeacherNotificationsPageClient({
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiBell className="w-8 h-8 text-theme-primary" />
+                <PiBell className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -286,7 +286,7 @@ export default function TeacherNotificationsPageClient({
               className="classical-card p-6 text-center"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiBell className="w-6 h-6 text-theme-primary" />
+                <PiBell className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {unreadCount}
@@ -301,7 +301,7 @@ export default function TeacherNotificationsPageClient({
               className="classical-card p-6 text-center"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCalendar className="w-6 h-6 text-theme-primary" />
+                <PiCalendarBlank className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {notificationStats
@@ -318,7 +318,7 @@ export default function TeacherNotificationsPageClient({
               className="classical-card p-6 text-center"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiFileText className="w-6 h-6 text-theme-primary" />
+                <PiFileText className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {notificationStats
@@ -335,7 +335,7 @@ export default function TeacherNotificationsPageClient({
               className="classical-card p-6 text-center"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiUser className="w-6 h-6 text-theme-primary" />
+                <PiUser className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {notificationStats
@@ -403,7 +403,7 @@ export default function TeacherNotificationsPageClient({
                     disabled={loading}
                     className="btn-classical-secondary flex items-center space-x-2"
                   >
-                    <FiCheckCircle className="w-4 h-4" />
+                    <PiCheckCircle className="w-4 h-4" />
                     <span>{t('mark_all')}</span>
                   </button>
                 )}
@@ -417,12 +417,12 @@ export default function TeacherNotificationsPageClient({
           <div className="space-y-4">
             {loading && notifications.length === 0 ? (
               <div className="text-center py-12">
-                <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+                <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
                 <p className="text-theme-secondary">{t('loading')}</p>
               </div>
             ) : filteredNotifications.length === 0 ? (
               <div className="classical-card p-12 text-center">
-                <FiBell className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
+                <PiBell className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
                   {filter === 'all'
                     ? t('no_notifications')
@@ -515,7 +515,7 @@ export default function TeacherNotificationsPageClient({
                                   <span>
                                     {notification.actionText || t('view')}
                                   </span>
-                                  <FiExternalLink className="w-3 h-3" />
+                                  <PiArrowSquareOut className="w-3 h-3" />
                                 </Link>
                               )}
 
@@ -525,7 +525,7 @@ export default function TeacherNotificationsPageClient({
                                   className="p-2 rounded-lg hover:bg-interactive-hover transition-colors"
                                   title={t('mark_as_read')}
                                 >
-                                  <FiCheck className="w-4 h-4 text-theme-tertiary hover:text-accent-green" />
+                                  <PiCheck className="w-4 h-4 text-theme-tertiary hover:text-accent-green" />
                                 </button>
                               )}
                             </div>
@@ -544,7 +544,7 @@ export default function TeacherNotificationsPageClient({
                       disabled={loading}
                       className="btn-classical-secondary flex items-center space-x-2 mx-auto"
                     >
-                      <FiRefreshCw
+                      <PiArrowsClockwise
                         className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                       />
                       <span>{loading ? t('loading') : t('load_more')}</span>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiSave, FiX, FiAlertCircle, FiTag } from 'react-icons/fi';
+import { PiFloppyDisk, PiTag, PiWarningCircle, PiX } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import { createTag, updateTag } from '@/app/requests/blog/admin-actions';
 
@@ -130,7 +130,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
             />
             {errors.name && (
               <p className="text-sm text-red-500 mt-1 flex items-center space-x-1">
-                <FiAlertCircle className="w-4 h-4" />
+                <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.name}</span>
               </p>
             )}
@@ -161,7 +161,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
             </div>
             {errors.slug && (
               <p className="text-sm text-red-500 mt-1 flex items-center space-x-1">
-                <FiAlertCircle className="w-4 h-4" />
+                <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.slug}</span>
               </p>
             )}
@@ -217,7 +217,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
             </div>
             {errors.color && (
               <p className="text-sm text-red-500 mt-1 flex items-center space-x-1">
-                <FiAlertCircle className="w-4 h-4" />
+                <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.color}</span>
               </p>
             )}
@@ -257,7 +257,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
                       color: formData.color,
                     }}
                   >
-                    <FiTag className="w-5 h-5" />
+                    <PiTag className="w-5 h-5" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-theme-primary">
@@ -283,7 +283,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
             className="btn-classical-secondary flex items-center space-x-2"
             disabled={submitting}
           >
-            <FiX className="w-4 h-4" />
+            <PiX className="w-4 h-4" />
             <span>Cancelar</span>
           </button>
 
@@ -292,7 +292,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
             className="btn-classical-primary flex items-center space-x-2"
             disabled={submitting}
           >
-            <FiSave className="w-4 h-4" />
+            <PiFloppyDisk className="w-4 h-4" />
             <span>
               {submitting
                 ? 'Salvando...'

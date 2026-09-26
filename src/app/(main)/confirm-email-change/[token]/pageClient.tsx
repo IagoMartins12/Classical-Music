@@ -5,16 +5,16 @@ import { legacyAuth } from '@/app/libs/api/compat';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { signOut } from '@/app/libs/session';
-import {
-  FiCheckCircle,
-  FiAlertTriangle,
-  FiLoader,
-  FiMail,
-  FiRefreshCw,
-  FiLogOut,
-  FiHome,
-} from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
+import {
+  PiArrowsClockwise,
+  PiCheckCircle,
+  PiEnvelopeSimple,
+  PiHouse,
+  PiSignOut,
+  PiSpinnerGap,
+  PiWarning,
+} from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import { toast } from 'react-hot-toast';
 import { useAuthStore } from '@/app/stores/authStore';
@@ -164,7 +164,7 @@ export default function ConfirmEmailChangePage() {
         <div className="text-center">
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 bg-brand-gradient rounded-full flex items-center justify-center shadow-theme-glow animate-pulse">
-              <FiLoader className="w-8 h-8 text-theme-primary animate-spin" />
+              <PiSpinnerGap className="w-8 h-8 text-theme-primary animate-spin" />
             </div>
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
@@ -182,7 +182,7 @@ export default function ConfirmEmailChangePage() {
         <div className="text-center">
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 bg-accent-red/10 rounded-full flex items-center justify-center">
-              <FiAlertTriangle className="w-8 h-8 text-accent-red" />
+              <PiWarning className="w-8 h-8 text-accent-red" />
             </div>
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
@@ -203,7 +203,7 @@ export default function ConfirmEmailChangePage() {
         <div className="text-center">
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center shadow-theme-glow animate-pulse">
-              <FiCheckCircle className="w-8 h-8 text-white" />
+              <PiCheckCircle className="w-8 h-8 text-white" />
             </div>
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
@@ -214,7 +214,7 @@ export default function ConfirmEmailChangePage() {
           {result.data && (
             <div className="bg-accent-green/10 border border-accent-green/20 rounded-lg p-6 mb-6">
               <h3 className="font-semibold text-accent-green mb-4 flex items-center justify-center">
-                <FiMail className="w-5 h-5 mr-2" />
+                <PiEnvelopeSimple className="w-5 h-5 mr-2" />
                 {t('pages_token_jsx_h3_children_0__resumo_alteração')}
               </h3>
               <div className="space-y-2 text-sm">
@@ -241,7 +241,7 @@ export default function ConfirmEmailChangePage() {
           {/* 🆕 NOVO: Aviso sobre logout necessário */}
           <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4 mb-6">
             <div className="flex items-start">
-              <FiLogOut className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+              <PiSignOut className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-accent-amber mb-2">
                   {t('pages_token_jsx_h4_children_0__logout_necessário')}
@@ -251,7 +251,7 @@ export default function ConfirmEmailChangePage() {
                 </p>
                 {isLoggingOut ? (
                   <div className="flex items-center justify-center text-accent-amber">
-                    <FiLoader className="w-4 h-4 animate-spin mr-2" />
+                    <PiSpinnerGap className="w-4 h-4 animate-spin mr-2" />
                     <span className="text-sm">
                       {t('pages_token_jsx_span_children_0__fazendo_logout')}
                     </span>
@@ -267,7 +267,7 @@ export default function ConfirmEmailChangePage() {
 
           <div className="bg-accent-blue/10 border border-accent-blue/20 rounded-lg p-4 mb-6">
             <h4 className="font-medium text-accent-blue mb-2 flex items-center justify-center">
-              <FiCheckCircle className="w-4 h-4 mr-2" />
+              <PiCheckCircle className="w-4 h-4 mr-2" />
               {t('pages_token_jsx_h4_children_0__funcionalidades_restauradas')}
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-accent-blue">
@@ -292,9 +292,9 @@ export default function ConfirmEmailChangePage() {
               onClick={handleManualLogout}
               leftIcon={
                 isLoggingOut ? (
-                  <FiLoader className="animate-spin" />
+                  <PiSpinnerGap className="animate-spin" />
                 ) : (
-                  <FiLogOut />
+                  <PiSignOut />
                 )
               }
               className="w-full"
@@ -309,7 +309,7 @@ export default function ConfirmEmailChangePage() {
               variant="ghost"
               size="lg"
               onClick={() => router.push('/')}
-              rightIcon={<FiHome />}
+              rightIcon={<PiHouse />}
               className="w-full"
               disabled={isLoggingOut}
             >
@@ -336,7 +336,7 @@ export default function ConfirmEmailChangePage() {
       <div className="text-center">
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 bg-accent-red/10 rounded-full flex items-center justify-center">
-            <FiAlertTriangle className="w-8 h-8 text-accent-red" />
+            <PiWarning className="w-8 h-8 text-accent-red" />
           </div>
         </div>
 
@@ -386,7 +386,7 @@ export default function ConfirmEmailChangePage() {
                   size="lg"
                   onClick={handleResendConfirmation}
                   isLoading={isResending}
-                  leftIcon={<FiRefreshCw />}
+                  leftIcon={<PiArrowsClockwise />}
                   className="w-full"
                 >
                   {t(
@@ -422,7 +422,7 @@ export default function ConfirmEmailChangePage() {
               variant="ghost"
               size="lg"
               onClick={() => router.push('/')}
-              rightIcon={<FiHome />}
+              rightIcon={<PiHouse />}
               className="w-full"
             >
               {t('pages_token_jsx_button_children_0__voltar_ao_início')}

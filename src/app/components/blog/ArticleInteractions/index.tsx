@@ -4,14 +4,13 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useSession } from '@/app/libs/session';
 import {
-  FaHeart,
-  FaRegHeart,
-  FaBookmark,
-  FaRegBookmark,
-  FaShareAlt,
-} from 'react-icons/fa';
-import { BiComment } from 'react-icons/bi';
-import { FiShare2 } from 'react-icons/fi';
+  PiBookmarkSimple,
+  PiBookmarkSimpleFill,
+  PiChatCircle,
+  PiHeart,
+  PiHeartFill,
+  PiShareNetwork,
+} from 'react-icons/pi';
 import { useToast } from '@/app/hooks/useToast';
 import { useIsMobile } from '@/app/hooks/useMobile';
 import {
@@ -125,7 +124,15 @@ export function ArticleInteractions({
                 isLiked ? 'text-red-500' : 'text-theme-secondary'
               }`}
             >
-              <FaHeart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
+              {isLiked ? (
+                <PiHeartFill
+                  className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`}
+                />
+              ) : (
+                <PiHeart
+                  className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`}
+                />
+              )}
               <span className="text-xs">Curtir</span>
             </button>
 
@@ -135,9 +142,15 @@ export function ArticleInteractions({
                 isSaved ? 'text-brand-primary' : 'text-theme-secondary'
               }`}
             >
-              <FaBookmark
-                className={`w-5 h-5 ${isSaved ? 'fill-current' : ''}`}
-              />
+              {isSaved ? (
+                <PiBookmarkSimpleFill
+                  className={`w-5 h-5 ${isSaved ? 'fill-current' : ''}`}
+                />
+              ) : (
+                <PiBookmarkSimple
+                  className={`w-5 h-5 ${isSaved ? 'fill-current' : ''}`}
+                />
+              )}
               <span className="text-xs">Salvar</span>
             </button>
 
@@ -145,7 +158,7 @@ export function ArticleInteractions({
               onClick={onOpenShareModal}
               className="flex flex-col items-center space-y-1 text-theme-secondary"
             >
-              <FaShareAlt className="w-5 h-5" />
+              <PiShareNetwork className="w-5 h-5" />
               <span className="text-xs">Compartilhar</span>
             </button>
 
@@ -177,9 +190,9 @@ export function ArticleInteractions({
             }`}
           >
             {isLiked ? (
-              <FaHeart className="w-5 h-5" />
+              <PiHeart className="w-5 h-5" />
             ) : (
-              <FaRegHeart className="w-5 h-5" />
+              <PiHeart className="w-5 h-5" />
             )}
             <span className="font-medium">{likesCount}</span>
           </button>
@@ -195,9 +208,9 @@ export function ArticleInteractions({
             }`}
           >
             {isSaved ? (
-              <FaBookmark className="w-5 h-5" />
+              <PiBookmarkSimple className="w-5 h-5" />
             ) : (
-              <FaRegBookmark className="w-5 h-5" />
+              <PiBookmarkSimple className="w-5 h-5" />
             )}
             <span className="font-medium">{bookmarksCount}</span>
           </button>
@@ -207,7 +220,7 @@ export function ArticleInteractions({
             onClick={scrollToComments}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-theme-classical text-theme-secondary transition-all"
           >
-            <BiComment className="w-5 h-5" />
+            <PiChatCircle className="w-5 h-5" />
             <span className="font-medium inline">Comentar</span>
           </button>
         </div>
@@ -217,7 +230,7 @@ export function ArticleInteractions({
           onClick={() => onOpenShareModal?.()}
           className=" hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-theme-classical text-theme-secondary transition-all"
         >
-          <FiShare2 className="w-5 h-5" />
+          <PiShareNetwork className="w-5 h-5" />
           <span className="font-medium hidden sm:inline">Compartilhar</span>
         </button>
       </div>

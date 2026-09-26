@@ -3,7 +3,7 @@
 
 import { useTheme } from '@/app/stores/themeStore';
 import React from 'react';
-import { FiSun, FiMoon } from 'react-icons/fi';
+import { PiMoon, PiSun } from 'react-icons/pi';
 
 interface ThemeToggleProps {
   variant?: 'default' | 'compact' | 'navbar';
@@ -101,7 +101,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
         {/* Icon container */}
         <div className="relative flex items-center justify-center">
           {/* Sun icon */}
-          <FiSun
+          <PiSun
             className={`
               ${getIconSize()}
               absolute
@@ -116,7 +116,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
           />
 
           {/* Moon icon */}
-          <FiMoon
+          <PiMoon
             className={`
               ${getIconSize()}
               absolute

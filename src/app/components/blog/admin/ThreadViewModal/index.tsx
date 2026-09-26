@@ -10,14 +10,15 @@ import {
   type ModerationAction,
 } from '@/app/requests/blog/admin-actions';
 import {
-  BiUser,
-  BiCheckCircle,
-  BiXCircle,
-  BiFlag,
-  BiLoader,
-} from 'react-icons/bi';
-import { FiAlertTriangle, FiX } from 'react-icons/fi';
-import { HiReply } from 'react-icons/hi';
+  PiArrowBendUpLeft,
+  PiCheckCircle,
+  PiFlag,
+  PiSpinnerGap,
+  PiUser,
+  PiWarning,
+  PiX,
+  PiXCircle,
+} from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import { toast } from 'react-hot-toast';
@@ -148,7 +149,7 @@ export function ThreadViewModal({
         {comment.isFlagged && (
           <div className="bg-yellow-500/10 border-l-4 border-yellow-500 p-3 mb-3 rounded">
             <div className="flex items-start space-x-2">
-              <FiAlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+              <PiWarning className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-yellow-700">
                   Denunciado
@@ -180,7 +181,7 @@ export function ThreadViewModal({
                   depth > 0 ? 'w-8 h-8' : 'w-10 h-10'
                 } rounded-full bg-theme-classical flex items-center justify-center`}
               >
-                <BiUser className="w-5 h-5 text-brand-primary" />
+                <PiUser className="w-5 h-5 text-brand-primary" />
               </div>
             )}
           </div>
@@ -226,7 +227,7 @@ export function ThreadViewModal({
                   disabled={processing === comment.id}
                   variant="success"
                   size="sm"
-                  leftIcon={<BiCheckCircle className="w-4 h-4" />}
+                  leftIcon={<PiCheckCircle className="w-4 h-4" />}
                 >
                   Aprovar
                 </Button>
@@ -238,7 +239,7 @@ export function ThreadViewModal({
                   disabled={processing === comment.id}
                   variant="delete"
                   size="sm"
-                  leftIcon={<BiXCircle className="w-4 h-4" />}
+                  leftIcon={<PiXCircle className="w-4 h-4" />}
                 >
                   Rejeitar
                 </Button>
@@ -250,14 +251,14 @@ export function ThreadViewModal({
                   disabled={processing === comment.id}
                   variant="outline"
                   size="sm"
-                  leftIcon={<BiFlag className="w-4 h-4" />}
+                  leftIcon={<PiFlag className="w-4 h-4" />}
                 >
                   Spam
                 </Button>
               )}
 
               {processing === comment.id && (
-                <BiLoader className="w-4 h-4 animate-spin text-brand-primary" />
+                <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
               )}
             </div>
 
@@ -265,7 +266,7 @@ export function ThreadViewModal({
             {comment.replies && comment.replies.length > 0 && (
               <div className="mt-4 border-l-2 border-theme-secondary pl-4">
                 <div className="flex items-center gap-2 mb-3 text-xs text-theme-tertiary">
-                  <HiReply className="w-4 h-4" />
+                  <PiArrowBendUpLeft className="w-4 h-4" />
                   <span>{comment.replies.length} resposta(s)</span>
                 </div>
                 {comment.replies.map((reply) =>
@@ -284,7 +285,7 @@ export function ThreadViewModal({
       <div className=" overflow-y-auto">
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <BiLoader className="w-8 h-8 animate-spin text-brand-primary" />
+            <PiSpinnerGap className="w-8 h-8 animate-spin text-brand-primary" />
           </div>
         ) : thread ? (
           <div className="space-y-4">
@@ -300,7 +301,7 @@ export function ThreadViewModal({
             <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <HiReply className="w-5 h-5 text-blue-600" />
+                  <PiArrowBendUpLeft className="w-5 h-5 text-blue-600" />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
@@ -321,7 +322,7 @@ export function ThreadViewModal({
           </div>
         ) : (
           <div className="text-center py-12">
-            <FiAlertTriangle className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
+            <PiWarning className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
             <p className="text-theme-secondary">
               Não foi possível carregar a thread
             </p>
@@ -333,7 +334,7 @@ export function ThreadViewModal({
       <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-theme-secondary">
         <Button
           onClick={onClose}
-          leftIcon={<FiX className="w-4 h-4 mr-2" />}
+          leftIcon={<PiX className="w-4 h-4 mr-2" />}
           variant="secondary"
         >
           Fechar

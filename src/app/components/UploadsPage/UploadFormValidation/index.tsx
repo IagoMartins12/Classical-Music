@@ -3,11 +3,11 @@
 
 import { ValidationResult } from '@/app/utils/uploadValidation';
 import {
-  FiAlertCircle,
-  FiCheckCircle,
-  FiAlertTriangle,
-  FiInfo,
-} from 'react-icons/fi';
+  PiCheckCircle,
+  PiInfo,
+  PiWarning,
+  PiWarningCircle,
+} from 'react-icons/pi';
 
 interface UploadFormValidationProps {
   validation: ValidationResult;
@@ -38,7 +38,7 @@ const UploadFormValidation = ({
         className={`bg-accent-green/10 border border-accent-green/20 rounded-lg p-4 ${className}`}
       >
         <div className="flex items-center space-x-2">
-          <FiCheckCircle className="w-5 h-5 text-accent-green" />
+          <PiCheckCircle className="w-5 h-5 text-accent-green" />
           <span className="text-sm font-medium text-accent-green">
             Validação bem-sucedida
           </span>
@@ -67,7 +67,7 @@ const UploadFormValidation = ({
       {validation.errors.length > 0 && (
         <div className="bg-accent-red/10 border border-accent-red/20 rounded-lg p-4">
           <div className="flex items-center space-x-2 mb-2">
-            <FiAlertCircle className="w-5 h-5 text-accent-red" />
+            <PiWarningCircle className="w-5 h-5 text-accent-red" />
             <span className="text-sm font-medium text-accent-red">
               Erros encontrados ({validation.errors.length})
             </span>
@@ -90,7 +90,7 @@ const UploadFormValidation = ({
       {validation.warnings.length > 0 && (
         <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4">
           <div className="flex items-center space-x-2 mb-2">
-            <FiAlertTriangle className="w-5 h-5 text-accent-amber" />
+            <PiWarning className="w-5 h-5 text-accent-amber" />
             <span className="text-sm font-medium text-accent-amber">
               Avisos ({validation.warnings.length})
             </span>
@@ -112,7 +112,7 @@ const UploadFormValidation = ({
       {/* Data Quality */}
       <div className="bg-accent-blue/10 border border-accent-blue/20 rounded-lg p-4">
         <div className="flex items-center space-x-2 mb-2">
-          <FiInfo className="w-5 h-5 text-accent-blue" />
+          <PiInfo className="w-5 h-5 text-accent-blue" />
           <span className="text-sm font-medium text-accent-blue">
             Qualidade dos dados
           </span>

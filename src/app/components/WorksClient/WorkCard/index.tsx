@@ -4,14 +4,13 @@
 import { WorkListItem } from '@/app/requests/work-details';
 import Link from '@/app/components/LocalizedLink';
 import {
-  FiClock,
-  FiMusic,
-  FiUser,
-  FiCalendar,
-  FiBookOpen,
-  FiHeadphones,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiBookOpen,
+  PiCalendarBlank,
+  PiClock,
+  PiHeadphones,
+  PiMusicNotes,
+  PiUser,
+} from 'react-icons/pi';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -75,7 +74,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {/* Opus/Catalog */}
             {work.opOrCatalog && (
               <div className="flex items-center mb-3">
-                <FiBookOpen className="w-3 h-3 text-theme-tertiary mr-2" />
+                <PiBookOpen className="w-3 h-3 text-theme-tertiary mr-2" />
                 <span className="text-sm text-theme-secondary font-medium">
                   {work.opOrCatalog}
                 </span>
@@ -85,7 +84,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {/* Composer */}
             <div className="flex items-center mb-4">
               <div className="w-6 h-6 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-2">
-                <FiUser className="w-3 h-3 text-theme-primary" />
+                <PiUser className="w-3 h-3 text-theme-primary" />
               </div>
               <Link
                 href={`/composer/${work.composer.id}`}
@@ -105,7 +104,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {/* Instrument */}
             {work.instrument?.name && (
               <div className="flex items-center">
-                <FiMusic className="w-4 h-4 text-brand-primary mr-2 flex-shrink-0" />
+                <PiMusicNotes className="w-4 h-4 text-brand-primary mr-2 flex-shrink-0" />
                 <span className="text-sm text-theme-secondary">
                   {work.instrument.name}
                 </span>
@@ -115,7 +114,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {/* Composition Year */}
             {work.compositionYear && (
               <div className="flex items-center">
-                <FiCalendar className="w-4 h-4 text-accent-green mr-2 flex-shrink-0" />
+                <PiCalendarBlank className="w-4 h-4 text-accent-green mr-2 flex-shrink-0" />
                 <span className="text-sm text-theme-secondary">
                   {work.compositionYear}
                 </span>
@@ -125,7 +124,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {/* Duration */}
             {work.mediaDuration && (
               <div className="flex items-center">
-                <FiClock className="w-4 h-4 text-accent-purple mr-2 flex-shrink-0" />
+                <PiClock className="w-4 h-4 text-accent-purple mr-2 flex-shrink-0" />
                 <span className="text-sm text-theme-secondary">
                   {formatDuration(work.mediaDuration)}
                 </span>
@@ -135,7 +134,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {/* Tone/Key */}
             {work.tone && (
               <div className="flex items-center">
-                <GiMusicalNotes className="w-4 h-4 text-brand-secondary mr-2 flex-shrink-0" />
+                <PiMusicNotes className="w-4 h-4 text-brand-secondary mr-2 flex-shrink-0" />
                 <span className="text-sm text-theme-secondary">
                   {t('card_jsx_span_key_label')} {work.tone}
                 </span>
@@ -147,7 +146,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
           <div className="flex flex-wrap gap-2 mb-4">
             {work.epoch && work.epoch.name && (
               <span className="inline-flex items-center px-2 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium">
-                <FiClock className="w-2.5 h-2.5 mr-1" />
+                <PiClock className="w-2.5 h-2.5 mr-1" />
                 {work.epoch.name}
               </span>
             )}
@@ -161,7 +160,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
               className="btn-classical-primary w-full text-center flex items-center justify-center space-x-2 group/btn"
               onClick={(e) => e.stopPropagation()}
             >
-              <FiHeadphones className="w-4 h-4" />
+              <PiHeadphones className="w-4 h-4" />
               <span>{t('card_jsx_button_explore_work')}</span>
               <svg
                 className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"

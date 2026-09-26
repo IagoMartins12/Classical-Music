@@ -4,29 +4,30 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import {
-  FiClipboard,
-  FiPlus,
-  FiSearch,
-  FiFilter,
-  FiCalendar,
-  FiClock,
-  FiUser,
-  FiEye,
-  FiX,
-  FiCheck,
-  FiAlertCircle,
-  FiRefreshCw,
-  FiTarget,
-  FiBookOpen,
-  FiMusic,
-  FiStar,
-  FiPlay,
-  FiCheckCircle,
-  FiEdit,
-  FiVideo,
-  FiSave,
-  FiAlertTriangle,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCheck,
+  PiCheckCircle,
+  PiClipboardText,
+  PiClock,
+  PiEye,
+  PiFloppyDisk,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiNotePencil,
+  PiPlay,
+  PiPlus,
+  PiStar,
+  PiStarFill,
+  PiTarget,
+  PiUser,
+  PiVideoCamera,
+  PiWarning,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -342,11 +343,11 @@ export default function TeacherAssignmentsPageClient({
   };
 
   const getStatusIcon = (assignment: TeacherAssignment) => {
-    if (assignment.isOverdue) return <FiAlertCircle className="w-4 h-4" />;
-    if (assignment.isCompleted) return <FiCheckCircle className="w-4 h-4" />;
+    if (assignment.isOverdue) return <PiWarningCircle className="w-4 h-4" />;
+    if (assignment.isCompleted) return <PiCheckCircle className="w-4 h-4" />;
     if (assignment.status === 'IN_PROGRESS')
-      return <FiPlay className="w-4 h-4" />;
-    return <FiClock className="w-4 h-4" />;
+      return <PiPlay className="w-4 h-4" />;
+    return <PiClock className="w-4 h-4" />;
   };
 
   // Actions using hook
@@ -423,7 +424,7 @@ export default function TeacherAssignmentsPageClient({
           {/* Indicativo de atenção necessária */}
           {statusInfo.needsAttention && (
             <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
-              <FiAlertTriangle className="w-3 h-3 text-red-600" />
+              <PiWarning className="w-3 h-3 text-red-600" />
             </div>
           )}
 
@@ -452,7 +453,7 @@ export default function TeacherAssignmentsPageClient({
                                 </div>
                               ) : (
                                 <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                                  <FiUser className="w-5 h-5 md:w-6 md:h-6 text-theme-primary" />
+                                  <PiUser className="w-5 h-5 md:w-6 md:h-6 text-theme-primary" />
                                 </div>
                               )}
                             </div>
@@ -491,7 +492,7 @@ export default function TeacherAssignmentsPageClient({
                                 className="w-5 h-5 md:w-6 md:h-6 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full flex items-center justify-center"
                                 title={t('has_scores')}
                               >
-                                <FiMusic className="w-3 h-3" />
+                                <PiMusicNotes className="w-3 h-3" />
                               </div>
                             )}
 
@@ -504,12 +505,12 @@ export default function TeacherAssignmentsPageClient({
                                 }}
                                 className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
                               >
-                                <FiEye className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                                <PiEye className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                               </button>
 
                               <Link href={`assignments/${assignment.id}/edit`}>
                                 <button className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
-                                  <FiEdit className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                                  <PiNotePencil className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                                 </button>
                               </Link>
                             </div>
@@ -518,11 +519,11 @@ export default function TeacherAssignmentsPageClient({
 
                         <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-theme-secondary mt-1">
                           <div className="flex items-center space-x-1">
-                            <FiUser className="w-3 h-3 md:w-4 md:h-4" />
+                            <PiUser className="w-3 h-3 md:w-4 md:h-4" />
                             <span>{assignment.student.name}</span>
                           </div>
                           <div className="flex items-center space-x-1">
-                            <FiBookOpen className="w-3 h-3 md:w-4 md:h-4" />
+                            <PiBookOpen className="w-3 h-3 md:w-4 md:h-4" />
                             <span>
                               {t(
                                 ASSIGNMENT_TYPES[
@@ -533,13 +534,13 @@ export default function TeacherAssignmentsPageClient({
                           </div>
                           {assignment.dueDate && (
                             <div className="flex items-center space-x-1">
-                              <FiCalendar className="w-3 h-3 md:w-4 md:h-4" />
+                              <PiCalendarBlank className="w-3 h-3 md:w-4 md:h-4" />
                               <span>{formatDueDate(assignment.dueDate)}</span>
                             </div>
                           )}
                           {assignment.estimatedTime && (
                             <div className="flex items-center space-x-1">
-                              <FiClock className="w-3 h-3 md:w-4 md:h-4" />
+                              <PiClock className="w-3 h-3 md:w-4 md:h-4" />
                               <span>{assignment.estimatedTime}min</span>
                             </div>
                           )}
@@ -581,7 +582,7 @@ export default function TeacherAssignmentsPageClient({
                           key={idx}
                           className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs flex items-center space-x-1"
                         >
-                          <FiTarget className="w-3 h-3" />
+                          <PiTarget className="w-3 h-3" />
                           <span>{goal}</span>
                         </span>
                       ))}
@@ -592,7 +593,7 @@ export default function TeacherAssignmentsPageClient({
                             key={idx}
                             className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs flex items-center space-x-1"
                           >
-                            <FiMusic className="w-3 h-3" />
+                            <PiMusicNotes className="w-3 h-3" />
                             <span>{goal}</span>
                           </span>
                         ))}
@@ -615,7 +616,7 @@ export default function TeacherAssignmentsPageClient({
                     {/* Stats */}
                     <div className="flex flex-col space-y-1 md:flex-row md:items-center md:space-x-6 md:space-y-0 text-xs md:text-sm text-theme-tertiary">
                       <div className="flex items-center space-x-1">
-                        <FiCalendar className="w-3 h-3 md:w-4 md:h-4" />
+                        <PiCalendarBlank className="w-3 h-3 md:w-4 md:h-4" />
                         <span>
                           {t('created_date', {
                             date: new Date(
@@ -626,7 +627,7 @@ export default function TeacherAssignmentsPageClient({
                       </div>
                       {assignment.completedAt && (
                         <div className="flex items-center space-x-1">
-                          <FiCheck className="w-3 h-3 md:w-4 md:h-4" />
+                          <PiCheck className="w-3 h-3 md:w-4 md:h-4" />
                           <span>
                             {t('completed_date', {
                               date: new Date(
@@ -638,7 +639,7 @@ export default function TeacherAssignmentsPageClient({
                       )}
                       {hasScores && (
                         <div className="flex items-center space-x-1 text-accent-purple">
-                          <FiMusic className="w-3 h-3 md:w-4 md:h-4" />
+                          <PiMusicNotes className="w-3 h-3 md:w-4 md:h-4" />
                           <span>
                             {t('scores_count', {
                               count: assignment.workScoreIds.length,
@@ -653,7 +654,7 @@ export default function TeacherAssignmentsPageClient({
                     {/* Alerta para tarefas que precisam de atenção */}
                     {statusInfo.needsAttention && (
                       <div className="flex items-center justify-center space-x-1 mt-3 text-accent-red">
-                        <FiAlertTriangle className="w-4 h-4 text-red-600" />
+                        <PiWarning className="w-4 h-4 text-red-600" />
                         <span className="font-semibold text-red-600">
                           {t('needs_status_update')}
                         </span>
@@ -695,7 +696,7 @@ export default function TeacherAssignmentsPageClient({
           {/* Indicativo de atenção necessária */}
           {statusInfo.needsAttention && (
             <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
-              <FiAlertTriangle className="w-3 h-3 text-red-600" />
+              <PiWarning className="w-3 h-3 text-red-600" />
             </div>
           )}
 
@@ -717,7 +718,7 @@ export default function TeacherAssignmentsPageClient({
                       </div>
                     ) : (
                       <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                        <FiUser className="w-5 h-5 md:w-6 md:h-6 text-theme-primary" />
+                        <PiUser className="w-5 h-5 md:w-6 md:h-6 text-theme-primary" />
                       </div>
                     )}
                   </div>
@@ -731,11 +732,11 @@ export default function TeacherAssignmentsPageClient({
                         </h3>
                         <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-theme-secondary mt-1">
                           <div className="flex items-center space-x-1">
-                            <FiUser className="w-3 h-3 md:w-4 md:h-4" />
+                            <PiUser className="w-3 h-3 md:w-4 md:h-4" />
                             <span>{assignment.student.name}</span>
                           </div>
                           <div className="flex items-center space-x-1">
-                            <FiBookOpen className="w-3 h-3 md:w-4 md:h-4" />
+                            <PiBookOpen className="w-3 h-3 md:w-4 md:h-4" />
                             <span>
                               {t(
                                 ASSIGNMENT_TYPES[
@@ -746,13 +747,13 @@ export default function TeacherAssignmentsPageClient({
                           </div>
                           {assignment.dueDate && (
                             <div className="flex items-center space-x-1">
-                              <FiCalendar className="w-3 h-3 md:w-4 md:h-4" />
+                              <PiCalendarBlank className="w-3 h-3 md:w-4 md:h-4" />
                               <span>{formatDueDate(assignment.dueDate)}</span>
                             </div>
                           )}
                           {assignment.estimatedTime && (
                             <div className="flex items-center space-x-1">
-                              <FiClock className="w-3 h-3 md:w-4 md:h-4" />
+                              <PiClock className="w-3 h-3 md:w-4 md:h-4" />
                               <span>{assignment.estimatedTime}min</span>
                             </div>
                           )}
@@ -819,7 +820,7 @@ export default function TeacherAssignmentsPageClient({
                           key={idx}
                           className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs flex items-center space-x-1"
                         >
-                          <FiTarget className="w-3 h-3" />
+                          <PiTarget className="w-3 h-3" />
                           <span>{goal}</span>
                         </span>
                       ))}
@@ -830,7 +831,7 @@ export default function TeacherAssignmentsPageClient({
                             key={idx}
                             className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs flex items-center space-x-1"
                           >
-                            <FiMusic className="w-3 h-3" />
+                            <PiMusicNotes className="w-3 h-3" />
                             <span>{goal}</span>
                           </span>
                         ))}
@@ -853,7 +854,7 @@ export default function TeacherAssignmentsPageClient({
                     {/* Stats */}
                     <div className="flex flex-col space-y-1 md:flex-row md:items-center md:space-x-6 md:space-y-0 text-xs md:text-sm text-theme-tertiary">
                       <div className="flex items-center space-x-1">
-                        <FiCalendar className="w-3 h-3 md:w-4 md:h-4" />
+                        <PiCalendarBlank className="w-3 h-3 md:w-4 md:h-4" />
                         <span>
                           {t('created_date', {
                             date: new Date(
@@ -864,7 +865,7 @@ export default function TeacherAssignmentsPageClient({
                       </div>
                       {assignment.completedAt && (
                         <div className="flex items-center space-x-1">
-                          <FiCheck className="w-3 h-3 md:w-4 md:h-4" />
+                          <PiCheck className="w-3 h-3 md:w-4 md:h-4" />
                           <span>
                             {t('completed_date', {
                               date: new Date(
@@ -879,7 +880,7 @@ export default function TeacherAssignmentsPageClient({
                     {/* Alerta para tarefas que precisam de atenção */}
                     {statusInfo.needsAttention && (
                       <div className="flex items-center justify-center space-x-1 mt-3 text-accent-red">
-                        <FiAlertTriangle className="w-4 h-4 text-red-600" />
+                        <PiWarning className="w-4 h-4 text-red-600" />
                         <span className="font-semibold text-red-600">
                           {t('needs_status_update')}
                         </span>
@@ -898,12 +899,12 @@ export default function TeacherAssignmentsPageClient({
                   }}
                   className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
                 >
-                  <FiEye className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                  <PiEye className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                 </button>
 
                 <Link href={`assignments/${assignment.id}/edit`}>
                   <button className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
-                    <FiEdit className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                    <PiNotePencil className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                   </button>
                 </Link>
 
@@ -931,7 +932,7 @@ export default function TeacherAssignmentsPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiClipboard className="w-8 h-8 text-theme-primary" />
+              <PiClipboardText className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('error_loading_tasks')}
@@ -945,7 +946,7 @@ export default function TeacherAssignmentsPageClient({
                 disabled={loading.assignments}
                 className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
               >
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-4 h-4 ${
                     loading.assignments ? 'animate-spin' : ''
                   }`}
@@ -977,7 +978,7 @@ export default function TeacherAssignmentsPageClient({
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiClipboard className="w-8 h-8 text-theme-primary" />
+                <PiClipboardText className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -997,7 +998,7 @@ export default function TeacherAssignmentsPageClient({
               <div className="flex flex-col sm:flex-row gap-4 flex-1">
                 {/* Search */}
                 <div className="relative flex-1 max-w-md">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
                   <Input
                     type="text"
                     placeholder={t('search_placeholder')}
@@ -1010,7 +1011,7 @@ export default function TeacherAssignmentsPageClient({
                       onClick={() => setSearchTerm('')}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
                     >
-                      <FiX className="w-4 h-4" />
+                      <PiX className="w-4 h-4" />
                     </button>
                   )}
                 </div>
@@ -1066,7 +1067,7 @@ export default function TeacherAssignmentsPageClient({
                   disabled={loading.assignments}
                   className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
                 >
-                  <FiRefreshCw
+                  <PiArrowsClockwise
                     className={`w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all ${
                       loading.assignments ? 'animate-spin' : ''
                     }`}
@@ -1079,7 +1080,7 @@ export default function TeacherAssignmentsPageClient({
             {(searchTerm || filter !== 'all' || selectedStudent !== 'all') && (
               <div className="flex items-center justify-between pt-4 border-t border-theme-secondary mt-4">
                 <div className="flex items-center space-x-2 text-sm text-theme-secondary">
-                  <FiFilter className="w-4 h-4" />
+                  <PiFunnel className="w-4 h-4" />
                   <span>
                     {t('showing_results', {
                       count: filteredAndSortedAssignments.length,
@@ -1113,7 +1114,7 @@ export default function TeacherAssignmentsPageClient({
         {loading.assignments && (
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
-              <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+              <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
               <p className="text-theme-secondary">{t('loading_tasks')}</p>
             </div>
           </AnimatedItem>
@@ -1126,7 +1127,7 @@ export default function TeacherAssignmentsPageClient({
               {filteredAndSortedAssignments.length === 0 ? (
                 <AnimatedCard hover="none" className="classical-card">
                   <div className="text-center py-16">
-                    <FiClipboard className="w-16 h-16 text-theme-tertiary mx-auto mb-6" />
+                    <PiClipboardText className="w-16 h-16 text-theme-tertiary mx-auto mb-6" />
                     <h3 className="text-xl font-bold text-theme-primary mb-4">
                       {searchTerm ||
                       filter !== 'all' ||
@@ -1195,9 +1196,9 @@ export default function TeacherAssignmentsPageClient({
                 className="btn-classical-secondary flex items-center space-x-2"
               >
                 {loading.assignments ? (
-                  <FiRefreshCw className="w-4 h-4 animate-spin" />
+                  <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                 ) : (
-                  <FiPlus className="w-4 h-4" />
+                  <PiPlus className="w-4 h-4" />
                 )}
                 <span>{t('load_more_tasks')}</span>
               </button>
@@ -1296,7 +1297,7 @@ function CreateAssignmentModal({
               onClick={onClose}
               className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
             >
-              <FiX className="w-4 h-4 text-theme-tertiary" />
+              <PiX className="w-4 h-4 text-theme-tertiary" />
             </button>
           </div>
 
@@ -1459,7 +1460,7 @@ function CreateAssignmentModal({
                     onClick={() => addGoal('practiceGoals')}
                     className="text-brand-primary hover:text-brand-secondary text-sm flex items-center space-x-1"
                   >
-                    <FiPlus className="w-3 h-3" />
+                    <PiPlus className="w-3 h-3" />
                     <span>{t('add')}</span>
                   </button>
                 </div>
@@ -1482,7 +1483,7 @@ function CreateAssignmentModal({
                             onClick={() => removeGoal('practiceGoals', index)}
                             className="text-accent-red"
                           >
-                            <FiX className="w-4 h-4" />
+                            <PiX className="w-4 h-4" />
                           </button>
                         )}
                       </div>
@@ -1502,7 +1503,7 @@ function CreateAssignmentModal({
                     onClick={() => addGoal('technicalGoals')}
                     className="text-brand-primary hover:text-brand-secondary text-sm flex items-center space-x-1"
                   >
-                    <FiPlus className="w-3 h-3" />
+                    <PiPlus className="w-3 h-3" />
                     <span>{t('add')}</span>
                   </button>
                 </div>
@@ -1525,7 +1526,7 @@ function CreateAssignmentModal({
                             onClick={() => removeGoal('technicalGoals', index)}
                             className="text-accent-red"
                           >
-                            <FiX className="w-4 h-4" />
+                            <PiX className="w-4 h-4" />
                           </button>
                         )}
                       </div>
@@ -1555,9 +1556,9 @@ function CreateAssignmentModal({
                 className="btn-classical-primary flex items-center space-x-2"
               >
                 {loading ? (
-                  <FiRefreshCw className="w-4 h-4 animate-spin" />
+                  <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                 ) : (
-                  <FiCheck className="w-4 h-4" />
+                  <PiCheck className="w-4 h-4" />
                 )}
                 <span>{loading ? t('creating_task') : t('create_task')}</span>
               </button>
@@ -1684,7 +1685,7 @@ function AssignmentDetailsModal({
                   </div>
                 ) : (
                   <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                    <FiUser className="w-8 h-8 text-theme-primary" />
+                    <PiUser className="w-8 h-8 text-theme-primary" />
                   </div>
                 )}
               </div>
@@ -1696,13 +1697,13 @@ function AssignmentDetailsModal({
                 </h2>
                 <div className="flex items-center space-x-4 mb-3">
                   <div className="flex items-center space-x-2 text-theme-secondary">
-                    <FiUser className="w-4 h-4" />
+                    <PiUser className="w-4 h-4" />
                     <span className="font-medium">
                       {assignment.student.name}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2 text-theme-secondary">
-                    <FiBookOpen className="w-4 h-4" />
+                    <PiBookOpen className="w-4 h-4" />
                     <span>
                       {t(
                         ASSIGNMENT_TYPES[
@@ -1713,7 +1714,7 @@ function AssignmentDetailsModal({
                   </div>
                   {assignment.dueDate && (
                     <div className="flex items-center space-x-2 text-theme-secondary">
-                      <FiCalendar className="w-4 h-4" />
+                      <PiCalendarBlank className="w-4 h-4" />
                       <span>{formatDate(assignment.dueDate)}</span>
                     </div>
                   )}
@@ -1746,7 +1747,7 @@ function AssignmentDetailsModal({
                   {/* 🆕 Indicadores visuais */}
                   {videoSubmission && (
                     <span className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded text-xs flex items-center space-x-1">
-                      <FiVideo className="w-3 h-3" />
+                      <PiVideoCamera className="w-3 h-3" />
                       <span>Vídeo</span>
                     </span>
                   )}
@@ -1754,14 +1755,14 @@ function AssignmentDetailsModal({
                   {assignment.workScoreIds &&
                     assignment.workScoreIds.length > 0 && (
                       <span className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs flex items-center space-x-1">
-                        <FiMusic className="w-3 h-3" />
+                        <PiMusicNotes className="w-3 h-3" />
                         <span>{assignment.workScoreIds.length}</span>
                       </span>
                     )}
 
                   {completedMilestones.length > 0 && (
                     <span className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs flex items-center space-x-1">
-                      <FiTarget className="w-3 h-3" />
+                      <PiTarget className="w-3 h-3" />
                       <span>{completedMilestones.length} conquistas</span>
                     </span>
                   )}
@@ -1816,7 +1817,7 @@ function AssignmentDetailsModal({
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 rounded-lg flex items-center justify-center">
-                          <FiVideo className="w-5 h-5 text-accent-purple" />
+                          <PiVideoCamera className="w-5 h-5 text-accent-purple" />
                         </div>
                         <div>
                           <div className="font-medium text-theme-primary text-sm">
@@ -1834,7 +1835,7 @@ function AssignmentDetailsModal({
                         rel="noopener noreferrer"
                         className="btn-classical-secondary text-xs px-3 py-1 flex items-center space-x-1"
                       >
-                        <FiPlay className="w-3 h-3" />
+                        <PiPlay className="w-3 h-3" />
                         <span>Assistir</span>
                       </a>
                     </div>
@@ -1865,7 +1866,7 @@ function AssignmentDetailsModal({
                         key={idx}
                         className="flex items-center space-x-2 text-sm p-2 bg-accent-blue/5 border border-accent-blue/20 rounded"
                       >
-                        <FiTarget className="w-3 h-3 text-accent-blue" />
+                        <PiTarget className="w-3 h-3 text-accent-blue" />
                         <span className="text-theme-primary truncate">
                           {goal}
                         </span>
@@ -1876,7 +1877,7 @@ function AssignmentDetailsModal({
                         key={idx}
                         className="flex items-center space-x-2 text-sm p-2 bg-accent-green/5 border border-accent-green/20 rounded"
                       >
-                        <FiMusic className="w-3 h-3 text-accent-green" />
+                        <PiMusicNotes className="w-3 h-3 text-accent-green" />
                         <span className="text-theme-primary truncate">
                           {goal}
                         </span>
@@ -1921,16 +1922,27 @@ function AssignmentDetailsModal({
                           Avaliação de dificuldade:
                         </span>
                         <div className="flex items-center space-x-1">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <FiStar
-                              key={star}
-                              className={`w-4 h-4 ${
-                                star <= assignment.studentRating!
-                                  ? 'text-accent-yellow fill-current'
-                                  : 'text-theme-tertiary'
-                              }`}
-                            />
-                          ))}
+                          {[1, 2, 3, 4, 5].map((star) =>
+                            star <= assignment.studentRating! ? (
+                              <PiStarFill
+                                key={star}
+                                className={`w-4 h-4 ${
+                                  star <= assignment.studentRating!
+                                    ? 'text-accent-yellow fill-current'
+                                    : 'text-theme-tertiary'
+                                }`}
+                              />
+                            ) : (
+                              <PiStar
+                                key={star}
+                                className={`w-4 h-4 ${
+                                  star <= assignment.studentRating!
+                                    ? 'text-accent-yellow fill-current'
+                                    : 'text-theme-tertiary'
+                                }`}
+                              />
+                            )
+                          )}
                         </div>
                         <span className="text-sm text-theme-primary">
                           ({assignment.studentRating}/5)
@@ -1967,13 +1979,23 @@ function AssignmentDetailsModal({
                             onClick={() => setRating(star)}
                             className="w-5 h-5 text-theme-tertiary hover:text-accent-yellow transition-colors"
                           >
-                            <FiStar
-                              className={`w-4 h-4 ${
-                                star <= rating
-                                  ? 'text-accent-yellow fill-current'
-                                  : ''
-                              }`}
-                            />
+                            {star <= rating ? (
+                              <PiStarFill
+                                className={`w-4 h-4 ${
+                                  star <= rating
+                                    ? 'text-accent-yellow fill-current'
+                                    : ''
+                                }`}
+                              />
+                            ) : (
+                              <PiStar
+                                className={`w-4 h-4 ${
+                                  star <= rating
+                                    ? 'text-accent-yellow fill-current'
+                                    : ''
+                                }`}
+                              />
+                            )}
                           </button>
                         ))}
                       </div>
@@ -1987,9 +2009,9 @@ function AssignmentDetailsModal({
                       className="btn-classical-secondary text-sm flex items-center space-x-1"
                     >
                       {actionLoading === assignment.id ? (
-                        <FiRefreshCw className="w-3 h-3 animate-spin" />
+                        <PiArrowsClockwise className="w-3 h-3 animate-spin" />
                       ) : (
-                        <FiSave className="w-3 h-3" />
+                        <PiFloppyDisk className="w-3 h-3" />
                       )}
                       <span>Salvar</span>
                     </button>
@@ -2078,9 +2100,9 @@ function AssignmentDetailsModal({
                       className="w-full btn-classical-primary text-sm flex items-center justify-center space-x-2"
                     >
                       {actionLoading === assignment.id ? (
-                        <FiRefreshCw className="w-3 h-3 animate-spin" />
+                        <PiArrowsClockwise className="w-3 h-3 animate-spin" />
                       ) : (
-                        <FiCheck className="w-3 h-3" />
+                        <PiCheck className="w-3 h-3" />
                       )}
                       <span>Aprovar</span>
                     </button>
@@ -2088,14 +2110,14 @@ function AssignmentDetailsModal({
 
                   <Link href={`assignments/${assignment.id}`}>
                     <button className="w-full btn-classical-secondary text-sm flex items-center justify-center space-x-2">
-                      <FiEye className="w-3 h-3" />
+                      <PiEye className="w-3 h-3" />
                       <span>Ver mais detalhes</span>
                     </button>
                   </Link>
 
                   <Link href={`assignments/${assignment.id}/edit`}>
                     <button className="w-full btn-classical-secondary text-sm flex items-center justify-center space-x-2">
-                      <FiEdit className="w-3 h-3" />
+                      <PiNotePencil className="w-3 h-3" />
                       <span>Editar</span>
                     </button>
                   </Link>
@@ -2107,7 +2129,7 @@ function AssignmentDetailsModal({
                       rel="noopener noreferrer"
                       className="w-full btn-classical-secondary text-sm flex items-center justify-center space-x-2"
                     >
-                      <FiVideo className="w-3 h-3" />
+                      <PiVideoCamera className="w-3 h-3" />
                       <span>Assistir Vídeo</span>
                     </a>
                   )}
@@ -2126,7 +2148,7 @@ function AssignmentDetailsModal({
                         key={key}
                         className="flex items-center space-x-2 text-xs"
                       >
-                        <FiCheckCircle className="w-3 h-3 text-accent-green" />
+                        <PiCheckCircle className="w-3 h-3 text-accent-green" />
                         <span className="text-theme-primary">
                           {milestoneLabels[key] || key}
                         </span>

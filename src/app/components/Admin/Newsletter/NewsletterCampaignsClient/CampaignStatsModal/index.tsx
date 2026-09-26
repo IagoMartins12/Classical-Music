@@ -5,13 +5,13 @@ import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import { useState, useEffect } from 'react';
 import {
-  FiBarChart2,
-  FiClock,
-  FiUsers,
-  FiMail,
-  FiTrendingUp,
-  FiActivity,
-} from 'react-icons/fi';
+  PiChartBar,
+  PiClock,
+  PiEnvelopeSimple,
+  PiPulse,
+  PiTrendUp,
+  PiUsers,
+} from 'react-icons/pi';
 import {
   MultiLineChart,
   AdminBarChart,
@@ -34,9 +34,9 @@ export function CampaignStatsModal({
   const [timelineData, setTimelineData] = useState<any[]>([]);
 
   const tabs = [
-    { id: 'overview', label: 'Visão Geral', icon: FiBarChart2 },
-    { id: 'engagement', label: 'Engajamento', icon: FiTrendingUp },
-    { id: 'timeline', label: 'Timeline', icon: FiClock },
+    { id: 'overview', label: 'Visão Geral', icon: PiChartBar },
+    { id: 'engagement', label: 'Engajamento', icon: PiTrendUp },
+    { id: 'timeline', label: 'Timeline', icon: PiClock },
   ];
 
   // Dados de estatísticas básicas
@@ -132,7 +132,7 @@ export function CampaignStatsModal({
       title: 'Campanha Criada',
       description: 'Campanha foi criada no sistema',
       timestamp: campaign.createdAt,
-      icon: FiMail,
+      icon: PiEnvelopeSimple,
       color: 'accent-blue',
     });
 
@@ -146,7 +146,7 @@ export function CampaignStatsModal({
           campaign.scheduledAt
         ).toLocaleDateString('pt-BR')}`,
         timestamp: campaign.scheduledAt,
-        icon: FiClock,
+        icon: PiClock,
         color: 'accent-amber',
       });
     }
@@ -159,7 +159,7 @@ export function CampaignStatsModal({
         title: 'Campanha Enviada',
         description: `Enviada para ${stats.sent} subscribers`,
         timestamp: campaign.sentAt,
-        icon: FiUsers,
+        icon: PiUsers,
         color: 'accent-green',
       });
 
@@ -175,7 +175,7 @@ export function CampaignStatsModal({
           title: 'Primeira Abertura',
           description: 'Primeiro subscriber abriu o email',
           timestamp: firstOpenDate.toISOString(),
-          icon: FiActivity,
+          icon: PiPulse,
           color: 'accent-purple',
         });
       }
@@ -189,7 +189,7 @@ export function CampaignStatsModal({
           title: 'Primeiro Clique',
           description: 'Primeiro subscriber clicou em um link',
           timestamp: firstClickDate.toISOString(),
-          icon: FiTrendingUp,
+          icon: PiTrendUp,
           color: 'accent-green',
         });
       }
@@ -204,7 +204,7 @@ export function CampaignStatsModal({
           title: 'Marco de Aberturas',
           description: 'Atingiu 50% de taxa de abertura',
           timestamp: milestoneDate.toISOString(),
-          icon: FiBarChart2,
+          icon: PiChartBar,
           color: 'accent-green',
         });
       }
@@ -306,28 +306,28 @@ export function CampaignStatsModal({
                 <MetricCard
                   title="Enviados"
                   value={stats.sent.toLocaleString()}
-                  icon={FiMail}
+                  icon={PiEnvelopeSimple}
                   color="#3B82F6"
                 />
                 <MetricCard
                   title="Entregues"
                   value={stats.delivered.toLocaleString()}
                   subtitle={`${rates.deliveryRate.toFixed(1)}%`}
-                  icon={FiUsers}
+                  icon={PiUsers}
                   color="#10B981"
                 />
                 <MetricCard
                   title="Abertos"
                   value={stats.opened.toLocaleString()}
                   subtitle={`${rates.openRate.toFixed(1)}%`}
-                  icon={FiBarChart2}
+                  icon={PiChartBar}
                   color="#F59E0B"
                 />
                 <MetricCard
                   title="Cliques"
                   value={stats.clicked.toLocaleString()}
                   subtitle={`${rates.clickRate.toFixed(1)}%`}
-                  icon={FiTrendingUp}
+                  icon={PiTrendUp}
                   color="#8B5CF6"
                 />
               </div>
@@ -592,7 +592,7 @@ export function CampaignStatsModal({
                 <div className="space-y-4 text-sm">
                   <div className="flex items-center justify-between p-3 bg-theme-tertiary rounded-lg">
                     <div className="flex items-center">
-                      <FiTrendingUp
+                      <PiTrendUp
                         className={`w-4 h-4 mr-2 ${
                           rates.openRate > 20
                             ? 'text-accent-green'
@@ -611,7 +611,7 @@ export function CampaignStatsModal({
 
                   <div className="flex items-center justify-between p-3 bg-theme-tertiary rounded-lg">
                     <div className="flex items-center">
-                      <FiActivity
+                      <PiPulse
                         className={`w-4 h-4 mr-2 ${
                           rates.clickRate > 2.5
                             ? 'text-accent-green'
@@ -630,7 +630,7 @@ export function CampaignStatsModal({
 
                   <div className="flex items-center justify-between p-3 bg-theme-tertiary rounded-lg">
                     <div className="flex items-center">
-                      <FiUsers
+                      <PiUsers
                         className={`w-4 h-4 mr-2 ${
                           rates.unsubscribeRate < 1
                             ? 'text-accent-green'

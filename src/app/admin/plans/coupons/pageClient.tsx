@@ -4,19 +4,20 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from '@/app/libs/session';
 import { useRouter } from 'next/navigation';
 import {
-  FiPlus,
-  FiEdit2,
-  FiTrash2,
-  FiToggleLeft,
-  FiToggleRight,
-  FiSearch,
-  FiCalendar,
-  FiPercent,
-  FiDollarSign,
-  FiLoader,
-  FiCopy,
-  FiX,
-} from 'react-icons/fi';
+  PiCalendarBlank,
+  PiCopy,
+  PiCurrencyDollar,
+  PiIdentificationCard,
+  PiMagnifyingGlass,
+  PiPencilSimple,
+  PiPercent,
+  PiPlus,
+  PiSpinnerGap,
+  PiToggleLeft,
+  PiToggleRight,
+  PiTrash,
+  PiX,
+} from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import toast from 'react-hot-toast';
 import Modal from '@/app/components/Modal';
@@ -27,7 +28,6 @@ import {
   AnimatedCard,
   AnimatedItem,
 } from '@/app/components/animation/AnimatedComponents';
-import { FaIdCard } from 'react-icons/fa';
 import {
   deleteCouponRequest,
   listCouponsRequest,
@@ -250,7 +250,7 @@ export default function AdminCouponsPageClient() {
   if (status === 'loading' || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <FiLoader className="w-8 h-8 animate-spin text-brand-primary" />
+        <PiSpinnerGap className="w-8 h-8 animate-spin text-brand-primary" />
       </div>
     );
   }
@@ -266,7 +266,7 @@ export default function AdminCouponsPageClient() {
                 className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-accent-blue to-accent-purple 
         rounded-2xl md:rounded-3xl flex items-center justify-center shadow-theme-glow"
               >
-                <FiPercent className="w-6 h-6 md:w-8 md:h-8 text-theme-primary" />
+                <PiPercent className="w-6 h-6 md:w-8 md:h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold text-gradient-brand classical-title mb-2 md:mb-4">
@@ -283,7 +283,7 @@ export default function AdminCouponsPageClient() {
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-tertiary w-5 h-5" />
+              <PiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-tertiary w-5 h-5" />
               <Input
                 type="text"
                 placeholder="Buscar cupons..."
@@ -296,7 +296,7 @@ export default function AdminCouponsPageClient() {
             <Button
               onClick={() => handleOpenModal()}
               className="flex items-center justify-cente gap-2"
-              leftIcon={<FiPlus className="w-4 h-4" />}
+              leftIcon={<PiPlus className="w-4 h-4" />}
             >
               <span>Novo Cupom</span>
             </Button>
@@ -342,7 +342,7 @@ export default function AdminCouponsPageClient() {
         >
           {filteredCoupons.length === 0 ? (
             <AnimatedCard className="classical-card p-8 w-full text-center">
-              <FaIdCard className="w-16 h-16 text-theme-tertiary  mx-auto mb-4" />
+              <PiIdentificationCard className="w-16 h-16 text-theme-tertiary  mx-auto mb-4" />
               <h3 className="text-xl font-bold text-theme-primary mb-2">
                 Nenhum cupon encontrado
               </h3>
@@ -351,7 +351,7 @@ export default function AdminCouponsPageClient() {
               </p>
               <Button
                 variant="secondary"
-                leftIcon={<FiX />}
+                leftIcon={<PiX />}
                 onClick={() => setFilterStatus('all')}
               >
                 Limpar Filtros
@@ -677,7 +677,7 @@ function CouponCard({
               className="text-theme-tertiary hover:text-brand-primary transition-colors"
               title="Copiar código"
             >
-              <FiCopy className="w-4 h-4" />
+              <PiCopy className="w-4 h-4" />
             </button>
           </div>
           {coupon.description && (
@@ -707,21 +707,21 @@ function CouponCard({
       <div className="flex items-center gap-2 mb-4">
         {coupon.type === 'PERCENTAGE' ? (
           <>
-            <FiPercent className="w-5 h-5 text-brand-primary" />
+            <PiPercent className="w-5 h-5 text-brand-primary" />
             <span className="text-2xl font-bold text-brand-primary">
               {coupon.discountValue}%
             </span>
           </>
         ) : coupon.type === 'FIXED' ? (
           <>
-            <FiDollarSign className="w-5 h-5 text-brand-primary" />
+            <PiCurrencyDollar className="w-5 h-5 text-brand-primary" />
             <span className="text-2xl font-bold text-brand-primary">
               R$ {coupon.discountValue.toFixed(2)}
             </span>
           </>
         ) : (
           <>
-            <FiCalendar className="w-5 h-5 text-brand-primary" />
+            <PiCalendarBlank className="w-5 h-5 text-brand-primary" />
             <span className="text-2xl font-bold text-brand-primary">
               +{coupon.extraTrialDays} dias
             </span>
@@ -791,12 +791,12 @@ function CouponCard({
         >
           {coupon.isActive ? (
             <>
-              <FiToggleRight className="w-4 h-4 text-accent-green" />
+              <PiToggleRight className="w-4 h-4 text-accent-green" />
               <span>Ativo</span>
             </>
           ) : (
             <>
-              <FiToggleLeft className="w-4 h-4 text-theme-tertiary" />
+              <PiToggleLeft className="w-4 h-4 text-theme-tertiary" />
               <span>Inativo</span>
             </>
           )}
@@ -806,7 +806,7 @@ function CouponCard({
           onClick={onEdit}
           className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary text-brand-primary hover:bg-interactive-hover transition-colors text-sm font-medium"
         >
-          <FiEdit2 className="w-4 h-4" />
+          <PiPencilSimple className="w-4 h-4" />
           <span>Editar</span>
         </button>
 
@@ -814,7 +814,7 @@ function CouponCard({
           onClick={onDelete}
           className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary text-red-500 hover:bg-red-500/10 transition-colors text-sm font-medium ml-auto"
         >
-          <FiTrash2 className="w-4 h-4" />
+          <PiTrash className="w-4 h-4" />
         </button>
       </div>
     </div>

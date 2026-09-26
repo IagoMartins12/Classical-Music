@@ -7,11 +7,16 @@ import Link from 'next/link';
 
 import Button from '../../Common/Button';
 import Modal from '../../Modal';
-import { BiCalendar, BiMapPin } from 'react-icons/bi';
-import { BsClock, BsTicket } from 'react-icons/bs';
-import { GiMusicalNotes } from 'react-icons/gi';
-import { FaUserGroup } from 'react-icons/fa6';
-import { FiEdit, FiTrash2 } from 'react-icons/fi';
+import {
+  PiCalendarBlank,
+  PiClock,
+  PiMapPin,
+  PiMusicNotes,
+  PiNotePencil,
+  PiTicket,
+  PiTrash,
+  PiUsersThree,
+} from 'react-icons/pi';
 
 interface EventModalProps {
   event: any;
@@ -94,7 +99,7 @@ export default function EventModal({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Data e Hora */}
           <div className="flex items-start space-x-3">
-            <BiCalendar className="w-5 h-5 mt-0.5 flex-shrink-0" />
+            <PiCalendarBlank className="w-5 h-5 mt-0.5 flex-shrink-0" />
             <div>
               <p className="text-sm font-medium ">Data</p>
               <p className="text-base capitalize">{formatDate(event.start)}</p>
@@ -102,7 +107,7 @@ export default function EventModal({
           </div>
 
           <div className="flex items-start space-x-3">
-            <BsClock className="w-5 h-5 mt-0.5 flex-shrink-0" />
+            <PiClock className="w-5 h-5 mt-0.5 flex-shrink-0" />
             <div>
               <p className="text-sm font-medium ">Horário</p>
               <p className="text-base ">
@@ -114,7 +119,7 @@ export default function EventModal({
 
           {/* Local */}
           <div className="flex items-start space-x-3">
-            <BiMapPin className="w-5 h-5 mt-0.5 flex-shrink-0" />
+            <PiMapPin className="w-5 h-5 mt-0.5 flex-shrink-0" />
             <div>
               <p className="text-sm font-bold ">Local</p>
               <p className="text-base ">{event.venue.name}</p>
@@ -126,7 +131,7 @@ export default function EventModal({
 
           {/* Tipo de Evento */}
           <div className="flex items-start space-x-3">
-            <GiMusicalNotes className="w-5 h-5 mt-0.5 flex-shrink-0" />
+            <PiMusicNotes className="w-5 h-5 mt-0.5 flex-shrink-0" />
             <div>
               <p className="text-sm font-medium ">Tipo</p>
               <p className="text-base ">{getEventTypeLabel(event.type)}</p>
@@ -137,7 +142,7 @@ export default function EventModal({
         {/* Badge de Gratuito */}
         {event.isFree && (
           <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-            <BsTicket className="w-4 h-4 mr-1" />
+            <PiTicket className="w-4 h-4 mr-1" />
             Entrada Gratuita
           </div>
         )}
@@ -146,7 +151,7 @@ export default function EventModal({
         {event.composers && event.composers.length > 0 && (
           <div>
             <div className="flex items-center space-x-2 mb-3">
-              <FaUserGroup className="w-5 h-5 " />
+              <PiUsersThree className="w-5 h-5 " />
               <h4 className="text-sm font-semibold ">Compositores</h4>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -167,7 +172,7 @@ export default function EventModal({
                     </div>
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-                      <GiMusicalNotes className="w-4 h-4 text-gray-500" />
+                      <PiMusicNotes className="w-4 h-4 text-gray-500" />
                     </div>
                   )}
                   <span className="text-sm font-medium ">{composer.name}</span>
@@ -208,7 +213,7 @@ export default function EventModal({
             variant="primary"
             size="lg"
             className="flex-1"
-            leftIcon={<BsTicket className="w-5 h-5 mr-2" />}
+            leftIcon={<PiTicket className="w-5 h-5 mr-2" />}
             onClick={() => window.open(event.externalUrl, '_blank')}
           >
             Ver evento no site
@@ -219,7 +224,7 @@ export default function EventModal({
               variant="primary"
               size="lg"
               className="flex-1"
-              leftIcon={<BsTicket className="w-5 h-5 mr-2" />}
+              leftIcon={<PiTicket className="w-5 h-5 mr-2" />}
               onClick={() => window.open(event.ticketUrl, '_blank')}
             >
               {event.isFree ? 'Retirar Ingresso' : 'Comprar Ingresso'}
@@ -229,7 +234,7 @@ export default function EventModal({
               variant="primary"
               size="lg"
               className="flex-1"
-              leftIcon={<BsTicket className="w-5 h-5 mr-2" />}
+              leftIcon={<PiTicket className="w-5 h-5 mr-2" />}
               disabled
             >
               Ingressos em breve
@@ -252,14 +257,14 @@ export default function EventModal({
               onClick={onDelete}
               className="w-full"
               variant="delete"
-              leftIcon={<FiTrash2 className="w-4 h-4" />}
+              leftIcon={<PiTrash className="w-4 h-4" />}
             >
               <span>Deletar</span>
             </Button>
             <Button
               className="w-full"
               onClick={onEdit}
-              leftIcon={<FiEdit className="w-4 h-4" />}
+              leftIcon={<PiNotePencil className="w-4 h-4" />}
             >
               <span>Editar</span>
             </Button>
@@ -288,7 +293,7 @@ export default function EventModal({
               window.open(url, '_blank');
             }}
           >
-            <BiCalendar className="w-4 h-4 inline-block mr-1" />
+            <PiCalendarBlank className="w-4 h-4 inline-block mr-1" />
             Adicionar ao Google Calendar
           </button>
         </div>

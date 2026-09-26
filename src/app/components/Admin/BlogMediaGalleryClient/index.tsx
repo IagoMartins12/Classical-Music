@@ -3,25 +3,25 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiTrash2,
-  FiRefreshCw,
-  FiImage,
-  FiVideo,
-  FiMusic,
-  FiCheckSquare,
-  FiSquare,
-  FiAlertTriangle,
-  FiHardDrive,
-  FiClock,
-  FiInfo,
-  FiEye,
-  FiGrid,
-  FiFileText,
-  FiCheck,
-  FiX,
-  FiLayers,
-  FiExternalLink,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiArrowsClockwise,
+  PiCheck,
+  PiCheckSquare,
+  PiClock,
+  PiEye,
+  PiFileText,
+  PiHardDrive,
+  PiImage,
+  PiInfo,
+  PiMusicNotes,
+  PiSquare,
+  PiSquaresFour,
+  PiStack,
+  PiTrash,
+  PiVideoCamera,
+  PiWarning,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -41,42 +41,42 @@ const CATEGORY_TABS = [
   {
     value: 'all' as const,
     label: 'Todos',
-    icon: FiGrid,
+    icon: PiSquaresFour,
     description: 'Todos os arquivos de mídia',
     color: 'text-theme-primary',
   },
   {
     value: 'cover' as const,
     label: 'Capas',
-    icon: FiImage,
+    icon: PiImage,
     description: 'Imagens de capa dos artigos',
     color: 'text-blue-500',
   },
   {
     value: 'content' as const,
     label: 'Conteúdo',
-    icon: FiFileText,
+    icon: PiFileText,
     description: 'Imagens e vídeos do conteúdo',
     color: 'text-green-500',
   },
   {
     value: 'audio' as const,
     label: 'Áudios',
-    icon: FiMusic,
+    icon: PiMusicNotes,
     description: 'Áudios de fundo dos artigos',
     color: 'text-purple-500',
   },
   {
     value: 'gallery' as const,
     label: 'Galeria',
-    icon: FiImage,
+    icon: PiImage,
     description: 'Mídia da galeria do artigo',
     color: 'text-pink-500',
   },
   {
     value: 'temp' as const,
     label: 'Temporários',
-    icon: FiClock,
+    icon: PiClock,
     description: 'Arquivos temporários não vinculados',
     color: 'text-yellow-500',
   },
@@ -135,11 +135,11 @@ export default function BlogMediaGalleryClient() {
   const getFileIcon = (type: string) => {
     switch (type) {
       case 'VIDEO':
-        return FiVideo;
+        return PiVideoCamera;
       case 'AUDIO':
-        return FiMusic;
+        return PiMusicNotes;
       default:
-        return FiImage;
+        return PiImage;
     }
   };
 
@@ -147,14 +147,14 @@ export default function BlogMediaGalleryClient() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <FiAlertTriangle className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Galeria
           </h2>
           <p className="text-theme-secondary mb-6">{error}</p>
           <Button
             variant="primary"
-            leftIcon={<FiRefreshCw />}
+            leftIcon={<PiArrowsClockwise />}
             onClick={() => window.location.reload()}
           >
             Recarregar Página
@@ -177,7 +177,7 @@ export default function BlogMediaGalleryClient() {
             <div className="text-center py-8 lg:py-12">
               <div className="flex items-center justify-center mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                  <FiImage className="w-8 h-8 text-white" />
+                  <PiImage className="w-8 h-8 text-white" />
                 </div>
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -258,7 +258,7 @@ export default function BlogMediaGalleryClient() {
 
                 <Button
                   variant="primary"
-                  leftIcon={<FiRefreshCw />}
+                  leftIcon={<PiArrowsClockwise />}
                   onClick={handleScan}
                   disabled={isLoading}
                   isLoading={isLoading}
@@ -276,7 +276,7 @@ export default function BlogMediaGalleryClient() {
                 <MetricCard
                   title={`Arquivos ${activeTab === 'all' ? 'Total' : 'na Seleção'}`}
                   value={filteredFiles.length.toLocaleString()}
-                  icon={FiImage}
+                  icon={PiImage}
                   color="#3B82F6"
                 />
 
@@ -287,7 +287,7 @@ export default function BlogMediaGalleryClient() {
                       ? `${(categoryStats[activeTab].size / (1024 * 1024)).toFixed(2)} MB`
                       : '0 MB'
                   }
-                  icon={FiHardDrive}
+                  icon={PiHardDrive}
                   color="#10B981"
                 />
 
@@ -298,7 +298,7 @@ export default function BlogMediaGalleryClient() {
                     value: getFormattedSelectedSize(),
                     isPositive: true,
                   }}
-                  icon={FiCheckSquare}
+                  icon={PiCheckSquare}
                   color="#8B5CF6"
                 />
 
@@ -309,7 +309,7 @@ export default function BlogMediaGalleryClient() {
                     value: `${(galleryResult.stats.temporarySize / (1024 * 1024)).toFixed(2)} MB`,
                     isPositive: false,
                   }}
-                  icon={FiClock}
+                  icon={PiClock}
                   color="#F59E0B"
                 />
 
@@ -320,7 +320,7 @@ export default function BlogMediaGalleryClient() {
                     value: `${galleryResult.stats.usedFiles} em uso`,
                     isPositive: true,
                   }}
-                  icon={FiX}
+                  icon={PiX}
                   color="#EF4444"
                 />
 
@@ -331,7 +331,7 @@ export default function BlogMediaGalleryClient() {
                     value: 'Usados em 2+ artigos',
                     isPositive: true,
                   }}
-                  icon={FiLayers}
+                  icon={PiStack}
                   color="#8B5CF6"
                 />
               </div>
@@ -361,9 +361,9 @@ export default function BlogMediaGalleryClient() {
                         }}
                         leftIcon={
                           selectedFiles.length === filteredFiles.length ? (
-                            <FiSquare />
+                            <PiSquare />
                           ) : (
-                            <FiCheckSquare />
+                            <PiCheckSquare />
                           )
                         }
                       >
@@ -376,7 +376,7 @@ export default function BlogMediaGalleryClient() {
                         <Button
                           variant="delete"
                           size="sm"
-                          leftIcon={<FiTrash2 />}
+                          leftIcon={<PiTrash />}
                           onClick={deleteSelectedFiles}
                           disabled={isDeleting}
                           isLoading={isDeleting}
@@ -390,7 +390,7 @@ export default function BlogMediaGalleryClient() {
 
                 {filteredFiles.length === 0 ? (
                   <div className="text-center py-12">
-                    <FiImage className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                    <PiImage className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                     <h4 className="text-lg font-medium text-theme-primary mb-2">
                       Nenhum arquivo encontrado
                     </h4>
@@ -419,9 +419,9 @@ export default function BlogMediaGalleryClient() {
                           {/* Checkbox */}
                           <div className="absolute top-2 left-2 z-10">
                             {isSelected ? (
-                              <FiCheckSquare className="w-5 h-5 text-brand-primary bg-white rounded shadow-md" />
+                              <PiCheckSquare className="w-5 h-5 text-brand-primary bg-white rounded shadow-md" />
                             ) : (
-                              <FiSquare className="w-5 h-5 text-white bg-black/50 rounded opacity-0 group-hover:opacity-100 transition-opacity" />
+                              <PiSquare className="w-5 h-5 text-white bg-black/50 rounded opacity-0 group-hover:opacity-100 transition-opacity" />
                             )}
                           </div>
 
@@ -459,7 +459,7 @@ export default function BlogMediaGalleryClient() {
                                 )}
                                 {file.isUsed ? (
                                   <span className="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-800 flex items-center space-x-1">
-                                    <FiCheck className="w-3 h-3" />
+                                    <PiCheck className="w-3 h-3" />
                                     <span>{file.usageCount}</span>
                                   </span>
                                 ) : (
@@ -476,7 +476,7 @@ export default function BlogMediaGalleryClient() {
                             <Button
                               variant="outline"
                               size="sm"
-                              leftIcon={<FiEye />}
+                              leftIcon={<PiEye />}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setShowPreview(file.url);
@@ -488,7 +488,7 @@ export default function BlogMediaGalleryClient() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                leftIcon={<FiInfo />}
+                                leftIcon={<PiInfo />}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setShowUsageDetails(file);
@@ -552,7 +552,7 @@ export default function BlogMediaGalleryClient() {
                   onClick={() => setShowUsageDetails(null)}
                   className="p-2 hover:bg-theme-secondary rounded-lg transition-colors"
                 >
-                  <FiX className="w-5 h-5 text-theme-tertiary" />
+                  <PiX className="w-5 h-5 text-theme-tertiary" />
                 </button>
               </div>
 
@@ -613,7 +613,7 @@ export default function BlogMediaGalleryClient() {
                         className="p-2 hover:bg-theme-tertiary rounded-lg transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <FiExternalLink className="w-4 h-4 text-brand-primary" />
+                        <PiArrowSquareOut className="w-4 h-4 text-brand-primary" />
                       </a>
                     </div>
                   </div>

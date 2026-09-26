@@ -3,13 +3,13 @@
 
 import React, { useState } from 'react';
 import {
-  FiEdit3,
-  FiSave,
-  FiX,
-  FiMapPin,
-  FiUser,
-  FiAlertCircle,
-} from 'react-icons/fi';
+  PiFloppyDisk,
+  PiMapPin,
+  PiPencilLine,
+  PiUser,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
@@ -289,7 +289,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
             variant="outline"
             size="sm"
             onClick={() => setIsEditing(true)}
-            leftIcon={<FiEdit3 />}
+            leftIcon={<PiPencilLine />}
           >
             {t('personal_info_edit')}
           </Button>
@@ -299,7 +299,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
               variant="outline"
               size="sm"
               onClick={handleCancel}
-              leftIcon={<FiX />}
+              leftIcon={<PiX />}
               disabled={isLoading}
             >
               {t('personal_info_cancel')}
@@ -309,7 +309,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
               size="sm"
               onClick={handleSave}
               isLoading={isLoading}
-              leftIcon={<FiSave />}
+              leftIcon={<PiFloppyDisk />}
               disabled={!canProceedWithPhone(formData.phone)}
               title={
                 errors.phone
@@ -360,7 +360,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           disabled={!isEditing}
           placeholder={t('personal_info_first_name_placeholder')}
           error={errors.firstName}
-          leftIcon={<FiUser className="w-4 h-4" />}
+          leftIcon={<PiUser className="w-4 h-4" />}
         />
 
         <Input
@@ -370,7 +370,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           onChange={handleInputChange}
           disabled={!isEditing}
           placeholder={t('personal_info_last_name_placeholder')}
-          leftIcon={<FiUser className="w-4 h-4" />}
+          leftIcon={<PiUser className="w-4 h-4" />}
           error={errors.lastName}
         />
       </div>
@@ -418,7 +418,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
         {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE (se editando e houver erro) */}
         {errors.phone && phoneValidation.showError && phoneValidation.error && (
           <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3">
-            <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <PiWarningCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
             <div>
               <h4 className="text-sm font-medium text-red-800">
                 {t('personal_info_phone_invalid')}
@@ -439,7 +439,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       {/* Localização */}
       <div>
         <div className="flex items-center space-x-2 mb-4">
-          <FiMapPin className="w-4 h-4 text-brand-primary" />
+          <PiMapPin className="w-4 h-4 text-brand-primary" />
           <h4 className="font-medium text-theme-primary">
             {t('personal_info_location')}
           </h4>

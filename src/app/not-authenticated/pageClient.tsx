@@ -4,18 +4,19 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiLock,
-  FiHome,
-  FiUsers,
-  FiBookOpen,
-  FiUser,
-  FiUserPlus,
-  FiMail,
-  FiMusic,
-  FiCompass,
-} from 'react-icons/fi';
-import { GiGraduateCap, GiGrandPiano, GiMusicalNotes } from 'react-icons/gi';
+  PiBookOpen,
+  PiCompass,
+  PiEnvelopeSimple,
+  PiGraduationCap,
+  PiHouse,
+  PiLock,
+  PiMusicNotes,
+  PiUser,
+  PiUserPlus,
+  PiUsers,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -83,7 +84,7 @@ export default function NotAuthenticated() {
           {
             title: t('not_authenticated_suggestion_login_teacher'),
             description: t('not_authenticated_suggestion_login_teacher_desc'),
-            icon: FiUser,
+            icon: PiUser,
             color: 'from-brand-primary to-brand-secondary',
             action: () => openLogin(),
           },
@@ -91,7 +92,7 @@ export default function NotAuthenticated() {
             title: t('not_authenticated_suggestion_request_teacher'),
             description: t('not_authenticated_suggestion_request_teacher_desc'),
             href: '/contact',
-            icon: FiMail,
+            icon: PiEnvelopeSimple,
             color: 'from-accent-purple to-accent-blue',
           },
           {
@@ -100,7 +101,7 @@ export default function NotAuthenticated() {
               'not_authenticated_suggestion_explore_encyclopedia_desc'
             ),
             href: '/composers',
-            icon: FiBookOpen,
+            icon: PiBookOpen,
             color: 'from-accent-green to-accent-blue',
           },
         ];
@@ -111,14 +112,14 @@ export default function NotAuthenticated() {
           {
             title: t('not_authenticated_suggestion_login_student'),
             description: t('not_authenticated_suggestion_login_student_desc'),
-            icon: FiUser,
+            icon: PiUser,
             color: 'from-accent-green to-accent-blue',
             action: () => openLogin(),
           },
           {
             title: t('not_authenticated_suggestion_create_student'),
             description: t('not_authenticated_suggestion_create_student_desc'),
-            icon: FiUserPlus,
+            icon: PiUserPlus,
             color: 'from-brand-primary to-brand-secondary',
             action: () => openRegister(),
           },
@@ -126,7 +127,7 @@ export default function NotAuthenticated() {
             title: t('not_authenticated_suggestion_know_platform'),
             description: t('not_authenticated_suggestion_know_platform_desc'),
             href: '/about-us',
-            icon: FiCompass,
+            icon: PiCompass,
             color: 'from-accent-purple to-accent-red',
           },
         ];
@@ -137,7 +138,7 @@ export default function NotAuthenticated() {
           {
             title: t('not_authenticated_suggestion_admin_login'),
             description: t('not_authenticated_suggestion_admin_login_desc'),
-            icon: FiUser,
+            icon: PiUser,
             color: 'from-accent-red to-accent-purple',
             action: () => openLogin(),
           },
@@ -145,7 +146,7 @@ export default function NotAuthenticated() {
             title: t('not_authenticated_suggestion_home'),
             description: t('not_authenticated_suggestion_home_desc'),
             href: '/',
-            icon: FiHome,
+            icon: PiHouse,
             color: 'from-brand-primary to-brand-secondary',
           },
         ];
@@ -156,14 +157,14 @@ export default function NotAuthenticated() {
           {
             title: t('not_authenticated_suggestion_login'),
             description: t('not_authenticated_suggestion_login_desc'),
-            icon: FiUser,
+            icon: PiUser,
             color: 'from-brand-primary to-brand-secondary',
             action: () => openLogin(),
           },
           {
             title: t('not_authenticated_suggestion_create_free'),
             description: t('not_authenticated_suggestion_create_free_desc'),
-            icon: FiUserPlus,
+            icon: PiUserPlus,
             color: 'from-accent-green to-accent-blue',
             action: () => openRegister(),
           },
@@ -171,7 +172,7 @@ export default function NotAuthenticated() {
             title: t('not_authenticated_suggestion_explore_public'),
             description: t('not_authenticated_suggestion_explore_public_desc'),
             href: '/composers',
-            icon: FiBookOpen,
+            icon: PiBookOpen,
             color: 'from-accent-purple to-accent-blue',
           },
         ];
@@ -289,7 +290,7 @@ export default function NotAuthenticated() {
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="relative mb-8">
                   <div className="w-32 h-32 mx-auto bg-gradient-to-br from-brand-primary/20 to-accent-blue/20 rounded-full flex items-center justify-center classical-card border-2 border-brand-primary/30 shadow-theme-glow">
-                    <FiLock className="w-16 h-16 text-brand-primary" />
+                    <PiLock className="w-16 h-16 text-brand-primary" />
                   </div>
                 </div>
               </AnimatedItem>
@@ -308,7 +309,7 @@ export default function NotAuthenticated() {
                     {getDescription()} 🎼
                   </p>
                   <div className="inline-flex items-center px-4 py-2 bg-brand-primary/10 rounded-full text-brand-primary font-medium">
-                    <FiMusic className="w-4 h-4 mr-2" />
+                    <PiMusicNotes className="w-4 h-4 mr-2" />
                     {getTitle()}
                   </div>
                 </div>
@@ -369,11 +370,11 @@ export default function NotAuthenticated() {
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                     {currentArea === 'teacher' ? (
-                      <FiUsers className="w-6 h-6 text-accent-green" />
+                      <PiUsers className="w-6 h-6 text-accent-green" />
                     ) : currentArea === 'student' ? (
-                      <GiGraduateCap className="w-6 h-6 text-accent-blue" />
+                      <PiGraduationCap className="w-6 h-6 text-accent-blue" />
                     ) : (
-                      <FiMusic className="w-6 h-6 text-brand-primary" />
+                      <PiMusicNotes className="w-6 h-6 text-brand-primary" />
                     )}
                   </div>
                   <h3 className="text-2xl font-bold text-theme-primary classical-title">
@@ -425,7 +426,7 @@ export default function NotAuthenticated() {
                     href="/"
                     className="btn-classical-secondary flex items-center space-x-3 group text-lg px-8 py-4"
                   >
-                    <FiHome className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                    <PiHouse className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                     <span>
                       {t('not_authenticated_jsx_span_children_0__page')}
                     </span>
@@ -437,7 +438,7 @@ export default function NotAuthenticated() {
                     href="/composers"
                     className="btn-classical-primary flex items-center space-x-3 group text-lg px-8 py-4"
                   >
-                    <FiBookOpen className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                    <PiBookOpen className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                     <span>
                       {t(
                         'not_authenticated_jsx_span_children_0__explorar_enciclopédia'
@@ -467,15 +468,15 @@ export default function NotAuthenticated() {
 
           {/* Decorative Elements */}
           <div className="absolute top-4 left-4 w-12 h-12 bg-brand-primary/10 rounded-2xl flex items-center justify-center opacity-40">
-            <FiLock className="w-6 h-6 text-brand-primary" />
+            <PiLock className="w-6 h-6 text-brand-primary" />
           </div>
 
           <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
-            <GiMusicalNotes className="w-8 h-8 text-brand-primary" />
+            <PiMusicNotes className="w-8 h-8 text-brand-primary" />
           </div>
 
           <div className="absolute top-1/3 right-8 w-8 h-8 bg-accent-blue/10 rounded-xl flex items-center justify-center opacity-30">
-            <GiMusicalNotes className="w-4 h-4 text-accent-blue" />
+            <PiMusicNotes className="w-4 h-4 text-accent-blue" />
           </div>
         </div>
       )}

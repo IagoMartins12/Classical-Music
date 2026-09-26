@@ -2,7 +2,12 @@
 'use client';
 
 import AnimatedMusicalNotes2 from '@/app/components/AnimatedMusicalNotes2';
-import { FiSearch, FiClock, FiList, FiGrid } from 'react-icons/fi';
+import {
+  PiClock,
+  PiListBullets,
+  PiMagnifyingGlass,
+  PiSquaresFour,
+} from 'react-icons/pi';
 
 export default function ComposersLoading() {
   return (
@@ -45,7 +50,7 @@ export default function ComposersLoading() {
             <div className="space-y-2">
               <div className="h-4 w-24 bg-theme-elevated rounded animate-pulse"></div>
               <div className="relative">
-                <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary/50" />
+                <PiMagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary/50" />
                 <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg pl-12 animate-pulse"></div>
               </div>
             </div>
@@ -54,7 +59,7 @@ export default function ComposersLoading() {
             <div className="space-y-2">
               <div className="h-4 w-28 bg-theme-elevated rounded animate-pulse"></div>
               <div className="relative">
-                <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary/50" />
+                <PiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary/50" />
                 <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg pl-12 animate-pulse"></div>
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                   <svg
@@ -88,10 +93,10 @@ export default function ComposersLoading() {
                 <span className="text-sm text-theme-secondary">Vista:</span>
                 <div className="bg-theme-secundary border border-theme-primary rounded-lg p-1 flex">
                   <div className="p-2 rounded-md bg-theme-elevated">
-                    <FiList className="w-4 h-4 text-theme-tertiary/50" />
+                    <PiListBullets className="w-4 h-4 text-theme-tertiary/50" />
                   </div>
                   <div className="p-2 rounded-md bg-brand-gradient/20">
-                    <FiGrid className="w-4 h-4 text-brand-primary/50" />
+                    <PiSquaresFour className="w-4 h-4 text-brand-primary/50" />
                   </div>
                 </div>
               </div>

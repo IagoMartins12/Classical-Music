@@ -3,20 +3,20 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import {
-  FiCalendar,
-  FiClock,
-  FiUser,
-  FiChevronLeft,
-  FiChevronRight,
-  FiEye,
-  FiX,
-  FiRefreshCw,
-  FiMapPin,
-  FiBookOpen,
-  FiMessageSquare,
-  FiUserCheck,
-  FiHome,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCaretLeft,
+  PiCaretRight,
+  PiChatCenteredText,
+  PiClock,
+  PiEye,
+  PiHouse,
+  PiMapPin,
+  PiUser,
+  PiUserCheck,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -315,7 +315,7 @@ export default function StudentCalendarPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-lg">
             <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiUserCheck className="w-10 h-10 text-theme-primary" />
+              <PiUserCheck className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-2xl font-bold text-theme-primary classical-title mb-4">
               {t('student_calendar_no_teacher_title')}
@@ -328,7 +328,7 @@ export default function StudentCalendarPageClient({
                 href="/student"
                 className="btn-classical-primary flex items-center space-x-2"
               >
-                <FiHome className="w-4 h-4" />
+                <PiHouse className="w-4 h-4" />
                 <span>{t('student_calendar_no_teacher_back')}</span>
               </Link>
               <Link href="/contact" className="btn-classical-secondary">
@@ -353,7 +353,7 @@ export default function StudentCalendarPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiCalendar className="w-8 h-8 text-theme-primary" />
+              <PiCalendarBlank className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('student_calendar_error_title')}
@@ -367,7 +367,7 @@ export default function StudentCalendarPageClient({
                 disabled={loading.refreshing}
                 className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
               >
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-4 h-4 ${
                     loading.refreshing ? 'animate-spin' : ''
                   }`}
@@ -401,7 +401,7 @@ export default function StudentCalendarPageClient({
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiCalendar className="w-8 h-8 text-theme-primary" />
+                <PiCalendarBlank className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -429,7 +429,7 @@ export default function StudentCalendarPageClient({
                     disabled={loading.refreshing}
                     className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group disabled:opacity-50"
                   >
-                    <FiChevronLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                    <PiCaretLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                   </button>
 
                   <div className="text-center min-w-48">
@@ -455,7 +455,7 @@ export default function StudentCalendarPageClient({
                     disabled={loading.refreshing}
                     className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group disabled:opacity-50"
                   >
-                    <FiChevronRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                    <PiCaretRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                   </button>
                 </div>
 
@@ -557,7 +557,7 @@ export default function StudentCalendarPageClient({
                   disabled={loading.refreshing}
                   className="btn-classical-secondary text-sm flex items-center space-x-2 disabled:opacity-50"
                 >
-                  <FiRefreshCw
+                  <PiArrowsClockwise
                     className={`w-4 h-4 ${
                       loading.refreshing ? 'animate-spin' : ''
                     }`}
@@ -881,7 +881,7 @@ function DayView({
       <div className="space-y-4">
         {sortedEvents.length === 0 ? (
           <div className="text-center py-12">
-            <FiCalendar className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+            <PiCalendarBlank className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
             <h3 className="text-lg font-bold text-theme-primary mb-2">
               {noLessonsTitle}
             </h3>
@@ -902,27 +902,27 @@ function DayView({
 
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center space-x-2">
-                      <FiClock className="w-4 h-4" />
+                      <PiClock className="w-4 h-4" />
                       <span>{formatEventTime(event.start, event.end)}</span>
                     </div>
 
                     {event.teacher && (
                       <div className="flex items-center space-x-2">
-                        <FiUser className="w-4 h-4" />
+                        <PiUser className="w-4 h-4" />
                         <span>Prof. {event.teacher.name}</span>
                       </div>
                     )}
 
                     {event.location && (
                       <div className="flex items-center space-x-2">
-                        <FiMapPin className="w-4 h-4" />
+                        <PiMapPin className="w-4 h-4" />
                         <span>{event.location}</span>
                       </div>
                     )}
 
                     {event.objectives && event.objectives.length > 0 && (
                       <div className="flex items-start space-x-2">
-                        <FiBookOpen className="w-4 h-4 mt-0.5" />
+                        <PiBookOpen className="w-4 h-4 mt-0.5" />
                         <div className="flex flex-wrap gap-1">
                           {event.objectives
                             .slice(0, 3)
@@ -946,7 +946,7 @@ function DayView({
                 </div>
 
                 <div className="ml-4">
-                  <FiEye className="w-5 h-5 opacity-50" />
+                  <PiEye className="w-5 h-5 opacity-50" />
                 </div>
               </div>
             </button>
@@ -1048,7 +1048,7 @@ function StudentEventDetailsModal({
                       </div>
                     ) : (
                       <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                        <FiUser className="w-4 h-4 text-theme-primary" />
+                        <PiUser className="w-4 h-4 text-theme-primary" />
                       </div>
                     )}
                     <div>
@@ -1194,7 +1194,7 @@ function StudentEventDetailsModal({
                 href={`/student/lessons/${event.id}`}
                 className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
               >
-                <FiEye className="w-4 h-4" />
+                <PiEye className="w-4 h-4" />
                 <span>{t('student_calendar_modal_view_details')}</span>
               </Link>
 
@@ -1204,7 +1204,7 @@ function StudentEventDetailsModal({
                     onClick={onAddFeedback}
                     className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
                   >
-                    <FiMessageSquare className="w-4 h-4" />
+                    <PiChatCenteredText className="w-4 h-4" />
                     <span>{t('student_calendar_modal_add_feedback')}</span>
                   </button>
                 )}
@@ -1254,7 +1254,7 @@ function FeedbackModal({
               onClick={onClose}
               className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
             >
-              <FiX className="w-4 h-4 text-theme-tertiary" />
+              <PiX className="w-4 h-4 text-theme-tertiary" />
             </button>
           </div>
 
@@ -1291,7 +1291,7 @@ function FeedbackModal({
                   </>
                 ) : (
                   <>
-                    <FiMessageSquare className="w-4 h-4" />
+                    <PiChatCenteredText className="w-4 h-4" />
                     <span>{t('student_calendar_feedback_modal_send')}</span>
                   </>
                 )}

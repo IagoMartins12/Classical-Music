@@ -1,7 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { FiCheck, FiMusic, FiSearch, FiTrash2, FiUpload } from 'react-icons/fi';
+import {
+  PiCheck,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiTrash,
+  PiUploadSimple,
+} from 'react-icons/pi';
 import {
   Badge,
   Button,
@@ -114,7 +120,7 @@ export function GuiaClient() {
                         Ludwig van Beethoven
                       </Text>
                     </Stack>
-                    <Badge estado="ouro" icone={FiCheck}>
+                    <Badge estado="ouro" icone={PiCheck}>
                       Verificada
                     </Badge>
                   </Inline>
@@ -164,12 +170,12 @@ export function GuiaClient() {
             <Card>
               <Stack gap={4}>
                 <Inline gap={2} quebra>
-                  <Button variante="primario" icone={FiUpload}>
+                  <Button variante="primario" icone={PiUploadSimple}>
                     Enviar partitura
                   </Button>
                   <Button variante="secundario">Ver partituras</Button>
                   <Button variante="fantasma">Cancelar</Button>
-                  <Button variante="perigo" icone={FiTrash2}>
+                  <Button variante="perigo" icone={PiTrash}>
                     Remover
                   </Button>
                 </Inline>
@@ -185,7 +191,7 @@ export function GuiaClient() {
                   </Button>
                   <Button
                     variante="secundario"
-                    icone={FiSearch}
+                    icone={PiMagnifyingGlass}
                     rotulo="Buscar"
                   />
                 </Inline>
@@ -298,7 +304,7 @@ export function GuiaClient() {
           >
             <div className="grid gap-4 lg:grid-cols-3">
               <Vazio
-                icone={FiMusic}
+                icone={PiMusicNotes}
                 titulo="Nenhuma obra neste filtro"
                 descricao="1.412 obras do período existem sem partitura cadastrada."
                 acao={
@@ -355,10 +361,10 @@ export function GuiaClient() {
           <Secao titulo="Ícone" nota="Quatro tamanhos, traço 1.5.">
             <Card>
               <Inline gap={6}>
-                <Icon de={FiMusic} tamanho="pp" />
-                <Icon de={FiMusic} tamanho="p" />
-                <Icon de={FiMusic} tamanho="m" />
-                <Icon de={FiMusic} tamanho="g" />
+                <Icon de={PiMusicNotes} tamanho="pp" />
+                <Icon de={PiMusicNotes} tamanho="p" />
+                <Icon de={PiMusicNotes} tamanho="m" />
+                <Icon de={PiMusicNotes} tamanho="g" />
                 <Text papel="legenda">
                   A família única entra na fase 3, por codemod.
                 </Text>

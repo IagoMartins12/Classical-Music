@@ -1,8 +1,14 @@
 // app/teacher/notifications/loading.tsx - Loading para Notificações do Professor
 'use client';
 
-import { FiBell, FiCalendar, FiFileText, FiUser } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+import { GiGrandPiano } from 'react-icons/gi';
+import {
+  PiBell,
+  PiCalendarBlank,
+  PiFileText,
+  PiMusicNotes,
+  PiUser,
+} from 'react-icons/pi';
 
 export default function TeacherNotificationsLoading() {
   return (
@@ -27,13 +33,13 @@ export default function TeacherNotificationsLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiBell />
+          <PiBell />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiCalendar />
+          <PiCalendarBlank />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -45,7 +51,7 @@ export default function TeacherNotificationsLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -67,10 +73,14 @@ export default function TeacherNotificationsLoading() {
         {/* Stats Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {[
-            { icon: <FiBell className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiCalendar className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiFileText className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiUser className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiBell className="w-6 h-6 text-theme-inverse/20" /> },
+            {
+              icon: (
+                <PiCalendarBlank className="w-6 h-6 text-theme-inverse/20" />
+              ),
+            },
+            { icon: <PiFileText className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiUser className="w-6 h-6 text-theme-inverse/20" /> },
           ].map((item, index) => (
             <div
               key={index}
@@ -196,8 +206,8 @@ function NotificationCardSkeleton({ index }: { index: number }) {
                       priority === 'HIGH'
                         ? 'bg-accent-red/10'
                         : priority === 'MEDIUM'
-                        ? 'bg-accent-amber/10'
-                        : 'bg-accent-blue/10'
+                          ? 'bg-accent-amber/10'
+                          : 'bg-accent-blue/10'
                     }`}
                   ></div>
                 </div>

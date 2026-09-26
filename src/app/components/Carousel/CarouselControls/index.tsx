@@ -1,5 +1,5 @@
 // app/components/Carousel/CarouselControls.tsx - Updated with theme system
-import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
+import { PiCaretLeft, PiCaretRight } from 'react-icons/pi';
 
 interface CarouselControlsProps {
   onPrevious: () => void;
@@ -38,7 +38,7 @@ const CarouselControls: React.FC<CarouselControlsProps> = ({
         `}
         aria-label="Compositor anterior"
       >
-        <BiChevronLeft className="w-6 h-6 text-theme-primary group-hover:text-brand-primary transition-colors mx-auto" />
+        <PiCaretLeft className="w-6 h-6 text-theme-primary group-hover:text-brand-primary transition-colors mx-auto" />
 
         {/* Glow effect */}
         <div className="absolute inset-0 rounded-full bg-brand-gradient opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
@@ -64,7 +64,7 @@ const CarouselControls: React.FC<CarouselControlsProps> = ({
         `}
         aria-label="Próximo compositor"
       >
-        <BiChevronRight className="w-6 h-6 text-theme-primary group-hover:text-brand-primary transition-colors mx-auto" />
+        <PiCaretRight className="w-6 h-6 text-theme-primary group-hover:text-brand-primary transition-colors mx-auto" />
 
         {/* Glow effect */}
         <div className="absolute inset-0 rounded-full bg-brand-gradient opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>

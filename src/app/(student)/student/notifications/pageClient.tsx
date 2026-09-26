@@ -4,20 +4,20 @@
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import {
-  FiBell,
-  FiCheck,
-  FiCheckCircle,
-  FiClock,
-  FiAlertTriangle,
-  FiInfo,
-  FiFilter,
-  FiRefreshCw,
-  FiExternalLink,
-  FiCalendar,
-  FiFileText,
-  FiMusic,
-  FiBookOpen,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiArrowsClockwise,
+  PiBell,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCheck,
+  PiCheckCircle,
+  PiClock,
+  PiFileText,
+  PiFunnel,
+  PiInfo,
+  PiMusicNotes,
+  PiWarning,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -189,17 +189,17 @@ export default function StudentNotificationsPageClient({
   };
 
   const getNotificationIcon = (type: string, priority: string) => {
-    if (type.includes('LESSON')) return <FiCalendar className="w-5 h-5" />;
-    if (type.includes('ASSIGNMENT')) return <FiFileText className="w-5 h-5" />;
+    if (type.includes('LESSON')) return <PiCalendarBlank className="w-5 h-5" />;
+    if (type.includes('ASSIGNMENT')) return <PiFileText className="w-5 h-5" />;
     if (type.includes('PRACTICE') || type.includes('FEEDBACK'))
-      return <FiMusic className="w-5 h-5" />;
+      return <PiMusicNotes className="w-5 h-5" />;
 
     if (priority === 'HIGH' || priority === 'CRITICAL') {
-      return <FiAlertTriangle className="w-5 h-5 text-accent-red" />;
+      return <PiWarning className="w-5 h-5 text-accent-red" />;
     } else if (priority === 'MEDIUM') {
-      return <FiClock className="w-5 h-5 text-accent-amber" />;
+      return <PiClock className="w-5 h-5 text-accent-amber" />;
     } else {
-      return <FiInfo className="w-5 h-5 text-accent-blue" />;
+      return <PiInfo className="w-5 h-5 text-accent-blue" />;
     }
   };
 
@@ -218,15 +218,15 @@ export default function StudentNotificationsPageClient({
   const getFilterIcon = (filterType: FilterType) => {
     switch (filterType) {
       case 'lessons':
-        return <FiCalendar className="w-4 h-4" />;
+        return <PiCalendarBlank className="w-4 h-4" />;
       case 'assignments':
-        return <FiFileText className="w-4 h-4" />;
+        return <PiFileText className="w-4 h-4" />;
       case 'practice':
-        return <FiMusic className="w-4 h-4" />;
+        return <PiMusicNotes className="w-4 h-4" />;
       case 'unread':
-        return <FiBell className="w-4 h-4" />;
+        return <PiBell className="w-4 h-4" />;
       default:
-        return <FiFilter className="w-4 h-4" />;
+        return <PiFunnel className="w-4 h-4" />;
     }
   };
 
@@ -253,7 +253,7 @@ export default function StudentNotificationsPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
-            <FiAlertTriangle className="w-16 h-16 text-accent-red mx-auto mb-4" />
+            <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
             <h1 className="text-xl font-bold text-theme-primary mb-2">
               {t('error_loading')}
             </h1>
@@ -278,7 +278,7 @@ export default function StudentNotificationsPageClient({
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiBell className="w-8 h-8 text-theme-primary" />
+                <PiBell className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -343,7 +343,7 @@ export default function StudentNotificationsPageClient({
                     disabled={loading}
                     className="btn-classical-secondary flex items-center space-x-2"
                   >
-                    <FiCheckCircle className="w-4 h-4" />
+                    <PiCheckCircle className="w-4 h-4" />
                     <span>{t('mark_all')}</span>
                   </button>
                 )}
@@ -432,7 +432,7 @@ export default function StudentNotificationsPageClient({
                                   <span>
                                     {notification.actionText || t('view')}
                                   </span>
-                                  <FiExternalLink className="w-3 h-3" />
+                                  <PiArrowSquareOut className="w-3 h-3" />
                                 </Link>
                               )}
 
@@ -442,7 +442,7 @@ export default function StudentNotificationsPageClient({
                                   className="p-2 rounded-lg hover:bg-interactive-hover transition-colors"
                                   title={t('mark_read')}
                                 >
-                                  <FiCheck className="w-4 h-4 text-theme-tertiary hover:text-accent-green" />
+                                  <PiCheck className="w-4 h-4 text-theme-tertiary hover:text-accent-green" />
                                 </button>
                               )}
                             </div>
@@ -461,7 +461,7 @@ export default function StudentNotificationsPageClient({
                       disabled={loading}
                       className="btn-classical-secondary flex items-center space-x-2 mx-auto"
                     >
-                      <FiRefreshCw
+                      <PiArrowsClockwise
                         className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                       />
                       <span>{loading ? t('loading') : t('load_more')}</span>
@@ -471,7 +471,7 @@ export default function StudentNotificationsPageClient({
               </>
             ) : (
               <div className="classical-card p-12 text-center">
-                <FiBell className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
+                <PiBell className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
                   {filter === 'all'
                     ? t('no_notifications')
@@ -495,7 +495,7 @@ export default function StudentNotificationsPageClient({
                     href="/learning"
                     className="btn-classical-primary inline-flex items-center space-x-2"
                   >
-                    <FiBookOpen className="w-4 h-4" />
+                    <PiBookOpen className="w-4 h-4" />
                     <span>{t('explore_studies')}</span>
                   </Link>
                 )}

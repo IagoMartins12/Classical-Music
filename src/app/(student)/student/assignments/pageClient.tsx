@@ -4,26 +4,26 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import {
-  FiClipboard,
-  FiUser,
-  FiSearch,
-  FiFilter,
-  FiRefreshCw,
-  FiEye,
-  FiCheck,
-  FiClock,
-  FiChevronLeft,
-  FiChevronRight,
-  FiTarget,
-  FiBookOpen,
-  FiHeadphones,
-  FiMusic,
-  FiEdit3,
-  FiMic,
-  FiCalendar,
-  FiAlertTriangle,
-  FiTrendingUp,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCaretLeft,
+  PiCaretRight,
+  PiCheck,
+  PiClipboardText,
+  PiClock,
+  PiEye,
+  PiFunnel,
+  PiHeadphones,
+  PiMagnifyingGlass,
+  PiMicrophone,
+  PiMusicNotes,
+  PiPencilLine,
+  PiTarget,
+  PiTrendUp,
+  PiUser,
+  PiWarning,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -60,12 +60,12 @@ type SortOption =
   | 'priority';
 
 const typeIcons = {
-  practice: FiTarget,
-  theory: FiBookOpen,
-  listening: FiHeadphones,
-  composition: FiEdit3,
-  performance: FiMic,
-  reading: FiMusic,
+  practice: PiTarget,
+  theory: PiBookOpen,
+  listening: PiHeadphones,
+  composition: PiPencilLine,
+  performance: PiMicrophone,
+  reading: PiMusicNotes,
 };
 
 const priorityColors = {
@@ -305,7 +305,7 @@ export default function StudentAssignmentsPageClient({
       return {
         color: 'bg-accent-green/10 border-accent-green/30 text-accent-green',
         label: t('student_assignments_status_completed'),
-        icon: FiCheck,
+        icon: PiCheck,
       };
     }
 
@@ -313,7 +313,7 @@ export default function StudentAssignmentsPageClient({
       return {
         color: 'border-red-400 text-red-400',
         label: t('student_assignments_status_overdue'),
-        icon: FiAlertTriangle,
+        icon: PiWarning,
       };
     }
 
@@ -321,14 +321,14 @@ export default function StudentAssignmentsPageClient({
       return {
         color: 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue',
         label: t('student_assignments_status_in_progress'),
-        icon: FiTrendingUp,
+        icon: PiTrendUp,
       };
     }
 
     return {
       color: 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow',
       label: t('student_assignments_status_pending'),
-      icon: FiClock,
+      icon: PiClock,
     };
   };
 
@@ -342,7 +342,7 @@ export default function StudentAssignmentsPageClient({
       const statusInfo = getAssignmentStatusInfo(assignment);
       const StatusIcon = statusInfo.icon;
       const TypeIcon =
-        typeIcons[assignment.type as keyof typeof typeIcons] || FiTarget;
+        typeIcons[assignment.type as keyof typeof typeIcons] || PiTarget;
       const priorityColor =
         priorityColors[assignment.priority as keyof typeof priorityColors] ||
         'text-theme-secondary';
@@ -384,7 +384,7 @@ export default function StudentAssignmentsPageClient({
                   className="w-5 h-5 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full flex items-center justify-center"
                   title="Tem partituras vinculadas"
                 >
-                  <FiMusic className="w-3 h-3" />
+                  <PiMusicNotes className="w-3 h-3" />
                 </div>
               )}
             </div>
@@ -402,13 +402,13 @@ export default function StudentAssignmentsPageClient({
           {/* Meta Info */}
           <div className="space-y-2 mb-4">
             <div className="flex items-center text-sm text-theme-secondary">
-              <FiUser className="w-4 h-4 mr-2" />
+              <PiUser className="w-4 h-4 mr-2" />
               {assignment.lesson.teacher.name}
             </div>
 
             {assignment.dueDate && (
               <div className="flex items-center text-sm text-theme-secondary">
-                <FiCalendar className="w-4 h-4 mr-2" />
+                <PiCalendarBlank className="w-4 h-4 mr-2" />
                 {t('student_assignments_due_date')}{' '}
                 {formatDate(assignment.dueDate)}
                 {assignment.daysUntilDue !== null &&
@@ -440,7 +440,7 @@ export default function StudentAssignmentsPageClient({
 
             {assignment.estimatedTime && (
               <div className="flex items-center text-sm text-theme-secondary">
-                <FiClock className="w-4 h-4 mr-2" />
+                <PiClock className="w-4 h-4 mr-2" />
                 {formatTime(assignment.estimatedTime)}{' '}
                 {t('student_assignments_estimated_time')}
               </div>
@@ -449,7 +449,7 @@ export default function StudentAssignmentsPageClient({
             {/* 🆕 WORK SCORES INFO */}
             {hasScores && (
               <div className="flex items-center text-sm text-accent-purple">
-                <FiMusic className="w-4 h-4 mr-2" />
+                <PiMusicNotes className="w-4 h-4 mr-2" />
                 {t('student_assignments_scores_linked', {
                   count: assignment.workScoreIds.length,
                   plural: assignment.workScoreIds.length !== 1 ? 's' : '',
@@ -521,7 +521,7 @@ export default function StudentAssignmentsPageClient({
               className="text-sm text-brand-primary flex gap-2"
               href={`assignments/${assignment.id}`}
             >
-              <FiEye className="w-4 h-4 text-brand-primary" />
+              <PiEye className="w-4 h-4 text-brand-primary" />
               <span>{t('student_assignments_view_details')}</span>
             </Link>
           </div>
@@ -537,7 +537,7 @@ export default function StudentAssignmentsPageClient({
       const statusInfo = getAssignmentStatusInfo(assignment);
       const StatusIcon = statusInfo.icon;
       const TypeIcon =
-        typeIcons[assignment.type as keyof typeof typeIcons] || FiTarget;
+        typeIcons[assignment.type as keyof typeof typeIcons] || PiTarget;
       const priorityColor =
         priorityColors[assignment.priority as keyof typeof priorityColors] ||
         'text-theme-secondary';
@@ -587,13 +587,13 @@ export default function StudentAssignmentsPageClient({
           {/* Meta Info */}
           <div className="space-y-2 mb-4">
             <div className="flex items-center text-sm text-theme-secondary">
-              <FiUser className="w-4 h-4 mr-2" />
+              <PiUser className="w-4 h-4 mr-2" />
               {assignment.lesson.teacher.name}
             </div>
 
             {assignment.dueDate && (
               <div className="flex items-center text-sm text-theme-secondary">
-                <FiCalendar className="w-4 h-4 mr-2" />
+                <PiCalendarBlank className="w-4 h-4 mr-2" />
                 {t('student_assignments_due_date')}{' '}
                 {formatDate(assignment.dueDate)}
                 {assignment.daysUntilDue !== null &&
@@ -625,7 +625,7 @@ export default function StudentAssignmentsPageClient({
 
             {assignment.estimatedTime && (
               <div className="flex items-center text-sm text-theme-secondary">
-                <FiClock className="w-4 h-4 mr-2" />
+                <PiClock className="w-4 h-4 mr-2" />
                 {formatTime(assignment.estimatedTime)}{' '}
                 {t('student_assignments_estimated_time')}
               </div>
@@ -697,7 +697,7 @@ export default function StudentAssignmentsPageClient({
               className="text-sm text-brand-primary flex gap-2"
               href={`assignments/${assignment.id}`}
             >
-              <FiEye className="w-4 h-4 text-brand-primary" />
+              <PiEye className="w-4 h-4 text-brand-primary" />
               <span>{t('student_assignments_view_details')}</span>
             </Link>
           </div>
@@ -714,7 +714,7 @@ export default function StudentAssignmentsPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiUser className="w-8 h-8 text-theme-primary" />
+              <PiUser className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('student_assignments_no_teacher_title')}
@@ -738,7 +738,7 @@ export default function StudentAssignmentsPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiClipboard className="w-8 h-8 text-theme-primary" />
+              <PiClipboardText className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('student_assignments_error_title')}
@@ -752,7 +752,7 @@ export default function StudentAssignmentsPageClient({
                 disabled={loading.assignments}
                 className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
               >
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-4 h-4 ${
                     loading.assignments ? 'animate-spin' : ''
                   }`}
@@ -786,7 +786,7 @@ export default function StudentAssignmentsPageClient({
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiClipboard className="w-8 h-8 text-theme-primary" />
+                <PiClipboardText className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -807,7 +807,7 @@ export default function StudentAssignmentsPageClient({
                 className="classical-card p-6 text-center snap-start"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiClipboard className="w-6 h-6 text-theme-primary" />
+                  <PiClipboardText className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {displayStats.total}
@@ -822,7 +822,7 @@ export default function StudentAssignmentsPageClient({
                 className="classical-card p-6 text-center snap-start"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiClock className="w-6 h-6 text-theme-primary" />
+                  <PiClock className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {displayStats.pending}
@@ -837,7 +837,7 @@ export default function StudentAssignmentsPageClient({
                 className="classical-card p-6 text-center snap-start"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiTrendingUp className="w-6 h-6 text-theme-primary" />
+                  <PiTrendUp className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {displayStats.inProgress}
@@ -852,7 +852,7 @@ export default function StudentAssignmentsPageClient({
                 className="classical-card p-6 text-center snap-start"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiCheck className="w-6 h-6 text-theme-primary" />
+                  <PiCheck className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {displayStats.completed}
@@ -867,7 +867,7 @@ export default function StudentAssignmentsPageClient({
                 className="classical-card p-6 text-center snap-start"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiAlertTriangle className="w-6 h-6 text-theme-primary" />
+                  <PiWarning className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {displayStats.overdue}
@@ -886,7 +886,7 @@ export default function StudentAssignmentsPageClient({
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               {/* Search */}
               <div className="relative flex-1 max-w-md">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+                <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
                 <input
                   type="text"
                   placeholder={t('student_assignments_search_placeholder')}
@@ -903,7 +903,7 @@ export default function StudentAssignmentsPageClient({
                   className={`btn-classical-secondary flex items-center space-x-2 ${
                     showFilters ? 'bg-brand-primary/10 text-brand-primary' : ''
                   }`}
-                  leftIcon={<FiFilter className="w-4 h-4" />}
+                  leftIcon={<PiFunnel className="w-4 h-4" />}
                 >
                   <span>{t('student_assignments_filters')}</span>
                 </Button>
@@ -913,7 +913,7 @@ export default function StudentAssignmentsPageClient({
                   disabled={loading.assignments}
                   className="btn-classical-secondary flex items-center space-x-2"
                   leftIcon={
-                    <FiRefreshCw
+                    <PiArrowsClockwise
                       className={`w-4 h-4 ${loading.assignments ? 'animate-spin' : ''}`}
                     />
                   }
@@ -1086,7 +1086,7 @@ export default function StudentAssignmentsPageClient({
         <AnimatedItem direction="up" springType="gentle">
           {paginatedAssignments.length === 0 ? (
             <div className="text-center py-12">
-              <FiClipboard className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+              <PiClipboardText className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
               <h3 className="text-lg font-bold text-theme-primary mb-2">
                 {filteredAssignments.length === 0 &&
                 displayAssignments.length > 0
@@ -1125,7 +1125,7 @@ export default function StudentAssignmentsPageClient({
                 disabled={currentPage === 1}
                 className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50"
               >
-                <FiChevronLeft className="w-4 h-4" />
+                <PiCaretLeft className="w-4 h-4" />
                 <span>{t('student_assignments_pagination_previous')}</span>
               </button>
 
@@ -1167,7 +1167,7 @@ export default function StudentAssignmentsPageClient({
                 className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50"
               >
                 <span>{t('student_assignments_pagination_next')}</span>
-                <FiChevronRight className="w-4 h-4" />
+                <PiCaretRight className="w-4 h-4" />
               </button>
             </div>
           </AnimatedItem>

@@ -3,12 +3,12 @@
 
 import { useMemo, useEffect } from 'react';
 import {
-  FiMessageSquare,
-  FiUsers,
-  FiTarget,
-  FiZap,
-  FiBookOpen,
-} from 'react-icons/fi';
+  PiBookOpen,
+  PiChatCenteredText,
+  PiLightning,
+  PiTarget,
+  PiUsers,
+} from 'react-icons/pi';
 import Link from 'next/link';
 import { useAnnotationsStore } from '@/app/stores/useAnnotationsStore';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -82,7 +82,7 @@ export default function AnnotationsStatsWidget({
       >
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <FiMessageSquare className="w-8 h-8 text-white" />
+            <PiChatCenteredText className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl font-bold text-theme-primary mb-2">
             {t('stats_widget_share_knowledge')}
@@ -104,14 +104,14 @@ export default function AnnotationsStatsWidget({
               href="/works"
               className="btn-classical-primary flex items-center justify-center space-x-2 py-3"
             >
-              <FiBookOpen className="w-4 h-4" />
+              <PiBookOpen className="w-4 h-4" />
               <span>{t('stats_widget_explore_works')}</span>
             </Link>
             <Link
               href="/composers"
               className="btn-classical-secondary flex items-center justify-center space-x-2 py-3"
             >
-              <FiUsers className="w-4 h-4" />
+              <PiUsers className="w-4 h-4" />
               <span>{t('stats_widget_see_composers')}</span>
             </Link>
           </div>
@@ -137,7 +137,7 @@ export default function AnnotationsStatsWidget({
         {nextAchievements.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <FiTarget className="w-5 h-5 text-accent-purple" />
+              <PiTarget className="w-5 h-5 text-accent-purple" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_next_achievements')}
               </h4>
@@ -191,7 +191,7 @@ export default function AnnotationsStatsWidget({
         {smartCTAs.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <FiZap className="w-5 h-5 text-brand-primary" />
+              <PiLightning className="w-5 h-5 text-brand-primary" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_continue_contributing')}
               </h4>
@@ -256,7 +256,7 @@ export default function AnnotationsStatsWidget({
         {/* Impact Stats */}
         <AnimatedCard hover="lift" className="classical-card p-6">
           <div className="flex items-center space-x-3 mb-4">
-            <FiUsers className="w-5 h-5 text-accent-green" />
+            <PiUsers className="w-5 h-5 text-accent-green" />
             <h4 className="font-semibold text-theme-primary">
               {t('stats_widget_community_impact')}
             </h4>

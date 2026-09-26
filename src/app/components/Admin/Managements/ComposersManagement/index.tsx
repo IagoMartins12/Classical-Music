@@ -4,24 +4,24 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiUsers,
-  FiSearch,
-  FiFilter,
-  FiPlus,
-  FiEdit,
-  FiTrash2,
-  FiEye,
-  FiCheckCircle,
-  FiX,
-  FiRefreshCw,
-  FiMusic,
-  FiHeart,
-  FiMapPin,
-  FiCalendar,
-  FiShield,
-  FiImage,
-  FiTrendingUp,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCalendarBlank,
+  PiCheckCircle,
+  PiEye,
+  PiFunnel,
+  PiHeart,
+  PiImage,
+  PiMagnifyingGlass,
+  PiMapPin,
+  PiMusicNotes,
+  PiNotePencil,
+  PiPlus,
+  PiShield,
+  PiTrash,
+  PiTrendUp,
+  PiUsers,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -242,7 +242,7 @@ export default function ComposersManagement() {
           <div className="text-center mb-8 py-12">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiUsers className="w-8 h-8 text-theme-primary" />
+                <PiUsers className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -261,7 +261,9 @@ export default function ComposersManagement() {
                 variant="ghost"
                 size="sm"
                 leftIcon={
-                  <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                  <PiArrowsClockwise
+                    className={refreshing ? 'animate-spin' : ''}
+                  />
                 }
                 onClick={handleRefresh}
                 disabled={refreshing || statsLoading}
@@ -282,7 +284,7 @@ export default function ComposersManagement() {
                 title="Total de Compositores"
                 value={formatNumber(stats.total)}
                 change={{ value: stats.recentlyAdded, isPositive: true }}
-                icon={FiUsers}
+                icon={PiUsers}
                 color="#3B82F6"
                 subtitle={`nos ${getPeriodLabel(period)}`}
               />
@@ -295,7 +297,7 @@ export default function ComposersManagement() {
                     stats.total > 0 ? (stats.verified / stats.total) * 100 : 0,
                   isPositive: true,
                 }}
-                icon={FiCheckCircle}
+                icon={PiCheckCircle}
                 color="#10B981"
                 subtitle={`${(
                   (stats.verified / Math.max(stats.total, 1)) *
@@ -313,7 +315,7 @@ export default function ComposersManagement() {
                       : 0,
                   isPositive: true,
                 }}
-                icon={FiImage}
+                icon={PiImage}
                 color="#8B5CF6"
                 subtitle={`${(
                   (stats.withImages / Math.max(stats.total, 1)) *
@@ -325,7 +327,7 @@ export default function ComposersManagement() {
                 title="Média de Obras"
                 value={stats.avgWorksPerComposer.toFixed(1)}
                 change={{ value: 8.7, isPositive: true }}
-                icon={FiMusic}
+                icon={PiMusicNotes}
                 color="#F59E0B"
                 subtitle="por compositor"
               />
@@ -377,7 +379,7 @@ export default function ComposersManagement() {
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiTrendingUp className="w-5 h-5 text-accent-red" />
+                    <PiTrendUp className="w-5 h-5 text-accent-red" />
                     <span>Mais Favoritados</span>
                   </h3>
                   <div className="space-y-3">
@@ -401,7 +403,7 @@ export default function ComposersManagement() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={<FiEye />}
+                          leftIcon={<PiEye />}
                           onClick={() =>
                             router.push(`/composer/${composer.id}`)
                           }
@@ -418,7 +420,7 @@ export default function ComposersManagement() {
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiMusic className="w-5 h-5 text-accent-blue" />
+                    <PiMusicNotes className="w-5 h-5 text-accent-blue" />
                     <span>Mais Produtivos</span>
                   </h3>
                   <div className="space-y-3">
@@ -441,7 +443,7 @@ export default function ComposersManagement() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={<FiEye />}
+                          leftIcon={<PiEye />}
                           onClick={() =>
                             router.push(`/composer/${composer.id}`)
                           }
@@ -467,7 +469,7 @@ export default function ComposersManagement() {
                 <Button
                   variant="primary"
                   size="sm"
-                  leftIcon={<FiPlus />}
+                  leftIcon={<PiPlus />}
                   onClick={() => router.push('/uploads')}
                   className="hidden md:flex"
                 >
@@ -479,7 +481,7 @@ export default function ComposersManagement() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  leftIcon={<FiFilter />}
+                  leftIcon={<PiFunnel />}
                   onClick={() => setShowFilters(!showFilters)}
                   className="flex-shrink-0"
                 >
@@ -490,7 +492,9 @@ export default function ComposersManagement() {
                   variant="ghost"
                   size="sm"
                   leftIcon={
-                    <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                    <PiArrowsClockwise
+                      className={refreshing ? 'animate-spin' : ''}
+                    />
                   }
                   onClick={handleRefresh}
                   disabled={refreshing}
@@ -505,7 +509,7 @@ export default function ComposersManagement() {
             <div className="space-y-4 mb-6">
               {/* Busca */}
               <div className="relative w-full">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                 <Input
                   type="text"
                   placeholder="Buscar compositores..."
@@ -547,7 +551,7 @@ export default function ComposersManagement() {
                 <Button
                   variant="primary"
                   size="sm"
-                  leftIcon={<FiSearch />}
+                  leftIcon={<PiMagnifyingGlass />}
                   onClick={handleSearch}
                   className=" w-full"
                 >
@@ -674,7 +678,7 @@ export default function ComposersManagement() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    leftIcon={<FiCheckCircle />}
+                    leftIcon={<PiCheckCircle />}
                     onClick={() => handleBulkAction('verify')}
                     className="flex-1 sm:flex-none"
                   >
@@ -683,7 +687,7 @@ export default function ComposersManagement() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    leftIcon={<FiX />}
+                    leftIcon={<PiX />}
                     onClick={() => handleBulkAction('unverify')}
                     className="flex-1 sm:flex-none"
                   >
@@ -740,7 +744,7 @@ export default function ComposersManagement() {
                         />
                       ) : (
                         <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl bg-theme-primary/20 flex items-center justify-center">
-                          <FiUsers className="w-6 h-6 md:w-8 md:h-8 text-theme-tertiary" />
+                          <PiUsers className="w-6 h-6 md:w-8 md:h-8 text-theme-tertiary" />
                         </div>
                       )}
                     </div>
@@ -753,7 +757,7 @@ export default function ComposersManagement() {
                           {composer.name}
                         </h4>
                         {composer.isVerified && (
-                          <FiCheckCircle className="w-4 h-4 md:w-5 md:h-5 text-accent-green flex-shrink-0" />
+                          <PiCheckCircle className="w-4 h-4 md:w-5 md:h-5 text-accent-green flex-shrink-0" />
                         )}
                       </div>
 
@@ -789,7 +793,7 @@ export default function ComposersManagement() {
                       <div className="grid grid-cols-2 gap-2 text-xs md:text-sm text-theme-secondary mb-2">
                         {composer.birthDate && (
                           <div className="flex items-center gap-1">
-                            <FiCalendar className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                            <PiCalendarBlank className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                             <span className="truncate">
                               {composer.birthDate}
                             </span>
@@ -797,14 +801,14 @@ export default function ComposersManagement() {
                         )}
                         {composer.nationality && (
                           <div className="flex items-center gap-1">
-                            <FiMapPin className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                            <PiMapPin className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                             <span className="truncate">
                               {composer.nationality}
                             </span>
                           </div>
                         )}
                         <div className="flex items-center gap-1">
-                          <FiMusic className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                          <PiMusicNotes className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                           <span
                             className={
                               composer.worksCount === 0 ? 'text-accent-red' : ''
@@ -814,7 +818,7 @@ export default function ComposersManagement() {
                           </span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <FiHeart className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                          <PiHeart className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                           <span>{composer.favoritesCount} favoritos</span>
                         </div>
                       </div>
@@ -832,14 +836,14 @@ export default function ComposersManagement() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiEye />}
+                        leftIcon={<PiEye />}
                         onClick={() => router.push(`/composer/${composer.id}`)}
                         title="Ver detalhes"
                       />
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiEdit />}
+                        leftIcon={<PiNotePencil />}
                         onClick={() =>
                           router.push(`/uploads/composer/${composer.id}/edit`)
                         }
@@ -848,7 +852,7 @@ export default function ComposersManagement() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={composer.isVerified ? <FiX /> : <FiShield />}
+                        leftIcon={composer.isVerified ? <PiX /> : <PiShield />}
                         onClick={() =>
                           handleVerifyComposer(
                             composer.id,
@@ -869,7 +873,7 @@ export default function ComposersManagement() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiTrash2 />}
+                        leftIcon={<PiTrash />}
                         onClick={() =>
                           handleDeleteComposer(composer.id, composer.name)
                         }
@@ -887,7 +891,7 @@ export default function ComposersManagement() {
                       onClick={() => router.push(`/composer/${composer.id}`)}
                       className="flex-1"
                     >
-                      <FiEye className="w-4 h-4" />
+                      <PiEye className="w-4 h-4" />
                     </Button>
                     <Button
                       variant="ghost"
@@ -897,7 +901,7 @@ export default function ComposersManagement() {
                       }
                       className="flex-1"
                     >
-                      <FiEdit className="w-4 h-4" />
+                      <PiNotePencil className="w-4 h-4" />
                     </Button>
                     <Button
                       variant="ghost"
@@ -912,9 +916,9 @@ export default function ComposersManagement() {
                       }`}
                     >
                       {composer.isVerified ? (
-                        <FiX className="w-4 h-4" />
+                        <PiX className="w-4 h-4" />
                       ) : (
-                        <FiShield className="w-4 h-4" />
+                        <PiShield className="w-4 h-4" />
                       )}
                     </Button>
                     <Button
@@ -925,7 +929,7 @@ export default function ComposersManagement() {
                       }
                       className="flex-1 text-accent-red hover:bg-accent-red/10"
                     >
-                      <FiTrash2 className="w-4 h-4" />
+                      <PiTrash className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>

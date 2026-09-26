@@ -4,8 +4,7 @@
 import { CarouselCardProps } from '@/app/types/types';
 import LazyImage from '../../LazyImage';
 import Link from '@/app/components/LocalizedLink';
-import { FiUser, FiCalendar } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+import { PiCalendarBlank, PiMusicNotes, PiUser } from 'react-icons/pi';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -68,7 +67,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
             {item.epochName && (
               <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0">
                 <span className="inline-flex items-center px-3 py-1 bg-brand-primary/20 backdrop-blur-md border border-brand-primary/30 rounded-full text-xs font-medium text-white">
-                  <FiCalendar className="w-3 h-3 mr-1" />
+                  <PiCalendarBlank className="w-3 h-3 mr-1" />
                   {translateEpochWithHook(
                     translateEpochWithHook(item.epochName, t),
                     t
@@ -79,7 +78,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
 
             {/* Musical Note Decoration */}
             <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-30 transition-all duration-500 transform scale-150 group-hover:scale-100">
-              <GiMusicalNotes className="w-6 h-6 text-brand-primary" />
+              <PiMusicNotes className="w-6 h-6 text-brand-primary" />
             </div>
           </div>
 
@@ -99,7 +98,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
               {/* Subtitle with epoch info */}
               {item.epochName && (
                 <p className="text-theme-secondary text-sm mb-3 flex items-center">
-                  <FiUser className="w-3 h-3 mr-1 opacity-60" />
+                  <PiUser className="w-3 h-3 mr-1 opacity-60" />
 
                   {language === 'en' ? (
                     <>

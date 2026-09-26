@@ -3,7 +3,7 @@
 
 import Link from '@/app/components/LocalizedLink';
 import Image from '@/app/components/SmartImage';
-import { FiBookOpen, FiClock, FiArrowRight, FiUser } from 'react-icons/fi';
+import { PiArrowRight, PiBookOpen, PiClock, PiUser } from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../animation/AnimatedComponents';
 import type { BlogArticlePreview } from '@/app/requests/blog/composer-articles';
 import { useTranslation } from '@/app/hooks/useTranslation';
@@ -32,7 +32,7 @@ export default function ComposerArticlesSection({
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-pink rounded-2xl flex items-center justify-center">
-              <FiBookOpen className="w-6 h-6 text-theme-primary" />
+              <PiBookOpen className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -77,7 +77,7 @@ export default function ComposerArticlesSection({
                   </div>
                 ) : (
                   <div className="w-full h-48 bg-gradient-to-br from-accent-purple/20 to-accent-pink/20 flex items-center justify-center">
-                    <FiBookOpen className="w-12 h-12 text-theme-tertiary opacity-50" />
+                    <PiBookOpen className="w-12 h-12 text-theme-tertiary opacity-50" />
                   </div>
                 )}
 
@@ -98,14 +98,14 @@ export default function ComposerArticlesSection({
                     <div className="flex items-center space-x-4 text-xs text-theme-tertiary">
                       {article.readTime && (
                         <div className="flex items-center space-x-1">
-                          <FiClock className="w-3 h-3" />
+                          <PiClock className="w-3 h-3" />
                           <span>{article.readTime} min</span>
                         </div>
                       )}
 
                       {article.authorName && (
                         <div className="flex items-center space-x-1">
-                          <FiUser className="w-3 h-3" />
+                          <PiUser className="w-3 h-3" />
                           <span className="truncate max-w-[100px]">
                             {article.authorName}
                           </span>
@@ -113,7 +113,7 @@ export default function ComposerArticlesSection({
                       )}
                     </div>
 
-                    <FiArrowRight className="w-4 h-4 text-brand-primary group-hover:translate-x-1 transition-transform duration-300" />
+                    <PiArrowRight className="w-4 h-4 text-brand-primary group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
                 </div>
               </div>
@@ -130,18 +130,18 @@ export default function ComposerArticlesSection({
               href={`/blog/search?q=${encodeURIComponent(composerName)}`}
               className="btn-classical-primary flex items-center space-x-2 group/btn"
             >
-              <FiBookOpen className="w-4 h-4" />
+              <PiBookOpen className="w-4 h-4" />
               <span>{t('see_more_articles_about_composer')}</span>
-              <FiArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+              <PiArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
             </Link>
           ) : (
             <Link
               href="/blog"
               className="btn-classical-secondary flex items-center space-x-2 group/btn"
             >
-              <FiBookOpen className="w-4 h-4" />
+              <PiBookOpen className="w-4 h-4" />
               <span>{t('see_more_articles_blog')}</span>
-              <FiArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+              <PiArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
             </Link>
           )}
         </div>

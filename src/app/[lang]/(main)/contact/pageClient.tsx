@@ -2,22 +2,23 @@
 'use client';
 
 import React, { useState } from 'react';
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiMail,
-  FiPhone,
-  FiMapPin,
-  FiMessageCircle,
-  FiUser,
-  FiHelpCircle,
-  FiUpload,
-  FiSend,
-  FiClock,
-  FiCheckCircle,
-  FiAlertCircle,
-  FiLoader,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
-import { BiBug } from 'react-icons/bi';
+  PiBug,
+  PiChatCircle,
+  PiCheckCircle,
+  PiClock,
+  PiEnvelopeSimple,
+  PiMapPin,
+  PiMusicNotes,
+  PiPaperPlaneRight,
+  PiPhone,
+  PiQuestion,
+  PiSpinnerGap,
+  PiUploadSimple,
+  PiUser,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import {
   PageContainer,
@@ -48,7 +49,7 @@ export default function ContactPageClient() {
 
   const contactOptions: ContactOption[] = [
     {
-      icon: FiMessageCircle,
+      icon: PiChatCircle,
       title: t('contact_option_0_title'),
       description: t('contact_option_0_description'),
       action: t('contact_option_0_action'),
@@ -56,7 +57,7 @@ export default function ContactPageClient() {
       category: 'suporte',
     },
     {
-      icon: BiBug,
+      icon: PiBug,
       title: t('contact_option_1_title'),
       description: t('contact_option_1_description'),
       action: t('contact_option_1_action'),
@@ -64,7 +65,7 @@ export default function ContactPageClient() {
       category: 'bug',
     },
     {
-      icon: FiUpload,
+      icon: PiUploadSimple,
       title: t('contact_option_2_title'),
       description: t('contact_option_2_description'),
       action: t('contact_option_2_action'),
@@ -72,7 +73,7 @@ export default function ContactPageClient() {
       category: 'moderacao',
     },
     {
-      icon: FiUser,
+      icon: PiUser,
       title: t('contact_option_3_title'),
       description: t('contact_option_3_description'),
       action: t('contact_option_3_action'),
@@ -185,7 +186,9 @@ export default function ContactPageClient() {
   const getFormStatus = () => {
     if (loading) {
       return {
-        icon: <FiLoader className="w-5 h-5 animate-spin text-brand-primary" />,
+        icon: (
+          <PiSpinnerGap className="w-5 h-5 animate-spin text-brand-primary" />
+        ),
         message: t('contact_form_status_loading'),
         color: 'text-brand-primary',
       };
@@ -193,7 +196,7 @@ export default function ContactPageClient() {
 
     if (success) {
       return {
-        icon: <FiCheckCircle className="w-5 h-5 text-accent-green" />,
+        icon: <PiCheckCircle className="w-5 h-5 text-accent-green" />,
         message: t('contact_form_status_success'),
         color: 'text-accent-green',
       };
@@ -201,7 +204,7 @@ export default function ContactPageClient() {
 
     if (error) {
       return {
-        icon: <FiAlertCircle className="w-5 h-5 text-accent-red" />,
+        icon: <PiWarningCircle className="w-5 h-5 text-accent-red" />,
         message: error,
         color: 'text-accent-red',
       };
@@ -229,7 +232,7 @@ export default function ContactPageClient() {
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
-                  <FiMail className="w-5 h-5 text-brand-primary mr-2" />
+                  <PiEnvelopeSimple className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
                     {t('contact_jsx_span_children_0__fale_conosco')}
                   </span>
@@ -464,19 +467,19 @@ export default function ContactPageClient() {
                   >
                     {loading ? (
                       <>
-                        <FiLoader className="w-5 h-5 animate-spin" />
+                        <PiSpinnerGap className="w-5 h-5 animate-spin" />
                         <span>
                           {t('contact_jsx_span_children_0__enviando')}
                         </span>
                       </>
                     ) : success ? (
                       <>
-                        <FiCheckCircle className="w-5 h-5" />
+                        <PiCheckCircle className="w-5 h-5" />
                         <span>{t('contact_jsx_span_children_0__enviado')}</span>
                       </>
                     ) : (
                       <>
-                        <FiSend className="w-5 h-5" />
+                        <PiPaperPlaneRight className="w-5 h-5" />
                         <span>
                           {t('contact_jsx_span_children_0__enviar_mensagem')}
                         </span>
@@ -496,7 +499,7 @@ export default function ContactPageClient() {
                   <div className="space-y-6">
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                        <FiMail className="w-6 h-6 text-theme-primary" />
+                        <PiEnvelopeSimple className="w-6 h-6 text-theme-primary" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-theme-primary">
@@ -510,7 +513,7 @@ export default function ContactPageClient() {
 
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                        <FiPhone className="w-6 h-6 text-theme-primary" />
+                        <PiPhone className="w-6 h-6 text-theme-primary" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-theme-primary">
@@ -524,7 +527,7 @@ export default function ContactPageClient() {
 
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
-                        <FiMapPin className="w-6 h-6 text-theme-primary" />
+                        <PiMapPin className="w-6 h-6 text-theme-primary" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-theme-primary">
@@ -572,7 +575,7 @@ export default function ContactPageClient() {
 
                   <div className="mt-6 p-4 bg-accent-blue/10 border border-accent-blue/20 rounded-lg">
                     <div className="flex items-center space-x-3">
-                      <FiClock className="w-5 h-5 text-accent-blue" />
+                      <PiClock className="w-5 h-5 text-accent-blue" />
                       <span className="text-accent-blue font-medium">
                         {t('contact_jsx_span_children_0__resposta_tempo')}
                       </span>
@@ -590,7 +593,7 @@ export default function ContactPageClient() {
                       href="/faq"
                       className="flex items-center space-x-3 text-theme-secondary hover:text-brand-primary transition-colors"
                     >
-                      <FiHelpCircle className="w-5 h-5" />
+                      <PiQuestion className="w-5 h-5" />
                       <span>
                         {t('contact_jsx_link_children_0__central_ajuda')}
                       </span>
@@ -600,7 +603,7 @@ export default function ContactPageClient() {
                       href="/help"
                       className="flex items-center space-x-3 text-theme-secondary hover:text-brand-primary transition-colors"
                     >
-                      <FiMessageCircle className="w-5 h-5" />
+                      <PiChatCircle className="w-5 h-5" />
                       <span>
                         {t('contact_jsx_link_children_0__guias_tutoriais')}
                       </span>
@@ -610,7 +613,7 @@ export default function ContactPageClient() {
                       href="/support"
                       className="flex items-center space-x-3 text-theme-secondary hover:text-brand-primary transition-colors"
                     >
-                      <FiUser className="w-5 h-5" />
+                      <PiUser className="w-5 h-5" />
                       <span>
                         {t('contact_jsx_link_children_0__suporte_técnico')}
                       </span>
@@ -628,7 +631,7 @@ export default function ContactPageClient() {
         className="top-16 left-16 text-6xl text-brand-primary/5"
         delay={0}
       >
-        <GiMusicalNotes />
+        <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
         className="bottom-16 right-16 text-5xl text-accent-purple/5"
@@ -640,7 +643,7 @@ export default function ContactPageClient() {
         className="top-1/3 right-24 text-4xl text-accent-blue/5"
         delay={1}
       >
-        <FiMail />
+        <PiEnvelopeSimple />
       </FloatingElement>
     </PageContainer>
   );

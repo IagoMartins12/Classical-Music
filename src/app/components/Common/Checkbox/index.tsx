@@ -1,7 +1,7 @@
 'use client';
 
 import React, { forwardRef, useState } from 'react';
-import { FiCheck } from 'react-icons/fi';
+import { PiCheck } from 'react-icons/pi';
 
 interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -70,7 +70,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               ${isChecked ? 'bg-brand-primary   ' : ''}
             `}
           >
-            <FiCheck
+            <PiCheck
               className={`
                 text-theme-primary transition-all duration-200
                 ${isChecked ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}

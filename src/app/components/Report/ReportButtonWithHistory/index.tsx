@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiFlag, FiClock } from 'react-icons/fi';
+import { PiClock, PiFlag } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import ReportModal from '../ReportModal';
 import ReportHistoryModal from '../ReportHistoryModal';
@@ -37,7 +37,7 @@ export default function ReportButtonWithHistory({
         <Button
           variant={variant}
           size={size}
-          leftIcon={<FiFlag />}
+          leftIcon={<PiFlag />}
           onClick={() => setShowReportModal(true)}
         >
           Reportar
@@ -47,7 +47,7 @@ export default function ReportButtonWithHistory({
           <Button
             variant="ghost"
             size={size}
-            leftIcon={<FiClock />}
+            leftIcon={<PiClock />}
             onClick={() => setShowHistoryModal(true)}
             title="Ver histórico de reports"
           >

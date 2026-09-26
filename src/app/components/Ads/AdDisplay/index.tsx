@@ -4,13 +4,13 @@
 import { useFrontAds } from '@/app/hooks/useFrontAds';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  FiExternalLink,
-  FiX,
-  FiMessageCircle,
-  FiPlay,
-  FiStar,
-  FiMusic,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiChatCircle,
+  PiMusicNotes,
+  PiPlay,
+  PiStar,
+  PiX,
+} from 'react-icons/pi';
 import {
   getResponsiveImageUrl,
   getImageSrcSet,
@@ -330,7 +330,7 @@ const PremiumAdItem = React.forwardRef<
           className="absolute top-3 right-3 w-8 h-8 bg-black/60 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-black/80 z-10"
           title="Fechar anúncio"
         >
-          <FiX className="w-4 h-4" />
+          <PiX className="w-4 h-4" />
         </button>
 
         {/* Media */}
@@ -362,7 +362,7 @@ const PremiumAdItem = React.forwardRef<
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center">
-                    <FiPlay className="w-5 h-5 text-white ml-1" />
+                    <PiPlay className="w-5 h-5 text-white ml-1" />
                   </div>
                 </div>
               </div>
@@ -396,9 +396,9 @@ const PremiumAdItem = React.forwardRef<
               <div className="ad-cta-text flex items-center gap-2">
                 <span>{ad.ctaText}</span>
                 {ad.linkType === 'whatsapp' ? (
-                  <FiMessageCircle className="w-4 h-4" />
+                  <PiChatCircle className="w-4 h-4" />
                 ) : ad.isExternal ? (
-                  <FiExternalLink className="w-4 h-4" />
+                  <PiArrowSquareOut className="w-4 h-4" />
                 ) : null}
               </div>
             )}
@@ -442,7 +442,7 @@ const HeaderPremiumAd = React.forwardRef<
         className="absolute top-4 right-4 w-8 h-8 bg-white/20 text-white rounded-full flex items-center justify-center hover:bg-white/30 transition-colors z-10"
         title="Fechar"
       >
-        <FiX className="w-4 h-4" />
+        <PiX className="w-4 h-4" />
       </button>
 
       {/* Content */}
@@ -469,15 +469,15 @@ const HeaderPremiumAd = React.forwardRef<
         <div className="flex items-center gap-3">
           {ad.ctaText && (
             <button className="ad-cta-button">
-              <FiStar className="w-4 h-4" />
+              <PiStar className="w-4 h-4" />
               {ad.ctaText}
             </button>
           )}
 
           {ad.linkType === 'whatsapp' ? (
-            <FiMessageCircle className="w-5 h-5 text-white/80" />
+            <PiChatCircle className="w-5 h-5 text-white/80" />
           ) : ad.isExternal ? (
-            <FiExternalLink className="w-5 h-5 text-white/80" />
+            <PiArrowSquareOut className="w-5 h-5 text-white/80" />
           ) : null}
         </div>
       </div>
@@ -534,7 +534,7 @@ const SidebarPremiumAd = React.forwardRef<
           className="absolute top-3 right-3 w-7 h-7 bg-black/60 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-10"
           title="Fechar anúncio"
         >
-          <FiX className="w-3 h-3" />
+          <PiX className="w-3 h-3" />
         </button>
 
         {/* Media */}
@@ -561,7 +561,7 @@ const SidebarPremiumAd = React.forwardRef<
             )}
 
             <div className="ad-image-overlay">
-              <FiMusic className="w-8 h-8 text-white" />
+              <PiMusicNotes className="w-8 h-8 text-white" />
             </div>
           </div>
         )}
@@ -581,9 +581,9 @@ const SidebarPremiumAd = React.forwardRef<
               <div className="ad-cta-text">
                 <span>{ad.ctaText}</span>
                 {ad.linkType === 'whatsapp' ? (
-                  <FiMessageCircle className="w-4 h-4" />
+                  <PiChatCircle className="w-4 h-4" />
                 ) : (
-                  <FiExternalLink className="w-4 h-4" />
+                  <PiArrowSquareOut className="w-4 h-4" />
                 )}
               </div>
             )}
@@ -634,12 +634,12 @@ const ContentPremiumAd = React.forwardRef<
           className="absolute top-4 right-4 w-8 h-8 bg-black/60 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-10"
           title="Fechar anúncio"
         >
-          <FiX className="w-4 h-4" />
+          <PiX className="w-4 h-4" />
         </button>
 
         <div className="ad-inner">
           <div className="ad-icon">
-            <FiMusic />
+            <PiMusicNotes />
           </div>
 
           <div className="ad-text">

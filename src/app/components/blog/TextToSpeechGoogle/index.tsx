@@ -3,13 +3,13 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
-  FiVolume2,
-  FiPause,
-  FiPlay,
-  FiSquare,
-  FiDownload,
-  FiLoader,
-} from 'react-icons/fi';
+  PiDownloadSimple,
+  PiPause,
+  PiPlay,
+  PiSpeakerHigh,
+  PiSpinnerGap,
+  PiSquare,
+} from 'react-icons/pi';
 import { generateArticleAudio } from '@/app/requests/blog/interactions';
 
 interface TextToSpeechGoogleProps {
@@ -254,7 +254,7 @@ export function TextToSpeechGoogle({
       {/* HEADER */}
       <div className="flex items-center space-x-3 mb-4">
         <div className="p-3 bg-gradient-to-br from-brand-primary to-accent-purple rounded-lg shadow-theme-medium">
-          <FiVolume2 className="w-6 h-6 text-white" />
+          <PiSpeakerHigh className="w-6 h-6 text-white" />
         </div>
         <div>
           <h3 className="font-bold text-theme-primary">Ouça este artigo</h3>
@@ -292,12 +292,12 @@ export function TextToSpeechGoogle({
             >
               {isPlaying ? (
                 <>
-                  <FiPause className="w-5 h-5" />
+                  <PiPause className="w-5 h-5" />
                   <span>Pausar</span>
                 </>
               ) : (
                 <>
-                  <FiPlay className="w-5 h-5" />
+                  <PiPlay className="w-5 h-5" />
                   <span>{isPaused ? 'Continuar' : 'Ouvir Artigo'}</span>
                 </>
               )}
@@ -308,7 +308,7 @@ export function TextToSpeechGoogle({
               className="btn-classical-secondary p-3"
               title="Parar"
             >
-              <FiSquare className="w-5 h-5" />
+              <PiSquare className="w-5 h-5" />
             </button>
 
             <button
@@ -316,13 +316,13 @@ export function TextToSpeechGoogle({
               className="btn-classical-secondary p-3"
               title="Baixar áudio"
             >
-              <FiDownload className="w-5 h-5" />
+              <PiDownloadSimple className="w-5 h-5" />
             </button>
           </div>
 
           {/* Volume */}
           <div className="flex items-center space-x-3">
-            <FiVolume2 className="w-4 h-4 text-theme-secondary" />
+            <PiSpeakerHigh className="w-4 h-4 text-theme-secondary" />
             <input
               type="range"
               min="0"
@@ -350,12 +350,12 @@ export function TextToSpeechGoogle({
           >
             {isGenerating ? (
               <>
-                <FiLoader className="w-5 h-5 animate-spin" />
+                <PiSpinnerGap className="w-5 h-5 animate-spin" />
                 <span>Carregando áudio...</span>
               </>
             ) : (
               <>
-                <FiPlay className="w-5 h-5" />
+                <PiPlay className="w-5 h-5" />
                 <span>Clique para ouvir este post</span>
               </>
             )}

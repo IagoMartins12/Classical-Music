@@ -1,27 +1,28 @@
 'use client';
 
 import React, { JSX, useState, useEffect } from 'react';
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiHelpCircle,
-  FiBookOpen,
-  FiHeart,
-  FiUpload,
-  FiMusic,
-  FiUser,
-  FiChevronDown,
-  FiChevronUp,
-  FiSearch,
-  FiMessageCircle,
-  FiMail,
-  FiTarget,
-  FiUserCheck,
-  FiFlag,
-  FiGlobe,
-  FiPlay,
-  FiSettings,
-  FiLayers,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano, GiScrollQuill } from 'react-icons/gi';
+  PiBookOpen,
+  PiCaretDown,
+  PiCaretUp,
+  PiChatCircle,
+  PiEnvelopeSimple,
+  PiFlag,
+  PiGear,
+  PiGlobe,
+  PiHeart,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiPlay,
+  PiQuestion,
+  PiScroll,
+  PiStack,
+  PiTarget,
+  PiUploadSimple,
+  PiUser,
+  PiUserCheck,
+} from 'react-icons/pi';
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Link from '@/app/components/LocalizedLink';
 import {
@@ -61,35 +62,35 @@ export default function FAQPage(): JSX.Element {
     {
       id: '1',
       category: t('faq_category_geral'),
-      icon: FiHelpCircle,
+      icon: PiQuestion,
       question: t('faq_item_0_question'),
       answer: t('faq_item_0_answer'),
     },
     {
       id: '2',
       category: t('faq_category_geral'),
-      icon: FiUser,
+      icon: PiUser,
       question: t('faq_item_1_question'),
       answer: t('faq_item_1_answer'),
     },
     {
       id: '3',
       category: t('faq_category_geral'),
-      icon: FiSearch,
+      icon: PiMagnifyingGlass,
       question: t('faq_item_2_question'),
       answer: t('faq_item_2_answer'),
     },
     {
       id: '4',
       category: t('faq_category_geral'),
-      icon: FiGlobe,
+      icon: PiGlobe,
       question: t('faq_item_3_question'),
       answer: t('faq_item_3_answer'),
     },
     {
       id: '5',
       category: t('faq_category_geral'),
-      icon: FiPlay,
+      icon: PiPlay,
       question: t('faq_item_4_question'),
       answer: t('faq_item_4_answer'),
     },
@@ -98,14 +99,14 @@ export default function FAQPage(): JSX.Element {
     {
       id: '6',
       category: t('faq_category_favoritos'),
-      icon: FiHeart,
+      icon: PiHeart,
       question: t('faq_item_5_question'),
       answer: t('faq_item_5_answer'),
     },
     {
       id: '7',
       category: t('faq_category_favoritos'),
-      icon: FiMusic,
+      icon: PiMusicNotes,
       question: t('faq_item_6_question'),
       answer: t('faq_item_6_answer'),
     },
@@ -114,21 +115,21 @@ export default function FAQPage(): JSX.Element {
     {
       id: '9',
       category: t('faq_category_partituras'),
-      icon: FiMusic,
+      icon: PiMusicNotes,
       question: t('faq_item_7_question'),
       answer: t('faq_item_7_answer'),
     },
     {
       id: '10',
       category: t('faq_category_partituras'),
-      icon: FiUpload,
+      icon: PiUploadSimple,
       question: t('faq_item_8_question'),
       answer: t('faq_item_8_answer'),
     },
     {
       id: '11',
       category: t('faq_category_partituras'),
-      icon: FiBookOpen,
+      icon: PiBookOpen,
       question: t('faq_item_9_question'),
       answer: t('faq_item_9_answer'),
     },
@@ -137,21 +138,21 @@ export default function FAQPage(): JSX.Element {
     {
       id: '12',
       category: t('faq_category_aprendizado'),
-      icon: FiTarget,
+      icon: PiTarget,
       question: t('faq_item_10_question'),
       answer: t('faq_item_10_answer'),
     },
     {
       id: '13',
       category: t('faq_category_aprendizado'),
-      icon: FiPlay,
+      icon: PiPlay,
       question: t('faq_item_11_question'),
       answer: t('faq_item_11_answer'),
     },
     {
       id: '14',
       category: t('faq_category_aprendizado'),
-      icon: FiUserCheck,
+      icon: PiUserCheck,
       question: t('faq_item_12_question'),
       answer: t('faq_item_12_answer'),
     },
@@ -160,21 +161,21 @@ export default function FAQPage(): JSX.Element {
     {
       id: '15',
       category: t('faq_category_anotacoes'),
-      icon: FiBookOpen,
+      icon: PiBookOpen,
       question: t('faq_item_13_question'),
       answer: t('faq_item_13_answer'),
     },
     {
       id: '16',
       category: t('faq_category_anotacoes'),
-      icon: FiLayers,
+      icon: PiStack,
       question: t('faq_item_14_question'),
       answer: t('faq_item_14_answer'),
     },
     {
       id: '17',
       category: t('faq_category_anotacoes'),
-      icon: FiHeart,
+      icon: PiHeart,
       question: t('faq_item_15_question'),
       answer: t('faq_item_15_answer'),
     },
@@ -183,21 +184,21 @@ export default function FAQPage(): JSX.Element {
     {
       id: '18',
       category: t('faq_category_upload'),
-      icon: FiUpload,
+      icon: PiUploadSimple,
       question: t('faq_item_16_question'),
       answer: t('faq_item_16_answer'),
     },
     {
       id: '19',
       category: t('faq_category_upload'),
-      icon: FiGlobe,
+      icon: PiGlobe,
       question: t('faq_item_17_question'),
       answer: t('faq_item_17_answer'),
     },
     {
       id: '20',
       category: t('faq_category_upload'),
-      icon: FiSettings,
+      icon: PiGear,
       question: t('faq_item_18_question'),
       answer: t('faq_item_18_answer'),
     },
@@ -206,14 +207,14 @@ export default function FAQPage(): JSX.Element {
     {
       id: '21',
       category: t('faq_category_moderacao'),
-      icon: FiFlag,
+      icon: PiFlag,
       question: t('faq_item_19_question'),
       answer: t('faq_item_19_answer'),
     },
     {
       id: '22',
       category: t('faq_category_moderacao'),
-      icon: FiSettings,
+      icon: PiGear,
       question: t('faq_item_20_question'),
       answer: t('faq_item_20_answer'),
     },
@@ -222,14 +223,14 @@ export default function FAQPage(): JSX.Element {
     {
       id: '24',
       category: t('faq_category_newsletter'),
-      icon: FiMail,
+      icon: PiEnvelopeSimple,
       question: t('faq_item_21_question'),
       answer: t('faq_item_21_answer'),
     },
     {
       id: '25',
       category: t('faq_category_newsletter'),
-      icon: FiSettings,
+      icon: PiGear,
       question: t('faq_item_22_question'),
       answer: t('faq_item_22_answer'),
     },
@@ -238,14 +239,14 @@ export default function FAQPage(): JSX.Element {
     {
       id: '26',
       category: t('faq_category_conta'),
-      icon: FiUser,
+      icon: PiUser,
       question: t('faq_item_23_question'),
       answer: t('faq_item_23_answer'),
     },
     {
       id: '27',
       category: t('faq_category_conta'),
-      icon: FiSettings,
+      icon: PiGear,
       question: t('faq_item_24_question'),
       answer: t('faq_item_24_answer'),
     },
@@ -294,7 +295,7 @@ export default function FAQPage(): JSX.Element {
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
-                  <FiHelpCircle className="w-5 h-5 text-brand-primary mr-2" />
+                  <PiQuestion className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
                     {t('faq_jsx_span_children_0__central_ajuda')}
                   </span>
@@ -329,7 +330,7 @@ export default function FAQPage(): JSX.Element {
               {/* Search Bar */}
               <AnimatedCard hover="lift" className="classical-card p-6 mb-8">
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
                   <Input
                     type="text"
                     placeholder={t('faq_jsx_input_placeholder_buscar')}
@@ -371,7 +372,7 @@ export default function FAQPage(): JSX.Element {
                   hover="lift"
                   className="classical-card p-8 text-center"
                 >
-                  <FiSearch className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                  <PiMagnifyingGlass className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                   <h3 className="text-xl font-semibold text-theme-primary mb-2">
                     {t('faq_jsx_h3_children_0__nenhuma_pergunta_encontrada')}
                   </h3>
@@ -407,9 +408,9 @@ export default function FAQPage(): JSX.Element {
                           </div>
                           <div className="flex-shrink-0 ml-4">
                             {expandedItems.has(item.id) ? (
-                              <FiChevronUp className="w-5 h-5 text-theme-secondary" />
+                              <PiCaretUp className="w-5 h-5 text-theme-secondary" />
                             ) : (
-                              <FiChevronDown className="w-5 h-5 text-theme-secondary" />
+                              <PiCaretDown className="w-5 h-5 text-theme-secondary" />
                             )}
                           </div>
                         </div>
@@ -444,7 +445,7 @@ export default function FAQPage(): JSX.Element {
             className="classical-card p-12 text-center max-w-4xl mx-auto"
           >
             <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
-              <FiMessageCircle className="w-10 h-10 text-theme-primary" />
+              <PiChatCircle className="w-10 h-10 text-theme-primary" />
             </div>
 
             <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">
@@ -460,7 +461,7 @@ export default function FAQPage(): JSX.Element {
                 href="/contact"
                 className="btn-classical-primary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
               >
-                <FiMail className="w-5 h-5" />
+                <PiEnvelopeSimple className="w-5 h-5" />
                 <span>{t('faq_jsx_link_children_0__entre_contato')}</span>
               </Link>
 
@@ -468,20 +469,20 @@ export default function FAQPage(): JSX.Element {
                 href="/help"
                 className="btn-classical-secondary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
               >
-                <FiBookOpen className="w-5 h-5" />
+                <PiBookOpen className="w-5 h-5" />
                 <span>{t('faq_jsx_link_children_0__central_ajuda')}</span>
               </Link>
             </div>
 
             <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
               <div className="flex items-center space-x-2 text-theme-tertiary">
-                <FiHelpCircle className="w-4 h-4" />
+                <PiQuestion className="w-4 h-4" />
                 <span className="text-sm">
                   {t('faq_jsx_span_children_0__resposta_24h')}
                 </span>
               </div>
               <div className="flex items-center space-x-2 text-theme-tertiary">
-                <FiUser className="w-4 h-4" />
+                <PiUser className="w-4 h-4" />
                 <span className="text-sm">
                   {t('faq_jsx_span_children_0__suporte_especializado')}
                 </span>
@@ -496,7 +497,7 @@ export default function FAQPage(): JSX.Element {
         className="top-16 left-16 text-6xl text-brand-primary/5"
         delay={0}
       >
-        <GiMusicalNotes />
+        <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
         className="bottom-16 right-16 text-5xl text-accent-purple/5"
@@ -508,13 +509,13 @@ export default function FAQPage(): JSX.Element {
         className="top-1/3 right-24 text-4xl text-accent-blue/5"
         delay={1}
       >
-        <FiHelpCircle />
+        <PiQuestion />
       </FloatingElement>
       <FloatingElement
         className="bottom-1/3 left-24 text-4xl text-brand-secondary/5"
         delay={3}
       >
-        <GiScrollQuill />
+        <PiScroll />
       </FloatingElement>
     </PageContainer>
   );

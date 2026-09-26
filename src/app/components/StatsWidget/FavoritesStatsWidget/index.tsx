@@ -3,13 +3,13 @@
 
 import { useMemo, useEffect } from 'react';
 import {
-  FiTrendingUp,
-  FiMusic,
-  FiUser,
-  FiTarget,
-  FiZap,
-  FiHeart,
-} from 'react-icons/fi';
+  PiHeart,
+  PiLightning,
+  PiMusicNotes,
+  PiTarget,
+  PiTrendUp,
+  PiUser,
+} from 'react-icons/pi';
 import Link from 'next/link';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
@@ -87,7 +87,7 @@ export default function FavoritesStatsWidget({
       >
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <FiHeart className="w-8 h-8 text-white" />
+            <PiHeart className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl font-bold text-theme-primary mb-2">
             {t('stats_widget_build_library')}
@@ -103,14 +103,14 @@ export default function FavoritesStatsWidget({
               href="/composers"
               className="btn-classical-secondary flex items-center justify-center space-x-2 py-3"
             >
-              <FiUser className="w-4 h-4" />
+              <PiUser className="w-4 h-4" />
               <span>{t('stats_widget_composers')}</span>
             </Link>
             <Link
               href="/works"
               className="btn-classical-primary flex items-center justify-center space-x-2 py-3"
             >
-              <FiMusic className="w-4 h-4" />
+              <PiMusicNotes className="w-4 h-4" />
               <span>{t('stats_widget_explore_works')}</span>
             </Link>
           </div>
@@ -138,7 +138,7 @@ export default function FavoritesStatsWidget({
         {nextAchievements.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6 mt-4">
             <div className="flex items-center space-x-3 mb-4">
-              <FiTarget className="w-5 h-5 text-accent-blue" />
+              <PiTarget className="w-5 h-5 text-accent-blue" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_next_achievements')}
               </h4>
@@ -192,7 +192,7 @@ export default function FavoritesStatsWidget({
         {smartCTAs.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <FiZap className="w-5 h-5 text-brand-primary" />
+              <PiLightning className="w-5 h-5 text-brand-primary" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_recommendations')}
               </h4>
@@ -251,7 +251,7 @@ export default function FavoritesStatsWidget({
         {stats.topComposerWorks > 1 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <FiTrendingUp className="w-5 h-5 text-accent-green" />
+              <PiTrendUp className="w-5 h-5 text-accent-green" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_favorite_composer')}
               </h4>

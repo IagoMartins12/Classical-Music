@@ -4,19 +4,19 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiFlag,
-  FiCheck,
-  FiX,
-  FiTrash2,
-  FiUser,
-  FiMusic,
-  FiFile,
-  FiCalendar,
-  FiShield,
-  FiAlertTriangle,
-  FiExternalLink,
-  FiEye,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiCalendarBlank,
+  PiCheck,
+  PiEye,
+  PiFile,
+  PiFlag,
+  PiMusicNotes,
+  PiShield,
+  PiTrash,
+  PiUser,
+  PiWarning,
+  PiX,
+} from 'react-icons/pi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import {
@@ -170,13 +170,13 @@ const ModerationClient = ({
   const getEntityIcon = (type: string) => {
     switch (type) {
       case 'composer':
-        return <FiUser className="w-5 h-5" />;
+        return <PiUser className="w-5 h-5" />;
       case 'work':
-        return <FiMusic className="w-5 h-5" />;
+        return <PiMusicNotes className="w-5 h-5" />;
       case 'score':
-        return <FiFile className="w-5 h-5" />;
+        return <PiFile className="w-5 h-5" />;
       default:
-        return <FiFlag className="w-5 h-5" />;
+        return <PiFlag className="w-5 h-5" />;
     }
   };
 
@@ -252,7 +252,7 @@ const ModerationClient = ({
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiShield className="w-8 h-8 text-theme-primary" />
+                <PiShield className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -329,7 +329,7 @@ const ModerationClient = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    leftIcon={<FiEye />}
+                    leftIcon={<PiEye />}
                     onClick={() => router.push('/admin/report')}
                   >
                     {t('moderation_dashboard_button')}
@@ -345,7 +345,7 @@ const ModerationClient = ({
           <div className="space-y-4">
             {moderations.length === 0 ? (
               <div className="classical-card p-12 text-center">
-                <FiShield className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                <PiShield className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
                   {t('moderation_no_records_title')}
                 </h3>
@@ -421,11 +421,11 @@ const ModerationClient = ({
 
                           <div className="flex items-center space-x-4 text-sm text-theme-tertiary mb-2">
                             <span className="flex items-center space-x-1">
-                              <FiFlag className="w-4 h-4" />
+                              <PiFlag className="w-4 h-4" />
                               <span>{getReasonLabel(moderation.reason)}</span>
                             </span>
                             <span className="flex items-center space-x-1">
-                              <FiCalendar className="w-4 h-4" />
+                              <PiCalendarBlank className="w-4 h-4" />
                               <span>
                                 {formatDistanceToNow(
                                   new Date(moderation.createdAt),
@@ -434,7 +434,7 @@ const ModerationClient = ({
                               </span>
                             </span>
                             <span className="flex items-center space-x-1">
-                              <FiUser className="w-4 h-4" />
+                              <PiUser className="w-4 h-4" />
                               <span>
                                 {moderation.reporter.firstName ||
                                   moderation.reporter.email}
@@ -464,7 +464,7 @@ const ModerationClient = ({
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={<FiEye />}
+                          leftIcon={<PiEye />}
                           onClick={() => showHistory(moderation)}
                           title={t('moderation_view_history_button')}
                         >
@@ -476,7 +476,7 @@ const ModerationClient = ({
                             <Button
                               variant="secondary"
                               size="sm"
-                              leftIcon={<FiCheck />}
+                              leftIcon={<PiCheck />}
                               onClick={() =>
                                 handleModeration(moderation.id, 'approve')
                               }
@@ -487,7 +487,7 @@ const ModerationClient = ({
                             <Button
                               variant="secondary"
                               size="sm"
-                              leftIcon={<FiX />}
+                              leftIcon={<PiX />}
                               onClick={() =>
                                 handleModeration(moderation.id, 'reject')
                               }
@@ -498,7 +498,7 @@ const ModerationClient = ({
                             <Button
                               variant="delete"
                               size="sm"
-                              leftIcon={<FiTrash2 />}
+                              leftIcon={<PiTrash />}
                               onClick={() => openModerationModal(moderation)}
                               disabled={processingId === moderation.id}
                             >
@@ -511,7 +511,7 @@ const ModerationClient = ({
                           <Button
                             variant="ghost"
                             size="sm"
-                            leftIcon={<FiExternalLink />}
+                            leftIcon={<PiArrowSquareOut />}
                             onClick={() => {
                               const url = getViewUrl(moderation);
                               if (url) window.open(url, '_blank');
@@ -575,7 +575,7 @@ const ModerationClient = ({
             <div className="classical-card p-6 max-w-md w-full">
               <div className="text-center">
                 <div className="w-16 h-16 bg-accent-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FiAlertTriangle className="w-8 h-8 text-accent-red" />
+                  <PiWarning className="w-8 h-8 text-accent-red" />
                 </div>
 
                 <h3 className="text-xl font-bold text-theme-primary mb-2">

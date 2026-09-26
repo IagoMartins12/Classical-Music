@@ -3,7 +3,7 @@
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import React from 'react';
-import { FiPlus, FiX } from 'react-icons/fi';
+import { PiPlus, PiX } from 'react-icons/pi';
 
 import { useTranslation } from '@/app/context/TranslationContext';
 import { translateInstrument } from '@/app/utils/translations/instrumentsGenresTranslation';
@@ -208,7 +208,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                   onClick={() => removeInstrument(instrument.id)}
                   className="p-2 text-theme-tertiary hover:text-accent-red transition-colors"
                 >
-                  <FiX className="w-4 h-4" />
+                  <PiX className="w-4 h-4" />
                 </button>
               </div>
             ))}
@@ -237,7 +237,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                 {instrument.displayName}
               </span>
               {!isInstrumentSelected(instrument.id) && (
-                <FiPlus className="w-4 h-4 text-brand-primary" />
+                <PiPlus className="w-4 h-4 text-brand-primary" />
               )}
             </div>
             {instrument.category && (

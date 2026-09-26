@@ -14,14 +14,14 @@ import {
 
 import { WorksListResponse, FilterOptions } from '@/app/requests/work-details';
 import {
-  FiSearch,
-  FiFilter,
-  FiMusic,
-  FiX,
-  FiRefreshCw,
-  FiBookOpen,
-  FiClock,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiClock,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiX,
+} from 'react-icons/pi';
 import WorkCard from '../../../components/WorksClient/WorkCard';
 import WorkCardList from '../../../components/WorksClient/WorkCardList';
 import PaginationControls from '../../../components/PaginationControls';
@@ -135,7 +135,7 @@ const ResultsInfo = memo(
 
       {isPending && (
         <div className="flex items-center text-brand-primary">
-          <FiRefreshCw className="w-4 h-4 mr-1 animate-spin" />
+          <PiArrowsClockwise className="w-4 h-4 mr-1 animate-spin" />
           {t('client_jsx_span_loading')}
         </div>
       )}
@@ -195,7 +195,7 @@ const ActiveFilters = memo(
                 onClick={() => onRemoveFilter('search')}
                 className="hover:text-brand-secondary transition-colors"
               >
-                <FiX className="w-3 h-3" />
+                <PiX className="w-3 h-3" />
               </button>
             </div>
           </AnimatedItem>
@@ -212,7 +212,7 @@ const ActiveFilters = memo(
                 onClick={() => onRemoveFilter('composer')}
                 className="hover:text-accent-purple/80 transition-colors"
               >
-                <FiX className="w-3 h-3" />
+                <PiX className="w-3 h-3" />
               </button>
             </div>
           </AnimatedItem>
@@ -232,7 +232,7 @@ const ActiveFilters = memo(
                 onClick={() => onRemoveFilter('instrument')}
                 className="hover:text-accent-green/80 transition-colors"
               >
-                <FiX className="w-3 h-3" />
+                <PiX className="w-3 h-3" />
               </button>
             </div>
           </AnimatedItem>
@@ -258,7 +258,7 @@ const ActiveFilters = memo(
                 onClick={() => onRemoveFilter('epoch')}
                 className="hover:text-accent-blue/80 transition-colors"
               >
-                <FiX className="w-3 h-3" />
+                <PiX className="w-3 h-3" />
               </button>
             </div>
           </AnimatedItem>
@@ -280,7 +280,7 @@ const ActiveFilters = memo(
                 onClick={() => onRemoveFilter('genre')}
                 className="hover:text-accent-orange/80 transition-colors"
               >
-                <FiX className="w-3 h-3" />
+                <PiX className="w-3 h-3" />
               </button>
             </div>
           </AnimatedItem>
@@ -532,7 +532,7 @@ const WorksClient = memo(
           <AnimatedItem direction="scale" className="mt-4" springType="bouncy">
             <div className="classical-card p-12 text-center">
               <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <FiMusic className="w-8 h-8 text-theme-tertiary" />
+                <PiMusicNotes className="w-8 h-8 text-theme-tertiary" />
               </div>
               <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
                 {t('client_jsx_h3_no_works_found')}
@@ -604,7 +604,7 @@ const WorksClient = memo(
             <div className="relative z-10">
               <div className="flex items-center justify-center mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-                  <FiBookOpen className="w-8 h-8 text-theme-primary" />
+                  <PiBookOpen className="w-8 h-8 text-theme-primary" />
                 </div>
               </div>
 
@@ -638,7 +638,7 @@ const WorksClient = memo(
             {/* Search Bar */}
             <div className="mb-6">
               <div className="relative">
-                <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+                <PiMagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
                 <input
                   type="text"
                   placeholder={t('client_jsx_input_search_placeholder')}
@@ -654,7 +654,7 @@ const WorksClient = memo(
                     onClick={() => handleSearchChange('')}
                     className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
                   >
-                    <FiX className="w-5 h-5" />
+                    <PiX className="w-5 h-5" />
                   </button>
                 )}
               </div>
@@ -669,7 +669,7 @@ const WorksClient = memo(
                 }`}
                 disabled={isPending}
               >
-                <FiFilter className="w-4 h-4" />
+                <PiFunnel className="w-4 h-4" />
                 <span>
                   {showFilters
                     ? t('client_jsx_button_hide_filters')
@@ -726,7 +726,7 @@ const WorksClient = memo(
                         {t('client_jsx_label_instrument')}
                       </label>
                       <div className="relative">
-                        <FiMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                        <PiMusicNotes className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                         <Select
                           options={[
                             {
@@ -754,7 +754,7 @@ const WorksClient = memo(
                         {t('client_jsx_label_epoch')}
                       </span>
                       <div className="relative">
-                        <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                        <PiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                         <Select
                           options={[
                             {

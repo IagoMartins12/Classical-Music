@@ -10,7 +10,12 @@ import CreateEventModal from '@/app/components/calendar/CreateEventModal';
 import CreateVenueModal from '@/app/components/calendar/CreateVenueModal';
 import ConfirmDeleteEventModal from '@/app/components/calendar/ConfirmDeleteEventModal';
 import ConfirmDeleteVenueModal from '@/app/components/calendar/ConfirmDeleteVenueModal';
-import { FiCalendar, FiPlus, FiMapPin, FiSearch } from 'react-icons/fi';
+import {
+  PiCalendarBlank,
+  PiMagnifyingGlass,
+  PiMapPin,
+  PiPlus,
+} from 'react-icons/pi';
 import { PageContainer } from '@/app/components/animation/AnimatedComponents';
 import { useCalendarManagement } from '@/app/hooks/useCalendarManagement';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -120,7 +125,7 @@ export default function CalendarPageClient({
         <div className="text-center mb-8 py-8">
           <div className="flex items-center justify-center mb-6">
             <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-              <FiCalendar className="w-8 h-8 text-theme-primary" />
+              <PiCalendarBlank className="w-8 h-8 text-theme-primary" />
             </div>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -138,14 +143,14 @@ export default function CalendarPageClient({
               onClick={calendarManagement.openCreateEventModal}
               className="btn-classical-primary flex items-center space-x-2"
             >
-              <FiPlus className="w-4 h-4" />
+              <PiPlus className="w-4 h-4" />
               <span>Novo Evento</span>
             </button>
             <button
               onClick={() => setIsSearchModalOpen(true)}
               className="btn-classical-secondary flex items-center space-x-2"
             >
-              <FiSearch className="w-4 h-4" />
+              <PiMagnifyingGlass className="w-4 h-4" />
               <span>Buscar Eventos (Scraper)</span>
             </button>
 
@@ -153,7 +158,7 @@ export default function CalendarPageClient({
               onClick={calendarManagement.openCreateVenueModal}
               className="btn-classical-secondary flex items-center space-x-2"
             >
-              <FiMapPin className="w-4 h-4" />
+              <PiMapPin className="w-4 h-4" />
               <span>Novo Local</span>
             </button>
           </div>

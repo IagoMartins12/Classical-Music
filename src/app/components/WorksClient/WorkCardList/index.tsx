@@ -4,14 +4,13 @@
 import { WorkListItem } from '@/app/requests/work-details';
 import Link from '@/app/components/LocalizedLink';
 import {
-  FiUser,
-  FiMusic,
-  FiClock,
-  FiCalendar,
-  FiChevronRight,
-  FiBookOpen,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCaretRight,
+  PiClock,
+  PiMusicNotes,
+  PiUser,
+} from 'react-icons/pi';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -38,7 +37,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
         {/* Musical icon */}
         <div className="relative w-10 h-10 flex-shrink-0">
           <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-theme-sm group-hover:shadow-theme-glow">
-            <GiMusicalNotes className="w-5 h-5 text-theme-primary" />
+            <PiMusicNotes className="w-5 h-5 text-theme-primary" />
           </div>
         </div>
 
@@ -56,7 +55,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
             <div className="flex gap-4 items-center">
               {work.opOrCatalog && (
                 <span className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-theme-primary/30 text-theme-secondary rounded-md text-xs font-medium flex-shrink-0">
-                  <FiBookOpen className="w-2.5 h-2.5 mr-1" />
+                  <PiBookOpen className="w-2.5 h-2.5 mr-1" />
                   {work.opOrCatalog}
                 </span>
               )}
@@ -80,7 +79,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
               className="inline-flex items-center text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium"
               onClick={(e) => e.stopPropagation()}
             >
-              <FiUser className="w-3 h-3 mr-1" />
+              <PiUser className="w-3 h-3 mr-1" />
               {work.composer.fullName}
             </Link>
 
@@ -98,28 +97,28 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
           <div className="flex flex-wrap items-center gap-4 text-sm text-theme-tertiary">
             {work.instrument?.name && (
               <div className="flex items-center">
-                <FiMusic className="w-3 h-3 mr-1 text-brand-primary" />
+                <PiMusicNotes className="w-3 h-3 mr-1 text-brand-primary" />
                 <span>{work.instrument.name}</span>
               </div>
             )}
 
             {work.compositionYear && (
               <div className="flex items-center">
-                <FiCalendar className="w-3 h-3 mr-1 text-accent-green" />
+                <PiCalendarBlank className="w-3 h-3 mr-1 text-accent-green" />
                 <span>{work.compositionYear}</span>
               </div>
             )}
 
             {work.mediaDuration && (
               <div className="flex items-center">
-                <FiClock className="w-3 h-3 mr-1 text-accent-purple" />
+                <PiClock className="w-3 h-3 mr-1 text-accent-purple" />
                 <span>{formatDuration(work.mediaDuration)}</span>
               </div>
             )}
 
             {work.tone && (
               <div className="flex items-center">
-                <GiMusicalNotes className="w-3 h-3 mr-1 text-brand-secondary" />
+                <PiMusicNotes className="w-3 h-3 mr-1 text-brand-secondary" />
                 <span>
                   {t('cardlist_jsx_span_key_label')} {work.tone}
                 </span>
@@ -141,7 +140,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
 
         {/* Arrow */}
         <div className="w-8 h-8 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-brand-primary group-hover:bg-brand-primary/10 transition-all duration-300">
-          <FiChevronRight className="w-4 h-4 text-theme-primary group-hover:text-brand-primary transition-all duration-300 transform group-hover:translate-x-0.5" />
+          <PiCaretRight className="w-4 h-4 text-theme-primary group-hover:text-brand-primary transition-all duration-300 transform group-hover:translate-x-0.5" />
         </div>
       </div>
 

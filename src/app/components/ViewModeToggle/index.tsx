@@ -1,7 +1,7 @@
 // app/components/ViewModeToggle.tsx
 'use client';
 
-import { FiList, FiGrid } from 'react-icons/fi';
+import { PiListBullets, PiSquaresFour } from 'react-icons/pi';
 
 export type ViewMode = 'list' | 'cards';
 
@@ -29,7 +29,7 @@ export default function ViewModeToggle({
           }`}
           title="Visualização em lista"
         >
-          <FiList className="w-4 h-4" />
+          <PiListBullets className="w-4 h-4" />
         </button>
         <button
           onClick={() => onViewModeChange('cards')}
@@ -40,7 +40,7 @@ export default function ViewModeToggle({
           }`}
           title="Visualização em cards"
         >
-          <FiGrid className="w-4 h-4" />
+          <PiSquaresFour className="w-4 h-4" />
         </button>
       </div>
     </div>

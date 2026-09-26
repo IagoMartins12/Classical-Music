@@ -1,7 +1,7 @@
 'use client';
 
-import { FiMusic } from 'react-icons/fi';
-import { GiGrandPiano, GiMusicalNotes, GiViolin } from 'react-icons/gi';
+import { GiGrandPiano, GiViolin } from 'react-icons/gi';
+import { PiMusicNotes } from 'react-icons/pi';
 import { useEffect, useState } from 'react';
 
 // Versão ultra-otimizada com apenas 2 elementos animados
@@ -83,7 +83,7 @@ const AnimatedMusicalNotes = () => {
       <div className="absolute inset-0 pointer-events-none hidden md:block">
         {/* Apenas 2 elementos animados - máxima eficiência */}
         <div className="absolute top-16 left-16 text-4xl text-brand-primary/15 float-slow">
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
 
         <div
@@ -95,7 +95,7 @@ const AnimatedMusicalNotes = () => {
 
         {/* Elementos estáticos - sem animação para economizar recursos */}
         <div className="absolute top-1/3 right-24 text-2xl text-accent-blue/10">
-          <FiMusic />
+          <PiMusicNotes />
         </div>
 
         <div className="absolute bottom-1/4 left-24 text-2xl text-brand-secondary/10">

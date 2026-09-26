@@ -3,7 +3,7 @@
 
 import { ReactNode } from 'react';
 import EmailVerificationRequired from '../../VerificationsProviders/EmailVerificationRequired';
-import { FiMail } from 'react-icons/fi';
+import { PiEnvelopeSimple } from 'react-icons/pi';
 import Button from '../../Common/Button';
 
 interface EmailVerifiedWrapperProps {
@@ -39,7 +39,7 @@ export default function EmailVerifiedWrapper({
       return (
         <div className={`classical-card p-8 text-center ${className}`}>
           <div className="w-16 h-16 bg-gradient-to-br from-accent-amber/20 to-accent-blue/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <FiMail className="w-8 h-8 text-accent-amber" />
+            <PiEnvelopeSimple className="w-8 h-8 text-accent-amber" />
           </div>
           <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
             Email não verificado
@@ -51,7 +51,7 @@ export default function EmailVerifiedWrapper({
             <Button
               onClick={() => (window.location.href = '/uploads')}
               variant="primary"
-              leftIcon={<FiMail />}
+              leftIcon={<PiEnvelopeSimple />}
             >
               Verificar Email
             </Button>
@@ -65,7 +65,7 @@ export default function EmailVerifiedWrapper({
           {/* Overlay que desabilita o conteúdo */}
           <div className="absolute inset-0 bg-theme-overlay backdrop-blur-sm rounded-lg z-10 flex items-center justify-center">
             <div className="classical-card p-6 text-center max-w-sm">
-              <FiMail className="w-8 h-8 text-accent-amber mx-auto mb-3" />
+              <PiEnvelopeSimple className="w-8 h-8 text-accent-amber mx-auto mb-3" />
               <h4 className="font-semibold text-theme-primary mb-2">
                 Email não verificado
               </h4>

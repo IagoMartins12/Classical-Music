@@ -2,22 +2,22 @@
 'use client';
 
 import {
-  FiCalendar,
-  FiClock,
-  FiMusic,
-  FiActivity,
-  FiMapPin,
-  FiLayers,
-  FiBookOpen,
-  FiEdit3,
-  FiSave,
-  FiTrash2,
-  FiUser,
-  FiTarget,
-  FiTag,
-  FiExternalLink,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiMetronome } from 'react-icons/gi';
+  PiArrowSquareOut,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiClock,
+  PiFloppyDisk,
+  PiMapPin,
+  PiMetronome,
+  PiMusicNotes,
+  PiPencilLine,
+  PiPulse,
+  PiStack,
+  PiTag,
+  PiTarget,
+  PiTrash,
+  PiUser,
+} from 'react-icons/pi';
 
 export default function EditWorkLoading() {
   return (
@@ -75,7 +75,7 @@ export default function EditWorkLoading() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-4">
                         <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
-                          <FiEdit3 className="w-5 h-5 text-theme-primary/30" />
+                          <PiPencilLine className="w-5 h-5 text-theme-primary/30" />
                         </div>
                         <div className="space-y-2">
                           <div className="h-10 w-48 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded"></div>
@@ -98,12 +98,12 @@ export default function EditWorkLoading() {
                     {/* Action buttons */}
                     <div className="flex items-center space-x-3 ml-4">
                       <div className="h-10 w-20 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center space-x-2">
-                        <FiSave className="w-4 h-4 text-theme-primary/30" />
+                        <PiFloppyDisk className="w-4 h-4 text-theme-primary/30" />
                         <div className="w-8 h-4 bg-theme-primary/30 rounded"></div>
                       </div>
 
                       <div className="h-10 w-24 bg-accent-red/20 border border-accent-red/30 rounded-lg flex items-center justify-center space-x-2">
-                        <FiTrash2 className="w-4 h-4 text-accent-red/30" />
+                        <PiTrash className="w-4 h-4 text-accent-red/30" />
                         <div className="w-12 h-4 bg-accent-red/30 rounded"></div>
                       </div>
                     </div>
@@ -112,7 +112,7 @@ export default function EditWorkLoading() {
                   {/* Difficulty Level Badge */}
                   <div className="flex items-center space-x-3">
                     <div className="h-8 w-40 bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 rounded-full flex items-center justify-center space-x-2">
-                      <FiTarget className="w-4 h-4 text-theme-primary/30" />
+                      <PiTarget className="w-4 h-4 text-theme-primary/30" />
                       <div className="w-24 h-4 bg-theme-primary/30 rounded"></div>
                     </div>
                   </div>
@@ -123,49 +123,49 @@ export default function EditWorkLoading() {
                   {[
                     {
                       icon: (
-                        <FiCalendar className="w-4 h-4 text-theme-primary/30" />
+                        <PiCalendarBlank className="w-4 h-4 text-theme-primary/30" />
                       ),
                       gradient: 'from-accent-green to-accent-blue',
                     },
                     {
                       icon: (
-                        <FiClock className="w-4 h-4 text-theme-primary/30" />
+                        <PiClock className="w-4 h-4 text-theme-primary/30" />
                       ),
                       gradient: 'from-accent-purple to-accent-blue',
                     },
                     {
                       icon: (
-                        <FiMusic className="w-4 h-4 text-theme-primary/30" />
+                        <PiMusicNotes className="w-4 h-4 text-theme-primary/30" />
                       ),
                       gradient: 'from-brand-primary to-brand-secondary',
                     },
                     {
                       icon: (
-                        <FiActivity className="w-4 h-4 text-theme-primary/30" />
+                        <PiPulse className="w-4 h-4 text-theme-primary/30" />
                       ),
                       gradient: 'from-accent-red to-accent-purple',
                     },
                     {
                       icon: (
-                        <GiMetronome className="w-4 h-4 text-theme-primary/30" />
+                        <PiMetronome className="w-4 h-4 text-theme-primary/30" />
                       ),
                       gradient: 'from-accent-green to-accent-purple',
                     },
                     {
                       icon: (
-                        <GiMusicalNotes className="w-4 h-4 text-theme-primary/30" />
+                        <PiMusicNotes className="w-4 h-4 text-theme-primary/30" />
                       ),
                       gradient: 'from-accent-blue to-accent-purple',
                     },
                     {
                       icon: (
-                        <FiMapPin className="w-4 h-4 text-theme-primary/30" />
+                        <PiMapPin className="w-4 h-4 text-theme-primary/30" />
                       ),
                       gradient: 'from-accent-red to-accent-purple',
                     },
                     {
                       icon: (
-                        <FiLayers className="w-4 h-4 text-theme-primary/30" />
+                        <PiStack className="w-4 h-4 text-theme-primary/30" />
                       ),
                       gradient: 'from-accent-green to-accent-blue',
                     },
@@ -190,7 +190,7 @@ export default function EditWorkLoading() {
                 {/* Informações Adicionais */}
                 <div className="border-t border-theme-secondary pt-6">
                   <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                    <FiBookOpen className="w-5 h-5 text-accent-blue/30" />
+                    <PiBookOpen className="w-5 h-5 text-accent-blue/30" />
                     <div className="h-5 w-48 bg-theme-elevated rounded"></div>
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -220,7 +220,7 @@ export default function EditWorkLoading() {
                 {/* Tags de Categorias e Gêneros */}
                 <div className="border-t border-theme-secondary pt-6">
                   <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                    <FiTag className="w-5 h-5 text-accent-green/30" />
+                    <PiTag className="w-5 h-5 text-accent-green/30" />
                     <div className="h-5 w-44 bg-theme-elevated rounded"></div>
                   </h3>
                   <div className="space-y-4">
@@ -253,11 +253,11 @@ export default function EditWorkLoading() {
                 {/* Link IMSLP */}
                 <div className="border-t border-theme-secondary pt-6">
                   <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                    <FiExternalLink className="w-5 h-5 text-accent-blue/30" />
+                    <PiArrowSquareOut className="w-5 h-5 text-accent-blue/30" />
                     <div className="h-5 w-24 bg-theme-elevated rounded"></div>
                   </h3>
                   <div className="h-10 w-32 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center space-x-2">
-                    <FiBookOpen className="w-4 h-4 text-theme-primary/30" />
+                    <PiBookOpen className="w-4 h-4 text-theme-primary/30" />
                     <div className="w-16 h-4 bg-theme-primary/30 rounded"></div>
                   </div>
                 </div>
@@ -269,14 +269,14 @@ export default function EditWorkLoading() {
                 <div className="classical-card-simple p-6">
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center">
-                      <FiUser className="w-4 h-4 text-theme-primary/30" />
+                      <PiUser className="w-4 h-4 text-theme-primary/30" />
                     </div>
                     <div className="h-5 w-24 bg-theme-elevated rounded"></div>
                   </div>
 
                   <div className="text-center space-y-4">
                     <div className="w-32 h-40 mx-auto bg-gradient-card border border-theme-primary/20 rounded-xl flex items-center justify-center">
-                      <FiUser className="w-8 h-8 text-theme-tertiary/30 opacity-50" />
+                      <PiUser className="w-8 h-8 text-theme-tertiary/30 opacity-50" />
                     </div>
 
                     <div className="space-y-2">
@@ -290,7 +290,7 @@ export default function EditWorkLoading() {
                 <div className="classical-card-simple p-6">
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                      <FiBookOpen className="w-4 h-4 text-theme-primary/30" />
+                      <PiBookOpen className="w-4 h-4 text-theme-primary/30" />
                     </div>
                     <div className="h-5 w-32 bg-theme-elevated rounded"></div>
                   </div>

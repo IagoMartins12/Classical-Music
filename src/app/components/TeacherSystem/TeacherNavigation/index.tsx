@@ -6,22 +6,22 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from '@/app/libs/session';
 import Image from '@/app/components/SmartImage';
-import {
-  FiMenu,
-  FiX,
-  FiHome,
-  FiUsers,
-  FiCalendar,
-  FiBookOpen,
-  FiUser,
-  FiLogOut,
-  FiChevronDown,
-  FiChevronRight,
-  FiPlus,
-  FiBell,
-  FiActivity,
-} from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
+import {
+  PiBell,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCaretDown,
+  PiCaretRight,
+  PiHouse,
+  PiList,
+  PiPlus,
+  PiPulse,
+  PiSignOut,
+  PiUser,
+  PiUsers,
+  PiX,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useAuthStore, useOnboardingModal } from '@/app/stores/authStore';
@@ -73,18 +73,18 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
     {
       label: t('menu_dashboard'),
       href: '/teacher',
-      icon: FiHome,
+      icon: PiHouse,
       active: pathname === '/teacher',
     },
     {
       label: t('menu_students'),
-      icon: FiUsers,
+      icon: PiUsers,
       active: pathname.startsWith('/teacher/students'),
       href: '/teacher/students',
     },
     {
       label: t('menu_lessons'),
-      icon: FiCalendar,
+      icon: PiCalendarBlank,
       active: pathname.startsWith('/teacher/lessons'),
       href: '/teacher/lessons',
       submenu: [
@@ -92,46 +92,46 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
           label: t('submenu_all_lessons'),
           href: '/teacher/lessons',
           description: t('submenu_lessons_description'),
-          icon: FiCalendar,
+          icon: PiCalendarBlank,
         },
         {
           label: t('submenu_create_lesson'),
           href: '/teacher/lessons/create',
           description: t('submenu_create_lesson_description'),
-          icon: FiPlus,
+          icon: PiPlus,
         },
       ],
     },
     {
       label: t('menu_calendar'),
-      icon: FiCalendar,
+      icon: PiCalendarBlank,
       active: pathname.startsWith('/teacher/calendar'),
       href: '/teacher/calendar',
     },
     {
       label: t('menu_assignments'),
       href: '/teacher/assignments',
-      icon: FiBookOpen,
+      icon: PiBookOpen,
       active: pathname.startsWith('/teacher/assignments'),
       submenu: [
         {
           label: t('submenu_all_assignments'),
           href: '/teacher/assignments',
           description: t('submenu_assignments_description'),
-          icon: FiBookOpen,
+          icon: PiBookOpen,
         },
         {
           label: t('submenu_create_assignment'),
           href: '/teacher/assignments/create',
           description: t('submenu_create_assignment_description'),
-          icon: FiPlus,
+          icon: PiPlus,
         },
       ],
     },
     {
       label: t('menu_profile'),
       href: '/teacher/profile',
-      icon: FiUser,
+      icon: PiUser,
       active: pathname === '/teacher/profile',
     },
   ];
@@ -237,9 +237,9 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                 className="lg:hidden p-2 rounded-lg hover:bg-interactive-hover transition-colors"
               >
                 {isSidebarOpen ? (
-                  <FiX className="w-5 h-5 text-theme-secondary" />
+                  <PiX className="w-5 h-5 text-theme-secondary" />
                 ) : (
-                  <FiMenu className="w-5 h-5 text-theme-secondary" />
+                  <PiList className="w-5 h-5 text-theme-secondary" />
                 )}
               </button>
 
@@ -284,7 +284,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       >
                         <item.icon className="w-4 h-4" />
                         <span>{item.label}</span>
-                        <FiChevronDown
+                        <PiCaretDown
                           className={`w-4 h-4 transition-transform duration-200 ${
                             activeSubmenu === item.label ? 'rotate-180' : ''
                           }`}
@@ -394,7 +394,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                     )}
                   </div>
 
-                  <FiChevronDown className="w-4 h-4 text-theme-tertiary" />
+                  <PiCaretDown className="w-4 h-4 text-theme-tertiary" />
                 </button>
 
                 {/* Profile Dropdown */}
@@ -429,7 +429,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiUser className="w-4 h-4" />
+                      <PiUser className="w-4 h-4" />
                       <span>{t('profile_menu_my_profile')}</span>
                     </Link>
 
@@ -438,7 +438,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiBell className="w-4 h-4" />
+                      <PiBell className="w-4 h-4" />
                       <span>{t('profile_menu_notifications')}</span>
                     </Link>
 
@@ -447,7 +447,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiActivity className="w-4 h-4" />
+                      <PiPulse className="w-4 h-4" />
                       <span>{t('profile_menu_see_history')}</span>
                     </Link>
 
@@ -456,7 +456,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiHome className="w-4 h-4" />
+                      <PiHouse className="w-4 h-4" />
                       <span>{t('profile_menu_back_to_site')}</span>
                     </Link>
 
@@ -466,7 +466,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       onClick={handleLogout}
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-accent-red hover:bg-accent-red/10 rounded-lg transition-all"
                     >
-                      <FiLogOut className="w-4 h-4" />
+                      <PiSignOut className="w-4 h-4" />
                       <span>{t('profile_menu_logout')}</span>
                     </button>
                   </div>
@@ -506,7 +506,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                   onClick={closeSidebar}
                   className="p-2 rounded-lg hover:bg-interactive-hover transition-colors"
                 >
-                  <FiX className="w-5 h-5 text-theme-secondary" />
+                  <PiX className="w-5 h-5 text-theme-secondary" />
                 </button>
               </div>
 
@@ -535,7 +535,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                             <item.icon className="w-4 h-4" />
                             <span>{item.label}</span>
                           </div>
-                          <FiChevronRight
+                          <PiCaretRight
                             className={`w-4 h-4 transition-transform duration-200 ${
                               activeSubmenu === item.label ? 'rotate-90' : ''
                             }`}

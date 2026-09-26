@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
-import { FiAlertTriangle, FiTrash2 } from 'react-icons/fi';
+import { PiTrash, PiWarning } from 'react-icons/pi';
 import { useTranslation } from '@/app/hooks/useTranslation';
 
 export default function ConfirmDeleteModal({
@@ -49,7 +49,7 @@ export default function ConfirmDeleteModal({
       >
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center">
-            <FiAlertTriangle className="w-6 h-6 text-accent-red" />
+            <PiWarning className="w-6 h-6 text-accent-red" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-theme-primary">
@@ -88,7 +88,7 @@ export default function ConfirmDeleteModal({
               </>
             ) : (
               <>
-                <FiTrash2 className="w-4 h-4" />
+                <PiTrash className="w-4 h-4" />
                 <span>{t('delete_modal_delete')}</span>
               </>
             )}

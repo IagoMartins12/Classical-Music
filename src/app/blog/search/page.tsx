@@ -1,7 +1,7 @@
 // app/blog/search/page.tsx — busca de artigos, pela API
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { FaSearch } from 'react-icons/fa';
+import { PiMagnifyingGlass } from 'react-icons/pi';
 import { Breadcrumb } from '@/app/components/blog/Breadcrumb';
 import { SearchInput } from '@/app/components/blog/SearchInput';
 import { SearchResults } from '@/app/components/blog/SearchResults';
@@ -135,7 +135,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
       <div className="section-wrap !pt-0 pb-8">
         <div className="classical-card p-8">
           <div className="flex items-center gap-4 mb-6">
-            <FaSearch className="w-8 h-8 text-brand-primary" />
+            <PiMagnifyingGlass className="w-8 h-8 text-brand-primary" />
             <div className="flex-1">
               <h1 className="text-3xl md:text-4xl font-bold text-theme-primary">
                 {query ? `Resultados para "${query}"` : 'Buscar Artigos'}

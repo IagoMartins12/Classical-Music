@@ -1,28 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  FaMusic,
-  FaGuitar,
-  FaUsers,
-  FaCalendarAlt,
-  FaUser,
-  FaStar,
-  FaPlay,
-  FaChevronDown,
-  FaChevronUp,
-  FaClock,
-  FaMapMarkerAlt,
-  FaLightbulb,
-  FaAward,
-  FaExternalLinkAlt,
-  FaHistory,
-  FaExpand,
-  FaCompress,
-} from 'react-icons/fa';
 import { GiGrandPiano, GiViolin, GiHarp, GiPipeOrgan } from 'react-icons/gi';
-import { IoIosTrendingUp } from 'react-icons/io';
-import { MdMusicNote } from 'react-icons/md';
+import {
+  PiArrowSquareOut,
+  PiArrowsIn,
+  PiArrowsOut,
+  PiCalendar,
+  PiCaretDown,
+  PiCaretUp,
+  PiClock,
+  PiClockCounterClockwise,
+  PiGuitar,
+  PiLightbulb,
+  PiMapPin,
+  PiMedal,
+  PiMusicNote,
+  PiMusicNotes,
+  PiPlay,
+  PiStarFill,
+  PiTrendUp,
+  PiUser,
+  PiUsers,
+} from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import FloatingIcons from '../../../components/FloatingIcons';
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
@@ -87,19 +87,19 @@ interface Props {
 
 const iconMap = {
   Piano: GiGrandPiano,
-  Music: FaMusic,
+  Music: PiMusicNotes,
   Music2: GiViolin,
-  Music3: FaGuitar,
+  Music3: PiGuitar,
   Music4: GiPipeOrgan,
-  Users: FaUsers,
+  Users: PiUsers,
   Harp: GiHarp,
   Violin: GiViolin,
-  Cello: FaMusic,
+  Cello: PiMusicNotes,
   Organ: GiPipeOrgan,
 };
 
 const getIcon = (iconName: string) => {
-  return iconMap[iconName as keyof typeof iconMap] || FaMusic;
+  return iconMap[iconName as keyof typeof iconMap] || PiMusicNotes;
 };
 
 export function InstrumentsPageClient({
@@ -143,7 +143,7 @@ export function InstrumentsPageClient({
       <div className=" flex items-center justify-center bg-gradient-primary">
         <div className="text-center">
           <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
-            <FaMusic className="w-10 h-10 text-theme-primary" />
+            <PiMusicNotes className="w-10 h-10 text-theme-primary" />
           </div>
           <h2 className="text-2xl font-bold mb-2 text-theme-primary classical-title">
             {t('instruments_jsx_h2_children_0__erro_carregar_instrumentos')}
@@ -249,9 +249,9 @@ export function InstrumentsPageClient({
 
                     <div className="w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 group-hover:bg-brand-primary/20">
                       {isInstrumentOpen ? (
-                        <FaCompress className="w-4 h-4 text-theme-primary" />
+                        <PiArrowsIn className="w-4 h-4 text-theme-primary" />
                       ) : (
-                        <FaExpand className="w-4 h-4 text-theme-primary" />
+                        <PiArrowsOut className="w-4 h-4 text-theme-primary" />
                       )}
                     </div>
                   </div>
@@ -284,7 +284,7 @@ export function InstrumentsPageClient({
                           <div className="relative z-10">
                             <div className="flex items-center space-x-3 mb-4">
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                                <FaHistory className="w-4 h-4 text-theme-primary" />
+                                <PiClockCounterClockwise className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
                                 {t(
@@ -303,7 +303,7 @@ export function InstrumentsPageClient({
                           <div className="relative z-10">
                             <div className="flex items-center space-x-3 mb-4">
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                                <FaMapMarkerAlt className="w-4 h-4 text-theme-primary" />
+                                <PiMapPin className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
                                 {t(
@@ -363,7 +363,7 @@ export function InstrumentsPageClient({
                             <div className="relative z-10">
                               <div className="flex items-center space-x-3 mb-4">
                                 <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
-                                  <FaAward className="w-4 h-4 text-theme-primary" />
+                                  <PiMedal className="w-4 h-4 text-theme-primary" />
                                 </div>
                                 <h3 className="text-xl font-bold text-theme-primary classical-title">
                                   {t(
@@ -392,7 +392,7 @@ export function InstrumentsPageClient({
                                   </Link>
                                 ) : (
                                   <div className="w-14 h-14 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/30 shadow-theme-medium">
-                                    <FaUser className="w-7 h-7 text-theme-primary" />
+                                    <PiUser className="w-7 h-7 text-theme-primary" />
                                   </div>
                                 )}
                                 <div>
@@ -432,7 +432,7 @@ export function InstrumentsPageClient({
                           >
                             <div className="flex items-center space-x-3">
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
-                                <FaLightbulb className="w-4 h-4 text-theme-primary" />
+                                <PiLightbulb className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
                                 {t(
@@ -448,9 +448,9 @@ export function InstrumentsPageClient({
                               }`}
                             >
                               {isExpanded(instrument.id, 'characteristics') ? (
-                                <FaChevronUp className="w-4 h-4 text-theme-primary" />
+                                <PiCaretUp className="w-4 h-4 text-theme-primary" />
                               ) : (
-                                <FaChevronDown className="w-4 h-4 text-theme-primary" />
+                                <PiCaretDown className="w-4 h-4 text-theme-primary" />
                               )}
                             </div>
                           </button>
@@ -492,7 +492,7 @@ export function InstrumentsPageClient({
                           >
                             <div className="flex items-center space-x-3">
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
-                                <IoIosTrendingUp className="w-4 h-4 text-theme-primary" />
+                                <PiTrendUp className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
                                 {t(
@@ -508,9 +508,9 @@ export function InstrumentsPageClient({
                               }`}
                             >
                               {isExpanded(instrument.id, 'evolution') ? (
-                                <FaChevronUp className="w-4 h-4 text-theme-primary" />
+                                <PiCaretUp className="w-4 h-4 text-theme-primary" />
                               ) : (
-                                <FaChevronDown className="w-4 h-4 text-theme-primary" />
+                                <PiCaretDown className="w-4 h-4 text-theme-primary" />
                               )}
                             </div>
                           </button>
@@ -553,7 +553,7 @@ export function InstrumentsPageClient({
                           >
                             <div className="flex items-center space-x-3">
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
-                                <FaStar className="w-4 h-4 text-theme-primary" />
+                                <PiStarFill className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
                                 {t(
@@ -569,9 +569,9 @@ export function InstrumentsPageClient({
                               }`}
                             >
                               {isExpanded(instrument.id, 'features') ? (
-                                <FaChevronUp className="w-4 h-4 text-theme-primary" />
+                                <PiCaretUp className="w-4 h-4 text-theme-primary" />
                               ) : (
-                                <FaChevronDown className="w-4 h-4 text-theme-primary" />
+                                <PiCaretDown className="w-4 h-4 text-theme-primary" />
                               )}
                             </div>
                           </button>
@@ -612,7 +612,7 @@ export function InstrumentsPageClient({
                           >
                             <div className="flex items-center space-x-3">
                               <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
-                                <FaStar className="w-4 h-4 text-theme-primary" />
+                                <PiStarFill className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
                                 {t(
@@ -628,9 +628,9 @@ export function InstrumentsPageClient({
                               }`}
                             >
                               {isExpanded(instrument.id, 'performers') ? (
-                                <FaChevronUp className="w-4 h-4 text-theme-primary" />
+                                <PiCaretUp className="w-4 h-4 text-theme-primary" />
                               ) : (
-                                <FaChevronDown className="w-4 h-4 text-theme-primary" />
+                                <PiCaretDown className="w-4 h-4 text-theme-primary" />
                               )}
                             </div>
                           </button>
@@ -674,7 +674,7 @@ export function InstrumentsPageClient({
                       >
                         <div className="flex items-center space-x-3">
                           <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
-                            <FaMusic className="w-5 h-5 text-theme-primary" />
+                            <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                           </div>
                           <div>
                             <h3 className="text-2xl font-bold text-theme-primary classical-title">
@@ -698,9 +698,9 @@ export function InstrumentsPageClient({
                           }`}
                         >
                           {isExpanded(instrument.id, 'works') ? (
-                            <FaChevronUp className="w-4 h-4 text-theme-primary" />
+                            <PiCaretUp className="w-4 h-4 text-theme-primary" />
                           ) : (
-                            <FaChevronDown className="w-4 h-4 text-theme-primary" />
+                            <PiCaretDown className="w-4 h-4 text-theme-primary" />
                           )}
                         </div>
                       </button>
@@ -741,7 +741,7 @@ export function InstrumentsPageClient({
                                       </div>
                                       {work.videoUrl && (
                                         <div className="ml-2 w-8 h-8 bg-accent-red/20 hover:bg-accent-red/40 rounded-full flex items-center justify-center transition-all duration-300 group-hover/work:scale-110">
-                                          <FaPlay className="w-3 h-3 text-accent-red" />
+                                          <PiPlay className="w-3 h-3 text-accent-red" />
                                         </div>
                                       )}
                                     </div>
@@ -750,7 +750,7 @@ export function InstrumentsPageClient({
                                       {work.opOrCatalog && (
                                         <div className="flex items-center text-theme-secondary">
                                           <div className="w-4 h-4 bg-gradient-to-br from-accent-blue to-accent-purple rounded flex items-center justify-center mr-2">
-                                            <FaMusic className="w-3 h-3 text-theme-primary" />
+                                            <PiMusicNotes className="w-3 h-3 text-theme-primary" />
                                           </div>
                                           {work.opOrCatalog}
                                         </div>
@@ -758,7 +758,7 @@ export function InstrumentsPageClient({
                                       {work.compositionYear && (
                                         <div className="flex items-center text-theme-secondary">
                                           <div className="w-4 h-4 bg-gradient-to-br from-accent-green to-accent-blue rounded flex items-center justify-center mr-2">
-                                            <FaCalendarAlt className="w-3 h-3 text-theme-primary" />
+                                            <PiCalendar className="w-3 h-3 text-theme-primary" />
                                           </div>
                                           {work.compositionYear}
                                         </div>
@@ -766,7 +766,7 @@ export function InstrumentsPageClient({
                                       {work.tone && (
                                         <div className="flex items-center text-theme-secondary">
                                           <div className="w-4 h-4 bg-gradient-to-br from-accent-purple to-accent-red rounded flex items-center justify-center mr-2">
-                                            <MdMusicNote className="w-3 h-3 text-theme-primary" />
+                                            <PiMusicNote className="w-3 h-3 text-theme-primary" />
                                           </div>
                                           {work.tone}
                                         </div>
@@ -774,7 +774,7 @@ export function InstrumentsPageClient({
                                       {work.mediaDuration && (
                                         <div className="flex items-center text-theme-secondary">
                                           <div className="w-4 h-4 bg-gradient-to-br from-brand-primary to-brand-secondary rounded flex items-center justify-center mr-2">
-                                            <FaClock className="w-3 h-3 text-theme-primary" />
+                                            <PiClock className="w-3 h-3 text-theme-primary" />
                                           </div>
                                           {work.mediaDuration}
                                         </div>
@@ -796,7 +796,7 @@ export function InstrumentsPageClient({
                                           />
                                         ) : (
                                           <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/30">
-                                            <FaUser className="w-3 h-3 text-theme-primary" />
+                                            <PiUser className="w-3 h-3 text-theme-primary" />
                                           </div>
                                         )}
                                         <div>
@@ -811,7 +811,7 @@ export function InstrumentsPageClient({
                                         rel="noopener noreferrer"
                                         className="w-8 h-8 bg-interactive-hover hover:bg-brand-primary/20 rounded-xl flex items-center justify-center transition-all duration-300 group-hover/work:scale-110"
                                       >
-                                        <FaExternalLinkAlt className="w-3 h-3 text-theme-primary hover:text-brand-primary transition-colors duration-300" />
+                                        <PiArrowSquareOut className="w-3 h-3 text-theme-primary hover:text-brand-primary transition-colors duration-300" />
                                       </Link>
                                     </div>
                                   </div>

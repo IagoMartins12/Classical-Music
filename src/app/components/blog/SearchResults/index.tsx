@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FaSearch, FaFilter } from 'react-icons/fa';
+import { PiFunnel, PiMagnifyingGlass } from 'react-icons/pi';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { ArticleCard } from '@/app/components/blog/ArticleCard';
 import { ArticleCardList } from '@/app/components/blog/ArticleCardList';
@@ -94,7 +94,7 @@ export function SearchResults({
         <div className="lg:col-span-1">
           <div className="classical-card p-6 sticky top-24">
             <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
-              <FaFilter className="text-brand-primary" />
+              <PiFunnel className="text-brand-primary" />
               Filtros
             </h3>
             <SearchFilters currentParams={currentParams} />
@@ -112,7 +112,7 @@ export function SearchResults({
         {/* Empty State */}
         <div className="lg:col-span-3">
           <div className="classical-card p-12 text-center">
-            <FaSearch className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+            <PiMagnifyingGlass className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-theme-primary mb-2">
               Nenhum resultado encontrado
             </h3>
@@ -134,7 +134,7 @@ export function SearchResults({
       <div className="lg:col-span-1">
         <div className="classical-card p-6 sticky top-24">
           <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
-            <FaFilter className="text-brand-primary" />
+            <PiFunnel className="text-brand-primary" />
             Filtros
           </h3>
           <SearchFilters currentParams={currentParams} />

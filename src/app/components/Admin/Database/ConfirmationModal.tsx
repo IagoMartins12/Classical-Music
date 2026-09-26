@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiAlertTriangle } from 'react-icons/fi';
+import { PiWarning } from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
@@ -81,7 +81,7 @@ export default function ConfirmationModal({
           <div
             className={`w-12 h-12 ${colorScheme.bg} rounded-full flex items-center justify-center flex-shrink-0`}
           >
-            <FiAlertTriangle className={`w-6 h-6 ${colorScheme.text}`} />
+            <PiWarning className={`w-6 h-6 ${colorScheme.text}`} />
           </div>
           <div className="flex-1">
             <h2 className={`text-xl font-bold ${colorScheme.text} mb-2`}>
@@ -114,7 +114,7 @@ export default function ConfirmationModal({
             />
             {error && (
               <p className="text-sm text-red-500 mt-2 flex items-center space-x-1">
-                <FiAlertTriangle className="w-4 h-4" />
+                <PiWarning className="w-4 h-4" />
                 <span>{error}</span>
               </p>
             )}
@@ -125,9 +125,7 @@ export default function ConfirmationModal({
             className={`p-4 rounded-lg border ${colorScheme.border} ${colorScheme.bg}`}
           >
             <div className="flex items-start space-x-2">
-              <FiAlertTriangle
-                className={`w-5 h-5 ${colorScheme.text} mt-0.5`}
-              />
+              <PiWarning className={`w-5 h-5 ${colorScheme.text} mt-0.5`} />
               <div className="flex-1">
                 <p className={`text-sm font-medium ${colorScheme.text} mb-1`}>
                   Atenção!

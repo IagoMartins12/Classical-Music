@@ -2,22 +2,21 @@
 'use client';
 
 import {
-  FiMessageSquare,
-  FiEye,
-  FiThumbsUp,
-  FiTarget,
-  FiGrid,
-  FiList,
-  FiFilter,
-  FiBookOpen,
-  FiSearch,
-  FiMusic,
-  FiLayers,
-  FiEdit3,
-  FiTrash2,
-  FiGlobe,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiBookOpen,
+  PiChatCenteredText,
+  PiEye,
+  PiFunnel,
+  PiGlobe,
+  PiListBullets,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiPencilLine,
+  PiSquaresFour,
+  PiStack,
+  PiTarget,
+  PiThumbsUp,
+  PiTrash,
+} from 'react-icons/pi';
 
 export default function AnnotationsPageLoading() {
   return (
@@ -33,22 +32,22 @@ export default function AnnotationsPageLoading() {
       {/* Floating musical notes - static */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-accent-green/10">
-          <FiMessageSquare />
+          <PiChatCenteredText />
         </div>
         <div className="absolute bottom-16 right-16 text-4xl text-accent-blue/10">
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
         <div className="absolute top-1/3 right-24 text-3xl text-accent-purple/10">
-          <FiTarget />
+          <PiTarget />
         </div>
         <div className="absolute bottom-1/3 left-24 text-3xl text-brand-primary/10">
-          <FiBookOpen />
+          <PiBookOpen />
         </div>
         <div className="absolute top-2/3 right-12 text-2xl text-accent-red/10">
-          <FiMusic />
+          <PiMusicNotes />
         </div>
         <div className="absolute bottom-2/3 left-12 text-2xl text-accent-purple/10">
-          <FiLayers />
+          <PiStack />
         </div>
       </div>
 
@@ -58,7 +57,7 @@ export default function AnnotationsPageLoading() {
           <div className="space-y-4 mb-6">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiMessageSquare className="w-8 h-8 text-theme-primary" />
+                <PiChatCenteredText className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <div className="h-12 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-2xl mx-auto max-w-2xl animate-pulse shadow-theme-medium"></div>
@@ -71,12 +70,12 @@ export default function AnnotationsPageLoading() {
           {[
             {
               icon: (
-                <FiMessageSquare className="w-6 h-6 text-theme-inverse/20" />
+                <PiChatCenteredText className="w-6 h-6 text-theme-inverse/20" />
               ),
             },
-            { icon: <FiEye className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiThumbsUp className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiTarget className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiEye className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiThumbsUp className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiTarget className="w-6 h-6 text-theme-inverse/20" /> },
           ].map((item, index) => (
             <div
               key={index}
@@ -114,13 +113,13 @@ export default function AnnotationsPageLoading() {
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search Skeleton */}
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary/50 w-4 h-4" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary/50 w-4 h-4" />
                   <div className="h-12 w-32 md:w-96 max-w-full bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg pl-12 animate-pulse"></div>
                 </div>
 
                 {/* Filter Button Skeleton */}
                 <div className="h-12 w-24 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center space-x-2 animate-pulse">
-                  <FiFilter className="w-4 h-4 text-theme-tertiary/30" />
+                  <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="w-12 h-4 bg-theme-tertiary/30 rounded"></div>
                 </div>
 
@@ -135,10 +134,10 @@ export default function AnnotationsPageLoading() {
                   <span className="text-sm text-theme-secondary">Vista:</span>
                   <div className="bg-theme-secondary border border-theme-primary rounded-lg p-1 flex">
                     <div className="p-2 rounded bg-theme-elevated">
-                      <FiList className="w-4 h-4 text-theme-tertiary/50" />
+                      <PiListBullets className="w-4 h-4 text-theme-tertiary/50" />
                     </div>
                     <div className="p-2 rounded bg-brand-gradient/20">
-                      <FiGrid className="w-4 h-4 text-brand-primary/50" />
+                      <PiSquaresFour className="w-4 h-4 text-brand-primary/50" />
                     </div>
                   </div>
                 </div>
@@ -153,7 +152,7 @@ export default function AnnotationsPageLoading() {
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-3 mb-6">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                <FiMessageSquare className="w-5 h-5 text-theme-inverse/20" />
+                <PiChatCenteredText className="w-5 h-5 text-theme-inverse/20" />
               </div>
               <div className="space-y-2">
                 <div className="h-8 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
@@ -273,10 +272,10 @@ function AnnotationCardSkeleton() {
         </div>
         <div className="flex items-center space-x-2 ml-4">
           <div className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center">
-            <FiEdit3 className="w-4 h-4 text-theme-tertiary/30" />
+            <PiPencilLine className="w-4 h-4 text-theme-tertiary/30" />
           </div>
           <div className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center">
-            <FiTrash2 className="w-4 h-4 text-theme-tertiary/30" />
+            <PiTrash className="w-4 h-4 text-theme-tertiary/30" />
           </div>
         </div>
       </div>
@@ -290,10 +289,10 @@ function AnnotationCardSkeleton() {
               index === 0
                 ? 'bg-accent-red/10 border-accent-red/30'
                 : index === 1
-                ? 'bg-accent-blue/10 border-accent-blue/30'
-                : index === 2
-                ? 'bg-theme-primary/10 border-theme-primary/30'
-                : 'bg-accent-green/10 border-accent-green/30'
+                  ? 'bg-accent-blue/10 border-accent-blue/30'
+                  : index === 2
+                    ? 'bg-theme-primary/10 border-theme-primary/30'
+                    : 'bg-accent-green/10 border-accent-green/30'
             }`}
           >
             <div className="w-3 h-3 bg-current/30 rounded"></div>
@@ -302,7 +301,7 @@ function AnnotationCardSkeleton() {
         ))}
 
         <div className="px-3 py-1 rounded-full text-xs border bg-accent-blue/10 border-accent-blue/30 flex items-center space-x-1">
-          <FiGlobe className="w-3 h-3 text-accent-blue/30" />
+          <PiGlobe className="w-3 h-3 text-accent-blue/30" />
           <div className="w-8 h-3 bg-accent-blue/30 rounded"></div>
         </div>
       </div>
@@ -331,11 +330,11 @@ function AnnotationCardSkeleton() {
         {/* Stats */}
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-1">
-            <FiThumbsUp className="w-4 h-4 text-theme-tertiary/30" />
+            <PiThumbsUp className="w-4 h-4 text-theme-tertiary/30" />
             <div className="w-8 h-4 bg-theme-elevated rounded"></div>
           </div>
           <div className="flex items-center space-x-1">
-            <FiEye className="w-4 h-4 text-theme-tertiary/30" />
+            <PiEye className="w-4 h-4 text-theme-tertiary/30" />
             <div className="w-12 h-4 bg-theme-elevated rounded"></div>
           </div>
           <div className="flex items-center space-x-1">

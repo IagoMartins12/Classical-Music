@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
 import Checkbox from '../../Common/Checkbox';
 import { listCategories, listTags } from '@/app/requests/blog/taxonomy';
 
@@ -125,9 +125,9 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
       >
         <span>{title}</span>
         {expandedSections[sectionKey] ? (
-          <FaChevronUp className="w-4 h-4" />
+          <PiCaretUp className="w-4 h-4" />
         ) : (
-          <FaChevronDown className="w-4 h-4" />
+          <PiCaretDown className="w-4 h-4" />
         )}
       </button>
       {expandedSections[sectionKey] && (

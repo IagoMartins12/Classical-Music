@@ -2,17 +2,18 @@
 'use client';
 
 import { useState } from 'react';
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiChevronDown,
-  FiChevronUp,
-  FiClock,
-  FiUsers,
-  FiMusic,
-  FiSettings,
-  FiStar,
-  FiBookOpen,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiScrollQuill, GiGrandPiano } from 'react-icons/gi';
+  PiBookOpen,
+  PiCaretDown,
+  PiCaretUp,
+  PiClock,
+  PiGear,
+  PiMusicNotes,
+  PiScroll,
+  PiStar,
+  PiUsers,
+} from 'react-icons/pi';
 import { HistoryComposerCard } from '../cards/HistoryComposerCard';
 import { useTranslation } from '@/app/context/TranslationContext';
 
@@ -61,12 +62,12 @@ const epochColors = {
 };
 
 const epochIcons = {
-  Medieval: GiScrollQuill,
-  Renascentista: GiMusicalNotes,
+  Medieval: PiScroll,
+  Renascentista: PiMusicNotes,
   Barroco: GiGrandPiano,
-  Clássico: FiMusic,
-  Romântico: FiUsers,
-  Moderno: FiSettings,
+  Clássico: PiMusicNotes,
+  Romântico: PiUsers,
+  Moderno: PiGear,
 };
 
 export function EpochSection({ epoch, index, isReversed = false }: Props) {
@@ -128,13 +129,13 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
           <div className="classical-card p-8 group hover:shadow-theme-glow transition-all duration-500 relative overflow-hidden">
             {/* Decorative element */}
             <div className="absolute top-4 right-4 text-3xl text-brand-primary/5">
-              <GiMusicalNotes />
+              <PiMusicNotes />
             </div>
 
             <div className="relative z-10">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                  <FiBookOpen className="w-4 h-4 text-theme-primary" />
+                  <PiBookOpen className="w-4 h-4 text-theme-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-theme-primary classical-title">
                   {t('epoch_jsx_h3_children_0__sobre_periodo')}
@@ -156,7 +157,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
-                  <FiStar className="w-5 h-5 text-theme-primary" />
+                  <PiStar className="w-5 h-5 text-theme-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-theme-primary classical-title">
                   {t(
@@ -172,9 +173,9 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                 }`}
               >
                 {isExpanded ? (
-                  <FiChevronUp className="w-4 h-4 text-theme-primary" />
+                  <PiCaretUp className="w-4 h-4 text-theme-primary" />
                 ) : (
-                  <FiChevronDown className="w-4 h-4 text-theme-primary" />
+                  <PiCaretDown className="w-4 h-4 text-theme-primary" />
                 )}
               </div>
             </button>
@@ -190,7 +191,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                        <GiMusicalNotes className="w-4 h-4 text-theme-primary" />
+                        <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
                         {t('epoch_jsx_h4_children_0__caracteristicas')}
@@ -216,7 +217,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                        <FiClock className="w-4 h-4 text-theme-primary" />
+                        <PiClock className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
                         {t('epoch_jsx_h4_children_0__desenvolvimentos_chave')}
@@ -242,7 +243,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center">
-                        <FiMusic className="w-4 h-4 text-theme-primary" />
+                        <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
                         {t('epoch_jsx_h4_children_0__formas_musicais')}
@@ -295,7 +296,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
         <div className="classical-card p-6 sticky top-6">
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-              <FiUsers className="w-5 h-5 text-theme-primary" />
+              <PiUsers className="w-5 h-5 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-xl font-bold text-theme-primary classical-title">
@@ -328,7 +329,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                 onClick={() => setShowAllComposers(!showAllComposers)}
                 className="w-full p-4 border-2 border-dashed border-theme-primary text-theme-primary hover:border-brand-primary hover:text-brand-primary hover:bg-brand-primary/5 transition-all duration-300 rounded-xl group flex items-center justify-center space-x-2"
               >
-                <FiUsers className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
+                <PiUsers className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
                 <span className="font-medium">
                   {showAllComposers
                     ? t('epoch_jsx_span_children_0__ver_menos')

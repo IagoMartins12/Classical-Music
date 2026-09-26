@@ -1,16 +1,16 @@
 // app/student/notifications/loading.tsx - Loading para Notificações do Aluno
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiBell,
-  FiCalendar,
-  FiFileText,
-  FiMusic,
-  FiRefreshCw,
-  FiCheck,
-  FiExternalLink,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiArrowSquareOut,
+  PiArrowsClockwise,
+  PiBell,
+  PiCalendarBlank,
+  PiCheck,
+  PiFileText,
+  PiMusicNotes,
+} from 'react-icons/pi';
 
 export default function StudentNotificationsLoading() {
   return (
@@ -35,13 +35,13 @@ export default function StudentNotificationsLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiBell />
+          <PiBell />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiCalendar />
+          <PiCalendarBlank />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -53,7 +53,7 @@ export default function StudentNotificationsLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -76,19 +76,21 @@ export default function StudentNotificationsLoading() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {[
             {
-              icon: <FiBell className="w-6 h-6 text-theme-inverse/20" />,
+              icon: <PiBell className="w-6 h-6 text-theme-inverse/20" />,
               color: 'from-accent-red/20 to-accent-purple/20',
             },
             {
-              icon: <FiCalendar className="w-6 h-6 text-theme-inverse/20" />,
+              icon: (
+                <PiCalendarBlank className="w-6 h-6 text-theme-inverse/20" />
+              ),
               color: 'from-accent-blue/20 to-accent-purple/20',
             },
             {
-              icon: <FiFileText className="w-6 h-6 text-theme-inverse/20" />,
+              icon: <PiFileText className="w-6 h-6 text-theme-inverse/20" />,
               color: 'from-accent-green/20 to-accent-blue/20',
             },
             {
-              icon: <FiMusic className="w-6 h-6 text-theme-inverse/20" />,
+              icon: <PiMusicNotes className="w-6 h-6 text-theme-inverse/20" />,
               color: 'from-accent-purple/20 to-accent-green/20',
             },
           ].map((item, index) => (
@@ -127,7 +129,7 @@ export default function StudentNotificationsLoading() {
             <div className="flex items-center space-x-3">
               <div className="h-10 w-32 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
               <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
-                <FiCheck className="w-4 h-4 text-theme-tertiary/30" />
+                <PiCheck className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="h-4 w-20 bg-theme-tertiary/20 rounded"></div>
               </div>
             </div>
@@ -144,7 +146,7 @@ export default function StudentNotificationsLoading() {
         {/* Load More Skeleton */}
         <div className="text-center py-8 animate-pulse">
           <div className="h-10 w-32 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg mx-auto flex items-center justify-center space-x-2">
-            <FiRefreshCw className="w-4 h-4 text-theme-tertiary/30" />
+            <PiArrowsClockwise className="w-4 h-4 text-theme-tertiary/30" />
             <div className="h-4 w-20 bg-theme-tertiary/20 rounded"></div>
           </div>
         </div>
@@ -170,8 +172,8 @@ function NotificationCardSkeleton({ delay = 0 }: { delay?: number }) {
         priorityType > 0.7
           ? 'border-l-accent-red bg-gradient-to-r from-accent-red/5 to-transparent'
           : priorityType > 0.4
-          ? 'border-l-accent-amber bg-gradient-to-r from-accent-amber/5 to-transparent'
-          : 'border-l-accent-green bg-gradient-to-r from-accent-green/5 to-transparent'
+            ? 'border-l-accent-amber bg-gradient-to-r from-accent-amber/5 to-transparent'
+            : 'border-l-accent-green bg-gradient-to-r from-accent-green/5 to-transparent'
       } ${isUnread ? 'ring-1 ring-accent-green/20' : ''} animate-pulse`}
       style={{ animationDelay: `${delay}s` }}
     >
@@ -197,8 +199,8 @@ function NotificationCardSkeleton({ delay = 0 }: { delay?: number }) {
                       priorityType > 0.7
                         ? 'bg-accent-red/10'
                         : priorityType > 0.4
-                        ? 'bg-accent-amber/10'
-                        : 'bg-accent-green/10'
+                          ? 'bg-accent-amber/10'
+                          : 'bg-accent-green/10'
                     }`}
                   ></div>
                   <div className="h-5 w-12 bg-theme-elevated rounded-full"></div>
@@ -210,13 +212,13 @@ function NotificationCardSkeleton({ delay = 0 }: { delay?: number }) {
                 {hasAction && (
                   <div className="h-8 w-16 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded flex items-center justify-center space-x-1">
                     <div className="w-3 h-3 bg-theme-primary/30 rounded"></div>
-                    <FiExternalLink className="w-3 h-3 text-theme-tertiary/30" />
+                    <PiArrowSquareOut className="w-3 h-3 text-theme-tertiary/30" />
                   </div>
                 )}
 
                 {isUnread && (
                   <div className="w-8 h-8 bg-theme-elevated rounded-lg flex items-center justify-center">
-                    <FiCheck className="w-4 h-4 text-theme-tertiary/30" />
+                    <PiCheck className="w-4 h-4 text-theme-tertiary/30" />
                   </div>
                 )}
               </div>

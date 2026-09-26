@@ -3,14 +3,14 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import {
-  FiUser,
-  FiMusic,
-  FiHeart,
-  FiShield,
-  FiSettings,
-  FiChevronLeft,
-  FiChevronRight,
-} from 'react-icons/fi';
+  PiCaretLeft,
+  PiCaretRight,
+  PiGear,
+  PiHeart,
+  PiMusicNotes,
+  PiShield,
+  PiUser,
+} from 'react-icons/pi';
 
 // Import all profile sections
 import PersonalInfoSection from '../../components/profile/PersonalInfoSection';
@@ -49,31 +49,31 @@ export default function ProfilePageClient() {
       {
         id: 'personal',
         labelKey: 'personal_info_title',
-        icon: <FiUser className="w-4 h-4" />,
+        icon: <PiUser className="w-4 h-4" />,
         component: PersonalInfoSection,
       },
       {
         id: 'instruments',
         labelKey: 'instruments_title',
-        icon: <FiMusic className="w-4 h-4" />,
+        icon: <PiMusicNotes className="w-4 h-4" />,
         component: InstrumentsSection,
       },
       {
         id: 'preferences',
         labelKey: 'preferences_title',
-        icon: <FiHeart className="w-4 h-4" />,
+        icon: <PiHeart className="w-4 h-4" />,
         component: MusicalPreferencesSection,
       },
       {
         id: 'privacy',
         labelKey: 'privacy_title',
-        icon: <FiShield className="w-4 h-4" />,
+        icon: <PiShield className="w-4 h-4" />,
         component: PrivacySection,
       },
       {
         id: 'account',
         labelKey: 'account_title',
-        icon: <FiSettings className="w-4 h-4" />,
+        icon: <PiGear className="w-4 h-4" />,
         component: AccountSettingsSection,
       },
     ],
@@ -180,7 +180,7 @@ export default function ProfilePageClient() {
                   disabled={currentTabIndex === 0}
                   className="flex items-center space-x-2 px-3 py-2 text-sm text-theme-secondary hover:text-theme-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <FiChevronLeft className="w-4 h-4" />
+                  <PiCaretLeft className="w-4 h-4" />
                   <span>{t('profile_main_previous')}</span>
                 </button>
 
@@ -190,7 +190,7 @@ export default function ProfilePageClient() {
                   className="flex items-center space-x-2 px-3 py-2 text-sm text-theme-secondary hover:text-theme-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span>{t('profile_main_next')}</span>
-                  <FiChevronRight className="w-4 h-4" />
+                  <PiCaretRight className="w-4 h-4" />
                 </button>
               </div>
             </div>

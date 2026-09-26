@@ -3,20 +3,20 @@
 
 import React, { useState } from 'react';
 import {
-  FiPlus,
-  FiEdit2,
-  FiTrash2,
-  FiMail,
-  FiUsers,
-  FiEye,
-  FiEyeOff,
-  FiCopy,
-  FiSearch,
-  FiSend,
-  FiCheckCircle,
-  FiClock,
-  FiAlertCircle,
-} from 'react-icons/fi';
+  PiCheckCircle,
+  PiClock,
+  PiCopy,
+  PiEnvelopeSimple,
+  PiEye,
+  PiEyeSlash,
+  PiMagnifyingGlass,
+  PiPaperPlaneRight,
+  PiPencilSimple,
+  PiPlus,
+  PiTrash,
+  PiUsers,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -181,9 +181,9 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             {isEditing ? (
-              <FiEdit2 className="w-8 h-8 text-white" />
+              <PiPencilSimple className="w-8 h-8 text-white" />
             ) : (
-              <FiPlus className="w-8 h-8 text-white" />
+              <PiPlus className="w-8 h-8 text-white" />
             )}
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -423,7 +423,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
       <>
         <div className="text-center mb-6">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
-            <FiSend className="w-8 h-8 text-white" />
+            <PiPaperPlaneRight className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
             Enviar Email de Teste
@@ -561,7 +561,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
                   className="sr-only"
                 />
                 <div className="text-center">
-                  <FiUsers className="w-6 h-6 mx-auto mb-2 text-theme-primary" />
+                  <PiUsers className="w-6 h-6 mx-auto mb-2 text-theme-primary" />
                   <div className="font-medium text-theme-primary">Lote</div>
                   <div className="text-sm text-theme-tertiary">Mais rápido</div>
                 </div>
@@ -588,7 +588,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
                   className="sr-only"
                 />
                 <div className="text-center">
-                  <FiMail className="w-6 h-6 mx-auto mb-2 text-theme-primary" />
+                  <PiEnvelopeSimple className="w-6 h-6 mx-auto mb-2 text-theme-primary" />
                   <div className="font-medium text-theme-primary">
                     Individual
                   </div>
@@ -628,7 +628,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
   const renderSendingStep = () => (
     <div className="text-center py-8">
       <div className="w-20 h-20 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
-        <FiSend className="w-10 h-10 text-white animate-pulse" />
+        <PiPaperPlaneRight className="w-10 h-10 text-white animate-pulse" />
       </div>
       <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
         Enviando Emails...
@@ -652,9 +652,9 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
         } rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow`}
       >
         {result?.results.successful === result?.results.total ? (
-          <FiCheckCircle className="w-10 h-10 text-white" />
+          <PiCheckCircle className="w-10 h-10 text-white" />
         ) : (
-          <FiAlertCircle className="w-10 h-10 text-white" />
+          <PiWarningCircle className="w-10 h-10 text-white" />
         )}
       </div>
 
@@ -809,7 +809,7 @@ export default function TestEmailListsManager() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <FiAlertCircle className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiWarningCircle className="w-16 h-16 text-accent-red mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar
           </h2>
@@ -835,7 +835,7 @@ export default function TestEmailListsManager() {
             <div className="text-center py-8">
               <div className="flex items-center justify-center mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
-                  <FiMail className="w-8 h-8 text-white" />
+                  <PiEnvelopeSimple className="w-8 h-8 text-white" />
                 </div>
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -860,7 +860,7 @@ export default function TestEmailListsManager() {
                       {stats.total}
                     </p>
                   </div>
-                  <FiMail className="w-8 h-8 text-accent-blue" />
+                  <PiEnvelopeSimple className="w-8 h-8 text-accent-blue" />
                 </div>
               </AnimatedCard>
 
@@ -874,7 +874,7 @@ export default function TestEmailListsManager() {
                       {stats.active}
                     </p>
                   </div>
-                  <FiCheckCircle className="w-8 h-8 text-accent-green" />
+                  <PiCheckCircle className="w-8 h-8 text-accent-green" />
                 </div>
               </AnimatedCard>
 
@@ -888,7 +888,7 @@ export default function TestEmailListsManager() {
                       {stats.totalEmails}
                     </p>
                   </div>
-                  <FiUsers className="w-8 h-8 text-accent-purple" />
+                  <PiUsers className="w-8 h-8 text-accent-purple" />
                 </div>
               </AnimatedCard>
 
@@ -902,7 +902,7 @@ export default function TestEmailListsManager() {
                       {stats.totalUses}
                     </p>
                   </div>
-                  <FiSend className="w-8 h-8 text-accent-amber" />
+                  <PiPaperPlaneRight className="w-8 h-8 text-accent-amber" />
                 </div>
               </AnimatedCard>
             </SequentialGrid>
@@ -916,7 +916,7 @@ export default function TestEmailListsManager() {
                 <div className="flex-1">
                   <Input
                     placeholder="Buscar listas..."
-                    leftIcon={<FiSearch className="w-4 h-4" />}
+                    leftIcon={<PiMagnifyingGlass className="w-4 h-4" />}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -952,14 +952,14 @@ export default function TestEmailListsManager() {
                   <>
                     <Button
                       variant="primary"
-                      leftIcon={<FiSend />}
+                      leftIcon={<PiPaperPlaneRight />}
                       onClick={() => setSendModalOpen(true)}
                     >
                       Enviar Teste ({selectedLists.length})
                     </Button>
                     <Button
                       variant="delete"
-                      leftIcon={<FiTrash2 />}
+                      leftIcon={<PiTrash />}
                       onClick={handleDeleteSelected}
                     >
                       Deletar ({selectedLists.length})
@@ -969,7 +969,7 @@ export default function TestEmailListsManager() {
 
                 <Button
                   variant="primary"
-                  leftIcon={<FiPlus />}
+                  leftIcon={<PiPlus />}
                   onClick={() => setCreateModalOpen(true)}
                 >
                   Nova Lista
@@ -1060,18 +1060,18 @@ export default function TestEmailListsManager() {
                           {/* Stats */}
                           <div className="flex items-center space-x-6 text-sm text-theme-tertiary">
                             <div className="flex items-center">
-                              <FiMail className="w-4 h-4 mr-1" />
+                              <PiEnvelopeSimple className="w-4 h-4 mr-1" />
                               <span>{list.totalEmails} emails</span>
                             </div>
 
                             <div className="flex items-center">
-                              <FiSend className="w-4 h-4 mr-1" />
+                              <PiPaperPlaneRight className="w-4 h-4 mr-1" />
                               <span>{list.timesUsed} usos</span>
                             </div>
 
                             {list.lastUsed && (
                               <div className="flex items-center">
-                                <FiClock className="w-4 h-4 mr-1" />
+                                <PiClock className="w-4 h-4 mr-1" />
                                 <span>
                                   Usado em{' '}
                                   {new Date(list.lastUsed).toLocaleDateString(
@@ -1089,7 +1089,7 @@ export default function TestEmailListsManager() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={<FiEdit2 />}
+                          leftIcon={<PiPencilSimple />}
                           onClick={() => handleEdit(list)}
                         >
                           Editar
@@ -1098,7 +1098,7 @@ export default function TestEmailListsManager() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={<FiCopy />}
+                          leftIcon={<PiCopy />}
                           onClick={() => handleDuplicate(list)}
                         >
                           Duplicar
@@ -1107,7 +1107,7 @@ export default function TestEmailListsManager() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={list.isActive ? <FiEyeOff /> : <FiEye />}
+                          leftIcon={list.isActive ? <PiEyeSlash /> : <PiEye />}
                           onClick={() => handleToggleStatus(list)}
                         >
                           {list.isActive ? 'Desativar' : 'Ativar'}
@@ -1120,7 +1120,7 @@ export default function TestEmailListsManager() {
             </SequentialGrid>
           ) : (
             <AnimatedCard className="classical-card p-12 text-center">
-              <FiMail className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+              <PiEnvelopeSimple className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-theme-primary mb-2">
                 {searchTerm || filterActive !== 'all'
                   ? 'Nenhuma lista encontrada'
@@ -1134,7 +1134,7 @@ export default function TestEmailListsManager() {
               {!searchTerm && filterActive === 'all' && (
                 <Button
                   variant="primary"
-                  leftIcon={<FiPlus />}
+                  leftIcon={<PiPlus />}
                   onClick={() => setCreateModalOpen(true)}
                 >
                   Criar Primeira Lista

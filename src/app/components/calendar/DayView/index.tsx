@@ -1,7 +1,7 @@
 // app/blog/calendar/components/DayView.tsx
 'use client';
 
-import { FiCalendar, FiClock, FiMapPin } from 'react-icons/fi';
+import { PiCalendarBlank, PiClock, PiMapPin } from 'react-icons/pi';
 
 interface DayViewProps {
   date: Date;
@@ -42,7 +42,7 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
       <div className="space-y-4">
         {sortedEvents.length === 0 ? (
           <div className="text-center py-12">
-            <FiCalendar className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+            <PiCalendarBlank className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
             <h3 className="text-lg font-bold text-theme-primary mb-2">
               Nenhum evento neste dia
             </h3>
@@ -65,12 +65,12 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
 
                   <div className="space-y-2 text-sm text-theme-secondary">
                     <div className="flex items-center space-x-2">
-                      <FiClock className="w-4 h-4" />
+                      <PiClock className="w-4 h-4" />
                       <span>{formatEventTime(event.start, event.end)}</span>
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <FiMapPin className="w-4 h-4" />
+                      <PiMapPin className="w-4 h-4" />
                       <span>
                         {event.venue.name} - {event.venue.city},{' '}
                         {event.venue.state}

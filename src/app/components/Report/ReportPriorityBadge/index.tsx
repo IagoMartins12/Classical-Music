@@ -1,7 +1,7 @@
 // app/components/Admin/ReportPriorityBadge.tsx - Badge de prioridade para reports
 'use client';
 
-import { FiAlertTriangle, FiClock, FiFlag } from 'react-icons/fi';
+import { PiClock, PiFlag, PiWarning } from 'react-icons/pi';
 
 interface ReportPriorityBadgeProps {
   priority: 'low' | 'normal' | 'high' | 'urgent';
@@ -27,35 +27,35 @@ export default function ReportPriorityBadge({
         ? days > 7
           ? 'urgent'
           : days > 3
-          ? 'high'
-          : 'normal'
+            ? 'high'
+            : 'normal'
         : priority;
 
     switch (calculatedPriority) {
       case 'urgent':
         return {
-          icon: <FiAlertTriangle className="w-3 h-3" />,
+          icon: <PiWarning className="w-3 h-3" />,
           color: 'text-accent-red bg-accent-red/10 border-accent-red/30',
           label: 'Urgente',
           pulse: true,
         };
       case 'high':
         return {
-          icon: <FiAlertTriangle className="w-3 h-3" />,
+          icon: <PiWarning className="w-3 h-3" />,
           color: 'text-accent-amber bg-accent-amber/10 border-accent-amber/30',
           label: 'Alta',
           pulse: false,
         };
       case 'low':
         return {
-          icon: <FiFlag className="w-3 h-3" />,
+          icon: <PiFlag className="w-3 h-3" />,
           color: 'text-accent-blue bg-accent-blue/10 border-accent-blue/30',
           label: 'Baixa',
           pulse: false,
         };
       default:
         return {
-          icon: <FiClock className="w-3 h-3" />,
+          icon: <PiClock className="w-3 h-3" />,
           color: 'text-theme-tertiary bg-theme-secondary border-theme-primary',
           label: 'Normal',
           pulse: false,

@@ -2,12 +2,12 @@
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import {
-  FaClock,
-  FaCommentDots,
-  FaHeart,
-  FaUser,
-  FaCalendar,
-} from 'react-icons/fa';
+  PiCalendarBlank,
+  PiChatDots,
+  PiClock,
+  PiHeart,
+  PiUser,
+} from 'react-icons/pi';
 
 interface ArticleCardListProps {
   article: {
@@ -118,7 +118,7 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
                 />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-theme-classical flex items-center justify-center">
-                  <FaUser className="w-4 h-4 text-brand-primary" />
+                  <PiUser className="w-4 h-4 text-brand-primary" />
                 </div>
               )}
               <span className="text-sm text-theme-secondary font-medium">
@@ -129,7 +129,7 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
             {/* Date */}
             {article.publishedAt && (
               <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
-                <FaCalendar className="w-3 h-3" />
+                <PiCalendarBlank className="w-3 h-3" />
                 <span>
                   {new Date(article.publishedAt).toLocaleDateString('pt-BR', {
                     day: '2-digit',
@@ -143,15 +143,15 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
             {/* Stats */}
             <div className="flex items-center space-x-4 text-sm text-theme-tertiary ml-auto">
               <div className="flex items-center space-x-1">
-                <FaClock className="w-4 h-4" />
+                <PiClock className="w-4 h-4" />
                 <span>{article.readTime}min</span>
               </div>
               <div className="flex items-center space-x-1">
-                <FaHeart className="w-4 h-4" />
+                <PiHeart className="w-4 h-4" />
                 <span>{article._count.likes}</span>
               </div>
               <div className="flex items-center space-x-1">
-                <FaCommentDots className="w-4 h-4" />
+                <PiChatDots className="w-4 h-4" />
                 <span>{article._count.comments}</span>
               </div>
             </div>

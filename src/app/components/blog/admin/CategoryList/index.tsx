@@ -10,15 +10,15 @@ import {
 } from '@/app/requests/blog/admin-actions';
 import Image from '@/app/components/SmartImage';
 import {
-  FiEdit,
-  FiTrash2,
-  FiEye,
-  FiEyeOff,
-  FiAlertCircle,
-  FiMove,
-  FiCheck,
-  FiX,
-} from 'react-icons/fi';
+  PiArrowsOutCardinal,
+  PiCheck,
+  PiEye,
+  PiEyeSlash,
+  PiNotePencil,
+  PiTrash,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
@@ -182,7 +182,7 @@ export function CategoryList({
   if (categories.length === 0) {
     return (
       <div className="classical-card p-12 text-center">
-        <FiAlertCircle className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+        <PiWarningCircle className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
         <h3 className="text-xl font-semibold text-theme-primary mb-2">
           Nenhuma categoria criada
         </h3>
@@ -193,7 +193,7 @@ export function CategoryList({
           href="/blog/admin/categories/create"
           className="btn-classical-primary inline-flex items-center space-x-2"
         >
-          <FiEdit className="w-4 h-4" />
+          <PiNotePencil className="w-4 h-4" />
           <span>Criar Primeira Categoria</span>
         </Link>
       </div>
@@ -235,7 +235,7 @@ export function CategoryList({
                 className="cursor-grab select-none p-1 rounded hover:bg-interactive-hover"
                 title="Arrastar para reordenar"
               >
-                <FiMove className="w-5 h-5 text-theme-tertiary" />
+                <PiArrowsOutCardinal className="w-5 h-5 text-theme-tertiary" />
               </button>
             </div>
             {/* Category Info */}
@@ -303,12 +303,12 @@ export function CategoryList({
               >
                 {category.isActive ? (
                   <>
-                    <FiCheck className="w-3 h-3" />
+                    <PiCheck className="w-3 h-3" />
                     <span>Ativa</span>
                   </>
                 ) : (
                   <>
-                    <FiX className="w-3 h-3" />
+                    <PiX className="w-3 h-3" />
                     <span>Inativa</span>
                   </>
                 )}
@@ -324,9 +324,9 @@ export function CategoryList({
                 title="Ver categoria"
               >
                 {category.isActive ? (
-                  <FiEye className="w-4 h-4" />
+                  <PiEye className="w-4 h-4" />
                 ) : (
-                  <FiEyeOff className="w-4 h-4" />
+                  <PiEyeSlash className="w-4 h-4" />
                 )}
               </Link>
 
@@ -336,7 +336,7 @@ export function CategoryList({
                 className="p-2 rounded-lg hover:bg-interactive-hover text-theme-secondary hover:text-blue-500 transition-all"
                 title="Editar"
               >
-                <FiEdit className="w-4 h-4" />
+                <PiNotePencil className="w-4 h-4" />
               </Link>
 
               {/* Delete */}
@@ -346,7 +346,7 @@ export function CategoryList({
                 title="Deletar"
                 disabled={category._count.articles > 0}
               >
-                <FiTrash2 className="w-4 h-4" />
+                <PiTrash className="w-4 h-4" />
               </button>
             </div>{' '}
           </div>
@@ -372,7 +372,7 @@ export function CategoryList({
           <div className="rounded-2xl max-w-md w-full p-6">
             <div className="flex items-start space-x-4">
               <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
-                <FiAlertCircle className="w-6 h-6 text-red-500" />
+                <PiWarningCircle className="w-6 h-6 text-red-500" />
               </div>
 
               <div className="flex-1">

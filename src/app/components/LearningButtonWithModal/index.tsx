@@ -3,12 +3,13 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiBookOpen,
-  FiCheckCircle,
-  FiTarget,
-  FiStar,
-  FiEdit3,
-} from 'react-icons/fi';
+  PiBookOpen,
+  PiCheckCircle,
+  PiPencilLine,
+  PiStar,
+  PiStarFill,
+  PiTarget,
+} from 'react-icons/pi';
 import {
   LearnedItem,
   useLearningStore,
@@ -112,7 +113,7 @@ const LearningButtonWithModal = ({
             edit: t('learning_editar_estudo'),
             remove: t('learning_remover_lista'),
           },
-          icon: isActive ? FiTarget : FiBookOpen,
+          icon: isActive ? PiTarget : PiBookOpen,
           colors: {
             active:
               'from-blue-500/20 to-blue-600/20 border-blue-500/50 text-blue-600 shadow-blue-500/20',
@@ -136,7 +137,7 @@ const LearningButtonWithModal = ({
             edit: t('learning_editar_aprendizado'),
             remove: t('learning_remover_lista'),
           },
-          icon: isActive ? FiCheckCircle : FiBookOpen,
+          icon: isActive ? PiCheckCircle : PiBookOpen,
           colors: {
             active:
               'from-green-500/20 to-green-600/20 border-green-500/50 text-green-600 shadow-green-500/20',
@@ -323,16 +324,27 @@ const LearningButtonWithModal = ({
 
     return (
       <div className="flex items-center space-x-0.5 ml-1">
-        {[...Array(5)].map((_, i) => (
-          <FiStar
-            key={i}
-            className={`w-2.5 h-2.5 ${
-              i < currentLevel
-                ? 'fill-current text-yellow-400'
-                : 'text-gray-300'
-            }`}
-          />
-        ))}
+        {[...Array(5)].map((_, i) =>
+          i < currentLevel ? (
+            <PiStarFill
+              key={i}
+              className={`w-2.5 h-2.5 ${
+                i < currentLevel
+                  ? 'fill-current text-yellow-400'
+                  : 'text-gray-300'
+              }`}
+            />
+          ) : (
+            <PiStar
+              key={i}
+              className={`w-2.5 h-2.5 ${
+                i < currentLevel
+                  ? 'fill-current text-yellow-400'
+                  : 'text-gray-300'
+              }`}
+            />
+          )
+        )}
       </div>
     );
   };
@@ -347,7 +359,7 @@ const LearningButtonWithModal = ({
   // Ícone dinâmico baseado no estado
   const getIcon = () => {
     if (isActive && isHovered && variant === 'detailed') {
-      return FiEdit3; // Mostrar ícone de edição no hover se ativo
+      return PiPencilLine; // Mostrar ícone de edição no hover se ativo
     }
     return config.icon;
   };
@@ -365,7 +377,7 @@ const LearningButtonWithModal = ({
   if (!mounted) {
     return (
       <div className={`${getButtonClasses()} ${className}`} style={style}>
-        <FiBookOpen className={`${sizes[size].icon} opacity-50`} />
+        <PiBookOpen className={`${sizes[size].icon} opacity-50`} />
         {variant !== 'compact' && (
           <span className="ml-2 opacity-50">
             {t('universal_audio_player_carregando')}
@@ -412,7 +424,7 @@ const LearningButtonWithModal = ({
         {/* Indicator para edição quando hover em item ativo */}
         {isActive && isHovered && variant !== 'detailed' && (
           <div className="absolute inset-0 bg-black/10 rounded-xl flex items-center justify-center">
-            <FiEdit3 className={`${sizes[size].icon} opacity-80`} />
+            <PiPencilLine className={`${sizes[size].icon} opacity-80`} />
           </div>
         )}
       </button>

@@ -6,22 +6,22 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import {
-  FiSave,
-  FiTrash2,
-  FiLoader,
-  FiEdit3,
-  FiFile,
-  FiDownload,
-  FiUser,
-  FiTag,
-  FiInfo,
-  FiFileText,
-  FiImage,
-  FiExternalLink,
-  FiMusic,
-  FiLayers,
-  FiEye,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiDownloadSimple,
+  PiEye,
+  PiFile,
+  PiFileText,
+  PiFloppyDisk,
+  PiImage,
+  PiInfo,
+  PiMusicNotes,
+  PiPencilLine,
+  PiSpinnerGap,
+  PiStack,
+  PiTag,
+  PiTrash,
+  PiUser,
+} from 'react-icons/pi';
 
 import {
   AnimatedContainer,
@@ -181,7 +181,7 @@ const EditScoreClient = ({
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-4">
                           <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                            <FiEdit3 className="w-5 h-5 text-theme-primary" />
+                            <PiPencilLine className="w-5 h-5 text-theme-primary" />
                           </div>
                           <div>
                             <h1 className="text-3xl md:text-4xl font-bold text-gradient-brand classical-title leading-tight">
@@ -218,7 +218,7 @@ const EditScoreClient = ({
                       {/* Action buttons */}
                       <div className="flex flex-wrap justify-center gap-4 sm:gap-0 items-center space-x-3 ml-4">
                         <Link href={`/score/${score.id}`}>
-                          <Button variant="primary" leftIcon={<FiEye />}>
+                          <Button variant="primary" leftIcon={<PiEye />}>
                             {t('see_score')}
                           </Button>
                         </Link>
@@ -227,7 +227,7 @@ const EditScoreClient = ({
                           <>
                             <Button
                               variant="primary"
-                              leftIcon={<FiSave />}
+                              leftIcon={<PiFloppyDisk />}
                               onClick={() => setShowEditModal(true)}
                             >
                               {t('edit_button')}
@@ -237,9 +237,9 @@ const EditScoreClient = ({
                               variant="delete"
                               leftIcon={
                                 isDeleting ? (
-                                  <FiLoader className="animate-spin" />
+                                  <PiSpinnerGap className="animate-spin" />
                                 ) : (
-                                  <FiTrash2 />
+                                  <PiTrash />
                                 )
                               }
                               onClick={handleDelete}
@@ -261,7 +261,7 @@ const EditScoreClient = ({
                           score.source
                         )} rounded-full flex items-center space-x-2 shadow-lg`}
                       >
-                        <FiTag className="w-4 h-4 text-theme-primary" />
+                        <PiTag className="w-4 h-4 text-theme-primary" />
                         <span className="text-theme-primary font-semibold text-sm">
                           {t('score_info_source')}:{' '}
                           {getSourceLabel(score.source)}
@@ -275,7 +275,7 @@ const EditScoreClient = ({
                     {/* Tipo */}
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                        <FiLayers className="w-4 h-4 text-theme-primary" />
+                        <PiStack className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
@@ -290,7 +290,7 @@ const EditScoreClient = ({
                     {/* Formato */}
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                        <FiFile className="w-4 h-4 text-theme-primary" />
+                        <PiFile className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
@@ -306,7 +306,7 @@ const EditScoreClient = ({
                     {score.fileSize && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiDownload className="w-4 h-4 text-theme-primary" />
+                          <PiDownloadSimple className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -323,7 +323,7 @@ const EditScoreClient = ({
                     {score.pageCount && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiFileText className="w-4 h-4 text-theme-primary" />
+                          <PiFileText className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -340,7 +340,7 @@ const EditScoreClient = ({
                     {score.groupTitle && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiTag className="w-4 h-4 text-theme-primary" />
+                          <PiTag className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -357,7 +357,7 @@ const EditScoreClient = ({
                     {score.uploader && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiUser className="w-4 h-4 text-theme-primary" />
+                          <PiUser className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -375,7 +375,7 @@ const EditScoreClient = ({
                   {(score.editor || score.publisher || score.copyright) && (
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                        <FiFileText className="w-5 h-5 text-accent-blue" />
+                        <PiFileText className="w-5 h-5 text-accent-blue" />
                         <span>{t('score_info_publication_info')}</span>
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -417,7 +417,7 @@ const EditScoreClient = ({
                   {score.notes && (
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                        <FiInfo className="w-5 h-5 text-accent-green" />
+                        <PiInfo className="w-5 h-5 text-accent-green" />
                         <span>{t('score_info_notes')}</span>
                       </h3>
                       <div className="p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
@@ -432,7 +432,7 @@ const EditScoreClient = ({
                   {score.downloadUrl && (
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                        <FiExternalLink className="w-5 h-5 text-accent-blue" />
+                        <PiArrowSquareOut className="w-5 h-5 text-accent-blue" />
                         <span>{t('score_info_file')}</span>
                       </h3>
                       <a
@@ -441,7 +441,7 @@ const EditScoreClient = ({
                         rel="noopener noreferrer"
                         className="btn-classical-primary flex items-center space-x-2 group/btn w-fit"
                       >
-                        <FiDownload className="w-4 h-4" />
+                        <PiDownloadSimple className="w-4 h-4" />
                         <span>{t('score_info_download')}</span>
                         <svg
                           className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
@@ -468,7 +468,7 @@ const EditScoreClient = ({
                     <div className="classical-card-simple p-6">
                       <div className="flex items-center space-x-3 mb-4">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                          <FiImage className="w-4 h-4 text-theme-primary" />
+                          <PiImage className="w-4 h-4 text-theme-primary" />
                         </div>
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {t('score_info_thumbnail')}
@@ -489,7 +489,7 @@ const EditScoreClient = ({
                           </div>
                         ) : (
                           <div className="w-full aspect-[3/4] mx-auto bg-gradient-card border border-theme-primary rounded-xl flex items-center justify-center">
-                            <FiFile className="w-12 h-12 text-theme-tertiary opacity-50" />
+                            <PiFile className="w-12 h-12 text-theme-tertiary opacity-50" />
                           </div>
                         )}
                       </div>
@@ -500,7 +500,7 @@ const EditScoreClient = ({
                   <div className="classical-card-simple p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
-                        <FiMusic className="w-4 h-4 text-theme-primary" />
+                        <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
                         {t('score_info_work')}
@@ -530,7 +530,7 @@ const EditScoreClient = ({
                   <div className="classical-card-simple p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                        <FiInfo className="w-4 h-4 text-theme-primary" />
+                        <PiInfo className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
                         {t('score_info_technical_details')}

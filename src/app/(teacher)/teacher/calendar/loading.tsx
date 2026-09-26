@@ -1,15 +1,16 @@
 // app/teacher/calendar/loading.tsx - Loading para Calendário do Professor
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiCalendar,
-  FiClock,
-  FiCheck,
-  FiX,
-  FiAlertCircle,
-  FiAlertTriangle,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiCalendarBlank,
+  PiCheck,
+  PiClock,
+  PiMusicNotes,
+  PiWarning,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 
 export default function TeacherCalendarLoading() {
   return (
@@ -34,13 +35,13 @@ export default function TeacherCalendarLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiCalendar />
+          <PiCalendarBlank />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiClock />
+          <PiClock />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -52,7 +53,7 @@ export default function TeacherCalendarLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -74,17 +75,21 @@ export default function TeacherCalendarLoading() {
         {/* Stats Cards Skeleton */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-6 mb-8">
           {[
-            { icon: <FiCalendar className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiClock className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiCheck className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiX className="w-6 h-6 text-theme-inverse/20" /> },
-            {
-              icon: <FiAlertCircle className="w-6 h-6 text-theme-inverse/20" />,
-            },
             {
               icon: (
-                <FiAlertTriangle className="w-6 h-6 text-theme-inverse/20" />
+                <PiCalendarBlank className="w-6 h-6 text-theme-inverse/20" />
               ),
+            },
+            { icon: <PiClock className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiCheck className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiX className="w-6 h-6 text-theme-inverse/20" /> },
+            {
+              icon: (
+                <PiWarningCircle className="w-6 h-6 text-theme-inverse/20" />
+              ),
+            },
+            {
+              icon: <PiWarning className="w-6 h-6 text-theme-inverse/20" />,
             },
           ].map((item, index) => (
             <div
@@ -151,7 +156,7 @@ export default function TeacherCalendarLoading() {
         <div className="classical-card p-6 border-l-4 border-accent-red animate-pulse">
           <div className="flex items-start space-x-4">
             <div className="w-10 h-10 bg-accent-red/10 rounded-full flex items-center justify-center">
-              <FiAlertCircle className="w-5 h-5 text-accent-red/50" />
+              <PiWarningCircle className="w-5 h-5 text-accent-red/50" />
             </div>
             <div className="flex-1">
               <div className="h-5 bg-accent-red/20 rounded mb-2 w-64"></div>
@@ -191,8 +196,8 @@ function CalendarDaySkeleton({ index }: { index: number }) {
         isToday
           ? 'bg-brand-primary/5 border-brand-primary/30'
           : isCurrentMonth
-          ? 'bg-theme-elevated/50'
-          : 'bg-theme-secondary/20 opacity-60'
+            ? 'bg-theme-elevated/50'
+            : 'bg-theme-secondary/20 opacity-60'
       }`}
     >
       <div
@@ -200,8 +205,8 @@ function CalendarDaySkeleton({ index }: { index: number }) {
           isToday
             ? 'text-brand-primary'
             : isCurrentMonth
-            ? 'text-theme-primary'
-            : 'text-theme-tertiary'
+              ? 'text-theme-primary'
+              : 'text-theme-tertiary'
         }`}
       >
         <div

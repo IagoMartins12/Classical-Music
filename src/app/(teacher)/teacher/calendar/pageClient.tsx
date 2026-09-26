@@ -4,25 +4,26 @@
 
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import {
-  FiCalendar,
-  FiClock,
-  FiUser,
-  FiPlus,
-  FiChevronLeft,
-  FiChevronRight,
-  FiEye,
-  FiEdit3,
-  FiX,
-  FiCheck,
-  FiAlertCircle,
-  FiRefreshCw,
-  FiMapPin,
-  FiBookOpen,
-  FiTrash2,
-  FiExternalLink,
-  FiAlertTriangle,
-  FiInfo,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCaretLeft,
+  PiCaretRight,
+  PiCheck,
+  PiClock,
+  PiEye,
+  PiInfo,
+  PiMapPin,
+  PiPencilLine,
+  PiPlus,
+  PiTrash,
+  PiUser,
+  PiWarning,
+  PiWarningCircle,
+  PiX,
+  PiXCircle,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -35,7 +36,6 @@ import Image from '@/app/components/SmartImage';
 import { useTeacherCalendar } from '@/app/hooks/useTeacherCalendar';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
-import { MdOutlineCancel } from 'react-icons/md';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useToast } from '@/app/hooks/useToast';
 import {
@@ -511,7 +511,7 @@ export default function TeacherCalendarPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiCalendar className="w-8 h-8 text-theme-primary" />
+              <PiCalendarBlank className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('error_loading_calendar')}
@@ -525,7 +525,7 @@ export default function TeacherCalendarPageClient({
                 disabled={loading.calendar}
                 className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
               >
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-4 h-4 ${
                     loading.calendar ? 'animate-spin' : ''
                   }`}
@@ -557,7 +557,7 @@ export default function TeacherCalendarPageClient({
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiCalendar className="w-8 h-8 text-theme-primary" />
+                <PiCalendarBlank className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -577,7 +577,7 @@ export default function TeacherCalendarPageClient({
               className="classical-card p-6 text-center"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCalendar className="w-6 h-6 text-theme-primary" />
+                <PiCalendarBlank className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {viewStats.total}
@@ -596,7 +596,7 @@ export default function TeacherCalendarPageClient({
               className="classical-card p-6 text-center"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiClock className="w-6 h-6 text-theme-primary" />
+                <PiClock className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {viewStats.scheduled}
@@ -611,7 +611,7 @@ export default function TeacherCalendarPageClient({
               className="classical-card p-6 text-center"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCheck className="w-6 h-6 text-theme-primary" />
+                <PiCheck className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {viewStats.completed}
@@ -626,7 +626,7 @@ export default function TeacherCalendarPageClient({
               className="classical-card p-6 text-center"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiX className="w-6 h-6 text-theme-primary" />
+                <PiX className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {viewStats.cancelled}
@@ -641,7 +641,7 @@ export default function TeacherCalendarPageClient({
               className="classical-card p-6 text-center"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiAlertCircle className="w-6 h-6 text-theme-primary" />
+                <PiWarningCircle className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {viewStats.today}
@@ -658,7 +658,7 @@ export default function TeacherCalendarPageClient({
               }`}
             >
               <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiAlertTriangle className="w-6 h-6 text-theme-primary" />
+                <PiWarning className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {viewStats.needsAttention}
@@ -678,7 +678,7 @@ export default function TeacherCalendarPageClient({
               className="classical-card p-4 mb-6 border-l-4 flex items-center justify-between !border-red-600"
             >
               <div className="flex items-center space-x-3">
-                <FiAlertTriangle className="w-5 h-5 text-accent-red" />
+                <PiWarning className="w-5 h-5 text-accent-red" />
                 <div>
                   <h4 className="font-semibold text-accent-red">
                     {t('attention_alert_title', {
@@ -718,7 +718,7 @@ export default function TeacherCalendarPageClient({
                     disabled={loading.calendar}
                     className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group disabled:opacity-50"
                   >
-                    <FiChevronLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                    <PiCaretLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                   </button>
 
                   <div className="text-center px-4">
@@ -742,7 +742,7 @@ export default function TeacherCalendarPageClient({
                     disabled={loading.calendar}
                     className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group disabled:opacity-50"
                   >
-                    <FiChevronRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                    <PiCaretRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                   </button>
                 </div>
 
@@ -760,7 +760,7 @@ export default function TeacherCalendarPageClient({
                     disabled={loading.calendar}
                     className="btn-classical-secondary text-sm flex items-center space-x-2 disabled:opacity-50"
                   >
-                    <FiRefreshCw
+                    <PiArrowsClockwise
                       className={`w-4 h-4 ${
                         loading.calendar ? 'animate-spin' : ''
                       }`}
@@ -833,7 +833,7 @@ export default function TeacherCalendarPageClient({
                   href="/teacher/lessons/create"
                   className="btn-classical-primary flex items-center space-x-2"
                 >
-                  <FiPlus className="w-4 h-4" />
+                  <PiPlus className="w-4 h-4" />
                   <span>{t('new_lesson')}</span>
                 </Link>
               </div>
@@ -845,7 +845,7 @@ export default function TeacherCalendarPageClient({
         {loading.calendar && (
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
-              <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+              <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
               <p className="text-theme-secondary">{t('loading_calendar')}</p>
             </div>
           </AnimatedItem>
@@ -916,7 +916,7 @@ export default function TeacherCalendarPageClient({
             >
               <div className="flex items-start space-x-4">
                 <div className="w-10 h-10 bg-accent-red/10 rounded-full flex items-center justify-center">
-                  <FiAlertCircle className="w-5 h-5 text-accent-red" />
+                  <PiWarningCircle className="w-5 h-5 text-accent-red" />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-bold text-accent-red mb-2">
@@ -971,13 +971,13 @@ export default function TeacherCalendarPageClient({
                 }`}
               >
                 {pendingStatusUpdate.newStatus === 'COMPLETED' && (
-                  <FiCheck className="w-8 h-8 text-theme-primary" />
+                  <PiCheck className="w-8 h-8 text-theme-primary" />
                 )}
                 {pendingStatusUpdate.newStatus === 'NO_SHOW' && (
-                  <FiUser className="w-8 h-8 text-theme-primary" />
+                  <PiUser className="w-8 h-8 text-theme-primary" />
                 )}
                 {pendingStatusUpdate.newStatus === 'CANCELLED' && (
-                  <MdOutlineCancel className="w-8 h-8 text-theme-primary" />
+                  <PiXCircle className="w-8 h-8 text-theme-primary" />
                 )}
               </div>
               <div>
@@ -994,7 +994,7 @@ export default function TeacherCalendarPageClient({
 
             <div className="bg-theme-tertiary rounded-lg p-4 mb-6">
               <div className="flex items-start space-x-3">
-                <FiInfo className="w-8 h-8 text-accent-blue mt-0.5" />
+                <PiInfo className="w-8 h-8 text-accent-blue mt-0.5" />
                 <div className="text-sm">
                   <p className="font-medium text-accent-blue mb-1">
                     {t('status_confirmation')}
@@ -1031,17 +1031,17 @@ export default function TeacherCalendarPageClient({
                 }`}
               >
                 {updatingStatus ? (
-                  <FiRefreshCw className="w-4 h-4 animate-spin" />
+                  <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                 ) : (
                   <>
                     {pendingStatusUpdate.newStatus === 'COMPLETED' && (
-                      <FiCheck className="w-4 h-4" />
+                      <PiCheck className="w-4 h-4" />
                     )}
                     {pendingStatusUpdate.newStatus === 'NO_SHOW' && (
-                      <FiUser className="w-4 h-4" />
+                      <PiUser className="w-4 h-4" />
                     )}
                     {pendingStatusUpdate.newStatus === 'CANCELLED' && (
-                      <FiX className="w-4 h-4" />
+                      <PiX className="w-4 h-4" />
                     )}
                   </>
                 )}
@@ -1180,7 +1180,7 @@ function MonthView({
               >
                 <span>{day.getDate()}</span>
                 {hasAttentionEvents && (
-                  <FiAlertTriangle className="w-3 h-3 text-accent-red" />
+                  <PiWarning className="w-3 h-3 text-accent-red" />
                 )}
               </div>
 
@@ -1197,7 +1197,7 @@ function MonthView({
                       )}`}
                     >
                       {statusInfo.needsAttention && (
-                        <FiAlertTriangle className="absolute -top-1 -right-1 w-2 h-2 text-accent-red" />
+                        <PiWarning className="absolute -top-1 -right-1 w-2 h-2 text-accent-red" />
                       )}
                       <div className="truncate">
                         {formatTime(event.start)} {event.title}
@@ -1299,7 +1299,7 @@ function WeekView({
                     >
                       {statusInfo.needsAttention && (
                         <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
-                          <FiAlertTriangle className="w-3 h-3 text-white" />
+                          <PiWarning className="w-3 h-3 text-white" />
                         </div>
                       )}
                       <div className="font-medium text-sm truncate">
@@ -1366,7 +1366,7 @@ function DayView({
       <div className="space-y-4">
         {sortedEvents.length === 0 ? (
           <div className="text-center py-12">
-            <FiCalendar className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+            <PiCalendarBlank className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
             <h3 className="text-lg font-bold text-theme-primary mb-2">
               {t('no_lessons_scheduled')}
             </h3>
@@ -1386,7 +1386,7 @@ function DayView({
               >
                 {statusInfo.needsAttention && (
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
-                    <FiAlertTriangle className="w-3 h-3 text-white" />
+                    <PiWarning className="w-3 h-3 text-white" />
                   </div>
                 )}
                 <div className="flex items-start justify-between">
@@ -1395,27 +1395,27 @@ function DayView({
 
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center space-x-2">
-                        <FiClock className="w-4 h-4" />
+                        <PiClock className="w-4 h-4" />
                         <span>{formatEventTime(event.start, event.end)}</span>
                       </div>
 
                       {event.student && (
                         <div className="flex items-center space-x-2">
-                          <FiUser className="w-4 h-4" />
+                          <PiUser className="w-4 h-4" />
                           <span>{event.student.name}</span>
                         </div>
                       )}
 
                       {event.location && (
                         <div className="flex items-center space-x-2">
-                          <FiMapPin className="w-4 h-4" />
+                          <PiMapPin className="w-4 h-4" />
                           <span>{event.location}</span>
                         </div>
                       )}
 
                       {statusInfo.needsAttention && (
                         <div className="flex items-center space-x-2 text-accent-red">
-                          <FiAlertTriangle className="w-4 h-4" />
+                          <PiWarning className="w-4 h-4" />
                           <span className="font-medium">
                             {t('overdue_hours', {
                               hours: statusInfo.hoursOverdue,
@@ -1427,7 +1427,7 @@ function DayView({
 
                       {event.objectives && event.objectives.length > 0 && (
                         <div className="flex items-start space-x-2">
-                          <FiBookOpen className="w-4 h-4 mt-0.5" />
+                          <PiBookOpen className="w-4 h-4 mt-0.5" />
                           <div className="flex flex-wrap gap-1">
                             {event.objectives
                               .slice(0, 3)
@@ -1451,7 +1451,7 @@ function DayView({
                   </div>
 
                   <div className="ml-4">
-                    <FiEye className="w-5 h-5 opacity-50" />
+                    <PiEye className="w-5 h-5 opacity-50" />
                   </div>
                 </div>
               </button>
@@ -1522,7 +1522,7 @@ function EventDetailsModal({
                 )}
                 {statusInfo.needsAttention && (
                   <span className="px-3 py-1 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-full text-sm flex items-center space-x-1">
-                    <FiAlertTriangle className="w-3 h-3" />
+                    <PiWarning className="w-3 h-3" />
                     <span>{t('needs_attention')}</span>
                   </span>
                 )}
@@ -1534,7 +1534,7 @@ function EventDetailsModal({
           {statusInfo.needsAttention && (
             <div className="mb-6 p-6 border border-red-600 rounded-lg bg-accent-red/5">
               <div className="flex flex-col items-center text-center space-y-4">
-                <FiAlertTriangle className="w-12 h-12 text-accent-red" />
+                <PiWarning className="w-12 h-12 text-accent-red" />
                 <div>
                   <h4 className="font-bold text-accent-red text-lg mb-2">
                     {t('lesson_needs_attention')}
@@ -1556,21 +1556,21 @@ function EventDetailsModal({
                     onClick={() => onUpdateStatus(event.id, 'COMPLETED')}
                     className="btn-classical-primary bg-accent-green border-accent-green hover:bg-accent-green/90 text-white flex items-center space-x-2 px-4 py-2"
                   >
-                    <FiCheck className="w-4 h-4" />
+                    <PiCheck className="w-4 h-4" />
                     <span>{t('mark_completed')}</span>
                   </button>
                   <button
                     onClick={() => onUpdateStatus(event.id, 'NO_SHOW')}
                     className="btn-classical-secondary bg-accent-yellow/10 border-accent-yellow text-accent-yellow hover:bg-accent-yellow/20 flex items-center space-x-2 px-4 py-2"
                   >
-                    <FiUser className="w-4 h-4" />
+                    <PiUser className="w-4 h-4" />
                     <span>{t('student_absent')}</span>
                   </button>
                   <button
                     onClick={() => onUpdateStatus(event.id, 'CANCELLED')}
                     className="btn-classical-secondary bg-accent-red/10 border-accent-red text-accent-red hover:bg-accent-red/20 flex items-center space-x-2 px-4 py-2"
                   >
-                    <FiX className="w-4 h-4" />
+                    <PiX className="w-4 h-4" />
                     <span>{t('was_cancelled')}</span>
                   </button>
                 </div>
@@ -1611,7 +1611,7 @@ function EventDetailsModal({
                       </div>
                     ) : (
                       <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                        <FiUser className="w-4 h-4 text-theme-primary" />
+                        <PiUser className="w-4 h-4 text-theme-primary" />
                       </div>
                     )}
                     <div>
@@ -1724,21 +1724,21 @@ function EventDetailsModal({
                     onClick={() => onUpdateStatus(event.id, 'COMPLETED')}
                     className="btn-classical-secondary bg-accent-green/10 border-accent-green text-accent-green hover:bg-accent-green/20 flex items-center space-x-2 text-sm"
                   >
-                    <FiCheck className="w-4 h-4" />
+                    <PiCheck className="w-4 h-4" />
                     <span>{t('complete_lesson')}</span>
                   </button>
                   <button
                     onClick={() => onUpdateStatus(event.id, 'NO_SHOW')}
                     className="btn-classical-secondary bg-accent-yellow/10 border-accent-yellow text-accent-yellow hover:bg-accent-yellow/20 flex items-center space-x-2 text-sm"
                   >
-                    <FiUser className="w-4 h-4" />
+                    <PiUser className="w-4 h-4" />
                     <span>{t('mark_absent')}</span>
                   </button>
                   <button
                     onClick={() => onUpdateStatus(event.id, 'CANCELLED')}
                     className="btn-classical-secondary bg-accent-red/10 border-accent-red text-accent-red hover:bg-accent-red/20 flex items-center space-x-2 text-sm"
                   >
-                    <FiX className="w-4 h-4" />
+                    <PiX className="w-4 h-4" />
                     <span>{t('cancel_lesson')}</span>
                   </button>
                 </div>
@@ -1751,7 +1751,7 @@ function EventDetailsModal({
                 href={`/teacher/lessons/${event.id}`}
                 className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
               >
-                <FiEye className="w-4 h-4" />
+                <PiEye className="w-4 h-4" />
                 <span>{t('view_full_details')}</span>
               </Link>
 
@@ -1765,7 +1765,7 @@ function EventDetailsModal({
                         : 'text-accent-blue hover:text-accent-purple'
                     }`}
                   >
-                    <FiEdit3 className="w-4 h-4" />
+                    <PiPencilLine className="w-4 h-4" />
                     <span>
                       {statusInfo.needsAttention
                         ? 'Atualizar Status'
@@ -1853,7 +1853,7 @@ function DayEventsModal({
               onClick={onClose}
               className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-theme-secondary transition-colors flex items-center justify-center"
             >
-              <FiX className="w-4 h-4 text-theme-tertiary" />
+              <PiX className="w-4 h-4 text-theme-tertiary" />
             </button>
           </div>
 
@@ -1861,7 +1861,7 @@ function DayEventsModal({
           {eventsNeedingAttention.length > 0 && (
             <div className="mb-6 p-4 bg-accent-red/5 border border-accent-red/20 rounded-lg">
               <div className="flex items-center space-x-3">
-                <FiAlertTriangle className="w-5 h-5 text-accent-red" />
+                <PiWarning className="w-5 h-5 text-accent-red" />
                 <div>
                   <h4 className="font-semibold text-accent-red">
                     {t('attention_general_alert', {
@@ -1911,7 +1911,7 @@ function DayEventsModal({
                         </span>
                         {statusInfo.needsAttention && (
                           <span className="px-2 py-1 bg-accent-red/20 text-accent-red rounded-full text-xs flex items-center space-x-1">
-                            <FiAlertTriangle className="w-3 h-3" />
+                            <PiWarning className="w-3 h-3" />
                             <span>{t('needs_attention')}</span>
                           </span>
                         )}
@@ -1920,7 +1920,7 @@ function DayEventsModal({
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div className="space-y-2 text-sm">
                           <div className="flex items-center space-x-2">
-                            <FiClock className="w-4 h-4" />
+                            <PiClock className="w-4 h-4" />
                             <span>
                               {formatEventTime(event.start, event.end)}
                             </span>
@@ -1928,21 +1928,21 @@ function DayEventsModal({
 
                           {event.student && (
                             <div className="flex items-center space-x-2">
-                              <FiUser className="w-4 h-4" />
+                              <PiUser className="w-4 h-4" />
                               <span>{event.student.name}</span>
                             </div>
                           )}
 
                           {event.location && (
                             <div className="flex items-center space-x-2">
-                              <FiMapPin className="w-4 h-4" />
+                              <PiMapPin className="w-4 h-4" />
                               <span>{event.location}</span>
                             </div>
                           )}
 
                           {statusInfo.needsAttention && (
                             <div className="flex items-center space-x-2 text-accent-red">
-                              <FiAlertTriangle className="w-4 h-4" />
+                              <PiWarning className="w-4 h-4" />
                               <span className="font-medium text-xs">
                                 {t('overdue_hours', {
                                   hours: statusInfo.hoursOverdue,
@@ -1984,7 +1984,7 @@ function DayEventsModal({
                           onClick={() => onEventClick(event)}
                           className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
                         >
-                          <FiEye className="w-4 h-4" />
+                          <PiEye className="w-4 h-4" />
                           <span>{t('view_details')}</span>
                         </button>
 
@@ -1994,9 +1994,9 @@ function DayEventsModal({
                               href={`/teacher/lessons/${event.id}`}
                               className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
                             >
-                              <FiEdit3 className="w-4 h-4" />
+                              <PiPencilLine className="w-4 h-4" />
                               <span>{t('edit')}</span>
-                              <FiExternalLink className="w-3 h-3" />
+                              <PiArrowSquareOut className="w-3 h-3" />
                             </Link>
 
                             {statusInfo.needsAttention && (
@@ -2007,7 +2007,7 @@ function DayEventsModal({
                                   }
                                   className="text-accent-green hover:text-accent-green/80 text-sm font-medium transition-colors flex items-center space-x-1"
                                 >
-                                  <FiCheck className="w-4 h-4" />
+                                  <PiCheck className="w-4 h-4" />
                                   <span>{t('event_status_completed')}</span>
                                 </button>
 
@@ -2017,7 +2017,7 @@ function DayEventsModal({
                                   }
                                   className="text-accent-yellow hover:text-accent-yellow/80 text-sm font-medium transition-colors flex items-center space-x-1"
                                 >
-                                  <FiUser className="w-4 h-4" />
+                                  <PiUser className="w-4 h-4" />
                                   <span>{t('event_status_no_show')}</span>
                                 </button>
                               </>
@@ -2027,7 +2027,7 @@ function DayEventsModal({
                               onClick={() => onCancelEvent(event.id)}
                               className="text-accent-red hover:text-accent-red/80 text-sm font-medium transition-colors flex items-center space-x-1"
                             >
-                              <FiTrash2 className="w-4 h-4" />
+                              <PiTrash className="w-4 h-4" />
                               <span>{t('cancel_lesson')}</span>
                             </button>
                           </>
@@ -2045,7 +2045,7 @@ function DayEventsModal({
               href="/teacher/lessons/create"
               className="btn-classical-primary flex items-center space-x-2"
             >
-              <FiPlus className="w-4 h-4" />
+              <PiPlus className="w-4 h-4" />
               <span>{t('new_lesson')}</span>
             </Link>
           </div>

@@ -3,27 +3,28 @@
 
 import { useState } from 'react';
 import {
-  FiFileText,
-  FiDownload,
-  FiPlay,
-  FiEdit,
-  FiTrash2,
-  FiPlus,
-  FiBarChart2,
-  FiTrendingUp,
-  FiUsers,
-  FiMusic,
-  FiActivity,
-  FiRefreshCw,
-  FiShare2,
-  FiClock,
-  FiX,
-  FiCheck,
-  FiAlertTriangle,
-  FiLoader,
-  FiExternalLink,
-  FiInfo,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiArrowsClockwise,
+  PiChartBar,
+  PiCheck,
+  PiClock,
+  PiDownloadSimple,
+  PiFileText,
+  PiInfo,
+  PiMusicNotes,
+  PiNotePencil,
+  PiPencilSimple,
+  PiPlay,
+  PiPlus,
+  PiPulse,
+  PiShareNetwork,
+  PiSpinnerGap,
+  PiTrash,
+  PiTrendUp,
+  PiUsers,
+  PiWarning,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -36,7 +37,6 @@ import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import { useAdminReports } from '@/app/hooks/admin/useAdminReports';
 import { toast } from 'react-hot-toast';
 import LoadingAdminState from '../../Common/LoadingState';
-import { BiPencil } from 'react-icons/bi';
 
 export default function AdvancedReports() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -136,13 +136,13 @@ export default function AdvancedReports() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'ready':
-        return <FiCheck className="w-5 h-5" />;
+        return <PiCheck className="w-5 h-5" />;
       case 'generating':
-        return <FiLoader className="w-5 h-5 animate-spin" />;
+        return <PiSpinnerGap className="w-5 h-5 animate-spin" />;
       case 'failed':
-        return <FiX className="w-5 h-5" />;
+        return <PiX className="w-5 h-5" />;
       default:
-        return <FiClock className="w-5 h-5" />;
+        return <PiClock className="w-5 h-5" />;
     }
   };
 
@@ -179,7 +179,7 @@ export default function AdvancedReports() {
       description:
         'Estatísticas completas de usuários ativos, novos registros, tipos de usuário e principais contribuidores',
       category: 'users',
-      icon: FiUsers,
+      icon: PiUsers,
       color: 'text-accent-blue',
       metrics: [
         'Total de usuários',
@@ -196,7 +196,7 @@ export default function AdvancedReports() {
       description:
         'Performance detalhada de obras, compositores, partituras e épocas mais populares',
       category: 'content',
-      icon: FiMusic,
+      icon: PiMusicNotes,
       color: 'text-accent-green',
       metrics: [
         'Total de obras',
@@ -213,7 +213,7 @@ export default function AdvancedReports() {
       description:
         'Análise profunda de interação dos usuários com sessões de estudo, anotações e metas',
       category: 'engagement',
-      icon: FiActivity,
+      icon: PiPulse,
       color: 'text-accent-purple',
       metrics: [
         'Sessões de estudo',
@@ -230,14 +230,14 @@ export default function AdvancedReports() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <FiAlertTriangle className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Relatórios
           </h2>
           <p className="text-theme-secondary mb-6">{error}</p>
           <Button
             variant="primary"
-            leftIcon={<FiRefreshCw />}
+            leftIcon={<PiArrowsClockwise />}
             onClick={refreshData}
           >
             Tentar Novamente
@@ -266,7 +266,7 @@ export default function AdvancedReports() {
             title="Relatórios Gerados"
             value={results.length}
             change={{ value: results.length > 0 ? 100 : 0, isPositive: true }}
-            icon={FiFileText}
+            icon={PiFileText}
             color="#F59E0B"
           />
 
@@ -274,7 +274,7 @@ export default function AdvancedReports() {
             title="Total de Obras"
             value={formatNumber(stats.totalWorks)}
             change={{ value: 8.3, isPositive: true }}
-            icon={FiMusic}
+            icon={PiMusicNotes}
             color="#10B981"
           />
 
@@ -282,7 +282,7 @@ export default function AdvancedReports() {
             title="Total de compositores"
             value={formatNumber(stats.totalComposers)}
             change={{ value: results.length > 0 ? 100 : 0, isPositive: true }}
-            icon={BiPencil}
+            icon={PiPencilSimple}
             color="#F59E0B"
           />
 
@@ -290,7 +290,7 @@ export default function AdvancedReports() {
             title="Total de Partituras"
             value={formatNumber(stats.totalScores)}
             change={{ value: 4.8, isPositive: true }}
-            icon={FiFileText}
+            icon={PiFileText}
             color="#EF4444"
           />
         </div>
@@ -303,7 +303,7 @@ export default function AdvancedReports() {
             title="Total de Usuários"
             value={formatNumber(stats.totalUsers)}
             change={{ value: 12.5, isPositive: true }}
-            icon={FiUsers}
+            icon={PiUsers}
             color="#3B82F6"
           />
 
@@ -311,7 +311,7 @@ export default function AdvancedReports() {
             title="Usuários Ativos (30d)"
             value={formatNumber(stats.activeUsers)}
             change={{ value: 5.2, isPositive: true }}
-            icon={FiUsers}
+            icon={PiUsers}
             color="#06B6D4"
           />
 
@@ -319,7 +319,7 @@ export default function AdvancedReports() {
             title="Novos Usuários (7d)"
             value={formatNumber(stats.newUsers)}
             change={{ value: 23.1, isPositive: true }}
-            icon={FiTrendingUp}
+            icon={PiTrendUp}
             color="#84CC16"
           />
 
@@ -327,7 +327,7 @@ export default function AdvancedReports() {
             title="Anotações Públicas"
             value={formatNumber(stats.totalAnnotations)}
             change={{ value: 18.9, isPositive: true }}
-            icon={FiEdit}
+            icon={PiNotePencil}
             color="#F97316"
           />
         </div>
@@ -375,7 +375,7 @@ export default function AdvancedReports() {
         {selectedFormat === 'pdf' && (
           <div className="mb-6 p-4 bg-accent-blue/10 border border-accent-blue/20 rounded-lg">
             <div className="flex items-start space-x-3">
-              <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+              <PiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
               <div>
                 <h4 className="font-medium text-accent-blue mb-1">
                   Sobre relatórios PDF
@@ -436,9 +436,9 @@ export default function AdvancedReports() {
                       size="sm"
                       leftIcon={
                         isGenerating ? (
-                          <FiRefreshCw className="animate-spin" />
+                          <PiArrowsClockwise className="animate-spin" />
                         ) : (
-                          <FiPlay />
+                          <PiPlay />
                         )
                       }
                       onClick={() => handleGenerateReport(type.id)}
@@ -473,7 +473,7 @@ export default function AdvancedReports() {
           <Button
             variant="secondary"
             size="sm"
-            leftIcon={<FiRefreshCw />}
+            leftIcon={<PiArrowsClockwise />}
             onClick={refreshData}
             disabled={loading}
           >
@@ -541,7 +541,9 @@ export default function AdvancedReports() {
                         <Button
                           variant="secondary"
                           size="sm"
-                          leftIcon={isPdf ? <FiExternalLink /> : <FiDownload />}
+                          leftIcon={
+                            isPdf ? <PiArrowSquareOut /> : <PiDownloadSimple />
+                          }
                           onClick={() => handleDownloadReport(result)}
                         >
                           {isPdf ? 'Abrir' : 'Download'}
@@ -549,7 +551,7 @@ export default function AdvancedReports() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={<FiShare2 />}
+                          leftIcon={<PiShareNetwork />}
                           onClick={() => {
                             navigator.clipboard.writeText(
                               window.location.origin + result.downloadUrl
@@ -567,9 +569,9 @@ export default function AdvancedReports() {
                       size="sm"
                       leftIcon={
                         isDeleting ? (
-                          <FiRefreshCw className="animate-spin" />
+                          <PiArrowsClockwise className="animate-spin" />
                         ) : (
-                          <FiTrash2 />
+                          <PiTrash />
                         )
                       }
                       className="text-accent-red hover:bg-accent-red/10"
@@ -584,7 +586,7 @@ export default function AdvancedReports() {
                 {result.error && (
                   <div className="mt-3 p-3 bg-accent-red/10 border border-accent-red rounded-lg">
                     <p className="text-sm text-accent-red">
-                      <FiAlertTriangle className="inline w-4 h-4 mr-2" />
+                      <PiWarning className="inline w-4 h-4 mr-2" />
                       {result.error}
                     </p>
                   </div>
@@ -595,7 +597,7 @@ export default function AdvancedReports() {
         </div>
       ) : (
         <div className="text-center py-12">
-          <FiFileText className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+          <PiFileText className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
           <h3 className="text-lg font-medium text-theme-primary mb-2">
             Nenhum relatório gerado ainda
           </h3>
@@ -605,7 +607,7 @@ export default function AdvancedReports() {
           </p>
           <Button
             variant="primary"
-            leftIcon={<FiPlus />}
+            leftIcon={<PiPlus />}
             onClick={() => setActiveTab('overview')}
           >
             Gerar Primeiro Relatório
@@ -631,7 +633,7 @@ export default function AdvancedReports() {
         <Button
           variant="secondary"
           size="sm"
-          leftIcon={<FiRefreshCw />}
+          leftIcon={<PiArrowsClockwise />}
           onClick={refreshData}
           disabled={loading}
         >
@@ -651,7 +653,7 @@ export default function AdvancedReports() {
                       : 'text-theme-tertiary bg-theme-secondary'
                   }`}
                 >
-                  <FiBarChart2 className="w-4 h-4" />
+                  <PiChartBar className="w-4 h-4" />
                 </div>
                 <div>
                   <h4 className="font-medium text-theme-primary">
@@ -739,13 +741,13 @@ export default function AdvancedReports() {
   );
 
   const tabs = [
-    { id: 'overview', label: 'Visão Geral', icon: FiBarChart2 },
+    { id: 'overview', label: 'Visão Geral', icon: PiChartBar },
     {
       id: 'results',
       label: `Relatórios (${results.length})`,
-      icon: FiDownload,
+      icon: PiDownloadSimple,
     },
-    { id: 'metrics', label: 'Métricas', icon: FiActivity },
+    { id: 'metrics', label: 'Métricas', icon: PiPulse },
   ];
 
   return (
@@ -756,7 +758,7 @@ export default function AdvancedReports() {
           <div className="text-center mb-8 py-12">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiFileText className="w-8 h-8 text-theme-primary" />
+                <PiFileText className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -813,7 +815,7 @@ export default function AdvancedReports() {
           <div className="flex flex-col sm:flex-row gap-4 pt-6 mt-8 border-t border-theme-secondary">
             <Button
               variant="primary"
-              leftIcon={<FiUsers />}
+              leftIcon={<PiUsers />}
               onClick={() => {
                 setActiveTab('overview');
                 handleGenerateReport('users-overview');
@@ -824,7 +826,7 @@ export default function AdvancedReports() {
             </Button>
             <Button
               variant="secondary"
-              leftIcon={<FiMusic />}
+              leftIcon={<PiMusicNotes />}
               onClick={() => {
                 setActiveTab('overview');
                 handleGenerateReport('content-analysis');
@@ -835,7 +837,7 @@ export default function AdvancedReports() {
             </Button>
             <Button
               variant="secondary"
-              leftIcon={<FiActivity />}
+              leftIcon={<PiPulse />}
               onClick={() => {
                 setActiveTab('overview');
                 handleGenerateReport('engagement-metrics');

@@ -1,7 +1,7 @@
 // app/components/Common/EditButton.tsx
 'use client';
 
-import { FiEdit } from 'react-icons/fi';
+import { PiNotePencil } from 'react-icons/pi';
 import { useRouter } from 'next/navigation';
 
 interface EditButtonProps {
@@ -59,7 +59,7 @@ export default function EditButton({
                   `}
         title="Editar"
       >
-        <FiEdit
+        <PiNotePencil
           className={`${iconSizes[size]} group-hover:rotate-12 transition-transform duration-300`}
         />
       </button>

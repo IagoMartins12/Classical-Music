@@ -3,17 +3,17 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import {
-  FiLock,
-  FiEye,
-  FiEyeOff,
-  FiCheckCircle,
-  FiAlertCircle,
-  FiLoader,
-  FiArrowRight,
-  FiClock,
-} from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
+import {
+  PiArrowRight,
+  PiCheckCircle,
+  PiClock,
+  PiEye,
+  PiEyeSlash,
+  PiLock,
+  PiSpinnerGap,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import Link from 'next/link';
@@ -147,7 +147,7 @@ export default function ResetPasswordPage() {
   const renderValidatingStep = () => (
     <div className="text-center">
       <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-accent-purple rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
-        <FiLoader className="w-10 h-10 text-white animate-spin" />
+        <PiSpinnerGap className="w-10 h-10 text-white animate-spin" />
       </div>
       <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
         {t('validating_title')}
@@ -167,7 +167,7 @@ export default function ResetPasswordPage() {
       <>
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
-            <FiLock className="w-8 h-8 text-white" />
+            <PiLock className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-theme-primary classical-title mb-2">
             {t('form_title')}
@@ -195,7 +195,7 @@ export default function ResetPasswordPage() {
               {timeLeft && (
                 <div className="text-right">
                   <div className="flex items-center">
-                    <FiClock className="w-4 h-4 text-theme-tertiary mr-1" />
+                    <PiClock className="w-4 h-4 text-theme-tertiary mr-1" />
                     <span className={`text-sm font-medium ${timeLeft.color}`}>
                       {timeLeft.text}
                     </span>
@@ -214,7 +214,7 @@ export default function ResetPasswordPage() {
           {error && (
             <div className="p-3 rounded-lg bg-accent-red bg-opacity-10 border border-accent-red text-accent-red text-sm">
               <div className="flex items-center">
-                <FiAlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+                <PiWarningCircle className="w-4 h-4 mr-2 flex-shrink-0" />
                 <span>{error}</span>
               </div>
             </div>
@@ -228,7 +228,7 @@ export default function ResetPasswordPage() {
               name="password"
               value={formData.password}
               onChange={(e) => updateField('password', e.target.value)}
-              leftIcon={<FiLock className="w-4 h-4" />}
+              leftIcon={<PiLock className="w-4 h-4" />}
               rightIcon={
                 <button
                   type="button"
@@ -236,9 +236,9 @@ export default function ResetPasswordPage() {
                   className="text-theme-tertiary hover:text-theme-primary"
                 >
                   {showPassword ? (
-                    <FiEyeOff className="w-4 h-4" />
+                    <PiEyeSlash className="w-4 h-4" />
                   ) : (
-                    <FiEye className="w-4 h-4" />
+                    <PiEye className="w-4 h-4" />
                   )}
                 </button>
               }
@@ -298,7 +298,7 @@ export default function ResetPasswordPage() {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={(e) => updateField('confirmPassword', e.target.value)}
-              leftIcon={<FiLock className="w-4 h-4" />}
+              leftIcon={<PiLock className="w-4 h-4" />}
               rightIcon={
                 <button
                   type="button"
@@ -306,9 +306,9 @@ export default function ResetPasswordPage() {
                   className="text-theme-tertiary hover:text-theme-primary"
                 >
                   {showConfirmPassword ? (
-                    <FiEyeOff className="w-4 h-4" />
+                    <PiEyeSlash className="w-4 h-4" />
                   ) : (
-                    <FiEye className="w-4 h-4" />
+                    <PiEye className="w-4 h-4" />
                   )}
                 </button>
               }
@@ -366,7 +366,7 @@ export default function ResetPasswordPage() {
   const renderSuccessStep = () => (
     <div className="text-center">
       <div className="w-20 h-20 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-bounce">
-        <FiCheckCircle className="w-10 h-10 text-white" />
+        <PiCheckCircle className="w-10 h-10 text-white" />
       </div>
       <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
         {t('success_title')}
@@ -388,7 +388,7 @@ export default function ResetPasswordPage() {
         <Button
           variant="primary"
           size="lg"
-          rightIcon={<FiArrowRight />}
+          rightIcon={<PiArrowRight />}
           onClick={() => router.push('/?login=true')}
           className="animate-pulse"
         >
@@ -409,7 +409,7 @@ export default function ResetPasswordPage() {
   const renderErrorStep = () => (
     <div className="text-center">
       <div className="w-20 h-20 bg-gradient-to-br from-accent-red to-accent-amber rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
-        <FiAlertCircle className="w-10 h-10 text-white" />
+        <PiWarningCircle className="w-10 h-10 text-white" />
       </div>
       <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
         {t('error_title')}
@@ -420,7 +420,7 @@ export default function ResetPasswordPage() {
 
       <div className="bg-accent-red bg-opacity-10 border border-accent-red rounded-xl p-6 mb-8">
         <div className="flex items-center justify-center mb-3">
-          <FiAlertCircle className="w-5 h-5 text-accent-red mr-2" />
+          <PiWarningCircle className="w-5 h-5 text-accent-red mr-2" />
           <span className="font-medium text-accent-red">
             {getErrorTitle(pageState.errorCode)}
           </span>

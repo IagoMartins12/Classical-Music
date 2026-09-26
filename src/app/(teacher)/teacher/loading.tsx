@@ -1,19 +1,19 @@
 // app/teacher/loading.tsx - Loading para Dashboard Principal do Professor
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiUsers,
-  FiCalendar,
-  FiMusic,
-  FiBarChart2,
-  FiClock,
-  FiBookOpen,
-  FiClipboard,
-  FiStar,
-  FiTrendingUp,
-  FiBell,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiBell,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiChartBar,
+  PiClipboardText,
+  PiClock,
+  PiMusicNotes,
+  PiStar,
+  PiTrendUp,
+  PiUsers,
+} from 'react-icons/pi';
 
 export default function TeacherDashboardLoading() {
   return (
@@ -38,13 +38,13 @@ export default function TeacherDashboardLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiUsers />
+          <PiUsers />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiCalendar />
+          <PiCalendarBlank />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -56,7 +56,7 @@ export default function TeacherDashboardLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -78,10 +78,16 @@ export default function TeacherDashboardLoading() {
         {/* Main Stats Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[
-            { icon: <FiUsers className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiCalendar className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiMusic className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiBarChart2 className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiUsers className="w-6 h-6 text-theme-inverse/20" /> },
+            {
+              icon: (
+                <PiCalendarBlank className="w-6 h-6 text-theme-inverse/20" />
+              ),
+            },
+            {
+              icon: <PiMusicNotes className="w-6 h-6 text-theme-inverse/20" />,
+            },
+            { icon: <PiChartBar className="w-6 h-6 text-theme-inverse/20" /> },
           ].map((item, index) => (
             <div
               key={index}
@@ -104,7 +110,7 @@ export default function TeacherDashboardLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                  <FiClock className="w-5 h-5 text-theme-primary/30" />
+                  <PiClock className="w-5 h-5 text-theme-primary/30" />
                 </div>
                 <div className="space-y-2">
                   <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
@@ -127,7 +133,7 @@ export default function TeacherDashboardLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                  <FiBookOpen className="w-5 h-5 text-theme-primary/30" />
+                  <PiBookOpen className="w-5 h-5 text-theme-primary/30" />
                 </div>
                 <div className="space-y-2">
                   <div className="h-6 w-40 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
@@ -146,7 +152,7 @@ export default function TeacherDashboardLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                  <FiClipboard className="w-5 h-5 text-theme-primary/30" />
+                  <PiClipboardText className="w-5 h-5 text-theme-primary/30" />
                 </div>
                 <div className="space-y-2">
                   <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
@@ -168,7 +174,7 @@ export default function TeacherDashboardLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                  <FiCalendar className="w-4 h-4 text-theme-primary/30" />
+                  <PiCalendarBlank className="w-4 h-4 text-theme-primary/30" />
                 </div>
                 <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
               </div>
@@ -192,7 +198,7 @@ export default function TeacherDashboardLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                  <FiStar className="w-4 h-4 text-theme-primary/30" />
+                  <PiStar className="w-4 h-4 text-theme-primary/30" />
                 </div>
                 <div className="h-5 w-40 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
               </div>
@@ -208,7 +214,7 @@ export default function TeacherDashboardLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                  <FiTrendingUp className="w-4 h-4 text-theme-primary/30" />
+                  <PiTrendUp className="w-4 h-4 text-theme-primary/30" />
                 </div>
                 <div className="h-5 w-28 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
               </div>
@@ -232,7 +238,7 @@ export default function TeacherDashboardLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                  <FiBell className="w-4 h-4 text-theme-primary/30" />
+                  <PiBell className="w-4 h-4 text-theme-primary/30" />
                 </div>
                 <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
               </div>

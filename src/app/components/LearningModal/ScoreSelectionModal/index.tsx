@@ -3,17 +3,16 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
-  FiMusic,
-  FiArrowLeft,
-  FiX,
-  FiBookOpen,
-  FiUpload,
-  FiMoreHorizontal,
-  FiRefreshCw,
-  FiAlertCircle,
-  FiFileText,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiArrowLeft,
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiDotsThree,
+  PiFileText,
+  PiMusicNotes,
+  PiUploadSimple,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import { useWorkScores, WorkScore } from '@/app/hooks/useWorkScores';
 
@@ -106,35 +105,35 @@ const ScoreSelectionModal = ({
       id: 'scores',
       label: t('scores_tab'),
       type: 'scores' as const,
-      icon: FiMusic,
+      icon: PiMusicNotes,
       gradient: 'from-brand-primary to-brand-secondary',
     },
     {
       id: 'parts',
       label: t('parts_tab'),
       type: 'parts' as const,
-      icon: FiFileText,
+      icon: PiFileText,
       gradient: 'from-accent-blue to-accent-purple',
     },
     {
       id: 'arrangements',
       label: t('arrangements_tab'),
       type: 'arrangements' as const,
-      icon: GiMusicalNotes,
+      icon: PiMusicNotes,
       gradient: 'from-accent-green to-accent-blue',
     },
     {
       id: 'uploads',
       label: t('uploads_tab'),
       type: 'uploads' as const,
-      icon: FiUpload,
+      icon: PiUploadSimple,
       gradient: 'from-accent-purple to-accent-red',
     },
     {
       id: 'others',
       label: t('others_tab'),
       type: 'others' as const,
-      icon: FiFileText,
+      icon: PiFileText,
       gradient: 'from-accent-red to-accent-purple',
     },
   ];
@@ -505,11 +504,11 @@ const ScoreSelectionModal = ({
                 onClick={onClose}
                 className="w-10 h-10 bg-theme-elevated border border-theme-primary hover:border-brand-primary rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-interactive-hover"
               >
-                <FiArrowLeft className="w-5 h-5 text-theme-primary" />
+                <PiArrowLeft className="w-5 h-5 text-theme-primary" />
               </button>
 
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
-                <FiMusic className="w-6 h-6 text-theme-primary" />
+                <PiMusicNotes className="w-6 h-6 text-theme-primary" />
               </div>
 
               <div>
@@ -704,7 +703,7 @@ const ScoreSelectionModal = ({
                           </>
                         ) : (
                           <>
-                            <FiMoreHorizontal className="w-4 h-4" />
+                            <PiDotsThree className="w-4 h-4" />
                             <span>
                               {t('load_more')} (
                               {Math.min(20, activeTabStat.remaining)})
@@ -725,14 +724,14 @@ const ScoreSelectionModal = ({
                     <div className="classical-card bg-theme-elevated p-6">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
-                          <FiBookOpen className="w-5 h-5 text-accent-blue" />
+                          <PiBookOpen className="w-5 h-5 text-accent-blue" />
                           <span>{t('score_preview')}</span>
                         </h3>
                         <button
                           onClick={() => setSelectedScore(null)}
                           className="w-8 h-8 bg-theme-primary border border-theme-secondary hover:border-accent-red rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-accent-red/10"
                         >
-                          <FiX className="w-4 h-4 text-theme-primary hover:text-accent-red" />
+                          <PiX className="w-4 h-4 text-theme-primary hover:text-accent-red" />
                         </button>
                       </div>
                       <ScorePreview score={selectedScore as any} />
@@ -750,14 +749,14 @@ const ScoreSelectionModal = ({
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
-                  <FiBookOpen className="w-5 h-5 text-accent-blue" />
+                  <PiBookOpen className="w-5 h-5 text-accent-blue" />
                   <span>{t('score_preview')}</span>
                 </h3>
                 <button
                   onClick={() => setSelectedScore(null)}
                   className="w-8 h-8 bg-theme-primary border border-theme-secondary hover:border-accent-red rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-accent-red/10"
                 >
-                  <FiX className="w-4 h-4 text-theme-primary hover:text-accent-red" />
+                  <PiX className="w-4 h-4 text-theme-primary hover:text-accent-red" />
                 </button>
               </div>
               <ScorePreview score={selectedScore as any} />
@@ -835,14 +834,14 @@ function ErrorState({
   return (
     <div className="bg-gradient-to-r from-accent-red/10 to-accent-red/5 border border-accent-red/30 rounded-2xl p-6">
       <div className="text-center">
-        <FiAlertCircle className="w-12 h-12 text-accent-red mx-auto mb-4" />
+        <PiWarningCircle className="w-12 h-12 text-accent-red mx-auto mb-4" />
         <p className="text-accent-red font-medium mb-4">{error}</p>
         {onRefetch && (
           <button
             onClick={onRefetch}
             className="btn-classical-secondary flex items-center space-x-2"
           >
-            <FiRefreshCw className="w-4 h-4" />
+            <PiArrowsClockwise className="w-4 h-4" />
             <span>{t('try_again')}</span>
           </button>
         )}
@@ -857,7 +856,7 @@ function EmptyState() {
   return (
     <div className="text-center py-12">
       <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-        <FiBookOpen className="w-8 h-8 text-theme-tertiary" />
+        <PiBookOpen className="w-8 h-8 text-theme-tertiary" />
       </div>
       <h3 className="text-lg font-semibold text-theme-primary mb-2">
         {t('no_scores_found')}

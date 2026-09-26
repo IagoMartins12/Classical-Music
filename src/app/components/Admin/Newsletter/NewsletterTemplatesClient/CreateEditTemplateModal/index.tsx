@@ -3,15 +3,15 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiX,
-  FiSave,
-  FiRefreshCw,
-  FiEye,
-  FiCode,
-  FiFileText,
-  FiSettings,
-  FiAlertCircle,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCode,
+  PiEye,
+  PiFileText,
+  PiFloppyDisk,
+  PiGear,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import Modal from '@/app/components/Modal';
@@ -237,9 +237,9 @@ export default function CreateEditTemplateModal({
   };
 
   const steps = [
-    { id: 1, title: 'Informações Básicas', icon: FiFileText },
-    { id: 2, title: 'Conteúdo', icon: FiCode },
-    { id: 3, title: 'Configurações', icon: FiSettings },
+    { id: 1, title: 'Informações Básicas', icon: PiFileText },
+    { id: 2, title: 'Conteúdo', icon: PiCode },
+    { id: 3, title: 'Configurações', icon: PiGear },
   ];
 
   return (
@@ -319,7 +319,7 @@ export default function CreateEditTemplateModal({
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiCode />}
+                        leftIcon={<PiCode />}
                         onClick={() => loadBuiltInTemplate(form.type)}
                       >
                         Carregar template built-in como base
@@ -420,7 +420,7 @@ export default function CreateEditTemplateModal({
                 <div className="flex items-center space-x-4">
                   <Button
                     variant="ghost"
-                    leftIcon={<FiEye />}
+                    leftIcon={<PiEye />}
                     onClick={handlePreview}
                   >
                     Preview Template
@@ -537,7 +537,7 @@ export default function CreateEditTemplateModal({
                 {errors.submit && (
                   <div className="p-4 bg-accent-red/10 border border-accent-red/20 rounded-lg">
                     <div className="flex items-center">
-                      <FiAlertCircle className="w-5 h-5 text-accent-red mr-2" />
+                      <PiWarningCircle className="w-5 h-5 text-accent-red mr-2" />
                       <span className="text-accent-red">{errors.submit}</span>
                     </div>
                   </div>
@@ -581,9 +581,9 @@ export default function CreateEditTemplateModal({
                   variant="primary"
                   leftIcon={
                     saving ? (
-                      <FiRefreshCw className="animate-spin" />
+                      <PiArrowsClockwise className="animate-spin" />
                     ) : (
-                      <FiSave />
+                      <PiFloppyDisk />
                     )
                   }
                   onClick={handleSubmit}
@@ -621,7 +621,7 @@ export default function CreateEditTemplateModal({
                 onClick={() => setShowPreview(false)}
                 className="text-theme-tertiary hover:text-theme-primary transition-colors"
               >
-                <FiX className="w-6 h-6" />
+                <PiX className="w-6 h-6" />
               </button>
             </div>
 

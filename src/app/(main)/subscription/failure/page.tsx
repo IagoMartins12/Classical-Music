@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { FiX, FiArrowLeft, FiHelpCircle } from 'react-icons/fi';
+import { PiArrowLeft, PiQuestion, PiX } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 
 export default function SubscriptionFailurePage() {
@@ -14,7 +14,7 @@ export default function SubscriptionFailurePage() {
         <div className="bg-theme-elevated rounded-2xl shadow-theme-large p-8 md:p-12 text-center">
           {/* Error Icon */}
           <div className="w-24 h-24 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-8">
-            <FiX className="w-12 h-12 text-white" />
+            <PiX className="w-12 h-12 text-white" />
           </div>
 
           {/* Title */}
@@ -30,7 +30,7 @@ export default function SubscriptionFailurePage() {
           <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6 mb-8 text-left">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                <FiHelpCircle className="w-6 h-6 text-red-500" />
+                <PiQuestion className="w-6 h-6 text-red-500" />
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-theme-primary mb-2">
@@ -64,7 +64,7 @@ export default function SubscriptionFailurePage() {
               onClick={() => router.push('/pricing')}
               className="flex-1 flex items-center justify-center gap-2"
             >
-              <FiArrowLeft className="w-5 h-5" />
+              <PiArrowLeft className="w-5 h-5" />
               <span>Tentar Novamente</span>
             </Button>
             <Button

@@ -2,13 +2,13 @@
 import type { StudentInviteStatus } from '@/app/types/portal';
 import React from 'react';
 import {
-  FiClock,
-  FiCheckCircle,
-  FiXCircle,
-  FiAlertCircle,
-  FiRefreshCw,
-  FiMail,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCheckCircle,
+  PiClock,
+  PiEnvelopeSimple,
+  PiWarningCircle,
+  PiXCircle,
+} from 'react-icons/pi';
 
 interface StudentInviteStatusBadgeProps {
   status?: StudentInviteStatus | null;
@@ -35,7 +35,7 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
         return {
           color: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
           bgColor: 'bg-amber-50',
-          icon: FiClock,
+          icon: PiClock,
           iconColor: 'text-amber-500',
           text: 'Convite Pendente',
           shortText: 'Pendente',
@@ -46,7 +46,7 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
         return {
           color: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
           bgColor: 'bg-emerald-50',
-          icon: FiCheckCircle,
+          icon: PiCheckCircle,
           iconColor: 'text-emerald-500',
           text: 'Convite Aceito',
           shortText: 'Aceito',
@@ -59,7 +59,7 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
         return {
           color: 'bg-red-500/10 text-red-600 border-red-500/20',
           bgColor: 'bg-red-50',
-          icon: FiXCircle,
+          icon: PiXCircle,
           iconColor: 'text-red-500',
           text: 'Convite Recusado',
           shortText: 'Recusado',
@@ -72,7 +72,7 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
         return {
           color: 'bg-gray-500/10 text-gray-600 border-gray-500/20',
           bgColor: 'bg-gray-50',
-          icon: FiAlertCircle,
+          icon: PiWarningCircle,
           iconColor: 'text-gray-500',
           text: 'Convite Expirado',
           shortText: 'Expirado',
@@ -83,7 +83,7 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
         return {
           color: 'bg-gray-500/10 text-gray-600 border-gray-500/20',
           bgColor: 'bg-gray-50',
-          icon: FiAlertCircle,
+          icon: PiWarningCircle,
           iconColor: 'text-gray-500',
           text: 'Status Desconhecido',
           shortText: 'Desconhecido',
@@ -114,9 +114,9 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
             title="Reenviar convite"
           >
             {isResending ? (
-              <FiRefreshCw className="w-3 h-3 animate-spin" />
+              <PiArrowsClockwise className="w-3 h-3 animate-spin" />
             ) : (
-              <FiMail className="w-3 h-3" />
+              <PiEnvelopeSimple className="w-3 h-3" />
             )}
           </button>
         )}
@@ -156,12 +156,12 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
           >
             {isResending ? (
               <>
-                <FiRefreshCw className="w-3 h-3 animate-spin" />
+                <PiArrowsClockwise className="w-3 h-3 animate-spin" />
                 <span>Enviando...</span>
               </>
             ) : (
               <>
-                <FiMail className="w-3 h-3" />
+                <PiEnvelopeSimple className="w-3 h-3" />
                 <span>
                   {status === 'PENDING'
                     ? 'Reenviar'

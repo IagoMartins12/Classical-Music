@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { BiLoader } from 'react-icons/bi';
+import { PiSpinnerGap } from 'react-icons/pi';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:
@@ -86,7 +86,7 @@ const Button: React.FC<ButtonProps> = ({
       {...props}
     >
       {isLoading && (
-        <BiLoader className={`animate-spin ${iconSizes[size]} mr-2`} />
+        <PiSpinnerGap className={`animate-spin ${iconSizes[size]} mr-2`} />
       )}
       {!isLoading && leftIcon && (
         <span className={`${iconSizes[size]} mr-2`}>{leftIcon}</span>

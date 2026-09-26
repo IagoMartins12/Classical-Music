@@ -1,19 +1,19 @@
 // app/teacher/profile/loading.tsx - Loading para Perfil do Professor
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiUser,
-  FiAward,
-  FiMusic,
-  FiGlobe,
-  FiMail,
-  FiPhone,
-  FiMapPin,
-  FiClock,
-  FiUsers,
-  FiEye,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiClock,
+  PiEnvelopeSimple,
+  PiEye,
+  PiGlobe,
+  PiMapPin,
+  PiMedal,
+  PiMusicNotes,
+  PiPhone,
+  PiUser,
+  PiUsers,
+} from 'react-icons/pi';
 
 export default function TeacherProfileLoading() {
   return (
@@ -38,13 +38,13 @@ export default function TeacherProfileLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiUser />
+          <PiUser />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiAward />
+          <PiMedal />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -56,7 +56,7 @@ export default function TeacherProfileLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -79,7 +79,7 @@ export default function TeacherProfileLoading() {
         <div className="space-y-8">
           {/* Personal Information Skeleton */}
           <ProfileSectionSkeleton
-            icon={<FiUser className="w-5 h-5 text-theme-primary/30" />}
+            icon={<PiUser className="w-5 h-5 text-theme-primary/30" />}
             title="Informações Pessoais"
             subtitle="Seus dados básicos e informações de contato"
           >
@@ -95,7 +95,7 @@ export default function TeacherProfileLoading() {
                 <div>
                   <div className="h-3 w-12 bg-theme-tertiary/30 rounded mb-2"></div>
                   <div className="flex items-center space-x-2">
-                    <FiMail className="w-4 h-4 text-theme-tertiary/30" />
+                    <PiEnvelopeSimple className="w-4 h-4 text-theme-tertiary/30" />
                     <div className="h-5 w-56 bg-theme-primary/30 rounded"></div>
                   </div>
                 </div>
@@ -104,7 +104,7 @@ export default function TeacherProfileLoading() {
                 <div>
                   <div className="h-3 w-16 bg-theme-tertiary/30 rounded mb-2"></div>
                   <div className="flex items-center space-x-2">
-                    <FiPhone className="w-4 h-4 text-theme-tertiary/30" />
+                    <PiPhone className="w-4 h-4 text-theme-tertiary/30" />
                     <div className="h-5 w-40 bg-theme-primary/30 rounded"></div>
                   </div>
                 </div>
@@ -115,7 +115,7 @@ export default function TeacherProfileLoading() {
                 <div>
                   <div className="h-3 w-20 bg-theme-tertiary/30 rounded mb-2"></div>
                   <div className="flex items-center space-x-2">
-                    <FiMapPin className="w-4 h-4 text-theme-tertiary/30" />
+                    <PiMapPin className="w-4 h-4 text-theme-tertiary/30" />
                     <div className="h-5 w-44 bg-theme-primary/30 rounded"></div>
                   </div>
                 </div>
@@ -140,7 +140,7 @@ export default function TeacherProfileLoading() {
 
           {/* Professional Information Skeleton */}
           <ProfileSectionSkeleton
-            icon={<FiAward className="w-5 h-5 text-theme-primary/30" />}
+            icon={<PiMedal className="w-5 h-5 text-theme-primary/30" />}
             title="Informações Profissionais"
             subtitle="Sua experiência, formação e conquistas"
           >
@@ -179,7 +179,7 @@ export default function TeacherProfileLoading() {
               <div>
                 <div className="h-3 w-16 bg-theme-tertiary/30 rounded mb-2"></div>
                 <div className="flex items-center space-x-2">
-                  <FiGlobe className="w-4 h-4 text-brand-primary/30" />
+                  <PiGlobe className="w-4 h-4 text-brand-primary/30" />
                   <div className="h-4 w-48 bg-brand-primary/30 rounded"></div>
                 </div>
               </div>
@@ -188,7 +188,7 @@ export default function TeacherProfileLoading() {
 
           {/* Teaching Configuration Skeleton */}
           <ProfileSectionSkeleton
-            icon={<FiMusic className="w-5 h-5 text-theme-primary/30" />}
+            icon={<PiMusicNotes className="w-5 h-5 text-theme-primary/30" />}
             title="Configurações de Ensino"
             subtitle="Seus instrumentos, especialidades e métodos de ensino"
           >
@@ -235,7 +235,7 @@ export default function TeacherProfileLoading() {
                 <div>
                   <div className="h-3 w-24 bg-theme-tertiary/30 rounded mb-2"></div>
                   <div className="flex items-center space-x-2">
-                    <FiClock className="w-4 h-4 text-theme-primary/30" />
+                    <PiClock className="w-4 h-4 text-theme-primary/30" />
                     <div className="h-4 w-20 bg-theme-primary/30 rounded"></div>
                   </div>
                 </div>
@@ -244,7 +244,7 @@ export default function TeacherProfileLoading() {
                 <div>
                   <div className="h-3 w-32 bg-theme-tertiary/30 rounded mb-2"></div>
                   <div className="flex items-center space-x-2">
-                    <FiUsers className="w-4 h-4 text-theme-primary/30" />
+                    <PiUsers className="w-4 h-4 text-theme-primary/30" />
                     <div className="h-4 w-16 bg-theme-primary/30 rounded"></div>
                   </div>
                 </div>
@@ -260,7 +260,7 @@ export default function TeacherProfileLoading() {
 
           {/* Public Profile Skeleton */}
           <ProfileSectionSkeleton
-            icon={<FiGlobe className="w-5 h-5 text-theme-primary/30" />}
+            icon={<PiGlobe className="w-5 h-5 text-theme-primary/30" />}
             title="Perfil Público"
             subtitle="Configure sua visibilidade na página 'Conheça Nossos Professores'"
           >
@@ -269,7 +269,7 @@ export default function TeacherProfileLoading() {
               <div className="flex items-center justify-between p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-accent-green/20 rounded-full flex items-center justify-center">
-                    <FiEye className="w-5 h-5 text-accent-green/50" />
+                    <PiEye className="w-5 h-5 text-accent-green/50" />
                   </div>
                   <div>
                     <div className="h-4 w-24 bg-theme-primary/30 rounded mb-1"></div>
@@ -291,7 +291,7 @@ export default function TeacherProfileLoading() {
               {/* Info box */}
               <div className="bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 rounded-lg border border-brand-primary/20 p-4">
                 <div className="flex items-center space-x-3 mb-2">
-                  <FiGlobe className="w-5 h-5 text-brand-primary/30" />
+                  <PiGlobe className="w-5 h-5 text-brand-primary/30" />
                   <div className="h-4 w-32 bg-theme-primary/30 rounded"></div>
                 </div>
                 <div className="space-y-1 mb-3">

@@ -3,18 +3,18 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiX,
-  FiCalendar,
-  FiUsers,
-  FiFileText,
-  FiEye,
-  FiSave,
-  FiRefreshCw,
-  FiCode,
-  FiMail,
-  FiStar,
-  FiEdit,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCalendarBlank,
+  PiCode,
+  PiEnvelopeSimple,
+  PiEye,
+  PiFileText,
+  PiFloppyDisk,
+  PiNotePencil,
+  PiStar,
+  PiUsers,
+  PiX,
+} from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import Modal from '@/app/components/Modal';
@@ -202,11 +202,11 @@ export default function CreateCampaignModal({
   };
 
   const steps = [
-    { id: 1, title: 'Informações Básicas', icon: FiFileText },
-    { id: 2, title: 'Template e Conteúdo', icon: FiEye },
-    { id: 3, title: 'Configurações de Envio', icon: FiMail },
-    { id: 4, title: 'Agendamento', icon: FiCalendar },
-    { id: 5, title: 'Segmentação', icon: FiUsers },
+    { id: 1, title: 'Informações Básicas', icon: PiFileText },
+    { id: 2, title: 'Template e Conteúdo', icon: PiEye },
+    { id: 3, title: 'Configurações de Envio', icon: PiEnvelopeSimple },
+    { id: 4, title: 'Agendamento', icon: PiCalendarBlank },
+    { id: 5, title: 'Segmentação', icon: PiUsers },
   ];
 
   return (
@@ -236,8 +236,8 @@ export default function CreateCampaignModal({
                     currentStep === step.id
                       ? 'bg-brand-primary text-white'
                       : currentStep > step.id
-                      ? 'bg-green-700 text-white'
-                      : 'bg-theme-secondary text-theme-tertiary'
+                        ? 'bg-green-700 text-white'
+                        : 'bg-theme-secondary text-theme-tertiary'
                   }`}
                   onClick={() => setCurrentStep(step.id)}
                 >
@@ -392,14 +392,14 @@ export default function CreateCampaignModal({
                         </div>
                       ) : (
                         <div className="text-center py-6">
-                          <FiFileText className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
+                          <PiFileText className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
                           <p className="text-theme-tertiary mb-4">
                             Nenhum template personalizado disponível para o tipo
                             &quot;{form.templateType}&quot;
                           </p>
                           <Button
                             variant="ghost"
-                            leftIcon={<FiEdit />}
+                            leftIcon={<PiNotePencil />}
                             onClick={() =>
                               window.open(
                                 '/admin/newsletter/templates',
@@ -422,7 +422,7 @@ export default function CreateCampaignModal({
                                 </h5>
                                 {selectedTemplate.isDefault && (
                                   <span className="px-2 py-1 bg-accent-amber/20 text-accent-amber rounded-full text-xs flex items-center">
-                                    <FiStar className="w-3 h-3 mr-1" />
+                                    <PiStar className="w-3 h-3 mr-1" />
                                     Padrão
                                   </span>
                                 )}
@@ -444,7 +444,7 @@ export default function CreateCampaignModal({
                             <Button
                               variant="ghost"
                               size="sm"
-                              leftIcon={<FiCode />}
+                              leftIcon={<PiCode />}
                               onClick={() =>
                                 window.open(
                                   `/admin/newsletter/templates?preview=${selectedTemplate.id}`,
@@ -507,7 +507,7 @@ export default function CreateCampaignModal({
                 <div className="flex items-center space-x-4">
                   <Button
                     variant="ghost"
-                    leftIcon={<FiEye />}
+                    leftIcon={<PiEye />}
                     onClick={handlePreview}
                   >
                     Preview Template
@@ -744,9 +744,9 @@ export default function CreateCampaignModal({
                   variant="primary"
                   leftIcon={
                     saving ? (
-                      <FiRefreshCw className="animate-spin" />
+                      <PiArrowsClockwise className="animate-spin" />
                     ) : (
-                      <FiSave />
+                      <PiFloppyDisk />
                     )
                   }
                   onClick={handleSubmit}
@@ -755,8 +755,8 @@ export default function CreateCampaignModal({
                   {saving
                     ? 'Salvando...'
                     : editCampaign
-                    ? 'Atualizar Campanha'
-                    : 'Criar Campanha'}
+                      ? 'Atualizar Campanha'
+                      : 'Criar Campanha'}
                 </Button>
               )}
             </div>
@@ -776,7 +776,7 @@ export default function CreateCampaignModal({
                 onClick={() => setShowPreview(false)}
                 className="text-theme-tertiary hover:text-theme-primary transition-colors"
               >
-                <FiX className="w-6 h-6" />
+                <PiX className="w-6 h-6" />
               </button>
             </div>
 

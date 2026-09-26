@@ -9,7 +9,7 @@ import React, {
   useLayoutEffect,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { FiX } from 'react-icons/fi';
+import { PiX } from 'react-icons/pi';
 import ConfirmationModal from './ConfirmationModal';
 import { useModalConfirmation } from '@/app/hooks/useModalConfirmation';
 import { useIsMobile } from '@/app/hooks/useMobile';
@@ -232,7 +232,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
                     className="p-2 text-theme-tertiary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
                     aria-label="Fechar modal"
                   >
-                    <FiX className="w-5 h-5" />
+                    <PiX className="w-5 h-5" />
                   </button>
                 )}
               </div>

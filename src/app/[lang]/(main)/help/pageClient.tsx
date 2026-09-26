@@ -1,24 +1,26 @@
 'use client';
 
 import React, { JSX, useState } from 'react';
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiBook,
-  FiVideo,
-  FiUser,
-  FiUpload,
-  FiSearch,
-  FiPlay,
-  FiMessageCircle,
-  FiArrowRight,
-  FiBookOpen,
-  FiHelpCircle,
-  FiHeart,
-  FiUserCheck,
-  FiFlag,
-  FiMail,
-  FiTarget,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano, GiScrollQuill } from 'react-icons/gi';
+  PiArrowRight,
+  PiBook,
+  PiBookOpen,
+  PiChatCircle,
+  PiEnvelopeSimple,
+  PiFlag,
+  PiHeart,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiPlay,
+  PiQuestion,
+  PiScroll,
+  PiTarget,
+  PiUploadSimple,
+  PiUser,
+  PiUserCheck,
+  PiVideoCamera,
+} from 'react-icons/pi';
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Link from '@/app/components/LocalizedLink';
 import {
@@ -66,13 +68,13 @@ const getDifficultyColor = (difficulty: string): string => {
 const getTypeIcon = (type: string) => {
   switch (type) {
     case 'article':
-      return FiBook;
+      return PiBook;
     case 'video':
-      return FiVideo;
+      return PiVideoCamera;
     case 'interactive':
-      return FiPlay;
+      return PiPlay;
     default:
-      return FiBook;
+      return PiBook;
   }
 };
 
@@ -149,9 +151,9 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
 
                 <span className="text-sm text-brand-primary block md:hidden font-medium">
                   {isExpanded ? (
-                    <FiArrowRight className="w-5 h-5 text-brand-primary rotate-90 transition-transform duration-300" />
+                    <PiArrowRight className="w-5 h-5 text-brand-primary rotate-90 transition-transform duration-300" />
                   ) : (
-                    <FiArrowRight className="w-5 h-5 text-brand-primary transition-transform duration-300" />
+                    <PiArrowRight className="w-5 h-5 text-brand-primary transition-transform duration-300" />
                   )}
                 </span>
               </div>
@@ -182,9 +184,9 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
           <div className="flex-shrink-0 ml-4 hidden md:flex">
             <div className="flex flex-col items-center space-y-1">
               {isExpanded ? (
-                <FiArrowRight className="w-5 h-5 text-brand-primary rotate-90 transition-transform duration-300" />
+                <PiArrowRight className="w-5 h-5 text-brand-primary rotate-90 transition-transform duration-300" />
               ) : (
-                <FiArrowRight className="w-5 h-5 text-brand-primary transition-transform duration-300" />
+                <PiArrowRight className="w-5 h-5 text-brand-primary transition-transform duration-300" />
               )}
               <span className="text-xs text-theme-tertiary">
                 {isExpanded ? t('help_guide_close') : t('help_guide_open')}
@@ -308,7 +310,7 @@ export default function HelpPage(): JSX.Element {
       id: 'getting-started',
       title: t('help_category_0_title'),
       description: t('help_category_0_description'),
-      icon: FiPlay,
+      icon: PiPlay,
       color: 'from-green-500 to-blue-500',
       guides: [
         {
@@ -344,7 +346,7 @@ export default function HelpPage(): JSX.Element {
       id: 'search-explore',
       title: t('help_category_1_title'),
       description: t('help_category_1_description'),
-      icon: FiSearch,
+      icon: PiMagnifyingGlass,
       color: 'from-blue-500 to-purple-500',
       guides: [
         {
@@ -371,7 +373,7 @@ export default function HelpPage(): JSX.Element {
       id: 'student-mode',
       title: t('help_category_2_title'),
       description: t('help_category_2_description'),
-      icon: FiUserCheck,
+      icon: PiUserCheck,
       color: 'from-purple-500 to-pink-500',
       guides: [
         {
@@ -398,7 +400,7 @@ export default function HelpPage(): JSX.Element {
       id: 'uploads',
       title: t('help_category_3_title'),
       description: t('help_category_3_description'),
-      icon: FiUpload,
+      icon: PiUploadSimple,
       color: 'from-orange-500 to-red-500',
       guides: [
         {
@@ -425,7 +427,7 @@ export default function HelpPage(): JSX.Element {
       id: 'favorites',
       title: t('help_category_4_title'),
       description: t('help_category_4_description'),
-      icon: FiHeart,
+      icon: PiHeart,
       color: 'from-pink-500 to-red-500',
       guides: [
         {
@@ -452,7 +454,7 @@ export default function HelpPage(): JSX.Element {
       id: 'learning-system',
       title: t('help_category_5_title'),
       description: t('help_category_5_description'),
-      icon: FiTarget,
+      icon: PiTarget,
       color: 'from-green-500 to-teal-500',
       guides: [
         {
@@ -479,7 +481,7 @@ export default function HelpPage(): JSX.Element {
       id: 'annotations',
       title: t('help_category_6_title'),
       description: t('help_category_6_description'),
-      icon: FiBookOpen,
+      icon: PiBookOpen,
       color: 'from-indigo-500 to-purple-500',
       guides: [
         {
@@ -506,7 +508,7 @@ export default function HelpPage(): JSX.Element {
       id: 'newsletter',
       title: t('help_category_7_title'),
       description: t('help_category_7_description'),
-      icon: FiMail,
+      icon: PiEnvelopeSimple,
       color: 'from-teal-500 to-green-500',
       guides: [
         {
@@ -524,7 +526,7 @@ export default function HelpPage(): JSX.Element {
       id: 'moderation',
       title: t('help_category_8_title'),
       description: t('help_category_8_description'),
-      icon: FiFlag,
+      icon: PiFlag,
       color: 'from-red-500 to-pink-500',
       guides: [
         {
@@ -595,7 +597,7 @@ export default function HelpPage(): JSX.Element {
                           {category.guides.length}{' '}
                           {t('help_jsx_span_children_0__guias')}
                         </span>
-                        <FiArrowRight className="w-4 h-4 ml-2" />
+                        <PiArrowRight className="w-4 h-4 ml-2" />
                       </div>
                     </div>
                   ))}
@@ -620,7 +622,7 @@ export default function HelpPage(): JSX.Element {
                   onClick={() => setSelectedCategory(null)}
                   className="inline-flex items-center text-brand-primary hover:text-brand-primary/80 mb-4 transition-colors"
                 >
-                  <FiArrowRight className="w-4 h-4 mr-2 rotate-180" />
+                  <PiArrowRight className="w-4 h-4 mr-2 rotate-180" />
                   {t('help_jsx_button_children_0__voltar')}
                 </button>
                 <h3 className="text-2xl font-bold classical-title text-theme-primary mb-2">
@@ -658,7 +660,7 @@ export default function HelpPage(): JSX.Element {
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
-                  <FiHelpCircle className="w-5 h-5 text-brand-primary mr-2" />
+                  <PiQuestion className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
                     {t('help_jsx_span_children_0__tutoriais_guias')}
                   </span>
@@ -700,7 +702,7 @@ export default function HelpPage(): JSX.Element {
                       href="/faq"
                       className="flex items-center justify-center space-x-3 p-4 bg-gradient-to-r from-accent-blue/10 to-accent-purple/10 border border-accent-blue/20 rounded-lg hover:border-accent-blue/40 transition-all"
                     >
-                      <FiHelpCircle className="w-5 h-5 text-accent-blue" />
+                      <PiQuestion className="w-5 h-5 text-accent-blue" />
                       <span className="text-theme-primary font-medium">
                         {t('help_jsx_link_children_0__perguntas_frequentes')}
                       </span>
@@ -710,7 +712,7 @@ export default function HelpPage(): JSX.Element {
                       href="/contact"
                       className="flex items-center justify-center space-x-3 p-4 bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/20 rounded-lg hover:border-accent-green/40 transition-all"
                     >
-                      <FiMessageCircle className="w-5 h-5 text-accent-green" />
+                      <PiChatCircle className="w-5 h-5 text-accent-green" />
                       <span className="text-theme-primary font-medium">
                         {t('help_jsx_link_children_0__fale_conosco')}
                       </span>
@@ -720,7 +722,7 @@ export default function HelpPage(): JSX.Element {
                       href="/support"
                       className="flex items-center justify-center space-x-3 p-4 bg-gradient-to-r from-accent-red/10 to-accent-amber/10 border border-accent-red/20 rounded-lg hover:border-accent-red/40 transition-all"
                     >
-                      <FiUser className="w-5 h-5 text-accent-red" />
+                      <PiUser className="w-5 h-5 text-accent-red" />
                       <span className="text-theme-primary font-medium">
                         {t('help_jsx_link_children_0__suporte_técnico')}
                       </span>
@@ -747,7 +749,7 @@ export default function HelpPage(): JSX.Element {
               className="classical-card p-12 text-center max-w-4xl mx-auto"
             >
               <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
-                <FiMessageCircle className="w-10 h-10 text-theme-primary" />
+                <PiChatCircle className="w-10 h-10 text-theme-primary" />
               </div>
 
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">
@@ -763,7 +765,7 @@ export default function HelpPage(): JSX.Element {
                   href="/contact"
                   className="btn-classical-primary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
                 >
-                  <FiMessageCircle className="w-5 h-5" />
+                  <PiChatCircle className="w-5 h-5" />
                   <span>{t('help_jsx_link_children_0__fale_conosco_1')}</span>
                 </Link>
 
@@ -771,7 +773,7 @@ export default function HelpPage(): JSX.Element {
                   href="/support"
                   className="btn-classical-secondary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
                 >
-                  <FiUser className="w-5 h-5" />
+                  <PiUser className="w-5 h-5" />
                   <span>
                     {t('help_jsx_link_children_0__suporte_técnico_1')}
                   </span>
@@ -787,7 +789,7 @@ export default function HelpPage(): JSX.Element {
         className="top-16 left-16 text-6xl text-brand-primary/5"
         delay={0}
       >
-        <GiMusicalNotes />
+        <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
         className="bottom-16 right-16 text-5xl text-accent-purple/5"
@@ -799,13 +801,13 @@ export default function HelpPage(): JSX.Element {
         className="top-1/3 right-24 text-4xl text-accent-blue/5"
         delay={1}
       >
-        <FiBook />
+        <PiBook />
       </FloatingElement>
       <FloatingElement
         className="bottom-1/3 left-24 text-4xl text-brand-secondary/5"
         delay={3}
       >
-        <GiScrollQuill />
+        <PiScroll />
       </FloatingElement>
     </PageContainer>
   );

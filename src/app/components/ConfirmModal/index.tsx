@@ -5,13 +5,13 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatedCard, AnimatedItem } from '../animation/AnimatedComponents';
 import {
-  FiAlertTriangle,
-  FiTrash2,
-  FiCheck,
-  FiInfo,
-  FiHelpCircle,
-  FiLoader,
-} from 'react-icons/fi';
+  PiCheck,
+  PiInfo,
+  PiQuestion,
+  PiSpinnerGap,
+  PiTrash,
+  PiWarning,
+} from 'react-icons/pi';
 import Button from '../Common/Button';
 
 export interface ConfirmModalProps {
@@ -29,7 +29,7 @@ export interface ConfirmModalProps {
 
 const TYPE_CONFIG = {
   danger: {
-    icon: FiTrash2,
+    icon: PiTrash,
     color: 'text-accent-red',
     bgColor: 'bg-accent-red/10',
     borderColor: 'border-accent-red/30',
@@ -37,7 +37,7 @@ const TYPE_CONFIG = {
     defaultConfirmText: 'Deletar',
   },
   warning: {
-    icon: FiAlertTriangle,
+    icon: PiWarning,
     color: 'text-accent-amber',
     bgColor: 'bg-accent-amber/10',
     borderColor: 'border-accent-amber/30',
@@ -45,7 +45,7 @@ const TYPE_CONFIG = {
     defaultConfirmText: 'Continuar',
   },
   info: {
-    icon: FiInfo,
+    icon: PiInfo,
     color: 'text-accent-blue',
     bgColor: 'bg-accent-blue/10',
     borderColor: 'border-accent-blue/30',
@@ -53,7 +53,7 @@ const TYPE_CONFIG = {
     defaultConfirmText: 'OK',
   },
   question: {
-    icon: FiHelpCircle,
+    icon: PiQuestion,
     color: 'text-brand-primary',
     bgColor: 'bg-brand-primary/10',
     borderColor: 'border-brand-primary/30',
@@ -165,11 +165,11 @@ export default function ConfirmModal({
               disabled={isLoadingState}
               leftIcon={
                 isLoadingState ? (
-                  <FiLoader className="animate-spin" />
+                  <PiSpinnerGap className="animate-spin" />
                 ) : type === 'danger' ? (
-                  <FiTrash2 />
+                  <PiTrash />
                 ) : type === 'question' ? (
-                  <FiCheck />
+                  <PiCheck />
                 ) : undefined
               }
             >

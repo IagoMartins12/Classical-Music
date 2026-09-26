@@ -3,7 +3,7 @@
 
 import Image from '@/app/components/SmartImage';
 import { useState } from 'react';
-import { FiX, FiExternalLink } from 'react-icons/fi';
+import { PiArrowSquareOut, PiX } from 'react-icons/pi';
 
 interface AdBannerProps {
   ad: any;
@@ -47,7 +47,7 @@ export default function AdBanner({
         className="absolute top-2 right-2 w-6 h-6 bg-white/20 text-white rounded-full flex items-center justify-center hover:bg-white/30 transition-colors z-10"
         title="Fechar"
       >
-        <FiX className="w-3 h-3" />
+        <PiX className="w-3 h-3" />
       </button>
 
       {/* Banner Content */}
@@ -84,7 +84,7 @@ export default function AdBanner({
           )}
 
           {ad.isExternal && (
-            <FiExternalLink className="w-4 h-4 text-white/80" />
+            <PiArrowSquareOut className="w-4 h-4 text-white/80" />
           )}
         </div>
       </div>

@@ -5,17 +5,17 @@ import React, { useState, useEffect } from 'react';
 // Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
 // objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
 import type { User } from '@/app/hooks/userStore';
-import {
-  FiMail,
-  FiLock,
-  FiTrash2,
-  FiAlertTriangle,
-  FiUser,
-  FiInfo,
-  FiCheck,
-  FiShield,
-} from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
+import {
+  PiCheck,
+  PiEnvelopeSimple,
+  PiInfo,
+  PiLock,
+  PiShield,
+  PiTrash,
+  PiUser,
+  PiWarning,
+} from 'react-icons/pi';
 
 import { toast } from 'react-hot-toast';
 import Input from '../../Common/Inputs';
@@ -355,7 +355,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={() => setIsChangingEmail(true)}
-                  leftIcon={<FiMail />}
+                  leftIcon={<PiEnvelopeSimple />}
                 >
                   {t('account_change_email')}
                 </Button>
@@ -368,12 +368,12 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   <Input
                     value={user.email || ''}
                     disabled
-                    leftIcon={<FiMail className="w-4 h-4" />}
+                    leftIcon={<PiEnvelopeSimple className="w-4 h-4" />}
                     className="flex-1"
                   />
                   {user.emailVerified && (
                     <div className="flex items-center space-x-1 text-accent-green text-sm">
-                      <FiCheck className="w-4 h-4" />
+                      <PiCheck className="w-4 h-4" />
                       <span>{t('account_verified')}</span>
                     </div>
                   )}
@@ -383,7 +383,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 {!canChangeEmail && !loginMethod.isLoading && (
                   <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
                     <div className="flex items-start">
-                      <FiShield className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
+                      <PiShield className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
                       <div>
                         <h4 className="font-medium text-accent-blue mb-1">
                           {t('account_social_protected')}
@@ -402,7 +402,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               <div className="classical-card-2 p-4 space-y-4">
                 <div className="bg-accent-amber bg-opacity-10 border border-red-400 rounded-lg p-4">
                   <div className="flex items-start">
-                    <FiAlertTriangle className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+                    <PiWarning className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
                     <div>
                       <h4 className="font-medium text-accent-amber mb-1">
                         {t('account_email_change_warning')}
@@ -428,7 +428,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                       newEmail: e.target.value,
                     }))
                   }
-                  leftIcon={<FiMail className="w-4 h-4" />}
+                  leftIcon={<PiEnvelopeSimple className="w-4 h-4" />}
                   placeholder={t('account_new_email_placeholder')}
                   error={
                     emailData.newEmail && !validateEmail(emailData.newEmail)
@@ -447,7 +447,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                       currentPassword: e.target.value,
                     }))
                   }
-                  leftIcon={<FiLock className="w-4 h-4" />}
+                  leftIcon={<PiLock className="w-4 h-4" />}
                   placeholder={t('account_current_password_placeholder')}
                 />
 
@@ -499,7 +499,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               variant="outline"
               size="sm"
               onClick={() => setIsChangingPassword(true)}
-              leftIcon={<FiLock />}
+              leftIcon={<PiLock />}
               disabled={
                 !loginMethod.hasPassword &&
                 loginMethod.hasSocialLogin &&
@@ -520,7 +520,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           !loginMethod.isLoading && (
             <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4 mb-4">
               <div className="flex items-start">
-                <FiShield className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
+                <PiShield className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
                 <div>
                   <h4 className="font-medium text-accent-blue mb-1">
                     {t('account_social_only')}
@@ -545,7 +545,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           !loginMethod.isLoading && (
             <div className="bg-accent-amber bg-opacity-10 border border-accent-amber rounded-lg p-4 mb-4">
               <div className="flex items-start">
-                <FiInfo className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+                <PiInfo className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
                 <div>
                   <h4 className="font-medium text-accent-amber mb-1">
                     {t('account_improve_security')}
@@ -572,7 +572,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                     currentPassword: e.target.value,
                   }))
                 }
-                leftIcon={<FiLock className="w-4 h-4" />}
+                leftIcon={<PiLock className="w-4 h-4" />}
                 placeholder="Digite sua senha atual"
               />
             )}
@@ -592,7 +592,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                     newPassword: e.target.value,
                   }))
                 }
-                leftIcon={<FiLock className="w-4 h-4" />}
+                leftIcon={<PiLock className="w-4 h-4" />}
                 placeholder={
                   loginMethod.hasPassword
                     ? t('account_new_password_placeholder')
@@ -649,7 +649,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   confirmPassword: e.target.value,
                 }))
               }
-              leftIcon={<FiLock className="w-4 h-4" />}
+              leftIcon={<PiLock className="w-4 h-4" />}
               placeholder={
                 loginMethod.hasPassword
                   ? t('account_confirm_new_password_placeholder')
@@ -712,7 +712,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               variant="outline"
               size="sm"
               onClick={() => setIsChangingUserType(true)}
-              leftIcon={<FiUser />}
+              leftIcon={<PiUser />}
             >
               {t('account_change_type')}
             </Button>
@@ -731,7 +731,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 </p>
               </div>
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
-                <FiUser className="w-6 h-6 text-theme-primary" />
+                <PiUser className="w-6 h-6 text-theme-primary" />
               </div>
             </div>
           </div>
@@ -739,7 +739,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           <div className="classical-card-2 p-4 space-y-4">
             <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
               <div className="flex items-start">
-                <FiInfo className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
+                <PiInfo className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
                 <div>
                   <h4 className="font-medium text-accent-blue mb-2">
                     {t('account_choose_type')}
@@ -823,7 +823,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       {/* Danger Zone */}
       <div className="border-t border-accent-red pt-8">
         <div className="flex items-center space-x-3 mb-4">
-          <FiAlertTriangle className="w-5 h-5 text-accent-red" />
+          <PiWarning className="w-5 h-5 text-accent-red" />
           <h3 className="text-lg font-semibold text-accent-red">
             {t('account_danger_zone')}
           </h3>
@@ -844,7 +844,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               variant="delete"
               size="sm"
               onClick={handleOpenDeleteModal}
-              leftIcon={<FiTrash2 />}
+              leftIcon={<PiTrash />}
               className="truncate py-3 px-4"
             >
               {t('account_delete_button')}

@@ -1,26 +1,23 @@
 'use client';
 
 import React from 'react';
+import { GiGrandPiano, GiMusicalScore } from 'react-icons/gi';
 import {
-  FiHeart,
-  FiUsers,
-  FiBookOpen,
-  FiTarget,
-  FiStar,
-  FiAward,
-  FiGlobe,
-  FiHeadphones,
-  FiUpload,
-  FiEdit3,
-} from 'react-icons/fi';
-import {
-  GiMusicalNotes,
-  GiGrandPiano,
-  GiScrollQuill,
-  GiMetronome,
-  GiMusicalScore,
-  GiTeacher,
-} from 'react-icons/gi';
+  PiBookOpen,
+  PiChalkboardTeacher,
+  PiGlobe,
+  PiHeadphones,
+  PiHeart,
+  PiMedal,
+  PiMetronome,
+  PiMusicNotes,
+  PiPencilLine,
+  PiScroll,
+  PiStar,
+  PiTarget,
+  PiUploadSimple,
+  PiUsers,
+} from 'react-icons/pi';
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Link from '@/app/components/LocalizedLink';
 import {
@@ -38,7 +35,7 @@ export default function AboutPage() {
   const { t, language } = useTranslation({ sections: ['pages/about-us'] });
   const features = [
     {
-      icon: GiMusicalNotes,
+      icon: PiMusicNotes,
       title: t('about_feature_0_title'),
       description: t('about_feature_0_description'),
     },
@@ -48,22 +45,22 @@ export default function AboutPage() {
       description: t('about_feature_1_description'),
     },
     {
-      icon: GiTeacher,
+      icon: PiChalkboardTeacher,
       title: t('about_feature_2_title'),
       description: t('about_feature_2_description'),
     },
     {
-      icon: FiEdit3,
+      icon: PiPencilLine,
       title: t('about_feature_3_title'),
       description: t('about_feature_3_description'),
     },
     {
-      icon: FiTarget,
+      icon: PiTarget,
       title: t('about_feature_4_title'),
       description: t('about_feature_4_description'),
     },
     {
-      icon: FiUpload,
+      icon: PiUploadSimple,
       title: t('about_feature_5_title'),
       description: t('about_feature_5_description'),
     },
@@ -71,17 +68,17 @@ export default function AboutPage() {
 
   const values = [
     {
-      icon: FiHeart,
+      icon: PiHeart,
       title: t('about_value_0_title'),
       description: t('about_value_0_description'),
     },
     {
-      icon: FiGlobe,
+      icon: PiGlobe,
       title: t('about_value_1_title'),
       description: t('about_value_1_description'),
     },
     {
-      icon: FiStar,
+      icon: PiStar,
       title: t('about_value_2_title'),
       description: t('about_value_2_description'),
     },
@@ -126,7 +123,7 @@ export default function AboutPage() {
                     href="/composers"
                     className="btn-classical-secondary flex items-center justify-center space-x-2 px-8 py-4 text-lg"
                   >
-                    <FiBookOpen className="w-5 h-5" />
+                    <PiBookOpen className="w-5 h-5" />
                     <span>{t('about_hero_explore_btn')}</span>
                   </Link>
                 </div>
@@ -145,7 +142,7 @@ export default function AboutPage() {
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-8">
                 <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 border border-accent-blue/30 rounded-full">
-                  <FiTarget className="w-4 h-4 text-accent-blue mr-2" />
+                  <PiTarget className="w-4 h-4 text-accent-blue mr-2" />
                   <span className="text-accent-blue font-medium text-sm">
                     {t('about_mission_badge')}
                   </span>
@@ -169,7 +166,7 @@ export default function AboutPage() {
                     className="flex items-start space-x-4 p-6 bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 border border-brand-primary/20 rounded-2xl"
                   >
                     <div className="w-12 h-12 bg-brand-gradient rounded-xl flex items-center justify-center flex-shrink-0">
-                      <FiHeart className="w-6 h-6 text-theme-primary" />
+                      <PiHeart className="w-6 h-6 text-theme-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-theme-primary classical-title mb-2">
@@ -253,7 +250,7 @@ export default function AboutPage() {
           <div className="section-wrap">
             <div className="text-center mb-16">
               <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-purple/20 to-accent-blue/20 border border-accent-purple/30 rounded-full mb-6">
-                <FiStar className="w-4 h-4 text-accent-purple mr-2" />
+                <PiStar className="w-4 h-4 text-accent-purple mr-2" />
                 <span className="text-accent-purple font-medium text-sm">
                   {t('about_features_badge')}
                 </span>
@@ -289,7 +286,7 @@ export default function AboutPage() {
           <div className="section-wrap">
             <div className="text-center mb-16">
               <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-6">
-                <FiHeart className="w-4 h-4 text-brand-primary mr-2" />
+                <PiHeart className="w-4 h-4 text-brand-primary mr-2" />
                 <span className="text-brand-primary font-medium text-sm">
                   {t('about_values_badge')}
                 </span>
@@ -326,7 +323,7 @@ export default function AboutPage() {
               className="classical-card p-12 text-center max-w-4xl mx-auto"
             >
               <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
-                <GiMetronome className="w-10 h-10 text-theme-primary" />
+                <PiMetronome className="w-10 h-10 text-theme-primary" />
               </div>
 
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">
@@ -344,22 +341,22 @@ export default function AboutPage() {
                   href="/"
                   className="btn-classical-secondary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
                 >
-                  <FiHeadphones className="w-5 h-5" />
+                  <PiHeadphones className="w-5 h-5" />
                   <span>{t('about_cta_explore_btn')}</span>
                 </Link>
               </div>
 
               <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
                 <div className="flex items-center space-x-2 text-theme-tertiary">
-                  <FiUsers className="w-4 h-4" />
+                  <PiUsers className="w-4 h-4" />
                   <span className="text-sm">{t('about_cta_stat_1')}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-theme-tertiary">
-                  <FiStar className="w-4 h-4" />
+                  <PiStar className="w-4 h-4" />
                   <span className="text-sm">{t('about_cta_stat_2')}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-theme-tertiary">
-                  <FiAward className="w-4 h-4" />
+                  <PiMedal className="w-4 h-4" />
                   <span className="text-sm">{t('about_cta_stat_3')}</span>
                 </div>
               </div>
@@ -373,7 +370,7 @@ export default function AboutPage() {
         className="top-16 left-16 text-6xl text-brand-primary/5"
         delay={0}
       >
-        <GiMusicalNotes />
+        <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
         className="bottom-16 right-16 text-5xl text-accent-purple/5"
@@ -385,13 +382,13 @@ export default function AboutPage() {
         className="top-1/3 right-24 text-4xl text-accent-blue/5"
         delay={1}
       >
-        <GiScrollQuill />
+        <PiScroll />
       </FloatingElement>
       <FloatingElement
         className="bottom-1/3 left-24 text-4xl text-brand-secondary/5"
         delay={3}
       >
-        <GiMetronome />
+        <PiMetronome />
       </FloatingElement>
     </PageContainer>
   );

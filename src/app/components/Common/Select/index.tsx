@@ -2,7 +2,7 @@
 'use client';
 
 import React, { forwardRef, useId, useMemo } from 'react';
-import { FiAlertCircle, FiChevronDown } from 'react-icons/fi';
+import { PiCaretDown, PiWarningCircle } from 'react-icons/pi';
 
 interface SelectOption {
   value: string;
@@ -144,7 +144,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
           {/* Seta customizada */}
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-            <FiChevronDown
+            <PiCaretDown
               className={`w-4 h-4 transition-colors duration-200 ${
                 props.disabled ? 'text-theme-tertiary' : 'text-theme-secondary'
               }`}
@@ -155,7 +155,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {/* Mensagem de erro */}
         {error && (
           <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1 gap-2">
-            <FiAlertCircle className="w-4 h-4" />
+            <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>
           </p>
         )}

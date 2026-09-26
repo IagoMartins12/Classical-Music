@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
+import { PiCaretLeft, PiCaretRight } from 'react-icons/pi';
 import WeekView from '../WeekView';
 import MonthView from '../MonthView';
 import DayView from '../DayView';
@@ -182,7 +182,7 @@ export default function CustomCalendar({
                 onClick={goToPrevious}
                 className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
               >
-                <BiChevronLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiCaretLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </button>
 
               <div className="text-center min-w-48">
@@ -195,7 +195,7 @@ export default function CustomCalendar({
                 onClick={goToNext}
                 className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
               >
-                <BiChevronRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiCaretRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </button>
             </div>
 

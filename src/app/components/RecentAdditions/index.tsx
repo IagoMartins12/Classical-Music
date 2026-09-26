@@ -1,7 +1,7 @@
 // app/components/RecentAdditions/RecentAdditions.tsx
 'use client';
 
-import { FiPlus } from 'react-icons/fi';
+import { PiPlus } from 'react-icons/pi';
 
 import SectionTitle from '../Utils/SectionTitle';
 import RecentComposerCard from './RecentComposerCard';
@@ -35,7 +35,7 @@ const RecentAdditions: React.FC<RecentAdditionsProps> = ({
         subtitle={t('recent_additions_subtitle')}
         linkText={t('recent_additions_link_text')}
         linkHref="/composers?sort=recent"
-        icon={<FiPlus className="w-6 h-6" />}
+        icon={<PiPlus className="w-6 h-6" />}
         accent="green"
       />
 

@@ -4,17 +4,17 @@
 import { useState, useEffect, useMemo } from 'react';
 import { z } from 'zod';
 import {
-  FaUpload,
-  FaTimes,
-  FaMusic,
-  FaSave,
-  FaEye,
-  FaArrowRight,
-  FaArrowLeft,
-  FaClock,
-  FaPlus,
-  FaTrash,
-} from 'react-icons/fa';
+  PiArrowLeft,
+  PiArrowRight,
+  PiClock,
+  PiEye,
+  PiFloppyDisk,
+  PiMusicNotes,
+  PiPlus,
+  PiTrash,
+  PiUploadSimple,
+  PiX,
+} from 'react-icons/pi';
 import { ArticleType, ArticleStatus } from '@/app/types/blog';
 import { findComposerById, getWorkById } from '@/app/requests/catalog-search';
 import {
@@ -32,7 +32,6 @@ import ArticlePreviewModal from '../ArticlePreviewModal';
 import FeaturedArticlesManager from '../FeaturedArticlesManager';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
-import { FiUpload } from 'react-icons/fi';
 
 const articleSchema = z.object({
   title: z.string().min(3, 'Título deve ter pelo menos 3 caracteres'),
@@ -705,7 +704,7 @@ export function ArticleForm({
                   onClick={handleRemoveCover}
                   className="absolute top-2 right-2 p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors shadow-theme-medium"
                 >
-                  <FaTimes className="w-4 h-4" />
+                  <PiX className="w-4 h-4" />
                 </button>
               </div>
             ) : (
@@ -722,7 +721,7 @@ export function ArticleForm({
                   htmlFor="cover-upload"
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <FaUpload className="w-12 h-12 text-theme-tertiary mb-4" />
+                  <PiUploadSimple className="w-12 h-12 text-theme-tertiary mb-4" />
                   <span className="text-sm text-theme-secondary">
                     {uploadingCover
                       ? 'Enviando...'
@@ -786,7 +785,7 @@ export function ArticleForm({
               Tempo de Leitura
             </label>
             <div className="flex items-center gap-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-              <FaClock className="text-blue-600 w-5 h-5 flex-shrink-0" />
+              <PiClock className="text-blue-600 w-5 h-5 flex-shrink-0" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
                   Tempo estimado automaticamente:{' '}
@@ -907,7 +906,7 @@ export function ArticleForm({
           {/* 🔄 MÚSICA DE FUNDO - ATUALIZADA COM UPLOAD */}
           <div className="classical-card-simple p-4">
             <h3 className="text-sm font-medium text-theme-primary mb-4 flex items-center">
-              <FaMusic className="w-4 h-4 mr-2 text-brand-primary" />
+              <PiMusicNotes className="w-4 h-4 mr-2 text-brand-primary" />
               Música de Fundo
             </h3>
 
@@ -957,7 +956,7 @@ export function ArticleForm({
 
                       {formData.backgroundMusic?.url && !uploadingAudio ? (
                         <div className="space-y-3">
-                          <FaMusic className="w-12 h-12 text-green-600 mx-auto" />
+                          <PiMusicNotes className="w-12 h-12 text-green-600 mx-auto" />
                           <p className="text-sm text-green-700 font-medium">
                             ✓ Áudio carregado com sucesso
                           </p>
@@ -978,7 +977,7 @@ export function ArticleForm({
                           htmlFor="background-audio-upload"
                           className="cursor-pointer"
                         >
-                          <FiUpload className="w-12 h-12 text-theme-tertiary mx-auto mb-2" />
+                          <PiUploadSimple className="w-12 h-12 text-theme-tertiary mx-auto mb-2" />
                           <span className="text-sm text-theme-secondary">
                             {uploadingAudio
                               ? 'Enviando...'
@@ -1188,7 +1187,7 @@ export function ArticleForm({
                       onClick={() => handleRemoveComposer(composer.id)}
                       className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                     >
-                      <FaTrash className="w-4 h-4" />
+                      <PiTrash className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
@@ -1213,7 +1212,7 @@ export function ArticleForm({
                 disabled={!currentComposer}
                 className="btn-classical-primary flex items-center space-x-2"
               >
-                <FaPlus className="w-4 h-4" />
+                <PiPlus className="w-4 h-4" />
                 <span>Adicionar</span>
               </button>
             </div>
@@ -1246,7 +1245,7 @@ export function ArticleForm({
                       onClick={() => handleRemoveWork(work.id)}
                       className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                     >
-                      <FaTrash className="w-4 h-4" />
+                      <PiTrash className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
@@ -1285,7 +1284,7 @@ export function ArticleForm({
                   disabled={!currentWork}
                   className="btn-classical-primary flex items-center space-x-2"
                 >
-                  <FaPlus className="w-4 h-4" />
+                  <PiPlus className="w-4 h-4" />
                   <span>Adicionar</span>
                 </button>
               </div>
@@ -1356,7 +1355,7 @@ export function ArticleForm({
               onClick={goToPreviousTab}
               className="btn-classical-secondary flex items-center space-x-2"
             >
-              <FaArrowLeft className="w-4 h-4" />
+              <PiArrowLeft className="w-4 h-4" />
               <span>Voltar</span>
             </button>
           )}
@@ -1368,7 +1367,7 @@ export function ArticleForm({
             onClick={() => setShowPreview(true)}
             className="btn-classical-secondary flex items-center space-x-2"
           >
-            <FaEye className="w-4 h-4" />
+            <PiEye className="w-4 h-4" />
             <span>Preview</span>
           </button>
 
@@ -1379,7 +1378,7 @@ export function ArticleForm({
               className="btn-classical-primary flex items-center space-x-2"
             >
               <span>Próximo</span>
-              <FaArrowRight className="w-4 h-4" />
+              <PiArrowRight className="w-4 h-4" />
             </button>
           ) : (
             <button
@@ -1387,7 +1386,7 @@ export function ArticleForm({
               disabled={isSubmitting}
               className="btn-classical-primary flex items-center space-x-2"
             >
-              <FaSave className="w-4 h-4" />
+              <PiFloppyDisk className="w-4 h-4" />
               <span>
                 {isSubmitting
                   ? 'Salvando...'

@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import {
-  FiMusic,
-  FiStar,
-  FiUser,
-  FiSearch,
-  FiX,
-  FiFileText,
-} from 'react-icons/fi';
+  PiFileText,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiStar,
+  PiUser,
+  PiX,
+} from 'react-icons/pi';
 import { AnimatedContainer } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 
@@ -29,47 +29,47 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
     if (filters) {
       return {
         all: {
-          icon: FiSearch,
+          icon: PiMagnifyingGlass,
           title: t('empty_no_results'),
           description: t('empty_no_results_description'),
           primaryAction: {
             label: t('empty_clear_filters'),
             onClick: onClearFilters,
-            icon: FiX,
+            icon: PiX,
             href: null,
           },
           showSecondaryActions: false,
         },
         composers: {
-          icon: FiSearch,
+          icon: PiMagnifyingGlass,
           title: t('empty_no_composer'),
           description: t('empty_no_composer_description'),
           primaryAction: {
             label: t('empty_clear_filters'),
             onClick: onClearFilters,
-            icon: FiX,
+            icon: PiX,
           },
           showSecondaryActions: false,
         },
         works: {
-          icon: FiSearch,
+          icon: PiMagnifyingGlass,
           title: t('empty_no_work'),
           description: t('empty_no_work_description'),
           primaryAction: {
             label: t('empty_clear_filters'),
             onClick: onClearFilters,
-            icon: FiX,
+            icon: PiX,
           },
           showSecondaryActions: false,
         },
         scores: {
-          icon: FiSearch,
+          icon: PiMagnifyingGlass,
           title: t('empty_no_score'),
           description: t('empty_no_score_description'),
           primaryAction: {
             label: t('empty_clear_filters'),
             onClick: onClearFilters,
-            icon: FiX,
+            icon: PiX,
           },
           showSecondaryActions: false,
         },
@@ -79,44 +79,44 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
     // Estados vazios sem filtros
     return {
       all: {
-        icon: FiStar,
+        icon: PiStar,
         title: t('empty_start_journey'),
         description: t('empty_start_journey_description'),
         showSecondaryActions: true,
         tip: t('empty_start_journey_tip'),
       },
       composers: {
-        icon: FiUser,
+        icon: PiUser,
         title: t('empty_no_favorite_composer'),
         description: t('empty_no_favorite_composer_description'),
         primaryAction: {
           label: t('empty_explore_composers'),
           href: '/composers',
-          icon: FiUser,
+          icon: PiUser,
         },
         showSecondaryActions: false,
         tip: t('empty_favorite_composers_tip'),
       },
       works: {
-        icon: FiMusic,
+        icon: PiMusicNotes,
         title: t('empty_no_favorite_work'),
         description: t('empty_no_favorite_work_description'),
         primaryAction: {
           label: t('empty_discover_works'),
           href: '/works',
-          icon: FiMusic,
+          icon: PiMusicNotes,
         },
         showSecondaryActions: false,
         tip: t('empty_favorite_works_tip'),
       },
       scores: {
-        icon: FiFileText,
+        icon: PiFileText,
         title: t('empty_no_favorite_score'),
         description: t('empty_no_favorite_score_description'),
         primaryAction: {
           label: t('empty_discover_works'),
           href: '/works',
-          icon: FiMusic,
+          icon: PiMusicNotes,
         },
         showSecondaryActions: false,
         tip: t('empty_favorite_scores_tip'),
@@ -191,7 +191,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
                 href="/composers"
                 className="btn-classical-primary flex items-center justify-center space-x-2 group"
               >
-                <FiUser className="w-4 h-4" />
+                <PiUser className="w-4 h-4" />
                 <span>{t('empty_see_composers')}</span>
                 <svg
                   className="w-4 h-4 transition-transform group-hover:translate-x-1"
@@ -212,7 +212,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
                 href="/works"
                 className="btn-classical-secondary flex items-center justify-center space-x-2 group"
               >
-                <FiMusic className="w-4 h-4" />
+                <PiMusicNotes className="w-4 h-4" />
                 <span>{t('empty_discover_works')}</span>
                 <svg
                   className="w-4 h-4 transition-transform group-hover:translate-x-1"
@@ -234,7 +234,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
                 href="/works"
                 className="btn-classical-primary flex items-center justify-center space-x-2 group"
               >
-                <FiFileText className="w-4 h-4" />
+                <PiFileText className="w-4 h-4" />
                 <span>{t('empty_see_scores')}</span>
                 <svg
                   className="w-4 h-4 transition-transform group-hover:translate-x-1"
@@ -258,7 +258,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
             <div className="mt-8 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
               <div className="flex items-start space-x-3">
                 <div className="w-10 h-8 md:w-6 md:h-6 rounded-lg flex items-center justify-center mt-0.5">
-                  <FiStar className="w-5 h-5text-theme-primary" />
+                  <PiStar className="w-5 h-5text-theme-primary" />
                 </div>
                 <div className="text-left">
                   <h4 className="font-semibold text-theme-primary text-sm mb-1">

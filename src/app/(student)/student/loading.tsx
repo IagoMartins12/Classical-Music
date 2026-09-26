@@ -1,19 +1,19 @@
 // app/student/loading.tsx - Loading para Dashboard do Aluno
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiUser,
-  FiCalendar,
-  FiClock,
-  FiBookOpen,
-  FiTarget,
-  FiMusic,
-  FiUserCheck,
-  FiHeart,
-  FiCheckCircle,
-  FiTrendingUp,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCheckCircle,
+  PiClock,
+  PiHeart,
+  PiMusicNotes,
+  PiTarget,
+  PiTrendUp,
+  PiUser,
+  PiUserCheck,
+} from 'react-icons/pi';
 
 export default function StudentDashboardLoading() {
   return (
@@ -38,13 +38,13 @@ export default function StudentDashboardLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiUser />
+          <PiUser />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiMusic />
+          <PiMusicNotes />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -56,7 +56,7 @@ export default function StudentDashboardLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -78,11 +78,15 @@ export default function StudentDashboardLoading() {
         {/* Stats Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {[
-            { icon: <FiBookOpen className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiCalendar className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiClock className="w-6 h-6 text-theme-inverse/20" /> },
+            { icon: <PiBookOpen className="w-6 h-6 text-theme-inverse/20" /> },
             {
-              icon: <FiTrendingUp className="w-6 h-6 text-theme-inverse/20" />,
+              icon: (
+                <PiCalendarBlank className="w-6 h-6 text-theme-inverse/20" />
+              ),
+            },
+            { icon: <PiClock className="w-6 h-6 text-theme-inverse/20" /> },
+            {
+              icon: <PiTrendUp className="w-6 h-6 text-theme-inverse/20" />,
             },
           ].map((item, index) => (
             <div
@@ -108,7 +112,7 @@ export default function StudentDashboardLoading() {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                    <FiTarget className="w-5 h-5 text-theme-inverse/20" />
+                    <PiTarget className="w-5 h-5 text-theme-inverse/20" />
                   </div>
                   <div>
                     <div className="h-5 bg-theme-primary/30 rounded w-32 mb-1"></div>
@@ -138,7 +142,7 @@ export default function StudentDashboardLoading() {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                    <FiClock className="w-5 h-5 text-theme-inverse/20" />
+                    <PiClock className="w-5 h-5 text-theme-inverse/20" />
                   </div>
                   <div>
                     <div className="h-5 bg-theme-primary/30 rounded w-32 mb-1"></div>
@@ -209,7 +213,7 @@ export default function StudentDashboardLoading() {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center">
-                    <FiMusic className="w-5 h-5 text-theme-inverse/20" />
+                    <PiMusicNotes className="w-5 h-5 text-theme-inverse/20" />
                   </div>
                   <div>
                     <div className="h-5 bg-theme-primary/30 rounded w-28 mb-1"></div>
@@ -223,7 +227,7 @@ export default function StudentDashboardLoading() {
                 {/* Current Works */}
                 <div>
                   <div className="h-4 bg-theme-primary/30 rounded w-40 mb-3 flex items-center">
-                    <FiBookOpen className="w-4 h-4 text-accent-blue/30 mr-2" />
+                    <PiBookOpen className="w-4 h-4 text-accent-blue/30 mr-2" />
                   </div>
                   <div className="space-y-2">
                     {Array.from({ length: 4 }).map((_, i) => (
@@ -239,7 +243,7 @@ export default function StudentDashboardLoading() {
                 {/* Learned Works */}
                 <div>
                   <div className="h-4 bg-theme-primary/30 rounded w-32 mb-3 flex items-center">
-                    <FiCheckCircle className="w-4 h-4 text-accent-green/30 mr-2" />
+                    <PiCheckCircle className="w-4 h-4 text-accent-green/30 mr-2" />
                   </div>
                   <div className="space-y-2">
                     {Array.from({ length: 4 }).map((_, i) => (
@@ -251,7 +255,7 @@ export default function StudentDashboardLoading() {
                           </div>
                           <div className="flex items-center space-x-1">
                             <div className="h-3 bg-accent-green/20 rounded w-8"></div>
-                            <FiHeart className="w-3 h-3 text-accent-red/30" />
+                            <PiHeart className="w-3 h-3 text-accent-red/30" />
                           </div>
                         </div>
                       </div>
@@ -268,7 +272,7 @@ export default function StudentDashboardLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-lg flex items-center justify-center">
-                  <FiCalendar className="w-4 h-4 text-theme-inverse/20" />
+                  <PiCalendarBlank className="w-4 h-4 text-theme-inverse/20" />
                 </div>
                 <div>
                   <div className="h-4 bg-theme-primary/30 rounded w-16 mb-1"></div>
@@ -297,7 +301,7 @@ export default function StudentDashboardLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-lg flex items-center justify-center">
-                  <FiClock className="w-4 h-4 text-theme-inverse/20" />
+                  <PiClock className="w-4 h-4 text-theme-inverse/20" />
                 </div>
                 <div>
                   <div className="h-4 bg-theme-primary/30 rounded w-28 mb-1"></div>
@@ -325,7 +329,7 @@ export default function StudentDashboardLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-lg flex items-center justify-center">
-                  <FiUserCheck className="w-4 h-4 text-theme-inverse/20" />
+                  <PiUserCheck className="w-4 h-4 text-theme-inverse/20" />
                 </div>
                 <div>
                   <div className="h-4 bg-theme-primary/30 rounded w-32 mb-1"></div>

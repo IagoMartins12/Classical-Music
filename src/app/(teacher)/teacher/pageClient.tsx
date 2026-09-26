@@ -6,15 +6,15 @@ import { useState, useCallback, useEffect } from 'react';
 import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import {
-  FiUsers,
-  FiCalendar,
-  FiClock,
-  FiXCircle,
-  FiEye,
-  FiChevronRight,
-  FiRefreshCw,
-  FiUserPlus,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCalendarBlank,
+  PiCaretRight,
+  PiClock,
+  PiEye,
+  PiUserPlus,
+  PiUsers,
+  PiXCircle,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -285,7 +285,7 @@ export default function TeacherPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiXCircle className="w-8 h-8 text-theme-primary" />
+              <PiXCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               Erro ao Carregar Dashboard
@@ -301,7 +301,7 @@ export default function TeacherPageClient({
                 disabled={refreshing}
                 className="btn-classical-primary flex justify-center items-center space-x-2"
               >
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
                 />
                 <span>
@@ -333,7 +333,7 @@ export default function TeacherPageClient({
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiUsers className="w-8 h-8 text-theme-primary" />
+                <PiUsers className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title m-0 mb-4">
@@ -364,7 +364,7 @@ export default function TeacherPageClient({
                   <div className="flex items-center w-full sm:w-[75%]  justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
-                        <FiUsers className="w-5 h-5 text-theme-primary" />
+                        <PiUsers className="w-5 h-5 text-theme-primary" />
                       </div>
                       <div>
                         <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -381,7 +381,7 @@ export default function TeacherPageClient({
                       className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
                     >
                       <span>{t('see_all')}</span>
-                      <FiChevronRight className="w-4 h-4" />
+                      <PiCaretRight className="w-4 h-4" />
                     </Link>
                   </div>
 
@@ -390,7 +390,7 @@ export default function TeacherPageClient({
                       onClick={() => setShowAddStudent(true)}
                       className="btn-classical-primary flex items-center space-x-2 mx-auto"
                     >
-                      <FiUserPlus className="w-4 h-4" />
+                      <PiUserPlus className="w-4 h-4" />
                       <span>{t('add_student')}</span>
                     </button>
                   </div>
@@ -422,7 +422,7 @@ export default function TeacherPageClient({
                               </div>
                             ) : (
                               <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all">
-                                <FiUsers className="w-6 h-6 text-theme-primary" />
+                                <PiUsers className="w-6 h-6 text-theme-primary" />
                               </div>
                             )}
                           </div>
@@ -452,7 +452,7 @@ export default function TeacherPageClient({
                               href={`/teacher/students/${studentRel.student.id}`}
                               className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group/btn"
                             >
-                              <FiEye className="w-4 h-4 text-theme-tertiary group-hover/btn:text-brand-primary transition-colors" />
+                              <PiEye className="w-4 h-4 text-theme-tertiary group-hover/btn:text-brand-primary transition-colors" />
                             </Link>
                           </div>
                         </div>
@@ -474,7 +474,7 @@ export default function TeacherPageClient({
                                   )}
                                 </div>
                               </div>
-                              <FiClock className="w-4 h-4 text-brand-primary" />
+                              <PiClock className="w-4 h-4 text-brand-primary" />
                             </div>
                           </div>
                         )}
@@ -485,7 +485,7 @@ export default function TeacherPageClient({
                   {activeStudents.length === 0 && (
                     <div className="text-center py-12">
                       <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <FiUsers className="w-8 h-8 text-theme-tertiary" />
+                        <PiUsers className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h3 className="text-lg font-bold text-theme-primary classical-title mb-2">
                         {t('no_students_yet')}
@@ -497,7 +497,7 @@ export default function TeacherPageClient({
                         onClick={() => setShowAddStudent(true)}
                         className="btn-classical-primary flex items-center space-x-2 mx-auto"
                       >
-                        <FiUserPlus className="w-4 h-4" />
+                        <PiUserPlus className="w-4 h-4" />
                         <span>{t('add_first_student')}</span>
                       </button>
                     </div>
@@ -512,7 +512,7 @@ export default function TeacherPageClient({
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
-                    <FiCalendar className="w-4 h-4 text-theme-primary" />
+                    <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                   </div>
                   <div>
                     <h3 className="font-bold text-theme-primary">
@@ -545,7 +545,7 @@ export default function TeacherPageClient({
                             </div>
                           </div>
                           <div className="w-6 h-6 rounded hover:bg-interactive-hover transition-colors flex items-center justify-center">
-                            <FiEye className="w-3 h-3 text-theme-tertiary" />
+                            <PiEye className="w-3 h-3 text-theme-tertiary" />
                           </div>
                         </div>
                       </div>
@@ -554,7 +554,7 @@ export default function TeacherPageClient({
 
                   {todayLessons.length === 0 && (
                     <div className="text-center py-6">
-                      <FiCalendar className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
+                      <PiCalendarBlank className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                       <p className="text-sm text-theme-tertiary">
                         {t('no_lessons_today')}
                       </p>
@@ -578,7 +578,7 @@ export default function TeacherPageClient({
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
-                    <FiClock className="w-4 h-4 text-theme-primary" />
+                    <PiClock className="w-4 h-4 text-theme-primary" />
                   </div>
                   <div>
                     <h3 className="font-bold text-theme-primary">
@@ -612,7 +612,7 @@ export default function TeacherPageClient({
                             </div>
                           </div>
                           <div className="w-6 h-6 rounded hover:bg-interactive-hover transition-colors flex items-center justify-center">
-                            <FiEye className="w-3 h-3 text-theme-tertiary" />
+                            <PiEye className="w-3 h-3 text-theme-tertiary" />
                           </div>
                         </div>
                       </div>

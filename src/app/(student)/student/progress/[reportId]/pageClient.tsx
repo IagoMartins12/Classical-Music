@@ -6,23 +6,22 @@ import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import {
-  FiArrowLeft,
-  FiRefreshCw,
-  FiTrendingUp,
-  FiTarget,
-  FiBookOpen,
-  FiClock,
-  FiAward,
-  FiBarChart2,
-  FiMusic,
-  FiUser,
-  FiAlertCircle,
-  FiMessageSquare,
-  FiSend,
-  FiEye,
-  FiCalendar,
-  FiClock as FiTime,
-} from 'react-icons/fi';
+  PiArrowLeft,
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiChartBar,
+  PiChatCenteredText,
+  PiClock,
+  PiEye,
+  PiMedal,
+  PiMusicNotes,
+  PiPaperPlaneRight,
+  PiTarget,
+  PiTrendUp,
+  PiUser,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -199,7 +198,7 @@ export default function StudentSharedReportPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiAlertCircle className="w-8 h-8 text-theme-primary" />
+              <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               Erro ao carregar relatório
@@ -213,7 +212,7 @@ export default function StudentSharedReportPageClient({
                 disabled={loading}
                 className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
               >
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                 />
                 <span>{loading ? 'Carregando...' : 'Tentar Novamente'}</span>
@@ -236,7 +235,7 @@ export default function StudentSharedReportPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center">
-            <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
             <p className="text-theme-secondary">Carregando relatório...</p>
           </div>
         </div>
@@ -257,7 +256,7 @@ export default function StudentSharedReportPageClient({
                 href="/student/progress"
                 className="w-12 h-12 rounded-xl bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
               >
-                <FiArrowLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiArrowLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </Link>
 
               <div>
@@ -279,7 +278,7 @@ export default function StudentSharedReportPageClient({
               className="btn-classical-secondary p-3"
               title="Atualizar dados"
             >
-              <FiRefreshCw
+              <PiArrowsClockwise
                 className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`}
               />
             </button>
@@ -304,7 +303,7 @@ export default function StudentSharedReportPageClient({
                   </div>
                 ) : (
                   <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                    <FiUser className="w-6 h-6 text-theme-primary" />
+                    <PiUser className="w-6 h-6 text-theme-primary" />
                   </div>
                 )}
                 <div>
@@ -337,7 +336,7 @@ export default function StudentSharedReportPageClient({
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-theme-secondary flex items-center">
-                    <FiCalendar className="w-4 h-4 mr-2" />
+                    <PiCalendarBlank className="w-4 h-4 mr-2" />
                     Criado em
                   </span>
                   <span className="text-theme-primary font-medium">
@@ -346,7 +345,7 @@ export default function StudentSharedReportPageClient({
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-theme-secondary flex items-center">
-                    <FiEye className="w-4 h-4 mr-2" />
+                    <PiEye className="w-4 h-4 mr-2" />
                     Visualizações
                   </span>
                   <span className="text-theme-primary font-medium">
@@ -356,7 +355,7 @@ export default function StudentSharedReportPageClient({
                 {reportData.metadata.expiresAt && (
                   <div className="flex items-center justify-between">
                     <span className="text-theme-secondary flex items-center">
-                      <FiTime className="w-4 h-4 mr-2" />
+                      <PiClock className="w-4 h-4 mr-2" />
                       Expira em
                     </span>
                     <span className="text-theme-primary font-medium">
@@ -379,7 +378,7 @@ export default function StudentSharedReportPageClient({
               className="classical-card p-6 border-l-4 border-brand-primary mb-8"
             >
               <h3 className="text-lg font-bold text-theme-primary mb-3 flex items-center">
-                <FiMessageSquare className="w-5 h-5 mr-2" />
+                <PiChatCenteredText className="w-5 h-5 mr-2" />
                 Mensagem do Professor
               </h3>
               <div className="text-theme-secondary whitespace-pre-wrap">
@@ -406,7 +405,7 @@ export default function StudentSharedReportPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
-                <FiBarChart2 className="w-6 h-6 mr-3 text-brand-primary" />
+                <PiChartBar className="w-6 h-6 mr-3 text-brand-primary" />
                 Visão Geral
               </h2>
 
@@ -416,7 +415,7 @@ export default function StudentSharedReportPageClient({
                   className="classical-card p-6 text-center"
                 >
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <FiBookOpen className="w-6 h-6 text-theme-primary" />
+                    <PiBookOpen className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary mb-1">
                     {progressData.overview.completedLessons}
@@ -434,7 +433,7 @@ export default function StudentSharedReportPageClient({
                   className="classical-card p-6 text-center"
                 >
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <FiClock className="w-6 h-6 text-theme-primary" />
+                    <PiClock className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary mb-1">
                     {progressData.overview.totalStudyHours}h
@@ -452,7 +451,7 @@ export default function StudentSharedReportPageClient({
                   className="classical-card p-6 text-center"
                 >
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <FiMusic className="w-6 h-6 text-theme-primary" />
+                    <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary mb-1">
                     {progressData.overview.piecesStudied}
@@ -470,7 +469,7 @@ export default function StudentSharedReportPageClient({
                   className="classical-card p-6 text-center"
                 >
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-orange to-accent-red rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <FiAward className="w-6 h-6 text-theme-primary" />
+                    <PiMedal className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary mb-1">
                     {progressData.overview.currentStreak}
@@ -492,7 +491,7 @@ export default function StudentSharedReportPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
-                <FiTrendingUp className="w-6 h-6 mr-3 text-brand-primary" />
+                <PiTrendUp className="w-6 h-6 mr-3 text-brand-primary" />
                 Evolução do Progresso
               </h2>
 
@@ -526,7 +525,7 @@ export default function StudentSharedReportPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
-                <FiTarget className="w-6 h-6 mr-3 text-brand-primary" />
+                <PiTarget className="w-6 h-6 mr-3 text-brand-primary" />
                 Avaliação de Habilidades
               </h2>
 
@@ -589,7 +588,7 @@ export default function StudentSharedReportPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard hover="lift" className="classical-card p-6 mb-8">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center">
-                <FiMessageSquare className="w-6 h-6 mr-3 text-brand-primary" />
+                <PiChatCenteredText className="w-6 h-6 mr-3 text-brand-primary" />
                 Comentários ({reportData.comments.length})
               </h3>
 
@@ -622,9 +621,9 @@ export default function StudentSharedReportPageClient({
                     className="btn-classical-primary flex items-center space-x-2"
                   >
                     {addingComment ? (
-                      <FiRefreshCw className="w-4 h-4 animate-spin" />
+                      <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                     ) : (
-                      <FiSend className="w-4 h-4" />
+                      <PiPaperPlaneRight className="w-4 h-4" />
                     )}
                     <span>{addingComment ? 'Enviando...' : 'Enviar'}</span>
                   </button>
@@ -640,7 +639,7 @@ export default function StudentSharedReportPageClient({
                   >
                     <div className="flex items-start space-x-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center flex-shrink-0">
-                        <FiUser className="w-4 h-4 text-theme-primary" />
+                        <PiUser className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-2">

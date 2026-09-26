@@ -3,15 +3,15 @@
 
 import Link from 'next/link';
 import {
-  FiMail,
-  FiUserCheck,
-  FiHome,
-  FiRefreshCw,
-  FiAlertTriangle,
-  FiMessageCircle,
-  FiChevronRight,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiArrowsClockwise,
+  PiCaretRight,
+  PiChatCircle,
+  PiEnvelopeSimple,
+  PiHouse,
+  PiMusicNotes,
+  PiUserCheck,
+  PiWarning,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -50,7 +50,7 @@ export default function TeacherVerificationRequired({
             <AnimatedItem direction="scale" springType="bouncy">
               <div className="relative mb-8">
                 <div className="w-32 h-32 mx-auto bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-full flex items-center justify-center classical-card border-2 border-accent-blue/30 shadow-theme-glow">
-                  <FiUserCheck className="w-16 h-16 text-accent-blue" />
+                  <PiUserCheck className="w-16 h-16 text-accent-blue" />
                 </div>
               </div>
             </AnimatedItem>
@@ -76,7 +76,7 @@ export default function TeacherVerificationRequired({
             >
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <FiMail className="w-6 h-6 text-accent-blue" />
+                  <PiEnvelopeSimple className="w-6 h-6 text-accent-blue" />
                 </div>
                 <div className="text-left flex-1">
                   <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
@@ -110,7 +110,7 @@ export default function TeacherVerificationRequired({
                   size="lg"
                   isLoading={isRefreshing}
                   leftIcon={
-                    <FiRefreshCw
+                    <PiArrowsClockwise
                       className={`w-5 h-5 ${
                         isRefreshing ? 'animate-spin' : 'group-hover:rotate-180'
                       } transition-transform duration-500`}
@@ -127,7 +127,7 @@ export default function TeacherVerificationRequired({
                   <Button
                     variant="secondary"
                     size="lg"
-                    leftIcon={<FiMessageCircle className="w-5 h-5" />}
+                    leftIcon={<PiChatCircle className="w-5 h-5" />}
                     className="px-8 py-4"
                   >
                     Entrar em Contato
@@ -141,7 +141,7 @@ export default function TeacherVerificationRequired({
                     variant="secondary"
                     size="lg"
                     leftIcon={
-                      <FiHome className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                      <PiHouse className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                     }
                     className="px-8 py-4"
                   >
@@ -157,7 +157,7 @@ export default function TeacherVerificationRequired({
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
-                    <FiMail className="w-5 h-5 text-accent-blue" />
+                    <PiEnvelopeSimple className="w-5 h-5 text-accent-blue" />
                   </div>
                   <h3 className="text-xl font-bold text-theme-primary classical-title">
                     Status Atual
@@ -196,7 +196,7 @@ export default function TeacherVerificationRequired({
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                    <FiUserCheck className="w-5 h-5 text-accent-green" />
+                    <PiUserCheck className="w-5 h-5 text-accent-green" />
                   </div>
                   <h3 className="text-xl font-bold text-theme-primary classical-title">
                     Após a Aprovação
@@ -239,7 +239,7 @@ export default function TeacherVerificationRequired({
             >
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                  <FiChevronRight className="w-5 h-5 text-accent-purple" />
+                  <PiCaretRight className="w-5 h-5 text-accent-purple" />
                 </div>
                 <h3 className="text-lg font-bold text-theme-primary classical-title">
                   Como Funciona o Processo
@@ -304,7 +304,7 @@ export default function TeacherVerificationRequired({
             >
               <div className="flex items-start space-x-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <FiAlertTriangle className="w-5 h-5 text-accent-purple" />
+                  <PiWarning className="w-5 h-5 text-accent-purple" />
                 </div>
                 <div className="text-left flex-1">
                   <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
@@ -323,9 +323,9 @@ export default function TeacherVerificationRequired({
                       href="/contact"
                       className="inline-flex items-center space-x-2 text-brand-primary hover:text-brand-secondary transition-colors font-medium"
                     >
-                      <FiMessageCircle className="w-4 h-4" />
+                      <PiChatCircle className="w-4 h-4" />
                       <span>Entrar em contato com suporte</span>
-                      <FiChevronRight className="w-4 h-4" />
+                      <PiCaretRight className="w-4 h-4" />
                     </Link>
                   </div>
                 </div>
@@ -350,11 +350,11 @@ export default function TeacherVerificationRequired({
 
         {/* Decorative Elements */}
         <div className="absolute top-4 left-4 w-12 h-12 bg-accent-blue/10 rounded-2xl flex items-center justify-center opacity-40">
-          <GiMusicalNotes className="w-6 h-6 text-accent-blue" />
+          <PiMusicNotes className="w-6 h-6 text-accent-blue" />
         </div>
 
         <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
-          <FiUserCheck className="w-8 h-8 text-brand-primary" />
+          <PiUserCheck className="w-8 h-8 text-brand-primary" />
         </div>
       </div>
       <Toaster

@@ -1,19 +1,19 @@
 // app/student/assignments/loading.tsx - Loading para Tarefas do Aluno
 'use client';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiClipboard,
-  FiClock,
-  FiCheck,
-  FiAlertTriangle,
-  FiTrendingUp,
-  FiTarget,
-  FiMusic,
-  FiSearch,
-  FiFilter,
-  FiRefreshCw,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiArrowsClockwise,
+  PiCheck,
+  PiClipboardText,
+  PiClock,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiTarget,
+  PiTrendUp,
+  PiWarning,
+} from 'react-icons/pi';
 
 export default function StudentAssignmentsLoading() {
   return (
@@ -38,13 +38,13 @@ export default function StudentAssignmentsLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiClipboard />
+          <PiClipboardText />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiTarget />
+          <PiTarget />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -56,7 +56,7 @@ export default function StudentAssignmentsLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -78,16 +78,18 @@ export default function StudentAssignmentsLoading() {
         {/* Stats Cards Skeleton */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-8">
           {[
-            { icon: <FiClipboard className="w-6 h-6 text-theme-inverse/20" /> },
-            { icon: <FiClock className="w-6 h-6 text-theme-inverse/20" /> },
-            {
-              icon: <FiTrendingUp className="w-6 h-6 text-theme-inverse/20" />,
-            },
-            { icon: <FiCheck className="w-6 h-6 text-theme-inverse/20" /> },
             {
               icon: (
-                <FiAlertTriangle className="w-6 h-6 text-theme-inverse/20" />
+                <PiClipboardText className="w-6 h-6 text-theme-inverse/20" />
               ),
+            },
+            { icon: <PiClock className="w-6 h-6 text-theme-inverse/20" /> },
+            {
+              icon: <PiTrendUp className="w-6 h-6 text-theme-inverse/20" />,
+            },
+            { icon: <PiCheck className="w-6 h-6 text-theme-inverse/20" /> },
+            {
+              icon: <PiWarning className="w-6 h-6 text-theme-inverse/20" />,
             },
           ].map((item, index) => (
             <div
@@ -109,7 +111,7 @@ export default function StudentAssignmentsLoading() {
             {/* Search */}
             <div className="relative flex-1 max-w-md">
               <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg flex items-center">
-                <FiSearch className="ml-3 w-5 h-5 text-theme-tertiary/30" />
+                <PiMagnifyingGlass className="ml-3 w-5 h-5 text-theme-tertiary/30" />
                 <div className="h-4 bg-theme-tertiary/20 rounded flex-1 mx-3"></div>
               </div>
             </div>
@@ -117,14 +119,14 @@ export default function StudentAssignmentsLoading() {
             {/* Controls */}
             <div className="flex items-center space-x-4">
               <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
-                <FiFilter className="w-4 h-4 text-theme-tertiary/30" />
+                <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="h-4 w-12 bg-theme-tertiary/20 rounded"></div>
               </div>
 
               <div className="h-10 w-20 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
 
               <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
-                <FiRefreshCw className="w-4 h-4 text-theme-tertiary/30" />
+                <PiArrowsClockwise className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="h-4 w-16 bg-theme-tertiary/20 rounded"></div>
               </div>
             </div>
@@ -203,9 +205,9 @@ function AssignmentCardSkeleton({ delay = 0 }: { delay?: number }) {
       <div className="flex items-center justify-between mb-4">
         <div className="h-6 w-20 bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 border border-accent-blue/30 rounded-full"></div>
         <div className="flex items-center space-x-2">
-          <FiTarget className="w-4 h-4 text-theme-tertiary/30" />
+          <PiTarget className="w-4 h-4 text-theme-tertiary/30" />
           <div className="w-5 h-5 bg-accent-purple/10 border border-accent-purple/30 rounded-full flex items-center justify-center">
-            <FiMusic className="w-3 h-3 text-accent-purple/30" />
+            <PiMusicNotes className="w-3 h-3 text-accent-purple/30" />
           </div>
         </div>
       </div>
@@ -217,22 +219,22 @@ function AssignmentCardSkeleton({ delay = 0 }: { delay?: number }) {
       {/* Meta Info */}
       <div className="space-y-2 mb-4">
         <div className="flex items-center">
-          <FiTarget className="w-4 h-4 mr-2 text-theme-tertiary/30" />
+          <PiTarget className="w-4 h-4 mr-2 text-theme-tertiary/30" />
           <div className="h-3 bg-theme-secondary/30 rounded w-32"></div>
         </div>
 
         <div className="flex items-center">
-          <FiClock className="w-4 h-4 mr-2 text-theme-tertiary/30" />
+          <PiClock className="w-4 h-4 mr-2 text-theme-tertiary/30" />
           <div className="h-3 bg-theme-secondary/30 rounded w-28"></div>
         </div>
 
         <div className="flex items-center">
-          <FiClock className="w-4 h-4 mr-2 text-theme-tertiary/30" />
+          <PiClock className="w-4 h-4 mr-2 text-theme-tertiary/30" />
           <div className="h-3 bg-theme-secondary/30 rounded w-24"></div>
         </div>
 
         <div className="flex items-center">
-          <FiMusic className="w-4 h-4 mr-2 text-accent-purple/30" />
+          <PiMusicNotes className="w-4 h-4 mr-2 text-accent-purple/30" />
           <div className="h-3 bg-accent-purple/20 rounded w-40"></div>
         </div>
       </div>

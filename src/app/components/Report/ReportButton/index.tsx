@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiFlag } from 'react-icons/fi';
+import { PiFlag } from 'react-icons/pi';
 import ReportModal from '../ReportModal';
 import { useTranslation } from '@/app/context/TranslationContext';
 
@@ -58,7 +58,7 @@ export default function ReportButton({
               `}
           title={t('report_button_reportar')}
         >
-          <FiFlag
+          <PiFlag
             className={`${iconSizes[size]} group-hover:rotate-12 transition-transform duration-300`}
           />
         </button>

@@ -1,7 +1,7 @@
 // app/components/ComposersByEpoch/ComposersByEpoch.tsx
 'use client';
 
-import { FiClock, FiUsers, FiMusic, FiChevronDown } from 'react-icons/fi';
+import { PiCaretDown, PiClock, PiMusicNotes, PiUsers } from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -136,7 +136,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
               isExpanded ? 'rotate-180' : ''
             }`}
           >
-            <FiChevronDown className="w-3 h-3 text-white" />
+            <PiCaretDown className="w-3 h-3 text-white" />
           </div>
         </div>
 
@@ -175,7 +175,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-white/20 rounded-lg hidden md:flex items-center justify-center">
-                <FiUsers className="w-4 h-4 " />
+                <PiUsers className="w-4 h-4 " />
               </div>
               <div className="text-left">
                 <div className="text-sm font-semibold">
@@ -210,7 +210,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-white/20 rounded-lg hidden md:flex items-center justify-center">
-                <FiMusic className="w-4 h-4" />
+                <PiMusicNotes className="w-4 h-4" />
               </div>
 
               <div className="text-left">
@@ -266,7 +266,7 @@ const ComposersByEpoch: React.FC<ComposersByEpochProps> = ({ epochs }) => {
         subtitle={t('composers_by_epoch_subtitle')}
         linkText={t('composers_by_epoch_link_text')}
         linkHref="/composers"
-        icon={<FiClock className="w-6 h-6" />}
+        icon={<PiClock className="w-6 h-6" />}
         accent="purple"
       />
 

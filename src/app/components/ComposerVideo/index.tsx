@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiPlay, FiAlertCircle } from 'react-icons/fi';
+import { PiPlay, PiWarningCircle } from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 
@@ -180,7 +180,7 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
       <AnimatedItem direction="left" springType="smooth">
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-2xl flex items-center justify-center">
-            <FiPlay className="w-6 h-6 text-theme-primary" />
+            <PiPlay className="w-6 h-6 text-theme-primary" />
           </div>
           <div className="flex-1">
             <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -223,7 +223,7 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
         <AnimatedItem direction="up" springType="gentle">
           <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
             <div className="flex items-center space-x-3">
-              <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+              <PiWarningCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
               <div>
                 <p className="text-red-800 font-medium">
                   {t('video_error_title')}

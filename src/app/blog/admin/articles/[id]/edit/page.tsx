@@ -5,8 +5,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArticleForm } from '@/app/components/blog/ArticleForm';
-import { BiTrash } from 'react-icons/bi';
-import { FaArrowLeft } from 'react-icons/fa';
+import { PiArrowLeft, PiTrash } from 'react-icons/pi';
 import {
   deleteArticle,
   loadArticleForEdit,
@@ -160,7 +159,7 @@ export default function EditArticlePage() {
               href="/blog/admin/articles"
               className="inline-flex items-center text-sm text-theme-secondary hover:text-brand-primary mb-4 transition-colors"
             >
-              <FaArrowLeft className="w-4 h-4 mr-2" />
+              <PiArrowLeft className="w-4 h-4 mr-2" />
               Voltar para artigos
             </Link>
             <h1 className="text-3xl font-bold text-theme-primary classical-title">
@@ -174,7 +173,7 @@ export default function EditArticlePage() {
             disabled={deleting}
             className="btn-classical-delete flex items-center space-x-2"
           >
-            <BiTrash className="w-4 h-4" />
+            <PiTrash className="w-4 h-4" />
             <span>{deleting ? 'Deletando...' : 'Deletar'}</span>
           </button>
         </div>

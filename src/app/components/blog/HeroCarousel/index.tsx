@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
-import { FaChevronLeft, FaChevronRight, FaClock, FaUser } from 'react-icons/fa';
+import { PiCaretLeft, PiCaretRight, PiClock, PiUser } from 'react-icons/pi';
 
 interface Article {
   id: string;
@@ -148,12 +148,12 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300">
                 {authorName && (
                   <div className="flex items-center space-x-2">
-                    <FaUser className="w-4 h-4" />
+                    <PiUser className="w-4 h-4" />
                     <span>{authorName}</span>
                   </div>
                 )}
                 <div className="flex items-center space-x-2">
-                  <FaClock className="w-4 h-4" />
+                  <PiClock className="w-4 h-4" />
                   <span>{currentArticle.readTime} min de leitura</span>
                 </div>
                 {currentArticle.publishedAt && (
@@ -184,14 +184,14 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
               className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/70 transition-all"
               aria-label="Anterior"
             >
-              <FaChevronLeft className="w-6 h-6 text-white" />
+              <PiCaretLeft className="w-6 h-6 text-white" />
             </button>
             <button
               onClick={goToNext}
               className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/70 transition-all"
               aria-label="Próximo"
             >
-              <FaChevronRight className="w-6 h-6 text-white" />
+              <PiCaretRight className="w-6 h-6 text-white" />
             </button>
           </>
         )}

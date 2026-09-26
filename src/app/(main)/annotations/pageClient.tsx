@@ -3,13 +3,13 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
-  FiMessageSquare,
-  FiSearch,
-  FiFilter,
-  FiX,
-  FiPlus,
-  FiBarChart2,
-} from 'react-icons/fi';
+  PiChartBar,
+  PiChatCenteredText,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiPlus,
+  PiX,
+} from 'react-icons/pi';
 
 import { useAuth } from '@/app/hooks/useAuth';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
@@ -354,7 +354,7 @@ export default function AnnotationsPageClient() {
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiMessageSquare className="w-8 h-8 text-theme-primary" />
+                <PiChatCenteredText className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -422,7 +422,7 @@ export default function AnnotationsPageClient() {
                 <div className="flex flex-col sm:flex-row gap-3">
                   {/* Search */}
                   <div className="relative">
-                    <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                    <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                     <input
                       type="text"
                       placeholder={t('search_placeholder')}
@@ -443,7 +443,7 @@ export default function AnnotationsPageClient() {
                           : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
                     }`}
                   >
-                    <FiFilter className="w-4 h-4" />
+                    <PiFunnel className="w-4 h-4" />
                     <span className="text-sm">
                       {t('filters_button')}
                       {hasActiveFilters && (
@@ -466,7 +466,7 @@ export default function AnnotationsPageClient() {
                   <Button
                     variant="outline"
                     onClick={toggleStats}
-                    leftIcon={<FiBarChart2 className="w-4 h-4" />}
+                    leftIcon={<PiChartBar className="w-4 h-4" />}
                   >
                     <span className="text-sm">
                       {isMobile
@@ -493,7 +493,7 @@ export default function AnnotationsPageClient() {
                   <div className="bg-theme-secondary rounded-xl p-4 border border-theme-primary">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-sm font-semibold text-theme-primary flex items-center space-x-2">
-                        <FiFilter className="w-4 h-4" />
+                        <PiFunnel className="w-4 h-4" />
                         <span>{t('advanced_filters_title')}</span>
                       </h3>
                       <div className="flex items-center space-x-2">
@@ -509,7 +509,7 @@ export default function AnnotationsPageClient() {
                           onClick={() => setShowFilters(false)}
                           className="w-6 h-6 rounded-full bg-theme-primary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
                         >
-                          <FiX className="w-4 h-4" />
+                          <PiX className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -603,7 +603,7 @@ export default function AnnotationsPageClient() {
               >
                 <div className="text-center py-8 md:py-16">
                   <div className="w-24 h-24 bg-gradient-to-br from-theme-secondary to-theme-primary rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                    <FiMessageSquare className="w-12 h-12 text-theme-tertiary" />
+                    <PiChatCenteredText className="w-12 h-12 text-theme-tertiary" />
                   </div>
                   <h3 className="text-2xl font-bold text-theme-primary mb-4">
                     {debouncedSearchQuery || hasActiveFilters
@@ -625,7 +625,7 @@ export default function AnnotationsPageClient() {
                       className="btn-classical-primary flex w-max items-center space-x-2 mx-auto"
                     >
                       <span>{t('explore_works')}</span>
-                      <FiPlus className="w-4 h-4" />
+                      <PiPlus className="w-4 h-4" />
                     </Link>
                   )}
                 </div>
@@ -644,7 +644,7 @@ export default function AnnotationsPageClient() {
                 >
                   <div className="flex items-center space-x-3 mb-6">
                     <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                      <FiMessageSquare className="w-5 h-5 text-theme-primary" />
+                      <PiChatCenteredText className="w-5 h-5 text-theme-primary" />
                     </div>
                     <div>
                       <h2 className="text-2xl font-bold text-theme-primary classical-title">

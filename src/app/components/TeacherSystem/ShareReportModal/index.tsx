@@ -4,20 +4,20 @@
 
 import { useState } from 'react';
 import {
-  FiShare2,
-  FiRefreshCw,
-  FiCheck,
-  FiBarChart2,
-  FiTrendingUp,
-  FiHeart,
-  FiActivity,
-  FiTarget,
-  FiBookOpen,
-  FiUsers,
-  FiCalendar,
-  FiAward,
-  FiMessageSquare,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiChartBar,
+  PiChatCenteredText,
+  PiCheck,
+  PiHeart,
+  PiMedal,
+  PiPulse,
+  PiShareNetwork,
+  PiTarget,
+  PiTrendUp,
+  PiUsers,
+} from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
 import Checkbox from '../../Common/Checkbox';
 
@@ -54,77 +54,77 @@ export interface ShareReportData {
 const SECTION_OPTIONS = [
   {
     key: 'overview',
-    icon: FiBarChart2,
+    icon: PiChartBar,
     title: 'Visão Geral',
     description: 'Estatísticas básicas de progresso',
     defaultEnabled: true,
   },
   {
     key: 'evolution',
-    icon: FiTrendingUp,
+    icon: PiTrendUp,
     title: 'Evolução do Progresso',
     description: 'Gráficos de progresso ao longo do tempo',
     defaultEnabled: true,
   },
   {
     key: 'preferences',
-    icon: FiHeart,
+    icon: PiHeart,
     title: 'Preferências Musicais',
     description: 'Compositores e períodos favoritos',
     defaultEnabled: true,
   },
   {
     key: 'engagement',
-    icon: FiActivity,
+    icon: PiPulse,
     title: 'Padrões de Engajamento',
     description: 'Análise de horários e dias produtivos',
     defaultEnabled: false,
   },
   {
     key: 'insights',
-    icon: FiTarget,
+    icon: PiTarget,
     title: 'Insights Pedagógicos',
     description: 'Estilo de aprendizado e áreas fortes',
     defaultEnabled: true,
   },
   {
     key: 'assignments',
-    icon: FiBookOpen,
+    icon: PiBookOpen,
     title: 'Análise de Tarefas',
     description: 'Performance em diferentes tipos de tarefa',
     defaultEnabled: false,
   },
   {
     key: 'repertoire',
-    icon: FiUsers,
+    icon: PiUsers,
     title: 'Análise de Repertório',
     description: 'Compositores estudados e complexidade',
     defaultEnabled: true,
   },
   {
     key: 'attendance',
-    icon: FiCalendar,
+    icon: PiCalendarBlank,
     title: 'Detalhes de Presença',
     description: 'Pontualidade e padrões de faltas',
     defaultEnabled: false,
   },
   {
     key: 'comparisons',
-    icon: FiUsers,
+    icon: PiUsers,
     title: 'Comparações',
     description: 'Comparação com períodos anteriores',
     defaultEnabled: false,
   },
   {
     key: 'achievements',
-    icon: FiAward,
+    icon: PiMedal,
     title: 'Conquistas e Marcos',
     description: 'Marcos de aprendizado alcançados',
     defaultEnabled: true,
   },
   {
     key: 'recommendations',
-    icon: FiMessageSquare,
+    icon: PiChatCenteredText,
     title: 'Recomendações',
     description: 'Sugestões para próximos passos',
     defaultEnabled: false,
@@ -307,7 +307,7 @@ export default function ShareReportModal({
                         }`}
                       >
                         {isSelected && (
-                          <FiCheck className="w-3 h-3 text-white" />
+                          <PiCheck className="w-3 h-3 text-white" />
                         )}
                       </div>
                     </div>
@@ -402,12 +402,12 @@ export default function ShareReportModal({
           >
             {loading ? (
               <>
-                <FiRefreshCw className="w-4 h-4 animate-spin" />
+                <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                 <span>Compartilhando...</span>
               </>
             ) : (
               <>
-                <FiShare2 className="w-4 h-4" />
+                <PiShareNetwork className="w-4 h-4" />
                 <span>Compartilhar Relatório</span>
               </>
             )}

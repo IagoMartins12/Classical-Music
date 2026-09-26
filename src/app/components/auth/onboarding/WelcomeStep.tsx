@@ -2,8 +2,8 @@
 'use client';
 
 import React from 'react';
-import { GiGrandPiano, GiMusicalNotes, GiViolin } from 'react-icons/gi';
-import { FiHeart, FiBook, FiUsers } from 'react-icons/fi';
+import { GiGrandPiano, GiViolin } from 'react-icons/gi';
+import { PiBook, PiHeart, PiMusicNotes, PiUsers } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 const WelcomeStep: React.FC = () => {
@@ -20,7 +20,7 @@ const WelcomeStep: React.FC = () => {
             <GiViolin className="w-8 h-8 text-accent-purple" />
           </div>
           <div className="w-16 h-16 bg-accent-blue bg-opacity-20 rounded-full flex items-center justify-center">
-            <GiMusicalNotes className="w-8 h-8 text-accent-blue" />
+            <PiMusicNotes className="w-8 h-8 text-accent-blue" />
           </div>
         </div>
 
@@ -36,7 +36,7 @@ const WelcomeStep: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
         <div className="classical-card-2 p-6 text-center">
           <div className="w-12 h-12 bg-accent-green bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FiBook className="w-6 h-6 text-accent-green" />
+            <PiBook className="w-6 h-6 text-accent-green" />
           </div>
           <h4 className="font-semibold text-theme-primary mb-2">
             {t('welcome_step_explore_title')}
@@ -48,7 +48,7 @@ const WelcomeStep: React.FC = () => {
 
         <div className="classical-card-2 p-6 text-center">
           <div className="w-12 h-12 bg-accent-purple bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FiHeart className="w-6 h-6 text-accent-purple" />
+            <PiHeart className="w-6 h-6 text-accent-purple" />
           </div>
           <h4 className="font-semibold text-theme-primary mb-2">
             {t('welcome_step_personalize_title')}
@@ -60,7 +60,7 @@ const WelcomeStep: React.FC = () => {
 
         <div className="classical-card-2 p-6 text-center">
           <div className="w-12 h-12 bg-accent-blue bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FiUsers className="w-6 h-6 text-accent-blue" />
+            <PiUsers className="w-6 h-6 text-accent-blue" />
           </div>
           <h4 className="font-semibold text-theme-primary mb-2">
             {t('welcome_step_connect_title')}

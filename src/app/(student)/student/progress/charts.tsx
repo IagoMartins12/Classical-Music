@@ -24,7 +24,7 @@ import {
   Pie,
   Cell,
 } from 'recharts';
-import { FiBarChart2, FiTarget } from 'react-icons/fi';
+import { PiChartBar, PiTarget } from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedItem,
@@ -73,7 +73,7 @@ export default function ProgressCharts({
               <h3 className="text-xl font-bold text-theme-primary">
                 {t('monthly_evolution')}
               </h3>
-              <FiBarChart2 className="w-6 h-6 text-brand-primary" />
+              <PiChartBar className="w-6 h-6 text-brand-primary" />
             </div>
 
             <div className="h-80">
@@ -129,7 +129,7 @@ export default function ProgressCharts({
               <h3 className="text-xl font-bold text-theme-primary">
                 {t('assignment_types')}
               </h3>
-              <FiTarget className="w-6 h-6 text-brand-primary" />
+              <PiTarget className="w-6 h-6 text-brand-primary" />
             </div>
 
             <div className="h-80">

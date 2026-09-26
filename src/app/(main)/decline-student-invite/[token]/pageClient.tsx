@@ -4,16 +4,16 @@
 import { legacyAuth } from '@/app/libs/api/compat';
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import {
-  FiCheckCircle,
-  FiAlertCircle,
-  FiLoader,
-  FiArrowRight,
-  FiHome,
-  FiX,
-  FiUser,
-} from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
+import {
+  PiArrowRight,
+  PiCheckCircle,
+  PiHouse,
+  PiSpinnerGap,
+  PiUser,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
@@ -155,7 +155,7 @@ export default function DeclineStudentInvitePage() {
       return (
         <div className="text-center">
           <div className="w-20 h-20 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
-            <FiAlertCircle className="w-10 h-10 text-theme-primary" />
+            <PiWarningCircle className="w-10 h-10 text-theme-primary" />
           </div>
           <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
             {t('pages_token_jsx_h1_children_0__confirmar_recusa')}
@@ -207,7 +207,7 @@ export default function DeclineStudentInvitePage() {
                 variant="ghost"
                 size="lg"
                 onClick={() => router.push('/')}
-                leftIcon={<FiHome />}
+                leftIcon={<PiHouse />}
               >
                 {t('pages_token_jsx_button_children_0__voltar_ao_site')}
               </Button>
@@ -216,7 +216,7 @@ export default function DeclineStudentInvitePage() {
                 variant="delete"
                 size="lg"
                 onClick={() => setConfirmDecline(true)}
-                leftIcon={<FiX />}
+                leftIcon={<PiX />}
                 className="bg-gradient-to-r from-accent-red to-accent-amber"
               >
                 {t('pages_token_jsx_button_children_0__confirmar_recusa')}
@@ -232,7 +232,7 @@ export default function DeclineStudentInvitePage() {
         return (
           <div className="text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
-              <FiLoader className="w-10 h-10 text-theme-primary animate-spin" />
+              <PiSpinnerGap className="w-10 h-10 text-theme-primary animate-spin" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
               {t('pages_token_jsx_h1_children_0__processando_recusa')}
@@ -250,7 +250,7 @@ export default function DeclineStudentInvitePage() {
         return (
           <div className="text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-accent-blue to-theme-primary rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
-              <FiCheckCircle className="w-10 h-10 text-theme-primary" />
+              <PiCheckCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
               {t('pages_token_jsx_h1_children_0__convite_recusado')}
@@ -261,7 +261,7 @@ export default function DeclineStudentInvitePage() {
               <div className="bg-theme-secondary bg-opacity-50 border border-theme-secondary rounded-xl p-6 mb-8">
                 <div className="flex items-center justify-center mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-theme-primary to-accent-blue rounded-full flex items-center justify-center mr-3">
-                    <FiUser className="w-6 h-6 text-theme-primary" />
+                    <PiUser className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-theme-primary">
@@ -307,7 +307,7 @@ export default function DeclineStudentInvitePage() {
               <Button
                 variant="primary"
                 size="lg"
-                rightIcon={<FiArrowRight />}
+                rightIcon={<PiArrowRight />}
                 onClick={() => router.push('/')}
                 className="animate-pulse"
               >
@@ -335,7 +335,7 @@ export default function DeclineStudentInvitePage() {
         return (
           <div className="text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-theme-primary to-accent-blue rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
-              <FiCheckCircle className="w-10 h-10 text-theme-primary" />
+              <PiCheckCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
               {t('pages_token_jsx_h1_children_0__já_processado')}
@@ -352,7 +352,7 @@ export default function DeclineStudentInvitePage() {
               <Button
                 variant="primary"
                 size="lg"
-                rightIcon={<FiArrowRight />}
+                rightIcon={<PiArrowRight />}
                 onClick={() => router.push('/')}
               >
                 {t('pages_token_jsx_button_children_0__ir_para_o_site')}
@@ -373,7 +373,7 @@ export default function DeclineStudentInvitePage() {
         return (
           <div className="text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-accent-red to-accent-amber rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
-              <FiAlertCircle className="w-10 h-10 text-theme-primary" />
+              <PiWarningCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
               {t('pages_token_jsx_h1_children_0__erro_ao_processar')}
@@ -382,7 +382,7 @@ export default function DeclineStudentInvitePage() {
 
             <div className="bg-accent-red bg-opacity-10 border border-accent-red rounded-xl p-6 mb-8">
               <div className="flex items-center justify-center mb-3">
-                <FiAlertCircle className="w-5 h-5 text-accent-red mr-2" />
+                <PiWarningCircle className="w-5 h-5 text-accent-red mr-2" />
                 <span className="font-medium text-accent-red">
                   {getErrorTitle(state.errorCode, t)}
                 </span>

@@ -1,7 +1,7 @@
 // app/components/Admin/Common/PeriodSelector.tsx
 'use client';
 
-import { FiCalendar } from 'react-icons/fi';
+import { PiCalendarBlank } from 'react-icons/pi';
 import Select from '@/app/components/Common/Select';
 
 export type TimePeriod = '7d' | '30d' | '3m' | '6m' | '1y' | 'all';
@@ -28,7 +28,7 @@ export default function PeriodSelector({
 
   return (
     <div className={`flex items-center space-x-2 ${className}`}>
-      <FiCalendar className="w-4 h-4 text-theme-tertiary" />
+      <PiCalendarBlank className="w-4 h-4 text-theme-tertiary" />
       <Select
         value={value}
         onChange={(e) => onChange(e.target.value as TimePeriod)}

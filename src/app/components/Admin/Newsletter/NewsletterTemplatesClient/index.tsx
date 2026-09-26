@@ -3,20 +3,20 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiFileText,
-  FiSearch,
-  FiPlus,
-  FiRefreshCw,
-  FiEdit,
-  FiTrash2,
-  FiEye,
-  FiCopy,
-  FiMail,
-  FiCheckCircle,
-  FiAlertCircle,
-  FiStar,
-  FiCode,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCheckCircle,
+  PiCode,
+  PiCopy,
+  PiEnvelopeSimple,
+  PiEye,
+  PiFileText,
+  PiMagnifyingGlass,
+  PiNotePencil,
+  PiPlus,
+  PiStar,
+  PiTrash,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -215,7 +215,7 @@ export default function NewsletterTemplatesClient() {
             <div className="text-center py-8">
               <div className="flex items-center justify-center mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
-                  <FiFileText className="w-8 h-8 text-white" />
+                  <PiFileText className="w-8 h-8 text-white" />
                 </div>
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -240,7 +240,7 @@ export default function NewsletterTemplatesClient() {
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-accent-blue/20 rounded-xl flex items-center justify-center">
-                  <FiFileText className="w-6 h-6 text-accent-blue" />
+                  <PiFileText className="w-6 h-6 text-accent-blue" />
                 </div>
               </div>
             </AnimatedCard>
@@ -256,7 +256,7 @@ export default function NewsletterTemplatesClient() {
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-accent-green/20 rounded-xl flex items-center justify-center">
-                  <FiCheckCircle className="w-6 h-6 text-accent-green" />
+                  <PiCheckCircle className="w-6 h-6 text-accent-green" />
                 </div>
               </div>
             </AnimatedCard>
@@ -272,7 +272,7 @@ export default function NewsletterTemplatesClient() {
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-accent-amber/20 rounded-xl flex items-center justify-center">
-                  <FiStar className="w-6 h-6 text-accent-amber" />
+                  <PiStar className="w-6 h-6 text-accent-amber" />
                 </div>
               </div>
             </AnimatedCard>
@@ -286,7 +286,7 @@ export default function NewsletterTemplatesClient() {
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-accent-purple/20 rounded-xl flex items-center justify-center">
-                  <FiCode className="w-6 h-6 text-accent-purple" />
+                  <PiCode className="w-6 h-6 text-accent-purple" />
                 </div>
               </div>
             </AnimatedCard>
@@ -296,7 +296,7 @@ export default function NewsletterTemplatesClient() {
           <AnimatedCard className="classical-card p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
-                <FiCode className="w-5 h-5 text-accent-purple" />
+                <PiCode className="w-5 h-5 text-accent-purple" />
                 <h3 className="text-lg font-bold text-theme-primary">
                   Templates Built-in Disponíveis
                 </h3>
@@ -316,7 +316,7 @@ export default function NewsletterTemplatesClient() {
                     >
                       {getTemplateTypeName(type)}
                     </span>
-                    <FiCode className="w-4 h-4 text-accent-purple" />
+                    <PiCode className="w-4 h-4 text-accent-purple" />
                   </div>
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
                     {template.description}
@@ -343,7 +343,7 @@ export default function NewsletterTemplatesClient() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1">
                 {/* Search */}
                 <div className="relative flex-1 max-w-md">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                   <Input
                     type="text"
                     placeholder="Buscar templates..."
@@ -379,7 +379,7 @@ export default function NewsletterTemplatesClient() {
                   variant="ghost"
                   size="sm"
                   leftIcon={
-                    <FiRefreshCw
+                    <PiArrowsClockwise
                       className={templatesLoading ? 'animate-spin' : ''}
                     />
                   }
@@ -391,7 +391,7 @@ export default function NewsletterTemplatesClient() {
 
                 <Button
                   variant="primary"
-                  leftIcon={<FiPlus />}
+                  leftIcon={<PiPlus />}
                   onClick={() => setShowCreateModal(true)}
                 >
                   Novo Template
@@ -423,7 +423,7 @@ export default function NewsletterTemplatesClient() {
 
                               {template.isDefault && (
                                 <span className="px-2 py-1 bg-accent-amber/20 text-accent-amber rounded-full text-xs font-medium flex items-center">
-                                  <FiStar className="w-3 h-3 mr-1" />
+                                  <PiStar className="w-3 h-3 mr-1" />
                                   Padrão
                                 </span>
                               )}
@@ -454,13 +454,13 @@ export default function NewsletterTemplatesClient() {
                           {/* Stats */}
                           <div className="flex items-center space-x-6 text-sm text-theme-tertiary">
                             <div className="flex items-center">
-                              <FiMail className="w-4 h-4 mr-1" />
+                              <PiEnvelopeSimple className="w-4 h-4 mr-1" />
                               <span>{template.timesUsed || 0} usos</span>
                             </div>
 
                             {template.avgOpenRate && (
                               <div className="flex items-center">
-                                <FiEye className="w-4 h-4 mr-1" />
+                                <PiEye className="w-4 h-4 mr-1" />
                                 <span>
                                   {(template.avgOpenRate * 100).toFixed(1)}%
                                   abertura
@@ -469,7 +469,7 @@ export default function NewsletterTemplatesClient() {
                             )}
 
                             <div className="flex items-center">
-                              <FiCode className="w-4 h-4 mr-1" />
+                              <PiCode className="w-4 h-4 mr-1" />
                               <span>
                                 {template.variables?.length || 0} variáveis
                               </span>
@@ -482,28 +482,28 @@ export default function NewsletterTemplatesClient() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            leftIcon={<FiEye />}
+                            leftIcon={<PiEye />}
                             onClick={() => handlePreview(template)}
                             title="Preview"
                           />
                           <Button
                             variant="ghost"
                             size="sm"
-                            leftIcon={<FiEdit />}
+                            leftIcon={<PiNotePencil />}
                             onClick={() => handleEdit(template)}
                             title="Editar"
                           />
                           <Button
                             variant="ghost"
                             size="sm"
-                            leftIcon={<FiCopy />}
+                            leftIcon={<PiCopy />}
                             onClick={() => handleDuplicate(template)}
                             title="Duplicar"
                           />
                           <Button
                             variant="ghost"
                             size="sm"
-                            leftIcon={<FiStar />}
+                            leftIcon={<PiStar />}
                             onClick={() => handleToggleDefault(template)}
                             className={
                               template.isDefault ? 'text-accent-amber' : ''
@@ -519,9 +519,9 @@ export default function NewsletterTemplatesClient() {
                             size="sm"
                             leftIcon={
                               template.isActive ? (
-                                <FiAlertCircle />
+                                <PiWarningCircle />
                               ) : (
-                                <FiCheckCircle />
+                                <PiCheckCircle />
                               )
                             }
                             onClick={() => handleToggleStatus(template)}
@@ -535,7 +535,7 @@ export default function NewsletterTemplatesClient() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            leftIcon={<FiTrash2 />}
+                            leftIcon={<PiTrash />}
                             onClick={() => handleDelete(template)}
                             className="text-accent-red hover:text-accent-red"
                             title="Deletar"
@@ -548,7 +548,7 @@ export default function NewsletterTemplatesClient() {
               </SequentialGrid>
             ) : (
               <div className="text-center py-12">
-                <FiFileText className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                <PiFileText className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-xl font-medium text-theme-primary mb-2">
                   {filters.search || filters.type || filters.status
                     ? 'Nenhum template encontrado'
@@ -562,7 +562,7 @@ export default function NewsletterTemplatesClient() {
                 {!filters.search && !filters.type && !filters.status && (
                   <Button
                     variant="primary"
-                    leftIcon={<FiPlus />}
+                    leftIcon={<PiPlus />}
                     onClick={() => setShowCreateModal(true)}
                   >
                     Criar Primeiro Template

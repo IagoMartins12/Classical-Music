@@ -3,8 +3,8 @@
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import React from 'react';
-import { FiCheck, FiArrowRight } from 'react-icons/fi';
-import { GiGrandPiano, GiMusicalNotes } from 'react-icons/gi';
+import { GiGrandPiano } from 'react-icons/gi';
+import { PiArrowRight, PiCheck, PiMusicNotes } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '../../Common/Button';
 
@@ -64,7 +64,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
       <div className="mb-8">
         <div className="flex justify-center space-x-2 mb-6">
           <div className="w-20 h-20 bg-brand-gradient rounded-full bg-green-400 flex items-center justify-center">
-            <FiCheck className="w-10 h-10 text-white" />
+            <PiCheck className="w-10 h-10 text-white" />
           </div>
         </div>
 
@@ -87,7 +87,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
           {getPersonalizedFeatures().map((feature, index) => (
             <div key={index} className="flex items-start space-x-3">
               <div className="w-5 h-5 bg-accent-green bg-opacity-20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <FiCheck className="w-3 h-3 text-accent-green" />
+                <PiCheck className="w-3 h-3 text-accent-green" />
               </div>
               <span className="text-sm text-theme-secondary">{feature}</span>
             </div>
@@ -103,7 +103,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
           <div className="classical-card-2 p-4">
-            <GiMusicalNotes className="w-8 h-8 text-accent-blue mx-auto mb-3" />
+            <PiMusicNotes className="w-8 h-8 text-accent-blue mx-auto mb-3" />
             <h5 className="font-medium text-theme-primary mb-2">
               {t('completion_step_explore_title')}
             </h5>
@@ -123,7 +123,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
           </div>
 
           <div className="classical-card-2 p-4">
-            <FiArrowRight className="w-8 h-8 text-accent-green mx-auto mb-3" />
+            <PiArrowRight className="w-8 h-8 text-accent-green mx-auto mb-3" />
             <h5 className="font-medium text-theme-primary mb-2">
               {t('completion_step_study_title')}
             </h5>
@@ -140,7 +140,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
         isLoading={isLoading}
         size="lg"
         className="px-8"
-        rightIcon={<FiArrowRight />}
+        rightIcon={<PiArrowRight />}
       >
         {isLoading
           ? t('completion_step_complete_loading')

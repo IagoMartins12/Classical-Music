@@ -6,17 +6,17 @@ import { signOut, useSession } from '@/app/libs/session';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  FiShield,
-  FiSettings,
-  FiLogOut,
-  FiUsers,
-  FiBarChart2,
-  FiFlag,
-  FiChevronDown,
-  FiActivity,
-  FiHome,
-  FiMenu,
-} from 'react-icons/fi';
+  PiCaretDown,
+  PiChartBar,
+  PiFlag,
+  PiGear,
+  PiHouse,
+  PiList,
+  PiPulse,
+  PiShield,
+  PiSignOut,
+  PiUsers,
+} from 'react-icons/pi';
 
 interface AdminHeaderProps {
   onMenuClick: () => void;
@@ -35,31 +35,31 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
     {
       href: '/admin',
       label: 'Dashboard',
-      icon: FiBarChart2,
+      icon: PiChartBar,
       isActive: pathname === '/admin',
     },
     {
       href: '/admin/users',
       label: 'Usuários',
-      icon: FiUsers,
+      icon: PiUsers,
       isActive: pathname.startsWith('/admin/users'),
     },
     {
       href: '/admin/moderation',
       label: 'Moderação',
-      icon: FiShield,
+      icon: PiShield,
       isActive: pathname.startsWith('/admin/moderation'),
     },
     {
       href: '/admin/reports-metric',
       label: 'Relatórios',
-      icon: FiFlag,
+      icon: PiFlag,
       isActive: pathname.startsWith('/admin/reports-metric'),
     },
     {
       href: '/admin/analytics',
       label: 'Analytics',
-      icon: FiActivity,
+      icon: PiPulse,
       isActive: pathname.startsWith('/admin/analytics'),
     },
   ];
@@ -84,7 +84,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                 onClick={onMenuClick}
                 className="lg:hidden p-2 rounded-lg text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary transition-all"
               >
-                <FiMenu className="w-5 h-5" />
+                <PiList className="w-5 h-5" />
               </button>
 
               {/* Logo */}
@@ -93,7 +93,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                 className="flex items-center space-x-2 lg:space-x-3 text-theme-primary hover:text-brand-primary transition-colors"
               >
                 <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-accent-red to-accent-amber rounded-xl flex items-center justify-center shadow-lg">
-                  <FiShield className="w-4 h-4 lg:w-6 lg:h-6 text-theme-primary" />
+                  <PiShield className="w-4 h-4 lg:w-6 lg:h-6 text-theme-primary" />
                 </div>
                 <div className="hidden sm:block">
                   <div className="font-bold text-base lg:text-lg">
@@ -130,7 +130,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                   className="p-2 rounded-lg text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary transition-all"
                   title="Configurações"
                 >
-                  <FiSettings className="w-4 h-4 lg:w-5 lg:h-5" />
+                  <PiGear className="w-4 h-4 lg:w-5 lg:h-5" />
                 </Link>
               </div>
 
@@ -153,7 +153,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                     </p>
                     <p className="text-xs text-theme-tertiary">Administrador</p>
                   </div>
-                  <FiChevronDown
+                  <PiCaretDown
                     className={`w-3 h-3 lg:w-4 lg:h-4 text-theme-tertiary transition-transform ${
                       showUserMenu ? 'rotate-180' : ''
                     }`}
@@ -178,7 +178,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                       className="flex items-center space-x-3 px-4 py-2 text-theme-secondary hover:text-theme-primary hover:bg-theme-secondary transition-all text-sm"
                       onClick={() => setShowUserMenu(false)}
                     >
-                      <FiHome className="w-4 h-4" />
+                      <PiHouse className="w-4 h-4" />
                       <span>Ver Site Principal</span>
                     </Link>
 
@@ -188,7 +188,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                       onClick={handleSignOut}
                       className="flex items-center space-x-3 px-4 py-2 text-accent-red hover:bg-accent-red/10 transition-all w-full text-sm"
                     >
-                      <FiLogOut className="w-4 h-4" />
+                      <PiSignOut className="w-4 h-4" />
                       <span>Sair</span>
                     </button>
                   </div>

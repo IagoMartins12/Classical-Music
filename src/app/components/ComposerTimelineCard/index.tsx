@@ -1,7 +1,11 @@
 import Link from '@/app/components/LocalizedLink';
 import Image from '@/app/components/SmartImage';
-import { FiUser, FiCalendar, FiMapPin } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+import {
+  PiCalendarBlank,
+  PiMapPin,
+  PiMusicNotes,
+  PiUser,
+} from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useComposerBiography } from '@/app/hooks/useComposerBiography';
 
@@ -61,7 +65,7 @@ export function ComposerTimelineCard({
       >
         {/* Background decoration */}
         <div className="absolute top-4 right-4 text-4xl text-brand-primary/5">
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
 
         <div className="relative z-10">
@@ -84,7 +88,7 @@ export function ComposerTimelineCard({
                   }}
                 />
               ) : null}
-              <FiUser
+              <PiUser
                 className={`text-theme-primary text-lg ${
                   composer.portraitUrl ? 'hidden' : ''
                 }`}
@@ -99,7 +103,7 @@ export function ComposerTimelineCard({
               <span
                 className={`inline-flex items-center px-3 py-1 bg-gradient-to-r ${composer.gradientClass} text-theme-primary text-xs rounded-full font-medium shadow-theme-small classical-card-simple mt-2`}
               >
-                <FiMapPin className="w-3 h-3 mr-1 text-theme-primary" />
+                <PiMapPin className="w-3 h-3 mr-1 text-theme-primary" />
                 {composer.epochName}
               </span>
             </div>
@@ -109,7 +113,7 @@ export function ComposerTimelineCard({
           <div className="flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-xl">
             <div className="flex items-center text-theme-secondary">
               <div className="w-6 h-6 border-theme-primary rounded-lg flex items-center justify-center mr-2">
-                <FiCalendar className="w-4 h-4 text-accent-blue" />
+                <PiCalendarBlank className="w-4 h-4 text-accent-blue" />
               </div>
               <span className="font-medium text-sm">
                 {getLifespan(composer)}

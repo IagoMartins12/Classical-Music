@@ -3,29 +3,28 @@
 
 import { useState } from 'react';
 import {
-  FiThumbsUp,
-  FiEdit3,
-  FiTrash2,
-  FiEye,
-  FiMapPin,
-  FiTarget,
-  FiLayers,
-  FiMusic,
-  FiBookOpen,
-  FiAward,
-  FiMessageSquare,
-  FiClock,
-  FiUser,
-  FiMoreHorizontal,
-  FiLoader,
-  FiExternalLink,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiArrowSquareOut,
+  PiBookOpen,
+  PiChatCenteredText,
+  PiClock,
+  PiDotsThree,
+  PiEye,
+  PiMapPin,
+  PiMedal,
+  PiMusicNotes,
+  PiPencilLine,
+  PiSealCheck,
+  PiSpinnerGap,
+  PiStack,
+  PiTarget,
+  PiThumbsUp,
+  PiTrash,
+  PiUser,
+} from 'react-icons/pi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR, enUS } from 'date-fns/locale';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
-import { MdVerified } from 'react-icons/md';
 
 import { ViewMode } from '@/app/components/ViewModeToggle';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -81,46 +80,46 @@ export default function UserAnnotationCard({
     const configs = {
       TECHNIQUE: {
         label: t('category_technique'),
-        icon: FiTarget,
+        icon: PiTarget,
         color: 'from-accent-red to-accent-purple',
         bgColor: 'bg-accent-red/10 border-accent-red/30 text-accent-red',
       },
       INTERPRETATION: {
         label: t('category_interpretation'),
-        icon: GiMusicalNotes,
+        icon: PiMusicNotes,
         color: 'from-accent-blue to-accent-purple',
         bgColor: 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue',
       },
       PRACTICE_TIP: {
         label: t('category_practice_tip'),
-        icon: FiBookOpen,
+        icon: PiBookOpen,
         color: 'from-accent-green to-accent-blue',
         bgColor: 'bg-accent-green/10 border-accent-green/30 text-accent-green',
       },
       THEORY: {
         label: t('category_theory'),
-        icon: FiLayers,
+        icon: PiStack,
         color: 'from-accent-purple to-accent-blue',
         bgColor:
           'bg-accent-purple/10 border-accent-purple/30 text-accent-purple',
       },
       PERFORMANCE: {
         label: t('category_performance'),
-        icon: FiMusic,
+        icon: PiMusicNotes,
         color: 'from-brand-primary to-brand-secondary',
         bgColor:
           'bg-brand-primary/10 border-brand-primary/30 text-brand-primary',
       },
       HISTORICAL: {
         label: t('category_historical'),
-        icon: FiAward,
+        icon: PiMedal,
         color: 'from-accent-purple to-accent-red',
         bgColor:
           'bg-accent-purple/10 border-accent-purple/30 text-accent-purple',
       },
       GENERAL: {
         label: t('category_general'),
-        icon: FiMessageSquare,
+        icon: PiChatCenteredText,
         color: 'from-theme-primary to-theme-secondary',
         bgColor:
           'bg-theme-primary/10 border-theme-primary/30 text-theme-primary',
@@ -266,7 +265,7 @@ export default function UserAnnotationCard({
         {isUpdating && (
           <div className="absolute inset-0 bg-theme-primary/5 backdrop-blur-sm z-20 flex items-center justify-center">
             <div className="flex items-center space-x-3 bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30">
-              <FiLoader className="w-4 h-4 animate-spin text-brand-primary" />
+              <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
               <span className="text-sm font-medium text-theme-primary">
                 {isOptimistic
                   ? t('user_annotation_card_saving_loading')
@@ -283,10 +282,10 @@ export default function UserAnnotationCard({
               <h3 className="font-semibold text-theme-primary text-sm mb-1 truncate">
                 {currentAnnotation.title}
                 {currentAnnotation.isVerified && (
-                  <MdVerified className="w-4 h-4 text-accent-green inline ml-2" />
+                  <PiSealCheck className="w-4 h-4 text-accent-green inline ml-2" />
                 )}
                 {isOptimistic && (
-                  <FiLoader className="w-3 h-3 animate-spin text-accent-blue inline ml-2" />
+                  <PiSpinnerGap className="w-3 h-3 animate-spin text-accent-blue inline ml-2" />
                 )}
               </h3>
               <div className="text-xs text-theme-secondary">
@@ -325,11 +324,11 @@ export default function UserAnnotationCard({
             {/* Stats */}
             <div className="col-span-2 text-xs text-theme-tertiary space-y-1">
               <div className="flex items-center space-x-1">
-                <FiThumbsUp className="w-3 h-3" />
+                <PiThumbsUp className="w-3 h-3" />
                 <span>{currentAnnotation.helpfulCount}</span>
               </div>
               <div className="flex items-center space-x-1">
-                <FiEye className="w-3 h-3" />
+                <PiEye className="w-3 h-3" />
                 <span>{currentAnnotation.viewCount}</span>
               </div>
             </div>
@@ -345,7 +344,7 @@ export default function UserAnnotationCard({
                       isUpdating ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
-                    <FiMoreHorizontal className="w-3 h-3" />
+                    <PiDotsThree className="w-3 h-3" />
                   </button>
 
                   {showActions && !isUpdating && (
@@ -357,7 +356,7 @@ export default function UserAnnotationCard({
                         }}
                         className="w-full px-3 py-1 text-left text-xs text-theme-primary hover:bg-interactive-hover flex items-center space-x-2 transition-colors"
                       >
-                        <FiEdit3 className="w-3 h-3" />
+                        <PiPencilLine className="w-3 h-3" />
                         <span>{t('user_annotation_card_edit')}</span>
                       </button>
                       <button
@@ -367,7 +366,7 @@ export default function UserAnnotationCard({
                         }}
                         className="w-full px-3 py-1 text-left text-xs text-accent-red hover:bg-accent-red/10 flex items-center space-x-2 transition-colors"
                       >
-                        <FiTrash2 className="w-3 h-3" />
+                        <PiTrash className="w-3 h-3" />
                         <span>{t('user_annotation_card_delete')}</span>
                       </button>
                     </div>
@@ -378,7 +377,7 @@ export default function UserAnnotationCard({
                 href={`/works/${workInfo.id}`}
                 className="w-6 h-6 rounded-lg bg-theme-elevated border border-theme-primary/30 flex items-center justify-center text-theme-tertiary hover:text-brand-primary hover:border-brand-primary/50 transition-all ml-2"
               >
-                <FiExternalLink className="w-3 h-3" />
+                <PiArrowSquareOut className="w-3 h-3" />
               </Link>
             </div>
           </div>
@@ -400,7 +399,7 @@ export default function UserAnnotationCard({
           {isUpdating && (
             <div className="absolute inset-0 bg-theme-primary/5 backdrop-blur-sm z-20 flex items-center justify-center rounded-xl">
               <div className="flex items-center space-x-3 bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30">
-                <FiLoader className="w-4 h-4 animate-spin text-brand-primary" />
+                <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
                 <span className="text-sm font-medium text-theme-primary">
                   {isOptimistic
                     ? t('user_annotation_card_saving_loading')
@@ -417,14 +416,14 @@ export default function UserAnnotationCard({
             >
               <div className="flex items-start gap-3 mb-3">
                 <div className="inline-flex items-center py-0.5">
-                  <FiMessageSquare className="w-3 h-3 mr-1" />
+                  <PiChatCenteredText className="w-3 h-3 mr-1" />
                   <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 flex-1 line-clamp-2">
                     {currentAnnotation.title}
                     {currentAnnotation.isVerified && (
-                      <MdVerified className="w-4 h-4 text-accent-green inline ml-2" />
+                      <PiSealCheck className="w-4 h-4 text-accent-green inline ml-2" />
                     )}
                     {isOptimistic && (
-                      <FiLoader className="w-3 h-3 animate-spin text-accent-blue inline ml-2" />
+                      <PiSpinnerGap className="w-3 h-3 animate-spin text-accent-blue inline ml-2" />
                     )}
                   </h3>
                 </div>
@@ -433,14 +432,14 @@ export default function UserAnnotationCard({
               {/* Informações da obra */}
               <div className="space-y-1 mb-3">
                 <div className="flex items-center space-x-2">
-                  <FiMusic className="w-3 h-3 text-accent-blue" />
+                  <PiMusicNotes className="w-3 h-3 text-accent-blue" />
                   <span className="text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium">
                     {workInfo.title}
                   </span>
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <FiUser className="w-3 h-3 text-theme-tertiary" />
+                  <PiUser className="w-3 h-3 text-theme-tertiary" />
                   <span className="text-sm text-theme-tertiary">
                     {workInfo.composer.fullName}
                   </span>
@@ -469,14 +468,14 @@ export default function UserAnnotationCard({
 
                 {!currentAnnotation.isPublic && (
                   <span className="px-2 py-0.5 rounded-full text-xs font-medium border bg-accent-red/10 border-accent-red/30 text-accent-red flex items-center space-x-1">
-                    <FiEye className="w-2.5 h-2.5" />
+                    <PiEye className="w-2.5 h-2.5" />
                     <span>{t('user_annotation_card_private')}</span>
                   </span>
                 )}
 
                 {measureInfo && (
                   <span className="px-2 py-0.5 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary flex items-center space-x-1">
-                    <FiMapPin className="w-2.5 h-2.5" />
+                    <PiMapPin className="w-2.5 h-2.5" />
                     <span>{measureInfo}</span>
                   </span>
                 )}
@@ -485,15 +484,15 @@ export default function UserAnnotationCard({
               {/* Stats compactas */}
               <div className="flex items-center space-x-4 text-xs text-theme-tertiary mb-3">
                 <div className="flex items-center space-x-1">
-                  <FiThumbsUp className="w-3 h-3" />
+                  <PiThumbsUp className="w-3 h-3" />
                   <span>{currentAnnotation.helpfulCount}</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <FiEye className="w-3 h-3" />
+                  <PiEye className="w-3 h-3" />
                   <span>{currentAnnotation.viewCount}</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <FiClock className="w-3 h-3" />
+                  <PiClock className="w-3 h-3" />
                   <span>
                     {formatDistanceToNow(
                       new Date(currentAnnotation.createdAt),
@@ -518,7 +517,7 @@ export default function UserAnnotationCard({
                       isUpdating ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
-                    <FiMoreHorizontal className="w-3 h-3" />
+                    <PiDotsThree className="w-3 h-3" />
                   </button>
 
                   {showActions && !isUpdating && (
@@ -530,7 +529,7 @@ export default function UserAnnotationCard({
                         }}
                         className="w-full px-3 py-1 text-left text-xs text-theme-primary hover:bg-interactive-hover flex items-center space-x-2 transition-colors"
                       >
-                        <FiEdit3 className="w-3 h-3" />
+                        <PiPencilLine className="w-3 h-3" />
                         <span>{t('user_annotation_card_edit')}</span>
                       </button>
                       <button
@@ -540,7 +539,7 @@ export default function UserAnnotationCard({
                         }}
                         className="w-full px-3 py-1 text-left text-xs text-accent-red hover:bg-accent-red/10 flex items-center space-x-2 transition-colors"
                       >
-                        <FiTrash2 className="w-3 h-3" />
+                        <PiTrash className="w-3 h-3" />
                         <span>{t('user_annotation_card_delete')}</span>
                       </button>
                     </div>
@@ -557,7 +556,7 @@ export default function UserAnnotationCard({
               className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
             >
               <span>{t('user_annotation_card_see_work')}</span>
-              <FiExternalLink className="w-3 h-3" />
+              <PiArrowSquareOut className="w-3 h-3" />
             </Link>
           </div>
         </div>
@@ -595,7 +594,7 @@ export default function UserAnnotationCard({
         {isUpdating && (
           <div className="absolute inset-0 bg-theme-primary/5 backdrop-blur-sm z-20 flex items-center justify-center">
             <div className="flex items-center space-x-3 bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30">
-              <FiLoader className="w-4 h-4 animate-spin text-brand-primary" />
+              <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
               <span className="text-sm font-medium text-theme-primary">
                 {isOptimistic
                   ? t('user_annotation_card_saving_loading')
@@ -625,7 +624,7 @@ export default function UserAnnotationCard({
                   />
                 ) : (
                   <div className="w-10 h-10 bg-gradient-to-br from-theme-primary to-theme-secondary rounded-xl flex items-center justify-center">
-                    <FiUser className="w-5 h-5 text-theme-primary" />
+                    <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
                 )}
               </div>
@@ -638,7 +637,7 @@ export default function UserAnnotationCard({
                   </h3>
                   {currentAnnotation.isVerified && (
                     <div className="flex items-center space-x-1 text-accent-green">
-                      <MdVerified className="w-4 h-4" />
+                      <PiSealCheck className="w-4 h-4" />
                       <span className="text-xs font-medium">
                         {t('user_annotation_card_verified')}
                       </span>
@@ -646,7 +645,7 @@ export default function UserAnnotationCard({
                   )}
                   {isOptimistic && (
                     <div className="flex items-center space-x-1 text-accent-blue">
-                      <FiLoader className="w-3 h-3 animate-spin" />
+                      <PiSpinnerGap className="w-3 h-3 animate-spin" />
                       <span className="text-xs font-medium">
                         {t('user_annotation_card_saving')}
                       </span>
@@ -667,7 +666,7 @@ export default function UserAnnotationCard({
                 </div>
 
                 <div className="flex items-center space-x-2 text-xs text-theme-tertiary">
-                  <FiClock className="w-3 h-3" />
+                  <PiClock className="w-3 h-3" />
                   <span>
                     {formatDistanceToNow(
                       new Date(currentAnnotation.createdAt),
@@ -691,7 +690,7 @@ export default function UserAnnotationCard({
                     isUpdating ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
-                  <FiMoreHorizontal className="w-4 h-4" />
+                  <PiDotsThree className="w-4 h-4" />
                 </button>
 
                 {showActions && !isUpdating && (
@@ -703,7 +702,7 @@ export default function UserAnnotationCard({
                       }}
                       className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-interactive-hover flex items-center space-x-2 transition-colors"
                     >
-                      <FiEdit3 className="w-3 h-3" />
+                      <PiPencilLine className="w-3 h-3" />
                       <span>{t('user_annotation_card_edit')}</span>
                     </button>
                     <button
@@ -713,7 +712,7 @@ export default function UserAnnotationCard({
                       }}
                       className="w-full px-4 py-2 text-left text-sm text-accent-red hover:bg-accent-red/10 flex items-center space-x-2 transition-colors"
                     >
-                      <FiTrash2 className="w-3 h-3" />
+                      <PiTrash className="w-3 h-3" />
                       <span>{t('user_annotation_card_delete')}</span>
                     </button>
                   </div>
@@ -739,14 +738,14 @@ export default function UserAnnotationCard({
 
             {!currentAnnotation.isPublic && (
               <span className="px-3 py-1 rounded-full text-xs font-medium border bg-accent-red/10 border-accent-red/30 text-accent-red flex items-center space-x-1">
-                <FiEye className="w-3 h-3" />
+                <PiEye className="w-3 h-3" />
                 <span>{t('user_annotation_card_private')}</span>
               </span>
             )}
 
             {measureInfo && (
               <span className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary flex items-center space-x-1">
-                <FiMapPin className="w-3 h-3" />
+                <PiMapPin className="w-3 h-3" />
                 <span>{measureInfo}</span>
               </span>
             )}
@@ -795,11 +794,11 @@ export default function UserAnnotationCard({
             {/* Stats */}
             <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
               <div className="flex items-center space-x-1">
-                <FiThumbsUp className="w-4 h-4" />
+                <PiThumbsUp className="w-4 h-4" />
                 <span>{currentAnnotation.helpfulCount}</span>
               </div>
               <div className="flex items-center space-x-1">
-                <FiEye className="w-4 h-4" />
+                <PiEye className="w-4 h-4" />
                 <span>{currentAnnotation.viewCount}</span>
               </div>
             </div>
@@ -809,7 +808,7 @@ export default function UserAnnotationCard({
               href={`/works/${workInfo.id}`}
               className="btn-classical-secondary flex items-center space-x-2 text-sm"
             >
-              <FiExternalLink className="w-4 h-4" />
+              <PiArrowSquareOut className="w-4 h-4" />
               <span>{t('user_annotation_card_see_work')}</span>
             </Link>
           </div>

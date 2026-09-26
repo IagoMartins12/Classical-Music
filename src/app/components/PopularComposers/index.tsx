@@ -1,7 +1,7 @@
 // app/components/PopularComposers.tsx - Updated with theme system
 'use client';
 
-import { FiTrendingUp } from 'react-icons/fi';
+import { PiTrendUp } from 'react-icons/pi';
 import SectionTitle from '../Utils/SectionTitle';
 import Carousel from '../Carousel/Carousel';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -36,7 +36,7 @@ const PopularComposers: React.FC<pageComposersInterface> = ({
         subtitle={t('master_composers')}
         linkText={t('see_all_composers')}
         linkHref="/composers"
-        icon={<FiTrendingUp className="w-6 h-6" />}
+        icon={<PiTrendUp className="w-6 h-6" />}
         accent="gold"
       />
 

@@ -3,15 +3,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { registerWithPassword, signInWithGoogle } from '@/app/libs/session';
-import {
-  FiMail,
-  FiLock,
-  FiUser,
-  FiCheckCircle,
-  FiAlertTriangle,
-} from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { GiGrandPiano } from 'react-icons/gi';
+import {
+  PiCheckCircle,
+  PiEnvelopeSimple,
+  PiLock,
+  PiUser,
+  PiWarning,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import {
   useOnboardingModal,
@@ -423,7 +423,7 @@ const RegisterModal: React.FC = () => {
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center shadow-theme-glow animate-pulse">
-            <FiCheckCircle className="w-8 h-8 text-white" />
+            <PiCheckCircle className="w-8 h-8 text-white" />
           </div>
         </div>
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -442,7 +442,7 @@ const RegisterModal: React.FC = () => {
           registerStep.userData?.registrationMethod !== 'google' && (
             <div className="bg-accent-amber bg-opacity-10 border border-accent-amber rounded-lg p-4">
               <div className="flex items-start">
-                <FiAlertTriangle className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+                <PiWarning className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
                 <div>
                   <h4 className="font-medium text-accent-amber mb-1">
                     {t('register_success_login_manual_title')}
@@ -504,7 +504,7 @@ const RegisterModal: React.FC = () => {
 
         <div className="bg-theme-secondary rounded-lg p-4 space-y-3">
           <h4 className="text-sm font-medium text-theme-primary flex items-center">
-            <FiCheckCircle className="w-4 h-4 mr-2" />
+            <PiCheckCircle className="w-4 h-4 mr-2" />
             {t('register_success_next_steps')}
           </h4>
           <ul className="text-sm text-theme-tertiary space-y-2">
@@ -615,7 +615,7 @@ const RegisterModal: React.FC = () => {
               name="username"
               value={formData.username}
               onChange={handleInputChange}
-              leftIcon={<FiUser className="w-4 h-4" />}
+              leftIcon={<PiUser className="w-4 h-4" />}
               placeholder={t('register_modal_username_placeholder')}
               error={errors.username}
               disabled={isLoading || isGoogleLoading}
@@ -633,7 +633,7 @@ const RegisterModal: React.FC = () => {
           name="email"
           value={formData.email}
           onChange={handleInputChange}
-          leftIcon={<FiMail className="w-4 h-4" />}
+          leftIcon={<PiEnvelopeSimple className="w-4 h-4" />}
           placeholder={t('register_modal_email_placeholder')}
           error={errors.email || emailConflictError}
           disabled={isLoading || isGoogleLoading}
@@ -645,7 +645,7 @@ const RegisterModal: React.FC = () => {
           name="password"
           value={formData.password}
           onChange={handleInputChange}
-          leftIcon={<FiLock className="w-4 h-4" />}
+          leftIcon={<PiLock className="w-4 h-4" />}
           placeholder={t('register_modal_password_placeholder')}
           isPassword
           error={errors.password}
@@ -658,7 +658,7 @@ const RegisterModal: React.FC = () => {
           name="confirmPassword"
           value={formData.confirmPassword}
           onChange={handleInputChange}
-          leftIcon={<FiLock className="w-4 h-4" />}
+          leftIcon={<PiLock className="w-4 h-4" />}
           placeholder={t('register_modal_confirm_password_placeholder')}
           isPassword
           error={errors.confirmPassword}

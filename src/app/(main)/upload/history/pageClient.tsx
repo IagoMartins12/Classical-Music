@@ -4,24 +4,24 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiClock,
-  FiUser,
-  FiMusic,
-  FiFile,
-  FiPlus,
-  FiEdit,
-  FiTrash2,
-  FiFilter,
-  FiCalendar,
-  FiActivity,
-  FiChevronDown,
-  FiChevronUp,
-  FiEye,
-  FiMapPin,
-  FiMonitor,
-  FiDatabase,
-  FiCheck,
-} from 'react-icons/fi';
+  PiCalendarBlank,
+  PiCaretDown,
+  PiCaretUp,
+  PiCheck,
+  PiClock,
+  PiDatabase,
+  PiEye,
+  PiFile,
+  PiFunnel,
+  PiMapPin,
+  PiMonitor,
+  PiMusicNotes,
+  PiNotePencil,
+  PiPlus,
+  PiPulse,
+  PiTrash,
+  PiUser,
+} from 'react-icons/pi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import {
@@ -151,31 +151,31 @@ const HistoryClient = ({
   const getEntityIcon = (entityType: string) => {
     switch (entityType) {
       case 'composer':
-        return <FiUser className="w-5 h-5" />;
+        return <PiUser className="w-5 h-5" />;
       case 'work':
-        return <FiMusic className="w-5 h-5" />;
+        return <PiMusicNotes className="w-5 h-5" />;
       case 'score':
-        return <FiFile className="w-5 h-5" />;
+        return <PiFile className="w-5 h-5" />;
       default:
-        return <FiActivity className="w-5 h-5" />;
+        return <PiPulse className="w-5 h-5" />;
     }
   };
 
   const getActionIcon = (action: string, changes?: any) => {
     // Ícone especial para bulk import
     if (changes?.bulkImport) {
-      return <FiDatabase className="w-4 h-4 text-purple-600" />;
+      return <PiDatabase className="w-4 h-4 text-purple-600" />;
     }
 
     switch (action) {
       case 'create':
-        return <FiPlus className="w-4 h-4 text-green-600" />;
+        return <PiPlus className="w-4 h-4 text-green-600" />;
       case 'update':
-        return <FiEdit className="w-4 h-4 text-blue-600" />;
+        return <PiNotePencil className="w-4 h-4 text-blue-600" />;
       case 'delete':
-        return <FiTrash2 className="w-4 h-4 text-red-600" />;
+        return <PiTrash className="w-4 h-4 text-red-600" />;
       default:
-        return <FiActivity className="w-4 h-4 text-theme-tertiary" />;
+        return <PiPulse className="w-4 h-4 text-theme-tertiary" />;
     }
   };
 
@@ -275,7 +275,7 @@ const HistoryClient = ({
       return (
         <div className="mt-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
           <h5 className="text-sm font-medium text-purple-700 mb-3 flex items-center">
-            <FiDatabase className="w-4 h-4 mr-1" />
+            <PiDatabase className="w-4 h-4 mr-1" />
             {t('history_bulk_import_title')}
           </h5>
 
@@ -337,7 +337,7 @@ const HistoryClient = ({
                       key={index}
                       className="text-xs text-purple-600 flex items-center"
                     >
-                      <FiCheck className="w-3 h-3 mr-1 text-green-500" />
+                      <PiCheck className="w-3 h-3 mr-1 text-green-500" />
                       {work.title}
                     </div>
                   ))}
@@ -360,7 +360,7 @@ const HistoryClient = ({
       return (
         <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
           <h5 className="text-sm font-medium text-green-700 mb-2 flex items-center">
-            <FiPlus className="w-4 h-4 mr-1" />
+            <PiPlus className="w-4 h-4 mr-1" />
             {t('history_changes_created_title')}
           </h5>
           <div className="space-y-1">
@@ -381,7 +381,7 @@ const HistoryClient = ({
       return (
         <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
           <h5 className="text-sm font-medium text-red-700 mb-2 flex items-center">
-            <FiTrash2 className="w-4 h-4 mr-1" />
+            <PiTrash className="w-4 h-4 mr-1" />
             {t('history_changes_deleted_title')}
           </h5>
           <div className="space-y-1">
@@ -412,7 +412,7 @@ const HistoryClient = ({
       return (
         <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <h5 className="text-sm font-medium text-blue-700 mb-2 flex items-center">
-            <FiEdit className="w-4 h-4 mr-1" />
+            <PiNotePencil className="w-4 h-4 mr-1" />
             {t('history_changes_updated_title')}
           </h5>
           <div className="space-y-2">
@@ -499,7 +499,7 @@ const HistoryClient = ({
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiClock className="w-8 h-8 text-theme-primary" />
+                <PiClock className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -532,12 +532,12 @@ const HistoryClient = ({
                   onClick={() => setShowFilters(!showFilters)}
                   className="flex items-center space-x-2 px-4 py-2 bg-theme-secondary hover:bg-theme-tertiary text-theme-primary rounded-lg transition-colors"
                 >
-                  <FiFilter className="w-4 h-4" />
+                  <PiFunnel className="w-4 h-4" />
                   <span>{t('history_filters_button')}</span>
                   {showFilters ? (
-                    <FiChevronUp className="w-4 h-4" />
+                    <PiCaretUp className="w-4 h-4" />
                   ) : (
-                    <FiChevronDown className="w-4 h-4" />
+                    <PiCaretDown className="w-4 h-4" />
                   )}
                 </button>
               </div>
@@ -596,7 +596,7 @@ const HistoryClient = ({
           <div className="space-y-6">
             {history.length === 0 ? (
               <div className="classical-card p-12 text-center">
-                <FiClock className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                <PiClock className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
                   {t('history_no_records_title')}
                 </h3>
@@ -662,7 +662,7 @@ const HistoryClient = ({
 
                             <div className="flex items-center space-x-2">
                               <div className="flex items-center space-x-2 text-xs text-theme-tertiary">
-                                <FiCalendar className="w-3 h-3" />
+                                <PiCalendarBlank className="w-3 h-3" />
                                 <span>
                                   {formatDistanceToNow(
                                     new Date(record.createdAt),
@@ -680,9 +680,9 @@ const HistoryClient = ({
                                   className="w-6 h-6 rounded-full bg-theme-secondary hover:bg-theme-tertiary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
                                 >
                                   {expandedItems.has(record.id) ? (
-                                    <FiChevronUp className="w-3 h-3" />
+                                    <PiCaretUp className="w-3 h-3" />
                                   ) : (
-                                    <FiEye className="w-3 h-3" />
+                                    <PiEye className="w-3 h-3" />
                                   )}
                                 </button>
                               )}
@@ -730,7 +730,7 @@ const HistoryClient = ({
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-theme-tertiary">
                                   {record.ipAddress && (
                                     <div className="flex items-center space-x-2">
-                                      <FiMapPin className="w-3 h-3" />
+                                      <PiMapPin className="w-3 h-3" />
                                       <span>
                                         {t('history_ip_label')}{' '}
                                         {record.ipAddress}
@@ -740,7 +740,7 @@ const HistoryClient = ({
 
                                   {record.userAgent && (
                                     <div className="flex items-center space-x-2">
-                                      <FiMonitor className="w-3 h-3" />
+                                      <PiMonitor className="w-3 h-3" />
                                       <span title={record.userAgent}>
                                         {record.userAgent.length > 30
                                           ? record.userAgent.substring(0, 30) +

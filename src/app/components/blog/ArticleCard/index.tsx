@@ -1,7 +1,7 @@
 // app/components/blog/ArticleCard.tsx
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
-import { FaClock, FaCommentDots, FaHeart, FaUser } from 'react-icons/fa';
+import { PiChatDots, PiClock, PiHeart, PiUser } from 'react-icons/pi';
 
 interface ArticleCardProps {
   article: {
@@ -109,7 +109,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
               />
             ) : (
               <div className="w-6 h-6 rounded-full bg-theme-classical flex items-center justify-center">
-                <FaUser className="w-3 h-3 text-brand-primary" />
+                <PiUser className="w-3 h-3 text-brand-primary" />
               </div>
             )}
             <span className="text-xs text-theme-tertiary">
@@ -120,15 +120,15 @@ export function ArticleCard({ article }: ArticleCardProps) {
           {/* Stats */}
           <div className="flex items-center space-x-3 text-xs text-theme-tertiary">
             <div className="flex items-center space-x-1">
-              <FaClock className="w-3 h-3" />
+              <PiClock className="w-3 h-3" />
               <span>{article?.readTime ?? 0}min</span>
             </div>
             <div className="flex items-center space-x-1">
-              <FaHeart className="w-3 h-3" />
+              <PiHeart className="w-3 h-3" />
               <span>{article._count.likes}</span>
             </div>
             <div className="flex items-center space-x-1">
-              <FaCommentDots className="w-3 h-3" />
+              <PiChatDots className="w-3 h-3" />
               <span>{article._count.comments}</span>
             </div>
           </div>

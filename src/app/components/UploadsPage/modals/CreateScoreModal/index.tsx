@@ -5,22 +5,22 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from '@/app/components/SmartImage';
 import {
-  FiFile,
-  FiUpload,
-  FiSave,
-  FiLoader,
-  FiInfo,
-  FiImage,
-  FiFileText,
-  FiTag,
-  FiCheck,
-  FiAlertCircle,
-  FiLink,
-  FiX,
-  FiFilter,
-  FiTarget,
-  FiSettings,
-} from 'react-icons/fi';
+  PiCheck,
+  PiFile,
+  PiFileText,
+  PiFloppyDisk,
+  PiFunnel,
+  PiGear,
+  PiImage,
+  PiInfo,
+  PiLink,
+  PiSpinnerGap,
+  PiTag,
+  PiTarget,
+  PiUploadSimple,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedItem,
@@ -671,7 +671,7 @@ const CreateScoreModal = ({
           <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                <FiFile className="w-5 h-5 text-theme-primary" />
+                <PiFile className="w-5 h-5 text-theme-primary" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -695,7 +695,7 @@ const CreateScoreModal = ({
               {!editingScore && (
                 <AnimatedCard className="classical-card-2 p-4">
                   <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                    <FiUpload className="w-5 h-5" />
+                    <PiUploadSimple className="w-5 h-5" />
                     <span>{t('modal_score_upload_mode_title')}</span>
                   </h3>
 
@@ -719,7 +719,7 @@ const CreateScoreModal = ({
                                 : 'bg-theme-secondary text-theme-tertiary'
                             }`}
                           >
-                            <FiLink className="w-4 h-4" />
+                            <PiLink className="w-4 h-4" />
                           </div>
                           <div className="text-left">
                             <h4 className="font-medium">
@@ -750,7 +750,7 @@ const CreateScoreModal = ({
                                 : 'bg-theme-secondary text-theme-tertiary'
                             }`}
                           >
-                            <FiUpload className="w-4 h-4" />
+                            <PiUploadSimple className="w-4 h-4" />
                           </div>
                           <div className="text-left">
                             <h4 className="font-medium">
@@ -767,7 +767,7 @@ const CreateScoreModal = ({
                     {errors.uploadMode && (
                       <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                         <div className="flex items-center space-x-2">
-                          <FiAlertCircle className="w-4 h-4 text-red-600" />
+                          <PiWarningCircle className="w-4 h-4 text-red-600" />
                           <span className="text-sm font-medium text-red-800">
                             {errors.uploadMode}
                           </span>
@@ -782,7 +782,7 @@ const CreateScoreModal = ({
               {uploadMode === 'file' && !editingScore && (
                 <AnimatedCard className="classical-card-2 p-4">
                   <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                    <FiUpload className="w-5 h-5" />
+                    <PiUploadSimple className="w-5 h-5" />
                     <span>Enviar Arquivo</span>
                   </h3>
 
@@ -812,7 +812,7 @@ const CreateScoreModal = ({
 
                       {uploadingFile ? (
                         <div className="flex items-center justify-center space-x-2">
-                          <FiLoader className="w-6 h-6 animate-spin text-brand-primary" />
+                          <PiSpinnerGap className="w-6 h-6 animate-spin text-brand-primary" />
                           <span className="text-theme-secondary">
                             Enviando arquivo...
                           </span>
@@ -821,9 +821,9 @@ const CreateScoreModal = ({
                         <div className="space-y-4">
                           <div className="flex items-center justify-center space-x-2">
                             {selectedFile.type.startsWith('image/') ? (
-                              <FiImage className="w-6 h-6 text-accent-green" />
+                              <PiImage className="w-6 h-6 text-accent-green" />
                             ) : (
-                              <FiFile className="w-6 h-6 text-accent-green" />
+                              <PiFile className="w-6 h-6 text-accent-green" />
                             )}
                             <span className="text-theme-primary font-medium">
                               {selectedFile.name}
@@ -836,7 +836,7 @@ const CreateScoreModal = ({
                           {generatingThumbnail && (
                             <div className="mt-4 text-center">
                               <div className="flex items-center justify-center space-x-2 text-sm text-brand-primary">
-                                <FiLoader className="w-4 h-4 animate-spin" />
+                                <PiSpinnerGap className="w-4 h-4 animate-spin" />
                                 <span>
                                   {isLargeFile
                                     ? 'Processando arquivo grande...'
@@ -868,7 +868,7 @@ const CreateScoreModal = ({
                           {thumbnailError && !generatingThumbnail && (
                             <div className="mt-4 text-center">
                               <div className="flex items-center justify-center space-x-2 text-sm text-amber-600 mb-2">
-                                <FiAlertCircle className="w-4 h-4" />
+                                <PiWarningCircle className="w-4 h-4" />
                                 <span>Preview não disponível</span>
                               </div>
                               <div className="text-xs text-theme-tertiary">
@@ -879,7 +879,7 @@ const CreateScoreModal = ({
                         </div>
                       ) : (
                         <div>
-                          <FiUpload className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                          <PiUploadSimple className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                           <p className="text-theme-secondary">
                             Clique aqui ou arraste arquivos para enviar
                           </p>
@@ -896,7 +896,7 @@ const CreateScoreModal = ({
                     {errors.downloadUrl && uploadMode === 'file' && (
                       <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                         <div className="flex items-center space-x-2">
-                          <FiAlertCircle className="w-4 h-4 text-red-600" />
+                          <PiWarningCircle className="w-4 h-4 text-red-600" />
                           <span className="text-sm font-medium text-red-800">
                             {errors.downloadUrl}
                           </span>
@@ -913,7 +913,7 @@ const CreateScoreModal = ({
                         }}
                         className="flex items-center space-x-2 mx-auto text-sm text-theme-tertiary hover:text-accent-red transition-colors"
                       >
-                        <FiX className="w-4 h-4" />
+                        <PiX className="w-4 h-4" />
                         <span>Remover arquivo</span>
                       </button>
                     )}
@@ -925,7 +925,7 @@ const CreateScoreModal = ({
               {uploadMode === 'url' && !editingScore && (
                 <AnimatedCard className="classical-card-2 p-4">
                   <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                    <FiLink className="w-5 h-5" />
+                    <PiLink className="w-5 h-5" />
                     <span>URL do Arquivo</span>
                   </h3>
 
@@ -936,19 +936,19 @@ const CreateScoreModal = ({
                     onChange={(e) => handleUrlChange(e.target.value)}
                     error={errors.downloadUrl}
                     placeholder="https://exemplo.com/partitura.pdf"
-                    leftIcon={<FiLink />}
+                    leftIcon={<PiLink />}
                   />
 
                   {validatingFile && (
                     <div className="mt-2 flex items-center space-x-2 text-sm text-brand-primary">
-                      <FiLoader className="w-4 h-4 animate-spin" />
+                      <PiSpinnerGap className="w-4 h-4 animate-spin" />
                       <span>Validando arquivo...</span>
                     </div>
                   )}
 
                   {fileValidation.isValid && (
                     <div className="mt-2 flex items-center space-x-2 text-sm text-accent-green">
-                      <FiCheck className="w-4 h-4" />
+                      <PiCheck className="w-4 h-4" />
                       <span>Arquivo válido encontrado</span>
                     </div>
                   )}
@@ -956,7 +956,7 @@ const CreateScoreModal = ({
                   {fileValidation.error && (
                     <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                       <div className="flex items-center space-x-2">
-                        <FiAlertCircle className="w-4 h-4 text-red-600" />
+                        <PiWarningCircle className="w-4 h-4 text-red-600" />
                         <span className="text-sm font-medium text-red-800">
                           {fileValidation.error}
                         </span>
@@ -969,7 +969,7 @@ const CreateScoreModal = ({
               {/* Work Selection */}
               <AnimatedCard className="classical-card-2 p-4 relative z-50">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiInfo className="w-5 h-5" />
+                  <PiInfo className="w-5 h-5" />
                   <span>{t('modal_score_work_selection_title')}</span>
                 </h3>
 
@@ -977,7 +977,7 @@ const CreateScoreModal = ({
                   <div ref={fieldRefs.composerFilter}>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
                       <div className="flex items-center space-x-2">
-                        <FiFilter className="w-4 h-4" />
+                        <PiFunnel className="w-4 h-4" />
                         <span>{t('modal_score_work_filter_composer')}</span>
                         {shouldDisableComposerFilter && (
                           <span className="text-xs text-accent-blue">
@@ -1017,7 +1017,7 @@ const CreateScoreModal = ({
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-3">
                             <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center">
-                              <FiCheck className="w-4 h-4 text-accent-blue" />
+                              <PiCheck className="w-4 h-4 text-accent-blue" />
                             </div>
                             <div>
                               <p className="font-medium text-theme-primary text-sm">
@@ -1030,7 +1030,7 @@ const CreateScoreModal = ({
                             </div>
                           </div>
                           <div className="text-theme-tertiary">
-                            <FiInfo className="w-4 h-4" />
+                            <PiInfo className="w-4 h-4" />
                           </div>
                         </div>
                       </div>
@@ -1059,7 +1059,7 @@ const CreateScoreModal = ({
                   {!editingScore && !loadingUserWorks && (
                     <div className="bg-theme-secondary/10 rounded-lg p-3">
                       <div className="flex items-start space-x-2">
-                        <FiInfo className="w-4 h-4 text-theme-tertiary mt-0.5" />
+                        <PiInfo className="w-4 h-4 text-theme-tertiary mt-0.5" />
                         <div className="text-xs text-theme-tertiary">
                           <p className="font-medium mb-1">
                             💡 {t('modal_score_work_suggestions_title')}
@@ -1083,7 +1083,7 @@ const CreateScoreModal = ({
               {/* Basic Information */}
               <AnimatedCard className="classical-card-2 p-4">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiInfo className="w-5 h-5" />
+                  <PiInfo className="w-5 h-5" />
                   <span>{t('modal_score_basic_info_title')}</span>
                 </h3>
 
@@ -1148,7 +1148,7 @@ const CreateScoreModal = ({
               {/* Publication Information */}
               <AnimatedCard className="classical-card-2 p-4">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiFileText className="w-5 h-5" />
+                  <PiFileText className="w-5 h-5" />
                   <span>{t('modal_score_publication_title')}</span>
                 </h3>
 
@@ -1188,7 +1188,7 @@ const CreateScoreModal = ({
                         handleInputChange('thumbnailUrl', e.target.value)
                       }
                       placeholder="https://exemplo.com/thumb.jpg"
-                      leftIcon={<FiImage />}
+                      leftIcon={<PiImage />}
                     />
                   )}
                 </div>
@@ -1197,7 +1197,7 @@ const CreateScoreModal = ({
               {/* Score Grouping */}
               <AnimatedCard className="classical-card-2 p-4">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiTag className="w-5 h-5" />
+                  <PiTag className="w-5 h-5" />
                   <span>{t('modal_score_grouping_title')}</span>
                 </h3>
 
@@ -1205,7 +1205,7 @@ const CreateScoreModal = ({
                   {formData.workId && (
                     <div>
                       <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-                        <FiTarget className="w-4 h-4 text-accent-green" />
+                        <PiTarget className="w-4 h-4 text-accent-green" />
                         <span>
                           {t('modal_score_grouping_suggestions_title')}
                         </span>
@@ -1223,7 +1223,7 @@ const CreateScoreModal = ({
 
                   <div>
                     <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-                      <FiSettings className="w-4 h-4 text-theme-tertiary" />
+                      <PiGear className="w-4 h-4 text-theme-tertiary" />
                       <span>{t('modal_score_grouping_manual_title')}</span>
                     </h4>
 
@@ -1252,7 +1252,7 @@ const CreateScoreModal = ({
 
                   <div className="p-4 bg-theme-secondary/10 rounded-lg">
                     <h4 className="font-medium text-theme-primary mb-2 flex items-center space-x-2">
-                      <FiInfo className="w-4 h-4" />
+                      <PiInfo className="w-4 h-4" />
                       <span>{t('modal_score_grouping_how_title')}</span>
                     </h4>
                     <p className="text-sm text-theme-secondary">
@@ -1280,7 +1280,7 @@ const CreateScoreModal = ({
               {/* Notes and Custom Data */}
               <AnimatedCard className="classical-card-2 p-4">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiInfo className="w-5 h-5" />
+                  <PiInfo className="w-5 h-5" />
                   <span>{t('modal_score_notes_title')}</span>
                 </h3>
 
@@ -1318,9 +1318,9 @@ const CreateScoreModal = ({
                   variant="primary"
                   leftIcon={
                     isSubmitting ? (
-                      <FiLoader className="animate-spin" />
+                      <PiSpinnerGap className="animate-spin" />
                     ) : (
-                      <FiSave />
+                      <PiFloppyDisk />
                     )
                   }
                   disabled={isSubmitting || (!editingScore && !uploadMode)}

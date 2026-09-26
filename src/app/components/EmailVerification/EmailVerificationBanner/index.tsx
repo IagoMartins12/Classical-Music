@@ -2,7 +2,12 @@
 'use client';
 
 import { useState } from 'react';
-import { FiMail, FiX, FiRefreshCw, FiCheckCircle } from 'react-icons/fi';
+import {
+  PiArrowsClockwise,
+  PiCheckCircle,
+  PiEnvelopeSimple,
+  PiX,
+} from 'react-icons/pi';
 import { AnimatedItem } from '../../animation/AnimatedComponents';
 import Button from '../../Common/Button';
 import { useEmailVerification } from '@/app/hooks/useEmailVerification';
@@ -37,7 +42,7 @@ export default function EmailVerificationBanner({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-amber/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                <FiMail className="w-5 h-5 text-accent-amber" />
+                <PiEnvelopeSimple className="w-5 h-5 text-accent-amber" />
               </div>
 
               <div className="flex-1">
@@ -47,7 +52,7 @@ export default function EmailVerificationBanner({
                   </h4>
                   {emailSent && (
                     <div className="flex items-center space-x-1">
-                      <FiCheckCircle className="w-4 h-4 text-accent-green" />
+                      <PiCheckCircle className="w-4 h-4 text-accent-green" />
                       <span className="text-xs text-accent-green font-medium">
                         Email enviado!
                       </span>
@@ -69,7 +74,7 @@ export default function EmailVerificationBanner({
                 size="sm"
                 isLoading={isSending}
                 leftIcon={
-                  <FiRefreshCw
+                  <PiArrowsClockwise
                     className={`w-4 h-4 ${isSending ? 'animate-spin' : ''}`}
                   />
                 }
@@ -84,7 +89,7 @@ export default function EmailVerificationBanner({
                   className="w-8 h-8 rounded-lg bg-theme-tertiary/20 hover:bg-theme-tertiary/30 flex items-center justify-center text-theme-tertiary hover:text-theme-primary transition-colors"
                   aria-label="Fechar aviso"
                 >
-                  <FiX className="w-4 h-4" />
+                  <PiX className="w-4 h-4" />
                 </button>
               )}
             </div>

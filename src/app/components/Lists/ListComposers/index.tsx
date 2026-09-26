@@ -2,8 +2,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FiChevronDown, FiUsers } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+import { PiCaretDown, PiMusicNotes, PiUsers } from 'react-icons/pi';
 import ListComposersCards from '../Cards/ListComposersCard';
 import { composerHomeProps } from '../../PopularComposers';
 import { useNavigate } from '@/app/hooks/useNavigate';
@@ -102,7 +101,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
                 </>
               ) : (
                 <>
-                  <FiChevronDown className="w-5 h-5 mr-2 inline" />
+                  <PiCaretDown className="w-5 h-5 mr-2 inline" />
                   {t('loading_more_composers')}
                 </>
               )}
@@ -120,7 +119,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
             <div className="classical-card p-6 max-w-md mx-auto">
               <div className="flex items-center justify-center mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-brand-primary rounded-full flex items-center justify-center shadow-theme-glow">
-                  <GiMusicalNotes className="w-6 h-6 text-theme-primary" />
+                  <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
               <h4 className="text-lg font-bold text-theme-primary classical-title mb-2">
@@ -137,7 +136,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
               onClick={() => navigateToUrl('composers')}
               className="btn-classical-secondary text-lg px-8 py-4 hover:scale-105 active:scale-95"
             >
-              <FiUsers className="w-5 h-5 mr-2 inline" />
+              <PiUsers className="w-5 h-5 mr-2 inline" />
 
               {t('see_all_composers')}
             </button>

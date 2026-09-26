@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { Editor } from '@tiptap/react';
-import { FiUpload, FiMusic } from 'react-icons/fi';
+import { PiMusicNotes, PiUploadSimple } from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Button from '@/app/components/Common/Button';
@@ -210,7 +210,7 @@ export function AudioPlayerModal({
 
                 {audioUrl && !uploading ? (
                   <div className="space-y-3">
-                    <FiMusic className="w-12 h-12 text-green-600 mx-auto" />
+                    <PiMusicNotes className="w-12 h-12 text-green-600 mx-auto" />
                     <p className="text-sm text-green-700 font-medium">
                       ✓ Áudio carregado com sucesso
                     </p>
@@ -224,7 +224,7 @@ export function AudioPlayerModal({
                   </div>
                 ) : (
                   <label htmlFor="audio-upload" className="cursor-pointer">
-                    <FiUpload className="w-12 h-12 text-theme-tertiary mx-auto mb-2" />
+                    <PiUploadSimple className="w-12 h-12 text-theme-tertiary mx-auto mb-2" />
                     <span className="text-sm text-theme-secondary">
                       {uploading ? 'Enviando...' : 'Clique para fazer upload'}
                     </span>

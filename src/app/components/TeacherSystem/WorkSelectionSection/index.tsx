@@ -4,15 +4,15 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
-  FiMusic,
-  FiPlus,
-  FiTrash2,
-  FiUser,
-  FiBookOpen,
-  FiCheck,
-  FiX,
-  FiInfo,
-} from 'react-icons/fi';
+  PiBookOpen,
+  PiCheck,
+  PiInfo,
+  PiMusicNotes,
+  PiPlus,
+  PiTrash,
+  PiUser,
+  PiX,
+} from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import ComposerSearchInput from '../../ComposerSearchInput';
 import ScoreSelectionModal from '../../LearningModal/ScoreSelectionModal';
@@ -291,7 +291,7 @@ export default function WorkSelectionSection({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-              <FiMusic className="w-5 h-5 text-theme-primary" />
+              <PiMusicNotes className="w-5 h-5 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-theme-primary classical-title">
@@ -328,7 +328,7 @@ export default function WorkSelectionSection({
         {selectedWorks.length > 0 && (
           <div className="space-y-3">
             <h4 className="text-sm font-medium text-theme-primary flex items-center space-x-2">
-              <FiBookOpen className="w-4 h-4" />
+              <PiBookOpen className="w-4 h-4" />
               <span>Peças Vinculadas</span>
             </h4>
 
@@ -343,7 +343,7 @@ export default function WorkSelectionSection({
                     <div className="flex items-center flex-col sm:flex-row gap-4 sm:gap-0 justify-between">
                       <div className="flex items-center space-x-3 flex-1 min-w-0 w-full">
                         <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <FiMusic className="w-4 h-4 text-accent-blue" />
+                          <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                         </div>
 
                         <div className="flex-1 min-w-0">
@@ -363,7 +363,7 @@ export default function WorkSelectionSection({
                           {work.scoreId ? (
                             <div className="mt-2 flex items-center space-x-2">
                               <div className="flex items-center space-x-1 text-xs text-accent-green">
-                                <FiCheck className="w-3 h-3" />
+                                <PiCheck className="w-3 h-3" />
                                 <span>Partitura: {work.scoreTitle}</span>
                               </div>
                               <span className="text-xs text-theme-tertiary">
@@ -404,7 +404,7 @@ export default function WorkSelectionSection({
                             disabled ? 'opacity-50 cursor-not-allowed' : ''
                           }`}
                         >
-                          <FiTrash2 className="w-3 h-3 text-accent-red" />
+                          <PiTrash className="w-3 h-3 text-accent-red" />
                         </button>
                       </div>
                     </div>
@@ -430,7 +430,7 @@ export default function WorkSelectionSection({
                     : 'border-theme-tertiary/50 text-theme-tertiary cursor-not-allowed opacity-50'
                 }`}
               >
-                <FiPlus className="w-4 h-4" />
+                <PiPlus className="w-4 h-4" />
                 <span>
                   {selectedWorks.length === 0
                     ? 'Adicionar primeira peça'
@@ -441,7 +441,7 @@ export default function WorkSelectionSection({
               <div className="bg-brand-primary/5 border border-color-primary rounded-lg p-4 space-y-4">
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm font-medium text-theme-primary flex items-center space-x-2">
-                    <FiPlus className="w-4 h-4 text-brand-primary" />
+                    <PiPlus className="w-4 h-4 text-brand-primary" />
                     <span>Adicionar Nova Peça</span>
                   </h4>
                   <button
@@ -449,7 +449,7 @@ export default function WorkSelectionSection({
                     onClick={resetAddForm}
                     className="w-6 h-6 rounded-full bg-theme-elevated border border-theme-secondary hover:border-accent-red transition-colors flex items-center justify-center"
                   >
-                    <FiX className="w-3 h-3 text-theme-tertiary hover:text-accent-red" />
+                    <PiX className="w-3 h-3 text-theme-tertiary hover:text-accent-red" />
                   </button>
                 </div>
 
@@ -457,7 +457,7 @@ export default function WorkSelectionSection({
                 <div>
                   <label className="block text-sm font-medium text-theme-tertiary mb-2">
                     <div className="flex items-center space-x-2">
-                      <FiUser className="w-4 h-4" />
+                      <PiUser className="w-4 h-4" />
                       <span>Compositor</span>
                       {hasWorkSelected && (
                         <span className="text-xs text-accent-blue">
@@ -486,7 +486,7 @@ export default function WorkSelectionSection({
                 <div>
                   <label className="block text-sm font-medium text-theme-tertiary mb-2">
                     <div className="flex items-center space-x-2">
-                      <FiMusic className="w-4 h-4" />
+                      <PiMusicNotes className="w-4 h-4" />
                       <span>Obra *</span>
                       {/* 🆕 Indicador de carregamento das obras do compositor */}
                       {loadingComposerWorks && (
@@ -525,7 +525,7 @@ export default function WorkSelectionSection({
                   <div className="text-xs text-theme-tertiary">
                     {hasComposerSelected && hasWorkSelected ? (
                       <span className="text-accent-green flex items-center space-x-1">
-                        <FiCheck className="w-3 h-3" />
+                        <PiCheck className="w-3 h-3" />
                         <span>Pronto para adicionar</span>
                       </span>
                     ) : !hasComposerSelected && !hasWorkSelected ? (
@@ -556,7 +556,7 @@ export default function WorkSelectionSection({
                       disabled={!hasWorkSelected || loadingComposerWorks}
                       className="btn-classical-primary text-sm flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <FiCheck className="w-3 h-3" />
+                      <PiCheck className="w-3 h-3" />
                       <span>Adicionar Peça</span>
                     </button>
                   </div>
@@ -570,7 +570,7 @@ export default function WorkSelectionSection({
         {selectedWorks.length >= maxWorks && (
           <div className="bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg p-3">
             <div className="flex items-start space-x-3">
-              <FiInfo className="w-5 h-5 text-accent-yellow mt-0.5 flex-shrink-0" />
+              <PiInfo className="w-5 h-5 text-accent-yellow mt-0.5 flex-shrink-0" />
               <div className="text-sm">
                 <p className="font-medium text-accent-yellow mb-1">
                   Limite de peças atingido
@@ -588,7 +588,7 @@ export default function WorkSelectionSection({
         {selectedWorks.length === 0 && !isAddingWork && (
           <div className="bg-theme-secondary/10 rounded-lg p-4">
             <div className="flex items-start space-x-3">
-              <FiInfo className="w-5 h-5 text-theme-tertiary mt-0.5 hidden sm:flex" />
+              <PiInfo className="w-5 h-5 text-theme-tertiary mt-0.5 hidden sm:flex" />
               <div className="text-sm text-theme-secondary">
                 <p className="font-medium mb-1">
                   💡 Como funciona o sistema de peças:

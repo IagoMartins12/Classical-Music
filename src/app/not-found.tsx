@@ -5,16 +5,16 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useSession } from '@/app/libs/session';
 import Link from 'next/link';
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiHome,
-  FiMusic,
-  FiUsers,
-  FiBookOpen,
-  FiCompass,
-  FiFileText,
-  FiLayers,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+  PiBookOpen,
+  PiCompass,
+  PiFileText,
+  PiHouse,
+  PiMusicNotes,
+  PiStack,
+  PiUsers,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -211,7 +211,7 @@ export default function NotFound() {
                           href={getHomeLink()}
                           className="btn-classical-primary flex items-center space-x-3 group text-lg px-8 py-4"
                         >
-                          <FiHome className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                          <PiHouse className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                           <span>{getAreaTitle()}</span>
                         </Link>
                       </AnimatedItem>
@@ -237,11 +237,11 @@ export default function NotFound() {
 
                 {/* Decorative Elements */}
                 <div className="absolute top-4 left-4 w-12 h-12 bg-accent-purple/10 rounded-2xl flex items-center justify-center opacity-40">
-                  <GiMusicalNotes className="w-6 h-6 text-accent-purple" />
+                  <PiMusicNotes className="w-6 h-6 text-accent-purple" />
                 </div>
 
                 <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
-                  <GiMusicalNotes className="w-8 h-8 text-brand-primary" />
+                  <PiMusicNotes className="w-8 h-8 text-brand-primary" />
                 </div>
               </div>
               {/* Mobile Overlay */}
@@ -301,19 +301,19 @@ export default function NotFound() {
             title: t('not_found_teacher_suggestions_0__title'),
             description: t('not_found_teacher_suggestions_0__description'),
             href: '/teacher',
-            icon: FiUsers,
+            icon: PiUsers,
           },
           {
             title: t('not_found_teacher_suggestions_1__title'),
             description: t('not_found_teacher_suggestions_1__description'),
             href: '/teacher/students',
-            icon: FiUsers,
+            icon: PiUsers,
           },
           {
             title: t('not_found_teacher_suggestions_2__title'),
             description: t('not_found_teacher_suggestions_2__description'),
             href: '/teacher/calendar',
-            icon: FiBookOpen,
+            icon: PiBookOpen,
           },
         ];
 
@@ -323,19 +323,19 @@ export default function NotFound() {
             title: t('not_found_student_suggestions_0__title'),
             description: t('not_found_student_suggestions_0__description'),
             href: '/student',
-            icon: FiHome,
+            icon: PiHouse,
           },
           {
             title: t('not_found_student_suggestions_1__title'),
             description: t('not_found_student_suggestions_1__description'),
             href: '/student/lessons',
-            icon: FiBookOpen,
+            icon: PiBookOpen,
           },
           {
             title: t('not_found_student_suggestions_2__title'),
             description: t('not_found_student_suggestions_2__description'),
             href: '/student/progress',
-            icon: FiMusic,
+            icon: PiMusicNotes,
           },
         ];
 
@@ -345,19 +345,19 @@ export default function NotFound() {
             title: t('not_found_admin_suggestions_0__title'),
             description: t('not_found_admin_suggestions_0__description'),
             href: '/admin',
-            icon: FiHome,
+            icon: PiHouse,
           },
           {
             title: t('not_found_admin_suggestions_1__title'),
             description: t('not_found_admin_suggestions_1__description'),
             href: '/admin/users',
-            icon: FiUsers,
+            icon: PiUsers,
           },
           {
             title: t('not_found_admin_suggestions_2__title'),
             description: t('not_found_admin_suggestions_2__description'),
             href: '/admin/composers',
-            icon: FiMusic,
+            icon: PiMusicNotes,
           },
         ];
 
@@ -367,19 +367,19 @@ export default function NotFound() {
             title: t('not_found_blog_suggestions_0__title'),
             description: t('not_found_blog_suggestions_0__description'),
             href: '/blog/articles',
-            icon: FiFileText,
+            icon: PiFileText,
           },
           {
             title: t('not_found_blog_suggestions_1__title'),
             description: t('not_found_blog_suggestions_1__description'),
             href: '/blog/category',
-            icon: FiLayers,
+            icon: PiStack,
           },
           {
             title: t('not_found_blog_suggestions_2__title'),
             description: t('not_found_blog_suggestions_2__description'),
             href: '/blog',
-            icon: FiHome,
+            icon: PiHouse,
           },
         ];
 
@@ -389,19 +389,19 @@ export default function NotFound() {
             title: t('not_found_main_suggestions_0__title'),
             description: t('not_found_main_suggestions_0__description'),
             href: '/composers',
-            icon: FiUsers,
+            icon: PiUsers,
           },
           {
             title: t('not_found_main_suggestions_1__title'),
             description: t('not_found_main_suggestions_1__description'),
             href: '/music-history',
-            icon: FiBookOpen,
+            icon: PiBookOpen,
           },
           {
             title: t('not_found_main_suggestions_2__title'),
             description: t('not_found_main_suggestions_2__description'),
             href: '/instruments',
-            icon: FiMusic,
+            icon: PiMusicNotes,
           },
         ];
     }
@@ -514,7 +514,7 @@ export default function NotFound() {
                       href={getHomeLink()}
                       className="btn-classical-primary flex items-center space-x-3 group text-lg px-8 py-4"
                     >
-                      <FiHome className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                      <PiHouse className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                       <span>{getAreaTitle()}</span>
                     </Link>
                   </AnimatedItem>
@@ -525,7 +525,7 @@ export default function NotFound() {
                         href="/"
                         className="btn-classical-secondary flex items-center space-x-3 group text-lg px-8 py-4"
                       >
-                        <FiCompass className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+                        <PiCompass className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
                         <span>
                           {t('not_found_jsx_span_children_0__page_inicial')}
                         </span>
@@ -553,11 +553,11 @@ export default function NotFound() {
 
             {/* Decorative Elements */}
             <div className="absolute top-4 left-4 w-12 h-12 bg-accent-purple/10 rounded-2xl flex items-center justify-center opacity-40">
-              <GiMusicalNotes className="w-6 h-6 text-accent-purple" />
+              <PiMusicNotes className="w-6 h-6 text-accent-purple" />
             </div>
 
             <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
-              <GiMusicalNotes className="w-8 h-8 text-brand-primary" />
+              <PiMusicNotes className="w-8 h-8 text-brand-primary" />
             </div>
           </div>
           <Footer />

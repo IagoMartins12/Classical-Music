@@ -3,12 +3,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import {
-  FiSave,
-  FiPlus,
-  FiTarget,
-  FiMessageCircle,
-  FiInfo,
-} from 'react-icons/fi';
+  PiChatCircle,
+  PiFloppyDisk,
+  PiInfo,
+  PiPlus,
+  PiTarget,
+} from 'react-icons/pi';
 import toast from 'react-hot-toast';
 import { useAds } from '@/app/hooks/admin/useAds';
 import Button from '@/app/components/Common/Button';
@@ -298,7 +298,7 @@ export default function CreateAdModal({
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center">
-              <FiPlus className="w-5 h-5 text-white" />
+              <PiPlus className="w-5 h-5 text-white" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-theme-primary">
@@ -314,7 +314,7 @@ export default function CreateAdModal({
         {/* Alert sobre mídia */}
         <div className="p-4 bg-accent-blue/10 border-l-4 border-accent-blue mx-6 mt-4 rounded">
           <div className="flex items-start space-x-3">
-            <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+            <PiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
             <div>
               <h4 className="font-medium text-theme-primary">Sobre a mídia</h4>
               <p className="text-sm text-theme-secondary mt-1">
@@ -330,7 +330,7 @@ export default function CreateAdModal({
         {conflictInfo && (
           <div className="p-4 bg-accent-red/10 border-l-4 border-accent-red mx-6 mt-4 rounded">
             <div className="flex items-start space-x-3">
-              <FiTarget className="w-5 h-5 text-accent-red mt-0.5" />
+              <PiTarget className="w-5 h-5 text-accent-red mt-0.5" />
               <div>
                 <h4 className="font-medium text-accent-red">
                   Conflito Detectado
@@ -348,7 +348,7 @@ export default function CreateAdModal({
           {/* Informações Básicas */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
-              <FiTarget className="w-5 h-5" />
+              <PiTarget className="w-5 h-5" />
               <span>Informações Básicas</span>
             </h3>
 
@@ -437,7 +437,7 @@ export default function CreateAdModal({
           {/* Segmentação */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
-              <FiTarget className="w-5 h-5" />
+              <PiTarget className="w-5 h-5" />
               <span>Segmentação</span>
             </h3>
 
@@ -502,7 +502,7 @@ export default function CreateAdModal({
           {/* Link e Call-to-Action */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
-              <FiMessageCircle className="w-5 h-5" />
+              <PiChatCircle className="w-5 h-5" />
               <span>Call-to-Action</span>
             </h3>
 
@@ -704,7 +704,7 @@ export default function CreateAdModal({
             <Button
               type="submit"
               variant="primary"
-              leftIcon={<FiSave />}
+              leftIcon={<PiFloppyDisk />}
               disabled={loading || !!conflictInfo}
               isLoading={loading}
             >

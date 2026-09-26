@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BsArrowUp } from 'react-icons/bs';
+import { PiArrowUp } from 'react-icons/pi';
 
 export function ProgressBar() {
   const [progress, setProgress] = useState(0);
@@ -104,7 +104,7 @@ export function ProgressBar() {
             className="mt-4 w-full py-2 btn-classical-primary flex items-center justify-center space-x-2"
             aria-label="Voltar ao topo"
           >
-            <BsArrowUp className="w-4 h-4" />
+            <PiArrowUp className="w-4 h-4" />
             <span>Topo</span>
           </button>
         )}

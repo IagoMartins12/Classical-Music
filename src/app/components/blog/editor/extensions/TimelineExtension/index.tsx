@@ -4,7 +4,7 @@ import { ReactNodeViewRenderer } from '@tiptap/react';
 import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
-import { FaClock, FaTrash, FaUser } from 'react-icons/fa';
+import { PiClock, PiTrash, PiUser } from 'react-icons/pi';
 
 const TimelineComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -31,7 +31,7 @@ const TimelineComponent = (props: any) => {
             className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
             title="Remover"
           >
-            <FaTrash className="w-4 h-4" />
+            <PiTrash className="w-4 h-4" />
           </button>
         </div>
       )}
@@ -39,7 +39,7 @@ const TimelineComponent = (props: any) => {
       {/* ✅ Header com compositor se existir */}
       {composerName && (
         <div className="mb-6 flex items-center space-x-3 p-4 bg-brand-primary/10 rounded-lg border-l-4 border-brand-primary">
-          <FaUser className="w-5 h-5 text-brand-primary" />
+          <PiUser className="w-5 h-5 text-brand-primary" />
           <div>
             <p className="text-sm text-theme-tertiary">Timeline de</p>
             <p className="font-semibold text-theme-primary">{composerName}</p>
@@ -56,7 +56,7 @@ const TimelineComponent = (props: any) => {
             <div key={index} className="relative flex items-start space-x-6">
               {/* Ícone */}
               <div className="relative z-10 flex items-center justify-center w-16 h-16 rounded-full bg-brand-primary border-4 border-theme-elevated shadow-theme-medium">
-                <FaClock className="w-6 h-6 text-theme-primary" />
+                <PiClock className="w-6 h-6 text-theme-primary" />
               </div>
 
               {/* Conteúdo */}

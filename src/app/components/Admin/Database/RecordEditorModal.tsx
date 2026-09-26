@@ -3,12 +3,12 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiX,
-  FiSave,
-  FiAlertCircle,
-  FiLock,
-  FiAlertTriangle,
-} from 'react-icons/fi';
+  PiFloppyDisk,
+  PiLock,
+  PiWarning,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
@@ -196,13 +196,13 @@ export default function RecordEditorModal({
       <div className="flex items-center space-x-2 mb-2">
         {fieldInfo.isSensitive && (
           <span className="px-2 py-0.5 bg-red-500/20 text-red-500 text-xs rounded-full flex items-center space-x-1">
-            <FiLock className="w-3 h-3" />
+            <PiLock className="w-3 h-3" />
             <span>Sensível</span>
           </span>
         )}
         {fieldInfo.requiresConfirmation && (
           <span className="px-2 py-0.5 bg-orange-500/20 text-orange-500 text-xs rounded-full flex items-center space-x-1">
-            <FiAlertTriangle className="w-3 h-3" />
+            <PiWarning className="w-3 h-3" />
             <span>Exige confirmação</span>
           </span>
         )}
@@ -317,7 +317,7 @@ export default function RecordEditorModal({
 
         {error && (
           <div className="flex items-center space-x-2 text-accent-red text-sm">
-            <FiAlertCircle className="w-4 h-4" />
+            <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>
           </div>
         )}
@@ -355,7 +355,7 @@ export default function RecordEditorModal({
                 onClick={onClose}
                 className="p-2 hover:bg-theme-secondary rounded-lg transition-colors"
               >
-                <FiX className="w-5 h-5 text-theme-tertiary" />
+                <PiX className="w-5 h-5 text-theme-tertiary" />
               </button>
             </div>
           </div>
@@ -377,7 +377,7 @@ export default function RecordEditorModal({
             <div className="text-sm text-theme-tertiary">
               {Object.keys(errors).length > 0 && (
                 <span className="text-accent-red flex items-center space-x-2">
-                  <FiAlertCircle />
+                  <PiWarningCircle />
                   <span>
                     {Object.keys(errors).length} erro(s) encontrado(s)
                   </span>
@@ -391,7 +391,7 @@ export default function RecordEditorModal({
               </Button>
               <Button
                 variant="primary"
-                leftIcon={<FiSave />}
+                leftIcon={<PiFloppyDisk />}
                 onClick={handleSave}
                 disabled={isSaving}
                 isLoading={isSaving}

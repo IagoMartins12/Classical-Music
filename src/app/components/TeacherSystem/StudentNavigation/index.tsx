@@ -7,23 +7,22 @@ import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from '@/app/libs/session';
 import Image from '@/app/components/SmartImage';
 import {
-  FiMenu,
-  FiX,
-  FiHome,
-  FiCalendar,
-  FiBookOpen,
-  FiUser,
-  FiTrendingUp,
-  FiLogOut,
-  FiChevronDown,
-  FiChevronRight,
-  FiMusic,
-  FiFile,
-  FiBell,
-  FiBook,
-  FiActivity,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiBell,
+  PiBook,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCaretDown,
+  PiCaretRight,
+  PiFile,
+  PiHouse,
+  PiList,
+  PiMusicNotes,
+  PiPulse,
+  PiSignOut,
+  PiTrendUp,
+  PiUser,
+  PiX,
+} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useAuthStore, useOnboardingModal } from '@/app/stores/authStore';
@@ -75,37 +74,37 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
     {
       label: t('menu_dashboard'),
       href: '/student',
-      icon: FiHome,
+      icon: PiHouse,
       active: pathname === '/student',
     },
     {
       label: t('menu_my_lessons'),
-      icon: FiBook,
+      icon: PiBook,
       href: '/student/lessons',
       active: pathname.startsWith('/student/lessons'),
     },
     {
       label: t('menu_calendar'),
       href: '/student/calendar',
-      icon: FiCalendar,
+      icon: PiCalendarBlank,
       active: pathname.startsWith('/student/calendar'),
     },
     {
       label: t('menu_my_progress'),
-      icon: FiTrendingUp,
+      icon: PiTrendUp,
       active: pathname.startsWith('/student/progress'),
       href: '/student/progress',
     },
     {
       label: t('menu_assignments'),
       href: '/student/assignments',
-      icon: FiBookOpen,
+      icon: PiBookOpen,
       active: pathname.startsWith('/student/assignments'),
     },
     {
       label: t('menu_profile'),
       href: '/student/profile',
-      icon: FiUser,
+      icon: PiUser,
       active: pathname === '/student/profile',
     },
   ];
@@ -211,15 +210,15 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                 className="lg:hidden p-2 rounded-lg hover:bg-interactive-hover transition-colors"
               >
                 {isSidebarOpen ? (
-                  <FiX className="w-5 h-5 text-theme-secondary" />
+                  <PiX className="w-5 h-5 text-theme-secondary" />
                 ) : (
-                  <FiMenu className="w-5 h-5 text-theme-secondary" />
+                  <PiList className="w-5 h-5 text-theme-secondary" />
                 )}
               </button>
 
               <Link href="/student" className="flex items-center group">
                 <div className="relative">
-                  <GiMusicalNotes className="w-8 h-8 mr-3 text-accent-green icon-glow transition-all duration-300 group-hover:scale-110" />
+                  <PiMusicNotes className="w-8 h-8 mr-3 text-accent-green icon-glow transition-all duration-300 group-hover:scale-110" />
                 </div>
                 <div className="hidden sm:block">
                   <span className="text-xl gold-shine font-bold text-gradient-brand classical-title">
@@ -257,7 +256,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       >
                         <item.icon className="w-4 h-4" />
                         <span>{item.label}</span>
-                        <FiChevronDown
+                        <PiCaretDown
                           className={`w-4 h-4 transition-transform duration-200 ${
                             activeSubmenu === item.label ? 'rotate-180' : ''
                           }`}
@@ -366,7 +365,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                     )}
                   </div>
 
-                  <FiChevronDown className="w-4 h-4 text-theme-tertiary" />
+                  <PiCaretDown className="w-4 h-4 text-theme-tertiary" />
                 </button>
 
                 {/* Profile Dropdown */}
@@ -401,7 +400,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-accent-green hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiUser className="w-4 h-4" />
+                      <PiUser className="w-4 h-4" />
                       <span>{t('profile_menu_my_profile')}</span>
                     </Link>
 
@@ -410,7 +409,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-accent-green hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiBell className="w-4 h-4" />
+                      <PiBell className="w-4 h-4" />
                       <span>{t('profile_menu_notifications')}</span>
                     </Link>
 
@@ -419,7 +418,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-accent-green hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiActivity className="w-4 h-4" />
+                      <PiPulse className="w-4 h-4" />
                       <span>{t('profile_menu_history')}</span>
                     </Link>
 
@@ -428,7 +427,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-accent-green hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiBookOpen className="w-4 h-4" />
+                      <PiBookOpen className="w-4 h-4" />
                       <span>{t('profile_menu_study_list')}</span>
                     </Link>
 
@@ -437,7 +436,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-accent-green hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiFile className="w-4 h-4" />
+                      <PiFile className="w-4 h-4" />
                       <span>{t('profile_menu_annotations')}</span>
                     </Link>
 
@@ -446,7 +445,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-accent-green hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiHome className="w-4 h-4" />
+                      <PiHouse className="w-4 h-4" />
                       <span>{t('profile_menu_back_to_site')}</span>
                     </Link>
 
@@ -456,7 +455,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       onClick={handleLogout}
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-accent-red hover:bg-accent-red/10 rounded-lg transition-all"
                     >
-                      <FiLogOut className="w-4 h-4" />
+                      <PiSignOut className="w-4 h-4" />
                       <span>{t('profile_menu_logout')}</span>
                     </button>
                   </div>
@@ -482,7 +481,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
               {/* Header */}
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center">
-                  <GiMusicalNotes className="w-8 h-8 mr-3 text-accent-green" />
+                  <PiMusicNotes className="w-8 h-8 mr-3 text-accent-green" />
                   <div>
                     <span className="text-lg gold-shine font-bold text-gradient-brand">
                       {t('brand_name')}
@@ -496,7 +495,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                   onClick={closeSidebar}
                   className="p-2 rounded-lg hover:bg-interactive-hover transition-colors"
                 >
-                  <FiX className="w-5 h-5 text-theme-secondary" />
+                  <PiX className="w-5 h-5 text-theme-secondary" />
                 </button>
               </div>
 
@@ -525,7 +524,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                             <item.icon className="w-4 h-4" />
                             <span>{item.label}</span>
                           </div>
-                          <FiChevronRight
+                          <PiCaretRight
                             className={`w-4 h-4 transition-transform duration-200 ${
                               activeSubmenu === item.label ? 'rotate-90' : ''
                             }`}
@@ -586,7 +585,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                   className="flex items-center space-x-3 px-3 py-2 bg-accent-green/10 text-accent-green rounded-lg font-medium"
                   onClick={closeSidebar}
                 >
-                  <FiMusic className="w-4 h-4" />
+                  <PiMusicNotes className="w-4 h-4" />
                   <span>{t('mobile_explore_repertoire')}</span>
                 </Link>
 

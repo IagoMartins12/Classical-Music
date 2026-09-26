@@ -3,31 +3,31 @@
 
 import { useState } from 'react';
 import {
-  FiTrash2,
-  FiSearch,
-  FiRefreshCw,
-  FiFile,
-  FiImage,
-  FiVideo,
-  FiMusic,
-  FiFileText,
-  FiCheckSquare,
-  FiSquare,
-  FiAlertTriangle,
-  FiHardDrive,
-  FiClock,
-  FiDatabase,
-  FiInfo,
-  FiFolder,
-  FiUsers,
-  FiUser,
-  FiPlay,
-  FiGrid,
-  FiEye,
-  FiCloud,
-  FiMonitor,
-  FiLayers,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCheckSquare,
+  PiClock,
+  PiCloud,
+  PiDatabase,
+  PiEye,
+  PiFile,
+  PiFileText,
+  PiFolder,
+  PiHardDrive,
+  PiImage,
+  PiInfo,
+  PiMagnifyingGlass,
+  PiMonitor,
+  PiMusicNotes,
+  PiPlay,
+  PiSquare,
+  PiSquaresFour,
+  PiStack,
+  PiTrash,
+  PiUser,
+  PiUsers,
+  PiVideoCamera,
+  PiWarning,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -50,56 +50,56 @@ const CATEGORY_TABS = [
   {
     value: 'all' as const,
     label: 'Todos',
-    icon: FiGrid,
+    icon: PiSquaresFour,
     description: 'Todos os arquivos órfãos (local + Cloudinary)',
     color: 'text-theme-primary',
   },
   {
     value: 'local' as const,
     label: 'Locais',
-    icon: FiMonitor,
+    icon: PiMonitor,
     description: 'Arquivos locais do servidor',
     color: 'text-blue-500',
   },
   {
     value: 'cloudinary' as const,
     label: 'Cloudinary',
-    icon: FiCloud,
+    icon: PiCloud,
     description: 'Arquivos no Cloudinary',
     color: 'text-purple-500',
   },
   {
     value: 'assignments' as const,
     label: 'Tarefas',
-    icon: FiFileText,
+    icon: PiFileText,
     description: 'Vídeos de tarefas',
     color: 'text-green-500',
   },
   {
     value: 'learned' as const,
     label: 'Performances',
-    icon: FiPlay,
+    icon: PiPlay,
     description: 'Vídeos de performance',
     color: 'text-red-500',
   },
   {
     value: 'profiles' as const,
     label: 'Perfis',
-    icon: FiUsers,
+    icon: PiUsers,
     description: 'Fotos de usuários',
     color: 'text-indigo-500',
   },
   {
     value: 'composers' as const,
     label: 'Compositores',
-    icon: FiUser,
+    icon: PiUser,
     description: 'Retratos de compositores',
     color: 'text-pink-500',
   },
   {
     value: 'works' as const,
     label: 'Obras',
-    icon: FiMusic,
+    icon: PiMusicNotes,
     description: 'Mídia de obras',
     color: 'text-yellow-500',
   },
@@ -115,13 +115,13 @@ const SCAN_TYPE_OPTIONS = [
 // Função auxiliar para obter componente de ícone
 const getIconComponent = (iconName: string): IconType => {
   const iconMap: Record<string, IconType> = {
-    FiImage,
-    FiVideo,
-    FiMusic,
-    FiFileText,
-    FiFile,
+    PiImage,
+    PiVideoCamera,
+    PiMusicNotes,
+    PiFileText,
+    PiFile,
   };
-  return iconMap[iconName] || FiFile;
+  return iconMap[iconName] || PiFile;
 };
 
 // Componente de arquivo do Cloudinary
@@ -177,9 +177,9 @@ const CloudinaryFileItem = ({
           {/* Checkbox */}
           <div className="flex-shrink-0">
             {isSelected ? (
-              <FiCheckSquare className="w-5 h-5 text-brand-primary" />
+              <PiCheckSquare className="w-5 h-5 text-brand-primary" />
             ) : (
-              <FiSquare className="w-5 h-5 text-theme-tertiary" />
+              <PiSquare className="w-5 h-5 text-theme-tertiary" />
             )}
           </div>
 
@@ -207,17 +207,17 @@ const CloudinaryFileItem = ({
             </div>
             <div className="flex items-center space-x-4 text-sm text-theme-secondary">
               <span className="flex items-center space-x-1">
-                <FiFolder className="w-3 h-3" />
+                <PiFolder className="w-3 h-3" />
                 <span className="truncate max-w-48">
                   {file.folder || 'Root'}
                 </span>
               </span>
               <span className="flex items-center space-x-1">
-                <FiHardDrive className="w-3 h-3" />
+                <PiHardDrive className="w-3 h-3" />
                 <span>{file.formattedSize}</span>
               </span>
               <span className="flex items-center space-x-1">
-                <FiClock className="w-3 h-3" />
+                <PiClock className="w-3 h-3" />
                 <span>{formatCloudinaryAge(file.createdAt)}</span>
               </span>
             </div>
@@ -229,7 +229,7 @@ const CloudinaryFileItem = ({
           <Button
             variant="secondary"
             size="sm"
-            leftIcon={<FiEye />}
+            leftIcon={<PiEye />}
             onClick={(e) => {
               e.stopPropagation();
               onPreview(file);
@@ -241,7 +241,7 @@ const CloudinaryFileItem = ({
           <Button
             variant="ghost"
             size="sm"
-            leftIcon={<FiInfo />}
+            leftIcon={<PiInfo />}
             onClick={(e) => {
               e.stopPropagation();
               onDetails(file);
@@ -382,14 +382,14 @@ export default function OrphanFilesManagementClient() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <FiAlertTriangle className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Sistema
           </h2>
           <p className="text-theme-secondary mb-6">{error}</p>
           <Button
             variant="primary"
-            leftIcon={<FiRefreshCw />}
+            leftIcon={<PiArrowsClockwise />}
             onClick={() => window.location.reload()}
           >
             Recarregar Página
@@ -412,7 +412,7 @@ export default function OrphanFilesManagementClient() {
             <div className="text-center py-8 lg:py-12">
               <div className="flex items-center justify-center mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                  <FiLayers className="w-8 h-8 text-white" />
+                  <PiStack className="w-8 h-8 text-white" />
                 </div>
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -554,7 +554,7 @@ export default function OrphanFilesManagementClient() {
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button
                     variant="primary"
-                    leftIcon={<FiSearch />}
+                    leftIcon={<PiMagnifyingGlass />}
                     onClick={handleScan}
                     disabled={isScanning}
                     isLoading={isScanning}
@@ -590,7 +590,7 @@ export default function OrphanFilesManagementClient() {
                         : 0,
                     isPositive: false,
                   }}
-                  icon={FiTrash2}
+                  icon={PiTrash}
                   color="#EF4444"
                 />
 
@@ -599,7 +599,7 @@ export default function OrphanFilesManagementClient() {
                   value={`${(activeTabStats.size / (1024 * 1024)).toFixed(
                     2
                   )} MB`}
-                  icon={FiHardDrive}
+                  icon={PiHardDrive}
                   color="#10B981"
                 />
 
@@ -612,7 +612,7 @@ export default function OrphanFilesManagementClient() {
                     value: getFormattedSelectedSize(),
                     isPositive: true,
                   }}
-                  icon={FiCheckSquare}
+                  icon={PiCheckSquare}
                   color="#3B82F6"
                 />
 
@@ -627,7 +627,7 @@ export default function OrphanFilesManagementClient() {
                       : 'Apenas Local',
                     isPositive: true,
                   }}
-                  icon={scanResult.includesCloudinary ? FiLayers : FiMonitor}
+                  icon={scanResult.includesCloudinary ? PiStack : PiMonitor}
                   color="#F59E0B"
                 />
               </div>
@@ -685,9 +685,9 @@ export default function OrphanFilesManagementClient() {
                           selectedFiles.length === filteredLocalFiles.length &&
                           selectedCloudinaryFiles.length ===
                             filteredCloudinaryFiles.length ? (
-                            <FiSquare />
+                            <PiSquare />
                           ) : (
-                            <FiCheckSquare />
+                            <PiCheckSquare />
                           )
                         }
                       >
@@ -703,7 +703,7 @@ export default function OrphanFilesManagementClient() {
                         <Button
                           variant="delete"
                           size="sm"
-                          leftIcon={<FiTrash2 />}
+                          leftIcon={<PiTrash />}
                           onClick={removeSelectedFiles}
                           disabled={isRemoving}
                           isLoading={isRemoving}
@@ -720,7 +720,7 @@ export default function OrphanFilesManagementClient() {
 
                 {totalFilteredFiles === 0 ? (
                   <div className="text-center py-12">
-                    <FiDatabase className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                    <PiDatabase className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                     <h4 className="text-lg font-medium text-theme-primary mb-2">
                       Nenhum arquivo órfão encontrado!
                     </h4>
@@ -735,7 +735,7 @@ export default function OrphanFilesManagementClient() {
                     {!scanResult && (
                       <Button
                         variant="primary"
-                        leftIcon={<FiSearch />}
+                        leftIcon={<PiMagnifyingGlass />}
                         onClick={handleScan}
                         disabled={isScanning}
                       >
@@ -749,7 +749,7 @@ export default function OrphanFilesManagementClient() {
                     {filteredLocalFiles.length > 0 && (
                       <div>
                         <h4 className="text-lg font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-                          <FiMonitor className="w-5 h-5" />
+                          <PiMonitor className="w-5 h-5" />
                           <span>
                             Arquivos Locais ({filteredLocalFiles.length})
                           </span>
@@ -779,9 +779,9 @@ export default function OrphanFilesManagementClient() {
                                   <div className="flex items-center space-x-3 min-w-0 flex-1">
                                     <div className="flex-shrink-0">
                                       {isSelected ? (
-                                        <FiCheckSquare className="w-5 h-5 text-brand-primary" />
+                                        <PiCheckSquare className="w-5 h-5 text-brand-primary" />
                                       ) : (
-                                        <FiSquare className="w-5 h-5 text-theme-tertiary" />
+                                        <PiSquare className="w-5 h-5 text-theme-tertiary" />
                                       )}
                                     </div>
 
@@ -800,7 +800,7 @@ export default function OrphanFilesManagementClient() {
                                       </div>
                                       <div className="flex items-center space-x-4 text-sm text-theme-secondary">
                                         <span className="flex items-center space-x-1">
-                                          <FiFolder className="w-3 h-3" />
+                                          <PiFolder className="w-3 h-3" />
                                           <span className="truncate max-w-48">
                                             {file.directory}
                                           </span>
@@ -817,7 +817,7 @@ export default function OrphanFilesManagementClient() {
                                     <Button
                                       variant="secondary"
                                       size="sm"
-                                      leftIcon={<FiEye />}
+                                      leftIcon={<PiEye />}
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         setShowFilePreview(file);
@@ -828,7 +828,7 @@ export default function OrphanFilesManagementClient() {
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      leftIcon={<FiInfo />}
+                                      leftIcon={<PiInfo />}
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         setShowFileDetails(file);
@@ -849,7 +849,7 @@ export default function OrphanFilesManagementClient() {
                     {filteredCloudinaryFiles.length > 0 && (
                       <div>
                         <h4 className="text-lg font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-                          <FiCloud className="w-5 h-5" />
+                          <PiCloud className="w-5 h-5" />
                           <span>
                             Arquivos do Cloudinary (
                             {filteredCloudinaryFiles.length})

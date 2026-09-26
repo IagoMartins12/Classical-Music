@@ -3,12 +3,12 @@
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import React from 'react';
+import { GiMusicalScore } from 'react-icons/gi';
 import {
-  GiGraduateCap,
-  GiMusicalScore,
-  GiTeacher,
-  GiMicrophone,
-} from 'react-icons/gi';
+  PiChalkboardTeacher,
+  PiGraduationCap,
+  PiMicrophone,
+} from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 
 const UserTypeStep: React.FC = () => {
@@ -20,7 +20,7 @@ const UserTypeStep: React.FC = () => {
       value: 'MUSIC_STUDENT',
       label: t('user_type_music_student'),
       description: t('user_type_music_student_desc'),
-      icon: GiGraduateCap,
+      icon: PiGraduationCap,
       color: 'bg-accent-blue',
     },
     {
@@ -34,14 +34,14 @@ const UserTypeStep: React.FC = () => {
       value: 'PROFESSIONAL',
       label: t('user_type_professional'),
       description: t('user_type_professional_desc'),
-      icon: GiMicrophone,
+      icon: PiMicrophone,
       color: 'bg-accent-purple',
     },
     {
       value: 'TEACHER',
       label: t('user_type_teacher'),
       description: t('user_type_teacher_desc'),
-      icon: GiTeacher,
+      icon: PiChalkboardTeacher,
       color: 'bg-accent-amber',
     },
   ] as const;

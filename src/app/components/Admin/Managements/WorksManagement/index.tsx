@@ -4,23 +4,23 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiMusic,
-  FiSearch,
-  FiFilter,
-  FiEdit,
-  FiTrash2,
-  FiEye,
-  FiRefreshCw,
-  FiDownload,
-  FiStar,
-  FiHeart,
-  FiMessageSquare,
-  FiFileText,
-  FiUser,
-  FiTarget,
-  FiBookOpen,
-  FiCheckCircle,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiChatCenteredText,
+  PiCheckCircle,
+  PiDownloadSimple,
+  PiEye,
+  PiFileText,
+  PiFunnel,
+  PiHeart,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiNotePencil,
+  PiStar,
+  PiTarget,
+  PiTrash,
+  PiUser,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -247,7 +247,7 @@ export default function WorksManagement() {
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiMusic className="w-8 h-8 text-theme-primary" />
+                <PiMusicNotes className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -276,7 +276,7 @@ export default function WorksManagement() {
                 title="Total de Obras"
                 value={formatNumber(stats.total)}
                 change={{ value: stats.recentlyAdded, isPositive: true }}
-                icon={FiMusic}
+                icon={PiMusicNotes}
                 color="#10B981"
                 subtitle={`nos ${getPeriodLabel(period)}`}
               />
@@ -285,7 +285,7 @@ export default function WorksManagement() {
                 title="Partituras por Obra"
                 value={stats.avgScoresPerWork.toFixed(1)}
                 change={{ value: 12.4, isPositive: true }}
-                icon={FiFileText}
+                icon={PiFileText}
                 color="#3B82F6"
                 subtitle="média por obra"
               />
@@ -300,7 +300,7 @@ export default function WorksManagement() {
                       : 0,
                   isPositive: false,
                 }}
-                icon={FiTarget}
+                icon={PiTarget}
                 color="#F59E0B"
                 subtitle={`${(
                   (stats.withoutScores / Math.max(stats.total, 1)) *
@@ -312,7 +312,7 @@ export default function WorksManagement() {
                 title="Média de Favoritos"
                 value={stats.avgFavoritesPerWork.toFixed(1)}
                 change={{ value: 15.2, isPositive: true }}
-                icon={FiHeart}
+                icon={PiHeart}
                 color="#8B5CF6"
                 subtitle="por obra"
               />
@@ -377,7 +377,7 @@ export default function WorksManagement() {
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiStar className="w-5 h-5 text-accent-amber" />
+                    <PiStar className="w-5 h-5 text-accent-amber" />
                     <span>Mais Favoritadas</span>
                   </h3>
                   <div className="space-y-3">
@@ -400,7 +400,7 @@ export default function WorksManagement() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={<FiEye />}
+                          leftIcon={<PiEye />}
                           onClick={() => router.push(`/admin/works/${work.id}`)}
                         />
                       </div>
@@ -415,7 +415,7 @@ export default function WorksManagement() {
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiBookOpen className="w-5 h-5 text-accent-blue" />
+                    <PiBookOpen className="w-5 h-5 text-accent-blue" />
                     <span>Mais Queridas</span>
                   </h3>
                   <div className="space-y-3">
@@ -439,7 +439,7 @@ export default function WorksManagement() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={<FiEye />}
+                          leftIcon={<PiEye />}
                           onClick={() => router.push(`/admin/works/${work.id}`)}
                         />
                       </div>
@@ -454,7 +454,7 @@ export default function WorksManagement() {
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                    <FiCheckCircle className="w-5 h-5 text-accent-green" />
+                    <PiCheckCircle className="w-5 h-5 text-accent-green" />
                     <span>Mais Aprendidas</span>
                   </h3>
                   <div className="space-y-3">
@@ -477,7 +477,7 @@ export default function WorksManagement() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={<FiEye />}
+                          leftIcon={<PiEye />}
                           onClick={() => router.push(`/admin/works/${work.id}`)}
                         />
                       </div>
@@ -500,7 +500,7 @@ export default function WorksManagement() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  leftIcon={<FiFilter />}
+                  leftIcon={<PiFunnel />}
                   onClick={() => setShowFilters(!showFilters)}
                 >
                   Filtros Avançados
@@ -509,7 +509,9 @@ export default function WorksManagement() {
                   variant="ghost"
                   size="sm"
                   leftIcon={
-                    <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                    <PiArrowsClockwise
+                      className={refreshing ? 'animate-spin' : ''}
+                    />
                   }
                   onClick={handleRefresh}
                   disabled={refreshing}
@@ -523,7 +525,7 @@ export default function WorksManagement() {
             <div className="space-y-4 mb-6">
               <div className="flex items-center space-x-4">
                 <div className="relative flex-1">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                   <Input
                     type="text"
                     placeholder="Buscar obras..."
@@ -566,7 +568,7 @@ export default function WorksManagement() {
                 <Button
                   variant="primary"
                   size="sm"
-                  leftIcon={<FiSearch />}
+                  leftIcon={<PiMagnifyingGlass />}
                   onClick={handleSearch}
                 >
                   Buscar
@@ -731,7 +733,7 @@ export default function WorksManagement() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    leftIcon={<FiDownload />}
+                    leftIcon={<PiDownloadSimple />}
                     onClick={() => handleBulkAction('export')}
                   >
                     Exportar
@@ -818,7 +820,7 @@ export default function WorksManagement() {
 
                       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm text-theme-secondary">
                         <div className="flex items-center space-x-1">
-                          <FiHeart className="w-4 h-4" />
+                          <PiHeart className="w-4 h-4" />
                           <span
                             className={
                               work.favoritesCount === 0 ? 'text-accent-red' : ''
@@ -828,15 +830,15 @@ export default function WorksManagement() {
                           </span>
                         </div>
                         <div className="flex items-center space-x-1">
-                          <FiBookOpen className="w-4 h-4" />
+                          <PiBookOpen className="w-4 h-4" />
                           <span>{work.wantToLearnCount} querem</span>
                         </div>
                         <div className="flex items-center space-x-1">
-                          <FiCheckCircle className="w-4 h-4" />
+                          <PiCheckCircle className="w-4 h-4" />
                           <span>{work.learnedCount} aprenderam</span>
                         </div>
                         <div className="flex items-center space-x-1">
-                          <FiFileText className="w-4 h-4" />
+                          <PiFileText className="w-4 h-4" />
                           <span
                             className={
                               work.scoresCount === 0 ? 'text-accent-red' : ''
@@ -846,14 +848,14 @@ export default function WorksManagement() {
                           </span>
                         </div>
                         <div className="flex items-center space-x-1">
-                          <FiMessageSquare className="w-4 h-4" />
+                          <PiChatCenteredText className="w-4 h-4" />
                           <span>{work.annotationsCount} anotações</span>
                         </div>
                       </div>
 
                       {work.uploader && (
                         <div className="mt-2 text-xs text-theme-tertiary flex items-center space-x-1">
-                          <FiUser className="w-3 h-3" />
+                          <PiUser className="w-3 h-3" />
                           <span>Adicionada por: {work.uploader}</span>
                         </div>
                       )}
@@ -863,14 +865,14 @@ export default function WorksManagement() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiEye />}
+                        leftIcon={<PiEye />}
                         onClick={() => router.push(`/admin/works/${work.id}`)}
                         title="Ver detalhes"
                       />
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiEdit />}
+                        leftIcon={<PiNotePencil />}
                         onClick={() =>
                           router.push(`/admin/works/${work.id}/edit`)
                         }
@@ -879,7 +881,7 @@ export default function WorksManagement() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        leftIcon={<FiTrash2 />}
+                        leftIcon={<PiTrash />}
                         onClick={() => handleDeleteWork(work.id, work.title)}
                         className="text-accent-red hover:bg-accent-red/10"
                         title="Deletar"

@@ -4,21 +4,22 @@
 
 import { useCallback, useEffect } from 'react';
 import {
-  FiTrendingUp,
-  FiBookOpen,
-  FiClock,
-  FiAward,
-  FiTarget,
-  FiUsers,
-  FiCalendar,
-  FiRefreshCw,
-  FiCheckCircle,
-  FiMusic,
-  FiHeart,
-  FiStar,
-  FiUser,
-  FiAlertCircle,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCheckCircle,
+  PiClock,
+  PiFire,
+  PiHeart,
+  PiMedal,
+  PiMusicNotes,
+  PiStar,
+  PiTarget,
+  PiTrendUp,
+  PiUser,
+  PiUsers,
+  PiWarningCircle,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -37,7 +38,6 @@ import {
 import Select from '@/app/components/Common/Select';
 import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
-import { FaFire } from 'react-icons/fa';
 import { useTranslation } from '@/app/context/TranslationContext';
 import dynamic from 'next/dynamic';
 
@@ -99,7 +99,7 @@ export default function StudentProgressPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiAlertCircle className="w-8 h-8 text-theme-primary" />
+              <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('error_loading_progress')}
@@ -113,7 +113,7 @@ export default function StudentProgressPageClient({
                 disabled={loading.refreshing}
                 className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
               >
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-4 h-4 ${
                     loading.refreshing ? 'animate-spin' : ''
                   }`}
@@ -142,7 +142,7 @@ export default function StudentProgressPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center">
-            <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
             <p className="text-theme-secondary">{t('loading_progress')}</p>
           </div>
         </div>
@@ -158,7 +158,7 @@ export default function StudentProgressPageClient({
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiTrendingUp className="w-8 h-8 text-theme-primary" />
+                <PiTrendUp className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -203,7 +203,7 @@ export default function StudentProgressPageClient({
                 disabled={loading.refreshing}
                 className="btn-classical-secondary p-3"
               >
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-5 h-5 ${
                     loading.refreshing ? 'animate-spin' : ''
                   }`}
@@ -237,7 +237,7 @@ export default function StudentProgressPageClient({
                   </div>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                  <FiBookOpen className="w-6 h-6 text-theme-primary" />
+                  <PiBookOpen className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
             </AnimatedCard>
@@ -262,7 +262,7 @@ export default function StudentProgressPageClient({
                   </div>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                  <FiClock className="w-6 h-6 text-theme-primary" />
+                  <PiClock className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
             </AnimatedCard>
@@ -282,7 +282,7 @@ export default function StudentProgressPageClient({
                   </div>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center">
-                  <FiMusic className="w-6 h-6 text-theme-primary" />
+                  <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
             </AnimatedCard>
@@ -305,7 +305,7 @@ export default function StudentProgressPageClient({
                   </div>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-orange to-accent-red rounded-xl flex items-center justify-center">
-                  <FaFire className="w-6 h-6 text-theme-primary" />
+                  <PiFire className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
             </AnimatedCard>
@@ -327,7 +327,7 @@ export default function StudentProgressPageClient({
                   {t('assignments')}
                 </h3>
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                  <FiTarget className="w-5 h-5 text-theme-primary" />
+                  <PiTarget className="w-5 h-5 text-theme-primary" />
                 </div>
               </div>
 
@@ -368,7 +368,7 @@ export default function StudentProgressPageClient({
                   {t('consistency')}
                 </h3>
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                  <FiCalendar className="w-5 h-5 text-theme-primary" />
+                  <PiCalendarBlank className="w-5 h-5 text-theme-primary" />
                 </div>
               </div>
 
@@ -416,7 +416,7 @@ export default function StudentProgressPageClient({
                   {t('annotations')}
                 </h3>
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center">
-                  <FiBookOpen className="w-5 h-5 text-theme-primary" />
+                  <PiBookOpen className="w-5 h-5 text-theme-primary" />
                 </div>
               </div>
 
@@ -465,7 +465,7 @@ export default function StudentProgressPageClient({
                   <h3 className="text-xl font-bold text-theme-primary">
                     {t('progress_by_teacher')}
                   </h3>
-                  <FiUsers className="w-6 h-6 text-brand-primary" />
+                  <PiUsers className="w-6 h-6 text-brand-primary" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -490,7 +490,7 @@ export default function StudentProgressPageClient({
                             </div>
                           ) : (
                             <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                              <FiUser className="w-5 h-5 text-theme-primary" />
+                              <PiUser className="w-5 h-5 text-theme-primary" />
                             </div>
                           )}
                           <div className="flex-1">
@@ -529,7 +529,7 @@ export default function StudentProgressPageClient({
                                 <span className="text-accent-yellow font-medium">
                                   {teacher.avgRating.toFixed(1)}
                                 </span>
-                                <FiStar className="w-3 h-3 text-accent-yellow" />
+                                <PiStar className="w-3 h-3 text-accent-yellow" />
                               </div>
                             </div>
                           )}
@@ -570,7 +570,7 @@ export default function StudentProgressPageClient({
                 <h3 className="text-xl font-bold text-theme-primary">
                   {t('achievements')}
                 </h3>
-                <FiAward className="w-6 h-6 text-brand-primary" />
+                <PiMedal className="w-6 h-6 text-brand-primary" />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -584,7 +584,7 @@ export default function StudentProgressPageClient({
                     <div className="p-4 bg-gradient-to-r from-accent-green/5 to-accent-blue/5 border border-accent-green/30 rounded-lg">
                       <div className="flex items-center space-x-3 mb-2">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center">
-                          <FiAward className="w-4 h-4 text-theme-primary" />
+                          <PiMedal className="w-4 h-4 text-theme-primary" />
                         </div>
                         <h4 className="font-bold text-theme-primary">
                           {achievement.title}
@@ -637,7 +637,7 @@ export default function StudentProgressPageClient({
               {/* Learned Works */}
               <div>
                 <h4 className="font-bold text-theme-primary mb-4 flex items-center">
-                  <FiCheckCircle className="w-5 h-5 mr-2 text-accent-green" />
+                  <PiCheckCircle className="w-5 h-5 mr-2 text-accent-green" />
                   {t('already_learned')} ({progressData.stats.learnedWorks})
                 </h4>
 
@@ -672,7 +672,7 @@ export default function StudentProgressPageClient({
                                 <span className="text-xs text-theme-secondary">
                                   {work.mastery}/5
                                 </span>
-                                <FiStar className="w-3 h-3 text-accent-yellow" />
+                                <PiStar className="w-3 h-3 text-accent-yellow" />
                               </div>
                             )}
                           </div>
@@ -691,7 +691,7 @@ export default function StudentProgressPageClient({
               {/* Want to Learn */}
               <div>
                 <h4 className="font-bold text-theme-primary mb-4 flex items-center">
-                  <FiHeart className="w-5 h-5 mr-2 text-accent-blue" />
+                  <PiHeart className="w-5 h-5 mr-2 text-accent-blue" />
                   {t('want_to_learn')} ({progressData.stats.wantToLearnWorks})
                 </h4>
 

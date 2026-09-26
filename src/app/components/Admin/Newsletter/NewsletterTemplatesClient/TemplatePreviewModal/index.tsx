@@ -3,14 +3,14 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiX,
-  FiEye,
-  FiCode,
-  FiMail,
-  FiMonitor,
-  FiSmartphone,
-  FiTablet,
-} from 'react-icons/fi';
+  PiCode,
+  PiDeviceMobile,
+  PiDeviceTablet,
+  PiEnvelopeSimple,
+  PiEye,
+  PiMonitor,
+  PiX,
+} from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import { processTemplate } from '@/app/libs/newsletter/emailTemplates';
@@ -157,7 +157,7 @@ export default function TemplatePreviewModal({
         <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <FiEye className="w-5 h-5 text-theme-primary" />
+              <PiEye className="w-5 h-5 text-theme-primary" />
               <h3 className="text-lg font-bold text-theme-primary">
                 Preview: {template.name}
               </h3>
@@ -172,7 +172,7 @@ export default function TemplatePreviewModal({
                     : 'text-theme-tertiary hover:text-theme-primary'
                 }`}
               >
-                <FiEye className="w-4 h-4 inline mr-1" />
+                <PiEye className="w-4 h-4 inline mr-1" />
                 HTML
               </button>
               <button
@@ -183,7 +183,7 @@ export default function TemplatePreviewModal({
                     : 'text-theme-tertiary hover:text-theme-primary'
                 }`}
               >
-                <FiMail className="w-4 h-4 inline mr-1" />
+                <PiEnvelopeSimple className="w-4 h-4 inline mr-1" />
                 Texto
               </button>
               <button
@@ -194,7 +194,7 @@ export default function TemplatePreviewModal({
                     : 'text-theme-tertiary hover:text-theme-primary'
                 }`}
               >
-                <FiCode className="w-4 h-4 inline mr-1" />
+                <PiCode className="w-4 h-4 inline mr-1" />
                 Código
               </button>
             </div>
@@ -213,7 +213,7 @@ export default function TemplatePreviewModal({
                   }`}
                   title="Desktop"
                 >
-                  <FiMonitor className="w-4 h-4" />
+                  <PiMonitor className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setDeviceMode('tablet')}
@@ -224,7 +224,7 @@ export default function TemplatePreviewModal({
                   }`}
                   title="Tablet"
                 >
-                  <FiTablet className="w-4 h-4" />
+                  <PiDeviceTablet className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setDeviceMode('mobile')}
@@ -235,7 +235,7 @@ export default function TemplatePreviewModal({
                   }`}
                   title="Mobile"
                 >
-                  <FiSmartphone className="w-4 h-4" />
+                  <PiDeviceMobile className="w-4 h-4" />
                 </button>
               </div>
             )}
@@ -244,7 +244,7 @@ export default function TemplatePreviewModal({
               onClick={onClose}
               className="text-theme-tertiary hover:text-theme-primary transition-colors"
             >
-              <FiX className="w-6 h-6" />
+              <PiX className="w-6 h-6" />
             </button>
           </div>
         </div>
@@ -303,7 +303,7 @@ export default function TemplatePreviewModal({
               <div className="max-w-4xl mx-auto space-y-6">
                 <div>
                   <h4 className="font-medium text-theme-primary mb-3 flex items-center">
-                    <FiCode className="w-4 h-4 mr-2" />
+                    <PiCode className="w-4 h-4 mr-2" />
                     HTML Source
                   </h4>
                   <pre className="text-theme-primary bg-theme-secondary p-4 rounded-lg text-xs overflow-x-auto font-mono">
@@ -313,7 +313,7 @@ export default function TemplatePreviewModal({
 
                 <div>
                   <h4 className="font-medium text-theme-primary mb-3 flex items-center">
-                    <FiMail className="w-4 h-4 mr-2" />
+                    <PiEnvelopeSimple className="w-4 h-4 mr-2" />
                     Text Source
                   </h4>
                   <pre className="text-theme-primary bg-theme-secondary p-4 rounded-lg text-xs overflow-x-auto font-mono">

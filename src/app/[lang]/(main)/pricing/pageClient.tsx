@@ -4,27 +4,25 @@ import { useLocalizedRouter } from '@/app/hooks/useLocalizedRouter';
 import React, { useState } from 'react';
 import { useSession } from '@/app/libs/session';
 
+import { GiGrandPiano } from 'react-icons/gi';
 import {
-  FiCheck,
-  FiX,
-  FiZap,
-  FiAward,
-  FiBook,
-  FiAlertCircle,
-  FiLoader,
-  FiUsers,
-  FiStar,
-  FiHeadphones,
-  FiTarget,
-} from 'react-icons/fi';
-import {
-  GiMusicalNotes,
-  GiGrandPiano,
-  GiMetronome,
-  GiScrollQuill,
-  GiTeacher,
-  GiTrophy,
-} from 'react-icons/gi';
+  PiBook,
+  PiChalkboardTeacher,
+  PiCheck,
+  PiHeadphones,
+  PiLightning,
+  PiMedal,
+  PiMetronome,
+  PiMusicNotes,
+  PiScroll,
+  PiSpinnerGap,
+  PiStar,
+  PiTarget,
+  PiTrophy,
+  PiUsers,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import {
   PageContainer,
   AnimatedContainer,
@@ -387,7 +385,7 @@ export default function PricingPage({ pricing }: PricingProps) {
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
-                  <GiTrophy className="w-5 h-5 text-brand-primary mr-2" />
+                  <PiTrophy className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
                     Planos para Todos
                   </span>
@@ -414,7 +412,7 @@ export default function PricingPage({ pricing }: PricingProps) {
               {!subscriptionLoading && currentPlan && (
                 <AnimatedItem direction="up" springType="gentle">
                   <div className="inline-flex items-center bg-theme-elevated rounded-full px-6 py-3 shadow-theme-medium border border-theme-secondary mt-8">
-                    <FiCheck className="w-5 h-5 text-accent-green mr-2" />
+                    <PiCheck className="w-5 h-5 text-accent-green mr-2" />
                     <span className="text-theme-secondary">
                       Plano atual:{' '}
                       <strong className="text-theme-primary">
@@ -465,7 +463,7 @@ export default function PricingPage({ pricing }: PricingProps) {
           <div className="section-wrap">
             <div className="text-center mb-16">
               <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 border border-accent-blue/30 rounded-full mb-6">
-                <FiBook className="w-4 h-4 text-accent-blue mr-2" />
+                <PiBook className="w-4 h-4 text-accent-blue mr-2" />
                 <span className="text-accent-blue font-medium text-sm">
                   Para Usuários
                 </span>
@@ -490,7 +488,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                 name="Free"
                 price={0}
                 period="sempre"
-                icon={FiBook}
+                icon={PiBook}
                 features={[
                   { text: 'Acesso completo ao catálogo', enabled: true },
                   { text: "'Quero Aprender' e 'Já Aprendi'", enabled: true },
@@ -525,7 +523,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                     ? prices.plus.yearlySavings
                     : undefined
                 }
-                icon={FiZap}
+                icon={PiLightning}
                 iconGradient
                 badge="POPULAR"
                 highlighted
@@ -583,7 +581,7 @@ export default function PricingPage({ pricing }: PricingProps) {
           <div className="section-wrap">
             <div className="text-center mb-16">
               <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-purple/20 to-accent-blue/20 border border-accent-purple/30 rounded-full mb-6">
-                <GiTeacher className="w-4 h-4 text-accent-purple mr-2" />
+                <PiChalkboardTeacher className="w-4 h-4 text-accent-purple mr-2" />
                 <span className="text-accent-purple font-medium text-sm">
                   Para Professores
                 </span>
@@ -622,7 +620,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                     ? prices.mentor.yearlySavings
                     : undefined
                 }
-                icon={GiTeacher}
+                icon={PiChalkboardTeacher}
                 iconColor="from-accent-purple to-accent-blue"
                 trialDays={pricing.MENTOR?.trialDays ?? 30}
                 features={[
@@ -664,7 +662,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                     ? prices.maestro.yearlySavings
                     : undefined
                 }
-                icon={FiAward}
+                icon={PiMedal}
                 iconGradient
                 badge="⭐ PREMIUM"
                 highlighted
@@ -798,7 +796,7 @@ export default function PricingPage({ pricing }: PricingProps) {
           <div className="section-wrap">
             <div className="text-center mb-16">
               <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 border border-accent-blue/30 rounded-full mb-6">
-                <FiTarget className="w-4 h-4 text-accent-blue mr-2" />
+                <PiTarget className="w-4 h-4 text-accent-blue mr-2" />
                 <span className="text-accent-blue font-medium text-sm">
                   Benefícios
                 </span>
@@ -814,7 +812,7 @@ export default function PricingPage({ pricing }: PricingProps) {
 
             <SequentialGrid cols={4} gap={8} delayBetweenItems={0.15}>
               <BenefitCard
-                icon={FiBook}
+                icon={PiBook}
                 title="Free"
                 subtitle="Curioso / Usuário casual"
                 benefits={[
@@ -825,7 +823,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                 highlighted
               />
               <BenefitCard
-                icon={FiZap}
+                icon={PiLightning}
                 title="Plus"
                 subtitle="Usuário dedicado"
                 benefits={[
@@ -836,7 +834,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                 highlighted
               />
               <BenefitCard
-                icon={GiTeacher}
+                icon={PiChalkboardTeacher}
                 title="Mentor"
                 subtitle="Professor iniciante"
                 benefits={[
@@ -847,7 +845,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                 highlighted
               />
               <BenefitCard
-                icon={FiAward}
+                icon={PiMedal}
                 title="Maestro"
                 subtitle="Professor profissional"
                 benefits={[
@@ -913,7 +911,7 @@ export default function PricingPage({ pricing }: PricingProps) {
               className="classical-card p-12 text-center max-w-4xl mx-auto"
             >
               <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
-                <GiMetronome className="w-10 h-10 text-theme-primary" />
+                <PiMetronome className="w-10 h-10 text-theme-primary" />
               </div>
 
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">
@@ -927,29 +925,29 @@ export default function PricingPage({ pricing }: PricingProps) {
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
                 <button className="btn-classical-primary px-10 py-4 text-lg flex items-center justify-center space-x-2">
-                  <FiZap className="w-5 h-5" />
+                  <PiLightning className="w-5 h-5" />
                   <span>Experimentar Grátis</span>
                 </button>
                 <Link
                   href="/composers"
                   className="btn-classical-secondary px-10 py-4 text-lg flex items-center justify-center space-x-2"
                 >
-                  <FiHeadphones className="w-5 h-5" />
+                  <PiHeadphones className="w-5 h-5" />
                   <span>Explorar Sem Cadastro</span>
                 </Link>
               </div>
 
               <div className="flex flex-wrap items-center justify-center gap-8 mt-12 pt-8 border-t border-theme-secondary">
                 <div className="flex items-center space-x-2 text-theme-tertiary">
-                  <FiUsers className="w-4 h-4" />
+                  <PiUsers className="w-4 h-4" />
                   <span className="text-sm">10.000+ usuários ativos</span>
                 </div>
                 <div className="flex items-center space-x-2 text-theme-tertiary">
-                  <FiStar className="w-4 h-4" />
+                  <PiStar className="w-4 h-4" />
                   <span className="text-sm">Avaliação 4.9/5</span>
                 </div>
                 <div className="flex items-center space-x-2 text-theme-tertiary">
-                  <FiAward className="w-4 h-4" />
+                  <PiMedal className="w-4 h-4" />
                   <span className="text-sm">Suporte 24/7</span>
                 </div>
               </div>
@@ -1023,7 +1021,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                         key={index}
                         className="flex items-center gap-2 text-sm"
                       >
-                        <FiCheck className="text-accent-green w-4 h-4" />
+                        <PiCheck className="text-accent-green w-4 h-4" />
                         <span className="text-theme-secondary">{feature}</span>
                       </div>
                     ))}
@@ -1108,7 +1106,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                       variant="outline"
                     >
                       {couponValidating ? (
-                        <FiLoader className="w-5 h-5 animate-spin" />
+                        <PiSpinnerGap className="w-5 h-5 animate-spin" />
                       ) : (
                         'Validar'
                       )}
@@ -1117,7 +1115,7 @@ export default function PricingPage({ pricing }: PricingProps) {
 
                   {couponData && (
                     <div className="mt-2 flex items-center gap-2 text-sm text-accent-green">
-                      <FiCheck className="w-4 h-4" />
+                      <PiCheck className="w-4 h-4" />
                       <span>{couponData.message}</span>
                     </div>
                   )}
@@ -1131,7 +1129,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                 >
                   {processingPlan ? (
                     <div className="flex items-center justify-center gap-2">
-                      <FiLoader className="w-5 h-5 animate-spin" />
+                      <PiSpinnerGap className="w-5 h-5 animate-spin" />
                       <span>Processando...</span>
                     </div>
                   ) : (
@@ -1154,7 +1152,7 @@ export default function PricingPage({ pricing }: PricingProps) {
         className="top-16 left-16 text-6xl text-brand-primary/5"
         delay={0}
       >
-        <GiMusicalNotes />
+        <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
         className="bottom-16 right-16 text-5xl text-accent-purple/5"
@@ -1166,13 +1164,13 @@ export default function PricingPage({ pricing }: PricingProps) {
         className="top-1/3 right-24 text-4xl text-accent-blue/5"
         delay={1}
       >
-        <GiScrollQuill />
+        <PiScroll />
       </FloatingElement>
       <FloatingElement
         className="bottom-1/3 left-24 text-4xl text-brand-secondary/5"
         delay={3}
       >
-        <GiMetronome />
+        <PiMetronome />
       </FloatingElement>
     </PageContainer>
   );
@@ -1275,12 +1273,12 @@ function PlanCard({
 
       {isCurrentPlan ? (
         <div className="w-full py-4 mb-8 bg-accent-green/20 text-accent-green font-medium rounded-lg flex items-center justify-center gap-2">
-          <FiCheck className="w-5 h-5" />
+          <PiCheck className="w-5 h-5" />
           <span>Plano Atual</span>
         </div>
       ) : !canUpgrade ? (
         <div className="w-full py-4 mb-8 bg-theme-tertiary/20 text-theme-tertiary font-medium rounded-lg flex items-center justify-center gap-2">
-          <FiAlertCircle className="w-5 h-5" />
+          <PiWarningCircle className="w-5 h-5" />
           <span>Plano Inferior</span>
         </div>
       ) : (
@@ -1292,7 +1290,7 @@ function PlanCard({
         >
           {isProcessing ? (
             <div className="flex items-center justify-center gap-2">
-              <FiLoader className="w-5 h-5 animate-spin" />
+              <PiSpinnerGap className="w-5 h-5 animate-spin" />
               <span>Processando...</span>
             </div>
           ) : trialDays ? (
@@ -1318,7 +1316,7 @@ function PlanCard({
         {features.map((feature, index) => (
           <Feature
             key={index}
-            icon={feature.enabled ? FiCheck : FiX}
+            icon={feature.enabled ? PiCheck : PiX}
             text={feature.text}
             disabled={!feature.enabled}
             accent={feature.accent}
@@ -1379,10 +1377,10 @@ function ComparisonRow({
 }: ComparisonRowProps) {
   const renderCell = (value: boolean | string) => {
     if (value === true) {
-      return <FiCheck className="w-6 h-6 text-accent-green mx-auto" />;
+      return <PiCheck className="w-6 h-6 text-accent-green mx-auto" />;
     }
     if (value === false) {
-      return <FiX className="w-6 h-6 text-theme-tertiary mx-auto" />;
+      return <PiX className="w-6 h-6 text-theme-tertiary mx-auto" />;
     }
     return (
       <span className="text-sm text-theme-secondary font-medium">{value}</span>
@@ -1443,7 +1441,7 @@ function BenefitCard({
             key={index}
             className="flex items-center justify-center space-x-2"
           >
-            <FiCheck
+            <PiCheck
               className={`w-4 h-4 ${
                 highlighted ? 'text-brand-primary' : 'text-accent-green'
               }`}
@@ -1513,8 +1511,8 @@ function ComparisonMobile({
 }) {
   const render = () => {
     if (value === true)
-      return <FiCheck className="text-accent-green w-5 h-5" />;
-    if (value === false) return <FiX className="text-theme-tertiary w-5 h-5" />;
+      return <PiCheck className="text-accent-green w-5 h-5" />;
+    if (value === false) return <PiX className="text-theme-tertiary w-5 h-5" />;
     return <span className="text-theme-secondary font-medium">{value}</span>;
   };
 

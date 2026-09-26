@@ -1,7 +1,7 @@
 // app/components/common/RefreshIndicator.tsx
 'use client';
 
-import { FiRefreshCw, FiCheck, FiX } from 'react-icons/fi';
+import { PiArrowsClockwise, PiCheck, PiX } from 'react-icons/pi';
 import { useState, useEffect } from 'react';
 
 interface RefreshIndicatorProps {
@@ -95,11 +95,11 @@ export default function RefreshIndicator({
       >
         {/* Estado de erro */}
         {error && !isRefreshing ? (
-          <FiX className={`${currentSize.icon} text-accent-red`} />
+          <PiX className={`${currentSize.icon} text-accent-red`} />
         ) : showSuccess ? (
-          <FiCheck className={`${currentSize.icon} text-accent-green`} />
+          <PiCheck className={`${currentSize.icon} text-accent-green`} />
         ) : (
-          <FiRefreshCw
+          <PiArrowsClockwise
             className={`
               ${
                 currentSize.icon
@@ -182,14 +182,14 @@ export function RefreshButton({
         error
           ? 'Erro ao atualizar - clique para tentar novamente'
           : isRefreshing
-          ? 'Atualizando...'
-          : 'Atualizar dados'
+            ? 'Atualizando...'
+            : 'Atualizar dados'
       }
     >
       {error && !isRefreshing ? (
-        <FiX className="w-4 h-4 text-accent-red" />
+        <PiX className="w-4 h-4 text-accent-red" />
       ) : (
-        <FiRefreshCw
+        <PiArrowsClockwise
           className={`
             w-4 h-4 text-theme-tertiary group-hover:text-brand-primary 
             transition-all ${

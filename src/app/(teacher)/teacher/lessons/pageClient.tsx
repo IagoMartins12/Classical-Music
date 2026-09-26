@@ -4,26 +4,26 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import {
-  FiCalendar,
-  FiClock,
-  FiUser,
-  FiPlus,
-  FiEye,
-  FiEdit3,
-  FiX,
-  FiCheck,
-  FiRefreshCw,
-  FiMapPin,
-  FiBookOpen,
-  FiFilter,
-  FiSearch,
-  FiMoreVertical,
-  FiUserCheck,
-  FiMessageSquare,
-  FiCheckCircle,
-  FiXCircle,
-  FiAlertTriangle,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiChatCenteredText,
+  PiCheck,
+  PiCheckCircle,
+  PiClock,
+  PiDotsThreeVertical,
+  PiEye,
+  PiFunnel,
+  PiMagnifyingGlass,
+  PiMapPin,
+  PiPencilLine,
+  PiPlus,
+  PiUser,
+  PiUserCheck,
+  PiWarning,
+  PiX,
+  PiXCircle,
+} from 'react-icons/pi';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -394,7 +394,7 @@ export default function TeacherLessonsPageClient({
           {/* Indicativo de atenção necessária */}
           {statusInfo.needsAttention && (
             <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
-              <FiAlertTriangle className="w-6 h-6 text-red-600" />
+              <PiWarning className="w-6 h-6 text-red-600" />
             </div>
           )}
 
@@ -423,7 +423,7 @@ export default function TeacherLessonsPageClient({
                         }
                         className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
                       >
-                        <FiMoreVertical className="w-4 h-4 text-theme-tertiary" />
+                        <PiDotsThreeVertical className="w-4 h-4 text-theme-tertiary" />
                       </button>
 
                       {/* Quick Actions Menu com z-index máximo */}
@@ -448,7 +448,7 @@ export default function TeacherLessonsPageClient({
                               href={`/teacher/lessons/${lesson.id}`}
                               className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-theme-primary"
                             >
-                              <FiEye className="w-4 h-4" />
+                              <PiEye className="w-4 h-4" />
                               <span>{t('view_details')}</span>
                             </Link>
 
@@ -460,7 +460,7 @@ export default function TeacherLessonsPageClient({
                                   }
                                   className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-green w-full text-left"
                                 >
-                                  <FiUserCheck className="w-4 h-4" />
+                                  <PiUserCheck className="w-4 h-4" />
                                   <span>{t('mark_attendance')}</span>
                                 </button>
 
@@ -470,7 +470,7 @@ export default function TeacherLessonsPageClient({
                                   }
                                   className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-yellow w-full text-left"
                                 >
-                                  <FiX className="w-4 h-4" />
+                                  <PiX className="w-4 h-4" />
                                   <span>{t('mark_absence')}</span>
                                 </button>
 
@@ -478,7 +478,7 @@ export default function TeacherLessonsPageClient({
                                   href={`/teacher/lessons/${lesson.id}`}
                                   className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-theme-primary"
                                 >
-                                  <FiEdit3 className="w-4 h-4" />
+                                  <PiPencilLine className="w-4 h-4" />
                                   <span>{t('edit')}</span>
                                 </Link>
 
@@ -486,7 +486,7 @@ export default function TeacherLessonsPageClient({
                                   onClick={() => handleQuickCancel(lesson.id)}
                                   className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-red w-full text-left"
                                 >
-                                  <FiX className="w-4 h-4" />
+                                  <PiX className="w-4 h-4" />
                                   <span>{t('cancel')}</span>
                                 </button>
                               </>
@@ -499,11 +499,11 @@ export default function TeacherLessonsPageClient({
                 </div>
                 <div className="flex items-center justify-between space-x-4 text-sm w-full text-theme-secondary mt-1">
                   <div className="flex items-center space-x-1">
-                    <FiCalendar className="w-4 h-4" />
+                    <PiCalendarBlank className="w-4 h-4" />
                     <span>{formatDateTime(lesson.scheduledAt)}</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <FiClock className="w-4 h-4" />
+                    <PiClock className="w-4 h-4" />
                     <span>
                       {lesson.duration}
                       {t('min_abbreviation')}
@@ -511,7 +511,7 @@ export default function TeacherLessonsPageClient({
                   </div>
                   {lesson.location && (
                     <div className="flex items-center space-x-1">
-                      <FiMapPin className="w-4 h-4" />
+                      <PiMapPin className="w-4 h-4" />
                       <span>{lesson.location}</span>
                     </div>
                   )}
@@ -532,7 +532,7 @@ export default function TeacherLessonsPageClient({
                   </div>
                 ) : (
                   <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                    <FiUser className="w-5 h-5 text-theme-primary" />
+                    <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
                 )}
                 <div>
@@ -594,9 +594,9 @@ export default function TeacherLessonsPageClient({
                         }`}
                       >
                         {lesson.studentPresent ? (
-                          <FiCheck className="w-4 h-4" />
+                          <PiCheck className="w-4 h-4" />
                         ) : (
-                          <FiX className="w-4 h-4" />
+                          <PiX className="w-4 h-4" />
                         )}
                         <span>
                           <span>{getStatusLabel(lesson.status)}</span>
@@ -606,14 +606,14 @@ export default function TeacherLessonsPageClient({
 
                   {lesson.homework && (
                     <div className="flex items-center space-x-1 text-accent-yellow">
-                      <FiBookOpen className="w-4 h-4" />
+                      <PiBookOpen className="w-4 h-4" />
                       <span>{t('with_homework')}</span>
                     </div>
                   )}
 
                   {lesson.studentFeedback && (
                     <div className="flex items-center space-x-1 text-accent-blue">
-                      <FiMessageSquare className="w-4 h-4" />
+                      <PiChatCenteredText className="w-4 h-4" />
                       <span>{t('with_feedback')}</span>
                     </div>
                   )}
@@ -627,7 +627,7 @@ export default function TeacherLessonsPageClient({
               {/* Alerta para aulas que precisam de atenção */}
               {statusInfo.needsAttention && (
                 <div className="flex items-center justify-center space-x-1 mt-3 text-accent-red">
-                  <FiAlertTriangle className="w-4 h-4 text-red-600" />
+                  <PiWarning className="w-4 h-4 text-red-600" />
                   <span className="strong text-red-600">
                     {t('needs_status_update')}
                   </span>
@@ -667,7 +667,7 @@ export default function TeacherLessonsPageClient({
           {/* Indicativo de atenção necessária */}
           {statusInfo.needsAttention && (
             <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
-              <FiAlertTriangle className="w-6 h-6 text-red-600" />
+              <PiWarning className="w-6 h-6 text-red-600" />
             </div>
           )}
 
@@ -680,11 +680,11 @@ export default function TeacherLessonsPageClient({
                   </h3>
                   <div className="flex items-center space-x-4 text-sm text-theme-secondary">
                     <div className="flex items-center space-x-1">
-                      <FiCalendar className="w-4 h-4" />
+                      <PiCalendarBlank className="w-4 h-4" />
                       <span>{formatDateTime(lesson.scheduledAt)}</span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <FiClock className="w-4 h-4" />
+                      <PiClock className="w-4 h-4" />
                       <span>
                         {lesson.duration}
                         {t('min_abbreviation')}
@@ -692,7 +692,7 @@ export default function TeacherLessonsPageClient({
                     </div>
                     {lesson.location && (
                       <div className="flex items-center space-x-1">
-                        <FiMapPin className="w-4 h-4" />
+                        <PiMapPin className="w-4 h-4" />
                         <span>{lesson.location}</span>
                       </div>
                     )}
@@ -717,7 +717,7 @@ export default function TeacherLessonsPageClient({
                       }
                       className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
                     >
-                      <FiMoreVertical className="w-4 h-4 text-theme-tertiary" />
+                      <PiDotsThreeVertical className="w-4 h-4 text-theme-tertiary" />
                     </button>
 
                     {/* Quick Actions Menu */}
@@ -746,7 +746,7 @@ export default function TeacherLessonsPageClient({
                             href={`/teacher/lessons/${lesson.id}`}
                             className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-theme-primary"
                           >
-                            <FiEye className="w-4 h-4" />
+                            <PiEye className="w-4 h-4" />
                             <span>{t('view_details')}</span>
                           </Link>
 
@@ -758,7 +758,7 @@ export default function TeacherLessonsPageClient({
                                 }
                                 className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-green w-full text-left"
                               >
-                                <FiUserCheck className="w-4 h-4" />
+                                <PiUserCheck className="w-4 h-4" />
                                 <span>{t('mark_attendance')}</span>
                               </button>
 
@@ -768,7 +768,7 @@ export default function TeacherLessonsPageClient({
                                 }
                                 className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-yellow w-full text-left"
                               >
-                                <FiX className="w-4 h-4" />
+                                <PiX className="w-4 h-4" />
                                 <span>{t('mark_absence')}</span>
                               </button>
 
@@ -776,7 +776,7 @@ export default function TeacherLessonsPageClient({
                                 href={`/teacher/lessons/${lesson.id}`}
                                 className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-theme-primary"
                               >
-                                <FiEdit3 className="w-4 h-4" />
+                                <PiPencilLine className="w-4 h-4" />
                                 <span>{t('edit')}</span>
                               </Link>
 
@@ -784,7 +784,7 @@ export default function TeacherLessonsPageClient({
                                 onClick={() => handleQuickCancel(lesson.id)}
                                 className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-red w-full text-left"
                               >
-                                <FiX className="w-4 h-4" />
+                                <PiX className="w-4 h-4" />
                                 <span>{t('cancel')}</span>
                               </button>
                             </>
@@ -810,7 +810,7 @@ export default function TeacherLessonsPageClient({
                   </div>
                 ) : (
                   <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                    <FiUser className="w-5 h-5 text-theme-primary" />
+                    <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
                 )}
                 <div>
@@ -876,9 +876,9 @@ export default function TeacherLessonsPageClient({
                         }`}
                       >
                         {lesson.studentPresent ? (
-                          <FiCheck className="w-4 h-4" />
+                          <PiCheck className="w-4 h-4" />
                         ) : (
-                          <FiX className="w-4 h-4" />
+                          <PiX className="w-4 h-4" />
                         )}
                         <span>
                           <span>{getStatusLabel(lesson.status)}</span>
@@ -888,14 +888,14 @@ export default function TeacherLessonsPageClient({
 
                   {lesson.homework && (
                     <div className="flex items-center space-x-1 text-accent-yellow">
-                      <FiBookOpen className="w-4 h-4" />
+                      <PiBookOpen className="w-4 h-4" />
                       <span>{t('with_homework')}</span>
                     </div>
                   )}
 
                   {lesson.studentFeedback && (
                     <div className="flex items-center space-x-1 text-accent-blue">
-                      <FiMessageSquare className="w-4 h-4" />
+                      <PiChatCenteredText className="w-4 h-4" />
                       <span>{t('with_feedback')}</span>
                     </div>
                   )}
@@ -909,7 +909,7 @@ export default function TeacherLessonsPageClient({
               {/* Alerta para aulas que precisam de atenção */}
               {statusInfo.needsAttention && (
                 <div className="flex items-center justify-center space-x-1 mt-3 text-accent-red">
-                  <FiAlertTriangle className="w-4 h-4 text-red-600" />
+                  <PiWarning className="w-4 h-4 text-red-600" />
                   <span className="strong text-red-600">
                     {t('needs_status_update')}
                   </span>
@@ -939,7 +939,7 @@ export default function TeacherLessonsPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FiBookOpen className="w-8 h-8 text-theme-primary" />
+              <PiBookOpen className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
               {t('error_loading_lessons')}
@@ -953,7 +953,7 @@ export default function TeacherLessonsPageClient({
                 disabled={loading.lessons}
                 className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
               >
-                <FiRefreshCw
+                <PiArrowsClockwise
                   className={`w-4 h-4 ${loading.lessons ? 'animate-spin' : ''}`}
                 />
                 <span>{loading.lessons ? t('updating') : t('try_again')}</span>
@@ -981,7 +981,7 @@ export default function TeacherLessonsPageClient({
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiBookOpen className="w-8 h-8 text-theme-primary" />
+                <PiBookOpen className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -1002,7 +1002,7 @@ export default function TeacherLessonsPageClient({
                 className="classical-card p-6 text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiBookOpen className="w-6 h-6 text-theme-primary" />
+                  <PiBookOpen className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.total}
@@ -1017,7 +1017,7 @@ export default function TeacherLessonsPageClient({
                 className="classical-card p-6 text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiCalendar className="w-6 h-6 text-theme-primary" />
+                  <PiCalendarBlank className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.scheduled}
@@ -1032,7 +1032,7 @@ export default function TeacherLessonsPageClient({
                 className="classical-card p-6 text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiCheckCircle className="w-6 h-6 text-theme-primary" />
+                  <PiCheckCircle className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.completed}
@@ -1047,7 +1047,7 @@ export default function TeacherLessonsPageClient({
                 className="classical-card p-6 text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiClock className="w-6 h-6 text-theme-primary" />
+                  <PiClock className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.today}
@@ -1062,7 +1062,7 @@ export default function TeacherLessonsPageClient({
                 className="classical-card p-6 text-center"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiXCircle className="w-6 h-6 text-theme-primary" />
+                  <PiXCircle className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.cancelled}
@@ -1082,7 +1082,7 @@ export default function TeacherLessonsPageClient({
               {/* Search */}
               <div className="flex-1 ">
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
                   <input
                     type="text"
                     placeholder={t('search_placeholder')}
@@ -1104,7 +1104,7 @@ export default function TeacherLessonsPageClient({
                         : ''
                     }`}
                   >
-                    <FiFilter className="w-4 h-4" />
+                    <PiFunnel className="w-4 h-4" />
                     <span>{t('filters')}</span>
                   </button>
 
@@ -1113,7 +1113,7 @@ export default function TeacherLessonsPageClient({
                     disabled={loading.lessons}
                     className="btn-classical-secondary flex items-center space-x-2"
                   >
-                    <FiRefreshCw
+                    <PiArrowsClockwise
                       className={`w-4 h-4 ${
                         loading.lessons ? 'animate-spin' : ''
                       }`}
@@ -1127,7 +1127,7 @@ export default function TeacherLessonsPageClient({
                     href="/teacher/lessons/create"
                     className="btn-classical-primary flex items-center space-x-2"
                   >
-                    <FiPlus className="w-4 h-4" />
+                    <PiPlus className="w-4 h-4" />
                     <span>{t('new_lesson')}</span>
                   </Link>
                   {/* VIEW MODE TOGGLE */}
@@ -1177,12 +1177,12 @@ export default function TeacherLessonsPageClient({
           <div className="space-y-4">
             {loading.lessons && lessons.length === 0 ? (
               <div className="text-center py-12">
-                <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+                <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
                 <p className="text-theme-secondary">{t('loading_lessons')}</p>
               </div>
             ) : filteredLessons.length === 0 ? (
               <div className="text-center py-12">
-                <FiBookOpen className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                <PiBookOpen className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-lg font-bold text-theme-primary mb-2">
                   {t('no_lessons_found')}
                 </h3>
@@ -1224,9 +1224,9 @@ export default function TeacherLessonsPageClient({
                   className="btn-classical-secondary flex items-center space-x-2 mx-auto"
                 >
                   {loading.lessons ? (
-                    <FiRefreshCw className="w-4 h-4 animate-spin" />
+                    <PiArrowsClockwise className="w-4 h-4 animate-spin" />
                   ) : (
-                    <FiPlus className="w-4 h-4" />
+                    <PiPlus className="w-4 h-4" />
                   )}
                   <span>
                     {loading.lessons ? t('updating') : t('load_more')}

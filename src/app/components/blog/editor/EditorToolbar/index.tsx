@@ -3,30 +3,32 @@
 
 import { Editor } from '@tiptap/react';
 import {
-  FaBold,
-  FaItalic,
-  FaUnderline,
-  FaStrikethrough,
-  FaCode,
-  FaListUl,
-  FaListOl,
-  FaQuoteRight,
-  FaLink,
-  FaImage,
-  FaYoutube,
-  FaAlignLeft,
-  FaAlignCenter,
-  FaAlignRight,
-  FaAlignJustify,
-  FaUndo,
-  FaRedo,
-  FaMusic,
-  FaUser,
-  FaFileAudio,
-  FaClock,
-  FaColumns,
-} from 'react-icons/fa';
-import { BsTypeH1, BsTypeH2, BsTypeH3 } from 'react-icons/bs';
+  PiArrowClockwise,
+  PiArrowCounterClockwise,
+  PiClock,
+  PiCode,
+  PiColumns,
+  PiFileAudio,
+  PiImage,
+  PiLink,
+  PiListBullets,
+  PiListNumbers,
+  PiMusicNotes,
+  PiQuotes,
+  PiTextAlignCenter,
+  PiTextAlignJustify,
+  PiTextAlignLeft,
+  PiTextAlignRight,
+  PiTextB,
+  PiTextHOne,
+  PiTextHThree,
+  PiTextHTwo,
+  PiTextItalic,
+  PiTextStrikethrough,
+  PiTextUnderline,
+  PiUser,
+  PiYoutubeLogo,
+} from 'react-icons/pi';
 import { useState } from 'react';
 import { YoutubeModal } from '../modals/YoutubeModal';
 import { ImageModal } from '../modals/ImageModal';
@@ -99,14 +101,14 @@ export function EditorToolbar({
           disabled={!editor.can().undo()}
           title="Desfazer (Ctrl+Z)"
         >
-          <FaUndo className="w-4 h-4" />
+          <PiArrowCounterClockwise className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
           title="Refazer (Ctrl+Y)"
         >
-          <FaRedo className="w-4 h-4" />
+          <PiArrowClockwise className="w-4 h-4" />
         </ToolbarButton>
 
         <Divider />
@@ -117,35 +119,35 @@ export function EditorToolbar({
           active={editor.isActive('bold')}
           title="Negrito (Ctrl+B)"
         >
-          <FaBold className="w-4 h-4" />
+          <PiTextB className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleItalic().run()}
           active={editor.isActive('italic')}
           title="Itálico (Ctrl+I)"
         >
-          <FaItalic className="w-4 h-4" />
+          <PiTextItalic className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           active={editor.isActive('underline')}
           title="Sublinhado (Ctrl+U)"
         >
-          <FaUnderline className="w-4 h-4" />
+          <PiTextUnderline className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleStrike().run()}
           active={editor.isActive('strike')}
           title="Riscado"
         >
-          <FaStrikethrough className="w-4 h-4" />
+          <PiTextStrikethrough className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleCode().run()}
           active={editor.isActive('code')}
           title="Código"
         >
-          <FaCode className="w-4 h-4" />
+          <PiCode className="w-4 h-4" />
         </ToolbarButton>
 
         <Divider />
@@ -158,7 +160,7 @@ export function EditorToolbar({
           active={editor.isActive('heading', { level: 1 })}
           title="Título 1"
         >
-          <BsTypeH1 className="w-4 h-4" />
+          <PiTextHOne className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() =>
@@ -167,7 +169,7 @@ export function EditorToolbar({
           active={editor.isActive('heading', { level: 2 })}
           title="Título 2"
         >
-          <BsTypeH2 className="w-4 h-4" />
+          <PiTextHTwo className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() =>
@@ -176,7 +178,7 @@ export function EditorToolbar({
           active={editor.isActive('heading', { level: 3 })}
           title="Título 3"
         >
-          <BsTypeH3 className="w-4 h-4" />
+          <PiTextHThree className="w-4 h-4" />
         </ToolbarButton>
 
         <Divider />
@@ -187,21 +189,21 @@ export function EditorToolbar({
           active={editor.isActive('bulletList')}
           title="Lista com marcadores"
         >
-          <FaListUl className="w-4 h-4" />
+          <PiListBullets className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           active={editor.isActive('orderedList')}
           title="Lista numerada"
         >
-          <FaListOl className="w-4 h-4" />
+          <PiListNumbers className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           active={editor.isActive('blockquote')}
           title="Citação"
         >
-          <FaQuoteRight className="w-4 h-4" />
+          <PiQuotes className="w-4 h-4" />
         </ToolbarButton>
 
         <Divider />
@@ -212,28 +214,28 @@ export function EditorToolbar({
           active={editor.isActive({ textAlign: 'left' })}
           title="Alinhar à esquerda"
         >
-          <FaAlignLeft className="w-4 h-4" />
+          <PiTextAlignLeft className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().setTextAlign('center').run()}
           active={editor.isActive({ textAlign: 'center' })}
           title="Centralizar"
         >
-          <FaAlignCenter className="w-4 h-4" />
+          <PiTextAlignCenter className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().setTextAlign('right').run()}
           active={editor.isActive({ textAlign: 'right' })}
           title="Alinhar à direita"
         >
-          <FaAlignRight className="w-4 h-4" />
+          <PiTextAlignRight className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().setTextAlign('justify').run()}
           active={editor.isActive({ textAlign: 'justify' })}
           title="Justificar"
         >
-          <FaAlignJustify className="w-4 h-4" />
+          <PiTextAlignJustify className="w-4 h-4" />
         </ToolbarButton>
 
         <Divider />
@@ -243,19 +245,19 @@ export function EditorToolbar({
           onClick={() => setShowLinkModal(true)}
           title="Inserir link"
         >
-          <FaLink className="w-4 h-4" />
+          <PiLink className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowImageModal(true)}
           title="Inserir imagem"
         >
-          <FaImage className="w-4 h-4" />
+          <PiImage className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowYoutubeModal(true)}
           title="Inserir vídeo do YouTube"
         >
-          <FaYoutube className="w-4 h-4" />
+          <PiYoutubeLogo className="w-4 h-4" />
         </ToolbarButton>
 
         <Divider />
@@ -271,43 +273,43 @@ export function EditorToolbar({
           onClick={() => setShowComposerModal(true)}
           title="Card de Compositor"
         >
-          <FaUser className="w-4 h-4 text-blue-600" />
+          <PiUser className="w-4 h-4 text-blue-600" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowWorkModal(true)}
           title="Card de Obra"
         >
-          <FaMusic className="w-4 h-4 text-blue-600" />
+          <PiMusicNotes className="w-4 h-4 text-blue-600" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowScoreModal(true)}
           title="Visualizador de Partitura"
         >
-          <FaFileAudio className="w-4 h-4 text-blue-600" />
+          <PiFileAudio className="w-4 h-4 text-blue-600" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowAudioModal(true)}
           title="Player de Áudio"
         >
-          <FaMusic className="w-4 h-4 text-purple-600" />
+          <PiMusicNotes className="w-4 h-4 text-purple-600" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowTimelineModal(true)}
           title="Timeline"
         >
-          <FaClock className="w-4 h-4 text-green-600" />
+          <PiClock className="w-4 h-4 text-green-600" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowVideoComparisonModal(true)}
           title="Comparação de Vídeos"
         >
-          <FaColumns className="w-4 h-4 text-orange-600" />
+          <PiColumns className="w-4 h-4 text-orange-600" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowQuoteModal(true)}
           title="Citação Musical"
         >
-          <FaQuoteRight className="w-4 h-4 text-purple-600" />
+          <PiQuotes className="w-4 h-4 text-purple-600" />
         </ToolbarButton>
       </div>
 

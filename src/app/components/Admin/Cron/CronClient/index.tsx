@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import {
-  FiAlertTriangle,
-  FiCalendar,
-  FiPause,
-  FiPlay,
-  FiSave,
-} from 'react-icons/fi';
+  PiCalendarBlank,
+  PiFloppyDisk,
+  PiPause,
+  PiPlay,
+  PiWarning,
+} from 'react-icons/pi';
 import {
   adminKeys,
   errorMessage,
@@ -122,7 +122,7 @@ export default function CronClient() {
                     </h2>
                     {tarefa.destructive && (
                       <span className="inline-flex items-center gap-1 text-xs text-accent-red bg-accent-red/10 rounded-full px-2 py-0.5">
-                        <FiAlertTriangle className="w-3 h-3" />
+                        <PiWarning className="w-3 h-3" />
                         apaga dado
                       </span>
                     )}
@@ -131,7 +131,7 @@ export default function CronClient() {
                     {tarefa.description}
                   </p>
                   <p className="text-theme-tertiary text-xs mt-1 flex items-center gap-1.5">
-                    <FiCalendar className="w-3 h-3" />
+                    <PiCalendarBlank className="w-3 h-3" />
                     {cronAtual
                       ? `${cronAtual} · próxima ${quando(tarefa.schedule?.nextRunAt)}`
                       : 'sem agendamento'}
@@ -143,7 +143,7 @@ export default function CronClient() {
                   disabled={rodando === tarefa.id}
                   className="btn-classical-secondary flex items-center gap-1.5 text-sm px-3 py-1.5 disabled:opacity-50"
                 >
-                  <FiPlay className="w-3.5 h-3.5" />
+                  <PiPlay className="w-3.5 h-3.5" />
                   {rodando === tarefa.id ? 'Rodando…' : 'Rodar agora'}
                 </button>
               </div>
@@ -191,7 +191,7 @@ export default function CronClient() {
                   disabled={!valor.trim() || valor === cronAtual}
                   className="btn-classical-primary flex items-center gap-1.5 text-sm px-3 py-1.5 disabled:opacity-40"
                 >
-                  <FiSave className="w-3.5 h-3.5" />
+                  <PiFloppyDisk className="w-3.5 h-3.5" />
                   Salvar
                 </button>
 
@@ -211,7 +211,7 @@ export default function CronClient() {
                     }
                     className="btn-classical-secondary flex items-center gap-1.5 text-sm px-3 py-1.5"
                   >
-                    <FiPause className="w-3.5 h-3.5" />
+                    <PiPause className="w-3.5 h-3.5" />
                     Desligar
                   </button>
                 )}

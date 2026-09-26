@@ -3,7 +3,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { ArticleCard } from '@/app/components/blog/ArticleCard';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { PiCaretLeft, PiCaretRight } from 'react-icons/pi';
 
 interface Article {
   id: string;
@@ -124,7 +124,7 @@ export function ArticleCarousel({ articles }: ArticleCarouselProps) {
           className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-theme-secondary/90 hover:bg-theme-secondary backdrop-blur-sm rounded-full flex items-center justify-center text-theme-primary shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-1/2"
           aria-label="Anterior"
         >
-          <FiChevronLeft className="w-6 h-6" />
+          <PiCaretLeft className="w-6 h-6" />
         </button>
       )}
 
@@ -157,7 +157,7 @@ export function ArticleCarousel({ articles }: ArticleCarouselProps) {
           className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-theme-secondary/90 hover:bg-theme-secondary backdrop-blur-sm rounded-full flex items-center justify-center text-theme-primary shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-1/2"
           aria-label="Próximo"
         >
-          <FiChevronRight className="w-6 h-6" />
+          <PiCaretRight className="w-6 h-6" />
         </button>
       )}
 

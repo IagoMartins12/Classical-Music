@@ -3,13 +3,13 @@
 
 import { useState } from 'react';
 import {
-  FiMonitor,
-  FiTablet,
-  FiSmartphone,
-  FiEye,
-  FiDownload,
-  FiInfo,
-} from 'react-icons/fi';
+  PiDeviceMobile,
+  PiDeviceTablet,
+  PiDownloadSimple,
+  PiEye,
+  PiInfo,
+  PiMonitor,
+} from 'react-icons/pi';
 import {
   getResponsiveImageUrl,
   AD_DIMENSIONS,
@@ -42,7 +42,7 @@ export default function MediaPreview({
     return (
       <div className={`classical-card p-6 text-center ${className}`}>
         <div className="text-theme-tertiary">
-          <FiEye className="w-12 h-12 mx-auto mb-3 opacity-50" />
+          <PiEye className="w-12 h-12 mx-auto mb-3 opacity-50" />
           <p>Nenhuma mídia para preview</p>
           <p className="text-sm mt-1">Faça upload de uma imagem ou vídeo</p>
         </div>
@@ -89,7 +89,7 @@ export default function MediaPreview({
     {
       value: 'desktop' as DeviceType,
       label: 'Desktop',
-      icon: FiMonitor,
+      icon: PiMonitor,
       color: 'text-accent-blue',
       bgColor: 'bg-accent-blue/10',
       description: '1200px+',
@@ -97,7 +97,7 @@ export default function MediaPreview({
     {
       value: 'tablet' as DeviceType,
       label: 'Tablet',
-      icon: FiTablet,
+      icon: PiDeviceTablet,
       color: 'text-accent-purple',
       bgColor: 'bg-accent-purple/10',
       description: '768px - 1199px',
@@ -105,7 +105,7 @@ export default function MediaPreview({
     {
       value: 'mobile' as DeviceType,
       label: 'Mobile',
-      icon: FiSmartphone,
+      icon: PiDeviceMobile,
       color: 'text-accent-green',
       bgColor: 'bg-accent-green/10',
       description: '< 768px',
@@ -128,7 +128,7 @@ export default function MediaPreview({
       <div className="p-4 border-b border-theme-primary bg-theme-secondary/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <FiEye className="w-5 h-5 text-brand-primary" />
+            <PiEye className="w-5 h-5 text-brand-primary" />
             <div>
               <h3 className="font-semibold text-theme-primary">
                 Preview Responsivo
@@ -143,7 +143,7 @@ export default function MediaPreview({
             <Button
               variant="ghost"
               size="sm"
-              leftIcon={<FiInfo />}
+              leftIcon={<PiInfo />}
               onClick={() => setShowDetails(!showDetails)}
               className={showDetails ? 'text-brand-primary' : ''}
             >
@@ -154,7 +154,7 @@ export default function MediaPreview({
               <Button
                 variant="ghost"
                 size="sm"
-                leftIcon={<FiDownload />}
+                leftIcon={<PiDownloadSimple />}
                 onClick={() =>
                   downloadMedia(
                     currentMedia.src,
@@ -320,11 +320,11 @@ export default function MediaPreview({
                 <div className="text-center text-theme-tertiary">
                   <div className="w-12 h-12 mx-auto mb-2 opacity-50">
                     {activeDevice === 'desktop' ? (
-                      <FiMonitor className="w-full h-full" />
+                      <PiMonitor className="w-full h-full" />
                     ) : activeDevice === 'tablet' ? (
-                      <FiTablet className="w-full h-full" />
+                      <PiDeviceTablet className="w-full h-full" />
                     ) : (
-                      <FiSmartphone className="w-full h-full" />
+                      <PiDeviceMobile className="w-full h-full" />
                     )}
                   </div>
                   <p className="text-sm">Sem mídia</p>
@@ -391,7 +391,7 @@ export default function MediaPreview({
       <div className="px-4 pb-4">
         <div className="bg-accent-gold/5 border border-accent-gold/20 rounded-lg p-3">
           <div className="flex items-start space-x-2">
-            <FiInfo className="w-4 h-4 text-accent-gold mt-0.5 flex-shrink-0" />
+            <PiInfo className="w-4 h-4 text-accent-gold mt-0.5 flex-shrink-0" />
             <div className="text-xs text-theme-secondary">
               <div className="font-medium text-theme-primary mb-1">
                 💡 Dicas de otimização

@@ -3,23 +3,23 @@
 
 import { useState } from 'react';
 import {
-  FiServer,
-  FiCpu,
-  FiHardDrive,
-  FiWifi,
-  FiDatabase,
-  FiActivity,
-  FiZap,
-  FiRefreshCw,
-  FiAlertTriangle,
-  FiCheckCircle,
-  FiDownload,
-  FiUsers,
-  FiFileText,
-  FiSettings,
-  FiTrendingUp,
-  FiClock,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiCheckCircle,
+  PiClock,
+  PiCpu,
+  PiDatabase,
+  PiDownloadSimple,
+  PiFileText,
+  PiGear,
+  PiHardDrive,
+  PiHardDrives,
+  PiLightning,
+  PiPulse,
+  PiTrendUp,
+  PiUsers,
+  PiWarning,
+  PiWifiHigh,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -124,13 +124,13 @@ export default function SystemPerformance() {
   const getHealthStatusIcon = (status: string) => {
     switch (status) {
       case 'healthy':
-        return <FiCheckCircle className="w-5 h-5" />;
+        return <PiCheckCircle className="w-5 h-5" />;
       case 'warning':
-        return <FiAlertTriangle className="w-5 h-5" />;
+        return <PiWarning className="w-5 h-5" />;
       case 'critical':
-        return <FiAlertTriangle className="w-5 h-5" />;
+        return <PiWarning className="w-5 h-5" />;
       default:
-        return <FiActivity className="w-5 h-5" />;
+        return <PiPulse className="w-5 h-5" />;
     }
   };
 
@@ -139,7 +139,7 @@ export default function SystemPerformance() {
       <PageContainer showBackground={true}>
         <AnimatedContainer delay={0.1}>
           <div className="text-center py-16">
-            <FiAlertTriangle className="w-16 h-16 text-accent-red mx-auto mb-6" />
+            <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-6" />
             <h1 className="text-2xl font-bold text-theme-primary mb-4">
               Erro ao Carregar Métricas
             </h1>
@@ -169,7 +169,7 @@ export default function SystemPerformance() {
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiServer className="w-8 h-8 text-theme-primary" />
+                <PiHardDrives className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -199,7 +199,7 @@ export default function SystemPerformance() {
 
               {!isConnected && (
                 <div className="ml-4 inline-flex items-center space-x-2 px-4 py-2 rounded-xl border border-accent-red bg-accent-red/10 text-accent-red">
-                  <FiAlertTriangle className="w-4 h-4" />
+                  <PiWarning className="w-4 h-4" />
                   <span className="font-medium">Desconectado</span>
                 </div>
               )}
@@ -256,7 +256,7 @@ export default function SystemPerformance() {
               <Button
                 variant="ghost"
                 size="sm"
-                leftIcon={<FiTrendingUp />}
+                leftIcon={<PiTrendUp />}
                 onClick={handleGetDetailedStats}
                 disabled={loading}
               >
@@ -266,7 +266,7 @@ export default function SystemPerformance() {
               <Button
                 variant="secondary"
                 size="sm"
-                leftIcon={<FiDownload />}
+                leftIcon={<PiDownloadSimple />}
                 onClick={handleExportData}
                 disabled={loading || !metrics}
               >
@@ -276,7 +276,7 @@ export default function SystemPerformance() {
               <Button
                 variant="ghost"
                 size="sm"
-                leftIcon={<FiSettings />}
+                leftIcon={<PiGear />}
                 onClick={clearCache}
                 disabled={loading}
               >
@@ -287,7 +287,9 @@ export default function SystemPerformance() {
                 variant="primary"
                 size="sm"
                 leftIcon={
-                  <FiRefreshCw className={loading ? 'animate-spin' : ''} />
+                  <PiArrowsClockwise
+                    className={loading ? 'animate-spin' : ''}
+                  />
                 }
                 onClick={refreshMetrics}
                 disabled={loading}
@@ -303,7 +305,7 @@ export default function SystemPerformance() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center mb-6">
               <p className="text-sm text-theme-tertiary flex items-center justify-center space-x-2">
-                <FiClock className="w-4 h-4" />
+                <PiClock className="w-4 h-4" />
                 <span>
                   Última atualização: {lastUpdated.toLocaleString('pt-BR')}
                 </span>
@@ -328,7 +330,7 @@ export default function SystemPerformance() {
                   : 0,
                 isPositive: metrics ? metrics.server.cpu.usage <= 70 : true,
               }}
-              icon={FiCpu}
+              icon={PiCpu}
               color={
                 metrics && metrics.server.cpu.usage > 80 ? '#EF4444' : '#F59E0B'
               }
@@ -352,7 +354,7 @@ export default function SystemPerformance() {
                   ? metrics.server.memory.percentage <= 80
                   : true,
               }}
-              icon={FiHardDrive}
+              icon={PiHardDrive}
               color={
                 metrics && metrics.server.memory.percentage > 90
                   ? '#EF4444'
@@ -382,7 +384,7 @@ export default function SystemPerformance() {
                   ? metrics.application.performance.avgResponseTime <= 1000
                   : true,
               }}
-              icon={FiZap}
+              icon={PiLightning}
               color="#8B5CF6"
               subtitle="Tempo médio"
             />
@@ -398,7 +400,7 @@ export default function SystemPerformance() {
                 value: metrics ? 12.5 : 0,
                 isPositive: true,
               }}
-              icon={FiUsers}
+              icon={PiUsers}
               color="#10B981"
               subtitle={
                 metrics ? `${metrics.application.users.active} hoje` : ''
@@ -413,7 +415,7 @@ export default function SystemPerformance() {
             <div className="mb-8">
               <AnimatedCard className="classical-card p-6 border-l-4 border-accent-red">
                 <div className="flex items-center space-x-3 mb-4">
-                  <FiAlertTriangle className="w-6 h-6 text-accent-red" />
+                  <PiWarning className="w-6 h-6 text-accent-red" />
                   <h3 className="text-xl font-bold text-theme-primary">
                     Alertas Críticos ({criticalAlerts.length})
                   </h3>
@@ -451,7 +453,7 @@ export default function SystemPerformance() {
           {/* Server Resources */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-              <FiServer className="w-5 h-5 text-accent-green" />
+              <PiHardDrives className="w-5 h-5 text-accent-green" />
               <span>Recursos do Servidor</span>
             </h3>
 
@@ -554,7 +556,7 @@ export default function SystemPerformance() {
           {/* Database Performance */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-              <FiDatabase className="w-5 h-5 text-accent-blue" />
+              <PiDatabase className="w-5 h-5 text-accent-blue" />
               <span>Performance da Database</span>
             </h3>
 
@@ -644,7 +646,7 @@ export default function SystemPerformance() {
           {/* System Alerts */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-              <FiAlertTriangle className="w-5 h-5 text-accent-red" />
+              <PiWarning className="w-5 h-5 text-accent-red" />
               <span>Alertas do Sistema</span>
               {activeAlerts.length > 0 && (
                 <span className="bg-accent-red text-white text-xs px-2 py-1 rounded-full">
@@ -656,7 +658,7 @@ export default function SystemPerformance() {
             <div className="space-y-3">
               {activeAlerts.length === 0 ? (
                 <div className="text-center py-6">
-                  <FiCheckCircle className="w-8 h-8 text-accent-green mx-auto mb-2" />
+                  <PiCheckCircle className="w-8 h-8 text-accent-green mx-auto mb-2" />
                   <p className="text-theme-primary font-medium">
                     Nenhum alerta ativo
                   </p>
@@ -708,14 +710,14 @@ export default function SystemPerformance() {
           {/* Recent Logs */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-              <FiFileText className="w-5 h-5 text-accent-blue" />
+              <PiFileText className="w-5 h-5 text-accent-blue" />
               <span>Logs Recentes</span>
             </h3>
 
             <div className="space-y-3 max-h-80 overflow-y-auto">
               {logs.length === 0 ? (
                 <div className="text-center py-6">
-                  <FiFileText className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
+                  <PiFileText className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                   <p className="text-theme-primary font-medium">
                     Nenhum log disponível
                   </p>
@@ -785,7 +787,7 @@ export default function SystemPerformance() {
           {/* Network Performance */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-              <FiWifi className="w-5 h-5 text-accent-purple" />
+              <PiWifiHigh className="w-5 h-5 text-accent-purple" />
               <span>Rede</span>
             </h3>
 
@@ -841,7 +843,7 @@ export default function SystemPerformance() {
           {/* Cache Performance */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-              <FiZap className="w-5 h-5 text-accent-green" />
+              <PiLightning className="w-5 h-5 text-accent-green" />
               <span>Cache</span>
             </h3>
 
@@ -893,7 +895,7 @@ export default function SystemPerformance() {
           {/* Application Stats */}
           <AnimatedCard className="classical-card p-6">
             <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-              <FiActivity className="w-5 h-5 text-accent-amber" />
+              <PiPulse className="w-5 h-5 text-accent-amber" />
               <span>Aplicação</span>
             </h3>
 

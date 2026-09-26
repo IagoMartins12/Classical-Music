@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { FiPhone, FiChevronDown, FiX, FiGlobe } from 'react-icons/fi';
+import { PiCaretDown, PiGlobe, PiPhone, PiX } from 'react-icons/pi';
 import {
   ALL_PHONE_COUNTRIES,
   PhoneCountry,
@@ -297,7 +297,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
     <div className={`space-y-2 ${className}`}>
       {showLabel && label && (
         <label className="block text-sm font-medium text-theme-secondary">
-          <FiPhone className="w-4 h-4 inline mr-2" />
+          <PiPhone className="w-4 h-4 inline mr-2" />
           {label}
         </label>
       )}
@@ -331,7 +331,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                   </span>
                 </>
               )}
-              <FiChevronDown
+              <PiCaretDown
                 className={`w-3 h-3 text-theme-tertiary transition-transform duration-200 flex-shrink-0 ${
                   isOpen ? 'rotate-180' : ''
                 }`}
@@ -346,7 +346,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
               >
                 {/* 🏷️ Header */}
                 <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
-                  <FiGlobe className="w-4 h-4 text-brand-primary" />
+                  <PiGlobe className="w-4 h-4 text-brand-primary" />
                   <span className="text-sm font-medium text-theme-secondary">
                     Selecionar País
                   </span>
@@ -414,7 +414,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                   ) : (
                     // 🚫 Estado Vazio
                     <div className="px-4 py-8 text-center">
-                      <FiGlobe className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
+                      <PiGlobe className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                       <p className="text-sm text-theme-secondary">
                         {searchTerm
                           ? `Nenhum país encontrado para "${searchTerm}"`
@@ -469,7 +469,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                 }}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
               >
-                <FiX className="w-4 h-4" />
+                <PiX className="w-4 h-4" />
               </button>
             )}
           </div>

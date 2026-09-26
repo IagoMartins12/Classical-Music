@@ -3,24 +3,24 @@
 
 import { useState } from 'react';
 import {
-  FiThumbsUp,
-  FiThumbsDown,
-  FiEdit3,
-  FiTrash2,
-  FiEye,
-  FiMapPin,
-  FiTarget,
-  FiLayers,
-  FiMusic,
-  FiBookOpen,
-  FiAward,
-  FiMessageSquare,
-  FiClock,
-  FiUser,
-  FiMoreHorizontal,
-  FiLoader,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiBookOpen,
+  PiChatCenteredText,
+  PiClock,
+  PiDotsThree,
+  PiEye,
+  PiMapPin,
+  PiMedal,
+  PiMusicNotes,
+  PiPencilLine,
+  PiSealCheck,
+  PiSpinnerGap,
+  PiStack,
+  PiTarget,
+  PiThumbsDown,
+  PiThumbsUp,
+  PiTrash,
+  PiUser,
+} from 'react-icons/pi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR, enUS } from 'date-fns/locale';
 import { toast } from 'react-hot-toast';
@@ -30,7 +30,6 @@ import {
 } from '@/app/stores/useAnnotationsStore';
 import { useAuth } from '@/app/hooks/useAuth';
 import CreateAnnotationModal from '../CreateAnnotationModal';
-import { MdVerified } from 'react-icons/md';
 import Image from '@/app/components/SmartImage';
 import ConfirmDeleteModal from '../DeleteAnnotationModal';
 import { useTranslation } from '@/app/hooks/useTranslation';
@@ -75,43 +74,43 @@ export default function AnnotationCard({
   const CATEGORY_CONFIG = {
     TECHNIQUE: {
       label: t('category_technique'),
-      icon: FiTarget,
+      icon: PiTarget,
       color: 'from-accent-red to-accent-purple',
       bgColor: 'bg-accent-red/10 border-accent-red/30 text-accent-red',
     },
     INTERPRETATION: {
       label: t('category_interpretation'),
-      icon: GiMusicalNotes,
+      icon: PiMusicNotes,
       color: 'from-accent-blue to-accent-purple',
       bgColor: 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue',
     },
     PRACTICE_TIP: {
       label: t('category_practice_tip'),
-      icon: FiBookOpen,
+      icon: PiBookOpen,
       color: 'from-accent-green to-accent-blue',
       bgColor: 'bg-accent-green/10 border-accent-green/30 text-accent-green',
     },
     THEORY: {
       label: t('category_theory'),
-      icon: FiLayers,
+      icon: PiStack,
       color: 'from-accent-purple to-accent-blue',
       bgColor: 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple',
     },
     PERFORMANCE: {
       label: t('category_performance'),
-      icon: FiMusic,
+      icon: PiMusicNotes,
       color: 'from-brand-primary to-brand-secondary',
       bgColor: 'bg-brand-primary/10 border-brand-primary/30 text-brand-primary',
     },
     HISTORICAL: {
       label: t('category_historical'),
-      icon: FiAward,
+      icon: PiMedal,
       color: 'from-accent-purple to-accent-red',
       bgColor: 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple',
     },
     GENERAL: {
       label: t('category_general'),
-      icon: FiMessageSquare,
+      icon: PiChatCenteredText,
       color: 'from-theme-primary to-theme-secondary',
       bgColor: 'bg-theme-primary/10 border-theme-primary/30 text-theme-primary',
     },
@@ -245,7 +244,7 @@ export default function AnnotationCard({
         {isUpdating && (
           <div className="absolute inset-0 bg-theme-primary/5 backdrop-blur-sm z-20 flex items-center justify-center">
             <div className="flex items-center space-x-3 bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30">
-              <FiLoader className="w-4 h-4 animate-spin text-brand-primary" />
+              <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
               <span className="text-sm font-medium text-theme-primary">
                 {isOptimistic
                   ? t('annotation_card_saving')
@@ -276,7 +275,7 @@ export default function AnnotationCard({
                   />
                 ) : (
                   <div className="w-10 h-10 bg-gradient-to-br from-theme-primary to-theme-secondary rounded-xl flex items-center justify-center">
-                    <FiUser className="w-5 h-5 text-theme-primary" />
+                    <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
                 )}
               </div>
@@ -289,7 +288,7 @@ export default function AnnotationCard({
                   </h3>
                   {annotation.isVerified && (
                     <div className="flex items-center space-x-1 text-accent-green">
-                      <MdVerified className="w-4 h-4" />
+                      <PiSealCheck className="w-4 h-4" />
                       <span className="text-xs font-medium">
                         {t('annotation_card_verified')}
                       </span>
@@ -298,7 +297,7 @@ export default function AnnotationCard({
                   {/* Indicador de anotação otimística */}
                   {isOptimistic && (
                     <div className="flex items-center space-x-1 text-accent-blue">
-                      <FiLoader className="w-3 h-3 animate-spin" />
+                      <PiSpinnerGap className="w-3 h-3 animate-spin" />
                       <span className="text-xs font-medium">
                         {t('annotation_card_saving')}
                       </span>
@@ -320,7 +319,7 @@ export default function AnnotationCard({
                     )}
                   </div>
                   <div className="flex items-center space-x-1 text-theme-tertiary">
-                    <FiClock className="w-3 h-3" />
+                    <PiClock className="w-3 h-3" />
                     <span>
                       {formatDistanceToNow(new Date(annotation.createdAt), {
                         addSuffix: true,
@@ -342,7 +341,7 @@ export default function AnnotationCard({
                     isUpdating ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
-                  <FiMoreHorizontal className="w-4 h-4" />
+                  <PiDotsThree className="w-4 h-4" />
                 </button>
 
                 {showActions && !isUpdating && (
@@ -354,7 +353,7 @@ export default function AnnotationCard({
                       }}
                       className="w-full cursor-pointer px-4 py-2 text-left text-sm text-theme-primary hover:bg-interactive-hover flex items-center space-x-2 transition-colors"
                     >
-                      <FiEdit3 className="w-3 h-3" />
+                      <PiPencilLine className="w-3 h-3" />
                       <span>{t('annotation_card_edit')}</span>
                     </button>
                     <button
@@ -364,7 +363,7 @@ export default function AnnotationCard({
                       }}
                       className="w-full cursor-pointer  px-4 py-2 text-left text-sm text-accent-red hover:bg-accent-red/10 flex items-center space-x-2 transition-colors"
                     >
-                      <FiTrash2 className="w-3 h-3" />
+                      <PiTrash className="w-3 h-3" />
                       <span>{t('annotation_card_delete')}</span>
                     </button>
                   </div>
@@ -393,14 +392,14 @@ export default function AnnotationCard({
             {/* Badge para anotação privada */}
             {!annotation.isPublic && (
               <span className="px-3 py-1 rounded-full text-xs font-medium border bg-accent-red/10 border-red-400 text-accent-red flex items-center space-x-1">
-                <FiEye className="w-3 h-3" />
+                <PiEye className="w-3 h-3" />
                 <span>{t('annotation_card_private_annotation')}</span>
               </span>
             )}
 
             {measureInfo && (
               <span className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary flex items-center space-x-1">
-                <FiMapPin className="w-3 h-3" />
+                <PiMapPin className="w-3 h-3" />
                 <span>{measureInfo}</span>
               </span>
             )}
@@ -422,7 +421,7 @@ export default function AnnotationCard({
           {showWorkInfo && annotation.work && (
             <div className="mb-4 p-3 bg-theme-elevated/50 border border-theme-primary/20 rounded-xl">
               <div className="flex items-center space-x-2 text-sm">
-                <FiMusic className="w-4 h-4 text-theme-tertiary" />
+                <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                 <span className="font-medium text-theme-primary">
                   {annotation.work.title}
                 </span>
@@ -479,7 +478,7 @@ export default function AnnotationCard({
                       : 'text-theme-tertiary hover:text-accent-green hover:bg-accent-green/5 border border-transparent hover:border-accent-green/20'
                   } ${isVoting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <FiThumbsUp
+                  <PiThumbsUp
                     className={`w-4 h-4 ${
                       annotation.userVote === true
                         ? 'text-blue-600'
@@ -506,7 +505,7 @@ export default function AnnotationCard({
                       : 'text-theme-tertiary hover:text-accent-red hover:bg-accent-red/5 hover:border-accent-red/20'
                   } ${isVoting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <FiThumbsDown
+                  <PiThumbsDown
                     className={`w-4 h-4 ${
                       annotation.userVote === false
                         ? 'text-red-600'
@@ -527,7 +526,7 @@ export default function AnnotationCard({
             ) : (
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
-                  <FiThumbsUp className="w-4 h-4" />
+                  <PiThumbsUp className="w-4 h-4" />
                   <span>{annotation.helpfulCount}</span>
                 </div>
                 {!user && (
@@ -546,7 +545,7 @@ export default function AnnotationCard({
             {/* Stats */}
             <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
               <div className="flex items-center space-x-1">
-                <FiEye className="w-4 h-4" />
+                <PiEye className="w-4 h-4" />
                 <span>{annotation.viewCount}</span>
               </div>
             </div>

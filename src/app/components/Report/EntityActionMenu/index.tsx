@@ -3,12 +3,12 @@
 
 import { useState } from 'react';
 import {
-  FiMoreHorizontal,
-  FiEye,
-  FiEdit,
-  FiTrash2,
-  FiShield,
-} from 'react-icons/fi';
+  PiDotsThree,
+  PiEye,
+  PiNotePencil,
+  PiShield,
+  PiTrash,
+} from 'react-icons/pi';
 import { useSession } from '@/app/libs/session';
 import ReportButton from '@/app/components/Report/ReportButton';
 import VerificationModal from '@/app/components/Verification/VerificationModal';
@@ -56,7 +56,7 @@ export default function EntityActionMenu({
           className="p-2 rounded-lg text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary transition-all"
           title="Mais ações"
         >
-          <FiMoreHorizontal className="w-5 h-5" />
+          <PiDotsThree className="w-5 h-5" />
         </button>
 
         {showMenu && (
@@ -78,7 +78,7 @@ export default function EntityActionMenu({
                     }}
                     className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-theme-secondary transition-colors flex items-center space-x-2"
                   >
-                    <FiEye className="w-4 h-4" />
+                    <PiEye className="w-4 h-4" />
                     <span>Visualizar</span>
                   </button>
                 )}
@@ -91,7 +91,7 @@ export default function EntityActionMenu({
                     }}
                     className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-theme-secondary transition-colors flex items-center space-x-2"
                   >
-                    <FiEdit className="w-4 h-4" />
+                    <PiNotePencil className="w-4 h-4" />
                     <span>Editar</span>
                   </button>
                 )}
@@ -105,7 +105,7 @@ export default function EntityActionMenu({
                     }}
                     className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-theme-secondary transition-colors flex items-center space-x-2"
                   >
-                    <FiShield className="w-4 h-4" />
+                    <PiShield className="w-4 h-4" />
                     <span>
                       {currentVerificationStatus
                         ? 'Remover verificação'
@@ -136,7 +136,7 @@ export default function EntityActionMenu({
                       }}
                       className="w-full px-4 py-2 text-left text-sm text-accent-red hover:bg-accent-red/10 transition-colors flex items-center space-x-2"
                     >
-                      <FiTrash2 className="w-4 h-4" />
+                      <PiTrash className="w-4 h-4" />
                       <span>Deletar</span>
                     </button>
                   </>

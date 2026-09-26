@@ -1,8 +1,8 @@
 // app/teacher/assignments/create/loading.tsx - Loading para Criar Nova Tarefa
 'use client';
 
-import { FiClipboard, FiTarget, FiMusic } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+import { GiGrandPiano } from 'react-icons/gi';
+import { PiClipboardText, PiMusicNotes, PiTarget } from 'react-icons/pi';
 
 export default function CreateAssignmentLoading() {
   return (
@@ -27,13 +27,13 @@ export default function CreateAssignmentLoading() {
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <FiClipboard />
+          <PiClipboardText />
         </div>
         <div
           className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
           style={{ animationDelay: '1s' }}
         >
-          <FiTarget />
+          <PiTarget />
         </div>
         <div
           className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
@@ -45,7 +45,7 @@ export default function CreateAssignmentLoading() {
           className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
           style={{ animationDelay: '0.5s' }}
         >
-          <GiMusicalNotes />
+          <PiMusicNotes />
         </div>
       </div>
 
@@ -148,7 +148,7 @@ export default function CreateAssignmentLoading() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <FiMusic className="w-5 h-5 text-theme-primary/30" />
+                      <PiMusicNotes className="w-5 h-5 text-theme-primary/30" />
                       <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-32"></div>
                     </div>
                     <div className="h-4 bg-theme-tertiary/30 rounded w-16"></div>
@@ -259,7 +259,7 @@ export default function CreateAssignmentLoading() {
             {/* Selected Works Summary */}
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-2 mb-4">
-                <FiMusic className="w-5 h-5 text-theme-primary/30" />
+                <PiMusicNotes className="w-5 h-5 text-theme-primary/30" />
                 <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-32"></div>
               </div>
 

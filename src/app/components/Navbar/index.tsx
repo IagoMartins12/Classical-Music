@@ -5,22 +5,23 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from '@/app/components/LocalizedLink';
 import { signOut } from '@/app/libs/session';
 import { usePathname } from 'next/navigation';
-import {
-  FiMenu,
-  FiX,
-  FiUser,
-  FiLogOut,
-  FiHeart,
-  FiBookOpen,
-  FiFile,
-  FiUpload,
-  FiSettings,
-  FiChevronDown,
-  FiChevronRight,
-  FiChevronLeft,
-  FiShield,
-} from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
+import {
+  PiBookOpen,
+  PiCaretDown,
+  PiCaretLeft,
+  PiCaretRight,
+  PiFile,
+  PiGear,
+  PiGraduationCap,
+  PiHeart,
+  PiList,
+  PiShield,
+  PiSignOut,
+  PiUploadSimple,
+  PiUser,
+  PiX,
+} from 'react-icons/pi';
 import { ThemeToggle } from '../ThemeToggle';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -35,7 +36,6 @@ import Image from '@/app/components/SmartImage';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useRouter } from 'next/navigation';
-import { FaGraduationCap } from 'react-icons/fa';
 import { LanguageToggle } from '../LanguageToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
 
@@ -358,7 +358,7 @@ const Navbar: React.FC = () => {
                       `}
                     >
                       <span>{label}</span>
-                      <FiChevronDown
+                      <PiCaretDown
                         className={`w-4 h-4 transition-transform duration-200 ${
                           activeSubmenu === label ? 'rotate-180' : ''
                         }`}
@@ -509,7 +509,7 @@ const Navbar: React.FC = () => {
                         `}
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        <FiUser className="w-4 h-4" />
+                        <PiUser className="w-4 h-4" />
                         <span>{t('navbar_link_meu_perfil')}</span>
                       </Link>
                     )}
@@ -526,7 +526,7 @@ const Navbar: React.FC = () => {
                       `}
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiHeart className="w-4 h-4" />
+                      <PiHeart className="w-4 h-4" />
                       <span>{t('navbar_link_favoritos')}</span>
                     </Link>
 
@@ -542,7 +542,7 @@ const Navbar: React.FC = () => {
                       `}
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiBookOpen className="w-4 h-4" />
+                      <PiBookOpen className="w-4 h-4" />
                       <span>{t('navbar_link_lições')}</span>
                     </Link>
 
@@ -558,7 +558,7 @@ const Navbar: React.FC = () => {
                       `}
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiFile className="w-4 h-4" />
+                      <PiFile className="w-4 h-4" />
                       <span>{t('navbar_link_anotações')}</span>
                     </Link>
 
@@ -574,7 +574,7 @@ const Navbar: React.FC = () => {
                       `}
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiUpload className="w-4 h-4" />
+                      <PiUploadSimple className="w-4 h-4" />
                       <span>{t('navbar_link_uploads')}</span>
                     </Link>
 
@@ -591,7 +591,7 @@ const Navbar: React.FC = () => {
                         `}
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        <FaGraduationCap className="w-4 h-4" />
+                        <PiGraduationCap className="w-4 h-4" />
                         <span>{t('navbar_link_painel_professor')}</span>
                       </Link>
                     )}
@@ -609,7 +609,7 @@ const Navbar: React.FC = () => {
                         `}
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        <FaGraduationCap className="w-4 h-4" />
+                        <PiGraduationCap className="w-4 h-4" />
                         <span>{t('navbar_link_painel_aluno')}</span>
                       </Link>
                     )}
@@ -626,7 +626,7 @@ const Navbar: React.FC = () => {
                         `}
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        <FiShield className="w-4 h-4" />
+                        <PiShield className="w-4 h-4" />
                         <span>{t('navbar_link_moderation')}</span>
                       </Link>
                     )}
@@ -643,7 +643,7 @@ const Navbar: React.FC = () => {
                         `}
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        <FiSettings className="w-4 h-4" />
+                        <PiGear className="w-4 h-4" />
                         <span>{t('navbar_link_admin')}</span>
                       </Link>
                     )}
@@ -654,7 +654,7 @@ const Navbar: React.FC = () => {
                       onClick={handleLogout}
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm  rounded-lg "
                     >
-                      <FiLogOut className="w-4 h-4" />
+                      <PiSignOut className="w-4 h-4" />
                       <span>{t('navbar_sair')}</span>
                     </button>
                   </div>
@@ -690,9 +690,9 @@ const Navbar: React.FC = () => {
                 {isMenuOpen ? t('navbar_fechar') : t('navbar_abrir')}
               </span>
               {isMenuOpen ? (
-                <FiX className="w-6 h-6" />
+                <PiX className="w-6 h-6" />
               ) : (
-                <FiMenu className="w-6 h-6" />
+                <PiList className="w-6 h-6" />
               )}
             </button>
           </div>
@@ -750,7 +750,7 @@ const Navbar: React.FC = () => {
                                 onClick={() => goToSubmenuView(label, submenu)}
                                 className="ml-2 p-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                               >
-                                <FiChevronRight className="w-5 h-5" />
+                                <PiCaretRight className="w-5 h-5" />
                               </button>
                             </div>
                           ) : (
@@ -810,7 +810,7 @@ const Navbar: React.FC = () => {
                             </div>
                           </div>
                           <div className="p-2 text-theme-tertiary hover:text-brand-primary transition-colors">
-                            <FiChevronRight className="w-5 h-5" />
+                            <PiCaretRight className="w-5 h-5" />
                           </div>
                         </div>
                       </>
@@ -853,7 +853,7 @@ const Navbar: React.FC = () => {
                             onClick={handleLogout}
                             className="flex items-center space-x-3 w-full px-4 py-3 text-accent-red hover:bg-accent-red rounded-lg l"
                           >
-                            <FiLogOut className="w-5 h-5" />
+                            <PiSignOut className="w-5 h-5" />
                             <span>{t('navbar_sair')}</span>
                           </button>
                         </li>
@@ -886,7 +886,7 @@ const Navbar: React.FC = () => {
                           onClick={goBackToMain}
                           className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                         >
-                          <FiChevronLeft className="w-5 h-5" />
+                          <PiCaretLeft className="w-5 h-5" />
                         </button>
                         <h3 className="font-medium text-theme-primary">
                           Perfil
@@ -946,7 +946,7 @@ const Navbar: React.FC = () => {
                               `}
                               onClick={handleMobileNavClick}
                             >
-                              <FiUser className="w-5 h-5" />
+                              <PiUser className="w-5 h-5" />
                               <span>{t('navbar_link_meu_perfil')}</span>
                             </Link>
                           </li>
@@ -965,7 +965,7 @@ const Navbar: React.FC = () => {
                             `}
                             onClick={handleMobileNavClick}
                           >
-                            <FiHeart className="w-5 h-5" />
+                            <PiHeart className="w-5 h-5" />
                             <span>{t('navbar_link_favoritos')}</span>
                           </Link>
                         </li>
@@ -983,7 +983,7 @@ const Navbar: React.FC = () => {
                             `}
                             onClick={handleMobileNavClick}
                           >
-                            <FiBookOpen className="w-5 h-5" />
+                            <PiBookOpen className="w-5 h-5" />
                             <span>{t('navbar_link_lições')}</span>
                           </Link>
                         </li>
@@ -1001,7 +1001,7 @@ const Navbar: React.FC = () => {
                             `}
                             onClick={handleMobileNavClick}
                           >
-                            <FiFile className="w-5 h-5" />
+                            <PiFile className="w-5 h-5" />
                             <span>{t('navbar_link_anotações')}</span>
                           </Link>
                         </li>
@@ -1019,7 +1019,7 @@ const Navbar: React.FC = () => {
                             `}
                             onClick={handleMobileNavClick}
                           >
-                            <FiUpload className="w-5 h-5" />
+                            <PiUploadSimple className="w-5 h-5" />
                             <span>{t('navbar_link_uploads')}</span>
                           </Link>
                         </li>
@@ -1039,7 +1039,7 @@ const Navbar: React.FC = () => {
                               `}
                               onClick={handleMobileNavClick}
                             >
-                              <FaGraduationCap className="w-5 h-5" />
+                              <PiGraduationCap className="w-5 h-5" />
                               <span>{t('navbar_link_painel_professor')}</span>
                             </Link>
                           </li>
@@ -1059,7 +1059,7 @@ const Navbar: React.FC = () => {
                               `}
                               onClick={handleMobileNavClick}
                             >
-                              <FaGraduationCap className="w-5 h-5" />
+                              <PiGraduationCap className="w-5 h-5" />
                               <span>{t('navbar_link_painel_aluno')}</span>
                             </Link>
                           </li>
@@ -1080,7 +1080,7 @@ const Navbar: React.FC = () => {
                                 `}
                                 onClick={handleMobileNavClick}
                               >
-                                <FiShield className="w-5 h-5" />
+                                <PiShield className="w-5 h-5" />
                                 <span>{t('navbar_link_moderation')}</span>
                               </Link>
                             </li>
@@ -1097,7 +1097,7 @@ const Navbar: React.FC = () => {
                                 `}
                                 onClick={handleMobileNavClick}
                               >
-                                <FiSettings className="w-5 h-5" />
+                                <PiGear className="w-5 h-5" />
                                 <span>{t('navbar_link_admin')}</span>
                               </Link>
                             </li>
@@ -1122,7 +1122,7 @@ const Navbar: React.FC = () => {
                         onClick={goBackToMain}
                         className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                       >
-                        <FiChevronLeft className="w-5 h-5" />
+                        <PiCaretLeft className="w-5 h-5" />
                       </button>
                       <h3 className="font-medium text-theme-primary">
                         {submenuTitle}

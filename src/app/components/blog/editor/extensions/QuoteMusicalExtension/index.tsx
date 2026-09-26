@@ -5,10 +5,14 @@
 import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
 import { useState, useRef, useEffect } from 'react';
-import { MdFormatQuote } from 'react-icons/md';
-import { BiMusic, BiPause, BiPlay } from 'react-icons/bi';
-import { FiVolume2 } from 'react-icons/fi';
-import { FaTrash } from 'react-icons/fa';
+import {
+  PiMusicNotes,
+  PiPause,
+  PiPlay,
+  PiQuotes,
+  PiSpeakerHigh,
+  PiTrash,
+} from 'react-icons/pi';
 
 // Declaração do tipo para YouTube Player API
 declare global {
@@ -165,13 +169,13 @@ const QuoteMusicalComponent = (props: any) => {
               className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
               title="Remover"
             >
-              <FaTrash className="w-4 h-4" />
+              <PiTrash className="w-4 h-4" />
             </button>
           </div>
         )}
 
         {/* Quote Icon */}
-        <MdFormatQuote className="absolute top-4 right-4 w-12 h-12 text-theme-tertiary opacity-20" />
+        <PiQuotes className="absolute top-4 right-4 w-12 h-12 text-theme-tertiary opacity-20" />
 
         {/* Quote */}
         <blockquote className="relative z-10">
@@ -194,7 +198,7 @@ const QuoteMusicalComponent = (props: any) => {
                   }}
                   className="flex items-center space-x-2 text-sm text-accent-purple hover:text-brand-primary transition-colors"
                 >
-                  <BiMusic className="w-5 h-5" />
+                  <PiMusicNotes className="w-5 h-5" />
                   <span>{showPlayer ? 'Ocultar' : 'Mostrar'} controles</span>
                 </button>
               </div>
@@ -219,15 +223,15 @@ const QuoteMusicalComponent = (props: any) => {
               className="p-2 bg-accent-purple text-white rounded-full hover:opacity-90 transition-opacity"
             >
               {isPlaying ? (
-                <BiPause className="w-5 h-5" />
+                <PiPause className="w-5 h-5" />
               ) : (
-                <BiPlay className="w-5 h-5" />
+                <PiPlay className="w-5 h-5" />
               )}
             </button>
 
             {/* Volume Control */}
             <div className="flex items-center space-x-2 flex-1">
-              <FiVolume2 className="w-5 h-5 text-theme-secondary" />
+              <PiSpeakerHigh className="w-5 h-5 text-theme-secondary" />
               <input
                 type="range"
                 min="0"

@@ -3,21 +3,21 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import {
-  FiCheck,
-  FiCopy,
-  FiInfo,
-  FiCalendar,
-  FiMusic,
-  FiTag,
-  FiUser,
-  FiClock,
-  FiVolume2,
-  FiBookOpen,
-  FiStar,
-  FiGlobe,
-  FiLayers,
-  FiX,
-} from 'react-icons/fi';
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCheck,
+  PiClock,
+  PiCopy,
+  PiGlobe,
+  PiInfo,
+  PiMusicNotes,
+  PiSpeakerHigh,
+  PiStack,
+  PiStar,
+  PiTag,
+  PiUser,
+  PiX,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedItem,
@@ -119,7 +119,7 @@ const ParentWorkConfirmationModal: React.FC<{
           {/* Header */}
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-              <FiLayers className="w-5 h-5 text-blue-600" />
+              <PiStack className="w-5 h-5 text-blue-600" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-theme-primary">
@@ -135,7 +135,7 @@ const ParentWorkConfirmationModal: React.FC<{
           <div className="space-y-4">
             <div className="p-4 classical-card-simple  rounded-lg">
               <div className="flex items-start space-x-3">
-                <FiInfo className="w-5 h-5 text-theme-primary mt-0.5" />
+                <PiInfo className="w-5 h-5 text-theme-primary mt-0.5" />
                 <div className="text-sm text-theme-primary">
                   <p className="font-medium mb-2">
                     Deseja aproveitar informações da obra da coleção?
@@ -160,7 +160,7 @@ const ParentWorkConfirmationModal: React.FC<{
               type="button"
               variant="secondary"
               onClick={onClose}
-              leftIcon={<FiX />}
+              leftIcon={<PiX />}
             >
               Não, obrigado
             </Button>
@@ -169,7 +169,7 @@ const ParentWorkConfirmationModal: React.FC<{
               type="button"
               variant="primary"
               onClick={onConfirm}
-              leftIcon={<FiCheck />}
+              leftIcon={<PiCheck />}
             >
               Sim, ver opções
             </Button>
@@ -203,7 +203,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'opOrCatalog',
         label: 'Op./Catálogo',
-        icon: FiBookOpen,
+        icon: PiBookOpen,
         parentValue: parentWorkData.opOrCatalog,
         currentValue: currentFormData.opOrCatalog,
         canCopy:
@@ -213,7 +213,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'compositionYear',
         label: 'Ano de Composição',
-        icon: FiCalendar,
+        icon: PiCalendarBlank,
         parentValue: parentWorkData.compositionYear,
         currentValue: currentFormData.compositionYear,
         canCopy:
@@ -224,7 +224,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'firstPublishDate',
         label: 'Primeira Publicação',
-        icon: FiCalendar,
+        icon: PiCalendarBlank,
         parentValue: parentWorkData.firstPublishDate,
         currentValue: currentFormData.firstPublishDate,
         canCopy:
@@ -235,7 +235,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'tone',
         label: 'Tonalidade',
-        icon: FiMusic,
+        icon: PiMusicNotes,
         parentValue: parentWorkData.tone,
         currentValue: currentFormData.tone,
         canCopy: !!parentWorkData.tone && !currentFormData.tone.trim(),
@@ -244,7 +244,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'mediaDuration',
         label: 'Duração',
-        icon: FiClock,
+        icon: PiClock,
         parentValue: parentWorkData.mediaDuration,
         currentValue: currentFormData.mediaDuration,
         canCopy:
@@ -257,7 +257,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'workStyle',
         label: 'Estilo Musical',
-        icon: FiVolume2,
+        icon: PiSpeakerHigh,
         parentValue: parentWorkData.workStyle,
         currentValue: currentFormData.workStyle,
         canCopy:
@@ -267,7 +267,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'moviment',
         label: 'Movimento',
-        icon: FiMusic,
+        icon: PiMusicNotes,
         parentValue: parentWorkData.moviment,
         currentValue: currentFormData.moviment,
         canCopy: !!parentWorkData.moviment && !currentFormData.moviment.trim(),
@@ -276,7 +276,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'instrumentation',
         label: 'Instrumentação',
-        icon: FiUser,
+        icon: PiUser,
         parentValue: parentWorkData.instrumentation,
         currentValue: currentFormData.instrumentation,
         canCopy:
@@ -287,7 +287,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'dedicateTo',
         label: 'Dedicado a',
-        icon: FiStar,
+        icon: PiStar,
         parentValue: parentWorkData.dedicateTo,
         currentValue: currentFormData.dedicateTo,
         canCopy:
@@ -299,7 +299,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'categoryNames',
         label: 'Categorias',
-        icon: FiTag,
+        icon: PiTag,
         parentValue: parentWorkData.categoryNames,
         currentValue: currentFormData.categoryNames,
         isArray: true,
@@ -312,7 +312,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'workGenresArr',
         label: 'Gêneros',
-        icon: FiTag,
+        icon: PiTag,
         parentValue: parentWorkData.workGenresArr,
         currentValue: currentFormData.workGenresArr,
         isArray: true,
@@ -327,7 +327,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'workType',
         label: 'Tipo de Obra',
-        icon: FiGlobe,
+        icon: PiGlobe,
         parentValue: parentWorkData.workType,
         currentValue: currentFormData.workType,
         canCopy:
@@ -338,7 +338,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'difficultyLevel',
         label: 'Nível de Dificuldade',
-        icon: FiStar,
+        icon: PiStar,
         parentValue: parentWorkData.difficultyLevel,
         currentValue: currentFormData.difficultyLevel,
         canCopy:
@@ -351,7 +351,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'imslpTags',
         label: 'Tags IMSLP',
-        icon: FiTag,
+        icon: PiTag,
         parentValue: parentWorkData.imslpTags,
         currentValue: currentFormData.imslpTags
           .split(',')
@@ -369,7 +369,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'epochId',
         label: 'Época',
-        icon: FiCalendar,
+        icon: PiCalendarBlank,
         parentValue: parentWorkData.epoch?.name,
         currentValue: currentFormData.epochId,
         displayValue: parentWorkData.epoch?.name,
@@ -379,7 +379,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       {
         key: 'instrumentId',
         label: 'Instrumento',
-        icon: FiMusic,
+        icon: PiMusicNotes,
         parentValue: parentWorkData.instrument?.name,
         currentValue: currentFormData.instrumentId,
         displayValue: parentWorkData.instrument?.name,
@@ -407,12 +407,12 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
   }, [fieldSuggestions]);
 
   const categoryLabels = {
-    catalog: { title: 'Catálogo', icon: FiBookOpen, color: 'text-blue-600' },
-    musical: { title: 'Musical', icon: FiMusic, color: 'text-purple-600' },
-    metadata: { title: 'Metadados', icon: FiInfo, color: 'text-green-600' },
+    catalog: { title: 'Catálogo', icon: PiBookOpen, color: 'text-blue-600' },
+    musical: { title: 'Musical', icon: PiMusicNotes, color: 'text-purple-600' },
+    metadata: { title: 'Metadados', icon: PiInfo, color: 'text-green-600' },
     classification: {
       title: 'Classificação',
-      icon: FiTag,
+      icon: PiTag,
       color: 'text-orange-600',
     },
   };
@@ -543,7 +543,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
             <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                  <FiCopy className="w-5 h-5 text-theme-primary" />
+                  <PiCopy className="w-5 h-5 text-theme-primary" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-theme-primary">
@@ -566,7 +566,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                   hover="none"
                 >
                   <div className="flex items-start space-x-3">
-                    <FiInfo className="w-5 h-5 text-black mt-0.5" />
+                    <PiInfo className="w-5 h-5 text-black mt-0.5" />
                     <div className="text-sm text-blue-800">
                       <p className="font-medium mb-1">
                         Campos que podem ser copiados
@@ -709,9 +709,9 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                 disabled={selectedFields.size === 0 || isApplying}
                 leftIcon={
                   isApplying ? (
-                    <FiCopy className="animate-pulse" />
+                    <PiCopy className="animate-pulse" />
                   ) : (
-                    <FiCheck />
+                    <PiCheck />
                   )
                 }
               >

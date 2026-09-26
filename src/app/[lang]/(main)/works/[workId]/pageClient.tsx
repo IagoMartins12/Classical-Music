@@ -4,25 +4,25 @@
 import { useState, useEffect } from 'react';
 import Link from '@/app/components/LocalizedLink';
 import {
-  FiCalendar,
-  FiMusic,
-  FiInfo,
-  FiTarget,
-  FiSettings,
-  FiBookOpen,
-  FiExternalLink,
-  FiPause,
-  FiPlay,
-  FiHeadphones,
-  FiMapPin,
-  FiClock,
-  FiTag,
-  FiCheckCircle,
-  FiArrowLeft,
-  FiLayers,
-  FiArrowUp,
-  FiArrowDown,
-} from 'react-icons/fi';
+  PiArrowDown,
+  PiArrowLeft,
+  PiArrowSquareOut,
+  PiArrowUp,
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCheckCircle,
+  PiClock,
+  PiGear,
+  PiHeadphones,
+  PiInfo,
+  PiMapPin,
+  PiMusicNotes,
+  PiPause,
+  PiPlay,
+  PiStack,
+  PiTag,
+  PiTarget,
+} from 'react-icons/pi';
 import { useIMSLPScoresIncremental } from '@/app/hooks/useIMSLPScoresIncremental';
 import { useWorkScores } from '@/app/hooks/useWorkScores';
 import { useNavigate } from '@/app/hooks/useNavigate';
@@ -41,7 +41,6 @@ import ShareButton from '../../../../components/ShareButton';
 import AnnotationsSection from '../../../../components/Annotations/AnnotationsSection';
 import { useMostFavoritedForWork } from '@/app/stores/useMostFavoritedStore';
 import IMSLPTabsIncremental from '../../../../components/WorkDetailsClient/IMSLPTabsIncremental';
-import { GiMusicalNotes } from 'react-icons/gi';
 import ReportButton from '../../../../components/Report/ReportButton';
 import VerificationModal from '../../../../components/Verification/VerificationModal';
 import VerificationBadge from '../../../../components/Verification/VerificationBadge';
@@ -405,7 +404,7 @@ export default function WorkDetailsClient({
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 hidden md:flex bg-gradient-to-br from-accent-blue to-brand-primary rounded-2xl  items-center justify-center">
-                    <FiTarget className="w-6 h-6 text-theme-primary" />
+                    <PiTarget className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="flex flex-col gap-2">
                     <h2 className="text-lg md:text-xl font-bold text-theme-primary classical-title">
@@ -429,7 +428,7 @@ export default function WorkDetailsClient({
                     onClick={handleCancelSelection}
                     className="btn-classical-secondary w-full justify-center flex items-center space-x-2"
                   >
-                    <FiArrowLeft className="w-4 h-4" />
+                    <PiArrowLeft className="w-4 h-4" />
                     <span>{t('selection_mode_voltar')}</span>
                   </button>
                   {tempSelectedWorkScore && (
@@ -437,7 +436,7 @@ export default function WorkDetailsClient({
                       onClick={handleConfirmSelection}
                       className="btn-classical-primary w-full justify-center flex items-center space-x-2"
                     >
-                      <FiCheckCircle className="w-4 h-4" />
+                      <PiCheckCircle className="w-4 h-4" />
                       <span>{t('selection_mode_confirmar_selecao')}</span>
                     </button>
                   )}
@@ -494,7 +493,7 @@ export default function WorkDetailsClient({
                 <div className="p-6">
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                      <FiBookOpen className="w-4 h-4 text-theme-primary" />
+                      <PiBookOpen className="w-4 h-4 text-theme-primary" />
                     </div>
                     <h3 className="text-lg font-semibold text-theme-primary">
                       {t('selection_mode_preview_partitura')}
@@ -511,7 +510,7 @@ export default function WorkDetailsClient({
                           onClick={handleConfirmSelection}
                           className="btn-classical-primary flex items-center justify-center space-x-2"
                         >
-                          <FiCheckCircle className="w-4 h-4" />
+                          <PiCheckCircle className="w-4 h-4" />
                           <span>{t('selection_mode_confirmar_selecao')}</span>
                         </button>
 
@@ -519,7 +518,7 @@ export default function WorkDetailsClient({
                           onClick={handleCancelSelection}
                           className="btn-classical-secondary flex items-center justify-center space-x-2"
                         >
-                          <FiArrowLeft className="w-4 h-4" />
+                          <PiArrowLeft className="w-4 h-4" />
                           <span>{t('selection_mode_voltar')}</span>
                         </button>
                       </div>
@@ -527,7 +526,7 @@ export default function WorkDetailsClient({
                   ) : (
                     <div className="text-center py-8">
                       <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <FiMusic className="w-8 h-8 text-theme-tertiary" />
+                        <PiMusicNotes className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h4 className="text-lg font-semibold text-theme-primary mb-2">
                         {t('selection_mode_selecione_partitura')}
@@ -616,7 +615,7 @@ export default function WorkDetailsClient({
                 className="absolute hidden sm:flex bottom-6 right-12 text-4xl text-brand-secondary/10 animate-float"
                 style={{ animationDelay: '1s' }}
               >
-                <FiMusic />
+                <PiMusicNotes />
               </div>
             </div>
 
@@ -728,7 +727,7 @@ export default function WorkDetailsClient({
                             work.difficultyLevel
                           )} rounded-full flex items-center space-x-2 shadow-lg`}
                         >
-                          <FiTarget className="w-4 h-4 text-theme-primary" />
+                          <PiTarget className="w-4 h-4 text-theme-primary" />
                           <span className="text-theme-primary font-semibold text-sm">
                             {t('work_details_nivel')}{' '}
                             {getDifficultyLabel(work.difficultyLevel)}
@@ -768,7 +767,7 @@ export default function WorkDetailsClient({
                     {work.compositionYear && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiCalendar className="w-4 h-4 text-theme-primary" />
+                          <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -785,7 +784,7 @@ export default function WorkDetailsClient({
                     {work.mediaDuration && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiClock className="w-4 h-4 text-theme-primary" />
+                          <PiClock className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -802,7 +801,7 @@ export default function WorkDetailsClient({
                     {work.tone && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiMusic className="w-4 h-4 text-theme-primary" />
+                          <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -819,7 +818,7 @@ export default function WorkDetailsClient({
                     {work.instrument && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <GiMusicalNotes className="w-4 h-4 text-theme-primary" />
+                          <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -836,7 +835,7 @@ export default function WorkDetailsClient({
                     {work.epoch && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiMapPin className="w-4 h-4 text-theme-primary" />
+                          <PiMapPin className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -855,7 +854,7 @@ export default function WorkDetailsClient({
                     (work.childWorks && work.childWorks.length > 0)) && (
                     <div className="border-t border-theme-secondary pt-6">
                       <h2 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                        <FiLayers className="w-5 h-5 text-accent-purple" />
+                        <PiStack className="w-5 h-5 text-accent-purple" />
                         <span>{t('work_details_relacoes_colecao')}</span>
                       </h2>
 
@@ -865,7 +864,7 @@ export default function WorkDetailsClient({
                           <div className="p-4 bg-theme-elevated rounded-xl">
                             <div className="flex items-start space-x-3">
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                                <FiArrowUp className="w-4 h-4 text-theme-primary" />
+                                <PiArrowUp className="w-4 h-4 text-theme-primary" />
                               </div>
                               <div className="flex-1">
                                 <p className="text-sm font-medium text-theme-tertiary mb-1">
@@ -876,7 +875,7 @@ export default function WorkDetailsClient({
                                   className="text-accent-purple hover:text-accent-blue font-semibold transition-colors duration-300 group flex items-center space-x-2"
                                 >
                                   <span>{work.parentWork.title}</span>
-                                  <FiExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  <PiArrowSquareOut className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </Link>
                                 <p className="text-xs text-theme-tertiary mt-1">
                                   {t('work_details_por')}{' '}
@@ -892,7 +891,7 @@ export default function WorkDetailsClient({
                           <div className="p-4 bg-theme-elevated rounded-xl">
                             <div className="flex items-start space-x-3">
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                                <FiArrowDown className="w-4 h-4 text-theme-primary" />
+                                <PiArrowDown className="w-4 h-4 text-theme-primary" />
                               </div>
                               <div className="flex-1">
                                 <p className="text-sm font-medium text-theme-tertiary mb-3">
@@ -921,7 +920,7 @@ export default function WorkDetailsClient({
                                           </p>
                                         )}
                                       </div>
-                                      <FiExternalLink className="w-3 h-3 text-theme-tertiary  transition-opacity flex-shrink-0" />
+                                      <PiArrowSquareOut className="w-3 h-3 text-theme-tertiary  transition-opacity flex-shrink-0" />
                                     </Link>
                                   ))}
                                 </div>
@@ -939,7 +938,7 @@ export default function WorkDetailsClient({
                     work.workStyle) && (
                     <div className="border-t border-theme-secondary pt-6">
                       <h2 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                        <FiInfo className="w-5 h-5 text-accent-blue" />
+                        <PiInfo className="w-5 h-5 text-accent-blue" />
                         <span>{t('work_details_informacoes_adicionais')}</span>
                       </h2>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -1005,7 +1004,7 @@ export default function WorkDetailsClient({
                       work.workGenresArr?.length > 0) && (
                       <div className="border-t border-theme-secondary pt-6">
                         <h2 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                          <FiTag className="w-5 h-5 text-accent-green" />
+                          <PiTag className="w-5 h-5 text-accent-green" />
                           <span>{t('work_details_categorias_generos')}</span>
                         </h2>
                         <div className="space-y-4">
@@ -1081,7 +1080,7 @@ export default function WorkDetailsClient({
                     <div className="classical-card-simple p-6">
                       <div className="flex items-center space-x-3 mb-4">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center">
-                          <FiHeadphones className="w-4 h-4 text-theme-primary" />
+                          <PiHeadphones className="w-4 h-4 text-theme-primary" />
                         </div>
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {t('work_details_reproducao')}
@@ -1093,9 +1092,9 @@ export default function WorkDetailsClient({
                           className="btn-classical-primary w-full flex items-center justify-center space-x-2 group"
                         >
                           {isPlaying ? (
-                            <FiPause className="w-4 h-4" />
+                            <PiPause className="w-4 h-4" />
                           ) : (
-                            <FiPlay className="w-4 h-4" />
+                            <PiPlay className="w-4 h-4" />
                           )}
                           <span>
                             {isPlaying
@@ -1109,7 +1108,7 @@ export default function WorkDetailsClient({
                           rel="noopener noreferrer"
                           className="btn-classical-secondary w-full flex items-center justify-center space-x-2 group"
                         >
-                          <FiExternalLink className="w-4 h-4" />
+                          <PiArrowSquareOut className="w-4 h-4" />
                           <span>{t('work_details_abrir_player_externo')}</span>
                           <svg
                             className="w-4 h-4 transition-transform group-hover:translate-x-1"
@@ -1133,7 +1132,7 @@ export default function WorkDetailsClient({
                   <div className="classical-card-simple p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                        <FiBookOpen className="w-4 h-4 text-theme-primary" />
+                        <PiBookOpen className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
                         {t('work_details_recursos_externos')}
@@ -1146,7 +1145,7 @@ export default function WorkDetailsClient({
                         rel="noopener noreferrer"
                         className="btn-classical-primary w-full flex items-center space-x-2 group"
                       >
-                        <FiBookOpen className="w-4 h-4" />
+                        <PiBookOpen className="w-4 h-4" />
                         <span>{t('work_details_ver_partitura_imslp')}</span>
                         <svg
                           className="w-4 h-4 transition-transform group-hover:translate-x-1"
@@ -1169,7 +1168,7 @@ export default function WorkDetailsClient({
                   <div className="classical-card-simple p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                        <FiSettings className="w-4 h-4 text-theme-primary" />
+                        <PiGear className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
                         {t('work_details_detalhes_tecnicos')}

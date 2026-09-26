@@ -1,12 +1,15 @@
 // app/blog/page.tsx
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
-import { BsClock } from 'react-icons/bs';
-import { BiTrendingUp } from 'react-icons/bi';
+import {
+  PiArrowRight,
+  PiClock,
+  PiSquaresFour,
+  PiTrendUp,
+} from 'react-icons/pi';
 import { HeroCarousel } from '@/app/components/blog/HeroCarousel';
 import { ArticleCard } from '@/app/components/blog/ArticleCard';
 import SectionTitle from '../components/Utils/SectionTitle';
-import { FiTrendingUp, FiGrid, FiArrowRight } from 'react-icons/fi';
 import { tolerarApiForaNoBuild } from '@/app/libs/api/build-tolerance';
 import {
   getCachedFeaturedArticles,
@@ -71,7 +74,7 @@ export default async function BlogHomePage() {
           subtitle="Descubra as novidades do mundo da música clássica"
           linkText="Ver todos"
           linkHref="/blog/articles"
-          icon={<FiTrendingUp className="w-6 h-6" />}
+          icon={<PiTrendUp className="w-6 h-6" />}
           accent="gold"
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -93,7 +96,7 @@ export default async function BlogHomePage() {
           subtitle="Navegue pelos temas que mais te interessam"
           linkText="Ver todas"
           linkHref="/blog/category"
-          icon={<FiGrid className="w-6 h-6" />}
+          icon={<PiSquaresFour className="w-6 h-6" />}
           accent="gold"
         />
 
@@ -145,7 +148,7 @@ export default async function BlogHomePage() {
                 {/* CTA */}
                 <div className="flex items-center text-brand-primary text-sm font-medium group-hover:translate-x-2 transition-transform">
                   <span className="mr-1">Explorar</span>
-                  <FiArrowRight className="w-4 h-4" />
+                  <PiArrowRight className="w-4 h-4" />
                 </div>
               </div>
             </Link>
@@ -160,7 +163,7 @@ export default async function BlogHomePage() {
           <div className="lg:col-span-2">
             <div className="classical-card p-8">
               <h3 className="text-2xl font-bold text-theme-primary mb-6 flex items-center">
-                <BiTrendingUp className="w-6 h-6 mr-3 text-brand-primary" />
+                <PiTrendUp className="w-6 h-6 mr-3 text-brand-primary" />
                 Destaques da Semana
               </h3>
               <p className="text-theme-secondary mb-6">
@@ -181,7 +184,7 @@ export default async function BlogHomePage() {
           <div className="lg:col-span-1">
             <div className="classical-card p-6 sticky top-24">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center">
-                <BiTrendingUp className="w-5 h-5 mr-2 text-brand-primary" />
+                <PiTrendUp className="w-5 h-5 mr-2 text-brand-primary" />
                 Mais Lidos
               </h3>
               <div className="space-y-4">
@@ -199,7 +202,7 @@ export default async function BlogHomePage() {
                         {article.title}
                       </h4>
                       <div className="flex items-center text-xs text-theme-tertiary space-x-2">
-                        <BsClock className="w-3 h-3" />
+                        <PiClock className="w-3 h-3" />
                         <span>{article?.readTime ?? 0} min</span>
                         <span>•</span>
                         <span>{article.viewCount.toLocaleString()} views</span>

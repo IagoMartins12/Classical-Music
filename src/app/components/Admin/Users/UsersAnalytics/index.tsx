@@ -3,16 +3,16 @@
 import { useRouter } from 'next/navigation';
 import { useState, useMemo } from 'react';
 import {
-  FiUsers,
-  FiActivity,
-  FiUpload,
-  FiTrendingUp,
-  FiTarget,
-  FiAward,
-  FiDownload,
-  FiRefreshCw,
-  FiEye,
-} from 'react-icons/fi';
+  PiArrowsClockwise,
+  PiDownloadSimple,
+  PiEye,
+  PiMedal,
+  PiPulse,
+  PiTarget,
+  PiTrendUp,
+  PiUploadSimple,
+  PiUsers,
+} from 'react-icons/pi';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -137,14 +137,14 @@ export default function UsersAnalytics() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <FiUsers className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiUsers className="w-16 h-16 text-accent-red mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Dados
           </h2>
           <p className="text-theme-secondary mb-6">{error}</p>
           <Button
             variant="primary"
-            leftIcon={<FiRefreshCw />}
+            leftIcon={<PiArrowsClockwise />}
             onClick={refreshData}
           >
             Tentar Novamente
@@ -170,7 +170,7 @@ export default function UsersAnalytics() {
           <div className="text-center mb-8 py-12">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiUsers className="w-8 h-8 text-theme-primary" />
+                <PiUsers className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -189,7 +189,9 @@ export default function UsersAnalytics() {
                 variant="ghost"
                 size="sm"
                 leftIcon={
-                  <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
+                  <PiArrowsClockwise
+                    className={refreshing ? 'animate-spin' : ''}
+                  />
                 }
                 onClick={handleRefresh}
                 disabled={refreshing || statsLoading}
@@ -213,7 +215,7 @@ export default function UsersAnalytics() {
                   value: analytics.newUsers.recentlyAdded || 0,
                   isPositive: true,
                 }}
-                icon={FiUsers}
+                icon={PiUsers}
                 color="#3B82F6"
                 subtitle={`nos ${getPeriodLabel(period)}`}
               />
@@ -225,7 +227,7 @@ export default function UsersAnalytics() {
                   value: analytics.activeUsers.growthRate || 0,
                   isPositive: (analytics.activeUsers.growthRate || 0) >= 0,
                 }}
-                icon={FiActivity}
+                icon={PiPulse}
                 color="#10B981"
                 subtitle={`${getPeriodLabel(period)}`}
               />
@@ -237,7 +239,7 @@ export default function UsersAnalytics() {
                   value: analytics.newUsers.growthRate || 0,
                   isPositive: (analytics.newUsers.growthRate || 0) >= 0,
                 }}
-                icon={FiTrendingUp}
+                icon={PiTrendUp}
                 color="#F59E0B"
                 subtitle={`${getPeriodLabel(period)}`}
               />
@@ -249,7 +251,7 @@ export default function UsersAnalytics() {
                   value: analytics.retentionGrowth || 0,
                   isPositive: (analytics.retentionGrowth || 0) >= 0,
                 }}
-                icon={FiTarget}
+                icon={PiTarget}
                 color="#8B5CF6"
                 subtitle="usuários ativos"
               />
@@ -301,7 +303,7 @@ export default function UsersAnalytics() {
             {/* Top Contributors */}
             <AnimatedCard className="classical-card p-4 lg:p-6">
               <h3 className="text-lg lg:text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                <FiUpload className="w-5 h-5 text-accent-green" />
+                <PiUploadSimple className="w-5 h-5 text-accent-green" />
                 <span>Top Contribuidores</span>
               </h3>
               <div className="space-y-4">
@@ -328,14 +330,14 @@ export default function UsersAnalytics() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          leftIcon={<FiEye />}
+                          leftIcon={<PiEye />}
                         />
                       </div>
                     </div>
                   ))
                 ) : (
                   <div className="text-center py-8">
-                    <FiUpload className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                    <PiUploadSimple className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                     <p className="text-theme-secondary">
                       Nenhum contribuidor encontrado
                     </p>
@@ -347,7 +349,7 @@ export default function UsersAnalytics() {
             {/* User Types Detailed */}
             <AnimatedCard className="classical-card p-4 lg:p-6">
               <h3 className="text-lg lg:text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                <FiTarget className="w-5 h-5 text-accent-blue" />
+                <PiTarget className="w-5 h-5 text-accent-blue" />
                 <span>Tipos de Usuário</span>
               </h3>
               <div className="space-y-4">
@@ -391,7 +393,7 @@ export default function UsersAnalytics() {
             {/* Engagement Metrics */}
             <AnimatedCard className="classical-card p-4 lg:p-6">
               <h3 className="text-lg lg:text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                <FiActivity className="w-5 h-5 text-accent-amber" />
+                <PiPulse className="w-5 h-5 text-accent-amber" />
                 <span>Métricas de Engajamento</span>
               </h3>
               <div className="space-y-4">
@@ -452,7 +454,7 @@ export default function UsersAnalytics() {
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-4 lg:p-6">
               <h3 className="text-lg lg:text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                <FiAward className="w-5 h-5 text-accent-purple" />
+                <PiMedal className="w-5 h-5 text-accent-purple" />
                 <span>Resumo de Atividade ({getPeriodLabel(period)})</span>
               </h3>
 
@@ -498,7 +500,7 @@ export default function UsersAnalytics() {
           <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-theme-secondary">
             <Button
               variant="primary"
-              leftIcon={<FiUsers />}
+              leftIcon={<PiUsers />}
               onClick={() => router.push('/admin/users/list')}
               className="flex-1"
             >
@@ -507,7 +509,7 @@ export default function UsersAnalytics() {
 
             <Button
               variant="secondary"
-              leftIcon={<FiDownload />}
+              leftIcon={<PiDownloadSimple />}
               onClick={handleExportData}
               className="flex-1"
               disabled={!analytics || !exportData}

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { TagForm } from '@/app/components/blog/admin/TagForm';
 import { getServerAccessToken } from '@/app/libs/api/server-session';
 import { loadAdminTag } from '@/app/requests/blog/admin';
-import { FaArrowLeft } from 'react-icons/fa';
+import { PiArrowLeft } from 'react-icons/pi';
 import { getServerSession } from '@/app/libs/api/server-session';
 
 interface idProps {
@@ -55,7 +55,7 @@ export default async function EditTagPage({ params }: PageProps) {
             href="/blog/admin/tags"
             className="inline-flex items-center text-sm text-theme-secondary hover:text-brand-primary mb-4 transition-colors"
           >
-            <FaArrowLeft className="w-4 h-4 mr-2" />
+            <PiArrowLeft className="w-4 h-4 mr-2" />
             Voltar para tags
           </Link>
           <h1 className="text-3xl font-bold text-theme-primary classical-title">

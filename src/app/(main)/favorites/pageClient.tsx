@@ -4,17 +4,17 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
-  FiHeart,
-  FiUser,
-  FiMusic,
-  FiSearch,
-  FiExternalLink,
-  FiClock,
-  FiBookOpen,
-  FiFileText,
-  FiStar,
-  FiBarChart2,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiBookOpen,
+  PiChartBar,
+  PiClock,
+  PiFileText,
+  PiHeart,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiStar,
+  PiUser,
+} from 'react-icons/pi';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import Image from '@/app/components/SmartImage';
 import FavoriteButton from '../../components/FavoriteButton';
@@ -134,7 +134,7 @@ export default function FavoritesClient() {
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiHeart className="w-8 h-8 text-theme-primary" />
+                <PiHeart className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
@@ -199,7 +199,7 @@ export default function FavoritesClient() {
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search */}
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                   <input
                     type="text"
                     placeholder={t('search_placeholder')}
@@ -217,7 +217,7 @@ export default function FavoritesClient() {
                   <Button
                     variant="outline"
                     onClick={toggleStats}
-                    leftIcon={<FiBarChart2 className="w-4 h-4" />}
+                    leftIcon={<PiChartBar className="w-4 h-4" />}
                   >
                     <span className="text-sm">
                       {isMobile
@@ -273,7 +273,7 @@ export default function FavoritesClient() {
                       >
                         <div className="flex items-center space-x-3 mb-6">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                            <FiUser className="w-5 h-5 text-theme-primary" />
+                            <PiUser className="w-5 h-5 text-theme-primary" />
                           </div>
                           <div>
                             <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -359,7 +359,7 @@ export default function FavoritesClient() {
                       >
                         <div className="flex items-center space-x-3 mb-6">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                            <FiMusic className="w-5 h-5 text-theme-primary" />
+                            <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                           </div>
                           <div>
                             <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -445,7 +445,7 @@ export default function FavoritesClient() {
                       >
                         <div className="flex items-center space-x-3 mb-6">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                            <FiFileText className="w-5 h-5 text-theme-primary" />
+                            <PiFileText className="w-5 h-5 text-theme-primary" />
                           </div>
                           <div>
                             <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -613,21 +613,21 @@ function ComposerFavoriteCard({
                   </div>
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-3 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all duration-500 group-hover:scale-110">
-                    <FiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
+                    <PiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
                   </div>
                 )}
               </div>
 
               <div className="flex flex-col justify-center">
                 <div className="inline-flex items-center py-0.5">
-                  <FiUser className="w-3 h-3 mr-1" />
+                  <PiUser className="w-3 h-3 mr-1" />
                   <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 w-11/12 truncate flex-1">
                     {favorite.composer?.fullName || favorite.composer?.name}
                   </h3>
                 </div>
 
                 <span className="inline-flex items-center px-3 justify-center py-1 mt-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium">
-                  <FiClock className="w-2.5 h-2.5 mr-1" />
+                  <PiClock className="w-2.5 h-2.5 mr-1" />
                   {favorite.composer?.epochName &&
                     translateEpochWithHook(favorite.composer.epochName, t)}
                 </span>
@@ -654,7 +654,7 @@ function ComposerFavoriteCard({
               className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
             >
               <span>{t('see_profile')}</span>
-              <FiExternalLink className="w-3 h-3" />
+              <PiArrowSquareOut className="w-3 h-3" />
             </Link>
           </div>
         )}
@@ -703,7 +703,7 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
                 <div className="flex gap-4 items-center">
                   {favorite.work?.opOrCatalog && (
                     <span className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-theme-primary/30 text-theme-secondary rounded-md text-xs font-medium flex-shrink-0">
-                      <FiBookOpen className="w-2.5 h-2.5 mr-1" />
+                      <PiBookOpen className="w-2.5 h-2.5 mr-1" />
                       {favorite.work?.opOrCatalog}
                     </span>
                   )}
@@ -726,7 +726,7 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
                   className="inline-flex items-center text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <FiUser className="w-3 h-3 mr-1" />
+                  <PiUser className="w-3 h-3 mr-1" />
                   {favorite.work.composer.fullName}
                 </div>
               </div>
@@ -741,7 +741,7 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
               className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
             >
               <span>{t('see_work')}</span>
-              <FiExternalLink className="w-3 h-3" />
+              <PiArrowSquareOut className="w-3 h-3" />
             </Link>
           </div>
         )}
@@ -792,7 +792,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
               }`}
             >
               <div className="inline-flex items-center py-0.5">
-                <FiFileText className="w-3 h-3 mr-1" />
+                <PiFileText className="w-3 h-3 mr-1" />
                 <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 flex-1 line-clamp-2">
                   {favorite.scoreTitle}
                 </h3>
@@ -800,7 +800,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
 
               <div className="flex gap-2 items-center flex-wrap">
                 <span className="inline-flex items-center px-2 py-0.5 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-md text-xs font-medium">
-                  <FiHeart className="w-2.5 h-2.5 mr-1" />
+                  <PiHeart className="w-2.5 h-2.5 mr-1" />
                   {favorite.scoreType}
                 </span>
 
@@ -813,14 +813,14 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
             {/* Informações da obra */}
             <div className="space-y-1 mb-3">
               <div className="flex items-center space-x-2">
-                <FiMusic className="w-3 h-3 text-accent-blue" />
+                <PiMusicNotes className="w-3 h-3 text-accent-blue" />
                 <span className="text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium">
                   {favorite.work?.title}
                 </span>
               </div>
 
               <div className="flex items-center space-x-2">
-                <FiUser className="w-3 h-3 text-theme-tertiary" />
+                <PiUser className="w-3 h-3 text-theme-tertiary" />
                 <span className="text-sm text-theme-tertiary">
                   {favorite.work?.composer?.fullName}
                 </span>
@@ -834,7 +834,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
               <div className="space-y-2 mb-3 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
                 {favorite.personalRating && (
                   <div className="flex items-center space-x-2">
-                    <FiStar className="w-3 h-3 text-accent-gold" />
+                    <PiStar className="w-3 h-3 text-accent-gold" />
                     <span className="text-sm text-accent-gold font-medium">
                       {favorite.personalRating}/5 {t('stars')}
                     </span>
@@ -871,7 +871,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
 
             {/* Data de adição */}
             <div className="text-xs text-theme-tertiary flex items-center space-x-1">
-              <FiClock className="w-3 h-3" />
+              <PiClock className="w-3 h-3" />
               <span>
                 {t('favorited_on')}{' '}
                 {new Date(favorite.addedAt).toLocaleDateString('pt-BR')}
@@ -905,7 +905,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
               className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
             >
               <span>{t('see_work')}</span>
-              <FiExternalLink className="w-3 h-3" />
+              <PiArrowSquareOut className="w-3 h-3" />
             </Link>
           </div>
         )}

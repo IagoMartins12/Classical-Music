@@ -3,15 +3,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import {
-  FiAlertTriangle,
-  FiCheckCircle,
-  FiClock,
-  FiDatabase,
-  FiDownload,
-  FiPlay,
-  FiSave,
-  FiX,
-} from 'react-icons/fi';
+  PiCheckCircle,
+  PiClock,
+  PiDatabase,
+  PiDownloadSimple,
+  PiFloppyDisk,
+  PiPlay,
+  PiWarning,
+  PiX,
+} from 'react-icons/pi';
 import { useBackup } from '@/app/hooks/admin/useBackup';
 import type { BackupCollectionConfig } from '@/app/requests/admin/backup';
 
@@ -154,7 +154,7 @@ export default function BackupManagementClient() {
             disabled={backup.executando || Boolean(impedimento)}
             className="btn-classical-primary flex items-center gap-2 disabled:opacity-50"
           >
-            <FiPlay className="w-4 h-4" />
+            <PiPlay className="w-4 h-4" />
             {backup.executando ? 'Executando…' : 'Executar agora'}
           </button>
 
@@ -163,7 +163,7 @@ export default function BackupManagementClient() {
             disabled={backup.salvar.isPending}
             className="btn-classical-secondary flex items-center gap-2 disabled:opacity-50"
           >
-            <FiSave className="w-4 h-4" />
+            <PiFloppyDisk className="w-4 h-4" />
             Salvar
           </button>
         </div>
@@ -171,7 +171,7 @@ export default function BackupManagementClient() {
 
       {impedimento && (
         <div className="classical-card p-4 flex gap-3 border-l-4 border-accent-amber">
-          <FiAlertTriangle className="w-5 h-5 text-accent-amber shrink-0 mt-0.5" />
+          <PiWarning className="w-5 h-5 text-accent-amber shrink-0 mt-0.5" />
           <div>
             <p className="text-theme-primary font-medium">
               O backup não pode rodar ainda
@@ -232,7 +232,7 @@ export default function BackupManagementClient() {
       <section className="classical-card p-4">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <h2 className="text-lg font-semibold text-theme-primary flex items-center gap-2">
-            <FiDatabase className="w-4 h-4" />O que entra no arquivo
+            <PiDatabase className="w-4 h-4" />O que entra no arquivo
           </h2>
 
           <div className="flex items-center gap-3">
@@ -326,7 +326,7 @@ export default function BackupManagementClient() {
                     onClick={() => void backup.baixar(arquivo.key)}
                     className="btn-classical-secondary flex items-center gap-1.5 text-sm px-3 py-1.5"
                   >
-                    <FiDownload className="w-3.5 h-3.5" />
+                    <PiDownloadSimple className="w-3.5 h-3.5" />
                     Baixar
                   </button>
                 </li>
@@ -349,11 +349,11 @@ export default function BackupManagementClient() {
               {backup.data?.execucoes.map((execucao) => (
                 <li key={execucao.id} className="flex gap-3 py-2.5">
                   {execucao.status === 'ok' ? (
-                    <FiCheckCircle className="w-4 h-4 text-accent-green shrink-0 mt-0.5" />
+                    <PiCheckCircle className="w-4 h-4 text-accent-green shrink-0 mt-0.5" />
                   ) : execucao.status === 'failed' ? (
-                    <FiX className="w-4 h-4 text-accent-red shrink-0 mt-0.5" />
+                    <PiX className="w-4 h-4 text-accent-red shrink-0 mt-0.5" />
                   ) : (
-                    <FiClock className="w-4 h-4 text-accent-amber shrink-0 mt-0.5" />
+                    <PiClock className="w-4 h-4 text-accent-amber shrink-0 mt-0.5" />
                   )}
 
                   <div className="min-w-0">

@@ -6,8 +6,7 @@ import { ReactNodeViewRenderer } from '@tiptap/react';
 import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
 import Link from 'next/link';
-import { BiMusic } from 'react-icons/bi';
-import { FaTrash } from 'react-icons/fa';
+import { PiMusicNotes, PiTrash } from 'react-icons/pi';
 
 const WorkCardComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -34,7 +33,7 @@ const WorkCardComponent = (props: any) => {
             className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
             title="Remover"
           >
-            <FaTrash className="w-4 h-4" />
+            <PiTrash className="w-4 h-4" />
           </button>
         </div>
       )}
@@ -42,7 +41,7 @@ const WorkCardComponent = (props: any) => {
       <div className="classical-card p-6 border-l-4 border-accent-purple">
         <div className="flex items-start space-x-4">
           <div className="p-3 bg-accent-purple rounded-lg shadow-theme-medium">
-            <BiMusic className="w-8 h-8 text-white" />
+            <PiMusicNotes className="w-8 h-8 text-white" />
           </div>
 
           <div className="flex-1">

@@ -3,16 +3,15 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiMusic,
-  FiUsers,
-  FiStar,
-  FiRefreshCw,
-  FiCheck,
-  FiPlus,
-  FiInfo,
-  FiLock,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiArrowsClockwise,
+  PiCheck,
+  PiInfo,
+  PiLock,
+  PiMusicNotes,
+  PiPlus,
+  PiStar,
+  PiUsers,
+} from 'react-icons/pi';
 import { getScoreGroups } from '@/app/requests/uploads-client';
 
 interface ScoreGroup {
@@ -128,13 +127,13 @@ export default function GroupingSuggestions({
   const getSourceIcon = (source: string) => {
     switch (source) {
       case 'UPLOAD':
-        return FiUsers;
+        return PiUsers;
       case 'CUSTOM':
-        return FiStar;
+        return PiStar;
       case 'IMSLP':
-        return GiMusicalNotes;
+        return PiMusicNotes;
       default:
-        return FiMusic;
+        return PiMusicNotes;
     }
   };
 
@@ -157,7 +156,7 @@ export default function GroupingSuggestions({
     return (
       <div className="bg-red-50 border border-red-200 rounded-xl p-4">
         <div className="flex items-center space-x-2 text-red-800">
-          <FiRefreshCw className="w-4 h-4" />
+          <PiArrowsClockwise className="w-4 h-4" />
           <span className="text-sm">{error}</span>
         </div>
       </div>
@@ -172,7 +171,7 @@ export default function GroupingSuggestions({
           {userGroups.length > 0 && (
             <div>
               <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-                <FiUsers className="w-4 h-4 text-accent-green" />
+                <PiUsers className="w-4 h-4 text-accent-green" />
                 <span>Seus Grupos Existentes</span>
                 <span className="px-2 py-0.5 bg-accent-green/20 text-accent-green rounded-full text-xs">
                   {userGroups.length}
@@ -226,7 +225,7 @@ export default function GroupingSuggestions({
                         </div>
 
                         {isSelected && (
-                          <FiCheck className="w-5 h-5 text-accent-green" />
+                          <PiCheck className="w-5 h-5 text-accent-green" />
                         )}
                       </div>
                     </button>
@@ -240,7 +239,7 @@ export default function GroupingSuggestions({
           {imslpGroups.length > 0 && (
             <div>
               <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-                <GiMusicalNotes className="w-4 h-4 text-accent-blue" />
+                <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                 <span>Grupos Existentes (IMSLP)</span>
                 <span className="px-2 py-0.5 bg-theme-tertiary/20 text-theme-tertiary rounded-full text-xs">
                   Apenas referência
@@ -273,7 +272,7 @@ export default function GroupingSuggestions({
                           </div>
                         </div>
 
-                        <FiLock className="w-4 h-4 text-theme-tertiary" />
+                        <PiLock className="w-4 h-4 text-theme-tertiary" />
                       </div>
                     </div>
                   );
@@ -282,7 +281,7 @@ export default function GroupingSuggestions({
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                 <div className="flex items-start space-x-2">
-                  <FiInfo className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <PiInfo className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div className="text-xs text-blue-800">
                     <p className="font-medium mb-1">
                       💡 Grupos IMSLP são apenas referência
@@ -303,7 +302,7 @@ export default function GroupingSuggestions({
       {/* Opção para Novo Grupo */}
       <div>
         <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-          <FiPlus className="w-4 h-4 text-brand-primary" />
+          <PiPlus className="w-4 h-4 text-brand-primary" />
           <span>Criar Novo Grupo</span>
         </h4>
 
@@ -324,7 +323,7 @@ export default function GroupingSuggestions({
         >
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-brand-primary/20 rounded-lg flex items-center justify-center">
-              <FiPlus className="w-4 h-4 text-brand-primary" />
+              <PiPlus className="w-4 h-4 text-brand-primary" />
             </div>
             <div>
               <h5 className="font-medium text-sm">
@@ -341,7 +340,7 @@ export default function GroupingSuggestions({
       {/* Info Helper Atualizado */}
       <div className="bg-theme-secondary/10 rounded-lg p-3 border border-theme-primary/20">
         <div className="flex items-start space-x-2">
-          <FiInfo className="w-4 h-4 text-theme-tertiary mt-0.5 flex-shrink-0" />
+          <PiInfo className="w-4 h-4 text-theme-tertiary mt-0.5 flex-shrink-0" />
           <div className="text-xs text-theme-tertiary">
             <p className="font-medium mb-1">
               💡 Como funciona o novo agrupamento:
