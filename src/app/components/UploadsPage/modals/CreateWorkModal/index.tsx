@@ -60,6 +60,7 @@ import {
   updateWorkMediaRequest,
   uploadWorkMediaFileRequest,
 } from '@/app/requests/work-media';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -1030,7 +1031,7 @@ const CreateWorkModal = ({
           <div>
             {/* Header */}
             <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
                   <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                 </div>
@@ -1046,7 +1047,7 @@ const CreateWorkModal = ({
                       : t('modal_work_subtitle_create')}
                   </p>
                 </div>
-              </div>
+              </Inline>
             </div>
 
             {/* Content */}
@@ -1058,18 +1059,18 @@ const CreateWorkModal = ({
                   hover="none"
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <PiDatabase className="w-4 h-4 text-theme-tertiary" />
                       <span className="text-sm font-medium text-theme-primary">
                         {t('modal_work_scraping_title')}
                       </span>
                       {isEditingExternalSource && (
-                        <div className="flex items-center space-x-1 text-xs text-blue-600">
+                        <Inline gap={1} className="text-xs text-blue-600">
                           <PiLock className="w-3 h-3" />
                           <span>Fonte IMSLP detectada automaticamente</span>
-                        </div>
+                        </Inline>
                       )}
-                    </div>
+                    </Inline>
                   </div>
 
                   <div className="space-y-4">
@@ -1084,25 +1085,25 @@ const CreateWorkModal = ({
 
                     {duplicateCheck.loading && (
                       <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <PiSpinnerGap className="w-4 h-4 animate-spin text-blue-600" />
                           <span className="text-sm text-blue-800">
                             {t('modal_work_scraping_checking_duplicates')}
                           </span>
-                        </div>
+                        </Inline>
                       </div>
                     )}
 
                     {duplicateCheck.found && (
                       <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <div className="flex items-center space-x-2 mb-2">
+                        <Inline gap={2} className="mb-2">
                           <PiWarningCircle className="w-4 h-4 text-red-600" />
                           <span className="text-sm font-medium text-red-800">
                             {duplicateCheck.duplicateType === 'url'
                               ? 'Duplicata encontrada por URL do IMSLP'
                               : 'Duplicata encontrada por título e compositor'}
                           </span>
-                        </div>
+                        </Inline>
                         <div className="space-y-1">
                           <p className="text-sm text-red-700">
                             <strong>Obra existente:</strong>{' '}
@@ -1153,12 +1154,12 @@ const CreateWorkModal = ({
 
                     {scrapingResult && (
                       <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                        <div className="flex items-center space-x-2 mb-2">
+                        <Inline gap={2} className="mb-2">
                           <PiCheck className="w-4 h-4 text-green-600" />
                           <span className="text-sm font-medium text-green-800">
                             {t('modal_work_scraping_success')}
                           </span>
-                        </div>
+                        </Inline>
                         <div className="text-xs text-green-700">
                           {t('modal_work_scraping_source', {
                             source: scrapingResult.source,
@@ -1171,12 +1172,12 @@ const CreateWorkModal = ({
 
                     {isEditingExternalSource && (
                       <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <PiInfo className="w-4 h-4 text-blue-600" />
                           <span className="text-sm text-blue-800">
                             {t('modal_work_scraping_external_detected')}
                           </span>
-                        </div>
+                        </Inline>
                       </div>
                     )}
                   </div>
@@ -1187,10 +1188,14 @@ const CreateWorkModal = ({
                   className="classical-card-simple p-4"
                   hover="none"
                 >
-                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-lg font-semibold text-theme-primary mb-4"
+                  >
                     <PiInfo className="w-5 h-5" />
                     <span>{t('modal_work_basic_title')}</span>
-                  </h3>
+                  </Inline>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
@@ -1223,10 +1228,14 @@ const CreateWorkModal = ({
                         popularComposers={composers}
                       />
                       {errors.composerId && (
-                        <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
+                        <Inline
+                          as="p"
+                          gap={1}
+                          className="text-red-500 text-sm font-medium mt-1"
+                        >
                           <PiWarningCircle className="w-4 h-4" />
                           <span>{errors.composerId}</span>
-                        </p>
+                        </Inline>
                       )}
                     </div>
 
@@ -1308,14 +1317,14 @@ const CreateWorkModal = ({
                   hover="none"
                 >
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0 mb-4">
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <PiStack className="w-4 h-4 text-theme-tertiary" />
                       <span className="text-sm font-medium text-theme-primary">
                         Coleção
                       </span>
-                    </div>
+                    </Inline>
 
-                    <label className="flex items-center space-x-2 cursor-pointer">
+                    <Inline as="label" gap={2} className="cursor-pointer">
                       <Checkbox
                         label="Essa peça faz parte de uma coleção?"
                         type="checkbox"
@@ -1334,14 +1343,14 @@ const CreateWorkModal = ({
                           }
                         }}
                       />
-                    </label>
+                    </Inline>
                   </div>
 
                   {isPartOfCollection && (
                     <div className="space-y-4 border-t border-theme-secondary pt-4">
                       {/* Informação sobre compositor */}
                       <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <PiInfo className="w-4 h-4 text-blue-600" />
                           <span className="text-sm text-blue-800">
                             <strong>Importante:</strong> A obra da coleção deve
@@ -1353,7 +1362,7 @@ const CreateWorkModal = ({
                               : 'selecione um compositor primeiro'}
                             ).
                           </span>
-                        </div>
+                        </Inline>
                       </div>
 
                       {/* Work Search Input para Parent Work */}
@@ -1376,10 +1385,13 @@ const CreateWorkModal = ({
                             disabled={loadingParentWork}
                           />
                           {loadingParentWork && (
-                            <div className="mt-2 flex items-center space-x-2 text-sm text-blue-600">
+                            <Inline
+                              gap={2}
+                              className="mt-2 text-sm text-blue-600"
+                            >
                               <PiSpinnerGap className="w-4 h-4 animate-spin" />
                               <span>Verificando dados da obra pai...</span>
-                            </div>
+                            </Inline>
                           )}
                           <p className="text-xs text-theme-tertiary mt-2">
                             💡 Busque pela obra principal que contém esta peça
@@ -1398,10 +1410,14 @@ const CreateWorkModal = ({
                   className="classical-card-simple p-4"
                   hover="none"
                 >
-                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-lg font-semibold text-theme-primary mb-4"
+                  >
                     <PiTag className="w-5 h-5" />
                     <span>{t('modal_work_catalog_title')}</span>
-                  </h3>
+                  </Inline>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
@@ -1474,10 +1490,14 @@ const CreateWorkModal = ({
                   className="classical-card-simple p-4"
                   hover="none"
                 >
-                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-lg font-semibold text-theme-primary mb-4"
+                  >
                     <PiMusicNotes className="w-5 h-5" />
                     <span>{t('modal_work_musical_title')}</span>
-                  </h3>
+                  </Inline>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
@@ -1523,10 +1543,14 @@ const CreateWorkModal = ({
                   className="classical-card-simple p-4"
                   hover="none"
                 >
-                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-lg font-semibold text-theme-primary mb-4"
+                  >
                     <PiTag className="w-5 h-5" />
                     <span>{t('modal_work_categories_title')}</span>
-                  </h3>
+                  </Inline>
 
                   <div className="space-y-4">
                     <MultiSelect
@@ -1558,10 +1582,14 @@ const CreateWorkModal = ({
                   className="classical-card-simple p-4"
                   hover="none"
                 >
-                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-lg font-semibold text-theme-primary mb-4"
+                  >
                     <PiArrowSquareOut className="w-5 h-5" />
                     <span>{t('modal_work_external_links_title')}</span>
-                  </h3>
+                  </Inline>
 
                   <div className="flex flex-col gap-2">
                     <Input
@@ -1579,13 +1607,16 @@ const CreateWorkModal = ({
                     />
 
                     {scrapingResult && (
-                      <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
+                      <Inline
+                        gap={1}
+                        className="mt-1 text-xs text-theme-primary font-bold"
+                      >
                         <PiLock className="w-3 h-3" />
                         <span>
                           Campo bloqueado pois foi extraído via scraping do
                           IMSLP
                         </span>
-                      </div>
+                      </Inline>
                     )}
                   </div>
                 </AnimatedCard>
@@ -1596,33 +1627,33 @@ const CreateWorkModal = ({
                   hover="none"
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                       <span className="text-sm font-medium text-theme-primary">
                         {t('modal_work_media_title')}
                       </span>
-                    </div>
+                    </Inline>
 
-                    <label className="flex items-center space-x-2 cursor-pointer">
+                    <Inline as="label" gap={2} className="cursor-pointer">
                       <Checkbox
                         label={t('modal_work_media_checkbox')}
                         type="checkbox"
                         checked={includeMedia}
                         onChange={(e) => setIncludeMedia(e.target.checked)}
                       />
-                    </label>
+                    </Inline>
                   </div>
 
                   {includeMedia && (
                     <div className="space-y-6 border-t border-theme-secondary pt-4">
                       {/* Spotify */}
                       <div className="space-y-3">
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <PiSpotifyLogo className="w-5 h-5 text-green-400" />
                           <h4 className="text-lg font-semibold text-theme-primary">
                             {t('modal_work_media_spotify_title')}
                           </h4>
-                        </div>
+                        </Inline>
                         <Input
                           label={t('modal_work_media_spotify_url')}
                           value={mediaData.spotifyUrl}
@@ -1639,12 +1670,12 @@ const CreateWorkModal = ({
 
                       {/* YouTube */}
                       <div className="space-y-3">
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <PiYoutubeLogo className="w-5 h-5 text-red-400" />
                           <h4 className="text-lg font-semibold text-theme-primary">
                             {t('modal_work_media_youtube_title')}
                           </h4>
-                        </div>
+                        </Inline>
                         <Input
                           label={t('modal_work_media_youtube_url')}
                           value={mediaData.youtubeUrl}
@@ -1661,12 +1692,12 @@ const CreateWorkModal = ({
 
                       {/* Custom Audio */}
                       <div className="space-y-3">
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <PiMusicNotes className="w-5 h-5 text-blue-400" />
                           <h4 className="text-lg font-semibold text-theme-primary">
                             {t('modal_work_media_audio_title')}
                           </h4>
-                        </div>
+                        </Inline>
                         <div>
                           <label className="block text-sm font-medium text-theme-tertiary mb-2">
                             {t('modal_work_media_audio_upload')}
@@ -1690,12 +1721,16 @@ const CreateWorkModal = ({
                             disabled={uploadingAudio}
                           />
                           {uploadingAudio && (
-                            <p className="text-sm text-blue-400 mt-1 flex items-center space-x-1">
+                            <Inline
+                              as="p"
+                              gap={1}
+                              className="text-sm text-blue-400 mt-1"
+                            >
                               <PiSpinnerGap className="w-4 h-4 animate-spin" />
                               <span>
                                 {t('modal_work_media_audio_uploading')}
                               </span>
-                            </p>
+                            </Inline>
                           )}
                           {mediaData.audioFile && (
                             <p className="text-sm text-theme-secondary mt-1">
@@ -1709,14 +1744,18 @@ const CreateWorkModal = ({
                       {user && user.role >= 1 && (
                         <div className="space-y-4">
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               <PiGraduationCap className="w-5 h-5 text-purple-400" />
                               <h4 className="text-lg font-semibold text-theme-primary">
                                 {t('modal_work_media_video_lesson_title')}
                               </h4>
-                            </div>
+                            </Inline>
 
-                            <label className="flex items-center space-x-2 cursor-pointer">
+                            <Inline
+                              as="label"
+                              gap={2}
+                              className="cursor-pointer"
+                            >
                               <Checkbox
                                 label={t(
                                   'modal_work_media_video_lesson_checkbox'
@@ -1730,7 +1769,7 @@ const CreateWorkModal = ({
                                   }))
                                 }
                               />
-                            </label>
+                            </Inline>
                           </div>
 
                           {mediaData.hasVideoAula && (
@@ -1840,12 +1879,16 @@ const CreateWorkModal = ({
                                     disabled={uploadingVideoAula}
                                   />
                                   {uploadingVideoAula && (
-                                    <p className="text-sm text-purple-400 mt-1 flex items-center space-x-1">
+                                    <Inline
+                                      as="p"
+                                      gap={1}
+                                      className="text-sm text-purple-400 mt-1"
+                                    >
                                       <PiSpinnerGap className="w-4 h-4 animate-spin" />
                                       <span>
                                         {t('modal_work_media_video_uploading')}
                                       </span>
-                                    </p>
+                                    </Inline>
                                   )}
                                   {mediaData.videoAulaFile && (
                                     <p className="text-sm text-theme-secondary mt-1">
@@ -1863,7 +1906,10 @@ const CreateWorkModal = ({
                 </AnimatedCard>
 
                 {/* Actions */}
-                <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary">
+                <Inline
+                  gap={3}
+                  className="justify-end pt-6 border-t border-theme-secondary"
+                >
                   <Button
                     type="button"
                     variant="secondary"
@@ -1893,7 +1939,7 @@ const CreateWorkModal = ({
                         ? t('form_update') + ' Obra'
                         : t('form_create') + ' Obra'}
                   </Button>
-                </div>
+                </Inline>
               </form>
             </div>
           </div>

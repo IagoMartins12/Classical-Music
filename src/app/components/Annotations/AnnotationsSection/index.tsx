@@ -33,6 +33,7 @@ import toast from 'react-hot-toast';
 import { useLoginModal } from '@/app/stores/authStore';
 import Input from '../../Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface AnnotationsSectionProps {
   workId: string;
@@ -271,7 +272,7 @@ export default function AnnotationsSection({
         <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
           <div className="p-2 md:p-6">
             <div className="flex items-center justify-between mb-6 gap-4">
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
                   <PiChatCenteredText className="w-6 h-6 text-theme-primary" />
                 </div>
@@ -283,7 +284,7 @@ export default function AnnotationsSection({
                     {t('annotations_subtitulo')}
                   </p>
                 </div>
-              </div>
+              </Inline>
 
               <button
                 onClick={() => {
@@ -303,7 +304,9 @@ export default function AnnotationsSection({
 
             {/* ✅ Barra de busca e filtros COM TRADUÇÕES */}
             <div className="space-y-4">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={() => {
                   if (!isAuthenticated) {
                     toast.error(t('annotations_login_required'));
@@ -312,11 +315,11 @@ export default function AnnotationsSection({
                   }
                   setShowCreateModal(true);
                 }}
-                className="btn-classical-primary w-full text-center justify-center flex md:hidden items-center space-x-2"
+                className="btn-classical-primary w-full text-center justify-center md:hidden"
               >
                 <PiPlus className="w-4 h-4" />
                 <span>{t('annotations_nova_anotacao')}</span>
-              </button>
+              </Inline>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 relative">
@@ -422,13 +425,13 @@ export default function AnnotationsSection({
               {/* ✅ Status de filtros COM TRADUÇÕES */}
               {hasAnyFilters && (
                 <div className="flex items-center justify-between bg-theme-elevated/50 classical-card-simple rounded-xl px-4 py-3">
-                  <div className="flex items-center space-x-2 text-sm">
+                  <Inline gap={2} className="text-sm">
                     <PiFunnel className="w-4 h-4 text-theme-tertiary" />
                     <span className="text-theme-primary">
                       {t('annotations_filtros_ativos')}:
                     </span>
 
-                    <div className="flex items-center space-x-1">
+                    <Inline gap={1}>
                       {communityFilters.category && (
                         <span className="bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs">
                           {CATEGORY_CONFIG[communityFilters.category].label}
@@ -471,16 +474,18 @@ export default function AnnotationsSection({
                           &quot;
                         </span>
                       )}
-                    </div>
-                  </div>
+                    </Inline>
+                  </Inline>
 
-                  <button
+                  <Inline
+                    as="button"
+                    gap={1}
                     onClick={handleClearAllFilters}
-                    className="text-accent-red hover:text-accent-red/80 text-sm font-medium flex items-center space-x-1 transition-colors"
+                    className="text-accent-red hover:text-accent-red/80 text-sm font-medium transition-colors"
                   >
                     <PiX className="w-4 h-4" />
                     <span>{t('annotations_limpar_todos')}</span>
-                  </button>
+                  </Inline>
                 </div>
               )}
             </div>
@@ -503,7 +508,7 @@ export default function AnnotationsSection({
         <div className="p-2 md:p-6">
           {isLoading && displayedAnnotations.length === 0 ? (
             <div className="flex items-center justify-center py-12">
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <div className="relative">
                   <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
                   <div
@@ -517,7 +522,7 @@ export default function AnnotationsSection({
                 <span className="text-theme-primary font-medium">
                   {t('annotations_carregando')}
                 </span>
-              </div>
+              </Inline>
             </div>
           ) : displayedAnnotations.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -535,10 +540,12 @@ export default function AnnotationsSection({
                 {/* Load more button */}
                 {workPagination?.hasMore && !localSearchTerm && (
                   <div className="flex justify-center pt-6">
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={loadMoreAnnotations}
                       disabled={isLoading}
-                      className="btn-classical-secondary flex items-center space-x-2"
+                      className="btn-classical-secondary"
                     >
                       {isLoading ? (
                         <>
@@ -551,7 +558,7 @@ export default function AnnotationsSection({
                           <span>{t('annotations_ver_mais')}</span>
                         </>
                       )}
-                    </button>
+                    </Inline>
                   </div>
                 )}
               </div>
@@ -572,13 +579,15 @@ export default function AnnotationsSection({
                   : t('annotations_compartilhe_descobertas')}
               </p>
               {isAuthenticated && !hasAnyFilters && (
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() => setShowCreateModal(true)}
-                  className="btn-classical-primary flex items-center space-x-2 mx-auto"
+                  className="btn-classical-primary mx-auto"
                 >
                   <PiPlus className="w-4 h-4" />
                   <span>{t('annotations_criar_primeira')}</span>
-                </button>
+                </Inline>
               )}
             </div>
           )}

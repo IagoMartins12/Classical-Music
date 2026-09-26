@@ -34,6 +34,7 @@ import Select from '@/app/components/Common/Select';
 import Link from 'next/link';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { loadSchoolActivities } from '@/app/requests/portal/school-activities';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Activity {
   id: string;
@@ -451,9 +452,11 @@ const TeacherHistoryClient = ({
                     {totalCount} {t('activities_found')}
                   </p>
                 </div>
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() => setShowFilters(!showFilters)}
-                  className="flex btn-classical-primary items-center space-x-2 "
+                  className="btn-classical-primary"
                 >
                   <PiFunnel className="w-4 h-4" />
                   <span>{t('filters_title')}</span>
@@ -462,7 +465,7 @@ const TeacherHistoryClient = ({
                   ) : (
                     <PiCaretDown className="w-4 h-4" />
                   )}
-                </button>
+                </Inline>
               </div>
 
               {showFilters && (
@@ -517,7 +520,7 @@ const TeacherHistoryClient = ({
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-3 pt-4">
+                  <Inline gap={3} className="pt-4">
                     <button
                       onClick={updateFilters}
                       className="btn-classical-primary"
@@ -530,17 +533,19 @@ const TeacherHistoryClient = ({
                     >
                       {t('clear_filters')}
                     </button>
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={fetchActivities}
                       disabled={loading}
-                      className="btn-classical-secondary flex items-center space-x-2"
+                      className="btn-classical-secondary"
                     >
                       <PiArrowsClockwise
                         className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                       />
                       <span>{t('refresh')}</span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </AnimatedItem>
               )}
             </div>
@@ -603,7 +608,7 @@ const TeacherHistoryClient = ({
                           )}`}
                         >
                           <div className="flex items-start justify-between mb-3">
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               <span className="text-sm font-medium text-theme-primary">
                                 {getActionLabel(activity.action)}
                               </span>
@@ -616,9 +621,9 @@ const TeacherHistoryClient = ({
                                   }
                                 )}
                               </span>
-                            </div>
+                            </Inline>
 
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               {activity.changes && (
                                 <button
                                   onClick={() => toggleExpanded(activity.id)}
@@ -640,7 +645,7 @@ const TeacherHistoryClient = ({
                                   <PiCaretRight className="w-3 h-3 text-theme-tertiary" />
                                 </Link>
                               )}
-                            </div>
+                            </Inline>
                           </div>
 
                           <div className="space-y-2">

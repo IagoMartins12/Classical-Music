@@ -15,6 +15,7 @@ import { useState } from 'react';
 import SectionTitle from '../Utils/SectionTitle';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Composer {
   id: string;
@@ -114,13 +115,13 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
 
               {/* Action indicator */}
               <div className="flex items-center justify-center pt-2 border-t border-theme-secondary/50">
-                <div className="flex items-center space-x-1 text-theme-tertiary text-xs">
+                <Inline gap={1} className="text-theme-tertiary text-xs">
                   <div className="w-1 h-1 bg-orange-400 rounded-full animate-pulse"></div>
                   <span className="font-medium">
                     {t('random_discoveries_explore')}
                   </span>
                   <PiEye className="w-2.5 h-2.5" />
-                </div>
+                </Inline>
               </div>
             </div>
           </div>
@@ -188,13 +189,13 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
 
               {/* Action indicator */}
               <div className="flex items-center justify-center pt-2 border-t border-theme-secondary/50">
-                <div className="flex items-center space-x-1 text-theme-tertiary text-xs">
+                <Inline gap={1} className="text-theme-tertiary text-xs">
                   <div className="w-1 h-1 bg-purple-400 rounded-full animate-pulse"></div>
                   <span className="font-medium">
                     {t('random_discoveries_study')}
                   </span>
                   <PiMusicNotes className="w-2.5 h-2.5" />
-                </div>
+                </Inline>
               </div>
             </div>
           </div>

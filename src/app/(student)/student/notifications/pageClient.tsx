@@ -33,6 +33,7 @@ import {
 import { useToast } from '@/app/hooks/useToast';
 import Select from '@/app/components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface StudentNotificationsPageClientProps {
   initialNotifications: NotificationData[];
@@ -331,23 +332,25 @@ export default function StudentNotificationsPageClient({
               </div>
 
               {/* Actions */}
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <Select
                   options={NotificationsSelectFilter}
                   value={sort}
                   onChange={(e) => setSort(e.target.value as SortType)}
                 />
                 {unreadCount > 0 && (
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={markAllAsRead}
                     disabled={loading}
-                    className="btn-classical-secondary flex items-center space-x-2"
+                    className="btn-classical-secondary"
                   >
                     <PiCheckCircle className="w-4 h-4" />
                     <span>{t('mark_all')}</span>
-                  </button>
+                  </Inline>
                 )}
-              </div>
+              </Inline>
             </div>
           </div>
         </AnimatedItem>
@@ -397,7 +400,10 @@ export default function StudentNotificationsPageClient({
                               </p>
 
                               {/* Metadata */}
-                              <div className="flex items-center space-x-4 mt-3 text-sm text-theme-tertiary">
+                              <Inline
+                                gap={4}
+                                className="mt-3 text-sm text-theme-tertiary"
+                              >
                                 <span>
                                   {formatTime(notification.createdAt)}
                                 </span>
@@ -418,11 +424,11 @@ export default function StudentNotificationsPageClient({
                                 <span className="px-2 py-1 rounded-full text-xs bg-theme-elevated border border-theme-secondary">
                                   {getTypeLabel(notification.type)}
                                 </span>
-                              </div>
+                              </Inline>
                             </div>
 
                             {/* Actions */}
-                            <div className="flex items-center space-x-2 ml-4">
+                            <Inline gap={2} className="ml-4">
                               {notification.actionUrl && (
                                 <Link
                                   href={notification.actionUrl}
@@ -445,7 +451,7 @@ export default function StudentNotificationsPageClient({
                                   <PiCheck className="w-4 h-4 text-theme-tertiary hover:text-accent-green" />
                                 </button>
                               )}
-                            </div>
+                            </Inline>
                           </div>
                         </div>
                       </div>
@@ -456,16 +462,18 @@ export default function StudentNotificationsPageClient({
                 {/* Load More */}
                 {hasMore && (
                   <div className="text-center py-8">
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={loadMoreNotifications}
                       disabled={loading}
-                      className="btn-classical-secondary flex items-center space-x-2 mx-auto"
+                      className="btn-classical-secondary mx-auto"
                     >
                       <PiArrowsClockwise
                         className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                       />
                       <span>{loading ? t('loading') : t('load_more')}</span>
-                    </button>
+                    </Inline>
                   </div>
                 )}
               </>

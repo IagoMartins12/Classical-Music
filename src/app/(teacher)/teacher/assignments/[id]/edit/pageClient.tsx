@@ -33,6 +33,7 @@ import WorkSelectionSection, {
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { getWorkById } from '@/app/requests/catalog-search';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface EditAssignmentPageClientProps {
   initialData: EditAssignmentData | null;
@@ -341,7 +342,7 @@ export default function EditAssignmentPageClient({
         {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               <Link
                 href="/teacher/assignments"
                 className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
@@ -356,17 +357,19 @@ export default function EditAssignmentPageClient({
                   {assignment.title}
                 </p>
               </div>
-            </div>
+            </Inline>
 
             {/* Delete Button */}
-            <button
+            <Inline
+              as="button"
+              gap={2}
               type="button"
               onClick={() => setShowDeleteConfirm(true)}
-              className="btn-classical-secondary text-accent-red border-accent-red/30 hover:bg-accent-red/10 flex items-center space-x-2"
+              className="btn-classical-secondary text-accent-red border-accent-red/30 hover:bg-accent-red/10"
             >
               <PiTrash className="w-4 h-4" />
               <span>{t('delete')}</span>
-            </button>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -510,22 +513,21 @@ export default function EditAssignmentPageClient({
                       <h3 className="text-lg font-bold text-theme-primary classical-title">
                         {t('practice_goals')}
                       </h3>
-                      <button
+                      <Inline
+                        as="button"
+                        gap={1}
                         type="button"
                         onClick={() => addArrayField('practiceGoals')}
-                        className="text-brand-primary hover:text-brand-secondary text-sm flex items-center space-x-1"
+                        className="text-brand-primary hover:text-brand-secondary text-sm"
                       >
                         <PiPlus className="w-3 h-3" />
                         <span>{t('add')}</span>
-                      </button>
+                      </Inline>
                     </div>
 
                     <div className="space-y-2">
                       {formData.practiceGoals.map((goal, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center space-x-2"
-                        >
+                        <Inline gap={2} key={index}>
                           <Input
                             widhtFull
                             type="text"
@@ -551,7 +553,7 @@ export default function EditAssignmentPageClient({
                               <PiX className="w-4 h-4" />
                             </button>
                           )}
-                        </div>
+                        </Inline>
                       ))}
                     </div>
                   </div>
@@ -559,10 +561,14 @@ export default function EditAssignmentPageClient({
                   {/* 🆕 SEÇÃO DE PEÇAS MUSICAIS */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-bold text-theme-primary classical-title flex items-center space-x-2">
+                      <Inline
+                        as="h3"
+                        gap={2}
+                        className="text-lg font-bold text-theme-primary classical-title"
+                      >
                         <PiMusicNotes className="w-5 h-5" />
                         <span>{t('musical_pieces')}</span>
-                      </h3>
+                      </Inline>
                       <div className="text-sm text-theme-secondary">
                         {t('pieces_count', { count: selectedWorks.length })}
                       </div>
@@ -578,10 +584,12 @@ export default function EditAssignmentPageClient({
 
                   {/* Advanced Options */}
                   <div className="space-y-4">
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       type="button"
                       onClick={() => setShowAdvanced(!showAdvanced)}
-                      className="flex items-center space-x-2 text-brand-primary hover:text-brand-secondary"
+                      className="text-brand-primary hover:text-brand-secondary"
                     >
                       <span>{t('advanced_options')}</span>
                       <div
@@ -603,7 +611,7 @@ export default function EditAssignmentPageClient({
                           />
                         </svg>
                       </div>
-                    </button>
+                    </Inline>
 
                     {showAdvanced && (
                       <div className="space-y-6 p-4 bg-theme-secondary/5 shadow-lg rounded-lg">
@@ -613,21 +621,20 @@ export default function EditAssignmentPageClient({
                             <label className="text-sm font-medium text-theme-primary">
                               {t('technical_goals')}
                             </label>
-                            <button
+                            <Inline
+                              as="button"
+                              gap={1}
                               type="button"
                               onClick={() => addArrayField('technicalGoals')}
-                              className="text-brand-primary text-sm flex items-center space-x-1"
+                              className="text-brand-primary text-sm"
                             >
                               <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
-                            </button>
+                            </Inline>
                           </div>
                           <div className="space-y-2">
                             {formData.technicalGoals.map((goal, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center space-x-2"
-                              >
+                              <Inline gap={2} key={index}>
                                 <Input
                                   type="text"
                                   value={goal}
@@ -653,7 +660,7 @@ export default function EditAssignmentPageClient({
                                     <PiX className="w-4 h-4" />
                                   </button>
                                 )}
-                              </div>
+                              </Inline>
                             ))}
                           </div>
                         </div>
@@ -664,21 +671,20 @@ export default function EditAssignmentPageClient({
                             <label className="text-sm font-medium text-theme-primary">
                               {t('musical_goals')}
                             </label>
-                            <button
+                            <Inline
+                              as="button"
+                              gap={1}
                               type="button"
                               onClick={() => addArrayField('musicalGoals')}
-                              className="text-brand-primary text-sm flex items-center space-x-1"
+                              className="text-brand-primary text-sm"
                             >
                               <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
-                            </button>
+                            </Inline>
                           </div>
                           <div className="space-y-2">
                             {formData.musicalGoals.map((goal, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center space-x-2"
-                              >
+                              <Inline gap={2} key={index}>
                                 <Input
                                   type="text"
                                   value={goal}
@@ -704,7 +710,7 @@ export default function EditAssignmentPageClient({
                                     <PiX className="w-4 h-4" />
                                   </button>
                                 )}
-                              </div>
+                              </Inline>
                             ))}
                           </div>
                         </div>
@@ -715,21 +721,20 @@ export default function EditAssignmentPageClient({
                             <label className="text-sm font-medium text-theme-primary">
                               {t('specific_exercises')}
                             </label>
-                            <button
+                            <Inline
+                              as="button"
+                              gap={1}
                               type="button"
                               onClick={() => addArrayField('exercises')}
-                              className="text-brand-primary text-sm flex items-center space-x-1"
+                              className="text-brand-primary text-sm"
                             >
                               <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
-                            </button>
+                            </Inline>
                           </div>
                           <div className="space-y-2">
                             {formData.exercises.map((exercise, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center space-x-2"
-                              >
+                              <Inline gap={2} key={index}>
                                 <Input
                                   type="text"
                                   value={exercise}
@@ -755,7 +760,7 @@ export default function EditAssignmentPageClient({
                                     <PiX className="w-4 h-4" />
                                   </button>
                                 )}
-                              </div>
+                              </Inline>
                             ))}
                           </div>
                         </div>
@@ -766,7 +771,7 @@ export default function EditAssignmentPageClient({
                   {/* Error Display */}
                   {error && (
                     <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <PiWarningCircle className="w-5 h-5 text-accent-red" />
                         <div>
                           <p className="text-accent-red font-medium">
@@ -781,26 +786,31 @@ export default function EditAssignmentPageClient({
                         >
                           <PiX className="w-4 h-4" />
                         </button>
-                      </div>
+                      </Inline>
                     </div>
                   )}
 
                   {/* Actions */}
-                  <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary">
+                  <Inline
+                    gap={3}
+                    className="justify-end pt-6 border-t border-theme-secondary"
+                  >
                     <Link
                       href="/teacher/assignments"
                       className="btn-classical-secondary"
                     >
                       {t('cancel')}
                     </Link>
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       type="submit"
                       disabled={
                         loading.updateAssignment ||
                         !formData.title ||
                         !formData.description
                       }
-                      className="btn-classical-primary flex items-center space-x-2"
+                      className="btn-classical-primary"
                     >
                       {loading.updateAssignment ? (
                         <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -812,8 +822,8 @@ export default function EditAssignmentPageClient({
                           ? t('updating')
                           : t('save_changes')}
                       </span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </form>
               </AnimatedCard>
             </AnimatedItem>
@@ -829,7 +839,7 @@ export default function EditAssignmentPageClient({
                 </h3>
 
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     {assignment.student.image ? (
                       <div className="w-12 h-12 relative rounded-full overflow-hidden">
                         <Image
@@ -853,7 +863,7 @@ export default function EditAssignmentPageClient({
                         {t('student')}
                       </div>
                     </div>
-                  </div>
+                  </Inline>
 
                   <div className="pt-4 border-t border-theme-secondary/20">
                     <div className="space-y-2 text-sm">
@@ -913,16 +923,21 @@ export default function EditAssignmentPageClient({
             {selectedWorks.length > 0 && (
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
-                  <h3 className="text-lg font-bold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-lg font-bold text-theme-primary classical-title mb-4"
+                  >
                     <PiMusicNotes className="w-5 h-5" />
                     <span>{t('selected_pieces')}</span>
-                  </h3>
+                  </Inline>
 
                   <div className="space-y-3">
                     {selectedWorks.map((work, index) => (
-                      <div
+                      <Inline
+                        gap={3}
                         key={work.workId}
-                        className="flex items-center space-x-3 p-3 bg-theme-elevated/50 rounded-lg"
+                        className="p-3 bg-theme-elevated/50 rounded-lg"
                       >
                         <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
                           <PiMusicNotes className="w-4 h-4 text-accent-blue" />
@@ -943,7 +958,7 @@ export default function EditAssignmentPageClient({
                         <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-1 rounded">
                           #{index + 1}
                         </span>
-                      </div>
+                      </Inline>
                     ))}
 
                     <div className="mt-3 p-3 bg-theme-elevated rounded-lg">
@@ -1045,10 +1060,12 @@ export default function EditAssignmentPageClient({
                   >
                     {t('cancel')}
                   </button>
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={handleDelete}
                     disabled={loading.deleteAssignment}
-                    className="btn-classical-primary bg-accent-red border-accent-red hover:bg-accent-red/90 flex-1 flex items-center justify-center space-x-2"
+                    className="btn-classical-primary bg-accent-red border-accent-red hover:bg-accent-red/90 flex-1 justify-center"
                   >
                     {loading.deleteAssignment ? (
                       <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -1058,7 +1075,7 @@ export default function EditAssignmentPageClient({
                     <span>
                       {loading.deleteAssignment ? t('deleting') : t('delete')}
                     </span>
-                  </button>
+                  </Inline>
                 </div>
               </div>
             </AnimatedCard>

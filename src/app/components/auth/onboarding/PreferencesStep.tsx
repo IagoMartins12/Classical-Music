@@ -10,6 +10,7 @@ import Select from '../../Common/Select';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import Input from '../../Common/Inputs';
 import { findComposers } from '@/app/requests/catalog-search';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Composer {
   id: string;
@@ -211,7 +212,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
 
           {selectedComposer && (
             <div className="my-4  classical-card p-3 rounded-lg border ">
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 {selectedComposer.portraitUrl && (
                   <Image
                     width={24}
@@ -237,7 +238,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
                 >
                   ✕
                 </button>
-              </div>
+              </Inline>
             </div>
           )}
 
@@ -248,7 +249,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
                 onClick={() => updateData({ favoriteComposerId: composer.id })}
                 className="classical-card-2 p-3 text-left transition-all duration-200 hover:border-brand-primary hover:scale-105"
               >
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   {composer.portraitUrl && (
                     <Image
                       width={24}
@@ -268,7 +269,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
                       </p>
                     )}
                   </div>
-                </div>
+                </Inline>
               </button>
             ))}
           </div>
@@ -276,12 +277,12 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
           {/* Estado de carregamento */}
           {isSearchingComposers && (
             <div className="text-center py-4">
-              <div className="flex items-center justify-center space-x-2">
+              <Inline gap={2} className="justify-center">
                 <PiSpinnerGap className="w-4 h-4 animate-spin text-theme-tertiary" />
                 <span className="text-sm text-theme-tertiary">
                   {t('preferences_step_searching_composers')}
                 </span>
-              </div>
+              </Inline>
             </div>
           )}
 

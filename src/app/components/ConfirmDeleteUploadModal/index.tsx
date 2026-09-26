@@ -14,6 +14,7 @@ import {
 import { useTranslation } from '@/app/context/TranslationContext';
 import { getCascadeInfo } from '@/app/requests/uploads-client';
 import Button from '../Common/Button';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CascadeInfo {
   works?: { id: string; title: string; scoresCount: number }[];
@@ -137,7 +138,7 @@ export default function ConfirmDeleteUploadModal({
         hover="none"
         className="relative bg-theme-primary rounded-xl shadow-xl max-w-lg w-full p-6 border border-theme-secondary overflow-y-auto"
       >
-        <div className="flex items-center space-x-3 mb-4">
+        <Inline gap={3} className="mb-4">
           <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center relative">
             <PiWarning className="w-6 h-6 text-accent-red" />
             {/* Ícone do tipo no canto */}
@@ -155,7 +156,7 @@ export default function ConfirmDeleteUploadModal({
               {t('delete_modal_subtitle')}
             </p>
           </div>
-        </div>
+        </Inline>
 
         <div className="mb-6 space-y-4">
           <p className="text-theme-secondary">
@@ -168,12 +169,15 @@ export default function ConfirmDeleteUploadModal({
 
           {/* Loading cascade info */}
           {loadingCascadeInfo ? (
-            <div className="flex items-center space-x-2 p-3 bg-accent-blue/10 rounded-lg border border-accent-blue/20">
+            <Inline
+              gap={2}
+              className="p-3 bg-accent-blue/10 rounded-lg border border-accent-blue/20"
+            >
               <PiSpinnerGap className="w-4 h-4 text-accent-blue animate-spin" />
               <span className="text-sm text-accent-blue">
                 {t('delete_modal_checking_related')}
               </span>
-            </div>
+            </Inline>
           ) : null}
 
           {/* Cascade information */}
@@ -311,12 +315,12 @@ export default function ConfirmDeleteUploadModal({
           !hasCascadeItems &&
           (itemType === 'composer' || itemType === 'work') ? (
             <div className="p-3 bg-accent-green/10 rounded-lg border border-accent-green/20">
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 <PiInfo className="w-4 h-4 text-accent-green" />
                 <span className="text-sm text-accent-green">
                   {t('delete_modal_no_related_items')}
                 </span>
-              </div>
+              </Inline>
             </div>
           ) : null}
 
@@ -338,7 +342,7 @@ export default function ConfirmDeleteUploadModal({
           ) : null}
         </div>
 
-        <div className="flex items-center justify-end space-x-3">
+        <Inline gap={3} className="justify-end">
           <button
             onClick={onClose}
             disabled={isLoading}
@@ -373,7 +377,7 @@ export default function ConfirmDeleteUploadModal({
               </>
             )}
           </Button>
-        </div>
+        </Inline>
       </AnimatedCard>
     </div>
   );

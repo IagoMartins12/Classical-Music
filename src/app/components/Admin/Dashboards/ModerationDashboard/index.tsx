@@ -32,6 +32,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ModerationItem {
   id: string;
@@ -367,9 +368,9 @@ export default function ModerationDashboard() {
             </div>
 
             {/* Right side actions */}
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               {selectedItems.size > 0 && (
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <span className="text-sm text-theme-secondary">
                     {selectedItems.size} selecionados
                   </span>
@@ -389,7 +390,7 @@ export default function ModerationDashboard() {
                   >
                     Rejeitar
                   </Button>
-                </div>
+                </Inline>
               )}
 
               <Button
@@ -408,7 +409,7 @@ export default function ModerationDashboard() {
               <Button variant="primary" size="sm" leftIcon={<PiFunnel />}>
                 Filtros Avançados
               </Button>
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -457,7 +458,7 @@ export default function ModerationDashboard() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between">
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center space-x-3 mb-2">
+                            <Inline gap={3} className="mb-2">
                               <h4 className="text-lg font-bold text-theme-primary truncate">
                                 {item.title}
                               </h4>
@@ -491,16 +492,19 @@ export default function ModerationDashboard() {
                               </span>
 
                               {item.reportCount > 0 && (
-                                <div className="flex items-center space-x-1">
+                                <Inline gap={1}>
                                   <PiFlag className="w-3 h-3 text-accent-red" />
                                   <span className="text-xs text-accent-red font-medium">
                                     {item.reportCount} reports
                                   </span>
-                                </div>
+                                </Inline>
                               )}
-                            </div>
+                            </Inline>
 
-                            <div className="flex items-center space-x-4 text-sm text-theme-secondary mb-3">
+                            <Inline
+                              gap={4}
+                              className="text-sm text-theme-secondary mb-3"
+                            >
                               <span>Por {item.uploader.name}</span>
                               <span>•</span>
                               <span>
@@ -520,7 +524,7 @@ export default function ModerationDashboard() {
                                   </span>
                                 </>
                               )}
-                            </div>
+                            </Inline>
 
                             {item.content.description && (
                               <p className="text-sm text-theme-secondary mb-3 line-clamp-2">
@@ -545,7 +549,7 @@ export default function ModerationDashboard() {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center space-x-2 flex-shrink-0">
+                      <Inline gap={2} className="flex-shrink-0">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -588,7 +592,7 @@ export default function ModerationDashboard() {
                             Ações
                           </Button>
                         )}
-                      </div>
+                      </Inline>
                     </div>
                   </div>
                 );
@@ -613,15 +617,20 @@ export default function ModerationDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
           {/* Top Moderators */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-xl font-bold text-theme-primary mb-6"
+            >
               <PiTarget className="w-5 h-5 text-accent-green" />
               <span>Top Moderadores</span>
-            </h3>
+            </Inline>
             <div className="space-y-4">
               {stats?.topModerators.map((moderator, index) => (
-                <div
+                <Inline
+                  gap={3}
                   key={moderator.id}
-                  className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                  className="p-3 bg-theme-secondary rounded-xl"
                 >
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                     {index + 1}
@@ -635,17 +644,21 @@ export default function ModerationDashboard() {
                       {moderator.accuracy.toFixed(1)}% precisão
                     </p>
                   </div>
-                </div>
+                </Inline>
               ))}
             </div>
           </AnimatedCard>
 
           {/* Quality Metrics */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-xl font-bold text-theme-primary mb-6"
+            >
               <PiTrendUp className="w-5 h-5 text-accent-blue" />
               <span>Métricas de Qualidade</span>
-            </h3>
+            </Inline>
             <div className="space-y-4">
               <div className="p-4 bg-theme-secondary rounded-xl">
                 <div className="flex items-center justify-between mb-2">

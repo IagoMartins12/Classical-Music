@@ -21,6 +21,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import { useNewsletterAnalytics } from '@/app/hooks/admin/useNewsletterAnalytics';
 import LoadingAdminState from '../../Common/LoadingState';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface MetricCard {
   title: string;
@@ -149,7 +150,7 @@ export default function NewsletterAnalyticsClient() {
           {/* Controls */}
           <AnimatedCard className="classical-card p-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex items-center space-x-4">
+              <Inline gap={4}>
                 <div>
                   <label className="block text-sm font-medium text-theme-secondary mb-2">
                     Período
@@ -166,9 +167,9 @@ export default function NewsletterAnalyticsClient() {
                     ))}
                   </select>
                 </div>
-              </div>
+              </Inline>
 
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -190,7 +191,7 @@ export default function NewsletterAnalyticsClient() {
                 >
                   Exportar
                 </Button>
-              </div>
+              </Inline>
             </div>
           </AnimatedCard>
 

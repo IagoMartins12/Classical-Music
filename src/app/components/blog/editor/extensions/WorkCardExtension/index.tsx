@@ -7,6 +7,7 @@ import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
 import Link from 'next/link';
 import { PiMusicNotes, PiTrash } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 const WorkCardComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -27,7 +28,10 @@ const WorkCardComponent = (props: any) => {
     >
       {/* ✅ Controles de Edição */}
       {showControls && (
-        <div className="absolute top-2 right-2 flex items-center space-x-2 p-2 bg-white shadow-lg rounded-lg z-10">
+        <Inline
+          gap={2}
+          className="absolute top-2 right-2 p-2 bg-white shadow-lg rounded-lg z-10"
+        >
           <button
             onClick={handleDelete}
             className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
@@ -35,7 +39,7 @@ const WorkCardComponent = (props: any) => {
           >
             <PiTrash className="w-4 h-4" />
           </button>
-        </div>
+        </Inline>
       )}
 
       <div className="classical-card p-6 border-l-4 border-accent-purple">
@@ -52,7 +56,7 @@ const WorkCardComponent = (props: any) => {
               {composerName} • {instrumentName}
             </p>
 
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <Link
                 href={`/works/${workId}`}
                 target="_blank"
@@ -69,7 +73,7 @@ const WorkCardComponent = (props: any) => {
               >
                 Ver Partituras
               </Link>
-            </div>
+            </Inline>
           </div>
         </div>
       </div>

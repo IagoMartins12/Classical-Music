@@ -9,6 +9,7 @@ import {
   PiSpeakerX,
   PiX,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface AudioAutoplayProps {
   audioUrl: string;
@@ -463,7 +464,7 @@ export function AudioAutoplay({
       </div>
 
       {/* Controles */}
-      <div className="flex items-center space-x-3 mb-3">
+      <Inline gap={3} className="mb-3">
         {/* Play/Pause */}
         <button
           onClick={togglePlayPause}
@@ -520,7 +521,7 @@ export function AudioAutoplay({
             <PiSpeakerHigh className="w-5 h-5 text-brand-primary" />
           )}
         </button>
-      </div>
+      </Inline>
     </div>
   );
 
@@ -588,9 +589,11 @@ export function AudioAutoplay({
               <AudioPlayer />
             </div>
           ) : (
-            <button
+            <Inline
+              as="button"
+              gap={2}
               onClick={() => setShowMobilePlayer(true)}
-              className="w-full classical-card-simple rounded-t-lg shadow-xl py-3 px-4 flex items-center justify-center space-x-2 hover:bg-theme-classical transition-colors"
+              className="w-full classical-card-simple rounded-t-lg shadow-xl py-3 px-4 justify-center hover:bg-theme-classical transition-colors"
               aria-label="Expandir player de áudio"
             >
               <svg
@@ -625,7 +628,7 @@ export function AudioAutoplay({
                   />
                 </div>
               )}
-            </button>
+            </Inline>
           )}
         </div>
       )}
@@ -646,9 +649,10 @@ export function AudioAutoplay({
               <AudioPlayer />
             </div>
           ) : (
-            <div
+            <Inline
+              gap={3}
               onClick={() => setShowPlayer(true)}
-              className="rounded-full classical-card-simple shadow-2xl p-3 flex items-center space-x-3  hover:shadow-xl transition-all cursor-pointer"
+              className="rounded-full classical-card-simple shadow-2xl p-3 hover:shadow-xl transition-all cursor-pointer"
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
@@ -674,7 +678,7 @@ export function AudioAutoplay({
               </button>
 
               {status === 'playing' && (
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <div className="flex space-x-1">
                     <div
                       className="w-1 h-4 bg-brand-primary rounded-full animate-pulse"
@@ -692,9 +696,9 @@ export function AudioAutoplay({
                   <span className="text-xs text-theme-secondary">
                     Áudio tocando
                   </span>
-                </div>
+                </Inline>
               )}
-            </div>
+            </Inline>
           )}
         </div>
       )}

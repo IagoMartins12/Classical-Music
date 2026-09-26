@@ -44,6 +44,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import { IconType } from 'react-icons';
+import { Inline } from '@/app/components/ui/Layout';
 
 // Tabs atualizadas com Cloudinary
 const CATEGORY_TABS = [
@@ -173,7 +174,7 @@ const CloudinaryFileItem = ({
       onClick={() => onToggleSelection(file.publicId)}
     >
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3 min-w-0 flex-1">
+        <Inline gap={3} className="min-w-0 flex-1">
           {/* Checkbox */}
           <div className="flex-shrink-0">
             {isSelected ? (
@@ -190,7 +191,7 @@ const CloudinaryFileItem = ({
 
           {/* Informações do Arquivo */}
           <div className="min-w-0 flex-1">
-            <div className="flex items-center space-x-2 mb-1">
+            <Inline gap={2} className="mb-1">
               <p className="font-medium text-theme-primary truncate">
                 {file.publicId.split('/').pop() || file.publicId}
               </p>
@@ -204,28 +205,28 @@ const CloudinaryFileItem = ({
               <span className="text-xs px-2 py-1 rounded bg-purple-100 text-purple-800">
                 Cloudinary
               </span>
-            </div>
-            <div className="flex items-center space-x-4 text-sm text-theme-secondary">
-              <span className="flex items-center space-x-1">
+            </Inline>
+            <Inline gap={4} className="text-sm text-theme-secondary">
+              <Inline as="span" gap={1}>
                 <PiFolder className="w-3 h-3" />
                 <span className="truncate max-w-48">
                   {file.folder || 'Root'}
                 </span>
-              </span>
-              <span className="flex items-center space-x-1">
+              </Inline>
+              <Inline as="span" gap={1}>
                 <PiHardDrive className="w-3 h-3" />
                 <span>{file.formattedSize}</span>
-              </span>
-              <span className="flex items-center space-x-1">
+              </Inline>
+              <Inline as="span" gap={1}>
                 <PiClock className="w-3 h-3" />
                 <span>{formatCloudinaryAge(file.createdAt)}</span>
-              </span>
-            </div>
+              </Inline>
+            </Inline>
           </div>
-        </div>
+        </Inline>
 
         {/* Ações */}
-        <div className="flex items-center space-x-2">
+        <Inline gap={2}>
           <Button
             variant="secondary"
             size="sm"
@@ -249,7 +250,7 @@ const CloudinaryFileItem = ({
           >
             Detalhes
           </Button>
-        </div>
+        </Inline>
       </div>
     </div>
   );
@@ -528,11 +529,11 @@ export default function OrphanFilesManagementClient() {
                   </p>
 
                   {/* Seletor de tipo de scan */}
-                  <div className="flex items-center space-x-4">
+                  <Inline gap={4}>
                     <label className="text-sm font-medium text-theme-primary">
                       Tipo de Scan:
                     </label>
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       {SCAN_TYPE_OPTIONS.map((option) => (
                         <button
                           key={option.value}
@@ -547,8 +548,8 @@ export default function OrphanFilesManagementClient() {
                           {option.label}
                         </button>
                       ))}
-                    </div>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3">
@@ -653,7 +654,7 @@ export default function OrphanFilesManagementClient() {
                   </h3>
 
                   {totalFilteredFiles > 0 && (
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -714,7 +715,7 @@ export default function OrphanFilesManagementClient() {
                           )
                         </Button>
                       )}
-                    </div>
+                    </Inline>
                   )}
                 </div>
 
@@ -748,12 +749,16 @@ export default function OrphanFilesManagementClient() {
                     {/* Arquivos Locais */}
                     {filteredLocalFiles.length > 0 && (
                       <div>
-                        <h4 className="text-lg font-semibold text-theme-primary mb-3 flex items-center space-x-2">
+                        <Inline
+                          as="h4"
+                          gap={2}
+                          className="text-lg font-semibold text-theme-primary mb-3"
+                        >
                           <PiMonitor className="w-5 h-5" />
                           <span>
                             Arquivos Locais ({filteredLocalFiles.length})
                           </span>
-                        </h4>
+                        </Inline>
                         <div className="space-y-2 max-h-96 overflow-y-auto">
                           {filteredLocalFiles.map((file) => {
                             const isSelected = selectedFiles.includes(
@@ -776,7 +781,7 @@ export default function OrphanFilesManagementClient() {
                                 }
                               >
                                 <div className="flex items-center justify-between">
-                                  <div className="flex items-center space-x-3 min-w-0 flex-1">
+                                  <Inline gap={3} className="min-w-0 flex-1">
                                     <div className="flex-shrink-0">
                                       {isSelected ? (
                                         <PiCheckSquare className="w-5 h-5 text-brand-primary" />
@@ -790,30 +795,33 @@ export default function OrphanFilesManagementClient() {
                                     </div>
 
                                     <div className="min-w-0 flex-1">
-                                      <div className="flex items-center space-x-2 mb-1">
+                                      <Inline gap={2} className="mb-1">
                                         <p className="font-medium text-theme-primary truncate">
                                           {file.name}
                                         </p>
                                         <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800">
                                           Local
                                         </span>
-                                      </div>
-                                      <div className="flex items-center space-x-4 text-sm text-theme-secondary">
-                                        <span className="flex items-center space-x-1">
+                                      </Inline>
+                                      <Inline
+                                        gap={4}
+                                        className="text-sm text-theme-secondary"
+                                      >
+                                        <Inline as="span" gap={1}>
                                           <PiFolder className="w-3 h-3" />
                                           <span className="truncate max-w-48">
                                             {file.directory}
                                           </span>
-                                        </span>
+                                        </Inline>
                                         <span>{file.formattedSize}</span>
                                         <span>
                                           {formatFileDate(file.lastModified)}
                                         </span>
-                                      </div>
+                                      </Inline>
                                     </div>
-                                  </div>
+                                  </Inline>
 
-                                  <div className="flex items-center space-x-2">
+                                  <Inline gap={2}>
                                     <Button
                                       variant="secondary"
                                       size="sm"
@@ -836,7 +844,7 @@ export default function OrphanFilesManagementClient() {
                                     >
                                       Detalhes
                                     </Button>
-                                  </div>
+                                  </Inline>
                                 </div>
                               </div>
                             );
@@ -848,13 +856,17 @@ export default function OrphanFilesManagementClient() {
                     {/* Arquivos do Cloudinary */}
                     {filteredCloudinaryFiles.length > 0 && (
                       <div>
-                        <h4 className="text-lg font-semibold text-theme-primary mb-3 flex items-center space-x-2">
+                        <Inline
+                          as="h4"
+                          gap={2}
+                          className="text-lg font-semibold text-theme-primary mb-3"
+                        >
                           <PiCloud className="w-5 h-5" />
                           <span>
                             Arquivos do Cloudinary (
                             {filteredCloudinaryFiles.length})
                           </span>
-                        </h4>
+                        </Inline>
                         <div className="space-y-2 max-h-96 overflow-y-auto">
                           {filteredCloudinaryFiles.map((file) => (
                             <CloudinaryFileItem

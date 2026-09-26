@@ -9,6 +9,7 @@ import {
   PiMusicNotes,
 } from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface WorkScore {
   id: string;
@@ -42,10 +43,14 @@ export default function MusicalPiecesSection({
       <AnimatedItem direction="up" springType="gentle" className={className}>
         <AnimatedCard hover="none" className={cardClassName}>
           <div className="flex items-center mb-4">
-            <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
+            <Inline
+              as="h2"
+              gap={2}
+              className="text-lg font-bold text-theme-primary"
+            >
               <PiMusicNotes className="w-5 h-5" />
               <span>{title}</span>
-            </h2>
+            </Inline>
           </div>
           <p className="text-theme-tertiary italic">{emptyMessage}</p>
         </AnimatedCard>
@@ -57,10 +62,14 @@ export default function MusicalPiecesSection({
     <AnimatedItem direction="up" springType="gentle" className={className}>
       <AnimatedCard hover="none" className={cardClassName}>
         <div className="flex items-center mb-4">
-          <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
+          <Inline
+            as="h2"
+            gap={2}
+            className="text-lg font-bold text-theme-primary"
+          >
             <PiMusicNotes className="w-5 h-5" />
             <span>{title}</span>
-          </h2>
+          </Inline>
         </div>
 
         <div className="space-y-4">
@@ -76,7 +85,7 @@ export default function MusicalPiecesSection({
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2 mb-1">
+                    <Inline gap={2} className="mb-1">
                       <h4 className="font-bold text-theme-primary">
                         {workScore.workTitle}
                       </h4>
@@ -85,7 +94,7 @@ export default function MusicalPiecesSection({
                           #{index + 1}
                         </span>
                       )}
-                    </div>
+                    </Inline>
 
                     {/* Link para o Compositor */}
                     <Link
@@ -129,15 +138,17 @@ export default function MusicalPiecesSection({
                 {/* Link de Download da Partitura */}
                 {workScore.downloadUrl && (
                   <div className="flex-shrink-0 ml-4">
-                    <a
+                    <Inline
+                      as="a"
+                      gap={2}
                       href={workScore.downloadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-classical-secondary flex items-center space-x-2 text-sm bg-accent-green/10 border-accent-green/30 text-accent-green hover:bg-accent-green/20"
+                      className="btn-classical-secondary text-sm bg-accent-green/10 border-accent-green/30 text-accent-green hover:bg-accent-green/20"
                     >
                       <PiDownloadSimple className="w-4 h-4" />
                       <span>Download</span>
-                    </a>
+                    </Inline>
                   </div>
                 )}
               </div>

@@ -27,6 +27,7 @@ import {
 import { toast } from 'react-hot-toast';
 import Modal from '@/app/components/Modal';
 import Select from '@/app/components/Common/Select';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Article {
   id: string;
@@ -229,7 +230,7 @@ export function ArticleList({
       <div className="classical-card p-4 mb-6">
         <div className="space-y-4">
           {/* Search Bar */}
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             <form onSubmit={handleSearch} className="flex-1 relative">
               <PiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
               <input
@@ -263,7 +264,7 @@ export function ArticleList({
                 <PiX className="w-5 h-5" />
               </button>
             )}
-          </div>
+          </Inline>
 
           {/* Filter Panel */}
           {showFilters && (
@@ -476,21 +477,25 @@ export function ArticleList({
                               </Link>
                             )}
 
-                            <button
+                            <Inline
+                              as="button"
+                              gap={2}
                               onClick={() => handleDuplicate(article.id)}
-                              className="flex items-center space-x-2 w-full px-4 py-2 hover:bg-interactive-hover text-theme-secondary"
+                              className="w-full px-4 py-2 hover:bg-interactive-hover text-theme-secondary"
                             >
                               <PiCopy className="w-4 h-4" />
                               <span>Duplicar</span>
-                            </button>
+                            </Inline>
 
-                            <button
+                            <Inline
+                              as="button"
+                              gap={2}
                               onClick={() => setDeleteModal(article.id)}
-                              className="flex items-center space-x-2 w-full px-4 py-2 hover:bg-red-500/10 text-red-500 rounded-b-lg"
+                              className="w-full px-4 py-2 hover:bg-red-500/10 text-red-500 rounded-b-lg"
                             >
                               <PiTrash className="w-4 h-4" />
                               <span>Deletar</span>
-                            </button>
+                            </Inline>
                           </div>
                         )}
                       </div>
@@ -506,48 +511,54 @@ export function ArticleList({
                     {/* Meta */}
                     <div className="mt-auto">
                       {/* Author & Date */}
-                      <div className="flex items-center space-x-3 text-xs text-theme-tertiary mb-3">
-                        <div className="flex items-center space-x-1">
+                      <Inline
+                        gap={3}
+                        className="text-xs text-theme-tertiary mb-3"
+                      >
+                        <Inline gap={1}>
                           <PiUser className="w-3 h-3" />
                           <span>{getAuthorName(article.author)}</span>
-                        </div>
+                        </Inline>
 
-                        <div className="flex items-center space-x-1">
+                        <Inline gap={1}>
                           <PiCalendarBlank className="w-3 h-3" />
                           <span>
                             {new Date(article.updatedAt).toLocaleDateString(
                               'pt-BR'
                             )}
                           </span>
-                        </div>
+                        </Inline>
 
-                        <div className="flex items-center space-x-1">
+                        <Inline gap={1}>
                           <PiClock className="w-3 h-3" />
                           <span>{article.readTime} min</span>
-                        </div>
-                      </div>
+                        </Inline>
+                      </Inline>
 
                       {/* Stats */}
                       <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center space-x-3 text-theme-tertiary">
-                          <div className="flex items-center space-x-1">
+                        <Inline gap={3} className="text-theme-tertiary">
+                          <Inline gap={1}>
                             <PiEye className="w-4 h-4" />
                             <span>{article.viewCount}</span>
-                          </div>
+                          </Inline>
 
-                          <div className="flex items-center space-x-1">
+                          <Inline gap={1}>
                             <PiHeart className="w-4 h-4" />
                             <span>{article._count.likes}</span>
-                          </div>
+                          </Inline>
 
-                          <div className="flex items-center space-x-1">
+                          <Inline gap={1}>
                             <PiChatCenteredText className="w-4 h-4" />
                             <span>{article._count.comments}</span>
-                          </div>
-                        </div>
+                          </Inline>
+                        </Inline>
 
                         {/* Quick Actions */}
-                        <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Inline
+                          gap={1}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
                           <Link
                             href={`/blog/admin/articles/${article.id}/edit`}
                             className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary hover:text-blue-500 transition-all"
@@ -574,7 +585,7 @@ export function ArticleList({
                           >
                             <PiTrash className="w-4 h-4" />
                           </button>
-                        </div>
+                        </Inline>
                       </div>
                     </div>
                   </div>
@@ -592,7 +603,7 @@ export function ArticleList({
                 de {pagination.total} artigos
               </p>
 
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 {pagination.page > 1 && (
                   <button
                     onClick={() =>
@@ -604,7 +615,7 @@ export function ArticleList({
                   </button>
                 )}
 
-                <div className="flex items-center space-x-1">
+                <Inline gap={1}>
                   {Array.from(
                     { length: pagination.totalPages },
                     (_, i) => i + 1
@@ -637,7 +648,7 @@ export function ArticleList({
                         </button>
                       </div>
                     ))}
-                </div>
+                </Inline>
 
                 {pagination.page < pagination.totalPages && (
                   <button
@@ -649,7 +660,7 @@ export function ArticleList({
                     Próxima
                   </button>
                 )}
-              </div>
+              </Inline>
             </div>
           )}
         </>
@@ -674,7 +685,7 @@ export function ArticleList({
                   perdidos.
                 </p>
 
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <button
                     onClick={() => setDeleteModal(null)}
                     className="flex-1 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-interactive-hover text-theme-primary transition-all"
@@ -689,7 +700,7 @@ export function ArticleList({
                   >
                     {deleting ? 'Deletando...' : 'Deletar'}
                   </button>
-                </div>
+                </Inline>
               </div>
             </div>
           </div>

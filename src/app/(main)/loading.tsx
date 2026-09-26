@@ -12,6 +12,7 @@ import {
   PiTrendUp,
   PiUser,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function HomeLoading() {
   return (
@@ -107,7 +108,7 @@ export default function HomeLoading() {
         <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center animate-shimmer">
                 <PiTrendUp className="w-6 h-6 text-brand-primary/50" />
               </div>
@@ -115,7 +116,7 @@ export default function HomeLoading() {
                 <div className="h-8 w-64 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
                 <div className="h-4 w-80 bg-theme-elevated rounded"></div>
               </div>
-            </div>
+            </Inline>
             <div className="h-10 w-48 bg-theme-elevated border border-theme-secondary rounded-xl"></div>
           </div>
 
@@ -197,7 +198,7 @@ export default function HomeLoading() {
         {/* Composers by Epoch Section */}
         <div className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
           {/* Section Header */}
-          <div className="flex items-center space-x-4 mb-8">
+          <Inline gap={4} className="mb-8">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
               <PiClock className="w-6 h-6 text-accent-purple/50" />
             </div>
@@ -205,7 +206,7 @@ export default function HomeLoading() {
               <div className="h-8 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
               <div className="h-4 w-64 bg-theme-elevated rounded"></div>
             </div>
-          </div>
+          </Inline>
 
           {/* Epochs Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
@@ -226,7 +227,7 @@ export default function HomeLoading() {
         {/* Random Discoveries Section */}
         <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
           {/* Section Header */}
-          <div className="flex items-center space-x-4 mb-8">
+          <Inline gap={4} className="mb-8">
             <div className="w-12 h-12 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-xl flex items-center justify-center">
               <PiMapTrifold className="w-6 h-6 text-orange-400/50" />
             </div>
@@ -234,7 +235,7 @@ export default function HomeLoading() {
               <div className="h-8 w-56 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
               <div className="h-4 w-72 bg-theme-elevated rounded"></div>
             </div>
-          </div>
+          </Inline>
 
           {/* Composers Grid */}
           <div className="mb-8">
@@ -286,7 +287,7 @@ export default function HomeLoading() {
         {/* Recent Additions Section */}
         <div className="animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
           {/* Section Header */}
-          <div className="flex items-center space-x-4 mb-8">
+          <Inline gap={4} className="mb-8">
             <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl flex items-center justify-center">
               <PiPlus className="w-6 h-6 text-green-400/50" />
             </div>
@@ -294,7 +295,7 @@ export default function HomeLoading() {
               <div className="h-8 w-44 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
               <div className="h-4 w-64 bg-theme-elevated rounded"></div>
             </div>
-          </div>
+          </Inline>
 
           {/* Recent Items Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -323,7 +324,7 @@ export default function HomeLoading() {
         {/* Musical Facts Section */}
         <div className="animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
           {/* Section Header */}
-          <div className="flex items-center space-x-4 mb-8">
+          <Inline gap={4} className="mb-8">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
               <PiBookOpen className="w-6 h-6 text-accent-blue/50" />
             </div>
@@ -331,7 +332,7 @@ export default function HomeLoading() {
               <div className="h-8 w-52 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
               <div className="h-4 w-80 bg-theme-elevated rounded"></div>
             </div>
-          </div>
+          </Inline>
 
           {/* Facts Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -363,7 +364,7 @@ export default function HomeLoading() {
         {/* Essential Composers Section */}
         <div className="animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
           {/* Section Header */}
-          <div className="flex items-center space-x-4 mb-8">
+          <Inline gap={4} className="mb-8">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
               <PiMedal className="w-6 h-6 text-accent-purple/50" />
             </div>
@@ -371,7 +372,7 @@ export default function HomeLoading() {
               <div className="h-8 w-60 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
               <div className="h-4 w-32 md:w-96 max-w-full bg-theme-elevated rounded"></div>
             </div>
-          </div>
+          </Inline>
 
           {/* Essential Composers Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">

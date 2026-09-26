@@ -38,6 +38,7 @@ import ConfirmationModal from './ConfirmationModal';
 import { useDatabaseStudio } from '@/app/hooks/admin/useDatabaseStudio';
 import { CONFIRMATION_MESSAGES } from './confirmations';
 import { deleteConfirmationPhrase } from '@/app/requests/admin/database';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function DatabaseStudioClient() {
   const {
@@ -204,7 +205,7 @@ export default function DatabaseStudioClient() {
               {/* Header da Sidebar */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center shadow-theme-glow">
                       <PiDatabase className="w-5 h-5 text-white" />
                     </div>
@@ -216,7 +217,7 @@ export default function DatabaseStudioClient() {
                         {models.length} tabelas
                       </p>
                     </div>
-                  </div>
+                  </Inline>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -246,7 +247,7 @@ export default function DatabaseStudioClient() {
                 {Object.entries(modelsByCategory).map(
                   ([category, categoryModels]) => (
                     <div key={category}>
-                      <div className="flex items-center space-x-2 mb-2">
+                      <Inline gap={2} className="mb-2">
                         <div
                           className={`w-2 h-2 rounded-full bg-gradient-to-r ${categoryColors[category]}`}
                         />
@@ -254,7 +255,7 @@ export default function DatabaseStudioClient() {
                           {categoryLabels[category]}
                         </h3>
                         <div className="flex-1 h-px bg-theme-primary" />
-                      </div>
+                      </Inline>
 
                       <div className="space-y-1">
                         {categoryModels.map((model) => (
@@ -267,12 +268,12 @@ export default function DatabaseStudioClient() {
                                 : 'hover:bg-theme-secondary text-theme-primary'
                             }`}
                           >
-                            <div className="flex items-center space-x-2 flex-1 min-w-0">
+                            <Inline gap={2} className="flex-1 min-w-0">
                               <PiStack className="w-4 h-4 flex-shrink-0" />
                               <span className="text-sm font-medium truncate">
                                 {model.displayName}
                               </span>
-                            </div>
+                            </Inline>
                             <span
                               className={`text-xs px-2 py-0.5 rounded-full ${
                                 selectedModel === model.name
@@ -301,7 +302,7 @@ export default function DatabaseStudioClient() {
               <AnimatedItem direction="down" springType="gentle">
                 <AnimatedCard className="classical-card p-4 mb-4" hover="none">
                   <div className="flex items-center justify-between gap-4 mb-4">
-                    <div className="flex items-center space-x-4 flex-1 min-w-0">
+                    <Inline gap={4} className="flex-1 min-w-0">
                       {/* Busca */}
                       <div className="relative flex-1 max-w-md">
                         <PiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
@@ -316,7 +317,10 @@ export default function DatabaseStudioClient() {
 
                       {/* Seleção múltipla */}
                       {selectedRecords.size > 0 && (
-                        <div className="flex items-center space-x-2 px-3 py-2 bg-brand-primary/10 border border-brand-primary/20 rounded-lg">
+                        <Inline
+                          gap={2}
+                          className="px-3 py-2 bg-brand-primary/10 border border-brand-primary/20 rounded-lg"
+                        >
                           <span className="text-sm font-medium text-brand-primary">
                             {selectedRecords.size} selecionado(s)
                           </span>
@@ -337,12 +341,12 @@ export default function DatabaseStudioClient() {
                           >
                             Limpar
                           </Button>
-                        </div>
+                        </Inline>
                       )}
-                    </div>
+                    </Inline>
 
                     {/* Ações */}
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -381,7 +385,10 @@ export default function DatabaseStudioClient() {
                         )}
                       </Button>
 
-                      <div className="flex items-center space-x-1 bg-theme-secondary p-1 rounded-lg">
+                      <Inline
+                        gap={1}
+                        className="bg-theme-secondary p-1 rounded-lg"
+                      >
                         <button
                           onClick={() => setViewMode('table')}
                           className={`p-2 rounded transition-colors ${
@@ -402,7 +409,7 @@ export default function DatabaseStudioClient() {
                         >
                           <PiSquaresFour className="w-4 h-4" />
                         </button>
-                      </div>
+                      </Inline>
 
                       <Button
                         variant="ghost"
@@ -433,7 +440,7 @@ export default function DatabaseStudioClient() {
                         onClick={() => loadRecords()}
                         disabled={loadingRecords}
                       />
-                    </div>
+                    </Inline>
                   </div>
 
                   {/* Filtros ativos */}
@@ -443,9 +450,10 @@ export default function DatabaseStudioClient() {
                         Filtros ativos:
                       </span>
                       {Object.entries(activeFilters).map(([field, value]) => (
-                        <div
+                        <Inline
+                          gap={2}
                           key={field}
-                          className="flex items-center space-x-2 px-3 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-sm"
+                          className="px-3 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-sm"
                         >
                           <span className="font-medium">{field}:</span>
                           <span>
@@ -459,7 +467,7 @@ export default function DatabaseStudioClient() {
                           >
                             <PiX className="w-3 h-3" />
                           </button>
-                        </div>
+                        </Inline>
                       ))}
                       <Button
                         variant="ghost"
@@ -482,8 +490,8 @@ export default function DatabaseStudioClient() {
                     hover="none"
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-6">
-                        <div className="flex items-center space-x-2">
+                      <Inline gap={6}>
+                        <Inline gap={2}>
                           <div className="w-8 h-8 bg-brand-primary/10 rounded-lg flex items-center justify-center">
                             <PiDatabase className="w-4 h-4 text-brand-primary" />
                           </div>
@@ -495,11 +503,11 @@ export default function DatabaseStudioClient() {
                               {schemaStats.totalFields}
                             </p>
                           </div>
-                        </div>
+                        </Inline>
 
                         <div className="h-8 w-px bg-theme-primary" />
 
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <div className="w-8 h-8 bg-green-500/10 rounded-lg flex items-center justify-center">
                             <PiEye className="w-4 h-4 text-green-500" />
                           </div>
@@ -511,11 +519,11 @@ export default function DatabaseStudioClient() {
                               {schemaStats.displayableFields}
                             </p>
                           </div>
-                        </div>
+                        </Inline>
 
                         <div className="h-8 w-px bg-theme-primary" />
 
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
                             <PiPencilSimple className="w-4 h-4 text-blue-500" />
                           </div>
@@ -527,11 +535,11 @@ export default function DatabaseStudioClient() {
                               {schemaStats.editableFields}
                             </p>
                           </div>
-                        </div>
+                        </Inline>
 
                         <div className="h-8 w-px bg-theme-primary" />
 
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <div className="w-8 h-8 bg-purple-500/10 rounded-lg flex items-center justify-center">
                             <PiMagnifyingGlass className="w-4 h-4 text-purple-500" />
                           </div>
@@ -543,16 +551,19 @@ export default function DatabaseStudioClient() {
                               {schemaStats.searchableFields}
                             </p>
                           </div>
-                        </div>
-                      </div>
+                        </Inline>
+                      </Inline>
 
-                      <div className="flex items-center space-x-2 px-4 py-2 bg-brand-primary/10 rounded-lg">
+                      <Inline
+                        gap={2}
+                        className="px-4 py-2 bg-brand-primary/10 rounded-lg"
+                      >
                         <span className="text-sm font-medium text-brand-primary">
                           {selectedFields.length === 0
                             ? `Exibindo ${Math.min(100, schemaStats.displayableFields)} campos`
                             : `${selectedFields.length} campos selecionados`}
                         </span>
-                      </div>
+                      </Inline>
                     </div>
                   </AnimatedCard>
                 </AnimatedItem>
@@ -636,7 +647,7 @@ export default function DatabaseStudioClient() {
                                       !isSensitive && setSort(fieldName)
                                     }
                                   >
-                                    <div className="flex items-center space-x-1">
+                                    <Inline gap={1}>
                                       {isSensitive && (
                                         <PiLock className="w-3 h-3 text-red-500" />
                                       )}
@@ -646,7 +657,7 @@ export default function DatabaseStudioClient() {
                                           {sortDirection === 'asc' ? '↑' : '↓'}
                                         </span>
                                       )}
-                                    </div>
+                                    </Inline>
                                   </th>
                                 );
                               })}
@@ -694,7 +705,7 @@ export default function DatabaseStudioClient() {
                                   );
                                 })}
                                 <td className="p-3">
-                                  <div className="flex items-center justify-end space-x-2">
+                                  <Inline gap={2} className="justify-end">
                                     <Button
                                       variant="ghost"
                                       size="sm"
@@ -710,7 +721,7 @@ export default function DatabaseStudioClient() {
                                       }
                                       className="text-accent-red hover:bg-accent-red/10"
                                     />
-                                  </div>
+                                  </Inline>
                                 </td>
                               </tr>
                             ))}
@@ -721,11 +732,11 @@ export default function DatabaseStudioClient() {
                       {/* Paginação */}
                       <div className="border-t border-theme-primary p-4">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
+                          <Inline gap={4}>
                             <span className="text-sm text-theme-secondary">
                               {totalRecords} registros no total
                             </span>
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               <span className="text-sm text-theme-tertiary">
                                 Exibir:
                               </span>
@@ -742,14 +753,14 @@ export default function DatabaseStudioClient() {
                                 ]}
                                 className="w-20"
                               />
-                            </div>
-                          </div>
+                            </Inline>
+                          </Inline>
 
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <span className="text-sm text-theme-secondary">
                               Página {currentPage} de {totalPages}
                             </span>
-                            <div className="flex items-center space-x-1">
+                            <Inline gap={1}>
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -764,8 +775,8 @@ export default function DatabaseStudioClient() {
                                 onClick={() => loadRecords(currentPage + 1)}
                                 disabled={currentPage === totalPages}
                               />
-                            </div>
-                          </div>
+                            </Inline>
+                          </Inline>
                         </div>
                       </div>
                     </>

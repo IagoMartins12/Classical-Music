@@ -45,6 +45,7 @@ import Link from 'next/link';
 import Button from '@/app/components/Common/Button';
 import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface TeacherAssignmentsPageClientProps {
   initialData: TeacherAssignmentsData;
@@ -518,11 +519,11 @@ export default function TeacherAssignmentsPageClient({
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-theme-secondary mt-1">
-                          <div className="flex items-center space-x-1">
+                          <Inline gap={1}>
                             <PiUser className="w-3 h-3 md:w-4 md:h-4" />
                             <span>{assignment.student.name}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
+                          </Inline>
+                          <Inline gap={1}>
                             <PiBookOpen className="w-3 h-3 md:w-4 md:h-4" />
                             <span>
                               {t(
@@ -531,18 +532,18 @@ export default function TeacherAssignmentsPageClient({
                                 ]
                               ) || assignment.type}
                             </span>
-                          </div>
+                          </Inline>
                           {assignment.dueDate && (
-                            <div className="flex items-center space-x-1">
+                            <Inline gap={1}>
                               <PiCalendarBlank className="w-3 h-3 md:w-4 md:h-4" />
                               <span>{formatDueDate(assignment.dueDate)}</span>
-                            </div>
+                            </Inline>
                           )}
                           {assignment.estimatedTime && (
-                            <div className="flex items-center space-x-1">
+                            <Inline gap={1}>
                               <PiClock className="w-3 h-3 md:w-4 md:h-4" />
                               <span>{assignment.estimatedTime}min</span>
-                            </div>
+                            </Inline>
                           )}
                         </div>
                       </div>
@@ -578,24 +579,28 @@ export default function TeacherAssignmentsPageClient({
                     {/* Goals */}
                     <div className="flex flex-wrap gap-2 mb-4">
                       {assignment.practiceGoals.slice(0, 2).map((goal, idx) => (
-                        <span
+                        <Inline
+                          as="span"
+                          gap={1}
                           key={idx}
-                          className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs flex items-center space-x-1"
+                          className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs"
                         >
                           <PiTarget className="w-3 h-3" />
                           <span>{goal}</span>
-                        </span>
+                        </Inline>
                       ))}
                       {assignment.technicalGoals
                         .slice(0, 1)
                         .map((goal, idx) => (
-                          <span
+                          <Inline
+                            as="span"
+                            gap={1}
                             key={idx}
-                            className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs flex items-center space-x-1"
+                            className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs"
                           >
                             <PiMusicNotes className="w-3 h-3" />
                             <span>{goal}</span>
-                          </span>
+                          </Inline>
                         ))}
                       {assignment.practiceGoals.length +
                         assignment.technicalGoals.length +
@@ -615,7 +620,7 @@ export default function TeacherAssignmentsPageClient({
 
                     {/* Stats */}
                     <div className="flex flex-col space-y-1 md:flex-row md:items-center md:space-x-6 md:space-y-0 text-xs md:text-sm text-theme-tertiary">
-                      <div className="flex items-center space-x-1">
+                      <Inline gap={1}>
                         <PiCalendarBlank className="w-3 h-3 md:w-4 md:h-4" />
                         <span>
                           {t('created_date', {
@@ -624,9 +629,9 @@ export default function TeacherAssignmentsPageClient({
                             ).toLocaleDateString('pt-BR'),
                           })}
                         </span>
-                      </div>
+                      </Inline>
                       {assignment.completedAt && (
-                        <div className="flex items-center space-x-1">
+                        <Inline gap={1}>
                           <PiCheck className="w-3 h-3 md:w-4 md:h-4" />
                           <span>
                             {t('completed_date', {
@@ -635,10 +640,10 @@ export default function TeacherAssignmentsPageClient({
                               ).toLocaleDateString('pt-BR'),
                             })}
                           </span>
-                        </div>
+                        </Inline>
                       )}
                       {hasScores && (
-                        <div className="flex items-center space-x-1 text-accent-purple">
+                        <Inline gap={1} className="text-accent-purple">
                           <PiMusicNotes className="w-3 h-3 md:w-4 md:h-4" />
                           <span>
                             {t('scores_count', {
@@ -647,18 +652,21 @@ export default function TeacherAssignmentsPageClient({
                                 assignment.workScoreIds.length !== 1 ? 's' : '',
                             })}
                           </span>
-                        </div>
+                        </Inline>
                       )}
                     </div>
 
                     {/* Alerta para tarefas que precisam de atenção */}
                     {statusInfo.needsAttention && (
-                      <div className="flex items-center justify-center space-x-1 mt-3 text-accent-red">
+                      <Inline
+                        gap={1}
+                        className="justify-center mt-3 text-accent-red"
+                      >
                         <PiWarning className="w-4 h-4 text-red-600" />
                         <span className="font-semibold text-red-600">
                           {t('needs_status_update')}
                         </span>
-                      </div>
+                      </Inline>
                     )}
                   </div>
                 </div>
@@ -731,11 +739,11 @@ export default function TeacherAssignmentsPageClient({
                           {assignment.title}
                         </h3>
                         <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-theme-secondary mt-1">
-                          <div className="flex items-center space-x-1">
+                          <Inline gap={1}>
                             <PiUser className="w-3 h-3 md:w-4 md:h-4" />
                             <span>{assignment.student.name}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
+                          </Inline>
+                          <Inline gap={1}>
                             <PiBookOpen className="w-3 h-3 md:w-4 md:h-4" />
                             <span>
                               {t(
@@ -744,18 +752,18 @@ export default function TeacherAssignmentsPageClient({
                                 ]
                               ) || assignment.type}
                             </span>
-                          </div>
+                          </Inline>
                           {assignment.dueDate && (
-                            <div className="flex items-center space-x-1">
+                            <Inline gap={1}>
                               <PiCalendarBlank className="w-3 h-3 md:w-4 md:h-4" />
                               <span>{formatDueDate(assignment.dueDate)}</span>
-                            </div>
+                            </Inline>
                           )}
                           {assignment.estimatedTime && (
-                            <div className="flex items-center space-x-1">
+                            <Inline gap={1}>
                               <PiClock className="w-3 h-3 md:w-4 md:h-4" />
                               <span>{assignment.estimatedTime}min</span>
-                            </div>
+                            </Inline>
                           )}
                         </div>
                       </div>
@@ -816,24 +824,28 @@ export default function TeacherAssignmentsPageClient({
                     {/* Goals */}
                     <div className="flex flex-wrap gap-2 mb-4">
                       {assignment.practiceGoals.slice(0, 2).map((goal, idx) => (
-                        <span
+                        <Inline
+                          as="span"
+                          gap={1}
                           key={idx}
-                          className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs flex items-center space-x-1"
+                          className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs"
                         >
                           <PiTarget className="w-3 h-3" />
                           <span>{goal}</span>
-                        </span>
+                        </Inline>
                       ))}
                       {assignment.technicalGoals
                         .slice(0, 1)
                         .map((goal, idx) => (
-                          <span
+                          <Inline
+                            as="span"
+                            gap={1}
                             key={idx}
-                            className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs flex items-center space-x-1"
+                            className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs"
                           >
                             <PiMusicNotes className="w-3 h-3" />
                             <span>{goal}</span>
-                          </span>
+                          </Inline>
                         ))}
                       {assignment.practiceGoals.length +
                         assignment.technicalGoals.length +
@@ -853,7 +865,7 @@ export default function TeacherAssignmentsPageClient({
 
                     {/* Stats */}
                     <div className="flex flex-col space-y-1 md:flex-row md:items-center md:space-x-6 md:space-y-0 text-xs md:text-sm text-theme-tertiary">
-                      <div className="flex items-center space-x-1">
+                      <Inline gap={1}>
                         <PiCalendarBlank className="w-3 h-3 md:w-4 md:h-4" />
                         <span>
                           {t('created_date', {
@@ -862,9 +874,9 @@ export default function TeacherAssignmentsPageClient({
                             ).toLocaleDateString('pt-BR'),
                           })}
                         </span>
-                      </div>
+                      </Inline>
                       {assignment.completedAt && (
-                        <div className="flex items-center space-x-1">
+                        <Inline gap={1}>
                           <PiCheck className="w-3 h-3 md:w-4 md:h-4" />
                           <span>
                             {t('completed_date', {
@@ -873,18 +885,21 @@ export default function TeacherAssignmentsPageClient({
                               ).toLocaleDateString('pt-BR'),
                             })}
                           </span>
-                        </div>
+                        </Inline>
                       )}
                     </div>
 
                     {/* Alerta para tarefas que precisam de atenção */}
                     {statusInfo.needsAttention && (
-                      <div className="flex items-center justify-center space-x-1 mt-3 text-accent-red">
+                      <Inline
+                        gap={1}
+                        className="justify-center mt-3 text-accent-red"
+                      >
                         <PiWarning className="w-4 h-4 text-red-600" />
                         <span className="font-semibold text-red-600">
                           {t('needs_status_update')}
                         </span>
-                      </div>
+                      </Inline>
                     )}
                   </div>
                 </div>
@@ -941,10 +956,12 @@ export default function TeacherAssignmentsPageClient({
               {error || errorMessage}
             </p>
             <div className="space-y-3">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={refreshAssignments}
                 disabled={loading.assignments}
-                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+                className="btn-classical-primary w-full justify-center"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${
@@ -954,7 +971,7 @@ export default function TeacherAssignmentsPageClient({
                 <span>
                   {loading.assignments ? t('loading_tasks') : t('try_again')}
                 </span>
-              </button>
+              </Inline>
               {error && (
                 <button
                   onClick={clearError}
@@ -1079,7 +1096,7 @@ export default function TeacherAssignmentsPageClient({
             {/* Filter Summary */}
             {(searchTerm || filter !== 'all' || selectedStudent !== 'all') && (
               <div className="flex items-center justify-between pt-4 border-t border-theme-secondary mt-4">
-                <div className="flex items-center space-x-2 text-sm text-theme-secondary">
+                <Inline gap={2} className="text-sm text-theme-secondary">
                   <PiFunnel className="w-4 h-4" />
                   <span>
                     {t('showing_results', {
@@ -1092,7 +1109,7 @@ export default function TeacherAssignmentsPageClient({
                       &quot;{searchTerm}&quot;
                     </span>
                   )}
-                </div>
+                </Inline>
 
                 <button
                   onClick={() => {
@@ -1188,12 +1205,14 @@ export default function TeacherAssignmentsPageClient({
         {pagination.hasMore && (
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center mt-8">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={() => {
                   // TODO: Implement load more using hook
                 }}
                 disabled={loading.assignments}
-                className="btn-classical-secondary flex items-center space-x-2"
+                className="btn-classical-secondary"
               >
                 {loading.assignments ? (
                   <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -1201,7 +1220,7 @@ export default function TeacherAssignmentsPageClient({
                   <PiPlus className="w-4 h-4" />
                 )}
                 <span>{t('load_more_tasks')}</span>
-              </button>
+              </Inline>
             </div>
           </AnimatedItem>
         )}
@@ -1455,19 +1474,21 @@ function CreateAssignmentModal({
                   <label className="text-sm font-medium text-theme-primary">
                     {t('practice_goals')}
                   </label>
-                  <button
+                  <Inline
+                    as="button"
+                    gap={1}
                     type="button"
                     onClick={() => addGoal('practiceGoals')}
-                    className="text-brand-primary hover:text-brand-secondary text-sm flex items-center space-x-1"
+                    className="text-brand-primary hover:text-brand-secondary text-sm"
                   >
                     <PiPlus className="w-3 h-3" />
                     <span>{t('add')}</span>
-                  </button>
+                  </Inline>
                 </div>
                 <div className="space-y-2">
                   {createForm.practiceGoals.map(
                     (goal: string, index: number) => (
-                      <div key={index} className="flex items-center space-x-2">
+                      <Inline gap={2} key={index}>
                         <Input
                           type="text"
                           value={goal}
@@ -1486,7 +1507,7 @@ function CreateAssignmentModal({
                             <PiX className="w-4 h-4" />
                           </button>
                         )}
-                      </div>
+                      </Inline>
                     )
                   )}
                 </div>
@@ -1498,19 +1519,21 @@ function CreateAssignmentModal({
                   <label className="text-sm font-medium text-theme-primary">
                     {t('technical_goals')}
                   </label>
-                  <button
+                  <Inline
+                    as="button"
+                    gap={1}
                     type="button"
                     onClick={() => addGoal('technicalGoals')}
-                    className="text-brand-primary hover:text-brand-secondary text-sm flex items-center space-x-1"
+                    className="text-brand-primary hover:text-brand-secondary text-sm"
                   >
                     <PiPlus className="w-3 h-3" />
                     <span>{t('add')}</span>
-                  </button>
+                  </Inline>
                 </div>
                 <div className="space-y-2">
                   {createForm.technicalGoals.map(
                     (goal: string, index: number) => (
-                      <div key={index} className="flex items-center space-x-2">
+                      <Inline gap={2} key={index}>
                         <Input
                           type="text"
                           value={goal}
@@ -1529,7 +1552,7 @@ function CreateAssignmentModal({
                             <PiX className="w-4 h-4" />
                           </button>
                         )}
-                      </div>
+                      </Inline>
                     )
                   )}
                 </div>
@@ -1537,7 +1560,10 @@ function CreateAssignmentModal({
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-end space-x-3 pt-4 border-t border-theme-secondary">
+            <Inline
+              gap={3}
+              className="justify-end pt-4 border-t border-theme-secondary"
+            >
               <button
                 onClick={onClose}
                 disabled={loading}
@@ -1545,7 +1571,9 @@ function CreateAssignmentModal({
               >
                 {t('cancel')}
               </button>
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={onSubmit}
                 disabled={
                   loading ||
@@ -1553,7 +1581,7 @@ function CreateAssignmentModal({
                   !createForm.description ||
                   !createForm.studentUserId
                 }
-                className="btn-classical-primary flex items-center space-x-2"
+                className="btn-classical-primary"
               >
                 {loading ? (
                   <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -1561,8 +1589,8 @@ function CreateAssignmentModal({
                   <PiCheck className="w-4 h-4" />
                 )}
                 <span>{loading ? t('creating_task') : t('create_task')}</span>
-              </button>
-            </div>
+              </Inline>
+            </Inline>
           </div>
         </div>
       </AnimatedCard>
@@ -1695,14 +1723,14 @@ function AssignmentDetailsModal({
                 <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
                   {assignment.title}
                 </h2>
-                <div className="flex items-center space-x-4 mb-3">
-                  <div className="flex items-center space-x-2 text-theme-secondary">
+                <Inline gap={4} className="mb-3">
+                  <Inline gap={2} className="text-theme-secondary">
                     <PiUser className="w-4 h-4" />
                     <span className="font-medium">
                       {assignment.student.name}
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-theme-secondary">
+                  </Inline>
+                  <Inline gap={2} className="text-theme-secondary">
                     <PiBookOpen className="w-4 h-4" />
                     <span>
                       {t(
@@ -1711,17 +1739,17 @@ function AssignmentDetailsModal({
                         ]
                       ) || assignment.type}
                     </span>
-                  </div>
+                  </Inline>
                   {assignment.dueDate && (
-                    <div className="flex items-center space-x-2 text-theme-secondary">
+                    <Inline gap={2} className="text-theme-secondary">
                       <PiCalendarBlank className="w-4 h-4" />
                       <span>{formatDate(assignment.dueDate)}</span>
-                    </div>
+                    </Inline>
                   )}
-                </div>
+                </Inline>
 
                 {/* Status e Indicadores */}
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
                       assignment
@@ -1746,27 +1774,39 @@ function AssignmentDetailsModal({
 
                   {/* 🆕 Indicadores visuais */}
                   {videoSubmission && (
-                    <span className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded text-xs flex items-center space-x-1">
+                    <Inline
+                      as="span"
+                      gap={1}
+                      className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded text-xs"
+                    >
                       <PiVideoCamera className="w-3 h-3" />
                       <span>Vídeo</span>
-                    </span>
+                    </Inline>
                   )}
 
                   {assignment.workScoreIds &&
                     assignment.workScoreIds.length > 0 && (
-                      <span className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs flex items-center space-x-1">
+                      <Inline
+                        as="span"
+                        gap={1}
+                        className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs"
+                      >
                         <PiMusicNotes className="w-3 h-3" />
                         <span>{assignment.workScoreIds.length}</span>
-                      </span>
+                      </Inline>
                     )}
 
                   {completedMilestones.length > 0 && (
-                    <span className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs flex items-center space-x-1">
+                    <Inline
+                      as="span"
+                      gap={1}
+                      className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs"
+                    >
                       <PiTarget className="w-3 h-3" />
                       <span>{completedMilestones.length} conquistas</span>
-                    </span>
+                    </Inline>
                   )}
-                </div>
+                </Inline>
               </div>
             </div>
           </div>
@@ -1791,7 +1831,7 @@ function AssignmentDetailsModal({
                   <label className="text-sm font-medium text-theme-tertiary block mb-3">
                     Progresso do Aluno
                   </label>
-                  <div className="flex items-center space-x-4 mb-3">
+                  <Inline gap={4} className="mb-3">
                     <div className="flex-1">
                       <div className="w-full bg-theme-secondary rounded-full h-3">
                         <div
@@ -1803,7 +1843,7 @@ function AssignmentDetailsModal({
                     <span className="text-theme-primary font-medium min-w-[3rem]">
                       {assignment.progress}%
                     </span>
-                  </div>
+                  </Inline>
                 </div>
               )}
 
@@ -1815,7 +1855,7 @@ function AssignmentDetailsModal({
                   </label>
                   <div className="p-4 bg-theme-elevated rounded-lg">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                           <PiVideoCamera className="w-5 h-5 text-accent-purple" />
                         </div>
@@ -1828,16 +1868,18 @@ function AssignmentDetailsModal({
                             {formatDateTime(videoSubmission.uploadedAt)}
                           </div>
                         </div>
-                      </div>
-                      <a
+                      </Inline>
+                      <Inline
+                        as="a"
+                        gap={1}
                         href={videoSubmission.filePath}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-classical-secondary text-xs px-3 py-1 flex items-center space-x-1"
+                        className="btn-classical-secondary text-xs px-3 py-1"
                       >
                         <PiPlay className="w-3 h-3" />
                         <span>Assistir</span>
-                      </a>
+                      </Inline>
                     </div>
 
                     {/* Video preview */}
@@ -1862,26 +1904,28 @@ function AssignmentDetailsModal({
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {assignment.practiceGoals.slice(0, 3).map((goal, idx) => (
-                      <div
+                      <Inline
+                        gap={2}
                         key={idx}
-                        className="flex items-center space-x-2 text-sm p-2 bg-accent-blue/5 border border-accent-blue/20 rounded"
+                        className="text-sm p-2 bg-accent-blue/5 border border-accent-blue/20 rounded"
                       >
                         <PiTarget className="w-3 h-3 text-accent-blue" />
                         <span className="text-theme-primary truncate">
                           {goal}
                         </span>
-                      </div>
+                      </Inline>
                     ))}
                     {assignment.technicalGoals.slice(0, 3).map((goal, idx) => (
-                      <div
+                      <Inline
+                        gap={2}
                         key={idx}
-                        className="flex items-center space-x-2 text-sm p-2 bg-accent-green/5 border border-accent-green/20 rounded"
+                        className="text-sm p-2 bg-accent-green/5 border border-accent-green/20 rounded"
                       >
                         <PiMusicNotes className="w-3 h-3 text-accent-green" />
                         <span className="text-theme-primary truncate">
                           {goal}
                         </span>
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                   {assignment.practiceGoals.length +
@@ -1917,11 +1961,11 @@ function AssignmentDetailsModal({
                     )}
 
                     {assignment.studentRating && (
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <span className="text-sm text-theme-tertiary">
                           Avaliação de dificuldade:
                         </span>
-                        <div className="flex items-center space-x-1">
+                        <Inline gap={1}>
                           {[1, 2, 3, 4, 5].map((star) =>
                             star <= assignment.studentRating! ? (
                               <PiStarFill
@@ -1943,11 +1987,11 @@ function AssignmentDetailsModal({
                               />
                             )
                           )}
-                        </div>
+                        </Inline>
                         <span className="text-sm text-theme-primary">
                           ({assignment.studentRating}/5)
                         </span>
-                      </div>
+                      </Inline>
                     )}
                   </div>
                 </div>
@@ -1968,11 +2012,11 @@ function AssignmentDetailsModal({
                   />
 
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <span className="text-sm text-theme-tertiary">
                         Avaliação:
                       </span>
-                      <div className="flex items-center space-x-1">
+                      <Inline gap={1}>
                         {[1, 2, 3, 4, 5].map((star) => (
                           <button
                             key={star}
@@ -1998,15 +2042,17 @@ function AssignmentDetailsModal({
                             )}
                           </button>
                         ))}
-                      </div>
-                    </div>
+                      </Inline>
+                    </Inline>
 
-                    <button
+                    <Inline
+                      as="button"
+                      gap={1}
                       onClick={saveFeedback}
                       disabled={
                         actionLoading === assignment.id || !feedback.trim()
                       }
-                      className="btn-classical-secondary text-sm flex items-center space-x-1"
+                      className="btn-classical-secondary text-sm"
                     >
                       {actionLoading === assignment.id ? (
                         <PiArrowsClockwise className="w-3 h-3 animate-spin" />
@@ -2014,7 +2060,7 @@ function AssignmentDetailsModal({
                         <PiFloppyDisk className="w-3 h-3" />
                       )}
                       <span>Salvar</span>
-                    </button>
+                    </Inline>
                   </div>
                 </div>
               </div>
@@ -2094,10 +2140,12 @@ function AssignmentDetailsModal({
                 </h3>
                 <div className=" flex flex-col gap-2">
                   {!assignment.isCompleted && (
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={approveAssignment}
                       disabled={actionLoading === assignment.id}
-                      className="w-full btn-classical-primary text-sm flex items-center justify-center space-x-2"
+                      className="w-full btn-classical-primary text-sm justify-center"
                     >
                       {actionLoading === assignment.id ? (
                         <PiArrowsClockwise className="w-3 h-3 animate-spin" />
@@ -2105,33 +2153,43 @@ function AssignmentDetailsModal({
                         <PiCheck className="w-3 h-3" />
                       )}
                       <span>Aprovar</span>
-                    </button>
+                    </Inline>
                   )}
 
                   <Link href={`assignments/${assignment.id}`}>
-                    <button className="w-full btn-classical-secondary text-sm flex items-center justify-center space-x-2">
+                    <Inline
+                      as="button"
+                      gap={2}
+                      className="w-full btn-classical-secondary text-sm justify-center"
+                    >
                       <PiEye className="w-3 h-3" />
                       <span>Ver mais detalhes</span>
-                    </button>
+                    </Inline>
                   </Link>
 
                   <Link href={`assignments/${assignment.id}/edit`}>
-                    <button className="w-full btn-classical-secondary text-sm flex items-center justify-center space-x-2">
+                    <Inline
+                      as="button"
+                      gap={2}
+                      className="w-full btn-classical-secondary text-sm justify-center"
+                    >
                       <PiNotePencil className="w-3 h-3" />
                       <span>Editar</span>
-                    </button>
+                    </Inline>
                   </Link>
 
                   {videoSubmission && (
-                    <a
+                    <Inline
+                      as="a"
+                      gap={2}
                       href={videoSubmission.filePath}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full btn-classical-secondary text-sm flex items-center justify-center space-x-2"
+                      className="w-full btn-classical-secondary text-sm justify-center"
                     >
                       <PiVideoCamera className="w-3 h-3" />
                       <span>Assistir Vídeo</span>
-                    </a>
+                    </Inline>
                   )}
                 </div>
               </div>
@@ -2144,15 +2202,12 @@ function AssignmentDetailsModal({
                   </h3>
                   <div className="space-y-1">
                     {completedMilestones.slice(0, 4).map((key) => (
-                      <div
-                        key={key}
-                        className="flex items-center space-x-2 text-xs"
-                      >
+                      <Inline gap={2} key={key} className="text-xs">
                         <PiCheckCircle className="w-3 h-3 text-accent-green" />
                         <span className="text-theme-primary">
                           {milestoneLabels[key] || key}
                         </span>
-                      </div>
+                      </Inline>
                     ))}
                     {completedMilestones.length > 4 && (
                       <div className="text-xs text-theme-tertiary">

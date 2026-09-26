@@ -28,6 +28,7 @@ import FloatingIcons from '../../../components/FloatingIcons';
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Composer {
   id: string;
@@ -219,7 +220,7 @@ export function InstrumentsPageClient({
                   className="flex items-center justify-between  px-0 py-2 md:px-8 md:py-6 cursor-pointer transition-all duration-300 hover:bg-interactive-hover relative z-10"
                   onClick={() => toggleInstrument(instrument.id)}
                 >
-                  <div className="flex items-center space-x-6">
+                  <Inline gap={6}>
                     <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-110 transition-transform duration-500">
                       <Icon className="w-10 h-10 text-theme-primary" />
                     </div>
@@ -235,9 +236,9 @@ export function InstrumentsPageClient({
                         {instrument.historicalData.inventionPeriod}
                       </p>
                     </div>
-                  </div>
+                  </Inline>
 
-                  <div className="flex items-center space-x-6">
+                  <Inline gap={6}>
                     <div className="text-center hidden md:block">
                       <div className="text-2xl font-bold text-brand-primary classical-title">
                         {instrument.stats.totalWorks}
@@ -254,7 +255,7 @@ export function InstrumentsPageClient({
                         <PiArrowsOut className="w-4 h-4 text-theme-primary" />
                       )}
                     </div>
-                  </div>
+                  </Inline>
                 </div>
 
                 {/* Expandable Content */}
@@ -282,7 +283,7 @@ export function InstrumentsPageClient({
                         {/* Detailed History */}
                         <div className="classical-card-2 p-6 relative overflow-hidden">
                           <div className="relative z-10">
-                            <div className="flex items-center space-x-3 mb-4">
+                            <Inline gap={3} className="mb-4">
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                                 <PiClockCounterClockwise className="w-4 h-4 text-theme-primary" />
                               </div>
@@ -291,7 +292,7 @@ export function InstrumentsPageClient({
                                   'instruments_jsx_h3_children_0__historia_detalhada'
                                 )}
                               </h3>
-                            </div>
+                            </Inline>
                             <p className="text-theme-secondary leading-relaxed text-sm classical-body">
                               {instrument.historicalData.detailedHistory}
                             </p>
@@ -301,7 +302,7 @@ export function InstrumentsPageClient({
                         {/* Basic Info */}
                         <div className="classical-card-2 p-6 relative overflow-hidden">
                           <div className="relative z-10">
-                            <div className="flex items-center space-x-3 mb-4">
+                            <Inline gap={3} className="mb-4">
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                                 <PiMapPin className="w-4 h-4 text-theme-primary" />
                               </div>
@@ -310,7 +311,7 @@ export function InstrumentsPageClient({
                                   'instruments_jsx_h3_children_0__informacoes_basicas'
                                 )}
                               </h3>
-                            </div>
+                            </Inline>
                             <div className="space-y-3">
                               <div className="flex justify-between">
                                 <span className="text-theme-secondary">
@@ -361,7 +362,7 @@ export function InstrumentsPageClient({
                         {instrument.topComposers[0] && (
                           <div className="classical-card-2 p-6 relative overflow-hidden">
                             <div className="relative z-10">
-                              <div className="flex items-center space-x-3 mb-4">
+                              <Inline gap={3} className="mb-4">
                                 <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
                                   <PiMedal className="w-4 h-4 text-theme-primary" />
                                 </div>
@@ -370,8 +371,8 @@ export function InstrumentsPageClient({
                                     'instruments_jsx_h3_children_0__compositor_destaque'
                                   )}
                                 </h3>
-                              </div>
-                              <div className="flex items-center space-x-4">
+                              </Inline>
+                              <Inline gap={4}>
                                 {instrument.topComposers[0].composer
                                   .portraitUrl ? (
                                   <Link
@@ -414,7 +415,7 @@ export function InstrumentsPageClient({
                                     )}{' '}
                                   </div>
                                 </div>
-                              </div>
+                              </Inline>
                             </div>
                           </div>
                         )}
@@ -430,7 +431,7 @@ export function InstrumentsPageClient({
                             }
                             className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-interactive-hover group/button"
                           >
-                            <div className="flex items-center space-x-3">
+                            <Inline gap={3}>
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
                                 <PiLightbulb className="w-4 h-4 text-theme-primary" />
                               </div>
@@ -439,7 +440,7 @@ export function InstrumentsPageClient({
                                   'instruments_jsx_h3_children_0__caracteristicas'
                                 )}
                               </h3>
-                            </div>
+                            </Inline>
                             <div
                               className={`w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 ${
                                 isExpanded(instrument.id, 'characteristics')
@@ -490,7 +491,7 @@ export function InstrumentsPageClient({
                             }
                             className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-interactive-hover group/button"
                           >
-                            <div className="flex items-center space-x-3">
+                            <Inline gap={3}>
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
                                 <PiTrendUp className="w-4 h-4 text-theme-primary" />
                               </div>
@@ -499,7 +500,7 @@ export function InstrumentsPageClient({
                                   'instruments_jsx_h3_children_0__evolucao_historica'
                                 )}
                               </h3>
-                            </div>
+                            </Inline>
                             <div
                               className={`w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 ${
                                 isExpanded(instrument.id, 'evolution')
@@ -551,7 +552,7 @@ export function InstrumentsPageClient({
                             }
                             className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-interactive-hover group/button"
                           >
-                            <div className="flex items-center space-x-3">
+                            <Inline gap={3}>
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
                                 <PiStarFill className="w-4 h-4 text-theme-primary" />
                               </div>
@@ -560,7 +561,7 @@ export function InstrumentsPageClient({
                                   'instruments_jsx_h3_children_0__caracteristicas_tecnicas'
                                 )}
                               </h3>
-                            </div>
+                            </Inline>
                             <div
                               className={`w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 ${
                                 isExpanded(instrument.id, 'features')
@@ -610,7 +611,7 @@ export function InstrumentsPageClient({
                             }
                             className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-interactive-hover group/button"
                           >
-                            <div className="flex items-center space-x-3">
+                            <Inline gap={3}>
                               <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
                                 <PiStarFill className="w-4 h-4 text-theme-primary" />
                               </div>
@@ -619,7 +620,7 @@ export function InstrumentsPageClient({
                                   'instruments_jsx_h3_children_0__interpretes_famosos'
                                 )}
                               </h3>
-                            </div>
+                            </Inline>
                             <div
                               className={`w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 ${
                                 isExpanded(instrument.id, 'performers')
@@ -650,12 +651,12 @@ export function InstrumentsPageClient({
                                       className="classical-card-simple rounded-xl p-4 text-theme-secondary hover:text-theme-primary hover:border-brand-primary/30 transition-all duration-300 group/performer"
                                       style={{ animationDelay: `${i * 0.05}s` }}
                                     >
-                                      <div className="flex items-center space-x-3">
+                                      <Inline gap={3}>
                                         <div className="w-2 h-2 bg-brand-primary rounded-full group-hover/performer:scale-150 transition-transform duration-300" />
                                         <span className="font-medium">
                                           {performer}
                                         </span>
-                                      </div>
+                                      </Inline>
                                     </div>
                                   )
                                 )}
@@ -672,7 +673,7 @@ export function InstrumentsPageClient({
                         onClick={() => toggleSection(instrument.id, 'works')}
                         className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-interactive-hover group/button"
                       >
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
                             <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                           </div>
@@ -689,7 +690,7 @@ export function InstrumentsPageClient({
                               )}
                             </p>
                           </div>
-                        </div>
+                        </Inline>
                         <div
                           className={`w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 ${
                             isExpanded(instrument.id, 'works')

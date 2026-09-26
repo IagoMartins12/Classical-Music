@@ -16,6 +16,7 @@ import type { UserUpload } from '@/app/requests/my-uploads';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 interface UploadComposerCardProps {
   item: UserUpload;
@@ -75,7 +76,7 @@ const UploadComposerCard = ({
       <div className="classical-card group relative p-4 hover:shadow-theme-glow transition-all duration-300">
         <div className="flex flex-col-reverse md:flex-row gap-2 items-center justify-between w-full">
           {/* Left section - Portrait and basic info */}
-          <div className="flex items-center self-start md:self-auto space-x-4 flex-1 min-w-0">
+          <Inline gap={4} className="self-start md:self-auto flex-1 min-w-0">
             {/* Portrait */}
             <div className="relative w-12 h-12 flex-shrink-0">
               {!imageLoaded && !imageError && portraitUrl && (
@@ -142,10 +143,14 @@ const UploadComposerCard = ({
 
                 {/* Badge para compositor com obras importáveis */}
                 {item.isIMSLP && (
-                  <span className="text-xs font-medium text-accent-green md:px-2 md:py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
+                  <Inline
+                    as="span"
+                    gap={1}
+                    className="text-xs font-medium text-accent-green md:px-2 md:py-1 bg-accent-green/10 rounded-full"
+                  >
                     <PiMusicNotes className="w-3 h-3" />
                     <span>{t('card_works_badge')}</span>
-                  </span>
+                  </Inline>
                 )}
 
                 {item.verificationStatus === 'verified' && (
@@ -155,10 +160,10 @@ const UploadComposerCard = ({
                 )}
               </div>
             </div>
-          </div>
+          </Inline>
 
           {/* Right section - Actions */}
-          <div className="flex items-center self-end md:self-auto space-x-2 flex-shrink-0">
+          <Inline gap={2} className="self-end md:self-auto flex-shrink-0">
             {hasExternalLinks && (
               <a
                 href={`https://imslp.org/wiki/${item.imslpId}`}
@@ -172,7 +177,7 @@ const UploadComposerCard = ({
               </a>
             )}
 
-            <div className="flex items-center space-x-1  transition-opacity duration-300">
+            <Inline gap={1} className="transition-opacity duration-300">
               {/* Botão de Bulk Insert de Obras */}
               {item.isIMSLP && onBulkInsertWorks && (
                 <button
@@ -200,8 +205,8 @@ const UploadComposerCard = ({
               >
                 <PiTrash className="w-4 h-4" />
               </button>
-            </div>
-          </div>
+            </Inline>
+          </Inline>
         </div>
       </div>
     );
@@ -253,7 +258,10 @@ const UploadComposerCard = ({
           </Link>
 
           {/* Floating action buttons */}
-          <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-100 md: transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <Stack
+            gap={2}
+            className="absolute top-4 right-4 opacity-100 md: transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+          >
             {/* Botão de Bulk Insert de Obras */}
             {item.isIMSLP && onBulkInsertWorks && (
               <button
@@ -281,7 +289,7 @@ const UploadComposerCard = ({
             >
               <PiTrash className="w-4 h-4" />
             </button>
-          </div>
+          </Stack>
         </div>
 
         {/* Content Section */}
@@ -306,18 +314,26 @@ const UploadComposerCard = ({
             {/* Status badges */}
             <div className="flex justify-center space-x-2">
               {item.isIMSLP && (
-                <span className="text-xs font-medium text-accent-blue px-2 py-1 bg-accent-blue/10 rounded-full flex items-center space-x-1">
+                <Inline
+                  as="span"
+                  gap={1}
+                  className="text-xs font-medium text-accent-blue px-2 py-1 bg-accent-blue/10 rounded-full"
+                >
                   <PiArrowSquareOut className="w-3 h-3" />
                   <span>IMSLP</span>
-                </span>
+                </Inline>
               )}
 
               {/* Badge para compositor com obras importáveis */}
               {item.isIMSLP && (
-                <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
+                <Inline
+                  as="span"
+                  gap={1}
+                  className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full"
+                >
                   <PiMusicNotes className="w-3 h-3" />
                   <span>{t('card_works_badge')}</span>
-                </span>
+                </Inline>
               )}
 
               {item.verificationStatus === 'verified' && (
@@ -369,13 +385,13 @@ const UploadComposerCard = ({
 
             {/* Date info */}
             <div className="flex items-center justify-center pt-4 border-t border-theme-secondary mt-4">
-              <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
+              <Inline gap={2} className="text-theme-tertiary text-xs">
                 <PiCalendarBlank className="w-3 h-3" />
                 <span>
                   {t('card_added_on')}{' '}
                   {new Date(item.createdAt).toLocaleDateString('pt-BR')}
                 </span>
-              </div>
+              </Inline>
             </div>
           </div>
 

@@ -16,6 +16,7 @@ import { translateNivel } from '@/app/utils';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { ViewMode } from '../../ViewModeToggle';
 import { TeacherStudentsServerData } from '@/app/(teacher)/teacher/students/pageServer';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface StudentCardTranslations {
   studentSince: string;
@@ -109,7 +110,7 @@ export default function StudentCard({
             <h3 className="font-semibold text-theme-primary truncate">
               {student.name}
             </h3>
-            <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
+            <Inline gap={4} className="text-sm text-theme-tertiary">
               {student.experienceLevel && (
                 <span>
                   {translations.studentLevel}{' '}
@@ -121,7 +122,7 @@ export default function StudentCard({
                   {translations.studentInstrument} {student.mainInstrument}
                 </span>
               )}
-            </div>
+            </Inline>
             <p className="text-sm text-theme-secondary">
               {translations.studentSince} {formatDate(relationship.startDate)}
             </p>
@@ -165,14 +166,14 @@ export default function StudentCard({
           </div>
 
           {/* Status & Actions */}
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <span
               className={`px-3 py-1 border rounded-full text-xs font-medium bg-${getStatusColor()}/10 border-${getStatusColor()}/30 text-${getStatusColor()}`}
             >
               {getStatusText()}
             </span>
 
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <button
                 onClick={handleToggleStatus}
                 disabled={isToggling}
@@ -199,8 +200,8 @@ export default function StudentCard({
               >
                 <PiEye className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </Link>
-            </div>
-          </div>
+            </Inline>
+          </Inline>
         </div>
       </AnimatedCard>
     );
@@ -211,7 +212,7 @@ export default function StudentCard({
     <AnimatedCard hover="lift" className="classical-card p-6">
       <div className="flex items-start justify-between mb-4">
         {/* Avatar & Basic Info */}
-        <div className="flex items-center space-x-4">
+        <Inline gap={4}>
           <div className="relative w-16 h-16">
             {student.image ? (
               <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-brand-primary/20">
@@ -251,7 +252,7 @@ export default function StudentCard({
               </p>
             </div>
           </div>
-        </div>
+        </Inline>
 
         {/* Status Badge */}
         <span
@@ -301,7 +302,7 @@ export default function StudentCard({
       )}
 
       {/* Action Buttons */}
-      <div className="flex items-center space-x-3">
+      <Inline gap={3}>
         <button
           onClick={handleToggleStatus}
           disabled={isToggling}
@@ -334,7 +335,7 @@ export default function StudentCard({
           <PiEye className="w-4 h-4" />
           <span>{translations.viewDetails}</span>
         </Link>
-      </div>
+      </Inline>
     </AnimatedCard>
   );
 }

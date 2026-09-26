@@ -4,6 +4,7 @@
 
 import { PiChartBar, PiMedal, PiTrendUp, PiUsers } from 'react-icons/pi';
 import { AnimatedItem, AnimatedCard } from '../animation/AnimatedComponents';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface DifficultyStatsProps {
   stats: {
@@ -125,7 +126,7 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
                   <span className="text-sm font-medium text-theme-secondary">
                     {system.system}
                   </span>
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <div className="w-32 bg-theme-elevated rounded-full h-2 overflow-hidden">
                       <div
                         className="h-full bg-brand-gradient transition-all duration-1000"
@@ -135,7 +136,7 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
                     <span className="text-sm font-semibold text-theme-primary min-w-[3rem] text-right">
                       {system.count}
                     </span>
-                  </div>
+                  </Inline>
                 </div>
               </AnimatedItem>
             ))}

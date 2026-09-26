@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { GiGrandPiano, GiGClef } from 'react-icons/gi';
 import { PiArrowsClockwise, PiGlobe, PiMusicNotes } from 'react-icons/pi';
 import Modal from '../Modal';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface TranslationLoadingModalProps {
   isOpen: boolean;
@@ -190,8 +191,8 @@ export function TranslationLoadingModal({
           </h2>
 
           {/* Subtítulo com bandeiras */}
-          <div className="flex items-center justify-center space-x-3 mb-6">
-            <div className="flex items-center space-x-2">
+          <Inline gap={3} className="justify-center mb-6">
+            <Inline gap={2}>
               {currentLanguage === 'pt' ? (
                 // Bandeira do Brasil
                 <span>🇧🇷</span>
@@ -204,8 +205,8 @@ export function TranslationLoadingModal({
                   ? 'English → Português'
                   : 'Português → English'}
               </span>
-            </div>
-          </div>
+            </Inline>
+          </Inline>
 
           {/* Step atual */}
           <p className="text-theme-secondary mb-6 classical-subtitle">

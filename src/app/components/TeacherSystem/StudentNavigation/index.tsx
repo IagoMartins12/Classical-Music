@@ -32,6 +32,7 @@ import { ThemeToggle } from '../../ThemeToggle';
 import NotificationBell from '../../Notification/NotificationBell';
 import { LanguageDropdown, LanguageToggle } from '../../LanguageToggle';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface StudentNavigationProps {
   user: any;
@@ -204,7 +205,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
         <div className="section-wrap py-3">
           <div className="flex items-center justify-between">
             {/* Logo and Brand */}
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                 className="lg:hidden p-2 rounded-lg hover:bg-interactive-hover transition-colors"
@@ -229,7 +230,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                   </div>
                 </div>
               </Link>
-            </div>
+            </Inline>
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-2">
@@ -274,7 +275,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                                 className="block p-3 rounded-lg hover:bg-interactive-hover transition-colors group"
                                 onClick={() => setActiveSubmenu(null)}
                               >
-                                <div className="flex items-center space-x-3">
+                                <Inline gap={3}>
                                   {subItem.icon && (
                                     <div className="w-8 h-8 bg-accent-green/10 rounded-lg flex items-center justify-center">
                                       <subItem.icon className="w-4 h-4 text-accent-green" />
@@ -295,7 +296,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                                       {subItem.badge}
                                     </span>
                                   )}
-                                </div>
+                                </Inline>
                               </Link>
                             ))}
                           </div>
@@ -328,7 +329,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
             </div>
 
             {/* Right Section */}
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <LanguageToggle variant="compact" className="hidden sm:block" />
 
               {/* Theme Toggle */}
@@ -336,9 +337,11 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
               <NotificationBell userRole="student" userId={user.id} />
               {/* Profile Menu */}
               <div className="relative" ref={profileRef}>
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-interactive-hover transition-colors group"
+                  className="p-2 rounded-lg hover:bg-interactive-hover transition-colors group"
                 >
                   {user.image ? (
                     <Image
@@ -366,7 +369,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                   </div>
 
                   <PiCaretDown className="w-4 h-4 text-theme-tertiary" />
-                </button>
+                </Inline>
 
                 {/* Profile Dropdown */}
                 {isProfileOpen && (
@@ -451,17 +454,19 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
                     <hr className="my-2 border-theme-secondary" />
 
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={handleLogout}
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-accent-red hover:bg-accent-red/10 rounded-lg transition-all"
+                      className="w-full px-3 py-2 text-sm text-accent-red hover:bg-accent-red/10 rounded-lg transition-all"
                     >
                       <PiSignOut className="w-4 h-4" />
                       <span>{t('profile_menu_logout')}</span>
-                    </button>
+                    </Inline>
                   </div>
                 )}
               </div>
-            </div>
+            </Inline>
           </div>
         </div>
       </nav>
@@ -520,10 +525,10 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                             }
                           `}
                         >
-                          <div className="flex items-center space-x-3">
+                          <Inline gap={3}>
                             <item.icon className="w-4 h-4" />
                             <span>{item.label}</span>
-                          </div>
+                          </Inline>
                           <PiCaretRight
                             className={`w-4 h-4 transition-transform duration-200 ${
                               activeSubmenu === item.label ? 'rotate-90' : ''
@@ -541,12 +546,12 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                                 className="block px-3 py-2 text-sm text-theme-tertiary hover:text-accent-green hover:bg-interactive-hover rounded-lg transition-colors"
                                 onClick={closeSidebar}
                               >
-                                <div className="flex items-center space-x-2">
+                                <Inline gap={2}>
                                   {subItem.icon && (
                                     <subItem.icon className="w-4 h-4" />
                                   )}
                                   <span>{subItem.label}</span>
-                                </div>
+                                </Inline>
                               </Link>
                             ))}
                           </div>

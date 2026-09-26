@@ -33,6 +33,7 @@ import {
   updateWorkMediaRequest,
   uploadWorkMediaFileRequest,
 } from '@/app/requests/work-media';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface VideoAulaSectionProps {
   work: {
@@ -794,7 +795,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
         {/* Header */}
         <div className="p-2 pb-6 md:p-6 border-b border-theme-secondary ">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                 <PiMusicNotes className="w-5 h-5 text-theme-primary" />
               </div>
@@ -806,7 +807,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   {t('video_aula_subtitulo')}
                 </p>
               </div>
-            </div>
+            </Inline>
 
             {canEditMedia && (
               <Button
@@ -924,7 +925,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   </div>
                 )}
 
-                <div className="flex items-center space-x-3 pt-4">
+                <Inline gap={3} className="pt-4">
                   <Button
                     variant="primary"
                     size="sm"
@@ -954,7 +955,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   >
                     {t('video_aula_cancelar')}
                   </Button>
-                </div>
+                </Inline>
               </div>
             </div>
           </div>
@@ -1000,7 +1001,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
       {/* Header */}
       <div className="p-6 border-b border-theme-secondary bg-gradient-to-r from-blue-900/10 to-purple-800/10">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
               <PiMusicNotes className="w-5 h-5 text-theme-primary" />
             </div>
@@ -1012,9 +1013,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 {t('video_aula_subtitulo')}
               </p>
             </div>
-          </div>
+          </Inline>
 
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             {canEditMedia && (
               <Button
                 variant="secondary"
@@ -1047,7 +1048,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   <PiArrowSquareOut className="w-5 h-5" />
                 </button>
               )}
-          </div>
+          </Inline>
         </div>
       </div>
 
@@ -1177,7 +1178,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 </div>
               )}
 
-              <div className="flex items-center space-x-3 pt-4">
+              <Inline gap={3} className="pt-4">
                 <Button
                   variant="primary"
                   size="sm"
@@ -1217,7 +1218,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 >
                   {t('video_aula_cancelar')}
                 </Button>
-              </div>
+              </Inline>
             </div>
           </div>
         </div>
@@ -1384,32 +1385,34 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
             </div>
 
             <div className="flex items-center justify-between text-sm text-theme-tertiary flex-wrap gap-2">
-              <div className="flex items-center space-x-4">
+              <Inline gap={4}>
                 {work.videoAulaAddedAt && (
-                  <div className="flex items-center space-x-1">
+                  <Inline gap={1}>
                     <PiUser className="w-4 h-4" />
                     <span>{formatDate(work.videoAulaAddedAt)}</span>
-                  </div>
+                  </Inline>
                 )}
 
                 {work.videoAulaMetadata?.duration && (
-                  <div className="flex items-center space-x-1">
+                  <Inline gap={1}>
                     <PiClock className="w-4 h-4" />
                     <span>{work.videoAulaMetadata.duration}</span>
-                  </div>
+                  </Inline>
                 )}
-              </div>
+              </Inline>
 
               {videoInfo.platform === 'local' && work.videoAulaFile && (
-                <a
+                <Inline
+                  as="a"
+                  gap={1}
                   href={work.videoAulaFile}
                   download
-                  className="flex items-center space-x-1 text-blue-400 hover:text-blue-300 transition-colors hover:bg-blue-400/10 px-2 py-1 rounded"
+                  className="text-blue-400 hover:text-blue-300 transition-colors hover:bg-blue-400/10 px-2 py-1 rounded"
                   title={t('video_aula_download')}
                 >
                   <PiDownloadSimple className="w-4 h-4" />
                   <span>{t('video_aula_download')}</span>
-                </a>
+                </Inline>
               )}
             </div>
 
@@ -1435,32 +1438,35 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   <div className="absolute inset-0  opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Button>
 
-                <div className="flex items-center justify-center space-x-4 text-xs text-theme-tertiary">
+                <Inline
+                  gap={4}
+                  className="justify-center text-xs text-theme-tertiary"
+                >
                   {!videoInfo.canEmbed && (
-                    <div className="flex items-center space-x-1">
+                    <Inline gap={1}>
                       <PiArrowSquareOut className="w-3 h-3" />
                       <span>{t('video_aula_abre_nova_aba')}</span>
-                    </div>
+                    </Inline>
                   )}
 
                   {videoInfo.platform === 'local' && (
-                    <div className="flex items-center space-x-1">
+                    <Inline gap={1}>
                       <PiDownloadSimple className="w-3 h-3" />
                       <span>{t('video_aula_download_disponivel')}</span>
-                    </div>
+                    </Inline>
                   )}
 
                   {(videoInfo.platform === 'tiktok' ||
                     videoInfo.platform === 'instagram') && (
-                    <div className="flex items-center space-x-1">
+                    <Inline gap={1}>
                       {getPlatformIcon(videoInfo.platform)}
                       <span>
                         {t('video_aula_abre_no')}{' '}
                         {getPlatformLabel(videoInfo.platform)}
                       </span>
-                    </div>
+                    </Inline>
                   )}
-                </div>
+                </Inline>
               </div>
             )}
 
@@ -1478,14 +1484,16 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 {(videoInfo.platform === 'local' ||
                   videoInfo.platform === 'direct') &&
                   work.videoAulaFile && (
-                    <a
+                    <Inline
+                      as="a"
+                      gap={1}
                       href={work.videoAulaFile}
                       download
-                      className="flex items-center space-x-1 text-blue-400 hover:text-blue-300 transition-colors hover:bg-blue-400/10 px-3 py-2 rounded text-sm"
+                      className="text-blue-400 hover:text-blue-300 transition-colors hover:bg-blue-400/10 px-3 py-2 rounded text-sm"
                     >
                       <PiDownloadSimple className="w-4 h-4" />
                       <span>{t('video_aula_download')}</span>
-                    </a>
+                    </Inline>
                   )}
               </div>
             )}

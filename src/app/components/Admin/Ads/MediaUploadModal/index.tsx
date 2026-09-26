@@ -26,6 +26,7 @@ import {
 } from '@/app/libs/ads/mediaUtils';
 import ImageNext from 'next/image';
 import { removeAdMedia, uploadAdMedia } from '@/app/requests/admin/ads';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface MediaUploadModalProps {
   ad: any;
@@ -309,7 +310,7 @@ export default function MediaUploadModal({
       <div className="w-full">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
               <PiUploadSimple className="w-6 h-6 text-white" />
             </div>
@@ -319,7 +320,7 @@ export default function MediaUploadModal({
               </h2>
               <p className="text-sm text-theme-tertiary">{ad.title}</p>
             </div>
-          </div>
+          </Inline>
 
           {/* Tabs */}
           <div className="flex bg-theme-secondary rounded-lg p-1">
@@ -420,10 +421,14 @@ export default function MediaUploadModal({
                 {/* Imagem atual */}
                 <div className="classical-card p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-theme-primary flex items-center space-x-2">
+                    <Inline
+                      as="h3"
+                      gap={2}
+                      className="font-semibold text-theme-primary"
+                    >
                       <PiImage className="w-5 h-5 text-accent-blue" />
                       <span>Imagem</span>
-                    </h3>
+                    </Inline>
                     {(ad.imageUrl || ad.imageVersions) && (
                       <Button
                         variant="ghost"
@@ -454,10 +459,10 @@ export default function MediaUploadModal({
                       </div>
 
                       <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center space-x-2 text-accent-green">
+                        <Inline gap={2} className="text-accent-green">
                           <PiCheck className="w-4 h-4" />
                           <span>Imagem configurada</span>
-                        </div>
+                        </Inline>
 
                         {ad.imageVersions && (
                           <div className="text-theme-tertiary">
@@ -486,10 +491,14 @@ export default function MediaUploadModal({
                 {/* Vídeo atual */}
                 <div className="classical-card p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-theme-primary flex items-center space-x-2">
+                    <Inline
+                      as="h3"
+                      gap={2}
+                      className="font-semibold text-theme-primary"
+                    >
                       <PiVideoCamera className="w-5 h-5 text-accent-purple" />
                       <span>Vídeo</span>
-                    </h3>
+                    </Inline>
                     {(ad.videoUrl || ad.videoVersions) && (
                       <Button
                         variant="ghost"
@@ -519,10 +528,10 @@ export default function MediaUploadModal({
                       </div>
 
                       <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center space-x-2 text-accent-green">
+                        <Inline gap={2} className="text-accent-green">
                           <PiCheck className="w-4 h-4" />
                           <span>Vídeo configurado</span>
-                        </div>
+                        </Inline>
 
                         {ad.videoVersions && (
                           <div className="text-theme-tertiary">
@@ -554,7 +563,7 @@ export default function MediaUploadModal({
                     Tipo de Mídia
                   </label>
                   <div className="flex space-x-4">
-                    <label className="flex items-center space-x-3 cursor-pointer">
+                    <Inline as="label" gap={3} className="cursor-pointer">
                       <input
                         type="radio"
                         value="image"
@@ -568,9 +577,9 @@ export default function MediaUploadModal({
                       <span className="text-theme-primary font-medium">
                         Imagem
                       </span>
-                    </label>
+                    </Inline>
 
-                    <label className="flex items-center space-x-3 cursor-pointer">
+                    <Inline as="label" gap={3} className="cursor-pointer">
                       <input
                         type="radio"
                         value="video"
@@ -584,7 +593,7 @@ export default function MediaUploadModal({
                       <span className="text-theme-primary font-medium">
                         Vídeo
                       </span>
-                    </label>
+                    </Inline>
                   </div>
                 </div>
 

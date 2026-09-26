@@ -22,6 +22,7 @@ import {
 import { toast } from 'react-hot-toast';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Category {
   id: string;
@@ -239,7 +240,7 @@ export function CategoryList({
               </button>
             </div>
             {/* Category Info */}
-            <div className="col-span-4 flex items-center space-x-3">
+            <Inline gap={3} className="col-span-4">
               {/* Icon or Image */}
               {category.image ? (
                 <Image
@@ -273,7 +274,7 @@ export function CategoryList({
                   </p>
                 )}
               </div>
-            </div>
+            </Inline>
             {/* Slug */}
             <div className="col-span-2">
               <code className="text-xs bg-theme-elevated px-2 py-1 rounded text-brand-primary">
@@ -315,7 +316,7 @@ export function CategoryList({
               </button>
             </div>
             {/* Actions */}
-            <div className="col-span-3 flex items-center justify-end space-x-2">
+            <Inline gap={2} className="col-span-3 justify-end">
               {/* View */}
               <Link
                 href={`/blog/category/${category.slug}`}
@@ -348,7 +349,7 @@ export function CategoryList({
               >
                 <PiTrash className="w-4 h-4" />
               </button>
-            </div>{' '}
+            </Inline>{' '}
           </div>
         ))}
       </div>
@@ -357,12 +358,12 @@ export function CategoryList({
       {reordering && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="bg-theme-secondary  classical-card  rounded-lg px-6 py-4 shadow-xl">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="w-5 h-5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
               <span className="text-theme-primary font-medium">
                 Atualizando ordem...
               </span>
-            </div>
+            </Inline>
           </div>
         </div>
       )}
@@ -398,7 +399,7 @@ export function CategoryList({
                   </div>
                 )}
 
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <Button
                     onClick={() => setDeleteModal(null)}
                     disabled={deleting}
@@ -420,7 +421,7 @@ export function CategoryList({
                   >
                     {deleting ? 'Deletando...' : 'Deletar'}
                   </Button>
-                </div>
+                </Inline>
               </div>
             </div>
           </div>

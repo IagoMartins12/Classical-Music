@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode } from 'react';
+import type { AllHTMLAttributes, ElementType, ReactNode, Ref } from 'react';
 import { cx } from './cx';
 
 /**
@@ -32,13 +32,26 @@ const GAP: Record<Degrau, string> = {
   16: 'gap-16',
 };
 
-interface StackProps {
+/**
+ * Qualquer atributo HTML passa adiante (`onClick`, `id`, `role`, `aria-*`,
+ * `type` de botão, `ref`): a fase 3 troca `<div className="flex …">` por estes
+ * componentes em 2.289 lugares, e um clique ou um `ref` perdido na troca seria
+ * defeito silencioso.
+ */
+type Repassados = Omit<
+  AllHTMLAttributes<HTMLElement>,
+  'className' | 'children' | 'as'
+> & {
+  ref?: Ref<HTMLElement>;
+};
+
+interface StackProps extends Repassados {
   /** 2 é "dentro de um grupo", 4 é o padrão de conteúdo, 6 separa seções. */
   gap?: Degrau;
   alinhar?: 'inicio' | 'centro' | 'fim' | 'esticar';
   as?: ElementType;
   className?: string;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 const ALINHAR = {
@@ -55,9 +68,11 @@ export function Stack({
   as: Tag = 'div',
   className,
   children,
+  ...resto
 }: StackProps) {
   return (
     <Tag
+      {...resto}
       className={cx(
         'flex flex-col',
         GAP[gap],
@@ -85,7 +100,7 @@ const ALINHAR_INLINE = {
   base: 'items-baseline',
 } as const;
 
-/** Alinha na horizontal. Substitui `flex items-center space-x-2|3`, 734 usos. */
+/** Alinha na horizontal. Substitui `flex items-center space-x-N` (2.221 lugares na fase 3). */
 export function Inline({
   gap = 2,
   alinhar = 'centro',
@@ -94,9 +109,11 @@ export function Inline({
   as: Tag = 'div',
   className,
   children,
+  ...resto
 }: InlineProps) {
   return (
     <Tag
+      {...resto}
       className={cx(
         'flex',
         GAP[gap],

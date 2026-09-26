@@ -43,6 +43,7 @@ import Input from '@/app/components/Common/Inputs';
 import PeriodSelector from '../../Common/PeriodSelector';
 import { getPeriodLabel } from '@/app/utils/adminUtils';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface UploadFilters {
   search: string;
@@ -119,7 +120,7 @@ const ActivityDetailModal = ({
       <div className="bg-theme-elevated rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
               <EntityIcon className="w-6 h-6 text-theme-primary" />
             </div>
@@ -132,7 +133,7 @@ const ActivityDetailModal = ({
                 {getEntityTypeLabel(activity.entityType)}
               </p>
             </div>
-          </div>
+          </Inline>
           <Button
             variant="ghost"
             size="sm"
@@ -149,46 +150,46 @@ const ActivityDetailModal = ({
               <label className="text-sm font-medium text-theme-secondary">
                 Usuário
               </label>
-              <div className="flex items-center space-x-2 mt-1">
+              <Inline gap={2} className="mt-1">
                 <PiUser className="w-4 h-4 text-theme-tertiary" />
                 <span className="text-theme-primary">{activity.user.name}</span>
-              </div>
+              </Inline>
             </div>
 
             <div>
               <label className="text-sm font-medium text-theme-secondary">
                 Data
               </label>
-              <div className="flex items-center space-x-2 mt-1">
+              <Inline gap={2} className="mt-1">
                 <PiCalendarBlank className="w-4 h-4 text-theme-tertiary" />
                 <span className="text-theme-primary">
                   {new Date(activity.createdAt).toLocaleString('pt-BR')}
                 </span>
-              </div>
+              </Inline>
             </div>
 
             <div>
               <label className="text-sm font-medium text-theme-secondary">
                 Tipo de Entidade
               </label>
-              <div className="flex items-center space-x-2 mt-1">
+              <Inline gap={2} className="mt-1">
                 <EntityIcon className="w-4 h-4 text-theme-tertiary" />
                 <span className="text-theme-primary">
                   {getEntityTypeLabel(activity.entityType)}
                 </span>
-              </div>
+              </Inline>
             </div>
 
             <div>
               <label className="text-sm font-medium text-theme-secondary">
                 Ação
               </label>
-              <div className="flex items-center space-x-2 mt-1">
+              <Inline gap={2} className="mt-1">
                 <PiNotePencil className="w-4 h-4 text-theme-tertiary" />
                 <span className="text-theme-primary">
                   {getActionLabel(activity.action)}
                 </span>
-              </div>
+              </Inline>
             </div>
           </div>
 
@@ -593,19 +594,23 @@ export default function UploadsManagement() {
         {stats && stats.byUser.length > 0 && (
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mb-8">
-              <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-xl font-bold text-theme-primary mb-6"
+              >
                 <PiTarget className="w-5 h-5 text-accent-purple" />
                 <span>
                   Principais Contribuidores ({getPeriodLabel(period)})
                 </span>
-              </h3>
+              </Inline>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {stats.byUser.slice(0, 6).map((user, index) => (
                   <div
                     key={user.userId}
                     className="p-4 bg-theme-secondary rounded-xl"
                   >
-                    <div className="flex items-center space-x-3 mb-3">
+                    <Inline gap={3} className="mb-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                         {index + 1}
                       </div>
@@ -617,7 +622,7 @@ export default function UploadsManagement() {
                           {user.count} contribuições
                         </p>
                       </div>
-                    </div>
+                    </Inline>
                     <div className="flex items-center justify-between">
                       <div className="w-full bg-theme-primary/20 rounded-full h-2">
                         <div
@@ -652,24 +657,29 @@ export default function UploadsManagement() {
         {stats && stats.recentActivity.length > 0 && (
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mb-8">
-              <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-xl font-bold text-theme-primary mb-6"
+              >
                 <PiClock className="w-5 h-5 text-accent-blue" />
                 <span>Atividade Recente</span>
-              </h3>
+              </Inline>
               <div className="space-y-3">
                 {stats.recentActivity.slice(0, 8).map((activity) => {
                   const EntityIcon = getEntityIcon(activity.entityType);
                   return (
-                    <div
+                    <Inline
+                      gap={4}
                       key={activity.id}
-                      className="flex items-center space-x-4 p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors cursor-pointer"
+                      className="p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors cursor-pointer"
                       onClick={() => handleActivityClick(activity)}
                     >
                       <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
                         <EntityIcon className="w-5 h-5 text-theme-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-1">
+                        <Inline gap={2} className="mb-1">
                           <span className="font-medium text-theme-primary">
                             {activity.userName}
                           </span>
@@ -683,7 +693,7 @@ export default function UploadsManagement() {
                           <span className="text-sm text-theme-tertiary">
                             {getEntityTypeLabel(activity.entityType)}
                           </span>
-                        </div>
+                        </Inline>
                         <p className="text-xs text-theme-tertiary">
                           {new Date(activity.createdAt).toLocaleString('pt-BR')}
                         </p>
@@ -697,7 +707,7 @@ export default function UploadsManagement() {
                           handleActivityClick(activity);
                         }}
                       />
-                    </div>
+                    </Inline>
                   );
                 })}
               </div>
@@ -712,7 +722,7 @@ export default function UploadsManagement() {
               <h3 className="text-xl font-bold text-theme-primary">
                 Histórico de Uploads
               </h3>
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -741,7 +751,7 @@ export default function UploadsManagement() {
                 >
                   Exportar
                 </Button>
-              </div>
+              </Inline>
             </div>
 
             {/* Filtros */}
@@ -818,7 +828,7 @@ export default function UploadsManagement() {
                 />
               </div>
 
-              <div className="flex items-center space-x-4">
+              <Inline gap={4}>
                 <Button
                   variant="primary"
                   size="sm"
@@ -827,7 +837,7 @@ export default function UploadsManagement() {
                 >
                   Buscar
                 </Button>
-              </div>
+              </Inline>
             </div>
 
             {/* Bulk Actions */}
@@ -836,7 +846,7 @@ export default function UploadsManagement() {
                 <span className="text-accent-purple font-medium">
                   {selectedUploads.size} uploads selecionados
                 </span>
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <Button
                     variant="secondary"
                     size="sm"
@@ -852,7 +862,7 @@ export default function UploadsManagement() {
                   >
                     Limpar Seleção
                   </Button>
-                </div>
+                </Inline>
               </div>
             )}
 
@@ -893,7 +903,7 @@ export default function UploadsManagement() {
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-3 mb-2">
+                        <Inline gap={3} className="mb-2">
                           <span
                             className={`text-xs px-2 py-1 rounded ${getActionColor(
                               upload.action
@@ -904,7 +914,7 @@ export default function UploadsManagement() {
                           <span className="text-sm font-medium text-theme-primary">
                             {getEntityTypeLabel(upload.entityType)}
                           </span>
-                        </div>
+                        </Inline>
 
                         {upload.entityDetails && (
                           <div className="mb-2">
@@ -936,33 +946,36 @@ export default function UploadsManagement() {
                           </div>
                         )}
 
-                        <div className="flex items-center space-x-4 text-sm text-theme-secondary">
-                          <div className="flex items-center space-x-1">
+                        <Inline
+                          gap={4}
+                          className="text-sm text-theme-secondary"
+                        >
+                          <Inline gap={1}>
                             <PiUser className="w-4 h-4" />
                             <span>{upload.user.name}</span>
-                          </div>
+                          </Inline>
 
-                          <div className="flex items-center space-x-1">
+                          <Inline gap={1}>
                             <PiClock className="w-4 h-4" />
                             <span>
                               {new Date(upload.createdAt).toLocaleString(
                                 'pt-BR'
                               )}
                             </span>
-                          </div>
+                          </Inline>
 
                           {upload.reason && (
-                            <div className="flex items-center space-x-1">
+                            <Inline gap={1}>
                               <PiFileText className="w-4 h-4" />
                               <span className="truncate max-w-xs">
                                 {upload.reason}
                               </span>
-                            </div>
+                            </Inline>
                           )}
-                        </div>
+                        </Inline>
                       </div>
 
-                      <div className="flex items-center space-x-2 flex-shrink-0">
+                      <Inline gap={2} className="flex-shrink-0">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -970,7 +983,7 @@ export default function UploadsManagement() {
                           onClick={() => handleActivityClick(upload)}
                           title="Ver detalhes"
                         />
-                      </div>
+                      </Inline>
                     </div>
                   </div>
                 );

@@ -16,6 +16,7 @@
 
 import { GiGrandPiano } from 'react-icons/gi';
 import { PiHeadphones, PiMagnifyingGlass, PiMusicNotes } from 'react-icons/pi';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 export default function WorksLoading() {
   return (
@@ -61,13 +62,13 @@ export default function WorksLoading() {
 
         {/* Search and Filters Skeleton */}
         <div className="classical-card p-6">
-          <div className="flex items-center space-x-3 mb-6">
+          <Inline gap={3} className="mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
             <div className="space-y-2">
               <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
               <div className="h-3 w-48 bg-theme-elevated rounded animate-pulse"></div>
             </div>
-          </div>
+          </Inline>
 
           {/* Search Bar */}
           <div className="mb-6">
@@ -82,22 +83,22 @@ export default function WorksLoading() {
             <div className="h-10 w-32 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg animate-pulse"></div>
 
             {/* View Mode Toggle */}
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="h-4 w-12 bg-theme-elevated rounded animate-pulse"></div>
               <div className="bg-theme-elevated border border-theme-primary rounded-lg p-1 flex">
                 <div className="w-8 h-8 bg-theme-elevated rounded-md"></div>
                 <div className="w-8 h-8 bg-brand-gradient/20 border border-brand-primary/30 rounded-md"></div>
               </div>
-            </div>
+            </Inline>
           </div>
 
           {/* Results Info */}
           <div className="flex items-center justify-between text-sm pt-4 border-t border-theme-secondary">
             <div className="h-4 w-48 bg-theme-elevated rounded animate-pulse"></div>
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <div className="w-4 h-4 bg-brand-primary/30 rounded-full animate-pulse"></div>
               <div className="h-4 w-20 bg-theme-elevated rounded animate-pulse"></div>
-            </div>
+            </Inline>
           </div>
         </div>
 
@@ -115,7 +116,7 @@ export default function WorksLoading() {
             <div className="h-4 w-48 bg-theme-elevated rounded animate-pulse"></div>
 
             {/* Pagination controls */}
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="h-10 w-24 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg animate-pulse"></div>
               <div className="flex space-x-1">
                 {Array.from({ length: 5 }, (_, i) => (
@@ -130,7 +131,7 @@ export default function WorksLoading() {
                 ))}
               </div>
               <div className="h-10 w-24 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg animate-pulse"></div>
-            </div>
+            </Inline>
           </div>
         </div>
       </div>
@@ -157,10 +158,10 @@ function WorkCardSkeleton() {
         </div>
 
         {/* Floating action buttons */}
-        <div className="absolute top-4 right-4 flex flex-col space-y-2">
+        <Stack gap={2} className="absolute top-4 right-4">
           <div className="w-8 h-8 bg-interactive-hover border border-theme-primary/30 rounded-full"></div>
           <div className="w-8 h-8 bg-brand-primary/20 border border-brand-primary/50 rounded-full"></div>
-        </div>
+        </Stack>
 
         <div className="relative z-10">
           {/* Title */}
@@ -222,10 +223,10 @@ function WorkCardSkeleton() {
 
           {/* Secondary Actions */}
           <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <div className="w-1.5 h-1.5 bg-brand-primary/30 rounded-full"></div>
               <div className="h-3 w-20 bg-theme-elevated rounded"></div>
-            </div>
+            </Inline>
             <div className="w-6 h-6 bg-theme-elevated border border-theme-primary/30 rounded-full"></div>
           </div>
         </div>

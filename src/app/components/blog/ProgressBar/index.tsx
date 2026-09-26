@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { PiArrowUp } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export function ProgressBar() {
   const [progress, setProgress] = useState(0);
@@ -99,14 +100,16 @@ export function ProgressBar() {
 
         {/* Scroll to Top Button */}
         {isVisible && (
-          <button
+          <Inline
+            as="button"
+            gap={2}
             onClick={scrollToTop}
-            className="mt-4 w-full py-2 btn-classical-primary flex items-center justify-center space-x-2"
+            className="mt-4 w-full py-2 btn-classical-primary justify-center"
             aria-label="Voltar ao topo"
           >
             <PiArrowUp className="w-4 h-4" />
             <span>Topo</span>
-          </button>
+          </Inline>
         )}
 
         {/* Reading Stats */}

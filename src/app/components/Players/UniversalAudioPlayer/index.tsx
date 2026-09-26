@@ -17,6 +17,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 
 // Importar componente Waveform e tipos
 import Waveform from '../../Waveform';
+import { Inline } from '@/app/components/ui/Layout';
 export interface AudioSource {
   type:
     | 'youtube-audio'
@@ -424,12 +425,12 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
             <p className="text-gray-400 text-sm">{work.composer.fullName}</p>
 
             {currentSource && (
-              <div className="flex items-center space-x-2 mt-2">
+              <Inline gap={2} className="mt-2">
                 {getSourceIcon(currentSource)}
                 <span className="text-xs text-gray-300">
                   {currentSource.label}
                 </span>
-              </div>
+              </Inline>
             )}
           </div>
         </div>
@@ -480,7 +481,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
 
       {/* Controles */}
       <div className="px-6 pb-6">
-        <div className="flex items-center space-x-4">
+        <Inline gap={4}>
           {/* Play/Pause */}
           <button
             onClick={togglePlay}
@@ -507,7 +508,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
           </div>
 
           {/* Volume */}
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             <button
               onClick={toggleMute}
               className="p-2 text-gray-400 hover:text-white transition-colors"
@@ -527,8 +528,8 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
               onChange={handleVolumeChange}
               className="w-20 h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
             />
-          </div>
-        </div>
+          </Inline>
+        </Inline>
       </div>
 
       <style jsx>{`

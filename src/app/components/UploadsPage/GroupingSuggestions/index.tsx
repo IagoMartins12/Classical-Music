@@ -13,6 +13,7 @@ import {
   PiUsers,
 } from 'react-icons/pi';
 import { getScoreGroups } from '@/app/requests/uploads-client';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ScoreGroup {
   groupIndex: number;
@@ -142,12 +143,12 @@ export default function GroupingSuggestions({
   if (loading) {
     return (
       <div className="bg-theme-secondary/10 rounded-xl p-4 border border-theme-primary/20">
-        <div className="flex items-center justify-center space-x-3 py-4">
+        <Inline gap={3} className="justify-center py-4">
           <div className="w-5 h-5 border-2 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
           <span className="text-theme-secondary text-sm">
             Analisando grupos existentes...
           </span>
-        </div>
+        </Inline>
       </div>
     );
   }
@@ -155,10 +156,10 @@ export default function GroupingSuggestions({
   if (error) {
     return (
       <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-        <div className="flex items-center space-x-2 text-red-800">
+        <Inline gap={2} className="text-red-800">
           <PiArrowsClockwise className="w-4 h-4" />
           <span className="text-sm">{error}</span>
-        </div>
+        </Inline>
       </div>
     );
   }
@@ -170,13 +171,17 @@ export default function GroupingSuggestions({
           {/* Grupos do Usuário (EDITÁVEIS) */}
           {userGroups.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
+              <Inline
+                as="h4"
+                gap={2}
+                className="text-sm font-semibold text-theme-primary mb-3"
+              >
                 <PiUsers className="w-4 h-4 text-accent-green" />
                 <span>Seus Grupos Existentes</span>
                 <span className="px-2 py-0.5 bg-accent-green/20 text-accent-green rounded-full text-xs">
                   {userGroups.length}
                 </span>
-              </h4>
+              </Inline>
 
               <div className="grid grid-cols-1 gap-2 mb-4">
                 {userGroups.map((group) => {
@@ -199,7 +204,7 @@ export default function GroupingSuggestions({
                       `}
                     >
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <div
                             className={`
                             w-8 h-8 rounded-lg flex items-center justify-center
@@ -222,7 +227,7 @@ export default function GroupingSuggestions({
                               {group.groupIndex} • Editável
                             </p>
                           </div>
-                        </div>
+                        </Inline>
 
                         {isSelected && (
                           <PiCheck className="w-5 h-5 text-accent-green" />
@@ -238,13 +243,17 @@ export default function GroupingSuggestions({
           {/* Grupos IMSLP (APENAS REFERÊNCIA) */}
           {imslpGroups.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
+              <Inline
+                as="h4"
+                gap={2}
+                className="text-sm font-semibold text-theme-primary mb-3"
+              >
                 <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                 <span>Grupos Existentes (IMSLP)</span>
                 <span className="px-2 py-0.5 bg-theme-tertiary/20 text-theme-tertiary rounded-full text-xs">
                   Apenas referência
                 </span>
-              </h4>
+              </Inline>
 
               <div className="grid grid-cols-1 gap-2 mb-4">
                 {imslpGroups.slice(0, 3).map((group) => {
@@ -256,7 +265,7 @@ export default function GroupingSuggestions({
                       className="p-3 rounded-lg border-2 border-theme-secondary bg-theme-elevated opacity-75 cursor-not-allowed"
                     >
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-theme-secondary text-theme-tertiary">
                             <Icon className="w-4 h-4" />
                           </div>
@@ -270,7 +279,7 @@ export default function GroupingSuggestions({
                               {group.groupIndex}
                             </p>
                           </div>
-                        </div>
+                        </Inline>
 
                         <PiLock className="w-4 h-4 text-theme-tertiary" />
                       </div>
@@ -301,10 +310,14 @@ export default function GroupingSuggestions({
 
       {/* Opção para Novo Grupo */}
       <div>
-        <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
+        <Inline
+          as="h4"
+          gap={2}
+          className="text-sm font-semibold text-theme-primary mb-3"
+        >
           <PiPlus className="w-4 h-4 text-brand-primary" />
           <span>Criar Novo Grupo</span>
-        </h4>
+        </Inline>
 
         <button
           onClick={(e) => {
@@ -321,7 +334,7 @@ export default function GroupingSuggestions({
           }}
           className="w-full p-3 rounded-lg border-2 border-dashed border-brand-primary text-brand-primary hover:bg-brand-primary/5 transition-all duration-200 text-left"
         >
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-8 h-8 bg-brand-primary/20 rounded-lg flex items-center justify-center">
               <PiPlus className="w-4 h-4 text-brand-primary" />
             </div>
@@ -333,7 +346,7 @@ export default function GroupingSuggestions({
                 Criar um novo grupo com título próprio
               </p>
             </div>
-          </div>
+          </Inline>
         </button>
       </div>
 

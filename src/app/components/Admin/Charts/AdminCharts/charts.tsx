@@ -17,6 +17,7 @@ import {
   Pie,
   Cell,
 } from 'recharts';
+import { Inline } from '@/app/components/ui/Layout';
 
 export interface ChartData {
   name?: string;
@@ -368,10 +369,7 @@ export const AdminPieChart = ({
       {/* 🆕 LEGENDA PERSONALIZADA PARA PIE CHARTS */}
       <div className="mt-4 flex flex-wrap justify-center gap-2">
         {normalizedData.map((entry, index) => (
-          <div
-            key={`legend-${index}`}
-            className="flex items-center space-x-2 text-xs"
-          >
+          <Inline gap={2} key={`legend-${index}`} className="text-xs">
             <div
               className="w-3 h-3 rounded-full"
               style={{
@@ -382,7 +380,7 @@ export const AdminPieChart = ({
             <span className="text-theme-secondary">
               {entry.name}: {entry.value.toLocaleString('pt-BR')}
             </span>
-          </div>
+          </Inline>
         ))}
       </div>
     </div>
@@ -613,7 +611,7 @@ export const HorizontalBarChart = ({
               : 0;
 
           return (
-            <div key={index} className="flex items-center space-x-3">
+            <Inline gap={3} key={index}>
               <div className="w-24 text-sm font-medium text-theme-primary truncate">
                 {item.name}
               </div>
@@ -631,7 +629,7 @@ export const HorizontalBarChart = ({
                   ? item.value.toLocaleString('pt-BR')
                   : '0'}
               </div>
-            </div>
+            </Inline>
           );
         })}
       </div>

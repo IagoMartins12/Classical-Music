@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { PiPlay, PiWarningCircle } from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 // Tipos para o vídeo
 export type VideoType = 'youtube' | 'vimeo' | 'direct' | 'invalid';
@@ -178,7 +179,7 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
   return (
     <AnimatedCard hover="lift" className="classical-card p-8">
       <AnimatedItem direction="left" springType="smooth">
-        <div className="flex items-center space-x-3 mb-6">
+        <Inline gap={3} className="mb-6">
           <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-2xl flex items-center justify-center">
             <PiPlay className="w-6 h-6 text-theme-primary" />
           </div>
@@ -190,7 +191,7 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
               {t('video_subtitle')} {composerName}
             </p>
           </div>
-        </div>
+        </Inline>
       </AnimatedItem>
 
       <AnimatedItem direction="up" springType="gentle">
@@ -199,14 +200,14 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
 
           {/* Video info/description */}
           <div className="flex items-start justify-between text-sm text-theme-secondary">
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
               <span>
                 {videoInfo.type === 'youtube' && 'YouTube'}
                 {videoInfo.type === 'vimeo' && 'Vimeo'}
                 {videoInfo.type === 'direct' && t('video_direct')}
               </span>
-            </div>
+            </Inline>
             <a
               href={videoInfo.originalUrl}
               target="_blank"
@@ -222,7 +223,7 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
       {hasError && (
         <AnimatedItem direction="up" springType="gentle">
           <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <PiWarningCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
               <div>
                 <p className="text-red-800 font-medium">
@@ -232,7 +233,7 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
                   {t('video_error_message')}
                 </p>
               </div>
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
       )}

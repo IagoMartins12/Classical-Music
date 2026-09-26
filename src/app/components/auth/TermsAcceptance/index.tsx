@@ -11,6 +11,7 @@ import {
 } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Modal from '../../Modal';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface TermsAcceptanceProps {
   accepted: boolean;
@@ -283,10 +284,10 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
 
         {/* Mensagem de Erro */}
         {error && (
-          <div className="flex items-center space-x-2 text-red-500 text-sm">
+          <Inline gap={2} className="text-red-500 text-sm">
             <PiWarningCircle className="w-4 h-4 flex-shrink-0" />
             <span>{error}</span>
-          </div>
+          </Inline>
         )}
       </div>
 
@@ -299,7 +300,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
         showCloseButton={true}
         setPr
       >
-        <div className="flex items-center space-x-3 mb-6">
+        <Inline gap={3} className="mb-6">
           {privacyContent.icon}
           <div>
             <h3 className="text-lg font-semibold text-theme-primary">
@@ -309,7 +310,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
               {t('privacy_policy_last_update')}
             </p>
           </div>
-        </div>
+        </Inline>
         {privacyContent.content}
       </Modal>
 
@@ -322,7 +323,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
         showCloseButton={true}
         setPr
       >
-        <div className="flex items-center space-x-3 mb-6">
+        <Inline gap={3} className="mb-6">
           {termsContent.icon}
           <div>
             <h3 className="text-lg font-semibold text-theme-primary">
@@ -332,7 +333,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
               {t('terms_of_use_last_update')}
             </p>
           </div>
-        </div>
+        </Inline>
         {termsContent.content}
       </Modal>
     </>

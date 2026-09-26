@@ -1,5 +1,6 @@
 // components/ScoreCardSkeleton.tsx - Skeleton para ScoreCard
 import React from 'react';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ScoreCardSkeletonProps {
   showThumbnail?: boolean;
@@ -123,7 +124,7 @@ export const ScoreLoadingWithProgress = ({
     >
       {/* Header */}
       <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
-        <div className="flex items-center space-x-3 mb-4">
+        <Inline gap={3} className="mb-4">
           <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
             <div className="relative">
               <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -144,7 +145,7 @@ export const ScoreLoadingWithProgress = ({
               {subtitle}
             </p>
           </div>
-        </div>
+        </Inline>
 
         {/* Progress Bar */}
         {progress > 0 && (

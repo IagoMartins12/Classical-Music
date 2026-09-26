@@ -30,6 +30,7 @@ import {
 } from '@/app/utils/type-utils';
 import { useTranslation } from '@/app/context/TranslationContext';
 import useIsTablet from '@/app/hooks/useIsTablet';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 // ✅ INTERFACE UNIFICADA SIMPLIFICADA
 interface MixedScoreData {
@@ -636,7 +637,10 @@ export default function IMSLPTabsIncremental({
   const renderTabSpecificButtons = useCallback(() => {
     if (!activeTabStats.hasMore) {
       return (
-        <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
+        <Stack
+          gap={4}
+          className="items-center py-8 border-t border-theme-secondary"
+        >
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
               <PiTarget className="w-8 h-8 text-theme-primary" />
@@ -653,7 +657,7 @@ export default function IMSLPTabsIncremental({
               })}
             </p>
           </div>
-        </div>
+        </Stack>
       );
     }
 
@@ -662,11 +666,13 @@ export default function IMSLPTabsIncremental({
     if (activeTabStats.remaining >= 1) {
       const loadAmount = Math.min(20, activeTabStats.remaining);
       buttons.push(
-        <button
+        <Inline
+          as="button"
+          gap={2}
           key="load-more-tab"
           onClick={() => onImslpLoadMoreForTab?.(activeTab, loadAmount)}
           disabled={imslpLoadingMore}
-          className="btn-classical-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-classical-primary disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {imslpLoadingMore ? (
             <>
@@ -684,19 +690,21 @@ export default function IMSLPTabsIncremental({
               </span>
             </>
           )}
-        </button>
+        </Inline>
       );
     }
 
     if (activeTabStats.remaining > 20) {
       buttons.push(
-        <button
+        <Inline
+          as="button"
+          gap={2}
           key="load-all-tab"
           onClick={() =>
             onImslpLoadMoreForTab?.(activeTab, activeTabStats.remaining)
           }
           disabled={imslpLoadingMore}
-          className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-classical-secondary disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <PiDownloadSimple className="w-4 h-4" />
           <span>
@@ -705,18 +713,20 @@ export default function IMSLPTabsIncremental({
               remaining: activeTabStats.remaining,
             })}
           </span>
-        </button>
+        </Inline>
       );
     }
 
     const globalRemaining = totalAvailable - currentLoaded;
     if (globalRemaining > activeTabStats.remaining && globalRemaining > 0) {
       buttons.push(
-        <button
+        <Inline
+          as="button"
+          gap={2}
           key="load-all-global"
           onClick={() => onImslpLoadAll?.()}
           disabled={imslpLoadingMore}
-          className="btn-classical-accent flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-classical-accent disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <PiStack className="w-4 h-4" />
           <span>
@@ -724,7 +734,7 @@ export default function IMSLPTabsIncremental({
               remaining: globalRemaining,
             })}
           </span>
-        </button>
+        </Inline>
       );
     }
 
@@ -770,7 +780,7 @@ export default function IMSLPTabsIncremental({
           <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
             <div className="p-2 md:p-6">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
                     <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                   </div>
@@ -778,7 +788,7 @@ export default function IMSLPTabsIncremental({
                     <h2 className="text-2xl font-bold text-theme-primary classical-title">
                       {t('imslp_tabs_partituras_disponiveis')}
                     </h2>
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <p className="text-theme-secondary classical-subtitle">
                         {selectedScore
                           ? `${t('imslp_tabs_partitura_selecionada')} ${
@@ -788,9 +798,9 @@ export default function IMSLPTabsIncremental({
                             ? t('imslp_tabs_selecione_partitura')
                             : t('imslp_tabs_explore_partituras')}
                       </p>
-                    </div>
+                    </Inline>
                   </div>
-                </div>
+                </Inline>
               </div>
             </div>
 
@@ -843,7 +853,7 @@ export default function IMSLPTabsIncremental({
                         </div>
                         <span className="font-semibold">{t(tab.labelKey)}</span>
 
-                        <div className="flex items-center space-x-1">
+                        <Inline gap={1}>
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
                               isActive
@@ -855,18 +865,18 @@ export default function IMSLPTabsIncremental({
                           </span>
 
                           {tabStats.hasMore ? (
-                            <div className="flex items-center space-x-1">
+                            <Inline gap={1}>
                               <div className="w-1 h-1 bg-accent-blue rounded-full animate-pulse"></div>
                               {isActive && (
                                 <span className="text-xs text-accent-blue font-medium">
                                   +{tabStats.remaining}
                                 </span>
                               )}
-                            </div>
+                            </Inline>
                           ) : (
                             <div className="w-1 h-1 bg-accent-green rounded-full"></div>
                           )}
-                        </div>
+                        </Inline>
                       </button>
                     </AnimatedItem>
                   );
@@ -888,14 +898,14 @@ export default function IMSLPTabsIncremental({
                     >
                       {scoreGroup.groupTitle && (
                         <div className="border-b border-theme-secondary pb-3">
-                          <div className="flex items-center space-x-3">
+                          <Inline gap={3}>
                             <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                               <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                             </div>
                             <h3 className="text-lg font-semibold text-theme-primary classical-title">
                               {scoreGroup.groupTitle}
                             </h3>
-                          </div>
+                          </Inline>
                         </div>
                       )}
 
@@ -956,7 +966,10 @@ export default function IMSLPTabsIncremental({
 
                   {/* Botões de Load More */}
                   {activeTabStats.hasMore && (
-                    <div className="flex flex-col items-center space-y-6 py-8 border-t border-theme-secondary">
+                    <Stack
+                      gap={6}
+                      className="items-center py-8 border-t border-theme-secondary"
+                    >
                       <div className="text-center">
                         <h3 className="text-lg font-semibold text-theme-primary mb-2">
                           {t('imslp_tabs_mais_disponiveis', {
@@ -980,12 +993,15 @@ export default function IMSLPTabsIncremental({
                       <div className="flex flex-wrap gap-4 justify-center">
                         {renderTabSpecificButtons()}
                       </div>
-                    </div>
+                    </Stack>
                   )}
 
                   {/* Load More para WorkScores */}
                   {activeTab === 'scores' && workScoresHasMore && (
-                    <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
+                    <Stack
+                      gap={4}
+                      className="items-center py-8 border-t border-theme-secondary"
+                    >
                       <div className="text-center">
                         <h3 className="text-lg font-semibold text-theme-primary mb-2">
                           {t('imslp_tabs_mais_open_atlas')}
@@ -999,10 +1015,12 @@ export default function IMSLPTabsIncremental({
                               })}
                         </p>
                       </div>
-                      <button
+                      <Inline
+                        as="button"
+                        gap={2}
                         onClick={onWorkScoresLoadMore}
                         disabled={workScoresLoading}
-                        className="btn-classical-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="btn-classical-primary disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {workScoresLoading ? (
                           <>
@@ -1015,8 +1033,8 @@ export default function IMSLPTabsIncremental({
                             <span>{t('imslp_tabs_carregar_mais_20')}</span>
                           </>
                         )}
-                      </button>
-                    </div>
+                      </Inline>
+                    </Stack>
                   )}
                 </div>
 
@@ -1028,10 +1046,14 @@ export default function IMSLPTabsIncremental({
                   >
                     <div className="classical-card-2 p-6">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+                        <Inline
+                          as="h3"
+                          gap={2}
+                          className="text-lg font-semibold text-theme-primary"
+                        >
                           <PiBookOpen className="w-5 h-5 text-accent-blue" />
                           <span>{t('imslp_tabs_preview_partitura')}</span>
-                        </h3>
+                        </Inline>
                         <SourceBadge source={selectedScore.source} t={t} />
                       </div>
 
@@ -1040,13 +1062,15 @@ export default function IMSLPTabsIncremental({
                       {!isSelectionMode && (
                         <div className="mt-4 pt-4 border-t border-theme-secondary">
                           <div className="flex flex-wrap gap-3">
-                            <button
+                            <Inline
+                              as="button"
+                              gap={2}
                               onClick={() => handleScoreSelect(selectedScore)}
-                              className="btn-classical-secondary flex items-center space-x-2"
+                              className="btn-classical-secondary"
                             >
                               <PiMusicNotes className="w-4 h-4" />
                               <span>{t('imslp_tabs_desselecionar')}</span>
-                            </button>
+                            </Inline>
                           </div>
                         </div>
                       )}
@@ -1068,7 +1092,7 @@ export default function IMSLPTabsIncremental({
 const LoadingState = React.memo(({ t }: { t: any }) => (
   <div className="classical-card overflow-hidden animate-fade-in-up">
     <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
-      <div className="flex items-center space-x-3">
+      <Inline gap={3}>
         <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
           <PiMusicNotes className="w-6 h-6 text-theme-primary" />
         </div>
@@ -1080,10 +1104,10 @@ const LoadingState = React.memo(({ t }: { t: any }) => (
             {t('imslp_tabs_carregando_partituras')}
           </p>
         </div>
-      </div>
+      </Inline>
     </div>
     <div className="p-8">
-      <div className="flex items-center justify-center space-x-3 py-12">
+      <Inline gap={3} className="justify-center py-12">
         <div className="relative">
           <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
           <div
@@ -1094,7 +1118,7 @@ const LoadingState = React.memo(({ t }: { t: any }) => (
         <span className="text-theme-primary font-medium">
           {t('imslp_tabs_carregando_partituras')}
         </span>
-      </div>
+      </Inline>
     </div>
   </div>
 ));
@@ -1112,7 +1136,7 @@ const ErrorState = React.memo(
   }) => (
     <div className="classical-card overflow-hidden animate-fade-in-up">
       <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
-        <div className="flex items-center space-x-3">
+        <Inline gap={3}>
           <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-2xl flex items-center justify-center">
             <PiWarningCircle className="w-6 h-6 text-theme-primary" />
           </div>
@@ -1124,7 +1148,7 @@ const ErrorState = React.memo(
               {t('imslp_tabs_erro_carregar_recursos')}
             </p>
           </div>
-        </div>
+        </Inline>
       </div>
       <div className="p-8">
         <div className="bg-gradient-to-r from-accent-red/10 to-accent-red/5 border border-accent-red/30 rounded-2xl p-6">
@@ -1135,13 +1159,15 @@ const ErrorState = React.memo(
             <div className="flex-1">
               <p className="text-accent-red font-medium mb-2">{error}</p>
               {onRefetch && (
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={onRefetch}
-                  className="btn-classical-secondary flex items-center space-x-2 group"
+                  className="btn-classical-secondary group"
                 >
                   <PiArrowsClockwise className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
                   <span>{t('imslp_tabs_tentar_novamente')}</span>
-                </button>
+                </Inline>
               )}
             </div>
           </div>

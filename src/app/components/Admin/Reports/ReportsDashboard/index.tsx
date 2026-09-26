@@ -27,6 +27,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import LoadingAdminState from '../../Common/LoadingState';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ReportStats {
   totalReports: number;
@@ -132,7 +133,7 @@ export default function ReportsDashboard() {
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               <Select
                 value={selectedPeriod}
                 onChange={(e) => setSelectedPeriod(e.target.value)}
@@ -157,9 +158,9 @@ export default function ReportsDashboard() {
               >
                 Atualizar
               </Button>
-            </div>
+            </Inline>
 
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <Button
                 variant="secondary"
                 leftIcon={<PiFunnel />}
@@ -174,7 +175,7 @@ export default function ReportsDashboard() {
               >
                 Analytics
               </Button>
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -237,10 +238,14 @@ export default function ReportsDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Reports by Type */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-xl font-bold text-theme-primary mb-6"
+            >
               <PiUsers className="w-5 h-5 text-accent-blue" />
               <span>Reports por Tipo</span>
-            </h3>
+            </Inline>
 
             {reportsByType.length > 0 ? (
               <div className="space-y-4">
@@ -249,15 +254,15 @@ export default function ReportsDashboard() {
                     key={item.entityType}
                     className="flex items-center justify-between"
                   >
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
                         {getTypeIcon(item.entityType)}
                       </div>
                       <span className="font-medium text-theme-primary">
                         {getTypeLabel(item.entityType)}
                       </span>
-                    </div>
-                    <div className="flex items-center space-x-3">
+                    </Inline>
+                    <Inline gap={3}>
                       <span className="text-2xl font-bold text-theme-primary">
                         {item._count.id}
                       </span>
@@ -272,7 +277,7 @@ export default function ReportsDashboard() {
                           }}
                         />
                       </div>
-                    </div>
+                    </Inline>
                   </div>
                 ))}
               </div>
@@ -286,10 +291,14 @@ export default function ReportsDashboard() {
 
           {/* Reports by Reason */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-xl font-bold text-theme-primary mb-6"
+            >
               <PiWarningCircle className="w-5 h-5 text-accent-red" />
               <span>Reports por Motivo</span>
-            </h3>
+            </Inline>
 
             {reportsByReason.length > 0 ? (
               <div className="space-y-4">
@@ -298,15 +307,15 @@ export default function ReportsDashboard() {
                     key={item.reason}
                     className="flex items-center justify-between"
                   >
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-amber rounded-lg flex items-center justify-center">
                         <PiFlag className="w-4 h-4 text-theme-primary" />
                       </div>
                       <span className="font-medium text-theme-primary">
                         {getReasonLabel(item.reason)}
                       </span>
-                    </div>
-                    <div className="flex items-center space-x-3">
+                    </Inline>
+                    <Inline gap={3}>
                       <span className="text-2xl font-bold text-theme-primary">
                         {item._count.id}
                       </span>
@@ -321,7 +330,7 @@ export default function ReportsDashboard() {
                           }}
                         />
                       </div>
-                    </div>
+                    </Inline>
                   </div>
                 ))}
               </div>

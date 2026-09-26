@@ -30,6 +30,7 @@ import {
   updateWorkMediaRequest,
   uploadWorkMediaFileRequest,
 } from '@/app/requests/work-media';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface MediaData {
   spotify: {
@@ -609,7 +610,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       {/* Header da Seção */}
       <div className="p-2 md:p-8 pb-6">
         <div className="flex flex-col sm:flex-row  items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
               <PiMusicNotes className="w-5 h-5 text-theme-primary" />
             </div>
@@ -621,7 +622,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 {t('media_subtitulo')}
               </p>
             </div>
-          </div>
+          </Inline>
 
           {/* Botões de Ação */}
           <div className="flex mt-4 md:mt-0 items-start md:items-center space-x-3">
@@ -729,7 +730,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 {mediaData.customAudio && (
                   <div className="mb-3 p-3 bg-green-900/20 border border-green-700/30 rounded-lg">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <PiDatabase className="w-4 h-4 text-green-400" />
                         <span className="text-sm text-green-300">
                           {work.customAudioSource === 'upload'
@@ -738,18 +739,20 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                                 work.customAudioSource
                               }`}
                         </span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <button
+                      </Inline>
+                      <Inline gap={2}>
+                        <Inline
+                          as="button"
+                          gap={1}
                           type="button"
                           onClick={deleteCustomAudio}
                           disabled={isUploading || !hasSearchBeenMade}
-                          className="text-xs px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 flex items-center space-x-1"
+                          className="text-xs px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
                         >
                           <PiTrash className="w-3 h-3" />
                           <span>{t('media_deletar')}</span>
-                        </button>
-                      </div>
+                        </Inline>
+                      </Inline>
                     </div>
                   </div>
                 )}
@@ -787,7 +790,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 )}
               </div>
 
-              <div className="flex items-center space-x-3 pt-4">
+              <Inline gap={3} className="pt-4">
                 <Button
                   variant="primary"
                   size="sm"
@@ -831,7 +834,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 >
                   {t('media_cancelar')}
                 </Button>
-              </div>
+              </Inline>
 
               {/* FEEDBACK ADICIONAL */}
               {!hasSearchBeenMade && (
@@ -924,12 +927,12 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 {mediaData.spotify && (
                   <AnimatedItem direction="up" delay={0.1}>
                     <div className="space-y-4">
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <PiSpotifyLogo className="w-5 h-5 text-green-400" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {t('media_spotify')}
                         </h3>
-                      </div>
+                      </Inline>
                       <SpotifyRedirectCard
                         spotify={{
                           trackId: mediaData.spotify.trackId,
@@ -954,12 +957,12 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 {mediaData.customAudio && (
                   <AnimatedItem direction="up" delay={0.2}>
                     <div className="space-y-4">
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <PiMusicNotes className="w-5 h-5 text-accent-green" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {t('media_reproducao_audio')}
                         </h3>
-                      </div>
+                      </Inline>
                       <UniversalAudioPlayer
                         work={work}
                         customAudio={mediaData.customAudio}
@@ -975,12 +978,12 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 {mediaData.youtube && (
                   <AnimatedItem direction="up" delay={0.3}>
                     <div className="space-y-4">
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <PiYoutubeLogo className="w-5 h-5 text-red-400" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {t('media_youtube')}
                         </h3>
-                      </div>
+                      </Inline>
                       <YouTubeVideoPlayer
                         video={{
                           videoId: mediaData.youtube.videoId,
@@ -1008,12 +1011,12 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   {mediaData.spotify && (
                     <AnimatedItem direction="up" delay={0.2}>
                       <div className="space-y-4">
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <PiSpotifyLogo className="w-5 h-5 text-green-400" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
                             {t('media_spotify')}
                           </h3>
-                        </div>
+                        </Inline>
                         <SpotifyRedirectCard
                           spotify={{
                             trackId: mediaData.spotify.trackId,
@@ -1039,12 +1042,12 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   {mediaData.customAudio && (
                     <AnimatedItem direction="up" delay={0.1}>
                       <div className="space-y-4">
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <PiMusicNotes className="w-5 h-5 text-accent-green" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
                             {t('media_reproducao_audio')}
                           </h3>
-                        </div>
+                        </Inline>
                         <UniversalAudioPlayer
                           work={work}
                           customAudio={mediaData.customAudio}
@@ -1062,12 +1065,12 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   <div className="space-y-6">
                     <AnimatedItem direction="up" delay={0.3}>
                       <div className="space-y-4">
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <PiYoutubeLogo className="w-5 h-5 text-red-400" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
                             {t('media_youtube')}
                           </h3>
-                        </div>
+                        </Inline>
                         <YouTubeVideoPlayer
                           video={{
                             videoId: mediaData.youtube.videoId,
@@ -1092,7 +1095,10 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {/* Status de Carregamento Global - ATUALIZADO */}
         {isSearching && hasAnyMedia && (
           <AnimatedItem direction="up" delay={0.1}>
-            <div className="mt-6 bg-blue-900/20 border border-blue-700/30 rounded-xl p-4 flex items-center space-x-3">
+            <Inline
+              gap={3}
+              className="mt-6 bg-blue-900/20 border border-blue-700/30 rounded-xl p-4"
+            >
               <PiArrowsClockwise className="w-5 h-5 text-blue-400 animate-spin" />
               <div className="flex-1">
                 <p className="text-blue-300 text-sm font-medium">
@@ -1102,7 +1108,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   🎵 Spotify • 📺 YouTube • 🎼 Fontes de Áudio
                 </p>
               </div>
-            </div>
+            </Inline>
           </AnimatedItem>
         )}
 
@@ -1125,47 +1131,47 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {hasAnyMedia && !isSearching && (
           <AnimatedItem direction="up" delay={0.6}>
             <div className="mt-6 bg-gradient-to-r from-green-900/10 to-blue-900/10 border border-green-700/20 rounded-xl p-4">
-              <div className="flex items-center space-x-4 text-sm">
-                <div className="flex items-center space-x-2">
+              <Inline gap={4} className="text-sm">
+                <Inline gap={2}>
                   <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                   <span className="text-theme-secondary">
                     {t('media_disponivel')}
                   </span>
-                </div>
+                </Inline>
 
-                <div className="flex items-center space-x-4">
+                <Inline gap={4}>
                   {mediaData.spotify && (
-                    <div className="flex items-center space-x-1 text-green-400">
+                    <Inline gap={1} className="text-green-400">
                       <PiSpotifyLogo className="w-3 h-3" />
                       <span>Spotify</span>
-                    </div>
+                    </Inline>
                   )}
 
                   {mediaData.youtube && (
-                    <div className="flex items-center space-x-1 text-red-400">
+                    <Inline gap={1} className="text-red-400">
                       <PiYoutubeLogo className="w-3 h-3" />
                       <span>YouTube</span>
-                    </div>
+                    </Inline>
                   )}
 
                   {mediaData.customAudio && (
-                    <div className="flex items-center space-x-1 text-blue-400">
+                    <Inline gap={1} className="text-blue-400">
                       <PiMusicNotes className="w-3 h-3" />
                       <span>Áudio</span>
-                    </div>
+                    </Inline>
                   )}
 
                   {mediaData.alternativeAudio.length > 0 && (
-                    <div className="flex items-center space-x-1 text-purple-400">
+                    <Inline gap={1} className="text-purple-400">
                       <PiMusicNotes className="w-3 h-3" />
                       <span>
                         {mediaData.alternativeAudio.length}{' '}
                         {t('media_temporarias')}
                       </span>
-                    </div>
+                    </Inline>
                   )}
-                </div>
-              </div>
+                </Inline>
+              </Inline>
             </div>
           </AnimatedItem>
         )}

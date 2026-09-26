@@ -14,6 +14,7 @@ import {
   getFormattedPlaceholder,
   handlePhonePaste,
 } from '@/app/utils/phones_and_location/countryTranslations';
+import { Inline } from '@/app/components/ui/Layout';
 
 export interface InternationalPhoneInputProps {
   value: string;
@@ -477,18 +478,22 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
 
         {/* ⚠️ Mensagem de Aviso */}
         {warningMessage && (
-          <p className="text-xs text-orange-600 flex items-center space-x-1 mt-1 animate-pulse">
+          <Inline
+            as="p"
+            gap={1}
+            className="text-xs text-orange-600 mt-1 animate-pulse"
+          >
             <span>⚠️</span>
             <span>{warningMessage}</span>
-          </p>
+          </Inline>
         )}
 
         {/* ❌ Erro */}
         {error && !warningMessage && (
-          <p className="text-xs text-accent-red flex items-center space-x-1 mt-1">
+          <Inline as="p" gap={1} className="text-xs text-accent-red mt-1">
             <span>⚠️</span>
             <span>{error}</span>
-          </p>
+          </Inline>
         )}
 
         {/* ✅ Indicador de Progresso */}
@@ -526,7 +531,7 @@ const CountryOption: React.FC<{
     `}
   >
     <div className="flex items-center justify-between">
-      <div className="flex items-center space-x-3 min-w-0 flex-1">
+      <Inline gap={3} className="min-w-0 flex-1">
         <span className="text-lg flex-shrink-0">{country.flag}</span>
         <div className="min-w-0 flex-1">
           <div className="text-sm font-medium truncate">{country.name}</div>
@@ -534,7 +539,7 @@ const CountryOption: React.FC<{
             {country.dialCode} • {country.format} • {country.maxDigits} dígitos
           </div>
         </div>
-      </div>
+      </Inline>
       {country.popular && (
         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-brand-primary/10 text-brand-primary flex-shrink-0 ml-2">
           Popular

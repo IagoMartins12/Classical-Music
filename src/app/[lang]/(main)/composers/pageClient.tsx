@@ -21,6 +21,7 @@ import Select from '../../../components/Common/Select';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { currentSearchParams } from '@/app/utils/currentSearchParams';
+import { Inline } from '@/app/components/ui/Layout';
 
 export interface ComposerImslp {
   epochName: string;
@@ -277,7 +278,7 @@ export default function ComposersClient({
 
           {/* Filter Status and View Toggle */}
           <div className="flex md:items-center justify-between gap-4 pt-4 border-t border-theme-secondary">
-            <div className="flex items-center space-x-4 justify-between">
+            <Inline gap={4} className="justify-between">
               <div className="text-theme-secondary text-sm">
                 <span className="font-medium text-theme-primary">
                   {composers.length}
@@ -317,9 +318,9 @@ export default function ComposersClient({
                   </span>
                 </div>
               )}
-            </div>
+            </Inline>
 
-            <div className="flex items-center space-x-3 justify-between">
+            <Inline gap={3} className="justify-between">
               {/* Clear Filters */}
               {hasActiveFilters && (
                 <button
@@ -335,7 +336,7 @@ export default function ComposersClient({
                 viewMode={viewMode}
                 onViewModeChange={setViewMode}
               />
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 

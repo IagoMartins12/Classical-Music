@@ -38,6 +38,7 @@ import Link from 'next/link';
 import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { loadSchoolActivities } from '@/app/requests/portal/school-activities';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Activity {
   id: string;
@@ -449,9 +450,11 @@ const StudentHistoryClient = ({
                     {t('student_history_filters_found', { count: totalCount })}
                   </p>
                 </div>
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-theme-secondary hover:bg-theme-tertiary text-theme-primary rounded-lg transition-colors"
+                  className="px-4 py-2 bg-theme-secondary hover:bg-theme-tertiary text-theme-primary rounded-lg transition-colors"
                 >
                   <PiFunnel className="w-4 h-4" />
                   <span>{t('student_history_filters_title')}</span>
@@ -460,7 +463,7 @@ const StudentHistoryClient = ({
                   ) : (
                     <PiCaretDown className="w-4 h-4" />
                   )}
-                </button>
+                </Inline>
               </div>
 
               {showFilters && (
@@ -515,7 +518,7 @@ const StudentHistoryClient = ({
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-3 pt-4">
+                  <Inline gap={3} className="pt-4">
                     <button
                       onClick={updateFilters}
                       className="btn-classical-primary"
@@ -528,19 +531,21 @@ const StudentHistoryClient = ({
                     >
                       {t('student_history_filters_clear')}
                     </button>
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={() => {
                         fetchActivities(true);
                       }}
                       disabled={loading}
-                      className="btn-classical-secondary flex items-center space-x-2"
+                      className="btn-classical-secondary"
                     >
                       <PiArrowsClockwise
                         className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                       />
                       <span>{t('student_history_refresh')}</span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </AnimatedItem>
               )}
             </div>
@@ -608,7 +613,7 @@ const StudentHistoryClient = ({
                           )}`}
                         >
                           <div className="flex items-start justify-between mb-3">
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               <span className="text-sm font-medium text-theme-primary">
                                 {getActionLabel(activity.action)}
                               </span>
@@ -621,9 +626,9 @@ const StudentHistoryClient = ({
                                   }
                                 )}
                               </span>
-                            </div>
+                            </Inline>
 
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               {activity.changes && (
                                 <button
                                   onClick={() => toggleExpanded(activity.id)}
@@ -645,7 +650,7 @@ const StudentHistoryClient = ({
                                   <PiCaretRight className="w-3 h-3 text-theme-tertiary" />
                                 </Link>
                               )}
-                            </div>
+                            </Inline>
                           </div>
 
                           <div className="space-y-2">

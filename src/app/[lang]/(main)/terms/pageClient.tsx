@@ -28,6 +28,7 @@ import {
   FloatingElement,
 } from '../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface TermsSection {
   id: string;
@@ -345,7 +346,10 @@ export default function TermsPage() {
                   </Link>
                 </div>
 
-                <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
+                <Inline
+                  gap={8}
+                  className="justify-center mt-12 pt-8 border-t border-theme-secondary"
+                >
                   <Link
                     href="/faq"
                     className="flex items-center space-x-2 text-theme-tertiary hover:text-brand-primary transition-colors"
@@ -364,7 +368,7 @@ export default function TermsPage() {
                       {t('terms_jsx_span_children_0__central_ajuda')}
                     </span>
                   </Link>
-                </div>
+                </Inline>
               </AnimatedCard>
             </div>
           </div>

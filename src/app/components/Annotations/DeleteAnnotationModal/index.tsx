@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { PiTrash, PiWarning } from 'react-icons/pi';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function ConfirmDeleteModal({
   isOpen,
@@ -47,7 +48,7 @@ export default function ConfirmDeleteModal({
         hover="none"
         className="relative bg-theme-primary rounded-xl shadow-xl max-w-md w-full p-6 border border-theme-secondary"
       >
-        <div className="flex items-center space-x-3 mb-4">
+        <Inline gap={3} className="mb-4">
           <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center">
             <PiWarning className="w-6 h-6 text-accent-red" />
           </div>
@@ -59,7 +60,7 @@ export default function ConfirmDeleteModal({
               {t('delete_modal_cannot_be_undone')}
             </p>
           </div>
-        </div>
+        </Inline>
 
         <div className="mb-6">
           <p className="text-theme-secondary">
@@ -68,7 +69,7 @@ export default function ConfirmDeleteModal({
           </p>
         </div>
 
-        <div className="flex items-center justify-end space-x-3">
+        <Inline gap={3} className="justify-end">
           <button
             onClick={onClose}
             disabled={isLoading}
@@ -76,10 +77,12 @@ export default function ConfirmDeleteModal({
           >
             {t('delete_modal_cancel')}
           </button>
-          <button
+          <Inline
+            as="button"
+            gap={2}
             onClick={onConfirm}
             disabled={isLoading}
-            className="px-4 py-2 bg-accent-red text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center space-x-2"
+            className="px-4 py-2 bg-accent-red text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50"
           >
             {isLoading ? (
               <>
@@ -92,8 +95,8 @@ export default function ConfirmDeleteModal({
                 <span>{t('delete_modal_delete')}</span>
               </>
             )}
-          </button>
-        </div>
+          </Inline>
+        </Inline>
       </AnimatedCard>
     </div>
   );

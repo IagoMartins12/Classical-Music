@@ -7,6 +7,7 @@ import { PiArrowRight, PiBookOpen, PiClock, PiUser } from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../animation/AnimatedComponents';
 import type { BlogArticlePreview } from '@/app/requests/blog/composer-articles';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ComposerArticlesSectionProps {
   articles: BlogArticlePreview[];
@@ -30,7 +31,7 @@ export default function ComposerArticlesSection({
       {/* Header */}
       <AnimatedItem direction="left" springType="smooth">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-pink rounded-2xl flex items-center justify-center">
               <PiBookOpen className="w-6 h-6 text-theme-primary" />
             </div>
@@ -42,7 +43,7 @@ export default function ComposerArticlesSection({
                 {t('articles_subtitle')} {composerName}
               </p>
             </div>
-          </div>
+          </Inline>
 
           {totalCount > 0 && (
             <div className="text-sm text-theme-tertiary">
@@ -95,23 +96,23 @@ export default function ComposerArticlesSection({
 
                   {/* Meta Info */}
                   <div className="flex items-center justify-between pt-3 border-t border-theme-primary">
-                    <div className="flex items-center space-x-4 text-xs text-theme-tertiary">
+                    <Inline gap={4} className="text-xs text-theme-tertiary">
                       {article.readTime && (
-                        <div className="flex items-center space-x-1">
+                        <Inline gap={1}>
                           <PiClock className="w-3 h-3" />
                           <span>{article.readTime} min</span>
-                        </div>
+                        </Inline>
                       )}
 
                       {article.authorName && (
-                        <div className="flex items-center space-x-1">
+                        <Inline gap={1}>
                           <PiUser className="w-3 h-3" />
                           <span className="truncate max-w-[100px]">
                             {article.authorName}
                           </span>
-                        </div>
+                        </Inline>
                       )}
-                    </div>
+                    </Inline>
 
                     <PiArrowRight className="w-4 h-4 text-brand-primary group-hover:translate-x-1 transition-transform duration-300" />
                   </div>

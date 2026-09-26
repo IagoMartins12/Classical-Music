@@ -10,6 +10,7 @@ import Button from '@/app/components/Common/Button';
 import ReportPriorityBadge from '../ReportPriorityBadge';
 import Modal from '../../Modal';
 import { getReportHistory } from '@/app/requests/moderation';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ReportHistoryModalProps {
   isOpen: boolean;
@@ -116,7 +117,7 @@ export default function ReportHistoryModal({
         <div className=" p-6 ">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="w-10 h-10 bg-accent-blue/20 rounded-xl flex items-center justify-center">
                 <PiFlag className="w-5 h-5 text-accent-blue" />
               </div>
@@ -126,7 +127,7 @@ export default function ReportHistoryModal({
                 </h2>
                 <p className="text-sm text-theme-secondary">{entityName}</p>
               </div>
-            </div>
+            </Inline>
           </div>
 
           {/* Content */}
@@ -148,13 +149,13 @@ export default function ReportHistoryModal({
                   className="p-4 bg-theme-secondary rounded-lg border border-theme-primary"
                 >
                   <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <ReportPriorityBadge
                         priority={report.priority as any}
                         createdAt={report.createdAt}
                       />
                       {getStatusBadge(report.status)}
-                    </div>
+                    </Inline>
                     <div className="text-sm text-theme-tertiary">
                       {formatDistanceToNow(new Date(report.createdAt), {
                         addSuffix: true,
@@ -175,20 +176,20 @@ export default function ReportHistoryModal({
                   </div>
 
                   <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center space-x-1 text-theme-tertiary">
+                    <Inline gap={1} className="text-theme-tertiary">
                       <PiUser className="w-4 h-4" />
                       <span>
                         {report.reporter.firstName || report.reporter.email}
                       </span>
-                    </div>
+                    </Inline>
                     {report.moderator && (
-                      <div className="flex items-center space-x-1 text-theme-tertiary">
+                      <Inline gap={1} className="text-theme-tertiary">
                         <span>Moderado por:</span>
                         <span className="font-medium">
                           {report.moderator.firstName ||
                             report.moderator.lastName}
                         </span>
-                      </div>
+                      </Inline>
                     )}
                   </div>
 

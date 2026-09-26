@@ -17,6 +17,7 @@ import {
   PiTrash,
   PiUsersThree,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface EventModalProps {
   event: any;
@@ -150,10 +151,10 @@ export default function EventModal({
         {/* Compositores */}
         {event.composers && event.composers.length > 0 && (
           <div>
-            <div className="flex items-center space-x-2 mb-3">
+            <Inline gap={2} className="mb-3">
               <PiUsersThree className="w-5 h-5 " />
               <h4 className="text-sm font-semibold ">Compositores</h4>
-            </div>
+            </Inline>
             <div className="flex flex-wrap gap-3">
               {event.composers.map((composer: any) => (
                 <Link

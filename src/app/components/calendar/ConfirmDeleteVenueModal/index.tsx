@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { PiTrash, PiWarning } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function ConfirmDeleteVenueModal({
   isOpen,
@@ -52,7 +53,7 @@ export default function ConfirmDeleteVenueModal({
         hover="none"
         className="relative bg-theme-primary rounded-xl shadow-xl max-w-md w-full p-6 border border-theme-secondary"
       >
-        <div className="flex items-center space-x-3 mb-4">
+        <Inline gap={3} className="mb-4">
           <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center">
             <PiWarning className="w-6 h-6 text-accent-red" />
           </div>
@@ -66,7 +67,7 @@ export default function ConfirmDeleteVenueModal({
                 : 'Esta ação não pode ser desfeita'}
             </p>
           </div>
-        </div>
+        </Inline>
 
         <div className="mb-6">
           {hasEvents ? (
@@ -94,7 +95,7 @@ export default function ConfirmDeleteVenueModal({
           )}
         </div>
 
-        <div className="flex items-center justify-end space-x-3">
+        <Inline gap={3} className="justify-end">
           <button
             onClick={onClose}
             disabled={isLoading}
@@ -103,10 +104,12 @@ export default function ConfirmDeleteVenueModal({
             {hasEvents ? 'Entendi' : 'Cancelar'}
           </button>
           {!hasEvents && (
-            <button
+            <Inline
+              as="button"
+              gap={2}
               onClick={onConfirm}
               disabled={isLoading}
-              className="px-4 py-2 bg-accent-red text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center space-x-2"
+              className="px-4 py-2 bg-accent-red text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50"
             >
               {isLoading ? (
                 <>
@@ -119,9 +122,9 @@ export default function ConfirmDeleteVenueModal({
                   <span>Deletar</span>
                 </>
               )}
-            </button>
+            </Inline>
           )}
-        </div>
+        </Inline>
       </AnimatedCard>
     </div>
   );

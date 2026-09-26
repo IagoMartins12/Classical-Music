@@ -4,6 +4,7 @@
 import { PiCaretLeft, PiCaretRight, PiDotsThree } from 'react-icons/pi';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { useCallback } from 'react';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface PaginationControlsProps {
   currentPage: number;
@@ -88,7 +89,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
     <div className="classical-card p-6 mt-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         {/* Page info */}
-        <div className="flex items-center space-x-2 text-theme-secondary text-sm">
+        <Inline gap={2} className="text-theme-secondary text-sm">
           <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
           <span>
             {t('pagination_jsx_span_children_0__pagina')}{' '}
@@ -96,12 +97,14 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
             {t('pagination_jsx_span_children_0__de_paginas')}{' '}
             <span className="font-bold text-theme-primary">{totalPages}</span>
           </span>
-        </div>
+        </Inline>
 
         {/* Navigation */}
-        <nav
+        <Inline
+          as="nav"
+          gap={2}
           aria-label={t('pagination_aria_nav')}
-          className="flex items-center justify-center space-x-2"
+          className="justify-center"
         >
           {/* First page */}
           <button
@@ -126,7 +129,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
           </button>
 
           {/* Page numbers */}
-          <div className="flex items-center space-x-1">
+          <Inline gap={1}>
             {visiblePages.map((page, index) => {
               if (page === '...') {
                 return (
@@ -165,7 +168,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
                 </button>
               );
             })}
-          </div>
+          </Inline>
 
           {/* Next button */}
           <button
@@ -188,7 +191,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
           >
             {t('pagination_jsx_button_children_0__final')}
           </button>
-        </nav>
+        </Inline>
 
         {/* Quick jump (mobile hidden) */}
         <div className="hidden lg:flex items-center space-x-2 text-sm"></div>
@@ -197,12 +200,12 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
       {/* Loading indicator */}
       {isPending && (
         <div className="mt-4 flex items-center justify-center">
-          <div className="flex items-center space-x-2 text-brand-primary text-sm">
+          <Inline gap={2} className="text-brand-primary text-sm">
             <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
             <span>
               {t('pagination_jsx_span_children_0__carregando_pagination')}
             </span>
-          </div>
+          </Inline>
         </div>
       )}
     </div>

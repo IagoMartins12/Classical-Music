@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import { PiCaretLeft, PiCaretRight, PiClock, PiUser } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Article {
   id: string;
@@ -147,15 +148,15 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
               {/* Meta */}
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300">
                 {authorName && (
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <PiUser className="w-4 h-4" />
                     <span>{authorName}</span>
-                  </div>
+                  </Inline>
                 )}
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <PiClock className="w-4 h-4" />
                   <span>{currentArticle.readTime} min de leitura</span>
-                </div>
+                </Inline>
                 {currentArticle.publishedAt && (
                   <span>
                     {new Date(currentArticle.publishedAt).toLocaleDateString(

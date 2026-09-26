@@ -11,6 +11,7 @@ import {
   PiSquare,
 } from 'react-icons/pi';
 import { generateArticleAudio } from '@/app/requests/blog/interactions';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface TextToSpeechGoogleProps {
   content: any; // TipTap JSON
@@ -252,14 +253,14 @@ export function TextToSpeechGoogle({
   return (
     <div className="classical-card p-6 my-8">
       {/* HEADER */}
-      <div className="flex items-center space-x-3 mb-4">
+      <Inline gap={3} className="mb-4">
         <div className="p-3 bg-gradient-to-br from-brand-primary to-accent-purple rounded-lg shadow-theme-medium">
           <PiSpeakerHigh className="w-6 h-6 text-white" />
         </div>
         <div>
           <h3 className="font-bold text-theme-primary">Ouça este artigo</h3>
         </div>
-      </div>
+      </Inline>
 
       {/* PLAYER OU BOTÃO INICIAL */}
       {audioUrl ? (
@@ -285,10 +286,12 @@ export function TextToSpeechGoogle({
           </div>
 
           {/* Controles */}
-          <div className="flex items-center space-x-3">
-            <button
+          <Inline gap={3}>
+            <Inline
+              as="button"
+              gap={2}
               onClick={handlePlayPause}
-              className="flex-1 btn-classical-primary flex items-center justify-center space-x-2"
+              className="flex-1 btn-classical-primary justify-center"
             >
               {isPlaying ? (
                 <>
@@ -301,7 +304,7 @@ export function TextToSpeechGoogle({
                   <span>{isPaused ? 'Continuar' : 'Ouvir Artigo'}</span>
                 </>
               )}
-            </button>
+            </Inline>
 
             <button
               onClick={handleStop}
@@ -318,10 +321,10 @@ export function TextToSpeechGoogle({
             >
               <PiDownloadSimple className="w-5 h-5" />
             </button>
-          </div>
+          </Inline>
 
           {/* Volume */}
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <PiSpeakerHigh className="w-4 h-4 text-theme-secondary" />
             <input
               type="range"
@@ -339,14 +342,16 @@ export function TextToSpeechGoogle({
             <span className="text-xs text-theme-tertiary w-12 text-right">
               {Math.round(volume * 100)}%
             </span>
-          </div>
+          </Inline>
         </div>
       ) : (
         <div className="space-y-3">
-          <button
+          <Inline
+            as="button"
+            gap={2}
             onClick={handleGenerateAudio}
             disabled={isGenerating}
-            className="w-full btn-classical-primary flex items-center justify-center space-x-2 py-4"
+            className="w-full btn-classical-primary justify-center py-4"
           >
             {isGenerating ? (
               <>
@@ -359,7 +364,7 @@ export function TextToSpeechGoogle({
                 <span>Clique para ouvir este post</span>
               </>
             )}
-          </button>
+          </Inline>
 
           {isGenerating && (
             <div className="text-center">

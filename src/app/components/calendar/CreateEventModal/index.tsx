@@ -12,6 +12,7 @@ import Input from '@/app/components/Common/Inputs';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import { saveEvent } from '@/app/requests/calendar-requests';
 import Image from '@/app/components/SmartImage';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CreateEventModalProps {
   isOpen: boolean;
@@ -288,7 +289,7 @@ export default function CreateEventModal({
     >
       {/* Header */}
       <div className="px-6 py-4 border-b border-theme-secondary">
-        <div className="flex items-center space-x-3">
+        <Inline gap={3}>
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center shadow-theme-glow">
             <PiCalendarBlank className="w-5 h-5 text-theme-primary" />
           </div>
@@ -302,7 +303,7 @@ export default function CreateEventModal({
                 : 'Adicione um novo evento ao calendário'}
             </p>
           </div>
-        </div>
+        </Inline>
       </div>
 
       {/* Form Content */}
@@ -505,7 +506,7 @@ export default function CreateEventModal({
           </div>
 
           <div className="flex items-center pt-6">
-            <label className="flex items-center space-x-2 cursor-pointer">
+            <Inline as="label" gap={2} className="cursor-pointer">
               <input
                 type="checkbox"
                 checked={formData.isFree}
@@ -517,13 +518,16 @@ export default function CreateEventModal({
               <span className="text-sm text-theme-primary">
                 Evento Gratuito
               </span>
-            </label>
+            </Inline>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t border-theme-secondary flex items-center justify-end space-x-3">
+      <Inline
+        gap={3}
+        className="px-6 py-4 border-t border-theme-secondary justify-end"
+      >
         <Button variant="secondary" onClick={onClose}>
           Cancelar
         </Button>
@@ -534,7 +538,7 @@ export default function CreateEventModal({
         >
           {isEditing ? 'Atualizar' : 'Criar'} Evento
         </Button>
-      </div>
+      </Inline>
     </Modal>
   );
 }

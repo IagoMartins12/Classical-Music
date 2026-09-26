@@ -30,6 +30,7 @@ import { useAdminActivity } from '@/app/hooks/admin/useAdminActivity';
 import { formatNumber } from '../../Utils';
 import toast from 'react-hot-toast';
 import Input from '@/app/components/Common/Inputs';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ActivityItem {
   id: string;
@@ -186,7 +187,7 @@ export default function LogsAudit() {
             </p>
 
             {/* Status Summary */}
-            <div className="flex items-center justify-center space-x-8 mt-6">
+            <Inline gap={8} className="justify-center mt-6">
               <div className="text-center">
                 <div className="text-2xl font-bold text-accent-blue">
                   {formatNumber(activityPagination.total)}
@@ -202,7 +203,7 @@ export default function LogsAudit() {
                 </div>
                 <div className="text-sm text-theme-tertiary">Carregadas</div>
               </div>
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -265,7 +266,7 @@ export default function LogsAudit() {
               activityFilters.type ||
               activityFilters.period) && (
               <div className="flex items-center justify-between p-3 mt-4 bg-accent-blue/10 border border-accent-blue rounded-lg">
-                <div className="flex items-center space-x-2 text-sm text-accent-blue">
+                <Inline gap={2} className="text-sm text-accent-blue">
                   <PiFunnel className="w-4 h-4" />
                   <span>
                     Filtros ativos:{' '}
@@ -280,7 +281,7 @@ export default function LogsAudit() {
                       .filter(Boolean)
                       .join(', ')}
                   </span>
-                </div>
+                </Inline>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -343,15 +344,19 @@ export default function LogsAudit() {
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center space-x-3 mb-2">
-                              <span className="text-xs text-theme-tertiary flex items-center space-x-1">
+                            <Inline gap={3} className="mb-2">
+                              <Inline
+                                as="span"
+                                gap={1}
+                                className="text-xs text-theme-tertiary"
+                              >
                                 <PiClock className="w-3 h-3" />
                                 <span>
                                   {getRelativeTime(
                                     activity.timestamp.toString()
                                   )}
                                 </span>
-                              </span>
+                              </Inline>
                               {activity.status && (
                                 <span
                                   className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
@@ -365,7 +370,7 @@ export default function LogsAudit() {
                                       : 'Erro'}
                                 </span>
                               )}
-                            </div>
+                            </Inline>
 
                             <p className="text-theme-primary font-medium mb-2">
                               <span className="font-bold">

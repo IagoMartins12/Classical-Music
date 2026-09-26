@@ -30,6 +30,7 @@ import { useLoginModal, useRegisterModal } from '@/app/stores/authStore';
 import { SearchModal } from '../SearchModal';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface NavItem {
   label: string;
@@ -476,7 +477,7 @@ export function BlogHeader() {
             </div>
 
             {/* Right Section */}
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               {/* Search Button */}
               <button
                 onClick={() => setIsSearchModalOpen(true)}
@@ -491,9 +492,11 @@ export function BlogHeader() {
               {/* User Menu / Login - Desktop */}
               {isLoading ? null : isAuthenticated && user ? (
                 <div className="relative hidden lg:block" ref={profileRef}>
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={toggleProfileMenu}
-                    className="flex items-center space-x-2 p-2 rounded-lg hover:bg-interactive-hover transition-colors"
+                    className="p-2 rounded-lg hover:bg-interactive-hover transition-colors"
                   >
                     {user.image ? (
                       <Image
@@ -513,7 +516,7 @@ export function BlogHeader() {
                         {getUserDisplayName()}
                       </p>
                     </div>
-                  </button>
+                  </Inline>
 
                   {/* Desktop Profile Dropdown */}
                   {isProfileOpen && (
@@ -653,13 +656,15 @@ export function BlogHeader() {
 
                       <hr className="my-2 border-theme-secondary" />
 
-                      <button
+                      <Inline
+                        as="button"
+                        gap={2}
                         onClick={handleLogout}
-                        className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-accent-red hover:bg-interactive-hover rounded-lg transition-all"
+                        className="w-full px-3 py-2 text-sm text-theme-secondary hover:text-accent-red hover:bg-interactive-hover rounded-lg transition-all"
                       >
                         <PiSignOut className="w-4 h-4" />
                         <span>Sair</span>
-                      </button>
+                      </Inline>
                     </div>
                   )}
                 </div>
@@ -693,7 +698,7 @@ export function BlogHeader() {
                   <PiList className="w-6 h-6" />
                 )}
               </button>
-            </div>
+            </Inline>
           </div>
 
           {/* Mobile Menu */}
@@ -778,7 +783,11 @@ export function BlogHeader() {
                             className="flex w-full items-center justify-between cursor-pointer text-left"
                             onClick={goToProfileView}
                           >
-                            <span className="flex items-center space-x-3 px-4 py-3 flex-1">
+                            <Inline
+                              as="span"
+                              gap={3}
+                              className="px-4 py-3 flex-1"
+                            >
                               {user.image ? (
                                 <Image
                                   src={user.image}
@@ -800,7 +809,7 @@ export function BlogHeader() {
                                   Perfil
                                 </span>
                               </span>
-                            </span>
+                            </Inline>
                             <PiCaretRight className="w-5 h-5 text-theme-tertiary" />
                           </button>
                         </li>
@@ -837,9 +846,9 @@ export function BlogHeader() {
                     </li>
                     <li>
                       <div className="flex items-center justify-center px-4 py-2">
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <ThemeToggle variant="default" />
-                        </div>
+                        </Inline>
                       </div>
                     </li>
                   </ul>
@@ -867,7 +876,10 @@ export function BlogHeader() {
                         </h3>
                       </div>
 
-                      <div className="flex items-center space-x-3 px-4 py-3 mb-4 bg-interactive-hover rounded-lg">
+                      <Inline
+                        gap={3}
+                        className="px-4 py-3 mb-4 bg-interactive-hover rounded-lg"
+                      >
                         {user.image ? (
                           <Image
                             src={user.image}
@@ -889,7 +901,7 @@ export function BlogHeader() {
                             {user.email}
                           </p>
                         </div>
-                      </div>
+                      </Inline>
 
                       <ul className="space-y-1">
                         <li>
@@ -1008,13 +1020,15 @@ export function BlogHeader() {
                         )}
 
                         <li>
-                          <button
+                          <Inline
+                            as="button"
+                            gap={3}
                             onClick={handleLogout}
-                            className="flex items-center space-x-3 w-full px-4 py-3 text-accent-red hover:bg-interactive-hover rounded-lg transition-all"
+                            className="w-full px-4 py-3 text-accent-red hover:bg-interactive-hover rounded-lg transition-all"
                           >
                             <PiSignOut className="w-5 h-5" />
                             <span>Sair</span>
-                          </button>
+                          </Inline>
                         </li>
                       </ul>
                     </div>

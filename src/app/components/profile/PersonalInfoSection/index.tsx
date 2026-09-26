@@ -36,6 +36,7 @@ import {
   usePhoneValidation,
 } from '@/app/utils/phones_and_location/phoneValidation';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface PersonalInfoSectionProps {
   user: User;
@@ -324,7 +325,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       </div>
 
       {/* Profile Image */}
-      <div className="flex items-center space-x-6 pb-6 border-b border-theme-secondary">
+      <Inline gap={6} className="pb-6 border-b border-theme-secondary">
         <ProfileImageUpload
           currentImage={user.image}
           onImageUpload={handleImageUpload}
@@ -348,7 +349,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
               : t('personal_info_photo_instruction_add')}
           </p>
         </div>
-      </div>
+      </Inline>
 
       {/* Basic Info Form */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -438,12 +439,12 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
 
       {/* Localização */}
       <div>
-        <div className="flex items-center space-x-2 mb-4">
+        <Inline gap={2} className="mb-4">
           <PiMapPin className="w-4 h-4 text-brand-primary" />
           <h4 className="font-medium text-theme-primary">
             {t('personal_info_location')}
           </h4>
-        </div>
+        </Inline>
 
         <LocationSelector
           value={formData.location}

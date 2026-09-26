@@ -12,6 +12,7 @@ import {
 import { useSession } from '@/app/libs/session';
 import ReportButton from '@/app/components/Report/ReportButton';
 import VerificationModal from '@/app/components/Verification/VerificationModal';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface EntityActionMenuProps {
   entityType: 'composer' | 'work' | 'score';
@@ -71,39 +72,45 @@ export default function EntityActionMenu({
             <div className="absolute right-0 top-full mt-2 bg-theme-elevated border border-theme-primary rounded-lg shadow-theme-medium z-20 min-w-48">
               <div className="py-2">
                 {onView && (
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={() => {
                       onView();
                       setShowMenu(false);
                     }}
-                    className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-theme-secondary transition-colors flex items-center space-x-2"
+                    className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-theme-secondary transition-colors"
                   >
                     <PiEye className="w-4 h-4" />
                     <span>Visualizar</span>
-                  </button>
+                  </Inline>
                 )}
 
                 {canEdit && onEdit && (
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={() => {
                       onEdit();
                       setShowMenu(false);
                     }}
-                    className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-theme-secondary transition-colors flex items-center space-x-2"
+                    className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-theme-secondary transition-colors"
                   >
                     <PiNotePencil className="w-4 h-4" />
                     <span>Editar</span>
-                  </button>
+                  </Inline>
                 )}
 
                 {/* Verificação (apenas para compositores e admins) */}
                 {isAdmin && entityType === 'composer' && (
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={() => {
                       setShowVerificationModal(true);
                       setShowMenu(false);
                     }}
-                    className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-theme-secondary transition-colors flex items-center space-x-2"
+                    className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-theme-secondary transition-colors"
                   >
                     <PiShield className="w-4 h-4" />
                     <span>
@@ -111,7 +118,7 @@ export default function EntityActionMenu({
                         ? 'Remover verificação'
                         : 'Verificar'}
                     </span>
-                  </button>
+                  </Inline>
                 )}
 
                 {/* Reportar */}
@@ -129,16 +136,18 @@ export default function EntityActionMenu({
                 {canDelete && onDelete && (
                   <>
                     <div className="border-t border-theme-secondary my-1" />
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={() => {
                         onDelete();
                         setShowMenu(false);
                       }}
-                      className="w-full px-4 py-2 text-left text-sm text-accent-red hover:bg-accent-red/10 transition-colors flex items-center space-x-2"
+                      className="w-full px-4 py-2 text-left text-sm text-accent-red hover:bg-accent-red/10 transition-colors"
                     >
                       <PiTrash className="w-4 h-4" />
                       <span>Deletar</span>
-                    </button>
+                    </Inline>
                   </>
                 )}
               </div>

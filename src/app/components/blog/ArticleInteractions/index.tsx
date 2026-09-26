@@ -18,6 +18,7 @@ import {
   setArticleBookmarked,
   setArticleLiked,
 } from '@/app/requests/blog/interactions';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface ArticleInteractionsProps {
   articleId: string;
@@ -154,13 +155,15 @@ export function ArticleInteractions({
               <span className="text-xs">Salvar</span>
             </button>
 
-            <button
+            <Stack
+              as="button"
+              gap={1}
               onClick={onOpenShareModal}
-              className="flex flex-col items-center space-y-1 text-theme-secondary"
+              className="items-center text-theme-secondary"
             >
               <PiShareNetwork className="w-5 h-5" />
               <span className="text-xs">Compartilhar</span>
-            </button>
+            </Stack>
 
             {/* <button
               onClick={onOpenFocusMode}

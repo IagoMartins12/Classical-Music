@@ -16,6 +16,7 @@ import {
 } from 'react-icons/pi';
 import Button from '../../Common/Button';
 import Modal from '../../Modal';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CoverCropperProps {
   imageUrl: string;
@@ -285,10 +286,13 @@ export default function CoverCropper({
                   onTouchMove={handleTouchMove}
                   onTouchEnd={handleMouseUp}
                 />
-                <div className="absolute top-4 left-4 text-white text-xs bg-black/60 px-3 py-1 rounded-full flex items-center space-x-2">
+                <Inline
+                  gap={2}
+                  className="absolute top-4 left-4 text-white text-xs bg-black/60 px-3 py-1 rounded-full"
+                >
                   <PiArrowsOutCardinal className="w-3 h-3" />
                   <span>Arraste para mover</span>
-                </div>
+                </Inline>
                 <div className="absolute top-4 right-4 text-white text-xs bg-black/60 px-3 py-1 rounded-full">
                   16:9 • {rotation}°
                 </div>
@@ -302,7 +306,7 @@ export default function CoverCropper({
                     <span className="text-sm font-medium text-theme-secondary">
                       🔍 Zoom: {Math.round(scale * 100)}%
                     </span>
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <button
                         type="button"
                         onClick={handleZoomOut}
@@ -327,7 +331,7 @@ export default function CoverCropper({
                       >
                         <PiMagnifyingGlassPlus className="w-4 h-4 text-theme-primary" />
                       </button>
-                    </div>
+                    </Inline>
                   </div>
 
                   <input
@@ -346,14 +350,16 @@ export default function CoverCropper({
                   <span className="text-sm font-medium text-theme-secondary">
                     🔄 Rotação: {rotation}°
                   </span>
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     type="button"
                     onClick={handleRotate}
-                    className="px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary-hover transition-colors flex items-center space-x-2"
+                    className="px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary-hover transition-colors"
                   >
                     <PiArrowClockwise className="w-4 h-4" />
                     <span>Girar 90°</span>
-                  </button>
+                  </Inline>
                 </div>
 
                 <p className="text-xs text-theme-tertiary text-center">
@@ -373,7 +379,7 @@ export default function CoverCropper({
               </h3>
 
               {/* Seletor de Dispositivo */}
-              <div className="flex items-center justify-center space-x-2 mb-4">
+              <Inline gap={2} className="justify-center mb-4">
                 <button
                   type="button"
                   onClick={() => setPreviewMode('desktop')}
@@ -410,7 +416,7 @@ export default function CoverCropper({
                 >
                   <PiDeviceMobile className="w-5 h-5" />
                 </button>
-              </div>
+              </Inline>
 
               <p className="text-xs text-center text-theme-tertiary mb-3">
                 {previewDims.label}

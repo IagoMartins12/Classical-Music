@@ -25,6 +25,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import { listAdminActivity } from '@/app/requests/admin/uploads';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ActivityItem {
   id: string;
@@ -175,10 +176,14 @@ export default function RecentActivity() {
   return (
     <AnimatedCard className="classical-card p-4 lg:p-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-        <h2 className="text-xl lg:text-2xl font-bold text-theme-primary flex items-center space-x-3">
+        <Inline
+          as="h2"
+          gap={3}
+          className="text-xl lg:text-2xl font-bold text-theme-primary"
+        >
           <PiPulse className="w-5 h-5 lg:w-6 lg:h-6 text-accent-blue" />
           <span>Atividade Recente</span>
-        </h2>
+        </Inline>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
           <Select
@@ -256,11 +261,14 @@ export default function RecentActivity() {
                           )}
                         </p>
 
-                        <div className="flex items-center space-x-3 mt-1">
-                          <div className="flex items-center space-x-1 text-xs text-theme-tertiary">
+                        <Inline gap={3} className="mt-1">
+                          <Inline
+                            gap={1}
+                            className="text-xs text-theme-tertiary"
+                          >
                             <PiClock className="w-3 h-3" />
                             <span>{formatTimeAgo(activity.timestamp)}</span>
-                          </div>
+                          </Inline>
 
                           {activity.status && (
                             <span
@@ -281,7 +289,7 @@ export default function RecentActivity() {
                               {activity.target.type}
                             </span>
                           )}
-                        </div>
+                        </Inline>
 
                         {activity.metadata && (
                           <div className="mt-2 text-xs text-theme-tertiary">
@@ -302,7 +310,10 @@ export default function RecentActivity() {
                         )}
                       </div>
 
-                      <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity ml-2">
+                      <Inline
+                        gap={1}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity ml-2"
+                      >
                         {activity.target && (
                           <Button
                             variant="ghost"
@@ -336,7 +347,7 @@ export default function RecentActivity() {
                             className="text-accent-amber hover:bg-accent-amber/10"
                           />
                         )}
-                      </div>
+                      </Inline>
                     </div>
                   </div>
                 </div>

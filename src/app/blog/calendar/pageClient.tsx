@@ -22,6 +22,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 import EventScraperModal from '@/app/components/blog/EventScraperModal';
 import DayEventsListModal from '@/app/components/calendar/DayEventsListModal';
 import { loadCalendar } from '@/app/requests/calendar-requests';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CalendarPageClientProps {
   initialData: CalendarPageData;
@@ -139,28 +140,34 @@ export default function CalendarPageClient({
         {/* Admin Actions */}
         {isAdmin && (
           <div className="mb-6 flex flex-wrap gap-3 justify-center">
-            <button
+            <Inline
+              as="button"
+              gap={2}
               onClick={calendarManagement.openCreateEventModal}
-              className="btn-classical-primary flex items-center space-x-2"
+              className="btn-classical-primary"
             >
               <PiPlus className="w-4 h-4" />
               <span>Novo Evento</span>
-            </button>
-            <button
+            </Inline>
+            <Inline
+              as="button"
+              gap={2}
               onClick={() => setIsSearchModalOpen(true)}
-              className="btn-classical-secondary flex items-center space-x-2"
+              className="btn-classical-secondary"
             >
               <PiMagnifyingGlass className="w-4 h-4" />
               <span>Buscar Eventos (Scraper)</span>
-            </button>
+            </Inline>
 
-            <button
+            <Inline
+              as="button"
+              gap={2}
               onClick={calendarManagement.openCreateVenueModal}
-              className="btn-classical-secondary flex items-center space-x-2"
+              className="btn-classical-secondary"
             >
               <PiMapPin className="w-4 h-4" />
               <span>Novo Local</span>
-            </button>
+            </Inline>
           </div>
         )}
 
@@ -286,15 +293,16 @@ function EventLegend() {
       </h4>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-3">
         {legendItems.map((item) => (
-          <div
+          <Inline
+            gap={2}
             key={item.label}
-            className="flex items-center space-x-2 p-2 rounded-lg transition-colors"
+            className="p-2 rounded-lg transition-colors"
           >
             <div className={`w-4 h-4 rounded ${item.color} flex-shrink-0`} />
             <span className="text-sm truncate">
               {item.icon} {item.label}
             </span>
-          </div>
+          </Inline>
         ))}
       </div>
     </div>

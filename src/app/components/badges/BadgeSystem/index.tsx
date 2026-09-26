@@ -15,6 +15,7 @@ import {
   PiTrophy,
 } from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
+import { Inline } from '@/app/components/ui/Layout';
 
 // Tipos de badges
 export type BadgeCategory =
@@ -489,18 +490,18 @@ export function BadgeGrid({
     <AnimatedCard hover="lift" className="classical-card p-6">
       <div className="space-y-4">
         {title && (
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             <PiMedal className="w-5 h-5 text-brand-primary" />
             <h4 className="font-semibold text-theme-primary">{title}</h4>
-            <div className="flex items-center space-x-1">
+            <Inline gap={1}>
               <span className="text-sm text-brand-primary font-bold">
                 {unlockedBadges.length}
               </span>
               <span className="text-sm text-theme-tertiary">
                 /{badges.length}
               </span>
-            </div>
-          </div>
+            </Inline>
+          </Inline>
         )}
 
         <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-4">

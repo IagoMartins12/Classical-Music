@@ -10,6 +10,7 @@ import {
   PiX,
 } from 'react-icons/pi';
 import { getWorkById, searchWorks } from '@/app/requests/catalog-search';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Work {
   id: string;
@@ -307,7 +308,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center">
                 <PiCheck className="w-4 h-4 text-accent-blue" />
               </div>
@@ -320,7 +321,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                     selectedWorkData.composer.name}
                 </p>
               </div>
-            </div>
+            </Inline>
             {!disabled && (
               <button
                 type="button"
@@ -405,7 +406,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                         onClick={() => handleWorkSelect(work)}
                         className="w-full text-left p-3 rounded-lg hover:bg-theme-secondary transition-colors group"
                       >
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <div
                             className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform ${
                               isUserWork
@@ -420,7 +421,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               <p className="font-medium text-theme-primary text-sm truncate">
                                 {work.title}
                               </p>
@@ -429,12 +430,12 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                                   Sugerida
                                 </span>
                               )}
-                            </div>
+                            </Inline>
                             <p className="text-theme-tertiary text-xs truncate">
                               {work.composer.fullName || work.composer.name}
                             </p>
                           </div>
-                        </div>
+                        </Inline>
                       </button>
                     );
                   })}
@@ -474,10 +475,14 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
       {/* Mensagem de erro */}
       {error && (
         <div>
-          <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
+          <Inline
+            as="p"
+            gap={1}
+            className="text-red-500 text-sm font-medium mt-1"
+          >
             <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>
-          </p>
+          </Inline>
         </div>
       )}
     </div>

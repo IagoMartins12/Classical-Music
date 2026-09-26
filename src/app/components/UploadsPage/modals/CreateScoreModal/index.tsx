@@ -54,6 +54,7 @@ import {
   searchComposers,
   uploadScoreFile,
 } from '@/app/requests/uploads-client';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CreateScoreModalProps {
   isOpen: boolean;
@@ -669,7 +670,7 @@ const CreateScoreModal = ({
         <div>
           {/* Header */}
           <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                 <PiFile className="w-5 h-5 text-theme-primary" />
               </div>
@@ -685,7 +686,7 @@ const CreateScoreModal = ({
                     : t('modal_score_subtitle_create')}
                 </p>
               </div>
-            </div>
+            </Inline>
           </div>
 
           {/* Content */}
@@ -694,10 +695,14 @@ const CreateScoreModal = ({
               {/* Upload Mode Selection */}
               {!editingScore && (
                 <AnimatedCard className="classical-card-2 p-4">
-                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-lg font-semibold text-theme-primary mb-4"
+                  >
                     <PiUploadSimple className="w-5 h-5" />
                     <span>{t('modal_score_upload_mode_title')}</span>
-                  </h3>
+                  </Inline>
 
                   <div className="space-y-4" ref={fieldRefs.uploadMode}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -711,7 +716,7 @@ const CreateScoreModal = ({
                             : 'border-theme-secondary bg-theme-elevated hover:border-theme-primary text-theme-secondary'
                         }`}
                       >
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <div
                             className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                               uploadMode === 'url'
@@ -729,7 +734,7 @@ const CreateScoreModal = ({
                               PDF, PNG, JPG ou outras imagens via URL
                             </p>
                           </div>
-                        </div>
+                        </Inline>
                       </button>
 
                       {/* File Upload Option */}
@@ -742,7 +747,7 @@ const CreateScoreModal = ({
                             : 'border-theme-secondary bg-theme-elevated hover:border-theme-primary text-theme-secondary'
                         }`}
                       >
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <div
                             className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                               uploadMode === 'file'
@@ -760,18 +765,18 @@ const CreateScoreModal = ({
                               Envie PDF ou imagens do seu dispositivo
                             </p>
                           </div>
-                        </div>
+                        </Inline>
                       </button>
                     </div>
 
                     {errors.uploadMode && (
                       <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <PiWarningCircle className="w-4 h-4 text-red-600" />
                           <span className="text-sm font-medium text-red-800">
                             {errors.uploadMode}
                           </span>
-                        </div>
+                        </Inline>
                       </div>
                     )}
                   </div>
@@ -781,10 +786,14 @@ const CreateScoreModal = ({
               {/* File Upload */}
               {uploadMode === 'file' && !editingScore && (
                 <AnimatedCard className="classical-card-2 p-4">
-                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-lg font-semibold text-theme-primary mb-4"
+                  >
                     <PiUploadSimple className="w-5 h-5" />
                     <span>Enviar Arquivo</span>
-                  </h3>
+                  </Inline>
 
                   <div className="space-y-4">
                     <div
@@ -811,15 +820,15 @@ const CreateScoreModal = ({
                       />
 
                       {uploadingFile ? (
-                        <div className="flex items-center justify-center space-x-2">
+                        <Inline gap={2} className="justify-center">
                           <PiSpinnerGap className="w-6 h-6 animate-spin text-brand-primary" />
                           <span className="text-theme-secondary">
                             Enviando arquivo...
                           </span>
-                        </div>
+                        </Inline>
                       ) : selectedFile ? (
                         <div className="space-y-4">
-                          <div className="flex items-center justify-center space-x-2">
+                          <Inline gap={2} className="justify-center">
                             {selectedFile.type.startsWith('image/') ? (
                               <PiImage className="w-6 h-6 text-accent-green" />
                             ) : (
@@ -831,18 +840,21 @@ const CreateScoreModal = ({
                             <span className="text-theme-tertiary">
                               ({formData.fileSize})
                             </span>
-                          </div>
+                          </Inline>
 
                           {generatingThumbnail && (
                             <div className="mt-4 text-center">
-                              <div className="flex items-center justify-center space-x-2 text-sm text-brand-primary">
+                              <Inline
+                                gap={2}
+                                className="justify-center text-sm text-brand-primary"
+                              >
                                 <PiSpinnerGap className="w-4 h-4 animate-spin" />
                                 <span>
                                   {isLargeFile
                                     ? 'Processando arquivo grande...'
                                     : 'Gerando preview...'}
                                 </span>
-                              </div>
+                              </Inline>
                               {isLargeFile && (
                                 <div className="mt-2 text-xs text-theme-tertiary">
                                   📄 Arquivos grandes podem levar mais tempo
@@ -867,10 +879,13 @@ const CreateScoreModal = ({
 
                           {thumbnailError && !generatingThumbnail && (
                             <div className="mt-4 text-center">
-                              <div className="flex items-center justify-center space-x-2 text-sm text-amber-600 mb-2">
+                              <Inline
+                                gap={2}
+                                className="justify-center text-sm text-amber-600 mb-2"
+                              >
                                 <PiWarningCircle className="w-4 h-4" />
                                 <span>Preview não disponível</span>
-                              </div>
+                              </Inline>
                               <div className="text-xs text-theme-tertiary">
                                 {thumbnailError}
                               </div>
@@ -895,27 +910,29 @@ const CreateScoreModal = ({
 
                     {errors.downloadUrl && uploadMode === 'file' && (
                       <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <PiWarningCircle className="w-4 h-4 text-red-600" />
                           <span className="text-sm font-medium text-red-800">
                             {errors.downloadUrl}
                           </span>
-                        </div>
+                        </Inline>
                       </div>
                     )}
 
                     {selectedFile && (
-                      <button
+                      <Inline
+                        as="button"
+                        gap={2}
                         type="button"
                         onClick={() => {
                           setSelectedFile(null);
                           resetUploadMode();
                         }}
-                        className="flex items-center space-x-2 mx-auto text-sm text-theme-tertiary hover:text-accent-red transition-colors"
+                        className="mx-auto text-sm text-theme-tertiary hover:text-accent-red transition-colors"
                       >
                         <PiX className="w-4 h-4" />
                         <span>Remover arquivo</span>
-                      </button>
+                      </Inline>
                     )}
                   </div>
                 </AnimatedCard>
@@ -924,10 +941,14 @@ const CreateScoreModal = ({
               {/* URL Input */}
               {uploadMode === 'url' && !editingScore && (
                 <AnimatedCard className="classical-card-2 p-4">
-                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-lg font-semibold text-theme-primary mb-4"
+                  >
                     <PiLink className="w-5 h-5" />
                     <span>URL do Arquivo</span>
-                  </h3>
+                  </Inline>
 
                   <Input
                     label="URL do Arquivo *"
@@ -940,27 +961,27 @@ const CreateScoreModal = ({
                   />
 
                   {validatingFile && (
-                    <div className="mt-2 flex items-center space-x-2 text-sm text-brand-primary">
+                    <Inline gap={2} className="mt-2 text-sm text-brand-primary">
                       <PiSpinnerGap className="w-4 h-4 animate-spin" />
                       <span>Validando arquivo...</span>
-                    </div>
+                    </Inline>
                   )}
 
                   {fileValidation.isValid && (
-                    <div className="mt-2 flex items-center space-x-2 text-sm text-accent-green">
+                    <Inline gap={2} className="mt-2 text-sm text-accent-green">
                       <PiCheck className="w-4 h-4" />
                       <span>Arquivo válido encontrado</span>
-                    </div>
+                    </Inline>
                   )}
 
                   {fileValidation.error && (
                     <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <PiWarningCircle className="w-4 h-4 text-red-600" />
                         <span className="text-sm font-medium text-red-800">
                           {fileValidation.error}
                         </span>
-                      </div>
+                      </Inline>
                     </div>
                   )}
                 </AnimatedCard>
@@ -968,15 +989,19 @@ const CreateScoreModal = ({
 
               {/* Work Selection */}
               <AnimatedCard className="classical-card-2 p-4 relative z-50">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                <Inline
+                  as="h3"
+                  gap={2}
+                  className="text-lg font-semibold text-theme-primary mb-4"
+                >
                   <PiInfo className="w-5 h-5" />
                   <span>{t('modal_score_work_selection_title')}</span>
-                </h3>
+                </Inline>
 
                 <div className="space-y-4">
                   <div ref={fieldRefs.composerFilter}>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <PiFunnel className="w-4 h-4" />
                         <span>{t('modal_score_work_filter_composer')}</span>
                         {shouldDisableComposerFilter && (
@@ -984,7 +1009,7 @@ const CreateScoreModal = ({
                             {t('modal_score_work_filter_auto_selected')}
                           </span>
                         )}
-                      </div>
+                      </Inline>
                     </label>
 
                     <ComposerSearchInput
@@ -1015,7 +1040,7 @@ const CreateScoreModal = ({
                     {editingScore && workData ? (
                       <div className="w-full p-3 border rounded-lg bg-theme-elevated border-theme-secondary opacity-50 cursor-not-allowed">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
+                          <Inline gap={3}>
                             <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center">
                               <PiCheck className="w-4 h-4 text-accent-blue" />
                             </div>
@@ -1028,7 +1053,7 @@ const CreateScoreModal = ({
                                   workData.composer.name}
                               </p>
                             </div>
-                          </div>
+                          </Inline>
                           <div className="text-theme-tertiary">
                             <PiInfo className="w-4 h-4" />
                           </div>
@@ -1082,10 +1107,14 @@ const CreateScoreModal = ({
 
               {/* Basic Information */}
               <AnimatedCard className="classical-card-2 p-4">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                <Inline
+                  as="h3"
+                  gap={2}
+                  className="text-lg font-semibold text-theme-primary mb-4"
+                >
                   <PiInfo className="w-5 h-5" />
                   <span>{t('modal_score_basic_info_title')}</span>
-                </h3>
+                </Inline>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
@@ -1147,10 +1176,14 @@ const CreateScoreModal = ({
 
               {/* Publication Information */}
               <AnimatedCard className="classical-card-2 p-4">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                <Inline
+                  as="h3"
+                  gap={2}
+                  className="text-lg font-semibold text-theme-primary mb-4"
+                >
                   <PiFileText className="w-5 h-5" />
                   <span>{t('modal_score_publication_title')}</span>
-                </h3>
+                </Inline>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
@@ -1196,20 +1229,28 @@ const CreateScoreModal = ({
 
               {/* Score Grouping */}
               <AnimatedCard className="classical-card-2 p-4">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                <Inline
+                  as="h3"
+                  gap={2}
+                  className="text-lg font-semibold text-theme-primary mb-4"
+                >
                   <PiTag className="w-5 h-5" />
                   <span>{t('modal_score_grouping_title')}</span>
-                </h3>
+                </Inline>
 
                 <div className="space-y-6">
                   {formData.workId && (
                     <div>
-                      <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
+                      <Inline
+                        as="h4"
+                        gap={2}
+                        className="text-sm font-semibold text-theme-primary mb-3"
+                      >
                         <PiTarget className="w-4 h-4 text-accent-green" />
                         <span>
                           {t('modal_score_grouping_suggestions_title')}
                         </span>
-                      </h4>
+                      </Inline>
 
                       <GroupingSuggestions
                         workId={formData.workId}
@@ -1222,10 +1263,14 @@ const CreateScoreModal = ({
                   )}
 
                   <div>
-                    <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
+                    <Inline
+                      as="h4"
+                      gap={2}
+                      className="text-sm font-semibold text-theme-primary mb-3"
+                    >
                       <PiGear className="w-4 h-4 text-theme-tertiary" />
                       <span>{t('modal_score_grouping_manual_title')}</span>
-                    </h4>
+                    </Inline>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Input
@@ -1251,10 +1296,14 @@ const CreateScoreModal = ({
                   </div>
 
                   <div className="p-4 bg-theme-secondary/10 rounded-lg">
-                    <h4 className="font-medium text-theme-primary mb-2 flex items-center space-x-2">
+                    <Inline
+                      as="h4"
+                      gap={2}
+                      className="font-medium text-theme-primary mb-2"
+                    >
                       <PiInfo className="w-4 h-4" />
                       <span>{t('modal_score_grouping_how_title')}</span>
-                    </h4>
+                    </Inline>
                     <p className="text-sm text-theme-secondary">
                       {t('modal_score_grouping_how_description')}
                     </p>
@@ -1279,10 +1328,14 @@ const CreateScoreModal = ({
 
               {/* Notes and Custom Data */}
               <AnimatedCard className="classical-card-2 p-4">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                <Inline
+                  as="h3"
+                  gap={2}
+                  className="text-lg font-semibold text-theme-primary mb-4"
+                >
                   <PiInfo className="w-5 h-5" />
                   <span>{t('modal_score_notes_title')}</span>
-                </h3>
+                </Inline>
 
                 <div className="space-y-4">
                   <div>
@@ -1303,7 +1356,10 @@ const CreateScoreModal = ({
               </AnimatedCard>
 
               {/* Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary">
+              <Inline
+                gap={3}
+                className="justify-end pt-6 border-t border-theme-secondary"
+              >
                 <Button
                   type="button"
                   variant="secondary"
@@ -1331,7 +1387,7 @@ const CreateScoreModal = ({
                       ? t('form_update') + ' Partitura'
                       : t('form_create') + ' Partitura'}
                 </Button>
-              </div>
+              </Inline>
             </form>
           </div>
         </div>

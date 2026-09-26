@@ -30,6 +30,7 @@ import Select from '@/app/components/Common/Select';
 import { useStudentCalendar } from '@/app/hooks/lessonsSystem/useStudentCalendar';
 import Modal from '@/app/components/Modal';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface StudentCalendarPageClientProps {
   initialData: StudentCalendarData | null;
@@ -362,10 +363,12 @@ export default function StudentCalendarPageClient({
               {error || errorMessage}
             </p>
             <div className="space-y-3">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={handleRefreshCalendar}
                 disabled={loading.refreshing}
-                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+                className="btn-classical-primary w-full justify-center"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${
@@ -377,7 +380,7 @@ export default function StudentCalendarPageClient({
                     ? t('student_calendar_error_try_again') + '...'
                     : t('student_calendar_error_try_again')}
                 </span>
-              </button>
+              </Inline>
               {error && (
                 <button
                   onClick={clearError}
@@ -418,8 +421,8 @@ export default function StudentCalendarPageClient({
           <AnimatedCard hover="none" className="classical-card p-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               {/* Navigation */}
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
+              <Inline gap={4}>
+                <Inline gap={2}>
                   <button
                     onClick={() =>
                       viewMode === 'month'
@@ -457,7 +460,7 @@ export default function StudentCalendarPageClient({
                   >
                     <PiCaretRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                   </button>
-                </div>
+                </Inline>
 
                 <button
                   onClick={goToToday}
@@ -466,7 +469,7 @@ export default function StudentCalendarPageClient({
                 >
                   {t('student_calendar_today')}
                 </button>
-              </div>
+              </Inline>
 
               {/* View Mode Toggle */}
               <div className="flex justify-center ">
@@ -505,7 +508,7 @@ export default function StudentCalendarPageClient({
               </div>
 
               {/* View Mode and Filters */}
-              <div className="flex items-center space-x-4 justify-center">
+              <Inline gap={4} className="justify-center">
                 {/* Teacher Filter */}
                 {calendarData && calendarData.teachers.length > 1 && (
                   <Select
@@ -552,10 +555,12 @@ export default function StudentCalendarPageClient({
                   className="input-classical-2 w-auto min-w-40"
                 />
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={handleRefreshCalendar}
                   disabled={loading.refreshing}
-                  className="btn-classical-secondary text-sm flex items-center space-x-2 disabled:opacity-50"
+                  className="btn-classical-secondary text-sm disabled:opacity-50"
                 >
                   <PiArrowsClockwise
                     className={`w-4 h-4 ${
@@ -563,8 +568,8 @@ export default function StudentCalendarPageClient({
                     }`}
                   />
                   <span>{t('student_calendar_refresh')}</span>
-                </button>
-              </div>
+                </Inline>
+              </Inline>
             </div>
           </AnimatedCard>
         </AnimatedItem>
@@ -901,23 +906,23 @@ function DayView({
                   <h3 className="font-bold text-lg mb-2">{event.title}</h3>
 
                   <div className="space-y-2 text-sm">
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <PiClock className="w-4 h-4" />
                       <span>{formatEventTime(event.start, event.end)}</span>
-                    </div>
+                    </Inline>
 
                     {event.teacher && (
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <PiUser className="w-4 h-4" />
                         <span>Prof. {event.teacher.name}</span>
-                      </div>
+                      </Inline>
                     )}
 
                     {event.location && (
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <PiMapPin className="w-4 h-4" />
                         <span>{event.location}</span>
-                      </div>
+                      </Inline>
                     )}
 
                     {event.objectives && event.objectives.length > 0 && (
@@ -1003,7 +1008,7 @@ function StudentEventDetailsModal({
               <h2 className="text-xl font-bold text-theme-primary classical-title">
                 {event.title}
               </h2>
-              <div className="flex items-center space-x-3 mt-2">
+              <Inline gap={3} className="mt-2">
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${getEventStatusColor(
                     event.status
@@ -1011,7 +1016,7 @@ function StudentEventDetailsModal({
                 >
                   {getStatusText(event.status)}
                 </span>
-              </div>
+              </Inline>
             </div>
           </div>
 
@@ -1035,7 +1040,7 @@ function StudentEventDetailsModal({
                   <label className="text-sm font-medium text-theme-tertiary block mb-2">
                     {t('student_calendar_modal_teacher')}
                   </label>
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     {event.teacher.image ? (
                       <div className="w-8 h-8 relative rounded-full overflow-hidden">
                         <Image
@@ -1056,7 +1061,7 @@ function StudentEventDetailsModal({
                         Prof. {event.teacher.name}
                       </div>
                     </div>
-                  </div>
+                  </Inline>
                 </div>
               )}
             </div>
@@ -1198,17 +1203,19 @@ function StudentEventDetailsModal({
                 <span>{t('student_calendar_modal_view_details')}</span>
               </Link>
 
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 {event.details?.canProvideFeedback && (
-                  <button
+                  <Inline
+                    as="button"
+                    gap={1}
                     onClick={onAddFeedback}
-                    className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
+                    className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors"
                   >
                     <PiChatCenteredText className="w-4 h-4" />
                     <span>{t('student_calendar_modal_add_feedback')}</span>
-                  </button>
+                  </Inline>
                 )}
-              </div>
+              </Inline>
             </div>
           </div>
         </div>
@@ -1278,11 +1285,13 @@ function FeedbackModal({
               </div>
             </div>
 
-            <div className="flex items-center space-x-3">
-              <button
+            <Inline gap={3}>
+              <Inline
+                as="button"
+                gap={2}
                 onClick={onSubmit}
                 disabled={loading || !feedbackText.trim()}
-                className="btn-classical-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-classical-primary disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <>
@@ -1295,7 +1304,7 @@ function FeedbackModal({
                     <span>{t('student_calendar_feedback_modal_send')}</span>
                   </>
                 )}
-              </button>
+              </Inline>
               <button
                 onClick={onClose}
                 disabled={loading}
@@ -1303,7 +1312,7 @@ function FeedbackModal({
               >
                 {t('student_calendar_feedback_modal_cancel')}
               </button>
-            </div>
+            </Inline>
           </div>
         </div>
       </AnimatedCard>

@@ -34,6 +34,7 @@ import {
   FloatingElement,
 } from '../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 interface SupportCategory {
   id: string;
@@ -669,14 +670,14 @@ export default function SupportPage(): JSX.Element {
                                 className="w-full p-2 pb-6 md:p-6 text-left focus:outline-none hover:bg-theme-elevated/50 transition-colors cursor-pointer"
                               >
                                 <div className="flex items-center justify-between">
-                                  <div className="flex items-center space-x-4">
+                                  <Inline gap={4}>
                                     <div className="w-8 h-8 bg-gradient-to-r from-accent-red to-accent-amber rounded-lg flex items-center justify-center flex-shrink-0">
                                       <span className="text-white font-bold text-sm">
                                         !
                                       </span>
                                     </div>
                                     <div className="flex-grow">
-                                      <div className="flex items-center space-x-2 mb-1">
+                                      <Inline gap={2} className="mb-1">
                                         <h4 className="text-lg font-semibold classical-title text-theme-primary">
                                           {solution.problem}
                                         </h4>
@@ -689,11 +690,11 @@ export default function SupportPage(): JSX.Element {
                                                 'support_jsx_span_children_0__ver_solução'
                                               )}
                                         </span>
-                                      </div>
+                                      </Inline>
                                       <p className="text-theme-secondary mt-1 classical-body">
                                         {solution.solution}
                                       </p>
-                                      <div className="flex items-center space-x-3 mt-2">
+                                      <Inline gap={3} className="mt-2">
                                         <span
                                           className={`text-xs font-medium px-2 py-1 rounded-full bg-theme-elevated ${getPriorityColor(
                                             solution.priority
@@ -722,11 +723,11 @@ export default function SupportPage(): JSX.Element {
                                             )}
                                           </span>
                                         )}
-                                      </div>
+                                      </Inline>
                                     </div>
-                                  </div>
+                                  </Inline>
                                   <div className="flex-shrink-0 ml-4">
-                                    <div className="flex flex-col items-center space-y-1">
+                                    <Stack gap={1} className="items-center">
                                       <PiArrowsClockwise
                                         className={`w-5 h-5 text-brand-primary transition-transform duration-300 ${
                                           expandedSolution === solution.id
@@ -743,7 +744,7 @@ export default function SupportPage(): JSX.Element {
                                               'support_jsx_span_children_0__abrir'
                                             )}
                                       </span>
-                                    </div>
+                                    </Stack>
                                   </div>
                                 </div>
                               </button>
@@ -848,20 +849,23 @@ export default function SupportPage(): JSX.Element {
                 </Link>
               </div>
 
-              <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
-                <div className="flex items-center space-x-2 text-theme-tertiary">
+              <Inline
+                gap={8}
+                className="justify-center mt-12 pt-8 border-t border-theme-secondary"
+              >
+                <Inline gap={2} className="text-theme-tertiary">
                   <PiClock className="w-4 h-4" />
                   <span className="text-sm">
                     {t('support_jsx_span_children_0__resposta_2h')}
                   </span>
-                </div>
-                <div className="flex items-center space-x-2 text-theme-tertiary">
+                </Inline>
+                <Inline gap={2} className="text-theme-tertiary">
                   <PiHardDrives className="w-4 h-4" />
                   <span className="text-sm">
                     {t('support_jsx_span_children_0__monitoramento_24_7')}
                   </span>
-                </div>
-              </div>
+                </Inline>
+              </Inline>
             </AnimatedCard>
           </div>
         </AnimatedContainer>

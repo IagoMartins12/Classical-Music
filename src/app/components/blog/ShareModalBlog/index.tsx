@@ -12,6 +12,7 @@ import {
   PiTwitterLogo,
   PiWhatsappLogo,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -129,7 +130,7 @@ export function ShareModalBlog({
           <label className="block text-sm font-medium text-theme-primary mb-2">
             Ou copie o link:
           </label>
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             <input
               type="text"
               value={url}
@@ -145,18 +146,18 @@ export function ShareModalBlog({
               }`}
             >
               {copied ? (
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <PiCheck className="w-4 h-4" />
                   <span className="hidden sm:inline">Copiado!</span>
-                </div>
+                </Inline>
               ) : (
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <PiLink className="w-4 h-4" />
                   <span className="hidden sm:inline">Copiar</span>
-                </div>
+                </Inline>
               )}
             </button>
-          </div>
+          </Inline>
         </div>
       </div>
     </Modal>

@@ -16,6 +16,7 @@ import {
   translateGenre,
   matchesGenreSearch,
 } from '@/app/utils/translations/instrumentsGenresTranslation';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Genre {
   id: string;
@@ -232,7 +233,10 @@ export default function GenreSearchInput({
           disabled={isDisabled}
         />
 
-        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
+        <Inline
+          gap={2}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2"
+        >
           {selectedGenre && (
             <button
               onClick={handleClear}
@@ -253,7 +257,7 @@ export default function GenreSearchInput({
               }`}
             />
           </button>
-        </div>
+        </Inline>
       </div>
 
       {/* Backdrop (para garantir que cliques fora fechem o dropdown) */}

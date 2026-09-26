@@ -1,3 +1,4 @@
+import { Inline } from '@/app/components/ui/Layout';
 const FormField = ({
   label,
   children,
@@ -10,10 +11,14 @@ const FormField = ({
   description?: string;
 }) => (
   <div className="space-y-2">
-    <label className="flex items-center space-x-2 text-sm font-medium text-theme-secondary">
+    <Inline
+      as="label"
+      gap={2}
+      className="text-sm font-medium text-theme-secondary"
+    >
       {Icon && <Icon className="w-4 h-4 text-theme-tertiary" />}
       <span>{label}</span>
-    </label>
+    </Inline>
     {children}
     {description && (
       <p className="text-xs text-theme-tertiary">{description}</p>

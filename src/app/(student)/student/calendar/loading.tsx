@@ -13,6 +13,7 @@ import {
   PiWarningCircle,
   PiX,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
@@ -110,8 +111,8 @@ export default function StudentCalendarLoading() {
         <div className="classical-card p-6 animate-pulse">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Navigation */}
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
+            <Inline gap={4}>
+              <Inline gap={2}>
                 <div className="w-10 h-10 bg-theme-elevated border border-theme-secondary rounded-lg flex items-center justify-center">
                   <PiCaretLeft className="w-5 h-5 text-theme-tertiary/30" />
                 </div>
@@ -123,18 +124,21 @@ export default function StudentCalendarLoading() {
                 <div className="w-10 h-10 bg-theme-elevated border border-theme-secondary rounded-lg flex items-center justify-center">
                   <PiCaretRight className="w-5 h-5 text-theme-tertiary/30" />
                 </div>
-              </div>
+              </Inline>
 
               <div className="h-10 w-16 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
 
-              <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
+              <Inline
+                gap={2}
+                className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4"
+              >
                 <PiArrowsClockwise className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="h-4 w-16 bg-theme-tertiary/20 rounded"></div>
-              </div>
-            </div>
+              </Inline>
+            </Inline>
 
             {/* View Mode and Filters */}
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               {/* View Mode Toggle */}
               <div className="flex bg-theme-secondary/30 rounded-lg p-1">
                 <div className="px-3 py-2 bg-theme-tertiary/30 rounded-lg text-sm">
@@ -151,7 +155,7 @@ export default function StudentCalendarLoading() {
               {/* Filters */}
               <div className="h-10 w-48 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
               <div className="h-10 w-40 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
-            </div>
+            </Inline>
           </div>
         </div>
 

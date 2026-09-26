@@ -5,6 +5,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { PiMagnifyingGlass, PiTrendUp, PiUser, PiX } from 'react-icons/pi';
 import { findComposerById, findComposers } from '@/app/requests/catalog-search';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Composer {
   id: string;
@@ -283,12 +284,12 @@ export default function ComposerSearchInput({
           {/* Loading */}
           {isLoading && (
             <div className="flex items-center justify-center py-8">
-              <div className="flex items-center space-x-2 text-theme-secondary">
+              <Inline gap={2} className="text-theme-secondary">
                 <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
                 <span className="text-sm">
                   {t('composer_search_jsx_loading')}
                 </span>
-              </div>
+              </Inline>
             </div>
           )}
 

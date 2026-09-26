@@ -13,6 +13,7 @@ import {
   PiSpeakerHigh,
   PiTrash,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 // Declaração do tipo para YouTube Player API
 declare global {
@@ -162,7 +163,10 @@ const QuoteMusicalComponent = (props: any) => {
       <div className="relative classical-card p-8 border-l-4 border-accent-purple">
         {/* Controles de Edição */}
         {showControls && (
-          <div className="absolute top-2 right-2 z-20 flex items-center space-x-2 p-2 shadow-lg rounded-lg">
+          <Inline
+            gap={2}
+            className="absolute top-2 right-2 z-20 p-2 shadow-lg rounded-lg"
+          >
             <button
               type="button"
               onClick={handleDelete}
@@ -171,7 +175,7 @@ const QuoteMusicalComponent = (props: any) => {
             >
               <PiTrash className="w-4 h-4" />
             </button>
-          </div>
+          </Inline>
         )}
 
         {/* Quote Icon */}
@@ -188,20 +192,22 @@ const QuoteMusicalComponent = (props: any) => {
             </cite>
 
             {mounted && backgroundAudioUrl && (
-              <div className="flex items-center space-x-3">
-                <button
+              <Inline gap={3}>
+                <Inline
+                  as="button"
+                  gap={2}
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     setShowPlayer(!showPlayer);
                   }}
-                  className="flex items-center space-x-2 text-sm text-accent-purple hover:text-brand-primary transition-colors"
+                  className="text-sm text-accent-purple hover:text-brand-primary transition-colors"
                 >
                   <PiMusicNotes className="w-5 h-5" />
                   <span>{showPlayer ? 'Ocultar' : 'Mostrar'} controles</span>
-                </button>
-              </div>
+                </Inline>
+              </Inline>
             )}
           </footer>
         </blockquote>
@@ -212,7 +218,7 @@ const QuoteMusicalComponent = (props: any) => {
             showPlayer && backgroundAudioUrl ? 'block' : 'hidden'
           }`}
         >
-          <div className="flex items-center space-x-4">
+          <Inline gap={4}>
             {/* Play/Pause */}
             <button
               onClick={(e) => {
@@ -230,7 +236,7 @@ const QuoteMusicalComponent = (props: any) => {
             </button>
 
             {/* Volume Control */}
-            <div className="flex items-center space-x-2 flex-1">
+            <Inline gap={2} className="flex-1">
               <PiSpeakerHigh className="w-5 h-5 text-theme-secondary" />
               <input
                 type="range"
@@ -247,8 +253,8 @@ const QuoteMusicalComponent = (props: any) => {
               <span className="text-xs text-theme-tertiary w-10 text-right">
                 {volume}%
               </span>
-            </div>
-          </div>
+            </Inline>
+          </Inline>
           <p className="text-xs text-theme-tertiary mt-2 text-center">
             🎵 Música de fundo em loop
           </p>

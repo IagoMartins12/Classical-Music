@@ -37,6 +37,7 @@ import RefreshIndicator from '@/app/components/Common/RefreshIndicator';
 import { translateNivel } from '@/app/utils';
 import RecentActivities from '@/app/components/TeacherSystem/RecentActivities';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 interface TeacherProfile {
   id: string;
@@ -293,13 +294,15 @@ export default function TeacherPageClient({
             <p className="text-theme-secondary classical-subtitle mb-6">
               {currentError}
             </p>
-            <div className="flex flex-col items-center space-y-3">
-              <button
+            <Stack gap={3} className="items-center">
+              <Inline
+                as="button"
+                gap={2}
                 onClick={() => {
                   refreshData(true);
                 }}
                 disabled={refreshing}
-                className="btn-classical-primary flex justify-center items-center space-x-2"
+                className="btn-classical-primary justify-center"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
@@ -307,7 +310,7 @@ export default function TeacherPageClient({
                 <span>
                   {refreshing ? 'Atualizando...' : 'Tentar Novamente'}
                 </span>
-              </button>
+              </Inline>
               {currentError !== errorMessage && (
                 <button
                   onClick={() => {
@@ -319,7 +322,7 @@ export default function TeacherPageClient({
                   Fechar Erro
                 </button>
               )}
-            </div>
+            </Stack>
           </div>
         </div>
       </PageContainer>
@@ -362,7 +365,7 @@ export default function TeacherPageClient({
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-0 justify-between mb-6">
                   <div className="flex items-center w-full sm:w-[75%]  justify-between">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
                         <PiUsers className="w-5 h-5 text-theme-primary" />
                       </div>
@@ -374,7 +377,7 @@ export default function TeacherPageClient({
                           {activeStudents.length} {t('active_students')}
                         </p>
                       </div>
-                    </div>
+                    </Inline>
 
                     <Link
                       href="/teacher/students"
@@ -386,13 +389,15 @@ export default function TeacherPageClient({
                   </div>
 
                   <div className="flex gap-4 items-center justify-center">
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={() => setShowAddStudent(true)}
-                      className="btn-classical-primary flex items-center space-x-2 mx-auto"
+                      className="btn-classical-primary mx-auto"
                     >
                       <PiUserPlus className="w-4 h-4" />
                       <span>{t('add_student')}</span>
-                    </button>
+                    </Inline>
                   </div>
                 </div>
 
@@ -431,7 +436,10 @@ export default function TeacherPageClient({
                             <h3 className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
                               {studentRel.student.name}
                             </h3>
-                            <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
+                            <Inline
+                              gap={4}
+                              className="text-sm text-theme-tertiary"
+                            >
                               <span>
                                 {t('level_label')}{' '}
                                 {translateNivel(studentRel.student.level)}
@@ -441,10 +449,10 @@ export default function TeacherPageClient({
                                   • {studentRel.student.mainInstrument}
                                 </span>
                               )}
-                            </div>
+                            </Inline>
                           </div>
 
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <span className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
                               {t('status_active')}
                             </span>
@@ -454,7 +462,7 @@ export default function TeacherPageClient({
                             >
                               <PiEye className="w-4 h-4 text-theme-tertiary group-hover/btn:text-brand-primary transition-colors" />
                             </Link>
-                          </div>
+                          </Inline>
                         </div>
 
                         {studentRel.nextLesson && (
@@ -493,13 +501,15 @@ export default function TeacherPageClient({
                       <p className="text-theme-secondary max-w-sm mx-auto mb-4">
                         {t('no_students_description')}
                       </p>
-                      <button
+                      <Inline
+                        as="button"
+                        gap={2}
                         onClick={() => setShowAddStudent(true)}
-                        className="btn-classical-primary flex items-center space-x-2 mx-auto"
+                        className="btn-classical-primary mx-auto"
                       >
                         <PiUserPlus className="w-4 h-4" />
                         <span>{t('add_first_student')}</span>
-                      </button>
+                      </Inline>
                     </div>
                   )}
                 </div>
@@ -510,7 +520,7 @@ export default function TeacherPageClient({
           <div className="lg:col-span-1 space-y-6">
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
-                <div className="flex items-center space-x-3 mb-4">
+                <Inline gap={3} className="mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
                     <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                   </div>
@@ -522,7 +532,7 @@ export default function TeacherPageClient({
                       {todayLessons.length} {t('lessons_scheduled')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
                 <div className="space-y-3">
                   {todayLessons.slice(0, 4).map((lesson) => (
@@ -531,7 +541,7 @@ export default function TeacherPageClient({
                       key={lesson.id}
                     >
                       <div className="classical-card-2 p-3">
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <div className="w-2 h-12 bg-brand-primary rounded-full"></div>
                           <div className="flex-1">
                             <div className="font-medium text-theme-primary text-sm">
@@ -547,7 +557,7 @@ export default function TeacherPageClient({
                           <div className="w-6 h-6 rounded hover:bg-interactive-hover transition-colors flex items-center justify-center">
                             <PiEye className="w-3 h-3 text-theme-tertiary" />
                           </div>
-                        </div>
+                        </Inline>
                       </div>
                     </Link>
                   ))}
@@ -576,7 +586,7 @@ export default function TeacherPageClient({
             {/* 🆕 SEÇÃO ATUALIZADA - PRÓXIMAS AULAS DESTA SEMANA */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
-                <div className="flex items-center space-x-3 mb-4">
+                <Inline gap={3} className="mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
                     <PiClock className="w-4 h-4 text-theme-primary" />
                   </div>
@@ -589,7 +599,7 @@ export default function TeacherPageClient({
                       {upcomingLessonsThisWeek.length === 1 ? 'aula' : 'aulas'})
                     </p>
                   </div>
-                </div>
+                </Inline>
 
                 <div className="space-y-2">
                   {upcomingLessonsThisWeek.map((lesson) => (
@@ -598,7 +608,7 @@ export default function TeacherPageClient({
                       key={lesson.id}
                     >
                       <div className="classical-card-2 p-3">
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <div className="w-2 h-12 bg-brand-primary rounded-full"></div>
                           <div className="flex-1">
                             <div className="font-medium text-theme-primary text-sm">
@@ -614,7 +624,7 @@ export default function TeacherPageClient({
                           <div className="w-6 h-6 rounded hover:bg-interactive-hover transition-colors flex items-center justify-center">
                             <PiEye className="w-3 h-3 text-theme-tertiary" />
                           </div>
-                        </div>
+                        </Inline>
                       </div>
                     </Link>
                   ))}

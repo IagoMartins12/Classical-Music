@@ -12,6 +12,7 @@ import {
   updateArticle,
 } from '@/app/requests/blog/admin-actions';
 import { listCategories } from '@/app/requests/blog/taxonomy';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function EditArticlePage() {
   const router = useRouter();
@@ -168,14 +169,16 @@ export default function EditArticlePage() {
             <p className="mt-2 text-sm text-theme-secondary">{article.title}</p>
           </div>
 
-          <button
+          <Inline
+            as="button"
+            gap={2}
             onClick={handleDelete}
             disabled={deleting}
-            className="btn-classical-delete flex items-center space-x-2"
+            className="btn-classical-delete"
           >
             <PiTrash className="w-4 h-4" />
             <span>{deleting ? 'Deletando...' : 'Deletar'}</span>
-          </button>
+          </Inline>
         </div>
 
         {/* Form */}

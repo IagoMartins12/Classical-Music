@@ -12,6 +12,7 @@ import { updatePrivacySettings } from '@/app/actions/profile';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface PrivacySectionProps {
   user: User;
@@ -139,7 +140,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         {/* Profile Visibility */}
         <div className="classical-card-2 p-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               {settings.profilePublic ? (
                 <PiEye className="w-5 h-5 text-brand-primary" />
               ) : (
@@ -153,7 +154,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
                   {t('privacy_public_profile_description')}
                 </p>
               </div>
-            </div>
+            </Inline>
 
             <ToggleSwitch
               checked={settings.profilePublic}
@@ -165,7 +166,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         {/* Location Visibility */}
         <div className="classical-card-2 p-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <PiMapPin className="w-5 h-5 text-brand-primary" />
               <div>
                 <h4 className="font-medium text-theme-primary">
@@ -175,7 +176,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
                   {t('privacy_show_location_description')}
                 </p>
               </div>
-            </div>
+            </Inline>
 
             <ToggleSwitch
               checked={settings.showLocation}
@@ -194,7 +195,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         {/* Instruments Visibility */}
         <div className="classical-card-2 p-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <PiEye className="w-5 h-5 text-brand-primary" />
               <div>
                 <h4 className="font-medium text-theme-primary">
@@ -204,7 +205,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
                   {t('privacy_show_instruments_description')}
                 </p>
               </div>
-            </div>
+            </Inline>
 
             <ToggleSwitch
               checked={settings.showInstruments}
@@ -223,7 +224,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         {/* Activity Visibility */}
         <div className="classical-card-2 p-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <PiEye className="w-5 h-5 text-brand-primary" />
               <div>
                 <h4 className="font-medium text-theme-primary">
@@ -233,7 +234,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
                   {t('privacy_show_activity_description')}
                 </p>
               </div>
-            </div>
+            </Inline>
 
             <ToggleSwitch
               checked={settings.showActivity}

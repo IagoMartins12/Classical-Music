@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { PiFloppyDisk, PiTag, PiWarningCircle, PiX } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import { createTag, updateTag } from '@/app/requests/blog/admin-actions';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface TagFormProps {
   mode: 'create' | 'edit';
@@ -129,10 +130,10 @@ export function TagForm({ mode, tag }: TagFormProps) {
               maxLength={30}
             />
             {errors.name && (
-              <p className="text-sm text-red-500 mt-1 flex items-center space-x-1">
+              <Inline as="p" gap={1} className="text-sm text-red-500 mt-1">
                 <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.name}</span>
-              </p>
+              </Inline>
             )}
             <p className="text-xs text-theme-tertiary mt-1">
               {formData.name.length}/30 caracteres
@@ -144,7 +145,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
             <label className="block text-sm font-medium text-theme-primary mb-2">
               Slug (URL) *
             </label>
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <span className="text-theme-tertiary text-sm">/blog/tag/</span>
               <input
                 type="text"
@@ -158,12 +159,12 @@ export function TagForm({ mode, tag }: TagFormProps) {
                 placeholder="beethoven"
                 maxLength={60}
               />
-            </div>
+            </Inline>
             {errors.slug && (
-              <p className="text-sm text-red-500 mt-1 flex items-center space-x-1">
+              <Inline as="p" gap={1} className="text-sm text-red-500 mt-1">
                 <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.slug}</span>
-              </p>
+              </Inline>
             )}
           </div>
 
@@ -195,7 +196,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
             <label className="block text-sm font-medium text-theme-primary mb-2">
               Cor *
             </label>
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <input
                 type="color"
                 value={formData.color}
@@ -214,12 +215,12 @@ export function TagForm({ mode, tag }: TagFormProps) {
                 placeholder="#d4af37"
                 maxLength={7}
               />
-            </div>
+            </Inline>
             {errors.color && (
-              <p className="text-sm text-red-500 mt-1 flex items-center space-x-1">
+              <Inline as="p" gap={1} className="text-sm text-red-500 mt-1">
                 <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.color}</span>
-              </p>
+              </Inline>
             )}
           </div>
         </div>
@@ -249,7 +250,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
             <div>
               <p className="text-xs text-theme-tertiary mb-2">Card:</p>
               <div className="classical-card p-4 max-w-xs">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center"
                     style={{
@@ -269,27 +270,31 @@ export function TagForm({ mode, tag }: TagFormProps) {
                       </p>
                     )}
                   </div>
-                </div>
+                </Inline>
               </div>
             </div>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end space-x-4">
-          <button
+        <Inline gap={4} className="justify-end">
+          <Inline
+            as="button"
+            gap={2}
             type="button"
             onClick={() => router.back()}
-            className="btn-classical-secondary flex items-center space-x-2"
+            className="btn-classical-secondary"
             disabled={submitting}
           >
             <PiX className="w-4 h-4" />
             <span>Cancelar</span>
-          </button>
+          </Inline>
 
-          <button
+          <Inline
+            as="button"
+            gap={2}
             type="submit"
-            className="btn-classical-primary flex items-center space-x-2"
+            className="btn-classical-primary"
             disabled={submitting}
           >
             <PiFloppyDisk className="w-4 h-4" />
@@ -300,8 +305,8 @@ export function TagForm({ mode, tag }: TagFormProps) {
                   ? 'Criar Tag'
                   : 'Salvar Alterações'}
             </span>
-          </button>
-        </div>
+          </Inline>
+        </Inline>
       </div>
     </form>
   );

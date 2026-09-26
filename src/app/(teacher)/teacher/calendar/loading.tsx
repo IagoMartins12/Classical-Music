@@ -11,6 +11,7 @@ import {
   PiWarningCircle,
   PiX,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function TeacherCalendarLoading() {
   return (
@@ -109,18 +110,18 @@ export default function TeacherCalendarLoading() {
         <div className="classical-card p-6 mb-4 animate-pulse">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Navigation */}
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
+            <Inline gap={4}>
+              <Inline gap={2}>
                 <div className="w-10 h-10 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
                 <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                 <div className="w-10 h-10 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
-              </div>
+              </Inline>
               <div className="h-10 w-16 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
               <div className="h-10 w-24 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
-            </div>
+            </Inline>
 
             {/* View Mode and Filters */}
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               <div className="flex bg-theme-secondary rounded-lg p-1">
                 <div className="h-8 w-12 bg-theme-tertiary rounded-lg"></div>
                 <div className="h-8 w-16 bg-theme-elevated rounded-lg ml-1"></div>
@@ -129,7 +130,7 @@ export default function TeacherCalendarLoading() {
               <div className="h-10 w-48 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
               <div className="h-10 w-40 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
               <div className="h-10 w-32 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-lg"></div>
-            </div>
+            </Inline>
           </div>
         </div>
 

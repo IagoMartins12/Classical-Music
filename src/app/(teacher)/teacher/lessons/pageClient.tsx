@@ -38,6 +38,7 @@ import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useTeacherLessons } from '@/app/hooks/lessonsSystem/useTeacherLessons';
 import { translateNivel } from '@/app/utils';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface TeacherLessonsPageClientProps {
   initialData: TeacherLessonsData;
@@ -405,7 +406,7 @@ export default function TeacherLessonsPageClient({
                   <h3 className="text-lg font-bold text-theme-primary classical-title truncate">
                     {lesson.title}
                   </h3>
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
                         lesson.status
@@ -454,25 +455,29 @@ export default function TeacherLessonsPageClient({
 
                             {lesson.status === 'SCHEDULED' && (
                               <>
-                                <button
+                                <Inline
+                                  as="button"
+                                  gap={3}
                                   onClick={() =>
                                     handleQuickAttendance(lesson.id, true)
                                   }
-                                  className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-green w-full text-left"
+                                  className="px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-green w-full text-left"
                                 >
                                   <PiUserCheck className="w-4 h-4" />
                                   <span>{t('mark_attendance')}</span>
-                                </button>
+                                </Inline>
 
-                                <button
+                                <Inline
+                                  as="button"
+                                  gap={3}
                                   onClick={() =>
                                     handleQuickAttendance(lesson.id, false)
                                   }
-                                  className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-yellow w-full text-left"
+                                  className="px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-yellow w-full text-left"
                                 >
                                   <PiX className="w-4 h-4" />
                                   <span>{t('mark_absence')}</span>
-                                </button>
+                                </Inline>
 
                                 <Link
                                   href={`/teacher/lessons/${lesson.id}`}
@@ -482,44 +487,49 @@ export default function TeacherLessonsPageClient({
                                   <span>{t('edit')}</span>
                                 </Link>
 
-                                <button
+                                <Inline
+                                  as="button"
+                                  gap={3}
                                   onClick={() => handleQuickCancel(lesson.id)}
-                                  className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-red w-full text-left"
+                                  className="px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-red w-full text-left"
                                 >
                                   <PiX className="w-4 h-4" />
                                   <span>{t('cancel')}</span>
-                                </button>
+                                </Inline>
                               </>
                             )}
                           </div>
                         </>
                       )}
                     </div>
-                  </div>
+                  </Inline>
                 </div>
-                <div className="flex items-center justify-between space-x-4 text-sm w-full text-theme-secondary mt-1">
-                  <div className="flex items-center space-x-1">
+                <Inline
+                  gap={4}
+                  className="justify-between text-sm w-full text-theme-secondary mt-1"
+                >
+                  <Inline gap={1}>
                     <PiCalendarBlank className="w-4 h-4" />
                     <span>{formatDateTime(lesson.scheduledAt)}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
+                  </Inline>
+                  <Inline gap={1}>
                     <PiClock className="w-4 h-4" />
                     <span>
                       {lesson.duration}
                       {t('min_abbreviation')}
                     </span>
-                  </div>
+                  </Inline>
                   {lesson.location && (
-                    <div className="flex items-center space-x-1">
+                    <Inline gap={1}>
                       <PiMapPin className="w-4 h-4" />
                       <span>{lesson.location}</span>
-                    </div>
+                    </Inline>
                   )}
-                </div>
+                </Inline>
               </div>
 
               {/* Student Info */}
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 {lesson.student.image ? (
                   <div className="w-10 h-10 relative rounded-full overflow-hidden">
                     <Image
@@ -543,7 +553,7 @@ export default function TeacherLessonsPageClient({
                     {t('level_label')} {translateNivel(lesson.student.level)}
                   </div>
                 </div>
-              </div>
+              </Inline>
 
               {/* Lesson Info */}
               {lesson.description && (
@@ -583,7 +593,7 @@ export default function TeacherLessonsPageClient({
 
               {/* Progress Indicators */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4 text-sm">
+                <Inline gap={4} className="text-sm">
                   {lesson.studentPresent !== undefined &&
                     lesson.studentPresent !== null && (
                       <div
@@ -605,19 +615,19 @@ export default function TeacherLessonsPageClient({
                     )}
 
                   {lesson.homework && (
-                    <div className="flex items-center space-x-1 text-accent-yellow">
+                    <Inline gap={1} className="text-accent-yellow">
                       <PiBookOpen className="w-4 h-4" />
                       <span>{t('with_homework')}</span>
-                    </div>
+                    </Inline>
                   )}
 
                   {lesson.studentFeedback && (
-                    <div className="flex items-center space-x-1 text-accent-blue">
+                    <Inline gap={1} className="text-accent-blue">
                       <PiChatCenteredText className="w-4 h-4" />
                       <span>{t('with_feedback')}</span>
-                    </div>
+                    </Inline>
                   )}
-                </div>
+                </Inline>
 
                 <div className="text-xs text-theme-tertiary">
                   {lesson.isRecurring && `🔄 ${t('recurring')} • `}
@@ -626,12 +636,12 @@ export default function TeacherLessonsPageClient({
               </div>
               {/* Alerta para aulas que precisam de atenção */}
               {statusInfo.needsAttention && (
-                <div className="flex items-center justify-center space-x-1 mt-3 text-accent-red">
+                <Inline gap={1} className="justify-center mt-3 text-accent-red">
                   <PiWarning className="w-4 h-4 text-red-600" />
                   <span className="strong text-red-600">
                     {t('needs_status_update')}
                   </span>
-                </div>
+                </Inline>
               )}
             </div>
           </div>
@@ -678,28 +688,28 @@ export default function TeacherLessonsPageClient({
                   <h3 className="text-lg font-bold text-theme-primary mb-2">
                     {lesson.title}
                   </h3>
-                  <div className="flex items-center space-x-4 text-sm text-theme-secondary">
-                    <div className="flex items-center space-x-1">
+                  <Inline gap={4} className="text-sm text-theme-secondary">
+                    <Inline gap={1}>
                       <PiCalendarBlank className="w-4 h-4" />
                       <span>{formatDateTime(lesson.scheduledAt)}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
+                    </Inline>
+                    <Inline gap={1}>
                       <PiClock className="w-4 h-4" />
                       <span>
                         {lesson.duration}
                         {t('min_abbreviation')}
                       </span>
-                    </div>
+                    </Inline>
                     {lesson.location && (
-                      <div className="flex items-center space-x-1">
+                      <Inline gap={1}>
                         <PiMapPin className="w-4 h-4" />
                         <span>{lesson.location}</span>
-                      </div>
+                      </Inline>
                     )}
-                  </div>
+                  </Inline>
                 </div>
 
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
                       lesson.status
@@ -752,25 +762,29 @@ export default function TeacherLessonsPageClient({
 
                           {lesson.status === 'SCHEDULED' && (
                             <>
-                              <button
+                              <Inline
+                                as="button"
+                                gap={3}
                                 onClick={() =>
                                   handleQuickAttendance(lesson.id, true)
                                 }
-                                className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-green w-full text-left"
+                                className="px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-green w-full text-left"
                               >
                                 <PiUserCheck className="w-4 h-4" />
                                 <span>{t('mark_attendance')}</span>
-                              </button>
+                              </Inline>
 
-                              <button
+                              <Inline
+                                as="button"
+                                gap={3}
                                 onClick={() =>
                                   handleQuickAttendance(lesson.id, false)
                                 }
-                                className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-yellow w-full text-left"
+                                className="px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-yellow w-full text-left"
                               >
                                 <PiX className="w-4 h-4" />
                                 <span>{t('mark_absence')}</span>
-                              </button>
+                              </Inline>
 
                               <Link
                                 href={`/teacher/lessons/${lesson.id}`}
@@ -780,24 +794,26 @@ export default function TeacherLessonsPageClient({
                                 <span>{t('edit')}</span>
                               </Link>
 
-                              <button
+                              <Inline
+                                as="button"
+                                gap={3}
                                 onClick={() => handleQuickCancel(lesson.id)}
-                                className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-red w-full text-left"
+                                className="px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-red w-full text-left"
                               >
                                 <PiX className="w-4 h-4" />
                                 <span>{t('cancel')}</span>
-                              </button>
+                              </Inline>
                             </>
                           )}
                         </div>
                       </div>
                     )}
                   </div>
-                </div>
+                </Inline>
               </div>
 
               {/* Student Info */}
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 {lesson.student.image ? (
                   <div className="w-10 h-10 relative rounded-full overflow-hidden">
                     <Image
@@ -821,7 +837,7 @@ export default function TeacherLessonsPageClient({
                     {t('level_label')} {translateNivel(lesson.student.level)}
                   </div>
                 </div>
-              </div>
+              </Inline>
 
               {/* Lesson Info */}
               {lesson.description && (
@@ -865,7 +881,7 @@ export default function TeacherLessonsPageClient({
 
               {/* Progress Indicators */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4 text-sm">
+                <Inline gap={4} className="text-sm">
                   {lesson.studentPresent !== undefined &&
                     lesson.studentPresent !== null && (
                       <div
@@ -887,19 +903,19 @@ export default function TeacherLessonsPageClient({
                     )}
 
                   {lesson.homework && (
-                    <div className="flex items-center space-x-1 text-accent-yellow">
+                    <Inline gap={1} className="text-accent-yellow">
                       <PiBookOpen className="w-4 h-4" />
                       <span>{t('with_homework')}</span>
-                    </div>
+                    </Inline>
                   )}
 
                   {lesson.studentFeedback && (
-                    <div className="flex items-center space-x-1 text-accent-blue">
+                    <Inline gap={1} className="text-accent-blue">
                       <PiChatCenteredText className="w-4 h-4" />
                       <span>{t('with_feedback')}</span>
-                    </div>
+                    </Inline>
                   )}
-                </div>
+                </Inline>
 
                 <div className="text-xs text-theme-tertiary">
                   {lesson.isRecurring && `🔄 ${t('recurring')} • `}
@@ -908,12 +924,12 @@ export default function TeacherLessonsPageClient({
               </div>
               {/* Alerta para aulas que precisam de atenção */}
               {statusInfo.needsAttention && (
-                <div className="flex items-center justify-center space-x-1 mt-3 text-accent-red">
+                <Inline gap={1} className="justify-center mt-3 text-accent-red">
                   <PiWarning className="w-4 h-4 text-red-600" />
                   <span className="strong text-red-600">
                     {t('needs_status_update')}
                   </span>
-                </div>
+                </Inline>
               )}
             </div>
           </div>
@@ -948,16 +964,18 @@ export default function TeacherLessonsPageClient({
               {error || errorMessage}
             </p>
             <div className="space-y-3">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={handleRefresh}
                 disabled={loading.lessons}
-                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+                className="btn-classical-primary w-full justify-center"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${loading.lessons ? 'animate-spin' : ''}`}
                 />
                 <span>{loading.lessons ? t('updating') : t('try_again')}</span>
-              </button>
+              </Inline>
               {error && (
                 <button
                   onClick={clearError}
@@ -1095,7 +1113,7 @@ export default function TeacherLessonsPageClient({
 
               {/* Filters and Controls */}
               <div className="flex flex-col gap-4 sm:flex-row sm:gap-0 items-center space-x-4">
-                <div className="flex items-center space-x-4">
+                <Inline gap={4}>
                   <button
                     onClick={() => setShowFilters(!showFilters)}
                     className={`btn-classical-secondary flex items-center space-x-2 ${
@@ -1108,10 +1126,12 @@ export default function TeacherLessonsPageClient({
                     <span>{t('filters')}</span>
                   </button>
 
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={handleRefresh}
                     disabled={loading.lessons}
-                    className="btn-classical-secondary flex items-center space-x-2"
+                    className="btn-classical-secondary"
                   >
                     <PiArrowsClockwise
                       className={`w-4 h-4 ${
@@ -1119,10 +1139,10 @@ export default function TeacherLessonsPageClient({
                       }`}
                     />
                     <span>{t('refresh')}</span>
-                  </button>
-                </div>
+                  </Inline>
+                </Inline>
 
-                <div className="flex items-center space-x-4">
+                <Inline gap={4}>
                   <Link
                     href="/teacher/lessons/create"
                     className="btn-classical-primary flex items-center space-x-2"
@@ -1135,7 +1155,7 @@ export default function TeacherLessonsPageClient({
                     viewMode={viewMode}
                     onViewModeChange={setViewMode}
                   />
-                </div>
+                </Inline>
               </div>
             </div>
 
@@ -1218,10 +1238,12 @@ export default function TeacherLessonsPageClient({
             {/* Load More */}
             {pagination.hasMore && (
               <div className="text-center py-8">
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={loadMoreLessons}
                   disabled={loading.lessons}
-                  className="btn-classical-secondary flex items-center space-x-2 mx-auto"
+                  className="btn-classical-secondary mx-auto"
                 >
                   {loading.lessons ? (
                     <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -1231,7 +1253,7 @@ export default function TeacherLessonsPageClient({
                   <span>
                     {loading.lessons ? t('updating') : t('load_more')}
                   </span>
-                </button>
+                </Inline>
               </div>
             )}
           </div>

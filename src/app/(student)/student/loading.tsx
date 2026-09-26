@@ -14,6 +14,7 @@ import {
   PiUser,
   PiUserCheck,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function StudentDashboardLoading() {
   return (
@@ -110,7 +111,7 @@ export default function StudentDashboardLoading() {
             {/* Quick Actions Skeleton */}
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                     <PiTarget className="w-5 h-5 text-theme-inverse/20" />
                   </div>
@@ -118,20 +119,20 @@ export default function StudentDashboardLoading() {
                     <div className="h-5 bg-theme-primary/30 rounded w-32 mb-1"></div>
                     <div className="h-3 bg-theme-tertiary/30 rounded w-48"></div>
                   </div>
-                </div>
+                </Inline>
                 <div className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="classical-card-2 p-4">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-lg"></div>
                       <div>
                         <div className="h-4 bg-theme-primary/30 rounded w-24 mb-1"></div>
                         <div className="h-3 bg-theme-tertiary/30 rounded w-32"></div>
                       </div>
-                    </div>
+                    </Inline>
                   </div>
                 ))}
               </div>
@@ -140,7 +141,7 @@ export default function StudentDashboardLoading() {
             {/* Recent Lessons Skeleton */}
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                     <PiClock className="w-5 h-5 text-theme-inverse/20" />
                   </div>
@@ -148,7 +149,7 @@ export default function StudentDashboardLoading() {
                     <div className="h-5 bg-theme-primary/30 rounded w-32 mb-1"></div>
                     <div className="h-3 bg-theme-tertiary/30 rounded w-56"></div>
                   </div>
-                </div>
+                </Inline>
                 <div className="h-4 w-20 bg-brand-primary/30 rounded"></div>
               </div>
 
@@ -158,17 +159,17 @@ export default function StudentDashboardLoading() {
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <div className="h-4 bg-theme-primary/30 rounded w-48 mb-1"></div>
-                        <div className="flex items-center space-x-4 mb-2">
+                        <Inline gap={4} className="mb-2">
                           <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
                           <div className="h-3 bg-theme-tertiary/30 rounded w-16"></div>
                           <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
-                        </div>
+                        </Inline>
                       </div>
 
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <div className="h-6 w-20 bg-accent-green/20 border border-accent-green/30 rounded-full"></div>
                         <div className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
-                      </div>
+                      </Inline>
                     </div>
 
                     {/* Lesson Details */}
@@ -211,7 +212,7 @@ export default function StudentDashboardLoading() {
             {/* Study Progress Skeleton */}
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center">
                     <PiMusicNotes className="w-5 h-5 text-theme-inverse/20" />
                   </div>
@@ -219,7 +220,7 @@ export default function StudentDashboardLoading() {
                     <div className="h-5 bg-theme-primary/30 rounded w-28 mb-1"></div>
                     <div className="h-3 bg-theme-tertiary/30 rounded w-56"></div>
                   </div>
-                </div>
+                </Inline>
                 <div className="h-4 w-24 bg-brand-primary/30 rounded"></div>
               </div>
 
@@ -253,10 +254,10 @@ export default function StudentDashboardLoading() {
                             <div className="h-4 bg-theme-primary/30 rounded w-28 mb-1"></div>
                             <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
                           </div>
-                          <div className="flex items-center space-x-1">
+                          <Inline gap={1}>
                             <div className="h-3 bg-accent-green/20 rounded w-8"></div>
                             <PiHeart className="w-3 h-3 text-accent-red/30" />
-                          </div>
+                          </Inline>
                         </div>
                       </div>
                     ))}
@@ -270,7 +271,7 @@ export default function StudentDashboardLoading() {
           <div className="lg:col-span-1 space-y-6">
             {/* Today's Schedule Skeleton */}
             <div className="classical-card p-6 animate-pulse">
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-lg flex items-center justify-center">
                   <PiCalendarBlank className="w-4 h-4 text-theme-inverse/20" />
                 </div>
@@ -278,12 +279,12 @@ export default function StudentDashboardLoading() {
                   <div className="h-4 bg-theme-primary/30 rounded w-16 mb-1"></div>
                   <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
                 </div>
-              </div>
+              </Inline>
 
               <div className="space-y-3">
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="classical-card-2 p-3">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div className="w-2 h-12 bg-brand-primary/30 rounded-full"></div>
                       <div className="flex-1">
                         <div className="h-4 bg-theme-primary/30 rounded w-16 mb-1"></div>
@@ -291,7 +292,7 @@ export default function StudentDashboardLoading() {
                         <div className="h-3 bg-accent-blue/20 rounded w-12"></div>
                       </div>
                       <div className="w-6 h-6 bg-theme-elevated rounded"></div>
-                    </div>
+                    </Inline>
                   </div>
                 ))}
               </div>
@@ -299,7 +300,7 @@ export default function StudentDashboardLoading() {
 
             {/* Upcoming Lessons Skeleton */}
             <div className="classical-card p-6 animate-pulse">
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-lg flex items-center justify-center">
                   <PiClock className="w-4 h-4 text-theme-inverse/20" />
                 </div>
@@ -307,7 +308,7 @@ export default function StudentDashboardLoading() {
                   <div className="h-4 bg-theme-primary/30 rounded w-28 mb-1"></div>
                   <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
                 </div>
-              </div>
+              </Inline>
 
               <div className="space-y-2">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -327,7 +328,7 @@ export default function StudentDashboardLoading() {
 
             {/* Teachers Skeleton */}
             <div className="classical-card p-6 animate-pulse">
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-lg flex items-center justify-center">
                   <PiUserCheck className="w-4 h-4 text-theme-inverse/20" />
                 </div>
@@ -335,12 +336,12 @@ export default function StudentDashboardLoading() {
                   <div className="h-4 bg-theme-primary/30 rounded w-32 mb-1"></div>
                   <div className="h-3 bg-theme-tertiary/30 rounded w-40"></div>
                 </div>
-              </div>
+              </Inline>
 
               <div className="space-y-3">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="classical-card-2 p-3">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       {/* Avatar */}
                       <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full"></div>
 
@@ -350,7 +351,7 @@ export default function StudentDashboardLoading() {
                         <div className="h-3 bg-theme-tertiary/30 rounded w-32 mb-1"></div>
                         <div className="h-3 bg-accent-blue/20 rounded w-20"></div>
                       </div>
-                    </div>
+                    </Inline>
                   </div>
                 ))}
               </div>

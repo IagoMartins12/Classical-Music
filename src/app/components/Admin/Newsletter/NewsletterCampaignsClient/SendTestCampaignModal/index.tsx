@@ -16,6 +16,7 @@ import Input from '@/app/components/Common/Inputs';
 import Modal from '@/app/components/Modal';
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import LoadingAdminState from '../../../Common/LoadingState';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface SendTestCampaignModalProps {
   isOpen: boolean;
@@ -269,7 +270,7 @@ export default function SendTestCampaignModal({
                     : 'border-theme-secondary hover:border-theme-primary'
                 }`}
               >
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <input
                     type="checkbox"
                     checked={formData.selectedListIds.includes(list.id)}
@@ -290,7 +291,7 @@ export default function SendTestCampaignModal({
                       </div>
                     )}
                   </div>
-                </div>
+                </Inline>
                 <div className="text-right">
                   <div className="text-sm font-medium text-theme-primary">
                     {list.totalEmails} emails

@@ -9,6 +9,7 @@ import { ArticlePageClient } from '@/app/components/blog/ArticlePageClient';
 import { ApproveArticleButton } from '@/app/components/blog/admin/ApproveArticleButton';
 import { backgroundAudioType, getArticle } from '@/app/requests/blog/articles';
 import { getServerSession } from '@/app/libs/api/server-session';
+import { Inline } from '@/app/components/ui/Layout';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,7 +59,7 @@ export default async function ArticlePreviewPage({ params }: PageProps) {
       <div className="sticky top-0 z-50 bg-yellow-500 border-b-4 border-yellow-600 shadow-lg">
         <div className="section-wrap">
           <div className="py-4 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <PiWarningCircle className="w-6 h-6 text-yellow-900" />
               <div>
                 <p className="text-sm font-bold text-yellow-900">
@@ -68,9 +69,9 @@ export default async function ArticlePreviewPage({ params }: PageProps) {
                   Esta é uma visualização. O artigo ainda não está publicado.
                 </p>
               </div>
-            </div>
+            </Inline>
 
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <Link
                 href={`/blog/admin/articles/${article.id}/edit`}
                 className="px-4 py-2 bg-white text-yellow-900 rounded-lg font-medium hover:bg-yellow-50 transition-all flex items-center space-x-2"
@@ -83,7 +84,7 @@ export default async function ArticlePreviewPage({ params }: PageProps) {
                 articleId={article.id}
                 slug={article.slug}
               />
-            </div>
+            </Inline>
           </div>
         </div>
       </div>

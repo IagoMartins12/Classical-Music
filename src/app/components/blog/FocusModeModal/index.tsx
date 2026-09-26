@@ -4,6 +4,7 @@
 import Image from '@/app/components/SmartImage';
 import { JSX, useEffect, useState } from 'react';
 import { PiMinus, PiPlus, PiX } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface FocusModeModalProps {
   isOpen: boolean;
@@ -63,9 +64,12 @@ export function FocusModeModal({
       />
 
       {/* CONTROLES FLUTUANTES */}
-      <div className="absolute top-8 right-8 flex items-center space-x-4 z-10">
+      <Inline gap={4} className="absolute top-8 right-8 z-10">
         {/* Controle de Fonte */}
-        <div className="flex items-center space-x-2 bg-theme-elevated rounded-full px-4 py-2 shadow-2xl border border-theme-secondary">
+        <Inline
+          gap={2}
+          className="bg-theme-elevated rounded-full px-4 py-2 shadow-2xl border border-theme-secondary"
+        >
           <button
             onClick={() => changeFontSize(-2)}
             className="p-1 hover:bg-theme-classical rounded-full transition-colors"
@@ -83,7 +87,7 @@ export function FocusModeModal({
           >
             <PiPlus className="w-4 h-4 text-theme-primary" />
           </button>
-        </div>
+        </Inline>
 
         {/* Botão Fechar */}
         <button
@@ -93,7 +97,7 @@ export function FocusModeModal({
         >
           <PiX className="w-5 h-5" />
         </button>
-      </div>
+      </Inline>
 
       {/* CONTEÚDO */}
       <div className="relative max-w-4xl w-full h-full overflow-y-auto px-8 py-16 z-1">

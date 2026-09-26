@@ -2,6 +2,7 @@
 'use client';
 
 import { PiCalendarBlank, PiClock, PiMapPin } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface DayViewProps {
   date: Date;
@@ -64,18 +65,18 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
                   </h3>
 
                   <div className="space-y-2 text-sm text-theme-secondary">
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <PiClock className="w-4 h-4" />
                       <span>{formatEventTime(event.start, event.end)}</span>
-                    </div>
+                    </Inline>
 
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <PiMapPin className="w-4 h-4" />
                       <span>
                         {event.venue.name} - {event.venue.city},{' '}
                         {event.venue.state}
                       </span>
-                    </div>
+                    </Inline>
 
                     {event.composers && event.composers.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-2">

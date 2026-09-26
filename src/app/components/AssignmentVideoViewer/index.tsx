@@ -17,6 +17,7 @@ import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface VideoSubmission {
   filename: string;
@@ -144,12 +145,12 @@ export default function AssignmentVideoViewer({
               <h3 className="text-lg font-bold text-theme-primary mb-1">
                 {assignment.title}
               </h3>
-              <div className="flex items-center space-x-4 text-sm text-theme-secondary">
-                <span className="flex items-center space-x-1">
+              <Inline gap={4} className="text-sm text-theme-secondary">
+                <Inline as="span" gap={1}>
                   <PiUser className="w-3 h-3" />
                   <span>{assignment.student.name}</span>
-                </span>
-                <span className="flex items-center space-x-1">
+                </Inline>
+                <Inline as="span" gap={1}>
                   <PiCalendarBlank className="w-3 h-3" />
                   <span>
                     {formatDistanceToNow(new Date(videoSubmission.uploadedAt), {
@@ -157,11 +158,11 @@ export default function AssignmentVideoViewer({
                       locale: ptBR,
                     })}
                   </span>
-                </span>
-              </div>
+                </Inline>
+              </Inline>
             </div>
 
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <Button
                 variant="ghost"
                 size="sm"
@@ -181,7 +182,7 @@ export default function AssignmentVideoViewer({
                   Fechar
                 </Button>
               )}
-            </div>
+            </Inline>
           </div>
         </div>
 
@@ -206,7 +207,7 @@ export default function AssignmentVideoViewer({
             </video>
 
             {/* Video Controls Overlay */}
-            <div className="absolute bottom-4 right-4 flex items-center space-x-2">
+            <Inline gap={2} className="absolute bottom-4 right-4">
               <Button
                 variant="secondary"
                 size="sm"
@@ -216,7 +217,7 @@ export default function AssignmentVideoViewer({
               >
                 {isFullscreen ? 'Sair' : 'Tela Cheia'}
               </Button>
-            </div>
+            </Inline>
           </div>
         </div>
 
@@ -317,7 +318,7 @@ export default function AssignmentVideoViewer({
           <div className="p-4 border-t border-theme-primary">
             <div className="flex items-center justify-between">
               <div className="text-sm text-theme-secondary">
-                <span className="flex items-center space-x-1">
+                <Inline as="span" gap={1}>
                   <PiClock className="w-3 h-3" />
                   <span>
                     Enviado{' '}
@@ -326,10 +327,10 @@ export default function AssignmentVideoViewer({
                       locale: ptBR,
                     })}
                   </span>
-                </span>
+                </Inline>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 {canDownload && (
                   <Button
                     variant="secondary"
@@ -344,7 +345,7 @@ export default function AssignmentVideoViewer({
                 <Button variant="ghost" onClick={onClose}>
                   Fechar
                 </Button>
-              </div>
+              </Inline>
             </div>
           </div>
         )}

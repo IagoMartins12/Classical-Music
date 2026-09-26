@@ -14,6 +14,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import { processTemplate } from '@/app/libs/newsletter/emailTemplates';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface TemplatePreviewModalProps {
   isOpen: boolean;
@@ -155,15 +156,15 @@ export default function TemplatePreviewModal({
       <div className="bg-theme-primary rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
+          <Inline gap={4}>
+            <Inline gap={2}>
               <PiEye className="w-5 h-5 text-theme-primary" />
               <h3 className="text-lg font-bold text-theme-primary">
                 Preview: {template.name}
               </h3>
-            </div>
+            </Inline>
 
-            <div className="flex items-center space-x-1 bg-theme-secondary rounded-lg p-1">
+            <Inline gap={1} className="bg-theme-secondary rounded-lg p-1">
               <button
                 onClick={() => setViewMode('html')}
                 className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
@@ -197,13 +198,13 @@ export default function TemplatePreviewModal({
                 <PiCode className="w-4 h-4 inline mr-1" />
                 Código
               </button>
-            </div>
-          </div>
+            </Inline>
+          </Inline>
 
-          <div className="flex items-center space-x-4">
+          <Inline gap={4}>
             {/* Device Mode Selector */}
             {viewMode === 'html' && (
-              <div className="flex items-center space-x-1 bg-theme-secondary rounded-lg p-1">
+              <Inline gap={1} className="bg-theme-secondary rounded-lg p-1">
                 <button
                   onClick={() => setDeviceMode('desktop')}
                   className={`p-2 rounded transition-colors ${
@@ -237,7 +238,7 @@ export default function TemplatePreviewModal({
                 >
                   <PiDeviceMobile className="w-4 h-4" />
                 </button>
-              </div>
+              </Inline>
             )}
 
             <button
@@ -246,7 +247,7 @@ export default function TemplatePreviewModal({
             >
               <PiX className="w-6 h-6" />
             </button>
-          </div>
+          </Inline>
         </div>
 
         {/* Template Info */}
@@ -352,11 +353,11 @@ export default function TemplatePreviewModal({
             {viewMode !== 'html' && ''}
           </div>
 
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             <Button variant="ghost" onClick={onClose}>
               Fechar
             </Button>
-          </div>
+          </Inline>
         </div>
       </div>
     </Modal>

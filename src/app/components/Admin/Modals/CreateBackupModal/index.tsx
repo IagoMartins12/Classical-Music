@@ -12,6 +12,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CreateBackupModalProps {
   isOpen: boolean;
@@ -68,7 +69,7 @@ export default function CreateBackupModal({
       <div className="classical-card max-w-2xl w-full max-h-[80vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
               <PiDownloadSimple className="w-5 h-5 text-theme-primary" />
             </div>
@@ -80,7 +81,7 @@ export default function CreateBackupModal({
                 Configure um novo backup do sistema
               </p>
             </div>
-          </div>
+          </Inline>
           <button
             onClick={onClose}
             className="p-2 rounded-lg text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary transition-all"
@@ -145,7 +146,11 @@ export default function CreateBackupModal({
             <h3 className="text-lg font-bold text-theme-primary">Conteúdo</h3>
 
             <div className="grid grid-cols-2 gap-4">
-              <label className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-all cursor-pointer">
+              <Inline
+                as="label"
+                gap={3}
+                className="p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-all cursor-pointer"
+              >
                 <Input
                   type="checkbox"
                   checked={config?.includeDatabase}
@@ -164,9 +169,13 @@ export default function CreateBackupModal({
                     Dados da aplicação
                   </div>
                 </div>
-              </label>
+              </Inline>
 
-              <label className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-all cursor-pointer">
+              <Inline
+                as="label"
+                gap={3}
+                className="p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-all cursor-pointer"
+              >
                 <Input
                   type="checkbox"
                   checked={config?.includeFiles}
@@ -185,7 +194,7 @@ export default function CreateBackupModal({
                     PDFs e uploads
                   </div>
                 </div>
-              </label>
+              </Inline>
             </div>
           </div>
 
@@ -194,7 +203,7 @@ export default function CreateBackupModal({
             <h3 className="text-lg font-bold text-theme-primary">Opções</h3>
 
             <div className="grid grid-cols-2 gap-4">
-              <label className="flex items-center space-x-3">
+              <Inline as="label" gap={3}>
                 <Input
                   type="checkbox"
                   checked={config?.compression}
@@ -207,9 +216,9 @@ export default function CreateBackupModal({
                   className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2"
                 />
                 <span className="text-theme-primary">Compressão</span>
-              </label>
+              </Inline>
 
-              <label className="flex items-center space-x-3">
+              <Inline as="label" gap={3}>
                 <Input
                   type="checkbox"
                   checked={config?.encryption}
@@ -222,7 +231,7 @@ export default function CreateBackupModal({
                   className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2"
                 />
                 <span className="text-theme-primary">Criptografia</span>
-              </label>
+              </Inline>
             </div>
 
             <div>
@@ -294,7 +303,10 @@ export default function CreateBackupModal({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary">
+          <Inline
+            gap={3}
+            className="justify-end pt-6 border-t border-theme-secondary"
+          >
             <Button
               type="button"
               variant="ghost"
@@ -311,7 +323,7 @@ export default function CreateBackupModal({
             >
               Criar Backup
             </Button>
-          </div>
+          </Inline>
         </form>
       </div>
     </div>

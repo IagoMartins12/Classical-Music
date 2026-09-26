@@ -18,6 +18,7 @@ import {
   AnimatedCard,
 } from '../animation/AnimatedComponents';
 import Select from '../Common/Select';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface DifficultyClientProps {
   difficultyData: DifficultyResponse;
@@ -221,7 +222,7 @@ export default function DifficultyClient({
             </div>
 
             {/* System Selector */}
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <span className="text-sm font-medium text-theme-secondary">
                 Sistema:
               </span>
@@ -235,7 +236,7 @@ export default function DifficultyClient({
                 className="input-classical-2 text-sm min-w-[120px]"
                 disabled={isPending}
               />
-            </div>
+            </Inline>
           </div>
 
           {/* Search Bar */}

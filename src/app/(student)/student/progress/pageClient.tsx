@@ -40,6 +40,7 @@ import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import { useTranslation } from '@/app/context/TranslationContext';
 import dynamic from 'next/dynamic';
+import { Inline } from '@/app/components/ui/Layout';
 
 /**
  * Os gráficos descem à parte: o `recharts` pesa mais que o resto desta tela
@@ -108,10 +109,12 @@ export default function StudentProgressPageClient({
               {error || errorMessage}
             </p>
             <div className="space-y-3">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={refreshProgress}
                 disabled={loading.refreshing}
-                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+                className="btn-classical-primary w-full justify-center"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${
@@ -121,7 +124,7 @@ export default function StudentProgressPageClient({
                 <span>
                   {loading.refreshing ? t('loading') : t('try_again')}
                 </span>
-              </button>
+              </Inline>
               {error && (
                 <button
                   onClick={clearError}
@@ -173,7 +176,7 @@ export default function StudentProgressPageClient({
         {/* Period Selector */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               <h2 className="text-lg font-bold text-theme-primary">
                 {formatPeriodLabel(currentPeriod)}
               </h2>
@@ -188,9 +191,9 @@ export default function StudentProgressPageClient({
                   )}{' '}
                 </span>
               )}
-            </div>
+            </Inline>
 
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <Select
                 value={currentPeriod}
                 onChange={(e) => handlePeriodChange(e.target.value)}
@@ -209,7 +212,7 @@ export default function StudentProgressPageClient({
                   }`}
                 />
               </button>
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -477,7 +480,7 @@ export default function StudentProgressPageClient({
                       delay={index * 0.1}
                     >
                       <div className="p-4 bg-theme-elevated rounded-lg border border-theme-secondary hover:border-brand-primary transition-all duration-300">
-                        <div className="flex items-center space-x-3 mb-4">
+                        <Inline gap={3} className="mb-4">
                           {teacher.teacherImage ? (
                             <div className="w-10 h-10 relative rounded-full overflow-hidden">
                               <Image
@@ -501,7 +504,7 @@ export default function StudentProgressPageClient({
                               {teacher.relationshipDuration}
                             </p>
                           </div>
-                        </div>
+                        </Inline>
 
                         <div className="space-y-2">
                           <div className="flex justify-between text-sm">
@@ -525,12 +528,12 @@ export default function StudentProgressPageClient({
                               <span className="text-theme-secondary">
                                 {t('rating')}
                               </span>
-                              <div className="flex items-center space-x-1">
+                              <Inline gap={1}>
                                 <span className="text-accent-yellow font-medium">
                                   {teacher.avgRating.toFixed(1)}
                                 </span>
                                 <PiStar className="w-3 h-3 text-accent-yellow" />
-                              </div>
+                              </Inline>
                             </div>
                           )}
                         </div>
@@ -582,14 +585,14 @@ export default function StudentProgressPageClient({
                     delay={index * 0.1}
                   >
                     <div className="p-4 bg-gradient-to-r from-accent-green/5 to-accent-blue/5 border border-accent-green/30 rounded-lg">
-                      <div className="flex items-center space-x-3 mb-2">
+                      <Inline gap={3} className="mb-2">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center">
                           <PiMedal className="w-4 h-4 text-theme-primary" />
                         </div>
                         <h4 className="font-bold text-theme-primary">
                           {achievement.title}
                         </h4>
-                      </div>
+                      </Inline>
                       <p className="text-sm text-theme-secondary">
                         {achievement.description}
                       </p>
@@ -668,12 +671,12 @@ export default function StudentProgressPageClient({
                               )}
                             </div>
                             {work.mastery && (
-                              <div className="flex items-center space-x-1 ml-3">
+                              <Inline gap={1} className="ml-3">
                                 <span className="text-xs text-theme-secondary">
                                   {work.mastery}/5
                                 </span>
                                 <PiStar className="w-3 h-3 text-accent-yellow" />
-                              </div>
+                              </Inline>
                             )}
                           </div>
                           {work.learnedDate && (

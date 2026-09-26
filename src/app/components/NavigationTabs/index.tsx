@@ -3,6 +3,7 @@
 
 import { useTranslation } from '@/app/context/TranslationContext';
 import { PiBookOpen, PiClock, PiMusicNotes } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Props {
   activeTab: 'history' | 'timeline';
@@ -34,14 +35,14 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
       <div className="relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center space-x-3 mb-4">
+          <Inline gap={3} className="justify-center mb-4">
             <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center shadow-theme-glow">
               <PiMusicNotes className="w-5 h-5 text-theme-primary" />
             </div>
             <h2 className="text-2xl font-bold text-theme-primary classical-title">
               {t('navigation_jsx_h2_children_0__navegue_historia')}
             </h2>
-          </div>
+          </Inline>
           <p className="text-theme-secondary classical-subtitle">
             {t('navigation_jsx_p_children_0__escolha_explorar')}
           </p>
@@ -127,14 +128,14 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
 
                     {/* Active state indicator */}
                     {isActive && (
-                      <div className="flex items-center space-x-2 mt-3">
+                      <Inline gap={2} className="mt-3">
                         <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
                         <span className="text-xs font-medium text-brand-primary">
                           {t(
                             'navigation_jsx_span_children_0__visualizacao_atual'
                           )}
                         </span>
-                      </div>
+                      </Inline>
                     )}
                   </div>
 
@@ -175,7 +176,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
         </div>
 
         {/* Bottom decoration */}
-        <div className="flex items-center justify-center space-x-2 mt-8">
+        <Inline gap={2} className="justify-center mt-8">
           <div className="w-1 h-1 bg-brand-primary rounded-full animate-pulse"></div>
           <div
             className="w-2 h-2 bg-accent-purple rounded-full animate-pulse"
@@ -185,7 +186,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
             className="w-1 h-1 bg-brand-primary rounded-full animate-pulse"
             style={{ animationDelay: '1s' }}
           ></div>
-        </div>
+        </Inline>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@
 import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
 import React from 'react';
 import { PiGlobe } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface LanguageToggleProps {
   variant?: 'default' | 'compact' | 'navbar' | 'globe';
@@ -232,9 +233,11 @@ export const LanguageDropdown: React.FC<{
 
   return (
     <div className={`relative ${className}`}>
-      <button
+      <Inline
+        as="button"
+        gap={2}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg hover:bg-interactive-hover transition-colors duration-200 disabled:opacity-50"
+        className="px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg hover:bg-interactive-hover transition-colors duration-200 disabled:opacity-50"
       >
         <div className="relative">
           <PiGlobe className="w-4 h-4 text-brand-primary" />
@@ -272,7 +275,7 @@ export const LanguageDropdown: React.FC<{
             d="M19 9l-7 7-7-7"
           />
         </svg>
-      </button>
+      </Inline>
 
       {isOpen && (
         <>

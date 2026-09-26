@@ -17,6 +17,7 @@ import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { listInstruments } from '@/app/requests/admin/ads';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CreateAdModalProps {
   showCreateModal: boolean;
@@ -296,7 +297,7 @@ export default function CreateAdModal({
       <div className="w-full">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center">
               <PiPlus className="w-5 h-5 text-white" />
             </div>
@@ -308,7 +309,7 @@ export default function CreateAdModal({
                 Criar nova campanha publicitária
               </p>
             </div>
-          </div>
+          </Inline>
         </div>
 
         {/* Alert sobre mídia */}
@@ -347,10 +348,14 @@ export default function CreateAdModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Informações Básicas */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-lg font-semibold text-theme-primary"
+            >
               <PiTarget className="w-5 h-5" />
               <span>Informações Básicas</span>
-            </h3>
+            </Inline>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -436,10 +441,14 @@ export default function CreateAdModal({
 
           {/* Segmentação */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-lg font-semibold text-theme-primary"
+            >
               <PiTarget className="w-5 h-5" />
               <span>Segmentação</span>
-            </h3>
+            </Inline>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -501,10 +510,14 @@ export default function CreateAdModal({
 
           {/* Link e Call-to-Action */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-lg font-semibold text-theme-primary"
+            >
               <PiChatCircle className="w-5 h-5" />
               <span>Call-to-Action</span>
-            </h3>
+            </Inline>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -659,7 +672,7 @@ export default function CreateAdModal({
                 Exibir em:
               </label>
               <div className="flex space-x-4">
-                <label className="flex items-center space-x-2">
+                <Inline as="label" gap={2}>
                   <Checkbox
                     type="checkbox"
                     label="Mobile"
@@ -669,8 +682,8 @@ export default function CreateAdModal({
                     }
                     className="rounded border-theme-primary"
                   />
-                </label>
-                <label className="flex items-center space-x-2">
+                </Inline>
+                <Inline as="label" gap={2}>
                   <Checkbox
                     label="Tablet"
                     type="checkbox"
@@ -680,8 +693,8 @@ export default function CreateAdModal({
                     }
                     className="rounded border-theme-primary"
                   />
-                </label>
-                <label className="flex items-center space-x-2">
+                </Inline>
+                <Inline as="label" gap={2}>
                   <Checkbox
                     label="Desktop"
                     type="checkbox"
@@ -691,7 +704,7 @@ export default function CreateAdModal({
                     }
                     className="rounded border-theme-primary"
                   />
-                </label>
+                </Inline>
               </div>
             </div>
           </div>

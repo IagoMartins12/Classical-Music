@@ -47,6 +47,7 @@ import { translateNivel } from '@/app/utils';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { updateLessonRequest } from '@/app/requests/portal/lesson-actions';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface TeacherLessonDetailsPageClientProps {
   lessonData: LessonDetailsData | null;
@@ -708,16 +709,18 @@ export default function TeacherLessonDetailsPageClient({
               {error || errorMessage}
             </p>
             <div className="space-y-3">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={refreshLesson}
                 disabled={loading.update}
-                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+                className="btn-classical-primary w-full justify-center"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${loading.update ? 'animate-spin' : ''}`}
                 />
                 <span>{loading.update ? t('loading') : t('try_again')}</span>
-              </button>
+              </Inline>
               <Link
                 href="/teacher/lessons"
                 className="btn-classical-secondary w-full text-center block"
@@ -758,8 +761,8 @@ export default function TeacherLessonDetailsPageClient({
         {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mb-8">
-            <div className="flex w-full justify-between items-center space-x-4">
-              <div className="flex items-center space-x-4">
+            <Inline gap={4} className="w-full justify-between">
+              <Inline gap={4}>
                 <Link
                   href="/teacher/lessons"
                   className="w-10 h-10 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
@@ -774,7 +777,7 @@ export default function TeacherLessonDetailsPageClient({
                     {t('page_subtitle')}
                   </p>
                 </div>
-              </div>
+              </Inline>
 
               <span
                 className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
@@ -783,30 +786,34 @@ export default function TeacherLessonDetailsPageClient({
               >
                 {getStatusLabel(lesson.status)}
               </span>
-            </div>
+            </Inline>
 
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               {canDelete && (
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() => setShowDeleteModal(true)}
-                  className="btn-classical-secondary text-accent-red border-accent-red/30 hover:bg-accent-red/10 flex items-center space-x-2"
+                  className="btn-classical-secondary text-accent-red border-accent-red/30 hover:bg-accent-red/10"
                 >
                   <PiTrash className="w-4 h-4" />
                   <span>{t('btn_delete')}</span>
-                </button>
+                </Inline>
               )}
 
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={refreshLesson}
                 disabled={loading.update}
-                className="btn-classical-secondary flex items-center space-x-2"
+                className="btn-classical-secondary"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${loading.update ? 'animate-spin' : ''}`}
                 />
                 <span>{t('btn_refresh')}</span>
-              </button>
-            </div>
+              </Inline>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -818,36 +825,46 @@ export default function TeacherLessonDetailsPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
+                  <Inline
+                    as="h2"
+                    gap={2}
+                    className="text-lg font-bold text-theme-primary"
+                  >
                     <PiCalendarBlank className="w-5 h-5" />
                     <span>{t('basic_info_title')}</span>
-                  </h2>
+                  </Inline>
                   {canEditLesson && !isEditing.basicInfo ? (
-                    <button
+                    <Inline
+                      as="button"
+                      gap={1}
                       onClick={() => setEditMode('basicInfo', true)}
-                      className="btn-classical-secondary flex items-center space-x-1 text-sm"
+                      className="btn-classical-secondary text-sm"
                     >
                       <PiPencilLine className="w-3 h-3" />
                       <span>{t('btn_edit')}</span>
-                    </button>
+                    </Inline>
                   ) : canEditLesson && isEditing.basicInfo ? (
-                    <div className="flex items-center space-x-2">
-                      <button
+                    <Inline gap={2}>
+                      <Inline
+                        as="button"
+                        gap={1}
                         onClick={handleSaveBasicInfo}
                         disabled={loading.update}
-                        className="btn-classical-primary flex items-center space-x-1 text-sm"
+                        className="btn-classical-primary text-sm"
                       >
                         <PiFloppyDisk className="w-3 h-3" />
                         <span>{t('btn_save')}</span>
-                      </button>
-                      <button
+                      </Inline>
+                      <Inline
+                        as="button"
+                        gap={1}
                         onClick={() => setEditMode('basicInfo', false)}
-                        className="btn-classical-secondary flex items-center space-x-1 text-sm"
+                        className="btn-classical-secondary text-sm"
                       >
                         <PiX className="w-3 h-3" />
                         <span>{t('btn_cancel')}</span>
-                      </button>
-                    </div>
+                      </Inline>
+                    </Inline>
                   ) : null}
                 </div>
 
@@ -974,32 +991,32 @@ export default function TeacherLessonDetailsPageClient({
                     )}
 
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="flex items-center space-x-2 text-theme-secondary">
+                      <Inline gap={2} className="text-theme-secondary">
                         <PiCalendarBlank className="w-4 h-4" />
                         <span>{formatDateTime(lesson.scheduledAt)}</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-theme-secondary">
+                      </Inline>
+                      <Inline gap={2} className="text-theme-secondary">
                         <PiClock className="w-4 h-4" />
                         <span>{formatDuration(lesson.duration)}</span>
-                      </div>
+                      </Inline>
                     </div>
 
                     {lesson.location && (
-                      <div className="flex items-center space-x-2 text-theme-secondary">
+                      <Inline gap={2} className="text-theme-secondary">
                         <PiMapPin className="w-4 h-4" />
                         <span>{lesson.location}</span>
-                      </div>
+                      </Inline>
                     )}
 
                     {/* Recurrence Info */}
                     {lesson.isRecurring && (
                       <div className="bg-theme-elevated rounded-lg p-4">
-                        <div className="flex items-center space-x-2 text-accent-blue mb-2">
+                        <Inline gap={2} className="text-accent-blue mb-2">
                           <PiRepeat className="w-4 h-4" />
                           <span className="font-medium">
                             {t('recurring_lesson_title')}
                           </span>
-                        </div>
+                        </Inline>
                         <p className="text-sm text-theme-secondary">
                           {t('recurring_lesson_description')}
                           {lesson.parentLessonId
@@ -1012,12 +1029,12 @@ export default function TeacherLessonDetailsPageClient({
                     {/* Warning if lesson was cancelled */}
                     {lesson.status === 'CANCELLED' && (
                       <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
-                        <div className="flex items-center space-x-2 text-accent-red mb-2">
+                        <Inline gap={2} className="text-accent-red mb-2">
                           <PiWarning className="w-4 h-4" />
                           <span className="font-medium">
                             {t('cancelled_lesson_title')}
                           </span>
-                        </div>
+                        </Inline>
                         <p className="text-sm text-theme-secondary">
                           {t('cancelled_lesson_description')}
                         </p>
@@ -1032,10 +1049,14 @@ export default function TeacherLessonDetailsPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-theme-primary classical-title flex items-center space-x-2">
+                  <Inline
+                    as="h2"
+                    gap={2}
+                    className="text-lg font-bold text-theme-primary classical-title"
+                  >
                     <PiMusicNotes className="w-5 h-5" />
                     <span>{t('musical_pieces_title')}</span>
-                  </h2>
+                  </Inline>
                   {canEditLesson && worksIds.length > 0 && <SaveWorksButton />}
                 </div>
 
@@ -1057,35 +1078,38 @@ export default function TeacherLessonDetailsPageClient({
                           key={work.workId}
                           className="bg-theme-elevated border border-theme-secondary rounded-lg p-4"
                         >
-                          <div className="flex items-center space-x-3">
+                          <Inline gap={3}>
                             <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
                               <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center space-x-2">
+                              <Inline gap={2}>
                                 <h5 className="font-medium text-theme-primary">
                                   {work.workTitle}
                                 </h5>
                                 <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-0.5 rounded">
                                   #{index + 1}
                                 </span>
-                              </div>
+                              </Inline>
                               <p className="text-sm text-theme-tertiary">
                                 {work.composerName}
                               </p>
                               {work.scoreId && (
-                                <div className="mt-2 flex items-center space-x-2">
-                                  <div className="flex items-center space-x-1 text-xs text-accent-green">
+                                <Inline gap={2} className="mt-2">
+                                  <Inline
+                                    gap={1}
+                                    className="text-xs text-accent-green"
+                                  >
                                     <PiCheck className="w-3 h-3" />
                                     <span>Partitura: {work.scoreTitle}</span>
-                                  </div>
+                                  </Inline>
                                   <span className="text-xs text-theme-tertiary">
                                     ({work.scoreSource})
                                   </span>
-                                </div>
+                                </Inline>
                               )}
                             </div>
-                          </div>
+                          </Inline>
                         </div>
                       ))}
                     </div>
@@ -1105,43 +1129,53 @@ export default function TeacherLessonDetailsPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
+                  <Inline
+                    as="h2"
+                    gap={2}
+                    className="text-lg font-bold text-theme-primary"
+                  >
                     <PiTarget className="w-5 h-5" />
                     <span>{t('objectives_title')}</span>
-                  </h2>
+                  </Inline>
                   {canEditLesson && !isEditing.objectives ? (
-                    <button
+                    <Inline
+                      as="button"
+                      gap={1}
                       onClick={() => setEditMode('objectives', true)}
-                      className="btn-classical-secondary flex items-center space-x-1 text-sm"
+                      className="btn-classical-secondary text-sm"
                     >
                       <PiPencilLine className="w-3 h-3" />
                       <span>{t('btn_edit')}</span>
-                    </button>
+                    </Inline>
                   ) : canEditLesson && isEditing.objectives ? (
-                    <div className="flex items-center space-x-2">
-                      <button
+                    <Inline gap={2}>
+                      <Inline
+                        as="button"
+                        gap={1}
                         onClick={handleSaveObjectives}
                         disabled={loading.update}
-                        className="btn-classical-primary flex items-center space-x-1 text-sm"
+                        className="btn-classical-primary text-sm"
                       >
                         <PiFloppyDisk className="w-3 h-3" />
                         <span>{t('btn_save')}</span>
-                      </button>
-                      <button
+                      </Inline>
+                      <Inline
+                        as="button"
+                        gap={1}
                         onClick={() => setEditMode('objectives', false)}
-                        className="btn-classical-secondary flex items-center space-x-1 text-sm"
+                        className="btn-classical-secondary text-sm"
                       >
                         <PiX className="w-3 h-3" />
                         <span>{t('btn_cancel')}</span>
-                      </button>
-                    </div>
+                      </Inline>
+                    </Inline>
                   ) : null}
                 </div>
 
                 {isEditing.objectives ? (
                   <div className="space-y-3">
                     {editingObjectives.map((objective, index) => (
-                      <div key={index} className="flex items-center space-x-2">
+                      <Inline gap={2} key={index}>
                         <Input
                           type="text"
                           value={objective}
@@ -1160,10 +1194,10 @@ export default function TeacherLessonDetailsPageClient({
                         >
                           <PiTrash className="w-4 h-4 text-accent-red" />
                         </button>
-                      </div>
+                      </Inline>
                     ))}
 
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <Input
                         type="text"
                         value={newObjective}
@@ -1194,7 +1228,7 @@ export default function TeacherLessonDetailsPageClient({
                       >
                         <PiPlus className="w-4 h-4 text-brand-primary" />
                       </button>
-                    </div>
+                    </Inline>
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -1221,19 +1255,25 @@ export default function TeacherLessonDetailsPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
+                  <Inline
+                    as="h2"
+                    gap={2}
+                    className="text-lg font-bold text-theme-primary"
+                  >
                     <PiBookOpen className="w-5 h-5" />
                     <span>{t('topics_techniques_title')}</span>
-                  </h2>
+                  </Inline>
                   {canEditLesson && (
-                    <button
+                    <Inline
+                      as="button"
+                      gap={1}
                       onClick={handleSaveTopicsAndTechniques}
                       disabled={loading.update}
-                      className="btn-classical-secondary flex items-center space-x-1 text-sm"
+                      className="btn-classical-secondary text-sm"
                     >
                       <PiFloppyDisk className="w-3 h-3" />
                       <span>{t('save_pieces_changes')}</span>
-                    </button>
+                    </Inline>
                   )}
                 </div>
 
@@ -1244,23 +1284,22 @@ export default function TeacherLessonDetailsPageClient({
                         {t('topics_covered')}
                       </h3>
                       {canEditLesson && (
-                        <button
+                        <Inline
+                          as="button"
+                          gap={1}
                           onClick={() => addArrayField('topics')}
-                          className="text-brand-primary  text-sm flex items-center space-x-1"
+                          className="text-brand-primary text-sm"
                         >
                           <PiPlus className="w-3 h-3" />
                           <span>{t('btn_add')}</span>
-                        </button>
+                        </Inline>
                       )}
                     </div>
 
                     {canEditLesson ? (
                       <div className="space-y-2">
                         {editingTopics.map((topic, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center space-x-2"
-                          >
+                          <Inline gap={2} key={index}>
                             <Input
                               type="text"
                               widhtFull
@@ -1285,7 +1324,7 @@ export default function TeacherLessonDetailsPageClient({
                                 <PiX className="w-3 h-3 text-accent-red" />
                               </button>
                             )}
-                          </div>
+                          </Inline>
                         ))}
 
                         {/* <div className="flex items-center space-x-2"> */}
@@ -1348,23 +1387,22 @@ export default function TeacherLessonDetailsPageClient({
                         {t('techniques_practiced')}
                       </h3>
                       {canEditLesson && (
-                        <button
+                        <Inline
+                          as="button"
+                          gap={1}
                           onClick={() => addArrayField('techniques')}
-                          className="text-brand-primary text-sm flex items-center space-x-1"
+                          className="text-brand-primary text-sm"
                         >
                           <PiPlus className="w-3 h-3" />
                           <span>{t('btn_add')}</span>
-                        </button>
+                        </Inline>
                       )}
                     </div>
 
                     {canEditLesson ? (
                       <div className="space-y-2">
                         {editingTechniques.map((technique, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center space-x-2"
-                          >
+                          <Inline gap={2} key={index}>
                             <Input
                               type="text"
                               widhtFull
@@ -1389,7 +1427,7 @@ export default function TeacherLessonDetailsPageClient({
                                 <PiX className="w-3 h-3 text-accent-red" />
                               </button>
                             )}
-                          </div>
+                          </Inline>
                         ))}
 
                         {/* <div className="flex items-center space-x-2">
@@ -1453,36 +1491,46 @@ export default function TeacherLessonDetailsPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
+                  <Inline
+                    as="h2"
+                    gap={2}
+                    className="text-lg font-bold text-theme-primary"
+                  >
                     <PiChatCenteredText className="w-5 h-5" />
                     <span>{t('notes_observations_title')}</span>
-                  </h2>
+                  </Inline>
                   {canEditLesson && !isEditing.notes ? (
-                    <button
+                    <Inline
+                      as="button"
+                      gap={1}
                       onClick={() => setEditMode('notes', true)}
-                      className="btn-classical-secondary flex items-center space-x-1 text-sm"
+                      className="btn-classical-secondary text-sm"
                     >
                       <PiPencilLine className="w-3 h-3" />
                       <span>{t('btn_edit')}</span>
-                    </button>
+                    </Inline>
                   ) : canEditLesson && isEditing.notes ? (
-                    <div className="flex items-center space-x-2">
-                      <button
+                    <Inline gap={2}>
+                      <Inline
+                        as="button"
+                        gap={1}
                         onClick={handleSaveNotes}
                         disabled={loading.notes}
-                        className="btn-classical-primary flex items-center space-x-1 text-sm"
+                        className="btn-classical-primary text-sm"
                       >
                         <PiFloppyDisk className="w-3 h-3" />
                         <span>{t('btn_save')}</span>
-                      </button>
-                      <button
+                      </Inline>
+                      <Inline
+                        as="button"
+                        gap={1}
                         onClick={() => setEditMode('notes', false)}
-                        className="btn-classical-secondary flex items-center space-x-1 text-sm"
+                        className="btn-classical-secondary text-sm"
                       >
                         <PiX className="w-3 h-3" />
                         <span>{t('btn_cancel')}</span>
-                      </button>
-                    </div>
+                      </Inline>
+                    </Inline>
                   ) : null}
                 </div>
 
@@ -1633,7 +1681,7 @@ export default function TeacherLessonDetailsPageClient({
                   {t('student_info_title')}
                 </h2>
 
-                <div className="flex items-center space-x-4 mb-6">
+                <Inline gap={4} className="mb-6">
                   {lesson.student.image ? (
                     <div className="w-16 h-16 relative rounded-full overflow-hidden">
                       <Image
@@ -1660,7 +1708,7 @@ export default function TeacherLessonDetailsPageClient({
                       {lesson.student.email}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
                 {/* Relationship Stats */}
                 <div className="space-y-2 text-sm">
@@ -1696,16 +1744,21 @@ export default function TeacherLessonDetailsPageClient({
             {editingWorks.length > 0 && (
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
-                  <h3 className="text-lg font-bold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-lg font-bold text-theme-primary classical-title mb-4"
+                  >
                     <PiMusicNotes className="w-5 h-5" />
                     <span>{t('linked_pieces_title')}</span>
-                  </h3>
+                  </Inline>
 
                   <div className="space-y-3">
                     {editingWorks.map((work, index) => (
-                      <div
+                      <Inline
+                        gap={3}
                         key={work.workId}
-                        className="flex items-center space-x-3 p-3 bg-theme-elevated/50 rounded-lg"
+                        className="p-3 bg-theme-elevated/50 rounded-lg"
                       >
                         <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
                           <PiMusicNotes className="w-4 h-4 text-accent-blue" />
@@ -1726,7 +1779,7 @@ export default function TeacherLessonDetailsPageClient({
                         <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-1 rounded">
                           #{index + 1}
                         </span>
-                      </div>
+                      </Inline>
                     ))}
 
                     <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
@@ -1757,41 +1810,49 @@ export default function TeacherLessonDetailsPageClient({
                   </h2>
 
                   <div className="space-y-3">
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={() => handleQuickAction('present')}
                       disabled={loading.attendance}
-                      className="btn-classical-primary w-full flex items-center justify-center space-x-2"
+                      className="btn-classical-primary w-full justify-center"
                     >
                       <PiUserCheck className="w-4 h-4" />
                       <span>{t('mark_present')}</span>
-                    </button>
+                    </Inline>
 
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={() => handleQuickAction('absent')}
                       disabled={loading.attendance}
-                      className="w-full px-4 py-2 bg-accent-yellow/10 border border-accent-yellow/30 text-accent-yellow rounded-lg hover:bg-accent-yellow/20 transition-colors flex items-center justify-center space-x-2"
+                      className="w-full px-4 py-2 bg-accent-yellow/10 border border-accent-yellow/30 text-accent-yellow rounded-lg hover:bg-accent-yellow/20 transition-colors justify-center"
                     >
                       <PiUserMinus className="w-4 h-4" />
                       <span>{t('mark_absent')}</span>
-                    </button>
+                    </Inline>
 
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={() => handleQuickAction('complete')}
                       disabled={loading.update}
-                      className="w-full px-4 py-2 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-lg hover:bg-accent-green/20 transition-colors flex items-center justify-center space-x-2"
+                      className="w-full px-4 py-2 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-lg hover:bg-accent-green/20 transition-colors justify-center"
                     >
                       <PiCheck className="w-4 h-4" />
                       <span>{t('complete_lesson')}</span>
-                    </button>
+                    </Inline>
 
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={() => handleQuickAction('cancel')}
                       disabled={loading.update}
-                      className="w-full px-4 py-2 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-lg hover:bg-accent-red/20 transition-colors flex items-center justify-center space-x-2"
+                      className="w-full px-4 py-2 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-lg hover:bg-accent-red/20 transition-colors justify-center"
                     >
                       <PiX className="w-4 h-4" />
                       <span>{t('cancel_lesson')}</span>
-                    </button>
+                    </Inline>
                   </div>
                 </AnimatedCard>
               </AnimatedItem>
@@ -1812,7 +1873,7 @@ export default function TeacherLessonDetailsPageClient({
                         : 'bg-accent-red/10 border border-accent-red/30'
                     }`}
                   >
-                    <div className="flex items-center space-x-2 mb-2">
+                    <Inline gap={2} className="mb-2">
                       {lesson.studentPresent ? (
                         <PiCheck className="w-5 h-5 text-accent-green" />
                       ) : (
@@ -1827,7 +1888,7 @@ export default function TeacherLessonDetailsPageClient({
                       >
                         {lesson.studentPresent ? t('present') : t('absent')}
                       </span>
-                    </div>
+                    </Inline>
 
                     {lesson.punctuality && (
                       <p className="text-sm text-theme-secondary">
@@ -1910,7 +1971,7 @@ export default function TeacherLessonDetailsPageClient({
           maxWidth="md"
         >
           <div className="p-6">
-            <div className="flex items-center space-x-3 mb-6">
+            <Inline gap={3} className="mb-6">
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center ${
                   quickActionType === 'present'
@@ -1947,7 +2008,7 @@ export default function TeacherLessonDetailsPageClient({
                   {quickActionType === 'cancel' && t('confirm_cancel_lesson')}
                 </p>
               </div>
-            </div>
+            </Inline>
 
             {quickActionType === 'cancel' && (
               <div className="mb-6">
@@ -1985,7 +2046,7 @@ export default function TeacherLessonDetailsPageClient({
               </div>
             </div>
 
-            <div className="flex items-center justify-end space-x-3">
+            <Inline gap={3} className="justify-end">
               <button
                 onClick={() => setShowQuickActionModal(false)}
                 className="btn-classical-secondary"
@@ -2024,7 +2085,7 @@ export default function TeacherLessonDetailsPageClient({
                   {loadingQuickAction ? t('btn_processing') : t('btn_confirm')}
                 </span>
               </button>
-            </div>
+            </Inline>
           </div>
         </Modal>
       )}
@@ -2033,7 +2094,7 @@ export default function TeacherLessonDetailsPageClient({
       {showDeleteModal && (
         <Modal isOpen onClose={() => setShowDeleteModal(false)} maxWidth="2xl">
           <div className="p-6">
-            <div className="flex items-center space-x-3 mb-6">
+            <Inline gap={3} className="mb-6">
               <div className="w-12 h-12 bg-accent-red/10 rounded-full flex items-center justify-center">
                 <PiTrash className="w-6 h-6 text-accent-red" />
               </div>
@@ -2045,7 +2106,7 @@ export default function TeacherLessonDetailsPageClient({
                   {t('delete_lesson_subtitle')}
                 </p>
               </div>
-            </div>
+            </Inline>
 
             <div className="space-y-4 mb-6">
               <div>
@@ -2063,7 +2124,7 @@ export default function TeacherLessonDetailsPageClient({
 
               {lesson.isRecurring && (
                 <div className="space-y-3">
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <Checkbox
                       label={t('delete_all_recurring')}
                       id="deleteAll"
@@ -2072,17 +2133,17 @@ export default function TeacherLessonDetailsPageClient({
                         setDeleteRecurringSeries(e.target.checked)
                       }
                     />
-                  </div>
+                  </Inline>
 
                   {deleteRecurringSeries && (
-                    <div className="flex items-center space-x-3 ">
+                    <Inline gap={3}>
                       <Checkbox
                         label={t('delete_future_only')}
                         id="futureOnly"
                         checked={deleteFutureOnly}
                         onChange={(e) => setDeleteFutureOnly(e.target.checked)}
                       />
-                    </div>
+                    </Inline>
                   )}
                 </div>
               )}
@@ -2110,7 +2171,7 @@ export default function TeacherLessonDetailsPageClient({
               </div>
             </div>
 
-            <div className="flex items-center justify-end space-x-3">
+            <Inline gap={3} className="justify-end">
               <button
                 onClick={() => setShowDeleteModal(false)}
                 className="btn-classical-secondary"
@@ -2118,10 +2179,12 @@ export default function TeacherLessonDetailsPageClient({
               >
                 {t('btn_keep_lesson')}
               </button>
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={handleDeleteLesson}
                 disabled={loading.delete}
-                className="btn-classical-primary bg-accent-red border-accent-red hover:bg-accent-red/90 flex items-center space-x-2"
+                className="btn-classical-primary bg-accent-red border-accent-red hover:bg-accent-red/90"
               >
                 {loading.delete ? (
                   <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -2133,8 +2196,8 @@ export default function TeacherLessonDetailsPageClient({
                     ? t('btn_deleting')
                     : t('btn_delete_permanently')}
                 </span>
-              </button>
-            </div>
+              </Inline>
+            </Inline>
           </div>
         </Modal>
       )}

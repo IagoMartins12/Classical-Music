@@ -4,6 +4,7 @@
 
 import { PiCrown, PiMedal, PiStar, PiTrendUp } from 'react-icons/pi';
 import { useIsMostFavorited } from '@/app/hooks/useMostFavoritedScore';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface MostFavoritedBadgeProps {
   workId: string;
@@ -137,14 +138,14 @@ export default function MostFavoritedBadge({
         className={baseClasses}
         title="Partitura mais favoritada pela comunidade"
       >
-        <div className="flex items-center space-x-1">
+        <Inline gap={1}>
           <span className={sizeConfig.emoji}>{config?.emoji}</span>
           {showText && (
             <span className={`${sizeConfig.text} font-bold hidden sm:inline`}>
               Favorita da comunidade
             </span>
           )}
-        </div>
+        </Inline>
       </div>
     );
   }

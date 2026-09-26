@@ -38,6 +38,7 @@ import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useRouter } from 'next/navigation';
 import { LanguageToggle } from '../LanguageToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface NavItem {
   label: string;
@@ -435,7 +436,7 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center space-x-4">
+          <Inline gap={4}>
             {/* Theme Toggle - Desktop only */}
             <LanguageToggle variant="compact" className="hidden sm:block" />
             <ThemeToggle variant="navbar" className="hidden sm:block" />
@@ -444,9 +445,11 @@ const Navbar: React.FC = () => {
             {isLoading ? null : isAuthenticated && user ? (
               /* Desktop User Menu */
               <div className="relative hidden lg:block" ref={profileRef}>
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={toggleProfileMenu}
-                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-interactive-hover transition-colors"
+                  className="p-2 rounded-lg hover:bg-interactive-hover transition-colors"
                 >
                   {user.image ? (
                     <Image
@@ -472,7 +475,7 @@ const Navbar: React.FC = () => {
                       </p>
                     )}
                   </div>
-                </button>
+                </Inline>
 
                 {/* Desktop Profile Dropdown */}
                 {isProfileOpen && (
@@ -650,13 +653,15 @@ const Navbar: React.FC = () => {
 
                     <hr className="my-2 border-theme-secondary" />
 
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={handleLogout}
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm  rounded-lg "
+                      className="w-full px-3 py-2 text-sm rounded-lg"
                     >
                       <PiSignOut className="w-4 h-4" />
                       <span>{t('navbar_sair')}</span>
-                    </button>
+                    </Inline>
                   </div>
                 )}
               </div>
@@ -695,7 +700,7 @@ const Navbar: React.FC = () => {
                 <PiList className="w-6 h-6" />
               )}
             </button>
-          </div>
+          </Inline>
         </div>
 
         {/* Mobile Navigation */}
@@ -786,7 +791,7 @@ const Navbar: React.FC = () => {
                           className="flex items-center justify-between"
                           onClick={goToProfileView}
                         >
-                          <div className="flex items-center space-x-3 px-4 py-3 flex-1">
+                          <Inline gap={3} className="px-4 py-3 flex-1">
                             {user.image ? (
                               <Image
                                 src={user.image}
@@ -808,7 +813,7 @@ const Navbar: React.FC = () => {
                                 Perfil
                               </p>
                             </div>
-                          </div>
+                          </Inline>
                           <div className="p-2 text-theme-tertiary hover:text-brand-primary transition-colors">
                             <PiCaretRight className="w-5 h-5" />
                           </div>
@@ -849,23 +854,25 @@ const Navbar: React.FC = () => {
                         <hr className="my-3 border-theme-secondary" />
 
                         <li>
-                          <button
+                          <Inline
+                            as="button"
+                            gap={3}
                             onClick={handleLogout}
-                            className="flex items-center space-x-3 w-full px-4 py-3 text-accent-red hover:bg-accent-red rounded-lg l"
+                            className="w-full px-4 py-3 text-accent-red hover:bg-accent-red rounded-lg l"
                           >
                             <PiSignOut className="w-5 h-5" />
                             <span>{t('navbar_sair')}</span>
-                          </button>
+                          </Inline>
                         </li>
                       </>
                     )}
                     <hr className="my-4 border-theme-secondary" />
                     <li>
                       <div className="flex items-center justify-center px-4 py-2">
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <LanguageToggle />
                           <ThemeToggle variant="default" />
-                        </div>
+                        </Inline>
                       </div>
                     </li>
                   </ul>
@@ -894,7 +901,10 @@ const Navbar: React.FC = () => {
                       </div>
 
                       {/* User Info */}
-                      <div className="flex items-center space-x-3 px-4 py-3 mb-4 bg-interactive-hover rounded-lg">
+                      <Inline
+                        gap={3}
+                        className="px-4 py-3 mb-4 bg-interactive-hover rounded-lg"
+                      >
                         {user.image ? (
                           <Image
                             src={user.image}
@@ -916,7 +926,7 @@ const Navbar: React.FC = () => {
                             {user.email}
                           </p>
                         </div>
-                      </div>
+                      </Inline>
 
                       {!user.onboardingCompleted && (
                         <button

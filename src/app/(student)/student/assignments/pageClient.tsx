@@ -38,6 +38,7 @@ import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '@/app/components/Common/Button';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface StudentAssignmentsPageClientProps {
   initialData: StudentAssignmentsData | null;
@@ -373,7 +374,7 @@ export default function StudentAssignmentsPageClient({
               <StatusIcon className="w-3 h-3 inline mr-1" />
               {statusInfo.label}
             </span>
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <TypeIcon className={`w-4 h-4 ${priorityColor}`} />
               <span className={`text-xs font-medium ${priorityColor}`}>
                 {priorityLabel}
@@ -387,7 +388,7 @@ export default function StudentAssignmentsPageClient({
                   <PiMusicNotes className="w-3 h-3" />
                 </div>
               )}
-            </div>
+            </Inline>
           </div>
 
           {/* Assignment Info */}
@@ -567,12 +568,12 @@ export default function StudentAssignmentsPageClient({
               <StatusIcon className="w-3 h-3 inline mr-1" />
               {statusInfo.label}
             </span>
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <TypeIcon className={`w-4 h-4 ${priorityColor}`} />
               <span className={`text-xs font-medium ${priorityColor}`}>
                 {priorityLabel}
               </span>
-            </div>
+            </Inline>
           </div>
 
           {/* Assignment Info */}
@@ -747,10 +748,12 @@ export default function StudentAssignmentsPageClient({
               {error || errorMessage}
             </p>
             <div className="space-y-3">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={refreshAssignments}
                 disabled={loading.assignments}
-                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+                className="btn-classical-primary w-full justify-center"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${
@@ -762,7 +765,7 @@ export default function StudentAssignmentsPageClient({
                     ? t('student_assignments_error_try_again') + '...'
                     : t('student_assignments_error_try_again')}
                 </span>
-              </button>
+              </Inline>
               {error && (
                 <button
                   onClick={clearError}
@@ -897,7 +900,7 @@ export default function StudentAssignmentsPageClient({
               </div>
 
               {/* Controls */}
-              <div className="flex items-center justify-center space-x-4">
+              <Inline gap={4} className="justify-center">
                 <Button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`btn-classical-secondary flex items-center space-x-2 ${
@@ -925,7 +928,7 @@ export default function StudentAssignmentsPageClient({
                   viewMode={viewMode}
                   onViewModeChange={setViewMode}
                 />
-              </div>
+              </Inline>
             </div>
 
             {/* Filters */}
@@ -1119,17 +1122,19 @@ export default function StudentAssignmentsPageClient({
         {/* Pagination */}
         {totalPages > 1 && (
           <AnimatedItem direction="up" springType="gentle">
-            <div className="flex items-center justify-center space-x-4 mt-8">
-              <button
+            <Inline gap={4} className="justify-center mt-8">
+              <Inline
+                as="button"
+                gap={2}
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50"
+                className="btn-classical-secondary disabled:opacity-50"
               >
                 <PiCaretLeft className="w-4 h-4" />
                 <span>{t('student_assignments_pagination_previous')}</span>
-              </button>
+              </Inline>
 
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 {Array.from({ length: totalPages }, (_, i) => i + 1)
                   .filter((page) => {
                     const distance = Math.abs(page - currentPage);
@@ -1157,19 +1162,21 @@ export default function StudentAssignmentsPageClient({
                       </div>
                     );
                   })}
-              </div>
+              </Inline>
 
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={() =>
                   setCurrentPage(Math.min(totalPages, currentPage + 1))
                 }
                 disabled={currentPage === totalPages}
-                className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50"
+                className="btn-classical-secondary disabled:opacity-50"
               >
                 <span>{t('student_assignments_pagination_next')}</span>
                 <PiCaretRight className="w-4 h-4" />
-              </button>
-            </div>
+              </Inline>
+            </Inline>
           </AnimatedItem>
         )}
       </AnimatedContainer>

@@ -26,6 +26,7 @@ import { useAuthStore } from '@/app/stores/authStore';
 import ProfileSkeleton from './loading';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '@/app/components/Common/Button';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Tab {
   id: string;
@@ -175,23 +176,27 @@ export default function ProfilePageClient() {
 
               {/* Mobile Navigation Arrows */}
               <div className="lg:hidden flex justify-between mt-4 pt-4 border-t border-theme-secondary">
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={goToPrevTab}
                   disabled={currentTabIndex === 0}
-                  className="flex items-center space-x-2 px-3 py-2 text-sm text-theme-secondary hover:text-theme-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-2 text-sm text-theme-secondary hover:text-theme-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <PiCaretLeft className="w-4 h-4" />
                   <span>{t('profile_main_previous')}</span>
-                </button>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={goToNextTab}
                   disabled={currentTabIndex === tabs.length - 1}
-                  className="flex items-center space-x-2 px-3 py-2 text-sm text-theme-secondary hover:text-theme-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-2 text-sm text-theme-secondary hover:text-theme-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span>{t('profile_main_next')}</span>
                   <PiCaretRight className="w-4 h-4" />
-                </button>
+                </Inline>
               </div>
             </div>
           </div>
@@ -201,12 +206,12 @@ export default function ProfilePageClient() {
             <div className="classical-card-2 p-6">
               {/* Mobile Tab Header */}
               <div className="lg:hidden mb-6 pb-6 border-b border-theme-secondary">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   {activeTabData?.icon}
                   <h2 className="text-xl font-semibold text-theme-primary">
                     {activeTabData && t(activeTabData.labelKey)}
                   </h2>
-                </div>
+                </Inline>
               </div>
 
               {/* Tab Content */}

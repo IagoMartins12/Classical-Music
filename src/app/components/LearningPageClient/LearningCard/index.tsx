@@ -34,6 +34,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 // Importar componentes de animação
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
@@ -95,7 +96,7 @@ const ConfirmDeleteModal = ({
         hover="none"
         className="relative bg-theme-primary rounded-xl shadow-xl max-w-md w-full p-6 border border-theme-secondary"
       >
-        <div className="flex items-center space-x-3 mb-4">
+        <Inline gap={3} className="mb-4">
           <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center">
             <PiWarning className="w-6 h-6 text-accent-red" />
           </div>
@@ -107,7 +108,7 @@ const ConfirmDeleteModal = ({
               {t('confirm_removal_subtitle')}
             </p>
           </div>
-        </div>
+        </Inline>
 
         <div className="mb-6">
           <p className="text-theme-secondary">
@@ -117,7 +118,7 @@ const ConfirmDeleteModal = ({
           </p>
         </div>
 
-        <div className="flex items-center justify-end space-x-3">
+        <Inline gap={3} className="justify-end">
           <button
             onClick={onClose}
             disabled={isLoading}
@@ -125,10 +126,12 @@ const ConfirmDeleteModal = ({
           >
             {t('cancel_button')}
           </button>
-          <button
+          <Inline
+            as="button"
+            gap={2}
             onClick={onConfirm}
             disabled={isLoading}
-            className="px-4 py-2 bg-accent-red text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center space-x-2"
+            className="px-4 py-2 bg-accent-red text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50"
           >
             {isLoading ? (
               <>
@@ -141,8 +144,8 @@ const ConfirmDeleteModal = ({
                 <span>{t('remove_button')}</span>
               </>
             )}
-          </button>
-        </div>
+          </Inline>
+        </Inline>
       </AnimatedCard>
     </div>
   );
@@ -249,11 +252,11 @@ export const LearningCard = ({
         <div
           className={`classical-card p-6 group hover:shadow-theme-glow transition-all`}
         >
-          <div className="flex items-center space-x-6">
+          <Inline gap={6}>
             <div className="flex-1">
-              <div className="flex items-center space-x-4">
+              <Inline gap={4}>
                 <div className="flex-1">
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <h3 className="font-bold text-theme-primary">
                       {item.work?.title}
                     </h3>
@@ -266,7 +269,7 @@ export const LearningCard = ({
                         <PiFileText className="w-3 h-3 text-accent-purple" />
                       </div>
                     )}
-                  </div>
+                  </Inline>
                   <p className="text-theme-secondary">
                     {item.work?.composer.fullName}
                   </p>
@@ -280,8 +283,8 @@ export const LearningCard = ({
                 {/* Compact info */}
                 <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 items-center space-x-3 text-sm text-theme-tertiary">
                   {/* Stars */}
-                  <div
-                    className="flex items-center space-x-1"
+                  <Inline
+                    gap={1}
                     title={
                       isWantToLearn
                         ? `${t('priority_label_card')} ${
@@ -307,7 +310,7 @@ export const LearningCard = ({
                         }`}
                       />
                     ))}
-                  </div>
+                  </Inline>
 
                   {/* Difficulty */}
                   {item.difficulty && (
@@ -321,7 +324,7 @@ export const LearningCard = ({
                   )}
 
                   {/* Quick info */}
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     {isWantToLearn ? (
                       <>
                         {wantToLearnItem.targetDate && (
@@ -353,19 +356,19 @@ export const LearningCard = ({
                           />
                         )}
                         {learnedItem.enjoyment && (
-                          <div
-                            className="flex items-center space-x-1"
+                          <Inline
+                            gap={1}
                             title={`${t('satisfaction_label')} ${
                               learnedItem.enjoyment
                             }/5`}
                           >
                             <PiHeart className="w-4 h-4" />
                             <span>{learnedItem.enjoyment}</span>
-                          </div>
+                          </Inline>
                         )}
                       </>
                     )}
-                  </div>
+                  </Inline>
                 </div>
 
                 {/* Action buttons */}
@@ -410,9 +413,9 @@ export const LearningCard = ({
                     </div>
                   )}
                 </div>
-              </div>
+              </Inline>
             </div>
-          </div>
+          </Inline>
         </div>
 
         <ConfirmDeleteModal
@@ -435,7 +438,7 @@ export const LearningCard = ({
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-            <div className="flex items-center space-x-2 mb-2">
+            <Inline gap={2} className="mb-2">
               <h3 className="font-bold text-theme-primary group-hover:text-brand-primary transition-colors classical-title">
                 {item.work?.title}
               </h3>
@@ -448,7 +451,7 @@ export const LearningCard = ({
                   <PiMusicNotes className="w-3 h-3 text-accent-purple" />
                 </div>
               )}
-            </div>
+            </Inline>
             <p className="text-theme-secondary classical-subtitle">
               {item.work?.composer.fullName}
             </p>
@@ -458,7 +461,7 @@ export const LearningCard = ({
               </p>
             )}
           </div>
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             {/* ✅ BOTÃO DE DOWNLOAD DA PARTITURA */}
             {hasSelectedScore && (
               <AnimatedItem hover="scale">
@@ -491,13 +494,13 @@ export const LearningCard = ({
             >
               <PiX className="w-4 h-4" />
             </button>
-          </div>
+          </Inline>
         </div>
 
         {/* ✅ SEÇÃO DE PARTITURA VINCULADA (se houver) */}
         {hasSelectedScore && item.selectedWorkScore && (
           <div className="mb-4 p-3 classical-card-simple rounded-xl">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="w-8 h-8 bg-accent-purple/20 rounded-lg flex items-center justify-center">
                 <PiFileText className="w-4 h-4 text-accent-purple" />
               </div>
@@ -514,26 +517,28 @@ export const LearningCard = ({
                     )}`}
                 </p>
               </div>
-              <button
+              <Inline
+                as="button"
+                gap={1}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleScoreDownload(item, t);
                 }}
-                className="btn-classical-secondary-sm flex items-center space-x-1 text-xs"
+                className="btn-classical-secondary-sm text-xs"
               >
                 <PiDownloadSimple className="w-3 h-3" />
                 <span>{t('download_button')}</span>
-              </button>
-            </div>
+              </Inline>
+            </Inline>
           </div>
         )}
 
         {/* Stars */}
-        <div className="flex items-center space-x-2 mb-4">
+        <Inline gap={2} className="mb-4">
           <span className="text-sm font-medium text-theme-tertiary">
             {isWantToLearn ? t('priority_label_card') : t('mastery_label_card')}
           </span>
-          <div className="flex items-center space-x-1">
+          <Inline gap={1}>
             {[...Array(5)].map((_, i) =>
               i <
               (isWantToLearn
@@ -550,13 +555,13 @@ export const LearningCard = ({
                 />
               )
             )}
-          </div>
-        </div>
+          </Inline>
+        </Inline>
 
         {/* Details */}
         <div className="space-y-3">
           {item.difficulty && (
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <PiTrendUp className="w-4 h-4 text-theme-tertiary" />
               <span
                 className={`text-xs px-2 py-1 rounded-full border transition-colors ${getDifficultyColor(
@@ -565,47 +570,47 @@ export const LearningCard = ({
               >
                 {getDifficultyLabel(item.difficulty, t)}
               </span>
-            </div>
+            </Inline>
           )}
 
           {isWantToLearn ? (
             <>
               {wantToLearnItem.targetDate && (
-                <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
+                <Inline gap={2} className="text-sm text-theme-tertiary">
                   <PiCalendarBlank className="w-4 h-4" />
                   <span>
                     {t('target_date')} {formatDate(wantToLearnItem.targetDate)}
                   </span>
-                </div>
+                </Inline>
               )}
 
               {wantToLearnItem.estimatedStudyTime && (
-                <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
+                <Inline gap={2} className="text-sm text-theme-tertiary">
                   <PiClock className="w-4 h-4" />
                   <span>
                     {wantToLearnItem.estimatedStudyTime}
                     {t('estimated_hours')}
                   </span>
-                </div>
+                </Inline>
               )}
 
               {wantToLearnItem.context && (
-                <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
+                <Inline gap={2} className="text-sm text-theme-tertiary">
                   <PiUsers className="w-4 h-4" />
                   <span>
                     {t('context_label')} {wantToLearnItem.context}
                   </span>
-                </div>
+                </Inline>
               )}
 
               {wantToLearnItem.motivation && (
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-blue">
-                  <div className="flex items-center space-x-2 mb-1">
+                  <Inline gap={2} className="mb-1">
                     <PiHeart className="w-4 h-4 text-accent-blue" />
                     <span className="text-sm font-medium text-theme-secondary">
                       {t('motivation_section')}
                     </span>
-                  </div>
+                  </Inline>
                   <p className="text-sm text-theme-tertiary">
                     {wantToLearnItem.motivation}
                   </p>
@@ -614,12 +619,12 @@ export const LearningCard = ({
 
               {wantToLearnItem.notes && (
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-purple">
-                  <div className="flex items-center space-x-2 mb-1">
+                  <Inline gap={2} className="mb-1">
                     <PiBookOpen className="w-4 h-4 text-accent-purple" />
                     <span className="text-sm font-medium text-theme-secondary">
                       {t('notes_section')}
                     </span>
-                  </div>
+                  </Inline>
                   <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
                     {wantToLearnItem.notes}
                   </p>
@@ -629,55 +634,55 @@ export const LearningCard = ({
           ) : (
             <>
               {learnedItem.studyStartDate && (
-                <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
+                <Inline gap={2} className="text-sm text-theme-tertiary">
                   <PiCalendarBlank className="w-4 h-4" />
                   <span>
                     {t('study_start')} {formatDate(learnedItem.studyStartDate)}
                   </span>
-                </div>
+                </Inline>
               )}
 
               {learnedItem.studyDuration && (
-                <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
+                <Inline gap={2} className="text-sm text-theme-tertiary">
                   <PiClock className="w-4 h-4" />
                   <span>
                     {learnedItem.studyDuration} {t('study_days')}
                   </span>
-                </div>
+                </Inline>
               )}
 
               {learnedItem.enjoyment && (
-                <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
+                <Inline gap={2} className="text-sm text-theme-tertiary">
                   <PiHeart className="w-4 h-4" />
                   <span>
                     {t('satisfaction_label')} {learnedItem.enjoyment}/5
                   </span>
-                </div>
+                </Inline>
               )}
 
-              <div className="flex items-center space-x-4 text-sm">
+              <Inline gap={4} className="text-sm">
                 {learnedItem.wouldRecommend && (
-                  <span className="flex items-center space-x-1 text-accent-green">
+                  <Inline as="span" gap={1} className="text-accent-green">
                     <PiUsers className="w-4 h-4" />
                     <span>{t('recommends')}</span>
-                  </span>
+                  </Inline>
                 )}
                 {learnedItem.publicPerformance && (
-                  <span className="flex items-center space-x-1 text-accent-blue">
+                  <Inline as="span" gap={1} className="text-accent-blue">
                     <PiPlay className="w-4 h-4" />
                     <span>{t('public_performance')}</span>
-                  </span>
+                  </Inline>
                 )}
-              </div>
+              </Inline>
 
               {learnedItem.technicalChallenges && (
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-red">
-                  <div className="flex items-center space-x-2 mb-1">
+                  <Inline gap={2} className="mb-1">
                     <PiTrendUp className="w-4 h-4 text-accent-red" />
                     <span className="text-sm font-medium text-theme-secondary">
                       {t('technical_challenges')}
                     </span>
-                  </div>
+                  </Inline>
                   <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
                     {learnedItem.technicalChallenges}
                   </p>
@@ -686,12 +691,12 @@ export const LearningCard = ({
 
               {learnedItem.musicalInsights && (
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-green">
-                  <div className="flex items-center space-x-2 mb-1">
+                  <Inline gap={2} className="mb-1">
                     <PiMedal className="w-4 h-4 text-accent-green" />
                     <span className="text-sm font-medium text-theme-secondary">
                       {t('musical_insights')}
                     </span>
-                  </div>
+                  </Inline>
                   <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
                     {learnedItem.musicalInsights}
                   </p>
@@ -700,12 +705,12 @@ export const LearningCard = ({
 
               {learnedItem.notes && (
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-purple">
-                  <div className="flex items-center space-x-2 mb-1">
+                  <Inline gap={2} className="mb-1">
                     <PiBookOpen className="w-4 h-4 text-accent-purple" />
                     <span className="text-sm font-medium text-theme-secondary">
                       {t('notes_section')}
                     </span>
-                  </div>
+                  </Inline>
                   <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
                     {learnedItem.notes}
                   </p>
@@ -722,7 +727,7 @@ export const LearningCard = ({
               ? `${t('added_at')} ${formatDate(wantToLearnItem.addedAt)}`
               : `${t('learned_at')} ${formatDate(learnedItem.learnedAt)}`}
           </span>
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <AnimatedItem hover="scale">
               <Link
                 href={`/works/${item.workId}`}
@@ -731,7 +736,7 @@ export const LearningCard = ({
                 {t('view_work')} →
               </Link>
             </AnimatedItem>
-          </div>
+          </Inline>
         </div>
       </div>
 

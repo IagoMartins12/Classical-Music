@@ -9,6 +9,7 @@ import Button from '@/app/components/Common/Button';
 import Checkbox from '@/app/components/Common/Checkbox';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
 import { findComposerById } from '@/app/requests/catalog-search';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ComposerModalProps {
   editor: Editor;
@@ -288,7 +289,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
                     )}
 
                     {/* Botões */}
-                    <div className="flex items-center space-x-2 mt-3">
+                    <Inline gap={2} className="mt-3">
                       <button
                         type="button"
                         className="px-3 py-1 bg-brand-primary text-white text-sm rounded hover:opacity-90 transition-opacity"
@@ -316,7 +317,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
                           Wikipedia
                         </a>
                       )}
-                    </div>
+                    </Inline>
                   </div>
                 </div>
               </div>

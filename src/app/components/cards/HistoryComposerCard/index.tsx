@@ -5,6 +5,7 @@ import { useComposerBiography } from '@/app/hooks/useComposerBiography';
 import Image from '@/app/components/SmartImage';
 import Link from '@/app/components/LocalizedLink';
 import { PiArrowSquareOut, PiCalendarBlank, PiUser } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Composer {
   id: string;
@@ -65,7 +66,7 @@ export function HistoryComposerCard({ composer }: Props) {
       className="block classical-card-simple p-4 hover:shadow-theme-glow transition-all duration-500 hover:scale-105 group relative overflow-hidden"
     >
       <div className="relative z-10">
-        <div className="flex items-center space-x-3 mb-3">
+        <Inline gap={3} className="mb-3">
           {/* Portrait */}
           <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center shadow-theme-medium flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
             {composer.portraitUrl ? (
@@ -101,7 +102,7 @@ export function HistoryComposerCard({ composer }: Props) {
           <div className="w-6 h-6 bg-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-brand-primary/10 group-hover:border-brand-primary/30 group-hover:text-brand-primary transition-all duration-300">
             <PiArrowSquareOut className="w-3 h-3" />
           </div>
-        </div>
+        </Inline>
 
         {/* Bio snippet */}
         {biography && (
@@ -114,12 +115,12 @@ export function HistoryComposerCard({ composer }: Props) {
 
         {/* Bottom indicator */}
         <div className="flex items-center justify-between mt-3 pt-2 border-t border-theme-secondary">
-          <div className="flex items-center space-x-1">
+          <Inline gap={1}>
             <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
             <span className="text-xs text-theme-tertiary font-medium">
               Ver detalhes
             </span>
-          </div>
+          </Inline>
 
           <svg
             className="w-3 h-3 text-theme-tertiary group-hover:text-brand-primary group-hover:translate-x-0.5 transition-all duration-300"

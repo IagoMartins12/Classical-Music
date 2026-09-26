@@ -34,6 +34,7 @@ import AdminHeader from '../components/Admin/AdminHeader';
 import AdminSidebar from '../components/Admin/AdminSidebar';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '../context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface SuggestionCard {
   title: string;
@@ -431,7 +432,7 @@ export default function AccessDenied() {
                 hover="lift"
                 className="classical-card p-6 mb-8 max-w-md mx-auto"
               >
-                <div className="flex items-center space-x-4">
+                <Inline gap={4}>
                   {session.user.image ? (
                     <Image
                       width={20}
@@ -456,7 +457,7 @@ export default function AccessDenied() {
                       {getRoleLabel()}
                     </span>
                   </div>
-                </div>
+                </Inline>
               </AnimatedCard>
             )}
 
@@ -528,51 +529,51 @@ export default function AccessDenied() {
               hover="lift"
               className="classical-card p-6 max-w-2xl mx-auto mb-8"
             >
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-green/20 rounded-xl flex items-center justify-center">
                   <PiEnvelopeSimple className="w-5 h-5 text-accent-blue" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title">
                   {t('acess_denied_jsx_h3_children_0__precisa_ajuda')}
                 </h3>
-              </div>
+              </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                 <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t(
                         'acess_denied_jsx_span_children_0__verifique_suas_permissões'
                       )}
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t(
                         'acess_denied_jsx_span_children_0__entre_contato_conosco'
                       )}
                     </span>
-                  </div>
+                  </Inline>
                 </div>
                 <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t(
                         'acess_denied_jsx_span_children_0__explore_enciclopédia'
                       )}
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t(
                         'acess_denied_jsx_span_children_0__solicite_acesso_adequado'
                       )}
                     </span>
-                  </div>
+                  </Inline>
                 </div>
               </div>
 

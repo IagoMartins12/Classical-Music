@@ -5,6 +5,7 @@ import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
 import { PiClock, PiTrash, PiUser } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 const TimelineComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -25,7 +26,10 @@ const TimelineComponent = (props: any) => {
     >
       {/* ✅ Controles de Edição */}
       {showControls && (
-        <div className="absolute top-0 right-0 flex items-center space-x-2 p-2 bg-white shadow-lg rounded-lg z-10">
+        <Inline
+          gap={2}
+          className="absolute top-0 right-0 p-2 bg-white shadow-lg rounded-lg z-10"
+        >
           <button
             onClick={handleDelete}
             className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
@@ -33,18 +37,21 @@ const TimelineComponent = (props: any) => {
           >
             <PiTrash className="w-4 h-4" />
           </button>
-        </div>
+        </Inline>
       )}
 
       {/* ✅ Header com compositor se existir */}
       {composerName && (
-        <div className="mb-6 flex items-center space-x-3 p-4 bg-brand-primary/10 rounded-lg border-l-4 border-brand-primary">
+        <Inline
+          gap={3}
+          className="mb-6 p-4 bg-brand-primary/10 rounded-lg border-l-4 border-brand-primary"
+        >
           <PiUser className="w-5 h-5 text-brand-primary" />
           <div>
             <p className="text-sm text-theme-tertiary">Timeline de</p>
             <p className="font-semibold text-theme-primary">{composerName}</p>
           </div>
-        </div>
+        </Inline>
       )}
 
       <div className="relative">

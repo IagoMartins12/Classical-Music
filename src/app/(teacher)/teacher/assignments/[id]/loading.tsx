@@ -11,6 +11,7 @@ import {
   PiStar,
   PiTarget,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function AssignmentDetailsLoading() {
   return (
@@ -60,19 +61,19 @@ export default function AssignmentDetailsLoading() {
       <div className="section-wrap space-y-8 relative z-10">
         {/* Header Skeleton */}
         <div className="flex items-center justify-between mb-8 animate-pulse">
-          <div className="flex items-center space-x-4">
+          <Inline gap={4}>
             <div className="w-10 h-10 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
             <div>
               <div className="h-8 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2 w-64"></div>
               <div className="h-4 bg-theme-elevated rounded w-40"></div>
             </div>
-          </div>
+          </Inline>
 
           {/* Quick Actions */}
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="h-8 w-20 bg-gradient-to-r from-accent-green/20 to-accent-green/20 border border-accent-green/30 rounded-full"></div>
             <div className="h-10 w-32 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-lg"></div>
-          </div>
+          </Inline>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -97,20 +98,20 @@ export default function AssignmentDetailsLoading() {
 
                   <div>
                     <div className="h-3 bg-theme-tertiary/30 rounded mb-2 w-12"></div>
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <PiCalendarBlank className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="h-4 bg-theme-primary/30 rounded w-24"></div>
                       <div className="h-4 bg-accent-yellow/30 rounded w-20"></div>
-                    </div>
+                    </Inline>
                   </div>
 
                   <div>
                     <div className="h-3 bg-theme-tertiary/30 rounded mb-2 w-24"></div>
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <PiClock className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="h-4 bg-theme-primary/30 rounded w-20"></div>
                       <div className="h-4 bg-theme-tertiary/30 rounded w-16"></div>
-                    </div>
+                    </Inline>
                   </div>
                 </div>
 
@@ -129,10 +130,10 @@ export default function AssignmentDetailsLoading() {
                   <div className="h-3 bg-theme-tertiary/30 rounded mb-2 w-32"></div>
                   <div className="space-y-2">
                     {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={i} className="flex items-center space-x-2">
+                      <Inline gap={2} key={i}>
                         <PiTarget className="w-4 h-4 text-accent-blue/30" />
                         <div className="h-3 bg-theme-primary/20 rounded flex-1"></div>
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </div>
@@ -141,10 +142,10 @@ export default function AssignmentDetailsLoading() {
                   <div className="h-3 bg-theme-tertiary/30 rounded mb-2 w-28"></div>
                   <div className="space-y-2">
                     {Array.from({ length: 2 }).map((_, i) => (
-                      <div key={i} className="flex items-center space-x-2">
+                      <Inline gap={2} key={i}>
                         <PiTarget className="w-4 h-4 text-accent-green/30" />
                         <div className="h-3 bg-theme-primary/20 rounded flex-1"></div>
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </div>
@@ -153,10 +154,10 @@ export default function AssignmentDetailsLoading() {
                   <div className="h-3 bg-theme-tertiary/30 rounded mb-2 w-20"></div>
                   <div className="space-y-2">
                     {Array.from({ length: 2 }).map((_, i) => (
-                      <div key={i} className="flex items-center space-x-2">
+                      <Inline gap={2} key={i}>
                         <PiBookOpen className="w-4 h-4 text-accent-purple/30" />
                         <div className="h-3 bg-theme-primary/20 rounded flex-1"></div>
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </div>
@@ -164,24 +165,24 @@ export default function AssignmentDetailsLoading() {
                 {/* Progress */}
                 <div>
                   <div className="h-3 bg-theme-tertiary/30 rounded mb-2 w-16"></div>
-                  <div className="flex items-center space-x-4">
+                  <Inline gap={4}>
                     <div className="flex-1">
                       <div className="w-full bg-theme-secondary rounded-full h-3">
                         <div className="bg-gradient-to-r from-brand-primary/30 to-brand-secondary/30 h-3 rounded-full w-2/3"></div>
                       </div>
                     </div>
                     <div className="h-4 bg-theme-primary/30 rounded w-8"></div>
-                  </div>
+                  </Inline>
                 </div>
               </div>
             </div>
 
             {/* Musical Pieces Section */}
             <div className="classical-card p-6 animate-pulse">
-              <div className="flex items-center space-x-2 mb-4">
+              <Inline gap={2} className="mb-4">
                 <PiMusicNotes className="w-5 h-5 text-theme-primary/30" />
                 <div className="h-6 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-48"></div>
-              </div>
+              </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Array.from({ length: 3 }).map((_, i) => (
@@ -211,7 +212,7 @@ export default function AssignmentDetailsLoading() {
               {/* Student Rating */}
               <div className="mb-6">
                 <div className="h-3 bg-theme-tertiary/30 rounded mb-2 w-40"></div>
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <div className="flex space-x-2">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <PiStar
@@ -221,7 +222,7 @@ export default function AssignmentDetailsLoading() {
                     ))}
                   </div>
                   <div className="h-4 bg-theme-primary/30 rounded w-8"></div>
-                </div>
+                </Inline>
               </div>
 
               {/* Submission Files */}
@@ -253,7 +254,7 @@ export default function AssignmentDetailsLoading() {
                 {/* Teacher Rating */}
                 <div>
                   <div className="h-3 bg-theme-tertiary/30 rounded mb-2 w-24"></div>
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <div className="flex space-x-2">
                       {Array.from({ length: 5 }).map((_, i) => (
                         <PiStar
@@ -263,7 +264,7 @@ export default function AssignmentDetailsLoading() {
                       ))}
                     </div>
                     <div className="h-4 bg-theme-primary/30 rounded w-8"></div>
-                  </div>
+                  </Inline>
                 </div>
               </div>
             </div>
@@ -275,13 +276,13 @@ export default function AssignmentDetailsLoading() {
             <div className="classical-card p-6 animate-pulse">
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-12 mb-4"></div>
 
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-full"></div>
                 <div>
                   <div className="h-4 bg-theme-primary/30 rounded mb-1 w-24"></div>
                   <div className="h-3 bg-brand-primary/30 rounded w-20"></div>
                 </div>
-              </div>
+              </Inline>
             </div>
 
             {/* Quick Actions */}

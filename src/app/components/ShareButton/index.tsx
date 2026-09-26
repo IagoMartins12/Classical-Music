@@ -14,6 +14,7 @@ import {
 } from 'react-icons/pi';
 import Input from '../Common/Inputs';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ShareButtonProps {
   url?: string;
@@ -171,7 +172,7 @@ export default function ShareButton({
               <label className="text-sm font-medium text-theme-secondary mb-2 block">
                 {t('share_copiar_link')}
               </label>
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 <Input
                   type="text"
                   value={shareUrl}
@@ -195,7 +196,7 @@ export default function ShareButton({
                     <PiCopy className="w-5 h-5" />
                   )}
                 </button>
-              </div>
+              </Inline>
               {copied && (
                 <p className="text-accent-green text-xs mt-1 flex items-center">
                   <PiCheck className="w-3 h-3 mr-1" />
@@ -210,45 +211,53 @@ export default function ShareButton({
                 {t('share_compartilhar_em')}
               </label>
               <div className="grid grid-cols-2 gap-3">
-                <button
+                <Inline
+                  as="button"
+                  gap={3}
                   onClick={() => handleShare('whatsapp')}
-                  className="flex items-center space-x-3 p-3 bg-green-500/10 border border-green-500/30 rounded-xl text-green-500 hover:bg-green-500/20 transition-all duration-300 group"
+                  className="p-3 bg-green-500/10 border border-green-500/30 rounded-xl text-green-500 hover:bg-green-500/20 transition-all duration-300 group"
                 >
                   <PiWhatsappLogo className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium">
                     {t('share_whatsapp')}
                   </span>
-                </button>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={3}
                   onClick={() => handleShare('twitter')}
-                  className="flex items-center space-x-3 p-3 bg-blue-400/10 border border-blue-400/30 rounded-xl text-blue-400 hover:bg-blue-400/20 transition-all duration-300 group"
+                  className="p-3 bg-blue-400/10 border border-blue-400/30 rounded-xl text-blue-400 hover:bg-blue-400/20 transition-all duration-300 group"
                 >
                   <PiTwitterLogo className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium">
                     {t('share_twitter')}
                   </span>
-                </button>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={3}
                   onClick={() => handleShare('facebook')}
-                  className="flex items-center space-x-3 p-3 bg-blue-600/10 border border-blue-600/30 rounded-xl text-blue-600 hover:bg-blue-600/20 transition-all duration-300 group"
+                  className="p-3 bg-blue-600/10 border border-blue-600/30 rounded-xl text-blue-600 hover:bg-blue-600/20 transition-all duration-300 group"
                 >
                   <PiFacebookLogo className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium">
                     {t('share_facebook')}
                   </span>
-                </button>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={3}
                   onClick={() => handleShare('telegram')}
-                  className="flex items-center space-x-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl text-blue-500 hover:bg-blue-500/20 transition-all duration-300 group"
+                  className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl text-blue-500 hover:bg-blue-500/20 transition-all duration-300 group"
                 >
                   <PiTelegramLogo className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium">
                     {t('share_telegram')}
                   </span>
-                </button>
+                </Inline>
               </div>
             </div>
           </div>

@@ -16,6 +16,7 @@ import {
   PiTrendUp,
   PiUser,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function TeacherStudentDetailLoading() {
   return (
@@ -65,30 +66,30 @@ export default function TeacherStudentDetailLoading() {
       <div className="section-wrap space-y-8 relative z-10">
         {/* Breadcrumb Skeleton */}
         <div className="pt-4 mb-6 animate-pulse">
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             <div className="h-4 w-20 bg-theme-elevated rounded"></div>
             <div className="w-3 h-3 bg-theme-elevated rounded"></div>
             <div className="h-4 w-16 bg-theme-elevated rounded"></div>
             <div className="w-3 h-3 bg-theme-elevated rounded"></div>
             <div className="h-4 w-24 bg-theme-elevated rounded"></div>
-          </div>
+          </Inline>
         </div>
 
         {/* Header Skeleton */}
         <div className="flex items-center justify-between mb-8 animate-pulse">
-          <div className="flex items-center space-x-4">
+          <Inline gap={4}>
             <div className="w-10 h-10 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
             <div>
               <div className="h-8 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-lg w-64 mb-2"></div>
               <div className="h-4 bg-theme-elevated rounded w-48"></div>
             </div>
-          </div>
+          </Inline>
 
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="h-8 w-16 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-full"></div>
             <div className="h-10 w-24 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
             <div className="h-10 w-32 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-lg"></div>
-          </div>
+          </Inline>
         </div>
 
         {/* Main Content Grid */}
@@ -97,7 +98,7 @@ export default function TeacherStudentDetailLoading() {
           <div className="lg:col-span-2 space-y-8">
             {/* Student Info Card Skeleton */}
             <div className="classical-card p-6 animate-pulse">
-              <div className="flex items-center space-x-6 mb-6">
+              <Inline gap={6} className="mb-6">
                 {/* Avatar */}
                 <div className="w-20 h-20 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full"></div>
 
@@ -110,7 +111,7 @@ export default function TeacherStudentDetailLoading() {
                     <div className="h-4 bg-theme-elevated rounded w-40"></div>
                   </div>
                 </div>
-              </div>
+              </Inline>
 
               {/* Student Details Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -186,7 +187,7 @@ export default function TeacherStudentDetailLoading() {
             {/* Recent Lessons Skeleton */}
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                     <PiClock className="w-5 h-5 text-theme-inverse/20" />
                   </div>
@@ -194,7 +195,7 @@ export default function TeacherStudentDetailLoading() {
                     <div className="h-5 bg-theme-primary/30 rounded w-32 mb-1"></div>
                     <div className="h-3 bg-theme-tertiary/30 rounded w-48"></div>
                   </div>
-                </div>
+                </Inline>
                 <div className="h-4 w-20 bg-brand-primary/30 rounded"></div>
               </div>
 
@@ -203,15 +204,15 @@ export default function TeacherStudentDetailLoading() {
                   <div key={index} className="classical-card-2 p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
+                        <Inline gap={3} className="mb-2">
                           <div className="h-4 bg-theme-primary/30 rounded w-48"></div>
                           <div className="h-5 w-16 bg-accent-green/20 border border-accent-green/30 rounded-full"></div>
-                        </div>
+                        </Inline>
 
-                        <div className="flex items-center space-x-4 mb-2">
+                        <Inline gap={4} className="mb-2">
                           <div className="h-3 bg-theme-elevated rounded w-32"></div>
                           <div className="h-3 bg-theme-elevated rounded w-16"></div>
-                        </div>
+                        </Inline>
 
                         <div className="flex flex-wrap gap-1 mb-2">
                           {Array.from({ length: 3 }).map((_, i) => (
@@ -238,7 +239,7 @@ export default function TeacherStudentDetailLoading() {
             {/* Teacher Notes Skeleton */}
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-xl flex items-center justify-center">
                     <PiChatCenteredText className="w-5 h-5 text-theme-inverse/20" />
                   </div>
@@ -246,7 +247,7 @@ export default function TeacherStudentDetailLoading() {
                     <div className="h-5 bg-theme-primary/30 rounded w-40 mb-1"></div>
                     <div className="h-3 bg-theme-tertiary/30 rounded w-56"></div>
                   </div>
-                </div>
+                </Inline>
                 <div className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
               </div>
 
@@ -264,7 +265,7 @@ export default function TeacherStudentDetailLoading() {
           <div className="lg:col-span-1 space-y-6">
             {/* Upcoming Lessons Skeleton */}
             <div className="classical-card p-6 animate-pulse">
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-lg flex items-center justify-center">
                   <PiCalendarBlank className="w-4 h-4 text-theme-inverse/20" />
                 </div>
@@ -272,12 +273,12 @@ export default function TeacherStudentDetailLoading() {
                   <div className="h-4 bg-theme-primary/30 rounded w-28 mb-1"></div>
                   <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
                 </div>
-              </div>
+              </Inline>
 
               <div className="space-y-3">
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="classical-card-2 p-3">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div className="w-2 h-12 bg-brand-primary/30 rounded-full"></div>
                       <div className="flex-1">
                         <div className="h-4 bg-theme-primary/30 rounded w-32 mb-1"></div>
@@ -285,7 +286,7 @@ export default function TeacherStudentDetailLoading() {
                         <div className="h-3 bg-accent-blue/30 rounded w-16"></div>
                       </div>
                       <div className="w-6 h-6 bg-theme-elevated rounded"></div>
-                    </div>
+                    </Inline>
                   </div>
                 ))}
               </div>
@@ -293,7 +294,7 @@ export default function TeacherStudentDetailLoading() {
 
             {/* Current Assignments Skeleton */}
             <div className="classical-card p-6 animate-pulse">
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-lg flex items-center justify-center">
                   <PiTarget className="w-4 h-4 text-theme-inverse/20" />
                 </div>
@@ -301,7 +302,7 @@ export default function TeacherStudentDetailLoading() {
                   <div className="h-4 bg-theme-primary/30 rounded w-24 mb-1"></div>
                   <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
                 </div>
-              </div>
+              </Inline>
 
               <div className="space-y-3">
                 {Array.from({ length: 3 }).map((_, i) => (
@@ -326,35 +327,38 @@ export default function TeacherStudentDetailLoading() {
 
             {/* Quick Actions Skeleton */}
             <div className="classical-card p-6 animate-pulse">
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-lg flex items-center justify-center">
                   <PiGear className="w-4 h-4 text-theme-inverse/20" />
                 </div>
                 <div>
                   <div className="h-4 bg-theme-primary/30 rounded w-28"></div>
                 </div>
-              </div>
+              </Inline>
 
               <div className="space-y-3">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="w-full classical-card-2 p-3">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-lg"></div>
                       <div>
                         <div className="h-4 bg-theme-primary/30 rounded w-24 mb-1"></div>
                         <div className="h-3 bg-theme-tertiary/30 rounded w-32"></div>
                       </div>
-                    </div>
+                    </Inline>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Refresh Button Skeleton */}
-            <div className="w-full h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg animate-pulse flex items-center justify-center space-x-2">
+            <Inline
+              gap={2}
+              className="w-full h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg animate-pulse justify-center"
+            >
               <PiTrendUp className="w-4 h-4 text-theme-inverse/20" />
               <div className="h-4 w-24 bg-theme-tertiary/30 rounded"></div>
-            </div>
+            </Inline>
           </div>
         </div>
       </div>

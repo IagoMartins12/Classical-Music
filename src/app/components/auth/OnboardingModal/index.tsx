@@ -23,6 +23,7 @@ import {
   usePhoneValidation,
 } from '@/app/utils/phones_and_location/phoneValidation';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface OnboardingOptions {
   instruments: Array<{ id: string; name: string; category: string | null }>;
@@ -382,7 +383,7 @@ const OnboardingModal: React.FC = () => {
             </Button> */}
           </div>
 
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             {/* 🆕 FEEDBACK VISUAL DO BOTÃO CONTINUAR */}
             <Button
               variant="primary"
@@ -398,7 +399,7 @@ const OnboardingModal: React.FC = () => {
                 ? t('onboarding_modal_finalize_profile')
                 : t('onboarding_modal_continue_button')}
             </Button>
-          </div>
+          </Inline>
         </div>
       )}
 
@@ -406,13 +407,15 @@ const OnboardingModal: React.FC = () => {
       {hasProgress && step === 1 && (
         <div className="mt-4 pt-4 border-t border-theme-secondary">
           <div className="flex items-center justify-center">
-            <button
+            <Inline
+              as="button"
+              gap={1}
               onClick={handleStartOver}
-              className="text-xs text-theme-tertiary hover:text-accent-red transition-colors flex items-center space-x-1"
+              className="text-xs text-theme-tertiary hover:text-accent-red transition-colors"
             >
               <PiWarningCircle className="w-3 h-3" />
               <span>{t('onboarding_modal_start_over')}</span>
-            </button>
+            </Inline>
           </div>
         </div>
       )}

@@ -9,6 +9,7 @@ import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({
   item,
@@ -49,7 +50,10 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
             <div className="absolute block md:hidden inset-0 bg-black/30"></div>
 
             {/* Floating Action Buttons */}
-            <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+            <Stack
+              gap={2}
+              className="absolute top-4 right-4 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+            >
               {/* Favorite Button */}
               <FavoriteButton
                 id={item.id}
@@ -61,7 +65,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
                 highlightMobile
                 isMobile={isMobile}
               />
-            </div>
+            </Stack>
 
             {/* Period Badge */}
             {item.epochName && (
@@ -122,12 +126,12 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
 
               {/* Action Bar */}
               <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
                   <span className="text-xs text-theme-tertiary font-medium">
                     {t('home_quick_actions_explore')}
                   </span>
-                </div>
+                </Inline>
 
                 {/* Arrow indicator */}
                 <div className="w-6 h-6 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-brand-primary group-hover:bg-brand-primary/10 transition-all duration-300">

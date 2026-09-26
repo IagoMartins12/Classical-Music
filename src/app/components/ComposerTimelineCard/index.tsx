@@ -8,6 +8,7 @@ import {
 } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useComposerBiography } from '@/app/hooks/useComposerBiography';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ComposerTimeline {
   id: string;
@@ -69,7 +70,7 @@ export function ComposerTimelineCard({
         </div>
 
         <div className="relative z-10">
-          <div className="flex items-center space-x-4 mb-4">
+          <Inline gap={4} className="mb-4">
             {/* Portrait */}
             <div
               className={`w-16 h-16 bg-gradient-to-br ${composer.gradientClass} rounded-2xl flex items-center justify-center shadow-theme-medium flex-shrink-0 group-hover:scale-110 transition-transform duration-500`}
@@ -107,7 +108,7 @@ export function ComposerTimelineCard({
                 {composer.epochName}
               </span>
             </div>
-          </div>
+          </Inline>
 
           {/* Lifespan */}
           <div className="flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-xl">

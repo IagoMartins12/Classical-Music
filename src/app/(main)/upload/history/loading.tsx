@@ -13,6 +13,7 @@ import {
   PiPlus,
   PiTrash,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function HistoryLoading() {
   return (
@@ -45,11 +46,14 @@ export default function HistoryLoading() {
                 <div className="h-5 w-16 bg-theme-elevated rounded"></div>
                 <div className="h-4 w-32 bg-theme-elevated rounded"></div>
               </div>
-              <div className="h-10 w-24 bg-theme-secondary rounded-lg flex items-center justify-center space-x-2">
+              <Inline
+                gap={2}
+                className="h-10 w-24 bg-theme-secondary rounded-lg justify-center"
+              >
                 <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="w-12 h-4 bg-theme-tertiary/30 rounded"></div>
                 <PiCaretDown className="w-4 h-4 text-theme-tertiary/30" />
-              </div>
+              </Inline>
             </div>
 
             {/* Filter Options - Expanded */}
@@ -139,21 +143,21 @@ function HistoryRecordSkeleton({ index }: { index: number }) {
           className={`classical-card-2 p-4 border-l-4 ${actionType.borderColor}/20`}
         >
           <div className="flex items-start justify-between mb-3">
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <div className="h-4 w-32 bg-theme-elevated rounded"></div>
               <div className="h-6 w-16 bg-accent-blue/10 border border-accent-blue/20 rounded-full"></div>
-            </div>
+            </Inline>
 
-            <div className="flex items-center space-x-2">
-              <div className="flex items-center space-x-2 text-xs">
+            <Inline gap={2}>
+              <Inline gap={2} className="text-xs">
                 <PiCalendarBlank className="w-3 h-3 text-theme-tertiary/30" />
                 <div className="h-3 w-16 bg-theme-elevated rounded"></div>
-              </div>
+              </Inline>
 
               <div className="w-6 h-6 rounded-full bg-theme-secondary/50 flex items-center justify-center">
                 <PiEye className="w-3 h-3 text-theme-tertiary/30" />
               </div>
-            </div>
+            </Inline>
           </div>
 
           <div className="space-y-2">
@@ -189,15 +193,15 @@ function HistoryRecordSkeleton({ index }: { index: number }) {
           {index === 0 && (
             <div className="mt-3 pt-3 border-t border-theme-secondary">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <PiMapPin className="w-3 h-3 text-theme-tertiary/30" />
                   <div className="h-3 w-24 bg-theme-elevated rounded"></div>
-                </div>
+                </Inline>
 
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <PiMonitor className="w-3 h-3 text-theme-tertiary/30" />
                   <div className="h-3 w-32 bg-theme-elevated rounded"></div>
-                </div>
+                </Inline>
               </div>
             </div>
           )}

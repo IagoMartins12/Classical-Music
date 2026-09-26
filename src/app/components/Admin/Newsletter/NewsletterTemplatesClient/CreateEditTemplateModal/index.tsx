@@ -21,6 +21,7 @@ import {
   extractVariables,
   previewTemplateSync,
 } from '@/app/libs/newsletter/emailTemplates';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CreateEditTemplateModalProps {
   isOpen: boolean;
@@ -261,7 +262,7 @@ export default function CreateEditTemplateModal({
 
           {/* Steps */}
           <div className="px-6 py-4 border-b border-theme-secondary">
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               {steps.map((step) => (
                 <div
                   key={step.id}
@@ -278,7 +279,7 @@ export default function CreateEditTemplateModal({
                   <span className="text-sm font-medium">{step.title}</span>
                 </div>
               ))}
-            </div>
+            </Inline>
           </div>
 
           {/* Content */}
@@ -417,7 +418,7 @@ export default function CreateEditTemplateModal({
                   </div>
                 )}
 
-                <div className="flex items-center space-x-4">
+                <Inline gap={4}>
                   <Button
                     variant="ghost"
                     leftIcon={<PiEye />}
@@ -425,7 +426,7 @@ export default function CreateEditTemplateModal({
                   >
                     Preview Template
                   </Button>
-                </div>
+                </Inline>
               </div>
             )}
 
@@ -548,7 +549,7 @@ export default function CreateEditTemplateModal({
 
           {/* Footer */}
           <div className="flex items-center justify-between p-6 border-t border-theme-secondary">
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               {currentStep > 1 && (
                 <Button
                   variant="ghost"
@@ -558,9 +559,9 @@ export default function CreateEditTemplateModal({
                   Anterior
                 </Button>
               )}
-            </div>
+            </Inline>
 
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <Button variant="ghost" onClick={onClose} disabled={saving}>
                 Cancelar
               </Button>
@@ -598,7 +599,7 @@ export default function CreateEditTemplateModal({
                       : 'Criar Template'}
                 </Button>
               )}
-            </div>
+            </Inline>
           </div>
         </div>
       </Modal>

@@ -10,6 +10,7 @@ import {
   PiUser,
   PiYoutubeLogo,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface YouTubePlayerProps {
   video: {
@@ -120,25 +121,27 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
         </div>
 
         <div className="flex items-center justify-between text-xs text-gray-400">
-          <div className="flex items-center space-x-1">
+          <Inline gap={1}>
             <PiUser className="w-3 h-3" />
             <span className="truncate">{video.channel}</span>
-          </div>
+          </Inline>
 
-          <div className="flex items-center space-x-1">
+          <Inline gap={1}>
             <PiCalendarBlank className="w-3 h-3" />
             <span>{formatDate(video.publishedAt)}</span>
-          </div>
+          </Inline>
         </div>
 
         {!isPlayerVisible && (
-          <button
+          <Inline
+            as="button"
+            gap={2}
             onClick={showPlayer}
-            className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2"
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors justify-center"
           >
             <PiPlay className="w-4 h-4" />
             <span>{t('youtube_button_span')}</span>
-          </button>
+          </Inline>
         )}
       </div>
 

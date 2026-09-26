@@ -11,6 +11,7 @@ import {
   PiX,
 } from 'react-icons/pi';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface StatsModalProps {
   isOpen: boolean;
@@ -193,7 +194,7 @@ export default function StatsModal({
             <div className="w-12 h-1.5 bg-theme-tertiary/30 rounded-full mx-auto mb-4" />
 
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <div
                   className={`w-10 h-10 bg-gradient-to-br ${colors.gradient} rounded-xl flex items-center justify-center`}
                 >
@@ -205,9 +206,9 @@ export default function StatsModal({
                     {isLandscape ? 'Modo paisagem ativo' : 'Toque para navegar'}
                   </p>
                 </div>
-              </div>
+              </Inline>
 
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 {/* Action Buttons */}
                 <button
                   onClick={handleShare}
@@ -233,7 +234,7 @@ export default function StatsModal({
                 >
                   <PiX className="w-4 h-4 text-theme-tertiary group-hover:text-accent-red" />
                 </button>
-              </div>
+              </Inline>
             </div>
           </div>
 
@@ -246,13 +247,15 @@ export default function StatsModal({
           {!isFullscreen && (
             <div className="flex-shrink-0 p-4 pt-2 border-t border-theme-primary/20">
               <div className="grid grid-cols-2 gap-3">
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={handleDownload}
-                  className="flex items-center justify-center space-x-2 py-3 bg-theme-secondary rounded-xl hover:bg-theme-primary transition-colors"
+                  className="justify-center py-3 bg-theme-secondary rounded-xl hover:bg-theme-primary transition-colors"
                 >
                   <PiDownloadSimple className="w-4 h-4 text-theme-tertiary" />
                   <span className="text-sm text-theme-tertiary">Exportar</span>
-                </button>
+                </Inline>
 
                 <button
                   onClick={handleShare}

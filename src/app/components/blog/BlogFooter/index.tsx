@@ -9,6 +9,7 @@ import {
   PiTwitterLogo,
   PiYoutubeLogo,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export function BlogFooter() {
   const currentYear = new Date().getFullYear();
@@ -69,7 +70,7 @@ export function BlogFooter() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Brand Column */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <PiMusicNotes className="w-8 h-8 text-brand-primary" />
               <div>
                 <h3 className="text-xl font-bold text-gradient-brand">
@@ -77,12 +78,12 @@ export function BlogFooter() {
                 </h3>
                 <p className="text-xs text-theme-tertiary">Blog Musical</p>
               </div>
-            </div>
+            </Inline>
             <p className="text-sm text-theme-secondary leading-relaxed">
               Explore o fascinante mundo da música clássica através de artigos,
               análises e biografias dos grandes mestres.
             </p>
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               {socialLinks.map((social) => (
                 <Link
                   key={social.label}
@@ -95,7 +96,7 @@ export function BlogFooter() {
                   <social.icon className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                 </Link>
               ))}
-            </div>
+            </Inline>
           </div>
 
           {/* Links Columns */}

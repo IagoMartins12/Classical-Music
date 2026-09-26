@@ -1,5 +1,6 @@
 import { GiViolin } from 'react-icons/gi';
 import { PiMusicNotes } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 {
   /* Floating Icons */
@@ -7,7 +8,7 @@ import { PiMusicNotes } from 'react-icons/pi';
 
 const FloatingIcons = () => {
   return (
-    <div className="flex justify-center items-center mb-8 space-x-6 animate-fade-in-up">
+    <Inline gap={6} className="justify-center mb-8 animate-fade-in-up">
       <div
         className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center shadow-theme-glow animate-bounce"
         style={{ animationDelay: '0s' }}
@@ -45,7 +46,7 @@ const FloatingIcons = () => {
           }
         }
       `}</style>
-    </div>
+    </Inline>
   );
 };
 

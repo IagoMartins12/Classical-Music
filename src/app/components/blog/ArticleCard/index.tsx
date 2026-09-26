@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import { PiChatDots, PiClock, PiHeart, PiUser } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ArticleCardProps {
   article: {
@@ -98,7 +99,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
         {/* Footer */}
         <div className="flex items-center justify-between pt-4 border-t border-theme-secondary mt-auto">
           {/* Author */}
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             {article.author.image ? (
               <Image
                 src={article.author.image}
@@ -115,23 +116,23 @@ export function ArticleCard({ article }: ArticleCardProps) {
             <span className="text-xs text-theme-tertiary">
               {authorName || 'Anônimo'}
             </span>
-          </div>
+          </Inline>
 
           {/* Stats */}
-          <div className="flex items-center space-x-3 text-xs text-theme-tertiary">
-            <div className="flex items-center space-x-1">
+          <Inline gap={3} className="text-xs text-theme-tertiary">
+            <Inline gap={1}>
               <PiClock className="w-3 h-3" />
               <span>{article?.readTime ?? 0}min</span>
-            </div>
-            <div className="flex items-center space-x-1">
+            </Inline>
+            <Inline gap={1}>
               <PiHeart className="w-3 h-3" />
               <span>{article._count.likes}</span>
-            </div>
-            <div className="flex items-center space-x-1">
+            </Inline>
+            <Inline gap={1}>
               <PiChatDots className="w-3 h-3" />
               <span>{article._count.comments}</span>
-            </div>
-          </div>
+            </Inline>
+          </Inline>
         </div>
       </div>
     </article>

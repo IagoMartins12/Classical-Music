@@ -1,6 +1,7 @@
 // app/components/Utils/SectionTitle.tsx - Updated with theme system
 import Link from 'next/link';
 import { PiArrowRight, PiUsers } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface SectionTitleProps {
   title: string;
@@ -36,7 +37,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
     <div className="">
       {/* Main Section Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-        <div className="flex items-center space-x-4">
+        <Inline gap={4}>
           {/* Icon with gradient background */}
           <div
             className={`w-12 h-12 bg-gradient-to-br ${getAccentClasses()} rounded-xl flex items-center justify-center shadow-theme-glow icon-glow`}
@@ -55,7 +56,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
               </p>
             )}
           </div>
-        </div>
+        </Inline>
 
         {/* Action Link */}
         {linkHref && (

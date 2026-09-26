@@ -6,6 +6,7 @@ import { ReactNodeViewRenderer } from '@tiptap/react';
 import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
 import { PiArrowsOut, PiDownloadSimple, PiFile, PiTrash } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 const ScoreViewerComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -38,7 +39,7 @@ const ScoreViewerComponent = (props: any) => {
         {/* Header */}
         <div className="bg-accent-green text-white px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <PiFile className="w-6 h-6" />
               <div>
                 <h4 className="font-bold">{scoreTitle || 'Partitura'}</h4>
@@ -46,9 +47,9 @@ const ScoreViewerComponent = (props: any) => {
                   {workTitle} - {composerName}
                 </p>
               </div>
-            </div>
+            </Inline>
 
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               {/* ✅ Controles de Edição */}
               {showControls && (
                 <button
@@ -78,7 +79,7 @@ const ScoreViewerComponent = (props: any) => {
               >
                 <PiArrowsOut className="w-5 h-5" />
               </button>
-            </div>
+            </Inline>
           </div>
         </div>
 

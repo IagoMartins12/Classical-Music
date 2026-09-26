@@ -29,6 +29,7 @@ import {
   FloatingElement,
 } from '../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface PrivacySection {
   id: string;
@@ -352,18 +353,18 @@ export default function PrivacyPage() {
                       {t('privacy_jsx_p_children_0__exercer_qualquer_seus')}
                     </p>
                     <div className="space-y-3">
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <PiEnvelopeSimple className="w-4 h-4 text-brand-primary" />
                         <span className="text-theme-secondary">
                           privacidade@opusatlas.com
                         </span>
-                      </div>
-                      <div className="flex items-center space-x-3">
+                      </Inline>
+                      <Inline gap={3}>
                         <PiGear className="w-4 h-4 text-brand-primary" />
                         <span className="text-theme-secondary">
                           {t('privacy_jsx_span_children_0__profile')}
                         </span>
-                      </div>
+                      </Inline>
                     </div>
                   </div>
                 </div>
@@ -416,20 +417,23 @@ export default function PrivacyPage() {
                   </Link>
                 </div>
 
-                <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
-                  <div className="flex items-center space-x-2 text-theme-tertiary">
+                <Inline
+                  gap={8}
+                  className="justify-center mt-12 pt-8 border-t border-theme-secondary"
+                >
+                  <Inline gap={2} className="text-theme-tertiary">
                     <PiShield className="w-4 h-4" />
                     <span className="text-sm">
                       {t('privacy_jsx_span_children_0__conformidade_lgpd')}
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-theme-tertiary">
+                  </Inline>
+                  <Inline gap={2} className="text-theme-tertiary">
                     <PiLock className="w-4 h-4" />
                     <span className="text-sm">
                       {t('privacy_jsx_span_children_0__dados_criptografados')}
                     </span>
-                  </div>
-                </div>
+                  </Inline>
+                </Inline>
               </AnimatedCard>
             </div>
           </div>

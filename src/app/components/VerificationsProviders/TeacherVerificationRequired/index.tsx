@@ -22,6 +22,7 @@ import Button from '../../Common/Button';
 import { useEmailRefreshSimple } from '@/app/hooks/useEmailRefresh';
 import Navbar from '../../Navbar';
 import { Toaster } from 'react-hot-toast';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface TeacherVerificationRequiredProps {
   userEmail?: string | null;
@@ -155,79 +156,79 @@ export default function TeacherVerificationRequired({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               {/* Current Status */}
               <AnimatedCard hover="lift" className="classical-card p-6">
-                <div className="flex items-center space-x-3 mb-4">
+                <Inline gap={3} className="mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
                     <PiEnvelopeSimple className="w-5 h-5 text-accent-blue" />
                   </div>
                   <h3 className="text-xl font-bold text-theme-primary classical-title">
                     Status Atual
                   </h3>
-                </div>
+                </Inline>
 
                 <div className="text-left space-y-3">
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Convite enviado para seu email
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Aguardando sua aceitação
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-theme-tertiary rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Aprovação do administrador
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-theme-tertiary rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Acesso completo liberado
                     </span>
-                  </div>
+                  </Inline>
                 </div>
               </AnimatedCard>
 
               {/* After approval */}
               <AnimatedCard hover="lift" className="classical-card p-6">
-                <div className="flex items-center space-x-3 mb-4">
+                <Inline gap={3} className="mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                     <PiUserCheck className="w-5 h-5 text-accent-green" />
                   </div>
                   <h3 className="text-xl font-bold text-theme-primary classical-title">
                     Após a Aprovação
                   </h3>
-                </div>
+                </Inline>
 
                 <div className="text-left space-y-2">
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Gerenciar alunos e aulas
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Criar cronogramas personalizados
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Acompanhar progresso dos alunos
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Sistema completo de avaliação
                     </span>
-                  </div>
+                  </Inline>
                 </div>
               </AnimatedCard>
             </div>
@@ -237,14 +238,14 @@ export default function TeacherVerificationRequired({
               hover="lift"
               className="classical-card p-6 max-w-3xl mx-auto mb-8"
             >
-              <div className="flex items-center space-x-3 mb-6">
+              <Inline gap={3} className="mb-6">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                   <PiCaretRight className="w-5 h-5 text-accent-purple" />
                 </div>
                 <h3 className="text-lg font-bold text-theme-primary classical-title">
                   Como Funciona o Processo
                 </h3>
-              </div>
+              </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="text-center p-4 bg-gradient-to-br from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">

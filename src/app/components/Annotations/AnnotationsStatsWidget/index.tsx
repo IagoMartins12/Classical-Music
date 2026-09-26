@@ -19,6 +19,7 @@ import {
   AnimatedCard,
   AnimatedItem,
 } from '@/app/components/animation/AnimatedComponents';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface AnnotationsStatsWidgetProps {
   stats: any;
@@ -95,10 +96,14 @@ export default function AnnotationsStatsWidget({
       {topCategories.length > 0 && (
         <AnimatedCard hover="lift" className="classical-card-2">
           <div className="p-6">
-            <h4 className="text-sm font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+            <Inline
+              as="h4"
+              gap={2}
+              className="text-sm font-semibold text-theme-primary mb-4"
+            >
               <PiTrendUp className="w-4 h-4" />
               <span>Suas Categorias Favoritas</span>
-            </h4>
+            </Inline>
             <div className="space-y-3">
               {topCategories.map((category: any, index: number) => {
                 const config =
@@ -118,7 +123,10 @@ export default function AnnotationsStatsWidget({
                     springType="bouncy"
                     delay={index * 0.1}
                   >
-                    <div className="flex items-center space-x-3 p-3 classical-card-simple rounded-xl">
+                    <Inline
+                      gap={3}
+                      className="p-3 classical-card-simple rounded-xl"
+                    >
                       <div
                         className={`w-8 h-8 rounded-lg bg-gradient-to-br ${
                           config?.color ||
@@ -147,7 +155,7 @@ export default function AnnotationsStatsWidget({
                           ></div>
                         </div>
                       </div>
-                    </div>
+                    </Inline>
                   </AnimatedItem>
                 );
               })}
@@ -160,10 +168,14 @@ export default function AnnotationsStatsWidget({
       {topAnnotations.length > 0 && (
         <AnimatedCard hover="lift" className="classical-card-2">
           <div className="p-6">
-            <h4 className="text-sm font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+            <Inline
+              as="h4"
+              gap={2}
+              className="text-sm font-semibold text-theme-primary mb-4"
+            >
               <PiTrophy className="w-4 h-4" />
               <span>Suas Anotações Mais Populares</span>
-            </h4>
+            </Inline>
             <div className="space-y-3">
               {topAnnotations.map((annotation, index) => {
                 const categoryConfig =
@@ -179,8 +191,11 @@ export default function AnnotationsStatsWidget({
                     springType="bouncy"
                     delay={index * 0.1}
                   >
-                    <div className="flex items-center space-x-3 p-3 classical-card-simple rounded-xl group hover:border-brand-primary/50 transition-all">
-                      <div className="flex items-center space-x-2">
+                    <Inline
+                      gap={3}
+                      className="p-3 classical-card-simple rounded-xl group hover:border-brand-primary/50 transition-all"
+                    >
+                      <Inline gap={2}>
                         <div
                           className={`w-6 h-6 rounded-lg flex items-center justify-center`}
                         >
@@ -189,7 +204,7 @@ export default function AnnotationsStatsWidget({
                         {annotation.isVerified && (
                           <PiSealCheck className="w-4 h-4 text-accent-green" />
                         )}
-                      </div>
+                      </Inline>
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-theme-primary text-sm truncate group-hover:text-brand-primary transition-colors">
                           {annotation.title}
@@ -198,18 +213,21 @@ export default function AnnotationsStatsWidget({
                           {annotation.work.title} -{' '}
                           {annotation.work.composer.name}
                         </div>
-                        <div className="flex items-center space-x-3 text-xs text-theme-tertiary mt-1">
-                          <span className="flex items-center space-x-1">
+                        <Inline
+                          gap={3}
+                          className="text-xs text-theme-tertiary mt-1"
+                        >
+                          <Inline as="span" gap={1}>
                             <PiThumbsUp className="w-3 h-3" />
                             <span>{annotation.helpfulCount}</span>
-                          </span>
-                          <span className="flex items-center space-x-1">
+                          </Inline>
+                          <Inline as="span" gap={1}>
                             <PiEye className="w-3 h-3" />
                             <span>{annotation.viewCount}</span>
-                          </span>
-                        </div>
+                          </Inline>
+                        </Inline>
                       </div>
-                    </div>
+                    </Inline>
                   </AnimatedItem>
                 );
               })}
@@ -222,10 +240,14 @@ export default function AnnotationsStatsWidget({
       {mostAnnotatedWorks.length > 0 && (
         <AnimatedCard hover="lift" className="classical-card-2">
           <div className="p-6">
-            <h4 className="text-sm font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+            <Inline
+              as="h4"
+              gap={2}
+              className="text-sm font-semibold text-theme-primary mb-4"
+            >
               <PiMusicNotes className="w-4 h-4" />
               <span>Obras Que Você Mais Anota</span>
-            </h4>
+            </Inline>
             <div className="space-y-3">
               {mostAnnotatedWorks.map((work, index) => (
                 <AnimatedItem
@@ -267,10 +289,14 @@ export default function AnnotationsStatsWidget({
       {/* Dicas para anotações */}
       <AnimatedCard hover="lift" className="classical-card-2">
         <div className="p-6">
-          <h4 className="text-sm font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+          <Inline
+            as="h4"
+            gap={2}
+            className="text-sm font-semibold text-theme-primary mb-4"
+          >
             <PiBookOpen className="w-4 h-4" />
             <span>Dicas para Anotar</span>
-          </h4>
+          </Inline>
           <div className="space-y-3 text-sm text-theme-secondary">
             <p>
               🎯 <strong>Seja específico</strong> - Indique compassos, mãos ou

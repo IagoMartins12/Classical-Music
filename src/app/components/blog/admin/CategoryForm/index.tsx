@@ -18,6 +18,7 @@ import {
   updateCategory,
   uploadCategoryImage,
 } from '@/app/requests/blog/admin-actions';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 interface CategoryFormProps {
   mode: 'create' | 'edit';
@@ -221,10 +222,10 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
               maxLength={50}
             />
             {errors.name && (
-              <p className="text-sm text-red-500 mt-1 flex items-center space-x-1">
+              <Inline as="p" gap={1} className="text-sm text-red-500 mt-1">
                 <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.name}</span>
-              </p>
+              </Inline>
             )}
             <p className="text-xs text-theme-tertiary mt-1">
               {formData.name.length}/50 caracteres
@@ -236,7 +237,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
             <label className="block text-sm font-medium text-theme-primary mb-2">
               Slug (URL) *
             </label>
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <span className="text-theme-tertiary text-sm">
                 /blog/category/
               </span>
@@ -252,12 +253,12 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                 placeholder="analise-musical"
                 maxLength={60}
               />
-            </div>
+            </Inline>
             {errors.slug && (
-              <p className="text-sm text-red-500 mt-1 flex items-center space-x-1">
+              <Inline as="p" gap={1} className="text-sm text-red-500 mt-1">
                 <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.slug}</span>
-              </p>
+              </Inline>
             )}
             <p className="text-xs text-theme-tertiary mt-1">
               Apenas letras minúsculas, números e hífens
@@ -318,7 +319,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
             {formData.icon && (
               <div className="mt-3 p-4 bg-theme-elevated rounded-lg">
                 <p className="text-xs text-theme-tertiary mb-2">Preview:</p>
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div
                     className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
                     style={{
@@ -333,7 +334,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                   <span className="font-medium text-theme-primary">
                     {formData.name || 'Nome da Categoria'}
                   </span>
-                </div>
+                </Inline>
               </div>
             )}
           </div>
@@ -343,7 +344,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
             <label className="block text-sm font-medium text-theme-primary mb-2">
               Cor *
             </label>
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <input
                 type="color"
                 value={formData.color}
@@ -362,12 +363,12 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                 placeholder="#d4af37"
                 maxLength={7}
               />
-            </div>
+            </Inline>
             {errors.color && (
-              <p className="text-sm text-red-500 mt-1 flex items-center space-x-1">
+              <Inline as="p" gap={1} className="text-sm text-red-500 mt-1">
                 <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.color}</span>
-              </p>
+              </Inline>
             )}
 
             <div className="mt-3 p-4 bg-theme-elevated rounded-lg">
@@ -420,14 +421,14 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
               }`}
             >
               {uploading ? (
-                <div className="flex flex-col items-center space-y-2">
+                <Stack gap={2} className="items-center">
                   <div className="w-8 h-8 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
                   <p className="text-sm text-theme-secondary">
                     Enviando imagem...
                   </p>
-                </div>
+                </Stack>
               ) : (
-                <div className="flex flex-col items-center space-y-2">
+                <Stack gap={2} className="items-center">
                   <PiUploadSimple className="w-8 h-8 text-theme-tertiary" />
                   <p className="text-sm text-theme-secondary">
                     Clique para selecionar uma imagem
@@ -435,7 +436,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                   <p className="text-xs text-theme-tertiary">
                     JPG, PNG ou WebP até 2MB
                   </p>
-                </div>
+                </Stack>
               )}
             </div>
           )}
@@ -480,20 +481,24 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-end space-x-4">
-        <button
+      <Inline gap={4} className="justify-end">
+        <Inline
+          as="button"
+          gap={2}
           type="button"
           onClick={() => router.back()}
-          className="btn-classical-secondary flex items-center space-x-2"
+          className="btn-classical-secondary"
           disabled={submitting}
         >
           <PiX className="w-4 h-4" />
           <span>Cancelar</span>
-        </button>
+        </Inline>
 
-        <button
+        <Inline
+          as="button"
+          gap={2}
           type="submit"
-          className="btn-classical-primary flex items-center space-x-2"
+          className="btn-classical-primary"
           disabled={submitting}
         >
           <PiFloppyDisk className="w-4 h-4" />
@@ -504,8 +509,8 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                 ? 'Criar Categoria'
                 : 'Salvar Alterações'}
           </span>
-        </button>
-      </div>
+        </Inline>
+      </Inline>
     </form>
   );
 }

@@ -8,6 +8,7 @@ import {
   PiWarning,
   PiWarningCircle,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface UploadFormValidationProps {
   validation: ValidationResult;
@@ -37,12 +38,12 @@ const UploadFormValidation = ({
       <div
         className={`bg-accent-green/10 border border-accent-green/20 rounded-lg p-4 ${className}`}
       >
-        <div className="flex items-center space-x-2">
+        <Inline gap={2}>
           <PiCheckCircle className="w-5 h-5 text-accent-green" />
           <span className="text-sm font-medium text-accent-green">
             Validação bem-sucedida
           </span>
-        </div>
+        </Inline>
         <div className="mt-2 flex items-center justify-between">
           <span className="text-sm text-theme-secondary">
             Qualidade dos dados:{' '}
@@ -66,12 +67,12 @@ const UploadFormValidation = ({
       {/* Errors */}
       {validation.errors.length > 0 && (
         <div className="bg-accent-red/10 border border-accent-red/20 rounded-lg p-4">
-          <div className="flex items-center space-x-2 mb-2">
+          <Inline gap={2} className="mb-2">
             <PiWarningCircle className="w-5 h-5 text-accent-red" />
             <span className="text-sm font-medium text-accent-red">
               Erros encontrados ({validation.errors.length})
             </span>
-          </div>
+          </Inline>
           <ul className="space-y-1">
             {validation.errors.map((error, index) => (
               <li
@@ -89,12 +90,12 @@ const UploadFormValidation = ({
       {/* Warnings */}
       {validation.warnings.length > 0 && (
         <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4">
-          <div className="flex items-center space-x-2 mb-2">
+          <Inline gap={2} className="mb-2">
             <PiWarning className="w-5 h-5 text-accent-amber" />
             <span className="text-sm font-medium text-accent-amber">
               Avisos ({validation.warnings.length})
             </span>
-          </div>
+          </Inline>
           <ul className="space-y-1">
             {validation.warnings.map((warning, index) => (
               <li
@@ -111,12 +112,12 @@ const UploadFormValidation = ({
 
       {/* Data Quality */}
       <div className="bg-accent-blue/10 border border-accent-blue/20 rounded-lg p-4">
-        <div className="flex items-center space-x-2 mb-2">
+        <Inline gap={2} className="mb-2">
           <PiInfo className="w-5 h-5 text-accent-blue" />
           <span className="text-sm font-medium text-accent-blue">
             Qualidade dos dados
           </span>
-        </div>
+        </Inline>
         <div className="flex items-center justify-between">
           <span className="text-sm text-theme-secondary">
             Pontuação:{' '}

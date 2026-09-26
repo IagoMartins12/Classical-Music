@@ -30,6 +30,7 @@ import {
   AnimatedCard,
   AnimatedItem,
 } from '../../../../components/animation/AnimatedComponents';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface PublicTeacherDetailsPageClientProps {
   teacher: TeacherDetailedProfile;
@@ -107,7 +108,11 @@ export default function PublicTeacherDetailsPageClient({
       <div className="section-wrap space-y-8 relative z-10">
         {/* Breadcrumb */}
         <AnimatedItem direction="down" springType="gentle">
-          <nav className="flex items-center space-x-2 text-sm text-theme-tertiary mb-6 pt-4">
+          <Inline
+            as="nav"
+            gap={2}
+            className="text-sm text-theme-tertiary mb-6 pt-4"
+          >
             <Link
               href="/teachers"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
@@ -130,7 +135,7 @@ export default function PublicTeacherDetailsPageClient({
             <span className="text-theme-primary font-medium">
               {teacher.name}
             </span>
-          </nav>
+          </Inline>
         </AnimatedItem>
 
         <AnimatedContainer
@@ -149,7 +154,7 @@ export default function PublicTeacherDetailsPageClient({
                     <div className="space-y-3">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <div className="flex items-center space-x-3">
+                          <Inline gap={3}>
                             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
                               {teacher.name}
                             </h1>
@@ -158,7 +163,7 @@ export default function PublicTeacherDetailsPageClient({
                                 <PiCheckCircle className="w-5 h-5 text-theme-primary" />
                               </div>
                             )}
-                          </div>
+                          </Inline>
 
                           {teacher.specialties.length > 0 && (
                             <p className="text-xl text-theme-secondary mt-2">
@@ -171,7 +176,7 @@ export default function PublicTeacherDetailsPageClient({
                         </div>
 
                         {/* Ações */}
-                        <div className="flex items-center space-x-3 pt-2">
+                        <Inline gap={3} className="pt-2">
                           <button
                             onClick={handleShare}
                             className="btn-classical-secondary flex items-center justify-center"
@@ -182,7 +187,7 @@ export default function PublicTeacherDetailsPageClient({
                           <button className="btn-classical-secondary flex items-center justify-center text-accent-red border-accent-red/30 hover:bg-accent-red/10">
                             <PiFlag className="w-5 h-5" />
                           </button>
-                        </div>
+                        </Inline>
                       </div>
                     </div>
                   </AnimatedItem>
@@ -324,9 +329,11 @@ export default function PublicTeacherDetailsPageClient({
                     <div className="space-y-4 pt-4">
                       <div className="flex flex-wrap gap-3">
                         {teacher.phone && (
-                          <button
+                          <Inline
+                            as="button"
+                            gap={2}
                             onClick={handleWhatsAppContact}
-                            className="btn-classical-primary flex items-center space-x-2 group/btn"
+                            className="btn-classical-primary group/btn"
                           >
                             <PiChatCircle className="w-5 h-5" />
                             <span>WhatsApp</span>
@@ -343,13 +350,15 @@ export default function PublicTeacherDetailsPageClient({
                                 d="M9 5l7 7-7 7"
                               />
                             </svg>
-                          </button>
+                          </Inline>
                         )}
 
                         {teacher.email && (
-                          <button
+                          <Inline
+                            as="button"
+                            gap={2}
                             onClick={handleEmailContact}
-                            className="btn-classical-secondary flex items-center space-x-2 group/btn"
+                            className="btn-classical-secondary group/btn"
                           >
                             <PiEnvelopeSimple className="w-5 h-5" />
                             <span>Email</span>
@@ -366,15 +375,17 @@ export default function PublicTeacherDetailsPageClient({
                                 d="M9 5l7 7-7 7"
                               />
                             </svg>
-                          </button>
+                          </Inline>
                         )}
 
                         {teacher.website && (
-                          <a
+                          <Inline
+                            as="a"
+                            gap={2}
                             href={teacher.website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="btn-classical-secondary flex items-center space-x-2 group/btn"
+                            className="btn-classical-secondary group/btn"
                           >
                             <PiArrowSquareOut className="w-5 h-5" />
                             <span>Website</span>
@@ -391,12 +402,15 @@ export default function PublicTeacherDetailsPageClient({
                                 d="M9 5l7 7-7 7"
                               />
                             </svg>
-                          </a>
+                          </Inline>
                         )}
                       </div>
 
                       {/* Status de disponibilidade */}
-                      <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
+                      <Inline
+                        gap={3}
+                        className="p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary"
+                      >
                         <div
                           className={`w-3 h-3 rounded-full ${
                             teacher.contactPreferences.acceptingStudents
@@ -409,7 +423,7 @@ export default function PublicTeacherDetailsPageClient({
                             ? `Aceitando novos alunos (máx. ${teacher.contactPreferences.maxStudentsPerWeek}/semana)`
                             : 'Não está aceitando novos alunos no momento'}
                         </p>
-                      </div>
+                      </Inline>
                     </div>
                   </AnimatedItem>
                 </div>
@@ -454,7 +468,7 @@ export default function PublicTeacherDetailsPageClient({
             <AnimatedCard hover="lift" className="classical-card">
               <div className="p-8">
                 <AnimatedItem direction="up" springType="bouncy">
-                  <div className="flex items-center space-x-3 mb-6">
+                  <Inline gap={3} className="mb-6">
                     <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center">
                       <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                     </div>
@@ -466,7 +480,7 @@ export default function PublicTeacherDetailsPageClient({
                         Áreas de expertise de {teacher.name}
                       </p>
                     </div>
-                  </div>
+                  </Inline>
                 </AnimatedItem>
 
                 <div className="flex flex-wrap gap-3">
@@ -504,7 +518,7 @@ export default function PublicTeacherDetailsPageClient({
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-8">
               <AnimatedItem direction="left" springType="smooth">
-                <div className="flex items-center space-x-3 mb-6">
+                <Inline gap={3} className="mb-6">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
                     <PiBookOpen className="w-6 h-6 text-theme-primary" />
                   </div>
@@ -516,7 +530,7 @@ export default function PublicTeacherDetailsPageClient({
                       Conheça mais sobre a trajetória e filosofia de ensino
                     </p>
                   </div>
-                </div>
+                </Inline>
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
@@ -555,7 +569,7 @@ export default function PublicTeacherDetailsPageClient({
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-8">
               <AnimatedItem direction="up" springType="bouncy">
-                <div className="flex items-center space-x-3 mb-6">
+                <Inline gap={3} className="mb-6">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
                     <PiChatCircle className="w-6 h-6 text-theme-primary" />
                   </div>
@@ -567,7 +581,7 @@ export default function PublicTeacherDetailsPageClient({
                       Inicie sua jornada musical hoje mesmo
                     </p>
                   </div>
-                </div>
+                </Inline>
               </AnimatedItem>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -579,7 +593,7 @@ export default function PublicTeacherDetailsPageClient({
                     </h3>
 
                     <div className="space-y-3">
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <PiClock className="w-5 h-5 text-accent-blue" />
                         <span className="text-theme-secondary">
                           Responde em até{' '}
@@ -587,9 +601,9 @@ export default function PublicTeacherDetailsPageClient({
                             {teacher.contactPreferences.responseTime}
                           </strong>
                         </span>
-                      </div>
+                      </Inline>
 
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <PiChatCircle className="w-5 h-5 text-accent-green" />
                         <span className="text-theme-secondary">
                           Prefere contato por{' '}
@@ -603,9 +617,9 @@ export default function PublicTeacherDetailsPageClient({
                                 : 'WhatsApp ou Email'}
                           </strong>
                         </span>
-                      </div>
+                      </Inline>
 
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <PiClock className="w-5 h-5 text-accent-purple" />
                         <span className="text-theme-secondary">
                           Aulas de{' '}
@@ -614,7 +628,7 @@ export default function PublicTeacherDetailsPageClient({
                             minutos
                           </strong>
                         </span>
-                      </div>
+                      </Inline>
                     </div>
                   </div>
                 </AnimatedItem>
@@ -628,35 +642,41 @@ export default function PublicTeacherDetailsPageClient({
 
                     <div className="space-y-3">
                       {teacher.phone && (
-                        <button
+                        <Inline
+                          as="button"
+                          gap={2}
                           onClick={handleWhatsAppContact}
-                          className="w-full btn-classical-primary flex items-center justify-center space-x-2"
+                          className="w-full btn-classical-primary justify-center"
                         >
                           <PiChatCircle className="w-5 h-5" />
                           <span>Conversar pelo WhatsApp</span>
-                        </button>
+                        </Inline>
                       )}
 
                       {teacher.email && (
-                        <button
+                        <Inline
+                          as="button"
+                          gap={2}
                           onClick={handleEmailContact}
-                          className="w-full btn-classical-secondary flex items-center justify-center space-x-2"
+                          className="w-full btn-classical-secondary justify-center"
                         >
                           <PiEnvelopeSimple className="w-5 h-5" />
                           <span>Enviar Email</span>
-                        </button>
+                        </Inline>
                       )}
 
                       {teacher.website && (
-                        <a
+                        <Inline
+                          as="a"
+                          gap={2}
                           href={teacher.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-full btn-classical-secondary flex items-center justify-center space-x-2"
+                          className="w-full btn-classical-secondary justify-center"
                         >
                           <PiArrowSquareOut className="w-5 h-5" />
                           <span>Visitar Website</span>
-                        </a>
+                        </Inline>
                       )}
                     </div>
                   </div>

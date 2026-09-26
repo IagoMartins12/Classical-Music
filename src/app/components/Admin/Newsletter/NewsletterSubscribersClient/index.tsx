@@ -39,6 +39,7 @@ import {
   EditSubscriberModal,
   SendEmailModal,
 } from '@/app/components/Admin/Newsletter/SubscriberModals';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface FilterState {
   status: string;
@@ -537,7 +538,7 @@ export default function NewsletterSubscribersClient() {
                         </td>
                         <td className="py-3 px-2">
                           <div>
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               <span className="font-medium text-theme-primary">
                                 {subscriber.firstName
                                   ? `${subscriber.firstName} ${
@@ -550,7 +551,7 @@ export default function NewsletterSubscribersClient() {
                                   Usuário
                                 </span>
                               )}
-                            </div>
+                            </Inline>
                             <div className="text-sm text-theme-secondary">
                               {subscriber.email}
                             </div>
@@ -597,7 +598,7 @@ export default function NewsletterSubscribersClient() {
                           </div>
                         </td>
                         <td className="py-3 px-2">
-                          <div className="flex items-center space-x-1">
+                          <Inline gap={1}>
                             {/* 🆕 BOTÕES ATUALIZADOS COM HANDLERS */}
                             <Button
                               variant="ghost"
@@ -634,7 +635,7 @@ export default function NewsletterSubscribersClient() {
                               className="text-accent-red hover:text-accent-red"
                               title="Deletar"
                             />
-                          </div>
+                          </Inline>
                         </td>
                       </tr>
                     );
@@ -668,7 +669,7 @@ export default function NewsletterSubscribersClient() {
                   )}{' '}
                   de {pagination.total} subscribers
                 </div>
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -692,7 +693,7 @@ export default function NewsletterSubscribersClient() {
                   >
                     Próximo
                   </Button>
-                </div>
+                </Inline>
               </div>
             )}
           </AnimatedCard>

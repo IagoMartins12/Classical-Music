@@ -30,6 +30,7 @@ import { getComposerNationalityDisplay } from '../../../../../components/Utils/n
 import { useToast } from '@/app/hooks/useToast';
 import { deleteUpload } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface EditComposerClientProps {
   composer: any;
@@ -177,7 +178,11 @@ const EditComposerClient = ({
       <div className="section-wrap space-y-8 relative z-10">
         {/* Breadcrumb */}
         <AnimatedItem direction="down" springType="gentle">
-          <nav className="flex items-center space-x-2 text-sm text-theme-tertiary mb-6 pt-4">
+          <Inline
+            as="nav"
+            gap={2}
+            className="text-sm text-theme-tertiary mb-6 pt-4"
+          >
             <Link
               href="/upload"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
@@ -219,7 +224,7 @@ const EditComposerClient = ({
             <span className="text-theme-primary font-medium">
               {t('breadcrumb_edit').replace('{name}', composer.name)}
             </span>
-          </nav>
+          </Inline>
         </AnimatedItem>
 
         <AnimatedContainer
@@ -237,7 +242,7 @@ const EditComposerClient = ({
                     <div className="space-y-3">
                       <div className="flex flex-col sm:flex-row items-start justify-between">
                         <div className="flex-1">
-                          <div className="flex items-center space-x-3 mb-4">
+                          <Inline gap={3} className="mb-4">
                             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                               <PiPencilLine className="w-5 h-5 text-theme-primary" />
                             </div>
@@ -249,11 +254,14 @@ const EditComposerClient = ({
                                 {composer.fullName || composer.name}
                               </p>
                             </div>
-                          </div>
+                          </Inline>
                         </div>
 
                         {/* Action buttons */}
-                        <div className="flex flex-wrap justify-center gap-3 items-center space-x-3 ml-4">
+                        <Inline
+                          gap={3}
+                          className="flex-wrap justify-center gap-3 ml-4"
+                        >
                           <Link href={`/composer/${composer.id}`}>
                             <Button variant="primary" leftIcon={<PiEye />}>
                               {t('see_composer')}
@@ -287,7 +295,7 @@ const EditComposerClient = ({
                               </Button>
                             </>
                           )}
-                        </div>
+                        </Inline>
                       </div>
                     </div>
                   </AnimatedItem>
@@ -432,17 +440,23 @@ const EditComposerClient = ({
                   {(composer.wikipediaLink || composer.permLinkImslp) && (
                     <AnimatedItem direction="right" springType="smooth">
                       <div className="border-t border-theme-secondary pt-6">
-                        <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                        <Inline
+                          as="h3"
+                          gap={2}
+                          className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                        >
                           <PiArrowSquareOut className="w-5 h-5 text-accent-blue" />
                           <span>{t('composer_info_external_links')}</span>
-                        </h3>
+                        </Inline>
                         <div className="flex flex-wrap gap-3">
                           {composer.wikipediaLink && (
-                            <a
+                            <Inline
+                              as="a"
+                              gap={2}
                               href={composer.wikipediaLink}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="btn-classical-primary flex items-center space-x-2 group/btn"
+                              className="btn-classical-primary group/btn"
                             >
                               <PiArrowSquareOut className="w-4 h-4" />
                               <span>{t('composer_info_wikipedia')}</span>
@@ -459,15 +473,17 @@ const EditComposerClient = ({
                                   d="M9 5l7 7-7 7"
                                 />
                               </svg>
-                            </a>
+                            </Inline>
                           )}
 
                           {composer.permLinkImslp && (
-                            <a
+                            <Inline
+                              as="a"
+                              gap={2}
                               href={composer.permLinkImslp}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="btn-classical-secondary flex items-center space-x-2 group/btn"
+                              className="btn-classical-secondary group/btn"
                             >
                               <PiBookOpen className="w-4 h-4" />
                               <span>{t('composer_info_imslp')}</span>
@@ -484,7 +500,7 @@ const EditComposerClient = ({
                                   d="M9 5l7 7-7 7"
                                 />
                               </svg>
-                            </a>
+                            </Inline>
                           )}
                         </div>
                       </div>
@@ -530,7 +546,7 @@ const EditComposerClient = ({
           {composer.bio && (
             <AnimatedCard hover="lift" className="classical-card p-8">
               <AnimatedItem direction="left" springType="smooth">
-                <div className="flex items-center space-x-3 mb-6">
+                <Inline gap={3} className="mb-6">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
                     <PiBookOpen className="w-6 h-6 text-theme-primary" />
                   </div>
@@ -548,7 +564,7 @@ const EditComposerClient = ({
                       <div className="absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-theme-elevated"></div>
                     </div>
                   </div>
-                </div>
+                </Inline>
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">

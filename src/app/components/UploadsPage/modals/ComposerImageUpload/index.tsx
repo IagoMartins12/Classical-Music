@@ -13,6 +13,7 @@ import {
 import { toast } from 'react-hot-toast';
 import Image from '@/app/components/SmartImage';
 import { uploadComposerImage } from '@/app/requests/uploads-client';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ComposerImageUploadProps {
   currentImage?: string | null;
@@ -153,7 +154,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
   return (
     <div className={`flex flex-col items-center space-y-4 ${className}`}>
       {/* Mode Selection */}
-      <div className="flex items-center space-x-2 bg-theme-secondary rounded-lg p-1">
+      <Inline gap={2} className="bg-theme-secondary rounded-lg p-1">
         <button
           onClick={(e) => {
             e.preventDefault();
@@ -185,7 +186,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
           <PiLink className="w-4 h-4" />
           <span className="text-sm font-medium">URL</span>
         </button>
-      </div>
+      </Inline>
 
       {/* Image Container */}
       <div className="relative">
@@ -254,17 +255,19 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
       {inputMode === 'upload' ? (
         /* Upload Mode */
         <div className="text-center">
-          <button
+          <Inline
+            as="button"
+            gap={2}
             onClick={(e) => {
               e.preventDefault();
               fileInputRef.current?.click();
             }}
             disabled={currentUploading}
-            className="flex items-center space-x-2 px-6 py-3 bg-brand-primary text-white rounded-lg hover:bg-brand-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-brand-primary text-white rounded-lg hover:bg-brand-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <PiUploadSimple className="w-4 h-4" />
             <span>Selecionar Arquivo</span>
-          </button>
+          </Inline>
           <p className="text-xs text-theme-tertiary mt-2">
             JPG, PNG, GIF ou WebP. Máximo 5MB.
           </p>

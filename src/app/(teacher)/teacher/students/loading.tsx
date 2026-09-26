@@ -13,6 +13,7 @@ import {
   PiUser,
   PiUsers,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function TeacherStudentsLoading() {
   return (
@@ -122,10 +123,10 @@ export default function TeacherStudentsLoading() {
 
           {/* Filter Summary */}
           <div className="flex items-center justify-between pt-4 border-t border-theme-secondary mt-4">
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
               <div className="h-3 bg-theme-secondary/30 rounded w-48"></div>
-            </div>
+            </Inline>
             <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
           </div>
         </div>
@@ -142,7 +143,7 @@ export default function TeacherStudentsLoading() {
           <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
             <div className="h-4 w-48 bg-theme-elevated rounded"></div>
 
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <div className="h-10 w-20 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
               {Array.from({ length: 5 }).map((_, i) => (
                 <div
@@ -155,7 +156,7 @@ export default function TeacherStudentsLoading() {
                 ></div>
               ))}
               <div className="h-10 w-20 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
-            </div>
+            </Inline>
 
             <div></div>
           </div>
@@ -187,18 +188,18 @@ function StudentCardSkeleton() {
 
         {/* Details */}
         <div className="space-y-2 pt-2">
-          <div className="flex items-center justify-center space-x-2">
+          <Inline gap={2} className="justify-center">
             <PiCalendarBlank className="w-3 h-3 text-theme-tertiary/30" />
             <div className="h-3 bg-theme-elevated rounded w-20"></div>
-          </div>
-          <div className="flex items-center justify-center space-x-2">
+          </Inline>
+          <Inline gap={2} className="justify-center">
             <PiClock className="w-3 h-3 text-theme-tertiary/30" />
             <div className="h-3 bg-theme-elevated rounded w-16"></div>
-          </div>
-          <div className="flex items-center justify-center space-x-2">
+          </Inline>
+          <Inline gap={2} className="justify-center">
             <PiBookOpen className="w-3 h-3 text-theme-tertiary/30" />
             <div className="h-3 bg-theme-elevated rounded w-12"></div>
-          </div>
+          </Inline>
         </div>
 
         {/* Level tag */}

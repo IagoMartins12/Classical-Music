@@ -3,6 +3,7 @@
 
 import { GiGrandPiano } from 'react-icons/gi';
 import { PiBookOpen, PiCalendarBlank, PiMusicNotes } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function CreateLessonLoading() {
   return (
@@ -52,13 +53,13 @@ export default function CreateLessonLoading() {
       <div className="section-wrap space-y-8 relative z-10">
         {/* Header Skeleton */}
         <div className="flex items-center justify-between mb-8 animate-pulse">
-          <div className="flex items-center space-x-4">
+          <Inline gap={4}>
             <div className="w-10 h-10 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
             <div>
               <div className="h-8 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2 w-48"></div>
               <div className="h-4 bg-theme-elevated rounded w-64"></div>
             </div>
-          </div>
+          </Inline>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -147,10 +148,10 @@ export default function CreateLessonLoading() {
 
                   <div className="space-y-2">
                     {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={i} className="flex items-center space-x-2">
+                      <Inline gap={2} key={i}>
                         <div className="h-10 bg-theme-elevated border border-theme-secondary rounded-lg flex-1"></div>
                         <div className="w-8 h-8 bg-theme-elevated rounded"></div>
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </div>
@@ -158,10 +159,10 @@ export default function CreateLessonLoading() {
                 {/* Musical Works Section */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <PiMusicNotes className="w-5 h-5 text-theme-primary/30" />
                       <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-32"></div>
-                    </div>
+                    </Inline>
                     <div className="h-4 bg-theme-tertiary/30 rounded w-16"></div>
                   </div>
 
@@ -190,20 +191,20 @@ export default function CreateLessonLoading() {
 
                   <div className="space-y-2">
                     {Array.from({ length: 2 }).map((_, i) => (
-                      <div key={i} className="flex items-center space-x-2">
+                      <Inline gap={2} key={i}>
                         <div className="h-10 bg-theme-elevated border border-theme-secondary rounded-lg flex-1"></div>
                         <div className="w-8 h-8 bg-theme-elevated rounded"></div>
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </div>
 
                 {/* Advanced Options Section */}
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <div className="h-4 bg-brand-primary/30 rounded w-32"></div>
                     <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
-                  </div>
+                  </Inline>
 
                   {/* Advanced form fields */}
                   <div className="space-y-6 p-4 bg-theme-secondary/5 rounded-lg">
@@ -216,34 +217,37 @@ export default function CreateLessonLoading() {
                     {/* Recordings */}
                     <div>
                       <div className="h-4 bg-theme-tertiary/30 rounded mb-2 w-32"></div>
-                      <div className="flex items-center space-x-4">
-                        <div className="flex items-center space-x-2">
+                      <Inline gap={4}>
+                        <Inline gap={2}>
                           <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
                           <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
-                        </div>
-                        <div className="flex items-center space-x-2">
+                        </Inline>
+                        <Inline gap={2}>
                           <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
                           <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
-                        </div>
-                      </div>
+                        </Inline>
+                      </Inline>
                     </div>
 
                     {/* Recurring */}
                     <div>
                       <div className="h-4 bg-theme-tertiary/30 rounded mb-2 w-28"></div>
-                      <div className="flex items-center space-x-4">
+                      <Inline gap={4}>
                         <div className="w-6 h-6 bg-theme-tertiary/30 rounded"></div>
                         <div className="h-3 bg-theme-tertiary/30 rounded w-48"></div>
-                      </div>
+                      </Inline>
                     </div>
                   </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary">
+                <Inline
+                  gap={3}
+                  className="justify-end pt-6 border-t border-theme-secondary"
+                >
                   <div className="h-10 w-20 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
                   <div className="h-10 w-32 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-lg"></div>
-                </div>
+                </Inline>
               </div>
             </div>
           </div>
@@ -255,13 +259,13 @@ export default function CreateLessonLoading() {
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-32 mb-4"></div>
 
               <div className="space-y-4">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-full"></div>
                   <div>
                     <div className="h-4 bg-theme-primary/30 rounded mb-1 w-20"></div>
                     <div className="h-3 bg-theme-tertiary/30 rounded w-16"></div>
                   </div>
-                </div>
+                </Inline>
 
                 {/* Student stats */}
                 <div className="grid grid-cols-2 gap-3 pt-3 border-t border-theme-secondary">
@@ -326,14 +330,17 @@ export default function CreateLessonLoading() {
 // Musical Work Item Skeleton
 function MusicalWorkItemSkeleton() {
   return (
-    <div className="flex items-center space-x-3 p-3 bg-theme-elevated/50 rounded-lg animate-pulse">
+    <Inline
+      gap={3}
+      className="p-3 bg-theme-elevated/50 rounded-lg animate-pulse"
+    >
       <div className="w-8 h-8 bg-accent-purple/20 rounded-lg flex-shrink-0"></div>
       <div className="flex-1 min-w-0">
         <div className="h-3 bg-theme-primary/20 rounded mb-1 w-3/4"></div>
         <div className="h-3 bg-theme-tertiary/20 rounded w-1/2"></div>
       </div>
       <div className="w-6 h-6 bg-theme-elevated rounded"></div>
-    </div>
+    </Inline>
   );
 }
 
@@ -341,13 +348,13 @@ function MusicalWorkItemSkeleton() {
 function LessonTemplateSkeleton() {
   return (
     <div className="p-3 bg-theme-elevated/50 rounded-lg cursor-pointer hover:bg-interactive-hover transition-colors animate-pulse">
-      <div className="flex items-center space-x-3">
+      <Inline gap={3}>
         <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex-shrink-0"></div>
         <div className="flex-1">
           <div className="h-3 bg-theme-primary/20 rounded mb-1 w-3/4"></div>
           <div className="h-3 bg-theme-tertiary/20 rounded w-1/2"></div>
         </div>
-      </div>
+      </Inline>
     </div>
   );
 }
@@ -356,13 +363,13 @@ function LessonTemplateSkeleton() {
 function RecentLessonSkeleton() {
   return (
     <div className="p-3 bg-theme-elevated/50 rounded-lg animate-pulse">
-      <div className="flex items-center space-x-3 mb-2">
+      <Inline gap={3} className="mb-2">
         <div className="w-6 h-6 bg-brand-primary/20 rounded-full flex-shrink-0"></div>
         <div className="flex-1">
           <div className="h-3 bg-theme-primary/20 rounded mb-1 w-3/4"></div>
           <div className="h-3 bg-theme-tertiary/20 rounded w-1/2"></div>
         </div>
-      </div>
+      </Inline>
       <div className="text-right">
         <div className="h-3 bg-brand-primary/30 rounded w-16 ml-auto"></div>
       </div>

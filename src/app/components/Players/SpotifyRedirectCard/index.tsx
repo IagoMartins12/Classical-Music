@@ -11,6 +11,7 @@ import {
 import { AnimatedItem } from '../../animation/AnimatedComponents';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface SpotifyRedirectCardProps {
   spotify: {
@@ -81,7 +82,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
         {/* Header com Logo Spotify */}
         <div className="p-4 border-b border-green-700/30 bg-green-900/10">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="w-8 h-8 bg-[#1db954] rounded-lg flex items-center justify-center">
                 <PiSpotifyLogo className="w-5 h-5 text-white" />
               </div>
@@ -93,20 +94,20 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                   {t('spotify_card_ouvir_completa')}
                 </p>
               </div>
-            </div>
+            </Inline>
 
             {/* 🆕 Duração e indicador de thumbnail */}
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               {/* Duração */}
               {spotify.duration > 0 && (
-                <div className="flex items-center space-x-1 text-green-400">
+                <Inline gap={1} className="text-green-400">
                   <PiClock className="w-3 h-3" />
                   <span className="text-xs font-medium">
                     {formatDuration(spotify.duration)}
                   </span>
-                </div>
+                </Inline>
               )}
-            </div>
+            </Inline>
           </div>
         </div>
 
@@ -169,18 +170,18 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                 </div>
 
                 {/* 🆕 Informações adicionais expandidas */}
-                <div className="flex items-center space-x-3 text-xs text-gray-400">
+                <Inline gap={3} className="text-xs text-gray-400">
                   {/* Preview disponível */}
                   {spotify.previewUrl && (
-                    <div
-                      className="flex items-center space-x-1"
+                    <Inline
+                      gap={1}
                       title={t('spotify_card_preview_disponivel')}
                     >
                       <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
                       <span>{t('spotify_card_preview_30s')}</span>
-                    </div>
+                    </Inline>
                   )}
-                </div>
+                </Inline>
               </div>
             </div>
           </div>
@@ -188,7 +189,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
           {/* 🆕 Preview Player (se disponível) - Melhorado */}
           {spotify.previewUrl && (
             <div className="mt-4 p-3 bg-green-900/10 rounded-lg border border-green-700/20">
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
                   <PiMusicNotes className="w-4 h-4 text-white" />
                 </div>
@@ -214,22 +215,24 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                     {t('spotify_card_nao_suporta_audio')}
                   </audio>
                 </div>
-              </div>
+              </Inline>
             </div>
           )}
 
           {/* Botão de Redirecionamento - 🆕 Melhorado */}
           <div className="mt-4">
-            <a
+            <Inline
+              as="a"
+              gap={2}
               href={spotify.trackUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full bg-[#1db954] hover:bg-[#1ed760] text-white rounded-lg py-3 px-4 flex items-center justify-center space-x-2 font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg group"
+              className="w-full bg-[#1db954] hover:bg-[#1ed760] text-white rounded-lg py-3 px-4 justify-center font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg group"
             >
               <PiSpotifyLogo className="w-4 h-4" />
               <span>{t('spotify_card_ouvir_spotify')}</span>
               <PiArrowSquareOut className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </a>
+            </Inline>
 
             {/* 🆕 Link direto para o álbum (se disponível) */}
             {spotify.albumName && (

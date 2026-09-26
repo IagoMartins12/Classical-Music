@@ -14,6 +14,7 @@ import {
   PiTrendUp,
   PiWarning,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function StudentAssignmentsLoading() {
   return (
@@ -117,19 +118,25 @@ export default function StudentAssignmentsLoading() {
             </div>
 
             {/* Controls */}
-            <div className="flex items-center space-x-4">
-              <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
+            <Inline gap={4}>
+              <Inline
+                gap={2}
+                className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4"
+              >
                 <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="h-4 w-12 bg-theme-tertiary/20 rounded"></div>
-              </div>
+              </Inline>
 
               <div className="h-10 w-20 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
 
-              <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
+              <Inline
+                gap={2}
+                className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4"
+              >
                 <PiArrowsClockwise className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="h-4 w-16 bg-theme-tertiary/20 rounded"></div>
-              </div>
-            </div>
+              </Inline>
+            </Inline>
           </div>
 
           {/* Filters Panel */}
@@ -162,12 +169,12 @@ export default function StudentAssignmentsLoading() {
         </div>
 
         {/* Pagination Skeleton */}
-        <div className="flex items-center justify-center space-x-4 mt-8 animate-pulse">
+        <Inline gap={4} className="justify-center mt-8 animate-pulse">
           <div className="h-10 w-20 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center">
             <div className="h-4 w-12 bg-theme-tertiary/20 rounded"></div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             {Array.from({ length: 5 }).map((_, i) => (
               <div
                 key={i}
@@ -178,12 +185,12 @@ export default function StudentAssignmentsLoading() {
                 }`}
               ></div>
             ))}
-          </div>
+          </Inline>
 
           <div className="h-10 w-20 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center">
             <div className="h-4 w-12 bg-theme-tertiary/20 rounded"></div>
           </div>
-        </div>
+        </Inline>
       </div>
 
       {/* Floating Particles */}
@@ -204,12 +211,12 @@ function AssignmentCardSkeleton({ delay = 0 }: { delay?: number }) {
       {/* Status and Priority */}
       <div className="flex items-center justify-between mb-4">
         <div className="h-6 w-20 bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 border border-accent-blue/30 rounded-full"></div>
-        <div className="flex items-center space-x-2">
+        <Inline gap={2}>
           <PiTarget className="w-4 h-4 text-theme-tertiary/30" />
           <div className="w-5 h-5 bg-accent-purple/10 border border-accent-purple/30 rounded-full flex items-center justify-center">
             <PiMusicNotes className="w-3 h-3 text-accent-purple/30" />
           </div>
-        </div>
+        </Inline>
       </div>
 
       {/* Assignment Info */}
@@ -264,10 +271,10 @@ function AssignmentCardSkeleton({ delay = 0 }: { delay?: number }) {
       {/* Action Button */}
       <div className="flex items-center justify-between">
         <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
-        <div className="h-4 w-20 bg-brand-primary/30 rounded flex items-center space-x-2">
+        <Inline gap={2} className="h-4 w-20 bg-brand-primary/30 rounded">
           <div className="w-3 h-3 bg-theme-primary/30 rounded ml-2"></div>
           <div className="h-3 w-12 bg-theme-primary/30 rounded mr-2"></div>
-        </div>
+        </Inline>
       </div>
     </div>
   );

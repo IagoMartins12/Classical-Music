@@ -12,6 +12,7 @@ import {
   PiTrash,
   PiUser,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function EditComposerLoading() {
   return (
@@ -25,7 +26,11 @@ export default function EditComposerLoading() {
 
       <div className="section-wrap space-y-8 relative z-10">
         {/* Breadcrumb Skeleton */}
-        <nav className="flex items-center space-x-2 text-sm text-theme-tertiary mb-6 pt-4">
+        <Inline
+          as="nav"
+          gap={2}
+          className="text-sm text-theme-tertiary mb-6 pt-4"
+        >
           <div className="h-4 w-16 bg-theme-elevated rounded"></div>
           <svg
             className="w-4 h-4"
@@ -55,7 +60,7 @@ export default function EditComposerLoading() {
             />
           </svg>
           <div className="h-4 w-32 bg-theme-primary/20 rounded"></div>
-        </nav>
+        </Inline>
 
         {/* Header Principal */}
         <div className="classical-card relative z-50">
@@ -66,7 +71,7 @@ export default function EditComposerLoading() {
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-4">
+                      <Inline gap={3} className="mb-4">
                         <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
                           <PiPencilLine className="w-5 h-5 text-theme-primary/30" />
                         </div>
@@ -74,21 +79,27 @@ export default function EditComposerLoading() {
                           <div className="h-10 w-64 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded"></div>
                           <div className="h-5 w-48 bg-theme-elevated rounded"></div>
                         </div>
-                      </div>
+                      </Inline>
                     </div>
 
                     {/* Action buttons */}
-                    <div className="flex items-center space-x-3 ml-4">
-                      <div className="h-10 w-20 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center space-x-2">
+                    <Inline gap={3} className="ml-4">
+                      <Inline
+                        gap={2}
+                        className="h-10 w-20 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg justify-center"
+                      >
                         <PiFloppyDisk className="w-4 h-4 text-theme-primary/30" />
                         <div className="w-8 h-4 bg-theme-primary/30 rounded"></div>
-                      </div>
+                      </Inline>
 
-                      <div className="h-10 w-24 bg-accent-red/20 border border-accent-red/30 rounded-lg flex items-center justify-center space-x-2">
+                      <Inline
+                        gap={2}
+                        className="h-10 w-24 bg-accent-red/20 border border-accent-red/30 rounded-lg justify-center"
+                      >
                         <PiTrash className="w-4 h-4 text-accent-red/30" />
                         <div className="w-12 h-4 bg-accent-red/30 rounded"></div>
-                      </div>
-                    </div>
+                      </Inline>
+                    </Inline>
                   </div>
                 </div>
 
@@ -162,20 +173,30 @@ export default function EditComposerLoading() {
 
                 {/* Links Externos */}
                 <div className="border-t border-theme-secondary pt-6">
-                  <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                  >
                     <PiArrowSquareOut className="w-5 h-5 text-accent-blue/30" />
                     <div className="h-5 w-28 bg-theme-elevated rounded"></div>
-                  </h3>
+                  </Inline>
                   <div className="flex flex-wrap gap-3">
-                    <div className="h-10 w-24 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center space-x-2">
+                    <Inline
+                      gap={2}
+                      className="h-10 w-24 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg justify-center"
+                    >
                       <PiArrowSquareOut className="w-4 h-4 text-theme-primary/30" />
                       <div className="w-12 h-4 bg-theme-primary/30 rounded"></div>
-                    </div>
+                    </Inline>
 
-                    <div className="h-10 w-20 bg-theme-secondary rounded-lg flex items-center justify-center space-x-2">
+                    <Inline
+                      gap={2}
+                      className="h-10 w-20 bg-theme-secondary rounded-lg justify-center"
+                    >
                       <PiBookOpen className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="w-10 h-4 bg-theme-tertiary/30 rounded"></div>
-                    </div>
+                    </Inline>
                   </div>
                 </div>
               </div>
@@ -197,7 +218,7 @@ export default function EditComposerLoading() {
 
         {/* Biografia */}
         <div className="classical-card p-8">
-          <div className="flex items-center space-x-3 mb-6">
+          <Inline gap={3} className="mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-2xl flex items-center justify-center">
               <PiBookOpen className="w-6 h-6 text-theme-primary/30" />
             </div>
@@ -209,7 +230,7 @@ export default function EditComposerLoading() {
                 <PiInfo className="w-4 h-4 text-theme-tertiary/30" />
               </div>
             </div>
-          </div>
+          </Inline>
 
           <div className="space-y-4">
             {Array.from({ length: 4 }).map((_, index) => (

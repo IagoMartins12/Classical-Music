@@ -6,6 +6,7 @@ import { PiCaretLeft, PiCaretRight } from 'react-icons/pi';
 import WeekView from '../WeekView';
 import MonthView from '../MonthView';
 import DayView from '../DayView';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CalendarEvent {
   id: string;
@@ -176,8 +177,8 @@ export default function CustomCalendar({
       <div className="p-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           {/* Navegação */}
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
+          <Inline gap={4}>
+            <Inline gap={2}>
               <button
                 onClick={goToPrevious}
                 className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
@@ -197,7 +198,7 @@ export default function CustomCalendar({
               >
                 <PiCaretRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </button>
-            </div>
+            </Inline>
 
             <button
               onClick={goToToday}
@@ -205,7 +206,7 @@ export default function CustomCalendar({
             >
               Hoje
             </button>
-          </div>
+          </Inline>
 
           {/* Botões de Visualização */}
           <div className="flex bg-theme-secondary rounded-lg p-1">

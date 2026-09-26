@@ -16,6 +16,7 @@ import {
 } from 'react-icons/pi';
 import { HistoryComposerCard } from '../cards/HistoryComposerCard';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Composer {
   id: string;
@@ -133,14 +134,14 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
             </div>
 
             <div className="relative z-10">
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                   <PiBookOpen className="w-4 h-4 text-theme-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-theme-primary classical-title">
                   {t('epoch_jsx_h3_children_0__sobre_periodo')}
                 </h3>
-              </div>
+              </Inline>
               <p className="text-theme-secondary text-md sm:text-lg leading-relaxed classical-body">
                 {epoch.historicalData.description}
               </p>
@@ -155,7 +156,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
               onClick={() => setIsExpanded(!isExpanded)}
               className="w-full p-2 sm:p-6 text-left flex items-center justify-between hover:bg-interactive-hover transition-all duration-300 group/button"
             >
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
                   <PiStar className="w-5 h-5 text-theme-primary" />
                 </div>
@@ -164,7 +165,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                     'epoch_jsx_h3_children_0__caracteristicas_desenvolvimentos'
                   )}
                 </h3>
-              </div>
+              </Inline>
               <div
                 className={`w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 ${
                   isExpanded
@@ -189,14 +190,14 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                 <div className="grid md:grid-cols-2 gap-6 pt-6">
                   {/* Características */}
                   <div className="space-y-4">
-                    <div className="flex items-center space-x-3 mb-4">
+                    <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                         <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
                         {t('epoch_jsx_h4_children_0__caracteristicas')}
                       </h4>
-                    </div>
+                    </Inline>
                     <div className="space-y-3">
                       {epoch.historicalData.characteristics.map((char, i) => (
                         <div
@@ -215,14 +216,14 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
 
                   {/* Desenvolvimentos */}
                   <div className="space-y-4">
-                    <div className="flex items-center space-x-3 mb-4">
+                    <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                         <PiClock className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
                         {t('epoch_jsx_h4_children_0__desenvolvimentos_chave')}
                       </h4>
-                    </div>
+                    </Inline>
                     <div className="space-y-3">
                       {epoch.historicalData.keyDevelopments.map((dev, i) => (
                         <div
@@ -241,14 +242,14 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
 
                   {/* Formas Musicais */}
                   <div className="space-y-4">
-                    <div className="flex items-center space-x-3 mb-4">
+                    <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center">
                         <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
                         {t('epoch_jsx_h4_children_0__formas_musicais')}
                       </h4>
-                    </div>
+                    </Inline>
                     <div className="flex flex-wrap gap-3">
                       {epoch.historicalData.musicalForms.map((form, i) => (
                         <span
@@ -264,14 +265,14 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
 
                   {/* Instrumentos */}
                   <div className="space-y-4">
-                    <div className="flex items-center space-x-3 mb-4">
+                    <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
                         <GiGrandPiano className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
                         {t('epoch_jsx_h4_children_0__instrumentos')}
                       </h4>
-                    </div>
+                    </Inline>
                     <div className="flex flex-wrap gap-3">
                       {epoch.historicalData.instruments.map((instrument, i) => (
                         <span
@@ -294,7 +295,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
       {/* Composers Section */}
       <div className="flex-1 w-full lg:max-w-md">
         <div className="classical-card p-6 sticky top-6">
-          <div className="flex items-center space-x-3 mb-6">
+          <Inline gap={3} className="mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
               <PiUsers className="w-5 h-5 text-theme-primary" />
             </div>
@@ -309,7 +310,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   : t('epoch_jsx_span_children_0__compositores')}
               </p>
             </div>
-          </div>
+          </Inline>
 
           <div className="space-y-4">
             {visibleComposers.map((composer, composerIndex) => (
@@ -325,9 +326,11 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
             ))}
 
             {epoch.composers.length > 4 && (
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={() => setShowAllComposers(!showAllComposers)}
-                className="w-full p-4 border-2 border-dashed border-theme-primary text-theme-primary hover:border-brand-primary hover:text-brand-primary hover:bg-brand-primary/5 transition-all duration-300 rounded-xl group flex items-center justify-center space-x-2"
+                className="w-full p-4 border-2 border-dashed border-theme-primary text-theme-primary hover:border-brand-primary hover:text-brand-primary hover:bg-brand-primary/5 transition-all duration-300 rounded-xl group justify-center"
               >
                 <PiUsers className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
                 <span className="font-medium">
@@ -354,7 +357,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                     d="M19 9l-7 7-7-7"
                   />
                 </svg>
-              </button>
+              </Inline>
             )}
           </div>
         </div>

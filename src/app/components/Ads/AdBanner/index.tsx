@@ -4,6 +4,7 @@
 import Image from '@/app/components/SmartImage';
 import { useState } from 'react';
 import { PiArrowSquareOut, PiX } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface AdBannerProps {
   ad: any;
@@ -55,7 +56,7 @@ export default function AdBanner({
         className="flex items-center justify-between p-4 cursor-pointer group"
         onClick={handleClick}
       >
-        <div className="flex items-center space-x-4">
+        <Inline gap={4}>
           {ad.imageUrl && (
             <Image
               height={12}
@@ -74,9 +75,9 @@ export default function AdBanner({
               <p className="text-white/80 text-sm">{ad.tagline}</p>
             )}
           </div>
-        </div>
+        </Inline>
 
-        <div className="flex items-center space-x-3">
+        <Inline gap={3}>
           {ad.ctaText && (
             <span className="text-white font-medium bg-white/20 px-3 py-1 rounded-full text-sm">
               {ad.ctaText}
@@ -86,7 +87,7 @@ export default function AdBanner({
           {ad.isExternal && (
             <PiArrowSquareOut className="w-4 h-4 text-white/80" />
           )}
-        </div>
+        </Inline>
       </div>
     </div>
   );

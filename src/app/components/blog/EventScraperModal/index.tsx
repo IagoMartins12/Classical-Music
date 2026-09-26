@@ -36,6 +36,7 @@ import {
   ScraperJob,
 } from '@/app/services/scraper-api/scraper-api.types';
 import { useScrapers } from '@/app/hooks/useScrapers';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface EventWithSelection extends ScrapedEvent {
   id: string;
@@ -400,7 +401,7 @@ export default function EventScraperModal({
         <div className="overflow-hidden flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
                 <PiMagnifyingGlass className="w-5 h-5 text-theme-primary" />
               </div>
@@ -412,10 +413,10 @@ export default function EventScraperModal({
                   Scrapers de concertos e eventos
                 </p>
               </div>
-            </div>
+            </Inline>
 
             {/* Step indicator */}
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               {(
                 [
                   'select-scraper',
@@ -445,7 +446,7 @@ export default function EventScraperModal({
                   }`}
                 />
               ))}
-            </div>
+            </Inline>
           </div>
 
           {/* Content */}
@@ -634,12 +635,12 @@ export default function EventScraperModal({
                       onClick={() => setShowDuplicates(!showDuplicates)}
                       className="w-full classical-card-simple p-4 flex items-center justify-between hover:border-yellow-500/30 transition-colors"
                     >
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <PiEye className="w-4 h-4 text-yellow-500" />
                         <span className="text-sm font-medium text-theme-primary">
                           Ver eventos duplicados ({duplicateEvents.length})
                         </span>
-                      </div>
+                      </Inline>
                       {showDuplicates ? (
                         <PiCaretUp className="w-5 h-5 text-theme-tertiary" />
                       ) : (
@@ -723,7 +724,7 @@ export default function EventScraperModal({
                               : 'bg-theme-elevated border-theme-secondary'
                       }`}
                     >
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <div className="flex-shrink-0">
                           {event.status === 'waiting' && (
                             <div className="w-5 h-5 rounded-full bg-theme-secondary flex items-center justify-center">
@@ -763,7 +764,7 @@ export default function EventScraperModal({
                             {event.message}
                           </p>
                         </div>
-                      </div>
+                      </Inline>
                     </div>
                   ))}
                 </div>
@@ -836,7 +837,7 @@ export default function EventScraperModal({
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           {result.status === 'success' && (
                             <PiCheck className="w-4 h-4 text-green-500" />
                           )}
@@ -850,7 +851,7 @@ export default function EventScraperModal({
                           <span className="text-sm text-theme-primary">
                             {result.title}
                           </span>
-                        </div>
+                        </Inline>
                         <span
                           className={`text-xs ${
                             result.status === 'success'
@@ -973,7 +974,7 @@ const EventCard = ({
         </p>
       </div>
 
-      <div className="flex-shrink-0 flex items-center space-x-2">
+      <Inline gap={2} className="flex-shrink-0">
         <a
           href={event.externalUrl}
           target="_blank"
@@ -1005,7 +1006,7 @@ const EventCard = ({
             <PiTrash className="w-4 h-4" />
           </button>
         )}
-      </div>
+      </Inline>
     </div>
   </div>
 );

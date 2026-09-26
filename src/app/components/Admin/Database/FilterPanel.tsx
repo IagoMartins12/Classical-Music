@@ -8,6 +8,7 @@ import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface FilterPanelProps {
   isOpen: boolean;
@@ -354,14 +355,14 @@ export default function FilterPanel({
         </div>
 
         {/* Ações */}
-        <div className="flex items-center justify-end space-x-3">
+        <Inline gap={3} className="justify-end">
           <Button variant="ghost" onClick={onClose}>
             Cancelar
           </Button>
           <Button variant="primary" onClick={handleApply}>
             Aplicar Filtros
           </Button>
-        </div>
+        </Inline>
       </div>
     </Modal>
   );

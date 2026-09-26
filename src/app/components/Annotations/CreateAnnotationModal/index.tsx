@@ -33,6 +33,7 @@ import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Input from '../../Common/Inputs';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { searchWorks as findWorks } from '@/app/requests/catalog-search';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CreateAnnotationModalProps {
   isOpen: boolean;
@@ -783,7 +784,7 @@ export default function CreateAnnotationModal({
     >
       {/* Header */}
       <div className="px-0 md:px-6 py-4 border-b border-theme-secondary">
-        <div className="flex items-center space-x-3">
+        <Inline gap={3}>
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-green to-accent-blue flex items-center justify-center shadow-theme-glow">
             <PiChatCenteredText className="w-5 h-5 text-theme-primary" />
           </div>
@@ -799,14 +800,14 @@ export default function CreateAnnotationModal({
                 : t('create_modal_new_subtitle')}
             </p>
           </div>
-        </div>
+        </Inline>
       </div>
 
       {/* Work Info/Selection */}
       <div className="px-0 md:px-6 py-4 bg-theme-elevated/50 border-b border-theme-secondary">
         {selectedWork ? (
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <PiMusicNotes className="w-5 h-5 text-theme-tertiary" />
               <div>
                 <h3 className="font-semibold text-theme-primary">
@@ -816,16 +817,16 @@ export default function CreateAnnotationModal({
                   {selectedWork.composer.fullName}
                 </p>
               </div>
-            </div>
+            </Inline>
           </div>
         ) : (
           <div>
-            <div className="flex items-center space-x-2 mb-3">
+            <Inline gap={2} className="mb-3">
               <PiMagnifyingGlass className="w-4 h-4 text-theme-tertiary" />
               <span className="text-sm font-medium text-theme-primary">
                 {t('create_modal_select_work')}
               </span>
-            </div>
+            </Inline>
             <div className="relative">
               <Input
                 type="text"
@@ -1129,9 +1130,11 @@ export default function CreateAnnotationModal({
           {/* Current Tags */}
           <div className="flex flex-wrap gap-2 mb-3">
             {formData.tags.map((tag, index) => (
-              <span
+              <Inline
+                as="span"
+                gap={2}
                 key={index}
-                className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm flex items-center space-x-2"
+                className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm"
               >
                 <span>#{tag}</span>
                 <button
@@ -1140,7 +1143,7 @@ export default function CreateAnnotationModal({
                 >
                   <PiX className="w-3 h-3" />
                 </button>
-              </span>
+              </Inline>
             ))}
           </div>
 
@@ -1156,20 +1159,22 @@ export default function CreateAnnotationModal({
               maxLength={20}
               widhtFull
             />
-            <button
+            <Inline
+              as="button"
+              gap={1}
               onClick={() => addTag()}
               disabled={!newTag.trim() || formData.tags.length >= 10}
-              className="btn-classical-secondary flex items-center space-x-1"
+              className="btn-classical-secondary"
             >
               <PiTag className="w-4 h-4" />
               <span>{t('create_modal_add_tag')}</span>
-            </button>
+            </Inline>
           </div>
 
           {/* Suggested Tags */}
           {availableSuggestedTags.length > 0 && formData.tags.length < 10 && (
             <div className="mb-3">
-              <div className="flex items-center space-x-2 mb-2">
+              <Inline gap={2} className="mb-2">
                 <PiPlus className="w-4 h-4 text-theme-tertiary" />
                 <span className="text-sm font-medium text-theme-secondary">
                   {t('create_modal_suggested_tags').replace(
@@ -1179,17 +1184,19 @@ export default function CreateAnnotationModal({
                   )}
                   :
                 </span>
-              </div>
+              </Inline>
               <div className="flex flex-wrap gap-2">
                 {availableSuggestedTags.slice(0, 8).map((tag) => (
-                  <button
+                  <Inline
+                    as="button"
+                    gap={1}
                     key={tag}
                     onClick={() => addTag(tag)}
-                    className="px-2 py-1 bg-theme-elevated hover:bg-brand-primary/10 border border-theme-secondary hover:border-brand-primary/30 text-theme-secondary hover:text-brand-primary rounded-md text-xs transition-all duration-200 flex items-center space-x-1"
+                    className="px-2 py-1 bg-theme-elevated hover:bg-brand-primary/10 border border-theme-secondary hover:border-brand-primary/30 text-theme-secondary hover:text-brand-primary rounded-md text-xs transition-all duration-200"
                   >
                     <PiPlus className="w-3 h-3" />
                     <span>#{tag}</span>
-                  </button>
+                  </Inline>
                 ))}
               </div>
             </div>
@@ -1204,7 +1211,7 @@ export default function CreateAnnotationModal({
         </div>
 
         {/* Privacy */}
-        <div className="flex items-center space-x-3">
+        <Inline gap={3}>
           <button
             onClick={() =>
               setFormData((prev) => ({ ...prev, isPublic: !prev.isPublic }))
@@ -1222,7 +1229,7 @@ export default function CreateAnnotationModal({
             )}
 
             <div>
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 <span className="font-medium text-theme-primary">
                   {formData.isPublic
                     ? t('create_modal_public_annotation')
@@ -1233,7 +1240,7 @@ export default function CreateAnnotationModal({
                 ) : (
                   <PiEyeSlash className="w-4 h-4 text-accent-red" />
                 )}
-              </div>
+              </Inline>
               <p className="text-sm text-start text-theme-secondary">
                 {formData.isPublic
                   ? t('create_modal_public_description')
@@ -1241,11 +1248,14 @@ export default function CreateAnnotationModal({
               </p>
             </div>
           </button>
-        </div>
+        </Inline>
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t border-theme-secondary flex items-center justify-end space-x-3">
+      <Inline
+        gap={3}
+        className="px-6 py-4 border-t border-theme-secondary justify-end"
+      >
         <Button variant="secondary" onClick={onClose}>
           {t('create_modal_cancel')}
         </Button>
@@ -1257,7 +1267,7 @@ export default function CreateAnnotationModal({
         >
           {isEditing ? t('create_modal_update') : t('create_modal_create')}
         </Button>
-      </div>
+      </Inline>
     </Modal>
   );
 }

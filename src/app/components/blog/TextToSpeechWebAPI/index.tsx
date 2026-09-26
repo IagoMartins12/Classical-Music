@@ -9,6 +9,7 @@ import {
   PiSpeakerHigh,
   PiSquare,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface TextToSpeechWebAPIProps {
   content: any; // TipTap JSON
@@ -188,7 +189,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
   return (
     <div className="classical-card p-6 my-8">
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-3">
+        <Inline gap={3}>
           <div className="p-3 bg-brand-primary rounded-lg">
             <PiSpeakerHigh className="w-6 h-6 text-white" />
           </div>
@@ -198,7 +199,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
               Leitura automática com síntese de voz
             </p>
           </div>
-        </div>
+        </Inline>
 
         <button
           onClick={() => setShowSettings(!showSettings)}
@@ -283,20 +284,24 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
       )}
 
       {/* CONTROLES */}
-      <div className="flex items-center justify-center space-x-3">
+      <Inline gap={3} className="justify-center">
         {!isSpeaking ? (
-          <button
+          <Inline
+            as="button"
+            gap={2}
             onClick={handleSpeak}
-            className="btn-classical-primary flex items-center space-x-2 px-6"
+            className="btn-classical-primary px-6"
           >
             <PiPlay className="w-5 h-5" />
             <span>Ouvir Artigo</span>
-          </button>
+          </Inline>
         ) : (
           <>
-            <button
+            <Inline
+              as="button"
+              gap={2}
               onClick={handlePauseResume}
-              className="btn-classical-secondary flex items-center space-x-2"
+              className="btn-classical-secondary"
             >
               {isPaused ? (
                 <>
@@ -309,18 +314,20 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
                   <span>Pausar</span>
                 </>
               )}
-            </button>
+            </Inline>
 
-            <button
+            <Inline
+              as="button"
+              gap={2}
               onClick={handleStop}
-              className="btn-classical-secondary flex items-center space-x-2 !bg-red-500 hover:!bg-red-600 !text-white"
+              className="btn-classical-secondary !bg-red-500 hover:!bg-red-600 !text-white"
             >
               <PiSquare className="w-5 h-5" />
               <span>Parar</span>
-            </button>
+            </Inline>
           </>
         )}
-      </div>
+      </Inline>
 
       <p className="text-xs text-theme-tertiary text-center mt-3">
         💡 Use fones de ouvido para melhor experiência

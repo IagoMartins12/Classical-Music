@@ -32,6 +32,7 @@ import { getAllEmailTemplates } from '@/app/libs/newsletter/emailTemplates';
 import CreateEditTemplateModal from './CreateEditTemplateModal';
 import TemplatePreviewModal from './TemplatePreviewModal';
 import LoadingAdminState from '../../Common/LoadingState';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface FilterState {
   type: string;
@@ -295,12 +296,12 @@ export default function NewsletterTemplatesClient() {
           {/* Built-in Templates Info */}
           <AnimatedCard className="classical-card p-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <PiCode className="w-5 h-5 text-accent-purple" />
                 <h3 className="text-lg font-bold text-theme-primary">
                   Templates Built-in Disponíveis
                 </h3>
-              </div>
+              </Inline>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {builtInTemplates.map(({ type, template }) => (
@@ -407,12 +408,12 @@ export default function NewsletterTemplatesClient() {
                     <div className="p-6">
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0 mr-4">
-                          <div className="flex items-center space-x-3 mb-3">
+                          <Inline gap={3} className="mb-3">
                             <h3 className="text-lg font-semibold text-theme-primary truncate">
                               {template.name}
                             </h3>
 
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium ${getTemplateTypeColor(
                                   template.type
@@ -437,8 +438,8 @@ export default function NewsletterTemplatesClient() {
                               >
                                 {template.isActive ? 'Ativo' : 'Inativo'}
                               </span>
-                            </div>
-                          </div>
+                            </Inline>
+                          </Inline>
 
                           <div className="mb-3">
                             <p className="text-theme-primary font-medium text-sm mb-1">
@@ -452,7 +453,10 @@ export default function NewsletterTemplatesClient() {
                           </div>
 
                           {/* Stats */}
-                          <div className="flex items-center space-x-6 text-sm text-theme-tertiary">
+                          <Inline
+                            gap={6}
+                            className="text-sm text-theme-tertiary"
+                          >
                             <div className="flex items-center">
                               <PiEnvelopeSimple className="w-4 h-4 mr-1" />
                               <span>{template.timesUsed || 0} usos</span>
@@ -474,11 +478,11 @@ export default function NewsletterTemplatesClient() {
                                 {template.variables?.length || 0} variáveis
                               </span>
                             </div>
-                          </div>
+                          </Inline>
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center space-x-1">
+                        <Inline gap={1}>
                           <Button
                             variant="ghost"
                             size="sm"
@@ -540,7 +544,7 @@ export default function NewsletterTemplatesClient() {
                             className="text-accent-red hover:text-accent-red"
                             title="Deletar"
                           />
-                        </div>
+                        </Inline>
                       </div>
                     </div>
                   </div>

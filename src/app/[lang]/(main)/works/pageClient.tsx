@@ -40,6 +40,7 @@ import { useComposerName } from '@/app/hooks/useComposerName';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import Select from '../../../components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface WorksClientProps {
   worksData: WorksListResponse;
@@ -708,7 +709,7 @@ const WorksClient = memo(
                 <div className="border-t border-theme-secondary pt-6 mb-4 relative z-[150]">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
                     {/* Composer Filter */}
-                    <div className="space-y-2 flex flex-col gap-1 relative z-[120]">
+                    <Stack gap={2} className="gap-1 relative z-[120]">
                       <label className="text-sm font-medium text-theme-secondary">
                         {t('client_jsx_label_composer')}
                       </label>
@@ -718,10 +719,10 @@ const WorksClient = memo(
                         popularComposers={filterOptions.popularComposers}
                         isDisabled={isPending}
                       />
-                    </div>
+                    </Stack>
 
                     {/* Instrument Filter */}
-                    <div className="space-y-2 flex flex-col gap-1 relative z-[110]">
+                    <Stack gap={2} className="gap-1 relative z-[110]">
                       <label className="text-sm font-medium text-theme-secondary">
                         {t('client_jsx_label_instrument')}
                       </label>
@@ -746,10 +747,10 @@ const WorksClient = memo(
                           disabled={isPending}
                         />
                       </div>
-                    </div>
+                    </Stack>
 
                     {/* Epoch Filter */}
-                    <div className="space-y-2 flex flex-col gap-1 relative z-[105]">
+                    <Stack gap={2} className="gap-1 relative z-[105]">
                       <span className="text-sm font-medium text-theme-secondary">
                         {t('client_jsx_label_epoch')}
                       </span>
@@ -775,10 +776,10 @@ const WorksClient = memo(
                           disabled={isPending}
                         />
                       </div>
-                    </div>
+                    </Stack>
 
                     {/* Genre Filter */}
-                    <div className="space-y-2 flex flex-col gap-1 relative z-[115]">
+                    <Stack gap={2} className="gap-1 relative z-[115]">
                       <span className="text-sm font-medium text-theme-secondary">
                         {t('client_jsx_label_genre')}
                       </span>
@@ -788,7 +789,7 @@ const WorksClient = memo(
                         initialGenres={filterOptions.workGenres}
                         isDisabled={isPending}
                       />
-                    </div>
+                    </Stack>
                   </div>
                 </div>
               </AnimatedContainer>

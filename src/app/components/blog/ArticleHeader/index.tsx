@@ -2,6 +2,7 @@ import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import { PiCalendarBlank, PiClock, PiUser } from 'react-icons/pi';
 import { AdminOnly } from '../AdminOnly';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ArticleHeaderProps {
   article: {
@@ -82,7 +83,7 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
 
           {/* Date */}
           {article.publishedAt && (
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <PiCalendarBlank className="w-5 h-5" />
               <span>
                 {new Date(article.publishedAt).toLocaleDateString('pt-BR', {
@@ -91,21 +92,21 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
                   year: 'numeric',
                 })}
               </span>
-            </div>
+            </Inline>
           )}
 
           {/* Read Time */}
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             <PiClock className="w-5 h-5" />
             <span>{article.readTime} min de leitura</span>
-          </div>
+          </Inline>
 
           {/* Views */}
           <AdminOnly show={isAdmin}>
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <span>👁️</span>
               <span>{article.viewCount.toLocaleString()} visualizações</span>
-            </div>
+            </Inline>
           </AdminOnly>
         </div>
 

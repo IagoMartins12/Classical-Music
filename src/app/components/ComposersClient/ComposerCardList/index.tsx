@@ -16,6 +16,7 @@ import VerificationBadge from '../../Verification/VerificationBadge';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { ComposerImslp } from '@/app/[lang]/(main)/composers/pageClient';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 interface composerCardListProps {
   composer: ComposerImslp;
@@ -43,7 +44,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
     // Link esticado sobre a linha inteira; ver o comentário em `ComposerCard`.
     <div className="relative flex items-center justify-between w-full group">
       {/* Left section - Portrait and basic info */}
-      <div className="flex items-center space-x-4 flex-1 min-w-0">
+      <Inline gap={4} className="flex-1 min-w-0">
         {/* Portrait */}
         <div className="relative w-12 h-12 flex-shrink-0">
           {!imageLoaded && !imageError && (
@@ -88,7 +89,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
             <VerificationBadge verified={composer.isVerified} variant="icon" />
           </span>
 
-          <div className="flex items-center space-x-4 mt-1">
+          <Inline gap={4} className="mt-1">
             {/* Period */}
             {composer.epochName && (
               <span className="inline-flex items-center text-xs text-brand-primary font-medium">
@@ -104,9 +105,9 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
                 {formatDates()}
               </span>
             )}
-          </div>
+          </Inline>
         </div>
-      </div>
+      </Inline>
 
       {/* Center section - External links */}
       <div className="relative z-10 hidden sm:flex items-center  space-x-2 mx-4">
@@ -136,7 +137,10 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
           </a>
         )}
 
-        <div className=" flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
+        <Stack
+          gap={2}
+          className="opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0"
+        >
           <FavoriteButton
             id={composer.id}
             type="composer"
@@ -145,11 +149,11 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
             itemName={composer.fullName}
             showToast={true}
           />
-        </div>
+        </Stack>
       </div>
 
       {/* Right section - Action indicator */}
-      <div className="flex items-center space-x-3 flex-shrink-0">
+      <Inline gap={3} className="flex-shrink-0">
         {/* Action hint */}
         <div className="hidden md:flex items-center space-x-2 text-theme-tertiary text-xs">
           <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
@@ -162,7 +166,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
         <div className="w-8 h-8 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-brand-primary group-hover:bg-brand-primary/10 transition-all duration-300">
           <PiCaretRight className="w-4 h-4 text-theme-primary group-hover:text-brand-primary transition-all duration-300 transform group-hover:translate-x-0.5" />
         </div>
-      </div>
+      </Inline>
 
       {/* Hover background effect */}
       <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-lg pointer-events-none"></div>

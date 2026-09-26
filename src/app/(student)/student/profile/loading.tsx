@@ -17,6 +17,7 @@ import {
   PiTrendUp,
   PiUser,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function StudentProfileLoading() {
   return (
@@ -266,16 +267,17 @@ export default function StudentProfileLoading() {
               <div className="h-6 bg-theme-primary/30 rounded w-32 mb-4"></div>
               <div className="space-y-3">
                 {Array.from({ length: 2 }).map((_, i) => (
-                  <div
+                  <Inline
+                    gap={3}
                     key={i}
-                    className="flex items-center space-x-3 p-3 bg-theme-secondary/10 rounded-lg"
+                    className="p-3 bg-theme-secondary/10 rounded-lg"
                   >
                     <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-full"></div>
                     <div className="flex-1">
                       <div className="h-4 bg-theme-primary/30 rounded w-24 mb-1"></div>
                       <div className="h-3 bg-theme-tertiary/30 rounded w-32"></div>
                     </div>
-                  </div>
+                  </Inline>
                 ))}
               </div>
             </div>
@@ -307,7 +309,7 @@ function ProfileSectionSkeleton({
     <div className="classical-card animate-pulse">
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div
               className={`w-10 h-10 bg-gradient-to-br ${iconColor} rounded-lg flex items-center justify-center`}
             >
@@ -317,12 +319,15 @@ function ProfileSectionSkeleton({
               <div className="h-6 bg-theme-primary/30 rounded w-48 mb-2"></div>
               <div className="h-3 bg-theme-tertiary/30 rounded w-64"></div>
             </div>
-          </div>
+          </Inline>
 
-          <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
+          <Inline
+            gap={2}
+            className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4"
+          >
             <PiPencilLine className="w-4 h-4 text-theme-tertiary/30" />
             <div className="h-4 w-12 bg-theme-tertiary/20 rounded"></div>
-          </div>
+          </Inline>
         </div>
 
         {children}
@@ -341,10 +346,10 @@ function ProfileFieldSkeleton({
   return (
     <div>
       <div className="h-3 bg-theme-tertiary/30 rounded w-16 mb-2"></div>
-      <div className="flex items-center space-x-2">
+      <Inline gap={2}>
         {icon && <div className="text-theme-tertiary/30">{icon}</div>}
         <div className="h-4 bg-theme-primary/30 rounded flex-1 max-w-40"></div>
-      </div>
+      </Inline>
     </div>
   );
 }

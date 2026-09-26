@@ -31,6 +31,7 @@ import { StudentDashboardData } from './pageServer';
 import { useStudentDashboard } from '@/app/hooks/lessonsSystem/useStudentDashboard';
 import RecentActivities from '@/app/components/TeacherSystem/RecentActivities';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface StudentProfile {
   id: string;
@@ -209,10 +210,12 @@ export default function StudentPageClient({
               {error || errorMessage}
             </p>
             <div className="space-y-3">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={handleRefreshData}
                 disabled={loading.refreshing}
-                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+                className="btn-classical-primary w-full justify-center"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${
@@ -224,7 +227,7 @@ export default function StudentPageClient({
                     ? t('student_home_error_try_again') + '...'
                     : t('student_home_error_try_again')}
                 </span>
-              </button>
+              </Inline>
               {error && (
                 <button
                   onClick={clearError}
@@ -348,7 +351,7 @@ export default function StudentPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                       <PiTarget className="w-5 h-5 text-theme-primary" />
                     </div>
@@ -360,7 +363,7 @@ export default function StudentPageClient({
                         {t('student_home_quick_actions_subtitle')}
                       </p>
                     </div>
-                  </div>
+                  </Inline>
                   <button
                     onClick={handleRefreshData}
                     disabled={loading.refreshing}
@@ -379,7 +382,7 @@ export default function StudentPageClient({
                     href="/student/calendar"
                     className="classical-card-2 p-4 text-left hover:border-brand-primary transition-all group"
                   >
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                         <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                       </div>
@@ -391,14 +394,14 @@ export default function StudentPageClient({
                           {t('student_home_quick_actions_calendar_desc')}
                         </div>
                       </div>
-                    </div>
+                    </Inline>
                   </Link>
 
                   <Link
                     href="/student/progress"
                     className="classical-card-2 p-4 text-left hover:border-brand-primary transition-all group"
                   >
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                         <PiChartBar className="w-4 h-4 text-theme-primary" />
                       </div>
@@ -410,14 +413,14 @@ export default function StudentPageClient({
                           {t('student_home_quick_actions_progress_desc')}
                         </div>
                       </div>
-                    </div>
+                    </Inline>
                   </Link>
 
                   <Link
                     href="/explore?filter=want-to-learn"
                     className="classical-card-2 p-4 text-left hover:border-brand-primary transition-all group"
                   >
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                         <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
@@ -429,7 +432,7 @@ export default function StudentPageClient({
                           {t('student_home_quick_actions_explore_desc')}
                         </div>
                       </div>
-                    </div>
+                    </Inline>
                   </Link>
                 </div>
               </AnimatedCard>
@@ -439,7 +442,7 @@ export default function StudentPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                       <PiClock className="w-5 h-5 text-theme-primary" />
                     </div>
@@ -453,7 +456,7 @@ export default function StudentPageClient({
                         })}
                       </p>
                     </div>
-                  </div>
+                  </Inline>
                   <Link
                     href="/student/calendar"
                     className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
@@ -482,7 +485,7 @@ export default function StudentPageClient({
                                 {lesson.title}
                               </h3>
 
-                              <div className="flex items-center space-x-2">
+                              <Inline gap={2}>
                                 <span className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
                                   {t(
                                     'student_home_recent_lessons_status_completed'
@@ -494,10 +497,13 @@ export default function StudentPageClient({
                                 >
                                   <PiEye className="w-4 h-4 text-theme-tertiary group-hover/btn:text-brand-primary transition-colors" />
                                 </Link>
-                              </div>
+                              </Inline>
                             </div>
 
-                            <div className="flex items-center space-x-4 text-sm text-theme-tertiary mt-1">
+                            <Inline
+                              gap={4}
+                              className="text-sm text-theme-tertiary mt-1"
+                            >
                               <span>
                                 {t('student_home_recent_lessons_professor')}{' '}
                                 {lesson.teacher.name}
@@ -507,7 +513,7 @@ export default function StudentPageClient({
                                 {formatTime(lesson.scheduledAt)}
                               </span>
                               <span>{lesson.duration}min</span>
-                            </div>
+                            </Inline>
                           </div>
                         </div>
 
@@ -602,7 +608,7 @@ export default function StudentPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
                       <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                     </div>
@@ -614,7 +620,7 @@ export default function StudentPageClient({
                         {t('student_home_studies_subtitle')}
                       </p>
                     </div>
-                  </div>
+                  </Inline>
                   <Link
                     href="/student/progress"
                     className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
@@ -627,14 +633,18 @@ export default function StudentPageClient({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Current Works */}
                   <div>
-                    <h3 className="font-semibold text-theme-primary mb-3 flex items-center space-x-2">
+                    <Inline
+                      as="h3"
+                      gap={2}
+                      className="font-semibold text-theme-primary mb-3"
+                    >
                       <PiBookOpen className="w-4 h-4 text-accent-blue" />
                       <span>
                         {t('student_home_studies_current_works', {
                           count: studyProgress.currentWorks.length,
                         })}
                       </span>
-                    </h3>
+                    </Inline>
                     <div className="space-y-2">
                       {studyProgress.currentWorks.slice(0, 4).map((work) => (
                         <Link href={`/work/${work.workId}`} key={work.workId}>
@@ -664,14 +674,18 @@ export default function StudentPageClient({
 
                   {/* Learned Works */}
                   <div>
-                    <h3 className="font-semibold text-theme-primary mb-3 flex items-center space-x-2">
+                    <Inline
+                      as="h3"
+                      gap={2}
+                      className="font-semibold text-theme-primary mb-3"
+                    >
                       <PiCheckCircle className="w-4 h-4 text-accent-green" />
                       <span>
                         {t('student_home_studies_learned_works', {
                           count: studyProgress.learnedWorks.length,
                         })}
                       </span>
-                    </h3>
+                    </Inline>
                     <div className="space-y-2">
                       {studyProgress.learnedWorks.slice(0, 4).map((work) => (
                         <Link href={`/work/${work.workId}`} key={work.workId}>
@@ -688,11 +702,11 @@ export default function StudentPageClient({
                                   {work.composer}
                                 </div>
                               </div>
-                              <div className="flex items-center space-x-1">
+                              <Inline gap={1}>
                                 {work.wouldRecommend && (
                                   <PiHeart className="w-3 h-3 text-accent-red" />
                                 )}
-                              </div>
+                              </Inline>
                             </div>
                           </div>
                         </Link>
@@ -714,7 +728,7 @@ export default function StudentPageClient({
             {/* Today's Schedule */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
-                <div className="flex items-center space-x-3 mb-4">
+                <Inline gap={3} className="mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
                     <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                   </div>
@@ -728,12 +742,12 @@ export default function StudentPageClient({
                       })}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
                 <div className="space-y-3">
                   {todayLessons.slice(0, 4).map((lesson) => (
                     <div key={lesson.id} className="classical-card-2 p-3">
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <div className="w-2 h-12 bg-brand-primary rounded-full"></div>
                         <div className="flex-1">
                           <div className="font-medium text-theme-primary text-sm">
@@ -753,7 +767,7 @@ export default function StudentPageClient({
                         >
                           <PiEye className="w-3 h-3 text-theme-tertiary" />
                         </Link>
-                      </div>
+                      </Inline>
                     </div>
                   ))}
 
@@ -781,7 +795,7 @@ export default function StudentPageClient({
             {/* Upcoming Lessons */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
-                <div className="flex items-center space-x-3 mb-4">
+                <Inline gap={3} className="mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
                     <PiClock className="w-4 h-4 text-theme-primary" />
                   </div>
@@ -793,7 +807,7 @@ export default function StudentPageClient({
                       {t('student_home_upcoming_subtitle')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
                 <div className="space-y-2">
                   {upcomingLessons.map((lesson) => (
@@ -831,7 +845,7 @@ export default function StudentPageClient({
             {/* Teachers */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
-                <div className="flex items-center space-x-3 mb-4">
+                <Inline gap={3} className="mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-lg flex items-center justify-center">
                     <PiUserCheck className="w-4 h-4 text-theme-primary" />
                   </div>
@@ -847,7 +861,7 @@ export default function StudentPageClient({
                       })}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
                 <div className="space-y-3">
                   {teachers.map((teacher) => (
@@ -855,7 +869,7 @@ export default function StudentPageClient({
                       key={teacher.teacherId}
                       className="classical-card-2 p-3"
                     >
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         {/* Avatar */}
                         <div className="relative w-10 h-10">
                           {teacher.teacherImage ? (
@@ -891,7 +905,7 @@ export default function StudentPageClient({
                             </div>
                           )}
                         </div>
-                      </div>
+                      </Inline>
                     </div>
                   ))}
 

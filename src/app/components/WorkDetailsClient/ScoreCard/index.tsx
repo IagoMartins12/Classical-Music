@@ -7,6 +7,7 @@ import FavoriteScoreButton from '../../FavoriteScoreButton';
 import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
 import type { WorkScore } from '@/app/types/catalog';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ScoreCardProps {
   score: WorkScore;
@@ -141,7 +142,7 @@ const ScoreCard = ({
               </div>
 
               {/* Action buttons */}
-              <div className="flex items-center space-x-2 flex-shrink-0">
+              <Inline gap={2} className="flex-shrink-0">
                 {/* Botão de favoritar */}
                 <FavoriteScoreButton
                   workId={workId}
@@ -186,7 +187,7 @@ const ScoreCard = ({
                     </div>
                   </a>
                 )}
-              </div>
+              </Inline>
             </div>
 
             {/* Detalhes em grid */}

@@ -4,6 +4,7 @@
 import Image from '@/app/components/SmartImage';
 import { useState } from 'react';
 import { PiArrowSquareOut, PiX } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface AdCardProps {
   ad: any;
@@ -85,10 +86,13 @@ export default function AdCard({
             </span>
 
             {ad.ctaText && (
-              <div className="flex items-center space-x-1 text-brand-primary text-sm font-medium">
+              <Inline
+                gap={1}
+                className="text-brand-primary text-sm font-medium"
+              >
                 <span>{ad.ctaText}</span>
                 {ad.isExternal && <PiArrowSquareOut className="w-3 h-3" />}
-              </div>
+              </Inline>
             )}
           </div>
         </div>

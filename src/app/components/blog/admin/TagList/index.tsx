@@ -13,6 +13,7 @@ import {
   PiWarningCircle,
 } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Tag {
   id: string;
@@ -122,7 +123,10 @@ export function TagList({ tags: tags }: TagListProps) {
                 <PiTag className="w-6 h-6" />
               </div>
 
-              <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Inline
+                gap={1}
+                className="opacity-0 group-hover:opacity-100 transition-opacity"
+              >
                 <Link
                   href={`/blog/tag/${tag.slug}`}
                   target="_blank"
@@ -148,7 +152,7 @@ export function TagList({ tags: tags }: TagListProps) {
                 >
                   <PiTrash className="w-4 h-4" />
                 </button>
-              </div>
+              </Inline>
             </div>
 
             {/* Tag Info */}
@@ -217,7 +221,7 @@ export function TagList({ tags: tags }: TagListProps) {
                   </div>
                 )}
 
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <button
                     onClick={() => setDeleteModal(null)}
                     className="flex-1 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-interactive-hover text-theme-primary transition-all"
@@ -236,7 +240,7 @@ export function TagList({ tags: tags }: TagListProps) {
                   >
                     {deleting ? 'Deletando...' : 'Deletar'}
                   </button>
-                </div>
+                </Inline>
               </div>
             </div>
           </div>

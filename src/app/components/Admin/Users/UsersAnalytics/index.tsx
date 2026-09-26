@@ -34,6 +34,7 @@ import StatsSkeleton, {
   ChartSkeleton,
   TopPerformersSkeleton,
 } from '../../Skeletons/StatsSkeleton';
+import { Inline } from '@/app/components/ui/Layout';
 
 const UserTypeTranslations = {
   MUSIC_STUDENT: 'Estudantes',
@@ -179,7 +180,7 @@ export default function UsersAnalytics() {
             <p className="text-lg md:text-xl text-theme-secondary classical-subtitle">
               Insights detalhados sobre comportamento e engajamento
             </p>
-            <div className="flex items-center justify-center space-x-4 mt-6">
+            <Inline gap={4} className="justify-center mt-6">
               <PeriodSelector
                 value={period}
                 onChange={setPeriod}
@@ -198,7 +199,7 @@ export default function UsersAnalytics() {
               >
                 Atualizar
               </Button>
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -302,16 +303,21 @@ export default function UsersAnalytics() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-8">
             {/* Top Contributors */}
             <AnimatedCard className="classical-card p-4 lg:p-6">
-              <h3 className="text-lg lg:text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-lg lg:text-xl font-bold text-theme-primary mb-6"
+              >
                 <PiUploadSimple className="w-5 h-5 text-accent-green" />
                 <span>Top Contribuidores</span>
-              </h3>
+              </Inline>
               <div className="space-y-4">
                 {analytics.topContributors.length > 0 ? (
                   analytics.topContributors.slice(0, 5).map((user, index) => (
-                    <div
+                    <Inline
+                      gap={3}
                       key={user.id}
-                      className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-all cursor-pointer"
+                      className="p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-all cursor-pointer"
                       onClick={() => handleUserNavigation(user.id)}
                     >
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
@@ -326,14 +332,14 @@ export default function UsersAnalytics() {
                           {user.uploadScore.toFixed(1)}
                         </p>
                       </div>
-                      <div className="flex items-center space-x-1">
+                      <Inline gap={1}>
                         <Button
                           variant="ghost"
                           size="sm"
                           leftIcon={<PiEye />}
                         />
-                      </div>
-                    </div>
+                      </Inline>
+                    </Inline>
                   ))
                 ) : (
                   <div className="text-center py-8">
@@ -348,10 +354,14 @@ export default function UsersAnalytics() {
 
             {/* User Types Detailed */}
             <AnimatedCard className="classical-card p-4 lg:p-6">
-              <h3 className="text-lg lg:text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-lg lg:text-xl font-bold text-theme-primary mb-6"
+              >
                 <PiTarget className="w-5 h-5 text-accent-blue" />
                 <span>Tipos de Usuário</span>
-              </h3>
+              </Inline>
               <div className="space-y-4">
                 {analytics.userTypes.map((type, index) => {
                   const typeName =
@@ -392,10 +402,14 @@ export default function UsersAnalytics() {
 
             {/* Engagement Metrics */}
             <AnimatedCard className="classical-card p-4 lg:p-6">
-              <h3 className="text-lg lg:text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-lg lg:text-xl font-bold text-theme-primary mb-6"
+              >
                 <PiPulse className="w-5 h-5 text-accent-amber" />
                 <span>Métricas de Engajamento</span>
-              </h3>
+              </Inline>
               <div className="space-y-4">
                 <div className="p-3 bg-theme-secondary rounded-xl">
                   <div className="flex items-center justify-between mb-2">
@@ -453,10 +467,14 @@ export default function UsersAnalytics() {
         {analytics && (
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-4 lg:p-6">
-              <h3 className="text-lg lg:text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-lg lg:text-xl font-bold text-theme-primary mb-6"
+              >
                 <PiMedal className="w-5 h-5 text-accent-purple" />
                 <span>Resumo de Atividade ({getPeriodLabel(period)})</span>
-              </h3>
+              </Inline>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
                 <div className="text-center p-4 bg-theme-secondary rounded-xl">

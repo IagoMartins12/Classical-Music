@@ -23,6 +23,7 @@ import Button from '../../Common/Button';
 import { useEmailRefreshSimple } from '@/app/hooks/useEmailRefresh';
 import { Toaster } from 'react-hot-toast';
 import Navbar from '../../Navbar';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface StudentVerificationRequiredProps {
   userEmail?: string | null;
@@ -157,79 +158,79 @@ export default function StudentVerificationRequired({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               {/* Current Status */}
               <AnimatedCard hover="lift" className="classical-card p-6">
-                <div className="flex items-center space-x-3 mb-4">
+                <Inline gap={3} className="mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-amber/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                     <PiClock className="w-5 h-5 text-accent-amber" />
                   </div>
                   <h3 className="text-xl font-bold text-theme-primary classical-title">
                     Status Atual
                   </h3>
-                </div>
+                </Inline>
 
                 <div className="text-left space-y-3">
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Você foi adicionado pelo professor
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Aguardando aprovação do convite
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-theme-tertiary rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Acesso à área do aluno
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-theme-tertiary rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Funcionalidades completas
                     </span>
-                  </div>
+                  </Inline>
                 </div>
               </AnimatedCard>
 
               {/* After approval */}
               <AnimatedCard hover="lift" className="classical-card p-6">
-                <div className="flex items-center space-x-3 mb-4">
+                <Inline gap={3} className="mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                     <PiUserCheck className="w-5 h-5 text-accent-green" />
                   </div>
                   <h3 className="text-xl font-bold text-theme-primary classical-title">
                     Após a Aprovação
                   </h3>
-                </div>
+                </Inline>
 
                 <div className="text-left space-y-2">
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Visualizar cronograma de aulas
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Acompanhar seu progresso musical
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Receber tarefas e feedbacks
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                     <span className="text-theme-secondary text-sm">
                       Acesso completo à plataforma
                     </span>
-                  </div>
+                  </Inline>
                 </div>
               </AnimatedCard>
             </div>
@@ -239,14 +240,14 @@ export default function StudentVerificationRequired({
               hover="lift"
               className="classical-card p-6 max-w-3xl mx-auto mb-8"
             >
-              <div className="flex items-center space-x-3 mb-6">
+              <Inline gap={3} className="mb-6">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
                   <PiCaretRight className="w-5 h-5 text-accent-blue" />
                 </div>
                 <h3 className="text-lg font-bold text-theme-primary classical-title">
                   Como Funciona o Processo
                 </h3>
-              </div>
+              </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="text-center p-4 bg-gradient-to-br from-theme-elevated to-interactive-hover rounded-lg border border-accent-green/20">
@@ -302,14 +303,14 @@ export default function StudentVerificationRequired({
               hover="lift"
               className="classical-card p-6 max-w-3xl mx-auto mb-8"
             >
-              <div className="flex items-center space-x-3 mb-6">
+              <Inline gap={3} className="mb-6">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                   <PiUserCheck className="w-5 h-5 text-accent-green" />
                 </div>
                 <h3 className="text-lg font-bold text-theme-primary classical-title">
                   O que você pode fazer enquanto aguarda
                 </h3>
-              </div>
+              </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="text-left">
@@ -317,30 +318,30 @@ export default function StudentVerificationRequired({
                     Na plataforma:
                   </h4>
                   <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                       <span className="text-theme-secondary text-sm">
                         Explorar compositores e obras
                       </span>
-                    </div>
-                    <div className="flex items-center space-x-2">
+                    </Inline>
+                    <Inline gap={2}>
                       <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                       <span className="text-theme-secondary text-sm">
                         Descobrir partituras gratuitas
                       </span>
-                    </div>
-                    <div className="flex items-center space-x-2">
+                    </Inline>
+                    <Inline gap={2}>
                       <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                       <span className="text-theme-secondary text-sm">
                         Criar sua lista de favoritos
                       </span>
-                    </div>
-                    <div className="flex items-center space-x-2">
+                    </Inline>
+                    <Inline gap={2}>
                       <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                       <span className="text-theme-secondary text-sm">
                         Personalizar seu perfil
                       </span>
-                    </div>
+                    </Inline>
                   </div>
                 </div>
 
@@ -349,30 +350,30 @@ export default function StudentVerificationRequired({
                     Para acelerar o processo:
                   </h4>
                   <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
                       <span className="text-theme-secondary text-sm">
                         Entre em contato com seu professor
                       </span>
-                    </div>
-                    <div className="flex items-center space-x-2">
+                    </Inline>
+                    <Inline gap={2}>
                       <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
                       <span className="text-theme-secondary text-sm">
                         Confirme que ele tem seu email correto
                       </span>
-                    </div>
-                    <div className="flex items-center space-x-2">
+                    </Inline>
+                    <Inline gap={2}>
                       <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
                       <span className="text-theme-secondary text-sm">
                         Peça para ele aprovar seu convite
                       </span>
-                    </div>
-                    <div className="flex items-center space-x-2">
+                    </Inline>
+                    <Inline gap={2}>
                       <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
                       <span className="text-theme-secondary text-sm">
                         Aguarde a notificação de aprovação
                       </span>
-                    </div>
+                    </Inline>
                   </div>
                 </div>
               </div>

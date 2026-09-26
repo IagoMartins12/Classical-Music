@@ -7,6 +7,7 @@ import Modal from '..';
 import Button from '../../Common/Button';
 import { ConfirmationConfig } from '@/app/hooks/useModalConfirmation';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -182,7 +183,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         )}
 
         {/* Botões */}
-        <div className="flex items-center justify-end space-x-3">
+        <Inline gap={3} className="justify-end">
           <Button
             variant="secondary"
             onClick={onCancel}
@@ -208,7 +209,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           >
             {finalConfig.confirmLabel}
           </Button>
-        </div>
+        </Inline>
       </div>
     </Modal>
   );

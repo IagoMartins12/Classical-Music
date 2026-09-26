@@ -11,6 +11,7 @@ import Input from '@/app/components/Common/Inputs';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import { saveVenue } from '@/app/requests/calendar-requests';
 import Image from '@/app/components/SmartImage';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CreateVenueModalProps {
   isOpen: boolean;
@@ -210,7 +211,7 @@ export default function CreateVenueModal({
     >
       {/* Header */}
       <div className="px-6 py-4 border-b border-theme-secondary">
-        <div className="flex items-center space-x-3">
+        <Inline gap={3}>
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center shadow-theme-glow">
             <PiMapPin className="w-5 h-5 text-theme-primary" />
           </div>
@@ -224,7 +225,7 @@ export default function CreateVenueModal({
                 : 'Adicione um novo local de eventos'}
             </p>
           </div>
-        </div>
+        </Inline>
       </div>
 
       {/* Form Content */}
@@ -457,7 +458,7 @@ export default function CreateVenueModal({
 
         {/* Active Status */}
         <div className="flex items-center">
-          <label className="flex items-center space-x-2 cursor-pointer">
+          <Inline as="label" gap={2} className="cursor-pointer">
             <input
               type="checkbox"
               checked={formData.isActive}
@@ -467,12 +468,15 @@ export default function CreateVenueModal({
               className="w-4 h-4 rounded border-theme-secondary"
             />
             <span className="text-sm text-theme-primary">Local Ativo</span>
-          </label>
+          </Inline>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t border-theme-secondary flex items-center justify-end space-x-3">
+      <Inline
+        gap={3}
+        className="px-6 py-4 border-t border-theme-secondary justify-end"
+      >
         <Button variant="secondary" onClick={onClose}>
           Cancelar
         </Button>
@@ -483,7 +487,7 @@ export default function CreateVenueModal({
         >
           {isEditing ? 'Atualizar' : 'Criar'} Local
         </Button>
-      </div>
+      </Inline>
     </Modal>
   );
 }

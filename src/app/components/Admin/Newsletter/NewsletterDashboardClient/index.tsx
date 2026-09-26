@@ -27,6 +27,7 @@ import { useNewsletterStats } from '@/app/hooks/useNewsletterSubscription';
 import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
 import LoadingAdminState from '../../Common/LoadingState';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface QuickAction {
   title: string;
@@ -333,7 +334,7 @@ export default function NewsletterDashboardClient() {
                         key={subscriber.id}
                         className="flex items-center justify-between p-3 bg-theme-secondary rounded-lg"
                       >
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center">
                             <span className="text-xs font-bold text-white">
                               {subscriber.firstName?.charAt(0) ||
@@ -348,7 +349,7 @@ export default function NewsletterDashboardClient() {
                               {subscriber.email}
                             </p>
                           </div>
-                        </div>
+                        </Inline>
                         <div className="text-right">
                           <div
                             className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
@@ -420,7 +421,7 @@ export default function NewsletterDashboardClient() {
                           {campaign.subject}
                         </p>
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4 text-xs">
+                          <Inline gap={4} className="text-xs">
                             <span className="flex items-center">
                               <PiEye className="w-3 h-3 mr-1 text-accent-purple" />
                               {(campaign.openRate * 100).toFixed(1)}%
@@ -429,7 +430,7 @@ export default function NewsletterDashboardClient() {
                               <PiCursor className="w-3 h-3 mr-1 text-accent-amber" />
                               {(campaign.clickRate * 100).toFixed(1)}%
                             </span>
-                          </div>
+                          </Inline>
                           <span className="text-xs text-theme-tertiary">
                             {campaign.emailsSent || 0} enviados
                           </span>

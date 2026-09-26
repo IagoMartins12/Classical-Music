@@ -21,6 +21,7 @@ import { legacyCatalog } from '@/app/libs/api/compat';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface MusicalPreferencesSectionProps {
   user: User;
@@ -268,12 +269,12 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       {/* Experience Level */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <div className="flex items-center space-x-2 mb-3">
+          <Inline gap={2} className="mb-3">
             <PiClock className="w-4 h-4 text-brand-primary" />
             <label className="text-sm font-medium text-theme-secondary">
               {t('preferences_experience_level')}
             </label>
-          </div>
+          </Inline>
 
           <Select
             value={formData.experienceLevel}
@@ -285,12 +286,12 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
         </div>
 
         <div>
-          <div className="flex items-center space-x-2 mb-3">
+          <Inline gap={2} className="mb-3">
             <PiClock className="w-4 h-4 text-brand-primary" />
             <label className="text-sm font-medium text-theme-secondary">
               {t('preferences_practice_time')}
             </label>
-          </div>
+          </Inline>
 
           <Select
             value={formData.practiceTimePerWeek.toString()}
@@ -304,12 +305,12 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 
       {/* Favorites */}
       <div className="pt-6 border-t border-theme-secondary">
-        <div className="flex items-center space-x-2 mb-6">
+        <Inline gap={2} className="mb-6">
           <PiHeart className="w-4 h-4 text-brand-primary" />
           <h4 className="font-medium text-theme-primary">
             {t('preferences_favorites')}
           </h4>
-        </div>
+        </Inline>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>

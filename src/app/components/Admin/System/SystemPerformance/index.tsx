@@ -39,6 +39,7 @@ import {
 import LoadingAdminState from '../../Common/LoadingState';
 import Modal from '@/app/components/Modal';
 import Checkbox from '@/app/components/Common/Checkbox';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function SystemPerformance() {
   const {
@@ -223,7 +224,7 @@ export default function SystemPerformance() {
                 className="input-classical-2"
               />
 
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 <Checkbox
                   id="autoRefresh"
                   checked={autoRefresh}
@@ -236,7 +237,7 @@ export default function SystemPerformance() {
                 >
                   Auto-refresh
                 </label>
-              </div>
+              </Inline>
 
               <Select
                 value={refreshInterval.toString()}
@@ -304,12 +305,16 @@ export default function SystemPerformance() {
         {lastUpdated && (
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center mb-6">
-              <p className="text-sm text-theme-tertiary flex items-center justify-center space-x-2">
+              <Inline
+                as="p"
+                gap={2}
+                className="text-sm text-theme-tertiary justify-center"
+              >
                 <PiClock className="w-4 h-4" />
                 <span>
                   Última atualização: {lastUpdated.toLocaleString('pt-BR')}
                 </span>
-              </p>
+              </Inline>
             </div>
           </AnimatedItem>
         )}
@@ -414,19 +419,19 @@ export default function SystemPerformance() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-8">
               <AnimatedCard className="classical-card p-6 border-l-4 border-accent-red">
-                <div className="flex items-center space-x-3 mb-4">
+                <Inline gap={3} className="mb-4">
                   <PiWarning className="w-6 h-6 text-accent-red" />
                   <h3 className="text-xl font-bold text-theme-primary">
                     Alertas Críticos ({criticalAlerts.length})
                   </h3>
-                </div>
+                </Inline>
                 <div className="space-y-3">
                   {criticalAlerts.slice(0, 3).map((alert) => (
                     <div
                       key={alert.id}
                       className="flex items-center justify-between p-3 bg-accent-red/10 rounded-lg"
                     >
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <div className="w-2 h-2 bg-accent-red rounded-full animate-pulse" />
                         <div>
                           <h4 className="font-medium text-theme-primary">
@@ -436,7 +441,7 @@ export default function SystemPerformance() {
                             {alert.message}
                           </p>
                         </div>
-                      </div>
+                      </Inline>
                       <div className="text-xs text-theme-tertiary">
                         {AlertUtils.formatAlertTime(alert.timestamp)}
                       </div>
@@ -452,10 +457,14 @@ export default function SystemPerformance() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Server Resources */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-xl font-bold text-theme-primary mb-6"
+            >
               <PiHardDrives className="w-5 h-5 text-accent-green" />
               <span>Recursos do Servidor</span>
-            </h3>
+            </Inline>
 
             <div className="space-y-6">
               <div>
@@ -463,7 +472,7 @@ export default function SystemPerformance() {
                   <span className="text-sm font-medium text-theme-primary">
                     CPU Usage
                   </span>
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <span className="text-sm font-bold text-accent-amber">
                       {metrics
                         ? formatPercentage(metrics.server.cpu.usage)
@@ -474,7 +483,7 @@ export default function SystemPerformance() {
                         {metrics.server.cpu.temperature}°C
                       </span>
                     )}
-                  </div>
+                  </Inline>
                 </div>
                 <div className="w-full bg-theme-secondary h-3 rounded-full overflow-hidden">
                   <div
@@ -555,10 +564,14 @@ export default function SystemPerformance() {
 
           {/* Database Performance */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-xl font-bold text-theme-primary mb-6"
+            >
               <PiDatabase className="w-5 h-5 text-accent-blue" />
               <span>Performance da Database</span>
-            </h3>
+            </Inline>
 
             <div className="space-y-4">
               <div className="grid grid-cols-3 gap-4">
@@ -645,7 +658,11 @@ export default function SystemPerformance() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* System Alerts */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-xl font-bold text-theme-primary mb-6"
+            >
               <PiWarning className="w-5 h-5 text-accent-red" />
               <span>Alertas do Sistema</span>
               {activeAlerts.length > 0 && (
@@ -653,7 +670,7 @@ export default function SystemPerformance() {
                   {activeAlerts.length}
                 </span>
               )}
-            </h3>
+            </Inline>
 
             <div className="space-y-3">
               {activeAlerts.length === 0 ? (
@@ -685,12 +702,15 @@ export default function SystemPerformance() {
                         <p className="text-sm text-theme-secondary mt-1">
                           {alert.message}
                         </p>
-                        <div className="flex items-center space-x-4 mt-2 text-xs text-theme-tertiary">
+                        <Inline
+                          gap={4}
+                          className="mt-2 text-xs text-theme-tertiary"
+                        >
                           <span>
                             {AlertUtils.formatAlertTime(alert.timestamp)}
                           </span>
                           <span className="capitalize">{alert.category}</span>
-                        </div>
+                        </Inline>
                       </div>
                     </div>
                   </div>
@@ -709,10 +729,14 @@ export default function SystemPerformance() {
 
           {/* Recent Logs */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-xl font-bold text-theme-primary mb-6"
+            >
               <PiFileText className="w-5 h-5 text-accent-blue" />
               <span>Logs Recentes</span>
-            </h3>
+            </Inline>
 
             <div className="space-y-3 max-h-80 overflow-y-auto">
               {logs.length === 0 ? (
@@ -741,7 +765,7 @@ export default function SystemPerformance() {
                         }`}
                       />
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-1">
+                        <Inline gap={2} className="mb-1">
                           <span
                             className={`text-xs font-medium uppercase tracking-wider ${LogUtils.getLogLevelColor(
                               log.level
@@ -755,7 +779,7 @@ export default function SystemPerformance() {
                           <span className="text-xs text-theme-tertiary">
                             {LogUtils.formatLogTime(log.timestamp)}
                           </span>
-                        </div>
+                        </Inline>
                         <p className="text-sm text-theme-primary">
                           {log.message}
                         </p>
@@ -786,10 +810,14 @@ export default function SystemPerformance() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Network Performance */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-xl font-bold text-theme-primary mb-6"
+            >
               <PiWifiHigh className="w-5 h-5 text-accent-purple" />
               <span>Rede</span>
-            </h3>
+            </Inline>
 
             <div className="space-y-4">
               <div className="text-center p-3 bg-theme-secondary rounded-xl">
@@ -842,10 +870,14 @@ export default function SystemPerformance() {
 
           {/* Cache Performance */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-xl font-bold text-theme-primary mb-6"
+            >
               <PiLightning className="w-5 h-5 text-accent-green" />
               <span>Cache</span>
-            </h3>
+            </Inline>
 
             <div className="space-y-4">
               <div className="text-center p-3 bg-theme-secondary rounded-xl">
@@ -894,10 +926,14 @@ export default function SystemPerformance() {
 
           {/* Application Stats */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-xl font-bold text-theme-primary mb-6"
+            >
               <PiPulse className="w-5 h-5 text-accent-amber" />
               <span>Aplicação</span>
-            </h3>
+            </Inline>
 
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-2">

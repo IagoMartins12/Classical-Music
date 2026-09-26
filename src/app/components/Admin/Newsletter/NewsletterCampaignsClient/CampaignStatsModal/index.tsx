@@ -18,6 +18,7 @@ import {
   HorizontalBarChart,
   MetricCard,
 } from '@/app/components/Admin/Charts/AdminCharts';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CampaignStatsModalProps {
   campaign: any;
@@ -247,7 +248,7 @@ export function CampaignStatsModal({
             </h2>
             <p className="text-theme-secondary">{campaign.subject}</p>
           </div>
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             <span
               className={`px-3 py-1 rounded-full text-xs font-medium ${
                 campaign.status === 'SENT'
@@ -267,7 +268,7 @@ export function CampaignStatsModal({
                     ? 'Agendada'
                     : campaign.status}
             </span>
-          </div>
+          </Inline>
         </div>
 
         {/* Tabs */}
@@ -342,7 +343,7 @@ export function CampaignStatsModal({
                     <span className="text-theme-secondary">
                       Taxa de Abertura
                     </span>
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <div className="w-32 bg-theme-primary rounded-full h-2">
                         <div
                           className="bg-accent-blue h-2 rounded-full"
@@ -361,13 +362,13 @@ export function CampaignStatsModal({
                       >
                         (média: 20%)
                       </span>
-                    </div>
+                    </Inline>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-theme-secondary">
                       Taxa de Cliques
                     </span>
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <div className="w-32 bg-theme-primary rounded-full h-2">
                         <div
                           className="bg-accent-purple h-2 rounded-full"
@@ -388,7 +389,7 @@ export function CampaignStatsModal({
                       >
                         (média: 2.5%)
                       </span>
-                    </div>
+                    </Inline>
                   </div>
                 </div>
               </div>

@@ -6,6 +6,7 @@ import { PiCheck, PiDotsThree, PiTrash, PiX } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import { useToast } from '@/app/hooks/useToast';
 import { resolveModerations } from '@/app/requests/moderation';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface BulkReportActionsProps {
   selectedReports: string[];
@@ -48,12 +49,12 @@ export default function BulkReportActions({
 
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-theme-elevated border border-theme-primary rounded-2xl p-4 shadow-theme-glow z-50">
-      <div className="flex items-center space-x-4">
+      <Inline gap={4}>
         <div className="text-sm font-medium text-theme-primary">
           {selectedReports.length} report(s) selecionado(s)
         </div>
 
-        <div className="flex items-center space-x-2">
+        <Inline gap={2}>
           <Button
             variant="secondary"
             size="sm"
@@ -92,8 +93,8 @@ export default function BulkReportActions({
           >
             Cancelar
           </Button>
-        </div>
-      </div>
+        </Inline>
+      </Inline>
     </div>
   );
 }

@@ -15,6 +15,7 @@ import VerificationBadge from '../../Verification/VerificationBadge';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { ComposerImslp } from '@/app/[lang]/(main)/composers/pageClient';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 interface composerCardProps {
   composer: ComposerImslp;
@@ -94,7 +95,10 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
           </div>
 
           {/* Floating action buttons */}
-          <div className="absolute top-4 right-4 z-10 flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <Stack
+            gap={2}
+            className="absolute top-4 right-4 z-10 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+          >
             <FavoriteButton
               id={composer.id}
               type="composer"
@@ -103,7 +107,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
               itemName={composer.fullName}
               showToast={true}
             />
-          </div>
+          </Stack>
         </div>
 
         {/* Content Section */}
@@ -183,7 +187,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
 
             {/* Action indicator */}
             <div className="flex items-center justify-center pt-4 border-t border-theme-secondary mt-4">
-              <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
+              <Inline gap={2} className="text-theme-tertiary text-xs">
                 <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
                 <span className="font-medium">
                   {t('card_jsx_span_children_0__explorar_obras')}
@@ -201,7 +205,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-              </div>
+              </Inline>
             </div>
           </div>
 

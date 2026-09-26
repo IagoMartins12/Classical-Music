@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
 import Checkbox from '../../Common/Checkbox';
 import { listCategories, listTags } from '@/app/requests/blog/taxonomy';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface SearchFiltersProps {
   currentParams: {
@@ -141,9 +142,11 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
       {/* Article Types */}
       <FilterSection title="Tipos de Artigo" sectionKey="tipos">
         {articleTypes.map((type) => (
-          <label
+          <Inline
+            as="label"
+            gap={2}
             key={type.value}
-            className="flex items-center space-x-2 cursor-pointer group"
+            className="cursor-pointer group"
           >
             <Checkbox
               checked={isChecked('tipos', type.value)}
@@ -154,7 +157,7 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
             <span className="text-sm text-theme-secondary group-hover:text-theme-primary transition-colors">
               {type.label}
             </span>
-          </label>
+          </Inline>
         ))}
       </FilterSection>
 
@@ -162,9 +165,11 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
       {categories.length > 0 && (
         <FilterSection title="Categorias" sectionKey="categorias">
           {categories.map((category: any) => (
-            <label
+            <Inline
+              as="label"
+              gap={2}
               key={category.id}
-              className="flex items-center space-x-2 cursor-pointer group"
+              className="cursor-pointer group"
             >
               <Checkbox
                 checked={isChecked('categorias', category.slug)}
@@ -180,7 +185,7 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
               <span className="text-sm text-theme-secondary group-hover:text-theme-primary transition-colors">
                 {category.icon} {category.name}
               </span>
-            </label>
+            </Inline>
           ))}
         </FilterSection>
       )}
@@ -189,9 +194,11 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
       {tags.length > 0 && (
         <FilterSection title="Tags Populares" sectionKey="tags">
           {tags.map((tag: any) => (
-            <label
+            <Inline
+              as="label"
+              gap={2}
               key={tag.id}
-              className="flex items-center space-x-2 cursor-pointer group"
+              className="cursor-pointer group"
             >
               <Checkbox
                 checked={isChecked('tags', tag.slug)}
@@ -206,7 +213,7 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
               >
                 #{tag.name}
               </span>
-            </label>
+            </Inline>
           ))}
         </FilterSection>
       )}

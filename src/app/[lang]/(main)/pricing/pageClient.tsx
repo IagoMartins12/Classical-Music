@@ -46,6 +46,7 @@ import Input from '@/app/components/Common/Inputs';
 import Link from '@/app/components/LocalizedLink';
 import { useLoginModal } from '@/app/stores/authStore';
 import Image from '@/app/components/SmartImage';
+import { Inline } from '@/app/components/ui/Layout';
 
 const comparisonData = [
   {
@@ -924,10 +925,14 @@ export default function PricingPage({ pricing }: PricingProps) {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                <button className="btn-classical-primary px-10 py-4 text-lg flex items-center justify-center space-x-2">
+                <Inline
+                  as="button"
+                  gap={2}
+                  className="btn-classical-primary px-10 py-4 text-lg justify-center"
+                >
                   <PiLightning className="w-5 h-5" />
                   <span>Experimentar Grátis</span>
-                </button>
+                </Inline>
                 <Link
                   href="/composers"
                   className="btn-classical-secondary px-10 py-4 text-lg flex items-center justify-center space-x-2"
@@ -938,18 +943,18 @@ export default function PricingPage({ pricing }: PricingProps) {
               </div>
 
               <div className="flex flex-wrap items-center justify-center gap-8 mt-12 pt-8 border-t border-theme-secondary">
-                <div className="flex items-center space-x-2 text-theme-tertiary">
+                <Inline gap={2} className="text-theme-tertiary">
                   <PiUsers className="w-4 h-4" />
                   <span className="text-sm">10.000+ usuários ativos</span>
-                </div>
-                <div className="flex items-center space-x-2 text-theme-tertiary">
+                </Inline>
+                <Inline gap={2} className="text-theme-tertiary">
                   <PiStar className="w-4 h-4" />
                   <span className="text-sm">Avaliação 4.9/5</span>
-                </div>
-                <div className="flex items-center space-x-2 text-theme-tertiary">
+                </Inline>
+                <Inline gap={2} className="text-theme-tertiary">
                   <PiMedal className="w-4 h-4" />
                   <span className="text-sm">Suporte 24/7</span>
-                </div>
+                </Inline>
               </div>
             </AnimatedCard>
           </div>
@@ -1437,17 +1442,14 @@ function BenefitCard({
       <p className="text-theme-tertiary text-sm mb-4">{subtitle}</p>
       <div className="space-y-2">
         {benefits.map((benefit, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-center space-x-2"
-          >
+          <Inline gap={2} key={index} className="justify-center">
             <PiCheck
               className={`w-4 h-4 ${
                 highlighted ? 'text-brand-primary' : 'text-accent-green'
               }`}
             />
             <span className="text-sm text-theme-secondary">{benefit}</span>
-          </div>
+          </Inline>
         ))}
       </div>
     </AnimatedCard>

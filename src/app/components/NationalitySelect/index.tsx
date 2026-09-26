@@ -9,6 +9,7 @@ import {
   type Nationality,
 } from '@/app/data/nationalities';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface NationalitySelectProps {
   value: string;
@@ -125,7 +126,10 @@ export default function NationalitySelect({
           `}
         />
 
-        <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+        <Inline
+          gap={1}
+          className="absolute right-2 top-1/2 transform -translate-y-1/2"
+        >
           {value && !disabled && (
             <button
               type="button"
@@ -143,7 +147,7 @@ export default function NationalitySelect({
               }`}
             />
           </div>
-        </div>
+        </Inline>
       </div>
 
       {/* Error message */}

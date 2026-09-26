@@ -7,6 +7,7 @@ import {
   loadFeaturedArticles,
   reorderFeaturedArticles,
 } from '@/app/requests/blog/admin-actions';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface FeaturedArticle {
   id: string;
@@ -177,7 +178,11 @@ export default function FeaturedArticlesManager({
       </div>
 
       {/* Toggle para marcar como destaque */}
-      <label className="flex items-center space-x-3 p-3 bg-theme-elevated rounded-lg cursor-pointer hover:bg-interactive-hover transition-colors mb-4">
+      <Inline
+        as="label"
+        gap={3}
+        className="p-3 bg-theme-elevated rounded-lg cursor-pointer hover:bg-interactive-hover transition-colors mb-4"
+      >
         <input
           type="checkbox"
           checked={isFeatured}
@@ -195,7 +200,7 @@ export default function FeaturedArticlesManager({
             </p>
           )}
         </div>
-      </label>
+      </Inline>
 
       {/* Lista de destaques atuais */}
       {displayArticles.length > 0 && (
@@ -216,7 +221,7 @@ export default function FeaturedArticlesManager({
                     : 'bg-theme-elevated border-theme-secondary'
                 }`}
               >
-                <div className="flex items-center space-x-3 flex-1">
+                <Inline gap={3} className="flex-1">
                   <span className="text-xs font-bold text-theme-tertiary min-w-[20px]">
                     #{index + 1}
                   </span>
@@ -228,10 +233,10 @@ export default function FeaturedArticlesManager({
                       <span className="ml-2 text-xs">(Este artigo)</span>
                     )}
                   </span>
-                </div>
+                </Inline>
 
                 {/* Botões de reordenação */}
-                <div className="flex items-center space-x-1">
+                <Inline gap={1}>
                   <button
                     type="button"
                     onClick={() => handleReorder(article.id, 'up')}
@@ -258,7 +263,7 @@ export default function FeaturedArticlesManager({
                   >
                     <PiArrowDown className="w-3 h-3" />
                   </button>
-                </div>
+                </Inline>
               </div>
             );
           })}

@@ -42,6 +42,7 @@ import {
   cancelLessonRequest,
   updateLessonRequest,
 } from '@/app/requests/portal/lesson-actions';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 interface TeacherCalendarPageClientProps {
   initialData: TeacherCalendarData;
@@ -520,10 +521,12 @@ export default function TeacherCalendarPageClient({
               {error || errorMessage}
             </p>
             <div className="space-y-3">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={handleRefreshCalendar}
                 disabled={loading.calendar}
-                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+                className="btn-classical-primary w-full justify-center"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${
@@ -533,7 +536,7 @@ export default function TeacherCalendarPageClient({
                 <span>
                   {loading.calendar ? t('loading_calendar') : t('try_again')}
                 </span>
-              </button>
+              </Inline>
               {error && (
                 <button
                   onClick={clearError}
@@ -677,7 +680,7 @@ export default function TeacherCalendarPageClient({
               hover="lift"
               className="classical-card p-4 mb-6 border-l-4 flex items-center justify-between !border-red-600"
             >
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <PiWarning className="w-5 h-5 text-accent-red" />
                 <div>
                   <h4 className="font-semibold text-accent-red">
@@ -691,7 +694,7 @@ export default function TeacherCalendarPageClient({
                     {t('attention_alert_message')}
                   </p>
                 </div>
-              </div>
+              </Inline>
               <button
                 onClick={() => setEventFilter('needs_attention')}
                 className="btn-classical-secondary text-sm whitespace-nowrap"
@@ -708,7 +711,7 @@ export default function TeacherCalendarPageClient({
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-0">
               {/* Navigation */}
               <div className="flex flex-col sm:flex-row gap-4 items-center space-x-4">
-                <div className="flex  items-center space-x-2">
+                <Inline gap={2}>
                   <button
                     onClick={() =>
                       viewMode === 'month'
@@ -744,9 +747,9 @@ export default function TeacherCalendarPageClient({
                   >
                     <PiCaretRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                   </button>
-                </div>
+                </Inline>
 
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <button
                     onClick={goToToday}
                     disabled={loading.calendar}
@@ -755,10 +758,12 @@ export default function TeacherCalendarPageClient({
                     {t('today')}
                   </button>
 
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={handleRefreshCalendar}
                     disabled={loading.calendar}
-                    className="btn-classical-secondary text-sm flex items-center space-x-2 disabled:opacity-50"
+                    className="btn-classical-secondary text-sm disabled:opacity-50"
                   >
                     <PiArrowsClockwise
                       className={`w-4 h-4 ${
@@ -766,12 +771,12 @@ export default function TeacherCalendarPageClient({
                       }`}
                     />
                     <span>{t('update')}</span>
-                  </button>
-                </div>
+                  </Inline>
+                </Inline>
               </div>
 
               {/* View Mode and Filters */}
-              <div className="flex items-center justify-center space-x-4">
+              <Inline gap={4} className="justify-center">
                 {/* View Mode Toggle */}
                 <div className="flex bg-theme-secondary rounded-lg p-1">
                   <button
@@ -805,10 +810,10 @@ export default function TeacherCalendarPageClient({
                     {t('day')}
                   </button>
                 </div>
-              </div>
+              </Inline>
 
               <div className="flex flex-col sm:flex-row items-center space-x-4 gap-4 sm:gap-0">
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   {/* Student Filter */}
                   <Select
                     value={selectedStudent}
@@ -826,7 +831,7 @@ export default function TeacherCalendarPageClient({
                     }
                     className="input-classical-2 w-auto min-w-40"
                   />
-                </div>
+                </Inline>
 
                 {/* Create Button */}
                 <Link
@@ -960,7 +965,7 @@ export default function TeacherCalendarPageClient({
           maxWidth="md"
         >
           <div className="p-6">
-            <div className="flex items-center space-x-3 mb-6">
+            <Inline gap={3} className="mb-6">
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center ${
                   pendingStatusUpdate.newStatus === 'COMPLETED'
@@ -990,7 +995,7 @@ export default function TeacherCalendarPageClient({
                   })}
                 </p>
               </div>
-            </div>
+            </Inline>
 
             <div className="bg-theme-tertiary rounded-lg p-4 mb-6">
               <div className="flex items-start space-x-3">
@@ -1011,7 +1016,7 @@ export default function TeacherCalendarPageClient({
               </div>
             </div>
 
-            <div className="flex items-center justify-end space-x-3">
+            <Inline gap={3} className="justify-end">
               <button
                 onClick={() => setShowStatusUpdateModal(false)}
                 className="btn-classical-secondary"
@@ -1055,7 +1060,7 @@ export default function TeacherCalendarPageClient({
                         : t('confirm_cancelled')}
                 </span>
               </button>
-            </div>
+            </Inline>
           </div>
         </Modal>
       )}
@@ -1268,9 +1273,12 @@ function WeekView({
                   : 'bg-theme-secondary/50 border-b border-theme-secondary/30'
               }`}
             >
-              <div className="text-sm text-theme-tertiary flex items-center justify-center space-x-1">
+              <Inline
+                gap={1}
+                className="text-sm text-theme-tertiary justify-center"
+              >
                 <span>{WEEKDAYS[index]}</span>
-              </div>
+              </Inline>
               <div
                 className={`text-lg font-bold ${
                   isToday ? 'text-brand-primary' : 'text-theme-primary'
@@ -1394,27 +1402,27 @@ function DayView({
                     <h3 className="font-bold text-lg mb-2">{event.title}</h3>
 
                     <div className="space-y-2 text-sm">
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <PiClock className="w-4 h-4" />
                         <span>{formatEventTime(event.start, event.end)}</span>
-                      </div>
+                      </Inline>
 
                       {event.student && (
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <PiUser className="w-4 h-4" />
                           <span>{event.student.name}</span>
-                        </div>
+                        </Inline>
                       )}
 
                       {event.location && (
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <PiMapPin className="w-4 h-4" />
                           <span>{event.location}</span>
-                        </div>
+                        </Inline>
                       )}
 
                       {statusInfo.needsAttention && (
-                        <div className="flex items-center space-x-2 text-accent-red">
+                        <Inline gap={2} className="text-accent-red">
                           <PiWarning className="w-4 h-4" />
                           <span className="font-medium">
                             {t('overdue_hours', {
@@ -1422,7 +1430,7 @@ function DayView({
                             })}{' '}
                             - Status precisa ser atualizado
                           </span>
-                        </div>
+                        </Inline>
                       )}
 
                       {event.objectives && event.objectives.length > 0 && (
@@ -1496,7 +1504,7 @@ function EventDetailsModal({
               <h2 className="text-xl font-bold text-theme-primary classical-title">
                 {event.title}
               </h2>
-              <div className="flex items-center space-x-3 mt-2">
+              <Inline gap={3} className="mt-2">
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${getEventStatusColor(
                     event.status,
@@ -1521,19 +1529,23 @@ function EventDetailsModal({
                   </span>
                 )}
                 {statusInfo.needsAttention && (
-                  <span className="px-3 py-1 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-full text-sm flex items-center space-x-1">
+                  <Inline
+                    as="span"
+                    gap={1}
+                    className="px-3 py-1 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-full text-sm"
+                  >
                     <PiWarning className="w-3 h-3" />
                     <span>{t('needs_attention')}</span>
-                  </span>
+                  </Inline>
                 )}
-              </div>
+              </Inline>
             </div>
           </div>
 
           {/* 🆕 ALERTA DE ATENÇÃO EXPANDIDO E MELHORADO */}
           {statusInfo.needsAttention && (
             <div className="mb-6 p-6 border border-red-600 rounded-lg bg-accent-red/5">
-              <div className="flex flex-col items-center text-center space-y-4">
+              <Stack gap={4} className="items-center text-center">
                 <PiWarning className="w-12 h-12 text-accent-red" />
                 <div>
                   <h4 className="font-bold text-accent-red text-lg mb-2">
@@ -1552,29 +1564,35 @@ function EventDetailsModal({
 
                 {/* 🆕 BOTÕES DE AÇÃO MELHORADOS */}
                 <div className="flex flex-wrap justify-center gap-3 pt-2">
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={() => onUpdateStatus(event.id, 'COMPLETED')}
-                    className="btn-classical-primary bg-accent-green border-accent-green hover:bg-accent-green/90 text-white flex items-center space-x-2 px-4 py-2"
+                    className="btn-classical-primary bg-accent-green border-accent-green hover:bg-accent-green/90 text-white px-4 py-2"
                   >
                     <PiCheck className="w-4 h-4" />
                     <span>{t('mark_completed')}</span>
-                  </button>
-                  <button
+                  </Inline>
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={() => onUpdateStatus(event.id, 'NO_SHOW')}
-                    className="btn-classical-secondary bg-accent-yellow/10 border-accent-yellow text-accent-yellow hover:bg-accent-yellow/20 flex items-center space-x-2 px-4 py-2"
+                    className="btn-classical-secondary bg-accent-yellow/10 border-accent-yellow text-accent-yellow hover:bg-accent-yellow/20 px-4 py-2"
                   >
                     <PiUser className="w-4 h-4" />
                     <span>{t('student_absent')}</span>
-                  </button>
-                  <button
+                  </Inline>
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={() => onUpdateStatus(event.id, 'CANCELLED')}
-                    className="btn-classical-secondary bg-accent-red/10 border-accent-red text-accent-red hover:bg-accent-red/20 flex items-center space-x-2 px-4 py-2"
+                    className="btn-classical-secondary bg-accent-red/10 border-accent-red text-accent-red hover:bg-accent-red/20 px-4 py-2"
                   >
                     <PiX className="w-4 h-4" />
                     <span>{t('was_cancelled')}</span>
-                  </button>
+                  </Inline>
                 </div>
-              </div>
+              </Stack>
             </div>
           )}
 
@@ -1598,7 +1616,7 @@ function EventDetailsModal({
                   <label className="text-sm font-medium text-theme-tertiary block mb-2">
                     {t('student')}
                   </label>
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     {event.student.image ? (
                       <div className="w-8 h-8 relative rounded-full overflow-hidden">
                         <Image
@@ -1622,7 +1640,7 @@ function EventDetailsModal({
                         {t('level')} {event.student.level}
                       </div>
                     </div>
-                  </div>
+                  </Inline>
                 </div>
               )}
             </div>
@@ -1720,27 +1738,33 @@ function EventDetailsModal({
                   {t('quick_actions')}
                 </label>
                 <div className="flex flex-wrap gap-3">
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={() => onUpdateStatus(event.id, 'COMPLETED')}
-                    className="btn-classical-secondary bg-accent-green/10 border-accent-green text-accent-green hover:bg-accent-green/20 flex items-center space-x-2 text-sm"
+                    className="btn-classical-secondary bg-accent-green/10 border-accent-green text-accent-green hover:bg-accent-green/20 text-sm"
                   >
                     <PiCheck className="w-4 h-4" />
                     <span>{t('complete_lesson')}</span>
-                  </button>
-                  <button
+                  </Inline>
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={() => onUpdateStatus(event.id, 'NO_SHOW')}
-                    className="btn-classical-secondary bg-accent-yellow/10 border-accent-yellow text-accent-yellow hover:bg-accent-yellow/20 flex items-center space-x-2 text-sm"
+                    className="btn-classical-secondary bg-accent-yellow/10 border-accent-yellow text-accent-yellow hover:bg-accent-yellow/20 text-sm"
                   >
                     <PiUser className="w-4 h-4" />
                     <span>{t('mark_absent')}</span>
-                  </button>
-                  <button
+                  </Inline>
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={() => onUpdateStatus(event.id, 'CANCELLED')}
-                    className="btn-classical-secondary bg-accent-red/10 border-accent-red text-accent-red hover:bg-accent-red/20 flex items-center space-x-2 text-sm"
+                    className="btn-classical-secondary bg-accent-red/10 border-accent-red text-accent-red hover:bg-accent-red/20 text-sm"
                   >
                     <PiX className="w-4 h-4" />
                     <span>{t('cancel_lesson')}</span>
-                  </button>
+                  </Inline>
                 </div>
               </div>
             )}
@@ -1755,7 +1779,7 @@ function EventDetailsModal({
                 <span>{t('view_full_details')}</span>
               </Link>
 
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 {event.status === 'SCHEDULED' && (
                   <Link
                     href={`/teacher/lessons/${event.id}`}
@@ -1773,7 +1797,7 @@ function EventDetailsModal({
                     </span>
                   </Link>
                 )}
-              </div>
+              </Inline>
             </div>
           </div>
         </div>
@@ -1860,7 +1884,7 @@ function DayEventsModal({
           {/* Alerta geral se houver eventos precisando de atenção */}
           {eventsNeedingAttention.length > 0 && (
             <div className="mb-6 p-4 bg-accent-red/5 border border-accent-red/20 rounded-lg">
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <PiWarning className="w-5 h-5 text-accent-red" />
                 <div>
                   <h4 className="font-semibold text-accent-red">
@@ -1875,7 +1899,7 @@ function DayEventsModal({
                     {t('lessons_overdue_message')}
                   </p>
                 </div>
-              </div>
+              </Inline>
             </div>
           )}
 
@@ -1893,7 +1917,7 @@ function DayEventsModal({
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
+                      <Inline gap={3} className="mb-2">
                         <h3 className="font-bold text-lg">{event.title}</h3>
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${getEventStatusColor(
@@ -1910,45 +1934,49 @@ function DayEventsModal({
                                 : event.status}
                         </span>
                         {statusInfo.needsAttention && (
-                          <span className="px-2 py-1 bg-accent-red/20 text-accent-red rounded-full text-xs flex items-center space-x-1">
+                          <Inline
+                            as="span"
+                            gap={1}
+                            className="px-2 py-1 bg-accent-red/20 text-accent-red rounded-full text-xs"
+                          >
                             <PiWarning className="w-3 h-3" />
                             <span>{t('needs_attention')}</span>
-                          </span>
+                          </Inline>
                         )}
-                      </div>
+                      </Inline>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div className="space-y-2 text-sm">
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <PiClock className="w-4 h-4" />
                             <span>
                               {formatEventTime(event.start, event.end)}
                             </span>
-                          </div>
+                          </Inline>
 
                           {event.student && (
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               <PiUser className="w-4 h-4" />
                               <span>{event.student.name}</span>
-                            </div>
+                            </Inline>
                           )}
 
                           {event.location && (
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               <PiMapPin className="w-4 h-4" />
                               <span>{event.location}</span>
-                            </div>
+                            </Inline>
                           )}
 
                           {statusInfo.needsAttention && (
-                            <div className="flex items-center space-x-2 text-accent-red">
+                            <Inline gap={2} className="text-accent-red">
                               <PiWarning className="w-4 h-4" />
                               <span className="font-medium text-xs">
                                 {t('overdue_hours', {
                                   hours: statusInfo.hoursOverdue,
                                 })}
                               </span>
-                            </div>
+                            </Inline>
                           )}
                         </div>
 
@@ -1979,14 +2007,16 @@ function DayEventsModal({
                       </div>
 
                       {/* Ações Rápidas */}
-                      <div className="flex items-center space-x-3 flex-wrap gap-2">
-                        <button
+                      <Inline gap={3} className="flex-wrap gap-2">
+                        <Inline
+                          as="button"
+                          gap={1}
                           onClick={() => onEventClick(event)}
-                          className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
+                          className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
                         >
                           <PiEye className="w-4 h-4" />
                           <span>{t('view_details')}</span>
-                        </button>
+                        </Inline>
 
                         {event.status === 'SCHEDULED' && (
                           <>
@@ -2001,38 +2031,44 @@ function DayEventsModal({
 
                             {statusInfo.needsAttention && (
                               <>
-                                <button
+                                <Inline
+                                  as="button"
+                                  gap={1}
                                   onClick={() =>
                                     onUpdateStatus(event.id, 'COMPLETED')
                                   }
-                                  className="text-accent-green hover:text-accent-green/80 text-sm font-medium transition-colors flex items-center space-x-1"
+                                  className="text-accent-green hover:text-accent-green/80 text-sm font-medium transition-colors"
                                 >
                                   <PiCheck className="w-4 h-4" />
                                   <span>{t('event_status_completed')}</span>
-                                </button>
+                                </Inline>
 
-                                <button
+                                <Inline
+                                  as="button"
+                                  gap={1}
                                   onClick={() =>
                                     onUpdateStatus(event.id, 'NO_SHOW')
                                   }
-                                  className="text-accent-yellow hover:text-accent-yellow/80 text-sm font-medium transition-colors flex items-center space-x-1"
+                                  className="text-accent-yellow hover:text-accent-yellow/80 text-sm font-medium transition-colors"
                                 >
                                   <PiUser className="w-4 h-4" />
                                   <span>{t('event_status_no_show')}</span>
-                                </button>
+                                </Inline>
                               </>
                             )}
 
-                            <button
+                            <Inline
+                              as="button"
+                              gap={1}
                               onClick={() => onCancelEvent(event.id)}
-                              className="text-accent-red hover:text-accent-red/80 text-sm font-medium transition-colors flex items-center space-x-1"
+                              className="text-accent-red hover:text-accent-red/80 text-sm font-medium transition-colors"
                             >
                               <PiTrash className="w-4 h-4" />
                               <span>{t('cancel_lesson')}</span>
-                            </button>
+                            </Inline>
                           </>
                         )}
-                      </div>
+                      </Inline>
                     </div>
                   </div>
                 </div>

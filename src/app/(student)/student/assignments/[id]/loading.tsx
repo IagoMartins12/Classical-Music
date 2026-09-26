@@ -15,6 +15,7 @@ import {
   PiStar,
   PiTarget,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function StudentAssignmentDetailsLoading() {
   return (
@@ -64,7 +65,7 @@ export default function StudentAssignmentDetailsLoading() {
       <div className="section-wrap space-y-8 relative z-10">
         {/* Header Skeleton */}
         <div className="flex items-center justify-between mb-8 animate-pulse">
-          <div className="flex items-center space-x-4">
+          <Inline gap={4}>
             <div className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary flex items-center justify-center">
               <PiArrowLeft className="w-4 h-4 text-theme-tertiary/30" />
             </div>
@@ -72,20 +73,26 @@ export default function StudentAssignmentDetailsLoading() {
               <div className="h-8 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-2xl w-80 mb-2"></div>
               <div className="h-4 bg-theme-secondary/30 rounded w-48"></div>
             </div>
-          </div>
+          </Inline>
 
           {/* Quick Actions */}
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="h-8 w-20 bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 border border-accent-blue/30 rounded-full"></div>
-            <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
+            <Inline
+              gap={2}
+              className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4"
+            >
               <PiFloppyDisk className="w-4 h-4 text-theme-tertiary/30" />
               <div className="h-4 w-24 bg-theme-tertiary/20 rounded"></div>
-            </div>
-            <div className="h-10 bg-gradient-to-r from-accent-green/20 to-accent-green/30 border border-accent-green/30 rounded-lg px-4 flex items-center space-x-2">
+            </Inline>
+            <Inline
+              gap={2}
+              className="h-10 bg-gradient-to-r from-accent-green/20 to-accent-green/30 border border-accent-green/30 rounded-lg px-4"
+            >
               <PiCheck className="w-4 h-4 text-theme-inverse/30" />
               <div className="h-4 w-20 bg-theme-inverse/30 rounded"></div>
-            </div>
-          </div>
+            </Inline>
+          </Inline>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -108,11 +115,11 @@ export default function StudentAssignmentDetailsLoading() {
                   </div>
                   <div>
                     <div className="h-3 bg-theme-tertiary/30 rounded w-12 mb-2"></div>
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <PiCalendarBlank className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="h-4 bg-theme-primary/30 rounded w-24"></div>
                       <div className="h-3 bg-accent-yellow/30 rounded w-20"></div>
-                    </div>
+                    </Inline>
                   </div>
                 </div>
 
@@ -129,42 +136,45 @@ export default function StudentAssignmentDetailsLoading() {
                 {/* Progress Section */}
                 <div>
                   <div className="h-3 bg-theme-tertiary/30 rounded w-24 mb-2"></div>
-                  <div className="flex items-center space-x-4 mb-4">
+                  <Inline gap={4} className="mb-4">
                     <div className="flex-1">
                       <div className="w-full bg-theme-secondary rounded-full h-3">
                         <div className="bg-green-400/30 h-3 rounded-full w-3/5"></div>
                       </div>
                     </div>
                     <div className="h-4 bg-theme-primary/30 rounded w-8"></div>
-                  </div>
+                  </Inline>
 
                   {/* Time Study Section */}
                   <div>
                     <div className="h-3 bg-theme-tertiary/30 rounded w-32 mb-3"></div>
                     <div className="rounded-lg p-4 border border-theme-secondary">
-                      <div className="flex items-center space-x-4">
+                      <Inline gap={4}>
                         <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-2">
+                          <Inline gap={2} className="mb-2">
                             <PiClock className="w-4 h-4 text-accent-blue/30" />
                             <div className="h-4 bg-theme-primary/30 rounded w-20"></div>
-                          </div>
-                          <div className="flex items-center space-x-2">
+                          </Inline>
+                          <Inline gap={2}>
                             <div className="h-10 w-20 bg-theme-elevated rounded border border-theme-secondary"></div>
                             <div className="h-3 bg-theme-secondary/30 rounded w-12"></div>
-                          </div>
+                          </Inline>
                         </div>
                         <div className="text-right">
                           <div className="h-3 bg-theme-tertiary/30 rounded w-12 mb-1"></div>
                           <div className="h-4 bg-theme-primary/30 rounded w-12"></div>
                         </div>
-                      </div>
+                      </Inline>
                     </div>
                   </div>
 
-                  <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg mt-4 flex items-center space-x-2 px-4">
+                  <Inline
+                    gap={2}
+                    className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg mt-4 px-4"
+                  >
                     <PiTarget className="w-4 h-4 text-theme-tertiary/30" />
                     <div className="h-4 w-28 bg-theme-tertiary/20 rounded"></div>
-                  </div>
+                  </Inline>
                 </div>
 
                 {/* Goals Section */}
@@ -172,10 +182,10 @@ export default function StudentAssignmentDetailsLoading() {
                   <div className="h-3 bg-theme-tertiary/30 rounded w-32 mb-2"></div>
                   <div className="space-y-2">
                     {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={i} className="flex items-center space-x-2">
+                      <Inline gap={2} key={i}>
                         <PiTarget className="w-4 h-4 text-accent-blue/30" />
                         <div className="h-3 bg-theme-primary/30 rounded flex-1 max-w-80"></div>
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </div>
@@ -184,10 +194,10 @@ export default function StudentAssignmentDetailsLoading() {
                   <div className="h-3 bg-theme-tertiary/30 rounded w-28 mb-2"></div>
                   <div className="space-y-2">
                     {Array.from({ length: 2 }).map((_, i) => (
-                      <div key={i} className="flex items-center space-x-2">
+                      <Inline gap={2} key={i}>
                         <PiTarget className="w-4 h-4 text-accent-green/30" />
                         <div className="h-3 bg-theme-primary/30 rounded flex-1 max-w-72"></div>
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </div>
@@ -196,10 +206,10 @@ export default function StudentAssignmentDetailsLoading() {
                   <div className="h-3 bg-theme-tertiary/30 rounded w-20 mb-2"></div>
                   <div className="space-y-2">
                     {Array.from({ length: 2 }).map((_, i) => (
-                      <div key={i} className="flex items-center space-x-2">
+                      <Inline gap={2} key={i}>
                         <PiBookOpen className="w-4 h-4 text-accent-purple/30" />
                         <div className="h-3 bg-theme-primary/30 rounded flex-1 max-w-64"></div>
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </div>
@@ -209,12 +219,12 @@ export default function StudentAssignmentDetailsLoading() {
             {/* Musical Pieces Section */}
             <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-lg flex items-center justify-center">
                     <PiMusicNotes className="w-5 h-5 text-theme-inverse/30" />
                   </div>
                   <div className="h-5 bg-theme-primary/30 rounded w-48"></div>
-                </div>
+                </Inline>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -243,7 +253,7 @@ export default function StudentAssignmentDetailsLoading() {
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <div className="h-3 bg-theme-tertiary/30 rounded w-32"></div>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <PiStar
@@ -252,7 +262,7 @@ export default function StudentAssignmentDetailsLoading() {
                     />
                   ))}
                   <div className="h-4 bg-theme-primary/30 rounded w-8"></div>
-                </div>
+                </Inline>
               </div>
             </div>
 
@@ -263,7 +273,7 @@ export default function StudentAssignmentDetailsLoading() {
                 <div className="h-24 bg-theme-elevated border border-theme-secondary rounded"></div>
                 <div>
                   <div className="h-3 bg-theme-tertiary/30 rounded w-64 mb-2"></div>
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     {[1, 2, 3, 4, 5].map((star) => (
                       <PiStar
                         key={star}
@@ -271,7 +281,7 @@ export default function StudentAssignmentDetailsLoading() {
                       />
                     ))}
                     <div className="h-4 bg-theme-primary/30 rounded w-20"></div>
-                  </div>
+                  </Inline>
                 </div>
               </div>
             </div>
@@ -282,13 +292,13 @@ export default function StudentAssignmentDetailsLoading() {
             {/* Teacher Info */}
             <div className="classical-card p-6 animate-pulse">
               <div className="h-5 bg-theme-primary/30 rounded w-20 mb-4"></div>
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-full"></div>
                 <div>
                   <div className="h-4 bg-theme-primary/30 rounded w-24 mb-1"></div>
                   <div className="h-3 bg-brand-primary/30 rounded w-32"></div>
                 </div>
-              </div>
+              </Inline>
             </div>
 
             {/* Assignment Info */}

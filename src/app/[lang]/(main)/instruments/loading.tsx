@@ -29,11 +29,11 @@ export default function InstrumentsLoading() {
           <div className="section-wrap mx-auto relative z-10">
             <div className="text-center space-y-8">
               {/* Floating Icons Skeleton */}
-              <div className="flex justify-center items-center mb-8 space-x-6">
+              <Inline gap={6} className="justify-center mb-8">
                 <div className="w-16 h-16 bg-interactive-hover rounded-2xl animate-pulse"></div>
                 <div className="w-20 h-20 bg-interactive-hover rounded-2xl animate-pulse"></div>
                 <div className="w-16 h-16 bg-interactive-hover rounded-2xl animate-pulse"></div>
-              </div>
+              </Inline>
 
               {/* Title Skeleton */}
               <div className="space-y-6">
@@ -77,7 +77,7 @@ export default function InstrumentsLoading() {
 
               {/* Instrument Header Skeleton */}
               <div className="flex items-center justify-between p-8 relative z-10">
-                <div className="flex items-center space-x-6">
+                <Inline gap={6}>
                   {/* Icon skeleton */}
                   <div className="w-20 h-20 bg-interactive-hover rounded-2xl animate-shimmer"></div>
 
@@ -87,10 +87,10 @@ export default function InstrumentsLoading() {
                     <div className="h-5 bg-interactive-hover rounded w-64 animate-shimmer"></div>
                     <div className="h-4 bg-interactive-hover rounded w-32 animate-shimmer"></div>
                   </div>
-                </div>
+                </Inline>
 
                 {/* Stats skeleton */}
-                <div className="flex items-center space-x-6">
+                <Inline gap={6}>
                   <div className="text-center space-y-2">
                     <div className="h-8 w-12 bg-interactive-hover rounded animate-shimmer"></div>
                     <div className="h-3 w-8 bg-interactive-hover rounded animate-shimmer"></div>
@@ -100,7 +100,7 @@ export default function InstrumentsLoading() {
                     <div className="h-3 w-12 bg-interactive-hover rounded animate-shimmer"></div>
                   </div> */}
                   <div className="w-8 h-8 bg-interactive-hover rounded-xl animate-pulse"></div>
-                </div>
+                </Inline>
               </div>
             </div>
           ))}
@@ -183,6 +183,7 @@ export default function InstrumentsLoading() {
 // 'use client';
 
 // import { GiViolin, GiGrandPiano, GiHarp, GiPipeOrgan } from 'react-icons/gi';
+import { Inline } from '@/app/components/ui/Layout';
 // //
 // const instruments = [
 //   { icon: GiGrandPiano, name: 'Piano', delay: 0 },

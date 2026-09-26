@@ -37,6 +37,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { listModerations, resolveModeration } from '@/app/requests/moderation';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ModerationClientProps {
   page: number;
@@ -300,8 +301,8 @@ const ModerationClient = ({
           <AnimatedItem direction="up" springType="gentle">
             <div className="classical-card p-4 mb-6">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <label className="flex items-center space-x-2 cursor-pointer">
+                <Inline gap={4}>
+                  <Inline as="label" gap={2} className="cursor-pointer">
                     <Checkbox
                       checked={selectAll}
                       onChange={(e) => handleSelectAll(e.target.checked)}
@@ -313,7 +314,7 @@ const ModerationClient = ({
                         moderations.length.toString()
                       )}
                     </span>
-                  </label>
+                  </Inline>
 
                   {selectedReports.length > 0 && (
                     <span className="text-sm text-theme-secondary">
@@ -323,9 +324,9 @@ const ModerationClient = ({
                       )}
                     </span>
                   )}
-                </div>
+                </Inline>
 
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -334,7 +335,7 @@ const ModerationClient = ({
                   >
                     {t('moderation_dashboard_button')}
                   </Button>
-                </div>
+                </Inline>
               </div>
             </div>
           </AnimatedItem>
@@ -390,7 +391,7 @@ const ModerationClient = ({
                         </div>
 
                         <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-2">
+                          <Inline gap={2} className="mb-2">
                             <ReportPriorityBadge
                               priority={moderation.priority || 'normal'}
                               createdAt={moderation.createdAt}
@@ -399,9 +400,9 @@ const ModerationClient = ({
                               {moderation.entityType.charAt(0).toUpperCase() +
                                 moderation.entityType.slice(1)}
                             </span>
-                          </div>
+                          </Inline>
 
-                          <div className="flex items-center space-x-2 mb-1">
+                          <Inline gap={2} className="mb-1">
                             <h3 className="text-lg font-bold text-theme-primary">
                               {getEntityTitle(moderation)}
                             </h3>
@@ -413,18 +414,21 @@ const ModerationClient = ({
                                   variant="icon"
                                 />
                               )}
-                          </div>
+                          </Inline>
 
                           <p className="text-sm text-theme-secondary mb-2">
                             {getEntitySubtitle(moderation)}
                           </p>
 
-                          <div className="flex items-center space-x-4 text-sm text-theme-tertiary mb-2">
-                            <span className="flex items-center space-x-1">
+                          <Inline
+                            gap={4}
+                            className="text-sm text-theme-tertiary mb-2"
+                          >
+                            <Inline as="span" gap={1}>
                               <PiFlag className="w-4 h-4" />
                               <span>{getReasonLabel(moderation.reason)}</span>
-                            </span>
-                            <span className="flex items-center space-x-1">
+                            </Inline>
+                            <Inline as="span" gap={1}>
                               <PiCalendarBlank className="w-4 h-4" />
                               <span>
                                 {formatDistanceToNow(
@@ -432,15 +436,15 @@ const ModerationClient = ({
                                   { addSuffix: true, locale: ptBR }
                                 )}
                               </span>
-                            </span>
-                            <span className="flex items-center space-x-1">
+                            </Inline>
+                            <Inline as="span" gap={1}>
                               <PiUser className="w-4 h-4" />
                               <span>
                                 {moderation.reporter.firstName ||
                                   moderation.reporter.email}
                               </span>
-                            </span>
-                          </div>
+                            </Inline>
+                          </Inline>
 
                           {moderation.description && (
                             <p className="text-sm text-theme-secondary italic">
@@ -459,7 +463,7 @@ const ModerationClient = ({
                         </div>
                       </div>
 
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         {/* Botão de histórico */}
                         <Button
                           variant="ghost"
@@ -520,7 +524,7 @@ const ModerationClient = ({
                             {t('moderation_view_item_button')}
                           </Button>
                         )}
-                      </div>
+                      </Inline>
                     </div>
                   </AnimatedCard>
                 </AnimatedItem>

@@ -5,6 +5,7 @@ import { useState, useEffect, createContext, useContext } from 'react';
 import { PiLightning, PiMedal, PiShield, PiStar, PiX } from 'react-icons/pi';
 import { AnimatedItem } from '../../animation/AnimatedComponents';
 import { markAchievementViewed } from '@/app/requests/achievements';
+import { Inline } from '@/app/components/ui/Layout';
 
 // Interface para achievement
 interface AchievementData {
@@ -207,7 +208,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
         className={`bg-theme-elevated border-2 ${config?.border} rounded-2xl shadow-2xl p-5 min-w-[350px] max-w-[420px] backdrop-blur-sm bg-opacity-98 shadow-theme-glow relative overflow-hidden`}
       >
         {/* Header */}
-        <div className="flex items-center space-x-4 mb-4 relative z-10">
+        <Inline gap={4} className="mb-4 relative z-10">
           <div
             className={`w-14 h-14 rounded-2xl bg-gradient-to-br $ flex items-center justify-center shadow-lg relative`}
           >
@@ -221,7 +222,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
           </div>
 
           <div className="flex-1">
-            <div className="flex items-center space-x-2 mb-1">
+            <Inline gap={2} className="mb-1">
               <h4 className="font-bold text-theme-primary text-sm">
                 Conquista Desbloqueada!
               </h4>
@@ -235,7 +236,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
                   ))}
                 </div>
               )}
-            </div>
+            </Inline>
             <div className="font-bold text-theme-primary text-lg">
               {achievement.name}
             </div>
@@ -247,7 +248,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
           >
             <PiX className="w-4 h-4" />
           </button>
-        </div>
+        </Inline>
 
         {/* Description */}
         <p className="text-sm text-theme-secondary mb-4 leading-relaxed relative z-10">

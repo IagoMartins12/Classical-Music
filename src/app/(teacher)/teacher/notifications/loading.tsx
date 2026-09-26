@@ -9,6 +9,7 @@ import {
   PiMusicNotes,
   PiUser,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function TeacherNotificationsLoading() {
   return (
@@ -113,10 +114,10 @@ export default function TeacherNotificationsLoading() {
             </div>
 
             {/* Actions */}
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="h-10 w-32 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
               <div className="h-10 w-32 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
-            </div>
+            </Inline>
           </div>
         </div>
 
@@ -199,7 +200,7 @@ function NotificationCardSkeleton({ index }: { index: number }) {
                 </div>
 
                 {/* Metadata */}
-                <div className="flex items-center space-x-4 text-sm">
+                <Inline gap={4} className="text-sm">
                   <div className="h-3 bg-theme-tertiary/20 rounded w-16"></div>
                   <div
                     className={`h-5 w-16 rounded-full ${
@@ -210,16 +211,16 @@ function NotificationCardSkeleton({ index }: { index: number }) {
                           : 'bg-accent-blue/10'
                     }`}
                   ></div>
-                </div>
+                </Inline>
               </div>
 
               {/* Actions */}
-              <div className="flex items-center space-x-2 ml-4">
+              <Inline gap={2} className="ml-4">
                 <div className="h-8 w-16 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded"></div>
                 {isUnread && (
                   <div className="w-8 h-8 bg-theme-elevated rounded-lg"></div>
                 )}
-              </div>
+              </Inline>
             </div>
           </div>
         </div>

@@ -9,6 +9,7 @@ import Modal from '../../Modal';
 import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { setVerificationRequest } from '@/app/requests/verification';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface VerificationModalProps {
   isOpen: boolean;
@@ -85,7 +86,7 @@ export default function VerificationModal({
         <div className="">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="w-10 h-10 bg-accent-blue/20 rounded-xl flex items-center justify-center">
                 <PiShield className="w-5 h-5 text-accent-blue" />
               </div>
@@ -95,13 +96,13 @@ export default function VerificationModal({
                 </h2>
                 <p className="text-sm text-theme-secondary">{composerName}</p>
               </div>
-            </div>
+            </Inline>
           </div>
 
           {/* Current Status */}
           <div className="mb-6">
             <div className="p-3 bg-theme-secondary rounded-lg">
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 <span className="text-sm font-medium text-theme-tertiary">
                   {t('verification_modal_status_atual')}
                 </span>
@@ -121,7 +122,7 @@ export default function VerificationModal({
                     <span>{t('verification_modal_nao_verificado')}</span>
                   )}
                 </span>
-              </div>
+              </Inline>
             </div>
           </div>
 

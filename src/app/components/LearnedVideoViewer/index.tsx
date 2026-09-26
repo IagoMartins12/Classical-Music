@@ -24,6 +24,7 @@ import Modal from '@/app/components/Modal';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Image from '@/app/components/SmartImage';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface LearnedVideoData {
   cloudinaryUrl: string;
@@ -224,7 +225,7 @@ export default function LearnedVideoViewer({
         {/* Header */}
         <div className="p-4 border-b border-theme-primary">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               {learned.work.composer.portraitUrl && (
                 <div className="w-12 h-12 rounded-full overflow-hidden">
                   <Image
@@ -247,12 +248,12 @@ export default function LearnedVideoViewer({
                   {learned.work.tone && ` (${learned.work.tone})`}
                 </p>
 
-                <div className="flex items-center space-x-4 text-xs text-theme-secondary">
-                  <span className="flex items-center space-x-1">
+                <Inline gap={4} className="text-xs text-theme-secondary">
+                  <Inline as="span" gap={1}>
                     <PiUser className="w-3 h-3" />
                     <span>{userName}</span>
-                  </span>
-                  <span className="flex items-center space-x-1">
+                  </Inline>
+                  <Inline as="span" gap={1}>
                     <PiCalendarBlank className="w-3 h-3" />
                     <span>
                       Aprendida{' '}
@@ -261,16 +262,16 @@ export default function LearnedVideoViewer({
                         locale: ptBR,
                       })}
                     </span>
-                  </span>
-                  <span className="flex items-center space-x-1">
+                  </Inline>
+                  <Inline as="span" gap={1}>
                     <PiTrendUp className="w-3 h-3" />
                     <span>Maestria: {learned.mastery}%</span>
-                  </span>
-                </div>
+                  </Inline>
+                </Inline>
               </div>
-            </div>
+            </Inline>
 
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               {canEdit && (
                 <Button
                   variant="ghost"
@@ -305,7 +306,7 @@ export default function LearnedVideoViewer({
                   Fechar
                 </Button>
               )}
-            </div>
+            </Inline>
           </div>
         </div>
 
@@ -331,7 +332,7 @@ export default function LearnedVideoViewer({
               </video>
 
               {/* Video Controls Overlay */}
-              <div className="absolute bottom-4 right-4 flex items-center space-x-2">
+              <Inline gap={2} className="absolute bottom-4 right-4">
                 <Button
                   variant="secondary"
                   size="sm"
@@ -341,7 +342,7 @@ export default function LearnedVideoViewer({
                 >
                   {isFullscreen ? 'Sair' : 'Tela Cheia'}
                 </Button>
-              </div>
+              </Inline>
             </div>
           )}
         </div>
@@ -405,7 +406,7 @@ export default function LearnedVideoViewer({
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-theme-secondary">Maestria:</span>
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <div className="w-16 bg-gray-200 rounded-full h-2">
                         <div
                           className="bg-blue-500 h-2 rounded-full"
@@ -415,7 +416,7 @@ export default function LearnedVideoViewer({
                       <span className="text-theme-primary font-medium">
                         {learned.mastery}%
                       </span>
-                    </div>
+                    </Inline>
                   </div>
 
                   {learned.difficulty && (
@@ -434,7 +435,7 @@ export default function LearnedVideoViewer({
                   {learned.enjoyment && (
                     <div className="flex justify-between">
                       <span className="text-theme-secondary">Diversão:</span>
-                      <div className="flex items-center space-x-1">
+                      <Inline gap={1}>
                         {[1, 2, 3, 4, 5].map((star) =>
                           star <= learned.enjoyment! ? (
                             <PiStarFill
@@ -456,7 +457,7 @@ export default function LearnedVideoViewer({
                             />
                           )
                         )}
-                      </div>
+                      </Inline>
                     </div>
                   )}
 
@@ -523,7 +524,7 @@ export default function LearnedVideoViewer({
                       className="w-full h-20 p-2 border border-theme-primary rounded-lg bg-theme-tertiary text-theme-primary text-sm resize-none"
                       placeholder="Adicione suas reflexões sobre esta peça..."
                     />
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <Button
                         variant="primary"
                         size="sm"
@@ -543,7 +544,7 @@ export default function LearnedVideoViewer({
                       >
                         Cancelar
                       </Button>
-                    </div>
+                    </Inline>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -599,7 +600,7 @@ export default function LearnedVideoViewer({
           <div className="p-4 border-t border-theme-primary">
             <div className="flex items-center justify-between">
               <div className="text-sm text-theme-secondary">
-                <span className="flex items-center space-x-1">
+                <Inline as="span" gap={1}>
                   <PiClock className="w-3 h-3" />
                   <span>
                     Vídeo enviado{' '}
@@ -608,10 +609,10 @@ export default function LearnedVideoViewer({
                       locale: ptBR,
                     })}
                   </span>
-                </span>
+                </Inline>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 {canDownload && (
                   <Button
                     variant="secondary"
@@ -626,7 +627,7 @@ export default function LearnedVideoViewer({
                 <Button variant="ghost" onClick={onClose}>
                   Fechar
                 </Button>
-              </div>
+              </Inline>
             </div>
           </div>
         )}

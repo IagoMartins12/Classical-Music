@@ -16,6 +16,7 @@ import type { UserUpload } from '@/app/requests/my-uploads';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import Link from 'next/link';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 interface UploadWorkCardProps {
   item: UserUpload;
@@ -61,7 +62,7 @@ const UploadWorkCard = ({
           className="flex items-center justify-between w-full"
         >
           {/* Left section - Work info */}
-          <div className="flex items-center space-x-4 flex-1 min-w-0">
+          <Inline gap={4} className="flex-1 min-w-0">
             {/* Icon */}
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center flex-shrink-0">
               <PiMusicNotes className="w-6 h-6 text-theme-primary" />
@@ -73,7 +74,7 @@ const UploadWorkCard = ({
                 {item.title}
               </h3>
 
-              <div className="flex items-center space-x-4 mt-1 flex-wrap">
+              <Inline gap={4} className="mt-1 flex-wrap">
                 {/* Composer */}
                 {item.composerName && (
                   <span className="inline-flex items-center text-sm text-accent-blue font-medium">
@@ -106,17 +107,21 @@ const UploadWorkCard = ({
                 )}
 
                 {item.verificationStatus === 'verified' && (
-                  <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
+                  <Inline
+                    as="span"
+                    gap={1}
+                    className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full"
+                  >
                     <PiShield className="w-3 h-3" />
                     <span>{t('card_verified_badge')}</span>
-                  </span>
+                  </Inline>
                 )}
-              </div>
+              </Inline>
             </div>
-          </div>
+          </Inline>
 
           {/* Right section - Actions */}
-          <div className="flex items-center space-x-2 flex-shrink-0">
+          <Inline gap={2} className="flex-shrink-0">
             {item.imslpId && (
               <div
                 rel="noopener noreferrer"
@@ -127,7 +132,7 @@ const UploadWorkCard = ({
               </div>
             )}
 
-            <div className="flex items-center space-x-1 -300">
+            <Inline gap={1} className="-300">
               <button
                 onClick={handleEditClick}
                 className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center"
@@ -144,8 +149,8 @@ const UploadWorkCard = ({
               >
                 <PiTrash className="w-4 h-4" />
               </button>
-            </div>
-          </div>
+            </Inline>
+          </Inline>
         </Link>
       </div>
     );
@@ -161,7 +166,10 @@ const UploadWorkCard = ({
             <div className="absolute inset-0 opacity-5 music-note-background"></div>
 
             {/* Floating action buttons */}
-            <div className="absolute top-0 sm:top-4 right-4 z-50 flex flex-col space-y-2 opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+            <Stack
+              gap={2}
+              className="absolute top-0 sm:top-4 right-4 z-50 opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+            >
               <button
                 onClick={handleEditClick}
                 className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center shadow-theme-medium"
@@ -178,7 +186,7 @@ const UploadWorkCard = ({
               >
                 <PiTrash className="w-4 h-4" />
               </button>
-            </div>
+            </Stack>
 
             <div className="relative z-10">
               {/* Title */}
@@ -264,21 +272,22 @@ const UploadWorkCard = ({
             <div className="space-y-3">
               {/* Secondary Actions */}
               <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
-                <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
+                <Inline gap={2} className="text-theme-tertiary text-xs">
                   <PiCalendarBlank className="w-3 h-3" />
                   <span>
                     {t('card_added_on')}{' '}
                     {new Date(item.createdAt).toLocaleDateString('pt-BR')}
                   </span>
-                </div>
+                </Inline>
 
                 {item.imslpId && (
-                  <div
-                    className="text-accent-green hover:text-accent-blue text-sm font-medium transition-colors flex items-center space-x-1"
+                  <Inline
+                    gap={1}
+                    className="text-accent-green hover:text-accent-blue text-sm font-medium transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <span>IMSLP</span>
-                  </div>
+                  </Inline>
                 )}
               </div>
             </div>

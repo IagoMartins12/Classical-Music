@@ -10,6 +10,7 @@ import {
 } from 'react-icons/pi';
 import { DifficultyWork } from '@/app/requests/difficulty-details'; // ✅ Import atualizado
 import { AnimatedItem } from '../animation/AnimatedComponents';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 interface DifficultyTableProps {
   works: DifficultyWork[]; // ✅ Tipo atualizado
@@ -118,7 +119,7 @@ export default function DifficultyTable({
               >
                 {/* Nível - SISTEMA HÍBRIDO */}
                 <td className="py-4 px-6">
-                  <div className="flex flex-col space-y-2">
+                  <Stack gap={2}>
                     {/* Badge Principal (Enum) */}
                     <div
                       className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold border max-w-fit ${
@@ -139,7 +140,7 @@ export default function DifficultyTable({
                         {work.imslpDifficultyLevel}
                       </div>
                     )}
-                  </div>
+                  </Stack>
                 </td>
 
                 {/* Obra */}
@@ -198,7 +199,7 @@ export default function DifficultyTable({
 
                 {/* Partituras */}
                 <td className="py-4 px-6">
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     {work.workScores && work.workScores.length > 0 ? (
                       <>
                         {work.workScores.slice(0, 2).map((score) => (
@@ -230,7 +231,7 @@ export default function DifficultyTable({
                         IMSLP
                       </Link>
                     )}
-                  </div>
+                  </Inline>
                 </td>
               </AnimatedItem>
             ))}

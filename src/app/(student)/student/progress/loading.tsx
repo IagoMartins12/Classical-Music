@@ -18,6 +18,7 @@ import {
   PiTrendUp,
   PiUsers,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function StudentProgressLoading() {
   return (
@@ -81,17 +82,17 @@ export default function StudentProgressLoading() {
 
         {/* Period Selector Skeleton */}
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4 animate-pulse">
-          <div className="flex items-center space-x-4">
+          <Inline gap={4}>
             <div className="h-6 bg-theme-primary/30 rounded w-32"></div>
             <div className="h-4 bg-theme-tertiary/30 rounded w-48"></div>
-          </div>
+          </Inline>
 
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="h-10 w-48 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
             <div className="w-12 h-12 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center">
               <PiArrowsClockwise className="w-5 h-5 text-theme-tertiary/30" />
             </div>
-          </div>
+          </Inline>
         </div>
 
         {/* Main Stats Grid Skeleton */}
@@ -207,13 +208,13 @@ export default function StudentProgressLoading() {
                 className="p-4 bg-theme-elevated/30 rounded-lg border border-theme-secondary/30"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="flex items-center space-x-3 mb-4">
+                <Inline gap={3} className="mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full"></div>
                   <div className="flex-1">
                     <div className="h-4 bg-theme-primary/30 rounded w-24 mb-1"></div>
                     <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
                   </div>
-                </div>
+                </Inline>
 
                 <div className="space-y-2">
                   <div className="flex justify-between">
@@ -226,10 +227,10 @@ export default function StudentProgressLoading() {
                   </div>
                   <div className="flex justify-between">
                     <div className="h-3 bg-theme-secondary/30 rounded w-16"></div>
-                    <div className="flex items-center space-x-1">
+                    <Inline gap={1}>
                       <div className="h-3 bg-accent-yellow/30 rounded w-6"></div>
                       <PiStar className="w-3 h-3 text-accent-yellow/30" />
-                    </div>
+                    </Inline>
                   </div>
                 </div>
 
@@ -261,12 +262,12 @@ export default function StudentProgressLoading() {
                 className="p-4 bg-gradient-to-r from-accent-green/5 to-accent-blue/5 border border-accent-green/30 rounded-lg"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="flex items-center space-x-3 mb-2">
+                <Inline gap={3} className="mb-2">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-full flex items-center justify-center">
                     <PiMedal className="w-4 h-4 text-theme-inverse/20" />
                   </div>
                   <div className="h-4 bg-theme-primary/30 rounded w-32"></div>
-                </div>
+                </Inline>
                 <div className="h-3 bg-theme-secondary/30 rounded w-full mb-2"></div>
                 <div className="h-3 bg-accent-green/20 rounded w-24"></div>
               </div>
@@ -301,10 +302,10 @@ export default function StudentProgressLoading() {
                         <div className="h-3 bg-theme-tertiary/30 rounded w-24 mb-1"></div>
                         <div className="h-5 w-16 bg-accent-blue/10 border border-accent-blue/30 rounded"></div>
                       </div>
-                      <div className="flex items-center space-x-1 ml-3">
+                      <Inline gap={1} className="ml-3">
                         <div className="h-3 bg-theme-secondary/30 rounded w-6"></div>
                         <PiStar className="w-3 h-3 text-accent-yellow/30" />
-                      </div>
+                      </Inline>
                     </div>
                     <div className="h-3 bg-accent-green/20 rounded w-28 mt-2"></div>
                   </div>

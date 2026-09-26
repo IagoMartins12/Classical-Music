@@ -15,6 +15,7 @@ import {
 import { AdminPieChart, TrendAreaChart } from '../../Charts/AdminCharts';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface AdStatsModalProps {
   ad: any;
@@ -121,7 +122,7 @@ export default function AdStatsModal({
       <div className="w-full">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
               <PiChartBar className="w-5 h-5 text-white" />
             </div>
@@ -131,8 +132,8 @@ export default function AdStatsModal({
               </h2>
               <p className="text-sm text-theme-tertiary">{ad.title}</p>
             </div>
-          </div>
-          <div className="flex items-center space-x-2">
+          </Inline>
+          <Inline gap={2}>
             <Button
               variant="ghost"
               size="sm"
@@ -142,7 +143,7 @@ export default function AdStatsModal({
             >
               Exportar
             </Button>
-          </div>
+          </Inline>
         </div>
 
         {/* Controls */}
@@ -307,7 +308,7 @@ export default function AdStatsModal({
                           <span className="text-theme-primary font-medium">
                             {country.country || 'Desconhecido'}
                           </span>
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <div className="w-20 bg-theme-primary rounded-full h-2 overflow-hidden">
                               <div
                                 className="h-full bg-accent-blue rounded-full transition-all duration-1000"
@@ -327,7 +328,7 @@ export default function AdStatsModal({
                             <span className="text-sm text-theme-tertiary w-12 text-right">
                               {formatNumber(country._sum?.impressions)}
                             </span>
-                          </div>
+                          </Inline>
                         </div>
                       ))}
                   </div>

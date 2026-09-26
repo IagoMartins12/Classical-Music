@@ -10,6 +10,7 @@ import {
 } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useBiographyWithLanguage } from '@/app/hooks/useBiographyWithLanguage';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ComposerBiographyProps {
   composerId: string;
@@ -97,21 +98,23 @@ export default function ComposerBiography({
             <PiWarningCircle className="w-5 h-5 text-accent-red" />
           </div>
           <div className="flex-1 items-center justify-center">
-            <div className="flex items-center space-x-2 mb-2">
+            <Inline gap={2} className="mb-2">
               <PiX className="w-4 h-4 text-accent-red" />
               <p className="text-accent-red font-semibold">
                 {t('error_generating_bio')}
               </p>
-            </div>
+            </Inline>
 
             <div className="flex justify-center mt-4 gap-2">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={handleRetry}
-                className="btn-classical-secondary flex items-center space-x-2 group"
+                className="btn-classical-secondary group"
               >
                 <PiArrowsClockwise className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
                 <span>{t('try_again')}</span>
-              </button>
+              </Inline>
             </div>
           </div>
         </div>
@@ -160,12 +163,12 @@ export default function ComposerBiography({
       {/* Warning se houver fallback */}
       {warning && (
         <div className="mb-6 p-3 bg-gradient-to-r from-accent-orange/10 to-accent-red/10 border border-accent-orange/30 rounded-xl">
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             <PiWarningCircle className="w-4 h-4 text-accent-orange" />
             <span className="text-accent-orange text-sm font-medium">
               {warning}
             </span>
-          </div>
+          </Inline>
         </div>
       )}
 
@@ -173,12 +176,12 @@ export default function ComposerBiography({
       {error && displayBio && (
         <div className="mb-6 p-3 bg-gradient-to-r from-accent-orange/10 to-accent-red/10 border border-accent-orange/30 rounded-xl">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <PiWarningCircle className="w-4 h-4 text-accent-orange" />
               <span className="text-accent-orange text-sm font-medium">
                 Translation error - showing previous version
               </span>
-            </div>
+            </Inline>
             <button
               onClick={handleRetry}
               className="text-xs px-2 py-1 bg-accent-orange/20 text-accent-orange rounded hover:bg-accent-orange/30 transition-colors"
@@ -208,14 +211,14 @@ export default function ComposerBiography({
 
       {/* Linha decorativa */}
       <div className="mt-6 pt-6 border-t border-theme-secondary">
-        <div className="flex items-center justify-center space-x-2 text-theme-tertiary">
+        <Inline gap={2} className="justify-center text-theme-tertiary">
           <div className="w-1 h-1 bg-brand-primary rounded-full animate-pulse"></div>
           <PiMusicNotes className="w-4 h-4" />
           <div
             className="w-1 h-1 bg-brand-primary rounded-full animate-pulse"
             style={{ animationDelay: '0.5s' }}
           ></div>
-        </div>
+        </Inline>
       </div>
     </div>
   );

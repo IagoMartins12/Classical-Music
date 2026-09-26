@@ -14,6 +14,7 @@ import {
   PiUser,
   PiUsers,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function TeacherProfileLoading() {
   return (
@@ -94,19 +95,19 @@ export default function TeacherProfileLoading() {
                 {/* Email */}
                 <div>
                   <div className="h-3 w-12 bg-theme-tertiary/30 rounded mb-2"></div>
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <PiEnvelopeSimple className="w-4 h-4 text-theme-tertiary/30" />
                     <div className="h-5 w-56 bg-theme-primary/30 rounded"></div>
-                  </div>
+                  </Inline>
                 </div>
 
                 {/* Phone */}
                 <div>
                   <div className="h-3 w-16 bg-theme-tertiary/30 rounded mb-2"></div>
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <PiPhone className="w-4 h-4 text-theme-tertiary/30" />
                     <div className="h-5 w-40 bg-theme-primary/30 rounded"></div>
-                  </div>
+                  </Inline>
                 </div>
               </div>
 
@@ -114,10 +115,10 @@ export default function TeacherProfileLoading() {
                 {/* Location */}
                 <div>
                   <div className="h-3 w-20 bg-theme-tertiary/30 rounded mb-2"></div>
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <PiMapPin className="w-4 h-4 text-theme-tertiary/30" />
                     <div className="h-5 w-44 bg-theme-primary/30 rounded"></div>
-                  </div>
+                  </Inline>
                 </div>
 
                 {/* Member since */}
@@ -129,10 +130,10 @@ export default function TeacherProfileLoading() {
                 {/* Status */}
                 <div>
                   <div className="h-3 w-12 bg-theme-tertiary/30 rounded mb-2"></div>
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <div className="h-6 w-16 bg-accent-green/20 border border-accent-green/30 rounded-full"></div>
                     <div className="h-6 w-20 bg-accent-green/20 border border-accent-green/30 rounded-full"></div>
-                  </div>
+                  </Inline>
                 </div>
               </div>
             </div>
@@ -178,10 +179,10 @@ export default function TeacherProfileLoading() {
               {/* Website */}
               <div>
                 <div className="h-3 w-16 bg-theme-tertiary/30 rounded mb-2"></div>
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <PiGlobe className="w-4 h-4 text-brand-primary/30" />
                   <div className="h-4 w-48 bg-brand-primary/30 rounded"></div>
-                </div>
+                </Inline>
               </div>
             </div>
           </ProfileSectionSkeleton>
@@ -234,19 +235,19 @@ export default function TeacherProfileLoading() {
                 {/* Duration */}
                 <div>
                   <div className="h-3 w-24 bg-theme-tertiary/30 rounded mb-2"></div>
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <PiClock className="w-4 h-4 text-theme-primary/30" />
                     <div className="h-4 w-20 bg-theme-primary/30 rounded"></div>
-                  </div>
+                  </Inline>
                 </div>
 
                 {/* Capacity */}
                 <div>
                   <div className="h-3 w-32 bg-theme-tertiary/30 rounded mb-2"></div>
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <PiUsers className="w-4 h-4 text-theme-primary/30" />
                     <div className="h-4 w-16 bg-theme-primary/30 rounded"></div>
-                  </div>
+                  </Inline>
                 </div>
 
                 {/* Timezone */}
@@ -267,7 +268,7 @@ export default function TeacherProfileLoading() {
             <div className="space-y-4">
               {/* Status toggle */}
               <div className="flex items-center justify-between p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-accent-green/20 rounded-full flex items-center justify-center">
                     <PiEye className="w-5 h-5 text-accent-green/50" />
                   </div>
@@ -275,7 +276,7 @@ export default function TeacherProfileLoading() {
                     <div className="h-4 w-24 bg-theme-primary/30 rounded mb-1"></div>
                     <div className="h-3 w-40 bg-theme-tertiary/30 rounded"></div>
                   </div>
-                </div>
+                </Inline>
                 <div className="w-11 h-6 bg-brand-primary/30 rounded-full"></div>
               </div>
 
@@ -290,10 +291,10 @@ export default function TeacherProfileLoading() {
 
               {/* Info box */}
               <div className="bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 rounded-lg border border-brand-primary/20 p-4">
-                <div className="flex items-center space-x-3 mb-2">
+                <Inline gap={3} className="mb-2">
                   <PiGlobe className="w-5 h-5 text-brand-primary/30" />
                   <div className="h-4 w-32 bg-theme-primary/30 rounded"></div>
-                </div>
+                </Inline>
                 <div className="space-y-1 mb-3">
                   <div className="h-3 bg-theme-secondary/30 rounded w-5/6"></div>
                   <div className="h-3 bg-theme-secondary/30 rounded w-4/6"></div>
@@ -329,7 +330,7 @@ function ProfileSectionSkeleton({
     <div className="classical-card animate-pulse">
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center">
               {icon}
             </div>
@@ -337,7 +338,7 @@ function ProfileSectionSkeleton({
               <div className="h-5 w-48 bg-theme-primary/30 rounded mb-2"></div>
               <div className="h-3 w-64 bg-theme-tertiary/30 rounded"></div>
             </div>
-          </div>
+          </Inline>
 
           <div className="h-10 w-20 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
         </div>

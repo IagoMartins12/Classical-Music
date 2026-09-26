@@ -38,6 +38,7 @@ import Link from 'next/link';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
 import Button from '@/app/components/Common/Button';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 type FilterTab = 'all' | 'want-to-learn' | 'learned';
@@ -458,11 +459,15 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                 <AnimatedItem direction="scale" springType="gentle">
                   <div className="bg-theme-secondary rounded-xl p-4 border border-theme-primary">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-sm font-semibold text-theme-primary flex items-center space-x-2">
+                      <Inline
+                        as="h3"
+                        gap={2}
+                        className="text-sm font-semibold text-theme-primary"
+                      >
                         <PiFunnel className="w-4 h-4" />
                         <span>{t('advanced_filters_title')}</span>
-                      </h3>
-                      <div className="flex items-center space-x-2">
+                      </Inline>
+                      <Inline gap={2}>
                         {hasActiveFilters && (
                           <button
                             onClick={clearFilters}
@@ -477,7 +482,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                         >
                           <PiX className="w-4 h-4" />
                         </button>
-                      </div>
+                      </Inline>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -589,7 +594,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                       className="mt-4"
                       key="want-to-learn"
                     >
-                      <div className="flex items-center space-x-3 mb-6">
+                      <Inline gap={3} className="mb-6">
                         <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                           <PiTarget className="w-5 h-5 text-theme-primary" />
                         </div>
@@ -603,7 +608,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                             {t('works_count')}
                           </p>
                         </div>
-                      </div>
+                      </Inline>
 
                       {filteredData.wantToLearn.length === 0 ? (
                         <EmptyState
@@ -669,7 +674,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                       className="mt-4"
                       key="learned"
                     >
-                      <div className="flex items-center space-x-3 mb-6">
+                      <Inline gap={3} className="mb-6">
                         <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                           <PiCheckCircle className="w-5 h-5 text-theme-primary" />
                         </div>
@@ -683,7 +688,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                             {t('works_count')}
                           </p>
                         </div>
-                      </div>
+                      </Inline>
 
                       {filteredData.learned.length === 0 ? (
                         <AnimatedItem direction="scale" springType="bouncy">

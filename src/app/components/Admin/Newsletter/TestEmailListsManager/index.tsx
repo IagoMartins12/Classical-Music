@@ -35,6 +35,7 @@ import {
 import LoadingAdminState from '../../Common/LoadingState';
 import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CreateEditModalProps {
   isOpen: boolean;
@@ -260,7 +261,7 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
               <label className="block text-sm font-medium text-theme-primary mb-2">
                 Cor da Lista
               </label>
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <input
                   type="color"
                   value={formData.color}
@@ -275,14 +276,14 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
                   placeholder="#6366f1"
                   disabled={loading}
                 />
-              </div>
+              </Inline>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-theme-primary mb-2">
                 Status
               </label>
-              <div className="flex items-center space-x-2 mt-3">
+              <Inline gap={2} className="mt-3">
                 <button
                   type="button"
                   onClick={() =>
@@ -302,7 +303,7 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
                 <span className="text-sm text-theme-primary">
                   {formData.isActive ? 'Ativa' : 'Inativa'}
                 </span>
-              </div>
+              </Inline>
             </div>
           </div>
 
@@ -980,7 +981,7 @@ export default function TestEmailListsManager() {
             {/* Selection Controls */}
             {lists.length > 0 && (
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-theme-secondary">
-                <div className="flex items-center space-x-4">
+                <Inline gap={4}>
                   <label className="flex items-center">
                     <Checkbox
                       checked={
@@ -1003,7 +1004,7 @@ export default function TestEmailListsManager() {
                       Limpar seleção
                     </button>
                   )}
-                </div>
+                </Inline>
 
                 <p className="text-sm text-theme-tertiary">
                   {selectedLists.length} de {filteredLists.length}{' '}
@@ -1035,7 +1036,7 @@ export default function TestEmailListsManager() {
 
                         {/* List Info */}
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-3 mb-2">
+                          <Inline gap={3} className="mb-2">
                             <h3 className="text-lg font-semibold text-theme-primary truncate">
                               {list.name}
                             </h3>
@@ -1049,7 +1050,7 @@ export default function TestEmailListsManager() {
                             >
                               {list.isActive ? 'Ativa' : 'Inativa'}
                             </div>
-                          </div>
+                          </Inline>
 
                           {list.description && (
                             <p className="text-theme-secondary text-sm mb-3">
@@ -1058,7 +1059,10 @@ export default function TestEmailListsManager() {
                           )}
 
                           {/* Stats */}
-                          <div className="flex items-center space-x-6 text-sm text-theme-tertiary">
+                          <Inline
+                            gap={6}
+                            className="text-sm text-theme-tertiary"
+                          >
                             <div className="flex items-center">
                               <PiEnvelopeSimple className="w-4 h-4 mr-1" />
                               <span>{list.totalEmails} emails</span>
@@ -1080,12 +1084,12 @@ export default function TestEmailListsManager() {
                                 </span>
                               </div>
                             )}
-                          </div>
+                          </Inline>
                         </div>
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center space-x-2 ml-4">
+                      <Inline gap={2} className="ml-4">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -1112,7 +1116,7 @@ export default function TestEmailListsManager() {
                         >
                           {list.isActive ? 'Desativar' : 'Ativar'}
                         </Button>
-                      </div>
+                      </Inline>
                     </div>
                   </div>
                 </AnimatedCard>

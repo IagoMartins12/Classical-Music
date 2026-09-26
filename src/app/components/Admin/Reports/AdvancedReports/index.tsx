@@ -37,6 +37,7 @@ import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import { useAdminReports } from '@/app/hooks/admin/useAdminReports';
 import { toast } from 'react-hot-toast';
 import LoadingAdminState from '../../Common/LoadingState';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function AdvancedReports() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -346,7 +347,7 @@ export default function AdvancedReports() {
             </p>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <Select
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value)}
@@ -368,7 +369,7 @@ export default function AdvancedReports() {
               ]}
               className="input-classical-2"
             />
-          </div>
+          </Inline>
         </div>
 
         {/* 🔄 AVISO PARA PDF */}
@@ -469,7 +470,7 @@ export default function AdvancedReports() {
             disponível{results.length !== 1 ? 'eis' : ''}
           </p>
         </div>
-        <div className="flex items-center space-x-3">
+        <Inline gap={3}>
           <Button
             variant="secondary"
             size="sm"
@@ -479,7 +480,7 @@ export default function AdvancedReports() {
           >
             {loading ? 'Atualizando...' : 'Atualizar'}
           </Button>
-        </div>
+        </Inline>
       </div>
 
       {results.length > 0 ? (
@@ -491,7 +492,7 @@ export default function AdvancedReports() {
             return (
               <AnimatedCard key={result.id} className="classical-card p-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4 flex-1">
+                  <Inline gap={4} className="flex-1">
                     <div
                       className={`w-10 h-10 rounded-xl flex items-center justify-center ${getStatusColor(
                         result.status
@@ -509,7 +510,7 @@ export default function AdvancedReports() {
                           </span>
                         )}
                       </h4>
-                      <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
+                      <Inline gap={4} className="text-sm text-theme-tertiary">
                         <span>Gerado: {formatDate(result.generatedAt)}</span>
                         <span className="uppercase font-medium">
                           {result.format}
@@ -531,11 +532,11 @@ export default function AdvancedReports() {
                         >
                           {getStatusText(result.status)}
                         </span>
-                      </div>
+                      </Inline>
                     </div>
-                  </div>
+                  </Inline>
 
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     {result.status === 'ready' && (
                       <>
                         <Button
@@ -580,7 +581,7 @@ export default function AdvancedReports() {
                     >
                       {isDeleting ? 'Excluindo...' : ''}
                     </Button>
-                  </div>
+                  </Inline>
                 </div>
 
                 {result.error && (
@@ -645,7 +646,7 @@ export default function AdvancedReports() {
         {metrics.map((metric) => (
           <AnimatedCard key={metric.id} className="classical-card p-4">
             <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <div
                   className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                     metric.available
@@ -663,7 +664,7 @@ export default function AdvancedReports() {
                     {metric.category}
                   </span>
                 </div>
-              </div>
+              </Inline>
 
               <span
                 className={`px-2 py-1 rounded-full text-xs font-medium ${

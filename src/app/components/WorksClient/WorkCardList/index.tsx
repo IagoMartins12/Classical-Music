@@ -14,6 +14,7 @@ import {
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 interface workCardListProps {
   work: WorkListItem;
@@ -33,7 +34,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
   return (
     <div className="flex items-center justify-between w-full group">
       {/* Left section - Main info */}
-      <div className="flex items-center space-x-4 flex-1 min-w-0">
+      <Inline gap={4} className="flex-1 min-w-0">
         {/* Musical icon */}
         <div className="relative w-10 h-10 flex-shrink-0">
           <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-theme-sm group-hover:shadow-theme-glow">
@@ -59,7 +60,10 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
                   {work.opOrCatalog}
                 </span>
               )}
-              <div className=" flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+              <Stack
+                gap={2}
+                className="opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+              >
                 <FavoriteButton
                   id={work.id}
                   type="work"
@@ -68,12 +72,12 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
                   itemName={work.title}
                   showToast={true}
                 />
-              </div>
+              </Stack>
             </div>
           </div>
 
           {/* Composer info */}
-          <div className="flex items-center space-x-2 mb-2">
+          <Inline gap={2} className="mb-2">
             <Link
               href={`/composer/${work.composer.id}`}
               className="inline-flex items-center text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium"
@@ -91,7 +95,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
                 </span>
               </>
             )}
-          </div>
+          </Inline>
 
           {/* Additional details */}
           <div className="flex flex-wrap items-center gap-4 text-sm text-theme-tertiary">
@@ -126,10 +130,10 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
             )}
           </div>
         </div>
-      </div>
+      </Inline>
 
       {/* Right section - Action indicator */}
-      <div className="flex items-center space-x-3 flex-shrink-0">
+      <Inline gap={3} className="flex-shrink-0">
         {/* Action hint */}
         <div className="hidden md:flex items-center space-x-2 text-theme-tertiary text-xs">
           <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
@@ -142,7 +146,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
         <div className="w-8 h-8 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-brand-primary group-hover:bg-brand-primary/10 transition-all duration-300">
           <PiCaretRight className="w-4 h-4 text-theme-primary group-hover:text-brand-primary transition-all duration-300 transform group-hover:translate-x-0.5" />
         </div>
-      </div>
+      </Inline>
 
       {/* Hover background effect */}
       <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-lg pointer-events-none"></div>

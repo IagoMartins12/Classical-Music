@@ -34,6 +34,7 @@ import {
 } from '../../../components/animation/AnimatedComponents';
 import Input from '@/app/components/Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface FAQItem {
   id: string;
@@ -393,7 +394,7 @@ export default function FAQPage(): JSX.Element {
                         className="w-full p-2 md:p-6 text-left focus:outline-none"
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
+                          <Inline gap={4}>
                             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center flex-shrink-0">
                               <item.icon className="w-6 h-6 text-theme-primary" />
                             </div>
@@ -405,7 +406,7 @@ export default function FAQPage(): JSX.Element {
                                 {item.question}
                               </h3>
                             </div>
-                          </div>
+                          </Inline>
                           <div className="flex-shrink-0 ml-4">
                             {expandedItems.has(item.id) ? (
                               <PiCaretUp className="w-5 h-5 text-theme-secondary" />
@@ -474,20 +475,23 @@ export default function FAQPage(): JSX.Element {
               </Link>
             </div>
 
-            <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
-              <div className="flex items-center space-x-2 text-theme-tertiary">
+            <Inline
+              gap={8}
+              className="justify-center mt-12 pt-8 border-t border-theme-secondary"
+            >
+              <Inline gap={2} className="text-theme-tertiary">
                 <PiQuestion className="w-4 h-4" />
                 <span className="text-sm">
                   {t('faq_jsx_span_children_0__resposta_24h')}
                 </span>
-              </div>
-              <div className="flex items-center space-x-2 text-theme-tertiary">
+              </Inline>
+              <Inline gap={2} className="text-theme-tertiary">
                 <PiUser className="w-4 h-4" />
                 <span className="text-sm">
                   {t('faq_jsx_span_children_0__suporte_especializado')}
                 </span>
-              </div>
-            </div>
+              </Inline>
+            </Inline>
           </AnimatedCard>
         </AnimatedContainer>
       </section>

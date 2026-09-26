@@ -34,6 +34,7 @@ import { useAdaptiveStats } from '@/app/hooks/useMobile';
 import { useAutoAchievementDetection } from '../../hooks/useAchievements';
 import Button from '@/app/components/Common/Button';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 type AnnotationCategory =
   | 'TECHNIQUE'
@@ -335,12 +336,12 @@ export default function AnnotationsPageClient() {
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
             <span className="text-theme-primary font-medium">
               Carregando...
             </span>
-          </div>
+          </Inline>
         </div>
       </PageContainer>
     );
@@ -492,11 +493,15 @@ export default function AnnotationsPageClient() {
                 <AnimatedItem direction="scale" springType="gentle">
                   <div className="bg-theme-secondary rounded-xl p-4 border border-theme-primary">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-sm font-semibold text-theme-primary flex items-center space-x-2">
+                      <Inline
+                        as="h3"
+                        gap={2}
+                        className="text-sm font-semibold text-theme-primary"
+                      >
                         <PiFunnel className="w-4 h-4" />
                         <span>{t('advanced_filters_title')}</span>
-                      </h3>
-                      <div className="flex items-center space-x-2">
+                      </Inline>
+                      <Inline gap={2}>
                         {hasActiveFilters && (
                           <button
                             onClick={handleClearFilters}
@@ -511,7 +516,7 @@ export default function AnnotationsPageClient() {
                         >
                           <PiX className="w-4 h-4" />
                         </button>
-                      </div>
+                      </Inline>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -579,7 +584,7 @@ export default function AnnotationsPageClient() {
           <AnimatedItem direction="up" springType="gentle">
             {isLoading && filteredAnnotations.length === 0 ? (
               <div className="flex items-center justify-center py-16">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="relative">
                     <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
                     <div
@@ -593,7 +598,7 @@ export default function AnnotationsPageClient() {
                   <span className="text-theme-primary font-medium">
                     {t('loading_annotations')}
                   </span>
-                </div>
+                </Inline>
               </div>
             ) : filteredAnnotations.length === 0 ? (
               <AnimatedItem
@@ -642,7 +647,7 @@ export default function AnnotationsPageClient() {
                     showStatsInline ? 'lg:col-span-2' : 'lg:col-span-3'
                   }
                 >
-                  <div className="flex items-center space-x-3 mb-6">
+                  <Inline gap={3} className="mb-6">
                     <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                       <PiChatCenteredText className="w-5 h-5 text-theme-primary" />
                     </div>
@@ -655,7 +660,7 @@ export default function AnnotationsPageClient() {
                         {stats.totalAnnotations} {t('annotations_count')}
                       </p>
                     </div>
-                  </div>
+                  </Inline>
 
                   {/* Annotations Grid/List */}
                   {viewMode === 'cards' ? (

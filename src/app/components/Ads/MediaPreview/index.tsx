@@ -16,6 +16,7 @@ import {
 } from '@/app/libs/ads/mediaUtils';
 import Button from '@/app/components/Common/Button';
 import Image from '@/app/components/SmartImage';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface MediaPreviewProps {
   ad: any;
@@ -127,7 +128,7 @@ export default function MediaPreview({
       {/* Header */}
       <div className="p-4 border-b border-theme-primary bg-theme-secondary/30">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <PiEye className="w-5 h-5 text-brand-primary" />
             <div>
               <h3 className="font-semibold text-theme-primary">
@@ -137,9 +138,9 @@ export default function MediaPreview({
                 Visualize como aparece em cada dispositivo
               </p>
             </div>
-          </div>
+          </Inline>
 
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             <Button
               variant="ghost"
               size="sm"
@@ -167,7 +168,7 @@ export default function MediaPreview({
                 Baixar
               </Button>
             )}
-          </div>
+          </Inline>
         </div>
       </div>
 
@@ -228,7 +229,7 @@ export default function MediaPreview({
 
             <div>
               <div className="font-medium text-theme-primary mb-1">Versões</div>
-              <div className="flex items-center space-x-2 text-xs">
+              <Inline gap={2} className="text-xs">
                 {hasImageVersions && (
                   <span className="px-2 py-1 bg-accent-green/10 text-accent-green rounded">
                     IMG ✓
@@ -244,7 +245,7 @@ export default function MediaPreview({
                     Original
                   </span>
                 )}
-              </div>
+              </Inline>
             </div>
           </div>
         </div>

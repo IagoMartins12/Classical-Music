@@ -41,6 +41,7 @@ import WorkSelectionSection, {
 import { translateNivel } from '@/app/utils';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { checkLessonConflicts } from '@/app/requests/portal/lesson-actions';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CreateLessonPageClientProps {
   initialData: CreateLessonData;
@@ -167,7 +168,7 @@ function ConflictModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="3xl">
       <div className="p-6">
-        <div className="flex items-center space-x-3 mb-6">
+        <Inline gap={3} className="mb-6">
           <div
             className={`w-12 h-12 rounded-full flex items-center justify-center ${
               conflicts.hasTimeConflicts
@@ -193,18 +194,22 @@ function ConflictModal({
                 : t('weekly_limit_description')}
             </p>
           </div>
-        </div>
+        </Inline>
 
         <div className="space-y-6">
           {/* Conflitos de Horário */}
           {conflicts.hasTimeConflicts && conflicts.timeConflicts.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-lg font-semibold text-theme-primary mb-4"
+              >
                 <PiWarningCircle className="w-5 h-5" />
                 <span>
                   {t('time_conflicts')} ({conflicts.timeConflicts.length})
                 </span>
-              </h3>
+              </Inline>
 
               <div className="space-y-3">
                 {conflicts.timeConflicts.map((conflict) => (
@@ -250,10 +255,14 @@ function ConflictModal({
           {/* Limite Semanal */}
           {conflicts.hasWeeklyLimitExceeded && conflicts.weeklyLimitWarning && (
             <div>
-              <h3 className="text-lg font-semibold text-accent-yellow mb-4 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-lg font-semibold text-accent-yellow mb-4"
+              >
                 <PiWarning className="w-5 h-5" />
                 <span>{t('weekly_limit_exceeded')}</span>
-              </h3>
+              </Inline>
 
               <div className="bg-theme-tertiary rounded-lg p-4">
                 <div className="space-y-3">
@@ -324,13 +333,14 @@ function ConflictModal({
               </h3>
               <div className="space-y-2">
                 {conflicts.warnings.map((warning, index) => (
-                  <div
+                  <Inline
+                    gap={3}
                     key={index}
-                    className="flex items-center space-x-3 text-sm text-theme-secondary"
+                    className="text-sm text-theme-secondary"
                   >
                     <PiInfo className="w-4 h-4 text-accent-blue" />
                     <span>{warning}</span>
-                  </div>
+                  </Inline>
                 ))}
               </div>
             </div>
@@ -338,7 +348,10 @@ function ConflictModal({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary mt-6">
+        <Inline
+          gap={3}
+          className="justify-end pt-6 border-t border-theme-secondary mt-6"
+        >
           <button
             onClick={onCancel}
             className="btn-classical-secondary"
@@ -348,10 +361,12 @@ function ConflictModal({
           </button>
 
           {!conflicts.hasTimeConflicts && (
-            <button
+            <Inline
+              as="button"
+              gap={2}
               onClick={onConfirm}
               disabled={loading}
-              className="btn-classical-primary bg-accent-yellow hover:bg-accent-yellow/80 flex items-center space-x-2"
+              className="btn-classical-primary bg-accent-yellow hover:bg-accent-yellow/80"
             >
               {loading ? (
                 <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -359,9 +374,9 @@ function ConflictModal({
                 <PiCheckCircle className="w-4 h-4" />
               )}
               <span>{loading ? t('creating') : t('create_anyway')}</span>
-            </button>
+            </Inline>
           )}
-        </div>
+        </Inline>
       </div>
     </Modal>
   );
@@ -890,7 +905,7 @@ export default function CreateLessonPageClient({
         {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               <Link
                 href="/teacher/lessons"
                 className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
@@ -905,7 +920,7 @@ export default function CreateLessonPageClient({
                   {t('page_subtitle')}
                 </p>
               </div>
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -950,7 +965,7 @@ export default function CreateLessonPageClient({
 
                     {selectedStudent && (
                       <div className="bg-theme-tertiary rounded-lg p-4">
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           {selectedStudent.image ? (
                             <div className="w-12 h-12 relative rounded-full overflow-hidden">
                               <Image
@@ -980,7 +995,7 @@ export default function CreateLessonPageClient({
                               {t('per_week')}
                             </div>
                           </div>
-                        </div>
+                        </Inline>
                       </div>
                     )}
 
@@ -1045,12 +1060,12 @@ export default function CreateLessonPageClient({
                     {/* Indicador de verificação de conflitos */}
                     {checkingConflicts && (
                       <div className=" rounded-lg p-3">
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <PiArrowsClockwise className="w-4 h-4 animate-spin text-accent-blue" />
                           <span className="text-sm text-accent-blue">
                             {t('checking_conflicts')}
                           </span>
-                        </div>
+                        </Inline>
                       </div>
                     )}
 
@@ -1059,7 +1074,7 @@ export default function CreateLessonPageClient({
                       <div className="space-y-3">
                         {conflicts.hasTimeConflicts && (
                           <div className="border-red-400 rounded-lg p-3">
-                            <div className="flex items-center space-x-3">
+                            <Inline gap={3}>
                               <PiXCircle className="w-4 h-4 text-accent-red" />
                               <div className="text-sm">
                                 <p className="font-medium text-accent-red">
@@ -1070,14 +1085,14 @@ export default function CreateLessonPageClient({
                                   {t('conflicting_lessons')}
                                 </p>
                               </div>
-                            </div>
+                            </Inline>
                           </div>
                         )}
 
                         {conflicts.hasWeeklyLimitExceeded &&
                           !conflicts.hasTimeConflicts && (
                             <div className=" border border-yellow-400 rounded-lg p-3">
-                              <div className="flex items-center space-x-3">
+                              <Inline gap={3}>
                                 <PiWarning className="w-4 h-4 text-accent-yellow" />
                                 <div className="text-sm">
                                   <p className="font-medium text-accent-yellow">
@@ -1093,19 +1108,19 @@ export default function CreateLessonPageClient({
                                     {t('lessons_this_week')}
                                   </p>
                                 </div>
-                              </div>
+                              </Inline>
                             </div>
                           )}
 
                         {!conflicts.hasTimeConflicts &&
                           !conflicts.hasWeeklyLimitExceeded && (
                             <div className=" rounded-lg p-3">
-                              <div className="flex items-center space-x-3">
+                              <Inline gap={3}>
                                 <PiCheckCircle className="w-4 h-4 text-green-400" />
                                 <span className="text-sm text-green-300">
                                   {t('no_conflicts_detected')}
                                 </span>
-                              </div>
+                              </Inline>
                             </div>
                           )}
                       </div>
@@ -1130,14 +1145,22 @@ export default function CreateLessonPageClient({
                           required
                         />
                         {validationErrors.scheduledAt && (
-                          <p className="text-red-500 text-sm mt-1 flex items-center space-x-1">
+                          <Inline
+                            as="p"
+                            gap={1}
+                            className="text-red-500 text-sm mt-1"
+                          >
                             <PiWarningCircle className="w-3 h-3" />
                             <span>{validationErrors.scheduledAt}</span>
-                          </p>
+                          </Inline>
                         )}
-                        <p className="text-xs text-theme-tertiary mt-1 flex items-center space-x-1">
+                        <Inline
+                          as="p"
+                          gap={1}
+                          className="text-xs text-theme-tertiary mt-1"
+                        >
                           {t('min_advance_notice')}
-                        </p>
+                        </Inline>
                       </div>
 
                       <div>
@@ -1183,7 +1206,7 @@ export default function CreateLessonPageClient({
 
                     {/* Recurrence - MELHORADO */}
                     <div className="space-y-4">
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <input
                           type="checkbox"
                           id="isRecurring"
@@ -1193,18 +1216,20 @@ export default function CreateLessonPageClient({
                           }
                           className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-brand-primary"
                         />
-                        <label
+                        <Inline
+                          as="label"
+                          gap={2}
                           htmlFor="isRecurring"
-                          className="text-theme-primary font-medium flex items-center space-x-2"
+                          className="text-theme-primary font-medium"
                         >
                           <PiRepeat className="w-4 h-4" />
                           <span>{t('recurring_lesson')}</span>
-                        </label>
-                      </div>
+                        </Inline>
+                      </Inline>
 
                       {formData.isRecurring && (
                         <div className="space-y-4 p-6 bg-gradient-to-br from-brand-primary/5 to-brand-secondary/5 border border-brand-primary/20 rounded-lg">
-                          <div className="flex items-center space-x-3 mb-4">
+                          <Inline gap={3} className="mb-4">
                             <PiInfo className="w-5 h-5 text-brand-primary" />
                             <div className="text-sm text-theme-secondary">
                               <p className="font-medium">
@@ -1212,7 +1237,7 @@ export default function CreateLessonPageClient({
                               </p>
                               <p>{t('recurrence_description')}</p>
                             </div>
-                          </div>
+                          </Inline>
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
@@ -1283,7 +1308,7 @@ export default function CreateLessonPageClient({
                             formData.recurrenceEnd &&
                             formData.recurrenceType !== 'NONE' && (
                               <div className="bg-theme-elevated/50 rounded-lg p-4 border border-theme-secondary/30">
-                                <div className="flex items-center space-x-3">
+                                <Inline gap={3}>
                                   <PiCalendarBlank className="w-5 h-5 text-brand-primary" />
                                   <div>
                                     <p className="font-medium text-theme-primary">
@@ -1306,7 +1331,7 @@ export default function CreateLessonPageClient({
                                       ).toLocaleDateString('pt-BR')}
                                     </p>
                                   </div>
-                                </div>
+                                </Inline>
                               </div>
                             )}
 
@@ -1332,10 +1357,14 @@ export default function CreateLessonPageClient({
                   {/* Seção de peças musicais */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-bold text-theme-primary classical-title flex items-center space-x-2">
+                      <Inline
+                        as="h3"
+                        gap={2}
+                        className="text-lg font-bold text-theme-primary classical-title"
+                      >
                         <PiMusicNotes className="w-5 h-5" />
                         <span>{t('musical_works')}</span>
-                      </h3>
+                      </Inline>
                       <div className="text-sm text-theme-secondary">
                         {selectedWorks.length}/4 {t('selected_works')}
                       </div>
@@ -1355,22 +1384,21 @@ export default function CreateLessonPageClient({
                       <h3 className="text-lg font-bold text-theme-primary classical-title">
                         {t('lesson_objectives')}
                       </h3>
-                      <button
+                      <Inline
+                        as="button"
+                        gap={1}
                         type="button"
                         onClick={() => addArrayField('objectives')}
-                        className="text-brand-primary hover:text-brand-secondary text-sm flex items-center space-x-1"
+                        className="text-brand-primary hover:text-brand-secondary text-sm"
                       >
                         <PiPlus className="w-3 h-3" />
                         <span>{t('add')}</span>
-                      </button>
+                      </Inline>
                     </div>
 
                     <div className="space-y-2">
                       {formData.objectives.map((objective, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center space-x-2"
-                        >
+                        <Inline gap={2} key={index}>
                           <Input
                             type="text"
                             value={objective}
@@ -1396,17 +1424,19 @@ export default function CreateLessonPageClient({
                               <PiX className="w-4 h-4" />
                             </button>
                           )}
-                        </div>
+                        </Inline>
                       ))}
                     </div>
                   </div>
 
                   {/* Advanced Options */}
                   <div className="space-y-4">
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       type="button"
                       onClick={() => setShowAdvanced(!showAdvanced)}
-                      className="flex items-center space-x-2 text-brand-primary hover:text-brand-secondary"
+                      className="text-brand-primary hover:text-brand-secondary"
                     >
                       <span>{t('advanced_options')}</span>
                       <div
@@ -1428,7 +1458,7 @@ export default function CreateLessonPageClient({
                           />
                         </svg>
                       </div>
-                    </button>
+                    </Inline>
 
                     {showAdvanced && (
                       <div className="space-y-6 p-4 bg-theme-secondary/5 rounded-lg">
@@ -1438,21 +1468,20 @@ export default function CreateLessonPageClient({
                             <label className="text-sm font-medium text-theme-primary">
                               {t('topics_to_cover')}
                             </label>
-                            <button
+                            <Inline
+                              as="button"
+                              gap={1}
                               type="button"
                               onClick={() => addArrayField('topics')}
-                              className="text-brand-primary text-sm flex items-center space-x-1"
+                              className="text-brand-primary text-sm"
                             >
                               <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
-                            </button>
+                            </Inline>
                           </div>
                           <div className="space-y-2">
                             {formData.topics.map((topic, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center space-x-2"
-                              >
+                              <Inline gap={2} key={index}>
                                 <Input
                                   type="text"
                                   value={topic}
@@ -1478,7 +1507,7 @@ export default function CreateLessonPageClient({
                                     <PiX className="w-4 h-4" />
                                   </button>
                                 )}
-                              </div>
+                              </Inline>
                             ))}
                           </div>
                         </div>
@@ -1538,7 +1567,7 @@ export default function CreateLessonPageClient({
                   {/* Error Display */}
                   {error && (
                     <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <PiWarningCircle className="w-5 h-5 text-accent-red" />
                         <div>
                           <p className="text-accent-red font-medium">
@@ -1553,26 +1582,31 @@ export default function CreateLessonPageClient({
                         >
                           <PiX className="w-4 h-4" />
                         </button>
-                      </div>
+                      </Inline>
                     </div>
                   )}
 
                   {/* Actions */}
-                  <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary">
+                  <Inline
+                    gap={3}
+                    className="justify-end pt-6 border-t border-theme-secondary"
+                  >
                     <Link
                       href="/teacher/lessons"
                       className="btn-classical-secondary"
                     >
                       {t('cancel')}
                     </Link>
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       type="submit"
                       disabled={
                         loading.createLesson ||
                         pendingSubmission ||
                         checkingConflicts
                       }
-                      className="btn-classical-primary flex items-center space-x-2"
+                      className="btn-classical-primary"
                     >
                       {loading.createLesson || pendingSubmission ? (
                         <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -1594,8 +1628,8 @@ export default function CreateLessonPageClient({
                                 }`
                               : t('create_lesson')}
                       </span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </form>
               </AnimatedCard>
             </AnimatedItem>
@@ -1612,7 +1646,7 @@ export default function CreateLessonPageClient({
                   </h3>
 
                   <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       {selectedStudent.image ? (
                         <div className="w-12 h-12 relative rounded-full overflow-hidden">
                           <Image
@@ -1636,7 +1670,7 @@ export default function CreateLessonPageClient({
                           {t('level')} {translateNivel(selectedStudent.level)}
                         </div>
                       </div>
-                    </div>
+                    </Inline>
 
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
@@ -1682,16 +1716,21 @@ export default function CreateLessonPageClient({
             {selectedWorks.length > 0 && (
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6 ">
-                  <h3 className="text-lg font-bold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-lg font-bold text-theme-primary classical-title mb-4"
+                  >
                     <PiMusicNotes className="w-5 h-5" />
                     <span>{t('selected_works_title')}</span>
-                  </h3>
+                  </Inline>
 
                   <div className="space-y-3">
                     {selectedWorks.map((work, index) => (
-                      <div
+                      <Inline
+                        gap={3}
                         key={work.workId}
-                        className="flex items-center space-x-3 p-3 bg-theme-elevated/50 rounded-lg"
+                        className="p-3 bg-theme-elevated/50 rounded-lg"
                       >
                         <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
                           <PiMusicNotes className="w-4 h-4 text-accent-blue" />
@@ -1712,7 +1751,7 @@ export default function CreateLessonPageClient({
                         <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-1 rounded">
                           #{index + 1}
                         </span>
-                      </div>
+                      </Inline>
                     ))}
 
                     <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">

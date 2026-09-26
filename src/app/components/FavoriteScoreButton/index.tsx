@@ -18,6 +18,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 import { useLoginModal } from '@/app/stores/authStore';
 import type { WorkScore } from '@/app/types/catalog';
 import { useToast } from '@/app/hooks/useToast';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface FavoriteWorkScore {
   id: string;
@@ -121,7 +122,7 @@ const FavoriteModal = ({
             <label className="block text-sm font-medium text-theme-secondary mb-3">
               Avaliação Pessoal
             </label>
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
@@ -154,7 +155,7 @@ const FavoriteModal = ({
                   {personalRating} de 5
                 </span>
               )}
-            </div>
+            </Inline>
           </div>
 
           {/* Notas */}
@@ -181,9 +182,11 @@ const FavoriteModal = ({
             </label>
             <div className="flex flex-wrap gap-2 mb-3">
               {tags.map((tag) => (
-                <span
+                <Inline
+                  as="span"
+                  gap={1}
                   key={tag}
-                  className="px-3 py-1 bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium flex items-center space-x-1"
+                  className="px-3 py-1 bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium"
                 >
                   <span>{tag}</span>
                   <button
@@ -192,7 +195,7 @@ const FavoriteModal = ({
                   >
                     <PiX className="w-3 h-3" />
                   </button>
-                </span>
+                </Inline>
               ))}
             </div>
             <div className="flex space-x-2">
@@ -223,13 +226,15 @@ const FavoriteModal = ({
           >
             Cancelar
           </button>
-          <button
+          <Inline
+            as="button"
+            gap={2}
             onClick={handleSave}
-            className="px-6 py-2 bg-gradient-to-r from-brand-primary to-brand-secondary text-theme-primary rounded-xl font-medium hover:shadow-theme-glow transition-all duration-300 flex items-center space-x-2"
+            className="px-6 py-2 bg-gradient-to-r from-brand-primary to-brand-secondary text-theme-primary rounded-xl font-medium hover:shadow-theme-glow transition-all duration-300"
           >
             <PiCheck className="w-4 h-4" />
             <span>Salvar</span>
-          </button>
+          </Inline>
         </div>
       </div>
     </div>

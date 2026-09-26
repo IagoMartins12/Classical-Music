@@ -24,6 +24,7 @@ import { AnimatedCard } from '../animation/AnimatedComponents';
 import { CascadeInfo } from '@/app/hooks/useAccountManagement';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useIsMobile } from '@/app/hooks/useMobile';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -191,7 +192,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-secondary bg-accent-red/5">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center">
               <PiWarning className="w-6 h-6 text-accent-red" />
             </div>
@@ -203,7 +204,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 {t('delete_modal_subtitle')}
               </p>
             </div>
-          </div>
+          </Inline>
 
           <button
             onClick={handleClose}
@@ -345,9 +346,10 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                         {cascadeInfo.sampleComposers
                           .slice(0, 3)
                           .map((composer) => (
-                            <div
+                            <Inline
+                              gap={2}
                               key={composer.id}
-                              className="flex items-center space-x-2 text-sm"
+                              className="text-sm"
                             >
                               <PiUser className="w-3 h-3 text-accent-purple flex-shrink-0" />
                               <span className="text-theme-primary">
@@ -359,13 +361,10 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                                   </span>
                                 )}
                               </span>
-                            </div>
+                            </Inline>
                           ))}
                         {cascadeInfo.sampleWorks.slice(0, 3).map((work) => (
-                          <div
-                            key={work.id}
-                            className="flex items-center space-x-2 text-sm"
-                          >
+                          <Inline gap={2} key={work.id} className="text-sm">
                             <PiMusicNotes className="w-3 h-3 text-accent-blue flex-shrink-0" />
                             <span className="text-theme-primary">
                               {work.title}
@@ -374,14 +373,15 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                                 - {work.composer.name}
                               </span>
                             </span>
-                          </div>
+                          </Inline>
                         ))}
                         {cascadeInfo.sampleAnnotations
                           .slice(0, 2)
                           .map((annotation) => (
-                            <div
+                            <Inline
+                              gap={2}
                               key={annotation.id}
-                              className="flex items-center space-x-2 text-sm"
+                              className="text-sm"
                             >
                               <PiPencilLine className="w-3 h-3 text-accent-green flex-shrink-0" />
                               <span className="text-theme-primary">
@@ -391,7 +391,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                                   ({annotation.work.title})
                                 </span>
                               </span>
-                            </div>
+                            </Inline>
                           ))}
                       </div>
                     </div>
@@ -493,7 +493,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
 
         {/* Footer */}
         <div className="flex flex-col-reverse md:flex-row gap-4 items-center justify-between p-6 border-t border-theme-secondary bg-theme-secondary/30">
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             {/* Step indicator */}
             <div className="flex space-x-2">
               {['warning', 'cascade', 'confirm'].map((step, index) => (
@@ -515,9 +515,9 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               {['warning', 'cascade', 'confirm'].indexOf(currentStep) + 1}{' '}
               {t('delete_modal_of')} 3
             </span>
-          </div>
+          </Inline>
 
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             {/* Back button */}
             {currentStep !== 'warning' && (
               <Button
@@ -567,7 +567,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   : t('delete_modal_next')}
               </Button>
             )}
-          </div>
+          </Inline>
         </div>
       </AnimatedCard>
     </div>

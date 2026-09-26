@@ -9,6 +9,7 @@ import {
   PiHardDrives,
   PiUsers,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface SystemMetric {
   label: string;
@@ -156,7 +157,7 @@ export default function AdminFooter() {
             {/* Time and Status */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-6 space-y-2 sm:space-y-0">
               {/* Current Time */}
-              <div className="flex items-center space-x-2 text-theme-secondary">
+              <Inline gap={2} className="text-theme-secondary">
                 <PiClock className="w-4 h-4" />
                 <div className="text-sm">
                   <span className="font-mono font-bold">
@@ -166,17 +167,17 @@ export default function AdminFooter() {
                     {formatDate(currentTime)}
                   </span>
                 </div>
-              </div>
+              </Inline>
 
               {/* System Status Indicator */}
-              <div className="flex items-center space-x-2">
-                <div className="flex items-center space-x-1">
+              <Inline gap={2}>
+                <Inline gap={1}>
                   <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
                   <span className="text-sm text-theme-secondary">
                     Sistema Operacional
                   </span>
-                </div>
-              </div>
+                </Inline>
+              </Inline>
             </div>
           </div>
 
@@ -193,7 +194,7 @@ export default function AdminFooter() {
             </div>
 
             {/* Quick Links */}
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               <button className="text-xs text-theme-tertiary hover:text-theme-primary transition-colors">
                 Documentação
               </button>
@@ -203,7 +204,7 @@ export default function AdminFooter() {
               <button className="text-xs text-theme-tertiary hover:text-theme-primary transition-colors">
                 Changelog
               </button>
-            </div>
+            </Inline>
           </div>
         </div>
       </div>

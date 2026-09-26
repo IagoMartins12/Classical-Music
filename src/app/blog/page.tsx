@@ -17,6 +17,7 @@ import {
   getCachedMostReadArticles,
   getCachedCategories,
 } from '@/app/requests/blog/cached-blog-function';
+import { Inline } from '@/app/components/ui/Layout';
 
 // ✅ Revalidação de 5 minutos (fallback para ISR do Next.js)
 export const revalidate = 300;
@@ -201,12 +202,12 @@ export default async function BlogHomePage() {
                       <h4 className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors line-clamp-2 mb-1">
                         {article.title}
                       </h4>
-                      <div className="flex items-center text-xs text-theme-tertiary space-x-2">
+                      <Inline gap={2} className="text-xs text-theme-tertiary">
                         <PiClock className="w-3 h-3" />
                         <span>{article?.readTime ?? 0} min</span>
                         <span>•</span>
                         <span>{article.viewCount.toLocaleString()} views</span>
-                      </div>
+                      </Inline>
                     </div>
                   </Link>
                 ))}

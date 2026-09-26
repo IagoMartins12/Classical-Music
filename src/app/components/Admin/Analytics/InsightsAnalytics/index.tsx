@@ -41,6 +41,7 @@ import { useAdminInsights } from '@/app/hooks/admin/useAdminInsights';
 import toast from 'react-hot-toast';
 import { formatNumber } from '../../Utils';
 import LoadingAdminState from '../../Common/LoadingState';
+import { Inline } from '@/app/components/ui/Layout';
 
 // ===== UTILITY FUNCTIONS (Moved outside component for reusability) =====
 const getSeverityColor = (severity: string) => {
@@ -224,7 +225,7 @@ export default function AdvancedInsightsAnalytics() {
             </p>
 
             {/* Enhanced Health Metrics */}
-            <div className="flex items-center justify-center space-x-8 mt-6">
+            <Inline gap={8} className="justify-center mt-6">
               <div className="text-center">
                 <div
                   className={`text-4xl font-bold mb-2 ${
@@ -290,7 +291,7 @@ export default function AdvancedInsightsAnalytics() {
                   </div>
                 </div>
               )}
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -299,12 +300,12 @@ export default function AdvancedInsightsAnalytics() {
           0 && (
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mb-8 border-l-4 border-accent-red">
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <PiWarning className="w-6 h-6 text-accent-red" />
                 <h3 className="text-xl font-bold text-theme-primary">
                   ⚠️ Alertas Críticos Detectados
                 </h3>
-              </div>
+              </Inline>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {insights.anomalies
                   .filter((anomaly) => anomaly.severity === 'critical')
@@ -433,7 +434,7 @@ export default function AdvancedInsightsAnalytics() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center space-x-3">
+            <Inline gap={3} className="flex-wrap">
               <Button
                 variant="ghost"
                 size="sm"
@@ -467,7 +468,7 @@ export default function AdvancedInsightsAnalytics() {
               >
                 {isGenerating ? 'Processando...' : 'Nova Análise'}
               </Button>
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -556,10 +557,14 @@ export default function AdvancedInsightsAnalytics() {
         {insights.summary.actionItems.length > 0 && (
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mt-8">
-              <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-xl font-bold text-theme-primary mb-6"
+              >
                 <PiClock className="w-5 h-5 text-accent-purple" />
                 <span>🎯 Próximas Ações Prioritárias</span>
-              </h3>
+              </Inline>
 
               <div className="space-y-4">
                 {insights.summary.actionItems
@@ -582,7 +587,7 @@ export default function AdvancedInsightsAnalytics() {
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <div className="flex items-center space-x-3 mb-2">
+                          <Inline gap={3} className="mb-2">
                             <span
                               className={`px-2 py-1 rounded-full text-xs font-medium ${
                                 item.priority === 'high'
@@ -601,7 +606,7 @@ export default function AdvancedInsightsAnalytics() {
                             <span className="text-xs text-theme-tertiary">
                               ⏱️ {item.timeframe}
                             </span>
-                          </div>
+                          </Inline>
                           <h4 className="font-medium text-theme-primary mb-1">
                             {item.action}
                           </h4>
@@ -628,19 +633,27 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
   return (
     <div className="space-y-8">
       <AnimatedItem direction="up" springType="gentle">
-        <h2 className="text-2xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+        <Inline
+          as="h2"
+          gap={2}
+          className="text-2xl font-bold text-theme-primary mb-6"
+        >
           <PiEye className="w-6 h-6 text-accent-blue" />
           <span>📊 Visão Geral Executiva</span>
-        </h2>
+        </Inline>
       </AnimatedItem>
 
       {/* Key Findings */}
       {insights.summary.keyFindings.length > 0 && (
         <AnimatedCard className="classical-card p-6">
-          <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+          <Inline
+            as="h3"
+            gap={2}
+            className="text-lg font-bold text-theme-primary mb-4"
+          >
             <PiBrain className="w-5 h-5 text-accent-purple" />
             <span>🔍 Principais Descobertas da IA</span>
-          </h3>
+          </Inline>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {insights.summary.keyFindings.map(
               (finding: string, index: number) => (
@@ -666,10 +679,10 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
         {/* Educational Performance */}
         <AnimatedCard className="classical-card p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-theme-primary flex items-center space-x-2">
+            <Inline as="h3" gap={2} className="font-bold text-theme-primary">
               <PiMedal className="w-5 h-5 text-accent-green" />
               <span>📚 Performance Educacional</span>
-            </h3>
+            </Inline>
             <Button
               variant="ghost"
               size="sm"
@@ -728,10 +741,10 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
         {/* Risk Monitoring */}
         <AnimatedCard className="classical-card p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-theme-primary flex items-center space-x-2">
+            <Inline as="h3" gap={2} className="font-bold text-theme-primary">
               <PiShield className="w-5 h-5 text-accent-amber" />
               <span>⚠️ Monitoramento de Riscos</span>
-            </h3>
+            </Inline>
             <Button
               variant="ghost"
               size="sm"
@@ -796,10 +809,10 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
         {/* Growth Potential */}
         <AnimatedCard className="classical-card p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-theme-primary flex items-center space-x-2">
+            <Inline as="h3" gap={2} className="font-bold text-theme-primary">
               <PiTrendUp className="w-5 h-5 text-accent-purple" />
               <span>🚀 Potencial de Crescimento</span>
-            </h3>
+            </Inline>
             <Button
               variant="ghost"
               size="sm"
@@ -847,10 +860,14 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
 
       {/* Real-time System Status */}
       <AnimatedCard className="classical-card p-6">
-        <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+        <Inline
+          as="h3"
+          gap={2}
+          className="text-lg font-bold text-theme-primary mb-4"
+        >
           <PiCpu className="w-5 h-5 text-accent-blue" />
           <span>⚡ Status do Sistema em Tempo Real</span>
-        </h3>
+        </Inline>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {insights.riskAssessment.systemHealthIndicators.map(
@@ -895,10 +912,14 @@ function PredictionsSection({
     <div className="space-y-8">
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
+          <Inline
+            as="h2"
+            gap={2}
+            className="text-2xl font-bold text-theme-primary"
+          >
             <PiTarget className="w-6 h-6 text-accent-purple" />
             <span>🔮 Previsões Inteligentes</span>
-          </h2>
+          </Inline>
           <Button
             variant="primary"
             size="sm"
@@ -970,13 +991,14 @@ function PredictionsSection({
                     {prediction.factors
                       .slice(0, 3)
                       .map((factor: string, i: number) => (
-                        <div
+                        <Inline
+                          gap={2}
                           key={i}
-                          className="text-xs text-theme-secondary flex items-center space-x-2"
+                          className="text-xs text-theme-secondary"
                         >
                           <div className="w-1.5 h-1.5 bg-accent-blue rounded-full"></div>
                           <span>{factor}</span>
-                        </div>
+                        </Inline>
                       ))}
                   </div>
                 </div>
@@ -1029,10 +1051,14 @@ function EducationalEngagementSection({
     <div className="space-y-8">
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
+          <Inline
+            as="h2"
+            gap={2}
+            className="text-2xl font-bold text-theme-primary"
+          >
             <PiMedal className="w-6 h-6 text-accent-green" />
             <span>📚 Engajamento Educacional</span>
-          </h2>
+          </Inline>
           <Button
             variant="secondary"
             size="sm"
@@ -1051,10 +1077,14 @@ function EducationalEngagementSection({
 
       {/* Learning Progressions */}
       <AnimatedCard className="classical-card p-6">
-        <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+        <Inline
+          as="h3"
+          gap={2}
+          className="text-lg font-bold text-theme-primary mb-4"
+        >
           <PiTarget className="w-5 h-5 text-accent-blue" />
           <span>🎯 Progressões de Aprendizado</span>
-        </h3>
+        </Inline>
 
         <div className="space-y-4">
           {educational.learningProgressions.map(
@@ -1064,14 +1094,14 @@ function EducationalEngagementSection({
                   <h4 className="font-bold text-theme-primary">
                     {progression.pathway}
                   </h4>
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <span className="text-sm font-medium text-accent-green">
                       {progression.successRate}% sucesso
                     </span>
                     <span className="text-sm text-theme-tertiary">
                       ~{progression.avgTimeToComplete} dias
                     </span>
-                  </div>
+                  </Inline>
                 </div>
 
                 <div className="w-full bg-theme-primary h-2 rounded-full overflow-hidden mb-3">
@@ -1089,13 +1119,15 @@ function EducationalEngagementSection({
                     <ul className="space-y-1">
                       {progression.dropoffPoints.map(
                         (point: string, i: number) => (
-                          <li
+                          <Inline
+                            as="li"
+                            gap={1}
                             key={i}
-                            className="text-accent-red flex items-center space-x-1"
+                            className="text-accent-red"
                           >
                             <span>•</span>
                             <span>{point}</span>
-                          </li>
+                          </Inline>
                         )
                       )}
                     </ul>
@@ -1107,13 +1139,15 @@ function EducationalEngagementSection({
                     <ul className="space-y-1">
                       {progression.recommendations.map(
                         (rec: string, i: number) => (
-                          <li
+                          <Inline
+                            as="li"
+                            gap={1}
                             key={i}
-                            className="text-accent-green flex items-center space-x-1"
+                            className="text-accent-green"
                           >
                             <span>•</span>
                             <span>{rec}</span>
-                          </li>
+                          </Inline>
                         )
                       )}
                     </ul>
@@ -1127,10 +1161,14 @@ function EducationalEngagementSection({
 
       {/* Composer Discovery Patterns */}
       <AnimatedCard className="classical-card p-6">
-        <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+        <Inline
+          as="h3"
+          gap={2}
+          className="text-lg font-bold text-theme-primary mb-4"
+        >
           <PiMapPin className="w-5 h-5 text-accent-purple" />
           <span>🗺️ Padrões de Descoberta Musical</span>
-        </h3>
+        </Inline>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {educational.composerDiscoveryPatterns.map(
@@ -1176,10 +1214,14 @@ function EducationalEngagementSection({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Annotation Quality */}
         <AnimatedCard className="classical-card p-6">
-          <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+          <Inline
+            as="h3"
+            gap={2}
+            className="text-lg font-bold text-theme-primary mb-4"
+          >
             <PiHeart className="w-5 h-5 text-accent-red" />
             <span>⭐ Qualidade das Anotações</span>
-          </h3>
+          </Inline>
 
           <div className="space-y-4">
             <div className="text-center p-4 bg-theme-secondary rounded-xl">
@@ -1209,14 +1251,14 @@ function EducationalEngagementSection({
                       <span className="text-sm text-theme-primary">
                         {contributor.username}
                       </span>
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <span className="text-sm font-bold text-accent-green">
                           {contributor.qualityScore}%
                         </span>
                         <span className="text-xs text-theme-tertiary">
                           ({contributor.totalAnnotations})
                         </span>
-                      </div>
+                      </Inline>
                     </div>
                   ))}
               </div>
@@ -1226,10 +1268,14 @@ function EducationalEngagementSection({
 
         {/* Study Session Analysis */}
         <AnimatedCard className="classical-card p-6">
-          <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+          <Inline
+            as="h3"
+            gap={2}
+            className="text-lg font-bold text-theme-primary mb-4"
+          >
             <PiClock className="w-5 h-5 text-accent-amber" />
             <span>⏰ Padrões de Estudo</span>
-          </h3>
+          </Inline>
 
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -1257,7 +1303,7 @@ function EducationalEngagementSection({
                 ).map(([day, percentage]: [string, any]) => (
                   <div key={day} className="flex items-center justify-between">
                     <span className="text-sm text-theme-secondary">{day}</span>
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <div className="w-16 h-2 bg-theme-secondary rounded-full overflow-hidden">
                         <div
                           className="h-full bg-accent-blue rounded-full"
@@ -1267,7 +1313,7 @@ function EducationalEngagementSection({
                       <span className="text-xs text-theme-tertiary w-8">
                         {percentage}%
                       </span>
-                    </div>
+                    </Inline>
                   </div>
                 ))}
               </div>
@@ -1307,10 +1353,14 @@ function UserJourneySection({
     <div className="space-y-8">
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
+          <Inline
+            as="h2"
+            gap={2}
+            className="text-2xl font-bold text-theme-primary"
+          >
             <PiMapPin className="w-6 h-6 text-accent-blue" />
             <span>🗺️ Jornadas de Usuário</span>
-          </h2>
+          </Inline>
           <Button
             variant="secondary"
             size="sm"
@@ -1329,10 +1379,14 @@ function UserJourneySection({
 
       {/* Typical User Journeys */}
       <AnimatedCard className="classical-card p-6">
-        <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+        <Inline
+          as="h3"
+          gap={2}
+          className="text-lg font-bold text-theme-primary mb-4"
+        >
           <PiUsers className="w-5 h-5 text-accent-green" />
           <span>👥 Jornadas Típicas por Perfil</span>
-        </h3>
+        </Inline>
 
         <div className="space-y-6">
           {userJourney.typicalJourneys.map((journey: any, index: number) => (
@@ -1342,12 +1396,9 @@ function UserJourneySection({
               </h4>
 
               {/* Journey Stages */}
-              <div className="flex items-center space-x-2 mb-4 overflow-x-auto pb-2">
+              <Inline gap={2} className="mb-4 overflow-x-auto pb-2">
                 {journey.stages.map((stage: any, stageIndex: number) => (
-                  <div
-                    key={stageIndex}
-                    className="flex items-center space-x-2 flex-shrink-0"
-                  >
+                  <Inline gap={2} key={stageIndex} className="flex-shrink-0">
                     <div className="text-center min-w-24">
                       <div
                         className={`w-16 h-16 rounded-full flex items-center justify-center text-xs font-bold ${
@@ -1370,9 +1421,9 @@ function UserJourneySection({
                     {stageIndex < journey.stages.length - 1 && (
                       <div className="w-8 h-0.5 bg-theme-tertiary"></div>
                     )}
-                  </div>
+                  </Inline>
                 ))}
-              </div>
+              </Inline>
 
               {/* Success Factors and Recommendations */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -1382,13 +1433,15 @@ function UserJourneySection({
                   </p>
                   <ul className="space-y-1">
                     {journey.successFactors.map((factor: string, i: number) => (
-                      <li
+                      <Inline
+                        as="li"
+                        gap={1}
                         key={i}
-                        className="text-accent-green flex items-center space-x-1"
+                        className="text-accent-green"
                       >
                         <span>•</span>
                         <span>{factor}</span>
-                      </li>
+                      </Inline>
                     ))}
                   </ul>
                 </div>
@@ -1396,13 +1449,15 @@ function UserJourneySection({
                   <p className="text-theme-tertiary mb-2">💡 Recomendações:</p>
                   <ul className="space-y-1">
                     {journey.recommendations.map((rec: string, i: number) => (
-                      <li
+                      <Inline
+                        as="li"
+                        gap={1}
                         key={i}
-                        className="text-accent-blue flex items-center space-x-1"
+                        className="text-accent-blue"
                       >
                         <span>•</span>
                         <span>{rec}</span>
-                      </li>
+                      </Inline>
                     ))}
                   </ul>
                 </div>
@@ -1414,16 +1469,20 @@ function UserJourneySection({
 
       {/* Conversion Funnels */}
       <AnimatedCard className="classical-card p-6">
-        <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+        <Inline
+          as="h3"
+          gap={2}
+          className="text-lg font-bold text-theme-primary mb-4"
+        >
           <PiFunnel className="w-5 h-5 text-accent-purple" />
           <span>🔄 Funis de Conversão</span>
-        </h3>
+        </Inline>
 
         <div className="space-y-4">
           {userJourney.conversionFunnels.map((funnel: any, index: number) => (
             <div key={index} className="p-4 bg-theme-secondary rounded-xl">
               <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <span className="text-sm text-theme-secondary">
                     {funnel.from}
                   </span>
@@ -1431,8 +1490,8 @@ function UserJourneySection({
                   <span className="text-sm font-medium text-theme-primary">
                     {funnel.to}
                   </span>
-                </div>
-                <div className="flex items-center space-x-3">
+                </Inline>
+                <Inline gap={3}>
                   <span
                     className={`text-lg font-bold ${
                       funnel.conversionRate >= 50
@@ -1447,7 +1506,7 @@ function UserJourneySection({
                   <span className="text-sm text-theme-tertiary">
                     ~{funnel.timeToConvert}d
                   </span>
-                </div>
+                </Inline>
               </div>
 
               <div className="w-full bg-theme-primary h-3 rounded-full overflow-hidden mb-3">
@@ -1487,10 +1546,14 @@ function UserJourneySection({
 
       {/* User Segments */}
       <AnimatedCard className="classical-card p-6">
-        <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+        <Inline
+          as="h3"
+          gap={2}
+          className="text-lg font-bold text-theme-primary mb-4"
+        >
           <PiChartPie className="w-5 h-5 text-accent-amber" />
           <span>🎯 Segmentação de Usuários</span>
-        </h3>
+        </Inline>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {userJourney.userSegments.map((segment: any, index: number) => (
@@ -1511,13 +1574,14 @@ function UserJourneySection({
                   </p>
                   <div className="space-y-1">
                     {segment.characteristics.map((char: string, i: number) => (
-                      <div
+                      <Inline
+                        gap={1}
                         key={i}
-                        className="text-xs text-theme-secondary flex items-center space-x-1"
+                        className="text-xs text-theme-secondary"
                       >
                         <span>•</span>
                         <span>{char}</span>
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </div>
@@ -1565,10 +1629,14 @@ function RiskAssessmentSection({
     <div className="space-y-8">
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
+          <Inline
+            as="h2"
+            gap={2}
+            className="text-2xl font-bold text-theme-primary"
+          >
             <PiShield className="w-6 h-6 text-accent-red" />
             <span>⚠️ Avaliação de Riscos</span>
-          </h2>
+          </Inline>
           <Button
             variant="secondary"
             size="sm"
@@ -1587,10 +1655,14 @@ function RiskAssessmentSection({
 
       {/* High Risk Users */}
       <AnimatedCard className="classical-card p-6">
-        <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+        <Inline
+          as="h3"
+          gap={2}
+          className="text-lg font-bold text-theme-primary mb-4"
+        >
           <PiUsers className="w-5 h-5 text-accent-red" />
           <span>🚨 Usuários em Alto Risco de Churn</span>
-        </h3>
+        </Inline>
 
         {riskAssessment.churnRiskUsers.length === 0 ? (
           <div className="text-center py-8">
@@ -1635,13 +1707,15 @@ function RiskAssessmentSection({
                       </p>
                       <ul className="space-y-1">
                         {user.riskFactors.map((factor: string, i: number) => (
-                          <li
+                          <Inline
+                            as="li"
+                            gap={1}
                             key={i}
-                            className="text-accent-red flex items-center space-x-1"
+                            className="text-accent-red"
                           >
                             <span>•</span>
                             <span>{factor}</span>
-                          </li>
+                          </Inline>
                         ))}
                       </ul>
                     </div>
@@ -1652,13 +1726,15 @@ function RiskAssessmentSection({
                       <ul className="space-y-1">
                         {user.suggestedActions.map(
                           (action: string, i: number) => (
-                            <li
+                            <Inline
+                              as="li"
+                              gap={1}
                               key={i}
-                              className="text-accent-green flex items-center space-x-1"
+                              className="text-accent-green"
                             >
                               <span>•</span>
                               <span>{action}</span>
-                            </li>
+                            </Inline>
                           )
                         )}
                       </ul>
@@ -1672,10 +1748,14 @@ function RiskAssessmentSection({
 
       {/* System Health Indicators */}
       <AnimatedCard className="classical-card p-6">
-        <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+        <Inline
+          as="h3"
+          gap={2}
+          className="text-lg font-bold text-theme-primary mb-4"
+        >
           <PiPulse className="w-5 h-5 text-accent-blue" />
           <span>💚 Indicadores de Saúde do Sistema</span>
-        </h3>
+        </Inline>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {riskAssessment.systemHealthIndicators.map(
@@ -1714,7 +1794,7 @@ function RiskAssessmentSection({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-center space-x-2 text-xs">
+                <Inline gap={2} className="justify-center text-xs">
                   <span
                     className={`${
                       indicator.trend === 'improving'
@@ -1733,7 +1813,7 @@ function RiskAssessmentSection({
                   <span className="text-theme-tertiary capitalize">
                     {indicator.trend}
                   </span>
-                </div>
+                </Inline>
               </div>
             )
           )}
@@ -1769,10 +1849,14 @@ function GrowthOpportunitiesSection({
     <div className="space-y-8">
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
+          <Inline
+            as="h2"
+            gap={2}
+            className="text-2xl font-bold text-theme-primary"
+          >
             <PiTrendUp className="w-6 h-6 text-accent-purple" />
             <span>🚀 Oportunidades de Crescimento</span>
-          </h2>
+          </Inline>
           <Button
             variant="secondary"
             size="sm"
@@ -1793,7 +1877,7 @@ function GrowthOpportunitiesSection({
         {opportunities.map((opportunity: any, index: number) => (
           <AnimatedCard key={index} className="classical-card p-6">
             <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <span className="text-2xl">
                   {getCategoryIcon(opportunity.category)}
                 </span>
@@ -1806,7 +1890,7 @@ function GrowthOpportunitiesSection({
                     {opportunity.timeline}
                   </p>
                 </div>
-              </div>
+              </Inline>
               <div className="flex space-x-2">
                 <span
                   className={`px-2 py-1 rounded-full text-xs font-medium ${getImpactColor(
@@ -1826,13 +1910,15 @@ function GrowthOpportunitiesSection({
                 <ul className="space-y-1">
                   {opportunity.expectedResults.map(
                     (result: string, i: number) => (
-                      <li
+                      <Inline
+                        as="li"
+                        gap={1}
                         key={i}
-                        className="text-sm text-accent-green flex items-center space-x-1"
+                        className="text-sm text-accent-green"
                       >
                         <span>•</span>
                         <span>{result}</span>
-                      </li>
+                      </Inline>
                     )
                   )}
                 </ul>
@@ -1846,13 +1932,15 @@ function GrowthOpportunitiesSection({
                   {opportunity.implementation
                     .slice(0, 3)
                     .map((step: string, i: number) => (
-                      <li
+                      <Inline
+                        as="li"
+                        gap={1}
                         key={i}
-                        className="text-sm text-theme-secondary flex items-center space-x-1"
+                        className="text-sm text-theme-secondary"
                       >
                         <span>{i + 1}.</span>
                         <span>{step}</span>
-                      </li>
+                      </Inline>
                     ))}
                 </ul>
               </div>
@@ -1896,10 +1984,14 @@ function MonetizationSection({
     <div className="space-y-8">
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
+          <Inline
+            as="h2"
+            gap={2}
+            className="text-2xl font-bold text-theme-primary"
+          >
             <PiCurrencyDollar className="w-6 h-6 text-accent-green" />
             <span>💰 Insights de Monetização</span>
-          </h2>
+          </Inline>
           <Button
             variant="secondary"
             size="sm"
@@ -1947,10 +2039,14 @@ function MonetizationSection({
 
       {/* User Value Segmentation */}
       <AnimatedCard className="classical-card p-6">
-        <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+        <Inline
+          as="h3"
+          gap={2}
+          className="text-lg font-bold text-theme-primary mb-4"
+        >
           <PiUsers className="w-5 h-5 text-accent-blue" />
           <span>👥 Segmentação por Valor do Usuário</span>
-        </h3>
+        </Inline>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {monetization.userValueSegmentation.map(
@@ -1996,10 +2092,14 @@ function MonetizationSection({
 
       {/* Monetization Opportunities */}
       <AnimatedCard className="classical-card p-6">
-        <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+        <Inline
+          as="h3"
+          gap={2}
+          className="text-lg font-bold text-theme-primary mb-4"
+        >
           <PiLightning className="w-5 h-5 text-accent-amber" />
           <span>⚡ Oportunidades de Monetização</span>
-        </h3>
+        </Inline>
 
         <div className="space-y-4">
           {monetization.monetizationOpportunities.map(
@@ -2050,10 +2150,14 @@ function BehaviorPatternsSection({
     <div className="space-y-8">
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
+          <Inline
+            as="h2"
+            gap={2}
+            className="text-2xl font-bold text-theme-primary"
+          >
             <PiBrain className="w-6 h-6 text-accent-purple" />
             <span>🧠 Padrões de Comportamento</span>
-          </h2>
+          </Inline>
           <Button
             variant="secondary"
             size="sm"
@@ -2075,7 +2179,7 @@ function BehaviorPatternsSection({
           <AnimatedCard key={index} className="classical-card p-6">
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-3">
+                <Inline gap={3} className="mb-3">
                   <h3 className="text-xl font-bold text-theme-primary">
                     {pattern.pattern}
                   </h3>
@@ -2094,7 +2198,7 @@ function BehaviorPatternsSection({
                   <span className="px-2 py-1 rounded-full text-xs font-medium bg-theme-secondary text-theme-tertiary">
                     {pattern.confidence}% confiança
                   </span>
-                </div>
+                </Inline>
 
                 <p className="text-theme-secondary mb-4">
                   {pattern.description}
@@ -2134,10 +2238,14 @@ function ContentPerformanceSection({
     <div className="space-y-8">
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
+          <Inline
+            as="h2"
+            gap={2}
+            className="text-2xl font-bold text-theme-primary"
+          >
             <PiChartBar className="w-6 h-6 text-accent-blue" />
             <span>📊 Performance de Conteúdo</span>
-          </h2>
+          </Inline>
           <Button
             variant="secondary"
             size="sm"
@@ -2158,10 +2266,14 @@ function ContentPerformanceSection({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Top Performers */}
         <AnimatedCard className="classical-card p-6">
-          <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+          <Inline
+            as="h3"
+            gap={2}
+            className="text-lg font-bold text-theme-primary mb-4"
+          >
             <PiMedal className="w-5 h-5 text-accent-green" />
             <span>🏆 Top Performers</span>
-          </h3>
+          </Inline>
           <div className="space-y-3">
             {contentPerformance.topPerformers
               .slice(0, 5)
@@ -2203,10 +2315,14 @@ function ContentPerformanceSection({
 
         {/* Underperformers */}
         <AnimatedCard className="classical-card p-6">
-          <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+          <Inline
+            as="h3"
+            gap={2}
+            className="text-lg font-bold text-theme-primary mb-4"
+          >
             <PiTrendDown className="w-5 h-5 text-accent-amber" />
             <span>📈 Oportunidades de Melhoria</span>
-          </h3>
+          </Inline>
           <div className="space-y-4">
             {contentPerformance.underperformers.map(
               (item: any, index: number) => (
@@ -2221,13 +2337,14 @@ function ContentPerformanceSection({
                     </p>
                     <div className="space-y-1">
                       {item.issues.map((issue: string, i: number) => (
-                        <div
+                        <Inline
+                          gap={1}
                           key={i}
-                          className="text-xs text-accent-red flex items-center space-x-1"
+                          className="text-xs text-accent-red"
                         >
                           <span>•</span>
                           <span>{issue}</span>
-                        </div>
+                        </Inline>
                       ))}
                     </div>
                   </div>
@@ -2238,13 +2355,14 @@ function ContentPerformanceSection({
                     </p>
                     <div className="space-y-1">
                       {item.suggestions.map((suggestion: string, i: number) => (
-                        <div
+                        <Inline
+                          gap={1}
                           key={i}
-                          className="text-xs text-accent-green flex items-center space-x-1"
+                          className="text-xs text-accent-green"
                         >
                           <span>•</span>
                           <span>{suggestion}</span>
-                        </div>
+                        </Inline>
                       ))}
                     </div>
                   </div>
@@ -2261,10 +2379,14 @@ function ContentPerformanceSection({
 
       {/* Content Optimization Recommendations */}
       <AnimatedCard className="classical-card p-6">
-        <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+        <Inline
+          as="h3"
+          gap={2}
+          className="text-lg font-bold text-theme-primary mb-4"
+        >
           <PiLightning className="w-5 h-5 text-accent-purple" />
           <span>🎯 Recomendações de Otimização</span>
-        </h3>
+        </Inline>
         <div className="space-y-3">
           {contentPerformance.contentOptimization
             .sort((a: any, b: any) => b.priority - a.priority)
@@ -2313,10 +2435,14 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
     <div className="space-y-8">
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-theme-primary flex items-center space-x-2">
+          <Inline
+            as="h2"
+            gap={2}
+            className="text-2xl font-bold text-theme-primary"
+          >
             <PiWarning className="w-6 h-6 text-accent-red" />
             <span>🔍 Detecção de Anomalias</span>
-          </h2>
+          </Inline>
           <Button
             variant="secondary"
             size="sm"
@@ -2371,7 +2497,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                   </div>
 
                   <div className="flex-1">
-                    <div className="flex items-center space-x-3 mb-2">
+                    <Inline gap={3} className="mb-2">
                       <h3 className="text-lg font-bold text-theme-primary">
                         {anomaly.type === 'spike'
                           ? '📈 Pico Anômalo'
@@ -2383,7 +2509,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                       <span className="text-sm text-theme-tertiary">
                         {new Date(anomaly.timestamp).toLocaleString('pt-BR')}
                       </span>
-                    </div>
+                    </Inline>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                       <div className="text-center p-3 bg-theme-secondary rounded-xl">
@@ -2440,13 +2566,14 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                       <div className="space-y-1">
                         {anomaly.possibleCauses.map(
                           (cause: string, i: number) => (
-                            <div
+                            <Inline
+                              gap={2}
                               key={i}
-                              className="text-sm text-theme-primary flex items-center space-x-2"
+                              className="text-sm text-theme-primary"
                             >
                               <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
                               <span>{cause}</span>
-                            </div>
+                            </Inline>
                           )
                         )}
                       </div>

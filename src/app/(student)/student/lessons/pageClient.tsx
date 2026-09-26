@@ -33,6 +33,7 @@ import Select from '@/app/components/Common/Select';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '@/app/components/Common/Button';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface StudentLessonsPageClientProps {
   initialData: StudentLessonsData | null;
@@ -493,9 +494,9 @@ export default function StudentLessonsPageClient({
           delay={index * 0.05}
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4 flex-1">
+            <Inline gap={4} className="flex-1">
               {/* Status Indicator */}
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 <span
                   className={`w-3 h-3 rounded-full ${
                     lesson.status === 'COMPLETED'
@@ -515,19 +516,19 @@ export default function StudentLessonsPageClient({
                     {t('today')}
                   </span>
                 )}
-              </div>
+              </Inline>
 
               {/* Lesson Info */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <h3 className="font-semibold text-theme-primary truncate">
                     {lesson.title}
                   </h3>
                   <span className="text-sm text-theme-secondary">
                     {lesson.teacher.name}
                   </span>
-                </div>
-                <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
+                </Inline>
+                <Inline gap={4} className="text-sm text-theme-tertiary">
                   <span>{formatDateTime(lesson.scheduledAt)}</span>
                   <span>{lesson.duration}min</span>
                   {lesson.location && <span>{lesson.location}</span>}
@@ -536,7 +537,7 @@ export default function StudentLessonsPageClient({
                       {t('status_pending')}
                     </span>
                   )}
-                </div>
+                </Inline>
               </div>
 
               {/* Status */}
@@ -545,17 +546,17 @@ export default function StudentLessonsPageClient({
               >
                 {statusDisplayInfo.label}
               </span>
-            </div>
+            </Inline>
 
             {/* Actions */}
-            <div className="flex items-center space-x-2 ml-4">
+            <Inline gap={2} className="ml-4">
               <Link
                 href={`/student/lessons/${lesson.id}`}
                 className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
               >
                 <PiEye className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </Link>
-            </div>
+            </Inline>
           </div>
         </AnimatedCard>
       );
@@ -603,16 +604,18 @@ export default function StudentLessonsPageClient({
               {error || errorMessage}
             </p>
             <div className="space-y-3">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={handleRefresh}
                 disabled={loading.lessons}
-                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+                className="btn-classical-primary w-full justify-center"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${loading.lessons ? 'animate-spin' : ''}`}
                 />
                 <span>{loading.lessons ? t('loading') : t('try_again')}</span>
-              </button>
+              </Inline>
               {error && (
                 <button
                   onClick={clearError}
@@ -919,17 +922,19 @@ export default function StudentLessonsPageClient({
         {/* Pagination */}
         {totalPages > 1 && (
           <AnimatedItem direction="up" springType="gentle">
-            <div className="flex items-center justify-center space-x-4 mt-8">
-              <button
+            <Inline gap={4} className="justify-center mt-8">
+              <Inline
+                as="button"
+                gap={2}
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50"
+                className="btn-classical-secondary disabled:opacity-50"
               >
                 <PiCaretLeft className="w-4 h-4" />
                 <span>{t('previous')}</span>
-              </button>
+              </Inline>
 
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 {Array.from({ length: totalPages }, (_, i) => i + 1)
                   .filter((page) => {
                     const distance = Math.abs(page - currentPage);
@@ -957,19 +962,21 @@ export default function StudentLessonsPageClient({
                       </div>
                     );
                   })}
-              </div>
+              </Inline>
 
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={() =>
                   setCurrentPage(Math.min(totalPages, currentPage + 1))
                 }
                 disabled={currentPage === totalPages}
-                className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50"
+                className="btn-classical-secondary disabled:opacity-50"
               >
                 <span>{t('next')}</span>
                 <PiCaretRight className="w-4 h-4" />
-              </button>
-            </div>
+              </Inline>
+            </Inline>
           </AnimatedItem>
         )}
       </AnimatedContainer>

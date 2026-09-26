@@ -3,6 +3,7 @@
 
 import React, { forwardRef, useId, useMemo } from 'react';
 import { PiCaretDown, PiWarningCircle } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface SelectOption {
   value: string;
@@ -154,10 +155,14 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
         {/* Mensagem de erro */}
         {error && (
-          <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1 gap-2">
+          <Inline
+            as="p"
+            gap={1}
+            className="text-red-500 text-sm font-medium mt-1 gap-2"
+          >
             <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>
-          </p>
+          </Inline>
         )}
       </div>
     );

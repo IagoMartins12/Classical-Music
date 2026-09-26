@@ -56,6 +56,7 @@ import {
   type ProgressMilestones,
 } from '@/app/utils/progressMilestones';
 import { useLearnedVideo } from '@/app/hooks/useLearnedVideo';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 const LearningModal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -693,7 +694,7 @@ const LearningModal = () => {
       >
         {/* Header */}
         <div className="px-0 md:px-6 py-4">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div
               className={`w-10 h-10 rounded-xl bg-gradient-to-br ${
                 config.color === 'blue'
@@ -709,12 +710,12 @@ const LearningModal = () => {
               </h2>
               <p className="text-sm text-theme-secondary">{config?.subtitle}</p>
             </div>
-          </div>
+          </Inline>
         </div>
 
         {/* Work Info */}
         <div className="px-0 md:px-6 py-4 classical-card !rounded-2xl !shadow-none !border-none !transform-none border-b border-theme-secondary">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <PiMusicNotes className="w-5 h-5 text-theme-tertiary" />
             <div>
               <h3 className="font-semibold text-theme-primary">{workTitle}</h3>
@@ -725,7 +726,7 @@ const LearningModal = () => {
                 </p>
               )}
             </div>
-          </div>
+          </Inline>
         </div>
 
         {/* Form Content */}
@@ -964,7 +965,7 @@ const LearningModal = () => {
               </FormField>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <Checkbox
                     id="wouldRecommend"
                     checked={learnedForm.wouldRecommend}
@@ -979,9 +980,9 @@ const LearningModal = () => {
                   >
                     {t('would_recommend')}
                   </label>
-                </div>
+                </Inline>
 
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <Checkbox
                     id="publicPerformance"
                     checked={learnedForm.publicPerformance}
@@ -996,7 +997,7 @@ const LearningModal = () => {
                   >
                     {t('public_performance_modal')}
                   </label>
-                </div>
+                </Inline>
               </div>
 
               <FormField label={t('general_notes')} icon={PiBookOpen}>
@@ -1015,7 +1016,7 @@ const LearningModal = () => {
           {availableMilestones.length > 0 && type === 'want-to-learn' && (
             <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
               <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
                     <PiTarget className="w-4 h-4 text-theme-primary" />
                   </div>
@@ -1028,17 +1029,19 @@ const LearningModal = () => {
                       {t('progress_complete')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() => setShowProgressModal(true)}
-                  className="btn-classical-secondary flex items-center space-x-2"
+                  className="btn-classical-secondary"
                 >
                   <PiPencilLine className="w-4 h-4" />
                   <span className="text-theme-primary text-sm">
                     {t('mark_progress_button')}
                   </span>
-                </button>
+                </Inline>
               </div>
 
               {/* Barra de progresso */}
@@ -1063,7 +1066,7 @@ const LearningModal = () => {
           {type === 'learned' && (
             <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
               <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                     <PiVideoCamera className="w-4 h-4 text-theme-primary" />
                   </div>
@@ -1075,7 +1078,7 @@ const LearningModal = () => {
                       {displayVideo ? t('video_added') : t('no_video_added')}
                     </p>
                   </div>
-                </div>
+                </Inline>
               </div>
 
               {displayVideo ? (
@@ -1084,7 +1087,7 @@ const LearningModal = () => {
                   {/* Informações do vídeo */}
                   <div className="bg-theme-elevated rounded-xl px-4">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <div>
                           <h4 className="font-semibold text-theme-primary text-sm">
                             {displayVideoName}
@@ -1097,7 +1100,7 @@ const LearningModal = () => {
                               : ` • ${t('private_label')}`}
                           </p>
                         </div>
-                      </div>
+                      </Inline>
                       {currentLearnedItem?.videoUrl && (
                         <button
                           onClick={handleDeleteVideo}
@@ -1149,7 +1152,7 @@ const LearningModal = () => {
                     htmlFor="video-upload"
                     className="w-full border-2 border-dashed border-theme-secondary hover:border-brand-primary rounded-xl p-4 text-center transition-all duration-300 hover:bg-brand-primary/5 group cursor-pointer block"
                   >
-                    <div className="flex flex-col items-center space-y-2">
+                    <Stack gap={2} className="items-center">
                       <div className="w-12 h-12 shadow-md border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <PiPlus className="w-6 h-6 text-brand-primary" />
                       </div>
@@ -1161,26 +1164,29 @@ const LearningModal = () => {
                           {t('video_formats_info')}
                         </p>
                       </div>
-                    </div>
+                    </Stack>
                   </label>
                 </div>
               )}
 
               {/* Configurações de privacidade */}
               <div className="mt-4">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <Checkbox
                     label={t('make_video_public')}
                     id="videoPublic"
                     checked={isVideoPublic}
                     onChange={(e) => setIsVideoPublic(e.target.checked)}
                   />
-                </div>
+                </Inline>
               </div>
 
               {/* Error display */}
               {uploadError && (
-                <div className="mt-4 p-3 border border-red-400 rounded-lg flex items-center space-x-2">
+                <Inline
+                  gap={2}
+                  className="mt-4 p-3 border border-red-400 rounded-lg"
+                >
                   <PiWarningCircle className="w-4 h-4 text-red-400" />
                   <span className="text-accent-red text-sm">{uploadError}</span>
                   <button
@@ -1189,7 +1195,7 @@ const LearningModal = () => {
                   >
                     <PiX className="w-4 h-4" />
                   </button>
-                </div>
+                </Inline>
               )}
             </div>
           )}
@@ -1197,7 +1203,7 @@ const LearningModal = () => {
           {/* Seção de Partitura */}
           <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                   <PiFileText className="w-4 h-4 text-theme-primary" />
                 </div>
@@ -1211,13 +1217,13 @@ const LearningModal = () => {
                       : t('no_score_selected')}
                   </p>
                 </div>
-              </div>
+              </Inline>
             </div>
 
             {selectedWorkScore ? (
               <div className="bg-theme-elevated rounded-xl p-4 border border-theme-primary">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
                       <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                     </div>
@@ -1237,30 +1243,34 @@ const LearningModal = () => {
                           ` • ${selectedWorkScore.type}`}
                       </p>
                     </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
+                  </Inline>
+                  <Inline gap={4}>
                     {selectedWorkScore.downloadUrl && (
-                      <a
+                      <Inline
+                        as="a"
+                        gap={2}
                         href={selectedWorkScore.downloadUrl}
                         target="_blank"
                         title={t('download_button')}
-                        className="btn-classical-secondary-sm flex items-center space-x-2 text-accent-purple border-accent-purple/30 hover:bg-accent-purple/10"
+                        className="btn-classical-secondary-sm text-accent-purple border-accent-purple/30 hover:bg-accent-purple/10"
                       >
                         <PiDownloadSimple className="w-5 h-5 text-theme-primary" />
-                      </a>
+                      </Inline>
                     )}
 
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       title={
                         isCurrentlyActive
                           ? t('change_button')
                           : t('edit_change_button')
                       }
                       onClick={handleAddScore}
-                      className="btn-classical-secondary-sm flex items-center space-x-2"
+                      className="btn-classical-secondary-sm"
                     >
                       <PiPencilLine className="w-5 h-5 text-theme-primary" />
-                    </button>
+                    </Inline>
                     <button
                       title={t('remove_button')}
                       onClick={handleRemoveScore}
@@ -1268,14 +1278,14 @@ const LearningModal = () => {
                     >
                       <PiX className="w-5 h-5 text-theme-primary" />
                     </button>
-                  </div>
+                  </Inline>
                 </div>
 
                 {!isCurrentlyActive &&
                   oppositeItem?.selectedWorkScore?.id ===
                     selectedWorkScore.id && (
                     <div className="mt-3  rounded-lg">
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <div className="w-4 h-4 bg-accent-green rounded-full flex items-center justify-center">
                           <span className="text-xs">💡</span>
                         </div>
@@ -1286,7 +1296,7 @@ const LearningModal = () => {
                             : t('want_to_learn')}
                           &quot;
                         </span>
-                      </div>
+                      </Inline>
                     </div>
                   )}
               </div>
@@ -1295,7 +1305,7 @@ const LearningModal = () => {
                 onClick={handleAddScore}
                 className="w-full border-2 border-dashed border-theme-secondary hover:border-brand-primary rounded-xl p-4 text-center transition-all duration-300 hover:bg-brand-primary/5 group"
               >
-                <div className="flex flex-col items-center space-y-2">
+                <Stack gap={2} className="items-center">
                   <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border-2 border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <PiPlus className="w-6 h-6 text-brand-primary" />
                   </div>
@@ -1311,7 +1321,7 @@ const LearningModal = () => {
                         : t('choose_score_description')}
                     </p>
                   </div>
-                </div>
+                </Stack>
               </button>
             )}
           </div>
@@ -1341,7 +1351,7 @@ const LearningModal = () => {
 
             {/* Botões Secundários - Quando editando */}
             {isCurrentlyActive && !isSubmitting && !isUploading && (
-              <div className="flex flex-col space-y-2">
+              <Stack gap={2}>
                 {type === 'want-to-learn' && (
                   <Button
                     variant="outline"
@@ -1360,7 +1370,7 @@ const LearningModal = () => {
                 >
                   {t('delete_button')}
                 </Button>
-              </div>
+              </Stack>
             )}
           </div>
 
@@ -1375,7 +1385,7 @@ const LearningModal = () => {
           >
             {/* Botões de ação à esquerda */}
             {isCurrentlyActive && !isSubmitting && !isUploading && (
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <Button
                   variant="delete"
                   leftIcon={<PiTrashSimple />}
@@ -1393,11 +1403,11 @@ const LearningModal = () => {
                     {t('mark_as_learned')}
                   </Button>
                 )}
-              </div>
+              </Inline>
             )}
 
             {/* Botão principal à direita */}
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <Button
                 variant="primary"
                 onClick={handleSubmit}
@@ -1413,7 +1423,7 @@ const LearningModal = () => {
                     ? t('update_button')
                     : t('save_button')}
               </Button>
-            </div>
+            </Inline>
           </div>
         </div>
       </Modal>
@@ -1464,7 +1474,7 @@ const LearningModal = () => {
         showCloseButton={true}
       >
         <div className="p-4 px-0 md:p-6">
-          <div className="flex items-center space-x-3 mb-4">
+          <Inline gap={3} className="mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-brand-primary rounded-xl flex items-center justify-center">
               <PiArrowRight className="w-6 h-6 text-theme-primary" />
             </div>
@@ -1476,7 +1486,7 @@ const LearningModal = () => {
                 {t('transfer_learned_subtitle')}
               </p>
             </div>
-          </div>
+          </Inline>
 
           <div className="classical-card-simple rounded-xl p-4 mb-6">
             <p className="text-theme-primary">
@@ -1534,7 +1544,7 @@ const LearningModal = () => {
 
             {/* Barra de progresso */}
             <div className="mb-6">
-              <div className="flex items-center space-x-4 mb-2">
+              <Inline gap={4} className="mb-2">
                 <div className="flex-1">
                   <div className="w-full bg-theme-secondary rounded-full h-3">
                     <div
@@ -1552,7 +1562,7 @@ const LearningModal = () => {
                 <span className="text-lg font-bold text-theme-primary">
                   {currentProgress}%
                 </span>
-              </div>
+              </Inline>
               <p className="text-sm text-theme-tertiary">
                 {t('click_milestones_instruction')}
               </p>

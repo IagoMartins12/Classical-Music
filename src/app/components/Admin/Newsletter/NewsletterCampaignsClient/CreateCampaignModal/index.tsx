@@ -25,6 +25,7 @@ import {
   processTemplate,
 } from '@/app/libs/newsletter/emailTemplates';
 import Checkbox from '@/app/components/Common/Checkbox';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CreateCampaignModalProps {
   onClose: () => void;
@@ -228,7 +229,7 @@ export default function CreateCampaignModal({
 
           {/* Steps */}
           <div className="px-6 py-4 border-b border-theme-secondary">
-            <div className="flex items-center space-x-2 overflow-x-auto">
+            <Inline gap={2} className="overflow-x-auto">
               {steps.map((step) => (
                 <div
                   key={step.id}
@@ -245,7 +246,7 @@ export default function CreateCampaignModal({
                   <span className="text-sm font-medium">{step.title}</span>
                 </div>
               ))}
-            </div>
+            </Inline>
           </div>
 
           {/* Content */}
@@ -416,7 +417,7 @@ export default function CreateCampaignModal({
                         <div className="p-4 bg-theme-primary border border-theme-secondary rounded-lg">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
-                              <div className="flex items-center space-x-2 mb-2">
+                              <Inline gap={2} className="mb-2">
                                 <h5 className="font-medium text-theme-primary">
                                   {selectedTemplate.name}
                                 </h5>
@@ -426,11 +427,14 @@ export default function CreateCampaignModal({
                                     Padrão
                                   </span>
                                 )}
-                              </div>
+                              </Inline>
                               <p className="text-sm text-theme-secondary mb-2">
                                 {selectedTemplate.description}
                               </p>
-                              <div className="flex items-center space-x-4 text-xs text-theme-tertiary">
+                              <Inline
+                                gap={4}
+                                className="text-xs text-theme-tertiary"
+                              >
                                 <span>📧 {selectedTemplate.subject}</span>
                                 <span>
                                   🔧 {selectedTemplate.variables?.length || 0}{' '}
@@ -439,7 +443,7 @@ export default function CreateCampaignModal({
                                 <span>
                                   📊 {selectedTemplate.timesUsed || 0} usos
                                 </span>
-                              </div>
+                              </Inline>
                             </div>
                             <Button
                               variant="ghost"
@@ -504,7 +508,7 @@ export default function CreateCampaignModal({
                     </div>
                   )}
 
-                <div className="flex items-center space-x-4">
+                <Inline gap={4}>
                   <Button
                     variant="ghost"
                     leftIcon={<PiEye />}
@@ -512,7 +516,7 @@ export default function CreateCampaignModal({
                   >
                     Preview Template
                   </Button>
-                </div>
+                </Inline>
               </div>
             )}
 
@@ -592,7 +596,7 @@ export default function CreateCampaignModal({
                     Opções de Envio
                   </h3>
                   <div className="space-y-3">
-                    <label className="flex items-center space-x-3">
+                    <Inline as="label" gap={3}>
                       <input
                         type="radio"
                         name="sendOption"
@@ -609,8 +613,8 @@ export default function CreateCampaignModal({
                       <span>
                         Salvar como rascunho (enviar manualmente depois)
                       </span>
-                    </label>
-                    <label className="flex items-center space-x-3">
+                    </Inline>
+                    <Inline as="label" gap={3}>
                       <input
                         type="radio"
                         name="sendOption"
@@ -626,7 +630,7 @@ export default function CreateCampaignModal({
                         }
                       />
                       <span>Agendar envio automático</span>
-                    </label>
+                    </Inline>
                   </div>
                 </div>
 
@@ -668,27 +672,27 @@ export default function CreateCampaignModal({
                   </p>
 
                   <div className="space-y-3">
-                    <label className="flex items-center space-x-3">
+                    <Inline as="label" gap={3}>
                       <Checkbox
                         type="checkbox"
                         className="rounded border-theme-primary text-brand-primary"
                       />
                       <span>Apenas novos subscribers (últimos 30 dias)</span>
-                    </label>
-                    <label className="flex items-center space-x-3">
+                    </Inline>
+                    <Inline as="label" gap={3}>
                       <Checkbox
                         type="checkbox"
                         className="rounded border-theme-primary text-brand-primary"
                       />
                       <span>Subscribers com alto engajamento</span>
-                    </label>
-                    <label className="flex items-center space-x-3">
+                    </Inline>
+                    <Inline as="label" gap={3}>
                       <Checkbox
                         type="checkbox"
                         className="rounded border-theme-primary text-brand-primary"
                       />
                       <span>Específicos interesses musicais</span>
-                    </label>
+                    </Inline>
                   </div>
                 </div>
 
@@ -708,7 +712,7 @@ export default function CreateCampaignModal({
 
           {/* Footer */}
           <div className="flex items-center justify-between p-6 border-t border-theme-secondary">
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               {currentStep > 1 && (
                 <Button
                   variant="ghost"
@@ -718,9 +722,9 @@ export default function CreateCampaignModal({
                   Anterior
                 </Button>
               )}
-            </div>
+            </Inline>
 
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <Button variant="ghost" onClick={onClose} disabled={saving}>
                 Cancelar
               </Button>
@@ -759,7 +763,7 @@ export default function CreateCampaignModal({
                       : 'Criar Campanha'}
                 </Button>
               )}
-            </div>
+            </Inline>
           </div>
         </div>
       </Modal>

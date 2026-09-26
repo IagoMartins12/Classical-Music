@@ -25,6 +25,7 @@ import {
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Checkbox from '../../Common/Checkbox';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Instrument {
   id: string;
@@ -278,13 +279,13 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
         <div className="space-y-4">
           {[...Array(2)].map((_, index) => (
             <div key={index} className="classical-card-2 p-4 animate-pulse">
-              <div className="flex items-center space-x-4">
+              <Inline gap={4}>
                 <div className="w-10 h-10 bg-theme-secondary rounded-full" />
                 <div className="flex-1">
                   <div className="h-4 bg-theme-secondary rounded w-24 mb-2" />
                   <div className="h-3 bg-theme-secondary rounded w-16" />
                 </div>
-              </div>
+              </Inline>
             </div>
           ))}
         </div>
@@ -361,13 +362,13 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
           userInstruments.map((instrument) => (
             <div key={instrument.id} className="classical-card-2 p-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
+                <Inline gap={4}>
                   <div className="w-10 h-10 bg-brand-gradient rounded-full flex items-center justify-center">
                     <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                   </div>
 
                   <div>
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <h4 className="font-medium text-theme-primary">
                         {instrument.name}
                       </h4>
@@ -381,7 +382,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                           {t('instruments_primary')}
                         </div>
                       )}
-                    </div>
+                    </Inline>
 
                     {isEditing ? (
                       <div className="flex flex-col md:flex-row items-start gap-4 md:items-center mt-4 md:mt-2">
@@ -396,7 +397,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                           className="w-32"
                         />
 
-                        <label className="flex items-center space-x-2 text-sm">
+                        <Inline as="label" gap={2} className="text-sm">
                           <Checkbox
                             label={t('instruments_primary')}
                             checked={instrument.isPrimary}
@@ -407,9 +408,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                             }
                             className="rounded"
                           />
-                        </label>
+                        </Inline>
 
-                        <label className="flex items-center space-x-2 text-sm">
+                        <Inline as="label" gap={2} className="text-sm">
                           <Checkbox
                             checked={instrument.isLearning}
                             onChange={(e) =>
@@ -420,7 +421,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                             className="rounded"
                             label={t('instruments_learning')}
                           />
-                        </label>
+                        </Inline>
                       </div>
                     ) : (
                       <p className="text-sm text-theme-secondary">
@@ -437,7 +438,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                       </p>
                     )}
                   </div>
-                </div>
+                </Inline>
 
                 {isEditing && (
                   <button
@@ -509,8 +510,8 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                 />
               </div>
 
-              <div className="flex items-center space-x-6">
-                <label className="flex items-center space-x-2 text-sm">
+              <Inline gap={6}>
+                <Inline as="label" gap={2} className="text-sm">
                   <Checkbox
                     label={t('instruments_primary_checkbox')}
                     checked={newInstrument.isPrimary}
@@ -522,9 +523,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                     }
                     className="rounded"
                   />
-                </label>
+                </Inline>
 
-                <label className="flex items-center space-x-2 text-sm">
+                <Inline as="label" gap={2} className="text-sm">
                   <Checkbox
                     label={t('instruments_learning_checkbox')}
                     checked={newInstrument.isLearning}
@@ -536,8 +537,8 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                     }
                     className="rounded"
                   />
-                </label>
-              </div>
+                </Inline>
+              </Inline>
 
               <div className="flex space-x-3">
                 <Button

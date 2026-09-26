@@ -46,6 +46,7 @@ import ShareReportModal, {
 } from '@/app/components/TeacherSystem/ShareReportModal';
 import { shareProgressReport } from '@/app/requests/portal/progress-report';
 import dynamic from 'next/dynamic';
+import { Inline } from '@/app/components/ui/Layout';
 
 /**
  * Os gráficos descem à parte — ver `charts.tsx`.
@@ -161,10 +162,12 @@ export default function TeacherProgressPageClient({
               {error || errorMessage}
             </p>
             <div className="space-y-3">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={refreshReport}
                 disabled={loading.refreshing}
-                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+                className="btn-classical-primary w-full justify-center"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${
@@ -174,7 +177,7 @@ export default function TeacherProgressPageClient({
                 <span>
                   {loading.refreshing ? t('loading_report') : t('try_again')}
                 </span>
-              </button>
+              </Inline>
               {error && (
                 <button
                   onClick={clearError}
@@ -208,7 +211,11 @@ export default function TeacherProgressPageClient({
       <AnimatedContainer delay={0.1} staggerSpeed="normal">
         {/* Breadcrumb & Navigation */}
         <AnimatedItem direction="down" springType="gentle">
-          <nav className="flex items-center space-x-2 text-sm text-theme-tertiary mb-6 pt-4">
+          <Inline
+            as="nav"
+            gap={2}
+            className="text-sm text-theme-tertiary mb-6 pt-4"
+          >
             <Link
               href="/teacher"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
@@ -233,13 +240,13 @@ export default function TeacherProgressPageClient({
             <span className="text-theme-primary font-medium">
               {t('breadcrumb_progress_report')}
             </span>
-          </nav>
+          </Inline>
         </AnimatedItem>
 
         {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8">
-            <div className="flex items-center space-x-4 mb-4 lg:mb-0">
+            <Inline gap={4} className="mb-4 lg:mb-0">
               <Link
                 href={`/teacher/students/${studentId}`}
                 className="w-12 h-12 rounded-xl bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
@@ -247,7 +254,7 @@ export default function TeacherProgressPageClient({
                 <PiArrowLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
               </Link>
 
-              <div className="flex items-center space-x-4">
+              <Inline gap={4}>
                 {reportData.studentInfo.image ? (
                   <div className="w-14 h-14 rounded-full overflow-hidden border-3 border-brand-primary/20">
                     <Image
@@ -284,8 +291,8 @@ export default function TeacherProgressPageClient({
                     })}
                   </p>
                 </div>
-              </div>
-            </div>
+              </Inline>
+            </Inline>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
               <Select
@@ -310,14 +317,16 @@ export default function TeacherProgressPageClient({
                   />
                 </button>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() => setShowShareModal(true)}
                   disabled={!reportData}
-                  className="btn-classical-primary flex items-center space-x-2"
+                  className="btn-classical-primary"
                 >
                   <PiShareNetwork className="w-4 h-4" />
                   <span>{t('btn_share_with_student')}</span>
-                </button>
+                </Inline>
               </div>
             </div>
           </div>
@@ -327,12 +336,12 @@ export default function TeacherProgressPageClient({
         {shareSuccess && (
           <AnimatedItem direction="up" springType="gentle">
             <div className="classical-card p-4 border-l-4 border-accent-green mb-6">
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <PiCheckCircle className="w-5 h-5 text-accent-green" />
                 <span className="text-accent-green font-medium">
                   {shareSuccess}
                 </span>
-              </div>
+              </Inline>
             </div>
           </AnimatedItem>
         )}
@@ -476,7 +485,7 @@ export default function TeacherProgressPageClient({
                           key={composer.name}
                           className="flex items-center justify-between p-3 bg-theme-elevated rounded-lg"
                         >
-                          <div className="flex items-center space-x-3">
+                          <Inline gap={3}>
                             <div
                               className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
                               style={{
@@ -496,7 +505,7 @@ export default function TeacherProgressPageClient({
                                 {composer.epoch}
                               </div>
                             </div>
-                          </div>
+                          </Inline>
                           <div className="text-right">
                             <div className="text-sm font-medium text-theme-primary">
                               {composer.studiedCount}/{composer.worksCount}
@@ -586,12 +595,12 @@ export default function TeacherProgressPageClient({
                 </h3>
                 <div className="space-y-3">
                   {reportData.insights.recommendedFocus.map((focus, index) => (
-                    <div key={index} className="flex items-center space-x-3">
+                    <Inline gap={3} key={index}>
                       <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                       <span className="text-sm text-theme-primary">
                         {focus}
                       </span>
-                    </div>
+                    </Inline>
                   ))}
                 </div>
               </AnimatedCard>
@@ -622,7 +631,7 @@ export default function TeacherProgressPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="classical-card p-4 bg-theme-elevated/50 border border-theme-secondary/50">
             <div className="flex flex-col sm:flex-row items-center justify-between text-sm text-theme-tertiary">
-              <div className="flex items-center space-x-4 mb-2 sm:mb-0">
+              <Inline gap={4} className="mb-2 sm:mb-0">
                 <span>
                   {t('report_generated', {
                     date: reportData.reportMetadata.generatedAt.toLocaleString(
@@ -642,7 +651,7 @@ export default function TeacherProgressPageClient({
                 >
                   Qualidade: {reportData.reportMetadata.dataQuality}
                 </span>
-              </div>
+              </Inline>
               <div className="text-xs">{t('analysis_disclaimer')}</div>
             </div>
           </div>

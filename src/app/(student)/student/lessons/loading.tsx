@@ -17,6 +17,7 @@ import {
   PiWarning,
   PiX,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function StudentLessonsLoading() {
   return (
@@ -115,19 +116,25 @@ export default function StudentLessonsLoading() {
             </div>
 
             {/* Controls */}
-            <div className="flex items-center space-x-4">
-              <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
+            <Inline gap={4}>
+              <Inline
+                gap={2}
+                className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4"
+              >
                 <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="h-4 w-12 bg-theme-tertiary/20 rounded"></div>
-              </div>
+              </Inline>
 
               <div className="h-10 w-20 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
 
-              <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
+              <Inline
+                gap={2}
+                className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4"
+              >
                 <PiArrowsClockwise className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="h-4 w-16 bg-theme-tertiary/20 rounded"></div>
-              </div>
-            </div>
+              </Inline>
+            </Inline>
           </div>
 
           {/* Filters Panel */}
@@ -160,12 +167,12 @@ export default function StudentLessonsLoading() {
         </div>
 
         {/* Pagination Skeleton */}
-        <div className="flex items-center justify-center space-x-4 mt-8 animate-pulse">
+        <Inline gap={4} className="justify-center mt-8 animate-pulse">
           <div className="h-10 w-20 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center">
             <div className="h-4 w-12 bg-theme-tertiary/20 rounded"></div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             {Array.from({ length: 5 }).map((_, i) => (
               <div
                 key={i}
@@ -176,12 +183,12 @@ export default function StudentLessonsLoading() {
                 }`}
               ></div>
             ))}
-          </div>
+          </Inline>
 
           <div className="h-10 w-20 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center">
             <div className="h-4 w-12 bg-theme-tertiary/20 rounded"></div>
           </div>
-        </div>
+        </Inline>
       </div>
 
       {/* Floating Particles */}
@@ -274,10 +281,13 @@ function LessonCardSkeleton({ delay = 0 }: { delay?: number }) {
       )}
 
       {/* Action Button */}
-      <div className="h-10 w-full bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-lg flex items-center justify-center space-x-2">
+      <Inline
+        gap={2}
+        className="h-10 w-full bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-lg justify-center"
+      >
         <div className="w-4 h-4 bg-theme-primary/30 rounded"></div>
         <div className="h-4 w-20 bg-theme-primary/30 rounded"></div>
-      </div>
+      </Inline>
     </div>
   );
 }

@@ -2,6 +2,7 @@
 'use client';
 
 import { Suspense } from 'react';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface SuspenseWrapperProps {
   children: React.ReactNode;
@@ -12,10 +13,10 @@ interface SuspenseWrapperProps {
 // Loading fallback padrão
 const DefaultLoadingFallback = () => (
   <div className="flex items-center justify-center min-h-[200px]">
-    <div className="flex items-center space-x-3">
+    <Inline gap={3}>
       <div className="w-6 h-6 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
       <span className="text-theme-secondary">Carregando...</span>
-    </div>
+    </Inline>
   </div>
 );
 
@@ -88,9 +89,9 @@ export const ListPageLoading = () => (
 // Loading específico para modais ou componentes pequenos
 export const ComponentLoading = () => (
   <div className="flex items-center justify-center p-8">
-    <div className="flex items-center space-x-3">
+    <Inline gap={3}>
       <div className="w-5 h-5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
       <span className="text-theme-secondary text-sm">Carregando...</span>
-    </div>
+    </Inline>
   </div>
 );

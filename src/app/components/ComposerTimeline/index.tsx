@@ -6,6 +6,7 @@ import { GiGrandPiano } from 'react-icons/gi';
 import { PiClock, PiMusicNotes } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { ComposerTimelineCard } from '../ComposerTimelineCard';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ComposerTimeline {
   id: string;
@@ -135,7 +136,7 @@ export function ComposersTimeline({ composers }: Props) {
     <div className="max-w-6xl mx-auto relative">
       {/* Header */}
       <div className="text-center mb-16 animate-fade-in-up">
-        <div className="flex items-center justify-center space-x-3 mb-6">
+        <Inline gap={3} className="justify-center mb-6">
           <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
             <PiClock className="w-6 h-6 text-theme-primary" />
           </div>
@@ -145,7 +146,7 @@ export function ComposersTimeline({ composers }: Props) {
           <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center shadow-theme-glow">
             <GiGrandPiano className="w-6 h-6 text-theme-primary" />
           </div>
-        </div>
+        </Inline>
 
         <h2 className="text-3xl lg:text-4xl font-bold text-gradient-brand classical-title mb-4">
           {t('timeline_jsx_h2_children_0__linha_tempo_compositores')}

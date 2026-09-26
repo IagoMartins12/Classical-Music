@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useCallback } from 'react';
+import { Inline } from '@/app/components/ui/Layout';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -523,13 +524,13 @@ export const SkeletonCard: React.FC<SkeletonCardProps> = ({
 }) => (
   <AnimatedCard className={`classical-card p-6 ${className}`} hover="none">
     {showIcon && (
-      <div className="flex items-center space-x-3 mb-4">
+      <Inline gap={3} className="mb-4">
         <SkeletonItem width="w-12" height="h-12" />
         <div className="flex-1 space-y-2">
           <SkeletonItem width="w-3/4" height="h-5" />
           <SkeletonItem width="w-1/2" height="h-3" />
         </div>
-      </div>
+      </Inline>
     )}
     <div className="space-y-3">
       {Array.from({ length: lines }, (_, i) => (

@@ -33,6 +33,7 @@ import CreateScoreModal from '../../../../../components/UploadsPage/modals/Creat
 import { useToast } from '@/app/hooks/useToast';
 import { deleteUpload } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface EditScoreClientProps {
   score: any;
@@ -116,7 +117,11 @@ const EditScoreClient = ({
       <div className="section-wrap space-y-8 relative z-10">
         {/* Breadcrumb */}
         <AnimatedItem direction="down" springType="gentle">
-          <nav className="flex items-center space-x-2 text-sm text-theme-tertiary mb-6 pt-4">
+          <Inline
+            as="nav"
+            gap={2}
+            className="text-sm text-theme-tertiary mb-6 pt-4"
+          >
             <Link
               href="/upload"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
@@ -158,7 +163,7 @@ const EditScoreClient = ({
             <span className="text-theme-primary font-medium">
               {t('breadcrumb_edit').replace('{name}', score.title)}
             </span>
-          </nav>
+          </Inline>
         </AnimatedItem>
 
         <AnimatedContainer
@@ -179,7 +184,7 @@ const EditScoreClient = ({
                   <div className="space-y-4">
                     <div className="flex flex-col sm:flex-row gap-4 sm:gap-0  items-start justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-4">
+                        <Inline gap={3} className="mb-4">
                           <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                             <PiPencilLine className="w-5 h-5 text-theme-primary" />
                           </div>
@@ -188,13 +193,16 @@ const EditScoreClient = ({
                               {t('edit_score_title')}
                             </h1>
                           </div>
-                        </div>
+                        </Inline>
 
                         <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
                           {score.title}
                         </h1>
 
-                        <div className="flex items-center space-x-2 text-xl text-theme-secondary mt-3">
+                        <Inline
+                          gap={2}
+                          className="text-xl text-theme-secondary mt-3"
+                        >
                           <span>{t('score_info_work_title')}</span>
                           <Link
                             href={`/works/${score.work.id}`}
@@ -202,8 +210,11 @@ const EditScoreClient = ({
                           >
                             {score.work.title}
                           </Link>
-                        </div>
-                        <div className="flex items-center space-x-2 text-lg text-theme-tertiary mt-2">
+                        </Inline>
+                        <Inline
+                          gap={2}
+                          className="text-lg text-theme-tertiary mt-2"
+                        >
                           <span>{t('score_info_by_composer')}</span>
                           <Link
                             href={`/composer/${score.work.composer.id}`}
@@ -212,11 +223,14 @@ const EditScoreClient = ({
                             {score.work.composer.fullName ||
                               score.work.composer.name}
                           </Link>
-                        </div>
+                        </Inline>
                       </div>
 
                       {/* Action buttons */}
-                      <div className="flex flex-wrap justify-center gap-4 sm:gap-0 items-center space-x-3 ml-4">
+                      <Inline
+                        gap={3}
+                        className="flex-wrap justify-center gap-4 sm:gap-0 ml-4"
+                      >
                         <Link href={`/score/${score.id}`}>
                           <Button variant="primary" leftIcon={<PiEye />}>
                             {t('see_score')}
@@ -251,11 +265,11 @@ const EditScoreClient = ({
                             </Button>
                           </>
                         )}
-                      </div>
+                      </Inline>
                     </div>
 
                     {/* Badge de Fonte */}
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div
                         className={`px-4 py-2 bg-gradient-to-r ${getSourceColor(
                           score.source
@@ -267,7 +281,7 @@ const EditScoreClient = ({
                           {getSourceLabel(score.source)}
                         </span>
                       </div>
-                    </div>
+                    </Inline>
                   </div>
 
                   {/* Grid de Informações Detalhadas */}
@@ -374,30 +388,34 @@ const EditScoreClient = ({
                   {/* Informações de Publicação */}
                   {(score.editor || score.publisher || score.copyright) && (
                     <div className="border-t border-theme-secondary pt-6">
-                      <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                      <Inline
+                        as="h3"
+                        gap={2}
+                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                      >
                         <PiFileText className="w-5 h-5 text-accent-blue" />
                         <span>{t('score_info_publication_info')}</span>
-                      </h3>
+                      </Inline>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         {score.editor && (
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <span className="font-medium text-theme-tertiary">
                               {t('score_info_editor')}:
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {score.editor}
                             </span>
-                          </div>
+                          </Inline>
                         )}
                         {score.publisher && (
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <span className="font-medium text-theme-tertiary">
                               {t('score_info_publisher')}:
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {score.publisher}
                             </span>
-                          </div>
+                          </Inline>
                         )}
                         {score.copyright && (
                           <div className="md:col-span-2 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
@@ -416,10 +434,14 @@ const EditScoreClient = ({
                   {/* Notas */}
                   {score.notes && (
                     <div className="border-t border-theme-secondary pt-6">
-                      <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                      <Inline
+                        as="h3"
+                        gap={2}
+                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                      >
                         <PiInfo className="w-5 h-5 text-accent-green" />
                         <span>{t('score_info_notes')}</span>
-                      </h3>
+                      </Inline>
                       <div className="p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
                         <p className="text-theme-primary whitespace-pre-line">
                           {score.notes}
@@ -431,15 +453,21 @@ const EditScoreClient = ({
                   {/* Link de Download */}
                   {score.downloadUrl && (
                     <div className="border-t border-theme-secondary pt-6">
-                      <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                      <Inline
+                        as="h3"
+                        gap={2}
+                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                      >
                         <PiArrowSquareOut className="w-5 h-5 text-accent-blue" />
                         <span>{t('score_info_file')}</span>
-                      </h3>
-                      <a
+                      </Inline>
+                      <Inline
+                        as="a"
+                        gap={2}
                         href={score.downloadUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-classical-primary flex items-center space-x-2 group/btn w-fit"
+                        className="btn-classical-primary group/btn w-fit"
                       >
                         <PiDownloadSimple className="w-4 h-4" />
                         <span>{t('score_info_download')}</span>
@@ -456,7 +484,7 @@ const EditScoreClient = ({
                             d="M9 5l7 7-7 7"
                           />
                         </svg>
-                      </a>
+                      </Inline>
                     </div>
                   )}
                 </div>
@@ -466,14 +494,14 @@ const EditScoreClient = ({
                   {/* Thumbnail da Partitura */}
                   {score.thumbnailUrl && (
                     <div className="classical-card-simple p-6">
-                      <div className="flex items-center space-x-3 mb-4">
+                      <Inline gap={3} className="mb-4">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                           <PiImage className="w-4 h-4 text-theme-primary" />
                         </div>
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {t('score_info_thumbnail')}
                         </h3>
-                      </div>
+                      </Inline>
 
                       <div className="text-center">
                         {!imageError ? (
@@ -498,14 +526,14 @@ const EditScoreClient = ({
 
                   {/* Informações da Obra */}
                   <div className="classical-card-simple p-6">
-                    <div className="flex items-center space-x-3 mb-4">
+                    <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
                         <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
                         {t('score_info_work')}
                       </h3>
-                    </div>
+                    </Inline>
 
                     <div className="space-y-4">
                       <div>
@@ -528,14 +556,14 @@ const EditScoreClient = ({
 
                   {/* Detalhes Técnicos */}
                   <div className="classical-card-simple p-6">
-                    <div className="flex items-center space-x-3 mb-4">
+                    <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                         <PiInfo className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
                         {t('score_info_technical_details')}
                       </h3>
-                    </div>
+                    </Inline>
                     <div className="space-y-3 text-sm">
                       {score.groupIndex !== null && (
                         <div className="flex items-center justify-between">

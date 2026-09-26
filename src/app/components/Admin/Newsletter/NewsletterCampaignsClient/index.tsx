@@ -33,6 +33,7 @@ import SendTestCampaignModal from './SendTestCampaignModal';
 import LoadingAdminState from '../../Common/LoadingState';
 import EditCampaignModal from '../EditCampaignModal';
 import { cancelCampaignRequest } from '@/app/requests/admin/newsletter';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface FilterState {
   status: string;
@@ -445,13 +446,16 @@ export default function NewsletterCampaignsClient() {
                             <p className="text-sm text-theme-secondary">
                               {campaign.subject}
                             </p>
-                            <div className="flex items-center space-x-2 text-xs text-theme-tertiary mt-1">
+                            <Inline
+                              gap={2}
+                              className="text-xs text-theme-tertiary mt-1"
+                            >
                               <span>
                                 {campaign.template?.name || 'Sem template'}
                               </span>
                               <span>•</span>
                               <span>por Admin</span>
-                            </div>
+                            </Inline>
                           </div>
                         </td>
                         <td className="py-3 px-2">
@@ -521,7 +525,7 @@ export default function NewsletterCampaignsClient() {
 
                         {/* 🆕 AÇÕES ATUALIZADAS COM BOTÃO DE EDIÇÃO */}
                         <td className="py-3 px-2">
-                          <div className="flex items-center space-x-1">
+                          <Inline gap={1}>
                             {/* Estatísticas */}
                             <Button
                               variant="ghost"
@@ -603,7 +607,7 @@ export default function NewsletterCampaignsClient() {
                               className="text-accent-red hover:text-accent-red"
                               title="Deletar"
                             />
-                          </div>
+                          </Inline>
                         </td>
                       </tr>
                     );
@@ -647,7 +651,7 @@ export default function NewsletterCampaignsClient() {
                   )}{' '}
                   de {campaignsPagination.total} campanhas
                 </div>
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -673,7 +677,7 @@ export default function NewsletterCampaignsClient() {
                   >
                     Próximo
                   </Button>
-                </div>
+                </Inline>
               </div>
             )}
           </AnimatedCard>

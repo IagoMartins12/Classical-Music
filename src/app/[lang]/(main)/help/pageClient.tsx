@@ -32,6 +32,7 @@ import {
   FloatingElement,
 } from '../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 interface HelpCategory {
   id: string;
@@ -136,12 +137,12 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
         className="w-full p-4 md:p-6 text-left focus:outline-none hover:bg-theme-elevated/50 transition-colors cursor-pointer"
       >
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+          <Inline gap={4}>
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center flex-shrink-0">
               <IconComponent className="w-6 h-6 text-theme-primary" />
             </div>
             <div className="flex-grow">
-              <div className="flex items-center space-x-2 mb-1">
+              <Inline gap={2} className="mb-1">
                 <h4 className="text-lg font-semibold classical-title text-theme-primary">
                   {guide.title}
                 </h4>
@@ -156,11 +157,11 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
                     <PiArrowRight className="w-5 h-5 text-brand-primary transition-transform duration-300" />
                   )}
                 </span>
-              </div>
+              </Inline>
               <p className="text-theme-secondary text-sm mt-1 classical-body">
                 {guide.description}
               </p>
-              <div className="flex items-center space-x-3 mt-2">
+              <Inline gap={3} className="mt-2">
                 {guide.duration && (
                   <span className="text-sm text-theme-tertiary">
                     📖 {guide.duration}
@@ -178,11 +179,11 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
                     ? `📄 ${t('help_type_article')}`
                     : `🎯 ${t('help_type_interactive')}`}
                 </span>
-              </div>
+              </Inline>
             </div>
-          </div>
+          </Inline>
           <div className="flex-shrink-0 ml-4 hidden md:flex">
-            <div className="flex flex-col items-center space-y-1">
+            <Stack gap={1} className="items-center">
               {isExpanded ? (
                 <PiArrowRight className="w-5 h-5 text-brand-primary rotate-90 transition-transform duration-300" />
               ) : (
@@ -191,7 +192,7 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
               <span className="text-xs text-theme-tertiary">
                 {isExpanded ? t('help_guide_close') : t('help_guide_open')}
               </span>
-            </div>
+            </Stack>
           </div>
         </div>
       </button>

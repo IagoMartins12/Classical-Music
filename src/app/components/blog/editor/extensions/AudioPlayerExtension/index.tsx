@@ -13,6 +13,7 @@ import {
   PiTrash,
 } from 'react-icons/pi';
 import Link from 'next/link';
+import { Inline } from '@/app/components/ui/Layout';
 
 // Declaração do tipo para YouTube Player API
 declare global {
@@ -204,7 +205,10 @@ const AudioPlayerComponent = (props: any) => {
       <div className="rounded-lg classical-card-simple border-l-4 border-accent-purple shadow-md overflow-hidden">
         {/* Controles de Edição */}
         {showControls && (
-          <div className="absolute top-4 right-4 z-10 flex items-center space-x-2 p-2 shadow-lg rounded-lg">
+          <Inline
+            gap={2}
+            className="absolute top-4 right-4 z-10 p-2 shadow-lg rounded-lg"
+          >
             <button
               onClick={handleDelete}
               className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
@@ -212,12 +216,12 @@ const AudioPlayerComponent = (props: any) => {
             >
               <PiTrash className="w-4 h-4" />
             </button>
-          </div>
+          </Inline>
         )}
 
         <div className="p-6">
           {/* Header */}
-          <div className="flex items-center space-x-3 mb-4">
+          <Inline gap={3} className="mb-4">
             <div className="w-14 h-14 bg-gradient-to-br from-accent-purple to-brand-primary rounded-lg flex items-center justify-center shadow-md">
               <PiMusicNotes className="w-7 h-7 text-white" />
             </div>
@@ -226,7 +230,7 @@ const AudioPlayerComponent = (props: any) => {
               <h4 className="text-lg font-bold text-theme-primary">{title}</h4>
 
               {/* Vinculações */}
-              <div className="flex items-center space-x-2 text-sm text-theme-secondary mt-1">
+              <Inline gap={2} className="text-sm text-theme-secondary mt-1">
                 {composerName && (
                   <>
                     {composerId ? (
@@ -259,13 +263,13 @@ const AudioPlayerComponent = (props: any) => {
                     )}
                   </>
                 )}
-              </div>
+              </Inline>
             </div>
-          </div>
+          </Inline>
 
           {/* Player Unificado - Mesmo visual para Upload e YouTube */}
           <div className="space-y-3">
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               {/* Play/Pause Button */}
               <button
                 onClick={(e) => {
@@ -304,7 +308,7 @@ const AudioPlayerComponent = (props: any) => {
               </div>
 
               {/* Volume Control */}
-              <div className="flex items-center space-x-2 w-24">
+              <Inline gap={2} className="w-24">
                 <PiSpeakerHigh className="w-5 h-5 text-theme-secondary" />
                 <input
                   type="range"
@@ -318,8 +322,8 @@ const AudioPlayerComponent = (props: any) => {
                     background: `linear-gradient(to right, var(--accent-purple) 0%, var(--accent-purple) ${volume}%, #e5e7eb ${volume}%, #e5e7eb 100%)`,
                   }}
                 />
-              </div>
-            </div>
+              </Inline>
+            </Inline>
 
             {/* Hidden Audio Element (para upload) */}
             {audioType === 'upload' && (

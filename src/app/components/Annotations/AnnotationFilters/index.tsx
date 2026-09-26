@@ -22,6 +22,7 @@ import {
 } from '@/app/stores/useAnnotationsStore';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface AnnotationFiltersProps {
   filters: Filters;
@@ -143,7 +144,7 @@ export default function AnnotationFiltersComponent({
     <AnimatedCard hover="none" className="border-t border-theme-secondary">
       <div className="p-6 bg-theme-elevated/30">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
               <PiFunnel className="w-4 h-4 text-theme-primary" />
             </div>
@@ -163,7 +164,7 @@ export default function AnnotationFiltersComponent({
                 {t('annotation_filters_ativos')}
               </span>
             )}
-          </div>
+          </Inline>
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-primary/30 flex items-center justify-center text-theme-tertiary hover:text-theme-primary hover:border-accent-red/50 transition-all"
@@ -175,10 +176,14 @@ export default function AnnotationFiltersComponent({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* ✅ Dificuldade com traduções */}
           <div>
-            <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+            <Inline
+              as="label"
+              gap={2}
+              className="text-sm font-medium text-theme-primary mb-3"
+            >
               <PiTarget className="w-4 h-4" />
               <span>{t('annotation_filters_nivel_dificuldade')}</span>
-            </label>
+            </Inline>
             <div className="space-y-2">
               {DIFFICULTY_OPTIONS.map((option) => {
                 const Icon = option.icon;
@@ -217,10 +222,14 @@ export default function AnnotationFiltersComponent({
 
           {/* ✅ Abrangência com traduções */}
           <div>
-            <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+            <Inline
+              as="label"
+              gap={2}
+              className="text-sm font-medium text-theme-primary mb-3"
+            >
               <PiStack className="w-4 h-4" />
               <span>{t('annotation_filters_abrangencia')}</span>
-            </label>
+            </Inline>
             <div className="space-y-2">
               {SCOPE_OPTIONS.map((option) => {
                 const Icon = option.icon;
@@ -259,10 +268,14 @@ export default function AnnotationFiltersComponent({
 
           {/* ✅ Ordenação com traduções */}
           <div>
-            <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+            <Inline
+              as="label"
+              gap={2}
+              className="text-sm font-medium text-theme-primary mb-3"
+            >
               <PiTrendUp className="w-4 h-4" />
               <span>{t('annotation_filters_ordenar_por')}</span>
-            </label>
+            </Inline>
             <div className="space-y-2">
               {SORT_OPTIONS.map((option) => {
                 const Icon = option.icon;
@@ -295,15 +308,23 @@ export default function AnnotationFiltersComponent({
 
         {/* ✅ Filtros de busca avançada com traduções */}
         <div className="mt-6 pt-6 border-t border-theme-secondary">
-          <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+          <Inline
+            as="label"
+            gap={2}
+            className="text-sm font-medium text-theme-primary mb-3"
+          >
             <PiMagnifyingGlass className="w-4 h-4" />
             <span>{t('annotation_filters_busca_avancada')}</span>
-          </label>
+          </Inline>
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="text-xs text-theme-tertiary mb-2 flex items-center space-x-1">
+              <Inline
+                as="label"
+                gap={1}
+                className="text-xs text-theme-tertiary mb-2"
+              >
                 <span>{t('annotation_filters_buscar_titulos')}</span>
-              </label>
+              </Inline>
               <div className="relative">
                 <input
                   type="text"
@@ -330,13 +351,21 @@ export default function AnnotationFiltersComponent({
         {/* ✅ Resumo de filtros ativos com traduções */}
         {hasActiveFilters && (
           <div className="mt-6 pt-6 border-t border-theme-secondary">
-            <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+            <Inline
+              as="label"
+              gap={2}
+              className="text-sm font-medium text-theme-primary mb-3"
+            >
               <PiFunnel className="w-4 h-4" />
               <span>{t('annotation_filters_filtros_ativos')}</span>
-            </label>
+            </Inline>
             <div className="flex flex-wrap gap-2">
               {localFilters.difficulty && (
-                <span className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm font-medium flex items-center space-x-2">
+                <Inline
+                  as="span"
+                  gap={2}
+                  className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm font-medium"
+                >
                   <span>
                     {t('annotation_filters_dificuldade')}{' '}
                     {
@@ -351,11 +380,15 @@ export default function AnnotationFiltersComponent({
                   >
                     <PiX className="w-3 h-3" />
                   </button>
-                </span>
+                </Inline>
               )}
 
               {localFilters.scope && (
-                <span className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm font-medium flex items-center space-x-2">
+                <Inline
+                  as="span"
+                  gap={2}
+                  className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm font-medium"
+                >
                   <span>
                     {t('annotation_filters_abrangencia_label')}{' '}
                     {
@@ -369,11 +402,15 @@ export default function AnnotationFiltersComponent({
                   >
                     <PiX className="w-3 h-3" />
                   </button>
-                </span>
+                </Inline>
               )}
 
               {localFilters.sortBy && localFilters.sortBy !== 'helpful' && (
-                <span className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm font-medium flex items-center space-x-2">
+                <Inline
+                  as="span"
+                  gap={2}
+                  className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm font-medium"
+                >
                   <span>
                     {t('annotation_filters_ordem')}{' '}
                     {
@@ -387,11 +424,15 @@ export default function AnnotationFiltersComponent({
                   >
                     <PiX className="w-3 h-3" />
                   </button>
-                </span>
+                </Inline>
               )}
 
               {localFilters.search && (
-                <span className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium flex items-center space-x-2">
+                <Inline
+                  as="span"
+                  gap={2}
+                  className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium"
+                >
                   <span>
                     {t('annotation_filters_busca')} &quot;{localFilters.search}
                     &quot;
@@ -402,7 +443,7 @@ export default function AnnotationFiltersComponent({
                   >
                     <PiX className="w-3 h-3" />
                   </button>
-                </span>
+                </Inline>
               )}
             </div>
           </div>
@@ -410,9 +451,13 @@ export default function AnnotationFiltersComponent({
 
         {/* ✅ Actions com traduções */}
         <div className="flex items-center justify-between mt-6 pt-6 border-t border-theme-secondary">
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             {hasActiveFilters ? (
-              <span className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium flex items-center space-x-1">
+              <Inline
+                as="span"
+                gap={1}
+                className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium"
+              >
                 <PiFunnel className="w-3 h-3" />
                 <span>
                   {
@@ -425,33 +470,37 @@ export default function AnnotationFiltersComponent({
                   }{' '}
                   {t('annotation_filters_filtro_aplicados')}
                 </span>
-              </span>
+              </Inline>
             ) : (
-              <span className="text-theme-tertiary text-sm flex items-center space-x-1">
+              <Inline as="span" gap={1} className="text-theme-tertiary text-sm">
                 <PiFunnel className="w-3 h-3" />
                 <span>{t('annotation_filters_nenhum_ativo')}</span>
-              </span>
+              </Inline>
             )}
-          </div>
+          </Inline>
 
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             {hasActiveFilters && (
-              <button
+              <Inline
+                as="button"
+                gap={1}
                 onClick={clearAllFilters}
-                className="btn-classical-secondary text-sm flex items-center space-x-1"
+                className="btn-classical-secondary text-sm"
               >
                 <PiArrowsClockwise className="w-4 h-4" />
                 <span>{t('annotation_filters_limpar_todos')}</span>
-              </button>
+              </Inline>
             )}
-            <button
+            <Inline
+              as="button"
+              gap={2}
               onClick={onClose}
-              className="btn-classical-primary text-sm flex items-center space-x-2"
+              className="btn-classical-primary text-sm"
             >
               <PiX className="w-4 h-4" />
               <span>{t('annotation_filters_fechar')}</span>
-            </button>
-          </div>
+            </Inline>
+          </Inline>
         </div>
 
         {/* ✅ Dica de uso com traduções */}

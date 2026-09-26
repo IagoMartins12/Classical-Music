@@ -8,6 +8,7 @@ import {
   PiHeart,
   PiUser,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ArticleCardListProps {
   article: {
@@ -107,7 +108,7 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
           {/* Footer */}
           <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-theme-secondary">
             {/* Author */}
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               {article.author.image ? (
                 <Image
                   src={article.author.image}
@@ -124,11 +125,11 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
               <span className="text-sm text-theme-secondary font-medium">
                 {authorName || 'Anônimo'}
               </span>
-            </div>
+            </Inline>
 
             {/* Date */}
             {article.publishedAt && (
-              <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
+              <Inline gap={2} className="text-sm text-theme-tertiary">
                 <PiCalendarBlank className="w-3 h-3" />
                 <span>
                   {new Date(article.publishedAt).toLocaleDateString('pt-BR', {
@@ -137,24 +138,24 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
                     year: 'numeric',
                   })}
                 </span>
-              </div>
+              </Inline>
             )}
 
             {/* Stats */}
-            <div className="flex items-center space-x-4 text-sm text-theme-tertiary ml-auto">
-              <div className="flex items-center space-x-1">
+            <Inline gap={4} className="text-sm text-theme-tertiary ml-auto">
+              <Inline gap={1}>
                 <PiClock className="w-4 h-4" />
                 <span>{article.readTime}min</span>
-              </div>
-              <div className="flex items-center space-x-1">
+              </Inline>
+              <Inline gap={1}>
                 <PiHeart className="w-4 h-4" />
                 <span>{article._count.likes}</span>
-              </div>
-              <div className="flex items-center space-x-1">
+              </Inline>
+              <Inline gap={1}>
                 <PiChatDots className="w-4 h-4" />
                 <span>{article._count.comments}</span>
-              </div>
-            </div>
+              </Inline>
+            </Inline>
           </div>
         </div>
       </div>

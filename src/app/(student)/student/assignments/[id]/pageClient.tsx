@@ -42,6 +42,7 @@ import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSe
 import Modal from '@/app/components/Modal';
 import { useAssignmentVideo } from '@/app/hooks/lessonsSystem/useAssignmentVideo';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface StudentAssignmentDetailsPageClientProps {
   initialData: StudentAssignmentDetailsData | null;
@@ -441,7 +442,7 @@ export default function StudentAssignmentDetailsPageClient({
         {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               <Link
                 href="/student/assignments"
                 className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
@@ -456,10 +457,10 @@ export default function StudentAssignmentDetailsPageClient({
                   {t('assignment_by')} {assignment.lesson.teacher.name}
                 </p>
               </div>
-            </div>
+            </Inline>
 
             {/* Quick Actions */}
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <span
                 className={`px-3 py-2 rounded-full text-sm font-medium border ${getStatusColor(
                   assignment
@@ -470,10 +471,12 @@ export default function StudentAssignmentDetailsPageClient({
 
               {/* Botão de Salvar Alterações */}
               {hasUnsavedChanges && (
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={handleSaveChanges}
                   disabled={isSaving}
-                  className="btn-classical-secondary flex items-center space-x-2 bg-accent-blue border-accent-blue text-white hover:bg-accent-blue/90"
+                  className="btn-classical-secondary bg-accent-blue border-accent-blue text-white hover:bg-accent-blue/90"
                 >
                   {isSaving ? (
                     <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -485,28 +488,33 @@ export default function StudentAssignmentDetailsPageClient({
                       ? t('student_assignment_details_saving')
                       : t('student_assignment_details_save_changes')}
                   </span>
-                </button>
+                </Inline>
               )}
 
               {!assignment.isCompleted && initialData.canSubmit && (
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() => setShowCompleteModal(true)}
-                  className="btn-classical-primary flex items-center space-x-2 bg-accent-green border-accent-green hover:bg-accent-green/90"
+                  className="btn-classical-primary bg-accent-green border-accent-green hover:bg-accent-green/90"
                 >
                   <PiCheck className="w-4 h-4" />
                   <span>
                     {t('student_assignment_details_complete_assignment')}
                   </span>
-                </button>
+                </Inline>
               )}
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 
         {/* Alerta de mudanças não salvas */}
         {hasUnsavedChanges && (
           <AnimatedItem direction="up" springType="gentle">
-            <div className="mb-6 p-4 bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg flex items-center space-x-3">
+            <Inline
+              gap={3}
+              className="mb-6 p-4 bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg"
+            >
               <PiWarning className="w-5 h-5 text-accent-yellow" />
               <div className="flex-1">
                 <p className="text-accent-yellow font-medium">
@@ -516,7 +524,7 @@ export default function StudentAssignmentDetailsPageClient({
                   {t('student_assignment_details_unsaved_changes_desc')}
                 </p>
               </div>
-            </div>
+            </Inline>
           </AnimatedItem>
         )}
 
@@ -570,7 +578,7 @@ export default function StudentAssignmentDetailsPageClient({
                         <label className="text-sm font-medium text-theme-tertiary block mb-2">
                           {t('student_assignment_details_due_date')}
                         </label>
-                        <div className="flex items-center space-x-2 text-theme-primary">
+                        <Inline gap={2} className="text-theme-primary">
                           <PiCalendarBlank className="w-4 h-4" />
                           <span>{formatDate(assignment.dueDate)}</span>
                           {assignment.daysUntilDue !== null && (
@@ -599,7 +607,7 @@ export default function StudentAssignmentDetailsPageClient({
                                     )}
                             </span>
                           )}
-                        </div>
+                        </Inline>
                       </div>
                     )}
                   </div>
@@ -619,7 +627,7 @@ export default function StudentAssignmentDetailsPageClient({
                     <label className="text-sm font-medium text-theme-tertiary block mb-2">
                       {t('student_assignment_details_your_progress')}
                     </label>
-                    <div className="flex items-center space-x-4 mb-4">
+                    <Inline gap={4} className="mb-4">
                       <div className="flex-1">
                         <div className="w-full bg-theme-secondary rounded-full h-2">
                           <div
@@ -637,17 +645,19 @@ export default function StudentAssignmentDetailsPageClient({
                       <span className="text-theme-primary font-medium">
                         {currentProgress}%
                       </span>
-                    </div>
+                    </Inline>
 
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={() => setShowProgressModal(true)}
-                      className="btn-classical-secondary flex items-center mt-4 space-x-2"
+                      className="btn-classical-secondary mt-4"
                     >
                       <PiTarget className="w-4 h-4" />
                       <span>
                         {t('student_assignment_details_mark_achievements')}
                       </span>
-                    </button>
+                    </Inline>
                   </div>
 
                   {/* Goals */}
@@ -658,13 +668,14 @@ export default function StudentAssignmentDetailsPageClient({
                       </label>
                       <div className="space-y-2">
                         {assignment.practiceGoals.map((goal, index) => (
-                          <div
+                          <Inline
+                            gap={2}
                             key={index}
-                            className="flex items-center space-x-2 text-theme-primary"
+                            className="text-theme-primary"
                           >
                             <PiTarget className="w-4 h-4 text-accent-blue" />
                             <span>{goal}</span>
-                          </div>
+                          </Inline>
                         ))}
                       </div>
                     </div>
@@ -677,13 +688,14 @@ export default function StudentAssignmentDetailsPageClient({
                       </label>
                       <div className="space-y-2">
                         {assignment.technicalGoals.map((goal, index) => (
-                          <div
+                          <Inline
+                            gap={2}
                             key={index}
-                            className="flex items-center space-x-2 text-theme-primary"
+                            className="text-theme-primary"
                           >
                             <PiTarget className="w-4 h-4 text-accent-green" />
                             <span>{goal}</span>
-                          </div>
+                          </Inline>
                         ))}
                       </div>
                     </div>
@@ -696,13 +708,14 @@ export default function StudentAssignmentDetailsPageClient({
                       </label>
                       <div className="space-y-2">
                         {assignment.exercises.map((exercise, index) => (
-                          <div
+                          <Inline
+                            gap={2}
                             key={index}
-                            className="flex items-center space-x-2 text-theme-primary"
+                            className="text-theme-primary"
                           >
                             <PiBookOpen className="w-4 h-4 text-accent-purple" />
                             <span>{exercise}</span>
-                          </div>
+                          </Inline>
                         ))}
                       </div>
                     </div>
@@ -727,7 +740,10 @@ export default function StudentAssignmentDetailsPageClient({
                           <h4 className="font-medium text-theme-primary mb-1">
                             {t('student_assignment_details_current_video')}
                           </h4>
-                          <div className="flex items-center space-x-4 text-sm text-theme-secondary">
+                          <Inline
+                            gap={4}
+                            className="text-sm text-theme-secondary"
+                          >
                             <span>{currentVideoSubmission.originalName}</span>
 
                             <span>
@@ -736,17 +752,19 @@ export default function StudentAssignmentDetailsPageClient({
                                 currentVideoSubmission.uploadedAt
                               )}
                             </span>
-                          </div>
+                          </Inline>
                         </div>
-                        <button
+                        <Inline
+                          as="button"
+                          gap={2}
                           onClick={() => setShowVideoModal(true)}
-                          className="btn-classical-secondary flex items-center space-x-2"
+                          className="btn-classical-secondary"
                         >
                           <PiPlay className="w-4 h-4" />
                           <span>
                             {t('student_assignment_details_view_video')}
                           </span>
-                        </button>
+                        </Inline>
                       </div>
                     </div>
                   )}
@@ -787,7 +805,7 @@ export default function StudentAssignmentDetailsPageClient({
                       ) : (
                         <div className="border border-theme-secondary rounded-lg p-4">
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-3">
+                            <Inline gap={3}>
                               <div className="w-12 h-12 bg-accent-blue/10 border border-accent-blue/30 rounded-lg flex items-center justify-center">
                                 <PiVideoCamera className="w-6 h-6 text-accent-blue" />
                               </div>
@@ -799,7 +817,7 @@ export default function StudentAssignmentDetailsPageClient({
                                   {formatFileSize(selectedVideo.size)}
                                 </div>
                               </div>
-                            </div>
+                            </Inline>
                             <button
                               onClick={removeVideo}
                               className="text-accent-red hover:text-accent-red/80 transition-colors"
@@ -823,7 +841,10 @@ export default function StudentAssignmentDetailsPageClient({
 
                     {/* Error Display */}
                     {uploadError && (
-                      <div className="p-3 bg-accent-red/10 border border-accent-red/30 rounded-lg flex items-center space-x-2">
+                      <Inline
+                        gap={2}
+                        className="p-3 bg-accent-red/10 border border-accent-red/30 rounded-lg"
+                      >
                         <PiWarningCircle className="w-4 h-4 text-accent-red" />
                         <span className="text-accent-red text-sm">
                           {uploadError}
@@ -834,12 +855,12 @@ export default function StudentAssignmentDetailsPageClient({
                         >
                           <PiX className="w-4 h-4" />
                         </button>
-                      </div>
+                      </Inline>
                     )}
 
                     {/* Upload Button */}
                     {selectedVideo && (
-                      <div className="flex items-center justify-end space-x-3">
+                      <Inline gap={3} className="justify-end">
                         <button
                           onClick={removeVideo}
                           disabled={isUploading}
@@ -847,10 +868,12 @@ export default function StudentAssignmentDetailsPageClient({
                         >
                           {t('student_assignment_details_cancel')}
                         </button>
-                        <button
+                        <Inline
+                          as="button"
+                          gap={2}
                           onClick={handleVideoUpload}
                           disabled={isUploading}
-                          className="btn-classical-primary flex items-center space-x-2"
+                          className="btn-classical-primary"
                         >
                           {isUploading ? (
                             <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -864,8 +887,8 @@ export default function StudentAssignmentDetailsPageClient({
                                 ? t('student_assignment_details_replace_video')
                                 : t('student_assignment_details_upload_video')}
                           </span>
-                        </button>
-                      </div>
+                        </Inline>
+                      </Inline>
                     )}
                   </div>
                 </AnimatedCard>
@@ -899,7 +922,7 @@ export default function StudentAssignmentDetailsPageClient({
                     </div>
 
                     {assignment.teacherRating && (
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <span className="text-sm font-medium text-theme-tertiary">
                           {t('student_assignment_details_teacher_rating')}
                         </span>
@@ -927,7 +950,7 @@ export default function StudentAssignmentDetailsPageClient({
                         <span className="text-theme-primary ml-2">
                           {assignment.teacherRating}/5
                         </span>
-                      </div>
+                      </Inline>
                     )}
                   </div>
                 </AnimatedCard>
@@ -956,7 +979,7 @@ export default function StudentAssignmentDetailsPageClient({
                     <label className="text-sm font-medium text-theme-tertiary block mb-2">
                       {t('student_assignment_details_difficulty_question')}
                     </label>
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
@@ -997,7 +1020,7 @@ export default function StudentAssignmentDetailsPageClient({
                                       'student_assignment_details_rating_very_hard'
                                     )}
                       </span>
-                    </div>
+                    </Inline>
                   </div>
                 </div>
               </AnimatedCard>
@@ -1013,7 +1036,7 @@ export default function StudentAssignmentDetailsPageClient({
                   {t('student_assignment_details_teacher_section')}
                 </h3>
 
-                <div className="flex items-center space-x-3 mb-4">
+                <Inline gap={3} className="mb-4">
                   {assignment.lesson.teacher.image ? (
                     <div className="w-12 h-12 relative rounded-full overflow-hidden">
                       <Image
@@ -1040,7 +1063,7 @@ export default function StudentAssignmentDetailsPageClient({
                       {t('student_assignment_details_view_related_lesson')}
                     </Link>
                   </div>
-                </div>
+                </Inline>
               </AnimatedCard>
             </AnimatedItem>
 
@@ -1144,7 +1167,7 @@ export default function StudentAssignmentDetailsPageClient({
         {/* Error Display */}
         {error && (
           <div className="fixed bottom-6 right-6 bg-accent-red/90 backdrop-blur-sm text-white p-4 rounded-lg shadow-lg max-w-md">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <PiWarningCircle className="w-5 h-5 text-white" />
               <div>
                 <p className="font-medium">Erro</p>
@@ -1156,7 +1179,7 @@ export default function StudentAssignmentDetailsPageClient({
               >
                 <PiX className="w-4 h-4" />
               </button>
-            </div>
+            </Inline>
           </div>
         )}
 
@@ -1179,7 +1202,7 @@ export default function StudentAssignmentDetailsPageClient({
                   {t('student_assignment_details_complete_modal_description')}
                 </p>
 
-                <div className="flex items-center justify-between space-x-3">
+                <Inline gap={3} className="justify-between">
                   <button
                     onClick={() => setShowCompleteModal(false)}
                     className="btn-classical-secondary"
@@ -1187,10 +1210,12 @@ export default function StudentAssignmentDetailsPageClient({
                   >
                     {t('student_assignment_details_complete_modal_cancel')}
                   </button>
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={handleCompleteAssignment}
                     disabled={loading.updateAssignment}
-                    className="btn-classical-primary bg-accent-green border-accent-green hover:bg-accent-green/90 flex items-center space-x-2"
+                    className="btn-classical-primary bg-accent-green border-accent-green hover:bg-accent-green/90"
                   >
                     {loading.updateAssignment ? (
                       <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -1204,8 +1229,8 @@ export default function StudentAssignmentDetailsPageClient({
                             'student_assignment_details_complete_modal_confirm'
                           )}
                     </span>
-                  </button>
-                </div>
+                  </Inline>
+                </Inline>
               </div>
             </AnimatedCard>
           </Modal>
@@ -1227,7 +1252,7 @@ export default function StudentAssignmentDetailsPageClient({
                 </div>
 
                 <div className="mb-6">
-                  <div className="flex items-center space-x-4 mb-2">
+                  <Inline gap={4} className="mb-2">
                     <div className="flex-1">
                       <div className="w-full bg-theme-secondary rounded-full h-3">
                         <div
@@ -1245,7 +1270,7 @@ export default function StudentAssignmentDetailsPageClient({
                     <span className="text-theme-primary font-medium">
                       {currentProgress}%
                     </span>
-                  </div>
+                  </Inline>
                   <p className="text-sm text-theme-tertiary">
                     {t('student_assignment_details_progress_modal_description')}
                   </p>
@@ -1325,7 +1350,7 @@ export default function StudentAssignmentDetailsPageClient({
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-4 text-sm text-theme-secondary">
+                  <Inline gap={4} className="text-sm text-theme-secondary">
                     <span>{currentVideoSubmission.originalName}</span>
                     <span>
                       {currentVideoSubmission.fileSize
@@ -1336,7 +1361,7 @@ export default function StudentAssignmentDetailsPageClient({
                       {t('student_assignment_details_uploaded_at')}{' '}
                       {formatDateTime(currentVideoSubmission.uploadedAt)}
                     </span>
-                  </div>
+                  </Inline>
 
                   <video
                     src={currentVideoSubmission.filePath}

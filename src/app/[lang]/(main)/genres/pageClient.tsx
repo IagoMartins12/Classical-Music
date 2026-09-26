@@ -16,6 +16,7 @@ import {
 import AnimatedMusicalNotes2 from '../../../components/AnimatedMusicalNotes2';
 import ViewModeToggle from '../../../components/ViewModeToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Genre {
   id: string;
@@ -152,20 +153,24 @@ export default function GenresClient({ genres }: GenresClientProps) {
         {/* Controls */}
         <div className="classical-card p-6">
           <div className="flex items-center justify-between mb-6">
-            <button
+            <Inline
+              as="button"
+              gap={2}
               onClick={goBack}
-              className="btn-classical-secondary flex items-center space-x-2"
+              className="btn-classical-secondary"
             >
               <PiArrowLeft className="w-4 h-4" />
               <span className="">{t('back_button')}</span>
-            </button>
+            </Inline>
 
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               {/* Expand/Collapse All Button */}
               {Object.keys(groupedGenres).length > 0 && (
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={toggleAllSections}
-                  className="btn-classical-secondary flex items-center space-x-2"
+                  className="btn-classical-secondary"
                 >
                   {areAllSectionsCollapsed() ? (
                     <>
@@ -178,9 +183,9 @@ export default function GenresClient({ genres }: GenresClientProps) {
                       <span>{t('collapse_all')}</span>
                     </>
                   )}
-                </button>
+                </Inline>
               )}
-            </div>
+            </Inline>
           </div>
 
           {/* Search Bar */}

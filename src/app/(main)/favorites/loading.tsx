@@ -11,6 +11,7 @@ import {
   PiSquaresFour,
   PiUser,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function FavoritesLoading() {
   return (
@@ -98,7 +99,7 @@ export default function FavoritesLoading() {
               </div>
 
               {/* View Mode Toggle Skeleton */}
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <div className="bg-theme-secondary border border-theme-primary rounded-lg p-1 flex">
                   <div className="p-2 rounded bg-theme-elevated">
                     <PiListBullets className="w-4 h-4 text-theme-tertiary/50" />
@@ -107,14 +108,14 @@ export default function FavoritesLoading() {
                     <PiSquaresFour className="w-4 h-4 text-brand-primary/50" />
                   </div>
                 </div>
-              </div>
+              </Inline>
             </div>
           </div>
         </div>
 
         {/* Composers Section Skeleton */}
         <div>
-          <div className="flex items-center space-x-3 mb-6">
+          <Inline gap={3} className="mb-6">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center">
               <PiUser className="w-5 h-5 text-theme-primary/30" />
             </div>
@@ -122,7 +123,7 @@ export default function FavoritesLoading() {
               <div className="h-8 w-56 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
               <div className="h-4 w-40 bg-theme-elevated rounded animate-pulse"></div>
             </div>
-          </div>
+          </Inline>
 
           {/* Composers Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -134,7 +135,7 @@ export default function FavoritesLoading() {
 
         {/* Works Section Skeleton */}
         <div>
-          <div className="flex items-center space-x-3 mb-6">
+          <Inline gap={3} className="mb-6">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center">
               <PiMusicNotes className="w-5 h-5 text-theme-primary/30" />
             </div>
@@ -142,7 +143,7 @@ export default function FavoritesLoading() {
               <div className="h-8 w-40 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
               <div className="h-4 w-32 bg-theme-elevated rounded animate-pulse"></div>
             </div>
-          </div>
+          </Inline>
 
           {/* Works Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -196,10 +197,10 @@ function ComposerCardSkeleton() {
 
       {/* Footer */}
       <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-end">
-        <div className="flex items-center space-x-1">
+        <Inline gap={1}>
           <div className="h-4 w-16 bg-brand-primary/20 rounded"></div>
           <PiArrowSquareOut className="w-3 h-3 text-theme-tertiary/30" />
-        </div>
+        </Inline>
       </div>
     </div>
   );
@@ -232,20 +233,20 @@ function WorkCardSkeleton() {
         </div>
 
         {/* Composer info */}
-        <div className="flex items-center space-x-2 mb-2">
+        <Inline gap={2} className="mb-2">
           <div className="flex items-center">
             <div className="w-3 h-3 bg-theme-tertiary/30 rounded mr-1"></div>
             <div className="h-4 bg-accent-blue/20 rounded w-28"></div>
           </div>
-        </div>
+        </Inline>
       </div>
 
       {/* Footer */}
       <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-end">
-        <div className="flex items-center space-x-1">
+        <Inline gap={1}>
           <div className="h-4 w-16 bg-brand-primary/20 rounded"></div>
           <PiArrowSquareOut className="w-3 h-3 text-theme-tertiary/30" />
-        </div>
+        </Inline>
       </div>
     </div>
   );

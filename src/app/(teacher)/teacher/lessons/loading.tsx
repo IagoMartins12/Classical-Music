@@ -14,6 +14,7 @@ import {
   PiUser,
   PiUsers,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function TeacherLessonsLoading() {
   return (
@@ -124,10 +125,10 @@ export default function TeacherLessonsLoading() {
 
           {/* Filter Summary */}
           <div className="flex items-center justify-between pt-4 border-t border-theme-secondary mt-4">
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
               <div className="h-3 bg-theme-secondary/30 rounded w-56"></div>
-            </div>
+            </Inline>
             <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
           </div>
         </div>
@@ -169,37 +170,37 @@ function LessonCardSkeleton() {
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-2">
+                  <Inline gap={3} className="mb-2">
                     <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-48"></div>
                     <div className="h-6 w-20 bg-gradient-to-r from-accent-blue/20 to-accent-blue/20 border border-accent-blue/30 rounded-full"></div>
-                  </div>
+                  </Inline>
 
-                  <div className="flex items-center space-x-4 mb-3">
-                    <div className="flex items-center space-x-2">
+                  <Inline gap={4} className="mb-3">
+                    <Inline gap={2}>
                       <PiUser className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="h-3 bg-theme-elevated rounded w-20"></div>
-                    </div>
-                    <div className="flex items-center space-x-2">
+                    </Inline>
+                    <Inline gap={2}>
                       <PiCalendarBlank className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="h-3 bg-theme-elevated rounded w-24"></div>
-                    </div>
-                    <div className="flex items-center space-x-2">
+                    </Inline>
+                    <Inline gap={2}>
                       <PiClock className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="h-3 bg-theme-elevated rounded w-16"></div>
-                    </div>
-                    <div className="flex items-center space-x-2">
+                    </Inline>
+                    <Inline gap={2}>
                       <PiMapPin className="w-4 h-4 text-theme-tertiary/30" />
                       <div className="h-3 bg-theme-elevated rounded w-20"></div>
-                    </div>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center space-x-2 ml-4">
+                <Inline gap={2} className="ml-4">
                   <div className="w-8 h-8 bg-theme-elevated rounded-lg"></div>
                   <div className="w-8 h-8 bg-theme-elevated rounded-lg"></div>
                   <div className="w-8 h-8 bg-theme-elevated rounded-lg"></div>
-                </div>
+                </Inline>
               </div>
 
               {/* Description */}
@@ -220,10 +221,10 @@ function LessonCardSkeleton() {
 
               {/* Works */}
               <div className="mb-4">
-                <div className="flex items-center space-x-2 mb-2">
+                <Inline gap={2} className="mb-2">
                   <PiMusicNotes className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
-                </div>
+                </Inline>
                 <div className="flex flex-wrap gap-2">
                   {Array.from({ length: 2 }).map((_, i) => (
                     <div
@@ -236,10 +237,10 @@ function LessonCardSkeleton() {
 
               {/* Homework */}
               <div className="space-y-2">
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <PiTarget className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
-                </div>
+                </Inline>
                 <div className="space-y-1">
                   <div className="h-3 bg-theme-elevated rounded w-full"></div>
                   <div className="h-3 bg-theme-elevated rounded w-2/3"></div>
@@ -258,20 +259,20 @@ function LessonCardSkeleton() {
               </div>
 
               {/* Stats */}
-              <div className="flex items-center space-x-6 text-sm text-theme-tertiary mt-4">
-                <div className="flex items-center space-x-2">
+              <Inline gap={6} className="text-sm text-theme-tertiary mt-4">
+                <Inline gap={2}>
                   <PiCalendarBlank className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
-                </div>
-                <div className="flex items-center space-x-2">
+                </Inline>
+                <Inline gap={2}>
                   <PiClock className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="h-3 bg-theme-tertiary/30 rounded w-16"></div>
-                </div>
-                <div className="flex items-center space-x-2">
+                </Inline>
+                <Inline gap={2}>
                   <PiTarget className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="h-3 bg-theme-tertiary/30 rounded w-12"></div>
-                </div>
-              </div>
+                </Inline>
+              </Inline>
             </div>
           </div>
         </div>

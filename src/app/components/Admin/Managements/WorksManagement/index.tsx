@@ -46,6 +46,7 @@ import StatsSkeleton, {
 import { getPeriodLabel } from '@/app/utils/adminUtils';
 import PeriodSelector from '../../Common/PeriodSelector';
 import LoadingAdminState from '../../Common/LoadingState';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface WorkFilters {
   search: string;
@@ -376,15 +377,20 @@ export default function WorksManagement() {
             {stats.mostPopular.length > 0 && (
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiStar className="w-5 h-5 text-accent-amber" />
                     <span>Mais Favoritadas</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-3">
                     {stats.mostPopular.slice(0, 5).map((work, index) => (
-                      <div
+                      <Inline
+                        gap={3}
                         key={work.id}
-                        className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                        className="p-3 bg-theme-secondary rounded-xl"
                       >
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                           {index + 1}
@@ -403,7 +409,7 @@ export default function WorksManagement() {
                           leftIcon={<PiEye />}
                           onClick={() => router.push(`/admin/works/${work.id}`)}
                         />
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </AnimatedCard>
@@ -414,15 +420,20 @@ export default function WorksManagement() {
             {stats.mostWantedToLearn.length > 0 && (
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiBookOpen className="w-5 h-5 text-accent-blue" />
                     <span>Mais Queridas</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-3">
                     {stats.mostWantedToLearn.slice(0, 5).map((work, index) => (
-                      <div
+                      <Inline
+                        gap={3}
                         key={work.id}
-                        className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                        className="p-3 bg-theme-secondary rounded-xl"
                       >
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                           {index + 1}
@@ -442,7 +453,7 @@ export default function WorksManagement() {
                           leftIcon={<PiEye />}
                           onClick={() => router.push(`/admin/works/${work.id}`)}
                         />
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </AnimatedCard>
@@ -453,15 +464,20 @@ export default function WorksManagement() {
             {stats.mostLearned.length > 0 && (
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiCheckCircle className="w-5 h-5 text-accent-green" />
                     <span>Mais Aprendidas</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-3">
                     {stats.mostLearned.slice(0, 5).map((work, index) => (
-                      <div
+                      <Inline
+                        gap={3}
                         key={work.id}
-                        className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                        className="p-3 bg-theme-secondary rounded-xl"
                       >
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                           {index + 1}
@@ -480,7 +496,7 @@ export default function WorksManagement() {
                           leftIcon={<PiEye />}
                           onClick={() => router.push(`/admin/works/${work.id}`)}
                         />
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </AnimatedCard>
@@ -496,7 +512,7 @@ export default function WorksManagement() {
               <h3 className="text-xl font-bold text-theme-primary">
                 Lista de Obras
               </h3>
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -518,12 +534,12 @@ export default function WorksManagement() {
                 >
                   Atualizar
                 </Button>
-              </div>
+              </Inline>
             </div>
 
             {/* Filtros Básicos - sempre visíveis */}
             <div className="space-y-4 mb-6">
-              <div className="flex items-center space-x-4">
+              <Inline gap={4}>
                 <div className="relative flex-1">
                   <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                   <Input
@@ -573,7 +589,7 @@ export default function WorksManagement() {
                 >
                   Buscar
                 </Button>
-              </div>
+              </Inline>
             </div>
 
             {/* Filtros Avançados */}
@@ -729,7 +745,7 @@ export default function WorksManagement() {
                 <span className="text-accent-green font-medium">
                   {selectedWorks.size} obras selecionadas
                 </span>
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <Button
                     variant="secondary"
                     size="sm"
@@ -745,7 +761,7 @@ export default function WorksManagement() {
                   >
                     Limpar Seleção
                   </Button>
-                </div>
+                </Inline>
               </div>
             )}
 
@@ -773,7 +789,7 @@ export default function WorksManagement() {
                     />
 
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-3 mb-2">
+                      <Inline gap={3} className="mb-2">
                         <h4 className="font-bold text-theme-primary text-lg">
                           {work.title}
                         </h4>
@@ -796,7 +812,7 @@ export default function WorksManagement() {
                             Sem partituras
                           </span>
                         )}
-                      </div>
+                      </Inline>
 
                       <div className="text-theme-secondary mb-3">
                         <span className="font-medium">{work.composer}</span>
@@ -819,7 +835,7 @@ export default function WorksManagement() {
                       </div>
 
                       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm text-theme-secondary">
-                        <div className="flex items-center space-x-1">
+                        <Inline gap={1}>
                           <PiHeart className="w-4 h-4" />
                           <span
                             className={
@@ -828,16 +844,16 @@ export default function WorksManagement() {
                           >
                             {work.favoritesCount} favoritos
                           </span>
-                        </div>
-                        <div className="flex items-center space-x-1">
+                        </Inline>
+                        <Inline gap={1}>
                           <PiBookOpen className="w-4 h-4" />
                           <span>{work.wantToLearnCount} querem</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
+                        </Inline>
+                        <Inline gap={1}>
                           <PiCheckCircle className="w-4 h-4" />
                           <span>{work.learnedCount} aprenderam</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
+                        </Inline>
+                        <Inline gap={1}>
                           <PiFileText className="w-4 h-4" />
                           <span
                             className={
@@ -846,22 +862,25 @@ export default function WorksManagement() {
                           >
                             {work.scoresCount} partituras
                           </span>
-                        </div>
-                        <div className="flex items-center space-x-1">
+                        </Inline>
+                        <Inline gap={1}>
                           <PiChatCenteredText className="w-4 h-4" />
                           <span>{work.annotationsCount} anotações</span>
-                        </div>
+                        </Inline>
                       </div>
 
                       {work.uploader && (
-                        <div className="mt-2 text-xs text-theme-tertiary flex items-center space-x-1">
+                        <Inline
+                          gap={1}
+                          className="mt-2 text-xs text-theme-tertiary"
+                        >
                           <PiUser className="w-3 h-3" />
                           <span>Adicionada por: {work.uploader}</span>
-                        </div>
+                        </Inline>
                       )}
                     </div>
 
-                    <div className="flex items-center space-x-2 flex-shrink-0">
+                    <Inline gap={2} className="flex-shrink-0">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -886,7 +905,7 @@ export default function WorksManagement() {
                         className="text-accent-red hover:bg-accent-red/10"
                         title="Deletar"
                       />
-                    </div>
+                    </Inline>
                   </div>
                 </div>
               ))}
@@ -898,7 +917,7 @@ export default function WorksManagement() {
                 <div className="text-sm text-theme-secondary">
                   Mostrando {works.length} de {pagination.total} obras
                 </div>
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -928,7 +947,7 @@ export default function WorksManagement() {
                   >
                     Próxima
                   </Button>
-                </div>
+                </Inline>
               </div>
             )}
           </AnimatedCard>

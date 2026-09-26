@@ -11,6 +11,7 @@ import {
 } from 'react-icons/pi';
 
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
+import { Inline } from '@/app/components/ui/Layout';
 
 const DetailedMusicHistorySkeleton = () => {
   // Dados das seções para o skeleton
@@ -71,7 +72,7 @@ const DetailedMusicHistorySkeleton = () => {
               {/* Header */}
               <div className="p-6 cursor-pointer select-none group">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <div
                       className={`w-12 h-12 bg-gradient-to-br  rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200`}
                     >
@@ -81,15 +82,15 @@ const DetailedMusicHistorySkeleton = () => {
                       <div className="h-8 w-80 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
                       <div className="h-4 w-64 bg-theme-elevated rounded animate-pulse"></div>
                     </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="h-4 w-16 bg-theme-elevated rounded animate-pulse"></div>
                     <div
                       className={`w-8 h-8 bg-gradient-to-br rounded-xl flex items-center justify-center`}
                     >
                       <PiCaretDown className="w-4 h-4 text-theme-primary" />
                     </div>
-                  </div>
+                  </Inline>
                 </div>
               </div>
             </div>
@@ -111,7 +112,7 @@ const LoadingMusicHistorySkeleton = () => {
         <div className="section-wrap py-24 lg:py-32">
           <div className="text-center">
             {/* Floating Icons Skeleton */}
-            <div className="flex justify-center items-center mb-8 space-x-6">
+            <Inline gap={6} className="justify-center mb-8">
               <div className="w-16 h-16 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-2xl flex items-center justify-center shadow-theme-glow animate-shimmer">
                 <div className="w-8 h-8 bg-theme-inverse/20 rounded-lg animate-pulse"></div>
               </div>
@@ -127,7 +128,7 @@ const LoadingMusicHistorySkeleton = () => {
               >
                 <div className="w-8 h-8 bg-theme-inverse/20 rounded-lg animate-pulse"></div>
               </div>
-            </div>
+            </Inline>
 
             {/* Title Skeleton */}
             <div className="space-y-6 mb-8">
@@ -176,10 +177,10 @@ const LoadingMusicHistorySkeleton = () => {
         {/* Navigation Tabs Skeleton */}
         <div className="classical-card p-8 animate-shimmer">
           <div className="text-center mb-8">
-            <div className="flex items-center justify-center space-x-3 mb-4">
+            <Inline gap={3} className="justify-center mb-4">
               <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl"></div>
               <div className="h-6 w-48 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-lg"></div>
-            </div>
+            </Inline>
             <div className="h-4 w-64 bg-theme-elevated rounded mx-auto"></div>
           </div>
 
@@ -229,10 +230,10 @@ const LoadingMusicHistorySkeleton = () => {
 
                 {/* Description */}
                 <div className="classical-card p-8 group">
-                  <div className="flex items-center space-x-3 mb-4">
+                  <Inline gap={3} className="mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
                     <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
-                  </div>
+                  </Inline>
                   <div className="space-y-3">
                     <div className="h-4 bg-theme-elevated rounded"></div>
                     <div className="h-4 bg-theme-elevated rounded w-4/5"></div>
@@ -244,18 +245,18 @@ const LoadingMusicHistorySkeleton = () => {
                 {/* Details Card */}
                 <div className="classical-card overflow-hidden">
                   <div className="p-6">
-                    <div className="flex items-center space-x-3 mb-6">
+                    <Inline gap={3} className="mb-6">
                       <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-2xl"></div>
                       <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
-                    </div>
+                    </Inline>
 
                     <div className="grid md:grid-cols-2 gap-6">
                       {[1, 2, 3, 4].map((item) => (
                         <div key={item} className="space-y-4">
-                          <div className="flex items-center space-x-3">
+                          <Inline gap={3}>
                             <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
                             <div className="h-5 w-24 bg-theme-elevated rounded"></div>
-                          </div>
+                          </Inline>
                           <div className="space-y-3">
                             {[1, 2, 3].map((subItem) => (
                               <div
@@ -280,13 +281,13 @@ const LoadingMusicHistorySkeleton = () => {
               {/* Composers Section */}
               <div className="flex-1 w-full lg:max-w-md">
                 <div className="classical-card p-6 sticky top-6">
-                  <div className="flex items-center space-x-3 mb-6">
+                  <Inline gap={3} className="mb-6">
                     <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
                     <div className="space-y-2">
                       <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                       <div className="h-3 w-24 bg-theme-elevated rounded"></div>
                     </div>
-                  </div>
+                  </Inline>
 
                   <div className="space-y-4">
                     {[1, 2, 3, 4].map((composer) => (
@@ -295,23 +296,23 @@ const LoadingMusicHistorySkeleton = () => {
                         className="classical-card-simple p-4 animate-shimmer"
                         style={{ animationDelay: `${composer * 0.1}s` }}
                       >
-                        <div className="flex items-center space-x-3 mb-3">
+                        <Inline gap={3} className="mb-3">
                           <div className="w-12 h-12 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl shadow-theme-medium flex-shrink-0"></div>
                           <div className="flex-1 space-y-2">
                             <div className="h-4 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                             <div className="h-3 bg-theme-elevated rounded w-2/3"></div>
                           </div>
                           <div className="w-6 h-6 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
-                        </div>
+                        </Inline>
                         <div className="space-y-2">
                           <div className="h-3 bg-theme-elevated rounded"></div>
                           <div className="h-3 bg-theme-elevated rounded w-4/5"></div>
                         </div>
                         <div className="flex items-center justify-between mt-3 pt-2 border-t border-theme-secondary">
-                          <div className="flex items-center space-x-1">
+                          <Inline gap={1}>
                             <div className="w-1.5 h-1.5 bg-brand-primary/30 rounded-full"></div>
                             <div className="h-3 w-16 bg-theme-elevated rounded"></div>
-                          </div>
+                          </Inline>
                           <div className="w-3 h-3 bg-theme-elevated rounded"></div>
                         </div>
                       </div>
@@ -331,13 +332,13 @@ const LoadingMusicHistorySkeleton = () => {
               className="classical-card p-8 animate-shimmer"
               style={{ animationDelay: `${section * 0.3}s` }}
             >
-              <div className="flex items-center space-x-3 mb-6">
+              <Inline gap={3} className="mb-6">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-gold/20 to-brand-secondary/20 rounded-2xl"></div>
                 <div className="space-y-2">
                   <div className="h-6 w-64 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                   <div className="h-4 w-48 bg-theme-elevated rounded"></div>
                 </div>
-              </div>
+              </Inline>
 
               <div className="space-y-4 mb-6">
                 <div className="h-4 bg-theme-elevated rounded"></div>
@@ -348,10 +349,10 @@ const LoadingMusicHistorySkeleton = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {[1, 2].map((card) => (
                   <div key={card} className="classical-card-simple p-6">
-                    <div className="flex items-center space-x-3 mb-4">
+                    <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
                       <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
-                    </div>
+                    </Inline>
                     <div className="space-y-3">
                       <div className="h-3 bg-theme-elevated rounded"></div>
                       <div className="h-3 bg-theme-elevated rounded w-4/5"></div>

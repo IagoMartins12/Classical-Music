@@ -8,6 +8,7 @@ import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface FieldSelectorProps {
   isOpen: boolean;
@@ -123,19 +124,27 @@ export default function FieldSelector({
 
     if ((field as any).isSensitive) {
       return (
-        <span className="px-2 py-0.5 bg-red-500/20 text-red-500 text-xs rounded-full flex items-center space-x-1">
+        <Inline
+          as="span"
+          gap={1}
+          className="px-2 py-0.5 bg-red-500/20 text-red-500 text-xs rounded-full"
+        >
           <PiLock className="w-3 h-3" />
           <span>Sensível</span>
-        </span>
+        </Inline>
       );
     }
 
     if (field.isRequired && !(field as any).isEditableByConfig) {
       return (
-        <span className="px-2 py-0.5 bg-amber-500/20 text-amber-500 text-xs rounded-full flex items-center space-x-1">
+        <Inline
+          as="span"
+          gap={1}
+          className="px-2 py-0.5 bg-amber-500/20 text-amber-500 text-xs rounded-full"
+        >
           <PiWarning className="w-3 h-3" />
           <span>Somente leitura</span>
-        </span>
+        </Inline>
       );
     }
 
@@ -219,7 +228,7 @@ export default function FieldSelector({
 
           {/* Filtros */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <button
                 onClick={() => setFilterType('all')}
                 className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
@@ -260,10 +269,10 @@ export default function FieldSelector({
               >
                 Relações
               </button>
-            </div>
+            </Inline>
 
-            <div className="flex items-center space-x-4">
-              <label className="flex items-center space-x-2 cursor-pointer">
+            <Inline gap={4}>
+              <Inline as="label" gap={2} className="cursor-pointer">
                 <Checkbox
                   checked={showSensitive}
                   onChange={(e) => setShowSensitive(e.target.checked)}
@@ -271,8 +280,8 @@ export default function FieldSelector({
                 <span className="text-sm text-theme-secondary">
                   Mostrar sensíveis
                 </span>
-              </label>
-            </div>
+              </Inline>
+            </Inline>
           </div>
         </div>
 
@@ -300,19 +309,19 @@ export default function FieldSelector({
                     onClick={() => onToggleField(field)}
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3 flex-1 min-w-0">
+                      <Inline gap={3} className="flex-1 min-w-0">
                         <Checkbox
                           checked={isSelected}
                           onChange={() => {}}
                           onClick={(e) => e.stopPropagation()}
                         />
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <span className="font-medium text-theme-primary">
                               {field}
                             </span>
                             {badge}
-                          </div>
+                          </Inline>
                           {fieldInfo && (
                             <div className="text-xs text-theme-tertiary mt-1">
                               {fieldInfo.type}
@@ -322,7 +331,7 @@ export default function FieldSelector({
                             </div>
                           )}
                         </div>
-                      </div>
+                      </Inline>
                       {isSelected && (
                         <PiCheck className="w-5 h-5 text-brand-primary" />
                       )}
@@ -336,23 +345,23 @@ export default function FieldSelector({
 
         {/* Ações rápidas */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             <Button variant="ghost" size="sm" onClick={onSelectAll}>
               Selecionar Todos
             </Button>
             <Button variant="ghost" size="sm" onClick={onClearSelection}>
               Limpar Seleção
             </Button>
-          </div>
+          </Inline>
 
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <Button variant="ghost" onClick={onClose}>
               Cancelar
             </Button>
             <Button variant="primary" onClick={handleApply}>
               Aplicar ({selectedFields.length} campos)
             </Button>
-          </div>
+          </Inline>
         </div>
       </div>
     </Modal>

@@ -21,6 +21,7 @@ import { StudentSearchResult } from '@/app/(teacher)/teacher/pageClient';
 import { Dispatch, SetStateAction, useState } from 'react';
 import Button from '../../Common/Button';
 import Checkbox from '../../Common/Checkbox';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface AddStudentModalProps {
   onClose: () => void;
@@ -252,7 +253,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                   {searchResults.map((student) => (
                     <div key={student.id} className="classical-card-simple p-4">
                       <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row items-center justify-between">
-                        <div className="flex w-[95%] sm:w-auto  items-center space-x-3">
+                        <Inline gap={3} className="w-[95%] sm:w-auto">
                           {/* Avatar */}
                           <div className="relative w-10 h-10">
                             {student.image ? (
@@ -287,7 +288,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                               </div>
                             )}
                           </div>
-                        </div>
+                        </Inline>
 
                         {/* Action Button */}
                         <div>
@@ -392,7 +393,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
               {/* Student Info Header */}
               <div className="bg-brand-primary/5  rounded-lg p-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
                       <PiUser className="w-6 h-6 text-theme-primary" />
                     </div>
@@ -404,7 +405,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                         {selectedStudent.name} • {selectedStudent.email}
                       </p>
                     </div>
-                  </div>
+                  </Inline>
                 </div>
               </div>
 

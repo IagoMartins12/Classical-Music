@@ -25,6 +25,7 @@ import {
 import { toast } from 'react-hot-toast';
 import Button from '@/app/components/Common/Button';
 import { ThreadViewModal } from '../ThreadViewModal';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Comment {
   id: string;
@@ -174,7 +175,7 @@ export function ModerationList({
     <div className="space-y-6">
       {/* Filter Tabs */}
       <div className="classical-card p-2">
-        <div className="flex items-center space-x-2 overflow-x-auto">
+        <Inline gap={2} className="overflow-x-auto">
           {filters.map((filter) => {
             const Icon = filter.icon;
             const isActive = currentFilter === filter.key;
@@ -197,7 +198,7 @@ export function ModerationList({
               </Link>
             );
           })}
-        </div>
+        </Inline>
       </div>
 
       {initialComments.length === 0 ? (
@@ -239,12 +240,12 @@ export function ModerationList({
                 {/* ✅ INDICADOR DE RESPOSTA */}
                 {isReply && (
                   <div className="bg-theme-tertiary border-l-4  px-4 py-2">
-                    <div className="flex items-center space-x-2 ">
+                    <Inline gap={2}>
                       <PiArrowBendUpLeft className="w-4 h-4" />
                       <span className="text-sm font-medium">
                         Esta é uma resposta
                       </span>
-                    </div>
+                    </Inline>
                   </div>
                 )}
 
@@ -288,7 +289,7 @@ export function ModerationList({
 
                       {/* User Info */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <h4 className="font-medium text-theme-primary truncate">
                             {getUserName(comment.user)}
                           </h4>
@@ -302,14 +303,14 @@ export function ModerationList({
                               (editado)
                             </span>
                           )}
-                        </div>
+                        </Inline>
                         <p className="text-sm text-theme-tertiary truncate">
                           {comment.user.email}
                         </p>
 
                         {/* ✅ MOSTRAR CONTADOR DE RESPOSTAS */}
                         {hasReplies && (
-                          <div className="flex items-center space-x-1 mt-1">
+                          <Inline gap={1} className="mt-1">
                             <PiArrowBendUpLeft className="w-4 h-4 0" />
                             <span className="text-xs font-medium">
                               {comment._count!.replies}{' '}
@@ -317,7 +318,7 @@ export function ModerationList({
                                 ? 'resposta'
                                 : 'respostas'}
                             </span>
-                          </div>
+                          </Inline>
                         )}
                       </div>
                     </div>
@@ -360,7 +361,7 @@ export function ModerationList({
                   </p>
 
                   {/* Article Link */}
-                  <div className="flex items-center space-x-2 text-sm text-theme-tertiary mb-4">
+                  <Inline gap={2} className="text-sm text-theme-tertiary mb-4">
                     <span>Artigo:</span>
                     <Link
                       href={`/${comment.article.slug}`}
@@ -372,11 +373,11 @@ export function ModerationList({
                       </span>
                       <PiArrowSquareOut className="w-3 h-3 flex-shrink-0" />
                     </Link>
-                  </div>
+                  </Inline>
 
                   {/* Actions */}
                   <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <Link
                         href={`/${comment.article.slug}#comment-${comment.id}`}
                         target="_blank"
@@ -388,19 +389,21 @@ export function ModerationList({
 
                       {/* ✅ BOTÃO PARA ABRIR MODAL DE THREAD */}
                       {(isReply || hasReplies) && (
-                        <button
+                        <Inline
+                          as="button"
+                          gap={1}
                           onClick={() =>
                             handleOpenThread(comment.id, comment.article.title)
                           }
-                          className="btn-classical-secondary text-sm flex items-center space-x-1"
+                          className="btn-classical-secondary text-sm"
                         >
                           <PiArrowBendUpLeft className="w-4 h-4" />
                           <span>Ver Thread</span>
-                        </button>
+                        </Inline>
                       )}
-                    </div>
+                    </Inline>
 
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       {comment.status !== 'APPROVED' && (
                         <Button
                           onClick={() => handleAction(comment.id, 'approve')}
@@ -433,7 +436,7 @@ export function ModerationList({
                           <span>Spam</span>
                         </Button>
                       )}
-                    </div>
+                    </Inline>
                   </div>
                 </div>
 

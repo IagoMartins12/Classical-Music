@@ -6,6 +6,7 @@ import { ReactNodeViewRenderer } from '@tiptap/react';
 import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
 import { PiColumns, PiPlay, PiTrash } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 const VideoComparisonComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -38,7 +39,7 @@ const VideoComparisonComponent = (props: any) => {
         {/* Header */}
         <div className="bg-accent-red text-white px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <PiColumns className="w-6 h-6" />
               <div>
                 <h4 className="font-bold">
@@ -48,7 +49,7 @@ const VideoComparisonComponent = (props: any) => {
                   <p className="text-sm opacity-90">Reprodução sincronizada</p>
                 )}
               </div>
-            </div>
+            </Inline>
 
             {/* ✅ Controles de Edição */}
             {showControls && (

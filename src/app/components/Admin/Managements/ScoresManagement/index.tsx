@@ -44,6 +44,7 @@ import { useAdminScores } from '@/app/hooks/admin/useAdminScores';
 import Image from '@/app/components/SmartImage';
 import LoadingAdminState from '../../Common/LoadingState';
 import Input from '@/app/components/Common/Inputs';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ScoreFilters {
   search: string;
@@ -220,7 +221,7 @@ export default function ScoresManagement() {
 
     const stars = Math.round(score / 2); // Convert 0-10 to 0-5 stars
     return (
-      <div className="flex items-center space-x-1">
+      <Inline gap={1}>
         {[...Array(5)].map((_, i) =>
           i < stars ? (
             <PiStarFill
@@ -245,7 +246,7 @@ export default function ScoresManagement() {
         <span className={`text-xs ml-1 ${getQualityColor(score)}`}>
           {score.toFixed(1)}
         </span>
-      </div>
+      </Inline>
     );
   };
 
@@ -291,7 +292,7 @@ export default function ScoresManagement() {
               Administre o catálogo de partituras da plataforma
             </p>
             {/* 🆕 Botão de Debug */}
-            <div className="mt-4 flex items-center justify-center space-x-2">
+            <Inline gap={2} className="mt-4 justify-center">
               <Button
                 variant="ghost"
                 size="sm"
@@ -300,7 +301,7 @@ export default function ScoresManagement() {
               >
                 {showDebug ? 'Ocultar' : 'Debug'}
               </Button>
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -308,10 +309,14 @@ export default function ScoresManagement() {
         {showDebug && stats && (
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mb-8 border-2 border-accent-amber/30">
-              <h3 className="text-lg font-bold text-accent-amber mb-4 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-lg font-bold text-accent-amber mb-4"
+              >
                 <PiWarningCircle className="w-5 h-5" />
                 <span>Debug das Estatísticas</span>
-              </h3>
+              </Inline>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <h4 className="font-semibold text-theme-primary mb-2">
@@ -480,17 +485,21 @@ export default function ScoresManagement() {
         {stats && stats.mostAccessed && stats.mostAccessed.length > 0 && (
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mb-8">
-              <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-xl font-bold text-theme-primary mb-6"
+              >
                 <PiTarget className="w-5 h-5 text-accent-amber" />
                 <span>Partituras Mais Acessadas</span>
-              </h3>
+              </Inline>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {stats.mostAccessed.slice(0, 6).map((score, index) => (
                   <div
                     key={score.id}
                     className="p-4 bg-theme-secondary rounded-xl"
                   >
-                    <div className="flex items-center space-x-3 mb-3">
+                    <Inline gap={3} className="mb-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                         {index + 1}
                       </div>
@@ -502,12 +511,12 @@ export default function ScoresManagement() {
                           {score.workTitle}
                         </p>
                       </div>
-                    </div>
+                    </Inline>
                     <div className="flex items-center justify-between text-xs text-theme-secondary">
-                      <span className="flex items-center space-x-1">
+                      <Inline as="span" gap={1}>
                         <PiEye className="w-3 h-3" />
                         <span>{formatNumber(score.accessCount)}</span>
-                      </span>
+                      </Inline>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -529,7 +538,7 @@ export default function ScoresManagement() {
               <h3 className="text-xl font-bold text-theme-primary">
                 Lista de Partituras
               </h3>
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -566,7 +575,7 @@ export default function ScoresManagement() {
                 >
                   Nova Partitura
                 </Button>
-              </div>
+              </Inline>
             </div>
 
             {/* Filtros */}
@@ -635,7 +644,7 @@ export default function ScoresManagement() {
                 />
               </div>
 
-              <div className="flex items-center space-x-4">
+              <Inline gap={4}>
                 <Button
                   variant="primary"
                   size="sm"
@@ -644,7 +653,7 @@ export default function ScoresManagement() {
                 >
                   Buscar
                 </Button>
-              </div>
+              </Inline>
             </div>
 
             {/* Bulk Actions */}
@@ -653,7 +662,7 @@ export default function ScoresManagement() {
                 <span className="text-accent-amber font-medium">
                   {selectedScores.size} partituras selecionadas
                 </span>
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <Button
                     variant="secondary"
                     size="sm"
@@ -685,7 +694,7 @@ export default function ScoresManagement() {
                   >
                     Limpar Seleção
                   </Button>
-                </div>
+                </Inline>
               </div>
             )}
 
@@ -723,7 +732,7 @@ export default function ScoresManagement() {
                     )}
 
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-3 mb-2">
+                      <Inline gap={3} className="mb-2">
                         <h4 className="font-bold text-theme-primary text-lg">
                           {score.title}
                         </h4>
@@ -742,7 +751,7 @@ export default function ScoresManagement() {
                         ) : (
                           <PiPause className="w-5 h-5 text-accent-red" />
                         )}
-                      </div>
+                      </Inline>
 
                       <div className="text-theme-secondary mb-2">
                         <span className="font-medium">{score.workTitle}</span>
@@ -757,41 +766,44 @@ export default function ScoresManagement() {
                       )}
 
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-theme-secondary">
-                        <div className="flex items-center space-x-1">
+                        <Inline gap={1}>
                           <PiEye className="w-4 h-4" />
                           <span>{formatNumber(score.accessCount)} acessos</span>
-                        </div>
+                        </Inline>
                         {score.fileSize && (
-                          <div className="flex items-center space-x-1">
+                          <Inline gap={1}>
                             <PiHardDrive className="w-4 h-4" />
                             <span>{formatFileSize(score.fileSize)}</span>
-                          </div>
+                          </Inline>
                         )}
                         {score.pageCount && (
-                          <div className="flex items-center space-x-1">
+                          <Inline gap={1}>
                             <PiFileText className="w-4 h-4" />
                             <span>{score.pageCount} páginas</span>
-                          </div>
+                          </Inline>
                         )}
-                        <div className="flex items-center space-x-1">
+                        <Inline gap={1}>
                           <PiCalendarBlank className="w-4 h-4" />
                           <span>
                             {new Date(score.createdAt).toLocaleDateString(
                               'pt-BR'
                             )}
                           </span>
-                        </div>
+                        </Inline>
                       </div>
 
                       {score.uploader && (
-                        <div className="mt-2 text-xs text-theme-tertiary flex items-center space-x-1">
+                        <Inline
+                          gap={1}
+                          className="mt-2 text-xs text-theme-tertiary"
+                        >
                           <PiUser className="w-3 h-3" />
                           <span>Adicionada por: {score.uploader}</span>
-                        </div>
+                        </Inline>
                       )}
                     </div>
 
-                    <div className="flex items-center space-x-2 flex-shrink-0">
+                    <Inline gap={2} className="flex-shrink-0">
                       {score.downloadUrl && (
                         <Button
                           variant="ghost"
@@ -833,7 +845,7 @@ export default function ScoresManagement() {
                         }
                         title={score.isActive ? 'Desativar' : 'Ativar'}
                       />
-                    </div>
+                    </Inline>
                   </div>
                 </div>
               ))}
@@ -845,7 +857,7 @@ export default function ScoresManagement() {
                 <div className="text-sm text-theme-secondary">
                   Mostrando {scores.length} de {pagination.total} partituras
                 </div>
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -875,7 +887,7 @@ export default function ScoresManagement() {
                   >
                     Próxima
                   </Button>
-                </div>
+                </Inline>
               </div>
             )}
           </AnimatedCard>

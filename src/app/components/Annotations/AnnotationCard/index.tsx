@@ -33,6 +33,7 @@ import CreateAnnotationModal from '../CreateAnnotationModal';
 import Image from '@/app/components/SmartImage';
 import ConfirmDeleteModal from '../DeleteAnnotationModal';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface AnnotationCardProps {
   annotation: WorkAnnotation;
@@ -243,7 +244,10 @@ export default function AnnotationCard({
         {/* Loading overlay para updates */}
         {isUpdating && (
           <div className="absolute inset-0 bg-theme-primary/5 backdrop-blur-sm z-20 flex items-center justify-center">
-            <div className="flex items-center space-x-3 bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30">
+            <Inline
+              gap={3}
+              className="bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30"
+            >
               <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
               <span className="text-sm font-medium text-theme-primary">
                 {isOptimistic
@@ -251,7 +255,7 @@ export default function AnnotationCard({
                   : t('annotation_card_updating')}
                 ...
               </span>
-            </div>
+            </Inline>
           </div>
         )}
 
@@ -282,31 +286,31 @@ export default function AnnotationCard({
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center space-x-2 mb-1">
+                <Inline gap={2} className="mb-1">
                   <h3 className="text-lg font-semibold text-theme-primary classical-title truncate">
                     {annotation.title}
                   </h3>
                   {annotation.isVerified && (
-                    <div className="flex items-center space-x-1 text-accent-green">
+                    <Inline gap={1} className="text-accent-green">
                       <PiSealCheck className="w-4 h-4" />
                       <span className="text-xs font-medium">
                         {t('annotation_card_verified')}
                       </span>
-                    </div>
+                    </Inline>
                   )}
                   {/* Indicador de anotação otimística */}
                   {isOptimistic && (
-                    <div className="flex items-center space-x-1 text-accent-blue">
+                    <Inline gap={1} className="text-accent-blue">
                       <PiSpinnerGap className="w-3 h-3 animate-spin" />
                       <span className="text-xs font-medium">
                         {t('annotation_card_saving')}
                       </span>
-                    </div>
+                    </Inline>
                   )}
-                </div>
+                </Inline>
 
                 <div className="flex flex-col md:flex-row items-start md:items-center space-x-4 text-sm text-theme-secondary">
-                  <div className="flex items-center space-x-1">
+                  <Inline gap={1}>
                     <span className="font-medium">
                       {annotation.user.firstName ||
                         annotation.user.username ||
@@ -317,8 +321,8 @@ export default function AnnotationCard({
                         • {getUserTypeLabel(annotation.user.userType)}
                       </span>
                     )}
-                  </div>
-                  <div className="flex items-center space-x-1 text-theme-tertiary">
+                  </Inline>
+                  <Inline gap={1} className="text-theme-tertiary">
                     <PiClock className="w-3 h-3" />
                     <span>
                       {formatDistanceToNow(new Date(annotation.createdAt), {
@@ -326,7 +330,7 @@ export default function AnnotationCard({
                         locale: locale,
                       })}
                     </span>
-                  </div>
+                  </Inline>
                 </div>
               </div>
             </div>
@@ -346,26 +350,30 @@ export default function AnnotationCard({
 
                 {showActions && !isUpdating && (
                   <div className="absolute right-0 top-9 bg-theme-elevated border border-theme-primary/30 rounded-xl shadow-theme-glow z-10 py-2 min-w-[120px]">
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={() => {
                         setShowEditModal(true);
                         setShowActions(false);
                       }}
-                      className="w-full cursor-pointer px-4 py-2 text-left text-sm text-theme-primary hover:bg-interactive-hover flex items-center space-x-2 transition-colors"
+                      className="w-full cursor-pointer px-4 py-2 text-left text-sm text-theme-primary hover:bg-interactive-hover transition-colors"
                     >
                       <PiPencilLine className="w-3 h-3" />
                       <span>{t('annotation_card_edit')}</span>
-                    </button>
-                    <button
+                    </Inline>
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={() => {
                         setShowDeleteModal(true);
                         setShowActions(false);
                       }}
-                      className="w-full cursor-pointer  px-4 py-2 text-left text-sm text-accent-red hover:bg-accent-red/10 flex items-center space-x-2 transition-colors"
+                      className="w-full cursor-pointer px-4 py-2 text-left text-sm text-accent-red hover:bg-accent-red/10 transition-colors"
                     >
                       <PiTrash className="w-3 h-3" />
                       <span>{t('annotation_card_delete')}</span>
-                    </button>
+                    </Inline>
                   </div>
                 )}
               </div>
@@ -391,17 +399,25 @@ export default function AnnotationCard({
 
             {/* Badge para anotação privada */}
             {!annotation.isPublic && (
-              <span className="px-3 py-1 rounded-full text-xs font-medium border bg-accent-red/10 border-red-400 text-accent-red flex items-center space-x-1">
+              <Inline
+                as="span"
+                gap={1}
+                className="px-3 py-1 rounded-full text-xs font-medium border bg-accent-red/10 border-red-400 text-accent-red"
+              >
                 <PiEye className="w-3 h-3" />
                 <span>{t('annotation_card_private_annotation')}</span>
-              </span>
+              </Inline>
             )}
 
             {measureInfo && (
-              <span className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary flex items-center space-x-1">
+              <Inline
+                as="span"
+                gap={1}
+                className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary"
+              >
                 <PiMapPin className="w-3 h-3" />
                 <span>{measureInfo}</span>
-              </span>
+              </Inline>
             )}
 
             {annotation.hand && (
@@ -420,7 +436,7 @@ export default function AnnotationCard({
           {/* Work info (for user profile pages) */}
           {showWorkInfo && annotation.work && (
             <div className="mb-4 p-3 bg-theme-elevated/50 border border-theme-primary/20 rounded-xl">
-              <div className="flex items-center space-x-2 text-sm">
+              <Inline gap={2} className="text-sm">
                 <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                 <span className="font-medium text-theme-primary">
                   {annotation.work.title}
@@ -428,7 +444,7 @@ export default function AnnotationCard({
                 <span className="text-theme-tertiary">
                   {t('annotation_card_by')} {annotation.work.composer.fullName}
                 </span>
-              </div>
+              </Inline>
             </div>
           )}
 
@@ -468,7 +484,7 @@ export default function AnnotationCard({
           <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
             {/* Vote buttons - Só mostrar se pode votar */}
             {canVote ? (
-              <div className="flex items-center space-x-4">
+              <Inline gap={4}>
                 <button
                   onClick={() => handleVote(true)}
                   disabled={isVoting}
@@ -522,13 +538,13 @@ export default function AnnotationCard({
                     {t('annotation_card_not_useful')}
                   </span>
                 </button>
-              </div>
+              </Inline>
             ) : (
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
+              <Inline gap={4}>
+                <Inline gap={2} className="text-sm text-theme-tertiary">
                   <PiThumbsUp className="w-4 h-4" />
                   <span>{annotation.helpfulCount}</span>
-                </div>
+                </Inline>
                 {!user && (
                   <div className="text-xs text-theme-tertiary">
                     {t('annotation_card_login_to_vote')}
@@ -539,16 +555,16 @@ export default function AnnotationCard({
                     {t('annotation_card_your_annotation')}
                   </div>
                 )}
-              </div>
+              </Inline>
             )}
 
             {/* Stats */}
-            <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
-              <div className="flex items-center space-x-1">
+            <Inline gap={4} className="text-sm text-theme-tertiary">
+              <Inline gap={1}>
                 <PiEye className="w-4 h-4" />
                 <span>{annotation.viewCount}</span>
-              </div>
-            </div>
+              </Inline>
+            </Inline>
           </div>
         </div>
       </div>

@@ -8,6 +8,7 @@ import {
   getCategory,
   listCategoryArticles,
 } from '@/app/requests/blog/taxonomy';
+import { Inline } from '@/app/components/ui/Layout';
 
 export const revalidate = 600;
 
@@ -98,15 +99,15 @@ export default async function CategoryPage({
           )}
 
           {/* Meta */}
-          <div className="flex items-center justify-center space-x-6 text-theme-tertiary">
-            <div className="flex items-center space-x-2">
+          <Inline gap={6} className="justify-center text-theme-tertiary">
+            <Inline gap={2}>
               <PiSquaresFour className="w-5 h-5" />
               <span>
                 {category._count.articles}{' '}
                 {category._count.articles === 1 ? 'artigo' : 'artigos'}
               </span>
-            </div>
-          </div>
+            </Inline>
+          </Inline>
         </div>
       </div>
 

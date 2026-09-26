@@ -40,6 +40,7 @@ import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 import Image from '@/app/components/SmartImage';
 import LoadingAdminState from '../../Common/LoadingState';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface FilterState {
   status: string;
@@ -511,7 +512,7 @@ export default function AdsManagementClient() {
                           />
                         </td>
                         <td className="py-3 px-2">
-                          <div className="flex items-center space-x-3">
+                          <Inline gap={3}>
                             {ad.imageUrl ? (
                               <Image
                                 width={48}
@@ -526,7 +527,7 @@ export default function AdsManagementClient() {
                               </div>
                             )}
                             <div>
-                              <div className="flex items-center space-x-2">
+                              <Inline gap={2}>
                                 <h3 className="font-medium text-theme-primary">
                                   {ad.title}
                                 </h3>
@@ -536,8 +537,11 @@ export default function AdsManagementClient() {
                                     title="Sem mídia"
                                   />
                                 )}
-                              </div>
-                              <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
+                              </Inline>
+                              <Inline
+                                gap={2}
+                                className="text-sm text-theme-tertiary"
+                              >
                                 <span>{ad.advertiserName}</span>
                                 <span>•</span>
                                 <span>{ad.placement}</span>
@@ -547,9 +551,9 @@ export default function AdsManagementClient() {
                                     <PiChatCircle className="w-3 h-3" />
                                   </>
                                 )}
-                              </div>
+                              </Inline>
                             </div>
-                          </div>
+                          </Inline>
                         </td>
                         <td className="py-3 px-2">
                           <span
@@ -566,7 +570,7 @@ export default function AdsManagementClient() {
                           </span>
                         </td>
                         <td className="py-3 px-2">
-                          <div className="flex items-center space-x-1">
+                          <Inline gap={1}>
                             {ad.imageUrl && (
                               <PiImage className="w-4 h-4 text-accent-green" />
                             )}
@@ -578,7 +582,7 @@ export default function AdsManagementClient() {
                                 Sem mídia
                               </span>
                             )}
-                          </div>
+                          </Inline>
                         </td>
                         <td className="py-3 px-2">
                           <div className="text-sm">
@@ -591,7 +595,7 @@ export default function AdsManagementClient() {
                           </div>
                         </td>
                         <td className="py-3 px-2">
-                          <div className="flex items-center space-x-1">
+                          <Inline gap={1}>
                             {/* 🆕 Botão de clonagem */}
                             <Button
                               variant="ghost"
@@ -655,7 +659,7 @@ export default function AdsManagementClient() {
                               className="text-accent-red hover:text-accent-red"
                               title="Deletar"
                             />
-                          </div>
+                          </Inline>
                         </td>
                       </tr>
                     );
@@ -696,7 +700,7 @@ export default function AdsManagementClient() {
                   )}{' '}
                   de {pagination.total} resultados
                 </div>
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -716,7 +720,7 @@ export default function AdsManagementClient() {
                   >
                     Próximo
                   </Button>
-                </div>
+                </Inline>
               </div>
             )}
           </AnimatedCard>

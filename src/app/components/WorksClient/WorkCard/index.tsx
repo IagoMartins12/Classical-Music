@@ -14,6 +14,7 @@ import {
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 interface workCardProps {
   work: WorkListItem;
@@ -48,7 +49,10 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
           <div className="absolute inset-0 opacity-5 music-note-background"></div>
 
           {/* Floating action buttons */}
-          <div className="absolute top-4 right-4 z-50 flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <Stack
+            gap={2}
+            className="absolute top-4 right-4 z-50 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+          >
             <FavoriteButton
               id={work.id}
               type="work"
@@ -57,7 +61,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
               itemName={work.title}
               showToast={true}
             />
-          </div>
+          </Stack>
 
           <div className="relative z-10">
             {/* Title */}
@@ -179,14 +183,14 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
 
             {/* Secondary Actions */}
             <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
-              <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
+              <Inline gap={2} className="text-theme-tertiary text-xs">
                 <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
                 <span className="font-medium">
                   {t('card_jsx_span_full_details')}
                 </span>
-              </div>
+              </Inline>
 
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 {/* Quick preview button */}
                 <button
                   onClick={(e) => {
@@ -217,7 +221,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
                     />
                   </svg>
                 </button>
-              </div>
+              </Inline>
             </div>
           </div>
 

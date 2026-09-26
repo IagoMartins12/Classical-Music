@@ -31,6 +31,7 @@ import {
   FloatingElement,
 } from '../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface CopyrightSection {
   id: string;
@@ -480,20 +481,20 @@ export default function CopyrightPage() {
                 </p>
 
                 <div className="space-y-4 mb-12">
-                  <div className="flex items-center justify-center space-x-3">
+                  <Inline gap={3} className="justify-center">
                     <PiEnvelopeSimple className="w-5 h-5 text-brand-primary" />
                     <span className="text-theme-primary font-medium">
                       opusatlas@gmail.com
                     </span>
-                  </div>
-                  <div className="flex items-center justify-center space-x-3">
+                  </Inline>
+                  <Inline gap={3} className="justify-center">
                     <PiFlag className="w-5 h-5 text-brand-primary" />
                     <span className="text-theme-primary font-medium">
                       {t(
                         'copyright_jsx_span_children_0__sistema_reports_plataforma'
                       )}
                     </span>
-                  </div>
+                  </Inline>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-6 justify-center">
@@ -518,20 +519,23 @@ export default function CopyrightPage() {
                   </Link>
                 </div>
 
-                <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
-                  <div className="flex items-center space-x-2 text-theme-tertiary">
+                <Inline
+                  gap={8}
+                  className="justify-center mt-12 pt-8 border-t border-theme-secondary"
+                >
+                  <Inline gap={2} className="text-theme-tertiary">
                     <PiEye className="w-4 h-4" />
                     <span className="text-sm">
                       {t('copyright_jsx_span_children_0__resposta')}
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-theme-tertiary">
+                  </Inline>
+                  <Inline gap={2} className="text-theme-tertiary">
                     <PiShield className="w-4 h-4" />
                     <span className="text-sm">
                       {t('copyright_jsx_span_children_0__legal')}
                     </span>
-                  </div>
-                </div>
+                  </Inline>
+                </Inline>
               </AnimatedCard>
             </div>
           </div>

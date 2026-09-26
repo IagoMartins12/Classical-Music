@@ -25,6 +25,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import Checkbox from '@/app/components/Common/Checkbox';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ParentWorkData {
   id: string;
@@ -117,7 +118,7 @@ const ParentWorkConfirmationModal: React.FC<{
       <AnimatedItem direction="scale" springType="bouncy" className="w-full">
         <div className="p-6">
           {/* Header */}
-          <div className="flex items-center space-x-3 mb-6">
+          <Inline gap={3} className="mb-6">
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
               <PiStack className="w-5 h-5 text-blue-600" />
             </div>
@@ -129,7 +130,7 @@ const ParentWorkConfirmationModal: React.FC<{
                 Dados úteis encontrados na obra pai
               </p>
             </div>
-          </div>
+          </Inline>
 
           {/* Content */}
           <div className="space-y-4">
@@ -155,7 +156,7 @@ const ParentWorkConfirmationModal: React.FC<{
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-between space-x-3 mt-6">
+          <Inline gap={3} className="justify-between mt-6">
             <Button
               type="button"
               variant="secondary"
@@ -173,7 +174,7 @@ const ParentWorkConfirmationModal: React.FC<{
             >
               Sim, ver opções
             </Button>
-          </div>
+          </Inline>
         </div>
       </AnimatedItem>
     </Modal>
@@ -541,7 +542,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
           <div>
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                   <PiCopy className="w-5 h-5 text-theme-primary" />
                 </div>
@@ -554,7 +555,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                     podem ser úteis
                   </p>
                 </div>
-              </div>
+              </Inline>
             </div>
 
             {/* Content */}
@@ -581,7 +582,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
 
                 {/* Controls */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <Button
                       type="button"
                       variant="secondary"
@@ -598,7 +599,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                     >
                       Limpar Seleção
                     </Button>
-                  </div>
+                  </Inline>
                   <div className="text-sm text-theme-tertiary">
                     {selectedFields.size} de {fieldSuggestions.length}{' '}
                     selecionados
@@ -618,7 +619,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                         className="classical-card-simple p-4"
                         hover="none"
                       >
-                        <div className="flex items-center space-x-2 mb-4">
+                        <Inline gap={2} className="mb-4">
                           <CategoryIcon
                             className={`w-5 h-5 text-theme-primary`}
                           />
@@ -632,7 +633,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                               : 'disponível'}
                             )
                           </span>
-                        </div>
+                        </Inline>
 
                         <div className="space-y-3">
                           {suggestions.map((suggestion) => {
@@ -692,7 +693,10 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-end space-x-3 p-6 border-t border-theme-secondary">
+            <Inline
+              gap={3}
+              className="justify-end p-6 border-t border-theme-secondary"
+            >
               <Button
                 type="button"
                 variant="secondary"
@@ -719,7 +723,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                   ? 'Aplicando...'
                   : `Aplicar ${selectedFields.size} campo${selectedFields.size !== 1 ? 's' : ''}`}
               </Button>
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
       </Modal>

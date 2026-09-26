@@ -30,6 +30,7 @@ import {
 } from '../../../components/animation/AnimatedComponents';
 import AboutUsButton from '@/app/components/AboutUsButton';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function AboutPage() {
   const { t, language } = useTranslation({ sections: ['pages/about-us'] });
@@ -210,30 +211,30 @@ export default function AboutPage() {
                         {t('about_stats_resources_title')}
                       </h4>
                       <div className="space-y-3">
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                           <span className="text-theme-secondary text-sm">
                             {t('about_stats_resource_1')}
                           </span>
-                        </div>
-                        <div className="flex items-center space-x-3">
+                        </Inline>
+                        <Inline gap={3}>
                           <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
                           <span className="text-theme-secondary text-sm">
                             {t('about_stats_resource_2')}
                           </span>
-                        </div>
-                        <div className="flex items-center space-x-3">
+                        </Inline>
+                        <Inline gap={3}>
                           <div className="w-2 h-2 bg-accent-purple rounded-full"></div>
                           <span className="text-theme-secondary text-sm">
                             {t('about_stats_resource_3')}
                           </span>
-                        </div>
-                        <div className="flex items-center space-x-3">
+                        </Inline>
+                        <Inline gap={3}>
                           <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                           <span className="text-theme-secondary text-sm">
                             {t('about_stats_resource_4')}
                           </span>
-                        </div>
+                        </Inline>
                       </div>
                     </div>
                   </div>
@@ -346,20 +347,23 @@ export default function AboutPage() {
                 </Link>
               </div>
 
-              <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
-                <div className="flex items-center space-x-2 text-theme-tertiary">
+              <Inline
+                gap={8}
+                className="justify-center mt-12 pt-8 border-t border-theme-secondary"
+              >
+                <Inline gap={2} className="text-theme-tertiary">
                   <PiUsers className="w-4 h-4" />
                   <span className="text-sm">{t('about_cta_stat_1')}</span>
-                </div>
-                <div className="flex items-center space-x-2 text-theme-tertiary">
+                </Inline>
+                <Inline gap={2} className="text-theme-tertiary">
                   <PiStar className="w-4 h-4" />
                   <span className="text-sm">{t('about_cta_stat_2')}</span>
-                </div>
-                <div className="flex items-center space-x-2 text-theme-tertiary">
+                </Inline>
+                <Inline gap={2} className="text-theme-tertiary">
                   <PiMedal className="w-4 h-4" />
                   <span className="text-sm">{t('about_cta_stat_3')}</span>
-                </div>
-              </div>
+                </Inline>
+              </Inline>
             </AnimatedCard>
           </div>
         </AnimatedContainer>

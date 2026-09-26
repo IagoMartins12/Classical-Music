@@ -36,6 +36,7 @@ import { useAdaptiveStats } from '@/app/hooks/useMobile';
 import Button from '@/app/components/Common/Button';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 // Atualizar tipo para incluir 'scores'
 type FilterTab = 'all' | 'composers' | 'works' | 'scores';
@@ -271,7 +272,7 @@ export default function FavoritesClient() {
                         className="mt-4"
                         springType="gentle"
                       >
-                        <div className="flex items-center space-x-3 mb-6">
+                        <Inline gap={3} className="mb-6">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                             <PiUser className="w-5 h-5 text-theme-primary" />
                           </div>
@@ -284,7 +285,7 @@ export default function FavoritesClient() {
                               {favoriteComposers.length} {t('composers_count')}
                             </p>
                           </div>
-                        </div>
+                        </Inline>
 
                         {viewMode === 'cards' ? (
                           <SequentialGrid
@@ -357,7 +358,7 @@ export default function FavoritesClient() {
                         className="mt-4"
                         springType="gentle"
                       >
-                        <div className="flex items-center space-x-3 mb-6">
+                        <Inline gap={3} className="mb-6">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                             <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                           </div>
@@ -370,7 +371,7 @@ export default function FavoritesClient() {
                               {favoriteWorks.length} {t('works_count')}
                             </p>
                           </div>
-                        </div>
+                        </Inline>
 
                         {viewMode === 'cards' ? (
                           <SequentialGrid
@@ -443,7 +444,7 @@ export default function FavoritesClient() {
                         className="mt-4"
                         springType="gentle"
                       >
-                        <div className="flex items-center space-x-3 mb-6">
+                        <Inline gap={3} className="mb-6">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                             <PiFileText className="w-5 h-5 text-theme-primary" />
                           </div>
@@ -456,7 +457,7 @@ export default function FavoritesClient() {
                               {favoriteScores.length} {t('scores_count')}
                             </p>
                           </div>
-                        </div>
+                        </Inline>
 
                         {viewMode === 'cards' ? (
                           <SequentialGrid
@@ -633,7 +634,10 @@ function ComposerFavoriteCard({
                 </span>
               </div>
 
-              <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+              <Stack
+                gap={2}
+                className="absolute top-4 right-4 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+              >
                 <FavoriteButton
                   id={favorite.composer.id}
                   type="composer"
@@ -642,7 +646,7 @@ function ComposerFavoriteCard({
                   itemName={favorite.composer.fullName}
                   showToast={true}
                 />
-              </div>
+              </Stack>
             </Link>
           </div>
         )}
@@ -709,7 +713,10 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
                   )}
                 </div>
 
-                <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                <Stack
+                  gap={2}
+                  className="absolute top-4 right-4 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+                >
                   <FavoriteButton
                     id={favorite.work.id}
                     type="work"
@@ -718,10 +725,10 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
                     itemName={favorite.work.title}
                     showToast={true}
                   />
-                </div>
+                </Stack>
               </div>
 
-              <div className="flex items-center space-x-2 mb-2">
+              <Inline gap={2} className="mb-2">
                 <div
                   className="inline-flex items-center text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium"
                   onClick={(e) => e.stopPropagation()}
@@ -729,7 +736,7 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
                   <PiUser className="w-3 h-3 mr-1" />
                   {favorite.work.composer.fullName}
                 </div>
-              </div>
+              </Inline>
             </Link>
           </div>
         )}
@@ -812,19 +819,19 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
 
             {/* Informações da obra */}
             <div className="space-y-1 mb-3">
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 <PiMusicNotes className="w-3 h-3 text-accent-blue" />
                 <span className="text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium">
                   {favorite.work?.title}
                 </span>
-              </div>
+              </Inline>
 
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 <PiUser className="w-3 h-3 text-theme-tertiary" />
                 <span className="text-sm text-theme-tertiary">
                   {favorite.work?.composer?.fullName}
                 </span>
-              </div>
+              </Inline>
             </div>
 
             {/* Metadados pessoais */}
@@ -833,12 +840,12 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
               favorite.tags?.length > 0) && (
               <div className="space-y-2 mb-3 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
                 {favorite.personalRating && (
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <PiStar className="w-3 h-3 text-accent-gold" />
                     <span className="text-sm text-accent-gold font-medium">
                       {favorite.personalRating}/5 {t('stars')}
                     </span>
-                  </div>
+                  </Inline>
                 )}
 
                 {favorite.notes && (
@@ -870,13 +877,13 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
             )}
 
             {/* Data de adição */}
-            <div className="text-xs text-theme-tertiary flex items-center space-x-1">
+            <Inline gap={1} className="text-xs text-theme-tertiary">
               <PiClock className="w-3 h-3" />
               <span>
                 {t('favorited_on')}{' '}
                 {new Date(favorite.addedAt).toLocaleDateString('pt-BR')}
               </span>
-            </div>
+            </Inline>
           </Link>
 
           {/* Botão de favoritar */}

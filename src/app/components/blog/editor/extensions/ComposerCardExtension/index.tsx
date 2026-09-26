@@ -6,6 +6,7 @@ import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import { PiTrash } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 const ComposerCardComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -40,7 +41,10 @@ const ComposerCardComponent = (props: any) => {
     >
       {/* Controles de Edição */}
       {showControls && (
-        <div className="absolute top-4 right-4 z-10 flex items-center space-x-2 p-2 shadow-lg rounded-lg">
+        <Inline
+          gap={2}
+          className="absolute top-4 right-4 z-10 p-2 shadow-lg rounded-lg"
+        >
           <button
             onClick={handleDelete}
             className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
@@ -48,7 +52,7 @@ const ComposerCardComponent = (props: any) => {
           >
             <PiTrash className="w-4 h-4" />
           </button>
-        </div>
+        </Inline>
       )}
 
       {/* Card do Compositor */}

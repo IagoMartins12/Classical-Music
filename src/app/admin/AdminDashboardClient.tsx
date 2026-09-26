@@ -31,6 +31,7 @@ import {
 import RecentActivity from '../components/Admin/Activity/RecentActivity';
 import BackupDashboardCard from '../components/Admin/Backup/BackupDashboardCard';
 import LoadingAdminState from '../components/Admin/Common/LoadingState';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function AdminDashboardClient() {
   const { stats, loading, error, refreshStats } = useAdminStats();
@@ -134,13 +135,13 @@ export default function AdminDashboardClient() {
 
               {/* Status Indicators */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <div className="w-3 h-3 bg-accent-green rounded-full animate-pulse"></div>
                   <span className="text-theme-primary font-medium">
                     Sistema Online
                   </span>
-                </div>
-                <div className="flex items-center space-x-2">
+                </Inline>
+                <Inline gap={2}>
                   <PiClock className="w-4 h-4 text-theme-secondary" />
                   <span className="text-theme-secondary">
                     {mounted
@@ -149,7 +150,7 @@ export default function AdminDashboardClient() {
                         : `Atualizado há ${getMinutesSinceUpdate()} min`
                       : 'Carregando...'}
                   </span>
-                </div>
+                </Inline>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -257,36 +258,36 @@ export default function AdminDashboardClient() {
               </h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <PiShield className="w-5 h-5 text-accent-amber" />
                     <span className="text-theme-primary text-sm lg:text-base">
                       Pendentes
                     </span>
-                  </div>
+                  </Inline>
                   <span className="font-bold text-accent-amber">
                     {stats.moderation?.pendingItems || 0}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <PiDatabase className="w-5 h-5 text-accent-purple" />
                     <span className="text-theme-primary text-sm lg:text-base">
                       Compositores
                     </span>
-                  </div>
+                  </Inline>
                   <span className="font-bold text-accent-purple">
                     {stats.overview.totalComposers || 0}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <PiTrendUp className="w-5 h-5 text-accent-green" />
                     <span className="text-theme-primary text-sm lg:text-base">
                       Anotações
                     </span>
-                  </div>
+                  </Inline>
                   <span className="font-bold text-accent-green">
                     {stats.trends.last7Days.newAnnotations || 0}
                   </span>

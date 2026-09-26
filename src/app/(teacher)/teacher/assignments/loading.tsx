@@ -11,6 +11,7 @@ import {
   PiTarget,
   PiWarningCircle,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function TeacherAssignmentsLoading() {
   return (
@@ -152,26 +153,26 @@ function AssignmentCardSkeleton() {
     <div className="classical-card p-6 h-full animate-pulse">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center space-x-3 flex-1">
+        <Inline gap={3} className="flex-1">
           {/* Student Avatar */}
           <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-full"></div>
 
           {/* Title and student info */}
           <div className="flex-1">
             <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2 w-3/4"></div>
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               <div className="h-3 bg-theme-elevated rounded w-20"></div>
               <div className="h-3 bg-theme-elevated rounded w-16"></div>
               <div className="h-3 bg-theme-elevated rounded w-24"></div>
-            </div>
+            </Inline>
           </div>
-        </div>
+        </Inline>
 
         {/* Status badges */}
-        <div className="flex items-center space-x-2">
+        <Inline gap={2}>
           <div className="h-6 w-20 bg-gradient-to-r from-accent-blue/20 to-accent-blue/20 border border-accent-blue/30 rounded-full"></div>
           <div className="h-6 w-16 bg-gradient-to-r from-accent-green/20 to-accent-green/20 border border-accent-green/30 rounded-full"></div>
-        </div>
+        </Inline>
       </div>
 
       {/* Description */}
@@ -201,11 +202,11 @@ function AssignmentCardSkeleton() {
       {/* Actions */}
       <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
         <div className="h-3 bg-theme-tertiary/30 rounded w-32"></div>
-        <div className="flex items-center space-x-2">
+        <Inline gap={2}>
           <div className="w-8 h-8 bg-theme-elevated rounded-lg"></div>
           <div className="w-8 h-8 bg-theme-elevated rounded-lg"></div>
           <div className="w-8 h-8 bg-theme-elevated rounded-lg"></div>
-        </div>
+        </Inline>
       </div>
     </div>
   );

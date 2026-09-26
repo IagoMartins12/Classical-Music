@@ -37,6 +37,7 @@ import CreateAnnotationModal from '@/app/components/Annotations/CreateAnnotation
 import Image from '@/app/components/SmartImage';
 import ConfirmDeleteModal from '../DeleteAnnotationModal';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface UserAnnotationCardProps {
   annotation: WorkAnnotation;
@@ -264,14 +265,17 @@ export default function UserAnnotationCard({
         {/* Loading overlay para updates */}
         {isUpdating && (
           <div className="absolute inset-0 bg-theme-primary/5 backdrop-blur-sm z-20 flex items-center justify-center">
-            <div className="flex items-center space-x-3 bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30">
+            <Inline
+              gap={3}
+              className="bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30"
+            >
               <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
               <span className="text-sm font-medium text-theme-primary">
                 {isOptimistic
                   ? t('user_annotation_card_saving_loading')
                   : t('user_annotation_card_updating_loading')}
               </span>
-            </div>
+            </Inline>
           </div>
         )}
 
@@ -323,14 +327,14 @@ export default function UserAnnotationCard({
 
             {/* Stats */}
             <div className="col-span-2 text-xs text-theme-tertiary space-y-1">
-              <div className="flex items-center space-x-1">
+              <Inline gap={1}>
                 <PiThumbsUp className="w-3 h-3" />
                 <span>{currentAnnotation.helpfulCount}</span>
-              </div>
-              <div className="flex items-center space-x-1">
+              </Inline>
+              <Inline gap={1}>
                 <PiEye className="w-3 h-3" />
                 <span>{currentAnnotation.viewCount}</span>
-              </div>
+              </Inline>
             </div>
 
             {/* Actions */}
@@ -349,26 +353,30 @@ export default function UserAnnotationCard({
 
                   {showActions && !isUpdating && (
                     <div className="absolute right-0 top-7 bg-theme-elevated border border-theme-primary/30 rounded-xl shadow-theme-glow z-10 py-2 min-w-[100px]">
-                      <button
+                      <Inline
+                        as="button"
+                        gap={2}
                         onClick={() => {
                           setShowEditModal(true);
                           setShowActions(false);
                         }}
-                        className="w-full px-3 py-1 text-left text-xs text-theme-primary hover:bg-interactive-hover flex items-center space-x-2 transition-colors"
+                        className="w-full px-3 py-1 text-left text-xs text-theme-primary hover:bg-interactive-hover transition-colors"
                       >
                         <PiPencilLine className="w-3 h-3" />
                         <span>{t('user_annotation_card_edit')}</span>
-                      </button>
-                      <button
+                      </Inline>
+                      <Inline
+                        as="button"
+                        gap={2}
                         onClick={() => {
                           setShowDeleteModal(true);
                           setShowActions(false);
                         }}
-                        className="w-full px-3 py-1 text-left text-xs text-accent-red hover:bg-accent-red/10 flex items-center space-x-2 transition-colors"
+                        className="w-full px-3 py-1 text-left text-xs text-accent-red hover:bg-accent-red/10 transition-colors"
                       >
                         <PiTrash className="w-3 h-3" />
                         <span>{t('user_annotation_card_delete')}</span>
-                      </button>
+                      </Inline>
                     </div>
                   )}
                 </div>
@@ -398,14 +406,17 @@ export default function UserAnnotationCard({
           {/* Loading overlay para updates */}
           {isUpdating && (
             <div className="absolute inset-0 bg-theme-primary/5 backdrop-blur-sm z-20 flex items-center justify-center rounded-xl">
-              <div className="flex items-center space-x-3 bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30">
+              <Inline
+                gap={3}
+                className="bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30"
+              >
                 <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
                 <span className="text-sm font-medium text-theme-primary">
                   {isOptimistic
                     ? t('user_annotation_card_saving_loading')
                     : t('user_annotation_card_updating_loading')}
                 </span>
-              </div>
+              </Inline>
             </div>
           )}
 
@@ -431,19 +442,19 @@ export default function UserAnnotationCard({
 
               {/* Informações da obra */}
               <div className="space-y-1 mb-3">
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <PiMusicNotes className="w-3 h-3 text-accent-blue" />
                   <span className="text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium">
                     {workInfo.title}
                   </span>
-                </div>
+                </Inline>
 
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <PiUser className="w-3 h-3 text-theme-tertiary" />
                   <span className="text-sm text-theme-tertiary">
                     {workInfo.composer.fullName}
                   </span>
-                </div>
+                </Inline>
               </div>
 
               {/* Content preview */}
@@ -467,31 +478,39 @@ export default function UserAnnotationCard({
                 </span>
 
                 {!currentAnnotation.isPublic && (
-                  <span className="px-2 py-0.5 rounded-full text-xs font-medium border bg-accent-red/10 border-accent-red/30 text-accent-red flex items-center space-x-1">
+                  <Inline
+                    as="span"
+                    gap={1}
+                    className="px-2 py-0.5 rounded-full text-xs font-medium border bg-accent-red/10 border-accent-red/30 text-accent-red"
+                  >
                     <PiEye className="w-2.5 h-2.5" />
                     <span>{t('user_annotation_card_private')}</span>
-                  </span>
+                  </Inline>
                 )}
 
                 {measureInfo && (
-                  <span className="px-2 py-0.5 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary flex items-center space-x-1">
+                  <Inline
+                    as="span"
+                    gap={1}
+                    className="px-2 py-0.5 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary"
+                  >
                     <PiMapPin className="w-2.5 h-2.5" />
                     <span>{measureInfo}</span>
-                  </span>
+                  </Inline>
                 )}
               </div>
 
               {/* Stats compactas */}
-              <div className="flex items-center space-x-4 text-xs text-theme-tertiary mb-3">
-                <div className="flex items-center space-x-1">
+              <Inline gap={4} className="text-xs text-theme-tertiary mb-3">
+                <Inline gap={1}>
                   <PiThumbsUp className="w-3 h-3" />
                   <span>{currentAnnotation.helpfulCount}</span>
-                </div>
-                <div className="flex items-center space-x-1">
+                </Inline>
+                <Inline gap={1}>
                   <PiEye className="w-3 h-3" />
                   <span>{currentAnnotation.viewCount}</span>
-                </div>
-                <div className="flex items-center space-x-1">
+                </Inline>
+                <Inline gap={1}>
                   <PiClock className="w-3 h-3" />
                   <span>
                     {formatDistanceToNow(
@@ -502,8 +521,8 @@ export default function UserAnnotationCard({
                       }
                     )}
                   </span>
-                </div>
-              </div>
+                </Inline>
+              </Inline>
             </Link>
 
             {/* Actions menu */}
@@ -522,26 +541,30 @@ export default function UserAnnotationCard({
 
                   {showActions && !isUpdating && (
                     <div className="absolute right-0 top-7 bg-theme-elevated border border-theme-primary/30 rounded-xl shadow-theme-glow z-10 py-2 min-w-[100px]">
-                      <button
+                      <Inline
+                        as="button"
+                        gap={2}
                         onClick={() => {
                           setShowEditModal(true);
                           setShowActions(false);
                         }}
-                        className="w-full px-3 py-1 text-left text-xs text-theme-primary hover:bg-interactive-hover flex items-center space-x-2 transition-colors"
+                        className="w-full px-3 py-1 text-left text-xs text-theme-primary hover:bg-interactive-hover transition-colors"
                       >
                         <PiPencilLine className="w-3 h-3" />
                         <span>{t('user_annotation_card_edit')}</span>
-                      </button>
-                      <button
+                      </Inline>
+                      <Inline
+                        as="button"
+                        gap={2}
                         onClick={() => {
                           setShowDeleteModal(true);
                           setShowActions(false);
                         }}
-                        className="w-full px-3 py-1 text-left text-xs text-accent-red hover:bg-accent-red/10 flex items-center space-x-2 transition-colors"
+                        className="w-full px-3 py-1 text-left text-xs text-accent-red hover:bg-accent-red/10 transition-colors"
                       >
                         <PiTrash className="w-3 h-3" />
                         <span>{t('user_annotation_card_delete')}</span>
-                      </button>
+                      </Inline>
                     </div>
                   )}
                 </div>
@@ -593,14 +616,17 @@ export default function UserAnnotationCard({
         {/* Loading overlay para updates */}
         {isUpdating && (
           <div className="absolute inset-0 bg-theme-primary/5 backdrop-blur-sm z-20 flex items-center justify-center">
-            <div className="flex items-center space-x-3 bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30">
+            <Inline
+              gap={3}
+              className="bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30"
+            >
               <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
               <span className="text-sm font-medium text-theme-primary">
                 {isOptimistic
                   ? t('user_annotation_card_saving_loading')
                   : t('user_annotation_card_updating_loading')}
               </span>
-            </div>
+            </Inline>
           </div>
         )}
 
@@ -631,29 +657,29 @@ export default function UserAnnotationCard({
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center space-x-2 mb-1">
+                <Inline gap={2} className="mb-1">
                   <h3 className="text-lg font-semibold text-theme-primary classical-title truncate">
                     {currentAnnotation.title}
                   </h3>
                   {currentAnnotation.isVerified && (
-                    <div className="flex items-center space-x-1 text-accent-green">
+                    <Inline gap={1} className="text-accent-green">
                       <PiSealCheck className="w-4 h-4" />
                       <span className="text-xs font-medium">
                         {t('user_annotation_card_verified')}
                       </span>
-                    </div>
+                    </Inline>
                   )}
                   {isOptimistic && (
-                    <div className="flex items-center space-x-1 text-accent-blue">
+                    <Inline gap={1} className="text-accent-blue">
                       <PiSpinnerGap className="w-3 h-3 animate-spin" />
                       <span className="text-xs font-medium">
                         {t('user_annotation_card_saving')}
                       </span>
-                    </div>
+                    </Inline>
                   )}
-                </div>
+                </Inline>
 
-                <div className="flex items-center space-x-4 text-sm text-theme-secondary mb-2">
+                <Inline gap={4} className="text-sm text-theme-secondary mb-2">
                   <Link
                     href={`/works/${workInfo.id}`}
                     className="font-medium hover:text-brand-primary transition-colors"
@@ -663,9 +689,9 @@ export default function UserAnnotationCard({
                   <span className="text-theme-tertiary">
                     {workInfo.composer.fullName}
                   </span>
-                </div>
+                </Inline>
 
-                <div className="flex items-center space-x-2 text-xs text-theme-tertiary">
+                <Inline gap={2} className="text-xs text-theme-tertiary">
                   <PiClock className="w-3 h-3" />
                   <span>
                     {formatDistanceToNow(
@@ -676,7 +702,7 @@ export default function UserAnnotationCard({
                       }
                     )}
                   </span>
-                </div>
+                </Inline>
               </div>
             </div>
 
@@ -695,26 +721,30 @@ export default function UserAnnotationCard({
 
                 {showActions && !isUpdating && (
                   <div className="absolute right-0 top-9 bg-theme-elevated border border-theme-primary/30 rounded-xl shadow-theme-glow z-10 py-2 min-w-[120px]">
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={() => {
                         setShowEditModal(true);
                         setShowActions(false);
                       }}
-                      className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-interactive-hover flex items-center space-x-2 transition-colors"
+                      className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-interactive-hover transition-colors"
                     >
                       <PiPencilLine className="w-3 h-3" />
                       <span>{t('user_annotation_card_edit')}</span>
-                    </button>
-                    <button
+                    </Inline>
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={() => {
                         setShowDeleteModal(true);
                         setShowActions(false);
                       }}
-                      className="w-full px-4 py-2 text-left text-sm text-accent-red hover:bg-accent-red/10 flex items-center space-x-2 transition-colors"
+                      className="w-full px-4 py-2 text-left text-sm text-accent-red hover:bg-accent-red/10 transition-colors"
                     >
                       <PiTrash className="w-3 h-3" />
                       <span>{t('user_annotation_card_delete')}</span>
-                    </button>
+                    </Inline>
                   </div>
                 )}
               </div>
@@ -737,17 +767,25 @@ export default function UserAnnotationCard({
             </span>
 
             {!currentAnnotation.isPublic && (
-              <span className="px-3 py-1 rounded-full text-xs font-medium border bg-accent-red/10 border-accent-red/30 text-accent-red flex items-center space-x-1">
+              <Inline
+                as="span"
+                gap={1}
+                className="px-3 py-1 rounded-full text-xs font-medium border bg-accent-red/10 border-accent-red/30 text-accent-red"
+              >
                 <PiEye className="w-3 h-3" />
                 <span>{t('user_annotation_card_private')}</span>
-              </span>
+              </Inline>
             )}
 
             {measureInfo && (
-              <span className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary flex items-center space-x-1">
+              <Inline
+                as="span"
+                gap={1}
+                className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary"
+              >
                 <PiMapPin className="w-3 h-3" />
                 <span>{measureInfo}</span>
-              </span>
+              </Inline>
             )}
 
             {currentAnnotation.pageNumber && (
@@ -792,16 +830,16 @@ export default function UserAnnotationCard({
           {/* Footer */}
           <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
             {/* Stats */}
-            <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
-              <div className="flex items-center space-x-1">
+            <Inline gap={4} className="text-sm text-theme-tertiary">
+              <Inline gap={1}>
                 <PiThumbsUp className="w-4 h-4" />
                 <span>{currentAnnotation.helpfulCount}</span>
-              </div>
-              <div className="flex items-center space-x-1">
+              </Inline>
+              <Inline gap={1}>
                 <PiEye className="w-4 h-4" />
                 <span>{currentAnnotation.viewCount}</span>
-              </div>
-            </div>
+              </Inline>
+            </Inline>
 
             {/* Link para a obra */}
             <Link

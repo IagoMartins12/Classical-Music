@@ -21,6 +21,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import { AnimatedCard } from '@/app/components/animation/AnimatedComponents';
 import toast from 'react-hot-toast';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface LogsCleanupProps {
   onClose?: () => void;
@@ -196,8 +197,8 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
               especificado
             </p>
 
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
+            <Inline gap={4}>
+              <Inline gap={2}>
                 <label className="text-sm font-medium text-theme-primary">
                   Deletar logs mais antigos que:
                 </label>
@@ -212,7 +213,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                   <option value={60}>60 dias</option>
                   <option value={90}>90 dias</option>
                 </select>
-              </div>
+              </Inline>
 
               <Button
                 variant="primary"
@@ -230,7 +231,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                   ? 'Limpando...'
                   : 'Limpar Automaticamente'}
               </Button>
-            </div>
+            </Inline>
           </div>
         </div>
       </AnimatedCard>
@@ -243,11 +244,11 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
               Seleção Manual de Datas
             </h3>
 
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <span className="text-sm text-theme-tertiary">
                 {selectedDates.size} de {availableDates.length} selecionadas
               </span>
-            </div>
+            </Inline>
           </div>
 
           {/* Ações de Seleção */}
@@ -307,7 +308,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                   }`}
                   onClick={() => toggleDateSelection(date)}
                 >
-                  <div className="flex items-center space-x-3">
+                  <Inline gap={3}>
                     <input
                       type="checkbox"
                       checked={selectedDates.has(date)}
@@ -322,7 +323,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                         {date} - {getEstimatedSize([date])}
                       </p>
                     </div>
-                  </div>
+                  </Inline>
 
                   <div className="text-sm text-theme-tertiary">
                     {(() => {
@@ -355,7 +356,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                 </p>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 <Button
                   variant="secondary"
                   size="sm"
@@ -382,7 +383,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                 >
                   Deletar Selecionados
                 </Button>
-              </div>
+              </Inline>
             </div>
           )}
         </div>
@@ -410,7 +411,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                 </span>
               </p>
 
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <Button
                   variant="secondary"
                   onClick={() => setShowConfirmDialog(false)}
@@ -435,7 +436,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                 >
                   {actionLoading === 'delete' ? 'Deletando...' : 'Deletar'}
                 </Button>
-              </div>
+              </Inline>
             </div>
           </AnimatedCard>
         </div>

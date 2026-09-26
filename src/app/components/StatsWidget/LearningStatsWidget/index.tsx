@@ -24,6 +24,7 @@ import { BadgeGrid } from '../../badges/BadgeSystem';
 import { useAchievementSystem } from '../../../hooks/useAchievements';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface LearningStatsWidgetProps {
   className?: string;
@@ -213,12 +214,12 @@ export default function LearningStatsWidget({
         {/* Próximas Conquistas */}
         {nextAchievements.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
-            <div className="flex items-center space-x-3 mb-4">
+            <Inline gap={3} className="mb-4">
               <PiTarget className="w-5 h-5 text-accent-green" />
               <h4 className="font-semibold text-theme-primary">
                 {t('next_achievements')}
               </h4>
-            </div>
+            </Inline>
             <div className="space-y-3">
               {nextAchievements.slice(0, 2).map((badge) => {
                 const Icon = badge.icon;
@@ -227,9 +228,10 @@ export default function LearningStatsWidget({
                   : 0;
 
                 return (
-                  <div
+                  <Inline
+                    gap={4}
                     key={badge.id}
-                    className="flex items-center space-x-4 p-3 bg-theme-secondary rounded-xl"
+                    className="p-3 bg-theme-secondary rounded-xl"
                   >
                     <div
                       className={`w-12 h-12 rounded-xl bg-gradient-to-br ${badge.color?.from} ${badge.color?.to} flex items-center justify-center`}
@@ -244,7 +246,7 @@ export default function LearningStatsWidget({
                         {badge.description}
                       </div>
                       {badge.maxProgress && (
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <div className="flex-1 bg-theme-primary rounded-full h-2">
                             <div
                               className={`h-full progress-bar rounded-full transition-all duration-500`}
@@ -254,10 +256,10 @@ export default function LearningStatsWidget({
                           <span className="text-xs text-theme-tertiary">
                             {badge.progress}/{badge.maxProgress}
                           </span>
-                        </div>
+                        </Inline>
                       )}
                     </div>
-                  </div>
+                  </Inline>
                 );
               })}
             </div>
@@ -267,12 +269,12 @@ export default function LearningStatsWidget({
         {/* Smart CTAs */}
         {smartCTAs.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
-            <div className="flex items-center space-x-3 mb-4">
+            <Inline gap={3} className="mb-4">
               <PiLightning className="w-5 h-5 text-brand-primary" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_recommendations')}
               </h4>
-            </div>
+            </Inline>
             <div className="grid grid-cols-1 gap-3">
               {smartCTAs.map((cta) => (
                 <Link
@@ -329,12 +331,12 @@ export default function LearningStatsWidget({
         <div className="grid grid-cols-1  gap-6">
           {/* Diversidade */}
           <AnimatedCard hover="lift" className="classical-card p-6">
-            <div className="flex items-center space-x-3 mb-4">
+            <Inline gap={3} className="mb-4">
               <PiMusicNotes className="w-5 h-5 text-accent-blue" />
               <h4 className="font-semibold text-theme-primary">
                 {t('diversity_title')}
               </h4>
-            </div>
+            </Inline>
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-theme-secondary">
@@ -358,12 +360,12 @@ export default function LearningStatsWidget({
           {/* Performance */}
           {stats.publicPerformances > 0 && (
             <AnimatedCard hover="lift" className="classical-card p-6">
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <PiUsers className="w-5 h-5 text-accent-purple" />
                 <h4 className="font-semibold text-theme-primary">
                   {t('performance_title')}
                 </h4>
-              </div>
+              </Inline>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-theme-secondary">

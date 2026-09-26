@@ -1,5 +1,6 @@
 // app/profile/components/ProfileSkeleton.tsx
 import React from 'react';
+import { Inline } from '@/app/components/ui/Layout';
 
 const ProfileSkeleton: React.FC = () => {
   return (
@@ -9,13 +10,10 @@ const ProfileSkeleton: React.FC = () => {
         <div className="classical-card-2 p-4">
           <div className="space-y-3">
             {[...Array(5)].map((_, index) => (
-              <div
-                key={index}
-                className="flex items-center space-x-3 px-3 py-2.5"
-              >
+              <Inline gap={3} key={index} className="px-3 py-2.5">
                 <div className="w-4 h-4 bg-theme-secondary bg-opacity-50 rounded" />
                 <div className="h-4 bg-theme-secondary bg-opacity-50 rounded flex-1" />
-              </div>
+              </Inline>
             ))}
           </div>
 
@@ -45,14 +43,14 @@ const ProfileSkeleton: React.FC = () => {
           </div>
 
           {/* Profile Image Section Skeleton */}
-          <div className="flex items-center space-x-6 pb-6 border-b border-theme-secondary mb-6">
+          <Inline gap={6} className="pb-6 border-b border-theme-secondary mb-6">
             <div className="w-20 h-20 bg-theme-secondary bg-opacity-50 rounded-full" />
             <div>
               <div className="h-5 w-32 bg-theme-secondary bg-opacity-50 rounded mb-2" />
               <div className="h-4 w-48 bg-theme-secondary bg-opacity-30 rounded mb-2" />
               <div className="h-8 w-24 bg-theme-secondary bg-opacity-50 rounded" />
             </div>
-          </div>
+          </Inline>
 
           {/* Form Fields Skeleton */}
           <div className="space-y-6">
@@ -74,10 +72,10 @@ const ProfileSkeleton: React.FC = () => {
 
             {/* Location section skeleton */}
             <div>
-              <div className="flex items-center space-x-2 mb-4">
+              <Inline gap={2} className="mb-4">
                 <div className="w-4 h-4 bg-theme-secondary bg-opacity-50 rounded" />
                 <div className="h-5 w-24 bg-theme-secondary bg-opacity-50 rounded" />
-              </div>
+              </Inline>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[...Array(3)].map((_, index) => (
                   <div key={index}>

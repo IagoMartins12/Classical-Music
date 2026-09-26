@@ -47,6 +47,7 @@ import UploadComposerCard from '../../components/UploadsPage/UploadComposerCard'
 import UploadWorkCard from '../../components/UploadsPage/UploadWorkCard';
 import UploadScoreCard from '../../components/UploadsPage/UploadScoreCard';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Epoch {
   id: string;
@@ -788,18 +789,20 @@ const UploadsClient = ({
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   {/* 🚀 Botão de Refresh */}
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={handleRefresh}
                     disabled={isRefreshing}
-                    className="flex items-center space-x-2 px-4 py-3 rounded-lg transition-all font-medium bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover disabled:opacity-50"
+                    className="px-4 py-3 rounded-lg transition-all font-medium bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover disabled:opacity-50"
                     title="Atualizar lista"
                   >
                     <PiArrowsClockwise
                       className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`}
                     />
-                  </button>
+                  </Inline>
 
                   <button
                     onClick={handleFiltersToggle}
@@ -834,7 +837,7 @@ const UploadsClient = ({
                     viewMode={viewMode}
                     onViewModeChange={setViewMode}
                   />
-                </div>
+                </Inline>
               </div>
             </div>
 
@@ -843,7 +846,11 @@ const UploadsClient = ({
               <AnimatedItem direction="scale" springType="gentle">
                 <div className="bg-theme-secondary rounded-xl p-4 border border-theme-primary mt-4">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-semibold text-theme-primary flex items-center space-x-2">
+                    <Inline
+                      as="h3"
+                      gap={2}
+                      className="text-sm font-semibold text-theme-primary"
+                    >
                       <PiFunnel className="w-4 h-4" />
                       <span>
                         {selectedType === 'all'
@@ -854,8 +861,8 @@ const UploadsClient = ({
                               ? t('filters_works')
                               : t('filters_scores')}
                       </span>
-                    </h3>
-                    <div className="flex items-center space-x-2">
+                    </Inline>
+                    <Inline gap={2}>
                       {hasActiveFilters && (
                         <button
                           onClick={clearFilters}
@@ -870,7 +877,7 @@ const UploadsClient = ({
                       >
                         <PiX className="w-4 h-4" />
                       </button>
-                    </div>
+                    </Inline>
                   </div>
 
                   {renderTabSpecificFilters()}
@@ -883,7 +890,7 @@ const UploadsClient = ({
         {/* Filter Status */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="flex justify-between gap-4 my-4">
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               <div className="text-theme-secondary text-sm">
                 <span className="font-medium text-theme-primary">
                   {uploads.length}
@@ -912,10 +919,10 @@ const UploadsClient = ({
                   </span>
                 </div>
               )}
-            </div>
+            </Inline>
 
             {/* Quick Actions */}
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <Button
                 variant="ghost"
                 size="sm"
@@ -924,7 +931,7 @@ const UploadsClient = ({
               >
                 {t('action_history')}
               </Button>
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -940,7 +947,7 @@ const UploadsClient = ({
                   springType="gentle"
                 >
                   <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                         <PiUser className="w-5 h-5 text-theme-primary" />
                       </div>
@@ -958,7 +965,7 @@ const UploadsClient = ({
                               } ${t('results_composers')}`}
                         </p>
                       </div>
-                    </div>
+                    </Inline>
 
                     {selectedType === 'all' && hasMoreComposers && (
                       <Button
@@ -1060,7 +1067,7 @@ const UploadsClient = ({
                   springType="gentle"
                 >
                   <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                         <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                       </div>
@@ -1078,7 +1085,7 @@ const UploadsClient = ({
                               } ${t('results_works')}`}
                         </p>
                       </div>
-                    </div>
+                    </Inline>
 
                     {selectedType === 'all' && hasMoreWorks && (
                       <Button
@@ -1176,7 +1183,7 @@ const UploadsClient = ({
                   springType="gentle"
                 >
                   <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                         <PiFileText className="w-5 h-5 text-theme-primary" />
                       </div>
@@ -1194,7 +1201,7 @@ const UploadsClient = ({
                               } ${t('results_scores')}`}
                         </p>
                       </div>
-                    </div>
+                    </Inline>
 
                     {selectedType === 'all' && hasMoreScores && (
                       <Button

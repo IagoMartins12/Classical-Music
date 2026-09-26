@@ -34,6 +34,7 @@ import CreateWorkModal from '../../../../../components/UploadsPage/modals/Create
 import { useToast } from '@/app/hooks/useToast';
 import { deleteUpload } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface EditWorkClientProps {
   work: any;
@@ -123,7 +124,11 @@ const EditWorkClient = ({
       <div className="section-wrap space-y-8 relative z-10">
         {/* Breadcrumb */}
         <AnimatedItem direction="down" springType="gentle">
-          <nav className="flex items-center space-x-2 text-sm text-theme-tertiary mb-6 pt-4">
+          <Inline
+            as="nav"
+            gap={2}
+            className="text-sm text-theme-tertiary mb-6 pt-4"
+          >
             <Link
               href="/upload"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
@@ -165,7 +170,7 @@ const EditWorkClient = ({
             <span className="text-theme-primary font-medium">
               {t('breadcrumb_edit').replace('{name}', work.title)}
             </span>
-          </nav>
+          </Inline>
         </AnimatedItem>
 
         <AnimatedContainer
@@ -186,7 +191,7 @@ const EditWorkClient = ({
                   <div className="space-y-4">
                     <div className="flex flex-col sm:flex-row items-start justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-4">
+                        <Inline gap={3} className="mb-4">
                           <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                             <PiPencilLine className="w-5 h-5 text-theme-primary" />
                           </div>
@@ -195,7 +200,7 @@ const EditWorkClient = ({
                               {t('edit_work_title')}
                             </h1>
                           </div>
-                        </div>
+                        </Inline>
 
                         <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
                           {work.title}
@@ -208,7 +213,10 @@ const EditWorkClient = ({
                           </h2>
                         )}
 
-                        <div className="flex items-center space-x-2 text-xl text-theme-secondary mt-3">
+                        <Inline
+                          gap={2}
+                          className="text-xl text-theme-secondary mt-3"
+                        >
                           <span>{t('score_info_by_composer')}</span>
                           <Link
                             href={`/composer/${work.composer.id}`}
@@ -216,7 +224,7 @@ const EditWorkClient = ({
                           >
                             {work.composer.fullName || work.composer.name}
                           </Link>
-                        </div>
+                        </Inline>
                         {work.opOrCatalog && (
                           <p className="text-lg text-theme-tertiary mt-2 font-medium">
                             {work.opOrCatalog}
@@ -225,7 +233,10 @@ const EditWorkClient = ({
                       </div>
 
                       {/* Action buttons */}
-                      <div className="flex flex-wrap justify-center gap-3 sm:gap-0 items-center space-x-3 mt-4 sm:mt-0 ml-4">
+                      <Inline
+                        gap={3}
+                        className="flex-wrap justify-center gap-3 sm:gap-0 mt-4 sm:mt-0 ml-4"
+                      >
                         <Link href={`/works/${work.id}`} className="ml-2">
                           <Button variant="primary" leftIcon={<PiEye />}>
                             {t('view_work_button')}
@@ -259,12 +270,12 @@ const EditWorkClient = ({
                             </Button>
                           </>
                         )}
-                      </div>
+                      </Inline>
                     </div>
 
                     {/* Difficulty Level Badge */}
                     {work.difficultyLevel && (
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <div
                           className={`px-4 py-2 bg-gradient-to-r ${getDifficultyColor(
                             work.difficultyLevel
@@ -276,7 +287,7 @@ const EditWorkClient = ({
                             {getDifficultyLabel(work.difficultyLevel)}
                           </span>
                         </div>
-                      </div>
+                      </Inline>
                     )}
                   </div>
 
@@ -402,40 +413,44 @@ const EditWorkClient = ({
                     work.workStyle ||
                     work.instrumentation) && (
                     <div className="border-t border-theme-secondary pt-6">
-                      <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                      <Inline
+                        as="h3"
+                        gap={2}
+                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                      >
                         <PiBookOpen className="w-5 h-5 text-accent-blue" />
                         <span>{t('work_info_additional_info')}</span>
-                      </h3>
+                      </Inline>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         {work.firstPublishDate && (
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <span className="font-medium text-theme-tertiary">
                               {t('work_info_first_publication')}:
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {work.firstPublishDate}
                             </span>
-                          </div>
+                          </Inline>
                         )}
                         {work.dedicateTo && (
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <span className="font-medium text-theme-tertiary">
                               {t('work_info_dedicated_to')}:
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {work.dedicateTo}
                             </span>
-                          </div>
+                          </Inline>
                         )}
                         {work.workStyle && (
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <span className="font-medium text-theme-tertiary">
                               {t('work_info_style')}:
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {work.workStyle}
                             </span>
-                          </div>
+                          </Inline>
                         )}
                         {work.instrumentation && (
                           <div className="md:col-span-2 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
@@ -455,10 +470,14 @@ const EditWorkClient = ({
                   {(work.categoryNames?.length > 0 ||
                     work.workGenresArr?.length > 0) && (
                     <div className="border-t border-theme-secondary pt-6">
-                      <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                      <Inline
+                        as="h3"
+                        gap={2}
+                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                      >
                         <PiTag className="w-5 h-5 text-accent-green" />
                         <span>{t('work_info_categories_genres')}</span>
-                      </h3>
+                      </Inline>
                       <div className="space-y-4">
                         {work.categoryNames?.length > 0 && (
                           <div>
@@ -506,15 +525,21 @@ const EditWorkClient = ({
                   {/* Link IMSLP */}
                   {work.imslpPermlink && (
                     <div className="border-t border-theme-secondary pt-6">
-                      <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                      <Inline
+                        as="h3"
+                        gap={2}
+                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                      >
                         <PiArrowSquareOut className="w-5 h-5 text-accent-blue" />
                         <span>{t('work_info_external_link')}</span>
-                      </h3>
-                      <a
+                      </Inline>
+                      <Inline
+                        as="a"
+                        gap={2}
                         href={work.imslpPermlink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-classical-primary flex items-center space-x-2 group/btn w-fit"
+                        className="btn-classical-primary group/btn w-fit"
                       >
                         <PiBookOpen className="w-4 h-4" />
                         <span>{t('work_info_view_imslp')}</span>
@@ -531,7 +556,7 @@ const EditWorkClient = ({
                             d="M9 5l7 7-7 7"
                           />
                         </svg>
-                      </a>
+                      </Inline>
                     </div>
                   )}
                 </div>
@@ -540,14 +565,14 @@ const EditWorkClient = ({
                 <div className="space-y-6">
                   {/* Foto do Compositor */}
                   <div className="classical-card-simple p-6">
-                    <div className="flex items-center space-x-3 mb-4">
+                    <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
                         <PiUser className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
                         {t('work_info_composer')}
                       </h3>
-                    </div>
+                    </Inline>
 
                     <div className="text-center space-y-4">
                       {work.composer.portraitUrl && !imageError ? (
@@ -583,14 +608,14 @@ const EditWorkClient = ({
 
                   {/* Detalhes Técnicos */}
                   <div className="classical-card-simple p-6">
-                    <div className="flex items-center space-x-3 mb-4">
+                    <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                         <PiBookOpen className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
                         {t('work_info_technical_details')}
                       </h3>
-                    </div>
+                    </Inline>
                     <div className="space-y-3 text-sm">
                       {work.movementNumber && (
                         <div className="flex items-center justify-between">

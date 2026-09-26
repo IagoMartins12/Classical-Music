@@ -9,6 +9,7 @@ import Modal from '../../Modal';
 import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { reportContent } from '@/app/requests/moderation';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -138,7 +139,7 @@ export default function ReportModal({
         <div className="w-full">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="w-10 h-10 bg-accent-red/20 rounded-xl flex items-center justify-center">
                 <PiFlag className="w-5 h-5 text-accent-red" />
               </div>
@@ -150,7 +151,7 @@ export default function ReportModal({
                   &quot;{entityName}&quot;
                 </p>
               </div>
-            </div>
+            </Inline>
           </div>
 
           {/* Form */}

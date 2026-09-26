@@ -44,6 +44,7 @@ import type { BlogArticlePreview } from '@/app/requests/blog/composer-articles';
 import ComposerArticlesSection from '@/app/components/ComposerArticlesSection';
 import { useSession } from '@/app/libs/session';
 import { canEditCatalog, canVerifyCatalog } from '@/app/utils/permissions';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
@@ -246,7 +247,11 @@ export default function ComposerDetailsClient({
       <div className="section-wrap space-y-8 relative z-10 ">
         {/* Breadcrumb */}
         <AnimatedItem direction="down" springType="gentle">
-          <nav className="flex items-center space-x-2 text-sm text-theme-tertiary mb-6 pt-4">
+          <Inline
+            as="nav"
+            gap={2}
+            className="text-sm text-theme-tertiary mb-6 pt-4"
+          >
             <Link
               href="/composers"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
@@ -269,7 +274,7 @@ export default function ComposerDetailsClient({
             <span className="text-theme-primary font-medium">
               {composer.name}
             </span>
-          </nav>
+          </Inline>
         </AnimatedItem>
 
         <AnimatedContainer
@@ -292,7 +297,7 @@ export default function ComposerDetailsClient({
                             {composer.name}
                           </h1>
                           {composer.fullName !== composer.name && (
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               <p className="text-xl text-theme-secondary">
                                 {composer.fullName}
                               </p>
@@ -303,11 +308,14 @@ export default function ComposerDetailsClient({
                                   variant="text"
                                 />
                               )}
-                            </div>
+                            </Inline>
                           )}
                         </div>
                         {/* Ações */}
-                        <div className="flex items-center self-end space-x-3 py-4 sm:pb-0 sm:pt-2 b">
+                        <Inline
+                          gap={3}
+                          className="self-end py-4 sm:pb-0 sm:pt-2 b"
+                        >
                           <FavoriteButton
                             id={composer.id}
                             type="composer"
@@ -350,7 +358,7 @@ export default function ComposerDetailsClient({
                               onClick={() => setShowVerificationModal(true)}
                             />
                           )}
-                        </div>
+                        </Inline>
                       </div>
                     </div>
                   </AnimatedItem>
@@ -505,11 +513,13 @@ export default function ComposerDetailsClient({
                     <div className="space-y-4 pt-4">
                       <div className="flex flex-wrap gap-3">
                         {composer.wikipediaLink && (
-                          <a
+                          <Inline
+                            as="a"
+                            gap={2}
                             href={composer.wikipediaLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="btn-classical-primary flex items-center space-x-2 group/btn"
+                            className="btn-classical-primary group/btn"
                           >
                             <PiArrowSquareOut className="w-4 h-4" />
                             <span>{t('wikipedia_link')}</span>
@@ -526,15 +536,17 @@ export default function ComposerDetailsClient({
                                 d="M9 5l7 7-7 7"
                               />
                             </svg>
-                          </a>
+                          </Inline>
                         )}
 
                         {composer.permLinkImslp && (
-                          <a
+                          <Inline
+                            as="a"
+                            gap={2}
                             href={composer.permLinkImslp}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="btn-classical-secondary flex items-center space-x-2 group/btn"
+                            className="btn-classical-secondary group/btn"
                           >
                             <PiBookOpen className="w-4 h-4" />
                             <span>{t('imslp_link')}</span>
@@ -551,7 +563,7 @@ export default function ComposerDetailsClient({
                                 d="M9 5l7 7-7 7"
                               />
                             </svg>
-                          </a>
+                          </Inline>
                         )}
                       </div>
                     </div>
@@ -599,7 +611,7 @@ export default function ComposerDetailsClient({
               className="classical-card p-8 z-10 relative"
             >
               <AnimatedItem direction="up" springType="bouncy">
-                <div className="flex items-center space-x-3 mb-6">
+                <Inline gap={3} className="mb-6">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center">
                     <PiUsers className="w-6 h-6 text-theme-primary" />
                   </div>
@@ -611,7 +623,7 @@ export default function ComposerDetailsClient({
                       {t('secondary_roles_subtitle')} {composer.fullName}
                     </p>
                   </div>
-                </div>
+                </Inline>
               </AnimatedItem>
 
               <div className="flex flex-wrap gap-3">
@@ -650,7 +662,7 @@ export default function ComposerDetailsClient({
           {/* Biografia */}
           <AnimatedCard hover="lift" className="classical-card p-8">
             <AnimatedItem direction="left" springType="smooth">
-              <div className="flex items-center space-x-3 mb-6">
+              <Inline gap={3} className="mb-6">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
                   <PiBookOpen className="w-6 h-6 text-theme-primary" />
                 </div>
@@ -669,7 +681,7 @@ export default function ComposerDetailsClient({
                     <div className="absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-theme-elevated"></div>
                   </div>
                 </div>
-              </div>
+              </Inline>
             </AnimatedItem>
 
             <AnimatedItem direction="up" springType="gentle">

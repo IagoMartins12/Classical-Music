@@ -34,6 +34,7 @@ import {
   loadSharedReport,
 } from '@/app/requests/portal/shared-reports';
 import dynamic from 'next/dynamic';
+import { Inline } from '@/app/components/ui/Layout';
 
 /**
  * Os gráficos descem à parte — ver `charts.tsx`.
@@ -207,16 +208,18 @@ export default function StudentSharedReportPageClient({
               {error || errorMessage}
             </p>
             <div className="space-y-3">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={refreshReport}
                 disabled={loading}
-                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+                className="btn-classical-primary w-full justify-center"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                 />
                 <span>{loading ? 'Carregando...' : 'Tentar Novamente'}</span>
-              </button>
+              </Inline>
               <Link
                 href="/student/progress"
                 className="btn-classical-secondary w-full"
@@ -251,7 +254,7 @@ export default function StudentSharedReportPageClient({
         {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8 pt-4">
-            <div className="flex items-center space-x-4 mb-4 lg:mb-0">
+            <Inline gap={4} className="mb-4 lg:mb-0">
               <Link
                 href="/student/progress"
                 className="w-12 h-12 rounded-xl bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
@@ -270,7 +273,7 @@ export default function StudentSharedReportPageClient({
                   {reportData.metadata.periodLabel}
                 </p>
               </div>
-            </div>
+            </Inline>
 
             <button
               onClick={refreshReport}
@@ -290,7 +293,7 @@ export default function StudentSharedReportPageClient({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* Teacher Card */}
             <AnimatedCard hover="lift" className="classical-card p-6">
-              <div className="flex items-center space-x-4 mb-4">
+              <Inline gap={4} className="mb-4">
                 {reportData.teacher.image ? (
                   <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-brand-primary/20">
                     <Image
@@ -312,7 +315,7 @@ export default function StudentSharedReportPageClient({
                   </h3>
                   <p className="text-sm text-theme-tertiary">Seu Professor</p>
                 </div>
-              </div>
+              </Inline>
 
               {reportData.teacher.specialties.length > 0 && (
                 <div className="flex flex-wrap gap-1">
@@ -615,10 +618,12 @@ export default function StudentSharedReportPageClient({
                     <option value="recommendations">Recomendações</option>
                   </select>
 
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={addComment}
                     disabled={!newComment.trim() || addingComment}
-                    className="btn-classical-primary flex items-center space-x-2"
+                    className="btn-classical-primary"
                   >
                     {addingComment ? (
                       <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -626,7 +631,7 @@ export default function StudentSharedReportPageClient({
                       <PiPaperPlaneRight className="w-4 h-4" />
                     )}
                     <span>{addingComment ? 'Enviando...' : 'Enviar'}</span>
-                  </button>
+                  </Inline>
                 </div>
               </div>
 

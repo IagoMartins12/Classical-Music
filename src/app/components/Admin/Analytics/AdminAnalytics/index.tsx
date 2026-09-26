@@ -33,6 +33,7 @@ import {
 import { useAdminAnalytics } from '@/app/hooks/admin/useAdminAnalytics';
 import LoadingAdminState from '../../Common/LoadingState';
 import { formatDuration, formatNumber } from '../../Utils';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function AdminAnalytics() {
   const router = useRouter();
@@ -170,23 +171,23 @@ export default function AdminAnalytics() {
 
             {/* Status e controles */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 <div className="w-3 h-3 bg-accent-green rounded-full animate-pulse"></div>
                 <span className="text-theme-primary font-medium">
                   Dados em Tempo Real
                 </span>
-              </div>
+              </Inline>
               {lastUpdated && (
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <PiArrowsClockwise className="w-4 h-4 text-theme-secondary" />
                   <span className="text-theme-secondary">
                     Atualizado há{' '}
                     {Math.round((Date.now() - lastUpdated.getTime()) / 60000)}{' '}
                     min
                   </span>
-                </div>
+                </Inline>
               )}
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -208,7 +209,7 @@ export default function AdminAnalytics() {
                 >
                   Exportar
                 </Button>
-              </div>
+              </Inline>
             </div>
           </div>
         </AnimatedItem>
@@ -216,10 +217,14 @@ export default function AdminAnalytics() {
         {/* Key Insights */}
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard className="classical-card p-6 mb-8">
-            <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-xl font-bold text-theme-primary mb-6"
+            >
               <PiTarget className="w-5 h-5 text-accent-blue" />
               <span>Insights Principais</span>
-            </h3>
+            </Inline>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {analytics.insights.keyMetrics.map((metric, index) => (
                 <div key={index} className="p-4 bg-theme-secondary rounded-xl">
@@ -249,10 +254,14 @@ export default function AdminAnalytics() {
         {analytics && analytics.charts && (
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6 mb-8">
-              <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-xl font-bold text-theme-primary mb-6"
+              >
                 <PiPulse className="w-5 h-5 text-accent-green" />
                 <span>Visão Geral do Engajamento</span>
-              </h3>
+              </Inline>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="p-4 bg-theme-secondary rounded-xl">
                   <div className="flex items-center justify-between mb-2">
@@ -422,17 +431,22 @@ export default function AdminAnalytics() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           {/* Top Works */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-lg font-bold text-theme-primary mb-4"
+            >
               <PiDatabase className="w-5 h-5 text-accent-blue" />
               <span>Obras Populares</span>
-            </h3>
+            </Inline>
             <div className="space-y-3">
               {analytics.charts.topPerformers.works
                 .slice(0, 5)
                 .map((work, index) => (
-                  <div
+                  <Inline
+                    gap={3}
                     key={work.id}
-                    className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                    className="p-3 bg-theme-secondary rounded-xl"
                   >
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                       {index + 1}
@@ -444,10 +458,13 @@ export default function AdminAnalytics() {
                       <p className="text-sm text-theme-tertiary truncate">
                         {work.composer}
                       </p>
-                      <div className="flex items-center space-x-3 text-xs text-theme-secondary mt-1">
+                      <Inline
+                        gap={3}
+                        className="text-xs text-theme-secondary mt-1"
+                      >
                         <span>❤️ {work.favorites}</span>
                         <span>📚 {work.sessions}</span>
-                      </div>
+                      </Inline>
                     </div>
                     <Button
                       variant="ghost"
@@ -455,24 +472,29 @@ export default function AdminAnalytics() {
                       leftIcon={<PiEye />}
                       onClick={() => router.push(`/admin/works/${work.id}`)}
                     />
-                  </div>
+                  </Inline>
                 ))}
             </div>
           </AnimatedCard>
 
           {/* Top Composers */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-lg font-bold text-theme-primary mb-4"
+            >
               <PiUsers className="w-5 h-5 text-accent-green" />
               <span>Compositores Populares</span>
-            </h3>
+            </Inline>
             <div className="space-y-3">
               {analytics.charts.topPerformers.composers
                 .slice(0, 5)
                 .map((composer, index) => (
-                  <div
+                  <Inline
+                    gap={3}
                     key={composer.id}
-                    className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                    className="p-3 bg-theme-secondary rounded-xl"
                   >
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                       {index + 1}
@@ -481,10 +503,13 @@ export default function AdminAnalytics() {
                       <p className="font-medium text-theme-primary truncate">
                         {composer.name}
                       </p>
-                      <div className="flex items-center space-x-3 text-xs text-theme-secondary mt-1">
+                      <Inline
+                        gap={3}
+                        className="text-xs text-theme-secondary mt-1"
+                      >
                         <span>🎵 {composer.works} obras</span>
                         <span>❤️ {composer.favorites}</span>
-                      </div>
+                      </Inline>
                     </div>
                     <Button
                       variant="ghost"
@@ -494,24 +519,29 @@ export default function AdminAnalytics() {
                         router.push(`/admin/composers/${composer.id}`)
                       }
                     />
-                  </div>
+                  </Inline>
                 ))}
             </div>
           </AnimatedCard>
 
           {/* Top Users */}
           <AnimatedCard className="classical-card p-6">
-            <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-lg font-bold text-theme-primary mb-4"
+            >
               <PiPulse className="w-5 h-5 text-accent-purple" />
               <span>Usuários Ativos</span>
-            </h3>
+            </Inline>
             <div className="space-y-3">
               {analytics.charts.topPerformers.users
                 .slice(0, 5)
                 .map((user, index) => (
-                  <div
+                  <Inline
+                    gap={3}
                     key={user.id}
-                    className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                    className="p-3 bg-theme-secondary rounded-xl"
                   >
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                       {index + 1}
@@ -520,10 +550,13 @@ export default function AdminAnalytics() {
                       <p className="font-medium text-theme-primary truncate">
                         {user.name}
                       </p>
-                      <div className="flex items-center space-x-3 text-xs text-theme-secondary mt-1">
+                      <Inline
+                        gap={3}
+                        className="text-xs text-theme-secondary mt-1"
+                      >
                         <span>⏱️ {formatDuration(user.studyTime)}</span>
                         <span>📝 {user.annotations}</span>
-                      </div>
+                      </Inline>
                     </div>
                     <Button
                       variant="ghost"
@@ -531,7 +564,7 @@ export default function AdminAnalytics() {
                       leftIcon={<PiEye />}
                       onClick={() => router.push(`/admin/users/${user.id}`)}
                     />
-                  </div>
+                  </Inline>
                 ))}
             </div>
           </AnimatedCard>
@@ -541,10 +574,14 @@ export default function AdminAnalytics() {
         {analytics.insights.recommendations.length > 0 && (
           <AnimatedItem direction="up" springType="gentle" className="my-4">
             <AnimatedCard className="classical-card p-6">
-              <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-xl font-bold text-theme-primary mb-6"
+              >
                 <PiTarget className="w-5 h-5 text-accent-amber" />
                 <span>Recomendações</span>
-              </h3>
+              </Inline>
               <div className="space-y-4">
                 {analytics.insights.recommendations.map((rec, index) => {
                   const IconComponent = getRecommendationIcon(rec.type);

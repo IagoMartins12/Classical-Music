@@ -53,6 +53,7 @@ import {
   getOriginalCategoryName,
   translateCategory,
 } from '@/app/utils/translations/categoryTranslation';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 interface ComposerWorksProps {
   composerId: string;
@@ -416,7 +417,7 @@ export default function ComposerWorks({
     return (
       <AnimatedCard hover="lift" className="classical-card p-12">
         <AnimatedItem direction="up" springType="bouncy">
-          <div className="flex items-center space-x-3 mb-6">
+          <Inline gap={3} className="mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
               <PiBookOpen className="w-6 h-6 text-theme-primary" />
             </div>
@@ -425,7 +426,7 @@ export default function ComposerWorks({
                 {t('works_title')}
               </h2>
             </div>
-          </div>
+          </Inline>
         </AnimatedItem>
 
         <AnimatedItem direction="scale" springType="gentle">
@@ -454,7 +455,7 @@ export default function ComposerWorks({
           springType="smooth"
           className="p-0 pb-4 md:p-8 border-b border-theme-secondary bg-gradient-to-r from-theme-elevated to-interactive-hover"
         >
-          <div className="flex items-center space-x-3 mb-4">
+          <Inline gap={3} className="mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
               <PiBookOpen className="w-6 h-6 text-theme-primary" />
             </div>
@@ -467,17 +468,17 @@ export default function ComposerWorks({
                 {t('works_by_composer')} {composerName}
               </p>
             </div>
-          </div>
+          </Inline>
 
           {/* Tabs de WorkType */}
           {availableWorkTypes.length > 0 && (
             <div className="mb-6">
-              <div className="flex items-center space-x-2 mb-3">
+              <Inline gap={2} className="mb-3">
                 <PiStack className="w-4 h-4 text-theme-primary" />
                 <span className="text-sm font-medium text-theme-primary">
                   {t('filter_by_work_type')}
                 </span>
-              </div>
+              </Inline>
 
               <div className="flex flex-wrap gap-2">
                 {/* Tab "Todos" */}
@@ -595,7 +596,7 @@ export default function ComposerWorks({
             <div className="overflow-hidden transition-all duration-500 max-h-96 opacity-100 mt-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-theme-elevated/50 border border-theme-primary rounded-xl">
                 {/* Filtro de instrumento */}
-                <div className="space-y-2 flex flex-col gap-1">
+                <Stack gap={2} className="gap-1">
                   <label className="text-sm font-medium text-theme-secondary">
                     {t('instrument_filter_label')} (
                     {filterOptions.instruments.length})
@@ -616,10 +617,10 @@ export default function ComposerWorks({
                       disabled={loading}
                     />
                   </div>
-                </div>
+                </Stack>
 
                 {/* Filtro de gênero */}
-                <div className="space-y-2 flex flex-col gap-1">
+                <Stack gap={2} className="gap-1">
                   <label className="text-sm font-medium text-theme-secondary">
                     {t('genre_filter_label')} ({filterOptions.workGenres.length}
                     )
@@ -640,10 +641,10 @@ export default function ComposerWorks({
                       disabled={loading}
                     />
                   </div>
-                </div>
+                </Stack>
 
                 {/* Filtro de categoria */}
-                <div className="space-y-2 flex flex-col gap-1">
+                <Stack gap={2} className="gap-1">
                   <label className="text-sm font-medium text-theme-secondary">
                     {t('category_filter_label')} (
                     {filterOptions.categories.length})
@@ -664,7 +665,7 @@ export default function ComposerWorks({
                       disabled={loading}
                     />
                   </div>
-                </div>
+                </Stack>
               </div>
             </div>
           )}
@@ -785,7 +786,7 @@ export default function ComposerWorks({
               {/* Loading indicator */}
               <AnimatedItem direction="scale" springType="gentle">
                 <div className="flex items-center justify-center py-4 opacity-70">
-                  <div className="flex items-center space-x-2 text-sm text-theme-secondary">
+                  <Inline gap={2} className="text-sm text-theme-secondary">
                     <div className="w-2 h-2 bg-brand-primary rounded-full animate-bounce"></div>
                     <div
                       className="w-2 h-2 bg-brand-primary rounded-full animate-bounce"
@@ -796,7 +797,7 @@ export default function ComposerWorks({
                       style={{ animationDelay: '0.2s' }}
                     ></div>
                     <span className="ml-2">{t('loading')}...</span>
-                  </div>
+                  </Inline>
                 </div>
               </AnimatedItem>
             </AnimatedContainer>
@@ -818,7 +819,7 @@ export default function ComposerWorks({
                       <div className="p-6">
                         <div className="flex items-start justify-between">
                           <div className="flex-1 max-w-full">
-                            <div className="flex items-center space-x-3 mb-4">
+                            <Inline gap={3} className="mb-4">
                               {work.instrument?.name && (
                                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center text-theme-primary group-hover:scale-110 transition-transform duration-300">
                                   {getInstrumentIcon(work.instrument.name)}
@@ -840,37 +841,37 @@ export default function ComposerWorks({
                                   </span>
                                 )}
                               </div>
-                            </div>
+                            </Inline>
 
                             <div className="flex flex-col gap-4 text-sm text-theme-secondary">
                               {work.instrument?.name && (
-                                <div className="flex items-center space-x-2">
+                                <Inline gap={2}>
                                   <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                                   <span>{work.instrument.name}</span>
-                                </div>
+                                </Inline>
                               )}
 
                               {work.tone && (
-                                <div className="flex items-center space-x-2">
+                                <Inline gap={2}>
                                   <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                                   <span>{work.tone}</span>
-                                </div>
+                                </Inline>
                               )}
 
                               {work.mediaDuration && (
-                                <div className="flex items-center space-x-2">
+                                <Inline gap={2}>
                                   <PiClock className="w-4 h-4 text-theme-tertiary" />
                                   <span>
                                     {formatDuration(work.mediaDuration)}
                                   </span>
-                                </div>
+                                </Inline>
                               )}
 
                               {work.compositionYear && (
-                                <div className="flex items-center space-x-2">
+                                <Inline gap={2}>
                                   <PiCalendarBlank className="w-4 h-4 text-theme-tertiary" />
                                   <span>{work.compositionYear}</span>
-                                </div>
+                                </Inline>
                               )}
                             </div>
 
@@ -931,7 +932,7 @@ export default function ComposerWorks({
                         <div className="p-6">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
-                              <div className="flex items-center space-x-3 mb-4">
+                              <Inline gap={3} className="mb-4">
                                 {work.instrument?.name && (
                                   <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center text-theme-primary group-hover:scale-110 transition-transform duration-300">
                                     {getInstrumentIcon(work.instrument.name)}
@@ -953,37 +954,37 @@ export default function ComposerWorks({
                                     </span>
                                   )}
                                 </div>
-                              </div>
+                              </Inline>
 
                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-theme-secondary">
                                 {work.instrument?.name && (
-                                  <div className="flex items-center space-x-2">
+                                  <Inline gap={2}>
                                     <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                                     <span>{work.instrument.name}</span>
-                                  </div>
+                                  </Inline>
                                 )}
 
                                 {work.tone && (
-                                  <div className="flex items-center space-x-2">
+                                  <Inline gap={2}>
                                     <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                                     <span>{work.tone}</span>
-                                  </div>
+                                  </Inline>
                                 )}
 
                                 {work.mediaDuration && (
-                                  <div className="flex items-center space-x-2">
+                                  <Inline gap={2}>
                                     <PiClock className="w-4 h-4 text-theme-tertiary" />
                                     <span>
                                       {formatDuration(work.mediaDuration)}
                                     </span>
-                                  </div>
+                                  </Inline>
                                 )}
 
                                 {work.compositionYear && (
-                                  <div className="flex items-center space-x-2">
+                                  <Inline gap={2}>
                                     <PiCalendarBlank className="w-4 h-4 text-theme-tertiary" />
                                     <span>{work.compositionYear}</span>
-                                  </div>
+                                  </Inline>
                                 )}
                               </div>
 
@@ -1015,8 +1016,9 @@ export default function ComposerWorks({
                               )}
                             </div>
 
-                            <div
-                              className="flex items-center space-x-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300"
+                            <Inline
+                              gap={2}
+                              className="opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300"
                               onClick={(e) => e.stopPropagation()}
                             >
                               <FavoriteButton
@@ -1027,7 +1029,7 @@ export default function ComposerWorks({
                                 itemName={work.title}
                                 showToast={true}
                               />
-                            </div>
+                            </Inline>
                           </div>
                         </div>
                       </Link>
@@ -1039,10 +1041,12 @@ export default function ComposerWorks({
               {/* Botão Carregar Mais */}
               {hasMore && (
                 <div className="flex justify-center pt-8">
-                  <button
+                  <Inline
+                    as="button"
+                    gap={3}
                     onClick={loadMore}
                     disabled={loadingMore}
-                    className="btn-classical-primary flex items-center space-x-3 px-8 py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed group hover:scale-105 transition-all duration-300"
+                    className="btn-classical-primary px-8 py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed group hover:scale-105 transition-all duration-300"
                   >
                     {loadingMore ? (
                       <PiSpinnerGap className="w-5 h-5 animate-spin" />
@@ -1056,7 +1060,7 @@ export default function ComposerWorks({
                             totalCount - works.length
                           } ${t('remaining_works')})`}
                     </span>
-                  </button>
+                  </Inline>
                 </div>
               )}
             </>
@@ -1075,13 +1079,15 @@ export default function ComposerWorks({
                 </p>
                 {hasActiveFilters && (
                   <AnimatedItem hover="scale" springType="bouncy">
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={clearFilters}
-                      className="btn-classical-primary flex items-center space-x-2 mx-auto group"
+                      className="btn-classical-primary mx-auto group"
                     >
                       <PiArrowsClockwise className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
                       <span>{t('clear_filters')}</span>
-                    </button>
+                    </Inline>
                   </AnimatedItem>
                 )}
               </div>

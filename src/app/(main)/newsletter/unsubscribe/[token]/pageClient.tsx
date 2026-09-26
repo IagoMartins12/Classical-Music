@@ -14,6 +14,7 @@ import {
 import Input from '@/app/components/Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { unsubscribeFromNewsletter } from '@/app/requests/newsletter';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function UnsubscribePage() {
   const router = useRouter();
@@ -196,9 +197,11 @@ export default function UnsubscribePage() {
                       </label>
                       <div className="space-y-2">
                         {unsubscribeReasons.map((reasonOption) => (
-                          <label
+                          <Inline
+                            as="label"
+                            gap={3}
                             key={reasonOption.id}
-                            className="flex items-center space-x-3 p-3 rounded-lg border border-theme-secondary cursor-pointer hover:bg-theme-secondary transition-colors"
+                            className="p-3 rounded-lg border border-theme-secondary cursor-pointer hover:bg-theme-secondary transition-colors"
                           >
                             <Input
                               type="radio"
@@ -211,7 +214,7 @@ export default function UnsubscribePage() {
                             <span className="text-theme-primary">
                               {reasonOption.label}
                             </span>
-                          </label>
+                          </Inline>
                         ))}
                       </div>
                     </div>

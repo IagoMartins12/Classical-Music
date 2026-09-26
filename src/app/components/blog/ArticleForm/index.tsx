@@ -32,6 +32,7 @@ import ArticlePreviewModal from '../ArticlePreviewModal';
 import FeaturedArticlesManager from '../FeaturedArticlesManager';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
+import { Inline } from '@/app/components/ui/Layout';
 
 const articleSchema = z.object({
   title: z.string().min(3, 'Título deve ter pelo menos 3 caracteres'),
@@ -638,7 +639,7 @@ export function ArticleForm({
             <label className="block text-sm font-medium text-theme-primary mb-2">
               Slug (URL) *
             </label>
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               <span className="text-theme-tertiary text-sm">/artigo/</span>
               <input
                 type="text"
@@ -649,7 +650,7 @@ export function ArticleForm({
                 className="input-classical-2 flex-1"
                 placeholder="slug-do-artigo"
               />
-            </div>
+            </Inline>
             {errors.slug && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                 {errors.slug}
@@ -1049,7 +1050,7 @@ export function ArticleForm({
               )}
 
               {/* ✅ CONFIGURAÇÕES (mesmas para ambas as abas) */}
-              <div className="flex items-center space-x-4">
+              <Inline gap={4}>
                 <div className="flex-1">
                   <label className="block text-xs text-theme-tertiary mb-1">
                     Volume (0.0 - 1.0)
@@ -1073,7 +1074,7 @@ export function ArticleForm({
                   />
                 </div>
 
-                <label className="flex items-center space-x-2">
+                <Inline as="label" gap={2}>
                   <input
                     type="checkbox"
                     checked={formData.backgroundMusic?.loop ?? true}
@@ -1089,9 +1090,9 @@ export function ArticleForm({
                     className="w-4 h-4 text-brand-primary border-theme-secondary rounded"
                   />
                   <span className="text-sm text-theme-secondary">Loop</span>
-                </label>
+                </Inline>
 
-                <label className="flex items-center space-x-2">
+                <Inline as="label" gap={2}>
                   <input
                     type="checkbox"
                     checked={formData.backgroundMusic?.autoplay ?? true}
@@ -1107,8 +1108,8 @@ export function ArticleForm({
                     className="w-4 h-4 text-brand-primary border-theme-secondary rounded"
                   />
                   <span className="text-sm text-theme-secondary">Autoplay</span>
-                </label>
-              </div>
+                </Inline>
+              </Inline>
             </div>
           </div>
         </div>
@@ -1128,7 +1129,7 @@ export function ArticleForm({
                   Estes itens serão salvos junto com o artigo
                 </p>
               </div>
-              <div className="flex items-center space-x-4">
+              <Inline gap={4}>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-blue-600">
                     {formData.composerIds.length}
@@ -1145,7 +1146,7 @@ export function ArticleForm({
                     Obra{formData.workIds.length !== 1 ? 's' : ''}
                   </p>
                 </div>
-              </div>
+              </Inline>
             </div>
           </div>
 
@@ -1163,7 +1164,7 @@ export function ArticleForm({
                     key={composer.id}
                     className="flex items-center justify-between p-3 bg-theme-elevated rounded-lg"
                   >
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       {composer.portraitUrl && (
                         <Image
                           src={composer.portraitUrl}
@@ -1181,7 +1182,7 @@ export function ArticleForm({
                           {composer.epochName} • {composer.nationality}
                         </p>
                       </div>
-                    </div>
+                    </Inline>
                     <button
                       type="button"
                       onClick={() => handleRemoveComposer(composer.id)}
@@ -1206,15 +1207,17 @@ export function ArticleForm({
                   fullData={true}
                 />
               </div>
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 type="button"
                 onClick={handleAddComposer}
                 disabled={!currentComposer}
-                className="btn-classical-primary flex items-center space-x-2"
+                className="btn-classical-primary"
               >
                 <PiPlus className="w-4 h-4" />
                 <span>Adicionar</span>
-              </button>
+              </Inline>
             </div>
           </div>
 
@@ -1278,15 +1281,17 @@ export function ArticleForm({
                     filterByComposer={composerFilterForWorks}
                   />
                 </div>
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   type="button"
                   onClick={handleAddWork}
                   disabled={!currentWork}
-                  className="btn-classical-primary flex items-center space-x-2"
+                  className="btn-classical-primary"
                 >
                   <PiPlus className="w-4 h-4" />
                   <span>Adicionar</span>
-                </button>
+                </Inline>
               </div>
             </div>
           </div>
@@ -1350,41 +1355,49 @@ export function ArticleForm({
       <div className="flex items-center justify-between pt-6 border-t border-theme-secondary">
         <div>
           {activeTab !== 'content' && (
-            <button
+            <Inline
+              as="button"
+              gap={2}
               type="button"
               onClick={goToPreviousTab}
-              className="btn-classical-secondary flex items-center space-x-2"
+              className="btn-classical-secondary"
             >
               <PiArrowLeft className="w-4 h-4" />
               <span>Voltar</span>
-            </button>
+            </Inline>
           )}
         </div>
 
-        <div className="flex items-center space-x-4">
-          <button
+        <Inline gap={4}>
+          <Inline
+            as="button"
+            gap={2}
             type="button"
             onClick={() => setShowPreview(true)}
-            className="btn-classical-secondary flex items-center space-x-2"
+            className="btn-classical-secondary"
           >
             <PiEye className="w-4 h-4" />
             <span>Preview</span>
-          </button>
+          </Inline>
 
           {activeTab !== 'seo' ? (
-            <button
+            <Inline
+              as="button"
+              gap={2}
               type="button"
               onClick={goToNextTab}
-              className="btn-classical-primary flex items-center space-x-2"
+              className="btn-classical-primary"
             >
               <span>Próximo</span>
               <PiArrowRight className="w-4 h-4" />
-            </button>
+            </Inline>
           ) : (
-            <button
+            <Inline
+              as="button"
+              gap={2}
               type="submit"
               disabled={isSubmitting}
-              className="btn-classical-primary flex items-center space-x-2"
+              className="btn-classical-primary"
             >
               <PiFloppyDisk className="w-4 h-4" />
               <span>
@@ -1394,9 +1407,9 @@ export function ArticleForm({
                     ? 'Atualizar'
                     : 'Salvar e Visualizar'}
               </span>
-            </button>
+            </Inline>
           )}
-        </div>
+        </Inline>
       </div>
 
       {showPreview && (

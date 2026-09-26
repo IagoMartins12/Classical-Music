@@ -45,6 +45,7 @@ import { TeacherStatus } from '@/app/types/portal';
 import { saveTeacherProfile } from '@/app/requests/portal/profile-actions';
 import Input from '@/app/components/Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface TeacherProfilePageClientProps {
   initialData: TeacherProfileData | null;
@@ -459,13 +460,15 @@ export default function TeacherProfilePageClient({
             <p className="text-theme-secondary classical-subtitle mb-6">
               {error}
             </p>
-            <button
+            <Inline
+              as="button"
+              gap={2}
               onClick={() => window.location.reload()}
-              className="btn-classical-primary flex mx-auto items-center space-x-2"
+              className="btn-classical-primary mx-auto"
             >
               <PiArrowsClockwise className="w-4 h-4" />
               <span>{t('reload_page')}</span>
-            </button>
+            </Inline>
           </div>
         </div>
       </PageContainer>
@@ -499,14 +502,14 @@ export default function TeacherProfilePageClient({
               hover="lift"
               className="classical-card p-4 mb-6 border-l-4 border-accent-green"
             >
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <div className="w-8 h-8 bg-accent-green/10 rounded-full flex items-center justify-center">
                   <PiCheck className="w-4 h-4 text-accent-green" />
                 </div>
                 <div className="text-accent-green font-medium">
                   {successMessage}
                 </div>
-              </div>
+              </Inline>
             </AnimatedCard>
           </AnimatedItem>
         )}
@@ -519,12 +522,12 @@ export default function TeacherProfilePageClient({
               className="classical-card p-4 mb-6 border-l-4 border-accent-red"
             >
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-8 h-8 bg-accent-red/10 rounded-full flex items-center justify-center">
                     <PiX className="w-4 h-4 text-accent-red" />
                   </div>
                   <div className="text-accent-red font-medium">{error}</div>
-                </div>
+                </Inline>
                 <button
                   onClick={() => setError('')}
                   className="text-accent-red hover:text-accent-red/70 transition-colors"
@@ -542,7 +545,7 @@ export default function TeacherProfilePageClient({
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
                     <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
@@ -554,22 +557,24 @@ export default function TeacherProfilePageClient({
                       {t('personal_description')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() =>
                     setEditingSection(
                       editingSection === 'personal' ? null : 'personal'
                     )
                   }
                   disabled={saving}
-                  className="btn-classical-secondary flex items-center space-x-2"
+                  className="btn-classical-secondary"
                 >
                   <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'personal' ? t('cancel') : t('edit')}
                   </span>
-                </button>
+                </Inline>
               </div>
 
               {editingSection === 'personal' ? (
@@ -649,12 +654,12 @@ export default function TeacherProfilePageClient({
 
                   {/* Localização */}
                   <div>
-                    <div className="flex items-center space-x-2 mb-4">
+                    <Inline gap={2} className="mb-4">
                       <PiMapPin className="w-4 h-4 text-brand-primary" />
                       <h4 className="font-medium text-theme-primary">
                         {t('location')}
                       </h4>
-                    </div>
+                    </Inline>
 
                     <LocationSelector
                       value={personalForm.location}
@@ -665,7 +670,10 @@ export default function TeacherProfilePageClient({
                     />
                   </div>
 
-                  <div className="flex items-center justify-end space-x-3 pt-4 border-t border-theme-secondary">
+                  <Inline
+                    gap={3}
+                    className="justify-end pt-4 border-t border-theme-secondary"
+                  >
                     <button
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
@@ -673,12 +681,14 @@ export default function TeacherProfilePageClient({
                     >
                       {t('cancel')}
                     </button>
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={savePersonalData}
                       disabled={
                         saving || !canProceedWithPhone(personalForm.phone)
                       }
-                      className="btn-classical-primary flex items-center space-x-2"
+                      className="btn-classical-primary"
                       title={
                         phoneError
                           ? `Não é possível salvar: ${phoneError}`
@@ -691,8 +701,8 @@ export default function TeacherProfilePageClient({
                         <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -710,20 +720,26 @@ export default function TeacherProfilePageClient({
                       <label className="text-sm text-theme-tertiary">
                         {t('email_label')}
                       </label>
-                      <div className="text-theme-primary font-medium flex items-center space-x-2">
+                      <Inline
+                        gap={2}
+                        className="text-theme-primary font-medium"
+                      >
                         <PiEnvelopeSimple className="w-4 h-4" />
                         <span>{data?.user.email}</span>
-                      </div>
+                      </Inline>
                     </div>
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
                         {t('phone_label')}
                       </label>
-                      <div className="text-theme-primary font-medium flex items-center space-x-2">
+                      <Inline
+                        gap={2}
+                        className="text-theme-primary font-medium"
+                      >
                         <PiPhone className="w-4 h-4" />
                         <span>{data?.user.phone || t('not_informed')}</span>
-                      </div>
+                      </Inline>
                     </div>
                   </div>
 
@@ -732,14 +748,17 @@ export default function TeacherProfilePageClient({
                       <label className="text-sm text-theme-tertiary">
                         {t('location_label')}
                       </label>
-                      <div className="text-theme-primary font-medium flex items-center space-x-2">
+                      <Inline
+                        gap={2}
+                        className="text-theme-primary font-medium"
+                      >
                         <PiMapPin className="w-4 h-4" />
                         <span>
                           {data?.user.city && data?.user.state
                             ? `${data.user.city}, ${data.user.state}`
                             : data?.user.country || t('not_informed')}
                         </span>
-                      </div>
+                      </Inline>
                     </div>
 
                     <div>
@@ -757,7 +776,7 @@ export default function TeacherProfilePageClient({
                       <label className="text-sm text-theme-tertiary">
                         {t('status')}
                       </label>
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         {data?.status && (
                           <div
                             className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-${
@@ -780,7 +799,7 @@ export default function TeacherProfilePageClient({
                             {t('verified')}
                           </div>
                         )}
-                      </div>
+                      </Inline>
                     </div>
                   </div>
                 </div>
@@ -792,7 +811,7 @@ export default function TeacherProfilePageClient({
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center">
                     <PiMedal className="w-5 h-5 text-theme-primary" />
                   </div>
@@ -804,16 +823,18 @@ export default function TeacherProfilePageClient({
                       {t('professional_description')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() =>
                     setEditingSection(
                       editingSection === 'professional' ? null : 'professional'
                     )
                   }
                   disabled={saving}
-                  className="btn-classical-secondary flex items-center space-x-2"
+                  className="btn-classical-secondary"
                 >
                   <PiPencilLine className="w-4 h-4" />
                   <span>
@@ -821,7 +842,7 @@ export default function TeacherProfilePageClient({
                       ? t('cancel')
                       : t('edit')}
                   </span>
-                </button>
+                </Inline>
               </div>
 
               {editingSection === 'professional' ? (
@@ -926,7 +947,10 @@ export default function TeacherProfilePageClient({
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-end space-x-3 pt-4 border-t border-theme-secondary">
+                  <Inline
+                    gap={3}
+                    className="justify-end pt-4 border-t border-theme-secondary"
+                  >
                     <button
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
@@ -934,10 +958,12 @@ export default function TeacherProfilePageClient({
                     >
                       {t('cancel')}
                     </button>
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={saveProfessionalData}
                       disabled={saving}
-                      className="btn-classical-primary flex items-center space-x-2"
+                      className="btn-classical-primary"
                     >
                       {saving ? (
                         <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -945,8 +971,8 @@ export default function TeacherProfilePageClient({
                         <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -1002,15 +1028,17 @@ export default function TeacherProfilePageClient({
                         {t('website')}
                       </label>
                       <div className="text-theme-primary mt-2">
-                        <a
+                        <Inline
+                          as="a"
+                          gap={2}
                           href={data.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-brand-primary hover:text-brand-secondary transition-colors flex items-center space-x-2"
+                          className="text-brand-primary hover:text-brand-secondary transition-colors"
                         >
                           <PiGlobe className="w-4 h-4" />
                           <span>{data.website}</span>
-                        </a>
+                        </Inline>
                       </div>
                     </div>
                   )}
@@ -1045,7 +1073,7 @@ export default function TeacherProfilePageClient({
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
                     <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                   </div>
@@ -1057,22 +1085,24 @@ export default function TeacherProfilePageClient({
                       {t('teaching_description')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() =>
                     setEditingSection(
                       editingSection === 'teaching' ? null : 'teaching'
                     )
                   }
                   disabled={saving}
-                  className="btn-classical-secondary flex items-center space-x-2"
+                  className="btn-classical-secondary"
                 >
                   <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'teaching' ? t('cancel') : t('edit')}
                   </span>
-                </button>
+                </Inline>
               </div>
 
               {editingSection === 'teaching' ? (
@@ -1083,9 +1113,11 @@ export default function TeacherProfilePageClient({
                     </label>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {teachingForm.instruments.map((instrument) => (
-                        <span
+                        <Inline
+                          as="span"
+                          gap={2}
                           key={instrument}
-                          className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm flex items-center space-x-2"
+                          className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm"
                         >
                           <span>{instrument}</span>
                           <button
@@ -1097,7 +1129,7 @@ export default function TeacherProfilePageClient({
                           >
                             <PiX className="w-3 h-3" />
                           </button>
-                        </span>
+                        </Inline>
                       ))}
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -1128,9 +1160,11 @@ export default function TeacherProfilePageClient({
                     </label>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {teachingForm.specialties.map((specialty) => (
-                        <span
+                        <Inline
+                          as="span"
+                          gap={2}
                           key={specialty}
-                          className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm flex items-center space-x-2"
+                          className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm"
                         >
                           <span>{specialty}</span>
                           <button
@@ -1142,7 +1176,7 @@ export default function TeacherProfilePageClient({
                           >
                             <PiX className="w-3 h-3" />
                           </button>
-                        </span>
+                        </Inline>
                       ))}
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -1193,10 +1227,7 @@ export default function TeacherProfilePageClient({
                       </label>
                       <div className="space-y-2">
                         {AGE_GROUPS.map((ageGroup) => (
-                          <label
-                            key={ageGroup.value}
-                            className="flex items-center space-x-3"
-                          >
+                          <Inline as="label" gap={3} key={ageGroup.value}>
                             <input
                               type="checkbox"
                               checked={teachingForm.ageGroups.includes(
@@ -1215,7 +1246,7 @@ export default function TeacherProfilePageClient({
                             <span className="text-theme-primary text-sm">
                               {ageGroup.label}
                             </span>
-                          </label>
+                          </Inline>
                         ))}
                       </div>
                     </div>
@@ -1226,10 +1257,7 @@ export default function TeacherProfilePageClient({
                       </label>
                       <div className="space-y-2">
                         {SKILL_LEVELS.map((skillLevel) => (
-                          <label
-                            key={skillLevel.value}
-                            className="flex items-center space-x-3"
-                          >
+                          <Inline as="label" gap={3} key={skillLevel.value}>
                             <input
                               type="checkbox"
                               checked={teachingForm.skillLevels.includes(
@@ -1255,7 +1283,7 @@ export default function TeacherProfilePageClient({
                             <span className="text-theme-primary text-sm">
                               {skillLevel.label}
                             </span>
-                          </label>
+                          </Inline>
                         ))}
                       </div>
                     </div>
@@ -1333,7 +1361,10 @@ export default function TeacherProfilePageClient({
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-end space-x-3 pt-4 border-t border-theme-secondary">
+                  <Inline
+                    gap={3}
+                    className="justify-end pt-4 border-t border-theme-secondary"
+                  >
                     <button
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
@@ -1341,10 +1372,12 @@ export default function TeacherProfilePageClient({
                     >
                       {t('cancel')}
                     </button>
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={saveTeachingData}
                       disabled={saving}
-                      className="btn-classical-primary flex items-center space-x-2"
+                      className="btn-classical-primary"
                     >
                       {saving ? (
                         <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -1352,8 +1385,8 @@ export default function TeacherProfilePageClient({
                         <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -1473,24 +1506,30 @@ export default function TeacherProfilePageClient({
                       <label className="text-sm text-theme-tertiary">
                         {t('default_duration')}
                       </label>
-                      <div className="text-theme-primary font-medium flex items-center space-x-2 mt-1">
+                      <Inline
+                        gap={2}
+                        className="text-theme-primary font-medium mt-1"
+                      >
                         <PiClock className="w-4 h-4" />
                         <span>
                           {data?.defaultLessonDuration} {t('minutes')}
                         </span>
-                      </div>
+                      </Inline>
                     </div>
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
                         {t('weekly_capacity')}
                       </label>
-                      <div className="text-theme-primary font-medium flex items-center space-x-2 mt-1">
+                      <Inline
+                        gap={2}
+                        className="text-theme-primary font-medium mt-1"
+                      >
                         <PiUsers className="w-4 h-4" />
                         <span>
                           {data?.maxStudentsPerWeek} {t('students')}
                         </span>
-                      </div>
+                      </Inline>
                     </div>
 
                     <div>
@@ -1536,7 +1575,7 @@ export default function TeacherProfilePageClient({
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-lg flex items-center justify-center">
                     <PiGlobe className="w-5 h-5 text-theme-primary" />
                   </div>
@@ -1548,28 +1587,30 @@ export default function TeacherProfilePageClient({
                       {t('public_profile_description')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() =>
                     setEditingSection(
                       editingSection === 'public' ? null : 'public'
                     )
                   }
                   disabled={saving}
-                  className="btn-classical-secondary flex items-center space-x-2"
+                  className="btn-classical-secondary"
                 >
                   <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'public' ? t('cancel') : t('edit')}
                   </span>
-                </button>
+                </Inline>
               </div>
 
               {editingSection === 'public' ? (
                 <div className="space-y-6">
                   <div className="flex items-center justify-between p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg bg-theme-elevated border-theme-primary/20">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center ${
                           publicForm.isPublicProfile
@@ -1593,7 +1634,7 @@ export default function TeacherProfilePageClient({
                             : t('profile_private')}
                         </div>
                       </div>
-                    </div>
+                    </Inline>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
@@ -1635,7 +1676,10 @@ export default function TeacherProfilePageClient({
                     </div>
                   )}
 
-                  <div className="flex items-center justify-end space-x-3 pt-4 border-t border-theme-secondary">
+                  <Inline
+                    gap={3}
+                    className="justify-end pt-4 border-t border-theme-secondary"
+                  >
                     <button
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
@@ -1643,10 +1687,12 @@ export default function TeacherProfilePageClient({
                     >
                       {t('cancel')}
                     </button>
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={savePublicData}
                       disabled={saving}
-                      className="btn-classical-primary flex items-center space-x-2"
+                      className="btn-classical-primary"
                     >
                       {saving ? (
                         <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -1654,13 +1700,13 @@ export default function TeacherProfilePageClient({
                         <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </div>
               ) : (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg bg-theme-elevated border-theme-primary/20">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center ${
                           data?.isPublicProfile
@@ -1684,7 +1730,7 @@ export default function TeacherProfilePageClient({
                             : t('profile_private')}
                         </div>
                       </div>
-                    </div>
+                    </Inline>
                     <div
                       className={`px-3 py-1 rounded-full text-sm font-medium ${
                         data?.isPublicProfile
@@ -1710,12 +1756,12 @@ export default function TeacherProfilePageClient({
                       )}
 
                       <div className="bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 rounded-lg bg-theme-elevated border-brand-primary/20 p-4">
-                        <div className="flex items-center space-x-3 mb-2">
+                        <Inline gap={3} className="mb-2">
                           <PiGlobe className="w-5 h-5 text-brand-primary" />
                           <div className="font-medium text-theme-primary">
                             {t('profile_is_public')}
                           </div>
-                        </div>
+                        </Inline>
                         <div className="text-sm text-theme-secondary mb-3">
                           {t('profile_public_description')}
                         </div>

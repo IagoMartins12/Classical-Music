@@ -7,6 +7,7 @@ import { useOnboardingModal, usePromptModal } from '@/app/stores/authStore';
 import { useUser } from '@/app/hooks/userStore';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '../../Common/Button';
+import { Inline } from '@/app/components/ui/Layout';
 
 const OnboardingPrompt = () => {
   const user = useUser();
@@ -59,7 +60,7 @@ const OnboardingPrompt = () => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <Button
               size="sm"
               onClick={() => {
@@ -74,7 +75,7 @@ const OnboardingPrompt = () => {
             <Button variant="ghost" size="sm" onClick={closePrompt}>
               {t('prompt_later')}
             </Button>
-          </div>
+          </Inline>
         </div>
         <button
           onClick={closePrompt}

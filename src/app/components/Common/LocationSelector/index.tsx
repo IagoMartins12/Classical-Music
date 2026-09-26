@@ -14,6 +14,7 @@ import {
   PiX,
 } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface LocationData {
   country?: {
@@ -323,7 +324,10 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
           readOnly={!isOpen}
         />
 
-        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center space-x-1 z-10">
+        <Inline
+          gap={1}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10"
+        >
           {selectedOption && onClear && !disabled && (
             <button
               type="button"
@@ -338,7 +342,7 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
               isOpen ? 'rotate-180' : ''
             }`}
           />
-        </div>
+        </Inline>
       </div>
 
       {isOpen && !disabled && (
@@ -369,10 +373,10 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
 
           {isLoading && (
             <div className="flex items-center justify-center py-8">
-              <div className="flex items-center space-x-2 text-theme-secondary">
+              <Inline gap={2} className="text-theme-secondary">
                 <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
                 <span className="text-sm">Carregando opções...</span>
-              </div>
+              </Inline>
             </div>
           )}
 
@@ -395,7 +399,7 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
                     `}
                   >
                     <div className="flex items-center justify-between">
-                      <div className="min-w-0 flex-1 flex items-center space-x-3">
+                      <Inline gap={3} className="min-w-0 flex-1">
                         {option.flag && (
                           <span className="text-lg flex-shrink-0">
                             {option.flag}
@@ -412,7 +416,7 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
                             </div>
                           )}
                         </div>
-                      </div>
+                      </Inline>
                     </div>
                   </button>
                 ))

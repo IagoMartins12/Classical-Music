@@ -13,6 +13,7 @@ import {
   PiWarning,
 } from 'react-icons/pi';
 import Button from '../Common/Button';
+import { Inline } from '@/app/components/ui/Layout';
 
 export interface ConfirmModalProps {
   isOpen: boolean;
@@ -121,7 +122,7 @@ export default function ConfirmModal({
           className="relative bg-theme-primary rounded-xl shadow-xl max-w-md w-full p-6 border border-theme-secondary"
         >
           {/* Header */}
-          <div className="flex items-center space-x-3 mb-4">
+          <Inline gap={3} className="mb-4">
             <div
               className={`
                 w-12 h-12 rounded-xl flex items-center justify-center
@@ -139,7 +140,7 @@ export default function ConfirmModal({
                 {type === 'question' && 'Confirme sua escolha'}
               </p>
             </div>
-          </div>
+          </Inline>
 
           {/* Message */}
           <div className="mb-6">
@@ -150,7 +151,7 @@ export default function ConfirmModal({
           {children && <div className="mb-6">{children}</div>}
 
           {/* Actions */}
-          <div className="flex items-center justify-end space-x-3">
+          <Inline gap={3} className="justify-end">
             <Button
               variant="secondary"
               onClick={onClose}
@@ -175,7 +176,7 @@ export default function ConfirmModal({
             >
               {isLoadingState ? 'Processando...' : finalConfirmText}
             </Button>
-          </div>
+          </Inline>
         </AnimatedCard>
       </AnimatedItem>
     </div>

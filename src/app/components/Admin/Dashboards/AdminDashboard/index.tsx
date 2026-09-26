@@ -38,6 +38,7 @@ import {
   formatNumber,
   formatPercentage,
 } from '../../Utils';
+import { Inline } from '@/app/components/ui/Layout';
 
 // Tipos para melhor type safety
 type TimeFrame = '7d' | '30d' | '90d' | '1y';
@@ -184,7 +185,7 @@ export default function AdminDashboard() {
 
             {/* Controls */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-4">
-              <div className="flex items-center space-x-4">
+              <Inline gap={4}>
                 <Select
                   value={selectedTimeframe}
                   onChange={(e) =>
@@ -207,7 +208,7 @@ export default function AdminDashboard() {
                 >
                   {refreshing ? 'Atualizando...' : 'Atualizar'}
                 </Button>
-              </div>
+              </Inline>
 
               <div className="text-sm text-theme-tertiary">
                 Última atualização: {formattedLastUpdated}
@@ -248,7 +249,7 @@ export default function AdminDashboard() {
                     <div className="text-sm text-theme-tertiary mb-2">
                       Usuários Ativos
                     </div>
-                    <div className="flex items-center justify-center space-x-1">
+                    <Inline gap={1} className="justify-center">
                       {(() => {
                         const growthData = formatGrowthRate(
                           safeGet(stats, 'overview.growthRate.users', 0)
@@ -268,7 +269,7 @@ export default function AdminDashboard() {
                           </>
                         );
                       })()}
-                    </div>
+                    </Inline>
                   </div>
                 </AnimatedCard>
 
@@ -287,7 +288,7 @@ export default function AdminDashboard() {
                     <div className="text-sm text-theme-tertiary mb-2">
                       Obras Catalogadas
                     </div>
-                    <div className="flex items-center justify-center space-x-1">
+                    <Inline gap={1} className="justify-center">
                       {(() => {
                         const growthData = formatGrowthRate(
                           safeGet(stats, 'overview.growthRate.works', 0)
@@ -307,7 +308,7 @@ export default function AdminDashboard() {
                           </>
                         );
                       })()}
-                    </div>
+                    </Inline>
                   </div>
                 </AnimatedCard>
 
@@ -328,7 +329,7 @@ export default function AdminDashboard() {
                     <div className="text-sm text-theme-tertiary mb-2">
                       Anotações Criadas
                     </div>
-                    <div className="flex items-center justify-center space-x-1">
+                    <Inline gap={1} className="justify-center">
                       {(() => {
                         const growthData = formatGrowthRate(
                           safeGet(stats, 'overview.growthRate.annotations', 0)
@@ -348,7 +349,7 @@ export default function AdminDashboard() {
                           </>
                         );
                       })()}
-                    </div>
+                    </Inline>
                   </div>
                 </AnimatedCard>
               </div>
@@ -379,17 +380,22 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-8">
                 {/* Most Active Users */}
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiPulse className="w-5 h-5 text-accent-blue" />
                     <span>Usuários Mais Ativos</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-4">
                     {safeGet(stats, 'topUsers.mostActive', [])
                       .slice(0, 5)
                       .map((user: any, index: number) => (
-                        <div
+                        <Inline
+                          gap={3}
                           key={user?.id || `active-${index}`}
-                          className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                          className="p-3 bg-theme-secondary rounded-xl"
                         >
                           <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                             {index + 1}
@@ -407,7 +413,7 @@ export default function AdminDashboard() {
                               {user?.uploadsCount || 0} uploads
                             </p>
                           </div>
-                        </div>
+                        </Inline>
                       ))}
                   </div>
                   <Button
@@ -422,17 +428,22 @@ export default function AdminDashboard() {
 
                 {/* Top Contributors */}
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiUploadSimple className="w-5 h-5 text-accent-green" />
                     <span>Maiores Contribuidores</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-4">
                     {safeGet(stats, 'topUsers.topContributors', [])
                       .slice(0, 5)
                       .map((user: any, index: number) => (
-                        <div
+                        <Inline
+                          gap={3}
                           key={user?.id || `contributor-${index}`}
-                          className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                          className="p-3 bg-theme-secondary rounded-xl"
                         >
                           <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                             {index + 1}
@@ -453,24 +464,29 @@ export default function AdminDashboard() {
                               {user?.verifiedUploads || 0} verificados
                             </p>
                           </div>
-                        </div>
+                        </Inline>
                       ))}
                   </div>
                 </AnimatedCard>
 
                 {/* Top Annotators */}
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiChatCenteredText className="w-5 h-5 text-accent-amber" />
                     <span>Maiores Anotadores</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-4">
                     {safeGet(stats, 'topUsers.topAnnotators', [])
                       .slice(0, 5)
                       .map((user: any, index: number) => (
-                        <div
+                        <Inline
+                          gap={3}
                           key={user?.id || `annotator-${index}`}
-                          className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                          className="p-3 bg-theme-secondary rounded-xl"
                         >
                           <div className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                             {index + 1}
@@ -492,7 +508,7 @@ export default function AdminDashboard() {
                               {user?.helpfulAnnotationsCount || 0} ajudaram
                             </p>
                           </div>
-                        </div>
+                        </Inline>
                       ))}
                   </div>
                 </AnimatedCard>
@@ -504,10 +520,14 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                 {/* Popular Works */}
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiMusicNotes className="w-5 h-5 text-accent-blue" />
                     <span>Obras Mais Populares</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-4">
                     {safeGet(stats, 'content.popularWorks', [])
                       .slice(0, 8)
@@ -526,26 +546,26 @@ export default function AdminDashboard() {
                             <p className="text-sm text-theme-tertiary truncate">
                               {work?.composer || 'Compositor desconhecido'}
                             </p>
-                            <div className="flex items-center space-x-4 mt-2">
-                              <div className="flex items-center space-x-1">
+                            <Inline gap={4} className="mt-2">
+                              <Inline gap={1}>
                                 <PiHeart className="w-3 h-3 text-accent-red" />
                                 <span className="text-xs text-theme-tertiary">
                                   {work?.favoritesCount || 0}
                                 </span>
-                              </div>
-                              <div className="flex items-center space-x-1">
+                              </Inline>
+                              <Inline gap={1}>
                                 <PiChatCenteredText className="w-3 h-3 text-accent-blue" />
                                 <span className="text-xs text-theme-tertiary">
                                   {work?.annotationsCount || 0}
                                 </span>
-                              </div>
-                              <div className="flex items-center space-x-1">
+                              </Inline>
+                              <Inline gap={1}>
                                 <PiFileText className="w-3 h-3 text-accent-green" />
                                 <span className="text-xs text-theme-tertiary">
                                   {work?.scoreCount || 0}
                                 </span>
-                              </div>
-                            </div>
+                              </Inline>
+                            </Inline>
                           </div>
                         </div>
                       ))}
@@ -554,17 +574,22 @@ export default function AdminDashboard() {
 
                 {/* Popular Composers */}
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiUsers className="w-5 h-5 text-accent-green" />
                     <span>Compositores Mais Populares</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-4">
                     {safeGet(stats, 'content.popularComposers', [])
                       .slice(0, 8)
                       .map((composer: any, index: number) => (
-                        <div
+                        <Inline
+                          gap={3}
                           key={composer?.id || `composer-${index}`}
-                          className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                          className="p-3 bg-theme-secondary rounded-xl"
                         >
                           <div className="w-6 h-6 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-xs font-bold text-theme-primary">
                             {index + 1}
@@ -586,7 +611,7 @@ export default function AdminDashboard() {
                               obras/usuário
                             </p>
                           </div>
-                        </div>
+                        </Inline>
                       ))}
                   </div>
                 </AnimatedCard>
@@ -598,10 +623,14 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-8">
                 {/* User Activity */}
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiPulse className="w-5 h-5 text-accent-blue" />
                     <span>Atividade de Usuários</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                       <div>
@@ -653,10 +682,14 @@ export default function AdminDashboard() {
 
                 {/* Most Studied Works */}
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiTarget className="w-5 h-5 text-accent-amber" />
                     <span>Obras Mais Estudadas</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-3">
                     {safeGet(stats, 'engagement.mostStudiedWorks', [])
                       .slice(0, 6)
@@ -675,14 +708,14 @@ export default function AdminDashboard() {
                             <p className="text-xs text-theme-tertiary truncate">
                               {work?.composer || 'Compositor desconhecido'}
                             </p>
-                            <div className="flex items-center space-x-3 mt-1">
+                            <Inline gap={3} className="mt-1">
                               <span className="text-xs text-accent-amber font-medium">
                                 {formatDuration(work?.totalMinutes || 0)}
                               </span>
                               <span className="text-xs text-theme-tertiary">
                                 {work?.uniqueUsers || 0} usuários
                               </span>
-                            </div>
+                            </Inline>
                           </div>
                         </div>
                       ))}
@@ -691,10 +724,14 @@ export default function AdminDashboard() {
 
                 {/* Engagement Metrics */}
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiChartPie className="w-5 h-5 text-accent-green" />
                     <span>Métricas de Engajamento</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-4">
                     <div className="p-3 bg-theme-secondary rounded-xl">
                       <div className="flex items-center justify-between mb-2">
@@ -765,10 +802,14 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-8">
                 {/* Upload Quality */}
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiShield className="w-5 h-5 text-accent-green" />
                     <span>Qualidade dos Uploads</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-4">
                     <div className="text-center p-4 bg-theme-secondary rounded-xl">
                       <div className="text-3xl font-bold text-accent-green mb-2">
@@ -796,18 +837,22 @@ export default function AdminDashboard() {
 
                 {/* Verified Content */}
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiMedal className="w-5 h-5 text-accent-amber" />
                     <span>Conteúdo Verificado</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <PiUsers className="w-4 h-4 text-accent-blue" />
                         <span className="text-sm font-medium text-theme-primary">
                           Compositores
                         </span>
-                      </div>
+                      </Inline>
                       <span className="text-lg font-bold text-accent-blue">
                         {formatNumber(
                           safeGet(stats, 'quality.verifiedContent.composers', 0)
@@ -816,12 +861,12 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <PiMusicNotes className="w-4 h-4 text-accent-green" />
                         <span className="text-sm font-medium text-theme-primary">
                           Obras
                         </span>
-                      </div>
+                      </Inline>
                       <span className="text-lg font-bold text-accent-green">
                         {formatNumber(
                           safeGet(stats, 'quality.verifiedContent.works', 0)
@@ -830,12 +875,12 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <PiFileText className="w-4 h-4 text-accent-amber" />
                         <span className="text-sm font-medium text-theme-primary">
                           Partituras
                         </span>
-                      </div>
+                      </Inline>
                       <span className="text-lg font-bold text-accent-amber">
                         {formatNumber(
                           safeGet(stats, 'quality.verifiedContent.scores', 0)
@@ -847,10 +892,14 @@ export default function AdminDashboard() {
 
                 {/* Content Completeness */}
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiDatabase className="w-5 h-5 text-accent-purple" />
                     <span>Completude do Conteúdo</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-4">
                     <div className="p-3 bg-theme-secondary rounded-xl">
                       <div className="flex items-center justify-between mb-2">

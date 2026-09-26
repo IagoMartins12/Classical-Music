@@ -22,6 +22,7 @@ import {
   getWorkById,
   searchWorks,
 } from '@/app/requests/catalog-search';
+import { Inline } from '@/app/components/ui/Layout';
 
 // 🆕 Interface para dados das peças vinculadas
 export interface LessonWork {
@@ -289,7 +290,7 @@ export default function WorkSelectionSection({
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
               <PiMusicNotes className="w-5 h-5 text-theme-primary" />
             </div>
@@ -301,7 +302,7 @@ export default function WorkSelectionSection({
                 Vincule até {maxWorks} peças com suas partituras à aula
               </p>
             </div>
-          </div>
+          </Inline>
 
           {/* Contador */}
           <div className="text-right">
@@ -327,10 +328,14 @@ export default function WorkSelectionSection({
         {/* Lista de peças selecionadas */}
         {selectedWorks.length > 0 && (
           <div className="space-y-3">
-            <h4 className="text-sm font-medium text-theme-primary flex items-center space-x-2">
+            <Inline
+              as="h4"
+              gap={2}
+              className="text-sm font-medium text-theme-primary"
+            >
               <PiBookOpen className="w-4 h-4" />
               <span>Peças Vinculadas</span>
-            </h4>
+            </Inline>
 
             <div className="space-y-2">
               {selectedWorks.map((work, index) => (
@@ -341,44 +346,47 @@ export default function WorkSelectionSection({
                 >
                   <div className="bg-theme-elevated border border-theme-secondary rounded-lg p-4">
                     <div className="flex items-center flex-col sm:flex-row gap-4 sm:gap-0 justify-between">
-                      <div className="flex items-center space-x-3 flex-1 min-w-0 w-full">
+                      <Inline gap={3} className="flex-1 min-w-0 w-full">
                         <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
                           <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <h5 className="font-medium text-theme-primary truncate">
                               {work.workTitle}
                             </h5>
                             <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-0.5 rounded">
                               #{index + 1}
                             </span>
-                          </div>
+                          </Inline>
                           <p className="text-sm text-theme-tertiary truncate">
                             {work.composerName}
                           </p>
 
                           {/* Informações da partitura */}
                           {work.scoreId ? (
-                            <div className="mt-2 flex items-center space-x-2">
-                              <div className="flex items-center space-x-1 text-xs text-accent-green">
+                            <Inline gap={2} className="mt-2">
+                              <Inline
+                                gap={1}
+                                className="text-xs text-accent-green"
+                              >
                                 <PiCheck className="w-3 h-3" />
                                 <span>Partitura: {work.scoreTitle}</span>
-                              </div>
+                              </Inline>
                               <span className="text-xs text-theme-tertiary">
                                 ({work.scoreSource})
                               </span>
-                            </div>
+                            </Inline>
                           ) : (
                             <div className="mt-2 text-xs text-theme-tertiary">
                               Nenhuma partitura selecionada
                             </div>
                           )}
                         </div>
-                      </div>
+                      </Inline>
 
-                      <div className="flex items-center space-x-2 flex-shrink-0">
+                      <Inline gap={2} className="flex-shrink-0">
                         {/* Botão de selecionar partitura */}
                         <button
                           type="button"
@@ -406,7 +414,7 @@ export default function WorkSelectionSection({
                         >
                           <PiTrash className="w-3 h-3 text-accent-red" />
                         </button>
-                      </div>
+                      </Inline>
                     </div>
                   </div>
                 </AnimatedItem>
@@ -440,10 +448,14 @@ export default function WorkSelectionSection({
             ) : (
               <div className="bg-brand-primary/5 border border-color-primary rounded-lg p-4 space-y-4">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-medium text-theme-primary flex items-center space-x-2">
+                  <Inline
+                    as="h4"
+                    gap={2}
+                    className="text-sm font-medium text-theme-primary"
+                  >
                     <PiPlus className="w-4 h-4 text-brand-primary" />
                     <span>Adicionar Nova Peça</span>
-                  </h4>
+                  </Inline>
                   <button
                     type="button"
                     onClick={resetAddForm}
@@ -456,7 +468,7 @@ export default function WorkSelectionSection({
                 {/* Filtro de Compositor */}
                 <div>
                   <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <PiUser className="w-4 h-4" />
                       <span>Compositor</span>
                       {hasWorkSelected && (
@@ -464,7 +476,7 @@ export default function WorkSelectionSection({
                           (Selecionado automaticamente)
                         </span>
                       )}
-                    </div>
+                    </Inline>
                   </label>
 
                   <ComposerSearchInput
@@ -485,7 +497,7 @@ export default function WorkSelectionSection({
                 {/* Filtro de Obra */}
                 <div>
                   <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <PiMusicNotes className="w-4 h-4" />
                       <span>Obra *</span>
                       {/* 🆕 Indicador de carregamento das obras do compositor */}
@@ -494,7 +506,7 @@ export default function WorkSelectionSection({
                           (Carregando obras...)
                         </span>
                       )}
-                    </div>
+                    </Inline>
                   </label>
 
                   <SimpleWorkSearchInput
@@ -524,10 +536,10 @@ export default function WorkSelectionSection({
                 <div className="flex flex-col sm:flex-row gap-4 items-center justify-between pt-2">
                   <div className="text-xs text-theme-tertiary">
                     {hasComposerSelected && hasWorkSelected ? (
-                      <span className="text-accent-green flex items-center space-x-1">
+                      <Inline as="span" gap={1} className="text-accent-green">
                         <PiCheck className="w-3 h-3" />
                         <span>Pronto para adicionar</span>
-                      </span>
+                      </Inline>
                     ) : !hasComposerSelected && !hasWorkSelected ? (
                       <span>Selecione um compositor e uma obra</span>
                     ) : hasComposerSelected ? (
@@ -541,7 +553,7 @@ export default function WorkSelectionSection({
                     )}
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <button
                       type="button"
                       onClick={resetAddForm}
@@ -550,16 +562,18 @@ export default function WorkSelectionSection({
                       Cancelar
                     </button>
 
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       type="button"
                       onClick={handleAddWork}
                       disabled={!hasWorkSelected || loadingComposerWorks}
-                      className="btn-classical-primary text-sm flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="btn-classical-primary text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <PiCheck className="w-3 h-3" />
                       <span>Adicionar Peça</span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </div>
               </div>
             )}

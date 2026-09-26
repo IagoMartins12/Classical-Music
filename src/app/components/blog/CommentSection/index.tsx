@@ -27,6 +27,7 @@ import {
   setCommentLiked,
   updateComment,
 } from '@/app/requests/blog/interactions';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Comment {
   id: string;
@@ -125,14 +126,14 @@ const CommentItem = memo(
           }`}
         >
           <div className="bg-gray-100 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-300 dark:border-gray-700">
-            <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
+            <Inline gap={2} className="text-gray-600 dark:text-gray-400">
               <PiWarning className="w-5 h-5" />
               <span className="text-sm font-medium">
                 {isRejected
                   ? 'Comentário removido por violar nossas diretrizes'
                   : 'Comentário marcado como spam'}
               </span>
-            </div>
+            </Inline>
           </div>
         </div>
       );
@@ -172,7 +173,10 @@ const CommentItem = memo(
             {/* Status Warning for Owner */}
             {isOwner && (isRejected || isSpam || isFlagged || isPending) && (
               <div className="mb-3 p-2 bg-yellow-50/50 dark:bg-yellow-900/10 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                <div className="flex items-center space-x-2 text-yellow-700 dark:text-yellow-400">
+                <Inline
+                  gap={2}
+                  className="text-yellow-700 dark:text-yellow-400"
+                >
                   <PiInfo className="w-4 h-4" />
                   <span className="text-xs">
                     {isPending && 'Seu comentário está aguardando aprovação'}
@@ -182,7 +186,7 @@ const CommentItem = memo(
                       'Seu comentário foi rejeitado por violar nossas diretrizes'}
                     {isSpam && 'Seu comentário foi marcado como spam'}
                   </span>
-                </div>
+                </Inline>
               </div>
             )}
 
@@ -669,9 +673,11 @@ export function CommentSection({
               'Conteúdo violento ou perturbador',
               'Outro motivo',
             ].map((reason) => (
-              <label
+              <Inline
+                as="label"
+                gap={2}
                 key={reason}
-                className="flex items-center space-x-2 cursor-pointer"
+                className="cursor-pointer"
               >
                 <input
                   type="radio"
@@ -682,7 +688,7 @@ export function CommentSection({
                   className="w-4 h-4 text-brand-primary"
                 />
                 <span className="text-sm text-theme-primary">{reason}</span>
-              </label>
+              </Inline>
             ))}
           </div>
 

@@ -9,6 +9,7 @@ import {
 } from 'react-icons/pi';
 import { AnimatedContainer } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface emptyStatesProps {
   emptyState: 'all' | 'works' | 'composers' | 'scores';
@@ -151,13 +152,15 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
         <div className="space-y-4">
           {/* Ação principal personalizada (filtros) */}
           {config?.primaryAction && config.primaryAction.onClick && (
-            <button
+            <Inline
+              as="button"
+              gap={2}
               onClick={config?.primaryAction.onClick}
-              className="btn-classical-primary flex items-center justify-center space-x-2 group mx-auto"
+              className="btn-classical-primary justify-center group mx-auto"
             >
               <config.primaryAction.icon className="w-4 h-4" />
               <span>{config?.primaryAction.label}</span>
-            </button>
+            </Inline>
           )}
 
           {/* Ação principal com link */}

@@ -11,6 +11,7 @@ import {
   PiSquaresFour,
   PiTarget,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function LearningPageLoading() {
   return (
@@ -103,13 +104,16 @@ export default function LearningPageLoading() {
                 </div>
 
                 {/* Filter Button Skeleton */}
-                <div className="h-12 w-24 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center space-x-2 animate-pulse">
+                <Inline
+                  gap={2}
+                  className="h-12 w-24 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg justify-center animate-pulse"
+                >
                   <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="w-12 h-4 bg-theme-tertiary/30 rounded"></div>
-                </div>
+                </Inline>
 
                 {/* View Mode Toggle Skeleton */}
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <span className="text-sm text-theme-secondary">Vista:</span>
                   <div className="bg-theme-secondary border border-theme-primary rounded-lg p-1 flex">
                     <div className="p-2 rounded bg-theme-elevated">
@@ -119,7 +123,7 @@ export default function LearningPageLoading() {
                       <PiSquaresFour className="w-4 h-4 text-brand-primary/50" />
                     </div>
                   </div>
-                </div>
+                </Inline>
               </div>
             </div>
           </div>
@@ -127,7 +131,7 @@ export default function LearningPageLoading() {
 
         {/* Want to Learn Section Skeleton */}
         <div>
-          <div className="flex items-center space-x-3 mb-6">
+          <Inline gap={3} className="mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
               <PiTarget className="w-5 h-5 text-theme-inverse/20" />
             </div>
@@ -135,7 +139,7 @@ export default function LearningPageLoading() {
               <div className="h-8 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
               <div className="h-4 w-32 bg-theme-elevated rounded animate-pulse"></div>
             </div>
-          </div>
+          </Inline>
 
           {/* Learning Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -147,7 +151,7 @@ export default function LearningPageLoading() {
 
         {/* Learned Section Skeleton */}
         <div>
-          <div className="flex items-center space-x-3 mb-6">
+          <Inline gap={3} className="mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
               <PiCheckCircle className="w-5 h-5 text-theme-inverse/20" />
             </div>
@@ -155,7 +159,7 @@ export default function LearningPageLoading() {
               <div className="h-8 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
               <div className="h-4 w-28 bg-theme-elevated rounded animate-pulse"></div>
             </div>
-          </div>
+          </Inline>
 
           {/* Learned Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -185,42 +189,42 @@ function LearningCardSkeleton() {
           <div className="h-4 bg-theme-elevated rounded w-1/2"></div>
           <div className="h-3 bg-theme-elevated rounded w-1/3"></div>
         </div>
-        <div className="flex items-center space-x-2">
+        <Inline gap={2}>
           <div className="w-8 h-8 bg-theme-secondary rounded-lg"></div>
           <div className="w-8 h-8 bg-theme-secondary rounded-lg"></div>
-        </div>
+        </Inline>
       </div>
 
       {/* Stars */}
-      <div className="flex items-center space-x-2 mb-4">
+      <Inline gap={2} className="mb-4">
         <div className="h-4 w-16 bg-theme-elevated rounded"></div>
-        <div className="flex items-center space-x-1">
+        <Inline gap={1}>
           {Array.from({ length: 5 }).map((_, starIndex) => (
             <div
               key={starIndex}
               className="w-4 h-4 bg-yellow-400/20 rounded"
             ></div>
           ))}
-        </div>
-      </div>
+        </Inline>
+      </Inline>
 
       {/* Details */}
       <div className="space-y-3">
-        <div className="flex items-center space-x-2">
+        <Inline gap={2}>
           <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
           <div className="h-6 w-20 bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 border border-accent-blue/30 rounded-full"></div>
-        </div>
+        </Inline>
 
-        <div className="flex items-center space-x-2">
+        <Inline gap={2}>
           <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
           <div className="h-4 w-24 bg-theme-elevated rounded"></div>
-        </div>
+        </Inline>
 
         <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-blue/30">
-          <div className="flex items-center space-x-2 mb-2">
+          <Inline gap={2} className="mb-2">
             <div className="w-4 h-4 bg-accent-blue/30 rounded"></div>
             <div className="h-4 w-16 bg-theme-elevated rounded"></div>
-          </div>
+          </Inline>
           <div className="space-y-2">
             <div className="h-3 bg-theme-elevated rounded"></div>
             <div className="h-3 bg-theme-elevated rounded w-5/6"></div>

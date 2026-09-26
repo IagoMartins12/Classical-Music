@@ -33,6 +33,7 @@ import {
 import DeleteAccountModal from '../../DeleteAccountModal';
 import EmailVerificationBanner2 from '../../EmailVerification/EmailVerificationBanner2';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface AccountSettingsSectionProps {
   user: User;
@@ -302,7 +303,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
     };
 
     return (
-      <div className="flex items-center space-x-4">
+      <Inline gap={4}>
         <div className="flex-1">
           <p className="font-medium text-theme-primary">
             {getLoginTypeLabel()}
@@ -313,12 +314,12 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         </div>
 
         {loginMethod.socialProviders.includes('google') && (
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             <FcGoogle className="w-5 h-5" />
             <span className="text-sm text-theme-secondary">Google</span>
-          </div>
+          </Inline>
         )}
-      </div>
+      </Inline>
     );
   };
 
@@ -364,7 +365,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
             {!isChangingEmail ? (
               <div className="space-y-3">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <Input
                     value={user.email || ''}
                     disabled
@@ -372,12 +373,12 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                     className="flex-1"
                   />
                   {user.emailVerified && (
-                    <div className="flex items-center space-x-1 text-accent-green text-sm">
+                    <Inline gap={1} className="text-accent-green text-sm">
                       <PiCheck className="w-4 h-4" />
                       <span>{t('account_verified')}</span>
-                    </div>
+                    </Inline>
                   )}
-                </div>
+                </Inline>
 
                 {/* 🆕 NOVO: Aviso para usuários com login social */}
                 {!canChangeEmail && !loginMethod.isLoading && (
@@ -801,7 +802,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             <h4 className="font-medium text-theme-primary mb-2">
               {t('account_status')}
             </h4>
-            <div className="flex items-center space-x-2 flex-wrap">
+            <Inline gap={2} className="flex-wrap">
               <span className="inline-flex px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
                 {t('account_active')}
               </span>
@@ -815,19 +816,19 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   {t('account_social_login')}
                 </span>
               )}
-            </div>
+            </Inline>
           </div>
         </div>
       </div>
 
       {/* Danger Zone */}
       <div className="border-t border-accent-red pt-8">
-        <div className="flex items-center space-x-3 mb-4">
+        <Inline gap={3} className="mb-4">
           <PiWarning className="w-5 h-5 text-accent-red" />
           <h3 className="text-lg font-semibold text-accent-red">
             {t('account_danger_zone')}
           </h3>
-        </div>
+        </Inline>
 
         <div className="classical-card-2 p-4 border border-accent-red bg-accent-red bg-opacity-5">
           <div className="flex flex-col md:flex-row items-center gap-4 justify-between mb-4">

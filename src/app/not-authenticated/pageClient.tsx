@@ -28,6 +28,7 @@ import { useAuth } from '../hooks/useAuth';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { useTranslation } from '../context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface SuggestionCard {
   title: string;
@@ -247,12 +248,12 @@ export default function NotAuthenticated() {
       {/* Evitar renderizar se estiver carregando ou se o usuário estiver autenticado */}
       {isAuthenticated ? (
         <div className="classical-theme min-h-screen flex items-center justify-center">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-8 h-8 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
             <span className="text-theme-secondary">
               {t('not_authenticated_jsx_span_children_0__redirecionando')}
             </span>
-          </div>
+          </Inline>
         </div>
       ) : (
         <div className="classical-theme min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -367,7 +368,7 @@ export default function NotAuthenticated() {
                 hover="lift"
                 className="classical-card p-8 max-w-3xl mx-auto mb-12"
               >
-                <div className="flex items-center space-x-3 mb-6">
+                <Inline gap={3} className="mb-6">
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                     {currentArea === 'teacher' ? (
                       <PiUsers className="w-6 h-6 text-accent-green" />
@@ -380,14 +381,14 @@ export default function NotAuthenticated() {
                   <h3 className="text-2xl font-bold text-theme-primary classical-title">
                     {t('not_authenticated_jsx_h3_children_0__terá_acesso')}
                   </h3>
-                </div>
+                </Inline>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                   {getBenefits().map((benefit, index) => (
-                    <div key={index} className="flex items-center space-x-3">
+                    <Inline gap={3} key={index}>
                       <div className="w-2 h-2 bg-brand-primary rounded-full flex-shrink-0"></div>
                       <span className="text-theme-secondary">{benefit}</span>
-                    </div>
+                    </Inline>
                   ))}
                 </div>
 

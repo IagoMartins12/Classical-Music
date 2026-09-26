@@ -6,6 +6,7 @@ import { PiWarning } from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -113,10 +114,10 @@ export default function ConfirmationModal({
               disabled={isLoading}
             />
             {error && (
-              <p className="text-sm text-red-500 mt-2 flex items-center space-x-1">
+              <Inline as="p" gap={1} className="text-sm text-red-500 mt-2">
                 <PiWarning className="w-4 h-4" />
                 <span>{error}</span>
-              </p>
+              </Inline>
             )}
           </div>
 
@@ -141,7 +142,7 @@ export default function ConfirmationModal({
         </div>
 
         {/* Ações */}
-        <div className="flex items-center justify-end space-x-3 mt-6">
+        <Inline gap={3} className="justify-end mt-6">
           <Button variant="ghost" onClick={handleClose} disabled={isLoading}>
             Cancelar
           </Button>
@@ -154,7 +155,7 @@ export default function ConfirmationModal({
           >
             {isLoading ? 'Processando...' : 'Confirmar'}
           </button>
-        </div>
+        </Inline>
       </div>
     </Modal>
   );

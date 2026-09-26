@@ -15,6 +15,7 @@ import {
 } from 'react-icons/pi';
 import { useNotifications } from '@/app/hooks/notifications/useNotifications';
 import { NotificationData } from '@/app/types/notification';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface NotificationBellProps {
   userRole: 'teacher' | 'student';
@@ -215,16 +216,18 @@ export default function NotificationBell({
                 </p>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 {unreadCount > 0 && (
-                  <button
+                  <Inline
+                    as="button"
+                    gap={1}
                     onClick={handleMarkAllAsRead}
-                    className="text-xs text-brand-primary hover:text-brand-secondary transition-colors flex items-center space-x-1"
+                    className="text-xs text-brand-primary hover:text-brand-secondary transition-colors"
                     title="Marcar todas como lidas"
                   >
                     <PiCheckCircle className="w-3 h-3" />
                     <span>Marcar todas</span>
-                  </button>
+                  </Inline>
                 )}
 
                 <button
@@ -233,7 +236,7 @@ export default function NotificationBell({
                 >
                   <PiX className="w-4 h-4 text-theme-tertiary" />
                 </button>
-              </div>
+              </Inline>
             </div>
           </div>
 
@@ -291,7 +294,7 @@ export default function NotificationBell({
                                 {formatTime(notification.createdAt)}
                               </span>
 
-                              <div className="flex items-center space-x-2">
+                              <Inline gap={2}>
                                 {notification.actionUrl && (
                                   <Link
                                     href={notification.actionUrl}
@@ -319,7 +322,7 @@ export default function NotificationBell({
                                     <PiCheck className="w-3 h-3" />
                                   </button>
                                 )}
-                              </div>
+                              </Inline>
                             </div>
                           </div>
                         </div>

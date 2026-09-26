@@ -13,6 +13,7 @@ import {
 } from 'react-icons/pi';
 import { getResponsiveImageUrl } from '@/app/libs/ads/mediaUtils';
 import Image from '@/app/components/SmartImage';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface AdModalProps {
   ad: any;
@@ -293,7 +294,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
           {ad.ctaText && (
             <div className="text-center">
               <button onClick={handleCtaClick} className="ad-cta-button group">
-                <span className="flex items-center justify-center space-x-2">
+                <Inline as="span" gap={2} className="justify-center">
                   {ad.linkType === 'whatsapp' ? (
                     <>
                       <PiChatCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -308,7 +309,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
                       )}
                     </>
                   )}
-                </span>
+                </Inline>
               </button>
             </div>
           )}
@@ -323,11 +324,13 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
             </button>
 
             {ad.advertiserWebsite && (
-              <a
+              <Inline
+                as="a"
+                gap={1}
                 href={ad.advertiserWebsite}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-theme-tertiary hover:text-brand-primary transition-colors flex items-center space-x-1"
+                className="text-theme-tertiary hover:text-brand-primary transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
                   onTrackEvent('modal_learn_more_click');
@@ -335,7 +338,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
               >
                 <span>Saiba mais</span>
                 <PiArrowSquareOut className="w-3 h-3" />
-              </a>
+              </Inline>
             )}
           </div>
 

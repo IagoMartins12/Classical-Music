@@ -28,6 +28,7 @@ import AdminSidebar from './components/Admin/AdminSidebar';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { useClientMetadata } from './hooks/useClientMetadata';
 import { BlogHeader } from './components/blog/BlogHeader';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -241,15 +242,17 @@ export default function Error({ error, reset }: ErrorProps) {
               className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
             >
               <AnimatedItem hover="scale" springType="bouncy">
-                <button
+                <Inline
+                  as="button"
+                  gap={3}
                   onClick={reset}
-                  className="btn-classical-primary w-full justify-center flex items-center space-x-3 group text-lg px-8 py-4"
+                  className="btn-classical-primary w-full justify-center group text-lg px-8 py-4"
                 >
                   <PiArrowsClockwise className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
                   <span>
                     {t('error_jsx_span_children_0__tentar_novamente')}
                   </span>
-                </button>
+                </Inline>
               </AnimatedItem>
 
               <AnimatedItem hover="scale" springType="bouncy">
@@ -270,43 +273,43 @@ export default function Error({ error, reset }: ErrorProps) {
               hover="lift"
               className="classical-card p-6 max-w-3xl mx-auto mb-8"
             >
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-green/20 rounded-xl flex items-center justify-center">
                   <PiMusicNotes className="w-5 h-5 text-accent-blue" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title">
                   {t('error_jsx_h3_children_0__que_voce_pode_fazer')}
                 </h3>
-              </div>
+              </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                 <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t('error_jsx_span_children_0__recarregar_pagina')}
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t('error_jsx_span_children_0__verificar_conexao')}
                     </span>
-                  </div>
+                  </Inline>
                 </div>
                 <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t('error_jsx_span_children_0__tentar_mais_tarde')}
                     </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
+                  </Inline>
+                  <Inline gap={2}>
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t('error_jsx_span_children_0__voltar_pagina_anterior')}
                     </span>
-                  </div>
+                  </Inline>
                 </div>
               </div>
             </AnimatedCard>

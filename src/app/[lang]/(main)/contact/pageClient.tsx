@@ -34,6 +34,7 @@ import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Checkbox from '@/app/components/Common/Checkbox';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ContactOption {
   icon: React.ComponentType<{ className?: string }>;
@@ -454,7 +455,9 @@ export default function ContactPageClient() {
                     </div>
                   </div>
 
-                  <button
+                  <Inline
+                    as="button"
+                    gap={3}
                     type="submit"
                     disabled={
                       loading ||
@@ -463,7 +466,7 @@ export default function ContactPageClient() {
                       !formData.email.trim() ||
                       !formData.message.trim()
                     }
-                    className="btn-classical-primary w-full flex items-center justify-center space-x-3 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn-classical-primary w-full justify-center py-4 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? (
                       <>
@@ -485,7 +488,7 @@ export default function ContactPageClient() {
                         </span>
                       </>
                     )}
-                  </button>
+                  </Inline>
                 </form>
               </AnimatedCard>
 
@@ -497,7 +500,7 @@ export default function ContactPageClient() {
                   </h3>
 
                   <div className="space-y-6">
-                    <div className="flex items-center space-x-4">
+                    <Inline gap={4}>
                       <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                         <PiEnvelopeSimple className="w-6 h-6 text-theme-primary" />
                       </div>
@@ -509,9 +512,9 @@ export default function ContactPageClient() {
                           {t('contact_jsx_p_children_0__email_address')}
                         </p>
                       </div>
-                    </div>
+                    </Inline>
 
-                    <div className="flex items-center space-x-4">
+                    <Inline gap={4}>
                       <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                         <PiPhone className="w-6 h-6 text-theme-primary" />
                       </div>
@@ -523,9 +526,9 @@ export default function ContactPageClient() {
                           {t('contact_jsx_p_children_0__telefone_number')}
                         </p>
                       </div>
-                    </div>
+                    </Inline>
 
-                    <div className="flex items-center space-x-4">
+                    <Inline gap={4}>
                       <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
                         <PiMapPin className="w-6 h-6 text-theme-primary" />
                       </div>
@@ -537,7 +540,7 @@ export default function ContactPageClient() {
                           {t('contact_jsx_p_children_0__localização_address')}
                         </p>
                       </div>
-                    </div>
+                    </Inline>
                   </div>
                 </AnimatedCard>
 
@@ -574,12 +577,12 @@ export default function ContactPageClient() {
                   </div>
 
                   <div className="mt-6 p-4 bg-accent-blue/10 border border-accent-blue/20 rounded-lg">
-                    <div className="flex items-center space-x-3">
+                    <Inline gap={3}>
                       <PiClock className="w-5 h-5 text-accent-blue" />
                       <span className="text-accent-blue font-medium">
                         {t('contact_jsx_span_children_0__resposta_tempo')}
                       </span>
-                    </div>
+                    </Inline>
                   </div>
                 </AnimatedCard>
 

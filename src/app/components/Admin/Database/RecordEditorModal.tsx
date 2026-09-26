@@ -17,6 +17,7 @@ import Checkbox from '@/app/components/Common/Checkbox';
 import ConfirmationModal from './ConfirmationModal';
 import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
 import { CONFIRMATION_KEYWORD } from './confirmations';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface RecordEditorModalProps {
   isOpen: boolean;
@@ -193,25 +194,33 @@ export default function RecordEditorModal({
 
     // Badges de campo
     const renderBadges = () => (
-      <div className="flex items-center space-x-2 mb-2">
+      <Inline gap={2} className="mb-2">
         {fieldInfo.isSensitive && (
-          <span className="px-2 py-0.5 bg-red-500/20 text-red-500 text-xs rounded-full flex items-center space-x-1">
+          <Inline
+            as="span"
+            gap={1}
+            className="px-2 py-0.5 bg-red-500/20 text-red-500 text-xs rounded-full"
+          >
             <PiLock className="w-3 h-3" />
             <span>Sensível</span>
-          </span>
+          </Inline>
         )}
         {fieldInfo.requiresConfirmation && (
-          <span className="px-2 py-0.5 bg-orange-500/20 text-orange-500 text-xs rounded-full flex items-center space-x-1">
+          <Inline
+            as="span"
+            gap={1}
+            className="px-2 py-0.5 bg-orange-500/20 text-orange-500 text-xs rounded-full"
+          >
             <PiWarning className="w-3 h-3" />
             <span>Exige confirmação</span>
-          </span>
+          </Inline>
         )}
         {field.isUnique && (
           <span className="px-2 py-0.5 bg-blue-500/20 text-blue-500 text-xs rounded-full">
             Único
           </span>
         )}
-      </div>
+      </Inline>
     );
 
     return (
@@ -225,7 +234,7 @@ export default function RecordEditorModal({
 
         {/* Boolean */}
         {field.type === 'Boolean' && (
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             <Checkbox
               checked={value || false}
               onChange={(e) => handleChange(e.target.checked)}
@@ -233,7 +242,7 @@ export default function RecordEditorModal({
             <span className="text-sm text-theme-secondary">
               {value ? 'Sim' : 'Não'}
             </span>
-          </div>
+          </Inline>
         )}
 
         {/* Enum */}
@@ -316,10 +325,10 @@ export default function RecordEditorModal({
         )}
 
         {error && (
-          <div className="flex items-center space-x-2 text-accent-red text-sm">
+          <Inline gap={2} className="text-accent-red text-sm">
             <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>
-          </div>
+          </Inline>
         )}
 
         <p className="text-xs text-theme-tertiary">
@@ -376,16 +385,16 @@ export default function RecordEditorModal({
           <div className="p-6 border-t border-theme-primary flex items-center justify-between">
             <div className="text-sm text-theme-tertiary">
               {Object.keys(errors).length > 0 && (
-                <span className="text-accent-red flex items-center space-x-2">
+                <Inline as="span" gap={2} className="text-accent-red">
                   <PiWarningCircle />
                   <span>
                     {Object.keys(errors).length} erro(s) encontrado(s)
                   </span>
-                </span>
+                </Inline>
               )}
             </div>
 
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <Button variant="ghost" onClick={onClose}>
                 Cancelar
               </Button>
@@ -398,7 +407,7 @@ export default function RecordEditorModal({
               >
                 {isSaving ? 'Salvando...' : 'Salvar'}
               </Button>
-            </div>
+            </Inline>
           </div>
         </div>
       </Modal>

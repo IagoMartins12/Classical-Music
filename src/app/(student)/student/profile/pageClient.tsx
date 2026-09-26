@@ -44,6 +44,7 @@ import { useStudentProfile } from '@/app/hooks/lessonsSystem/useStudentProfile';
 import { useToast } from '@/app/hooks/useToast';
 import Select from '@/app/components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface StudentProfilePageClientProps {
   initialData: StudentProfileData | null;
@@ -477,14 +478,14 @@ export default function StudentProfilePageClient({
               hover="lift"
               className="classical-card p-4 mb-6 border-l-4 border-accent-green"
             >
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <div className="w-8 h-8 bg-accent-green/10 rounded-full flex items-center justify-center">
                   <PiCheck className="w-4 h-4 text-accent-green" />
                 </div>
                 <div className="text-accent-green font-medium">
                   {successMessage}
                 </div>
-              </div>
+              </Inline>
             </AnimatedCard>
           </AnimatedItem>
         )}
@@ -497,12 +498,12 @@ export default function StudentProfilePageClient({
               className="classical-card p-4 mb-6 border-l-4 border-accent-red"
             >
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-8 h-8 bg-accent-red/10 rounded-full flex items-center justify-center">
                     <PiX className="w-4 h-4 text-accent-red" />
                   </div>
                   <div className="text-accent-red font-medium">{error}</div>
-                </div>
+                </Inline>
                 <button
                   onClick={clearError}
                   className="text-accent-red hover:text-accent-red/70 transition-colors"
@@ -520,7 +521,7 @@ export default function StudentProfilePageClient({
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
                     <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
@@ -532,22 +533,24 @@ export default function StudentProfilePageClient({
                       {t('personal_info_subtitle')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() =>
                     setEditingSection(
                       editingSection === 'personal' ? null : 'personal'
                     )
                   }
                   disabled={saving}
-                  className="btn-classical-secondary flex items-center space-x-2"
+                  className="btn-classical-secondary"
                 >
                   <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'personal' ? t('cancel') : t('edit')}
                   </span>
-                </button>
+                </Inline>
               </div>
 
               {editingSection === 'personal' ? (
@@ -627,12 +630,12 @@ export default function StudentProfilePageClient({
 
                   {/* Localização */}
                   <div>
-                    <div className="flex items-center space-x-2 mb-4">
+                    <Inline gap={2} className="mb-4">
                       <PiMapPin className="w-4 h-4 text-brand-primary" />
                       <h4 className="font-medium text-theme-primary">
                         {t('location')}
                       </h4>
-                    </div>
+                    </Inline>
 
                     <LocationSelector
                       value={personalForm.location}
@@ -643,7 +646,10 @@ export default function StudentProfilePageClient({
                     />
                   </div>
 
-                  <div className="flex items-center justify-end space-x-3 pt-4 border-t border-theme-secondary">
+                  <Inline
+                    gap={3}
+                    className="justify-end pt-4 border-t border-theme-secondary"
+                  >
                     <button
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
@@ -651,12 +657,14 @@ export default function StudentProfilePageClient({
                     >
                       {t('cancel')}
                     </button>
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={savePersonalData}
                       disabled={
                         saving || !canProceedWithPhone(personalForm.phone)
                       }
-                      className="btn-classical-primary flex items-center space-x-2"
+                      className="btn-classical-primary"
                       title={
                         phoneError
                           ? `Não é possível salvar: ${phoneError}`
@@ -669,8 +677,8 @@ export default function StudentProfilePageClient({
                         <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -688,20 +696,26 @@ export default function StudentProfilePageClient({
                       <label className="text-sm text-theme-tertiary">
                         {t('email')}
                       </label>
-                      <div className="text-theme-primary font-medium flex items-center space-x-2">
+                      <Inline
+                        gap={2}
+                        className="text-theme-primary font-medium"
+                      >
                         <PiEnvelopeSimple className="w-4 h-4" />
                         <span>{profile?.user.email}</span>
-                      </div>
+                      </Inline>
                     </div>
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
                         {t('phone')}
                       </label>
-                      <div className="text-theme-primary font-medium flex items-center space-x-2">
+                      <Inline
+                        gap={2}
+                        className="text-theme-primary font-medium"
+                      >
                         <PiPhone className="w-4 h-4" />
                         <span>{profile?.user.phone || t('not_informed')}</span>
-                      </div>
+                      </Inline>
                     </div>
                   </div>
 
@@ -710,14 +724,17 @@ export default function StudentProfilePageClient({
                       <label className="text-sm text-theme-tertiary">
                         {t('location')}
                       </label>
-                      <div className="text-theme-primary font-medium flex items-center space-x-2">
+                      <Inline
+                        gap={2}
+                        className="text-theme-primary font-medium"
+                      >
                         <PiMapPin className="w-4 h-4" />
                         <span>
                           {profile?.user.city && profile?.user.state
                             ? `${profile.user.city}, ${profile.user.state}`
                             : profile?.user.country || t('not_informed')}
                         </span>
-                      </div>
+                      </Inline>
                     </div>
 
                     <div>
@@ -742,7 +759,7 @@ export default function StudentProfilePageClient({
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
                     <PiBookOpen className="w-5 h-5 text-theme-primary" />
                   </div>
@@ -754,22 +771,24 @@ export default function StudentProfilePageClient({
                       {t('study_settings_subtitle')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() =>
                     setEditingSection(
                       editingSection === 'study' ? null : 'study'
                     )
                   }
                   disabled={saving}
-                  className="btn-classical-secondary flex items-center space-x-2"
+                  className="btn-classical-secondary"
                 >
                   <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'study' ? t('cancel') : t('edit')}
                   </span>
-                </button>
+                </Inline>
               </div>
 
               {editingSection === 'study' ? (
@@ -890,7 +909,10 @@ export default function StudentProfilePageClient({
                     />
                   </div>
 
-                  <div className="flex items-center justify-end space-x-3 pt-4 border-t border-theme-secondary">
+                  <Inline
+                    gap={3}
+                    className="justify-end pt-4 border-t border-theme-secondary"
+                  >
                     <button
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
@@ -898,10 +920,12 @@ export default function StudentProfilePageClient({
                     >
                       {t('cancel')}
                     </button>
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={saveStudyData}
                       disabled={saving}
-                      className="btn-classical-primary flex items-center space-x-2"
+                      className="btn-classical-primary"
                     >
                       {saving ? (
                         <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -909,8 +933,8 @@ export default function StudentProfilePageClient({
                         <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -1009,7 +1033,7 @@ export default function StudentProfilePageClient({
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-pink rounded-lg flex items-center justify-center">
                     <PiHeart className="w-5 h-5 text-theme-primary" />
                   </div>
@@ -1021,22 +1045,24 @@ export default function StudentProfilePageClient({
                       {t('musical_preferences_subtitle')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() =>
                     setEditingSection(
                       editingSection === 'preferences' ? null : 'preferences'
                     )
                   }
                   disabled={saving}
-                  className="btn-classical-secondary flex items-center space-x-2"
+                  className="btn-classical-secondary"
                 >
                   <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'preferences' ? t('cancel') : t('edit')}
                   </span>
-                </button>
+                </Inline>
               </div>
 
               {editingSection === 'preferences' ? (
@@ -1067,7 +1093,10 @@ export default function StudentProfilePageClient({
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-end space-x-3 pt-4 border-t border-theme-secondary">
+                  <Inline
+                    gap={3}
+                    className="justify-end pt-4 border-t border-theme-secondary"
+                  >
                     <button
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
@@ -1075,10 +1104,12 @@ export default function StudentProfilePageClient({
                     >
                       {t('cancel')}
                     </button>
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={savePreferencesData}
                       disabled={saving}
-                      className="btn-classical-primary flex items-center space-x-2"
+                      className="btn-classical-primary"
                     >
                       {saving ? (
                         <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -1086,8 +1117,8 @@ export default function StudentProfilePageClient({
                         <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </div>
               ) : (
                 <div>
@@ -1129,7 +1160,7 @@ export default function StudentProfilePageClient({
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
                     <PiShield className="w-5 h-5 text-theme-primary" />
                   </div>
@@ -1141,22 +1172,24 @@ export default function StudentProfilePageClient({
                       {t('privacy_settings_subtitle')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() =>
                     setEditingSection(
                       editingSection === 'privacy' ? null : 'privacy'
                     )
                   }
                   disabled={saving}
-                  className="btn-classical-secondary flex items-center space-x-2"
+                  className="btn-classical-secondary"
                 >
                   <PiPencilLine className="w-4 h-4" />
                   <span>
                     {editingSection === 'privacy' ? t('cancel') : t('edit')}
                   </span>
-                </button>
+                </Inline>
               </div>
 
               {editingSection === 'privacy' ? (
@@ -1252,7 +1285,10 @@ export default function StudentProfilePageClient({
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-end space-x-3 pt-4 border-t border-theme-secondary">
+                  <Inline
+                    gap={3}
+                    className="justify-end pt-4 border-t border-theme-secondary"
+                  >
                     <button
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
@@ -1260,10 +1296,12 @@ export default function StudentProfilePageClient({
                     >
                       {t('cancel')}
                     </button>
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={savePrivacyData}
                       disabled={saving}
-                      className="btn-classical-primary flex items-center space-x-2"
+                      className="btn-classical-primary"
                     >
                       {saving ? (
                         <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -1271,8 +1309,8 @@ export default function StudentProfilePageClient({
                         <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -1331,7 +1369,7 @@ export default function StudentProfilePageClient({
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-orange to-accent-red rounded-lg flex items-center justify-center">
                     <PiChatCenteredText className="w-5 h-5 text-theme-primary" />
                   </div>
@@ -1343,9 +1381,11 @@ export default function StudentProfilePageClient({
                       {t('communication_settings_subtitle')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() =>
                     setEditingSection(
                       editingSection === 'communication'
@@ -1354,7 +1394,7 @@ export default function StudentProfilePageClient({
                     )
                   }
                   disabled={saving}
-                  className="btn-classical-secondary flex items-center space-x-2"
+                  className="btn-classical-secondary"
                 >
                   <PiPencilLine className="w-4 h-4" />
                   <span>
@@ -1362,7 +1402,7 @@ export default function StudentProfilePageClient({
                       ? t('cancel')
                       : t('edit')}
                   </span>
-                </button>
+                </Inline>
               </div>
 
               {editingSection === 'communication' ? (
@@ -1390,7 +1430,10 @@ export default function StudentProfilePageClient({
                     </select>
                   </div>
 
-                  <div className="flex items-center justify-end space-x-3 pt-4 border-t border-theme-secondary">
+                  <Inline
+                    gap={3}
+                    className="justify-end pt-4 border-t border-theme-secondary"
+                  >
                     <button
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
@@ -1398,10 +1441,12 @@ export default function StudentProfilePageClient({
                     >
                       {t('cancel')}
                     </button>
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={saveCommunicationData}
                       disabled={saving}
-                      className="btn-classical-primary flex items-center space-x-2"
+                      className="btn-classical-primary"
                     >
                       {saving ? (
                         <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -1409,8 +1454,8 @@ export default function StudentProfilePageClient({
                         <PiFloppyDisk className="w-4 h-4" />
                       )}
                       <span>{t('save')}</span>
-                    </button>
-                  </div>
+                    </Inline>
+                  </Inline>
                 </div>
               ) : (
                 <div>
@@ -1431,7 +1476,7 @@ export default function StudentProfilePageClient({
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-lg flex items-center justify-center">
                     <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                   </div>
@@ -1443,12 +1488,14 @@ export default function StudentProfilePageClient({
                       {t('my_repertoire_subtitle')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={refreshStudyData}
                   disabled={loading.refreshStudyData}
-                  className="btn-classical-secondary flex items-center space-x-2"
+                  className="btn-classical-secondary"
                 >
                   <PiArrowsClockwise
                     className={`w-4 h-4 ${
@@ -1456,7 +1503,7 @@ export default function StudentProfilePageClient({
                     }`}
                   />
                   <span>{t('refresh')}</span>
-                </button>
+                </Inline>
               </div>
 
               {studyData && (
@@ -1575,9 +1622,10 @@ export default function StudentProfilePageClient({
                     {profile.teachers
                       .filter((t) => t.isActive)
                       .map((teacher) => (
-                        <div
+                        <Inline
+                          gap={3}
                           key={teacher.teacherId}
-                          className="flex items-center space-x-3 p-3 bg-theme-secondary/10 rounded-lg"
+                          className="p-3 bg-theme-secondary/10 rounded-lg"
                         >
                           {teacher.teacherImage ? (
                             <div className="w-10 h-10 relative rounded-full overflow-hidden">
@@ -1603,7 +1651,7 @@ export default function StudentProfilePageClient({
                               {teacher.lessonDuration}min
                             </div>
                           </div>
-                        </div>
+                        </Inline>
                       ))}
                   </div>
                 </div>

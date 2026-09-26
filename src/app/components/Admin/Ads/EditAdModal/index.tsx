@@ -17,6 +17,7 @@ import Input from '@/app/components/Common/Inputs';
 import Modal from '@/app/components/Modal';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { listInstruments } from '@/app/requests/admin/ads';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface EditAdModalProps {
   ad: any;
@@ -341,7 +342,7 @@ export default function EditAdModal({
       <div className="w-full">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
               <PiNotePencil className="w-5 h-5 text-white" />
             </div>
@@ -351,7 +352,7 @@ export default function EditAdModal({
               </h2>
               <p className="text-sm text-theme-tertiary">{ad?.title}</p>
             </div>
-          </div>
+          </Inline>
         </div>
 
         {/* Info sobre mídia */}
@@ -427,10 +428,14 @@ export default function EditAdModal({
 
           {/* Informações Básicas */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-lg font-semibold text-theme-primary"
+            >
               <PiTarget className="w-5 h-5" />
               <span>Informações Básicas</span>
-            </h3>
+            </Inline>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -525,10 +530,14 @@ export default function EditAdModal({
 
           {/* Segmentação */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-lg font-semibold text-theme-primary"
+            >
               <PiTarget className="w-5 h-5" />
               <span>Segmentação</span>
-            </h3>
+            </Inline>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -590,10 +599,14 @@ export default function EditAdModal({
 
           {/* Link e Call-to-Action */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+            <Inline
+              as="h3"
+              gap={2}
+              className="text-lg font-semibold text-theme-primary"
+            >
               <PiChatCircle className="w-5 h-5" />
               <span>Call-to-Action</span>
-            </h3>
+            </Inline>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -748,7 +761,7 @@ export default function EditAdModal({
                 Exibir em:
               </label>
               <div className="flex space-x-4">
-                <label className="flex items-center space-x-2">
+                <Inline as="label" gap={2}>
                   <Checkbox
                     type="checkbox"
                     label="Mobile"
@@ -758,8 +771,8 @@ export default function EditAdModal({
                     }
                     className="rounded border-theme-primary"
                   />
-                </label>
-                <label className="flex items-center space-x-2">
+                </Inline>
+                <Inline as="label" gap={2}>
                   <Checkbox
                     type="checkbox"
                     label="Tablet"
@@ -769,8 +782,8 @@ export default function EditAdModal({
                     }
                     className="rounded border-theme-primary"
                   />
-                </label>
-                <label className="flex items-center space-x-2">
+                </Inline>
+                <Inline as="label" gap={2}>
                   <Checkbox
                     type="checkbox"
                     label="Desktop"
@@ -780,7 +793,7 @@ export default function EditAdModal({
                     }
                     className="rounded border-theme-primary"
                   />
-                </label>
+                </Inline>
               </div>
             </div>
           </div>

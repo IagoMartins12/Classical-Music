@@ -23,6 +23,7 @@ import { TeacherStudentsServerData } from './pageServer';
 import StudentCard from '@/app/components/TeacherSystem/StudentCard';
 import AddStudentModal from '@/app/components/TeacherSystem/AddStudentModal';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface TeacherStudentsPageClientProps {
   initialData: TeacherStudentsServerData;
@@ -296,10 +297,12 @@ export default function TeacherStudentsPageClient({
               {error || errorMessage}
             </p>
             <div className="space-y-3">
-              <button
+              <Inline
+                as="button"
+                gap={2}
                 onClick={refreshStudents}
                 disabled={loading.students}
-                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+                className="btn-classical-primary w-full justify-center"
               >
                 <PiArrowsClockwise
                   className={`w-4 h-4 ${
@@ -309,7 +312,7 @@ export default function TeacherStudentsPageClient({
                 <span>
                   {loading.students ? t('loading_text') : t('try_again')}
                 </span>
-              </button>
+              </Inline>
               {error && (
                 <button
                   onClick={clearError}
@@ -396,14 +399,16 @@ export default function TeacherStudentsPageClient({
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center space-x-3">
-                  <button
+                <Inline gap={3}>
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={() => setShowAddStudent(true)}
-                    className="btn-classical-primary flex items-center space-x-2"
+                    className="btn-classical-primary"
                   >
                     <PiUserPlus className="w-4 h-4" />
                     <span>{t('add_student_button')}</span>
-                  </button>
+                  </Inline>
 
                   <button
                     onClick={refreshStudents}
@@ -416,7 +421,7 @@ export default function TeacherStudentsPageClient({
                       }`}
                     />
                   </button>
-                </div>
+                </Inline>
               </div>
 
               {/* Search and Filters */}
@@ -488,13 +493,15 @@ export default function TeacherStudentsPageClient({
                     : t('no_students_yet_description')}
                 </p>
                 {!searchQuery && activeTab === 'all' && (
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={() => setShowAddStudent(true)}
-                    className="btn-classical-primary flex items-center space-x-2 mx-auto"
+                    className="btn-classical-primary mx-auto"
                   >
                     <PiUserPlus className="w-4 h-4" />
                     <span>{t('add_first_student')}</span>
-                  </button>
+                  </Inline>
                 )}
               </div>
             ) : (

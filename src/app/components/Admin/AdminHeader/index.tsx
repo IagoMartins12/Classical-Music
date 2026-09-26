@@ -17,6 +17,7 @@ import {
   PiSignOut,
   PiUsers,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface AdminHeaderProps {
   onMenuClick: () => void;
@@ -184,13 +185,15 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
 
                     <div className="border-t border-theme-secondary my-2" />
 
-                    <button
+                    <Inline
+                      as="button"
+                      gap={3}
                       onClick={handleSignOut}
-                      className="flex items-center space-x-3 px-4 py-2 text-accent-red hover:bg-accent-red/10 transition-all w-full text-sm"
+                      className="px-4 py-2 text-accent-red hover:bg-accent-red/10 transition-all w-full text-sm"
                     >
                       <PiSignOut className="w-4 h-4" />
                       <span>Sair</span>
-                    </button>
+                    </Inline>
                   </div>
                 )}
               </div>

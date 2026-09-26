@@ -22,6 +22,7 @@ import Button from '../../Common/Button';
 import { useEmailVerification } from '@/app/hooks/useEmailVerification';
 import { useEmailRefresh } from '@/app/hooks/useEmailRefresh';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface EmailVerificationRequiredProps {
   userEmail: string;
@@ -100,12 +101,12 @@ export default function EmailVerificationRequired({
         {emailSent && (
           <AnimatedItem direction="up" springType="bouncy">
             <div className="bg-theme-elevated border-accent-green rounded-lg p-4 mb-6 max-w-2xl mx-auto">
-              <div className="flex items-center justify-center space-x-3">
+              <Inline gap={3} className="justify-center">
                 <PiCheckCircle className="w-5 h-5 text-accent-green" />
                 <p className="text-accent-green font-medium">
                   {t('email_sent_success')}
                 </p>
-              </div>
+              </Inline>
               <p className="text-accent-green text-sm text-center mt-2 opacity-80">
                 {t('email_sent_instructions')}
               </p>
@@ -163,40 +164,40 @@ export default function EmailVerificationRequired({
           {/* What you can do */}
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard hover="lift" className="classical-card p-6">
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                   <PiCheckCircle className="w-5 h-5 text-accent-green" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title">
                   {t('current_permissions_title')}
                 </h3>
-              </div>
+              </Inline>
 
               <div className="text-left space-y-2">
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                   <span className="text-theme-secondary text-sm">
                     {t('current_permission_explore')}
                   </span>
-                </div>
-                <div className="flex items-center space-x-2">
+                </Inline>
+                <Inline gap={2}>
                   <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                   <span className="text-theme-secondary text-sm">
                     {t('current_permission_discover')}
                   </span>
-                </div>
-                <div className="flex items-center space-x-2">
+                </Inline>
+                <Inline gap={2}>
                   <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                   <span className="text-theme-secondary text-sm">
                     {t('current_permission_favorites')}
                   </span>
-                </div>
-                <div className="flex items-center space-x-2">
+                </Inline>
+                <Inline gap={2}>
                   <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                   <span className="text-theme-secondary text-sm">
                     {t('current_permission_profile')}
                   </span>
-                </div>
+                </Inline>
               </div>
             </AnimatedCard>
           </AnimatedItem>
@@ -204,40 +205,40 @@ export default function EmailVerificationRequired({
           {/* After verification */}
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard hover="lift" className="classical-card p-6">
-              <div className="flex items-center space-x-3 mb-4">
+              <Inline gap={3} className="mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-amber/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
                   <PiShield className="w-5 h-5 text-accent-amber" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title">
                   {t('after_verification_title')}
                 </h3>
-              </div>
+              </Inline>
 
               <div className="text-left space-y-2">
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
                   <span className="text-theme-secondary text-sm">
                     {t('after_verification_composers')}
                   </span>
-                </div>
-                <div className="flex items-center space-x-2">
+                </Inline>
+                <Inline gap={2}>
                   <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
                   <span className="text-theme-secondary text-sm">
                     {t('after_verification_scores')}
                   </span>
-                </div>
-                <div className="flex items-center space-x-2">
+                </Inline>
+                <Inline gap={2}>
                   <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
                   <span className="text-theme-secondary text-sm">
                     {t('after_verification_works')}
                   </span>
-                </div>
-                <div className="flex items-center space-x-2">
+                </Inline>
+                <Inline gap={2}>
                   <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
                   <span className="text-theme-secondary text-sm">
                     {t('after_verification_full_access')}
                   </span>
-                </div>
+                </Inline>
               </div>
             </AnimatedCard>
           </AnimatedItem>

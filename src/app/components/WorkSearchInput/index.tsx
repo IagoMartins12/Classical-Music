@@ -18,6 +18,7 @@ import {
   PiWarningCircle,
 } from 'react-icons/pi';
 import { searchWorks } from '@/app/requests/catalog-search';
+import { Inline } from '@/app/components/ui/Layout';
 
 export interface WorkSearchInputWorkProp {
   id: string;
@@ -487,7 +488,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center">
                 <PiCheck className="w-4 h-4 text-accent-blue" />
               </div>
@@ -500,7 +501,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                     selectedWorkData.composer.name}
                 </p>
               </div>
-            </div>
+            </Inline>
             {!disabled && (
               <button
                 type="button"
@@ -575,7 +576,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                         onClick={() => handleWorkSelect(work)}
                         className="w-full text-left p-3 rounded-lg hover:bg-theme-secondary transition-colors group"
                       >
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <div
                             className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform ${
                               isUserWork
@@ -590,7 +591,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               <p className="font-medium text-theme-primary text-sm truncate">
                                 {work.title}
                               </p>
@@ -599,12 +600,12 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                                   Sua
                                 </span>
                               )}
-                            </div>
+                            </Inline>
                             <p className="text-theme-tertiary text-xs truncate">
                               {work.composer.fullName || work.composer.name}
                             </p>
                           </div>
-                        </div>
+                        </Inline>
                       </button>
                     );
                   })}
@@ -642,30 +643,34 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       {/* Mensagem de erro */}
       {error && (
         <div>
-          <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
+          <Inline
+            as="p"
+            gap={1}
+            className="text-red-500 text-sm font-medium mt-1"
+          >
             <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>
-          </p>
+          </Inline>
         </div>
       )}
 
       {/* Informação sobre o estado atual */}
       {!selectedWorkData && (
         <div className="mt-1 flex items-center justify-between text-xs text-theme-tertiary">
-          <div className="flex items-center space-x-2">
+          <Inline gap={2}>
             {stableFilterByComposer && stableFilterByComposer.trim() !== '' && (
-              <span className="flex items-center space-x-1">
+              <Inline as="span" gap={1}>
                 <PiFunnel className="w-3 h-3" />
                 <span>Filtrado por compositor</span>
-              </span>
+              </Inline>
             )}
             {stableUserSuggestions.length > 0 && (
-              <span className="flex items-center space-x-1">
+              <Inline as="span" gap={1}>
                 <PiUser className="w-3 h-3 text-accent-purple" />
                 <span>{stableUserSuggestions.length} obra(s) sua(s)</span>
-              </span>
+              </Inline>
             )}
-          </div>
+          </Inline>
           {composerWorks.length > 0 && (
             <span className="text-brand-primary">
               {composerWorks.length} obra(s) do compositor

@@ -3,6 +3,7 @@
 import Modal from '@/app/components/Modal';
 import { PiClock, PiMapPin, PiMusicNotes } from 'react-icons/pi';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface DayEventsListModalProps {
   isOpen: boolean;
@@ -80,7 +81,7 @@ export default function DayEventsListModal({
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     {/* Horário */}
-                    <div className="flex items-center space-x-2 mb-2">
+                    <Inline gap={2} className="mb-2">
                       <PiClock className="w-4 h-4 text-theme-tertiary flex-shrink-0" />
                       <span className="text-sm font-medium text-theme-secondary">
                         {formatEventTime(event.start)}
@@ -90,7 +91,7 @@ export default function DayEventsListModal({
                           Gratuito
                         </span>
                       )}
-                    </div>
+                    </Inline>
 
                     {/* Título */}
                     <h3 className="font-bold text-theme-primary mb-2">
@@ -98,13 +99,16 @@ export default function DayEventsListModal({
                     </h3>
 
                     {/* Local */}
-                    <div className="flex items-center space-x-2 text-sm text-theme-tertiary mb-2">
+                    <Inline
+                      gap={2}
+                      className="text-sm text-theme-tertiary mb-2"
+                    >
                       <PiMapPin className="w-3 h-3 flex-shrink-0" />
                       <span className="truncate">
                         {event.venue.name}
                         {event.venueDetails && ` - ${event.venueDetails}`}
                       </span>
-                    </div>
+                    </Inline>
 
                     {/* Compositores */}
                     {event.composers && event.composers.length > 0 && (

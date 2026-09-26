@@ -48,6 +48,7 @@ import { getPeriodLabel } from '@/app/utils/adminUtils';
 import PeriodSelector from '../../Common/PeriodSelector';
 import LoadingAdminState from '../../Common/LoadingState';
 import { mapStatsToChartData } from '@/app/utils/admin/adminDebug';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ComposerFilters {
   search: string;
@@ -251,7 +252,7 @@ export default function ComposersManagement() {
             <p className="text-lg md:text-xl text-theme-secondary classical-subtitle">
               Administre o catálogo de compositores da plataforma
             </p>
-            <div className="flex items-center justify-center space-x-4 mt-6">
+            <Inline gap={4} className="justify-center mt-6">
               <PeriodSelector
                 value={period}
                 onChange={setPeriod}
@@ -270,7 +271,7 @@ export default function ComposersManagement() {
               >
                 Atualizar
               </Button>
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -378,15 +379,20 @@ export default function ComposersManagement() {
             {stats.mostPopular.length > 0 && (
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiTrendUp className="w-5 h-5 text-accent-red" />
                     <span>Mais Favoritados</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-3">
                     {stats.mostPopular.slice(0, 5).map((composer, index) => (
-                      <div
+                      <Inline
+                        gap={3}
                         key={composer.id}
-                        className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                        className="p-3 bg-theme-secondary rounded-xl"
                       >
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-amber rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                           {index + 1}
@@ -408,7 +414,7 @@ export default function ComposersManagement() {
                             router.push(`/composer/${composer.id}`)
                           }
                         />
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </AnimatedCard>
@@ -419,15 +425,20 @@ export default function ComposersManagement() {
             {stats.topByWorks.length > 0 && (
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard className="classical-card p-6">
-                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                  <Inline
+                    as="h3"
+                    gap={2}
+                    className="text-xl font-bold text-theme-primary mb-6"
+                  >
                     <PiMusicNotes className="w-5 h-5 text-accent-blue" />
                     <span>Mais Produtivos</span>
-                  </h3>
+                  </Inline>
                   <div className="space-y-3">
                     {stats.topByWorks.slice(0, 5).map((composer, index) => (
-                      <div
+                      <Inline
+                        gap={3}
                         key={composer.id}
-                        className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                        className="p-3 bg-theme-secondary rounded-xl"
                       >
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
                           {index + 1}
@@ -448,7 +459,7 @@ export default function ComposersManagement() {
                             router.push(`/composer/${composer.id}`)
                           }
                         />
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </AnimatedCard>

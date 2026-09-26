@@ -11,6 +11,7 @@ import {
   PiFileText,
   PiMusicNotes,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function StudentNotificationsLoading() {
   return (
@@ -115,24 +116,28 @@ export default function StudentNotificationsLoading() {
             {/* Filters */}
             <div className="flex flex-wrap gap-2">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div
+                <Inline
+                  gap={2}
                   key={i}
-                  className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2"
+                  className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4"
                 >
                   <div className="w-4 h-4 bg-theme-tertiary/20 rounded"></div>
                   <div className="h-4 w-16 bg-theme-tertiary/20 rounded"></div>
-                </div>
+                </Inline>
               ))}
             </div>
 
             {/* Actions */}
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="h-10 w-32 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
-              <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4 flex items-center space-x-2">
+              <Inline
+                gap={2}
+                className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg px-4"
+              >
                 <PiCheck className="w-4 h-4 text-theme-tertiary/30" />
                 <div className="h-4 w-20 bg-theme-tertiary/20 rounded"></div>
-              </div>
-            </div>
+              </Inline>
+            </Inline>
           </div>
         </div>
 
@@ -145,10 +150,13 @@ export default function StudentNotificationsLoading() {
 
         {/* Load More Skeleton */}
         <div className="text-center py-8 animate-pulse">
-          <div className="h-10 w-32 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg mx-auto flex items-center justify-center space-x-2">
+          <Inline
+            gap={2}
+            className="h-10 w-32 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg mx-auto justify-center"
+          >
             <PiArrowsClockwise className="w-4 h-4 text-theme-tertiary/30" />
             <div className="h-4 w-20 bg-theme-tertiary/20 rounded"></div>
-          </div>
+          </Inline>
         </div>
       </div>
 
@@ -192,7 +200,7 @@ function NotificationCardSkeleton({ delay = 0 }: { delay?: number }) {
                 <div className="h-4 bg-theme-secondary/30 rounded w-full mb-3"></div>
 
                 {/* Metadata */}
-                <div className="flex items-center space-x-4 text-sm">
+                <Inline gap={4} className="text-sm">
                   <div className="h-3 bg-theme-tertiary/20 rounded w-16"></div>
                   <div
                     className={`h-5 w-16 rounded-full ${
@@ -204,16 +212,19 @@ function NotificationCardSkeleton({ delay = 0 }: { delay?: number }) {
                     }`}
                   ></div>
                   <div className="h-5 w-12 bg-theme-elevated rounded-full"></div>
-                </div>
+                </Inline>
               </div>
 
               {/* Actions */}
-              <div className="flex items-center space-x-2 ml-4">
+              <Inline gap={2} className="ml-4">
                 {hasAction && (
-                  <div className="h-8 w-16 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded flex items-center justify-center space-x-1">
+                  <Inline
+                    gap={1}
+                    className="h-8 w-16 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded justify-center"
+                  >
                     <div className="w-3 h-3 bg-theme-primary/30 rounded"></div>
                     <PiArrowSquareOut className="w-3 h-3 text-theme-tertiary/30" />
-                  </div>
+                  </Inline>
                 )}
 
                 {isUnread && (
@@ -221,7 +232,7 @@ function NotificationCardSkeleton({ delay = 0 }: { delay?: number }) {
                     <PiCheck className="w-4 h-4 text-theme-tertiary/30" />
                   </div>
                 )}
-              </div>
+              </Inline>
             </div>
           </div>
         </div>

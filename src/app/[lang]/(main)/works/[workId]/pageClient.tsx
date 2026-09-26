@@ -60,6 +60,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { useSession } from '@/app/libs/session';
 import { canEditCatalog, canVerifyCatalog } from '@/app/utils/permissions';
 import { workScoresRequest } from '@/app/requests/work-scores';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 // Interface para dados de áudio processados (mantida igual)
 interface ProcessedAudioData {
@@ -402,7 +403,7 @@ export default function WorkDetailsClient({
           <AnimatedItem direction="down" springType="gentle">
             <div className="bg-theme-elevated rounded-2xl p-4 md:p-6 mb-6">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
+                <Inline gap={4}>
                   <div className="w-12 h-12 hidden md:flex bg-gradient-to-br from-accent-blue to-brand-primary rounded-2xl  items-center justify-center">
                     <PiTarget className="w-6 h-6 text-theme-primary" />
                   </div>
@@ -421,24 +422,28 @@ export default function WorkDetailsClient({
                         : t('selection_mode_clique_partitura')}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
                 <div className="flex flex-col md:flex-row gap-4 md:gap-3 items-center ">
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     onClick={handleCancelSelection}
-                    className="btn-classical-secondary w-full justify-center flex items-center space-x-2"
+                    className="btn-classical-secondary w-full justify-center"
                   >
                     <PiArrowLeft className="w-4 h-4" />
                     <span>{t('selection_mode_voltar')}</span>
-                  </button>
+                  </Inline>
                   {tempSelectedWorkScore && (
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       onClick={handleConfirmSelection}
-                      className="btn-classical-primary w-full justify-center flex items-center space-x-2"
+                      className="btn-classical-primary w-full justify-center"
                     >
                       <PiCheckCircle className="w-4 h-4" />
                       <span>{t('selection_mode_confirmar_selecao')}</span>
-                    </button>
+                    </Inline>
                   )}
                 </div>
               </div>
@@ -491,37 +496,44 @@ export default function WorkDetailsClient({
             <div className="lg:col-span-1">
               <AnimatedCard hover="none" className="sticky top-6">
                 <div className="p-6">
-                  <div className="flex items-center space-x-3 mb-4">
+                  <Inline gap={3} className="mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                       <PiBookOpen className="w-4 h-4 text-theme-primary" />
                     </div>
                     <h3 className="text-lg font-semibold text-theme-primary">
                       {t('selection_mode_preview_partitura')}
                     </h3>
-                  </div>
+                  </Inline>
 
                   {tempSelectedWorkScore ? (
                     <div className="space-y-4">
                       <ScorePreview score={tempSelectedWorkScore as any} />
 
                       {/* BOTÕES DE AÇÃO MELHORADOS */}
-                      <div className="flex flex-col space-y-3 pt-4 border-t border-theme-secondary">
-                        <button
+                      <Stack
+                        gap={3}
+                        className="pt-4 border-t border-theme-secondary"
+                      >
+                        <Inline
+                          as="button"
+                          gap={2}
                           onClick={handleConfirmSelection}
-                          className="btn-classical-primary flex items-center justify-center space-x-2"
+                          className="btn-classical-primary justify-center"
                         >
                           <PiCheckCircle className="w-4 h-4" />
                           <span>{t('selection_mode_confirmar_selecao')}</span>
-                        </button>
+                        </Inline>
 
-                        <button
+                        <Inline
+                          as="button"
+                          gap={2}
                           onClick={handleCancelSelection}
-                          className="btn-classical-secondary flex items-center justify-center space-x-2"
+                          className="btn-classical-secondary justify-center"
                         >
                           <PiArrowLeft className="w-4 h-4" />
                           <span>{t('selection_mode_voltar')}</span>
-                        </button>
-                      </div>
+                        </Inline>
+                      </Stack>
                     </div>
                   ) : (
                     <div className="text-center py-8">
@@ -553,7 +565,11 @@ export default function WorkDetailsClient({
       <div className="section-wrap space-y-8 relative z-10">
         {/* Breadcrumb */}
         <AnimatedItem direction="down" springType="gentle">
-          <nav className="flex items-center space-x-2 text-sm text-theme-tertiary mb-6 pt-4">
+          <Inline
+            as="nav"
+            gap={2}
+            className="text-sm text-theme-tertiary mb-6 pt-4"
+          >
             <Link
               href="/works"
               className="hover:text-brand-primary hidden md:block transition-colors duration-300 font-medium"
@@ -596,7 +612,7 @@ export default function WorkDetailsClient({
               />
             </svg>
             <span className="text-theme-primary font-medium">{work.title}</span>
-          </nav>
+          </Inline>
         </AnimatedItem>
 
         <AnimatedContainer
@@ -647,7 +663,10 @@ export default function WorkDetailsClient({
                           </h2>
                         )}
 
-                        <div className="flex items-center space-x-2 text-xl text-theme-secondary mt-3">
+                        <Inline
+                          gap={2}
+                          className="text-xl text-theme-secondary mt-3"
+                        >
                           <span>{t('work_details_por')}</span>
                           <Link
                             href={`/composer/${work.composer.id}`}
@@ -655,7 +674,7 @@ export default function WorkDetailsClient({
                           >
                             {work.composer.fullName}
                           </Link>
-                        </div>
+                        </Inline>
                         {work.opOrCatalog && (
                           <p className="text-lg text-theme-tertiary mt-2 font-medium">
                             {work.opOrCatalog}
@@ -721,7 +740,7 @@ export default function WorkDetailsClient({
 
                     {/* Difficulty Level Badge */}
                     {work.difficultyLevel && (
-                      <div className="flex items-center space-x-3">
+                      <Inline gap={3}>
                         <div
                           className={`px-0 md:px-4 py-2 bg-gradient-to-r ${getDifficultyColor(
                             work.difficultyLevel
@@ -733,7 +752,7 @@ export default function WorkDetailsClient({
                             {getDifficultyLabel(work.difficultyLevel)}
                           </span>
                         </div>
-                      </div>
+                      </Inline>
                     )}
 
                     {/* Learning Action Buttons */}
@@ -853,10 +872,14 @@ export default function WorkDetailsClient({
                   {(work.parentWork ||
                     (work.childWorks && work.childWorks.length > 0)) && (
                     <div className="border-t border-theme-secondary pt-6">
-                      <h2 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                      <Inline
+                        as="h2"
+                        gap={2}
+                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                      >
                         <PiStack className="w-5 h-5 text-accent-purple" />
                         <span>{t('work_details_relacoes_colecao')}</span>
-                      </h2>
+                      </Inline>
 
                       <div className="space-y-4">
                         {/* Obra Pai (Se esta obra faz parte de uma coleção) */}
@@ -937,41 +960,45 @@ export default function WorkDetailsClient({
                     work.dedicateTo ||
                     work.workStyle) && (
                     <div className="border-t border-theme-secondary pt-6">
-                      <h2 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                      <Inline
+                        as="h2"
+                        gap={2}
+                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                      >
                         <PiInfo className="w-5 h-5 text-accent-blue" />
                         <span>{t('work_details_informacoes_adicionais')}</span>
-                      </h2>
+                      </Inline>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         {work.firstPublishDate && (
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <span className="font-medium text-theme-tertiary">
                               {t('work_details_primeira_publicacao')}
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {work.firstPublishDate}
                             </span>
-                          </div>
+                          </Inline>
                         )}
                         {work.dedicateTo && (
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <span className="font-medium text-theme-tertiary">
                               {t('work_details_dedicada_a')}
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {work.dedicateTo}
                             </span>
-                          </div>
+                          </Inline>
                         )}
 
                         {work.workStyle && (
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <span className="font-medium text-theme-tertiary">
                               {t('work_details_estilo')}
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {work.workStyle}
                             </span>
-                          </div>
+                          </Inline>
                         )}
                         {work.instrumentation && (
                           <div className="md:col-span-2 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
@@ -1003,10 +1030,14 @@ export default function WorkDetailsClient({
                     (work.categoryNames?.length > 0 ||
                       work.workGenresArr?.length > 0) && (
                       <div className="border-t border-theme-secondary pt-6">
-                        <h2 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                        <Inline
+                          as="h2"
+                          gap={2}
+                          className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                        >
                           <PiTag className="w-5 h-5 text-accent-green" />
                           <span>{t('work_details_categorias_generos')}</span>
-                        </h2>
+                        </Inline>
                         <div className="space-y-4">
                           {work.categoryNames?.length > 0 && (
                             <div>
@@ -1078,18 +1109,20 @@ export default function WorkDetailsClient({
                   {/* Player de Áudio/Vídeo */}
                   {work.videoUrl && (
                     <div className="classical-card-simple p-6">
-                      <div className="flex items-center space-x-3 mb-4">
+                      <Inline gap={3} className="mb-4">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center">
                           <PiHeadphones className="w-4 h-4 text-theme-primary" />
                         </div>
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {t('work_details_reproducao')}
                         </h3>
-                      </div>
+                      </Inline>
                       <div className="space-y-3">
-                        <button
+                        <Inline
+                          as="button"
+                          gap={2}
                           onClick={() => setIsPlaying(!isPlaying)}
-                          className="btn-classical-primary w-full flex items-center justify-center space-x-2 group"
+                          className="btn-classical-primary w-full justify-center group"
                         >
                           {isPlaying ? (
                             <PiPause className="w-4 h-4" />
@@ -1101,12 +1134,14 @@ export default function WorkDetailsClient({
                               ? t('work_details_pausar')
                               : t('work_details_reproduzir')}
                           </span>
-                        </button>
-                        <a
+                        </Inline>
+                        <Inline
+                          as="a"
+                          gap={2}
                           href={work.videoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="btn-classical-secondary w-full flex items-center justify-center space-x-2 group"
+                          className="btn-classical-secondary w-full justify-center group"
                         >
                           <PiArrowSquareOut className="w-4 h-4" />
                           <span>{t('work_details_abrir_player_externo')}</span>
@@ -1123,27 +1158,29 @@ export default function WorkDetailsClient({
                               d="M9 5l7 7-7 7"
                             />
                           </svg>
-                        </a>
+                        </Inline>
                       </div>
                     </div>
                   )}
 
                   {/* Links Externos */}
                   <div className="classical-card-simple p-6">
-                    <div className="flex items-center space-x-3 mb-4">
+                    <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                         <PiBookOpen className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
                         {t('work_details_recursos_externos')}
                       </h3>
-                    </div>
+                    </Inline>
                     <div className="space-y-3">
-                      <a
+                      <Inline
+                        as="a"
+                        gap={2}
                         href={work.imslpPermlink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-classical-primary w-full flex items-center space-x-2 group"
+                        className="btn-classical-primary w-full group"
                       >
                         <PiBookOpen className="w-4 h-4" />
                         <span>{t('work_details_ver_partitura_imslp')}</span>
@@ -1160,20 +1197,20 @@ export default function WorkDetailsClient({
                             d="M9 5l7 7-7 7"
                           />
                         </svg>
-                      </a>
+                      </Inline>
                     </div>
                   </div>
 
                   {/* ✅ Informações Técnicas - COM TRADUÇÕES */}
                   <div className="classical-card-simple p-6">
-                    <div className="flex items-center space-x-3 mb-4">
+                    <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                         <PiGear className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
                         {t('work_details_detalhes_tecnicos')}
                       </h3>
-                    </div>
+                    </Inline>
                     <div className="space-y-3 text-sm">
                       <div className="flex items-center justify-between">
                         <span className="font-medium text-theme-tertiary">

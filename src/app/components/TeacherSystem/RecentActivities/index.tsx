@@ -31,6 +31,7 @@ import {
   LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import { loadSchoolActivities } from '@/app/requests/portal/school-activities';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface Activity {
   id: string;
@@ -244,7 +245,7 @@ const RecentActivities = ({
     return (
       <AnimatedCard className={`classical-card p-6 ${className}`}>
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-orange rounded-lg flex items-center justify-center">
               <PiPulse className="w-4 h-4 text-theme-primary" />
             </div>
@@ -254,7 +255,7 @@ const RecentActivities = ({
               </h3>
               <p className="text-xs text-theme-tertiary">Erro ao carregar</p>
             </div>
-          </div>
+          </Inline>
           <button
             onClick={fetchRecentActivities}
             className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-accent-red transition-all flex items-center justify-center group"
@@ -279,7 +280,7 @@ const RecentActivities = ({
   return (
     <AnimatedCard className={`classical-card p-6 ${className}`}>
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-3">
+        <Inline gap={3}>
           <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center">
             <PiPulse className="w-4 h-4 text-theme-primary" />
           </div>
@@ -291,9 +292,9 @@ const RecentActivities = ({
               {activities.length > 0 ? 'Últimos 7 dias' : 'Nenhuma atividade'}
             </p>
           </div>
-        </div>
+        </Inline>
 
-        <div className="flex items-center space-x-2">
+        <Inline gap={2}>
           <button
             onClick={fetchRecentActivities}
             disabled={loading}
@@ -315,7 +316,7 @@ const RecentActivities = ({
               <PiCaretRight className="w-4 h-4" />
             </Link>
           )}
-        </div>
+        </Inline>
       </div>
 
       <div className="space-y-3">
@@ -352,7 +353,7 @@ const RecentActivities = ({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center space-x-2 mb-1">
+                        <Inline gap={2} className="mb-1">
                           <span
                             className={`py-1 rounded-full text-xs font-extrabold `}
                           >
@@ -361,7 +362,7 @@ const RecentActivities = ({
                           <span className="text-xs text-theme-tertiary">
                             {activity.timeAgo}
                           </span>
-                        </div>
+                        </Inline>
 
                         <h4 className="text-sm font-medium text-theme-primary line-clamp-1 group-hover:text-brand-primary transition-colors">
                           {activity.title}

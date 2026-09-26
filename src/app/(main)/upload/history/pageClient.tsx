@@ -35,6 +35,7 @@ import Select from '@/app/components/Common/Select';
 import { formatChangesForDisplay } from '@/app/utils/historyFormat';
 import { getUploadHistory } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface HistoryRecord {
   id: string;
@@ -528,9 +529,11 @@ const HistoryClient = ({
                     )}
                   </p>
                 </div>
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-theme-secondary hover:bg-theme-tertiary text-theme-primary rounded-lg transition-colors"
+                  className="px-4 py-2 bg-theme-secondary hover:bg-theme-tertiary text-theme-primary rounded-lg transition-colors"
                 >
                   <PiFunnel className="w-4 h-4" />
                   <span>{t('history_filters_button')}</span>
@@ -539,7 +542,7 @@ const HistoryClient = ({
                   ) : (
                     <PiCaretDown className="w-4 h-4" />
                   )}
-                </button>
+                </Inline>
               </div>
 
               {/* Filter Options */}
@@ -571,7 +574,7 @@ const HistoryClient = ({
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-3 pt-4">
+                  <Inline gap={3} className="pt-4">
                     <button
                       onClick={updateFilters}
                       className="btn-classical-primary"
@@ -584,7 +587,7 @@ const HistoryClient = ({
                     >
                       {t('history_clear_filters')}
                     </button>
-                  </div>
+                  </Inline>
                 </AnimatedItem>
               )}
             </div>
@@ -638,7 +641,7 @@ const HistoryClient = ({
                           )}`}
                         >
                           <div className="flex items-start justify-between mb-3">
-                            <div className="flex items-center space-x-2">
+                            <Inline gap={2}>
                               {getActionIcon(record.action, record.changes)}
                               <span className="text-sm font-medium text-theme-primary">
                                 {getActionLabel(record.action, record.changes)}{' '}
@@ -658,10 +661,13 @@ const HistoryClient = ({
                                   : record.action.charAt(0).toUpperCase() +
                                     record.action.slice(1)}
                               </span>
-                            </div>
+                            </Inline>
 
-                            <div className="flex items-center space-x-2">
-                              <div className="flex items-center space-x-2 text-xs text-theme-tertiary">
+                            <Inline gap={2}>
+                              <Inline
+                                gap={2}
+                                className="text-xs text-theme-tertiary"
+                              >
                                 <PiCalendarBlank className="w-3 h-3" />
                                 <span>
                                   {formatDistanceToNow(
@@ -672,7 +678,7 @@ const HistoryClient = ({
                                     }
                                   )}
                                 </span>
-                              </div>
+                              </Inline>
 
                               {record.changes && (
                                 <button
@@ -686,7 +692,7 @@ const HistoryClient = ({
                                   )}
                                 </button>
                               )}
-                            </div>
+                            </Inline>
                           </div>
 
                           <div className="space-y-2">
@@ -729,17 +735,17 @@ const HistoryClient = ({
                               <div className="mt-3 pt-3 border-t border-theme-secondary">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-theme-tertiary">
                                   {record.ipAddress && (
-                                    <div className="flex items-center space-x-2">
+                                    <Inline gap={2}>
                                       <PiMapPin className="w-3 h-3" />
                                       <span>
                                         {t('history_ip_label')}{' '}
                                         {record.ipAddress}
                                       </span>
-                                    </div>
+                                    </Inline>
                                   )}
 
                                   {record.userAgent && (
-                                    <div className="flex items-center space-x-2">
+                                    <Inline gap={2}>
                                       <PiMonitor className="w-3 h-3" />
                                       <span title={record.userAgent}>
                                         {record.userAgent.length > 30
@@ -747,7 +753,7 @@ const HistoryClient = ({
                                             '...'
                                           : record.userAgent}
                                       </span>
-                                    </div>
+                                    </Inline>
                                   )}
                                 </div>
                               </div>

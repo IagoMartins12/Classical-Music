@@ -17,6 +17,7 @@ import {
   PiThumbsUp,
   PiTrash,
 } from 'react-icons/pi';
+import { Inline } from '@/app/components/ui/Layout';
 
 export default function AnnotationsPageLoading() {
   return (
@@ -118,19 +119,25 @@ export default function AnnotationsPageLoading() {
                 </div>
 
                 {/* Filter Button Skeleton */}
-                <div className="h-12 w-24 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center space-x-2 animate-pulse">
+                <Inline
+                  gap={2}
+                  className="h-12 w-24 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg justify-center animate-pulse"
+                >
                   <PiFunnel className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="w-12 h-4 bg-theme-tertiary/30 rounded"></div>
-                </div>
+                </Inline>
 
                 {/* Create Button Skeleton */}
-                <div className="h-12 w-32 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-lg flex items-center justify-center space-x-2 animate-pulse">
+                <Inline
+                  gap={2}
+                  className="h-12 w-32 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-lg justify-center animate-pulse"
+                >
                   <div className="w-4 h-4 bg-theme-primary/30 rounded"></div>
                   <div className="w-20 h-4 bg-theme-primary/30 rounded"></div>
-                </div>
+                </Inline>
 
                 {/* View Mode Toggle Skeleton */}
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <span className="text-sm text-theme-secondary">Vista:</span>
                   <div className="bg-theme-secondary border border-theme-primary rounded-lg p-1 flex">
                     <div className="p-2 rounded bg-theme-elevated">
@@ -140,7 +147,7 @@ export default function AnnotationsPageLoading() {
                       <PiSquaresFour className="w-4 h-4 text-brand-primary/50" />
                     </div>
                   </div>
-                </div>
+                </Inline>
               </div>
             </div>
           </div>
@@ -150,7 +157,7 @@ export default function AnnotationsPageLoading() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Annotations List (2/3 da largura) */}
           <div className="lg:col-span-2">
-            <div className="flex items-center space-x-3 mb-6">
+            <Inline gap={3} className="mb-6">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                 <PiChatCenteredText className="w-5 h-5 text-theme-inverse/20" />
               </div>
@@ -158,7 +165,7 @@ export default function AnnotationsPageLoading() {
                 <div className="h-8 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
                 <div className="h-4 w-32 bg-theme-elevated rounded animate-pulse"></div>
               </div>
-            </div>
+            </Inline>
 
             {/* Annotations Cards */}
             <div className="space-y-4">
@@ -173,15 +180,16 @@ export default function AnnotationsPageLoading() {
             <div className="sticky top-6 space-y-6">
               {/* Stats Widget Skeleton */}
               <div className="classical-card-2 p-6 animate-pulse">
-                <div className="flex items-center space-x-2 mb-4">
+                <Inline gap={2} className="mb-4">
                   <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
                   <div className="h-4 w-32 bg-theme-elevated rounded"></div>
-                </div>
+                </Inline>
                 <div className="space-y-3">
                   {Array.from({ length: 3 }).map((_, index) => (
-                    <div
+                    <Inline
+                      gap={3}
                       key={index}
-                      className="flex items-center space-x-3 p-3 bg-theme-elevated/50 border border-theme-primary/20 rounded-xl"
+                      className="p-3 bg-theme-elevated/50 border border-theme-primary/20 rounded-xl"
                     >
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-lg"></div>
                       <div className="flex-1">
@@ -193,43 +201,44 @@ export default function AnnotationsPageLoading() {
                           <div className="bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 h-1.5 rounded-full w-3/4"></div>
                         </div>
                       </div>
-                    </div>
+                    </Inline>
                   ))}
                 </div>
               </div>
 
               {/* Top Annotations Widget Skeleton */}
               <div className="classical-card-2 p-6 animate-pulse">
-                <div className="flex items-center space-x-2 mb-4">
+                <Inline gap={2} className="mb-4">
                   <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
                   <div className="h-4 w-40 bg-theme-elevated rounded"></div>
-                </div>
+                </Inline>
                 <div className="space-y-3">
                   {Array.from({ length: 3 }).map((_, index) => (
-                    <div
+                    <Inline
+                      gap={3}
                       key={index}
-                      className="flex items-center space-x-3 p-3 bg-theme-elevated/50 border border-theme-primary/20 rounded-xl"
+                      className="p-3 bg-theme-elevated/50 border border-theme-primary/20 rounded-xl"
                     >
                       <div className="w-6 h-6 bg-accent-green/20 rounded-lg border"></div>
                       <div className="flex-1">
                         <div className="h-4 w-24 bg-theme-elevated rounded mb-1"></div>
                         <div className="h-3 w-32 bg-theme-elevated rounded mb-1"></div>
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <div className="h-3 w-8 bg-theme-elevated rounded"></div>
                           <div className="h-3 w-8 bg-theme-elevated rounded"></div>
-                        </div>
+                        </Inline>
                       </div>
-                    </div>
+                    </Inline>
                   ))}
                 </div>
               </div>
 
               {/* Tips Widget Skeleton */}
               <div className="classical-card-2 p-6 animate-pulse">
-                <div className="flex items-center space-x-2 mb-4">
+                <Inline gap={2} className="mb-4">
                   <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
                   <div className="h-4 w-24 bg-theme-elevated rounded"></div>
-                </div>
+                </Inline>
                 <div className="space-y-3">
                   {Array.from({ length: 4 }).map((_, index) => (
                     <div
@@ -260,24 +269,24 @@ function AnnotationCardSkeleton() {
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1 space-y-2">
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <div className="h-6 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-3/4"></div>
             <div className="w-5 h-5 bg-accent-green/20 rounded"></div>
-          </div>
-          <div className="flex items-center space-x-2">
+          </Inline>
+          <Inline gap={2}>
             <div className="h-4 bg-brand-primary/20 rounded w-1/3"></div>
             <div className="h-4 bg-theme-elevated rounded w-1/4"></div>
-          </div>
+          </Inline>
           <div className="h-3 bg-theme-elevated rounded w-1/4"></div>
         </div>
-        <div className="flex items-center space-x-2 ml-4">
+        <Inline gap={2} className="ml-4">
           <div className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center">
             <PiPencilLine className="w-4 h-4 text-theme-tertiary/30" />
           </div>
           <div className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center">
             <PiTrash className="w-4 h-4 text-theme-tertiary/30" />
           </div>
-        </div>
+        </Inline>
       </div>
 
       {/* Badges */}
@@ -300,10 +309,13 @@ function AnnotationCardSkeleton() {
           </div>
         ))}
 
-        <div className="px-3 py-1 rounded-full text-xs border bg-accent-blue/10 border-accent-blue/30 flex items-center space-x-1">
+        <Inline
+          gap={1}
+          className="px-3 py-1 rounded-full text-xs border bg-accent-blue/10 border-accent-blue/30"
+        >
           <PiGlobe className="w-3 h-3 text-accent-blue/30" />
           <div className="w-8 h-3 bg-accent-blue/30 rounded"></div>
-        </div>
+        </Inline>
       </div>
 
       {/* Content */}
@@ -328,28 +340,28 @@ function AnnotationCardSkeleton() {
       {/* Footer */}
       <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
         {/* Stats */}
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-1">
+        <Inline gap={4}>
+          <Inline gap={1}>
             <PiThumbsUp className="w-4 h-4 text-theme-tertiary/30" />
             <div className="w-8 h-4 bg-theme-elevated rounded"></div>
-          </div>
-          <div className="flex items-center space-x-1">
+          </Inline>
+          <Inline gap={1}>
             <PiEye className="w-4 h-4 text-theme-tertiary/30" />
             <div className="w-12 h-4 bg-theme-elevated rounded"></div>
-          </div>
-          <div className="flex items-center space-x-1">
+          </Inline>
+          <Inline gap={1}>
             <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
             <div className="w-16 h-4 bg-theme-elevated rounded"></div>
-          </div>
-        </div>
+          </Inline>
+        </Inline>
 
         {/* Actions */}
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-1">
+        <Inline gap={3}>
+          <Inline gap={1}>
             <div className="w-12 h-4 bg-brand-primary/20 rounded"></div>
             <div className="w-3 h-3 bg-brand-primary/20 rounded"></div>
-          </div>
-        </div>
+          </Inline>
+        </Inline>
       </div>
     </div>
   );

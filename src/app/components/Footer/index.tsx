@@ -31,6 +31,7 @@ import {
 } from '@/app/hooks/useNewsletterSubscription';
 import Button from '../Common/Button';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -159,14 +160,14 @@ const Footer: React.FC = () => {
     if (success) {
       return (
         <div className="space-y-3">
-          <div className="flex items-center space-x-2 text-accent-green">
+          <Inline gap={2} className="text-accent-green">
             <PiCheck className="w-4 h-4" />
             <span className="text-sm font-medium">
               {status === 'RESUBSCRIBED'
                 ? 'Bem-vindo de volta!'
                 : 'Inscrição realizada!'}
             </span>
-          </div>
+          </Inline>
 
           {status === 'PENDING' && (
             <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-3">
@@ -189,10 +190,10 @@ const Footer: React.FC = () => {
     if (error) {
       return (
         <div className="space-y-3">
-          <div className="flex items-center space-x-2 text-accent-red">
+          <Inline gap={2} className="text-accent-red">
             <PiWarningCircle className="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" />
             <p className="text-sm text-red-500 mt-1">{error}</p>
-          </div>
+          </Inline>
 
           {/* 🆕 OPÇÕES BASEADAS NO TIPO DE ERRO */}
           <div className="flex flex-wrap gap-2">
@@ -244,20 +245,20 @@ const Footer: React.FC = () => {
 
               {/* Contact Info */}
               <div className="space-y-3">
-                <div className="flex items-center space-x-3 text-sm text-theme-tertiary">
+                <Inline gap={3} className="text-sm text-theme-tertiary">
                   <PiEnvelopeSimple className="w-4 h-4 text-brand-primary" />
                   <span>opusatlas@gmail.com</span>
-                </div>
-                <div className="flex items-center space-x-3 text-sm text-theme-tertiary">
+                </Inline>
+                <Inline gap={3} className="text-sm text-theme-tertiary">
                   <PiPhone className="w-4 h-4 text-brand-primary" />
                   <span>{t('footer_jsx_span_children_0__text')}</span>
-                </div>
-                <div className="flex items-center space-x-3 text-sm text-theme-tertiary">
+                </Inline>
+                <Inline gap={3} className="text-sm text-theme-tertiary">
                   <PiMapPin className="w-4 h-4 text-brand-primary" />
                   <span>
                     {t('footer_jsx_span_children_0__são_paulo_brasil')}
                   </span>
-                </div>
+                </Inline>
               </div>
             </div>
 
@@ -364,9 +365,11 @@ const Footer: React.FC = () => {
 
                 {/* 🆕 FORMULÁRIO APRIMORADO */}
                 {(!success || showAdvanced) && (
-                  <form
+                  <Stack
+                    as="form"
+                    gap={3}
                     onSubmit={handleNewsletterSubmit}
-                    className="flex flex-col space-y-3 w-full lg:w-auto min-w-0 lg:min-w-[400px]"
+                    className="w-full lg:w-auto min-w-0 lg:min-w-[400px]"
                   >
                     <div className="flex flex-col sm:flex-row gap-3">
                       <input
@@ -411,7 +414,7 @@ const Footer: React.FC = () => {
                         )}
                       </Button>
                     </div>
-                  </form>
+                  </Stack>
                 )}
               </div>
 
@@ -445,13 +448,13 @@ const Footer: React.FC = () => {
                 </p>
               </div>
 
-              <div className="flex items-center space-x-6 text-sm text-theme-tertiary">
+              <Inline gap={6} className="text-sm text-theme-tertiary">
                 <span className="flex items-center">
                   {t('footer_jsx_span_children_0__feito')}
                   <PiHeart className="w-4 h-4 mx-1 text-accent-red" />{' '}
                   {t('footer_jsx_span_children_3__music')}
                 </span>
-              </div>
+              </Inline>
             </div>
           </div>
         </div>

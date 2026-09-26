@@ -26,6 +26,7 @@ import ScorePreview from '../../WorkDetailsClient/ScorePreview';
 import ScoreCard from '../../WorkDetailsClient/ScoreCard';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import Button from '../../Common/Button';
+import { Inline, Stack } from '@/app/components/ui/Layout';
 
 // Interface para dados unificados
 interface MixedScoreData {
@@ -499,7 +500,7 @@ const ScoreSelectionModal = ({
       <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
         <div className="p-2 md:p-6">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               <button
                 onClick={onClose}
                 className="w-10 h-10 bg-theme-elevated border border-theme-primary hover:border-brand-primary rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-interactive-hover"
@@ -517,18 +518,18 @@ const ScoreSelectionModal = ({
                     ? t('edit_score_modal_title')
                     : t('select_score_modal_title')}
                 </h2>
-                <div className="flex items-center space-x-2">
+                <Inline gap={2}>
                   <p className="text-theme-secondary classical-subtitle">
                     {workTitle} • {composerName}
                   </p>
-                </div>
+                </Inline>
               </div>
-            </div>
+            </Inline>
 
             {/* Status e botão de confirmação */}
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="bg-theme-elevated/50 border border-brand-primary/30 rounded-xl px-4 py-2">
-                <div className="flex items-center space-x-2 text-sm">
+                <Inline gap={2} className="text-sm">
                   <span className="text-theme-secondary text-center font-medium">
                     {selectedScore
                       ? isEditing
@@ -536,7 +537,7 @@ const ScoreSelectionModal = ({
                         : t('score_selected')
                       : t('no_score_selected_modal')}
                   </span>
-                </div>
+                </Inline>
               </div>
 
               <Button
@@ -563,7 +564,7 @@ const ScoreSelectionModal = ({
                   </>
                 )}
               </Button>
-            </div>
+            </Inline>
           </div>
         </div>
 
@@ -601,7 +602,7 @@ const ScoreSelectionModal = ({
                     <span className="font-semibold">{tab.label}</span>
 
                     {/* Contadores corretos */}
-                    <div className="flex items-center space-x-1">
+                    <Inline gap={1}>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
                           isActive
@@ -614,18 +615,18 @@ const ScoreSelectionModal = ({
 
                       {/* Indicador de progresso */}
                       {tabStat.hasMore ? (
-                        <div className="flex items-center space-x-1">
+                        <Inline gap={1}>
                           <div className="w-1 h-1 bg-accent-blue rounded-full animate-pulse"></div>
                           {isActive && (
                             <span className="text-xs text-accent-blue font-medium">
                               +{tabStat.remaining}
                             </span>
                           )}
-                        </div>
+                        </Inline>
                       ) : (
                         <div className="w-1 h-1 bg-accent-green rounded-full"></div>
                       )}
-                    </div>
+                    </Inline>
                   </button>
                 </AnimatedItem>
               );
@@ -676,7 +677,10 @@ const ScoreSelectionModal = ({
 
                 {/* Load More Buttons */}
                 {activeTabStat.hasMore && (
-                  <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
+                  <Stack
+                    gap={4}
+                    className="items-center py-8 border-t border-theme-secondary"
+                  >
                     <div className="text-center">
                       <h3 className="text-lg font-semibold text-theme-primary mb-2">
                         {t('more_scores_available')}
@@ -691,10 +695,12 @@ const ScoreSelectionModal = ({
                     </div>
 
                     <div className="flex flex-wrap gap-4 justify-center">
-                      <button
+                      <Inline
+                        as="button"
+                        gap={2}
                         onClick={() => handleLoadMoreForTab(activeTab)}
                         disabled={loadingWorkScores}
-                        className="btn-classical-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="btn-classical-primary disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {loadingWorkScores ? (
                           <>
@@ -710,9 +716,9 @@ const ScoreSelectionModal = ({
                             </span>
                           </>
                         )}
-                      </button>
+                      </Inline>
                     </div>
-                  </div>
+                  </Stack>
                 )}
 
                 {/* Preview Panel Mobile - Abaixo dos cards */}
@@ -723,10 +729,14 @@ const ScoreSelectionModal = ({
                   >
                     <div className="classical-card bg-theme-elevated p-6">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+                        <Inline
+                          as="h3"
+                          gap={2}
+                          className="text-lg font-semibold text-theme-primary"
+                        >
                           <PiBookOpen className="w-5 h-5 text-accent-blue" />
                           <span>{t('score_preview')}</span>
-                        </h3>
+                        </Inline>
                         <button
                           onClick={() => setSelectedScore(null)}
                           className="w-8 h-8 bg-theme-primary border border-theme-secondary hover:border-accent-red rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-accent-red/10"
@@ -748,10 +758,14 @@ const ScoreSelectionModal = ({
           <div className="hidden lg:block w-96 max-w-full border-l border-theme-secondary bg-theme-elevated overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+                <Inline
+                  as="h3"
+                  gap={2}
+                  className="text-lg font-semibold text-theme-primary"
+                >
                   <PiBookOpen className="w-5 h-5 text-accent-blue" />
                   <span>{t('score_preview')}</span>
-                </h3>
+                </Inline>
                 <button
                   onClick={() => setSelectedScore(null)}
                   className="w-8 h-8 bg-theme-primary border border-theme-secondary hover:border-accent-red rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-accent-red/10"
@@ -779,7 +793,7 @@ const ScoreSelectionModal = ({
             )}
           </div>
 
-          <div className="flex items-center space-x-3">
+          <Inline gap={3}>
             <Button onClick={onClose} className="btn-classical-secondary">
               {isEditing ? t('keep_current') : t('cancel_button')}
             </Button>
@@ -799,7 +813,7 @@ const ScoreSelectionModal = ({
                     ? t('remove_score')
                     : t('continue_without_score')}
             </Button>
-          </div>
+          </Inline>
         </div>
       </div>
     </Modal>
@@ -812,12 +826,12 @@ function LoadingState() {
 
   return (
     <div className="flex items-center justify-center py-12">
-      <div className="flex items-center space-x-3">
+      <Inline gap={3}>
         <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
         <span className="text-theme-primary font-medium">
           {t('loading_scores')}
         </span>
-      </div>
+      </Inline>
     </div>
   );
 }
@@ -837,13 +851,15 @@ function ErrorState({
         <PiWarningCircle className="w-12 h-12 text-accent-red mx-auto mb-4" />
         <p className="text-accent-red font-medium mb-4">{error}</p>
         {onRefetch && (
-          <button
+          <Inline
+            as="button"
+            gap={2}
             onClick={onRefetch}
-            className="btn-classical-secondary flex items-center space-x-2"
+            className="btn-classical-secondary"
           >
             <PiArrowsClockwise className="w-4 h-4" />
             <span>{t('try_again')}</span>
-          </button>
+          </Inline>
         )}
       </div>
     </div>

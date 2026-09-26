@@ -55,6 +55,7 @@ import {
   loadComposerBiographies,
   translateBiographyText,
 } from '@/app/requests/composer-biography';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface DuplicateCheckState {
   loading: boolean;
@@ -912,7 +913,7 @@ const CreateComposerModal = ({
         <div>
           {/* Header */}
           <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                 <PiUser className="w-5 h-5 text-theme-primary" />
               </div>
@@ -928,7 +929,7 @@ const CreateComposerModal = ({
                     : t('modal_composer_subtitle_create')}
                 </p>
               </div>
-            </div>
+            </Inline>
           </div>
 
           {/* Content */}
@@ -937,18 +938,21 @@ const CreateComposerModal = ({
               {/* URL Scraping */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-2">
+                  <Inline gap={2}>
                     <PiDatabase className="w-4 h-4 text-theme-tertiary" />
                     <span className="text-sm font-medium text-theme-primary">
                       {t('modal_composer_scraping_title')}
                     </span>
                     {isEditingExternalSource && (
-                      <div className="flex items-center space-x-1 text-xs text-theme-primary font-bold">
+                      <Inline
+                        gap={1}
+                        className="text-xs text-theme-primary font-bold"
+                      >
                         <PiLock className="w-3 h-3" />
                         <span>{t('modal_composer_scraping_detected')}</span>
-                      </div>
+                      </Inline>
                     )}
-                  </div>
+                  </Inline>
                 </div>
 
                 <div className="space-y-4">
@@ -988,23 +992,23 @@ const CreateComposerModal = ({
 
                       {duplicateCheck.loading && (
                         <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <PiSpinnerGap className="w-4 h-4 animate-spin text-theme-primary font-bold" />
                             <span className="text-sm text-blue-800">
                               {t('modal_composer_scraping_checking_duplicates')}
                             </span>
-                          </div>
+                          </Inline>
                         </div>
                       )}
 
                       {duplicateCheck.found && (
                         <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                          <div className="flex items-center space-x-2 mb-2">
+                          <Inline gap={2} className="mb-2">
                             <PiWarningCircle className="w-4 h-4 text-red-600" />
                             <span className="text-sm font-medium text-red-800">
                               {t('modal_composer_scraping_duplicate_found')}
                             </span>
-                          </div>
+                          </Inline>
                           <div className="text-sm text-red-700">
                             <p className="mb-1">
                               <strong>
@@ -1097,12 +1101,12 @@ const CreateComposerModal = ({
 
                       {scrapingResult && (
                         <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                          <div className="flex items-center space-x-2 mb-2">
+                          <Inline gap={2} className="mb-2">
                             <PiCheck className="w-4 h-4 text-green-600" />
                             <span className="text-sm font-medium text-green-800">
                               {t('modal_composer_scraping_success')}
                             </span>
-                          </div>
+                          </Inline>
                           <div className="text-xs text-green-700">
                             {t('modal_composer_scraping_quality', {
                               source: scrapingResult.source,
@@ -1116,7 +1120,7 @@ const CreateComposerModal = ({
 
                       {isEditingExternalSource && (
                         <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                          <div className="flex items-center space-x-2">
+                          <Inline gap={2}>
                             <PiInfo className="w-4 h-4 text-blue-600" />
                             <span className="text-sm text-blue-800">
                               {t('modal_composer_scraping_external_edit', {
@@ -1126,7 +1130,7 @@ const CreateComposerModal = ({
                                     : 'Wikipedia',
                               })}
                             </span>
-                          </div>
+                          </Inline>
                         </div>
                       )}
                     </div>
@@ -1136,10 +1140,14 @@ const CreateComposerModal = ({
 
               {/* Basic Information */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                <Inline
+                  as="h3"
+                  gap={2}
+                  className="text-lg font-semibold text-theme-primary mb-4"
+                >
                   <PiInfo className="w-5 h-5" />
                   <span>{t('modal_composer_basic_title')}</span>
-                </h3>
+                </Inline>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
@@ -1190,10 +1198,14 @@ const CreateComposerModal = ({
 
               {/* Dates */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                <Inline
+                  as="h3"
+                  gap={2}
+                  className="text-lg font-semibold text-theme-primary mb-4"
+                >
                   <PiCalendarBlank className="w-5 h-5" />
                   <span>{t('modal_composer_dates_title')}</span>
-                </h3>
+                </Inline>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -1238,10 +1250,14 @@ const CreateComposerModal = ({
 
               {/* Image */}
               <AnimatedCard className="classical-card-simple p-6" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-6 flex items-center space-x-2">
+                <Inline
+                  as="h3"
+                  gap={2}
+                  className="text-lg font-semibold text-theme-primary mb-6"
+                >
                   <PiImage className="w-5 h-5" />
                   <span>{t('modal_composer_image_title')}</span>
-                </h3>
+                </Inline>
 
                 <div className="flex justify-center">
                   <ComposerImageUpload
@@ -1264,10 +1280,14 @@ const CreateComposerModal = ({
 
               {/* Classification */}
               <AnimatedCard className="classical-card-simple p-4 " hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                <Inline
+                  as="h3"
+                  gap={2}
+                  className="text-lg font-semibold text-theme-primary mb-4"
+                >
                   <PiTag className="w-5 h-5" />
                   <span>{t('modal_composer_classification_title')}</span>
-                </h3>
+                </Inline>
 
                 <div className=" space-y-6 gap-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1351,10 +1371,7 @@ const CreateComposerModal = ({
                     </label>
                     <div className="flex flex-wrap gap-6">
                       {filteredSecondaryRoles.map((role) => (
-                        <div
-                          key={role.id}
-                          className="flex items-center space-x-2"
-                        >
+                        <Inline gap={2} key={role.id}>
                           <Checkbox
                             type="checkbox"
                             id={`role-${role.id}`}
@@ -1373,7 +1390,7 @@ const CreateComposerModal = ({
                           >
                             {translateRole(role.name, language || 'pt')}
                           </label>
-                        </div>
+                        </Inline>
                       ))}
                     </div>
                   </div>
@@ -1404,10 +1421,14 @@ const CreateComposerModal = ({
 
               {/* External Links */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                <Inline
+                  as="h3"
+                  gap={2}
+                  className="text-lg font-semibold text-theme-primary mb-4"
+                >
                   <PiGlobe className="w-5 h-5" />
                   <span>{t('modal_composer_external_title')}</span>
-                </h3>
+                </Inline>
 
                 <div className="grid grid-cols-1 gap-4">
                   {/* Wikipedia Link */}
@@ -1428,14 +1449,17 @@ const CreateComposerModal = ({
                       }
                     />
                     {isFieldLocked('wikipediaLink') && (
-                      <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
+                      <Inline
+                        gap={1}
+                        className="mt-1 text-xs text-theme-primary font-bold"
+                      >
                         <PiLock className="w-3 h-3" />
                         <span>
                           {t('modal_composer_external_field_locked', {
                             source: 'Wikipedia',
                           })}
                         </span>
-                      </div>
+                      </Inline>
                     )}
                   </div>
 
@@ -1457,14 +1481,17 @@ const CreateComposerModal = ({
                       }
                     />
                     {isFieldLocked('permLinkImslp') && (
-                      <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
+                      <Inline
+                        gap={1}
+                        className="mt-1 text-xs text-theme-primary font-bold"
+                      >
                         <PiLock className="w-3 h-3" />
                         <span>
                           {t('modal_composer_external_field_locked', {
                             source: 'IMSLP',
                           })}
                         </span>
-                      </div>
+                      </Inline>
                     )}
                   </div>
 
@@ -1511,10 +1538,14 @@ const CreateComposerModal = ({
 
               {/* 🆕 NOVO CARD: Biography Management */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                <Inline
+                  as="h3"
+                  gap={2}
+                  className="text-lg font-semibold text-theme-primary mb-4"
+                >
                   <PiBookOpen className="w-5 h-5" />
                   <span>{t('modal_composer_bio_title')}</span>
-                </h3>
+                </Inline>
 
                 {/* Tabs PT/EN */}
                 <div className="flex border-b border-theme-secondary mb-4">
@@ -1564,11 +1595,13 @@ const CreateComposerModal = ({
 
                 {/* Action Buttons */}
                 <div className="flex flex-wrap gap-3 mb-4">
-                  <button
+                  <Inline
+                    as="button"
+                    gap={2}
                     type="button"
                     onClick={() => handleGenerateBiography(biographyTab)}
                     disabled={isGeneratingBio}
-                    className="btn-classical-primary flex items-center space-x-2"
+                    className="btn-classical-primary"
                   >
                     {isGeneratingBio ? (
                       <PiSpinnerGap className="w-4 h-4 animate-spin" />
@@ -1576,14 +1609,16 @@ const CreateComposerModal = ({
                       <PiSparkle className="w-4 h-4" />
                     )}
                     <span>Gerar com IA</span>
-                  </button>
+                  </Inline>
 
                   {biographyTab === 'pt' ? (
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       type="button"
                       onClick={() => handleTranslateBiography('pt', 'en')}
                       disabled={isTranslatingBio || !biographies.pt}
-                      className="btn-classical-secondary flex items-center space-x-2"
+                      className="btn-classical-secondary"
                     >
                       {isTranslatingBio ? (
                         <PiSpinnerGap className="w-4 h-4 animate-spin" />
@@ -1591,13 +1626,15 @@ const CreateComposerModal = ({
                         <PiTranslate className="w-4 h-4" />
                       )}
                       <span>Traduzir para Inglês</span>
-                    </button>
+                    </Inline>
                   ) : (
-                    <button
+                    <Inline
+                      as="button"
+                      gap={2}
                       type="button"
                       onClick={() => handleTranslateBiography('en', 'pt')}
                       disabled={isTranslatingBio || !biographies.en}
-                      className="btn-classical-secondary flex items-center space-x-2"
+                      className="btn-classical-secondary"
                     >
                       {isTranslatingBio ? (
                         <PiSpinnerGap className="w-4 h-4 animate-spin" />
@@ -1605,7 +1642,7 @@ const CreateComposerModal = ({
                         <PiTranslate className="w-4 h-4" />
                       )}
                       <span>Traduzir para Português</span>
-                    </button>
+                    </Inline>
                   )}
 
                   <button
@@ -1660,7 +1697,7 @@ const CreateComposerModal = ({
                 <div className="grid grid-cols-2 gap-4 mt-4">
                   <div className="p-3 bg-theme-elevated rounded-lg border border-theme-secondary">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <span className="text-xl">🇧🇷</span>
                         <div>
                           <p className="text-xs text-theme-tertiary">
@@ -1670,7 +1707,7 @@ const CreateComposerModal = ({
                             {biographies.pt ? 'Preenchida' : 'Vazia'}
                           </p>
                         </div>
-                      </div>
+                      </Inline>
                       {biographies.pt && (
                         <PiCheck className="w-5 h-5 text-accent-green" />
                       )}
@@ -1679,7 +1716,7 @@ const CreateComposerModal = ({
 
                   <div className="p-3 bg-theme-elevated rounded-lg border border-theme-secondary">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
+                      <Inline gap={2}>
                         <span className="text-xl">🇺🇸</span>
                         <div>
                           <p className="text-xs text-theme-tertiary">English</p>
@@ -1687,7 +1724,7 @@ const CreateComposerModal = ({
                             {biographies.en ? 'Filled' : 'Empty'}
                           </p>
                         </div>
-                      </div>
+                      </Inline>
                       {biographies.en && (
                         <PiCheck className="w-5 h-5 text-accent-green" />
                       )}
@@ -1697,7 +1734,10 @@ const CreateComposerModal = ({
               </AnimatedCard>
 
               {/* Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary">
+              <Inline
+                gap={3}
+                className="justify-end pt-6 border-t border-theme-secondary"
+              >
                 <Button
                   type="button"
                   variant="secondary"
@@ -1725,7 +1765,7 @@ const CreateComposerModal = ({
                       ? t('form_update') + ' Compositor'
                       : t('form_create') + ' Compositor'}
                 </Button>
-              </div>
+              </Inline>
             </form>
           </div>
         </div>

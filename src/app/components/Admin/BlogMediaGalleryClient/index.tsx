@@ -36,6 +36,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import Image from '@/app/components/SmartImage';
+import { Inline } from '@/app/components/ui/Layout';
 
 const CATEGORY_TABS = [
   {
@@ -348,7 +349,7 @@ export default function BlogMediaGalleryClient() {
                   </h3>
 
                   {filteredFiles.length > 0 && (
-                    <div className="flex items-center space-x-2">
+                    <Inline gap={2}>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -384,7 +385,7 @@ export default function BlogMediaGalleryClient() {
                           Remover ({selectedFiles.length})
                         </Button>
                       )}
-                    </div>
+                    </Inline>
                   )}
                 </div>
 
@@ -451,28 +452,35 @@ export default function BlogMediaGalleryClient() {
                               <span className="text-xs text-theme-tertiary">
                                 {file.formattedSize}
                               </span>
-                              <div className="flex items-center space-x-1">
+                              <Inline gap={1}>
                                 {file.isTemporary && (
                                   <span className="text-xs px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800">
                                     Temp
                                   </span>
                                 )}
                                 {file.isUsed ? (
-                                  <span className="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-800 flex items-center space-x-1">
+                                  <Inline
+                                    as="span"
+                                    gap={1}
+                                    className="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-800"
+                                  >
                                     <PiCheck className="w-3 h-3" />
                                     <span>{file.usageCount}</span>
-                                  </span>
+                                  </Inline>
                                 ) : (
                                   <span className="text-xs px-1.5 py-0.5 rounded bg-red-100 text-red-800">
                                     Não usado
                                   </span>
                                 )}
-                              </div>
+                              </Inline>
                             </div>
                           </div>
 
                           {/* Actions Overlay */}
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-2">
+                          <Inline
+                            gap={2}
+                            className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity justify-center"
+                          >
                             <Button
                               variant="outline"
                               size="sm"
@@ -497,7 +505,7 @@ export default function BlogMediaGalleryClient() {
                                 Uso
                               </Button>
                             )}
-                          </div>
+                          </Inline>
                         </div>
                       );
                     })}
@@ -597,14 +605,14 @@ export default function BlogMediaGalleryClient() {
                         <p className="font-medium text-theme-primary mb-1">
                           {usage.articleTitle}
                         </p>
-                        <div className="flex items-center space-x-2">
+                        <Inline gap={2}>
                           <span className="text-xs px-2 py-1 rounded bg-brand-primary/10 text-brand-primary">
                             {getUsageTypeLabel(usage.usageType)}
                           </span>
                           <span className="text-xs text-theme-tertiary">
                             ID: {usage.articleId.slice(0, 8)}...
                           </span>
-                        </div>
+                        </Inline>
                       </div>
                       <a
                         href={`/blog/${usage.slug}`}

@@ -39,6 +39,7 @@ import Image from '@/app/components/SmartImage';
 import Link from '@/app/components/LocalizedLink';
 
 import { currentSearchParams } from '@/app/utils/currentSearchParams';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface PublicTeachersPageClientProps {
   initialData: PublicTeachersResponse | null;
@@ -169,13 +170,15 @@ export default function PublicTeachersPageClient({
             <p className="text-theme-secondary classical-subtitle mb-6">
               {errorMessage}
             </p>
-            <button
+            <Inline
+              as="button"
+              gap={2}
               onClick={() => window.location.reload()}
-              className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+              className="btn-classical-primary w-full justify-center"
             >
               <PiArrowsClockwise className="w-4 h-4" />
               <span>Tentar Novamente</span>
-            </button>
+            </Inline>
           </div>
         </div>
       </PageContainer>
@@ -306,7 +309,7 @@ export default function PublicTeachersPageClient({
               </div>
 
               {/* Filter Toggle */}
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <Select
                   value={currentFilters.sortBy || 'rating'}
                   onChange={(e) => updateFilters({ sortBy: e.target.value })}
@@ -344,7 +347,7 @@ export default function PublicTeachersPageClient({
                     <PiX className="w-4 h-4" />
                   </button>
                 )}
-              </div>
+              </Inline>
             </div>
 
             {/* Filters Panel */}
@@ -436,8 +439,8 @@ export default function PublicTeachersPageClient({
                   />
                 </div>
 
-                <div className="mt-4 flex items-center space-x-4">
-                  <label className="flex items-center space-x-2 cursor-pointer">
+                <Inline gap={4} className="mt-4">
+                  <Inline as="label" gap={2} className="cursor-pointer">
                     <input
                       type="checkbox"
                       checked={currentFilters.verified || false}
@@ -450,8 +453,8 @@ export default function PublicTeachersPageClient({
                     <span className="text-theme-secondary">
                       Apenas perfis verificados
                     </span>
-                  </label>
-                </div>
+                  </Inline>
+                </Inline>
               </AnimatedItem>
             )}
           </AnimatedCard>
@@ -528,7 +531,7 @@ export default function PublicTeachersPageClient({
         {/* Pagination */}
         {pagination.total > pagination.limit && (
           <AnimatedItem direction="up" springType="gentle">
-            <div className="flex justify-center items-center space-x-2">
+            <Inline gap={2} className="justify-center">
               {/* Previous */}
               <button
                 onClick={() => handlePageChange((currentFilters.page || 1) - 1)}
@@ -575,7 +578,7 @@ export default function PublicTeachersPageClient({
               >
                 Próximo
               </button>
-            </div>
+            </Inline>
           </AnimatedItem>
         )}
       </AnimatedContainer>
@@ -630,7 +633,7 @@ function TeacherCard({
             )}
 
             <div className="flex-1">
-              <div className="flex items-center space-x-2">
+              <Inline gap={2}>
                 <h3 className="text-lg font-bold text-theme-primary">
                   {teacher.name}
                 </h3>
@@ -639,31 +642,31 @@ function TeacherCard({
                     <PiCheckCircle className="w-3 h-3 text-theme-primary" />
                   </div>
                 )}
-              </div>
+              </Inline>
 
               {/* Rating */}
               {teacher.averageRating && teacher.totalReviews > 0 && (
-                <div className="flex items-center space-x-2 mt-1">
-                  <div className="flex items-center space-x-1">
+                <Inline gap={2} className="mt-1">
+                  <Inline gap={1}>
                     <PiStar className="w-4 h-4 text-accent-yellow" />
                     <span className="text-sm font-medium text-theme-primary">
                       {teacher.averageRating.toFixed(1)}
                     </span>
-                  </div>
+                  </Inline>
                   <span className="text-xs text-theme-tertiary">
                     ({teacher.totalReviews} avaliações)
                   </span>
-                </div>
+                </Inline>
               )}
 
               {/* Location */}
               {teacher.location && (
-                <div className="flex items-center space-x-1 mt-1">
+                <Inline gap={1} className="mt-1">
                   <PiMapPin className="w-3 h-3 text-theme-tertiary" />
                   <span className="text-xs text-theme-tertiary">
                     {teacher.location}
                   </span>
-                </div>
+                </Inline>
               )}
             </div>
           </div>
@@ -677,14 +680,14 @@ function TeacherCard({
 
           {/* Experience */}
           <div className="flex items-center justify-between text-xs text-theme-tertiary mb-4">
-            <div className="flex items-center space-x-1">
+            <Inline gap={1}>
               <PiClock className="w-3 h-3" />
               <span>{teacher.yearsExperience} anos de experiência</span>
-            </div>
-            <div className="flex items-center space-x-1">
+            </Inline>
+            <Inline gap={1}>
               <PiUsers className="w-3 h-3" />
               <span>{teacher.totalStudents} alunos</span>
-            </div>
+            </Inline>
           </div>
 
           {/* Specialties */}
@@ -720,27 +723,31 @@ function TeacherCard({
             </Link>
 
             {/* Contact Options */}
-            <div className="flex items-center space-x-2">
+            <Inline gap={2}>
               {teacher.phone && (
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() => onWhatsAppContact(teacher)}
-                  className="btn-classical-secondary flex-1 flex items-center justify-center space-x-2 text-accent-green border-accent-green/30 hover:bg-accent-green/10"
+                  className="btn-classical-secondary flex-1 justify-center text-accent-green border-accent-green/30 hover:bg-accent-green/10"
                 >
                   <PiChatCircle className="w-4 h-4" />
                   <span>WhatsApp</span>
-                </button>
+                </Inline>
               )}
 
               {teacher.email && (
-                <button
+                <Inline
+                  as="button"
+                  gap={2}
                   onClick={() => onEmailContact(teacher)}
-                  className="btn-classical-secondary flex-1 flex items-center justify-center space-x-2"
+                  className="btn-classical-secondary flex-1 justify-center"
                 >
                   <PiEnvelopeSimple className="w-4 h-4" />
                   <span>Email</span>
-                </button>
+                </Inline>
               )}
-            </div>
+            </Inline>
           </div>
         </div>
       </AnimatedCard>

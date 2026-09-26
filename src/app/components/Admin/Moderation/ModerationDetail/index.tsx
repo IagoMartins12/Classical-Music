@@ -28,6 +28,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import { useAdminModeration } from '@/app/hooks/admin/useAdminModeration';
 import { useToast } from '@/app/hooks/useToast';
+import { Inline } from '@/app/components/ui/Layout';
 
 interface ModerationDetailProps {
   itemId: string;
@@ -195,7 +196,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
         {/* Header */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-4">
+            <Inline gap={4}>
               <Button
                 variant="ghost"
                 leftIcon={<PiArrowLeft />}
@@ -204,7 +205,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 Voltar
               </Button>
               <div className="h-6 w-px bg-theme-secondary" />
-              <div className="flex items-center space-x-3">
+              <Inline gap={3}>
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                   <TypeIcon className="w-6 h-6 text-theme-primary" />
                 </div>
@@ -212,7 +213,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                   <h1 className="text-2xl font-bold text-theme-primary">
                     {item.title}
                   </h1>
-                  <div className="flex items-center space-x-3 text-sm text-theme-tertiary">
+                  <Inline gap={3} className="text-sm text-theme-tertiary">
                     <span className="capitalize">{item.type}</span>
                     <span>•</span>
                     <span
@@ -231,12 +232,12 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                     </span>
                     <span>•</span>
                     <span>{item.reportCount} reports</span>
-                  </div>
+                  </Inline>
                 </div>
-              </div>
-            </div>
+              </Inline>
+            </Inline>
 
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               <Button
                 variant="secondary"
                 leftIcon={<PiShareNetwork />}
@@ -251,7 +252,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
               >
                 Exportar
               </Button>
-            </div>
+            </Inline>
           </div>
         </AnimatedItem>
 
@@ -291,13 +292,14 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                   </h4>
                   <div className="space-y-2">
                     {item.issues.map((issue: string, index: number) => (
-                      <div
+                      <Inline
+                        gap={2}
                         key={index}
-                        className="flex items-center space-x-2 p-3 bg-accent-amber/10 border border-accent-amber rounded-lg"
+                        className="p-3 bg-accent-amber/10 border border-accent-amber rounded-lg"
                       >
                         <PiWarning className="w-4 h-4 text-accent-amber" />
                         <span className="text-theme-primary">{issue}</span>
-                      </div>
+                      </Inline>
                     ))}
                   </div>
                 </div>
@@ -386,7 +388,10 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                   </select>
                 </div>
 
-                <div className="flex items-center space-x-4 pt-4 border-t border-theme-secondary">
+                <Inline
+                  gap={4}
+                  className="pt-4 border-t border-theme-secondary"
+                >
                   <Button
                     variant="primary"
                     leftIcon={<PiCheck />}
@@ -406,7 +411,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                   >
                     Rejeitar Item
                   </Button>
-                </div>
+                </Inline>
               </div>
             </AnimatedCard>
           </div>
@@ -415,13 +420,17 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
           <div className="space-y-6">
             {/* Uploader Info */}
             <AnimatedCard className="classical-card p-6">
-              <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-lg font-bold text-theme-primary mb-4"
+              >
                 <PiUser className="w-5 h-5 text-accent-blue" />
                 <span>Informações do Uploader</span>
-              </h3>
+              </Inline>
 
               <div className="space-y-4">
-                <div className="flex items-center space-x-3">
+                <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
                     <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
@@ -433,7 +442,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                       {item.uploader.email}
                     </p>
                   </div>
-                </div>
+                </Inline>
 
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="text-center p-2 bg-theme-secondary rounded-lg">
@@ -466,10 +475,14 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
 
             {/* Timeline */}
             <AnimatedCard className="classical-card p-6">
-              <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-lg font-bold text-theme-primary mb-4"
+              >
                 <PiCalendarBlank className="w-5 h-5 text-accent-green" />
                 <span>Timeline</span>
-              </h3>
+              </Inline>
 
               <div className="space-y-3">
                 <div className="flex items-start space-x-3">
@@ -512,10 +525,14 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
 
             {/* Quick Stats */}
             <AnimatedCard className="classical-card p-6">
-              <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+              <Inline
+                as="h3"
+                gap={2}
+                className="text-lg font-bold text-theme-primary mb-4"
+              >
                 <PiInfo className="w-5 h-5 text-accent-purple" />
                 <span>Estatísticas Rápidas</span>
-              </h3>
+              </Inline>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
