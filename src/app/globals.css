@@ -334,100 +334,110 @@
   --fonte-mono: var(--fonte-mono-next), ui-monospace, monospace;
 }
 
-.t-display {
-  font-family: var(--fonte-display);
-  font-size: 3.75rem;
-  line-height: 1.05;
-  letter-spacing: -0.015em;
-  font-weight: 400;
-}
-.t-titulo {
-  font-family: var(--fonte-display);
-  font-size: 2.25rem;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  font-weight: 400;
-}
-.t-subtitulo {
-  font-family: var(--fonte-display);
-  font-size: 1.5rem;
-  line-height: 1.25;
-  font-weight: 500;
-}
-.t-secao {
-  font-size: 1.25rem;
-  line-height: 1.3;
-  font-weight: 500;
-}
-.t-corpo {
-  font-size: 1.0625rem; /* 17px: o padrão de leitura */
-  line-height: 1.6;
-}
-.t-rotulo {
-  font-size: 0.875rem;
-  line-height: 1.45;
-}
-.t-legenda {
-  font-size: 0.8125rem;
-  line-height: 1.5;
-  color: var(--texto-fraco);
-}
-.t-dado {
-  font-family: var(--fonte-mono);
-  font-variant-numeric: tabular-nums;
-}
+/* As classes do sistema moram em `@layer components`, abaixo dos utilitários.
+   Fora de camada, no Tailwind v4 elas venceriam qualquer utilitário escrito
+   ao lado: `t-legenda text-erro` mostrava o erro do campo em cinza, e o
+   `rounded-b-none` da folha no telefone era ignorado. */
+@layer components {
+  .t-display {
+    font-family: var(--fonte-display);
+    font-size: 3.75rem;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    font-weight: 400;
+  }
+  .t-titulo {
+    font-family: var(--fonte-display);
+    font-size: 2.25rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    font-weight: 400;
+  }
+  .t-subtitulo {
+    font-family: var(--fonte-display);
+    font-size: 1.5rem;
+    line-height: 1.25;
+    font-weight: 500;
+  }
+  .t-secao {
+    font-size: 1.25rem;
+    line-height: 1.3;
+    font-weight: 500;
+  }
+  .t-corpo {
+    font-size: 1.0625rem; /* 17px: o padrão de leitura */
+    line-height: 1.6;
+  }
+  .t-rotulo {
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+  .t-legenda {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--texto-fraco);
+  }
+  .t-dado {
+    font-family: var(--fonte-mono);
+    font-variant-numeric: tabular-nums;
+  }
 
-/* =========================================================================
-   Superfícies como utilitário. Degradê não é cor, então não entra no @theme.
-   ========================================================================= */
-.sup-1 {
-  background: var(--sup-1);
-  border: 1px solid var(--linha);
-  border-radius: var(--r-card);
-  box-shadow: var(--sombra-1);
-}
-.sup-2 {
-  background: var(--sup-2);
-  border: 1px solid var(--linha);
-  border-radius: var(--r-card);
-  box-shadow: var(--sombra-1);
-}
-.sup-alta {
-  background: var(--sup-alta);
-  border: 1px solid var(--linha-forte);
-  border-radius: var(--r-folha);
-  box-shadow: var(--sombra-alta);
-}
+  /* =========================================================================
+     Superfícies como utilitário. Degradê não é cor, então não entra no @theme.
+     ========================================================================= */
+  .sup-1 {
+    background: var(--sup-1);
+    border: 1px solid var(--linha);
+    border-radius: var(--r-card);
+    box-shadow: var(--sombra-1);
+  }
+  .sup-2 {
+    background: var(--sup-2);
+    border: 1px solid var(--linha);
+    border-radius: var(--r-card);
+    box-shadow: var(--sombra-1);
+  }
+  .sup-alta {
+    background: var(--sup-alta);
+    border: 1px solid var(--linha-forte);
+    border-radius: var(--r-folha);
+    box-shadow: var(--sombra-alta);
+  }
 
-/* Fundos sem moldura, para quando o componente já traz borda e raio.
-   `bg-[var(--sup-2)]` não serve: o utilitário do Tailwind gera
-   `background-color`, e degradê não é cor. */
-.fundo-sup-1 {
-  background: var(--sup-1);
-}
-.fundo-sup-2 {
-  background: var(--sup-2);
-}
-.fill-ouro {
-  background: var(--ouro-fill);
-}
-.fill-ouro:hover:not(:disabled) {
-  background: var(--ouro-fill-hover);
-}
-.tint-ouro {
-  background: var(--ouro-tint);
+  /* Fundos sem moldura, para quando o componente já traz borda e raio.
+     `bg-[var(--sup-2)]` não serve: o utilitário do Tailwind gera
+     `background-color`, e degradê não é cor. */
+  .fundo-sup-1 {
+    background: var(--sup-1);
+  }
+  .fundo-sup-2 {
+    background: var(--sup-2);
+  }
+  .fill-ouro {
+    background: var(--ouro-fill);
+  }
+  .fill-ouro:hover:not(:disabled) {
+    background: var(--ouro-fill-hover);
+  }
+  .tint-ouro {
+    background: var(--ouro-tint);
+  }
 }
 
 /* =========================================================================
    Foco. 976 botões no produto e 42 arquivos com anel próprio: o resto
    dependia do contorno do navegador, que não é do sistema de ninguém.
    ========================================================================= */
-:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  /* Contorno transparente em vez de `none`: no modo de alto contraste do
-     Windows a sombra some, e o contorno é o que sobra para mostrar o foco. */
-  outline: 2px solid transparent;
-  border-color: var(--ouro);
-  box-shadow: var(--foco-anel);
+/* Em `@layer base`: é o padrão de todo elemento, e um componente com foco
+   próprio (utilitário `focus-visible:*`) consegue sobrescrever. */
+@layer base {
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    /* Contorno transparente em vez de `none`: no modo de alto contraste do
+       Windows a sombra some, e o contorno é o que sobra para mostrar o foco. */
+    outline: 2px solid transparent;
+    border-color: var(--ouro);
+    box-shadow: var(--foco-anel);
+  }
 }
 
 /* =========================================================================
