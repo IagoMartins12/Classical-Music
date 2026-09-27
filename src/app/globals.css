@@ -126,6 +126,9 @@
   --sup-2-b: #1a1b25;
   --sup-alta-a: #2a2b39;
   --sup-alta-b: #202130;
+  /* Esqueleto: um passo acima do card, para o bloco se ler sobre ele. */
+  --esqueleto: #23242f;
+  --esqueleto-brilho: #2f303e;
 
   --sup-1: linear-gradient(var(--angulo), var(--sup-1-a), var(--sup-1-b));
   --sup-2: linear-gradient(var(--angulo), var(--sup-2-a), var(--sup-2-b));
@@ -282,6 +285,8 @@
   --sup-2-b: #f4ede0;
   --sup-alta-a: #ffffff;
   --sup-alta-b: #f7f1e6;
+  --esqueleto: #f1e9da;
+  --esqueleto-brilho: #fbf8f2;
 
   --linha: #e4dccb;
   --linha-forte: #d6cbb4;
@@ -1059,16 +1064,24 @@ body {
 }
 
 /* Loading skeleton */
+/* Esqueleto: tom próprio da superfície (`--esqueleto`) com um brilho um passo
+   acima — sem ouro, sem cinza. 1,6s, curva suave; liso com movimento reduzido. */
 .loading-skeleton {
   background: linear-gradient(
     90deg,
-    var(--bg-secondary) 25%,
-    var(--interactive-hover) 50%,
-    var(--bg-secondary) 75%
+    var(--esqueleto) 30%,
+    var(--esqueleto-brilho) 50%,
+    var(--esqueleto) 70%
   );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  background-size: 220% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
   border-radius: 0.5rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .loading-skeleton {
+    animation: none;
+    background: var(--esqueleto);
+  }
 }
 
 /* Modal/Overlay */
