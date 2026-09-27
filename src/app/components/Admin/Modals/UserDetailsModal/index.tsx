@@ -1,4 +1,5 @@
 'use client';
+import { PiStar } from 'react-icons/pi';
 
 import { useState, useEffect } from 'react';
 import {
@@ -243,7 +244,7 @@ export default function UserDetailsModal({
               <p className="text-sm flex items-center gap-2 mt-1">
                 <PiClock className="w-4 h-4" />
                 {detailsData.isOnline
-                  ? '🟢 Online agora'
+                  ? 'Online agora'
                   : formatLastSeen(detailsData.lastSeenMinutesAgo)}
               </p>
             )}
@@ -613,7 +614,9 @@ export default function UserDetailsModal({
                                 {Array.from({
                                   length: score.personalRating,
                                 }).map((_, i) => (
-                                  <span key={i}>⭐</span>
+                                  <span key={i}>
+                                    <PiStar aria-hidden className="h-4 w-4" />
+                                  </span>
                                 ))}
                               </div>
                             )}

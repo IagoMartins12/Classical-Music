@@ -111,7 +111,7 @@ export function ImageModal({
                 : 'text-theme-tertiary'
             }`}
           >
-            📤 Fazer Upload
+            Fazer Upload
           </button>
           <button
             type="button" // ✅ IMPORTANTE: type="button" para não submeter
@@ -122,7 +122,7 @@ export function ImageModal({
                 : 'text-theme-tertiary'
             }`}
           >
-            🔗 Link Externo
+            Link Externo
           </button>
         </div>
 
@@ -202,7 +202,7 @@ export function ImageModal({
                     />
                   ) : (
                     <p className="text-sm text-red-500">
-                      ❌ Não foi possível carregar a imagem
+                      Não foi possível carregar a imagem
                     </p>
                   )}
                 </div>

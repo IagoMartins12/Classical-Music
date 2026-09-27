@@ -118,7 +118,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
             <Stack className="classical-card">
               <div className="p-4 rounded-lg">
                 <h4 className="font-semibold text-theme-primary mb-3">
-                  ⚙️ Configurações
+                  Configurações
                 </h4>
 
                 {/* Layout */}
@@ -133,7 +133,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
                       onClick={() => setLayout('vertical')}
                       className="flex-1"
                     >
-                      📋 Vertical
+                      Vertical
                     </Button>
                     <Button
                       type="button"
@@ -221,7 +221,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
             {/* COLUNA DIREITA - Preview */}
             <Stack>
               <Card densidade="compacta" className="rounded-lg">
-                <h4 className="font-semibold mb-3">👁️ Preview</h4>
+                <h4 className="font-semibold mb-3">Preview</h4>
 
                 {/* Preview do Card */}
                 <div
@@ -265,7 +265,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
                           as="p"
                           className="mb-2"
                         >
-                          📅 {composerData.birthDate || '?'} -{' '}
+                          {composerData.birthDate || '?'} -{' '}
                           {composerData.deathDate || 'Presente'}
                         </Text>
                       )}
@@ -273,21 +273,21 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
                     {/* Época */}
                     {showEpoch && composerData.epochName && (
                       <p className="text-sm font-medium mb-2">
-                        📜 {composerData.epochName}
+                        {composerData.epochName}
                       </p>
                     )}
 
                     {/* ✅ NACIONALIDADE ADICIONADA NO PREVIEW */}
                     {showNationality && composerData.nationality && (
                       <Text papel="rotulo" tom="fraco" as="p" className="mb-2">
-                        🌍 {composerData.nationality}
+                        {composerData.nationality}
                       </Text>
                     )}
 
                     {/* Instrumentação */}
                     {showInstrumentation && composerData.instruments && (
                       <Text papel="rotulo" tom="fraco" as="p" className="mb-3">
-                        🎼 {composerData.instruments}
+                        {composerData.instruments}
                       </Text>
                     )}
 

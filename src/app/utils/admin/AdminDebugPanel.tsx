@@ -17,7 +17,7 @@ export const AdminDebugPanel: React.FC<AdminDebugPanelProps> = ({
 
   return (
     <div className="fixed bottom-4 right-4 max-w-md bg-black/90 text-white text-xs p-4 rounded-lg z-aviso max-h-96 overflow-y-auto">
-      <h4 className="font-bold mb-2 text-yellow-400">🔍 Admin Debug Panel</h4>
+      <h4 className="font-bold mb-2 text-yellow-400">Admin Debug Panel</h4>
 
       <div className="mb-2">
         <strong>Filters Applied:</strong>

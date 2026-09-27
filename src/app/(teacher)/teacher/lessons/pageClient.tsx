@@ -633,7 +633,7 @@ export default function TeacherLessonsPageClient({
                 </Inline>
 
                 <Text papel="legenda" tom="fraco" as="div">
-                  {lesson.isRecurring && `🔄 ${t('recurring')} • `}
+                  {lesson.isRecurring && `${t('recurring')} • `}
                   {t('created_on')} {formatDate(lesson.createdAt)}
                 </Text>
               </div>
@@ -920,7 +920,7 @@ export default function TeacherLessonsPageClient({
                 </Inline>
 
                 <Text papel="legenda" tom="fraco" as="div">
-                  {lesson.isRecurring && `🔄 ${t('recurring')} • `}
+                  {lesson.isRecurring && `${t('recurring')} • `}
                   {t('created_on')} {formatDate(lesson.createdAt)}
                 </Text>
               </div>

@@ -335,7 +335,7 @@ export default function CreateEditTemplateModal({
                     onChange={(e) =>
                       handleInputChange('subject', e.target.value)
                     }
-                    placeholder="Ex: 🎼 Sua dose semanal de música clássica"
+                    placeholder="Ex: Sua dose semanal de música clássica"
                     error={errors.subject}
                   />
                 </div>
@@ -391,7 +391,7 @@ export default function CreateEditTemplateModal({
                 {form.variables.length > 0 && (
                   <Stack gap={2} className="p-4 rounded-lg bg-sup-2">
                     <h4 className="font-medium">
-                      🔧 Variáveis detectadas ({form.variables.length})
+                      Variáveis detectadas ({form.variables.length})
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {form.variables.map((variable) => (

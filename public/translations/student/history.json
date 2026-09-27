@@ -42,10 +42,10 @@
     "student_history_label_reschedule": "Reagendamento Solicitado",
     "student_history_label_absence": "Ausência Informada",
     "student_history_label_profile": "Perfil Atualizado",
-    "student_history_metadata_video": "📹 Vídeo",
-    "student_history_metadata_file": "📄 Arquivo",
-    "student_history_metadata_text": "📝 Texto",
-    "student_history_metadata_with_message": "💬 Com mensagem"
+    "student_history_metadata_video": "Vídeo",
+    "student_history_metadata_file": "Arquivo",
+    "student_history_metadata_text": "Texto",
+    "student_history_metadata_with_message": "Com mensagem"
   },
   "en": {
     "student_history_header_title": "My Activity History",
@@ -90,9 +90,9 @@
     "student_history_label_reschedule": "Reschedule Requested",
     "student_history_label_absence": "Absence Informed",
     "student_history_label_profile": "Profile Updated",
-    "student_history_metadata_video": "📹 Video",
-    "student_history_metadata_file": "📄 File",
-    "student_history_metadata_text": "📝 Text",
-    "student_history_metadata_with_message": "💬 With message"
+    "student_history_metadata_video": "Video",
+    "student_history_metadata_file": "File",
+    "student_history_metadata_text": "Text",
+    "student_history_metadata_with_message": "With message"
   }
 }

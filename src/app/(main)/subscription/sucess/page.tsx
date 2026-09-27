@@ -49,7 +49,7 @@ export default function SubscriptionSuccessPage() {
 
           {/* Title */}
           <h1 className="text-3xl md:text-4xl font-bold text-theme-primary mb-4">
-            🎉 Pagamento Aprovado!
+            Pagamento Aprovado!
           </h1>
 
           <p className="text-xl text-theme-secondary mb-8">
@@ -106,7 +106,7 @@ export default function SubscriptionSuccessPage() {
           </div>
 
           <Text papel="rotulo" tom="fraco" as="p" className="mt-8">
-            Bem-vindo ao Opus Atlas! Estamos felizes em tê-lo conosco. 🎵
+            Bem-vindo ao Opus Atlas! Estamos felizes em tê-lo conosco.
           </Text>
         </div>
       </div>

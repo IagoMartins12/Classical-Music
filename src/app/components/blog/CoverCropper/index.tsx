@@ -268,7 +268,7 @@ export default function CoverCropper({
                       : 'bg-theme-classical text-theme-secondary'
                   }`}
                 >
-                  {showGrid ? '🔲 Grid Ativo' : '⬜ Grid Inativo'}
+                  {showGrid ? 'Grid Ativo' : '⬜ Grid Inativo'}
                 </button>
               </div>
 
@@ -305,7 +305,7 @@ export default function CoverCropper({
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Text papel="rotulo" tom="suave" className="font-medium">
-                      🔍 Zoom: {Math.round(scale * 100)}%
+                      Zoom:{Math.round(scale * 100)}%
                     </Text>
                     <Inline gap={2}>
                       <button
@@ -349,7 +349,7 @@ export default function CoverCropper({
                 {/* Rotação */}
                 <div className="flex items-center justify-between p-3 bg-theme-classical rounded-lg">
                   <Text papel="rotulo" tom="suave" className="font-medium">
-                    🔄 Rotação: {rotation}°
+                    Rotação:{rotation}°
                   </Text>
                   <Inline
                     as="button"
@@ -369,7 +369,7 @@ export default function CoverCropper({
                   as="p"
                   className="text-center"
                 >
-                  💡 <strong>Dica:</strong> Use o grid (regra dos terços) para
+                  <strong>Dica:</strong> Use o grid (regra dos terços) para
                   posicionar elementos importantes
                 </Text>
               </Stack>
@@ -504,7 +504,7 @@ export default function CoverCropper({
               className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg"
             >
               <p className="text-xs text-green-900 dark:text-green-100 font-medium">
-                ✨ Recursos Disponíveis:
+                Recursos Disponíveis:
               </p>
               <ul className="text-xs text-green-800 dark:text-green-200 space-y-1">
                 <li>• Zoom preciso (10% - 500%)</li>

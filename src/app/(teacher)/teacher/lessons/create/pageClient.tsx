@@ -241,9 +241,7 @@ function ConflictModal({
                 <div className="flex items-start space-x-3">
                   <PiInfo className="w-5 h-5 mt-0.5" />
                   <Stack gap={1} className="text-sm">
-                    <p className="font-medium">
-                      ⚠️ {t('cannot_create_lesson')}
-                    </p>
+                    <p className="font-medium">{t('cannot_create_lesson')}</p>
                     <p className="text-theme-secondary">
                       {t('conflict_description')}
                     </p>
@@ -1736,7 +1734,7 @@ export default function CreateLessonPageClient({
                             {work.composerName}
                           </Text>
                           {work.scoreId && (
-                            <p className="text-xs">✓ {t('with_score')}</p>
+                            <p className="text-xs">{t('with_score')}</p>
                           )}
                         </div>
                         <Text

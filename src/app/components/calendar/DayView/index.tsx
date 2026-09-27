@@ -113,7 +113,7 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
                         event.isFree ? '' : ''
                       }`}
                     >
-                      {event.isFree ? '🎫 Gratuito' : '🎫 Ingresso'}
+                      {event.isFree ? 'Gratuito' : 'Ingresso'}
                     </span>
                     <Text papel="legenda" tom="fraco">
                       {getEventTypeLabel(event.type)}

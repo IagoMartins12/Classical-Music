@@ -183,7 +183,7 @@ export function AudioPlayerModal({
                 : 'text-theme-tertiary'
             }`}
           >
-            📤 Fazer Upload
+            Fazer Upload
           </button>
           <button
             type="button"
@@ -194,7 +194,7 @@ export function AudioPlayerModal({
                 : 'text-theme-tertiary'
             }`}
           >
-            🎥 Link do YouTube
+            Link do YouTube
           </button>
         </div>
 
@@ -219,7 +219,7 @@ export function AudioPlayerModal({
                   <div className="space-y-3">
                     <PiMusicNotes className="w-12 h-12 text-green-600 mx-auto" />
                     <p className="text-sm text-green-700 font-medium">
-                      ✓ Áudio carregado com sucesso
+                      Áudio carregado com sucesso
                     </p>
                     <Text papel="legenda" tom="fraco" as="p">
                       {audioTitle}
@@ -283,7 +283,7 @@ export function AudioPlayerModal({
             {youtubeUrl && extractYouTubeId(youtubeUrl) && (
               <div className="p-4 bg-green-50 rounded-lg">
                 <p className="text-sm text-green-800 mb-2">
-                  ✓ Link válido do YouTube
+                  Link válido do YouTube
                 </p>
                 <iframe
                   width="100%"
@@ -303,7 +303,7 @@ export function AudioPlayerModal({
         {(audioUrl || youtubeUrl) && (
           <Stack className="border-t pt-4 border-linha">
             <h4 className="font-semibold text-theme-primary">
-              📎 Vinculações Opcionais
+              Vinculações Opcionais
             </h4>
 
             <div>
@@ -315,7 +315,7 @@ export function AudioPlayerModal({
                 onComposerSelect={handleComposerSelect}
               />
               {composerData && (
-                <p className="text-sm text-green-600 mt-1">✓ Vinculado</p>
+                <p className="text-sm text-green-600 mt-1">Vinculado</p>
               )}
             </div>
 
@@ -329,7 +329,7 @@ export function AudioPlayerModal({
                 filterByComposer={selectedComposer}
               />
               {workData && (
-                <p className="text-sm text-green-600 mt-1">✓ Vinculado</p>
+                <p className="text-sm text-green-600 mt-1">Vinculado</p>
               )}
             </div>
           </Stack>

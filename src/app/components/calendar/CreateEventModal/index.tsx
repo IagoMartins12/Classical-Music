@@ -133,19 +133,19 @@ export default function CreateEventModal({
   };
 
   const EVENT_TYPE_OPTIONS = [
-    { value: 'CONCERT', label: '🎼 Concerto' },
-    { value: 'RECITAL', label: '🎹 Recital' },
-    { value: 'OPERA', label: '🎭 Ópera' },
-    { value: 'CHAMBER_MUSIC', label: '🎻 Música de Câmara' },
-    { value: 'ORCHESTRA', label: '🎺 Orquestra Sinfônica' },
-    { value: 'MASTERCLASS', label: '🎓 Masterclass' },
-    { value: 'WORKSHOP', label: '🔧 Workshop' },
-    { value: 'FESTIVAL', label: '🎪 Festival' },
-    { value: 'COMPETITION', label: '🏆 Competição' },
-    { value: 'LECTURE', label: '📚 Palestra' },
-    { value: 'EXHIBITION', label: '🖼️ Exposição' },
-    { value: 'OPEN_REHEARSAL', label: '📝 Ensaio Aberto' },
-    { value: 'OTHER', label: '📌 Outro' },
+    { value: 'CONCERT', label: 'Concerto' },
+    { value: 'RECITAL', label: 'Recital' },
+    { value: 'OPERA', label: 'Ópera' },
+    { value: 'CHAMBER_MUSIC', label: 'Música de Câmara' },
+    { value: 'ORCHESTRA', label: 'Orquestra Sinfônica' },
+    { value: 'MASTERCLASS', label: 'Masterclass' },
+    { value: 'WORKSHOP', label: 'Workshop' },
+    { value: 'FESTIVAL', label: 'Festival' },
+    { value: 'COMPETITION', label: 'Competição' },
+    { value: 'LECTURE', label: 'Palestra' },
+    { value: 'EXHIBITION', label: 'Exposição' },
+    { value: 'OPEN_REHEARSAL', label: 'Ensaio Aberto' },
+    { value: 'OTHER', label: 'Outro' },
   ];
 
   const STATUS_OPTIONS = [

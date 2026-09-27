@@ -258,7 +258,7 @@ const QuoteMusicalComponent = (props: any) => {
             </Inline>
           </Inline>
           <Text papel="legenda" tom="fraco" as="p" className="mt-2 text-center">
-            🎵 Música de fundo em loop
+            Música de fundo em loop
           </Text>
         </div>
 

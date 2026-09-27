@@ -381,7 +381,7 @@ export function ArticleList({
                     {/* Featured Badge */}
                     {article.isFeatured && (
                       <div className="absolute top-2 left-2 px-2 py-1 bg-yellow-500 text-white text-xs font-bold rounded">
-                        ⭐ Destaque
+                        Destaque
                       </div>
                     )}
 

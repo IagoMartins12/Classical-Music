@@ -1553,9 +1553,7 @@ export default function StudentProfilePageClient({
                               {t('mastery')}: {work.mastery}/5
                             </div>
                             {work.wouldRecommend && (
-                              <div className="text-xs">
-                                ⭐ {t('recommends')}
-                              </div>
+                              <div className="text-xs">{t('recommends')}</div>
                             )}
                           </div>
                         </div>

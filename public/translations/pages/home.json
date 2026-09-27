@@ -57,8 +57,8 @@
     "musical_facts_filter_label": "Filtrar por período:",
     "musical_facts_all_periods": "Todos os Períodos",
     "musical_facts_shuffle": "Embaralhar",
-    "musical_facts_all_explored": "Você explorou todas as curiosidades! 🎉",
-    "musical_facts_category_completed": "Todas as curiosidades de {category} foram exibidas! 🎵",
+    "musical_facts_all_explored": "Você explorou todas as curiosidades!",
+    "musical_facts_category_completed": "Todas as curiosidades de {category} foram exibidas!",
 
     "epochs_medieval": "Medieval",
     "epochs_renascentista": "Renascentista",
@@ -142,8 +142,8 @@
     "musical_facts_filter_label": "Filter by period:",
     "musical_facts_all_periods": "All Periods",
     "musical_facts_shuffle": "Shuffle",
-    "musical_facts_all_explored": "You've explored all curiosities! 🎉",
-    "musical_facts_category_completed": "All curiosities from {category} have been displayed! 🎵",
+    "musical_facts_all_explored": "You've explored all curiosities!",
+    "musical_facts_category_completed": "All curiosities from {category} have been displayed!",
 
     "epochs_medieval": "Medieval",
     "epochs_renascentista": "Renaissance",

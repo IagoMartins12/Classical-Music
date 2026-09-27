@@ -502,7 +502,7 @@ export default function WorkSelectionSection({
 
                   {hasWorkSelected && (
                     <Text papel="legenda" tom="fraco" as="p" className="mt-2">
-                      💡 O compositor foi selecionado automaticamente baseado na
+                      O compositor foi selecionado automaticamente baseado na
                       obra escolhida.
                     </Text>
                   )}
@@ -538,7 +538,7 @@ export default function WorkSelectionSection({
                     composerWorks.length > 0 &&
                     !loadingComposerWorks && (
                       <Text papel="legenda" tom="fraco" as="p" className="mt-2">
-                        🎼 {composerWorks.length} obra(s) de{' '}
+                        {composerWorks.length} obra(s) de{' '}
                         {popularComposers.find((c) => c.id === selectedComposer)
                           ?.name || 'compositor selecionado'}{' '}
                         carregadas automaticamente
@@ -617,7 +617,7 @@ export default function WorkSelectionSection({
               <PiInfo className="w-5 h-5 text-theme-tertiary mt-0.5 hidden sm:flex" />
               <Text papel="rotulo" tom="suave" as="div">
                 <p className="font-medium mb-1">
-                  💡 Como funciona o sistema de peças:
+                  Como funciona o sistema de peças:
                 </p>
                 <ul className="list-disc list-inside space-y-1 text-xs">
                   <li>Selecione primeiro o compositor, depois a obra</li>

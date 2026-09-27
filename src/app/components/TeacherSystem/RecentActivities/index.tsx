@@ -217,7 +217,7 @@ const RecentActivities = ({
       return (
         <Text papel="legenda" tom="fraco" as="div" className="mt-1">
           <span className="font-medium">{firstField}:</span>{' '}
-          {String(change.from)} → {String(change.to)}
+          {String(change.from)} →{String(change.to)}
           {changedFields.length > 1 &&
             ` (+${changedFields.length - 1} alterações)`}
         </Text>

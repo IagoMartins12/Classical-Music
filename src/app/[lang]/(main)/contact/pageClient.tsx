@@ -306,8 +306,8 @@ export default function ContactPageClient() {
                     }`}
                   >
                     {selectedCategory === option.category
-                      ? `✓ ${t('contact_jsx_option_selected')}`
-                      : `${option.action} →`}
+                      ? `${t('contact_jsx_option_selected')}`
+                      : `${option.action}→`}
                   </div>
                 </AnimatedCard>
               ))}

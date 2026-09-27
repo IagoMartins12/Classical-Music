@@ -232,10 +232,10 @@ export default function MediaPreview({
               <div className="font-medium text-theme-primary">Versões</div>
               <Inline gap={2} className="text-xs">
                 {hasImageVersions && (
-                  <span className="px-2 py-1 rounded">IMG ✓</span>
+                  <span className="px-2 py-1 rounded">IMG</span>
                 )}
                 {hasVideoVersions && (
-                  <span className="px-2 py-1 rounded">VID ✓</span>
+                  <span className="px-2 py-1 rounded">VID</span>
                 )}
                 {!hasImageVersions && !hasVideoVersions && (
                   <span className="px-2 py-1 rounded">Original</span>
@@ -369,8 +369,7 @@ export default function MediaPreview({
             </div>
             {ad.mediaMetadata?.processingError && (
               <div className="mt-2 text-xs">
-                ⚠️ Processamento com fallback:{' '}
-                {ad.mediaMetadata.processingError}
+                Processamento com fallback: {ad.mediaMetadata.processingError}
               </div>
             )}
             {ad.mediaMetadata?.processedAt && (
@@ -390,7 +389,7 @@ export default function MediaPreview({
             <PiInfo className="w-4 h-4 mt-0.5 flex-shrink-0" />
             <Text papel="legenda" tom="suave" as="div">
               <div className="font-medium text-theme-primary mb-1">
-                💡 Dicas de otimização
+                Dicas de otimização
               </div>
               <ul className="space-y-1">
                 <li>• Textos devem ser legíveis em telas pequenas</li>

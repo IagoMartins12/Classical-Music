@@ -482,7 +482,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
             <Text papel="legenda" tom="fraco" as="div" className="mt-2">
               {userSuggestions.length > 0
                 ? ``
-                : '💡 Digite pelo menos 2 caracteres para buscar obras'}
+                : 'Digite pelo menos 2 caracteres para buscar obras'}
             </Text>
           )}
         </div>

@@ -151,7 +151,7 @@ async function runOrphanSweep(): Promise<OrphanScanResult> {
 
   const orphanFiles: CloudinaryOrphanFile[] = (outcome.sample ?? []).map(
     (line) => {
-      const [owner, publicId = ''] = line.split(' → ');
+      const [owner, publicId = ''] = line.split('→');
       const ownerType = owner.split(':')[0];
 
       return {

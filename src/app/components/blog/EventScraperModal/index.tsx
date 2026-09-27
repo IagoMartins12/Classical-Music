@@ -1025,7 +1025,7 @@ const EventCard = ({
 
         {event.composerNames.length > 0 && (
           <Text papel="legenda" tom="fraco" as="div">
-            🎼 {event.composerNames.join(', ')}
+            {event.composerNames.join(', ')}
           </Text>
         )}
 

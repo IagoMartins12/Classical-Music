@@ -149,8 +149,8 @@ const ParentWorkConfirmationModal: React.FC<{
                     peça.
                   </p>
                   <Text papel="legenda" tom="forte" as="p">
-                    💡 Apenas campos vazios serão preenchidos. Suas informações
-                    já digitadas não serão sobrescritas.
+                    Apenas campos vazios serão preenchidos. Suas informações já
+                    digitadas não serão sobrescritas.
                   </Text>
                 </Text>
               </div>

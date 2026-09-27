@@ -1,7 +1,7 @@
 // app/components/uploads/ConfirmDeleteUploadModal.tsx - TRADUZIDO
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { PiInfo, PiSpinnerGap, PiWarning } from 'react-icons/pi';
+import { PiSpinnerGap } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { getCascadeInfo } from '@/app/requests/uploads-client';
 import { Stack, Inline } from '@/app/components/ui/Layout';
@@ -47,22 +47,6 @@ export default function ConfirmDeleteUploadModal({
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (isOpen) {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-
-      // Carregar informações de cascata se necessário
-      if (itemId && (itemType === 'composer' || itemType === 'work')) {
-        loadCascadeInfo();
-      }
-
-      return () => {
-        document.body.style.overflow = originalOverflow;
-      };
-    }
-  }, [isOpen, itemId, itemType]);
-
   const loadCascadeInfo = async () => {
     if (!itemId) return;
 
@@ -75,6 +59,14 @@ export default function ConfirmDeleteUploadModal({
       setLoadingCascadeInfo(false);
     }
   };
+
+  useEffect(() => {
+    // Carregar informações de cascata se necessário
+    if (isOpen && itemId && (itemType === 'composer' || itemType === 'work')) {
+      loadCascadeInfo();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, itemId, itemType]);
 
   if (!mounted || !isOpen) return null;
 
@@ -135,7 +127,6 @@ export default function ConfirmDeleteUploadModal({
         {!loadingCascadeInfo && hasCascadeItems ? (
           <Stack gap={3} className="p-4 rounded-lg bg-sup-2">
             <div className="flex items-start space-x-2">
-              <PiInfo className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <div>
                 <div className="text-sm font-medium mb-1">
                   {t('delete_modal_cascade_warning')}
@@ -268,7 +259,6 @@ export default function ConfirmDeleteUploadModal({
         (itemType === 'composer' || itemType === 'work') ? (
           <div className="p-3 rounded-lg bg-sup-2">
             <Inline gap={2}>
-              <PiInfo className="w-4 h-4" />
               <span className="text-sm">
                 {t('delete_modal_no_related_items')}
               </span>
@@ -280,7 +270,6 @@ export default function ConfirmDeleteUploadModal({
         {itemType === 'score' ? (
           <div className="rounded-lg p-3 bg-sup-2">
             <div className="flex items-start space-x-2">
-              <PiWarning className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <div className="text-sm">
                 <p className="font-medium">
                   {t('delete_modal_score_warning_title')}

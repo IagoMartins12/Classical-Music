@@ -1,4 +1,5 @@
 'use client';
+import { PiCheck } from 'react-icons/pi';
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, useMemo } from 'react';
@@ -538,7 +539,12 @@ export default function UsersList() {
                                   <PiMedal className="w-2.5 h-2.5 md:w-3 md:h-3" />
                                   Professor
                                   {user.teacherProfile?.isVerified && (
-                                    <span className="">✓</span>
+                                    <span className="">
+                                      <PiCheck
+                                        aria-hidden
+                                        className="h-4 w-4"
+                                      />
+                                    </span>
                                   )}
                                 </span>
                               )}

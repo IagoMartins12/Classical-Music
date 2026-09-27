@@ -34,6 +34,7 @@ const NOMES = {
   voltar: { pt: 'Voltar', en: 'Back' },
   compartilhar: { pt: 'Compartilhar', en: 'Share' },
   buscar: { pt: 'Buscar', en: 'Search' },
+  limpar: { pt: 'Limpar', en: 'Clear' },
 } as const;
 
 export type Acao = keyof typeof NOMES;

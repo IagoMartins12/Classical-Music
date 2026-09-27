@@ -129,7 +129,7 @@ export default function ConfirmStudentInvitePage() {
         // Toast de sucesso
         if (!result.alreadyAccepted) {
           toast.success(
-            `🎉 Parabéns! Você agora é aluno de ${
+            `Parabéns! Você agora é aluno de${
               result.teacher?.name || 'seu professor'
             }!`
           );

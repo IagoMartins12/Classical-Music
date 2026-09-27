@@ -1,9 +1,10 @@
-// components/onboarding/PreferencesStep.tsx
 'use client';
+// components/onboarding/PreferencesStep.tsx
 
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { useOnboardingModal } from '@/app/stores/authStore';
 import React, { useState, useEffect } from 'react';
-import { PiHeart, PiMagnifyingGlass, PiSpinnerGap } from 'react-icons/pi';
+import { PiHeart, PiMagnifyingGlass, PiSpinnerGap, PiX } from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Select from '../../Common/Select';
@@ -237,7 +238,8 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
                   onClick={() => updateData({ favoriteComposerId: undefined })}
                   className="ml-auto text-theme-tertiary"
                 >
-                  ✕
+                  <PiX aria-hidden className="h-4 w-4" />
+                  <NomeAcao acao="limpar" />
                 </button>
               </Inline>
             </div>

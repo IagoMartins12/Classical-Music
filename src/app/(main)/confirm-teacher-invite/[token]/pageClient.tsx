@@ -117,7 +117,7 @@ export default function ConfirmTeacherInvitePage() {
 
         // Toast de sucesso
         if (!result.alreadyAccepted) {
-          toast.success('🎉 Parabéns! Você agora é um professor verificado!');
+          toast.success('Parabéns! Você agora é um professor verificado!');
         }
 
         // Redirecionar após sucesso (com delay para mostrar mensagem)

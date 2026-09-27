@@ -205,7 +205,7 @@ const ScoreCardWithBadge = React.memo(
             title={t('score_card_favorita_comunidade')}
           >
             <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 border-2 border-yellow-300 text-yellow-900 rounded-full font-medium shadow-xl backdrop-blur-sm flex items-center justify-center ring-2 ring-yellow-400/40 animate-pulse hover:animate-none transition-all duration-300 hover:scale-110">
-              <span className="text-lg filter drop-shadow-sm">👑</span>
+              <span className="text-lg filter drop-shadow-sm"></span>
             </div>
 
             {/* Tooltip elegante */}

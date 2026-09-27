@@ -124,7 +124,7 @@ const LearningModal = () => {
         learnedDataUpdated: 'Dados da obra aprendida atualizados!',
         learnedDataUpdatedWithVideo: 'Dados da obra aprendida atualizados',
         wantToLearnAdded: 'Obra adicionada à sua lista de estudos!',
-        congratsLearned: '🎉 Parabéns! Obra marcada como aprendida!',
+        congratsLearned: 'Parabéns! Obra marcada como aprendida!',
 
         // Mensagens de erro - handleSubmit
         saveError: 'Erro ao salvar. Tente novamente.',
@@ -132,7 +132,7 @@ const LearningModal = () => {
         updateVideoError: 'Erro ao atualizar com vídeo',
 
         // Mensagens de transferência - handleConfirmTransfer
-        transferSuccess: '🎉 Parabéns! Obra transferida para "Já Aprendi"!',
+        transferSuccess: 'Parabéns! Obra transferida para "Já Aprendi"!',
         transferError: 'Erro ao transferir obra. Tente novamente.',
         transferring: 'Transferindo...',
 
@@ -159,7 +159,7 @@ const LearningModal = () => {
         learnedDataUpdated: 'Learned work data updated!',
         learnedDataUpdatedWithVideo: 'Learned work data updated',
         wantToLearnAdded: 'Work added to your study list!',
-        congratsLearned: '🎉 Congratulations! Work marked as learned!',
+        congratsLearned: 'Congratulations! Work marked as learned!',
 
         // Error messages - handleSubmit
         saveError: 'Error saving. Please try again.',
@@ -168,7 +168,7 @@ const LearningModal = () => {
 
         // Transfer messages - handleConfirmTransfer
         transferSuccess:
-          '🎉 Congratulations! Work transferred to "Already Learned"!',
+          'Congratulations! Work transferred to "Already Learned"!',
         transferError: 'Error transferring work. Please try again.',
         transferring: 'Transferring...',
 
@@ -1291,7 +1291,7 @@ const LearningModal = () => {
                     <div className="mt-3  rounded-lg">
                       <Inline gap={2}>
                         <div className="w-4 h-4 rounded-full flex items-center justify-center">
-                          <span className="text-xs">💡</span>
+                          <span className="text-xs"></span>
                         </div>
                         <span className="text-xs md:text-sm text-green-400 font-medium">
                           {t('score_suggestion')} &quot;
@@ -1340,7 +1340,6 @@ const LearningModal = () => {
               variant="primary"
               onClick={handleSubmit}
               isLoading={isSubmitting || isUploading}
-              rightIcon={config?.emoji}
               disabled={isUploading}
               className="w-full"
             >
@@ -1416,7 +1415,6 @@ const LearningModal = () => {
                 variant="primary"
                 onClick={handleSubmit}
                 isLoading={isSubmitting || isUploading}
-                rightIcon={config?.emoji}
                 disabled={isUploading}
               >
                 {isSubmitting || isUploading

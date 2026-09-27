@@ -475,8 +475,8 @@ export default function AdminAnalytics() {
                         gap={3}
                         className="text-xs text-theme-secondary mt-1"
                       >
-                        <span>❤️ {work.favorites}</span>
-                        <span>📚 {work.sessions}</span>
+                        <span>{work.favorites}</span>
+                        <span>{work.sessions}</span>
                       </Inline>
                     </div>
                     <Button
@@ -525,8 +525,8 @@ export default function AdminAnalytics() {
                         gap={3}
                         className="text-xs text-theme-secondary mt-1"
                       >
-                        <span>🎵 {composer.works} obras</span>
-                        <span>❤️ {composer.favorites}</span>
+                        <span>{composer.works} obras</span>
+                        <span>{composer.favorites}</span>
                       </Inline>
                     </div>
                     <Button
@@ -577,8 +577,8 @@ export default function AdminAnalytics() {
                         gap={3}
                         className="text-xs text-theme-secondary mt-1"
                       >
-                        <span>⏱️ {formatDuration(user.studyTime)}</span>
-                        <span>📝 {user.annotations}</span>
+                        <span>{formatDuration(user.studyTime)}</span>
+                        <span>{user.annotations}</span>
                       </Inline>
                     </div>
                     <Button

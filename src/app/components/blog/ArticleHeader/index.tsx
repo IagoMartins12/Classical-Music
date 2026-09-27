@@ -107,7 +107,7 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
           {/* Views */}
           <AdminOnly show={isAdmin}>
             <Inline gap={2}>
-              <span>👁️</span>
+              <span></span>
               <span>{article.viewCount.toLocaleString()} visualizações</span>
             </Inline>
           </AdminOnly>
@@ -145,7 +145,7 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
             </div>
             {article.coverImageCredit && (
               <div className="absolute bottom-0 right-0 px-4 py-2 bg-black/60 backdrop-blur-sm text-white text-xs rounded-tl-lg">
-                📷 {article.coverImageCredit}
+                {article.coverImageCredit}
               </div>
             )}
           </div>

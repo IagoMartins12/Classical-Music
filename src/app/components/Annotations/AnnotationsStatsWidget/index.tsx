@@ -317,19 +317,19 @@ export default function AnnotationsStatsWidget({
           </Inline>
           <Text papel="rotulo" tom="suave" as="div" className="space-y-3">
             <p>
-              🎯 <strong>Seja específico</strong> - Indique compassos, mãos ou
+              <strong>Seja específico</strong> - Indique compassos, mãos ou
               seções exatas.
             </p>
             <p>
-              🎵 <strong>Use categorias</strong> - Organize por técnica,
+              <strong>Use categorias</strong> - Organize por técnica,
               interpretação ou teoria.
             </p>
             <p>
-              🏷️ <strong>Adicione tags</strong> - Facilite a busca com
+              <strong>Adicione tags</strong> - Facilite a busca com
               palavras-chave.
             </p>
             <p>
-              🌍 <strong>Torne público</strong> - Ajude outros músicos com seu
+              <strong>Torne público</strong> - Ajude outros músicos com seu
               conhecimento.
             </p>
           </Text>

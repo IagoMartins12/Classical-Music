@@ -367,13 +367,13 @@ export default function EditAdModal({
               <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                 {hasMedia ? (
                   <>
-                    ✅ Este anúncio possui mídia (imagem/vídeo). Use a opção
+                    Este anúncio possui mídia (imagem/vídeo). Use a opção
                     &quot;Gerenciar mídia&quot; para alterá-la.
                   </>
                 ) : (
                   <>
-                    ⚠️ Este anúncio não possui mídia. Adicione uma imagem ou
-                    vídeo para ativá-lo.
+                    Este anúncio não possui mídia. Adicione uma imagem ou vídeo
+                    para ativá-lo.
                   </>
                 )}
               </Text>

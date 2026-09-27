@@ -98,8 +98,16 @@ export default function ConfirmModal({
 
         {children}
 
-        <Inline gap={3} quebra className="justify-end">
-          <Button variante="secundario" onClick={onClose} disabled={ocupado}>
+        {/* Lado a lado quando cabem; quando o rótulo é longo, cada botão
+            ocupa a linha inteira, um embaixo do outro — nunca um quebrado e
+            o outro não. No telefone, a ação fica em cima, perto do polegar. */}
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:flex-wrap">
+          <Button
+            variante="secundario"
+            onClick={onClose}
+            disabled={ocupado}
+            className="w-full text-sm sm:w-auto sm:flex-1 sm:whitespace-nowrap"
+          >
             {cancelText}
           </Button>
           {!semConfirmar && (
@@ -108,11 +116,12 @@ export default function ConfirmModal({
               onClick={confirmar}
               carregando={ocupado}
               disabled={confirmarBloqueado}
+              className="w-full text-sm sm:w-auto sm:flex-1 sm:whitespace-nowrap"
             >
               {confirmText || acao}
             </Button>
           )}
-        </Inline>
+        </div>
       </Stack>
     </Modal>
   );

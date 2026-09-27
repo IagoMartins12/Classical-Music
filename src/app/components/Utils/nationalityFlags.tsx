@@ -595,7 +595,7 @@ export function FlagComponent({
   if (!isValid) {
     return (
       <span className={`inline-flex items-center space-x-1 ${className}`}>
-        <span className={`${sizeClasses[size]} opacity-50`}>🏳️</span>
+        <span className={`${sizeClasses[size]} opacity-50`}></span>
         {showCountryName && (
           <Text papel="rotulo" tom="fraco">
             {nationality}

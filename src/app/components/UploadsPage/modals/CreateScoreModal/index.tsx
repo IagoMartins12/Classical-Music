@@ -864,7 +864,7 @@ const CreateScoreModal = ({
                                   as="div"
                                   className="mt-2"
                                 >
-                                  📄 Arquivos grandes podem levar mais tempo
+                                  Arquivos grandes podem levar mais tempo
                                 </Text>
                               )}
                             </div>
@@ -919,7 +919,7 @@ const CreateScoreModal = ({
                             as="p"
                             className="mt-1"
                           >
-                            🖼️ Preview automático para PDFs e imagens
+                            Preview automático para PDFs e imagens
                           </Text>
                         </div>
                       )}
@@ -1038,13 +1038,13 @@ const CreateScoreModal = ({
 
                     {shouldDisableComposerFilter && (
                       <Text papel="legenda" tom="fraco" as="p" className="mt-2">
-                        💡 {t('modal_score_work_filter_tip')}
+                        {t('modal_score_work_filter_tip')}
                       </Text>
                     )}
 
                     {editingScore && (
                       <Text papel="legenda" tom="fraco" as="p" className="mt-2">
-                        💡 {t('modal_score_work_edit_tip')}
+                        {t('modal_score_work_edit_tip')}
                       </Text>
                     )}
                   </div>
@@ -1109,7 +1109,7 @@ const CreateScoreModal = ({
                         <PiInfo className="w-4 h-4 text-theme-tertiary mt-0.5" />
                         <Text papel="legenda" tom="fraco" as="div">
                           <p className="font-medium mb-1">
-                            💡 {t('modal_score_work_suggestions_title')}
+                            {t('modal_score_work_suggestions_title')}
                           </p>
                           {userWorks.length > 0 ? (
                             <p>
@@ -1327,7 +1327,7 @@ const CreateScoreModal = ({
                     </Text>
                     <Text papel="legenda" tom="fraco" as="div" className="mt-3">
                       <p>
-                        💡{' '}
+                        {' '}
                         <strong>
                           {t('modal_score_grouping_example_title')}
                         </strong>

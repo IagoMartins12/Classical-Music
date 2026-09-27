@@ -2,7 +2,7 @@
   "ptBr": {
     "error_jsx_span_children_0__opus_atlas": "Opus Atlas",
     "error_jsx_h1_children_0__oops_algo_deu_errado": "Oops! Algo deu errado",
-    "error_jsx_p_children_0__sinfonia_encontrou_nota": "A sinfonia encontrou uma nota fora do tom 🎵",
+    "error_jsx_p_children_0__sinfonia_encontrou_nota": "A sinfonia encontrou uma nota fora do tom",
     "error_jsx_span_children_0__tentar_novamente": "Tentar Novamente",
     "error_jsx_span_children_0__voltar_ao": "Voltar ao",
     "error_jsx_h3_children_0__que_voce_pode_fazer": "O que você pode fazer?",
@@ -21,7 +21,7 @@
   "en": {
     "error_jsx_span_children_0__opus_atlas": "Opus Atlas",
     "error_jsx_h1_children_0__oops_algo_deu_errado": "Oops! Something went wrong",
-    "error_jsx_p_children_0__sinfonia_encontrou_nota": "The symphony found a note out of tune 🎵",
+    "error_jsx_p_children_0__sinfonia_encontrou_nota": "The symphony found a note out of tune",
     "error_jsx_span_children_0__tentar_novamente": "Try Again",
     "error_jsx_span_children_0__voltar_ao": "Back to",
     "error_jsx_h3_children_0__que_voce_pode_fazer": "What you can do?",

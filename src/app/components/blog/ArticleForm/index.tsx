@@ -923,7 +923,7 @@ export function ArticleForm({
                     : 'text-theme-tertiary'
                 }`}
               >
-                📤 Fazer Upload
+                Fazer Upload
               </button>
               <button
                 type="button"
@@ -934,7 +934,7 @@ export function ArticleForm({
                     : 'text-theme-tertiary'
                 }`}
               >
-                🔗 Link Externo
+                Link Externo
               </button>
             </div>
 
@@ -960,7 +960,7 @@ export function ArticleForm({
                         <div className="space-y-3">
                           <PiMusicNotes className="w-12 h-12 text-green-600 mx-auto" />
                           <p className="text-sm text-green-700 font-medium">
-                            ✓ Áudio carregado com sucesso
+                            Áudio carregado com sucesso
                           </p>
                           {formData.backgroundMusic?.title && (
                             <Text papel="legenda" tom="fraco" as="p">

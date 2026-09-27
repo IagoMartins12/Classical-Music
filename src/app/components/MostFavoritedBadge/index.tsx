@@ -116,20 +116,12 @@ export default function MostFavoritedBadge({
     floating: 'absolute top-2 right-2 z-10',
   };
 
+  // Selo de superfície com o ouro de texto: sem degradê por nível, sem
+  // pulso contínuo e sem crescer sob o cursor.
   const baseClasses = `
-    ${positions[position]} 
+    ${positions[position]}
     ${sizeConfig.container}
-    bg-gradient-to-r ${config?.bgGradient}
-     ${config?.borderColor}
-    ${config?.textColor}
-    rounded-full
-    font-medium
-    shadow-lg
-    backdrop-blur-sm
-    animate-pulse
-    hover:animate-none
-    transition-all duration-300
-    hover:scale-105
+    bg-sup-2 text-ouro-texto rounded-full font-medium
   `;
 
   if (variant === 'crown') {
@@ -139,7 +131,7 @@ export default function MostFavoritedBadge({
         title="Partitura mais favoritada pela comunidade"
       >
         <Inline gap={1}>
-          <span className={sizeConfig.emoji}>{config?.emoji}</span>
+          <Icon aria-hidden className={sizeConfig.icon} />
           {showText && (
             <span className={`${sizeConfig.text} font-bold hidden sm:inline`}>
               Favorita da comunidade
@@ -153,9 +145,7 @@ export default function MostFavoritedBadge({
   return (
     <div className={baseClasses} title={`${config?.label} pela comunidade`}>
       <div className="flex items-center space-x-1.5">
-        <div className={`bg-gradient-to-r $ rounded-full p-1`}>
-          <Icon className={`${sizeConfig.icon} text-white`} />
-        </div>
+        <Icon aria-hidden className={sizeConfig.icon} />
         {showText && (
           <span className={`${sizeConfig.text} font-semibold hidden sm:inline`}>
             {size === 'sm' ? 'Top' : config.label}

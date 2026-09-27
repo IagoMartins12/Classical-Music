@@ -1,4 +1,5 @@
 'use client';
+import { PiCheck } from 'react-icons/pi';
 
 import React, { JSX, useState } from 'react';
 import { GiGrandPiano } from 'react-icons/gi';
@@ -720,7 +721,7 @@ export default function SupportPage(): JSX.Element {
                                         </span>
                                         {solution.steps && (
                                           <Text papel="legenda" tom="fraco">
-                                            📋 {solution.steps.length}{' '}
+                                            {solution.steps.length}{' '}
                                             {t(
                                               'support_jsx_span_children_0__passos'
                                             )}
@@ -759,7 +760,10 @@ export default function SupportPage(): JSX.Element {
                                       <div className="pl-4">
                                         <h5 className="font-semibold classical-title text-theme-primary mb-4 flex items-center">
                                           <span className="w-6 h-6 text-white rounded-full flex items-center justify-center text-sm font-medium mr-2">
-                                            ✓
+                                            <PiCheck
+                                              aria-hidden
+                                              className="h-4 w-4"
+                                            />
                                           </span>
                                           {t(
                                             'support_animatedcontainer_animateditem_passos_resolver'

@@ -167,7 +167,6 @@ export default function NotFound() {
                     <AnimatedItem direction="up" springType="smooth">
                       <p className="text-xl md:text-2xl text-theme-secondary mb-12 leading-relaxed max-w-2xl mx-auto">
                         {t('not_found_jsx_p_children_0__page')} {getAreaTitle()}{' '}
-                        🎼
                         <br />
                         <span className="text-lg text-theme-tertiary mt-2 block">
                           {t(
@@ -477,7 +476,7 @@ export default function NotFound() {
                 {/* Subtitle */}
                 <AnimatedItem direction="up" springType="smooth">
                   <p className="text-xl md:text-2xl text-theme-secondary mb-12 leading-relaxed max-w-2xl mx-auto">
-                    {t('not_found_jsx_p_children_0__page')} {getAreaTitle()} 🎼
+                    {t('not_found_jsx_p_children_0__page')} {getAreaTitle()}{' '}
                     <br />
                     <span className="text-lg text-theme-tertiary mt-2 block">
                       {t('not_found_jsx_span_children_0__tal_explorar_outras')}

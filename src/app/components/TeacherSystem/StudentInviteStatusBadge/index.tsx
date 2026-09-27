@@ -179,8 +179,8 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
       {status === 'PENDING' && (
         <div className="mt-3 pt-3 border-t border-amber-200/50">
           <div className="text-xs text-amber-700/80">
-            💡 <strong>Dica:</strong> O aluno receberá um email com instruções
-            para aceitar ou recusar o convite.
+            <strong>Dica:</strong> O aluno receberá um email com instruções para
+            aceitar ou recusar o convite.
           </div>
         </div>
       )}
@@ -188,7 +188,7 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
       {status === 'DECLINED' && (
         <div className="mt-3 pt-3 border-t border-red-200/50">
           <div className="text-xs text-red-700/80">
-            💡 <strong>O que fazer:</strong> Você pode enviar um novo convite ou
+            <strong>O que fazer:</strong> Você pode enviar um novo convite ou
             entrar em contato diretamente com o aluno.
           </div>
         </div>
@@ -197,8 +197,8 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
       {status === 'EXPIRED' && (
         <div className="mt-3 pt-3 border-t border-gray-200/50">
           <div className="text-xs text-gray-700/80">
-            ⏰ <strong>Convite expirado:</strong> Envie um novo convite para que
-            o aluno possa aceitar.
+            <strong>Convite expirado:</strong> Envie um novo convite para que o
+            aluno possa aceitar.
           </div>
         </div>
       )}

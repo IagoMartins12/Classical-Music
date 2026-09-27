@@ -424,7 +424,7 @@ export default function AccessDenied() {
             {/* Description */}
             <AnimatedItem direction="up" springType="smooth">
               <p className="text-xl md:text-2xl text-theme-secondary mb-8 leading-relaxed max-w-2xl mx-auto">
-                {getContextualDescription()} 🔒
+                {getContextualDescription()}{' '}
               </p>
             </AnimatedItem>
 

@@ -548,7 +548,7 @@ export function AudioAutoplay({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold mb-1">
-                  🎵 Este artigo possui áudio de fundo
+                  Este artigo possui áudio de fundo
                 </p>
                 <p className="text-xs opacity-90 mb-3">
                   {title || 'Ative o som para uma melhor experiência'}
@@ -557,7 +557,7 @@ export function AudioAutoplay({
                   onClick={activateAudio}
                   className="w-full text-theme-primary text-ouro-texto px-4 py-2 rounded-lg font-medium text-sm ansition-colors shadow-md"
                 >
-                  🔊 Ativar Áudio
+                  Ativar Áudio
                 </button>
               </div>
               <button

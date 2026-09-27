@@ -2,12 +2,7 @@
 'use client';
 
 import React from 'react';
-import {
-  PiArrowsClockwise,
-  PiBookOpen,
-  PiFunnel,
-  PiMusicNotes,
-} from 'react-icons/pi';
+import { PiArrowsClockwise, PiBookOpen, PiFunnel } from 'react-icons/pi';
 import SectionTitle from '../Utils/SectionTitle';
 
 import Select from '../Common/Select';
@@ -43,151 +38,32 @@ interface MusicalFactsProps {
   initialCount?: number;
 }
 
+/**
+ * Uma curiosidade: o card de sempre. Antes cada categoria tinha a própria cor
+ * viva (fundo, borda, selo e brilho ao passar o mouse), um emoji como ícone e
+ * uma nota decorativa — nove paletas numa seção só. A categoria agora é um
+ * rótulo discreto; o que distingue um card do outro é o texto.
+ */
 const FactCard = ({
   fact,
-  index,
   language,
 }: {
   fact: MusicalFact;
   index: number;
   language: Language;
-}) => {
-  const [isExpanded, setIsExpanded] = React.useState(false);
-
-  // Definir estilos por tipo de curiosidade
-  const getFactStyle = (type: string) => {
-    const styles = {
-      Medieval: {
-        gradient: 'from-blue-600/20 to-cyan-500/20',
-        border: 'border-blue-500/30',
-        accent: 'text-blue-400',
-        bg: 'bg-blue-500/10',
-      },
-      Renascimento: {
-        gradient: 'from-pink-600/20 to-rose-500/20',
-        border: 'border-pink-500/30',
-        accent: 'text-pink-400',
-        bg: 'bg-pink-500/10',
-      },
-      Barroco: {
-        gradient: 'from-purple-600/20 to-violet-500/20',
-        border: 'border-purple-500/30',
-        accent: 'text-purple-400',
-        bg: 'bg-purple-500/10',
-      },
-      Clássico: {
-        gradient: 'from-emerald-600/20 to-green-500/20',
-        border: 'border-emerald-500/30',
-        accent: 'text-emerald-400',
-        bg: 'bg-emerald-500/10',
-      },
-      Romântico: {
-        gradient: 'from-amber-600/20 to-yellow-500/20',
-        border: 'border-amber-500/30',
-        accent: 'text-amber-400',
-        bg: 'bg-amber-500/10',
-      },
-      Impressionismo: {
-        gradient: 'from-orange-600/20 to-red-500/20',
-        border: 'border-orange-500/30',
-        accent: 'text-orange-400',
-        bg: 'bg-orange-500/10',
-      },
-      Moderno: {
-        gradient: 'from-indigo-600/20 to-purple-500/20',
-        border: 'border-indigo-500/30',
-        accent: 'text-indigo-400',
-        bg: 'bg-indigo-500/10',
-      },
-      Teoria: {
-        gradient: 'from-cyan-600/20 to-sky-500/20',
-        border: 'border-cyan-500/30',
-        accent: 'text-cyan-400',
-        bg: 'bg-cyan-500/10',
-      },
-      Futuro: {
-        gradient: 'from-gray-600/20 to-slate-500/20',
-        border: 'border-gray-500/30',
-        accent: 'text-gray-400',
-        bg: 'bg-gray-500/10',
-      },
-    };
-
-    return (
-      styles[type as keyof typeof styles] || {
-        gradient: '',
-        border: '',
-        accent: 'text-ouro-texto',
-        bg: '',
-      }
-    );
-  };
-
-  const style = getFactStyle(fact.category);
-
-  // Animação escalonada baseada no índice
-  const animationDelay = `${index * 100}ms`;
-
-  return (
-    <div
-      className={`
-        classical-card-simple overflow-hidden transition-all duration-500 ease-out 
-        group hover:scale-[1.02] relative
-        bg-gradient-to-br ${style.gradient}  ${style.border}
-        animate-fade-in-up
-      `}
-      style={{ animationDelay }}
-      onClick={() => setIsExpanded(!isExpanded)}
-    >
-      {/* Header */}
-      <div className="p-6 pb-4">
-        <div className="flex items-start gap-4">
-          {/* Icon */}
-          <div
-            className={`w-12 h-12 rounded-2xl ${style.bg}  ${style.border} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}
-          >
-            <span className="text-2xl">{fact.icon}</span>
-          </div>
-
-          {/* Content */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-2">
-              <h3
-                className={`text-lg font-bold classical-title group-hover:${style.accent} transition-colors duration-300`}
-              >
-                {fact.title[language]}
-              </h3>
-
-              {/* Category badge */}
-              <span
-                className={`inline-flex items-center px-2 py-1 ${style.bg}  ${style.border} rounded-full text-xs font-medium ${style.accent}`}
-              >
-                {fact.category}
-              </span>
-            </div>
-
-            {/* Content preview */}
-            <p
-              className={`text-theme-secondary leading-relaxed transition-all duration-300 `}
-            >
-              {fact.content[language]}
-            </p>
-          </div>
-        </div>
+}) => (
+  <Card>
+    <Stack gap={3}>
+      <div className="flex items-baseline justify-between gap-4">
+        <h3 className="t-subtitulo">{fact.title[language]}</h3>
+        <span className="t-rotulo shrink-0 text-texto-fraco">
+          {fact.category}
+        </span>
       </div>
-
-      {/* Hover effect overlay */}
-      <div
-        className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl pointer-events-none bg-gradient-to-br ${style.gradient}`}
-      ></div>
-
-      {/* Floating decoration */}
-      <div className="absolute top-4 right-4 opacity-20 group-hover:opacity-40 transition-opacity duration-500">
-        <PiMusicNotes className={`w-5 h-5 ${style.accent}`} />
-      </div>
-    </div>
-  );
-};
+      <p className="t-corpo text-texto-suave">{fact.content[language]}</p>
+    </Stack>
+  </Card>
+);
 
 const MusicalFacts: React.FC<MusicalFactsProps> = ({
   facts: initialFacts,
@@ -372,16 +248,6 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
           ))}
         </div>
       )}
-
-      {/* Floating fact bubbles decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-20 w-24 h-24 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-2xl animate-pulse"></div>
-        <div className="absolute bottom-20 left-20 w-32 h-32 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl"></div>
-        <div
-          className="absolute top-1/2 left-1/4 w-16 h-16 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-2xl animate-pulse"
-          style={{ animationDelay: '1s' }}
-        ></div>
-      </div>
     </section>
   );
 };

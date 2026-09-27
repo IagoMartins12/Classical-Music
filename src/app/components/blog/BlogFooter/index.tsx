@@ -129,7 +129,7 @@ export function BlogFooter() {
         <div className="py-8 border-t border-theme-secondary">
           <div className="max-w-2xl mx-auto text-center">
             <h4 className="text-lg font-semibold text-theme-primary mb-2">
-              📬 Receba novos artigos no seu email
+              Receba novos artigos no seu email
             </h4>
             <Text papel="rotulo" tom="suave" as="p" className="mb-4">
               Inscreva-se na nossa newsletter e fique por dentro das novidades

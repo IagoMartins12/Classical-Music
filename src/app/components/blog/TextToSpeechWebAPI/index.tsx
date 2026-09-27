@@ -330,7 +330,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
       </Inline>
 
       <Text papel="legenda" tom="fraco" as="p" className="text-center mt-3">
-        💡 Use fones de ouvido para melhor experiência
+        Use fones de ouvido para melhor experiência
       </Text>
     </Card>
   );

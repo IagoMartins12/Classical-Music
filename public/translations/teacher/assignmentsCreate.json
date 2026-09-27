@@ -78,7 +78,7 @@
     "assignment_type_composition_desc": "Criação e composição musical",
     "assignment_type_performance_desc": "Preparação para apresentações",
     "assignment_type_reading_desc": "Leitura e interpretação de partituras",
-    "piece_with_score": "✓ Com partitura",
+    "piece_with_score": "Com partitura",
     "composer": "Compositor"
   },
   "en": {
@@ -160,7 +160,7 @@
     "assignment_type_composition_desc": "Musical creation and composition",
     "assignment_type_performance_desc": "Preparation for performances",
     "assignment_type_reading_desc": "Score reading and interpretation",
-    "piece_with_score": "✓ With score",
+    "piece_with_score": "With score",
     "composer": "Composer"
   }
 }

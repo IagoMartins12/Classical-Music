@@ -111,7 +111,7 @@ export function ArticleCarousel({ articles }: ArticleCarouselProps) {
   if (articles.length === 0) {
     return (
       <Card densidade="larga" className="text-center">
-        <p className="text-theme-secondary">Em breve novos artigos 🎵</p>
+        <p className="text-theme-secondary">Em breve novos artigos</p>
       </Card>
     );
   }

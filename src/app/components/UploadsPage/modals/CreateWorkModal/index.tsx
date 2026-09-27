@@ -1397,8 +1397,8 @@ const CreateWorkModal = ({
                             as="p"
                             className="mt-2"
                           >
-                            💡 Busque pela obra principal que contém esta peça
-                            como parte ou movimento.
+                            Busque pela obra principal que contém esta peça como
+                            parte ou movimento.
                           </Text>
                         </div>
                       ) : (

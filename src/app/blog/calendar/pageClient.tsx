@@ -289,7 +289,7 @@ function EventLegend() {
   return (
     <Card nivel={2} className="mt-6 rounded-lg shadow-md">
       <h4 className="text-sm font-semibold mb-4 flex items-center">
-        <span className="mr-2">🎨</span>
+        <span className="mr-2"></span>
         Legenda de Cores
       </h4>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-3">
@@ -300,9 +300,7 @@ function EventLegend() {
             className="p-2 rounded-lg transition-colors"
           >
             <div className={`w-4 h-4 rounded ${item.color} flex-shrink-0`} />
-            <span className="text-sm truncate">
-              {item.icon} {item.label}
-            </span>
+            <span className="text-sm truncate">{item.label}</span>
           </Inline>
         ))}
       </div>

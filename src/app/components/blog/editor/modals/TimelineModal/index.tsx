@@ -144,7 +144,7 @@ export function TimelineModal({
           />
           {composerName && (
             <Text papel="legenda" tom="fraco" as="p" className="mt-2">
-              ✅ Timeline vinculada a: <strong>{composerName}</strong>
+              Timeline vinculada a:<strong>{composerName}</strong>
             </Text>
           )}
         </Card>

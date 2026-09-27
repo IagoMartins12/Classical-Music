@@ -65,15 +65,6 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = 'unset';
-      };
-    }
-  }, [isOpen]);
-
   const handleClose = () => {
     if (isLoading) return;
     setCurrentStep('warning');

@@ -670,15 +670,15 @@ export function CampaignStatsModal({
                                 as="div"
                                 className="mt-2 flex space-x-4"
                               >
-                                <span>📧 {stats.sent} enviados</span>
-                                <span>✅ {stats.delivered} entregues</span>
-                                <span>📖 {stats.opened} abertos</span>
+                                <span>{stats.sent} enviados</span>
+                                <span>{stats.delivered} entregues</span>
+                                <span>{stats.opened} abertos</span>
                               </Text>
                             )}
 
                             {event.type === 'MILESTONE_OPENS' && (
                               <div className="mt-2 text-xs">
-                                🎯 Meta atingida em{' '}
+                                Meta atingida em{' '}
                                 {campaign.sentAt
                                   ? Math.round(
                                       (new Date(event.timestamp).getTime() -

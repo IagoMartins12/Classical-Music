@@ -1,10 +1,11 @@
-// app/composers/ComposersClient.tsx - Premium version com Animação Sequencial
 'use client';
+// app/composers/ComposersClient.tsx - Premium version com Animação Sequencial
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { useLocalizedRouter } from '@/app/hooks/useLocalizedRouter';
 
 import { useState, useTransition, useCallback } from 'react';
 
-import { PiClock, PiMagnifyingGlass, PiUser } from 'react-icons/pi';
+import { PiClock, PiMagnifyingGlass, PiUser, PiX } from 'react-icons/pi';
 import ComposerCard from '../../../components/ComposersClient/ComposerCard';
 import ComposerCardList from '../../../components/ComposersClient/ComposerCardList';
 import PaginationControls from '../../../components/PaginationControls';
@@ -232,7 +233,8 @@ export default function ComposersClient({
                     onClick={() => handleSearchChange('')}
                     className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary transition-colors"
                   >
-                    ✕
+                    <PiX aria-hidden className="h-4 w-4" />
+                    <NomeAcao acao="limpar" />
                   </button>
                 )}
               </div>

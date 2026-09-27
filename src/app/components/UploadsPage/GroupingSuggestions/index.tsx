@@ -296,7 +296,7 @@ export default function GroupingSuggestions({
                   <PiInfo className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                   <Stack gap={1} className="text-xs text-blue-800">
                     <p className="font-medium">
-                      💡 Grupos IMSLP são apenas referência
+                      Grupos IMSLP são apenas referência
                     </p>
                     <p>
                       Você não pode adicionar suas partituras aos grupos do
@@ -359,7 +359,7 @@ export default function GroupingSuggestions({
           <PiInfo className="w-4 h-4 text-theme-tertiary mt-0.5 flex-shrink-0" />
           <Text papel="legenda" tom="fraco" as="div">
             <p className="font-medium mb-1">
-              💡 Como funciona o novo agrupamento:
+              Como funciona o novo agrupamento:
             </p>
             <Stack gap={1}>
               <p>

@@ -186,7 +186,7 @@ export function QuoteMusicalModal({
                     : 'text-theme-tertiary'
                 }`}
               >
-                📤 Fazer Upload
+                Fazer Upload
               </button>
               <button
                 type="button"
@@ -197,7 +197,7 @@ export function QuoteMusicalModal({
                     : 'text-theme-tertiary'
                 }`}
               >
-                🎥 Link do YouTube
+                Link do YouTube
               </button>
             </div>
 
@@ -220,7 +220,7 @@ export function QuoteMusicalModal({
                   {audioUrl && !uploading ? (
                     <div className="space-y-2">
                       <p className="text-sm text-green-700 font-medium">
-                        ✓ Áudio carregado com sucesso
+                        Áudio carregado com sucesso
                       </p>
                       <label
                         htmlFor="audio-upload-quote"
@@ -262,7 +262,7 @@ export function QuoteMusicalModal({
                 {youtubeUrl && extractYouTubeId(youtubeUrl) && (
                   <div className="p-3 bg-green-50 rounded-lg">
                     <p className="text-sm text-green-800">
-                      ✓ Link válido do YouTube
+                      Link válido do YouTube
                     </p>
                   </div>
                 )}
@@ -299,8 +299,8 @@ export function QuoteMusicalModal({
 
             <div className="p-3 bg-blue-50 rounded-lg">
               <p className="text-xs text-blue-800">
-                💡 <strong>Dica:</strong> A música tocará automaticamente em
-                loop quando o leitor visualizar a citação. Apenas o áudio será
+                <strong>Dica:</strong> A música tocará automaticamente em loop
+                quando o leitor visualizar a citação. Apenas o áudio será
                 reproduzido.
               </p>
             </div>

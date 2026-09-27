@@ -258,11 +258,9 @@ export default function CloneAdModal({
       if (hasMedia) {
         // A API não copia a mídia: dois anúncios no mesmo arquivo fariam a
         // remoção de um levar a imagem do outro.
-        toast.success(
-          '✅ Anúncio clonado como rascunho. Envie a mídia de novo.'
-        );
+        toast.success('Anúncio clonado como rascunho. Envie a mídia de novo.');
       } else {
-        toast.success('✅ Anúncio clonado! Adicione mídia se necessário.');
+        toast.success('Anúncio clonado! Adicione mídia se necessário.');
       }
 
       onSuccess();
@@ -333,8 +331,8 @@ export default function CloneAdModal({
                   Mídia será clonada
                 </h4>
                 <Text papel="rotulo" tom="suave" as="p" className="mt-1">
-                  📁 A mídia do anúncio original será copiada para uma nova
-                  pasta exclusiva do clone. Todas as versões responsivas serão
+                  A mídia do anúncio original será copiada para uma nova pasta
+                  exclusiva do clone. Todas as versões responsivas serão
                   duplicadas automaticamente.
                 </Text>
               </div>

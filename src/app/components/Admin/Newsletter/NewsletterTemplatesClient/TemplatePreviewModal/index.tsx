@@ -344,9 +344,9 @@ export default function TemplatePreviewModal({
         {/* Footer */}
         <div className="flex items-center justify-between p-6 border-t border-theme-secondary">
           <Text papel="rotulo" tom="fraco" as="div">
-            {deviceMode === 'mobile' && '📱 Visualização Mobile'}
-            {deviceMode === 'tablet' && '📟 Visualização Tablet'}
-            {deviceMode === 'desktop' && '🖥️ Visualização Desktop'}
+            {deviceMode === 'mobile' && 'Visualização Mobile'}
+            {deviceMode === 'tablet' && 'Visualização Tablet'}
+            {deviceMode === 'desktop' && 'Visualização Desktop'}
             {viewMode !== 'html' && ''}
           </Text>
 

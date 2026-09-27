@@ -199,7 +199,7 @@ export default function MediaUploadModal({
       // a API o aceita desde sempre (ver `uploadAdMedia`).
       await uploadAdMedia(ad.id, filePreview.file, uploadType);
 
-      toast.success('✅ Mídia processada com sucesso!');
+      toast.success('Mídia processada com sucesso!');
 
       // As "dicas de qualidade" que apareciam aqui vinham da rota do legado,
       // que analisava o arquivo no servidor do Next. A API não devolve isso, e
@@ -466,7 +466,7 @@ export default function MediaUploadModal({
 
                         {ad.imageVersions && (
                           <div className="text-theme-tertiary">
-                            Versões responsivas: ✓
+                            Versões responsivas:
                           </div>
                         )}
                       </div>
@@ -535,7 +535,7 @@ export default function MediaUploadModal({
 
                         {ad.videoVersions && (
                           <div className="text-theme-tertiary">
-                            Versões responsivas: ✓
+                            Versões responsivas:
                           </div>
                         )}
                       </div>
@@ -819,12 +819,10 @@ export default function MediaUploadModal({
                   <PiInfo className="w-5 h-5 mt-0.5 flex-shrink-0" />
                   <Stack gap={2}>
                     <h4 className="font-medium text-theme-primary">
-                      🚀 Processamento Inteligente
+                      Processamento Inteligente
                     </h4>
                     <ul className="text-sm text-theme-secondary space-y-1">
-                      <li>
-                        • 📁 Arquivos salvos em pasta exclusiva do anúncio
-                      </li>
+                      <li>• Arquivos salvos em pasta exclusiva do anúncio</li>
                       <li>
                         • Criamos versões otimizadas para desktop, tablet e
                         mobile

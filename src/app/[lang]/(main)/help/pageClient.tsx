@@ -178,7 +178,7 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
               <Inline gap={3} className="mt-2">
                 {guide.duration && (
                   <Text papel="rotulo" tom="fraco">
-                    📖 {guide.duration}
+                    {guide.duration}
                   </Text>
                 )}
                 <span
@@ -190,8 +190,8 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
                 </span>
                 <Text papel="legenda" tom="fraco" className="hidden md:flex">
                   {guide.type === 'article'
-                    ? `📄 ${t('help_type_article')}`
-                    : `🎯 ${t('help_type_interactive')}`}
+                    ? `${t('help_type_article')}`
+                    : `${t('help_type_interactive')}`}
                 </Text>
               </Inline>
             </div>

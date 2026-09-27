@@ -654,8 +654,8 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
 
       <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
         {result?.results.successful === result?.results.total
-          ? '✅ Envio Concluído!'
-          : '⚠️ Envio Parcial'}
+          ? 'Envio Concluído!'
+          : 'Envio Parcial'}
       </h2>
 
       <p className="text-theme-secondary mb-6">{result?.message}</p>

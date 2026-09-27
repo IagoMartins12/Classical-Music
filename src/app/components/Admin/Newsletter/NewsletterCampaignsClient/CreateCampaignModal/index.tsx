@@ -277,7 +277,7 @@ export default function CreateCampaignModal({
                     onChange={(e) =>
                       setForm((prev) => ({ ...prev, subject: e.target.value }))
                     }
-                    placeholder="Ex: 🎼 Descobertas musicais desta semana"
+                    placeholder="Ex: Descobertas musicais desta semana"
                   />
                 </div>
 
@@ -428,13 +428,13 @@ export default function CreateCampaignModal({
                                 gap={4}
                                 className="text-xs text-theme-tertiary"
                               >
-                                <span>📧 {selectedTemplate.subject}</span>
+                                <span>{selectedTemplate.subject}</span>
                                 <span>
-                                  🔧 {selectedTemplate.variables?.length || 0}{' '}
+                                  {selectedTemplate.variables?.length || 0}{' '}
                                   variáveis
                                 </span>
                                 <span>
-                                  📊 {selectedTemplate.timesUsed || 0} usos
+                                  {selectedTemplate.timesUsed || 0} usos
                                 </span>
                               </Inline>
                             </div>
@@ -562,7 +562,7 @@ export default function CreateCampaignModal({
                 {selectedTemplate && (
                   <div className="p-4 rounded-lg bg-sup-2">
                     <p className="text-sm">
-                      <strong>💡 Configurações do Template:</strong> As
+                      <strong>Configurações do Template:</strong> As
                       configurações acima sobrescreverão as configurações padrão
                       do template selecionado.
                     </p>
@@ -678,7 +678,7 @@ export default function CreateCampaignModal({
                 </div>
 
                 <Stack gap={2} className="p-4 rounded-lg bg-sup-2">
-                  <h4 className="font-medium">📊 Estimativa de Alcance</h4>
+                  <h4 className="font-medium">Estimativa de Alcance</h4>
                   <p className="text-sm">
                     Com as configurações atuais, esta campanha será enviada para
                     aproximadamente <strong>todos os subscribers ativos</strong>

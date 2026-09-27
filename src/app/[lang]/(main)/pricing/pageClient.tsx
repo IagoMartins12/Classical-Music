@@ -666,7 +666,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                 }
                 icon={PiMedal}
                 iconGradient
-                badge="⭐ PREMIUM"
+                badge="PREMIUM"
                 highlighted
                 trialDays={pricing.MAESTRO?.trialDays ?? 30}
                 features={[

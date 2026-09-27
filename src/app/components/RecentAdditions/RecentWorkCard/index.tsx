@@ -90,10 +90,10 @@ const RecentWorkCard = ({ work }: RecentWorkCardProps) => {
   return (
     <div className="group cursor-pointer select-none">
       <Link href={`/works/${work.id}`}>
-        <div className="classical-card-simple overflow-hidden transition-all duration-500 ease-out group-hover:scale-[1.02] relative">
+        <div className="classical-card-simple overflow-hidden transition-all duration-500 ease-out relative">
           {/* Badges */}
           {/* <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-            <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 backdrop-blur-md rounded-full px-2 py-1 text-xs font-medium text-green-400 flex items-center gap-1">
+            <div className="bg-sup-2 border border-green-500/30 backdrop-blur-md rounded-full px-2 py-1 text-xs font-medium text-ouro-texto flex items-center gap-1">
               <FiPlus className="w-2.5 h-2.5" />
               Novo
             </div>
@@ -119,20 +119,20 @@ const RecentWorkCard = ({ work }: RecentWorkCardProps) => {
                 <div className="relative w-14 h-14">
                   {/* Work icon */}
                   <div
-                    className={`w-full h-full bg-gradient-to-br  rounded-2xl flex items-center justify-center border-2 border-green-400/20 group-hover:border-green-400/50 transition-all duration-500 group-hover:scale-110 shadow-lg`}
+                    className={`w-full h-full fundo-sup-2 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 shadow-lg`}
                   >
-                    <PiMusicNotes className="w-7 h-7 text-white drop-shadow-sm" />
+                    <PiMusicNotes className="w-7 h-7 text-ouro-texto" />
                   </div>
 
                   {/* Pulse indicator */}
-                  {/* <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center animate-pulse shadow-lg">
-                    <FiPlus className="w-2 h-2 text-white" />
+                  {/* <div className="absolute -bottom-1 -right-1 w-4 h-4 fundo-sup-2 rounded-full flex items-center justify-center animate-pulse shadow-lg">
+                    <FiPlus className="w-2 h-2 text-ouro-texto" />
                   </div> */}
                 </div>
               </div>
 
               <div className="flex-1 min-w-0">
-                <h3 className="text-base font-bold text-theme-primary classical-title group-hover:text-green-400 transition-colors duration-300 line-clamp-2 leading-tight mb-1">
+                <h3 className="text-base font-bold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-300 line-clamp-2 leading-tight mb-1">
                   {work.title}
                 </h3>
 
@@ -196,22 +196,22 @@ const RecentWorkCard = ({ work }: RecentWorkCardProps) => {
             {/* Action bar */}
             <div className="flex items-center justify-end pt-3 border-t border-linha">
               {/* <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
-                <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
+                <div className="w-1.5 h-1.5 bg-texto-fraco rounded-full"></div>
                 <span className="font-medium">Recém-adicionado</span>
               </div> */}
 
               <div className="flex items-center gap-2">
                 <div
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-theme-tertiary hover:text-blue-400 transition-all duration-300"
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-theme-tertiary hover:text-ouro-texto transition-all duration-300"
                   title="Disponível no IMSLP"
                 >
                   <PiArrowSquareOut className="w-3.5 h-3.5" />
                 </div>
 
                 {/* Navigation arrow */}
-                <div className="w-6 h-6 rounded-full flex items-center justify-center group-hover:bg-green-400/10 transition-all duration-300">
+                <div className="w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300">
                   <svg
-                    className="w-3 h-3 text-theme-tertiary group-hover:text-green-400 transition-all duration-300 transform group-hover:translate-x-0.5"
+                    className="w-3 h-3 text-theme-tertiary group-hover:text-ouro-texto transition-all duration-300 transform group-hover:translate-x-0.5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -229,7 +229,6 @@ const RecentWorkCard = ({ work }: RecentWorkCardProps) => {
           </div>
 
           {/* Hover glow effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl pointer-events-none"></div>
 
           {/* Additional subtle overlay for depth */}
           <div

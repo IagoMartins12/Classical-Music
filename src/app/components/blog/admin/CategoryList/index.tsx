@@ -399,7 +399,7 @@ export function CategoryList({
                   .articles ?? 0) > 0 && (
                   <div className="mb-4 p-3 bg-red-500/10 rounded-lg">
                     <p className="text-sm text-red-600">
-                      ⚠️ Esta categoria possui{' '}
+                      Esta categoria possui{' '}
                       {
                         categories.find((c) => c.id === deleteModal)?._count
                           .articles

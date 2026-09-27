@@ -496,7 +496,7 @@ export default function SendTestCampaignModal({
         </div>
 
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
-          {isSuccess ? '✅ Teste Enviado!' : '⚠️ Envio Parcial'}
+          {isSuccess ? 'Teste Enviado!' : 'Envio Parcial'}
         </h2>
 
         <p className="text-theme-secondary mb-6">{sendResult?.message}</p>

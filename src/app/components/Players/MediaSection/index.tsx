@@ -786,7 +786,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   )}
                 {editData.removeCustomAudio && (
                   <p className="text-sm text-red-400 mt-1">
-                    ⚠️ {t('media_audio_removido')}
+                    {t('media_audio_removido')}
                   </p>
                 )}
               </div>
@@ -845,7 +845,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   as="div"
                   className="mt-3 text-center"
                 >
-                  💡 {t('media_dica_busca')}
+                  {t('media_dica_busca')}
                 </Text>
               )}
             </div>
@@ -1108,7 +1108,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   {t('media_atualizando_para')} &quot;{work.title}&quot;...
                 </p>
                 <p className="text-blue-400 text-xs mt-1">
-                  🎵 Spotify • 📺 YouTube • 🎼 Fontes de Áudio
+                  Spotify • YouTube • Fontes de Áudio
                 </p>
               </div>
             </Inline>

@@ -452,23 +452,23 @@ export const emailTemplates: Record<string, MultiLanguageEmailTemplate> = {
         
         <p style="font-size: 18px; line-height: 1.8; margin-bottom: 25px; text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
           É com grande alegria que recebemos você na comunidade <strong style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}</strong>! 
-          Agora você faz parte da melhor plataforma de música clássica.
-        </p>
-        
-        <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; font-size: 22px; text-align: center;">
-            Sua jornada musical começa agora!
-          </h3>
-          <div style="text-align: left; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-            <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">✨ Newsletter exclusiva com conteúdo premium</div>
-            <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">🎵 Descobertas sobre compositores e obras clássicas</div>
-            <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">📚 Recursos avançados de estudo musical</div>
-            <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">🎹 Acesso a partituras premium e análises detalhadas</div>
-          </div>
-        </div>
-        
-        <div class="text-center" style="margin: 40px 0;">
-          <a href="{{siteUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">Explorar ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}</a>
+ Agora você faz parte da melhor plataforma de música clássica.
+ </p>
+ 
+ <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; font-size: 22px; text-align: center;">
+ Sua jornada musical começa agora!
+ </h3>
+ <div style="text-align: left; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;"> Newsletter exclusiva com conteúdo premium</div>
+ <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;"> Descobertas sobre compositores e obras clássicas</div>
+ <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;"> Recursos avançados de estudo musical</div>
+ <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;"> Acesso a partituras premium e análises detalhadas</div>
+ </div>
+ </div>
+ 
+ <div class="text-center" style="margin: 40px 0;">
+ <a href="{{siteUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">Explorar${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}</a>
         </div>
         
         <p style="margin-top: 30px; font-style: italic; text-align: center; color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">
@@ -509,23 +509,23 @@ Para cancelar: {{unsubscribeUrl}}`,
         
         <p style="font-size: 18px; line-height: 1.8; margin-bottom: 25px; text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
           We're thrilled to welcome you to the <strong style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">${OPUS_ATLAS_CONFIG.en.BRAND_NAME}</strong> community! 
-          You're now part of the premier classical music platform.
-        </p>
-        
-        <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; font-size: 22px; text-align: center;">
-            Your musical journey begins now!
-          </h3>
-          <div style="text-align: left; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-            <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">✨ Exclusive newsletter with premium content</div>
-            <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">🎵 Discoveries about composers and classical works</div>
-            <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">📚 Advanced music study resources</div>
-            <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">🎹 Access to premium sheet music and detailed analyses</div>
-          </div>
-        </div>
-        
-        <div class="text-center" style="margin: 40px 0;">
-          <a href="{{siteUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">Explore ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}</a>
+ You're now part of the premier classical music platform.
+ </p>
+ 
+ <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; font-size: 22px; text-align: center;">
+ Your musical journey begins now!
+ </h3>
+ <div style="text-align: left; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;"> Exclusive newsletter with premium content</div>
+ <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;"> Discoveries about composers and classical works</div>
+ <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;"> Advanced music study resources</div>
+ <div style="margin-bottom: 12px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;"> Access to premium sheet music and detailed analyses</div>
+ </div>
+ </div>
+ 
+ <div class="text-center" style="margin: 40px 0;">
+ <a href="{{siteUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">Explore${OPUS_ATLAS_CONFIG.en.BRAND_NAME}</a>
         </div>
         
         <p style="margin-top: 30px; font-style: italic; text-align: center; color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">
@@ -565,67 +565,67 @@ To unsubscribe: {{unsubscribeUrl}}`,
       subject: `Confirme sua conta no ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <p style="font-size: 20px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">
-          Olá {{firstName}}! 👋
-        </p>
-        
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
-          Que alegria ter você conosco! Sua conta foi criada com sucesso, mas precisamos confirmar 
-          seu email para garantir a segurança e liberar todas as funcionalidades.
-        </p>
-        
-        <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
-            🚀 Sua jornada começa agora!
-          </h3>
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
-            Após confirmar sua conta, você terá acesso completo à nossa plataforma 
-            de música clássica, com recursos exclusivos e conteúdo de alta qualidade.
-          </p>
-        </div>
-        
-        <div style="text-align: center; margin: 40px 0;">
-          <a href="{{confirmationUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">
-            Confirmar Minha Conta
-          </a>
-        </div>
-        
-        <div class="features-grid">
-          <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
-            <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">📚</div>
-            <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Biblioteca Completa</div>
-            <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Acesso completo a compositores, obras e análises exclusivas</div>
-          </div>
-          <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
-            <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">🎵</div>
-            <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Partituras Premium</div>
-            <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Coleção curada de partituras em alta resolução</div>
-          </div>
-          <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
-            <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">📝</div>
-            <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Ferramentas Avançadas</div>
-            <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Anotações, marcadores e listas personalizadas</div>
-          </div>
-          <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
-            <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">🎓</div>
-            <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Análises Detalhadas</div>
-            <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Insights profundos sobre técnicas e estilos</div>
-          </div>
-        </div>
-        
-        <div class="security-note" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
-            <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;">🔒</span>
-            <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Segurança:</strong> Este link de confirmação é válido por 24 horas e pode ser usado apenas uma vez. 
-            Se você não criou esta conta, pode ignorar este email com segurança.
-          </p>
-        </div>
-        
-        <p style="color: #888 !important; -webkit-text-fill-color: #888 !important; font-size: 14px; line-height: 1.6; margin-top: 40px; text-align: center;">
-          Se o botão não funcionar, copie e cole este link no seu navegador:<br>
-          <a href="{{confirmationUrl}}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; word-break: break-all;">{{confirmationUrl}}</a>
-        </p>
-      `,
+ <p style="font-size: 20px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">
+ Olá {{firstName}}! 
+ </p>
+ 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
+ Que alegria ter você conosco! Sua conta foi criada com sucesso, mas precisamos confirmar 
+ seu email para garantir a segurança e liberar todas as funcionalidades.
+ </p>
+ 
+ <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+ Sua jornada começa agora!
+ </h3>
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
+ Após confirmar sua conta, você terá acesso completo à nossa plataforma 
+ de música clássica, com recursos exclusivos e conteúdo de alta qualidade.
+ </p>
+ </div>
+ 
+ <div style="text-align: center; margin: 40px 0;">
+ <a href="{{confirmationUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">
+ Confirmar Minha Conta
+ </a>
+ </div>
+ 
+ <div class="features-grid">
+ <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
+ <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;"></div>
+ <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Biblioteca Completa</div>
+ <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Acesso completo a compositores, obras e análises exclusivas</div>
+ </div>
+ <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
+ <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;"></div>
+ <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Partituras Premium</div>
+ <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Coleção curada de partituras em alta resolução</div>
+ </div>
+ <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
+ <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;"></div>
+ <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Ferramentas Avançadas</div>
+ <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Anotações, marcadores e listas personalizadas</div>
+ </div>
+ <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
+ <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;"></div>
+ <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Análises Detalhadas</div>
+ <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Insights profundos sobre técnicas e estilos</div>
+ </div>
+ </div>
+ 
+ <div class="security-note" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
+ <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;"></span>
+ <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Segurança:</strong> Este link de confirmação é válido por 24 horas e pode ser usado apenas uma vez. 
+ Se você não criou esta conta, pode ignorar este email com segurança.
+ </p>
+ </div>
+ 
+ <p style="color: #888 !important; -webkit-text-fill-color: #888 !important; font-size: 14px; line-height: 1.6; margin-top: 40px; text-align: center;">
+ Se o botão não funcionar, copie e cole este link no seu navegador:<br>
+ <a href="{{confirmationUrl}}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; word-break: break-all;">{{confirmationUrl}}</a>
+ </p>
+ `,
         'pt'
       ),
       textContent: `CONFIRME SUA CONTA - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}
@@ -638,10 +638,10 @@ Para confirmar sua conta e liberar todas as funcionalidades, acesse:
 {{confirmationUrl}}
 
 APÓS CONFIRMAR VOCÊ TERÁ ACESSO A:
-📚 Biblioteca Completa
-🎵 Partituras Premium
-📝 Ferramentas Avançadas de Estudo
-🎓 Análises Musicais Detalhadas
+ Biblioteca Completa
+ Partituras Premium
+ Ferramentas Avançadas de Estudo
+ Análises Musicais Detalhadas
 
 SEGURANÇA: Este link é válido por 24 horas e pode ser usado apenas uma vez.
 
@@ -657,67 +657,67 @@ ${OPUS_ATLAS_CONFIG.pt.CONTACT_EMAIL}`,
       subject: `Confirm your ${OPUS_ATLAS_CONFIG.en.BRAND_NAME} account`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <p style="font-size: 20px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">
-          Hello {{firstName}}! 👋
-        </p>
-        
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
-          We're excited to have you with us! Your account has been successfully created, but we need to confirm 
-          your email to ensure security and unlock all features.
-        </p>
-        
-        <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
-            🚀 Your journey begins now!
-          </h3>
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
-            After confirming your account, you'll have full access to our 
-            classical music platform, with exclusive features and high-quality content.
-          </p>
-        </div>
-        
-        <div style="text-align: center; margin: 40px 0;">
-          <a href="{{confirmationUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">
-            Confirm My Account
-          </a>
-        </div>
-        
-        <div class="features-grid">
-          <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
-            <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">📚</div>
-            <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Complete Library</div>
-            <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Full access to composers, works and exclusive analyses</div>
-          </div>
-          <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
-            <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">🎵</div>
-            <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Premium Sheet Music</div>
-            <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Curated collection of high-resolution sheet music</div>
-          </div>
-          <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
-            <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">📝</div>
-            <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Advanced Tools</div>
-            <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Notes, bookmarks and personalized lists</div>
-          </div>
-          <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
-            <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">🎓</div>
-            <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Detailed Analysis</div>
-            <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Deep insights into techniques and styles</div>
-          </div>
-        </div>
-        
-        <div class="security-note" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
-            <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;">🔒</span>
-            <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Security:</strong> This confirmation link is valid for 24 hours and can only be used once. 
-            If you didn't create this account, you can safely ignore this email.
-          </p>
-        </div>
-        
-        <p style="color: #888 !important; -webkit-text-fill-color: #888 !important; font-size: 14px; line-height: 1.6; margin-top: 40px; text-align: center;">
-          If the button doesn't work, copy and paste this link into your browser:<br>
-          <a href="{{confirmationUrl}}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; word-break: break-all;">{{confirmationUrl}}</a>
-        </p>
-      `,
+ <p style="font-size: 20px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">
+ Hello {{firstName}}! 
+ </p>
+ 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
+ We're excited to have you with us! Your account has been successfully created, but we need to confirm 
+ your email to ensure security and unlock all features.
+ </p>
+ 
+ <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+ Your journey begins now!
+ </h3>
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
+ After confirming your account, you'll have full access to our 
+ classical music platform, with exclusive features and high-quality content.
+ </p>
+ </div>
+ 
+ <div style="text-align: center; margin: 40px 0;">
+ <a href="{{confirmationUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">
+ Confirm My Account
+ </a>
+ </div>
+ 
+ <div class="features-grid">
+ <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
+ <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;"></div>
+ <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Complete Library</div>
+ <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Full access to composers, works and exclusive analyses</div>
+ </div>
+ <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
+ <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;"></div>
+ <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Premium Sheet Music</div>
+ <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Curated collection of high-resolution sheet music</div>
+ </div>
+ <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
+ <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;"></div>
+ <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Advanced Tools</div>
+ <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Notes, bookmarks and personalized lists</div>
+ </div>
+ <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
+ <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;"></div>
+ <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Detailed Analysis</div>
+ <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Deep insights into techniques and styles</div>
+ </div>
+ </div>
+ 
+ <div class="security-note" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
+ <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;"></span>
+ <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Security:</strong> This confirmation link is valid for 24 hours and can only be used once. 
+ If you didn't create this account, you can safely ignore this email.
+ </p>
+ </div>
+ 
+ <p style="color: #888 !important; -webkit-text-fill-color: #888 !important; font-size: 14px; line-height: 1.6; margin-top: 40px; text-align: center;">
+ If the button doesn't work, copy and paste this link into your browser:<br>
+ <a href="{{confirmationUrl}}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; word-break: break-all;">{{confirmationUrl}}</a>
+ </p>
+ `,
         'en'
       ),
       textContent: `CONFIRM YOUR ACCOUNT - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}
@@ -730,10 +730,10 @@ To confirm your account and unlock all features, visit:
 {{confirmationUrl}}
 
 AFTER CONFIRMING YOU'LL HAVE ACCESS TO:
-📚 Complete Library
-🎵 Premium Sheet Music
-📝 Advanced Study Tools
-🎓 Detailed Musical Analysis
+ Complete Library
+ Premium Sheet Music
+ Advanced Study Tools
+ Detailed Musical Analysis
 
 SECURITY: This link is valid for 24 hours and can only be used once.
 
@@ -758,64 +758,64 @@ ${OPUS_ATLAS_CONFIG.en.CONTACT_EMAIL}`,
         
         <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin-bottom: 25px; text-align: center;">
           Recebemos uma solicitação para redefinir a senha da sua conta no ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}.
-        </p>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; border: 1px solid rgba(212, 175, 55, 0.3) !important; padding: 25px !important; margin: 25px 0 !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 20px; text-align: center;">
-            📧 Detalhes da Solicitação
-          </h3>
-          <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Email:</strong> {{email}}
-            </p>
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Data:</strong> {{requestDate}}
-            </p>
-          </div>
-        </div>
-        
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin: 25px 0; text-align: center;">
-          Se foi você quem solicitou esta mudança, clique no botão abaixo para criar uma nova senha:
-        </p>
-        
-        <div style="text-align: center; margin: 40px 0;">
-          <a href="{{resetUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">
-            🔑 Redefinir Senha
-          </a>
-        </div>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h4 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;">💡 Dicas para uma Senha Segura:</h4>
-          <div style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: left;">
-            <div style="margin-bottom: 8px;">• Use pelo menos 8 caracteres</div>
-            <div style="margin-bottom: 8px;">• Combine letras maiúsculas e minúsculas</div>
-            <div style="margin-bottom: 8px;">• Inclua números e símbolos especiais</div>
-            <div style="margin-bottom: 8px;">• Evite informações pessoais óbvias</div>
-            <div>• Não reutilize senhas de outros sites</div>
-          </div>
-        </div>
-        
-        <div class="warning-box" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
-            <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;">⚠️</span>
-            <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Importante:</strong> Este link é válido por apenas 1 hora e pode ser usado uma única vez. 
-            Se você não solicitou esta mudança, ignore este email e sua senha permanecerá inalterada.
-          </p>
-        </div>
-        
-        <p style="color: #888 !important; -webkit-text-fill-color: #888 !important; font-size: 14px; line-height: 1.6; margin-top: 30px; text-align: center;">
-          Se o botão não funcionar, copie e cole este link no seu navegador:<br>
-          <a href="{{resetUrl}}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; word-break: break-all;">{{resetUrl}}</a>
-        </p>
-        
-        <p style="color: #888 !important; -webkit-text-fill-color: #888 !important; font-size: 14px; line-height: 1.6; margin-top: 20px; text-align: center;">
-          Problemas com sua conta? Entre em contato conosco em 
-          <a href="mailto:${OPUS_ATLAS_CONFIG.pt.SUPPORT_EMAIL}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">${OPUS_ATLAS_CONFIG.pt.SUPPORT_EMAIL}</a>
+ </p>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; border: 1px solid rgba(212, 175, 55, 0.3) !important; padding: 25px !important; margin: 25px 0 !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 20px; text-align: center;">
+ Detalhes da Solicitação
+ </h3>
+ <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Email:</strong> {{email}}
+ </p>
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Data:</strong> {{requestDate}}
+ </p>
+ </div>
+ </div>
+ 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin: 25px 0; text-align: center;">
+ Se foi você quem solicitou esta mudança, clique no botão abaixo para criar uma nova senha:
+ </p>
+ 
+ <div style="text-align: center; margin: 40px 0;">
+ <a href="{{resetUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">
+ Redefinir Senha
+ </a>
+ </div>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h4 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;"> Dicas para uma Senha Segura:</h4>
+ <div style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: left;">
+ <div style="margin-bottom: 8px;">• Use pelo menos 8 caracteres</div>
+ <div style="margin-bottom: 8px;">• Combine letras maiúsculas e minúsculas</div>
+ <div style="margin-bottom: 8px;">• Inclua números e símbolos especiais</div>
+ <div style="margin-bottom: 8px;">• Evite informações pessoais óbvias</div>
+ <div>• Não reutilize senhas de outros sites</div>
+ </div>
+ </div>
+ 
+ <div class="warning-box" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
+ <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;"></span>
+ <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Importante:</strong> Este link é válido por apenas 1 hora e pode ser usado uma única vez. 
+ Se você não solicitou esta mudança, ignore este email e sua senha permanecerá inalterada.
+ </p>
+ </div>
+ 
+ <p style="color: #888 !important; -webkit-text-fill-color: #888 !important; font-size: 14px; line-height: 1.6; margin-top: 30px; text-align: center;">
+ Se o botão não funcionar, copie e cole este link no seu navegador:<br>
+ <a href="{{resetUrl}}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; word-break: break-all;">{{resetUrl}}</a>
+ </p>
+ 
+ <p style="color: #888 !important; -webkit-text-fill-color: #888 !important; font-size: 14px; line-height: 1.6; margin-top: 20px; text-align: center;">
+ Problemas com sua conta? Entre em contato conosco em 
+ <a href="mailto:${OPUS_ATLAS_CONFIG.pt.SUPPORT_EMAIL}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">${OPUS_ATLAS_CONFIG.pt.SUPPORT_EMAIL}</a>
         </p>
       `,
         'pt'
       ),
-      textContent: `🔒 REDEFINIR SENHA - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}
+      textContent: `REDEFINIR SENHA -${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}
 
 Olá {{firstName}},
 
@@ -854,65 +854,65 @@ ${OPUS_ATLAS_CONFIG.pt.LOCATION}`,
         </p>
         
         <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin-bottom: 25px; text-align: center;">
-          We received a request to reset the password for your ${OPUS_ATLAS_CONFIG.en.BRAND_NAME} account.
-        </p>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; border: 1px solid rgba(212, 175, 55, 0.3) !important; padding: 25px !important; margin: 25px 0 !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 20px; text-align: center;">
-            📧 Request Details
-          </h3>
-          <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Email:</strong> {{email}}
-            </p>
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Date:</strong> {{requestDate}}
-            </p>
-          </div>
-        </div>
-        
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin: 25px 0; text-align: center;">
-          If you requested this change, click the button below to create a new password:
-        </p>
-        
-        <div style="text-align: center; margin: 40px 0;">
-          <a href="{{resetUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">
-            🔑 Reset Password
-          </a>
-        </div>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h4 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;">💡 Tips for a Secure Password:</h4>
-          <div style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: left;">
-            <div style="margin-bottom: 8px;">• Use at least 8 characters</div>
-            <div style="margin-bottom: 8px;">• Combine uppercase and lowercase letters</div>
-            <div style="margin-bottom: 8px;">• Include numbers and special symbols</div>
-            <div style="margin-bottom: 8px;">• Avoid obvious personal information</div>
-            <div>• Don't reuse passwords from other sites</div>
-          </div>
-        </div>
-        
-        <div class="warning-box" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
-            <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;">⚠️</span>
-            <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Important:</strong> This link is valid for only 1 hour and can be used once. 
-            If you didn't request this change, ignore this email and your password will remain unchanged.
-          </p>
-        </div>
-        
-        <p style="color: #888 !important; -webkit-text-fill-color: #888 !important; font-size: 14px; line-height: 1.6; margin-top: 30px; text-align: center;">
-          If the button doesn't work, copy and paste this link into your browser:<br>
-          <a href="{{resetUrl}}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; word-break: break-all;">{{resetUrl}}</a>
-        </p>
-        
-        <p style="color: #888 !important; -webkit-text-fill-color: #888 !important; font-size: 14px; line-height: 1.6; margin-top: 20px; text-align: center;">
-          Problems with your account? Contact us at 
-          <a href="mailto:${OPUS_ATLAS_CONFIG.en.SUPPORT_EMAIL}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">${OPUS_ATLAS_CONFIG.en.SUPPORT_EMAIL}</a>
+          We received a request to reset the password for your ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}account.
+ </p>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; border: 1px solid rgba(212, 175, 55, 0.3) !important; padding: 25px !important; margin: 25px 0 !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 20px; text-align: center;">
+ Request Details
+ </h3>
+ <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Email:</strong> {{email}}
+ </p>
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Date:</strong> {{requestDate}}
+ </p>
+ </div>
+ </div>
+ 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin: 25px 0; text-align: center;">
+ If you requested this change, click the button below to create a new password:
+ </p>
+ 
+ <div style="text-align: center; margin: 40px 0;">
+ <a href="{{resetUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">
+ Reset Password
+ </a>
+ </div>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h4 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;"> Tips for a Secure Password:</h4>
+ <div style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: left;">
+ <div style="margin-bottom: 8px;">• Use at least 8 characters</div>
+ <div style="margin-bottom: 8px;">• Combine uppercase and lowercase letters</div>
+ <div style="margin-bottom: 8px;">• Include numbers and special symbols</div>
+ <div style="margin-bottom: 8px;">• Avoid obvious personal information</div>
+ <div>• Don't reuse passwords from other sites</div>
+ </div>
+ </div>
+ 
+ <div class="warning-box" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
+ <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;"></span>
+ <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Important:</strong> This link is valid for only 1 hour and can be used once. 
+ If you didn't request this change, ignore this email and your password will remain unchanged.
+ </p>
+ </div>
+ 
+ <p style="color: #888 !important; -webkit-text-fill-color: #888 !important; font-size: 14px; line-height: 1.6; margin-top: 30px; text-align: center;">
+ If the button doesn't work, copy and paste this link into your browser:<br>
+ <a href="{{resetUrl}}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; word-break: break-all;">{{resetUrl}}</a>
+ </p>
+ 
+ <p style="color: #888 !important; -webkit-text-fill-color: #888 !important; font-size: 14px; line-height: 1.6; margin-top: 20px; text-align: center;">
+ Problems with your account? Contact us at 
+ <a href="mailto:${OPUS_ATLAS_CONFIG.en.SUPPORT_EMAIL}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">${OPUS_ATLAS_CONFIG.en.SUPPORT_EMAIL}</a>
         </p>
       `,
         'en'
       ),
-      textContent: `🔒 RESET PASSWORD - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}
+      textContent: `RESET PASSWORD -${OPUS_ATLAS_CONFIG.en.BRAND_NAME}
 
 Hello {{firstName}},
 
@@ -946,55 +946,55 @@ ${OPUS_ATLAS_CONFIG.en.LOCATION}`,
 
   WEEKLY_DIGEST: {
     pt: {
-      subject: `🎼 Digest Semanal - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
+      subject: `Digest Semanal -${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
         <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">Sua dose semanal de música</h2>
         
         <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
           Olá, {{firstName}}! Aqui estão as novidades desta semana no ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}.
-        </p>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; text-align: center;">📊 Estatísticas da Semana</h3>
-          <div style="text-align: center;">
-            <div style="margin-bottom: 20px;">
-              <strong style="font-size: 28px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; display: block;">{{newComposers}}</strong>
-              <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">Novos Compositores</span>
-            </div>
-            <div style="margin-bottom: 20px;">
-              <strong style="font-size: 28px; color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; display: block;">{{newWorks}}</strong>
-              <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">Novas Obras</span>
-            </div>
-            <div style="margin-bottom: 20px;">
-              <strong style="font-size: 28px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; display: block;">{{newScores}}</strong>
-              <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">Partituras</span>
-            </div>
-            <div>
-              <strong style="font-size: 28px; color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; display: block;">{{activeUsers}}</strong>
-              <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">Usuários Ativos</span>
-            </div>
-          </div>
-        </div>
-        
-        {{#if featuredComposer}}
-        <div class="composer-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">🎭 Compositor em Destaque</h3>
-          <h4 style="margin-bottom: 10px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: center; font-size: 22px;">{{featuredComposer.name}}</h4>
-          <p style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important; margin-bottom: 15px; text-align: center;">{{featuredComposer.period}}</p>
-          <p style="margin-bottom: 20px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: center;">{{featuredComposer.description}}</p>
-          <div style="text-align: center;">
-            <a href="{{featuredComposer.url}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">Conhecer Compositor</a>
-          </div>
-        </div>
-        {{/if}}
-        
-        <div class="text-center" style="margin: 40px 0;">
-          <a href="{{siteUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">Explorar Mais Conteúdo</a>
-        </div>
-        
-        <p style="margin-top: 30px; text-align: center; color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important; font-style: italic;">
-          Continue sua jornada musical com o ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}!
+ </p>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; text-align: center;"> Estatísticas da Semana</h3>
+ <div style="text-align: center;">
+ <div style="margin-bottom: 20px;">
+ <strong style="font-size: 28px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; display: block;">{{newComposers}}</strong>
+ <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">Novos Compositores</span>
+ </div>
+ <div style="margin-bottom: 20px;">
+ <strong style="font-size: 28px; color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; display: block;">{{newWorks}}</strong>
+ <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">Novas Obras</span>
+ </div>
+ <div style="margin-bottom: 20px;">
+ <strong style="font-size: 28px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; display: block;">{{newScores}}</strong>
+ <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">Partituras</span>
+ </div>
+ <div>
+ <strong style="font-size: 28px; color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; display: block;">{{activeUsers}}</strong>
+ <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">Usuários Ativos</span>
+ </div>
+ </div>
+ </div>
+ 
+ {{#if featuredComposer}}
+ <div class="composer-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;"> Compositor em Destaque</h3>
+ <h4 style="margin-bottom: 10px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: center; font-size: 22px;">{{featuredComposer.name}}</h4>
+ <p style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important; margin-bottom: 15px; text-align: center;">{{featuredComposer.period}}</p>
+ <p style="margin-bottom: 20px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: center;">{{featuredComposer.description}}</p>
+ <div style="text-align: center;">
+ <a href="{{featuredComposer.url}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">Conhecer Compositor</a>
+ </div>
+ </div>
+ {{/if}}
+ 
+ <div class="text-center" style="margin: 40px 0;">
+ <a href="{{siteUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">Explorar Mais Conteúdo</a>
+ </div>
+ 
+ <p style="margin-top: 30px; text-align: center; color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important; font-style: italic;">
+ Continue sua jornada musical com o${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}!
         </p>
       `,
         'pt'
@@ -1031,55 +1031,55 @@ Cancelar: {{unsubscribeUrl}}`,
       description: 'Newsletter semanal com resumo de atividades',
     },
     en: {
-      subject: `🎼 Weekly Digest - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}`,
+      subject: `Weekly Digest -${OPUS_ATLAS_CONFIG.en.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
         <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">Your weekly dose of music</h2>
         
         <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
           Hello, {{firstName}}! Here are this week's highlights from ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}.
-        </p>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; text-align: center;">📊 Week's Statistics</h3>
-          <div style="text-align: center;">
-            <div style="margin-bottom: 20px;">
-              <strong style="font-size: 28px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; display: block;">{{newComposers}}</strong>
-              <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">New Composers</span>
-            </div>
-            <div style="margin-bottom: 20px;">
-              <strong style="font-size: 28px; color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; display: block;">{{newWorks}}</strong>
-              <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">New Works</span>
-            </div>
-            <div style="margin-bottom: 20px;">
-              <strong style="font-size: 28px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; display: block;">{{newScores}}</strong>
-              <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">Sheet Music</span>
-            </div>
-            <div>
-              <strong style="font-size: 28px; color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; display: block;">{{activeUsers}}</strong>
-              <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">Active Users</span>
-            </div>
-          </div>
-        </div>
-        
-        {{#if featuredComposer}}
-        <div class="composer-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">🎭 Featured Composer</h3>
-          <h4 style="margin-bottom: 10px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: center; font-size: 22px;">{{featuredComposer.name}}</h4>
-          <p style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important; margin-bottom: 15px; text-align: center;">{{featuredComposer.period}}</p>
-          <p style="margin-bottom: 20px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: center;">{{featuredComposer.description}}</p>
-          <div style="text-align: center;">
-            <a href="{{featuredComposer.url}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">Discover Composer</a>
-          </div>
-        </div>
-        {{/if}}
-        
-        <div class="text-center" style="margin: 40px 0;">
-          <a href="{{siteUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">Explore More Content</a>
-        </div>
-        
-        <p style="margin-top: 30px; text-align: center; color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important; font-style: italic;">
-          Continue your musical journey with ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}!
+ </p>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; text-align: center;"> Week's Statistics</h3>
+ <div style="text-align: center;">
+ <div style="margin-bottom: 20px;">
+ <strong style="font-size: 28px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; display: block;">{{newComposers}}</strong>
+ <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">New Composers</span>
+ </div>
+ <div style="margin-bottom: 20px;">
+ <strong style="font-size: 28px; color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; display: block;">{{newWorks}}</strong>
+ <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">New Works</span>
+ </div>
+ <div style="margin-bottom: 20px;">
+ <strong style="font-size: 28px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; display: block;">{{newScores}}</strong>
+ <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">Sheet Music</span>
+ </div>
+ <div>
+ <strong style="font-size: 28px; color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; display: block;">{{activeUsers}}</strong>
+ <span style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 14px;">Active Users</span>
+ </div>
+ </div>
+ </div>
+ 
+ {{#if featuredComposer}}
+ <div class="composer-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;"> Featured Composer</h3>
+ <h4 style="margin-bottom: 10px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: center; font-size: 22px;">{{featuredComposer.name}}</h4>
+ <p style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important; margin-bottom: 15px; text-align: center;">{{featuredComposer.period}}</p>
+ <p style="margin-bottom: 20px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: center;">{{featuredComposer.description}}</p>
+ <div style="text-align: center;">
+ <a href="{{featuredComposer.url}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">Discover Composer</a>
+ </div>
+ </div>
+ {{/if}}
+ 
+ <div class="text-center" style="margin: 40px 0;">
+ <a href="{{siteUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important; display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase;">Explore More Content</a>
+ </div>
+ 
+ <p style="margin-top: 30px; text-align: center; color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important; font-style: italic;">
+ Continue your musical journey with${OPUS_ATLAS_CONFIG.en.BRAND_NAME}!
         </p>
       `,
         'en'
@@ -1122,20 +1122,20 @@ Unsubscribe: {{unsubscribeUrl}}`,
       subject: `Inscrição cancelada - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <div style="text-align: center; margin-bottom: 30px;">
-          <div style="display: inline-block; width: 80px; height: 80px; background: linear-gradient(135deg, #ff9a8b 0%, #a8edea 100%); border-radius: 50%; line-height: 80px; font-size: 32px; margin-bottom: 20px;">
-            👋
-          </div>
-        </div>
+ <div style="text-align: center; margin-bottom: 30px;">
+ <div style="display: inline-block; width: 80px; height: 80px; background: linear-gradient(135deg, #ff9a8b 0%, #a8edea 100%); border-radius: 50%; line-height: 80px; font-size: 32px; margin-bottom: 20px;">
+ 
+ </div>
+ </div>
 
-        <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">Inscrição Cancelada</h2>
+ <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">Inscrição Cancelada</h2>
 
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 18px; line-height: 1.8; margin-bottom: 25px; text-align: center;">
-          Olá {{firstName}},
-        </p>
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 18px; line-height: 1.8; margin-bottom: 25px; text-align: center;">
+ Olá {{firstName}},
+ </p>
 
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 16px; line-height: 1.6; margin-bottom: 25px; text-align: center;">
-          Sua inscrição na newsletter do ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME} foi <strong style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">cancelada com sucesso</strong>. 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 16px; line-height: 1.6; margin-bottom: 25px; text-align: center;">
+ Sua inscrição na newsletter do${OPUS_ATLAS_CONFIG.pt.BRAND_NAME} foi <strong style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">cancelada com sucesso</strong>. 
           Você não receberá mais nossos emails sobre música clássica.
         </p>
 
@@ -1180,20 +1180,20 @@ Equipe ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
       subject: `Subscription cancelled - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <div style="text-align: center; margin-bottom: 30px;">
-          <div style="display: inline-block; width: 80px; height: 80px; background: linear-gradient(135deg, #ff9a8b 0%, #a8edea 100%); border-radius: 50%; line-height: 80px; font-size: 32px; margin-bottom: 20px;">
-            👋
-          </div>
-        </div>
+ <div style="text-align: center; margin-bottom: 30px;">
+ <div style="display: inline-block; width: 80px; height: 80px; background: linear-gradient(135deg, #ff9a8b 0%, #a8edea 100%); border-radius: 50%; line-height: 80px; font-size: 32px; margin-bottom: 20px;">
+ 
+ </div>
+ </div>
 
-        <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">Subscription Cancelled</h2>
+ <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">Subscription Cancelled</h2>
 
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 18px; line-height: 1.8; margin-bottom: 25px; text-align: center;">
-          Hello {{firstName}},
-        </p>
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 18px; line-height: 1.8; margin-bottom: 25px; text-align: center;">
+ Hello {{firstName}},
+ </p>
 
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 16px; line-height: 1.6; margin-bottom: 25px; text-align: center;">
-          Your subscription to the ${OPUS_ATLAS_CONFIG.en.BRAND_NAME} newsletter has been <strong style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">successfully cancelled</strong>. 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; font-size: 16px; line-height: 1.6; margin-bottom: 25px; text-align: center;">
+ Your subscription to the${OPUS_ATLAS_CONFIG.en.BRAND_NAME} newsletter has been <strong style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">successfully cancelled</strong>. 
           You will no longer receive our emails about classical music.
         </p>
 
@@ -1238,35 +1238,35 @@ ${OPUS_ATLAS_CONFIG.en.BRAND_NAME} Team`,
 
   NEW_COMPOSER: {
     pt: {
-      subject: `🎭 Novo compositor adicionado: {{composerName}} - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
+      subject: `Novo compositor adicionado: {{composerName}} -${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; text-align: center;">Novo compositor descoberto!</h2>
-        
-        <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-          Olá, {{firstName}}! Temos uma novidade emocionante para compartilhar com você.
-        </p>
-        
-        <div class="composer-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center; font-size: 24px;">🎭 {{composerName}}</h3>
-          <div style="text-align: center; margin-bottom: 20px;">
-            <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin-bottom: 8px;"><strong>Período:</strong> {{composerPeriod}}</p>
-            <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin-bottom: 20px;"><strong>Nacionalidade:</strong> {{composerNationality}}</p>
-          </div>
-          <p style="margin-bottom: 25px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: center; line-height: 1.7;">{{composerBio}}</p>
-          
-          <div class="text-center" style="margin-top: 30px;">
-            <a href="{{composerUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">Explorar Compositor</a>
-          </div>
-        </div>
-        
-        <p style="margin-top: 30px; text-align: center; color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">
-          Continue explorando nosso catálogo e descobrindo novos compositores!
-        </p>
-      `,
+ <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; text-align: center;">Novo compositor descoberto!</h2>
+ 
+ <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ Olá, {{firstName}}! Temos uma novidade emocionante para compartilhar com você.
+ </p>
+ 
+ <div class="composer-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center; font-size: 24px;"> {{composerName}}</h3>
+ <div style="text-align: center; margin-bottom: 20px;">
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin-bottom: 8px;"><strong>Período:</strong> {{composerPeriod}}</p>
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin-bottom: 20px;"><strong>Nacionalidade:</strong> {{composerNationality}}</p>
+ </div>
+ <p style="margin-bottom: 25px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: center; line-height: 1.7;">{{composerBio}}</p>
+ 
+ <div class="text-center" style="margin-top: 30px;">
+ <a href="{{composerUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">Explorar Compositor</a>
+ </div>
+ </div>
+ 
+ <p style="margin-top: 30px; text-align: center; color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">
+ Continue explorando nosso catálogo e descobrindo novos compositores!
+ </p>
+ `,
         'pt'
       ),
-      textContent: `🎭 NOVO COMPOSITOR DESCOBERTO!
+      textContent: `NOVO COMPOSITOR DESCOBERTO!
 
 Olá {{firstName}},
 
@@ -1293,35 +1293,35 @@ Cancelar: {{unsubscribeUrl}}`,
       description: 'Notificação sobre novo compositor adicionado',
     },
     en: {
-      subject: `🎭 New composer added: {{composerName}} - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}`,
+      subject: `New composer added: {{composerName}} -${OPUS_ATLAS_CONFIG.en.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; text-align: center;">New composer discovered!</h2>
-        
-        <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-          Hello, {{firstName}}! We have exciting news to share with you.
-        </p>
-        
-        <div class="composer-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center; font-size: 24px;">🎭 {{composerName}}</h3>
-          <div style="text-align: center; margin-bottom: 20px;">
-            <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin-bottom: 8px;"><strong>Period:</strong> {{composerPeriod}}</p>
-            <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin-bottom: 20px;"><strong>Nationality:</strong> {{composerNationality}}</p>
-          </div>
-          <p style="margin-bottom: 25px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: center; line-height: 1.7;">{{composerBio}}</p>
-          
-          <div class="text-center" style="margin-top: 30px;">
-            <a href="{{composerUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">Explore Composer</a>
-          </div>
-        </div>
-        
-        <p style="margin-top: 30px; text-align: center; color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">
-          Continue exploring our catalog and discovering new composers!
-        </p>
-      `,
+ <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; text-align: center;">New composer discovered!</h2>
+ 
+ <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ Hello, {{firstName}}! We have exciting news to share with you.
+ </p>
+ 
+ <div class="composer-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center; font-size: 24px;"> {{composerName}}</h3>
+ <div style="text-align: center; margin-bottom: 20px;">
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin-bottom: 8px;"><strong>Period:</strong> {{composerPeriod}}</p>
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin-bottom: 20px;"><strong>Nationality:</strong> {{composerNationality}}</p>
+ </div>
+ <p style="margin-bottom: 25px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; text-align: center; line-height: 1.7;">{{composerBio}}</p>
+ 
+ <div class="text-center" style="margin-top: 30px;">
+ <a href="{{composerUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">Explore Composer</a>
+ </div>
+ </div>
+ 
+ <p style="margin-top: 30px; text-align: center; color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">
+ Continue exploring our catalog and discovering new composers!
+ </p>
+ `,
         'en'
       ),
-      textContent: `🎭 NEW COMPOSER DISCOVERED!
+      textContent: `NEW COMPOSER DISCOVERED!
 
 Hello {{firstName}},
 
@@ -1351,55 +1351,55 @@ Unsubscribe: {{unsubscribeUrl}}`,
 
   TEACHER_INVITATION: {
     pt: {
-      subject: `🎓 Convite para ser Professor - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
+      subject: `Convite para ser Professor -${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">Você foi convidado para ser Professor!</h2>
-        
-        <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-          Olá, {{firstName}}! Temos uma oportunidade especial para você.
-        </p>
-        
-        <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
-            🎼 Convite para Ensinar no ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}
-          </h3>
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
-            Você foi selecionado para se tornar professor em nossa plataforma! 
-            Agora pode compartilhar seu conhecimento musical e guiar alunos.
-          </p>
-        </div>
-        
-        <div class="features-grid">
-          <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
-            <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">👨‍🎓</div>
-            <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Ensine Alunos</div>
-            <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Adicione e gerencie seus alunos</div>
-          </div>
-          <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
-            <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">📅</div>
-            <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Agende Aulas</div>
-            <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Sistema completo de agendamento</div>
-          </div>
-        </div>
-        
-        <div style="text-align: center; margin: 40px 0;">
-          <a href="{{acceptUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">
-            ✅ Aceitar Convite
-          </a>
-          <br><br>
-          <a href="{{declineUrl}}" class="btn-secondary" style="background: #2a2a2a !important; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">
-            ❌ Recusar Convite
-          </a>
-        </div>
-      `,
+ <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">Você foi convidado para ser Professor!</h2>
+ 
+ <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ Olá, {{firstName}}! Temos uma oportunidade especial para você.
+ </p>
+ 
+ <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+ Convite para Ensinar no${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}
+ </h3>
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
+ Você foi selecionado para se tornar professor em nossa plataforma! 
+ Agora pode compartilhar seu conhecimento musical e guiar alunos.
+ </p>
+ </div>
+ 
+ <div class="features-grid">
+ <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
+ <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;"></div>
+ <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Ensine Alunos</div>
+ <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Adicione e gerencie seus alunos</div>
+ </div>
+ <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
+ <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;"></div>
+ <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Agende Aulas</div>
+ <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Sistema completo de agendamento</div>
+ </div>
+ </div>
+ 
+ <div style="text-align: center; margin: 40px 0;">
+ <a href="{{acceptUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">
+ Aceitar Convite
+ </a>
+ <br><br>
+ <a href="{{declineUrl}}" class="btn-secondary" style="background: #2a2a2a !important; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">
+ Recusar Convite
+ </a>
+ </div>
+ `,
         'pt'
       ),
       textContent: `CONVITE PARA SER PROFESSOR - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}
 
 Olá {{firstName}},
 
-🎓 Você foi convidado para se tornar professor!
+ Você foi convidado para se tornar professor!
 
 ACEITAR: {{acceptUrl}}
 RECUSAR: {{declineUrl}}
@@ -1409,55 +1409,55 @@ ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME} - Compartilhe seu conhecimento`,
       description: 'Convite para usuário se tornar professor',
     },
     en: {
-      subject: `🎓 Teacher Invitation - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}`,
+      subject: `Teacher Invitation -${OPUS_ATLAS_CONFIG.en.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">You're invited to become a Teacher!</h2>
-        
-        <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-          Hello, {{firstName}}! We have a special opportunity for you.
-        </p>
-        
-        <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
-            🎼 Invitation to Teach at ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}
-          </h3>
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
-            You've been selected to become a teacher on our platform! 
-            Now you can share your musical knowledge and guide students.
-          </p>
-        </div>
-        
-        <div class="features-grid">
-          <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
-            <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">👨‍🎓</div>
-            <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Teach Students</div>
-            <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Add and manage your students</div>
-          </div>
-          <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
-            <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">📅</div>
-            <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Schedule Classes</div>
-            <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Complete scheduling system</div>
-          </div>
-        </div>
-        
-        <div style="text-align: center; margin: 40px 0;">
-          <a href="{{acceptUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">
-            ✅ Accept Invitation
-          </a>
-          <br><br>
-          <a href="{{declineUrl}}" class="btn-secondary" style="background: #2a2a2a !important; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">
-            ❌ Decline Invitation
-          </a>
-        </div>
-      `,
+ <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">You're invited to become a Teacher!</h2>
+ 
+ <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ Hello, {{firstName}}! We have a special opportunity for you.
+ </p>
+ 
+ <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+ Invitation to Teach at${OPUS_ATLAS_CONFIG.en.BRAND_NAME}
+ </h3>
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
+ You've been selected to become a teacher on our platform! 
+ Now you can share your musical knowledge and guide students.
+ </p>
+ </div>
+ 
+ <div class="features-grid">
+ <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
+ <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;"></div>
+ <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Teach Students</div>
+ <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Add and manage your students</div>
+ </div>
+ <div class="feature-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important; text-align: center;">
+ <div class="feature-icon" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;"></div>
+ <div class="feature-title" style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Schedule Classes</div>
+ <div class="feature-desc" style="color: #b0b0b0 !important; -webkit-text-fill-color: #b0b0b0 !important;">Complete scheduling system</div>
+ </div>
+ </div>
+ 
+ <div style="text-align: center; margin: 40px 0;">
+ <a href="{{acceptUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">
+ Accept Invitation
+ </a>
+ <br><br>
+ <a href="{{declineUrl}}" class="btn-secondary" style="background: #2a2a2a !important; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">
+ Decline Invitation
+ </a>
+ </div>
+ `,
         'en'
       ),
       textContent: `TEACHER INVITATION - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}
 
 Hello {{firstName}},
 
-🎓 You're invited to become a teacher!
+ You're invited to become a teacher!
 
 ACCEPT: {{acceptUrl}}
 DECLINE: {{declineUrl}}
@@ -1470,42 +1470,42 @@ ${OPUS_ATLAS_CONFIG.en.BRAND_NAME} - Share your knowledge`,
 
   STUDENT_INVITATION: {
     pt: {
-      subject: `🎵 Você foi adicionado como aluno - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
+      subject: `Você foi adicionado como aluno -${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">Você tem um novo professor!</h2>
-        
-        <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-          Olá, {{firstName}}! {{teacherName}} adicionou você como aluno.
-        </p>
-        
-        <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
-            🎼 Sua Jornada Musical Começa Agora!
-          </h3>
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
-            Você foi adicionado como aluno de <strong style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">{{teacherName}}</strong> 
-            no ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}.
-          </p>
-        </div>
-        
-        <div style="text-align: center; margin: 40px 0;">
-          <a href="{{acceptUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">
-            ✅ Aceitar Convite
-          </a>
-          <br><br>
-          <a href="{{declineUrl}}" class="btn-secondary" style="background: #2a2a2a !important; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">
-            ❌ Recusar Convite
-          </a>
-        </div>
-      `,
+ <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">Você tem um novo professor!</h2>
+ 
+ <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ Olá, {{firstName}}! {{teacherName}} adicionou você como aluno.
+ </p>
+ 
+ <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+ Sua Jornada Musical Começa Agora!
+ </h3>
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
+ Você foi adicionado como aluno de <strong style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">{{teacherName}}</strong> 
+ no${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}.
+ </p>
+ </div>
+ 
+ <div style="text-align: center; margin: 40px 0;">
+ <a href="{{acceptUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">
+ Aceitar Convite
+ </a>
+ <br><br>
+ <a href="{{declineUrl}}" class="btn-secondary" style="background: #2a2a2a !important; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">
+ Recusar Convite
+ </a>
+ </div>
+ `,
         'pt'
       ),
       textContent: `VOCÊ FOI ADICIONADO COMO ALUNO - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}
 
 Olá {{firstName}},
 
-🎵 {{teacherName}} adicionou você como aluno!
+ {{teacherName}} adicionou você como aluno!
 
 ACEITAR: {{acceptUrl}}
 RECUSAR: {{declineUrl}}
@@ -1515,42 +1515,42 @@ ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME} - Sua jornada musical começa agora!`,
       description: 'Convite para usuário se tornar aluno',
     },
     en: {
-      subject: `🎵 You've been added as a student - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}`,
+      subject: `You've been added as a student -${OPUS_ATLAS_CONFIG.en.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">You have a new teacher!</h2>
-        
-        <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-          Hello, {{firstName}}! {{teacherName}} has added you as a student.
-        </p>
-        
-        <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
-            🎼 Your Musical Journey Begins Now!
-          </h3>
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
-            You've been added as a student of <strong style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">{{teacherName}}</strong> 
-            on ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}.
-          </p>
-        </div>
-        
-        <div style="text-align: center; margin: 40px 0;">
-          <a href="{{acceptUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">
-            ✅ Accept Invitation
-          </a>
-          <br><br>
-          <a href="{{declineUrl}}" class="btn-secondary" style="background: #2a2a2a !important; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">
-            ❌ Decline Invitation
-          </a>
-        </div>
-      `,
+ <h2 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">You have a new teacher!</h2>
+ 
+ <p style="font-size: 18px; text-align: center; margin-bottom: 30px; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ Hello, {{firstName}}! {{teacherName}} has added you as a student.
+ </p>
+ 
+ <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+ Your Musical Journey Begins Now!
+ </h3>
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
+ You've been added as a student of <strong style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">{{teacherName}}</strong> 
+ on${OPUS_ATLAS_CONFIG.en.BRAND_NAME}.
+ </p>
+ </div>
+ 
+ <div style="text-align: center; margin: 40px 0;">
+ <a href="{{acceptUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">
+ Accept Invitation
+ </a>
+ <br><br>
+ <a href="{{declineUrl}}" class="btn-secondary" style="background: #2a2a2a !important; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">
+ Decline Invitation
+ </a>
+ </div>
+ `,
         'en'
       ),
       textContent: `YOU'VE BEEN ADDED AS A STUDENT - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}
 
 Hello {{firstName}},
 
-🎵 {{teacherName}} has added you as a student!
+ {{teacherName}} has added you as a student!
 
 ACCEPT: {{acceptUrl}}
 DECLINE: {{declineUrl}}
@@ -1601,42 +1601,42 @@ Unsubscribe: {{unsubscribeUrl}}`,
       subject: `Confirme sua mudança de email - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <p style="font-size: 20px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">
-          Olá {{firstName}}! 📧
-        </p>
-        
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
-          Você solicitou a alteração do email da sua conta no ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}.
-        </p>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
-            📧 Detalhes da Mudança
-          </h3>
-          <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Email atual:</strong> {{oldEmail}}
-            </p>
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Novo email:</strong> {{newEmail}}
-            </p>
-          </div>
-        </div>
-        
-        <div style="text-align: center; margin: 40px 0;">
-          <a href="{{confirmationUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">
-            ✅ Confirmar Mudança de Email
-          </a>
-        </div>
-        
-        <div class="warning-box" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
-            <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;">⚠️</span>
-            <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Importante:</strong> Este link é válido por 24 horas.
-            Se não solicitou esta mudança, ignore este email.
-          </p>
-        </div>
-      `,
+ <p style="font-size: 20px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">
+ Olá {{firstName}}! 
+ </p>
+ 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
+ Você solicitou a alteração do email da sua conta no${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}.
+ </p>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+ Detalhes da Mudança
+ </h3>
+ <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Email atual:</strong> {{oldEmail}}
+ </p>
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Novo email:</strong> {{newEmail}}
+ </p>
+ </div>
+ </div>
+ 
+ <div style="text-align: center; margin: 40px 0;">
+ <a href="{{confirmationUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">
+ Confirmar Mudança de Email
+ </a>
+ </div>
+ 
+ <div class="warning-box" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
+ <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;"></span>
+ <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Importante:</strong> Este link é válido por 24 horas.
+ Se não solicitou esta mudança, ignore este email.
+ </p>
+ </div>
+ `,
         'pt'
       ),
       textContent: `CONFIRME SUA MUDANÇA DE EMAIL - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}
@@ -1659,42 +1659,42 @@ IMPORTANTE: Link válido por 24 horas.`,
       subject: `Confirm your email change - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <p style="font-size: 20px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">
-          Hello {{firstName}}! 📧
-        </p>
-        
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
-          You requested to change your email address for your ${OPUS_ATLAS_CONFIG.en.BRAND_NAME} account.
-        </p>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
-            📧 Change Details
-          </h3>
-          <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Current email:</strong> {{oldEmail}}
-            </p>
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>New email:</strong> {{newEmail}}
-            </p>
-          </div>
-        </div>
-        
-        <div style="text-align: center; margin: 40px 0;">
-          <a href="{{confirmationUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">
-            ✅ Confirm Email Change
-          </a>
-        </div>
-        
-        <div class="warning-box" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
-            <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;">⚠️</span>
-            <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Important:</strong> This link is valid for 24 hours.
-            If you didn't request this change, ignore this email.
-          </p>
-        </div>
-      `,
+ <p style="font-size: 20px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">
+ Hello {{firstName}}! 
+ </p>
+ 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
+ You requested to change your email address for your${OPUS_ATLAS_CONFIG.en.BRAND_NAME}account.
+ </p>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+ Change Details
+ </h3>
+ <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Current email:</strong> {{oldEmail}}
+ </p>
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>New email:</strong> {{newEmail}}
+ </p>
+ </div>
+ </div>
+ 
+ <div style="text-align: center; margin: 40px 0;">
+ <a href="{{confirmationUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">
+ Confirm Email Change
+ </a>
+ </div>
+ 
+ <div class="warning-box" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
+ <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;"></span>
+ <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Important:</strong> This link is valid for 24 hours.
+ If you didn't request this change, ignore this email.
+ </p>
+ </div>
+ `,
         'en'
       ),
       textContent: `CONFIRM YOUR EMAIL CHANGE - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}
@@ -1720,38 +1720,38 @@ IMPORTANT: Link valid for 24 hours.`,
       subject: `Email alterado com sucesso - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
-            🎉 Email alterado com sucesso!
-          </h3>
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
-            Seu email foi alterado com sucesso e sua conta está totalmente funcional.
-          </p>
-        </div>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;">📧 Resumo</h3>
-          <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Email anterior:</strong> {{oldEmail}}
-            </p>
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Novo email:</strong> {{newEmail}}
-            </p>
-          </div>
-        </div>
-        
-        <div class="text-center" style="margin: 40px 0;">
-          <a href="{{siteUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">Acessar Minha Conta</a>
-        </div>
-      `,
+ <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+ Email alterado com sucesso!
+ </h3>
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
+ Seu email foi alterado com sucesso e sua conta está totalmente funcional.
+ </p>
+ </div>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;"> Resumo</h3>
+ <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Email anterior:</strong> {{oldEmail}}
+ </p>
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Novo email:</strong> {{newEmail}}
+ </p>
+ </div>
+ </div>
+ 
+ <div class="text-center" style="margin: 40px 0;">
+ <a href="{{siteUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">Acessar Minha Conta</a>
+ </div>
+ `,
         'pt'
       ),
       textContent: `EMAIL ALTERADO COM SUCESSO - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}
 
 Olá {{firstName}},
 
-✅ Seu email foi alterado com sucesso!
+ Seu email foi alterado com sucesso!
 
 RESUMO:
 Email anterior: {{oldEmail}}
@@ -1765,38 +1765,38 @@ Acesse: {{siteUrl}}`,
       subject: `Email changed successfully - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
-            🎉 Email changed successfully!
-          </h3>
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
-            Your email has been successfully changed and your account is fully functional.
-          </p>
-        </div>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;">📧 Summary</h3>
-          <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Previous email:</strong> {{oldEmail}}
-            </p>
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>New email:</strong> {{newEmail}}
-            </p>
-          </div>
-        </div>
-        
-        <div class="text-center" style="margin: 40px 0;">
-          <a href="{{siteUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">Access My Account</a>
-        </div>
-      `,
+ <div class="welcome-message" style="background: #1a1a1a !important; padding: 30px !important; border: 2px solid #d4af37 !important; margin: 30px 0 !important; border-radius: 16px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+ Email changed successfully!
+ </h3>
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0; line-height: 1.7; text-align: center;">
+ Your email has been successfully changed and your account is fully functional.
+ </p>
+ </div>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;"> Summary</h3>
+ <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Previous email:</strong> {{oldEmail}}
+ </p>
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>New email:</strong> {{newEmail}}
+ </p>
+ </div>
+ </div>
+ 
+ <div class="text-center" style="margin: 40px 0;">
+ <a href="{{siteUrl}}" class="btn-premium" style="background: #d4af37 !important; color: #000001 !important; -webkit-text-fill-color: #000001 !important;">Access My Account</a>
+ </div>
+ `,
         'en'
       ),
       textContent: `EMAIL CHANGED SUCCESSFULLY - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}
 
 Hello {{firstName}},
 
-✅ Your email has been successfully changed!
+ Your email has been successfully changed!
 
 SUMMARY:
 Previous email: {{oldEmail}}
@@ -1814,27 +1814,27 @@ Access: {{siteUrl}}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
         <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
-          Este é um aviso de que o email da sua conta ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME} foi alterado.
-        </p>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;">📧 Detalhes</h3>
-          <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Email anterior:</strong> {{oldEmail}}
-            </p>
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Novo email:</strong> {{newEmail}}
-            </p>
-          </div>
-        </div>
-        
-        <div class="warning-box" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
-            <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;">🔒</span>
-            <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Não foi você?</strong><br>
-            Se não solicitou esta mudança, entre em contato conosco em 
-            <a href="mailto:${OPUS_ATLAS_CONFIG.pt.SUPPORT_EMAIL}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">
+          Este é um aviso de que o email da sua conta ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}foi alterado.
+ </p>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;"> Detalhes</h3>
+ <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Email anterior:</strong> {{oldEmail}}
+ </p>
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Novo email:</strong> {{newEmail}}
+ </p>
+ </div>
+ </div>
+ 
+ <div class="warning-box" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
+ <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;"></span>
+ <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Não foi você?</strong><br>
+ Se não solicitou esta mudança, entre em contato conosco em 
+ <a href="mailto:${OPUS_ATLAS_CONFIG.pt.SUPPORT_EMAIL}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">
               ${OPUS_ATLAS_CONFIG.pt.SUPPORT_EMAIL}
             </a>
           </p>
@@ -1859,27 +1859,27 @@ NÃO FOI VOCÊ? Contate: ${OPUS_ATLAS_CONFIG.pt.SUPPORT_EMAIL}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
         <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
-          This is a notification that your ${OPUS_ATLAS_CONFIG.en.BRAND_NAME} account email has been changed.
-        </p>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;">📧 Details</h3>
-          <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Previous email:</strong> {{oldEmail}}
-            </p>
-            <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>New email:</strong> {{newEmail}}
-            </p>
-          </div>
-        </div>
-        
-        <div class="warning-box" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
-          <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
-            <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;">🔒</span>
-            <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Wasn't you?</strong><br>
-            If you didn't request this change, contact us at 
-            <a href="mailto:${OPUS_ATLAS_CONFIG.en.SUPPORT_EMAIL}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">
+          This is a notification that your ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}account email has been changed.
+ </p>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;"> Details</h3>
+ <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Previous email:</strong> {{oldEmail}}
+ </p>
+ <p style="margin: 0 0 10px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>New email:</strong> {{newEmail}}
+ </p>
+ </div>
+ </div>
+ 
+ <div class="warning-box" style="background: #2a1810 !important; border: 1px solid #d4af37 !important; padding: 20px !important; border-radius: 12px !important; margin: 30px 0 !important;">
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; margin: 0;">
+ <span style="color: #fbbf24 !important; -webkit-text-fill-color: #fbbf24 !important; font-size: 18px;"></span>
+ <strong style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">Wasn't you?</strong><br>
+ If you didn't request this change, contact us at 
+ <a href="mailto:${OPUS_ATLAS_CONFIG.en.SUPPORT_EMAIL}" style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important;">
               ${OPUS_ATLAS_CONFIG.en.SUPPORT_EMAIL}
             </a>
           </p>
@@ -1906,35 +1906,35 @@ WASN'T YOU? Contact: ${OPUS_ATLAS_CONFIG.en.SUPPORT_EMAIL}`,
       subject: `Sentiremos sua falta - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <p style="font-size: 20px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">
-          Adeus, {{firstName}} 💔
-        </p>
-        
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
-          Sua conta ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME} foi excluída conforme solicitado. 
-          Sentiremos muito sua falta.
-        </p>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;">📊 Sua Jornada</h3>
-          <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-            <p style="margin: 0 0 15px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Tempo conosco:</strong> {{accountAge}} dias
-            </p>
-            <p style="margin: 0 0 15px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Compositores adicionados:</strong> {{composersCount}}
-            </p>
-          </div>
-        </div>
-        
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin: 25px 0; text-align: center;">
-          Obrigado por fazer parte da nossa comunidade.
-        </p>
-        
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin: 30px 0; text-align: center; font-style: italic;">
-          "A música é a revelação mais alta que toda filosofia" - Beethoven
-        </p>
-      `,
+ <p style="font-size: 20px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">
+ Adeus, {{firstName}} 
+ </p>
+ 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
+ Sua conta${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}foi excluída conforme solicitado. 
+ Sentiremos muito sua falta.
+ </p>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;"> Sua Jornada</h3>
+ <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <p style="margin: 0 0 15px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Tempo conosco:</strong> {{accountAge}} dias
+ </p>
+ <p style="margin: 0 0 15px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Compositores adicionados:</strong> {{composersCount}}
+ </p>
+ </div>
+ </div>
+ 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin: 25px 0; text-align: center;">
+ Obrigado por fazer parte da nossa comunidade.
+ </p>
+ 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin: 30px 0; text-align: center; font-style: italic;">
+ "A música é a revelação mais alta que toda filosofia" - Beethoven
+ </p>
+ `,
         'pt'
       ),
       textContent: `SENTIREMOS SUA FALTA - ${OPUS_ATLAS_CONFIG.pt.BRAND_NAME}
@@ -1957,35 +1957,35 @@ Obrigado por tudo.`,
       subject: `We'll miss you - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}`,
       htmlContent: getPremiumOpusAtlasLayout(
         `
-        <p style="font-size: 20px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">
-          Goodbye, {{firstName}} 💔
-        </p>
-        
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
-          Your ${OPUS_ATLAS_CONFIG.en.BRAND_NAME} account has been deleted as requested. 
-          We'll really miss you.
-        </p>
-        
-        <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
-          <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;">📊 Your Journey</h3>
-          <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-            <p style="margin: 0 0 15px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Time with us:</strong> {{accountAge}} days
-            </p>
-            <p style="margin: 0 0 15px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
-              <strong>Composers added:</strong> {{composersCount}}
-            </p>
-          </div>
-        </div>
-        
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin: 25px 0; text-align: center;">
-          Thank you for being part of our community.
-        </p>
-        
-        <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin: 30px 0; text-align: center; font-style: italic;">
-          "Music is the highest revelation of philosophy" - Beethoven
-        </p>
-      `,
+ <p style="font-size: 20px; color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin-bottom: 20px; text-align: center;">
+ Goodbye, {{firstName}} 
+ </p>
+ 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
+ Your${OPUS_ATLAS_CONFIG.en.BRAND_NAME}account has been deleted as requested. 
+ We'll really miss you.
+ </p>
+ 
+ <div class="premium-card" style="background: #1a1a1a !important; padding: 25px !important; border-radius: 12px !important;">
+ <h3 style="color: #d4af37 !important; -webkit-text-fill-color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;"> Your Journey</h3>
+ <div style="text-align: center; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <p style="margin: 0 0 15px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Time with us:</strong> {{accountAge}} days
+ </p>
+ <p style="margin: 0 0 15px 0; color: #fffffe !important; -webkit-text-fill-color: #fffffe !important;">
+ <strong>Composers added:</strong> {{composersCount}}
+ </p>
+ </div>
+ </div>
+ 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin: 25px 0; text-align: center;">
+ Thank you for being part of our community.
+ </p>
+ 
+ <p style="color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; line-height: 1.7; margin: 30px 0; text-align: center; font-style: italic;">
+ "Music is the highest revelation of philosophy" - Beethoven
+ </p>
+ `,
         'en'
       ),
       textContent: `WE'LL MISS YOU - ${OPUS_ATLAS_CONFIG.en.BRAND_NAME}

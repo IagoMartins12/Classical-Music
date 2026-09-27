@@ -1,8 +1,8 @@
-// components/Common/InternationalPhoneInput.tsx (VERSÃO COMPLETA com todos os países)
 'use client';
+// components/Common/InternationalPhoneInput.tsx (VERSÃO COMPLETA com todos os países)
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { PiCaretDown, PiGlobe, PiPhone, PiX } from 'react-icons/pi';
+import { PiCaretDown, PiGlobe, PiPhone, PiX, PiWarning } from 'react-icons/pi';
 import {
   ALL_PHONE_COUNTRIES,
   PhoneCountry,
@@ -381,7 +381,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                                 tom="ouro"
                                 className="font-medium uppercase tracking-wide"
                               >
-                                🏆 Populares
+                                Populares
                               </Text>
                             </div>
                             {filteredCountries
@@ -403,7 +403,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                                 tom="suave"
                                 className="font-medium uppercase tracking-wide"
                               >
-                                🌍 Todos os Países
+                                Todos os Países
                               </Text>
                             </div>
                           </>
@@ -499,7 +499,9 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
             gap={1}
             className="text-xs text-orange-600 mt-1 animate-pulse"
           >
-            <span>⚠️</span>
+            <span>
+              <PiWarning aria-hidden className="h-4 w-4" />
+            </span>
             <span>{warningMessage}</span>
           </Inline>
         )}
@@ -507,7 +509,9 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
         {/* ❌ Erro */}
         {error && !warningMessage && (
           <Inline as="p" gap={1} className="text-xs mt-1">
-            <span>⚠️</span>
+            <span>
+              <PiWarning aria-hidden className="h-4 w-4" />
+            </span>
             <span>{error}</span>
           </Inline>
         )}

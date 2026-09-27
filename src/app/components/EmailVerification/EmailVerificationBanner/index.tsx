@@ -48,7 +48,7 @@ export default function EmailVerificationBanner({
               <div className="flex-1">
                 <Inline gap={2}>
                   <h4 className="text-sm font-semibold text-theme-primary">
-                    📧 Confirme seu email para fazer uploads
+                    Confirme seu email para fazer uploads
                   </h4>
                   {emailSent && (
                     <Inline gap={1}>

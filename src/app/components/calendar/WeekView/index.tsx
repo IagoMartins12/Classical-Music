@@ -1,6 +1,7 @@
+'use client';
+
 import { Text } from '@/app/components/ui/Text';
 // app/blog/calendar/components/WeekView.tsx
-('use client');
 
 interface WeekViewProps {
   days: Date[];

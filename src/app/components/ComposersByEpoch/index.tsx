@@ -107,7 +107,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
       {/* Círculo principal */}
       <div
         className={`
-          relative w-40 h-40 mx-auto rounded-full overflow-hidden border-3 border-theme-primary transition-all duration-500 ease-out group-hover:scale-105
+          relative w-40 h-40 mx-auto rounded-full overflow-hidden border-3 border-theme-primary transition-all duration-500 ease-out
           
         `}
       >
@@ -135,7 +135,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
               isExpanded ? 'rotate-180' : ''
             }`}
           >
-            <PiCaretDown className="w-3 h-3 text-white" />
+            <PiCaretDown className="w-3 h-3 text-ouro-texto" />
           </div>
         </div>
 
@@ -170,11 +170,11 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
                 ? `/composers?epoch=${epoch.id}`
                 : `/composers`
             }
-            className=" flex items-center justify-between w-full px-4 py-3 bg-theme-tertiary rounded-xl text-theme-primary font-medium transition-all duration-300"
+            className="flex items-center justify-between w-full px-4 py-3 bg-theme-tertiary rounded-xl text-theme-primary font-medium transition-all duration-300"
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-white/20 rounded-lg hidden md:flex items-center justify-center">
-                <PiUsers className="w-4 h-4 " />
+                <PiUsers className="w-4 h-4" />
               </div>
               <div className="text-left">
                 <div className="text-sm font-semibold">
@@ -240,7 +240,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
 
       {/* Dica de interação */}
       {!isExpanded && (
-        <div className=" text-center">
+        <div className="text-center">
           <Text papel="legenda" tom="fraco" className="font-medium opacity-60">
             {t('composers_by_epoch_click_navigate')}
           </Text>
@@ -290,11 +290,7 @@ const ComposersByEpoch: React.FC<ComposersByEpochProps> = ({ epochs }) => {
       </div>
 
       {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-20 w-32 h-32 bg-gradient-to-r from-purple-500/10 to-violet-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-r from-violet-500/10 to-purple-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-2xl animate-pulse"></div>
-      </div>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none"></div>
     </section>
   );
 };

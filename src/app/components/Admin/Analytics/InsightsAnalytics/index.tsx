@@ -267,10 +267,10 @@ export default function AdvancedInsightsAnalytics() {
                   }`}
                 >
                   {insights.summary.trendDirection === 'positive'
-                    ? '📈 Crescendo'
+                    ? 'Crescendo'
                     : insights.summary.trendDirection === 'negative'
-                      ? '📉 Atenção'
-                      : '➡️ Estável'}
+                      ? 'Atenção'
+                      : 'Estável'}
                 </div>
                 <Text papel="rotulo" tom="fraco" as="div">
                   Tendência Geral
@@ -311,7 +311,7 @@ export default function AdvancedInsightsAnalytics() {
               <Inline gap={3} className="mb-4">
                 <PiWarning className="w-6 h-6" />
                 <h3 className="text-xl font-bold text-theme-primary">
-                  ⚠️ Alertas Críticos Detectados
+                  Alertas Críticos Detectados
                 </h3>
               </Inline>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -397,19 +397,19 @@ export default function AdvancedInsightsAnalytics() {
                 value={selectedView}
                 onChange={(e) => setSelectedView(e.target.value)}
                 options={[
-                  { value: 'overview', label: '🏠 Visão Geral' },
-                  { value: 'predictions', label: '🔮 Previsões IA' },
-                  { value: 'educational', label: '📚 Engajamento Educacional' },
-                  { value: 'journeys', label: '🗺️ Jornadas de Usuário' },
-                  { value: 'risks', label: '⚠️ Avaliação de Riscos' },
-                  { value: 'growth', label: '🚀 Oportunidades de Crescimento' },
+                  { value: 'overview', label: 'Visão Geral' },
+                  { value: 'predictions', label: 'Previsões IA' },
+                  { value: 'educational', label: 'Engajamento Educacional' },
+                  { value: 'journeys', label: 'Jornadas de Usuário' },
+                  { value: 'risks', label: 'Avaliação de Riscos' },
+                  { value: 'growth', label: 'Oportunidades de Crescimento' },
                   {
                     value: 'monetization',
-                    label: '💰 Insights de Monetização',
+                    label: 'Insights de Monetização',
                   },
-                  { value: 'patterns', label: '🧠 Padrões de Comportamento' },
-                  { value: 'content', label: '📊 Performance de Conteúdo' },
-                  { value: 'anomalies', label: '🔍 Detecção de Anomalias' },
+                  { value: 'patterns', label: 'Padrões de Comportamento' },
+                  { value: 'content', label: 'Performance de Conteúdo' },
+                  { value: 'anomalies', label: 'Detecção de Anomalias' },
                 ]}
                 className="input-classical-2"
               />
@@ -570,7 +570,7 @@ export default function AdvancedInsightsAnalytics() {
                 className="text-xl font-bold text-theme-primary mb-6"
               >
                 <PiClock className="w-5 h-5" />
-                <span>🎯 Próximas Ações Prioritárias</span>
+                <span>Próximas Ações Prioritárias</span>
               </Inline>
 
               <div className="space-y-4">
@@ -605,13 +605,13 @@ export default function AdvancedInsightsAnalytics() {
                               }`}
                             >
                               {item.priority === 'high'
-                                ? '🔥 URGENTE'
+                                ? 'URGENTE'
                                 : item.priority === 'medium'
-                                  ? '⚡ IMPORTANTE'
-                                  : '📋 NORMAL'}
+                                  ? 'IMPORTANTE'
+                                  : 'NORMAL'}
                             </span>
                             <Text papel="legenda" tom="fraco">
-                              ⏱️ {item.timeframe}
+                              {item.timeframe}
                             </Text>
                           </Inline>
                           <h4 className="font-medium text-theme-primary mb-1">
@@ -646,7 +646,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
           className="text-2xl font-bold text-theme-primary mb-6"
         >
           <PiEye className="w-6 h-6" />
-          <span>📊 Visão Geral Executiva</span>
+          <span>Visão Geral Executiva</span>
         </Inline>
       </AnimatedItem>
 
@@ -659,7 +659,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
             className="text-lg font-bold text-theme-primary mb-4"
           >
             <PiBrain className="w-5 h-5" />
-            <span>🔍 Principais Descobertas da IA</span>
+            <span>Principais Descobertas da IA</span>
           </Inline>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {insights.summary.keyFindings.map(
@@ -693,7 +693,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
           <div className="flex items-center justify-between mb-4">
             <Inline as="h3" gap={2} className="font-bold text-theme-primary">
               <PiMedal className="w-5 h-5" />
-              <span>📚 Performance Educacional</span>
+              <span>Performance Educacional</span>
             </Inline>
             <Button
               variant="ghost"
@@ -733,7 +733,6 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
                 {insights.educationalEngagement.annotationQualityMetrics.avgHelpfulnessScore.toFixed(
                   1
                 )}
-                ⭐
               </span>
             </div>
             <div className="flex justify-between items-center">
@@ -755,7 +754,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
           <div className="flex items-center justify-between mb-4">
             <Inline as="h3" gap={2} className="font-bold text-theme-primary">
               <PiShield className="w-5 h-5" />
-              <span>⚠️ Monitoramento de Riscos</span>
+              <span>Monitoramento de Riscos</span>
             </Inline>
             <Button
               variant="ghost"
@@ -823,7 +822,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
           <div className="flex items-center justify-between mb-4">
             <Inline as="h3" gap={2} className="font-bold text-theme-primary">
               <PiTrendUp className="w-5 h-5" />
-              <span>🚀 Potencial de Crescimento</span>
+              <span>Potencial de Crescimento</span>
             </Inline>
             <Button
               variant="ghost"
@@ -880,7 +879,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
           className="text-lg font-bold text-theme-primary mb-4"
         >
           <PiCpu className="w-5 h-5" />
-          <span>⚡ Status do Sistema em Tempo Real</span>
+          <span>Status do Sistema em Tempo Real</span>
         </Inline>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -932,7 +931,7 @@ function PredictionsSection({
             className="text-2xl font-bold text-theme-primary"
           >
             <PiTarget className="w-6 h-6" />
-            <span>🔮 Previsões Inteligentes</span>
+            <span>Previsões Inteligentes</span>
           </Inline>
           <Button
             variant="primary"
@@ -1078,7 +1077,7 @@ function EducationalEngagementSection({
             className="text-2xl font-bold text-theme-primary"
           >
             <PiMedal className="w-6 h-6" />
-            <span>📚 Engajamento Educacional</span>
+            <span>Engajamento Educacional</span>
           </Inline>
           <Button
             variant="secondary"
@@ -1104,7 +1103,7 @@ function EducationalEngagementSection({
           className="text-lg font-bold text-theme-primary mb-4"
         >
           <PiTarget className="w-5 h-5" />
-          <span>🎯 Progressões de Aprendizado</span>
+          <span>Progressões de Aprendizado</span>
         </Inline>
 
         <Stack>
@@ -1138,9 +1137,7 @@ function EducationalEngagementSection({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <Stack gap={1}>
-                    <p className="text-theme-tertiary">
-                      🚫 Pontos de abandono:
-                    </p>
+                    <p className="text-theme-tertiary">Pontos de abandono:</p>
                     <ul className="space-y-1">
                       {progression.dropoffPoints.map(
                         (point: string, i: number) => (
@@ -1153,7 +1150,7 @@ function EducationalEngagementSection({
                     </ul>
                   </Stack>
                   <Stack gap={1}>
-                    <p className="text-theme-tertiary">💡 Recomendações:</p>
+                    <p className="text-theme-tertiary">Recomendações:</p>
                     <ul className="space-y-1">
                       {progression.recommendations.map(
                         (rec: string, i: number) => (
@@ -1180,7 +1177,7 @@ function EducationalEngagementSection({
           className="text-lg font-bold text-theme-primary mb-4"
         >
           <PiMapPin className="w-5 h-5" />
-          <span>🗺️ Padrões de Descoberta Musical</span>
+          <span>Padrões de Descoberta Musical</span>
         </Inline>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1197,7 +1194,7 @@ function EducationalEngagementSection({
                 <Stack gap={2} className="text-sm">
                   <div>
                     <p className="text-theme-tertiary">
-                      🚪 Compositores porta de entrada:
+                      Compositores porta de entrada:
                     </p>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {pattern.gatewayComposers.map(
@@ -1232,7 +1229,7 @@ function EducationalEngagementSection({
             className="text-lg font-bold text-theme-primary mb-4"
           >
             <PiHeart className="w-5 h-5" />
-            <span>⭐ Qualidade das Anotações</span>
+            <span>Qualidade das Anotações</span>
           </Inline>
 
           <Stack>
@@ -1244,7 +1241,6 @@ function EducationalEngagementSection({
                 {educational.annotationQualityMetrics.avgHelpfulnessScore.toFixed(
                   1
                 )}
-                ⭐
               </div>
               <Text papel="rotulo" tom="fraco" as="div">
                 Score Médio de Utilidade
@@ -1253,7 +1249,7 @@ function EducationalEngagementSection({
 
             <Stack gap={2}>
               <h4 className="font-medium text-theme-primary">
-                🏆 Top Contribuidores:
+                Top Contribuidores:
               </h4>
               <Stack gap={2}>
                 {educational.annotationQualityMetrics.topContributors
@@ -1289,7 +1285,7 @@ function EducationalEngagementSection({
             className="text-lg font-bold text-theme-primary mb-4"
           >
             <PiClock className="w-5 h-5" />
-            <span>⏰ Padrões de Estudo</span>
+            <span>Padrões de Estudo</span>
           </Inline>
 
           <Stack>
@@ -1314,7 +1310,7 @@ function EducationalEngagementSection({
 
             <Stack gap={2}>
               <h4 className="font-medium text-theme-primary">
-                📅 Padrões Semanais:
+                Padrões Semanais:
               </h4>
               <Stack gap={1}>
                 {Object.entries(
@@ -1342,7 +1338,7 @@ function EducationalEngagementSection({
 
             <Stack gap={2}>
               <h4 className="font-medium text-theme-primary">
-                🌦️ Tendências Sazonais:
+                Tendências Sazonais:
               </h4>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 {Object.entries(
@@ -1378,7 +1374,7 @@ function UserJourneySection({
             className="text-2xl font-bold text-theme-primary"
           >
             <PiMapPin className="w-6 h-6" />
-            <span>🗺️ Jornadas de Usuário</span>
+            <span>Jornadas de Usuário</span>
           </Inline>
           <Button
             variant="secondary"
@@ -1404,7 +1400,7 @@ function UserJourneySection({
           className="text-lg font-bold text-theme-primary mb-4"
         >
           <PiUsers className="w-5 h-5" />
-          <span>👥 Jornadas Típicas por Perfil</span>
+          <span>Jornadas Típicas por Perfil</span>
         </Inline>
 
         <Stack gap={6}>
@@ -1452,7 +1448,7 @@ function UserJourneySection({
               {/* Success Factors and Recommendations */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <Stack gap={2}>
-                  <p className="text-theme-tertiary">✅ Fatores de Sucesso:</p>
+                  <p className="text-theme-tertiary">Fatores de Sucesso:</p>
                   <ul className="space-y-1">
                     {journey.successFactors.map((factor: string, i: number) => (
                       <Inline as="li" gap={1} key={i} className="">
@@ -1463,7 +1459,7 @@ function UserJourneySection({
                   </ul>
                 </Stack>
                 <Stack gap={2}>
-                  <p className="text-theme-tertiary">💡 Recomendações:</p>
+                  <p className="text-theme-tertiary">Recomendações:</p>
                   <ul className="space-y-1">
                     {journey.recommendations.map((rec: string, i: number) => (
                       <Inline as="li" gap={1} key={i} className="">
@@ -1487,7 +1483,7 @@ function UserJourneySection({
           className="text-lg font-bold text-theme-primary mb-4"
         >
           <PiFunnel className="w-5 h-5" />
-          <span>🔄 Funis de Conversão</span>
+          <span>Funis de Conversão</span>
         </Inline>
 
         <Stack>
@@ -1540,7 +1536,7 @@ function UserJourneySection({
 
               <Stack gap={1}>
                 <Text papel="legenda" tom="fraco" as="p">
-                  🚀 Oportunidades de melhoria:
+                  Oportunidades de melhoria:
                 </Text>
                 <div className="flex flex-wrap gap-1">
                   {funnel.improvementOpportunities.map(
@@ -1565,7 +1561,7 @@ function UserJourneySection({
           className="text-lg font-bold text-theme-primary mb-4"
         >
           <PiChartPie className="w-5 h-5" />
-          <span>🎯 Segmentação de Usuários</span>
+          <span>Segmentação de Usuários</span>
         </Inline>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1650,7 +1646,7 @@ function RiskAssessmentSection({
             className="text-2xl font-bold text-theme-primary"
           >
             <PiShield className="w-6 h-6" />
-            <span>⚠️ Avaliação de Riscos</span>
+            <span>Avaliação de Riscos</span>
           </Inline>
           <Button
             variant="secondary"
@@ -1676,7 +1672,7 @@ function RiskAssessmentSection({
           className="text-lg font-bold text-theme-primary mb-4"
         >
           <PiUsers className="w-5 h-5" />
-          <span>🚨 Usuários em Alto Risco de Churn</span>
+          <span>Usuários em Alto Risco de Churn</span>
         </Inline>
 
         {riskAssessment.churnRiskUsers.length === 0 ? (
@@ -1718,9 +1714,7 @@ function RiskAssessmentSection({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <Stack gap={1}>
-                      <p className="text-theme-tertiary">
-                        ⚠️ Fatores de risco:
-                      </p>
+                      <p className="text-theme-tertiary">Fatores de risco:</p>
                       <ul className="space-y-1">
                         {user.riskFactors.map((factor: string, i: number) => (
                           <Inline as="li" gap={1} key={i} className="">
@@ -1731,7 +1725,7 @@ function RiskAssessmentSection({
                       </ul>
                     </Stack>
                     <Stack gap={1}>
-                      <p className="text-theme-tertiary">💡 Ações sugeridas:</p>
+                      <p className="text-theme-tertiary">Ações sugeridas:</p>
                       <ul className="space-y-1">
                         {user.suggestedActions.map(
                           (action: string, i: number) => (
@@ -1758,7 +1752,7 @@ function RiskAssessmentSection({
           className="text-lg font-bold text-theme-primary mb-4"
         >
           <PiPulse className="w-5 h-5" />
-          <span>💚 Indicadores de Saúde do Sistema</span>
+          <span>Indicadores de Saúde do Sistema</span>
         </Inline>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1863,7 +1857,7 @@ function GrowthOpportunitiesSection({
             className="text-2xl font-bold text-theme-primary"
           >
             <PiTrendUp className="w-6 h-6" />
-            <span>🚀 Oportunidades de Crescimento</span>
+            <span>Oportunidades de Crescimento</span>
           </Inline>
           <Button
             variant="secondary"
@@ -1918,7 +1912,7 @@ function GrowthOpportunitiesSection({
             <Stack>
               <Stack gap={2}>
                 <h4 className="text-sm font-medium text-theme-primary">
-                  🎯 Resultados Esperados:
+                  Resultados Esperados:
                 </h4>
                 <ul className="space-y-1">
                   {opportunity.expectedResults.map(
@@ -1934,7 +1928,7 @@ function GrowthOpportunitiesSection({
 
               <Stack gap={2}>
                 <h4 className="text-sm font-medium text-theme-primary">
-                  🛠️ Implementação:
+                  Implementação:
                 </h4>
                 <ul className="space-y-1">
                   {opportunity.implementation
@@ -1968,10 +1962,10 @@ function GrowthOpportunitiesSection({
                     }`}
                   >
                     {opportunity.effort === 'low'
-                      ? '🟢 Baixo'
+                      ? 'Baixo'
                       : opportunity.effort === 'medium'
-                        ? '🟡 Médio'
-                        : '🔴 Alto'}
+                        ? 'Médio'
+                        : 'Alto'}
                   </span>
                 </div>
               </div>
@@ -1998,7 +1992,7 @@ function MonetizationSection({
             className="text-2xl font-bold text-theme-primary"
           >
             <PiCurrencyDollar className="w-6 h-6" />
-            <span>💰 Insights de Monetização</span>
+            <span>Insights de Monetização</span>
           </Inline>
           <Button
             variant="secondary"
@@ -2057,7 +2051,7 @@ function MonetizationSection({
           className="text-lg font-bold text-theme-primary mb-4"
         >
           <PiUsers className="w-5 h-5" />
-          <span>👥 Segmentação por Valor do Usuário</span>
+          <span>Segmentação por Valor do Usuário</span>
         </Inline>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -2114,7 +2108,7 @@ function MonetizationSection({
           className="text-lg font-bold text-theme-primary mb-4"
         >
           <PiLightning className="w-5 h-5" />
-          <span>⚡ Oportunidades de Monetização</span>
+          <span>Oportunidades de Monetização</span>
         </Inline>
 
         <Stack>
@@ -2131,19 +2125,19 @@ function MonetizationSection({
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                   <Stack gap={1}>
-                    <p className="text-theme-tertiary">💰 Receita Estimada:</p>
+                    <p className="text-theme-tertiary">Receita Estimada:</p>
                     <p className="font-medium">
                       {opportunity.estimatedRevenue}
                     </p>
                   </Stack>
                   <Stack gap={1}>
-                    <p className="text-theme-tertiary">💸 Investimento:</p>
+                    <p className="text-theme-tertiary">Investimento:</p>
                     <p className="font-medium">
                       {opportunity.requiredInvestment}
                     </p>
                   </Stack>
                   <Stack gap={1}>
-                    <p className="text-theme-tertiary">📊 Viabilidade:</p>
+                    <p className="text-theme-tertiary">Viabilidade:</p>
                     <p className="font-medium">{opportunity.feasibility}</p>
                   </Stack>
                 </div>
@@ -2172,7 +2166,7 @@ function BehaviorPatternsSection({
             className="text-2xl font-bold text-theme-primary"
           >
             <PiBrain className="w-6 h-6" />
-            <span>🧠 Padrões de Comportamento</span>
+            <span>Padrões de Comportamento</span>
           </Inline>
           <Button
             variant="secondary"
@@ -2226,8 +2220,7 @@ function BehaviorPatternsSection({
 
                 <div className="bg-theme-secondary p-4 rounded-xl">
                   <Text papel="rotulo" tom="forte" as="p">
-                    <strong>🎯 Recomendação IA:</strong>{' '}
-                    {pattern.recommendation}
+                    <strong>Recomendação IA:</strong> {pattern.recommendation}
                   </Text>
                 </div>
               </div>
@@ -2266,7 +2259,7 @@ function ContentPerformanceSection({
             className="text-2xl font-bold text-theme-primary"
           >
             <PiChartBar className="w-6 h-6" />
-            <span>📊 Performance de Conteúdo</span>
+            <span>Performance de Conteúdo</span>
           </Inline>
           <Button
             variant="secondary"
@@ -2294,7 +2287,7 @@ function ContentPerformanceSection({
             className="text-lg font-bold text-theme-primary mb-4"
           >
             <PiMedal className="w-5 h-5" />
-            <span>🏆 Top Performers</span>
+            <span>Top Performers</span>
           </Inline>
           <Stack gap={3}>
             {contentPerformance.topPerformers
@@ -2323,12 +2316,10 @@ function ContentPerformanceSection({
                         {item.type}
                       </Text>
                       <div className="grid grid-cols-2 gap-2 text-xs">
-                        <span>❤️ {formatNumber(item.metrics.favorites)}</span>
-                        <span>📝 {formatNumber(item.metrics.annotations)}</span>
-                        <span>
-                          ⏱️ {formatNumber(item.metrics.studyTime)}min
-                        </span>
-                        <span>👁️ {formatNumber(item.metrics.views)}</span>
+                        <span>{formatNumber(item.metrics.favorites)}</span>
+                        <span>{formatNumber(item.metrics.annotations)}</span>
+                        <span>{formatNumber(item.metrics.studyTime)}min</span>
+                        <span>{formatNumber(item.metrics.views)}</span>
                       </div>
                     </div>
                     <div
@@ -2353,7 +2344,7 @@ function ContentPerformanceSection({
             className="text-lg font-bold text-theme-primary mb-4"
           >
             <PiTrendDown className="w-5 h-5" />
-            <span>📈 Oportunidades de Melhoria</span>
+            <span>Oportunidades de Melhoria</span>
           </Inline>
           <Stack>
             {contentPerformance.underperformers.map(
@@ -2365,7 +2356,7 @@ function ContentPerformanceSection({
 
                   <Stack gap={1} className="mb-3">
                     <Text papel="legenda" tom="fraco" as="p">
-                      ⚠️ Problemas identificados:
+                      Problemas identificados:
                     </Text>
                     <Stack gap={1}>
                       {item.issues.map((issue: string, i: number) => (
@@ -2379,7 +2370,7 @@ function ContentPerformanceSection({
 
                   <Stack gap={1} className="mb-3">
                     <Text papel="legenda" tom="fraco" as="p">
-                      💡 Sugestões IA:
+                      Sugestões IA:
                     </Text>
                     <Stack gap={1}>
                       {item.suggestions.map((suggestion: string, i: number) => (
@@ -2392,7 +2383,7 @@ function ContentPerformanceSection({
                   </Stack>
 
                   <div className="p-2 rounded text-xs">
-                    <strong>📊 Impacto esperado:</strong> {item.potentialImpact}
+                    <strong>Impacto esperado:</strong> {item.potentialImpact}
                   </div>
                 </div>
               )
@@ -2409,7 +2400,7 @@ function ContentPerformanceSection({
           className="text-lg font-bold text-theme-primary mb-4"
         >
           <PiLightning className="w-5 h-5" />
-          <span>🎯 Recomendações de Otimização</span>
+          <span>Recomendações de Otimização</span>
         </Inline>
         <Stack gap={3}>
           {contentPerformance.contentOptimization
@@ -2470,7 +2461,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
             className="text-2xl font-bold text-theme-primary"
           >
             <PiWarning className="w-6 h-6" />
-            <span>🔍 Detecção de Anomalias</span>
+            <span>Detecção de Anomalias</span>
           </Inline>
           <Button
             variant="secondary"
@@ -2492,7 +2483,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
         <AnimatedCard className="classical-card p-8 text-center">
           <PiCheckCircle className="w-16 h-16 mx-auto mb-4" />
           <h3 className="text-lg font-bold text-theme-primary mb-2">
-            ✅ Sistema Operando Normalmente
+            Sistema Operando Normalmente
           </h3>
           <p className="text-theme-secondary">
             Nenhuma anomalia significativa detectada pela IA.
@@ -2529,10 +2520,10 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                     <Inline gap={3} className="mb-2">
                       <h3 className="text-lg font-bold text-theme-primary">
                         {anomaly.type === 'spike'
-                          ? '📈 Pico Anômalo'
+                          ? 'Pico Anômalo'
                           : anomaly.type === 'drop'
-                            ? '📉 Queda Anômala'
-                            : '🔍 Comportamento Incomum'}{' '}
+                            ? 'Queda Anômala'
+                            : 'Comportamento Incomum'}{' '}
                         - {anomaly.metric}
                       </h3>
                       <Text papel="rotulo" tom="fraco">
@@ -2577,9 +2568,9 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                           }`}
                         >
                           {anomaly.severity === 'critical'
-                            ? '🚨 Crítico'
+                            ? 'Crítico'
                             : anomaly.severity === 'warning'
-                              ? '⚠️ Atenção'
+                              ? 'Atenção'
                               : 'ℹ️ Info'}
                         </div>
                         <Text papel="legenda" tom="fraco" as="div">
@@ -2590,7 +2581,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
 
                     <Stack gap={2}>
                       <Text papel="rotulo" tom="suave" as="p">
-                        🔍 Possíveis causas identificadas pela IA:
+                        Possíveis causas identificadas pela IA:
                       </Text>
                       <Stack gap={1}>
                         {anomaly.possibleCauses.map(
@@ -2611,7 +2602,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                     {anomaly.affectedUsers && (
                       <div className="mt-3 p-3 rounded-lg">
                         <p className="text-sm">
-                          <strong>👥 Impacto:</strong>{' '}
+                          <strong>Impacto:</strong>{' '}
                           {formatNumber(anomaly.affectedUsers)} usuários podem
                           ter sido afetados
                         </p>

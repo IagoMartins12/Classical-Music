@@ -1173,7 +1173,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   )}
                   {work.videoAulaFile && !editData.videoAulaFile && (
                     <p className="text-sm text-green-400 mt-1">
-                      📁 {t('video_aula_arquivo_atual')}{' '}
+                      {t('video_aula_arquivo_atual')}{' '}
                       {work.videoAulaFile.split('/').pop()}
                     </p>
                   )}

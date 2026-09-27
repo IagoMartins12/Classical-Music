@@ -264,28 +264,28 @@ export function ArticleContent({ content }: ArticleContentProps) {
     if (composerBirthDate || composerDeathDate) {
       const dates = document.createElement('p');
       dates.className = `text-sm text-theme-secondary mb-2 ${layout === 'vertical' ? 'text-center' : ''}`;
-      dates.textContent = `📅 ${composerBirthDate || '?'} - ${composerDeathDate || 'Presente'}`;
+      dates.textContent = `${composerBirthDate || '?'} - ${composerDeathDate || 'Presente'}`;
       content.appendChild(dates);
     }
 
     if (composerEpoch) {
       const epoch = document.createElement('p');
       epoch.className = `text-sm font-medium mb-2 ${layout === 'vertical' ? 'text-center' : ''}`;
-      epoch.textContent = `📜 Época: ${composerEpoch}`;
+      epoch.textContent = `Época:${composerEpoch}`;
       content.appendChild(epoch);
     }
 
     if (composerNationality) {
       const nationality = document.createElement('p');
       nationality.className = `text-sm text-theme-tertiary mb-2 ${layout === 'vertical' ? 'text-center' : ''}`;
-      nationality.textContent = `🌍 ${composerNationality}`;
+      nationality.textContent = `${composerNationality}`;
       content.appendChild(nationality);
     }
 
     if (composerInstrumentation) {
       const instrumentation = document.createElement('p');
       instrumentation.className = `text-sm text-theme-tertiary mb-3 ${layout === 'vertical' ? 'text-center' : ''}`;
-      instrumentation.textContent = `🎼 ${composerInstrumentation}`;
+      instrumentation.textContent = `${composerInstrumentation}`;
       content.appendChild(instrumentation);
     }
 
@@ -447,10 +447,10 @@ export function ArticleContent({ content }: ArticleContentProps) {
       <div class="flex items-center justify-between text-sm">
         <span class="text-theme-secondary">Página ${pageNumber}</span>
         <a href="/works/${workId}#scores" target="_blank" rel="noopener noreferrer" class="font-medium transition-colors">
-          Ver partitura completa no Opus Atlas →
-        </a>
-      </div>
-    `;
+ Ver partitura completa no Opus Atlas →
+ </a>
+ </div>
+ `;
     card.appendChild(footer);
 
     wrapper.appendChild(card);
@@ -999,13 +999,13 @@ export function ArticleContent({ content }: ArticleContentProps) {
           ${
             backgroundAudioUrl
               ? `
-            <div class="flex items-center space-x-2 text-sm">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-              </svg>
-              <span>🎵 Com música de fundo</span>
-            </div>
-          `
+ <div class="flex items-center space-x-2 text-sm">
+ <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+ <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+ </svg>
+ <span> Com música de fundo</span>
+ </div>
+ `
               : ''
           }
         </footer>

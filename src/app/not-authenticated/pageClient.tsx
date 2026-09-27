@@ -310,7 +310,7 @@ export default function NotAuthenticated() {
               <AnimatedItem direction="up" springType="smooth">
                 <div className="mb-8">
                   <p className="text-xl md:text-2xl text-theme-secondary mb-4 leading-relaxed max-w-2xl mx-auto">
-                    {getDescription()} 🎼
+                    {getDescription()}{' '}
                   </p>
                   <div className="inline-flex items-center px-4 py-2 rounded-full text-ouro-texto font-medium">
                     <PiMusicNotes className="w-4 h-4 mr-2" />

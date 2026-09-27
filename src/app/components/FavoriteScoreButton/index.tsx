@@ -311,8 +311,8 @@ export default function FavoriteScoreButton({
       if (showToast) {
         toast.success(
           result
-            ? '❤️ Partitura adicionada aos favoritos!'
-            : '💔 Partitura removida dos favoritos'
+            ? 'Partitura adicionada aos favoritos!'
+            : 'Partitura removida dos favoritos'
         );
       }
 
@@ -342,7 +342,7 @@ export default function FavoriteScoreButton({
       await updateScoreFavorite(workId, score.id, 'IMSLP', updates);
 
       if (showToast) {
-        toast.success('✨ Favorito atualizado com sucesso!');
+        toast.success('Favorito atualizado com sucesso!');
       }
     } catch (error) {
       console.error('Erro ao atualizar favorito:', error);

@@ -718,7 +718,7 @@ export default function AdvancedReports() {
       {stats && (
         <AnimatedCard className="classical-card p-6">
           <h4 className="text-lg font-bold text-theme-primary mb-4">
-            📊 Resumo das Métricas Principais
+            Resumo das Métricas Principais
           </h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">

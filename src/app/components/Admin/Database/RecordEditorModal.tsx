@@ -335,7 +335,7 @@ export default function RecordEditorModal({
 
         <Text papel="legenda" tom="fraco" as="p">
           Tipo: {field.type}
-          {field.relationTo && ` → ${field.relationTo}`}
+          {field.relationTo && `→${field.relationTo}`}
           {field.isList && '[]'}
         </Text>
       </div>

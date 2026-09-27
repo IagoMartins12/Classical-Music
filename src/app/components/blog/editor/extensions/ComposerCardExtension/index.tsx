@@ -94,7 +94,7 @@ const ComposerCardComponent = (props: any) => {
             <p
               className={`text-sm text-theme-secondary mb-2 ${layout === 'vertical' ? 'text-center' : ''}`}
             >
-              📅 {composerBirthDate || '?'} - {composerDeathDate || 'Presente'}
+              {composerBirthDate || '?'} - {composerDeathDate || 'Presente'}
             </p>
           )}
 
@@ -103,7 +103,7 @@ const ComposerCardComponent = (props: any) => {
             <p
               className={`text-sm font-medium mb-2 ${layout === 'vertical' ? 'text-center' : ''}`}
             >
-              📜 Época: {composerEpoch}
+              Época:{composerEpoch}
             </p>
           )}
 
@@ -112,7 +112,7 @@ const ComposerCardComponent = (props: any) => {
             <p
               className={`text-sm text-theme-tertiary mb-2 ${layout === 'vertical' ? 'text-center' : ''}`}
             >
-              🌍 {composerNationality}
+              {composerNationality}
             </p>
           )}
 
@@ -121,7 +121,7 @@ const ComposerCardComponent = (props: any) => {
             <p
               className={`text-sm text-theme-tertiary mb-3 ${layout === 'vertical' ? 'text-center' : ''}`}
             >
-              🎼 {composerInstrumentation}
+              {composerInstrumentation}
             </p>
           )}
 

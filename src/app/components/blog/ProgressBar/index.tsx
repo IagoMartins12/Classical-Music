@@ -52,7 +52,7 @@ export function ProgressBar() {
     if (progress < 50) return 'Indo bem!';
     if (progress < 75) return 'Quase lá!';
     if (progress < 100) return 'Finalizando...';
-    return 'Concluído! 🎉';
+    return 'Concluído!';
   };
 
   return (
