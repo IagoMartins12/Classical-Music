@@ -33,6 +33,8 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface StudentCalendarPageClientProps {
   initialData: StudentCalendarData | null;
@@ -384,12 +386,14 @@ export default function StudentCalendarPageClient({
                 </span>
               </Inline>
               {error && (
-                <button
+                <Button
+                  variante="secundario"
+                  type="submit"
                   onClick={clearError}
-                  className="btn-classical-secondary w-full"
+                  className="w-full"
                 >
                   {t('student_calendar_error_clear')}
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -435,6 +439,7 @@ export default function StudentCalendarPageClient({
                     className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group disabled:opacity-50"
                   >
                     <PiCaretLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                    <NomeAcao acao="anterior" />
                   </button>
 
                   <div className="text-center min-w-48">
@@ -461,16 +466,19 @@ export default function StudentCalendarPageClient({
                     className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group disabled:opacity-50"
                   >
                     <PiCaretRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                    <NomeAcao acao="proximo" />
                   </button>
                 </Inline>
 
-                <button
+                <Button
+                  variante="secundario"
+                  type="submit"
                   onClick={goToToday}
                   disabled={loading.refreshing}
-                  className="btn-classical-secondary text-sm disabled:opacity-50"
+                  className="disabled:opacity-50"
                 >
                   {t('student_calendar_today')}
-                </button>
+                </Button>
               </Inline>
 
               {/* View Mode Toggle */}
@@ -1274,6 +1282,7 @@ function FeedbackModal({
               className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
             >
               <PiX className="w-4 h-4 text-theme-tertiary" />
+              <NomeAcao acao="fechar" />
             </button>
           </div>
 
@@ -1315,13 +1324,14 @@ function FeedbackModal({
                   </>
                 )}
               </Inline>
-              <button
+              <Button
+                variante="secundario"
+                type="submit"
                 onClick={onClose}
                 disabled={loading}
-                className="btn-classical-secondary"
               >
                 {t('student_calendar_feedback_modal_cancel')}
-              </button>
+              </Button>
             </Inline>
           </div>
         </div>

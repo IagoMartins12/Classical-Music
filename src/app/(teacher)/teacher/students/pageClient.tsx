@@ -24,6 +24,8 @@ import StudentCard from '@/app/components/TeacherSystem/StudentCard';
 import AddStudentModal from '@/app/components/TeacherSystem/AddStudentModal';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface TeacherStudentsPageClientProps {
   initialData: TeacherStudentsServerData;
@@ -314,12 +316,14 @@ export default function TeacherStudentsPageClient({
                 </span>
               </Inline>
               {error && (
-                <button
+                <Button
+                  variante="secundario"
+                  type="submit"
                   onClick={clearError}
-                  className="btn-classical-secondary w-full"
+                  className="w-full"
                 >
                   {t('clear_error')}
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -420,6 +424,7 @@ export default function TeacherStudentsPageClient({
                         loading.students ? 'animate-spin' : ''
                       }`}
                     />
+                    <NomeAcao acao="atualizar" />
                   </button>
                 </Inline>
               </div>

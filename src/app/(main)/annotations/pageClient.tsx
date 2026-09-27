@@ -35,6 +35,7 @@ import { useAutoAchievementDetection } from '../../hooks/useAchievements';
 import Button from '@/app/components/Common/Button';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 type AnnotationCategory =
   | 'TECHNIQUE'
@@ -515,6 +516,7 @@ export default function AnnotationsPageClient() {
                           className="w-6 h-6 rounded-full bg-theme-primary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
                         >
                           <PiX className="w-4 h-4" />
+                          <NomeAcao acao="fechar" />
                         </button>
                       </Inline>
                     </div>

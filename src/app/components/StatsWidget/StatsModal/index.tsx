@@ -13,6 +13,7 @@ import {
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface StatsModalProps {
   isOpen: boolean;
@@ -216,6 +217,7 @@ export default function StatsModal({
                   className="w-10 h-10 bg-theme-secondary rounded-xl flex items-center justify-center hover:bg-theme-primary transition-colors"
                 >
                   <PiShareNetwork className="w-4 h-4 text-theme-tertiary" />
+                  <NomeAcao acao="compartilhar" />
                 </button>
 
                 <button
@@ -234,6 +236,7 @@ export default function StatsModal({
                   className="w-10 h-10 bg-theme-secondary rounded-xl flex items-center justify-center hover:bg-accent-red/20 transition-colors group"
                 >
                   <PiX className="w-4 h-4 text-theme-tertiary group-hover:text-accent-red" />
+                  <NomeAcao acao="fechar" />
                 </button>
               </Inline>
             </div>

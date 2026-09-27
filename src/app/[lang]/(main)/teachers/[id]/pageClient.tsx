@@ -32,6 +32,8 @@ import {
 } from '../../../../components/animation/AnimatedComponents';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface PublicTeacherDetailsPageClientProps {
   teacher: TeacherDetailedProfile;
@@ -178,16 +180,23 @@ export default function PublicTeacherDetailsPageClient({
 
                         {/* Ações */}
                         <Inline gap={3} className="pt-2">
-                          <button
+                          <Button
+                            variante="secundario"
+                            type="submit"
                             onClick={handleShare}
-                            className="btn-classical-secondary flex items-center justify-center"
+                            className="flex items-center justify-center"
                             title="Compartilhar perfil"
                           >
                             <PiShareNetwork className="w-5 h-5" />
-                          </button>
-                          <button className="btn-classical-secondary flex items-center justify-center text-accent-red border-accent-red/30 hover:bg-accent-red/10">
+                          </Button>
+                          <Button
+                            variante="secundario"
+                            type="submit"
+                            className="flex items-center justify-center"
+                          >
                             <PiFlag className="w-5 h-5" />
-                          </button>
+                            <NomeAcao acao="denunciar" />
+                          </Button>
                         </Inline>
                       </div>
                     </div>
@@ -569,12 +578,13 @@ export default function PublicTeacherDetailsPageClient({
                   </p>
 
                   {teacher.fullBio.length > 500 && (
-                    <button
+                    <Button
+                      variante="secundario"
+                      type="submit"
                       onClick={() => setShowFullBio(!showFullBio)}
-                      className="btn-classical-secondary text-sm"
                     >
                       {showFullBio ? 'Ver menos' : 'Ver mais'}
-                    </button>
+                    </Button>
                   )}
                 </div>
               </AnimatedItem>

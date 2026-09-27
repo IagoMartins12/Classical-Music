@@ -16,6 +16,7 @@ import Modal from '@/app/components/Modal';
 import { processTemplate } from '@/app/libs/newsletter/emailTemplates';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface TemplatePreviewModalProps {
   isOpen: boolean;
@@ -247,6 +248,7 @@ export default function TemplatePreviewModal({
               className="text-theme-tertiary hover:text-theme-primary transition-colors"
             >
               <PiX className="w-6 h-6" />
+              <NomeAcao acao="fechar" />
             </button>
           </Inline>
         </div>

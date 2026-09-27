@@ -23,6 +23,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { currentSearchParams } from '@/app/utils/currentSearchParams';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 export interface ComposerImslp {
   epochName: string;
@@ -329,12 +330,13 @@ export default function ComposersClient({
             <Inline gap={3} className="justify-between">
               {/* Clear Filters */}
               {hasActiveFilters && (
-                <button
+                <Button
+                  variante="secundario"
+                  type="submit"
                   onClick={clearFilters}
-                  className="btn-classical-secondary text-sm"
                 >
                   {t('client_jsx_button_children_0__limpar_filtros')}
-                </button>
+                </Button>
               )}
 
               {/* View Toggle */}
@@ -398,14 +400,15 @@ export default function ComposersClient({
                   {t('client_jsx_p_children_0__tente_ajustar_filtros')}
                 </p>
                 {hasActiveFilters && (
-                  <button
+                  <Button
+                    variante="primario"
+                    type="submit"
                     onClick={clearFilters}
-                    className="btn-classical-primary"
                   >
                     {t(
                       'client_jsx_button_children_0__limpar_filtros_ver_todos'
                     )}
-                  </button>
+                  </Button>
                 )}
               </div>
             </AnimatedItem>

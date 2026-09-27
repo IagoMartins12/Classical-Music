@@ -6,6 +6,7 @@ import { PiGraduationCap, PiInfo, PiMedal, PiX } from 'react-icons/pi';
 import { DIFFICULTY_INFO } from '@/app/requests/difficulty-details';
 import { AnimatedItem, AnimatedCard } from '../animation/AnimatedComponents';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface DifficultyInfoProps {
   onClose: () => void;
@@ -33,6 +34,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
           className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg flex items-center justify-center hover:border-brand-primary hover:bg-brand-primary/10 transition-all duration-300"
         >
           <PiX className="w-4 h-4 text-theme-secondary" />
+          <NomeAcao acao="fechar" />
         </button>
       </div>
 

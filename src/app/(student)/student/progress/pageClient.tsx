@@ -42,6 +42,8 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import dynamic from 'next/dynamic';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 /**
  * Os gráficos descem à parte: o `recharts` pesa mais que o resto desta tela
@@ -127,12 +129,14 @@ export default function StudentProgressPageClient({
                 </span>
               </Inline>
               {error && (
-                <button
+                <Button
+                  variante="secundario"
+                  type="submit"
                   onClick={clearError}
-                  className="btn-classical-secondary w-full"
+                  className="w-full"
                 >
                   {t('clear_error')}
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -202,17 +206,19 @@ export default function StudentProgressPageClient({
                 options={PERIOD_OPTIONS}
                 className="input-classical w-auto min-w-48"
               />
-              <button
+              <Button
+                variante="secundario"
+                type="submit"
                 onClick={refreshProgress}
                 disabled={loading.refreshing}
-                className="btn-classical-secondary p-3"
               >
                 <PiArrowsClockwise
                   className={`w-5 h-5 ${
                     loading.refreshing ? 'animate-spin' : ''
                   }`}
                 />
-              </button>
+                <NomeAcao acao="atualizar" />
+              </Button>
             </Inline>
           </div>
         </AnimatedItem>

@@ -33,6 +33,7 @@ import { LanguageToggle } from '../../LanguageToggle';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface TeacherNavigationProps {
   user: any;
@@ -537,6 +538,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                   className="p-2 rounded-lg hover:bg-interactive-hover transition-colors"
                 >
                   <PiX className="w-5 h-5 text-theme-secondary" />
+                  <NomeAcao acao="fechar" />
                 </button>
               </div>
 

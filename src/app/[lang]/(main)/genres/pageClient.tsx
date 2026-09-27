@@ -18,6 +18,8 @@ import ViewModeToggle from '../../../components/ViewModeToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface Genre {
   id: string;
@@ -205,6 +207,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
               >
                 <PiX className="w-5 h-5" />
+                <NomeAcao acao="fechar" />
               </button>
             )}
           </div>
@@ -384,9 +387,9 @@ export default function GenresClient({ genres }: GenresClientProps) {
             <p className="text-theme-secondary mb-6">
               {t('empty_subtitle').replace('{searchTerm}', searchTerm)}
             </p>
-            <button onClick={clearSearch} className="btn-classical-primary">
+            <Button variante="primario" type="submit" onClick={clearSearch}>
               {t('clear_search')}
-            </button>
+            </Button>
           </div>
         )}
       </div>

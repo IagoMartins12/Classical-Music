@@ -48,6 +48,8 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface TeacherProfilePageClientProps {
   initialData: TeacherProfileData | null;
@@ -535,6 +537,7 @@ export default function TeacherProfilePageClient({
                   className="text-accent-red hover:text-accent-red/70 transition-colors"
                 >
                   <PiX className="w-4 h-4" />
+                  <NomeAcao acao="fechar" />
                 </button>
               </div>
             </AnimatedCard>
@@ -670,13 +673,14 @@ export default function TeacherProfilePageClient({
                     gap={3}
                     className="justify-end pt-4 border-t border-theme-secondary"
                   >
-                    <button
+                    <Button
+                      variante="secundario"
+                      type="submit"
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
-                      className="btn-classical-secondary"
                     >
                       {t('cancel')}
-                    </button>
+                    </Button>
                     <Inline
                       as="button"
                       gap={2}
@@ -933,13 +937,14 @@ export default function TeacherProfilePageClient({
                     gap={3}
                     className="justify-end pt-4 border-t border-theme-secondary"
                   >
-                    <button
+                    <Button
+                      variante="secundario"
+                      type="submit"
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
-                      className="btn-classical-secondary"
                     >
                       {t('cancel')}
-                    </button>
+                    </Button>
                     <Inline
                       as="button"
                       gap={2}
@@ -1038,12 +1043,13 @@ export default function TeacherProfilePageClient({
                         <p className="text-theme-tertiary mb-4">
                           {t('complete_profile_description')}
                         </p>
-                        <button
+                        <Button
+                          variante="primario"
+                          type="submit"
                           onClick={() => setEditingSection('professional')}
-                          className="btn-classical-primary"
                         >
                           {t('start_now')}
-                        </button>
+                        </Button>
                       </div>
                     )}
                 </div>
@@ -1110,6 +1116,7 @@ export default function TeacherProfilePageClient({
                             disabled={saving}
                           >
                             <PiX className="w-3 h-3" />
+                            <NomeAcao acao="fechar" />
                           </button>
                         </Inline>
                       ))}
@@ -1157,6 +1164,7 @@ export default function TeacherProfilePageClient({
                             disabled={saving}
                           >
                             <PiX className="w-3 h-3" />
+                            <NomeAcao acao="fechar" />
                           </button>
                         </Inline>
                       ))}
@@ -1335,13 +1343,14 @@ export default function TeacherProfilePageClient({
                     gap={3}
                     className="justify-end pt-4 border-t border-theme-secondary"
                   >
-                    <button
+                    <Button
+                      variante="secundario"
+                      type="submit"
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
-                      className="btn-classical-secondary"
                     >
                       {t('cancel')}
-                    </button>
+                    </Button>
                     <Inline
                       as="button"
                       gap={2}
@@ -1528,12 +1537,13 @@ export default function TeacherProfilePageClient({
                         <p className="text-theme-tertiary mb-4">
                           {t('configure_description')}
                         </p>
-                        <button
+                        <Button
+                          variante="primario"
+                          type="submit"
                           onClick={() => setEditingSection('teaching')}
-                          className="btn-classical-primary"
                         >
                           {t('configure_now')}
-                        </button>
+                        </Button>
                       </div>
                     )}
                 </div>
@@ -1652,13 +1662,14 @@ export default function TeacherProfilePageClient({
                     gap={3}
                     className="justify-end pt-4 border-t border-theme-secondary"
                   >
-                    <button
+                    <Button
+                      variante="secundario"
+                      type="submit"
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
-                      className="btn-classical-secondary"
                     >
                       {t('cancel')}
-                    </button>
+                    </Button>
                     <Inline
                       as="button"
                       gap={2}
@@ -1763,12 +1774,13 @@ export default function TeacherProfilePageClient({
                       <p className="text-theme-tertiary mb-4">
                         {t('activate_public_profile')}
                       </p>
-                      <button
+                      <Button
+                        variante="primario"
+                        type="submit"
                         onClick={() => setEditingSection('public')}
-                        className="btn-classical-primary"
                       >
                         {t('make_public')}
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>

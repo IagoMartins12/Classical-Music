@@ -7,6 +7,7 @@ import { AnimatedItem } from '../../animation/AnimatedComponents';
 import { markAchievementViewed } from '@/app/requests/achievements';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 // Interface para achievement
 interface AchievementData {
@@ -248,6 +249,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
             className="w-7 h-7 rounded-full bg-theme-secondary hover:bg-theme-primary flex items-center justify-center transition-colors text-theme-tertiary hover:text-theme-primary"
           >
             <PiX className="w-4 h-4" />
+            <NomeAcao acao="fechar" />
           </button>
         </Inline>
 

@@ -24,6 +24,7 @@ import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface AnnotationFiltersProps {
   filters: Filters;
@@ -175,6 +176,7 @@ export default function AnnotationFiltersComponent({
             className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-primary/30 flex items-center justify-center text-theme-tertiary hover:text-theme-primary hover:border-accent-red/50 transition-all"
           >
             <PiX className="w-4 h-4" />
+            <NomeAcao acao="fechar" />
           </button>
         </div>
 
@@ -346,6 +348,7 @@ export default function AnnotationFiltersComponent({
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-accent-red transition-colors"
                   >
                     <PiX className="w-4 h-4" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 )}
               </div>
@@ -384,6 +387,7 @@ export default function AnnotationFiltersComponent({
                     className="text-accent-blue hover:text-accent-red transition-colors"
                   >
                     <PiX className="w-3 h-3" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </Inline>
               )}
@@ -406,6 +410,7 @@ export default function AnnotationFiltersComponent({
                     className="text-accent-green hover:text-accent-red transition-colors"
                   >
                     <PiX className="w-3 h-3" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </Inline>
               )}
@@ -428,6 +433,7 @@ export default function AnnotationFiltersComponent({
                     className="text-accent-purple hover:text-accent-red transition-colors"
                   >
                     <PiX className="w-3 h-3" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </Inline>
               )}
@@ -447,6 +453,7 @@ export default function AnnotationFiltersComponent({
                     className="text-brand-primary hover:text-accent-red transition-colors"
                   >
                     <PiX className="w-3 h-3" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </Inline>
               )}

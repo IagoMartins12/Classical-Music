@@ -29,6 +29,7 @@ import {
 } from '@/app/requests/blog/interactions';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 interface Comment {
   id: string;
@@ -215,19 +216,21 @@ const CommentItem = memo(
                   autoFocus
                 />
                 <div className="flex gap-2 mt-2">
-                  <button
+                  <Button
+                    variante="primario"
+                    type="submit"
                     onClick={() => onSaveEdit(comment.id)}
                     disabled={!editContent.trim() || submitting}
-                    className="btn-classical-primary px-3 py-1.5 text-xs"
                   >
                     {submitting ? 'Salvando...' : 'Salvar'}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={onCancelEdit}
-                    className="btn-classical-secondary px-3 py-1.5 text-xs"
                   >
                     Cancelar
-                  </button>
+                  </Button>
                 </div>
               </div>
             ) : (
@@ -309,19 +312,21 @@ const CommentItem = memo(
                   autoFocus
                 />
                 <div className="flex gap-2 mt-2">
-                  <button
+                  <Button
+                    variante="primario"
+                    type="submit"
                     onClick={() => onSubmitReply(comment.id)}
                     disabled={!replyContent.trim() || submitting}
-                    className="btn-classical-primary px-3 py-1.5 text-xs"
                   >
                     {submitting ? 'Enviando...' : 'Responder'}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={onCancelReply}
-                    className="btn-classical-secondary px-3 py-1.5 text-xs"
                   >
                     Cancelar
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
@@ -588,14 +593,15 @@ export function CommentSection({
                 className="input-classical-2 w-full resize-none"
               />
               <div className="flex justify-end mt-3">
-                <button
+                <Button
+                  variante="primario"
                   type="submit"
                   disabled={!newComment.trim() || submitting}
-                  className="btn-classical-primary flex items-center gap-2"
+                  className="flex items-center gap-2"
                 >
                   <PiPaperPlaneRight />
                   {submitting ? 'Enviando...' : 'Comentar'}
-                </button>
+                </Button>
               </div>
             </form>
           ) : (
@@ -712,24 +718,27 @@ export function CommentSection({
           )}
 
           <div className="flex justify-end gap-2 pt-4">
-            <button
+            <Button
+              variante="secundario"
+              type="submit"
               onClick={() => {
                 setReportModalOpen(false);
                 setReportingCommentId(null);
                 setReportReason('');
               }}
-              className="btn-classical-secondary"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
+              variante="primario"
+              type="submit"
               onClick={handleReportComment}
               disabled={!reportReason || reportingComment}
-              className="btn-classical-primary flex items-center gap-2"
+              className="flex items-center gap-2"
             >
               <PiFlag />
               {reportingComment ? 'Enviando...' : 'Denunciar'}
-            </button>
+            </Button>
           </div>
         </div>
       </Modal>

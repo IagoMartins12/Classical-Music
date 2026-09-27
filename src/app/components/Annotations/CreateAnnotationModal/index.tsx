@@ -35,6 +35,7 @@ import { useTranslation } from '@/app/hooks/useTranslation';
 import { searchWorks as findWorks } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface CreateAnnotationModalProps {
   isOpen: boolean;
@@ -1128,6 +1129,7 @@ export default function CreateAnnotationModal({
                   className="text-brand-primary hover:text-accent-red transition-colors"
                 >
                   <PiX className="w-3 h-3" />
+                  <NomeAcao acao="fechar" />
                 </button>
               </Inline>
             ))}

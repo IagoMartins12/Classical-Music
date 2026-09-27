@@ -34,6 +34,7 @@ import { useToast } from '@/app/hooks/useToast';
 import Select from '@/app/components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Button } from '@/app/components/ui/Button';
 
 interface StudentNotificationsPageClientProps {
   initialNotifications: NotificationData[];
@@ -259,12 +260,13 @@ export default function StudentNotificationsPageClient({
               {t('error_loading')}
             </h1>
             <p className="text-theme-secondary mb-4">{errorMessage}</p>
-            <button
+            <Button
+              variante="primario"
+              type="submit"
               onClick={() => window.location.reload()}
-              className="btn-classical-primary"
             >
               {t('error_try_again')}
-            </button>
+            </Button>
           </div>
         </div>
       </PageContainer>
@@ -490,12 +492,13 @@ export default function StudentNotificationsPageClient({
                 </p>
 
                 {filter !== 'all' && (
-                  <button
+                  <Button
+                    variante="primario"
+                    type="submit"
                     onClick={() => setFilter('all')}
-                    className="btn-classical-primary"
                   >
                     {t('view_all_notifications')}
-                  </button>
+                  </Button>
                 )}
 
                 {filter === 'all' && (

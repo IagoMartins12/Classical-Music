@@ -36,6 +36,8 @@ import { getWorkById } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface EditAssignmentPageClientProps {
   initialData: EditAssignmentData | null;
@@ -545,6 +547,7 @@ export default function EditAssignmentPageClient({
                               className="text-accent-red"
                             >
                               <PiX className="w-4 h-4" />
+                              <NomeAcao acao="fechar" />
                             </button>
                           )}
                         </Inline>
@@ -652,6 +655,7 @@ export default function EditAssignmentPageClient({
                                     className="text-accent-red"
                                   >
                                     <PiX className="w-4 h-4" />
+                                    <NomeAcao acao="fechar" />
                                   </button>
                                 )}
                               </Inline>
@@ -702,6 +706,7 @@ export default function EditAssignmentPageClient({
                                     className="text-accent-red"
                                   >
                                     <PiX className="w-4 h-4" />
+                                    <NomeAcao acao="fechar" />
                                   </button>
                                 )}
                               </Inline>
@@ -752,6 +757,7 @@ export default function EditAssignmentPageClient({
                                     className="text-accent-red"
                                   >
                                     <PiX className="w-4 h-4" />
+                                    <NomeAcao acao="fechar" />
                                   </button>
                                 )}
                               </Inline>
@@ -779,6 +785,7 @@ export default function EditAssignmentPageClient({
                           className="ml-auto text-accent-red"
                         >
                           <PiX className="w-4 h-4" />
+                          <NomeAcao acao="fechar" />
                         </button>
                       </Inline>
                     </div>
@@ -1066,13 +1073,15 @@ export default function EditAssignmentPageClient({
                   })}
                 </p>
                 <div className="flex space-x-3">
-                  <button
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={() => setShowDeleteConfirm(false)}
-                    className="btn-classical-secondary flex-1"
+                    className="flex-1"
                     disabled={loading.deleteAssignment}
                   >
                     {t('cancel')}
-                  </button>
+                  </Button>
                   <Inline
                     as="button"
                     gap={2}

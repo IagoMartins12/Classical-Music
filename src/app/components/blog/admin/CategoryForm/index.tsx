@@ -21,6 +21,7 @@ import {
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface CategoryFormProps {
   mode: 'create' | 'edit';
@@ -412,6 +413,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                 className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all"
               >
                 <PiTrash className="w-4 h-4" />
+                <NomeAcao acao="excluir" />
               </button>
             </div>
           ) : (

@@ -16,6 +16,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { unsubscribeFromNewsletter } from '@/app/requests/newsletter';
 import { Inline } from '@/app/components/ui/Layout';
 import { Field } from '@/app/components/ui/Field';
+import { Button } from '@/app/components/ui/Button';
 
 export default function UnsubscribePage() {
   const router = useRouter();
@@ -92,13 +93,15 @@ export default function UnsubscribePage() {
                   {t('unsubscribe_completed_message')}
                 </p>
 
-                <button
+                <Button
+                  variante="primario"
+                  type="submit"
                   onClick={() => router.push('/')}
-                  className="btn-classical-primary inline-flex items-center space-x-3"
+                  className="inline-flex items-center"
                 >
                   <span>{t('unsubscribe_completed_button')}</span>
                   <PiArrowRight className="w-5 h-5" />
-                </button>
+                </Button>
               </div>
             </div>
           </AnimatedContainer>
@@ -151,22 +154,26 @@ export default function UnsubscribePage() {
                     </div>
 
                     <div className="space-y-4">
-                      <button
+                      <Button
+                        variante="primario"
+                        type="submit"
                         onClick={handleProceedWithFeedback}
-                        className="btn-classical-primary w-full"
+                        className="w-full"
                       >
                         {t('unsubscribe_with_feedback_button')}
-                      </button>
+                      </Button>
 
-                      <button
+                      <Button
+                        variante="secundario"
+                        type="submit"
                         onClick={handleQuickUnsubscribe}
                         disabled={isSubmitting}
-                        className="btn-classical-secondary w-full"
+                        className="w-full"
                       >
                         {isSubmitting
                           ? t('unsubscribe_quick_button_loading')
                           : t('unsubscribe_quick_button')}
-                      </button>
+                      </Button>
 
                       <button
                         onClick={() => router.push('/')}
@@ -234,15 +241,17 @@ export default function UnsubscribePage() {
 
                     {/* Actions */}
                     <div className="space-y-3">
-                      <button
+                      <Button
+                        variante="primario"
+                        type="submit"
                         onClick={handleUnsubscribe}
                         disabled={isSubmitting}
-                        className="btn-classical-primary w-full"
+                        className="w-full"
                       >
                         {isSubmitting
                           ? t('unsubscribe_quick_button_loading')
                           : t('unsubscribe_confirm_button')}
-                      </button>
+                      </Button>
 
                       <button
                         onClick={() => setStep('confirm')}

@@ -19,6 +19,7 @@ import {
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface AdminHeaderProps {
   onMenuClick: () => void;
@@ -87,6 +88,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                 className="lg:hidden p-2 rounded-lg text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary transition-all"
               >
                 <PiList className="w-5 h-5" />
+                <NomeAcao acao="menu" />
               </button>
 
               {/* Logo */}

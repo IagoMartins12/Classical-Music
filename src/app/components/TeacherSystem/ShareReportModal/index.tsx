@@ -22,6 +22,7 @@ import Modal from '@/app/components/Modal';
 import Checkbox from '../../Common/Checkbox';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { Button } from '@/app/components/ui/Button';
 
 interface ShareReportModalProps {
   isOpen: boolean;
@@ -376,19 +377,21 @@ export default function ShareReportModal({
 
         {/* Actions */}
         <div className="flex items-center justify-end gap-3 pt-6 border-t border-theme-secondary mt-6">
-          <button
+          <Button
+            variante="secundario"
             type="button"
             onClick={onClose}
-            className="btn-classical-secondary"
             disabled={loading}
           >
             Cancelar
-          </button>
+          </Button>
 
-          <button
+          <Button
+            variante="primario"
+            type="submit"
             onClick={handleShare}
             disabled={loading || selectedCount === 0 || !shareData.title.trim()}
-            className="btn-classical-primary flex items-center gap-2"
+            className="flex items-center gap-2"
           >
             {loading ? (
               <>
@@ -401,7 +404,7 @@ export default function ShareReportModal({
                 <span>Compartilhar Relatório</span>
               </>
             )}
-          </button>
+          </Button>
         </div>
 
         {selectedCount === 0 && (

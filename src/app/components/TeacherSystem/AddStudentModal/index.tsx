@@ -24,6 +24,7 @@ import Checkbox from '../../Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface AddStudentModalProps {
   onClose: () => void;
@@ -211,6 +212,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                 className="text-theme-primary "
               >
                 <PiCaretLeft className="w-4 h-4" />
+                <NomeAcao acao="anterior" />
               </button>
             )}
             <div>

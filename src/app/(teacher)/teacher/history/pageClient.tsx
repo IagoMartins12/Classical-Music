@@ -37,6 +37,7 @@ import { loadSchoolActivities } from '@/app/requests/portal/school-activities';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { Button } from '@/app/components/ui/Button';
 
 interface Activity {
   id: string;
@@ -513,18 +514,20 @@ const TeacherHistoryClient = ({
                   </div>
 
                   <Inline gap={3} className="pt-4">
-                    <button
+                    <Button
+                      variante="primario"
+                      type="submit"
                       onClick={updateFilters}
-                      className="btn-classical-primary"
                     >
                       {t('apply_filters')}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variante="secundario"
+                      type="submit"
                       onClick={clearFilters}
-                      className="btn-classical-secondary"
                     >
                       {t('clear_filters')}
-                    </button>
+                    </Button>
                     <Inline
                       as="button"
                       gap={2}
@@ -554,12 +557,13 @@ const TeacherHistoryClient = ({
                   {t('error_loading_activities')}
                 </h3>
                 <p className="text-theme-secondary mb-4">{error}</p>
-                <button
+                <Button
+                  variante="primario"
+                  type="submit"
                   onClick={fetchActivities}
-                  className="btn-classical-primary"
                 >
                   {t('try_again')}
-                </button>
+                </Button>
               </div>
             ) : activities.length === 0 ? (
               <div className="classical-card p-12 text-center">

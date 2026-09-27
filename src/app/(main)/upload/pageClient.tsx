@@ -49,6 +49,7 @@ import UploadScoreCard from '../../components/UploadsPage/UploadScoreCard';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface Epoch {
   id: string;
@@ -877,6 +878,7 @@ const UploadsClient = ({
                         className="w-6 h-6 rounded-full bg-theme-primary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
                       >
                         <PiX className="w-4 h-4" />
+                        <NomeAcao acao="fechar" />
                       </button>
                     </Inline>
                   </div>

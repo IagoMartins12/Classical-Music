@@ -16,6 +16,7 @@ import {
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface LocationData {
   country?: {
@@ -336,6 +337,7 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
               className="p-1 hover:bg-theme-secondary hover:bg-opacity-30 rounded-full transition-colors"
             >
               <PiX className="w-3 h-3 text-theme-tertiary hover:text-theme-primary" />
+              <NomeAcao acao="fechar" />
             </button>
           )}
           <PiCaretDown

@@ -24,6 +24,8 @@ import {
 } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 // 🆕 Interface para dados das peças vinculadas
 export interface LessonWork {
@@ -428,6 +430,7 @@ export default function WorkSelectionSection({
                           }`}
                         >
                           <PiTrash className="w-3 h-3 text-accent-red" />
+                          <NomeAcao acao="excluir" />
                         </button>
                       </Inline>
                     </div>
@@ -477,6 +480,7 @@ export default function WorkSelectionSection({
                     className="w-6 h-6 rounded-full bg-theme-elevated border border-theme-secondary hover:border-accent-red transition-colors flex items-center justify-center"
                   >
                     <PiX className="w-3 h-3 text-theme-tertiary hover:text-accent-red" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </div>
 
@@ -569,13 +573,13 @@ export default function WorkSelectionSection({
                   </Text>
 
                   <Inline gap={2}>
-                    <button
+                    <Button
+                      variante="secundario"
                       type="button"
                       onClick={resetAddForm}
-                      className="btn-classical-secondary text-sm"
                     >
                       Cancelar
-                    </button>
+                    </Button>
 
                     <Inline
                       as="button"

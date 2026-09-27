@@ -38,6 +38,7 @@ import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import Image from '@/app/components/SmartImage';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 const CATEGORY_TABS = [
   {
@@ -572,6 +573,7 @@ export default function BlogMediaGalleryClient() {
                   className="p-2 hover:bg-theme-secondary rounded-lg transition-colors"
                 >
                   <PiX className="w-5 h-5 text-theme-tertiary" />
+                  <NomeAcao acao="fechar" />
                 </button>
               </div>
 

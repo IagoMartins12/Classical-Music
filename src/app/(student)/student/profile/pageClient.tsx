@@ -47,6 +47,8 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface StudentProfilePageClientProps {
   initialData: StudentProfileData | null;
@@ -416,9 +418,9 @@ export default function StudentProfilePageClient({
             <p className="text-theme-secondary classical-subtitle mb-6">
               {errorMessage}
             </p>
-            <button onClick={refreshProfile} className="btn-classical-primary">
+            <Button variante="primario" type="submit" onClick={refreshProfile}>
               {t('try_again')}
-            </button>
+            </Button>
           </div>
         </div>
       </PageContainer>
@@ -511,6 +513,7 @@ export default function StudentProfilePageClient({
                   className="text-accent-red hover:text-accent-red/70 transition-colors"
                 >
                   <PiX className="w-4 h-4" />
+                  <NomeAcao acao="fechar" />
                 </button>
               </div>
             </AnimatedCard>
@@ -646,13 +649,14 @@ export default function StudentProfilePageClient({
                     gap={3}
                     className="justify-end pt-4 border-t border-theme-secondary"
                   >
-                    <button
+                    <Button
+                      variante="secundario"
+                      type="submit"
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
-                      className="btn-classical-secondary"
                     >
                       {t('cancel')}
-                    </button>
+                    </Button>
                     <Inline
                       as="button"
                       gap={2}
@@ -893,13 +897,14 @@ export default function StudentProfilePageClient({
                     gap={3}
                     className="justify-end pt-4 border-t border-theme-secondary"
                   >
-                    <button
+                    <Button
+                      variante="secundario"
+                      type="submit"
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
-                      className="btn-classical-secondary"
                     >
                       {t('cancel')}
-                    </button>
+                    </Button>
                     <Inline
                       as="button"
                       gap={2}
@@ -996,12 +1001,13 @@ export default function StudentProfilePageClient({
                       <p className="text-theme-tertiary mb-4">
                         {t('add_goals_background')}
                       </p>
-                      <button
+                      <Button
+                        variante="primario"
+                        type="submit"
                         onClick={() => setEditingSection('study')}
-                        className="btn-classical-primary"
                       >
                         {t('configure_now')}
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -1077,13 +1083,14 @@ export default function StudentProfilePageClient({
                     gap={3}
                     className="justify-end pt-4 border-t border-theme-secondary"
                   >
-                    <button
+                    <Button
+                      variante="secundario"
+                      type="submit"
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
-                      className="btn-classical-secondary"
                     >
                       {t('cancel')}
-                    </button>
+                    </Button>
                     <Inline
                       as="button"
                       gap={2}
@@ -1125,12 +1132,13 @@ export default function StudentProfilePageClient({
                       <p className="text-theme-tertiary mb-4">
                         {t('select_favorite_genres')}
                       </p>
-                      <button
+                      <Button
+                        variante="primario"
+                        type="submit"
                         onClick={() => setEditingSection('preferences')}
-                        className="btn-classical-primary"
                       >
                         {t('choose_genres')}
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -1268,13 +1276,14 @@ export default function StudentProfilePageClient({
                     gap={3}
                     className="justify-end pt-4 border-t border-theme-secondary"
                   >
-                    <button
+                    <Button
+                      variante="secundario"
+                      type="submit"
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
-                      className="btn-classical-secondary"
                     >
                       {t('cancel')}
-                    </button>
+                    </Button>
                     <Inline
                       as="button"
                       gap={2}
@@ -1410,13 +1419,14 @@ export default function StudentProfilePageClient({
                     gap={3}
                     className="justify-end pt-4 border-t border-theme-secondary"
                   >
-                    <button
+                    <Button
+                      variante="secundario"
+                      type="submit"
                       onClick={() => setEditingSection(null)}
                       disabled={saving}
-                      className="btn-classical-secondary"
                     >
                       {t('cancel')}
-                    </button>
+                    </Button>
                     <Inline
                       as="button"
                       gap={2}

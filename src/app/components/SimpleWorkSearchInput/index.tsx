@@ -12,6 +12,7 @@ import {
 import { getWorkById, searchWorks } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface Work {
   id: string;
@@ -330,6 +331,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                 className="text-theme-tertiary hover:text-accent-red transition-colors p-1"
               >
                 <PiX className="w-4 h-4" />
+                <NomeAcao acao="fechar" />
               </button>
             )}
           </div>

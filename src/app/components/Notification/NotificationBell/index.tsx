@@ -17,6 +17,7 @@ import { useNotifications } from '@/app/hooks/notifications/useNotifications';
 import { NotificationData } from '@/app/types/notification';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface NotificationBellProps {
   userRole: 'teacher' | 'student';
@@ -240,6 +241,7 @@ export default function NotificationBell({
                   className="p-1 rounded hover:bg-interactive-hover transition-colors"
                 >
                   <PiX className="w-4 h-4 text-theme-tertiary" />
+                  <NomeAcao acao="fechar" />
                 </button>
               </Inline>
             </div>

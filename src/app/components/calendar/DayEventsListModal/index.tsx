@@ -5,6 +5,7 @@ import { PiClock, PiMapPin, PiMusicNotes } from 'react-icons/pi';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 interface DayEventsListModalProps {
   isOpen: boolean;
@@ -149,9 +150,9 @@ export default function DayEventsListModal({
 
         {/* Footer */}
         <div className="mt-6 flex justify-end">
-          <button onClick={onClose} className="btn-classical-secondary">
+          <Button variante="secundario" type="submit" onClick={onClose}>
             Fechar
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

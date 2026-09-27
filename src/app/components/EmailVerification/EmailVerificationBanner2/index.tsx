@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
 import { legacyAuth } from '@/app/libs/api/compat';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface EmailVerificationBannerProps {
   onDismiss?: () => void;
@@ -158,6 +159,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
           className={`${textColor} hover:opacity-60 transition-opacity p-1`}
         >
           <PiX className="w-4 h-4" />
+          <NomeAcao acao="fechar" />
         </button>
       </div>
 

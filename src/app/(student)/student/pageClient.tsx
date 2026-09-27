@@ -33,6 +33,8 @@ import RecentActivities from '@/app/components/TeacherSystem/RecentActivities';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface StudentProfile {
   id: string;
@@ -230,12 +232,14 @@ export default function StudentPageClient({
                 </span>
               </Inline>
               {error && (
-                <button
+                <Button
+                  variante="secundario"
+                  type="submit"
                   onClick={clearError}
-                  className="btn-classical-secondary w-full"
+                  className="w-full"
                 >
                   {t('student_home_error_clear')}
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -375,6 +379,7 @@ export default function StudentPageClient({
                         loading.refreshing ? 'animate-spin' : ''
                       }`}
                     />
+                    <NomeAcao acao="atualizar" />
                   </button>
                 </div>
 

@@ -7,6 +7,8 @@ import WeekView from '../WeekView';
 import MonthView from '../MonthView';
 import DayView from '../DayView';
 import { Inline } from '@/app/components/ui/Layout';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface CalendarEvent {
   id: string;
@@ -184,6 +186,7 @@ export default function CustomCalendar({
                 className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
               >
                 <PiCaretLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <NomeAcao acao="anterior" />
               </button>
 
               <div className="text-center min-w-48">
@@ -197,15 +200,13 @@ export default function CustomCalendar({
                 className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
               >
                 <PiCaretRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <NomeAcao acao="proximo" />
               </button>
             </Inline>
 
-            <button
-              onClick={goToToday}
-              className="btn-classical-secondary text-sm"
-            >
+            <Button variante="secundario" type="submit" onClick={goToToday}>
               Hoje
-            </button>
+            </Button>
           </Inline>
 
           {/* Botões de Visualização */}

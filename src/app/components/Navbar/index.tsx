@@ -40,6 +40,7 @@ import { LanguageToggle } from '../LanguageToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface NavItem {
   label: string;
@@ -775,6 +776,7 @@ const Navbar: React.FC = () => {
                                 className="ml-2 p-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                               >
                                 <PiCaretRight className="w-5 h-5" />
+                                <NomeAcao acao="proximo" />
                               </button>
                             </div>
                           ) : (
@@ -923,6 +925,7 @@ const Navbar: React.FC = () => {
                           className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                         >
                           <PiCaretLeft className="w-5 h-5" />
+                          <NomeAcao acao="anterior" />
                         </button>
                         <h3 className="font-medium text-theme-primary">
                           Perfil
@@ -1162,6 +1165,7 @@ const Navbar: React.FC = () => {
                         className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
                       >
                         <PiCaretLeft className="w-5 h-5" />
+                        <NomeAcao acao="anterior" />
                       </button>
                       <h3 className="font-medium text-theme-primary">
                         {submenuTitle}

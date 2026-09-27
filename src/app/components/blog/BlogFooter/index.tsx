@@ -11,6 +11,7 @@ import {
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 export function BlogFooter() {
   const currentYear = new Date().getFullYear();
@@ -140,12 +141,13 @@ export function BlogFooter() {
                 className="input-classical-2 flex-1"
                 required
               />
-              <button
+              <Button
+                variante="primario"
                 type="submit"
-                className="btn-classical-primary whitespace-nowrap"
+                className="whitespace-nowrap"
               >
                 Inscrever-se
-              </button>
+              </Button>
             </form>
           </div>
         </div>

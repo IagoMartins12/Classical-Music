@@ -10,6 +10,7 @@ import Select from '@/app/components/Common/Select';
 import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface FilterPanelProps {
   isOpen: boolean;
@@ -278,6 +279,7 @@ export default function FilterPanel({
                     className="p-2 hover:bg-accent-red/10 text-accent-red rounded transition-colors"
                   >
                     <PiTrash className="w-4 h-4" />
+                    <NomeAcao acao="excluir" />
                   </button>
                 </div>
               ))}

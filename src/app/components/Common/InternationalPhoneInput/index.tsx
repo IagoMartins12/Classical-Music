@@ -16,6 +16,7 @@ import {
 } from '@/app/utils/phones_and_location/countryTranslations';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 export interface InternationalPhoneInputProps {
   value: string;
@@ -489,6 +490,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
               >
                 <PiX className="w-4 h-4" />
+                <NomeAcao acao="fechar" />
               </button>
             )}
           </div>

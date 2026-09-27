@@ -29,12 +29,13 @@ type Variante = 'primario' | 'secundario' | 'fantasma' | 'perigo';
 type Tamanho = 'p' | 'm';
 
 const VARIANTE: Record<Variante, string> = {
-  primario: 'fill-ouro text-sobre-ouro border-transparent',
+  primario: 'fill-ouro text-sobre-ouro border-transparent font-semibold',
   secundario:
-    'fundo-sup-2 text-texto border-linha-forte hover:border-ouro/50 hover:text-ouro-texto',
+    'fundo-sup-2 text-texto border-linha-forte font-medium hover:border-ouro/50 hover:text-ouro-texto',
   fantasma:
-    'bg-transparent text-texto-suave border-transparent hover:text-texto hover:bg-[var(--interactive-hover)]',
-  perigo: 'bg-transparent text-erro border-erro/40 hover:bg-erro/10',
+    'bg-transparent text-texto-suave border-transparent hover:text-texto hover:bg-[var(--interactive-hover)] font-medium',
+  perigo:
+    'bg-transparent text-erro border-erro/40 hover:bg-erro/10 font-medium',
 };
 
 const TAMANHO: Record<Tamanho, string> = {
@@ -87,7 +88,7 @@ export function Button({
       aria-busy={carregando || undefined}
       disabled={disabled || carregando}
       className={cx(
-        'inline-flex items-center justify-center gap-2 rounded-controle border font-medium',
+        'inline-flex items-center justify-center gap-2 rounded-controle border',
         'transition-[transform,background-color,border-color,color] duration-[var(--t-toque)] ease-saida',
         'active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100',
         'disabled:cursor-not-allowed disabled:opacity-40',

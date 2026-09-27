@@ -42,6 +42,8 @@ import Select from '../../../components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface WorksClientProps {
   worksData: WorksListResponse;
@@ -203,6 +205,7 @@ const ActiveFilters = memo(
                 className="hover:text-brand-secondary transition-colors"
               >
                 <PiX className="w-3 h-3" />
+                <NomeAcao acao="fechar" />
               </button>
             </Text>
           </AnimatedItem>
@@ -220,6 +223,7 @@ const ActiveFilters = memo(
                 className="hover:text-accent-purple/80 transition-colors"
               >
                 <PiX className="w-3 h-3" />
+                <NomeAcao acao="fechar" />
               </button>
             </div>
           </AnimatedItem>
@@ -240,6 +244,7 @@ const ActiveFilters = memo(
                 className="hover:text-accent-green/80 transition-colors"
               >
                 <PiX className="w-3 h-3" />
+                <NomeAcao acao="fechar" />
               </button>
             </div>
           </AnimatedItem>
@@ -266,6 +271,7 @@ const ActiveFilters = memo(
                 className="hover:text-accent-blue/80 transition-colors"
               >
                 <PiX className="w-3 h-3" />
+                <NomeAcao acao="fechar" />
               </button>
             </div>
           </AnimatedItem>
@@ -288,6 +294,7 @@ const ActiveFilters = memo(
                 className="hover:text-accent-orange/80 transition-colors"
               >
                 <PiX className="w-3 h-3" />
+                <NomeAcao acao="fechar" />
               </button>
             </div>
           </AnimatedItem>
@@ -548,12 +555,13 @@ const WorksClient = memo(
                 {t('client_jsx_p_adjust_filters')}
               </p>
               {hasActiveFilters && (
-                <button
+                <Button
+                  variante="primario"
+                  type="submit"
                   onClick={clearFilters}
-                  className="btn-classical-primary"
                 >
                   {t('client_jsx_button_clear_and_view_all')}
-                </button>
+                </Button>
               )}
             </div>
           </AnimatedItem>
@@ -662,6 +670,7 @@ const WorksClient = memo(
                     className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
                   >
                     <PiX className="w-5 h-5" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 )}
               </div>

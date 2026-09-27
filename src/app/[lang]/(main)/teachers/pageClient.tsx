@@ -41,6 +41,8 @@ import Link from '@/app/components/LocalizedLink';
 import { currentSearchParams } from '@/app/utils/currentSearchParams';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface PublicTeachersPageClientProps {
   initialData: PublicTeachersResponse | null;
@@ -344,13 +346,15 @@ export default function PublicTeachersPageClient({
                 </button>
 
                 {hasActiveFilters && (
-                  <button
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={clearFilters}
                     disabled={isLoading}
-                    className="btn-classical-secondary text-accent-red border-accent-red/30 hover:bg-accent-red/10"
                   >
                     <PiX className="w-4 h-4" />
-                  </button>
+                    <NomeAcao acao="fechar" />
+                  </Button>
                 )}
               </Inline>
             </div>
@@ -505,12 +509,13 @@ export default function PublicTeachersPageClient({
                 resultados.
               </p>
               {hasActiveFilters && (
-                <button
+                <Button
+                  variante="primario"
+                  type="submit"
                   onClick={clearFilters}
-                  className="btn-classical-primary"
                 >
                   Limpar Filtros
-                </button>
+                </Button>
               )}
             </div>
           </AnimatedItem>
@@ -538,13 +543,15 @@ export default function PublicTeachersPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <Inline gap={2} className="justify-center">
               {/* Previous */}
-              <button
+              <Button
+                variante="secundario"
+                type="submit"
                 onClick={() => handlePageChange((currentFilters.page || 1) - 1)}
                 disabled={isLoading || (currentFilters.page || 1) <= 1}
-                className="btn-classical-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Anterior
-              </button>
+              </Button>
 
               {/* Page Numbers */}
               {Array.from(
@@ -576,13 +583,15 @@ export default function PublicTeachersPageClient({
               )}
 
               {/* Next */}
-              <button
+              <Button
+                variante="secundario"
+                type="submit"
                 onClick={() => handlePageChange((currentFilters.page || 1) + 1)}
                 disabled={isLoading || !pagination.hasMore}
-                className="btn-classical-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Próximo
-              </button>
+              </Button>
             </Inline>
           </AnimatedItem>
         )}

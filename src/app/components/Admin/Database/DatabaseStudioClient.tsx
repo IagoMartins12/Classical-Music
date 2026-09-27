@@ -40,6 +40,7 @@ import { CONFIRMATION_MESSAGES } from './confirmations';
 import { deleteConfirmationPhrase } from '@/app/requests/admin/database';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 export default function DatabaseStudioClient() {
   const {
@@ -403,6 +404,7 @@ export default function DatabaseStudioClient() {
                           }`}
                         >
                           <PiListBullets className="w-4 h-4" />
+                          <NomeAcao acao="verEmLista" />
                         </button>
                         <button
                           onClick={() => setViewMode('grid')}
@@ -413,6 +415,7 @@ export default function DatabaseStudioClient() {
                           }`}
                         >
                           <PiSquaresFour className="w-4 h-4" />
+                          <NomeAcao acao="verEmGrade" />
                         </button>
                       </Inline>
 
@@ -471,6 +474,7 @@ export default function DatabaseStudioClient() {
                             className="hover:text-accent-red transition-colors"
                           >
                             <PiX className="w-3 h-3" />
+                            <NomeAcao acao="fechar" />
                           </button>
                         </Inline>
                       ))}

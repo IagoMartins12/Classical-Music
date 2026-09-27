@@ -28,6 +28,7 @@ import Checkbox from '@/app/components/Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface CreateCampaignModalProps {
   onClose: () => void;
@@ -763,6 +764,7 @@ export default function CreateCampaignModal({
                 className="text-theme-tertiary hover:text-theme-primary transition-colors"
               >
                 <PiX className="w-6 h-6" />
+                <NomeAcao acao="fechar" />
               </button>
             </div>
 

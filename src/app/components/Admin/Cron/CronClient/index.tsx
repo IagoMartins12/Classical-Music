@@ -24,6 +24,7 @@ import {
   waitForMaintenanceJob,
 } from '@/app/requests/admin/maintenance';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 /**
  * As tarefas agendadas.
@@ -149,14 +150,16 @@ export default function CronClient() {
                   </Text>
                 </div>
 
-                <button
+                <Button
+                  variante="secundario"
+                  type="submit"
                   onClick={() => void executar(tarefa)}
                   disabled={rodando === tarefa.id}
-                  className="btn-classical-secondary flex items-center gap-1.5 text-sm px-3 py-1.5 disabled:opacity-50"
+                  className="flex items-center gap-1.5 disabled:opacity-50"
                 >
                   <PiPlay className="w-3.5 h-3.5" />
                   {rodando === tarefa.id ? 'Rodando…' : 'Rodar agora'}
-                </button>
+                </Button>
               </div>
 
               <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -192,7 +195,9 @@ export default function CronClient() {
                   ))}
                 </select>
 
-                <button
+                <Button
+                  variante="primario"
+                  type="submit"
                   onClick={() =>
                     void agendar
                       .mutateAsync([tarefa.id, valor])
@@ -200,14 +205,16 @@ export default function CronClient() {
                       .catch(() => undefined)
                   }
                   disabled={!valor.trim() || valor === cronAtual}
-                  className="btn-classical-primary flex items-center gap-1.5 text-sm px-3 py-1.5 disabled:opacity-40"
+                  className="flex items-center gap-1.5 disabled:opacity-40"
                 >
                   <PiFloppyDisk className="w-3.5 h-3.5" />
                   Salvar
-                </button>
+                </Button>
 
                 {cronAtual && (
-                  <button
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={() =>
                       void desagendar
                         .mutateAsync([tarefa.id])
@@ -220,11 +227,11 @@ export default function CronClient() {
                         })
                         .catch(() => undefined)
                     }
-                    className="btn-classical-secondary flex items-center gap-1.5 text-sm px-3 py-1.5"
+                    className="flex items-center gap-1.5"
                   >
                     <PiPause className="w-3.5 h-3.5" />
                     Desligar
-                  </button>
+                  </Button>
                 )}
               </div>
             </section>

@@ -20,6 +20,7 @@ import {
 import Select from '../Common/Select';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface DifficultyClientProps {
   difficultyData: DifficultyResponse;
@@ -259,6 +260,7 @@ export default function DifficultyClient({
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
                 >
                   <PiX className="w-5 h-5" />
+                  <NomeAcao acao="fechar" />
                 </button>
               )}
             </div>
@@ -319,6 +321,7 @@ export default function DifficultyClient({
                     className="hover:text-brand-secondary transition-colors"
                   >
                     <PiX className="w-3 h-3" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </Text>
               )}

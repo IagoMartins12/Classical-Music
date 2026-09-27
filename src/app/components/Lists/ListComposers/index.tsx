@@ -9,6 +9,7 @@ import { useNavigate } from '@/app/hooks/useNavigate';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useIsMobile } from '@/app/hooks/useMobile';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 interface listComposersProps {
   composers: composerHomeProps[];
@@ -133,14 +134,15 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
             </div>
 
             {/* See All Button */}
-            <button
+            <Button
+              variante="secundario"
+              type="submit"
               onClick={() => navigateToUrl('composers')}
-              className="btn-classical-secondary text-lg px-8 py-4 hover:scale-105 active:scale-95"
             >
               <PiUsers className="w-5 h-5 mr-2 inline" />
 
               {t('see_all_composers')}
-            </button>
+            </Button>
           </div>
         )}
       </div>

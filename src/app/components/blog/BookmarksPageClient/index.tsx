@@ -9,6 +9,7 @@ import { ArticleCard } from '../ArticleCard';
 import { ArticleCardList } from '../ArticleCardList';
 import { loadMyBookmarks } from '@/app/requests/blog/interactions';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 interface Category {
   id: string;
   name: string;
@@ -213,12 +214,13 @@ export function BookmarksPageClient({ categories }: BookmarksPageClientProps) {
             <div className="mt-12 flex justify-center">
               <div className="flex items-center gap-2">
                 {page > 1 && (
-                  <button
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={() => handlePageChange(page - 1)}
-                    className="btn-classical-secondary"
                   >
                     Anterior
-                  </button>
+                  </Button>
                 )}
 
                 <div className="flex items-center gap-1">
@@ -252,12 +254,13 @@ export function BookmarksPageClient({ categories }: BookmarksPageClientProps) {
                 </div>
 
                 {page < pagination.totalPages && (
-                  <button
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={() => handlePageChange(page + 1)}
-                    className="btn-classical-secondary"
                   >
                     Próxima
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>

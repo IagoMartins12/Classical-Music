@@ -3,6 +3,7 @@
 
 import { useLoginModal } from '@/app/stores/authStore';
 import { PiHeart } from 'react-icons/pi';
+import { Button } from '@/app/components/ui/Button';
 
 interface AuthCheckProps {
   title:
@@ -25,9 +26,9 @@ export default function AuthCheck({ title }: AuthCheckProps) {
         <p className="text-theme-secondary mb-6">
           Faça login para acessar {title}
         </p>
-        <button onClick={open} className="btn-classical-primary">
+        <Button variante="primario" type="submit" onClick={open}>
           Fazer Login
-        </button>
+        </Button>
       </div>
     </div>
   );

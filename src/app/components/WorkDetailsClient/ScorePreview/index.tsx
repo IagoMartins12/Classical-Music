@@ -14,6 +14,8 @@ import {
 } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface ScorePreviewProps {
   score: IMSLPScore & {
@@ -71,6 +73,7 @@ const ImageZoomModal = React.memo(
             className="absolute -top-2 -right-2 z-10 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
             <PiX className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+            <NomeAcao acao="fechar" />
           </button>
 
           <div className="relative rounded-lg overflow-hidden shadow-2xl bg-white dark:bg-gray-800">
@@ -159,10 +162,12 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
             {score.source && <SourceBadge source={score.source} t={t} />}
           </div>
 
-          <button
+          <Button
+            variante="primario"
+            type="submit"
             onClick={handleDownload}
             disabled={!score.downloadUrl}
-            className="flex items-center gap-2 btn-classical-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 active:scale-95 flex-shrink-0"
+            className="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             title={
               score.downloadUrl
                 ? t('score_preview_baixar')
@@ -171,7 +176,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
           >
             <PiDownloadSimple className="w-4 h-4" />
             <span className="hidden sm:inline">Download</span>
-          </button>
+          </Button>
         </div>
 
         {/* Preview da Partitura com zoom melhorado */}
@@ -361,13 +366,15 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
         {/* Botão de ação adicional se disponível */}
         {score.downloadUrl && (
           <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
-            <button
+            <Button
+              variante="primario"
+              type="submit"
               onClick={handleDownload}
-              className="flex gap-2 px-4 py-2 btn-classical-primary justify-center items-center !w-full disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+              className="flex gap-2 justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <PiArrowSquareOut className="w-4 h-4" />
               Baixar partitura
-            </button>
+            </Button>
           </div>
         )}
       </div>

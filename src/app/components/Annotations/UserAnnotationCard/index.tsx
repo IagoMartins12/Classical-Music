@@ -39,6 +39,7 @@ import ConfirmDeleteModal from '../DeleteAnnotationModal';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface UserAnnotationCardProps {
   annotation: WorkAnnotation;
@@ -355,6 +356,7 @@ export default function UserAnnotationCard({
                     }`}
                   >
                     <PiDotsThree className="w-3 h-3" />
+                    <NomeAcao acao="maisOpcoes" />
                   </button>
 
                   {showActions && !isUpdating && (
@@ -548,6 +550,7 @@ export default function UserAnnotationCard({
                     }`}
                   >
                     <PiDotsThree className="w-3 h-3" />
+                    <NomeAcao acao="maisOpcoes" />
                   </button>
 
                   {showActions && !isUpdating && (
@@ -728,6 +731,7 @@ export default function UserAnnotationCard({
                   }`}
                 >
                   <PiDotsThree className="w-4 h-4" />
+                  <NomeAcao acao="maisOpcoes" />
                 </button>
 
                 {showActions && !isUpdating && (

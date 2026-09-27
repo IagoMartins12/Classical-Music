@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PiMagnifyingGlass } from 'react-icons/pi';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 export function SearchInput() {
   const router = useRouter();
@@ -46,13 +48,10 @@ export function SearchInput() {
           className="input-classical w-full pl-12"
         />
       </div>
-      <button
-        type="button"
-        onClick={() => doSearch(value)}
-        className="btn-classical-primary px-4"
-      >
+      <Button variante="primario" type="button" onClick={() => doSearch(value)}>
         <PiMagnifyingGlass />
-      </button>
+        <NomeAcao acao="buscar" />
+      </Button>
     </div>
   );
 }

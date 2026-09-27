@@ -18,6 +18,7 @@ import Image from '@/app/components/SmartImage';
 import debounce from 'lodash/debounce';
 import { autocomplete } from '@/app/requests/blog/taxonomy';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -193,6 +194,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-theme-tertiary hover:text-theme-primary transition-colors"
           >
             <PiX className="w-5 h-5" />
+            <NomeAcao acao="fechar" />
           </button>
         </div>
 

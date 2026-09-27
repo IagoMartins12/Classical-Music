@@ -37,6 +37,7 @@ import { getUploadHistory } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 interface HistoryRecord {
   id: string;
@@ -572,18 +573,20 @@ const HistoryClient = ({
                   </div>
 
                   <Inline gap={3} className="pt-4">
-                    <button
+                    <Button
+                      variante="primario"
+                      type="submit"
                       onClick={updateFilters}
-                      className="btn-classical-primary"
                     >
                       {t('history_apply_filters')}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variante="secundario"
+                      type="submit"
                       onClick={clearFilters}
-                      className="btn-classical-secondary"
                     >
                       {t('history_clear_filters')}
-                    </button>
+                    </Button>
                   </Inline>
                 </AnimatedItem>
               )}

@@ -696,7 +696,12 @@ export default function CreateAdModal({
 
           {/* Actions */}
           <div className="flex justify-end space-x-3 pt-6 border-t border-theme-primary">
-            <Button variant="ghost" onClick={onClose} disabled={loading}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onClose}
+              disabled={loading}
+            >
               Cancelar
             </Button>
             <Button

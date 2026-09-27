@@ -29,6 +29,8 @@ import Modal from '@/app/components/Modal';
 import Select from '@/app/components/Common/Select';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface Article {
   id: string;
@@ -257,13 +259,14 @@ export function ArticleList({
             </button>
 
             {hasActiveFilters && (
-              <button
+              <Button
+                variante="secundario"
+                type="submit"
                 onClick={clearFilters}
-                className="btn-classical-secondary text-red-500"
                 title="Limpar filtros"
               >
                 <PiX className="w-5 h-5" />
-              </button>
+              </Button>
             )}
           </Inline>
 
@@ -346,9 +349,9 @@ export function ArticleList({
           <p className="text-theme-secondary mb-4">
             Tente ajustar os filtros ou fazer uma nova busca
           </p>
-          <button onClick={clearFilters} className="btn-classical-primary">
+          <Button variante="primario" type="submit" onClick={clearFilters}>
             Limpar Filtros
-          </button>
+          </Button>
         </div>
       ) : (
         <>
@@ -446,6 +449,7 @@ export function ArticleList({
                           className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary transition-all"
                         >
                           <PiDotsThreeVertical className="w-4 h-4" />
+                          <NomeAcao acao="maisOpcoes" />
                         </button>
 
                         {actionMenu === article.id && (
@@ -602,14 +606,15 @@ export function ArticleList({
 
               <Inline gap={2}>
                 {pagination.page > 1 && (
-                  <button
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={() =>
                       updateParams({ page: (pagination.page - 1).toString() })
                     }
-                    className="btn-classical-secondary"
                   >
                     Anterior
-                  </button>
+                  </Button>
                 )}
 
                 <Inline gap={1}>
@@ -648,14 +653,15 @@ export function ArticleList({
                 </Inline>
 
                 {pagination.page < pagination.totalPages && (
-                  <button
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={() =>
                       updateParams({ page: (pagination.page + 1).toString() })
                     }
-                    className="btn-classical-secondary"
                   >
                     Próxima
-                  </button>
+                  </Button>
                 )}
               </Inline>
             </div>

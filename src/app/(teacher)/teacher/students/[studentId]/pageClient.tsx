@@ -46,6 +46,8 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface TeacherStudentDetailPageClientProps {
   studentData: StudentDetailData;
@@ -406,19 +408,20 @@ function EditRelationshipModal({
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-3 pt-6 border-t border-theme-secondary">
-            <button
+            <Button
+              variante="secundario"
               type="button"
               onClick={onClose}
-              className="btn-classical-secondary"
               disabled={loading}
             >
               {t('btn_cancel')}
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variante="primario"
               type="submit"
               disabled={loading}
-              className="btn-classical-primary flex items-center gap-2"
+              className="flex items-center gap-2"
             >
               {loading ? (
                 <>
@@ -431,7 +434,7 @@ function EditRelationshipModal({
                   <span>{t('btn_save_changes')}</span>
                 </>
               )}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -670,6 +673,7 @@ export default function TeacherStudentDetailPageClient({
                   className="text-accent-red hover:text-accent-red/80 transition-colors"
                 >
                   <PiX className="w-4 h-4" />
+                  <NomeAcao acao="fechar" />
                 </button>
               </div>
             </AnimatedCard>
@@ -1226,16 +1230,17 @@ export default function TeacherStudentDetailPageClient({
                             : t('btn_save')}
                         </span>
                       </Inline>
-                      <button
+                      <Button
+                        variante="secundario"
+                        type="submit"
                         onClick={() => {
                           setEditingNotes(false);
                           setTeacherNotes(relationship.teacherNotes || '');
                         }}
                         disabled={loading.updateNotes}
-                        className="btn-classical-secondary text-sm"
                       >
                         {t('btn_cancel')}
-                      </button>
+                      </Button>
                     </Inline>
                   </div>
                 ) : (

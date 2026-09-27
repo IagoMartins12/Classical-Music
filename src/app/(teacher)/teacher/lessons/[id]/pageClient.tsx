@@ -50,6 +50,8 @@ import { updateLessonRequest } from '@/app/requests/portal/lesson-actions';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface TeacherLessonDetailsPageClientProps {
   lessonData: LessonDetailsData | null;
@@ -1185,6 +1187,7 @@ export default function TeacherLessonDetailsPageClient({
                           className="w-8 h-8 rounded-lg bg-accent-red/10 hover:bg-accent-red/20 transition-colors flex items-center justify-center"
                         >
                           <PiTrash className="w-4 h-4 text-accent-red" />
+                          <NomeAcao acao="excluir" />
                         </button>
                       </Inline>
                     ))}
@@ -1219,6 +1222,7 @@ export default function TeacherLessonDetailsPageClient({
                         className="w-8 h-8 rounded-lg bg-brand-primary/10 hover:bg-brand-primary/20 transition-colors flex items-center justify-center"
                       >
                         <PiPlus className="w-4 h-4 text-brand-primary" />
+                        <NomeAcao acao="adicionar" />
                       </button>
                     </Inline>
                   </div>
@@ -1314,6 +1318,7 @@ export default function TeacherLessonDetailsPageClient({
                                 className="w-6 h-6 rounded bg-accent-red/10 hover:bg-accent-red/20 transition-colors flex items-center justify-center"
                               >
                                 <PiX className="w-3 h-3 text-accent-red" />
+                                <NomeAcao acao="fechar" />
                               </button>
                             )}
                           </Inline>
@@ -1417,6 +1422,7 @@ export default function TeacherLessonDetailsPageClient({
                                 className="w-6 h-6 rounded bg-accent-red/10 hover:bg-accent-red/20 transition-colors flex items-center justify-center"
                               >
                                 <PiX className="w-3 h-3 text-accent-red" />
+                                <NomeAcao acao="fechar" />
                               </button>
                             )}
                           </Inline>
@@ -2042,13 +2048,14 @@ export default function TeacherLessonDetailsPageClient({
             </div>
 
             <Inline gap={3} className="justify-end">
-              <button
+              <Button
+                variante="secundario"
+                type="submit"
                 onClick={() => setShowQuickActionModal(false)}
-                className="btn-classical-secondary"
                 disabled={loadingQuickAction}
               >
                 {t('btn_cancel')}
-              </button>
+              </Button>
               <button
                 onClick={executeQuickAction}
                 disabled={loadingQuickAction}
@@ -2164,13 +2171,14 @@ export default function TeacherLessonDetailsPageClient({
             </div>
 
             <Inline gap={3} className="justify-end">
-              <button
+              <Button
+                variante="secundario"
+                type="submit"
                 onClick={() => setShowDeleteModal(false)}
-                className="btn-classical-secondary"
                 disabled={loading.delete}
               >
                 {t('btn_keep_lesson')}
-              </button>
+              </Button>
               <Inline
                 as="button"
                 gap={2}

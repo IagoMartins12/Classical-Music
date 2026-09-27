@@ -33,6 +33,7 @@ import {
 import { loadSchoolActivities } from '@/app/requests/portal/school-activities';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface Activity {
   id: string;
@@ -264,6 +265,7 @@ const RecentActivities = ({
             className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-accent-red transition-all flex items-center justify-center group"
           >
             <PiArrowsClockwise className="w-4 h-4 text-theme-tertiary group-hover:text-accent-red transition-colors" />
+            <NomeAcao acao="atualizar" />
           </button>
         </div>
 
@@ -310,6 +312,7 @@ const RecentActivities = ({
                 loading ? 'animate-spin' : ''
               }`}
             />
+            <NomeAcao acao="atualizar" />
           </button>
 
           {activities.length > 0 && (

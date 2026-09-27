@@ -36,6 +36,7 @@ import {
 import dynamic from 'next/dynamic';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 /**
  * Os gráficos descem à parte — ver `charts.tsx`.
@@ -276,16 +277,17 @@ export default function StudentSharedReportPageClient({
               </div>
             </Inline>
 
-            <button
+            <Button
+              variante="secundario"
+              type="submit"
               onClick={refreshReport}
               disabled={loading}
-              className="btn-classical-secondary p-3"
               title="Atualizar dados"
             >
               <PiArrowsClockwise
                 className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`}
               />
-            </button>
+            </Button>
           </div>
         </AnimatedItem>
 

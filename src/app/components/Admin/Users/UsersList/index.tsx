@@ -37,6 +37,7 @@ import Input from '@/app/components/Common/Inputs';
 import LoadingAdminState from '../../Common/LoadingState';
 import type { UserListFilters } from '@/app/requests/admin/users';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface FilterOption {
   value: string;
@@ -285,6 +286,7 @@ export default function UsersList() {
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary"
                   >
                     <PiX className="w-5 h-5" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 )}
               </div>

@@ -36,6 +36,7 @@ import {
 } from '@/app/requests/admin/billing';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface Coupon {
   id: string;
@@ -805,6 +806,7 @@ function CouponCard({
           className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary text-red-500 hover:bg-red-500/10 transition-colors text-sm font-medium ml-auto"
         >
           <PiTrash className="w-4 h-4" />
+          <NomeAcao acao="excluir" />
         </button>
       </div>
     </div>

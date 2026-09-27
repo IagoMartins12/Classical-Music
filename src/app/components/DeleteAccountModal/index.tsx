@@ -26,6 +26,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { useIsMobile } from '@/app/hooks/useMobile';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -213,6 +214,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-theme-tertiary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center disabled:opacity-50"
           >
             <PiX className="w-4 h-4" />
+            <NomeAcao acao="fechar" />
           </button>
         </div>
 

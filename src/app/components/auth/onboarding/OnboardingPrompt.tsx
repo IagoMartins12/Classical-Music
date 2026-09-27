@@ -9,6 +9,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '../../Common/Button';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 const OnboardingPrompt = () => {
   const user = useUser();
@@ -83,6 +84,7 @@ const OnboardingPrompt = () => {
           className="p-1 text-theme-tertiary hover:text-theme-secondary transition-colors"
         >
           <PiX className="w-4 h-4" />
+          <NomeAcao acao="fechar" />
         </button>
       </div>
     </div>

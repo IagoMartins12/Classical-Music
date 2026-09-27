@@ -19,6 +19,7 @@ import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
 import { CONFIRMATION_KEYWORD } from './confirmations';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface RecordEditorModalProps {
   isOpen: boolean;
@@ -366,6 +367,7 @@ export default function RecordEditorModal({
                 className="p-2 hover:bg-theme-secondary rounded-lg transition-colors"
               >
                 <PiX className="w-5 h-5 text-theme-tertiary" />
+                <NomeAcao acao="fechar" />
               </button>
             </div>
           </div>

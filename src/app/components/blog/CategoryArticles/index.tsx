@@ -9,6 +9,7 @@ import { ArticleCard } from '@/app/components/blog/ArticleCard';
 import { ArticleCardList } from '@/app/components/blog/ArticleCardList';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 interface Article {
   id: string;
@@ -123,12 +124,13 @@ export function CategoryArticles({
         <div className="mt-12 flex justify-center">
           <div className="flex items-center gap-2">
             {pagination.page > 1 && (
-              <button
+              <Button
+                variante="secundario"
+                type="submit"
                 onClick={() => handlePageChange(pagination.page - 1)}
-                className="btn-classical-secondary"
               >
                 Anterior
-              </button>
+              </Button>
             )}
 
             <div className="flex items-center gap-1">
@@ -159,12 +161,13 @@ export function CategoryArticles({
             </div>
 
             {pagination.page < pagination.totalPages && (
-              <button
+              <Button
+                variante="secundario"
+                type="submit"
                 onClick={() => handlePageChange(pagination.page + 1)}
-                className="btn-classical-secondary"
               >
                 Próxima
-              </button>
+              </Button>
             )}
           </div>
         </div>

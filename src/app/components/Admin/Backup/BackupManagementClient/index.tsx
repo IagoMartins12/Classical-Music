@@ -15,6 +15,7 @@ import {
 import { useBackup } from '@/app/hooks/admin/useBackup';
 import type { BackupCollectionConfig } from '@/app/requests/admin/backup';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 /** `18234567` → `17,4 MB`. */
 function tamanho(bytes: number | null): string {
@@ -150,23 +151,27 @@ export default function BackupManagementClient() {
         </div>
 
         <div className="flex gap-2">
-          <button
+          <Button
+            variante="primario"
+            type="submit"
             onClick={() => void backup.executar()}
             disabled={backup.executando || Boolean(impedimento)}
-            className="btn-classical-primary flex items-center gap-2 disabled:opacity-50"
+            className="flex items-center gap-2 disabled:opacity-50"
           >
             <PiPlay className="w-4 h-4" />
             {backup.executando ? 'Executando…' : 'Executar agora'}
-          </button>
+          </Button>
 
-          <button
+          <Button
+            variante="secundario"
+            type="submit"
             onClick={() => void salvar()}
             disabled={backup.salvar.isPending}
-            className="btn-classical-secondary flex items-center gap-2 disabled:opacity-50"
+            className="flex items-center gap-2 disabled:opacity-50"
           >
             <PiFloppyDisk className="w-4 h-4" />
             Salvar
-          </button>
+          </Button>
         </div>
       </header>
 
@@ -345,13 +350,15 @@ export default function BackupManagementClient() {
                     </Text>
                   </div>
 
-                  <button
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={() => void backup.baixar(arquivo.key)}
-                    className="btn-classical-secondary flex items-center gap-1.5 text-sm px-3 py-1.5"
+                    className="flex items-center gap-1.5"
                   >
                     <PiDownloadSimple className="w-3.5 h-3.5" />
                     Baixar
-                  </button>
+                  </Button>
                 </li>
               ))}
             </ul>

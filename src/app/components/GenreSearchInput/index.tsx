@@ -18,6 +18,7 @@ import {
 } from '@/app/utils/translations/instrumentsGenresTranslation';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface Genre {
   id: string;
@@ -257,6 +258,7 @@ export default function GenreSearchInput({
                 isOpen ? 'rotate-180' : ''
               }`}
             />
+            <NomeAcao acao="expandir" />
           </button>
         </Inline>
       </div>

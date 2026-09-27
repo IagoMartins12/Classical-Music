@@ -41,6 +41,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '@/app/components/Common/Button';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface CreateAssignmentPageClientProps {
   initialData: CreateAssignmentData;
@@ -727,6 +728,7 @@ export default function CreateAssignmentPageClient({
                               className="text-accent-red"
                             >
                               <PiX className="w-4 h-4" />
+                              <NomeAcao acao="fechar" />
                             </button>
                           )}
                         </Inline>
@@ -834,6 +836,7 @@ export default function CreateAssignmentPageClient({
                                     className="text-accent-red"
                                   >
                                     <PiX className="w-4 h-4" />
+                                    <NomeAcao acao="fechar" />
                                   </button>
                                 )}
                               </Inline>
@@ -884,6 +887,7 @@ export default function CreateAssignmentPageClient({
                                     className="text-accent-red"
                                   >
                                     <PiX className="w-4 h-4" />
+                                    <NomeAcao acao="fechar" />
                                   </button>
                                 )}
                               </Inline>
@@ -934,6 +938,7 @@ export default function CreateAssignmentPageClient({
                                     className="text-accent-red"
                                   >
                                     <PiX className="w-4 h-4" />
+                                    <NomeAcao acao="fechar" />
                                   </button>
                                 )}
                               </Inline>
@@ -961,6 +966,7 @@ export default function CreateAssignmentPageClient({
                           className="ml-auto text-accent-red"
                         >
                           <PiX className="w-4 h-4" />
+                          <NomeAcao acao="fechar" />
                         </button>
                       </Inline>
                     </div>

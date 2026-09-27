@@ -40,6 +40,8 @@ import { translateNivel } from '@/app/utils';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface TeacherLessonsPageClientProps {
   initialData: TeacherLessonsData;
@@ -426,6 +428,7 @@ export default function TeacherLessonsPageClient({
                         className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
                       >
                         <PiDotsThreeVertical className="w-4 h-4 text-theme-tertiary" />
+                        <NomeAcao acao="maisOpcoes" />
                       </button>
 
                       {/* Quick Actions Menu com z-index máximo */}
@@ -729,6 +732,7 @@ export default function TeacherLessonsPageClient({
                       className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
                     >
                       <PiDotsThreeVertical className="w-4 h-4 text-theme-tertiary" />
+                      <NomeAcao acao="maisOpcoes" />
                     </button>
 
                     {/* Quick Actions Menu */}
@@ -978,12 +982,14 @@ export default function TeacherLessonsPageClient({
                 <span>{loading.lessons ? t('updating') : t('try_again')}</span>
               </Inline>
               {error && (
-                <button
+                <Button
+                  variante="secundario"
+                  type="submit"
                   onClick={clearError}
-                  className="btn-classical-secondary w-full"
+                  className="w-full"
                 >
                   {t('clear_error')}
-                </button>
+                </Button>
               )}
             </div>
           </div>

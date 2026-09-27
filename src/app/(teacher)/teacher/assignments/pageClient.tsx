@@ -48,6 +48,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface TeacherAssignmentsPageClientProps {
   initialData: TeacherAssignmentsData;
@@ -509,11 +510,13 @@ export default function TeacherAssignmentsPageClient({
                                 className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
                               >
                                 <PiEye className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                                <NomeAcao acao="ver" />
                               </button>
 
                               <Link href={`assignments/${assignment.id}/edit`}>
                                 <button className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
                                   <PiNotePencil className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                                  <NomeAcao acao="editar" />
                                 </button>
                               </Link>
                             </div>
@@ -935,11 +938,13 @@ export default function TeacherAssignmentsPageClient({
                   className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
                 >
                   <PiEye className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                  <NomeAcao acao="ver" />
                 </button>
 
                 <Link href={`assignments/${assignment.id}/edit`}>
                   <button className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
                     <PiNotePencil className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                    <NomeAcao acao="editar" />
                   </button>
                 </Link>
 
@@ -1049,6 +1054,7 @@ export default function TeacherAssignmentsPageClient({
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
                     >
                       <PiX className="w-4 h-4" />
+                      <NomeAcao acao="fechar" />
                     </button>
                   )}
                 </div>
@@ -1109,6 +1115,7 @@ export default function TeacherAssignmentsPageClient({
                       loading.assignments ? 'animate-spin' : ''
                     }`}
                   />
+                  <NomeAcao acao="atualizar" />
                 </button>
               </div>
             </div>
@@ -1337,6 +1344,7 @@ function CreateAssignmentModal({
               className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
             >
               <PiX className="w-4 h-4 text-theme-tertiary" />
+              <NomeAcao acao="fechar" />
             </button>
           </div>
 
@@ -1510,6 +1518,7 @@ function CreateAssignmentModal({
                             className="text-accent-red"
                           >
                             <PiX className="w-4 h-4" />
+                            <NomeAcao acao="fechar" />
                           </button>
                         )}
                       </Inline>
@@ -1555,6 +1564,7 @@ function CreateAssignmentModal({
                             className="text-accent-red"
                           >
                             <PiX className="w-4 h-4" />
+                            <NomeAcao acao="fechar" />
                           </button>
                         )}
                       </Inline>

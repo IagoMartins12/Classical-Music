@@ -58,6 +58,7 @@ import {
 import { useLearnedVideo } from '@/app/hooks/useLearnedVideo';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 const LearningModal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -1112,6 +1113,7 @@ const LearningModal = () => {
                           className="text-accent-red hover:text-accent-red/80 text-sm"
                         >
                           <PiTrashSimple className="w-4 h-4" />
+                          <NomeAcao acao="excluir" />
                         </button>
                       )}
                     </div>
@@ -1199,6 +1201,7 @@ const LearningModal = () => {
                     className="ml-auto text-red-400 hover:text-accent-red/80"
                   >
                     <PiX className="w-4 h-4" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </Inline>
               )}

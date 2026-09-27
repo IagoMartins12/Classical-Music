@@ -13,6 +13,7 @@ import {
 import { generateArticleAudio } from '@/app/requests/blog/interactions';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 interface TextToSpeechGoogleProps {
   content: any; // TipTap JSON
@@ -312,21 +313,23 @@ export function TextToSpeechGoogle({
               )}
             </Inline>
 
-            <button
+            <Button
+              variante="secundario"
+              type="submit"
               onClick={handleStop}
-              className="btn-classical-secondary p-3"
               title="Parar"
             >
               <PiSquare className="w-5 h-5" />
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variante="secundario"
+              type="submit"
               onClick={handleDownload}
-              className="btn-classical-secondary p-3"
               title="Baixar áudio"
             >
               <PiDownloadSimple className="w-5 h-5" />
-            </button>
+            </Button>
           </Inline>
 
           {/* Volume */}

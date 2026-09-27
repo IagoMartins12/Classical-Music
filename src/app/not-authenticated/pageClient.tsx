@@ -30,6 +30,7 @@ import Navbar from '../components/Navbar';
 import { useTranslation } from '../context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 interface SuggestionCard {
   title: string;
@@ -409,20 +410,22 @@ export default function NotAuthenticated() {
                       {t('not_authenticated_jsx_p_children_0__não_tem_conta')}
                     </Text>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                      <button
+                      <Button
+                        variante="secundario"
+                        type="submit"
                         onClick={() => openLogin()}
-                        className="btn-classical-secondary text-sm px-6 py-2"
                       >
                         {t(
                           'not_authenticated_jsx_button_children_0__fazer_login'
                         )}
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variante="primario"
+                        type="submit"
                         onClick={() => openRegister()}
-                        className="btn-classical-primary text-sm px-6 py-2"
                       >
                         {t('not_authenticated_jsx_button_children_0__create')}
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 )}

@@ -24,6 +24,7 @@ import {
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface CreateEditTemplateModalProps {
   isOpen: boolean;
@@ -606,6 +607,7 @@ export default function CreateEditTemplateModal({
                 className="text-theme-tertiary hover:text-theme-primary transition-colors"
               >
                 <PiX className="w-6 h-6" />
+                <NomeAcao acao="fechar" />
               </button>
             </div>
 

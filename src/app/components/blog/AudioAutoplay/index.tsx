@@ -11,6 +11,7 @@ import {
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface AudioAutoplayProps {
   audioUrl: string;
@@ -565,6 +566,7 @@ export function AudioAutoplay({
                 className="flex-shrink-0 text-theme-primary transition-colors"
               >
                 <PiX className="w-5 h-5" />
+                <NomeAcao acao="fechar" />
               </button>
             </div>
           </div>
@@ -655,6 +657,7 @@ export function AudioAutoplay({
                   className="text-theme-tertiary hover:text-theme-primary transition-colors"
                 >
                   <PiX className="w-5 h-5" />
+                  <NomeAcao acao="fechar" />
                 </button>
               </div>
               <AudioPlayer />

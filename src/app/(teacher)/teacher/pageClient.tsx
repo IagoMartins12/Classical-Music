@@ -39,6 +39,7 @@ import RecentActivities from '@/app/components/TeacherSystem/RecentActivities';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 interface TeacherProfile {
   id: string;
@@ -313,15 +314,16 @@ export default function TeacherPageClient({
                 </span>
               </Inline>
               {currentError !== errorMessage && (
-                <button
+                <Button
+                  variante="secundario"
+                  type="submit"
                   onClick={() => {
                     setError(undefined);
                     clearError();
                   }}
-                  className="btn-classical-secondary text-sm"
                 >
                   Fechar Erro
-                </button>
+                </Button>
               )}
             </Stack>
           </div>

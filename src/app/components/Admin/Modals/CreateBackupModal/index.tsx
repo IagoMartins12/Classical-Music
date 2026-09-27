@@ -14,6 +14,7 @@ import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface CreateBackupModalProps {
   isOpen: boolean;
@@ -88,6 +89,7 @@ export default function CreateBackupModal({
             className="p-2 rounded-lg text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary transition-all"
           >
             <PiX className="w-5 h-5" />
+            <NomeAcao acao="fechar" />
           </button>
         </div>
 

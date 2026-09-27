@@ -35,6 +35,7 @@ import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 const articleSchema = z.object({
   title: z.string().min(3, 'Título deve ter pelo menos 3 caracteres'),
@@ -705,6 +706,7 @@ export function ArticleForm({
                   className="absolute top-2 right-2 p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors shadow-theme-medium"
                 >
                   <PiX className="w-4 h-4" />
+                  <NomeAcao acao="fechar" />
                 </button>
               </div>
             ) : (
@@ -1196,6 +1198,7 @@ export function ArticleForm({
                       className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                     >
                       <PiTrash className="w-4 h-4" />
+                      <NomeAcao acao="excluir" />
                     </button>
                   </div>
                 ))}
@@ -1256,6 +1259,7 @@ export function ArticleForm({
                       className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                     >
                       <PiTrash className="w-4 h-4" />
+                      <NomeAcao acao="excluir" />
                     </button>
                   </div>
                 ))}

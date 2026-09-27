@@ -8,6 +8,7 @@ import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { ArticleCard } from '@/app/components/blog/ArticleCard';
 import { ArticleCardList } from '@/app/components/blog/ArticleCardList';
 import { Field } from '@/app/components/ui/Field';
+import { Button } from '@/app/components/ui/Button';
 
 interface Article {
   id: string;
@@ -132,13 +133,14 @@ export function ArticlesFilter({
             </button>
 
             {hasActiveFilters && (
-              <button
+              <Button
+                variante="secundario"
+                type="submit"
                 onClick={clearFilters}
-                className="btn-classical-secondary text-red-500"
                 title="Limpar filtros"
               >
                 <PiX className="w-5 h-5" />
-              </button>
+              </Button>
             )}
 
             <ViewModeToggle
@@ -206,9 +208,9 @@ export function ArticlesFilter({
           <p className="text-theme-secondary mb-6">
             Tente ajustar os filtros ou fazer uma nova busca
           </p>
-          <button onClick={clearFilters} className="btn-classical-primary">
+          <Button variante="primario" type="submit" onClick={clearFilters}>
             Limpar Filtros
-          </button>
+          </Button>
         </div>
       ) : (
         <>
@@ -231,14 +233,15 @@ export function ArticlesFilter({
             <div className="mt-12 flex justify-center">
               <div className="flex items-center gap-2">
                 {pagination.page > 1 && (
-                  <button
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={() =>
                       updateParams({ page: (pagination.page - 1).toString() })
                     }
-                    className="btn-classical-secondary"
                   >
                     Anterior
-                  </button>
+                  </Button>
                 )}
 
                 <div className="flex items-center gap-1">
@@ -272,14 +275,15 @@ export function ArticlesFilter({
                 </div>
 
                 {pagination.page < pagination.totalPages && (
-                  <button
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={() =>
                       updateParams({ page: (pagination.page + 1).toString() })
                     }
-                    className="btn-classical-secondary"
                   >
                     Próxima
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>

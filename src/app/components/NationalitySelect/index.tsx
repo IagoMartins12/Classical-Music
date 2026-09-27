@@ -11,6 +11,7 @@ import {
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface NationalitySelectProps {
   value: string;
@@ -138,6 +139,7 @@ export default function NationalitySelect({
               className="p-1 text-theme-tertiary hover:text-theme-primary transition-colors"
             >
               <PiX className="w-4 h-4" />
+              <NomeAcao acao="fechar" />
             </button>
           )}
 

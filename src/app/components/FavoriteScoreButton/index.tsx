@@ -20,6 +20,7 @@ import type { WorkScore } from '@/app/types/catalog';
 import { useToast } from '@/app/hooks/useToast';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface FavoriteWorkScore {
   id: string;
@@ -116,6 +117,7 @@ const FavoriteModal = ({
             className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-xl flex items-center justify-center hover:bg-interactive-hover transition-colors"
           >
             <PiX className="w-4 h-4 text-theme-tertiary" />
+            <NomeAcao acao="fechar" />
           </button>
         </div>
 
@@ -202,6 +204,7 @@ const FavoriteModal = ({
                     className="w-4 h-4 hover:bg-brand-primary/20 rounded-full flex items-center justify-center"
                   >
                     <PiX className="w-3 h-3" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </Inline>
               ))}

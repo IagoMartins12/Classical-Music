@@ -16,6 +16,7 @@ import Input from '../Common/Inputs';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface ShareButtonProps {
   url?: string;
@@ -153,6 +154,7 @@ export default function ShareButton({
                 className="w-8 h-8 bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-theme-primary transition-colors"
               >
                 <PiX className="w-4 h-4" />
+                <NomeAcao acao="fechar" />
               </button>
             </div>
 

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { PiCaretDown, PiCheck, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface Option {
   id: string;
@@ -160,6 +161,7 @@ export default function MultiSelectWithId({
                     disabled={isDisabled}
                   >
                     <PiX className="w-3 h-3" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </Text>
               );
@@ -186,6 +188,7 @@ export default function MultiSelectWithId({
                       disabled={isDisabled}
                     >
                       <PiX className="w-3 h-3" />
+                      <NomeAcao acao="fechar" />
                     </button>
                   </Text>
                 );
@@ -206,6 +209,7 @@ export default function MultiSelectWithId({
               disabled={isDisabled}
             >
               <PiX className="w-4 h-4 text-theme-tertiary" />
+              <NomeAcao acao="fechar" />
             </button>
           )}
           <PiCaretDown

@@ -10,6 +10,7 @@ import { translateInstrument } from '@/app/utils/translations/instrumentsGenresT
 import Select from '../../Common/Select';
 import Checkbox from '../../Common/Checkbox';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface Instrument {
   id: string;
@@ -222,6 +223,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                   className="p-2 text-theme-tertiary hover:text-accent-red transition-colors"
                 >
                   <PiX className="w-4 h-4" />
+                  <NomeAcao acao="fechar" />
                 </button>
               </div>
             ))}

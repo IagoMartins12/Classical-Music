@@ -28,6 +28,7 @@ import { useTranslation } from '@/app/hooks/useTranslation';
 import Button from '../../Common/Button';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 // Interface para dados unificados
 interface MixedScoreData {
@@ -507,6 +508,7 @@ const ScoreSelectionModal = ({
                 className="w-10 h-10 bg-theme-elevated border border-theme-primary hover:border-brand-primary rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-interactive-hover"
               >
                 <PiArrowLeft className="w-5 h-5 text-theme-primary" />
+                <NomeAcao acao="voltar" />
               </button>
 
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
@@ -743,6 +745,7 @@ const ScoreSelectionModal = ({
                           className="w-8 h-8 bg-theme-primary border border-theme-secondary hover:border-accent-red rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-accent-red/10"
                         >
                           <PiX className="w-4 h-4 text-theme-primary hover:text-accent-red" />
+                          <NomeAcao acao="fechar" />
                         </button>
                       </div>
                       <ScorePreview score={selectedScore as any} />
@@ -772,6 +775,7 @@ const ScoreSelectionModal = ({
                   className="w-8 h-8 bg-theme-primary border border-theme-secondary hover:border-accent-red rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-accent-red/10"
                 >
                   <PiX className="w-4 h-4 text-theme-primary hover:text-accent-red" />
+                  <NomeAcao acao="fechar" />
                 </button>
               </div>
               <ScorePreview score={selectedScore as any} />

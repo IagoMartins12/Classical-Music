@@ -38,6 +38,8 @@ import Modal from '@/app/components/Modal';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface AssignmentDetailsPageClientProps {
   initialData: AssignmentDetailsData | null;
@@ -768,13 +770,14 @@ export default function AssignmentDetailsPageClient({
                       gap={3}
                       className="justify-end pt-4 border-t border-theme-secondary"
                     >
-                      <button
+                      <Button
+                        variante="secundario"
+                        type="submit"
                         onClick={() => setIsEditingFeedback(false)}
-                        className="btn-classical-secondary"
                         disabled={loading.updateFeedback}
                       >
                         {t('cancel')}
-                      </button>
+                      </Button>
                       <Inline
                         as="button"
                         gap={2}
@@ -961,6 +964,7 @@ export default function AssignmentDetailsPageClient({
                 className="ml-auto text-white hover:text-gray-200"
               >
                 <PiX className="w-4 h-4" />
+                <NomeAcao acao="fechar" />
               </button>
             </Inline>
           </div>
@@ -983,6 +987,7 @@ export default function AssignmentDetailsPageClient({
                     className="text-theme-tertiary hover:text-theme-primary"
                   >
                     <PiX className="w-5 h-5" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </div>
 
@@ -991,13 +996,14 @@ export default function AssignmentDetailsPageClient({
                 </p>
 
                 <Inline gap={3} className="justify-end">
-                  <button
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={() => setShowApproveModal(false)}
-                    className="btn-classical-secondary"
                     disabled={loading.approve}
                   >
                     {t('cancel')}
-                  </button>
+                  </Button>
                   <Inline
                     as="button"
                     gap={2}
@@ -1058,6 +1064,7 @@ export default function AssignmentDetailsPageClient({
                       className="text-theme-tertiary hover:text-theme-primary"
                     >
                       <PiX className="w-5 h-5" />
+                      <NomeAcao acao="fechar" />
                     </button>
                   </Inline>
                 </div>

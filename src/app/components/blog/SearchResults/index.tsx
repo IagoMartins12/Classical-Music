@@ -11,6 +11,7 @@ import { ArticleCardList } from '@/app/components/blog/ArticleCardList';
 import { SearchFilters } from '@/app/components/blog/SearchFilters';
 import { SortSelector } from '@/app/components/blog/SortSelector';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 interface Article {
   id: string;
@@ -191,14 +192,15 @@ export function SearchResults({
           <div className="mt-12 flex justify-center">
             <div className="flex items-center gap-2">
               {pagination.page > 1 && (
-                <button
+                <Button
+                  variante="secundario"
+                  type="submit"
                   onClick={() =>
                     updateParams({ page: (pagination.page - 1).toString() })
                   }
-                  className="btn-classical-secondary"
                 >
                   Anterior
-                </button>
+                </Button>
               )}
 
               <span className="px-4 py-2 text-theme-secondary">
@@ -206,14 +208,15 @@ export function SearchResults({
               </span>
 
               {pagination.page < pagination.totalPages && (
-                <button
+                <Button
+                  variante="secundario"
+                  type="submit"
                   onClick={() =>
                     updateParams({ page: (pagination.page + 1).toString() })
                   }
-                  className="btn-classical-secondary"
                 >
                   Próxima
-                </button>
+                </Button>
               )}
             </div>
           </div>

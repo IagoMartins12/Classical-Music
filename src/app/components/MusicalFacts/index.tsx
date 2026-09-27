@@ -19,6 +19,7 @@ import {
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Language } from '@/app/utils/translations/serverTranslations';
+import { Button } from '@/app/components/ui/Button';
 
 interface MusicalFact {
   id: string;
@@ -326,16 +327,18 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
         </div>
 
         {/* Refresh Button */}
-        <button
+        <Button
+          variante="secundario"
+          type="submit"
           onClick={refreshFacts}
           disabled={isLoading}
-          className="btn-classical-secondary flex items-center gap-2 text-sm"
+          className="flex items-center gap-2"
         >
           <PiArrowsClockwise
             className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}
           />
           {t('musical_facts_shuffle')}
-        </button>
+        </Button>
       </div>
 
       {/* Facts grid */}

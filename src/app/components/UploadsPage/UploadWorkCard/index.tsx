@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface UploadWorkCardProps {
   item: UserUpload;
@@ -147,6 +148,7 @@ const UploadWorkCard = ({
                 className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center"
               >
                 <PiNotePencil className="w-4 h-4" />
+                <NomeAcao acao="editar" />
               </button>
 
               <button
@@ -157,6 +159,7 @@ const UploadWorkCard = ({
                 }`}
               >
                 <PiTrash className="w-4 h-4" />
+                <NomeAcao acao="excluir" />
               </button>
             </Inline>
           </Inline>
@@ -184,6 +187,7 @@ const UploadWorkCard = ({
                 className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center shadow-theme-medium"
               >
                 <PiNotePencil className="w-4 h-4" />
+                <NomeAcao acao="editar" />
               </button>
 
               <button
@@ -194,6 +198,7 @@ const UploadWorkCard = ({
                 }`}
               >
                 <PiTrash className="w-4 h-4" />
+                <NomeAcao acao="excluir" />
               </button>
             </Stack>
 

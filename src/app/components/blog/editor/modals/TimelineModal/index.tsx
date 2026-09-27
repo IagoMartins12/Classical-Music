@@ -12,6 +12,7 @@ import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimpl
 import { findComposerById } from '@/app/requests/catalog-search';
 import { uploadBlogMedia } from '@/app/requests/blog/interactions';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface TimelineModalProps {
   editor: Editor;
@@ -223,6 +224,7 @@ export function TimelineModal({
                       className="absolute top-2 right-2 p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors shadow-theme-medium"
                     >
                       <PiTrash className="w-4 h-4" />
+                      <NomeAcao acao="excluir" />
                     </button>
                   </div>
                 ) : (

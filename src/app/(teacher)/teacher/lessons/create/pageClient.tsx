@@ -44,6 +44,8 @@ import { checkLessonConflicts } from '@/app/requests/portal/lesson-actions';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Button } from '@/app/components/ui/Button';
 
 interface CreateLessonPageClientProps {
   initialData: CreateLessonData;
@@ -361,13 +363,14 @@ function ConflictModal({
           gap={3}
           className="justify-end pt-6 border-t border-theme-secondary mt-6"
         >
-          <button
+          <Button
+            variante="secundario"
+            type="submit"
             onClick={onCancel}
-            className="btn-classical-secondary"
             disabled={loading}
           >
             {conflicts.hasTimeConflicts ? t('adjust_schedule') : t('cancel')}
-          </button>
+          </Button>
 
           {!conflicts.hasTimeConflicts && (
             <Inline
@@ -1417,6 +1420,7 @@ export default function CreateLessonPageClient({
                               className="text-accent-red"
                             >
                               <PiX className="w-4 h-4" />
+                              <NomeAcao acao="fechar" />
                             </button>
                           )}
                         </Inline>
@@ -1500,6 +1504,7 @@ export default function CreateLessonPageClient({
                                     className="text-accent-red"
                                   >
                                     <PiX className="w-4 h-4" />
+                                    <NomeAcao acao="fechar" />
                                   </button>
                                 )}
                               </Inline>
@@ -1567,6 +1572,7 @@ export default function CreateLessonPageClient({
                           className="ml-auto text-accent-red"
                         >
                           <PiX className="w-4 h-4" />
+                          <NomeAcao acao="fechar" />
                         </button>
                       </Inline>
                     </div>

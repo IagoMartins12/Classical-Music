@@ -42,6 +42,7 @@ import { sendStudentLessonNotice } from '@/app/requests/portal/lesson-actions';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { Button } from '@/app/components/ui/Button';
 
 interface StudentLessonDetailPageClientProps {
   initialData: StudentLessonDetail | null;
@@ -1009,13 +1010,14 @@ export default function StudentLessonDetailPageClient({
                 </div>
 
                 <Inline gap={3} className="justify-end">
-                  <button
+                  <Button
+                    variante="secundario"
+                    type="submit"
                     onClick={() => setShowStudentActionModal(false)}
-                    className="btn-classical-secondary"
                     disabled={loadingStudentAction}
                   >
                     {t('cancel')}
-                  </button>
+                  </Button>
                   <button
                     onClick={executeStudentAction}
                     disabled={loadingStudentAction}

@@ -35,6 +35,7 @@ import Input from '../../Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 interface AnnotationsSectionProps {
   workId: string;
@@ -287,7 +288,9 @@ export default function AnnotationsSection({
                 </div>
               </Inline>
 
-              <button
+              <Button
+                variante="primario"
+                type="submit"
                 onClick={() => {
                   if (!isAuthenticated) {
                     toast.error(t('annotations_login_required'));
@@ -296,11 +299,11 @@ export default function AnnotationsSection({
                   }
                   setShowCreateModal(true);
                 }}
-                className="btn-classical-primary hidden md:flex items-center space-x-2"
+                className="hidden md:flex items-center"
               >
                 <PiPlus className="w-4 h-4" />
                 <span>{t('annotations_nova_anotacao')}</span>
-              </button>
+              </Button>
             </div>
 
             {/* ✅ Barra de busca e filtros COM TRADUÇÕES */}

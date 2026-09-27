@@ -48,6 +48,7 @@ import { shareProgressReport } from '@/app/requests/portal/progress-report';
 import dynamic from 'next/dynamic';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
 
 /**
  * Os gráficos descem à parte — ver `charts.tsx`.
@@ -180,12 +181,14 @@ export default function TeacherProgressPageClient({
                 </span>
               </Inline>
               {error && (
-                <button
+                <Button
+                  variante="secundario"
+                  type="submit"
                   onClick={clearError}
-                  className="btn-classical-secondary w-full"
+                  className="w-full"
                 >
                   {t('clear_error')}
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -305,10 +308,11 @@ export default function TeacherProgressPageClient({
               />
 
               <div className="flex space-x-3">
-                <button
+                <Button
+                  variante="secundario"
+                  type="submit"
                   onClick={refreshReport}
                   disabled={loading.refreshing}
-                  className="btn-classical-secondary p-3"
                   title={t('btn_refresh_data')}
                 >
                   <PiArrowsClockwise
@@ -316,7 +320,7 @@ export default function TeacherProgressPageClient({
                       loading.refreshing ? 'animate-spin' : ''
                     }`}
                   />
-                </button>
+                </Button>
 
                 <Inline
                   as="button"

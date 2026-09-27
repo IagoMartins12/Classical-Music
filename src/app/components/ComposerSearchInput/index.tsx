@@ -7,6 +7,7 @@ import { PiMagnifyingGlass, PiTrendUp, PiUser, PiX } from 'react-icons/pi';
 import { findComposerById, findComposers } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface Composer {
   id: string;
@@ -254,6 +255,7 @@ export default function ComposerSearchInput({
             disabled={isDisabled}
           >
             <PiX className="w-4 h-4" />
+            <NomeAcao acao="fechar" />
           </button>
         )}
 

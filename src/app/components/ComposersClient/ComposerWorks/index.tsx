@@ -55,6 +55,7 @@ import {
 } from '@/app/utils/translations/categoryTranslation';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface ComposerWorksProps {
   composerId: string;
@@ -548,6 +549,7 @@ export default function ComposerWorks({
                 disabled={loading}
               >
                 <PiX className="w-5 h-5" />
+                <NomeAcao acao="fechar" />
               </button>
             )}
           </div>
@@ -694,6 +696,7 @@ export default function ComposerWorks({
                     disabled={loading}
                   >
                     <PiX className="w-3 h-3" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </Text>
               )}
@@ -710,6 +713,7 @@ export default function ComposerWorks({
                     disabled={loading}
                   >
                     <PiX className="w-3 h-3" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </div>
               )}
@@ -730,6 +734,7 @@ export default function ComposerWorks({
                     disabled={loading}
                   >
                     <PiX className="w-3 h-3" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </div>
               )}
@@ -745,6 +750,7 @@ export default function ComposerWorks({
                     disabled={loading}
                   >
                     <PiX className="w-3 h-3" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </div>
               )}
@@ -760,6 +766,7 @@ export default function ComposerWorks({
                     disabled={loading}
                   >
                     <PiX className="w-3 h-3" />
+                    <NomeAcao acao="fechar" />
                   </button>
                 </div>
               )}
