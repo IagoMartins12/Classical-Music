@@ -339,8 +339,8 @@ export default function AdminSidebar() {
               isChild ? 'ml-3 lg:ml-4' : ''
             } ${
               item.isActive
-                ? 'fill-ouro text-theme-primary shadow-md'
-                : 'text-theme-secondary hover:text-texto hover:bg-sup-1'
+                ? 'text-theme-primary shadow-md'
+                : 'text-theme-secondary'
             }`}
           >
             <div className="flex items-center space-x-2 lg:space-x-3 min-w-0">
@@ -360,8 +360,8 @@ export default function AdminSidebar() {
               isChild ? 'ml-3 lg:ml-4' : ''
             } ${
               item.isActive
-                ? 'bg-theme-tertiary fill-ouro text-theme-primary shadow-md'
-                : 'text-theme-secondary hover:text-texto hover:bg-sup-1'
+                ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                : 'text-theme-secondary'
             }`}
           >
             <div className="flex items-center space-x-2 lg:space-x-3 min-w-0">
@@ -400,7 +400,7 @@ export default function AdminSidebar() {
             <div key={section.title}>
               <button
                 onClick={() => toggleSection(section.title)}
-                className="flex items-center justify-between w-full mb-2 lg:mb-3 text-xs font-bold text-theme-tertiary uppercase tracking-wider hover:text-texto transition-colors"
+                className="flex items-center justify-between w-full mb-2 lg:mb-3 text-xs font-bold text-theme-tertiary uppercase tracking-wider transition-colors"
               >
                 <span>{section.title}</span>
                 {expandedSections.includes(section.title) ? (

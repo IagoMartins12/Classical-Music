@@ -80,7 +80,7 @@ export default async function CategoryPage({
               fill
               className="object-cover opacity-20"
             />
-            <div className="absolute inset-0 bg-fundo" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent" />
           </div>
         )}
 

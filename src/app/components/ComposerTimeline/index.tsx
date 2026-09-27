@@ -33,21 +33,21 @@ interface Props {
 }
 
 const epochColors = {
-  Medieval: 'fill-ouro',
-  Renaissance: 'bg-ok',
-  Baroque: 'fill-ouro',
-  Classical: 'bg-aviso',
-  Romantic: 'bg-erro',
-  Modern: 'bg-sup-2',
+  Medieval: '',
+  Renaissance: '',
+  Baroque: '',
+  Classical: '',
+  Romantic: '',
+  Modern: '',
 };
 
 const epochDotColors = {
-  Medieval: 'fill-ouro',
-  Renaissance: 'bg-ok',
-  Baroque: 'fill-ouro',
-  Classical: 'bg-aviso',
-  Romantic: 'bg-erro',
-  Modern: 'bg-sup-2',
+  Medieval: '',
+  Renaissance: '',
+  Baroque: '',
+  Classical: '',
+  Romantic: '',
+  Modern: '',
 };
 
 // Mapeamento explícito entre nomes em português e inglês
@@ -138,13 +138,13 @@ export function ComposersTimeline({ composers }: Props) {
       {/* Header */}
       <div className="text-center mb-16 animate-fade-in-up">
         <Inline gap={3} className="justify-center mb-6">
-          <div className="w-12 h-12 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow">
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-theme-glow">
             <PiClock className="w-6 h-6 text-theme-primary" />
           </div>
-          <div className="text-6xl text-ouro-texto/10">
+          <div className="text-6xl">
             <PiMusicNotes />
           </div>
-          <div className="w-12 h-12 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow">
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-theme-glow">
             <GiGrandPiano className="w-6 h-6 text-theme-primary" />
           </div>
         </Inline>
@@ -159,7 +159,7 @@ export function ComposersTimeline({ composers }: Props) {
 
       <div className="relative">
         {/* Timeline Line - Centralizada com gradiente */}
-        <div className="absolute left-0 lg:left-1/2 transform lg:-translate-x-1/2 top-0 bottom-0 w-1 fill-ouro rounded-full shadow-theme-glow" />
+        <div className="absolute left-0 lg:left-1/2 transform lg:-translate-x-1/2 top-0 bottom-0 w-1 rounded-full shadow-theme-glow" />
 
         {/* Timeline Items */}
         <div className="space-y-16">
@@ -182,7 +182,7 @@ export function ComposersTimeline({ composers }: Props) {
           className="text-center mt-16 animate-fade-in-up"
           style={{ animationDelay: `${timelineData.length * 0.1}s` }}
         >
-          <div className="w-12 h-12 fill-ouro rounded-2xl flex items-center justify-center mx-auto shadow-theme-glow">
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto shadow-theme-glow">
             <PiClock className="w-6 h-6 text-theme-primary" />
           </div>
           <Text

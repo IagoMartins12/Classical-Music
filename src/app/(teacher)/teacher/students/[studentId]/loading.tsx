@@ -41,23 +41,23 @@ export default function TeacherStudentDetailLoading() {
 
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-16 left-16 text-5xl text-ouro-texto/10 animate-float">
+        <div className="absolute top-16 left-16 text-5xl animate-float">
           <PiUser />
         </div>
         <div
-          className="absolute bottom-16 right-16 text-4xl text-ouro-texto/10 animate-float"
+          className="absolute bottom-16 right-16 text-4xl animate-float"
           style={{ animationDelay: '1s' }}
         >
           <PiChartBar />
         </div>
         <div
-          className="absolute top-1/3 right-24 text-3xl text-ouro-texto/10 animate-float"
+          className="absolute top-1/3 right-24 text-3xl animate-float"
           style={{ animationDelay: '2s' }}
         >
           <GiGrandPiano />
         </div>
         <div
-          className="absolute bottom-1/3 left-24 text-3xl text-aviso/10 animate-float"
+          className="absolute bottom-1/3 left-24 text-3xl animate-float"
           style={{ animationDelay: '0.5s' }}
         >
           <PiMusicNotes />
@@ -81,15 +81,15 @@ export default function TeacherStudentDetailLoading() {
           <Inline gap={4}>
             <div className="w-10 h-10 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
             <Stack gap={2}>
-              <div className="h-8 bg-sup-elevada border border-theme-primary rounded-lg w-64"></div>
+              <div className="h-8 border border-theme-primary rounded-lg w-64"></div>
               <div className="h-4 bg-theme-elevated rounded w-48"></div>
             </Stack>
           </Inline>
 
           <Inline gap={3}>
-            <div className="h-8 w-16 bg-sup-elevada border border-theme-secondary rounded-full"></div>
-            <div className="h-10 w-24 bg-sup-elevada border border-theme-secondary rounded-lg"></div>
-            <div className="h-10 w-32 bg-ouro/20 border border-ouro/30 rounded-lg"></div>
+            <div className="h-8 w-16 border border-theme-secondary rounded-full"></div>
+            <div className="h-10 w-24 border border-theme-secondary rounded-lg"></div>
+            <div className="h-10 w-32 border rounded-lg"></div>
           </Inline>
         </div>
 
@@ -101,11 +101,11 @@ export default function TeacherStudentDetailLoading() {
             <Card className="animate-pulse">
               <Inline gap={6} className="mb-6">
                 {/* Avatar */}
-                <div className="w-20 h-20 bg-ouro/20 border border-ouro/30 rounded-full"></div>
+                <div className="w-20 h-20 border rounded-full"></div>
 
                 {/* Basic Info */}
                 <div className="flex-1">
-                  <div className="h-6 bg-fundo rounded w-48 mb-2"></div>
+                  <div className="h-6 rounded w-48 mb-2"></div>
                   <Stack gap={1}>
                     <div className="h-4 bg-theme-elevated rounded w-56"></div>
                     <div className="h-4 bg-theme-elevated rounded w-44"></div>
@@ -119,16 +119,16 @@ export default function TeacherStudentDetailLoading() {
                 <Stack>
                   {Array.from({ length: 3 }).map((_, i) => (
                     <Stack gap={2} key={i}>
-                      <div className="h-3 w-24 bg-sup-2/30 rounded"></div>
-                      <div className="h-5 w-32 bg-fundo/30 rounded"></div>
+                      <div className="h-3 w-24 rounded"></div>
+                      <div className="h-5 w-32 rounded"></div>
                     </Stack>
                   ))}
                 </Stack>
                 <Stack>
                   {Array.from({ length: 3 }).map((_, i) => (
                     <Stack gap={2} key={i}>
-                      <div className="h-3 w-20 bg-sup-2/30 rounded"></div>
-                      <div className="h-5 w-28 bg-fundo/30 rounded"></div>
+                      <div className="h-3 w-20 rounded"></div>
+                      <div className="h-5 w-28 rounded"></div>
                     </Stack>
                   ))}
                 </Stack>
@@ -139,23 +139,20 @@ export default function TeacherStudentDetailLoading() {
                 gap={3}
                 className="mt-6 pt-6 border-t border-theme-secondary"
               >
-                <div className="h-3 w-32 bg-sup-2/30 rounded"></div>
+                <div className="h-3 w-32 rounded"></div>
                 <Stack gap={2}>
-                  <div className="h-4 bg-fundo/20 rounded w-full"></div>
-                  <div className="h-4 bg-fundo/20 rounded w-5/6"></div>
-                  <div className="h-4 bg-fundo/20 rounded w-4/6"></div>
+                  <div className="h-4 rounded w-full"></div>
+                  <div className="h-4 rounded w-5/6"></div>
+                  <div className="h-4 rounded w-4/6"></div>
                 </Stack>
               </Stack>
 
               {/* Current Focus */}
               <Stack gap={3} className="mt-4">
-                <div className="h-3 w-20 bg-sup-2/30 rounded"></div>
+                <div className="h-3 w-20 rounded"></div>
                 <div className="flex flex-wrap gap-2">
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-6 w-20 bg-ouro/20 border border-ouro/30 rounded-full"
-                    ></div>
+                    <div key={i} className="h-6 w-20 border rounded-full"></div>
                   ))}
                 </div>
               </Stack>
@@ -165,19 +162,19 @@ export default function TeacherStudentDetailLoading() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {[
                 {
-                  icon: <PiBookOpen className="w-6 h-6 text-sobre-ouro/20" />,
+                  icon: <PiBookOpen className="w-6 h-6" />,
                 },
-                { icon: <PiMedal className="w-6 h-6 text-sobre-ouro/20" /> },
-                { icon: <PiClock className="w-6 h-6 text-sobre-ouro/20" /> },
+                { icon: <PiMedal className="w-6 h-6" /> },
+                { icon: <PiClock className="w-6 h-6" /> },
                 {
-                  icon: <PiPulse className="w-6 h-6 text-sobre-ouro/20" />,
+                  icon: <PiPulse className="w-6 h-6" />,
                 },
               ].map((item, index) => (
                 <Card key={index} className="text-center animate-pulse">
-                  <div className="w-12 h-12 bg-ouro/20 border border-ouro/30 rounded-xl mx-auto mb-3 flex items-center justify-center">
+                  <div className="w-12 h-12 border rounded-xl mx-auto mb-3 flex items-center justify-center">
                     {item.icon}
                   </div>
-                  <div className="h-6 bg-ouro/20 rounded mb-2"></div>
+                  <div className="h-6 rounded mb-2"></div>
                   <div className="h-3 bg-theme-elevated rounded"></div>
                 </Card>
               ))}
@@ -187,15 +184,15 @@ export default function TeacherStudentDetailLoading() {
             <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-ok/20 rounded-xl flex items-center justify-center">
-                    <PiClock className="w-5 h-5 text-sobre-ouro/20" />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                    <PiClock className="w-5 h-5" />
                   </div>
                   <Stack gap={1}>
-                    <div className="h-5 bg-fundo/30 rounded w-32"></div>
-                    <div className="h-3 bg-sup-2/30 rounded w-48"></div>
+                    <div className="h-5 rounded w-32"></div>
+                    <div className="h-3 rounded w-48"></div>
                   </Stack>
                 </Inline>
-                <div className="h-4 w-20 bg-ouro/30 rounded"></div>
+                <div className="h-4 w-20 rounded"></div>
               </div>
 
               <Stack>
@@ -204,8 +201,8 @@ export default function TeacherStudentDetailLoading() {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <Inline gap={3} className="mb-2">
-                          <div className="h-4 bg-fundo/30 rounded w-48"></div>
-                          <div className="h-5 w-16 bg-ok/20 border border-ok/30 rounded-full"></div>
+                          <div className="h-4 rounded w-48"></div>
+                          <div className="h-5 w-16 border rounded-full"></div>
                         </Inline>
 
                         <Inline gap={4} className="mb-2">
@@ -222,12 +219,9 @@ export default function TeacherStudentDetailLoading() {
                           ))}
                         </div>
 
-                        <Stack
-                          gap={1}
-                          className="mt-2 p-2 bg-sup-elevada rounded border border-linha/20"
-                        >
-                          <div className="h-3 bg-sup-2/30 rounded w-12"></div>
-                          <div className="h-3 bg-fundo/30 rounded w-full"></div>
+                        <Stack gap={1} className="mt-2 p-2 rounded border">
+                          <div className="h-3 rounded w-12"></div>
+                          <div className="h-3 rounded w-full"></div>
                         </Stack>
                       </div>
 
@@ -242,22 +236,22 @@ export default function TeacherStudentDetailLoading() {
             <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-4">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-ouro/20 rounded-xl flex items-center justify-center">
-                    <PiChatCenteredText className="w-5 h-5 text-sobre-ouro/20" />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                    <PiChatCenteredText className="w-5 h-5" />
                   </div>
                   <Stack gap={1}>
-                    <div className="h-5 bg-fundo/30 rounded w-40"></div>
-                    <div className="h-3 bg-sup-2/30 rounded w-56"></div>
+                    <div className="h-5 rounded w-40"></div>
+                    <div className="h-3 rounded w-56"></div>
                   </Stack>
                 </Inline>
                 <div className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
               </div>
 
-              <div className="bg-sup-elevada rounded-lg border border-linha/20 p-4">
+              <div className="rounded-lg border p-4">
                 <Stack gap={2}>
-                  <div className="h-4 bg-fundo/20 rounded w-full"></div>
-                  <div className="h-4 bg-fundo/20 rounded w-5/6"></div>
-                  <div className="h-4 bg-fundo/20 rounded w-4/6"></div>
+                  <div className="h-4 rounded w-full"></div>
+                  <div className="h-4 rounded w-5/6"></div>
+                  <div className="h-4 rounded w-4/6"></div>
                 </Stack>
               </div>
             </Card>
@@ -268,12 +262,12 @@ export default function TeacherStudentDetailLoading() {
             {/* Upcoming Lessons Skeleton */}
             <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
-                <div className="w-8 h-8 bg-aviso/20 rounded-lg flex items-center justify-center">
-                  <PiCalendarBlank className="w-4 h-4 text-sobre-ouro/20" />
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                  <PiCalendarBlank className="w-4 h-4" />
                 </div>
                 <Stack gap={1}>
-                  <div className="h-4 bg-fundo/30 rounded w-28"></div>
-                  <div className="h-3 bg-sup-2/30 rounded w-20"></div>
+                  <div className="h-4 rounded w-28"></div>
+                  <div className="h-3 rounded w-20"></div>
                 </Stack>
               </Inline>
 
@@ -281,11 +275,11 @@ export default function TeacherStudentDetailLoading() {
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="classical-card-2 p-3">
                     <Inline gap={3}>
-                      <div className="w-2 h-12 bg-ouro/30 rounded-full"></div>
+                      <div className="w-2 h-12 rounded-full"></div>
                       <div className="flex-1">
-                        <div className="h-4 bg-fundo/30 rounded w-32 mb-1"></div>
-                        <div className="h-3 bg-sup-2/30 rounded w-24 mb-1"></div>
-                        <div className="h-3 bg-aviso/30 rounded w-16"></div>
+                        <div className="h-4 rounded w-32 mb-1"></div>
+                        <div className="h-3 rounded w-24 mb-1"></div>
+                        <div className="h-3 rounded w-16"></div>
                       </div>
                       <div className="w-6 h-6 bg-theme-elevated rounded"></div>
                     </Inline>
@@ -297,12 +291,12 @@ export default function TeacherStudentDetailLoading() {
             {/* Current Assignments Skeleton */}
             <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
-                <div className="w-8 h-8 bg-ok/20 rounded-lg flex items-center justify-center">
-                  <PiTarget className="w-4 h-4 text-sobre-ouro/20" />
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                  <PiTarget className="w-4 h-4" />
                 </div>
                 <Stack gap={1}>
-                  <div className="h-4 bg-fundo/30 rounded w-24"></div>
-                  <div className="h-3 bg-sup-2/30 rounded w-20"></div>
+                  <div className="h-4 rounded w-24"></div>
+                  <div className="h-3 rounded w-20"></div>
                 </Stack>
               </Inline>
 
@@ -311,16 +305,16 @@ export default function TeacherStudentDetailLoading() {
                   <Stack gap={2} key={i} className="classical-card-2 p-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="h-4 bg-fundo/30 rounded w-full mb-1"></div>
-                        <div className="h-3 bg-sup-2/30 rounded w-3/4"></div>
+                        <div className="h-4 rounded w-full mb-1"></div>
+                        <div className="h-3 rounded w-3/4"></div>
                       </div>
-                      <div className="h-5 w-12 bg-atencao/20 border border-atencao/30 rounded-full ml-2"></div>
+                      <div className="h-5 w-12 border rounded-full ml-2"></div>
                     </div>
 
-                    <div className="h-3 bg-sup-2/30 rounded w-32"></div>
+                    <div className="h-3 rounded w-32"></div>
 
-                    <div className="w-full bg-sup-1/20 rounded-full h-2">
-                      <div className="bg-ouro/30 rounded-full h-2 w-2/3"></div>
+                    <div className="w-full rounded-full h-2">
+                      <div className="rounded-full h-2 w-2/3"></div>
                     </div>
                   </Stack>
                 ))}
@@ -330,11 +324,11 @@ export default function TeacherStudentDetailLoading() {
             {/* Quick Actions Skeleton */}
             <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
-                <div className="w-8 h-8 bg-ouro/20 rounded-lg flex items-center justify-center">
-                  <PiGear className="w-4 h-4 text-sobre-ouro/20" />
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                  <PiGear className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="h-4 bg-fundo/30 rounded w-28"></div>
+                  <div className="h-4 rounded w-28"></div>
                 </div>
               </Inline>
 
@@ -342,10 +336,10 @@ export default function TeacherStudentDetailLoading() {
                 {Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="w-full classical-card-2 p-3">
                     <Inline gap={3}>
-                      <div className="w-8 h-8 bg-ok/20 rounded-lg"></div>
+                      <div className="w-8 h-8 rounded-lg"></div>
                       <Stack gap={1}>
-                        <div className="h-4 bg-fundo/30 rounded w-24"></div>
-                        <div className="h-3 bg-sup-2/30 rounded w-32"></div>
+                        <div className="h-4 rounded w-24"></div>
+                        <div className="h-3 rounded w-32"></div>
                       </Stack>
                     </Inline>
                   </div>
@@ -356,19 +350,19 @@ export default function TeacherStudentDetailLoading() {
             {/* Refresh Button Skeleton */}
             <Inline
               gap={2}
-              className="w-full h-10 bg-sup-elevada border border-theme-secondary rounded-lg animate-pulse justify-center"
+              className="w-full h-10 border border-theme-secondary rounded-lg animate-pulse justify-center"
             >
-              <PiTrendUp className="w-4 h-4 text-sobre-ouro/20" />
-              <div className="h-4 w-24 bg-sup-2/30 rounded"></div>
+              <PiTrendUp className="w-4 h-4" />
+              <div className="h-4 w-24 rounded"></div>
             </Inline>
           </Stack>
         </div>
       </div>
 
       {/* Floating Particles */}
-      <div className="fixed top-20 left-4 w-2 h-2 bg-ouro/30 rounded-full animate-pulse"></div>
-      <div className="fixed top-40 right-8 w-1.5 h-1.5 bg-ouro/40 rounded-full animate-pulse"></div>
-      <div className="fixed bottom-32 left-8 w-1 h-1 bg-ouro/50 rounded-full animate-pulse"></div>
+      <div className="fixed top-20 left-4 w-2 h-2 rounded-full animate-pulse"></div>
+      <div className="fixed top-40 right-8 w-1.5 h-1.5 rounded-full animate-pulse"></div>
+      <div className="fixed bottom-32 left-8 w-1 h-1 rounded-full animate-pulse"></div>
     </div>
   );
 }

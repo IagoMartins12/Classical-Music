@@ -135,7 +135,7 @@ export default function FavoritesClient() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiHeart className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -159,7 +159,7 @@ export default function FavoritesClient() {
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                     activeTab === 'all'
                       ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                      : 'text-theme-tertiary hover:text-texto'
+                      : 'text-theme-tertiary'
                   }`}
                 >
                   {t('tab_all')} ({stats.totalItems})
@@ -169,7 +169,7 @@ export default function FavoritesClient() {
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                     activeTab === 'composers'
                       ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                      : 'text-theme-tertiary hover:text-texto'
+                      : 'text-theme-tertiary'
                   }`}
                 >
                   {t('tab_composers')} ({stats.composersCount})
@@ -179,7 +179,7 @@ export default function FavoritesClient() {
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                     activeTab === 'works'
                       ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                      : 'text-theme-tertiary hover:text-texto'
+                      : 'text-theme-tertiary'
                   }`}
                 >
                   {t('tab_works')} ({stats.worksCount})
@@ -190,7 +190,7 @@ export default function FavoritesClient() {
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                     activeTab === 'scores'
                       ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                      : 'text-theme-tertiary hover:text-texto'
+                      : 'text-theme-tertiary'
                   }`}
                 >
                   {t('tab_scores')} ({stats.scoresCount})
@@ -584,7 +584,7 @@ function ComposerFavoriteCard({
 }: ComposerFavoriteCardProps) {
   return (
     <div
-      className={`classical-card p-6 group hover:shadow-[var(--sombra-2)] transition-all ${
+      className={`classical-card p-6 group transition-all ${
         viewMode === 'list' ? 'flex items-center space-x-6' : ''
       }`}
     >
@@ -597,11 +597,11 @@ function ComposerFavoriteCard({
           <div className="flex-1">
             <Link
               href={`/composer/${favorite.composer.id}`}
-              className="flex align-center gap-6 group-hover:text-ouro-texto transition-colors"
+              className="flex align-center gap-6 transition-colors"
             >
               <div className="relative w-16 h-16">
                 {favorite.composer?.portraitUrl ? (
-                  <div className="relative w-full h-full rounded-full overflow-hidden border border-ouro/20 group-hover:border-ouro/50 transition-all duration-500">
+                  <div className="relative w-full h-full rounded-full overflow-hidden border-3 transition-all duration-500">
                     <Image
                       src={favorite.composer.portraitUrl}
                       alt={favorite.composer.name}
@@ -614,7 +614,7 @@ function ComposerFavoriteCard({
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-full"></div>
                   </div>
                 ) : (
-                  <div className="w-full h-full fill-ouro rounded-full flex items-center justify-center border border-ouro/20 group-hover:border-ouro/50 transition-all duration-500 group-hover:scale-110">
+                  <div className="w-full h-full rounded-full flex items-center justify-center border-3 transition-all duration-500 group-hover:scale-110">
                     <PiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
                   </div>
                 )}
@@ -623,7 +623,7 @@ function ComposerFavoriteCard({
               <div className="flex flex-col justify-center">
                 <div className="inline-flex items-center py-0.5">
                   <PiUser className="w-3 h-3 mr-1" />
-                  <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-300 w-11/12 truncate flex-1">
+                  <h3 className="font-bold ml-1 text-theme-primary classical-title transition-colors duration-300 w-11/12 truncate flex-1">
                     {favorite.composer?.fullName || favorite.composer?.name}
                   </h3>
                 </div>
@@ -631,7 +631,7 @@ function ComposerFavoriteCard({
                 <Text
                   papel="legenda"
                   tom="ouro"
-                  className="inline-flex items-center px-3 justify-center py-1 mt-1 bg-ouro/10 border border-ouro/30 rounded-full font-medium"
+                  className="inline-flex items-center px-3 justify-center py-1 mt-1 border rounded-full font-medium"
                 >
                   <PiClock className="w-2.5 h-2.5 mr-1" />
                   {favorite.composer?.epochName &&
@@ -660,7 +660,7 @@ function ComposerFavoriteCard({
           <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-end">
             <Link
               href={`/composer/${favorite.composer?.id}`}
-              className="text-brand-primary hover:text-ouro-texto text-sm font-medium transition-colors flex items-center space-x-1"
+              className="text-ouro-texto text-sm font-medium transition-colors flex items-center space-x-1"
             >
               <span>{t('see_profile')}</span>
               <PiArrowSquareOut className="w-3 h-3" />
@@ -682,7 +682,7 @@ interface WorkFavoriteCardProps {
 function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
   return (
     <div
-      className={`classical-card p-6 group hover:shadow-[var(--sombra-2)] transition-all ${
+      className={`classical-card p-6 group transition-all ${
         viewMode === 'list' ? 'flex items-center space-x-6' : ''
       }`}
     >
@@ -697,7 +697,7 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
           <div className="flex-1">
             <Link
               href={`/works/${favorite.work?.id}`}
-              className="block group-hover:text-ouro-texto transition-colors"
+              className="block transition-colors"
             >
               <div
                 className={`flex items-start gap-3 mb-1 ${
@@ -705,7 +705,7 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
                 }`}
               >
                 <div className="inline-flex items-center py-0.5">
-                  <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-300 w-11/12 flex-1">
+                  <h3 className="font-bold ml-1 text-theme-primary classical-title transition-colors duration-300 w-11/12 flex-1">
                     {favorite.work.title}
                   </h3>
                 </div>
@@ -714,7 +714,7 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
                     <Text
                       papel="legenda"
                       tom="suave"
-                      className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-linha/30 rounded-md font-medium flex-shrink-0"
+                      className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border rounded-md font-medium flex-shrink-0"
                     >
                       <PiBookOpen className="w-2.5 h-2.5 mr-1" />
                       {favorite.work?.opOrCatalog}
@@ -739,7 +739,7 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
 
               <Inline gap={2} className="mb-2">
                 <div
-                  className="inline-flex items-center text-sm text-aviso hover:text-ouro-texto transition-colors font-medium"
+                  className="inline-flex items-center text-sm transition-colors font-medium"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <PiUser className="w-3 h-3 mr-1" />
@@ -754,7 +754,7 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
           <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-end">
             <Link
               href={`/works/${favorite.work?.id}`}
-              className="text-brand-primary hover:text-ouro-texto text-sm font-medium transition-colors flex items-center space-x-1"
+              className="text-ouro-texto text-sm font-medium transition-colors flex items-center space-x-1"
             >
               <span>{t('see_work')}</span>
               <PiArrowSquareOut className="w-3 h-3" />
@@ -776,7 +776,7 @@ interface ScoreFavoriteCardProps {
 function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
   return (
     <div
-      className={`classical-card p-6 group hover:shadow-[var(--sombra-2)] transition-all ${
+      className={`classical-card p-6 group transition-all ${
         viewMode === 'list' ? 'flex items-center space-x-6' : ''
       }`}
     >
@@ -800,7 +800,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
 
           <Link
             href={`/works/${favorite.workId}`}
-            className="block group-hover:text-ouro-texto transition-colors"
+            className="block transition-colors"
           >
             <div
               className={`flex items-start gap-3 mb-2 ${
@@ -809,13 +809,13 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
             >
               <div className="inline-flex items-center py-0.5">
                 <PiFileText className="w-3 h-3 mr-1" />
-                <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-300 flex-1 line-clamp-2">
+                <h3 className="font-bold ml-1 text-theme-primary classical-title transition-colors duration-300 flex-1 line-clamp-2">
                   {favorite.scoreTitle}
                 </h3>
               </div>
 
               <div className="flex gap-2 items-center flex-wrap">
-                <span className="inline-flex items-center px-2 py-0.5 bg-erro/10 border border-erro/30 text-erro rounded-md text-xs font-medium">
+                <span className="inline-flex items-center px-2 py-0.5 border rounded-md text-xs font-medium">
                   <PiHeart className="w-2.5 h-2.5 mr-1" />
                   {favorite.scoreType}
                 </span>
@@ -823,7 +823,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
                 <Text
                   papel="legenda"
                   tom="suave"
-                  className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-linha/30 rounded-md font-medium"
+                  className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border rounded-md font-medium"
                 >
                   {favorite.scoreSource}
                 </Text>
@@ -833,8 +833,8 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
             {/* Informações da obra */}
             <Stack gap={1} className="mb-3">
               <Inline gap={2}>
-                <PiMusicNotes className="w-3 h-3 text-aviso" />
-                <span className="text-sm text-aviso hover:text-ouro-texto transition-colors font-medium">
+                <PiMusicNotes className="w-3 h-3" />
+                <span className="text-sm transition-colors font-medium">
                   {favorite.work?.title}
                 </span>
               </Inline>
@@ -851,14 +851,11 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
             {(favorite.personalRating ||
               favorite.notes ||
               favorite.tags?.length > 0) && (
-              <Stack
-                gap={2}
-                className="mb-3 p-3 bg-sup-elevada rounded-lg border border-linha/20"
-              >
+              <Stack gap={2} className="mb-3 p-3 rounded-lg border">
                 {favorite.personalRating && (
                   <Inline gap={2}>
-                    <PiStar className="w-3 h-3 text-ouro-texto" />
-                    <span className="text-sm text-ouro-texto font-medium">
+                    <PiStar className="w-3 h-3" />
+                    <span className="text-sm font-medium">
                       {favorite.personalRating}/5 {t('stars')}
                     </span>
                   </Inline>
@@ -884,7 +881,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
                           papel="legenda"
                           tom="ouro"
                           key={index}
-                          className="px-1.5 py-0.5 bg-ouro/10 rounded"
+                          className="px-1.5 py-0.5 rounded"
                         >
                           {tag}
                         </Text>
@@ -893,7 +890,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
                       <Text
                         papel="legenda"
                         tom="fraco"
-                        className="px-1.5 py-0.5 bg-sup-1/20 rounded"
+                        className="px-1.5 py-0.5 rounded"
                       >
                         +{favorite.tags.length - 3}
                       </Text>
@@ -936,7 +933,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
           <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-between">
             <Link
               href={`/works/${favorite.workId}`}
-              className="text-brand-primary hover:text-ouro-texto text-sm font-medium transition-colors flex items-center space-x-1"
+              className="text-ouro-texto text-sm font-medium transition-colors flex items-center space-x-1"
             >
               <span>{t('see_work')}</span>
               <PiArrowSquareOut className="w-3 h-3" />

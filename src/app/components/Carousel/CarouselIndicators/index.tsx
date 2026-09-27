@@ -15,8 +15,8 @@ const CarouselIndicators: React.FC<CarouselIndicatorsProps> = ({
           disabled={isAnimating}
           className={`h-3 rounded-full transition-all duration-500 hover:scale-125 ${
             index === currentIndex
-              ? 'bg-aviso w-10 shadow-lg'
-              : 'bg-linha-forte hover:bg-linha-forte w-3'
+              ? 'bg-gradient-to-r from-blue-500 to-purple-600 w-10 shadow-lg'
+              : 'bg-gray-300 hover:bg-gray-400 w-3'
           }`}
         />
       ))}

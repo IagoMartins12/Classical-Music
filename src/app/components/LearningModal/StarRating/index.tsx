@@ -23,22 +23,18 @@ const StarRating = ({
           key={star}
           type="button"
           onClick={() => onChange(star)}
-          className="transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-ouro focus:ring-opacity-50 rounded"
+          className="transition-all hover:scale-110 focus:outline-none focus:ring-2 rounded"
         >
           {star <= value ? (
             <PiStarFill
               className={`w-6 h-6 transition-colors ${
-                star <= value
-                  ? 'fill-current text-atencao'
-                  : 'text-theme-tertiary hover:text-atencao'
+                star <= value ? 'fill-current' : 'text-theme-tertiary'
               }`}
             />
           ) : (
             <PiStar
               className={`w-6 h-6 transition-colors ${
-                star <= value
-                  ? 'fill-current text-atencao'
-                  : 'text-theme-tertiary hover:text-atencao'
+                star <= value ? 'fill-current' : 'text-theme-tertiary'
               }`}
             />
           )}

@@ -68,19 +68,19 @@ const UploadScoreCard = ({
     return (
       <Card
         densidade="compacta"
-        className="group relative hover:shadow-[var(--sombra-2)] transition-all duration-300"
+        className="group relative transition-all duration-300"
       >
         <div className="flex items-center justify-between w-full">
           {/* Left section - Score info */}
           <Inline gap={4} className="flex-1 min-w-0">
             {/* Icon */}
-            <div className="w-12 h-12 bg-ok rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
               <PiFileText className="w-6 h-6 text-theme-primary" />
             </div>
 
             {/* Main info */}
             <div className="flex-1 min-w-0">
-              <h3 className="text-base font-bold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-300 line-clamp-2">
+              <h3 className="text-base font-bold text-theme-primary classical-title transition-colors duration-300 line-clamp-2">
                 {item.title}
               </h3>
 
@@ -90,7 +90,7 @@ const UploadScoreCard = ({
                   {item.workId && item.workTitle && (
                     <Link
                       href={`/works/${item.workId}`}
-                      className="inline-flex items-center text-sm text-aviso font-medium hover:text-ouro-texto transition-colors"
+                      className="inline-flex items-center text-sm font-medium transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <PiMusicNotes className="w-3 h-3 mr-1" />
@@ -112,7 +112,7 @@ const UploadScoreCard = ({
                   {item.composerId && item.composerName && (
                     <Link
                       href={`/composer/${item.composerId}`}
-                      className="inline-flex items-center text-xs text-theme-tertiary hover:text-aviso transition-colors"
+                      className="inline-flex items-center text-xs text-theme-tertiary transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <PiUser className="w-3 h-3 mr-1" />
@@ -145,7 +145,7 @@ const UploadScoreCard = ({
 
                   {/* Status badges */}
                   {item.isIMSLP && (
-                    <span className="text-xs font-medium text-aviso px-2 py-1 bg-aviso/10 rounded-full">
+                    <span className="text-xs font-medium px-2 py-1 rounded-full">
                       IMSLP
                     </span>
                   )}
@@ -154,7 +154,7 @@ const UploadScoreCard = ({
                     <Inline
                       as="span"
                       gap={1}
-                      className="text-xs font-medium text-ok px-2 py-1 bg-ok/10 rounded-full"
+                      className="text-xs font-medium px-2 py-1 rounded-full"
                     >
                       <PiShield className="w-3 h-3" />
                       <span>{t('card_verified_badge')}</span>
@@ -172,7 +172,7 @@ const UploadScoreCard = ({
                 href={`https://imslp.org/wiki/${item.imslpId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-2 py-1 bg-ok/10 border border-ok/20 text-ok rounded-md text-xs font-medium hover:bg-ok/20 hover:scale-105 transition-all duration-300"
+                className="inline-flex items-center px-2 py-1 border rounded-md text-xs font-medium hover:scale-105 transition-all duration-300"
                 onClick={(e) => e.stopPropagation()}
               >
                 IMSLP
@@ -183,7 +183,7 @@ const UploadScoreCard = ({
             <Inline gap={1} className="duration-300">
               <button
                 onClick={onEdit}
-                className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-aviso/10 text-theme-tertiary hover:text-aviso transition-colors flex items-center justify-center"
+                className="w-8 h-8 rounded-lg bg-theme-secondary text-theme-tertiary transition-colors flex items-center justify-center"
               >
                 <PiNotePencil className="w-4 h-4" />
                 <NomeAcao acao="editar" />
@@ -192,7 +192,7 @@ const UploadScoreCard = ({
               <button
                 onClick={handleDeleteClick}
                 disabled={isDeleting}
-                className={`w-8 h-8 rounded-lg bg-theme-secondary hover:bg-erro/10 text-theme-tertiary hover:text-erro transition-colors flex items-center justify-center ${
+                className={`w-8 h-8 rounded-lg bg-theme-secondary text-theme-tertiary transition-colors flex items-center justify-center ${
                   isDeleting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -208,7 +208,7 @@ const UploadScoreCard = ({
 
   return (
     <div className="group cursor-pointer select-none h-full">
-      <div className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-[var(--sombra-2)]">
+      <div className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2">
         {/* Header Section */}
         <div className="relative p-6 pb-4 border-b border-theme-secondary">
           {/* Floating action buttons */}
@@ -218,7 +218,7 @@ const UploadScoreCard = ({
           >
             <button
               onClick={onEdit}
-              className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-aviso/10 text-theme-tertiary hover:text-aviso transition-colors flex items-center justify-center shadow-theme-medium"
+              className="w-8 h-8 rounded-lg bg-theme-elevated text-theme-tertiary transition-colors flex items-center justify-center shadow-theme-medium"
             >
               <PiNotePencil className="w-4 h-4" />
               <NomeAcao acao="editar" />
@@ -227,7 +227,7 @@ const UploadScoreCard = ({
             <button
               onClick={handleDeleteClick}
               disabled={isDeleting}
-              className={`w-8 h-8 rounded-lg bg-theme-elevated hover:bg-erro/10 text-theme-tertiary hover:text-erro transition-colors flex items-center justify-center shadow-theme-medium ${
+              className={`w-8 h-8 rounded-lg bg-theme-elevated text-theme-tertiary transition-colors flex items-center justify-center shadow-theme-medium ${
                 isDeleting ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
@@ -239,13 +239,13 @@ const UploadScoreCard = ({
           <div className="relative z-10">
             {/* Icon */}
             <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-ok rounded-xl flex items-center justify-center">
+              <div className="w-16 h-16 rounded-xl flex items-center justify-center">
                 <PiFileText className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
 
             {/* Title */}
-            <h3 className="text-lg font-bold text-theme-primary classical-title mb-3 line-clamp-2 group-hover:text-ouro-texto transition-colors duration-300 leading-tight text-center">
+            <h3 className="text-lg font-bold text-theme-primary classical-title mb-3 line-clamp-2 transition-colors duration-300 leading-tight text-center">
               {item.title}
             </h3>
           </div>
@@ -263,8 +263,8 @@ const UploadScoreCard = ({
                   className="flex items-center justify-center group/link hover:scale-105 transition-transform"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <PiMusicNotes className="w-4 h-4 text-aviso mr-2" />
-                  <span className="text-sm text-aviso font-medium hover:text-ouro-texto transition-colors hover:underline">
+                  <PiMusicNotes className="w-4 h-4 mr-2" />
+                  <span className="text-sm font-medium transition-colors hover:underline">
                     {item.workTitle}
                   </span>
                 </Link>
@@ -283,11 +283,11 @@ const UploadScoreCard = ({
                   className="flex items-center justify-center group/link hover:scale-105 transition-transform"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <PiUser className="w-4 h-4 text-theme-tertiary mr-2 group-hover/link:text-aviso transition-colors" />
+                  <PiUser className="w-4 h-4 text-theme-tertiary mr-2 transition-colors" />
                   <Text
                     papel="rotulo"
                     tom="fraco"
-                    className="group-hover/link:text-aviso transition-colors hover:underline"
+                    className="transition-colors hover:underline"
                   >
                     {item.composerName}
                   </Text>
@@ -306,7 +306,7 @@ const UploadScoreCard = ({
             {(item.fileSize || item.pageCount) && (
               <div className="text-center">
                 <div className="flex items-center justify-center">
-                  <PiDownloadSimple className="w-4 h-4 text-brand-primary mr-2" />
+                  <PiDownloadSimple className="w-4 h-4 text-ouro-texto mr-2" />
                   <Text papel="rotulo" tom="suave">
                     {item.fileSize}
                     {item.pageCount && ` • ${item.pageCount} páginas`}
@@ -321,10 +321,10 @@ const UploadScoreCard = ({
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
                     item.dataQuality === 'high'
-                      ? 'bg-ok/10 text-ok border border-ok/30'
+                      ? 'border'
                       : item.dataQuality === 'medium'
-                        ? 'bg-atencao/10 text-atencao border border-atencao/30'
-                        : 'bg-erro/10 text-erro border border-erro/30'
+                        ? 'border'
+                        : 'border'
                   }`}
                 >
                   <PiStar className="w-2.5 h-2.5 mr-1" />
@@ -337,14 +337,14 @@ const UploadScoreCard = ({
           {/* Badges */}
           <div className="flex flex-wrap justify-center gap-2 mb-4">
             {item.isIMSLP && (
-              <span className="inline-flex items-center px-2 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded-full text-xs font-medium">
+              <span className="inline-flex items-center px-2 py-1 border rounded-full text-xs font-medium">
                 <PiArrowSquareOut className="w-2.5 h-2.5 mr-1" />
                 IMSLP
               </span>
             )}
 
             {item.verificationStatus === 'verified' && (
-              <span className="inline-flex items-center px-2 py-1 bg-ok/10 border border-ok/30 text-ok rounded-full text-xs font-medium">
+              <span className="inline-flex items-center px-2 py-1 border rounded-full text-xs font-medium">
                 <PiShield className="w-2.5 h-2.5 mr-1" />
                 {t('card_verified_badge')}
               </span>
@@ -372,7 +372,7 @@ const UploadScoreCard = ({
                     href={item.downloadUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-brand-primary hover:text-aviso text-sm font-medium transition-colors"
+                    className="text-ouro-texto text-sm font-medium transition-colors"
                     onClick={(e) => e.stopPropagation()}
                     title={t('card_download_score')}
                   >
@@ -389,7 +389,7 @@ const UploadScoreCard = ({
                     href={`https://imslp.org/wiki/${item.imslpId}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-ok hover:text-aviso text-sm font-medium transition-colors"
+                    className="text-sm font-medium transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <span>IMSLP</span>
@@ -401,11 +401,11 @@ const UploadScoreCard = ({
           </Stack>
 
           {/* Hover glow effect */}
-          <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
         </div>
 
         {/* Floating mini indicator */}
-        <div className="absolute -top-1 -right-1 w-3 h-3 fill-ouro rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100"></div>
+        <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100"></div>
       </div>
 
       {/* Modal de confirmação de delete */}

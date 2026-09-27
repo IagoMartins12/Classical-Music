@@ -72,9 +72,9 @@ const typeIcons = {
 };
 
 const priorityColors = {
-  low: 'text-ok',
-  medium: 'text-atencao',
-  high: 'text-erro',
+  low: '',
+  medium: '',
+  high: '',
 };
 
 export default function StudentAssignmentsPageClient({
@@ -306,7 +306,7 @@ export default function StudentAssignmentsPageClient({
   const getAssignmentStatusInfo = (assignment: (typeof assignments)[0]) => {
     if (assignment.isCompleted) {
       return {
-        color: 'bg-ok/10 border-ok/30 text-ok',
+        color: '',
         label: t('student_assignments_status_completed'),
         icon: PiCheck,
       };
@@ -314,7 +314,7 @@ export default function StudentAssignmentsPageClient({
 
     if (assignment.isOverdue) {
       return {
-        color: 'border-erro text-erro',
+        color: 'border-red-400 text-red-400',
         label: t('student_assignments_status_overdue'),
         icon: PiWarning,
       };
@@ -322,14 +322,14 @@ export default function StudentAssignmentsPageClient({
 
     if (assignment.status === 'IN_PROGRESS') {
       return {
-        color: 'bg-aviso/10 border-aviso/30 text-aviso',
+        color: '',
         label: t('student_assignments_status_in_progress'),
         icon: PiTrendUp,
       };
     }
 
     return {
-      color: 'bg-atencao/10 border-atencao/30 text-atencao',
+      color: '',
       label: t('student_assignments_status_pending'),
       icon: PiClock,
     };
@@ -363,7 +363,7 @@ export default function StudentAssignmentsPageClient({
           key={assignment.id}
           hover="lift"
           className={`classical-card p-6 relative cursor-pointer ${
-            assignment.isOverdue ? 'ring-2 ring-erro/30' : ''
+            assignment.isOverdue ? 'ring-2' : ''
           }`}
           delay={index * 0.1}
           onClick={() => handleRouter(assignment.id)}
@@ -384,7 +384,7 @@ export default function StudentAssignmentsPageClient({
               {/* 🆕 WORK SCORE INDICATOR */}
               {hasScores && (
                 <div
-                  className="w-5 h-5 bg-ouro/10 border border-ouro/30 text-ouro-texto rounded-full flex items-center justify-center"
+                  className="w-5 h-5 border rounded-full flex items-center justify-center"
                   title="Tem partituras vinculadas"
                 >
                   <PiMusicNotes className="w-3 h-3" />
@@ -429,9 +429,9 @@ export default function StudentAssignmentsPageClient({
                     <span
                       className={`ml-1 font-medium ${
                         assignment.daysUntilDue < 0
-                          ? 'text-erro'
+                          ? ''
                           : assignment.daysUntilDue <= 2
-                            ? 'text-atencao'
+                            ? ''
                             : 'text-theme-secondary'
                       }`}
                     >
@@ -466,7 +466,7 @@ export default function StudentAssignmentsPageClient({
 
             {/* 🆕 WORK SCORES INFO */}
             {hasScores && (
-              <div className="flex items-center text-sm text-ouro-texto">
+              <div className="flex items-center text-sm">
                 <PiMusicNotes className="w-4 h-4 mr-2" />
                 {t('student_assignments_scores_linked', {
                   count: assignment.workScoreIds.length,
@@ -492,10 +492,10 @@ export default function StudentAssignmentsPageClient({
                   <div
                     className={`h-2 rounded-full transition-all ${
                       assignment.progress >= 100
-                        ? 'bg-ok'
+                        ? 'bg-green-400'
                         : assignment.progress >= 50
-                          ? 'bg-aviso'
-                          : 'bg-atencao'
+                          ? 'bg-blue-400'
+                          : 'bg-yellow-400'
                     }`}
                     style={{
                       width: `${Math.min(assignment.progress, 100)}%`,
@@ -515,7 +515,7 @@ export default function StudentAssignmentsPageClient({
                 {assignment.practiceGoals.slice(0, 2).map((goal, idx) => (
                   <span
                     key={idx}
-                    className="px-2 py-1 bg-aviso/10 text-aviso text-xs rounded line-clamp-1"
+                    className="px-2 py-1 text-xs rounded line-clamp-1"
                   >
                     {goal}
                   </span>
@@ -536,10 +536,10 @@ export default function StudentAssignmentsPageClient({
               {formatDate(assignment.createdAt)}
             </Text>
             <Link
-              className="text-sm text-brand-primary flex gap-2"
+              className="text-sm text-ouro-texto flex gap-2"
               href={`assignments/${assignment.id}`}
             >
-              <PiEye className="w-4 h-4 text-brand-primary" />
+              <PiEye className="w-4 h-4 text-ouro-texto" />
               <span>{t('student_assignments_view_details')}</span>
             </Link>
           </div>
@@ -572,7 +572,7 @@ export default function StudentAssignmentsPageClient({
           key={assignment.id}
           hover="lift"
           className={`classical-card p-6 relative cursor-pointer ${
-            assignment.isOverdue ? 'ring-2 ring-erro/30' : ''
+            assignment.isOverdue ? 'ring-2' : ''
           }`}
           delay={index * 0.1}
           onClick={() => handleRouter(assignment.id)}
@@ -629,9 +629,9 @@ export default function StudentAssignmentsPageClient({
                     <span
                       className={`ml-1 font-medium ${
                         assignment.daysUntilDue < 0
-                          ? 'text-erro'
+                          ? ''
                           : assignment.daysUntilDue <= 2
-                            ? 'text-atencao'
+                            ? ''
                             : 'text-theme-secondary'
                       }`}
                     >
@@ -681,10 +681,10 @@ export default function StudentAssignmentsPageClient({
                   <div
                     className={`h-2 rounded-full transition-all ${
                       assignment.progress >= 100
-                        ? 'bg-ok'
+                        ? 'bg-green-400'
                         : assignment.progress >= 50
-                          ? 'bg-aviso'
-                          : 'bg-atencao'
+                          ? 'bg-blue-400'
+                          : 'bg-yellow-400'
                     }`}
                     style={{
                       width: `${Math.min(assignment.progress, 100)}%`,
@@ -706,7 +706,7 @@ export default function StudentAssignmentsPageClient({
                   .map((goal: any, idx: number) => (
                     <span
                       key={idx}
-                      className="px-2 py-1 bg-aviso/10 text-aviso text-xs rounded line-clamp-1"
+                      className="px-2 py-1 text-xs rounded line-clamp-1"
                     >
                       {goal}
                     </span>
@@ -727,10 +727,10 @@ export default function StudentAssignmentsPageClient({
               {formatDate(assignment.createdAt)}
             </Text>
             <Link
-              className="text-sm text-brand-primary flex gap-2"
+              className="text-sm text-ouro-texto flex gap-2"
               href={`assignments/${assignment.id}`}
             >
-              <PiEye className="w-4 h-4 text-brand-primary" />
+              <PiEye className="w-4 h-4 text-ouro-texto" />
               <span>{t('student_assignments_view_details')}</span>
             </Link>
           </div>
@@ -746,7 +746,7 @@ export default function StudentAssignmentsPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-aviso rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiUser className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -770,7 +770,7 @@ export default function StudentAssignmentsPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiClipboardText className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -820,7 +820,7 @@ export default function StudentAssignmentsPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiClipboardText className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -841,7 +841,7 @@ export default function StudentAssignmentsPageClient({
                 hover="scale"
                 className="classical-card p-6 text-center snap-start"
               >
-                <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiClipboardText className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -856,7 +856,7 @@ export default function StudentAssignmentsPageClient({
                 hover="scale"
                 className="classical-card p-6 text-center snap-start"
               >
-                <div className="w-12 h-12 bg-atencao rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiClock className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -871,7 +871,7 @@ export default function StudentAssignmentsPageClient({
                 hover="scale"
                 className="classical-card p-6 text-center snap-start"
               >
-                <div className="w-12 h-12 bg-aviso rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiTrendUp className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -886,7 +886,7 @@ export default function StudentAssignmentsPageClient({
                 hover="scale"
                 className="classical-card p-6 text-center snap-start"
               >
-                <div className="w-12 h-12 bg-ok rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiCheck className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -901,7 +901,7 @@ export default function StudentAssignmentsPageClient({
                 hover="scale"
                 className="classical-card p-6 text-center snap-start"
               >
-                <div className="w-12 h-12 bg-erro rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiWarning className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -936,7 +936,7 @@ export default function StudentAssignmentsPageClient({
                 <Button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`btn-classical-secondary flex items-center space-x-2 ${
-                    showFilters ? 'bg-ouro/10 text-brand-primary' : ''
+                    showFilters ? 'text-ouro-texto' : ''
                   }`}
                   leftIcon={<PiFunnel className="w-4 h-4" />}
                 >
@@ -1177,8 +1177,8 @@ export default function StudentAssignmentsPageClient({
                           onClick={() => setCurrentPage(page)}
                           className={`w-10 h-10 rounded-lg font-medium transition-all ${
                             currentPage === page
-                              ? 'bg-ouro text-theme-primary'
-                              : 'text-theme-secondary hover:bg-sup-elevada'
+                              ? 'text-theme-primary'
+                              : 'text-theme-secondary'
                           }`}
                         >
                           {page}

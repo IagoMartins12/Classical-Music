@@ -170,9 +170,7 @@ export default function TemplatePreviewModal({
               <button
                 onClick={() => setViewMode('html')}
                 className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                  viewMode === 'html'
-                    ? 'bg-ouro text-sobre-ouro'
-                    : 'text-theme-tertiary hover:text-texto'
+                  viewMode === 'html' ? 'text-white' : 'text-theme-tertiary'
                 }`}
               >
                 <PiEye className="w-4 h-4 inline mr-1" />
@@ -181,9 +179,7 @@ export default function TemplatePreviewModal({
               <button
                 onClick={() => setViewMode('text')}
                 className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                  viewMode === 'text'
-                    ? 'bg-ouro text-sobre-ouro'
-                    : 'text-theme-tertiary hover:text-texto'
+                  viewMode === 'text' ? 'text-white' : 'text-theme-tertiary'
                 }`}
               >
                 <PiEnvelopeSimple className="w-4 h-4 inline mr-1" />
@@ -192,9 +188,7 @@ export default function TemplatePreviewModal({
               <button
                 onClick={() => setViewMode('code')}
                 className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                  viewMode === 'code'
-                    ? 'bg-ouro text-sobre-ouro'
-                    : 'text-theme-tertiary hover:text-texto'
+                  viewMode === 'code' ? 'text-white' : 'text-theme-tertiary'
                 }`}
               >
                 <PiCode className="w-4 h-4 inline mr-1" />
@@ -211,8 +205,8 @@ export default function TemplatePreviewModal({
                   onClick={() => setDeviceMode('desktop')}
                   className={`p-2 rounded transition-colors ${
                     deviceMode === 'desktop'
-                      ? 'bg-ouro text-sobre-ouro'
-                      : 'text-theme-tertiary hover:text-texto'
+                      ? 'text-white'
+                      : 'text-theme-tertiary'
                   }`}
                   title="Desktop"
                 >
@@ -222,8 +216,8 @@ export default function TemplatePreviewModal({
                   onClick={() => setDeviceMode('tablet')}
                   className={`p-2 rounded transition-colors ${
                     deviceMode === 'tablet'
-                      ? 'bg-ouro text-sobre-ouro'
-                      : 'text-theme-tertiary hover:text-texto'
+                      ? 'text-white'
+                      : 'text-theme-tertiary'
                   }`}
                   title="Tablet"
                 >
@@ -233,8 +227,8 @@ export default function TemplatePreviewModal({
                   onClick={() => setDeviceMode('mobile')}
                   className={`p-2 rounded transition-colors ${
                     deviceMode === 'mobile'
-                      ? 'bg-ouro text-sobre-ouro'
-                      : 'text-theme-tertiary hover:text-texto'
+                      ? 'text-white'
+                      : 'text-theme-tertiary'
                   }`}
                   title="Mobile"
                 >
@@ -245,7 +239,7 @@ export default function TemplatePreviewModal({
 
             <button
               onClick={onClose}
-              className="text-theme-tertiary hover:text-texto transition-colors"
+              className="text-theme-tertiary transition-colors"
             >
               <PiX className="w-6 h-6" />
               <NomeAcao acao="fechar" />
@@ -334,7 +328,7 @@ export default function TemplatePreviewModal({
                       {template.variables.map((variable: string) => (
                         <span
                           key={variable}
-                          className="px-3 py-1 bg-aviso text-white text-xs rounded-full font-mono"
+                          className="px-3 py-1 text-white text-xs rounded-full font-mono"
                         >
                           {`{{${variable}}}`}
                         </span>

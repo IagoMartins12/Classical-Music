@@ -21,7 +21,7 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
   return (
     <AnimatedCard hover="lift" className="classical-card p-6 mb-8">
       <div className="flex items-center mb-6">
-        <div className="w-12 h-12 bg-ok rounded-2xl flex items-center justify-center mr-4">
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center mr-4">
           <PiChartBar className="w-6 h-6 text-theme-primary" />
         </div>
         <div>
@@ -39,10 +39,10 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
         <AnimatedItem direction="up" hover="lift">
           <div className="bg-theme-elevated rounded-xl p-4 border border-theme-secondary">
             <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 bg-ouro/20 rounded-lg flex items-center justify-center">
-                <PiTrendUp className="w-5 h-5 text-brand-primary" />
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center">
+                <PiTrendUp className="w-5 h-5 text-ouro-texto" />
               </div>
-              <span className="text-2xl font-bold text-brand-primary">
+              <span className="text-2xl font-bold text-ouro-texto">
                 {stats.totalWorks.toLocaleString()}
               </span>
             </div>
@@ -59,10 +59,10 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
         <AnimatedItem direction="up" hover="lift" delay={0.1}>
           <div className="bg-theme-elevated rounded-xl p-4 border border-theme-secondary">
             <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 bg-aviso/20 rounded-lg flex items-center justify-center">
-                <PiUsers className="w-5 h-5 text-aviso" />
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center">
+                <PiUsers className="w-5 h-5" />
               </div>
-              <span className="text-2xl font-bold text-aviso">
+              <span className="text-2xl font-bold">
                 {stats.totalInstruments}
               </span>
             </div>
@@ -79,12 +79,10 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
         <AnimatedItem direction="up" hover="lift" delay={0.2}>
           <div className="bg-theme-elevated rounded-xl p-4 border border-theme-secondary">
             <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 bg-ok/20 rounded-lg flex items-center justify-center">
-                <PiChartBar className="w-5 h-5 text-ok" />
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center">
+                <PiChartBar className="w-5 h-5" />
               </div>
-              <span className="text-2xl font-bold text-ok">
-                {stats.averageLevel}
-              </span>
+              <span className="text-2xl font-bold">{stats.averageLevel}</span>
             </div>
             <Text papel="rotulo" tom="forte" as="p" className="font-medium">
               Nível Médio
@@ -99,10 +97,10 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
         <AnimatedItem direction="up" hover="lift" delay={0.3}>
           <div className="bg-theme-elevated rounded-xl p-4 border border-theme-secondary">
             <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 bg-ouro/20 rounded-lg flex items-center justify-center">
-                <PiMedal className="w-5 h-5 text-ouro-texto" />
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center">
+                <PiMedal className="w-5 h-5" />
               </div>
-              <span className="text-2xl font-bold text-ouro-texto">
+              <span className="text-2xl font-bold">
                 {stats.mostCommonLevel}
               </span>
             </div>
@@ -136,7 +134,7 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
                   <Inline gap={3}>
                     <div className="w-32 bg-theme-elevated rounded-full h-2 overflow-hidden">
                       <div
-                        className="h-full fill-ouro transition-all duration-1000"
+                        className="h-full transition-all duration-1000"
                         style={{ width: `${system.percentage}%` }}
                       />
                     </div>

@@ -100,9 +100,9 @@ const WorksSkeleton = memo(() => (
   <SequentialGrid cols={4} gap={6} delayBetweenItems={0.05} className="">
     {Array.from({ length: 8 }).map((_, i) => (
       <Card key={i} className="animate-pulse">
-        <div className="h-4 bg-sup-1/20 rounded mb-3"></div>
-        <div className="h-3 bg-sup-1/20 rounded mb-2"></div>
-        <div className="h-3 bg-sup-1/20 rounded w-2/3"></div>
+        <div className="h-4 rounded mb-3"></div>
+        <div className="h-3 rounded mb-2"></div>
+        <div className="h-3 rounded w-2/3"></div>
       </Card>
     ))}
   </SequentialGrid>
@@ -139,7 +139,7 @@ const ResultsInfo = memo(
       </div>
 
       {isPending && (
-        <div className="flex items-center text-brand-primary">
+        <div className="flex items-center text-ouro-texto">
           <PiArrowsClockwise className="w-4 h-4 mr-1 animate-spin" />
           {t('client_jsx_span_loading')}
         </div>
@@ -195,7 +195,7 @@ const ActiveFilters = memo(
               papel="rotulo"
               tom="ouro"
               as="div"
-              className="flex items-center gap-2 px-3 py-1 bg-ouro/10 border border-ouro/30 rounded-full"
+              className="flex items-center gap-2 px-3 py-1 border rounded-full"
             >
               <span>
                 {t('client_jsx_span_search_filter')} &quot;{searchParams.search}
@@ -203,7 +203,7 @@ const ActiveFilters = memo(
               </span>
               <button
                 onClick={() => onRemoveFilter('search')}
-                className="hover:text-ouro-texto transition-colors"
+                className="transition-colors"
               >
                 <PiX className="w-3 h-3" />
                 <NomeAcao acao="fechar" />
@@ -214,14 +214,14 @@ const ActiveFilters = memo(
 
         {searchParams.composer && (
           <AnimatedItem hover="scale">
-            <div className="flex items-center gap-2 px-3 py-1 bg-ouro/10 border border-ouro/30 text-ouro-texto rounded-full text-sm">
+            <div className="flex items-center gap-2 px-3 py-1 border rounded-full text-sm">
               <span>
                 {t('client_jsx_span_composer_filter')}{' '}
                 {composerName.composerName || 'Carregando...'}
               </span>
               <button
                 onClick={() => onRemoveFilter('composer')}
-                className="hover:text-ouro-texto/80 transition-colors"
+                className="transition-colors"
               >
                 <PiX className="w-3 h-3" />
                 <NomeAcao acao="fechar" />
@@ -232,7 +232,7 @@ const ActiveFilters = memo(
 
         {searchParams.instrument && (
           <AnimatedItem hover="scale">
-            <div className="flex items-center gap-2 px-3 py-1 bg-ok/10 border border-ok/30 text-ok rounded-full text-sm">
+            <div className="flex items-center gap-2 px-3 py-1 border rounded-full text-sm">
               <span>
                 {t('client_jsx_span_instrument_filter')}{' '}
                 {/* 🔧 CORREÇÃO: Buscar pelo ID em vez de nome */}
@@ -242,7 +242,7 @@ const ActiveFilters = memo(
               </span>
               <button
                 onClick={() => onRemoveFilter('instrument')}
-                className="hover:text-ok/80 transition-colors"
+                className="transition-colors"
               >
                 <PiX className="w-3 h-3" />
                 <NomeAcao acao="fechar" />
@@ -253,7 +253,7 @@ const ActiveFilters = memo(
 
         {searchParams.epoch && (
           <AnimatedItem hover="scale">
-            <div className="flex items-center gap-2 px-3 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded-full text-sm">
+            <div className="flex items-center gap-2 px-3 py-1 border rounded-full text-sm">
               <span>
                 {t('client_jsx_span_epoch_filter')}{' '}
                 {translateEpochWithHook(
@@ -269,7 +269,7 @@ const ActiveFilters = memo(
               </span>
               <button
                 onClick={() => onRemoveFilter('epoch')}
-                className="hover:text-aviso/80 transition-colors"
+                className="transition-colors"
               >
                 <PiX className="w-3 h-3" />
                 <NomeAcao acao="fechar" />
@@ -280,7 +280,7 @@ const ActiveFilters = memo(
 
         {searchParams.workGenresArr && (
           <AnimatedItem hover="scale">
-            <div className="flex items-center gap-2 px-3 py-1 bg-atencao/10 border border-atencao/30 text-atencao rounded-full text-sm">
+            <div className="flex items-center gap-2 px-3 py-1 border rounded-full text-sm">
               <span>
                 {t('client_jsx_span_genre_filter')}{' '}
                 {filterOptions.workGenres.find(
@@ -292,7 +292,7 @@ const ActiveFilters = memo(
               </span>
               <button
                 onClick={() => onRemoveFilter('genre')}
-                className="hover:text-atencao/80 transition-colors"
+                className="transition-colors"
               >
                 <PiX className="w-3 h-3" />
                 <NomeAcao acao="fechar" />
@@ -304,7 +304,7 @@ const ActiveFilters = memo(
         <AnimatedItem hover="scale">
           <button
             onClick={onClearAll}
-            className="text-sm text-erro hover:text-erro/80 underline font-medium"
+            className="text-sm underline font-medium"
           >
             {t('client_jsx_button_clear_all_filters')}
           </button>
@@ -546,7 +546,7 @@ const WorksClient = memo(
         return (
           <AnimatedItem direction="scale" className="mt-4" springType="bouncy">
             <div className="classical-card p-12 text-center">
-              <div className="w-16 h-16 bg-sup-2/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                 <PiMusicNotes className="w-8 h-8 text-theme-tertiary" />
               </div>
               <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
@@ -587,15 +587,15 @@ const WorksClient = memo(
       return (
         <AnimatedCard
           hover="none"
-          className="bg-sup-1 px-0 md:px-4 rounded-2xl overflow-hidden"
+          className="px-0 md:px-4 rounded-2xl overflow-hidden"
         >
-          <div className="divide-y divide-linha flex flex-col gap-4 py-4">
+          <div className="divide-y flex flex-col gap-4 py-4">
             {worksData.works.map((work, index) => (
               <AnimatedItem
                 key={work.id}
                 direction="left"
                 hover="lift"
-                className="classical-card p-4 hover:bg-ouro/10 transition-all duration-300 cursor-pointer group"
+                className="classical-card p-4 transition-all duration-300 cursor-pointer group"
                 style={{
                   animationDelay: `${index * 0.05}s`,
                   animationFillMode: 'backwards',
@@ -619,7 +619,7 @@ const WorksClient = memo(
 
             <div className="relative z-10">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-theme-glow">
                   <PiBookOpen className="w-8 h-8 text-theme-primary" />
                 </div>
               </div>
@@ -668,7 +668,7 @@ const WorksClient = memo(
                 {searchTerm && (
                   <button
                     onClick={() => handleSearchChange('')}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-texto transition-colors"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary transition-colors"
                   >
                     <PiX className="w-5 h-5" />
                     <NomeAcao acao="fechar" />
@@ -837,9 +837,9 @@ const WorksClient = memo(
             {/* Loading Overlay */}
             {isPending && (
               <AnimatedItem direction="scale" springType="gentle">
-                <div className="absolute inset-0 bg-veu backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl">
+                <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl">
                   <Card densidade="larga" className="text-center">
-                    <div className="w-12 h-12 border-4 border-ouro border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <div className="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="text-theme-primary font-medium">
                       {t('client_jsx_p_loading_works')}
                     </p>

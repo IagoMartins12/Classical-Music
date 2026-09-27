@@ -49,7 +49,7 @@ export function BlogEditor({
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'text-aviso underline hover:text-aviso',
+          class: 'text-blue-600 underline hover:text-blue-800',
         },
       }),
       Image.configure({
@@ -106,11 +106,11 @@ export function BlogEditor({
   }, [content, editor]);
 
   if (!editor) {
-    return <div className="animate-pulse bg-sup-2 rounded-lg h-[600px]" />;
+    return <div className="animate-pulse bg-gray-100 rounded-lg h-[600px]" />;
   }
 
   return (
-    <div className="border border-linha rounded-lg overflow-hidden classical-card-simple">
+    <div className="border border-gray-300 rounded-lg overflow-hidden classical-card-simple">
       {editable && (
         <EditorToolbar
           editor={editor}

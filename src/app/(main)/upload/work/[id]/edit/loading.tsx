@@ -66,7 +66,7 @@ export default function EditWorkLoading() {
               d="M9 5l7 7-7 7"
             />
           </svg>
-          <div className="h-4 w-32 bg-fundo/20 rounded"></div>
+          <div className="h-4 w-32 rounded"></div>
         </Inline>
 
         {/* Header Principal */}
@@ -80,23 +80,23 @@ export default function EditWorkLoading() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <Inline gap={3} className="mb-4">
-                        <div className="w-10 h-10 bg-aviso/20 rounded-xl flex items-center justify-center">
-                          <PiPencilLine className="w-5 h-5 text-texto/30" />
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                          <PiPencilLine className="w-5 h-5" />
                         </div>
                         <Stack gap={2}>
-                          <div className="h-10 w-48 bg-ouro/20 rounded"></div>
+                          <div className="h-10 w-48 rounded"></div>
                           <div className="h-5 w-40 bg-theme-elevated rounded"></div>
                         </Stack>
                       </Inline>
 
-                      <div className="h-12 bg-ouro/20 rounded mb-2"></div>
+                      <div className="h-12 rounded mb-2"></div>
 
                       {/* Subtitle */}
                       <div className="h-8 bg-theme-elevated rounded w-3/4 mt-2"></div>
 
                       <Inline gap={2} className="mt-3">
                         <div className="h-6 w-8 bg-theme-elevated rounded"></div>
-                        <div className="h-6 w-32 bg-ouro/20 rounded"></div>
+                        <div className="h-6 w-32 rounded"></div>
                       </Inline>
                       <div className="h-5 w-24 bg-theme-elevated rounded mt-2"></div>
                     </div>
@@ -105,18 +105,18 @@ export default function EditWorkLoading() {
                     <Inline gap={3} className="ml-4">
                       <Inline
                         gap={2}
-                        className="h-10 w-20 bg-ouro/20 rounded-lg justify-center"
+                        className="h-10 w-20 rounded-lg justify-center"
                       >
-                        <PiFloppyDisk className="w-4 h-4 text-texto/30" />
-                        <div className="w-8 h-4 bg-fundo/30 rounded"></div>
+                        <PiFloppyDisk className="w-4 h-4" />
+                        <div className="w-8 h-4 rounded"></div>
                       </Inline>
 
                       <Inline
                         gap={2}
-                        className="h-10 w-24 bg-erro/20 border border-erro/30 rounded-lg justify-center"
+                        className="h-10 w-24 border rounded-lg justify-center"
                       >
-                        <PiTrash className="w-4 h-4 text-erro/30" />
-                        <div className="w-12 h-4 bg-erro/30 rounded"></div>
+                        <PiTrash className="w-4 h-4" />
+                        <div className="w-12 h-4 rounded"></div>
                       </Inline>
                     </Inline>
                   </div>
@@ -125,10 +125,10 @@ export default function EditWorkLoading() {
                   <Inline gap={3}>
                     <Inline
                       gap={2}
-                      className="h-8 w-40 bg-aviso/20 rounded-full justify-center"
+                      className="h-8 w-40 rounded-full justify-center"
                     >
-                      <PiTarget className="w-4 h-4 text-texto/30" />
-                      <div className="w-24 h-4 bg-fundo/30 rounded"></div>
+                      <PiTarget className="w-4 h-4" />
+                      <div className="w-24 h-4 rounded"></div>
                     </Inline>
                   </Inline>
                 </Stack>
@@ -137,38 +137,36 @@ export default function EditWorkLoading() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {[
                     {
-                      icon: (
-                        <PiCalendarBlank className="w-4 h-4 text-texto/30" />
-                      ),
-                      gradient: 'bg-ok',
+                      icon: <PiCalendarBlank className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiClock className="w-4 h-4 text-texto/30" />,
-                      gradient: 'fill-ouro',
+                      icon: <PiClock className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiMusicNotes className="w-4 h-4 text-texto/30" />,
-                      gradient: 'fill-ouro',
+                      icon: <PiMusicNotes className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiPulse className="w-4 h-4 text-texto/30" />,
-                      gradient: 'bg-erro',
+                      icon: <PiPulse className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiMetronome className="w-4 h-4 text-texto/30" />,
-                      gradient: 'bg-ok',
+                      icon: <PiMetronome className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiMusicNotes className="w-4 h-4 text-texto/30" />,
-                      gradient: 'bg-aviso',
+                      icon: <PiMusicNotes className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiMapPin className="w-4 h-4 text-texto/30" />,
-                      gradient: 'bg-erro',
+                      icon: <PiMapPin className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiStack className="w-4 h-4 text-texto/30" />,
-                      gradient: 'bg-ok',
+                      icon: <PiStack className="w-4 h-4" />,
+                      gradient: '',
                     },
                   ].map((item, index) => (
                     <div
@@ -182,7 +180,7 @@ export default function EditWorkLoading() {
                       </div>
                       <Stack gap={1}>
                         <div className="h-4 w-24 bg-theme-elevated rounded"></div>
-                        <div className="h-5 w-20 bg-fundo rounded"></div>
+                        <div className="h-5 w-20 rounded"></div>
                       </Stack>
                     </div>
                   ))}
@@ -195,25 +193,25 @@ export default function EditWorkLoading() {
                     gap={2}
                     className="text-lg font-semibold text-theme-primary classical-title"
                   >
-                    <PiBookOpen className="w-5 h-5 text-aviso/30" />
+                    <PiBookOpen className="w-5 h-5" />
                     <div className="h-5 w-48 bg-theme-elevated rounded"></div>
                   </Inline>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <Inline gap={2}>
                       <div className="h-4 w-32 bg-theme-elevated rounded"></div>
-                      <div className="h-4 w-24 bg-fundo/20 rounded"></div>
+                      <div className="h-4 w-24 rounded"></div>
                     </Inline>
                     <Inline gap={2}>
                       <div className="h-4 w-20 bg-theme-elevated rounded"></div>
-                      <div className="h-4 w-28 bg-fundo/20 rounded"></div>
+                      <div className="h-4 w-28 rounded"></div>
                     </Inline>
                     <Inline gap={2}>
                       <div className="h-4 w-16 bg-theme-elevated rounded"></div>
-                      <div className="h-4 w-20 bg-fundo/20 rounded"></div>
+                      <div className="h-4 w-20 rounded"></div>
                     </Inline>
                     <Stack
                       gap={1}
-                      className="md:col-span-2 p-3 bg-sup-elevada rounded-xl border border-linha/20"
+                      className="md:col-span-2 p-3 rounded-xl border"
                     >
                       <div className="h-4 w-32 bg-theme-elevated rounded"></div>
                       <Stack gap={1}>
@@ -232,7 +230,7 @@ export default function EditWorkLoading() {
                     gap={2}
                     className="text-lg font-semibold text-theme-primary classical-title"
                   >
-                    <PiTag className="w-5 h-5 text-ok/30" />
+                    <PiTag className="w-5 h-5" />
                     <div className="h-5 w-44 bg-theme-elevated rounded"></div>
                   </Inline>
                   <Stack>
@@ -242,7 +240,7 @@ export default function EditWorkLoading() {
                         {Array.from({ length: 3 }).map((_, index) => (
                           <div
                             key={index}
-                            className="h-8 w-24 bg-ouro/10 border border-ouro/30 rounded-full"
+                            className="h-8 w-24 border rounded-full"
                           ></div>
                         ))}
                       </div>
@@ -254,7 +252,7 @@ export default function EditWorkLoading() {
                         {Array.from({ length: 4 }).map((_, index) => (
                           <div
                             key={index}
-                            className="h-8 w-20 bg-ok/10 border border-ok/30 rounded-full"
+                            className="h-8 w-20 border rounded-full"
                           ></div>
                         ))}
                       </div>
@@ -269,15 +267,15 @@ export default function EditWorkLoading() {
                     gap={2}
                     className="text-lg font-semibold text-theme-primary classical-title"
                   >
-                    <PiArrowSquareOut className="w-5 h-5 text-aviso/30" />
+                    <PiArrowSquareOut className="w-5 h-5" />
                     <div className="h-5 w-24 bg-theme-elevated rounded"></div>
                   </Inline>
                   <Inline
                     gap={2}
-                    className="h-10 w-32 bg-ouro/20 rounded-lg justify-center"
+                    className="h-10 w-32 rounded-lg justify-center"
                   >
-                    <PiBookOpen className="w-4 h-4 text-texto/30" />
-                    <div className="w-16 h-4 bg-fundo/30 rounded"></div>
+                    <PiBookOpen className="w-4 h-4" />
+                    <div className="w-16 h-4 rounded"></div>
                   </Inline>
                 </Stack>
               </Stack>
@@ -287,19 +285,19 @@ export default function EditWorkLoading() {
                 {/* Foto do Compositor */}
                 <Card nivel={2}>
                   <Inline gap={3} className="mb-4">
-                    <div className="w-8 h-8 bg-ouro/20 rounded-xl flex items-center justify-center">
-                      <PiUser className="w-4 h-4 text-texto/30" />
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center">
+                      <PiUser className="w-4 h-4" />
                     </div>
                     <div className="h-5 w-24 bg-theme-elevated rounded"></div>
                   </Inline>
 
                   <div className="text-center space-y-4">
-                    <div className="w-32 h-40 mx-auto fundo-sup-1 border border-linha/20 rounded-xl flex items-center justify-center">
-                      <PiUser className="w-8 h-8 text-texto-fraco/30 opacity-50" />
+                    <div className="w-32 h-40 mx-auto border rounded-xl flex items-center justify-center">
+                      <PiUser className="w-8 h-8 opacity-50" />
                     </div>
 
                     <div className="space-y-2">
-                      <div className="h-5 w-32 bg-ouro/20 rounded mx-auto"></div>
+                      <div className="h-5 w-32 rounded mx-auto"></div>
                       <div className="h-4 w-20 bg-theme-elevated rounded mx-auto"></div>
                     </div>
                   </div>
@@ -308,19 +306,19 @@ export default function EditWorkLoading() {
                 {/* Detalhes Técnicos */}
                 <Card nivel={2}>
                   <Inline gap={3} className="mb-4">
-                    <div className="w-8 h-8 bg-ouro/20 rounded-xl flex items-center justify-center">
-                      <PiBookOpen className="w-4 h-4 text-texto/30" />
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center">
+                      <PiBookOpen className="w-4 h-4" />
                     </div>
                     <div className="h-5 w-32 bg-theme-elevated rounded"></div>
                   </Inline>
                   <Stack gap={3} className="text-sm">
                     <div className="flex items-center justify-between">
                       <div className="h-4 w-20 bg-theme-elevated rounded"></div>
-                      <div className="h-4 w-8 bg-fundo/20 rounded"></div>
+                      <div className="h-4 w-8 rounded"></div>
                     </div>
                     <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
                       <div className="h-4 w-24 bg-theme-elevated rounded"></div>
-                      <div className="h-3 w-16 bg-fundo/20 rounded"></div>
+                      <div className="h-3 w-16 rounded"></div>
                     </div>
                   </Stack>
                 </Card>

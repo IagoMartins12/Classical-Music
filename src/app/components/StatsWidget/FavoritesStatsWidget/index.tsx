@@ -88,7 +88,7 @@ export default function FavoritesStatsWidget({
         className={`classical-card p-6 ${className} mt-4`}
       >
         <div className="text-center">
-          <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <PiHeart className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl font-bold text-theme-primary mb-2">
@@ -140,7 +140,7 @@ export default function FavoritesStatsWidget({
         {nextAchievements.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6 mt-4">
             <Inline gap={3} className="mb-4">
-              <PiTarget className="w-5 h-5 text-aviso" />
+              <PiTarget className="w-5 h-5" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_next_achievements')}
               </h4>
@@ -200,7 +200,7 @@ export default function FavoritesStatsWidget({
         {smartCTAs.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <Inline gap={3} className="mb-4">
-              <PiLightning className="w-5 h-5 text-brand-primary" />
+              <PiLightning className="w-5 h-5 text-ouro-texto" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_recommendations')}
               </h4>
@@ -213,7 +213,7 @@ export default function FavoritesStatsWidget({
                   className={`p-4 rounded-xl transition-all text-theme-primary hover:scale-105 ${
                     cta.priority === 'high'
                       ? 'bg-theme-tertiary'
-                      : 'bg-theme-elevated border-theme-primary hover:border-ouro'
+                      : 'bg-theme-elevated border-theme-primary'
                   }`}
                 >
                   <div className="font-medium mb-1">{cta.title}</div>
@@ -223,7 +223,7 @@ export default function FavoritesStatsWidget({
                   <div
                     className={`text-sm font-medium flex items-center space-x-1 ${
                       cta.priority === 'high'
-                        ? 'text-brand-primary'
+                        ? 'text-ouro-texto'
                         : 'text-theme-primary'
                     }`}
                   >
@@ -259,7 +259,7 @@ export default function FavoritesStatsWidget({
         {stats.topComposerWorks > 1 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <Inline gap={3} className="mb-4">
-              <PiTrendUp className="w-5 h-5 text-ok" />
+              <PiTrendUp className="w-5 h-5" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_favorite_composer')}
               </h4>

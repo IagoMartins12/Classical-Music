@@ -33,10 +33,10 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
     switch (status) {
       case 'PENDING':
         return {
-          color: 'bg-atencao/10 text-atencao border-atencao/20',
-          bgColor: 'bg-atencao/10',
+          color: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+          bgColor: 'bg-amber-50',
           icon: PiClock,
-          iconColor: 'text-atencao',
+          iconColor: 'text-amber-500',
           text: 'Convite Pendente',
           shortText: 'Pendente',
           description: 'Aguardando resposta do aluno',
@@ -44,10 +44,10 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
         };
       case 'ACCEPTED':
         return {
-          color: 'bg-ok/10 text-ok border-ok/20',
-          bgColor: 'bg-ok/10',
+          color: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+          bgColor: 'bg-emerald-50',
           icon: PiCheckCircle,
-          iconColor: 'text-ok',
+          iconColor: 'text-emerald-500',
           text: 'Convite Aceito',
           shortText: 'Aceito',
           description: acceptedAt
@@ -57,10 +57,10 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
         };
       case 'DECLINED':
         return {
-          color: 'bg-erro/10 text-erro border-erro/20',
-          bgColor: 'bg-erro/10',
+          color: 'bg-red-500/10 text-red-600 border-red-500/20',
+          bgColor: 'bg-red-50',
           icon: PiXCircle,
-          iconColor: 'text-erro',
+          iconColor: 'text-red-500',
           text: 'Convite Recusado',
           shortText: 'Recusado',
           description: declinedAt
@@ -70,10 +70,10 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
         };
       case 'EXPIRED':
         return {
-          color: 'bg-linha-forte/10 text-texto-suave border-linha-forte/20',
-          bgColor: 'bg-sup-2',
+          color: 'bg-gray-500/10 text-gray-600 border-gray-500/20',
+          bgColor: 'bg-gray-50',
           icon: PiWarningCircle,
-          iconColor: 'text-texto-fraco',
+          iconColor: 'text-gray-500',
           text: 'Convite Expirado',
           shortText: 'Expirado',
           description: 'O convite expirou sem resposta',
@@ -81,10 +81,10 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
         };
       default:
         return {
-          color: 'bg-linha-forte/10 text-texto-suave border-linha-forte/20',
-          bgColor: 'bg-sup-2',
+          color: 'bg-gray-500/10 text-gray-600 border-gray-500/20',
+          bgColor: 'bg-gray-50',
           icon: PiWarningCircle,
-          iconColor: 'text-texto-fraco',
+          iconColor: 'text-gray-500',
           text: 'Status Desconhecido',
           shortText: 'Desconhecido',
           description: 'Status não identificado',
@@ -110,7 +110,7 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
           <button
             onClick={onResendInvite}
             disabled={isResending}
-            className="p-1.5 hover:bg-sup-1 rounded-lg transition-colors text-theme-tertiary hover:text-ouro-texto"
+            className="p-1.5 rounded-lg transition-colors text-theme-tertiary"
             title="Reenviar convite"
           >
             {isResending ? (
@@ -177,8 +177,8 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
 
       {/* Informações adicionais baseadas no status */}
       {status === 'PENDING' && (
-        <div className="mt-3 pt-3 border-t border-atencao/50">
-          <div className="text-xs text-atencao/80">
+        <div className="mt-3 pt-3 border-t border-amber-200/50">
+          <div className="text-xs text-amber-700/80">
             💡 <strong>Dica:</strong> O aluno receberá um email com instruções
             para aceitar ou recusar o convite.
           </div>
@@ -186,8 +186,8 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
       )}
 
       {status === 'DECLINED' && (
-        <div className="mt-3 pt-3 border-t border-erro/50">
-          <div className="text-xs text-erro/80">
+        <div className="mt-3 pt-3 border-t border-red-200/50">
+          <div className="text-xs text-red-700/80">
             💡 <strong>O que fazer:</strong> Você pode enviar um novo convite ou
             entrar em contato diretamente com o aluno.
           </div>
@@ -195,8 +195,8 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
       )}
 
       {status === 'EXPIRED' && (
-        <div className="mt-3 pt-3 border-t border-linha/50">
-          <div className="text-xs text-texto-suave/80">
+        <div className="mt-3 pt-3 border-t border-gray-200/50">
+          <div className="text-xs text-gray-700/80">
             ⏰ <strong>Convite expirado:</strong> Envie um novo convite para que
             o aluno possa aceitar.
           </div>

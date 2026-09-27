@@ -220,20 +220,20 @@ const TeacherHistoryClient = ({
       case 'STUDENT_ADDED':
       case 'LESSON_CREATED':
       case 'ASSIGNMENT_CREATED':
-        return 'bg-ok';
+        return 'from-green-400 to-green-600';
       case 'LESSON_UPDATED':
       case 'ASSIGNMENT_UPDATED':
       case 'LESSON_STATUS_CHANGED':
-        return 'bg-atencao';
+        return 'from-orange-400 to-orange-600';
       case 'ASSIGNMENT_FEEDBACK_GIVEN':
-        return 'bg-atencao';
+        return 'from-yellow-400 to-yellow-600';
       case 'LESSON_NOTES_ADDED':
-        return 'bg-aviso';
+        return 'from-indigo-400 to-indigo-600';
       case 'TEACHER_PROFILE_UPDATED':
       case 'USER_PROFILE_UPDATED':
-        return 'fill-ouro';
+        return 'from-purple-400 to-purple-600';
       default:
-        return 'bg-texto-fraco';
+        return 'from-gray-400 to-gray-600';
     }
   };
 
@@ -242,20 +242,20 @@ const TeacherHistoryClient = ({
       case 'STUDENT_ADDED':
       case 'LESSON_CREATED':
       case 'ASSIGNMENT_CREATED':
-        return 'border border-ok/40 bg-ok/10';
+        return 'border-l-4 border-l-green-500';
       case 'LESSON_UPDATED':
       case 'ASSIGNMENT_UPDATED':
       case 'LESSON_STATUS_CHANGED':
-        return 'border border-atencao/40 bg-atencao/10';
+        return 'border-l-4 border-l-orange-500';
       case 'ASSIGNMENT_FEEDBACK_GIVEN':
-        return 'border border-atencao/40 bg-atencao/10';
+        return 'border-l-4 border-l-yellow-500';
       case 'LESSON_NOTES_ADDED':
-        return 'border border-aviso/40 bg-aviso/10';
+        return 'border-l-4 border-l-indigo-500';
       case 'TEACHER_PROFILE_UPDATED':
       case 'USER_PROFILE_UPDATED':
-        return 'border border-ouro/40 bg-ouro/10';
+        return 'border-l-4 border-l-purple-500';
       default:
-        return 'border border-linha';
+        return 'border-l-4 border-l-gray-300';
     }
   };
 
@@ -309,22 +309,22 @@ const TeacherHistoryClient = ({
     return (
       <Stack
         gap={2}
-        className="mt-3 p-3 bg-aviso/10 border border-aviso/30 rounded-lg"
+        className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg"
       >
-        <h5 className="text-sm font-medium text-aviso flex items-center">
+        <h5 className="text-sm font-medium text-blue-700 flex items-center">
           <PiNotePencil className="w-4 h-4 mr-1" />
           {t('changes_label')}
         </h5>
         <Stack gap={2}>
           {changesList.slice(0, 3).map(([key, change]: [string, any]) => (
             <Stack gap={1} key={key} className="text-xs">
-              <div className="font-medium text-aviso">{key}:</div>
-              <div className="pl-2 border-l-2 border-aviso/30">
-                <div className="text-erro flex items-center">
+              <div className="font-medium text-blue-700">{key}:</div>
+              <div className="pl-2 border-l-2 border-blue-300">
+                <div className="text-red-600 flex items-center">
                   <span className="w-8 text-xs">{t('from_label')}</span>
                   <span>{String(change.from)}</span>
                 </div>
-                <div className="text-ok flex items-center">
+                <div className="text-green-600 flex items-center">
                   <span className="w-8 text-xs">{t('to_label')}</span>
                   <span>{String(change.to)}</span>
                 </div>
@@ -332,7 +332,7 @@ const TeacherHistoryClient = ({
             </Stack>
           ))}
           {changesList.length > 3 && (
-            <div className="text-xs text-aviso">
+            <div className="text-xs text-blue-600">
               +{changesList.length - 3} {t('additional_changes')}
             </div>
           )}
@@ -358,7 +358,7 @@ const TeacherHistoryClient = ({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiPulse className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -384,7 +384,7 @@ const TeacherHistoryClient = ({
                 hover="scale"
                 className="classical-card p-6 text-center"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiPulse className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -399,7 +399,7 @@ const TeacherHistoryClient = ({
                 hover="scale"
                 className="classical-card p-6 text-center"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <FiClock className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -414,7 +414,7 @@ const TeacherHistoryClient = ({
                 hover="scale"
                 className="classical-card p-6 text-center"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiPlus className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -430,7 +430,7 @@ const TeacherHistoryClient = ({
                 hover="scale"
                 className="classical-card p-6 text-center"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiNotePencil className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -630,7 +630,7 @@ const TeacherHistoryClient = ({
                               {activity.changes && (
                                 <button
                                   onClick={() => toggleExpanded(activity.id)}
-                                  className="w-6 h-6 rounded-full bg-theme-secondary hover:bg-sup-2 text-theme-tertiary hover:text-texto transition-colors flex items-center justify-center"
+                                  className="w-6 h-6 rounded-full bg-theme-secondary text-theme-tertiary transition-colors flex items-center justify-center"
                                 >
                                   {expandedItems.has(activity.id) ? (
                                     <PiCaretUp className="w-3 h-3" />
@@ -643,7 +643,7 @@ const TeacherHistoryClient = ({
                               {getEntityLink(activity) && (
                                 <Link
                                   href={getEntityLink(activity)!}
-                                  className="w-6 h-6 rounded-full bg-theme-secondary hover:bg-ouro/10 transition-colors flex items-center justify-center"
+                                  className="w-6 h-6 rounded-full bg-theme-secondary transition-colors flex items-center justify-center"
                                 >
                                   <PiCaretRight className="w-3 h-3 text-theme-tertiary" />
                                 </Link>
@@ -710,8 +710,8 @@ const TeacherHistoryClient = ({
                     }}
                     className={`px-4 py-2 rounded-lg transition-colors ${
                       page === i + 1
-                        ? 'bg-ouro text-theme-primary'
-                        : 'bg-theme-secondary text-theme-tertiary hover:bg-sup-2'
+                        ? 'text-theme-primary'
+                        : 'bg-theme-secondary text-theme-tertiary'
                     }`}
                   >
                     {i + 1}

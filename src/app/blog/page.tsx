@@ -108,7 +108,7 @@ export default async function BlogHomePage() {
             <Link
               key={category.id}
               href={`/blog/category/${category.slug}`}
-              className="classical-card overflow-hidden group hover:shadow-[var(--sombra-2)] transition-all"
+              className="classical-card overflow-hidden group transition-all"
             >
               {/* Image/Background */}
               <div className="relative h-40 overflow-hidden">
@@ -138,7 +138,7 @@ export default async function BlogHomePage() {
 
               {/* Content */}
               <div className="p-5">
-                <h3 className="text-lg font-bold text-theme-primary mb-2 group-hover:text-ouro-texto transition-colors line-clamp-1">
+                <h3 className="text-lg font-bold text-theme-primary mb-2 transition-colors line-clamp-1">
                   {category.name}
                 </h3>
 
@@ -176,7 +176,7 @@ export default async function BlogHomePage() {
           <div className="lg:col-span-2">
             <Card densidade="larga">
               <h3 className="text-2xl font-bold text-theme-primary mb-6 flex items-center">
-                <PiTrendUp className="w-6 h-6 mr-3 text-brand-primary" />
+                <PiTrendUp className="w-6 h-6 mr-3 text-ouro-texto" />
                 Destaques da Semana
               </h3>
               <p className="text-theme-secondary mb-6">
@@ -197,7 +197,7 @@ export default async function BlogHomePage() {
           <div className="lg:col-span-1">
             <Card className="sticky top-24">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center">
-                <PiTrendUp className="w-5 h-5 mr-2 text-brand-primary" />
+                <PiTrendUp className="w-5 h-5 mr-2 text-ouro-texto" />
                 Mais Lidos
               </h3>
               <Stack>
@@ -207,11 +207,11 @@ export default async function BlogHomePage() {
                     href={`/blog/${article.slug}`}
                     className="flex items-start space-x-3 group"
                   >
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-theme-classical flex items-center justify-center text-brand-primary font-bold">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-theme-classical flex items-center justify-center text-ouro-texto font-bold">
                       {index + 1}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-theme-primary group-hover:text-ouro-texto transition-colors line-clamp-2 mb-1">
+                      <h4 className="font-medium text-theme-primary transition-colors line-clamp-2 mb-1">
                         {article.title}
                       </h4>
                       <Inline gap={2} className="text-xs text-theme-tertiary">

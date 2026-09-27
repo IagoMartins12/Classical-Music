@@ -787,7 +787,7 @@ export default function CreateAnnotationModal({
       {/* Header */}
       <div className="px-0 md:px-6 py-4 border-b border-theme-secondary">
         <Inline gap={3}>
-          <div className="w-10 h-10 rounded-xl bg-ok flex items-center justify-center shadow-theme-glow">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-theme-glow">
             <PiChatCenteredText className="w-5 h-5 text-theme-primary" />
           </div>
           <div>
@@ -806,7 +806,7 @@ export default function CreateAnnotationModal({
       </div>
 
       {/* Work Info/Selection */}
-      <div className="px-0 md:px-6 py-4 bg-sup-elevada/50 border-b border-theme-secondary">
+      <div className="px-0 md:px-6 py-4 border-b border-theme-secondary">
         {selectedWork ? (
           <div className="flex items-center justify-between">
             <Inline gap={3}>
@@ -845,12 +845,12 @@ export default function CreateAnnotationModal({
             </div>
 
             {workSearchResults.length > 0 && (
-              <div className="mt-2 max-h-40 overflow-y-auto bg-theme-elevated border border-linha/30 rounded-xl">
+              <div className="mt-2 max-h-40 overflow-y-auto bg-theme-elevated border rounded-xl">
                 {workSearchResults.map((work) => (
                   <button
                     key={work.id}
                     onClick={() => handleWorkSelect(work)}
-                    className="w-full p-3 text-left hover:bg-ouro/10 border-b border-linha/20 last:border-b-0 transition-colors"
+                    className="w-full p-3 text-left border-b last:border-b-0 transition-colors"
                   >
                     <Text
                       papel="rotulo"
@@ -869,9 +869,7 @@ export default function CreateAnnotationModal({
               </div>
             )}
 
-            {errors.workId && (
-              <p className="text-erro text-sm mt-1">{errors.workId}</p>
-            )}
+            {errors.workId && <p className="text-sm mt-1">{errors.workId}</p>}
           </div>
         )}
       </div>
@@ -889,13 +887,13 @@ export default function CreateAnnotationModal({
               setFormData((prev) => ({ ...prev, title: e.target.value }))
             }
             className={`w-full input-classical-2 ${
-              errors.title ? '!border-erro' : ''
+              errors.title ? '!border-red-400' : ''
             }`}
             placeholder={t('create_modal_annotation_title_placeholder')}
             maxLength={100}
           />
           {errors.title && (
-            <p className="text-erro text-sm mt-1">{errors.title}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
           )}
           <Text papel="legenda" tom="fraco" as="p" className="mt-1">
             {formData.title.length}/100 {t('create_modal_characters')}
@@ -917,11 +915,11 @@ export default function CreateAnnotationModal({
                 }))
               }
               className={`w-full input-classical-2 ${
-                errors.category ? 'border-erro' : ''
+                errors.category ? '' : ''
               }`}
             />
             {errors.category && (
-              <p className="text-erro text-sm mt-1">{errors.category}</p>
+              <p className="text-sm mt-1">{errors.category}</p>
             )}
           </div>
 
@@ -974,12 +972,12 @@ export default function CreateAnnotationModal({
                   }))
                 }
                 className={`w-full input-classical-2 ${
-                  errors.measureStart ? 'border-erro' : ''
+                  errors.measureStart ? '' : ''
                 }`}
                 placeholder={t('create_modal_measure_placeholder')}
               />
               {errors.measureStart && (
-                <p className="text-erro text-sm mt-1">{errors.measureStart}</p>
+                <p className="text-sm mt-1">{errors.measureStart}</p>
               )}
             </div>
             <div>
@@ -996,12 +994,12 @@ export default function CreateAnnotationModal({
                   }))
                 }
                 className={`w-full input-classical-2 ${
-                  errors.measureEnd ? 'border-erro' : ''
+                  errors.measureEnd ? '' : ''
                 }`}
                 placeholder={t('create_modal_measure_end_placeholder')}
               />
               {errors.measureEnd && (
-                <p className="text-erro text-sm mt-1">{errors.measureEnd}</p>
+                <p className="text-sm mt-1">{errors.measureEnd}</p>
               )}
             </div>
           </div>
@@ -1018,12 +1016,12 @@ export default function CreateAnnotationModal({
                 setFormData((prev) => ({ ...prev, movement: e.target.value }))
               }
               className={`w-full input-classical-2 ${
-                errors.movement ? 'border-erro' : ''
+                errors.movement ? '' : ''
               }`}
               placeholder={t('create_modal_movement_placeholder')}
             />
             {errors.movement && (
-              <p className="text-erro text-sm mt-1">{errors.movement}</p>
+              <p className="text-sm mt-1">{errors.movement}</p>
             )}
           </div>
         )}
@@ -1038,14 +1036,10 @@ export default function CreateAnnotationModal({
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, section: e.target.value }))
               }
-              className={`w-full input-classical-2 ${
-                errors.section ? 'border-erro' : ''
-              }`}
+              className={`w-full input-classical-2 ${errors.section ? '' : ''}`}
               placeholder={t('create_modal_section_placeholder')}
             />
-            {errors.section && (
-              <p className="text-erro text-sm mt-1">{errors.section}</p>
-            )}
+            {errors.section && <p className="text-sm mt-1">{errors.section}</p>}
           </div>
         )}
 
@@ -1090,14 +1084,14 @@ export default function CreateAnnotationModal({
               setFormData((prev) => ({ ...prev, content: e.target.value }))
             }
             className={`w-full input-classical-2 resize-none ${
-              errors.content ? '!border-erro' : ''
+              errors.content ? '!border-red-400' : ''
             }`}
             rows={6}
             placeholder={t('create_modal_content_placeholder')}
             maxLength={2000}
           />
           {errors.content && (
-            <p className="text-erro text-sm mt-1">{errors.content}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.content}</p>
           )}
           <Text papel="legenda" tom="fraco" as="p" className="mt-1">
             {formData.content.length}/2000 {t('create_modal_characters')}
@@ -1117,12 +1111,12 @@ export default function CreateAnnotationModal({
                 as="span"
                 gap={2}
                 key={index}
-                className="px-3 py-1 bg-ouro/10 border border-ouro/30 text-brand-primary rounded-full text-sm"
+                className="px-3 py-1 border text-ouro-texto rounded-full text-sm"
               >
                 <span>#{tag}</span>
                 <button
                   onClick={() => removeTag(tag)}
-                  className="text-brand-primary hover:text-erro transition-colors"
+                  className="text-ouro-texto transition-colors"
                 >
                   <PiX className="w-3 h-3" />
                   <NomeAcao acao="fechar" />
@@ -1176,7 +1170,7 @@ export default function CreateAnnotationModal({
                     gap={1}
                     key={tag}
                     onClick={() => addTag(tag)}
-                    className="px-2 py-1 bg-theme-elevated hover:bg-ouro/10 border border-theme-secondary hover:border-ouro/30 text-theme-secondary hover:text-ouro-texto rounded-md text-xs transition-all duration-200"
+                    className="px-2 py-1 bg-theme-elevated border border-theme-secondary text-theme-secondary rounded-md text-xs transition-all duration-200"
                   >
                     <PiPlus className="w-3 h-3" />
                     <span>#{tag}</span>
@@ -1186,9 +1180,7 @@ export default function CreateAnnotationModal({
             </Stack>
           )}
 
-          {errors.tags && (
-            <p className="text-erro text-sm mt-1">{errors.tags}</p>
-          )}
+          {errors.tags && <p className="text-sm mt-1">{errors.tags}</p>}
           <Text papel="legenda" tom="fraco" as="p">
             {t('create_modal_max_tags')}
           </Text>
@@ -1202,8 +1194,8 @@ export default function CreateAnnotationModal({
             }
             className={` rounded-lg gap-4 border-2 flex items-center justify-center transition-all ${
               formData.isPublic
-                ? 'bg-ok border-none text-theme-primary'
-                : 'bg-erro border-none text-theme-primary'
+                ? 'border-none text-theme-primary'
+                : 'border-none text-theme-primary'
             }`}
           >
             {formData.isPublic ? (
@@ -1220,9 +1212,9 @@ export default function CreateAnnotationModal({
                     : t('create_modal_private_annotation')}
                 </span>
                 {formData.isPublic ? (
-                  <PiEye className="w-4 h-4 text-ok" />
+                  <PiEye className="w-4 h-4" />
                 ) : (
-                  <PiEyeSlash className="w-4 h-4 text-erro" />
+                  <PiEyeSlash className="w-4 h-4" />
                 )}
               </Inline>
               <Text papel="rotulo" tom="suave" as="p" className="text-start">

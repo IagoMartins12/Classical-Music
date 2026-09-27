@@ -171,28 +171,28 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
   // Cores por raridade
   const rarityConfig = {
     COMMON: {
-      gradient: 'bg-texto-fraco',
+      gradient: 'from-slate-400 to-slate-600',
       icon: PiMedal,
       label: 'Comum',
-      border: 'border-linha-forte/30',
+      border: 'border-slate-400/30',
     },
     RARE: {
-      gradient: 'bg-aviso',
+      gradient: 'from-blue-400 to-blue-600',
       icon: PiStar,
       label: 'Raro',
-      border: 'border-aviso/30',
+      border: 'border-blue-400/30',
     },
     EPIC: {
-      gradient: 'fill-ouro',
+      gradient: 'from-purple-400 to-purple-600',
       icon: PiLightning,
       label: 'Épico',
-      border: 'border-ouro/30',
+      border: 'border-purple-400/30',
     },
     LEGENDARY: {
-      gradient: 'bg-atencao',
+      gradient: 'from-amber-400 to-amber-600',
       icon: PiShield,
       label: 'Lendário',
-      border: 'border-atencao/30',
+      border: 'border-amber-400/30',
     },
   };
 
@@ -233,7 +233,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
                   {[...Array(3)].map((_, i) => (
                     <PiStar
                       key={i}
-                      className="w-3 h-3 text-atencao animate-pulse"
+                      className="w-3 h-3 text-amber-400 animate-pulse"
                     />
                   ))}
                 </div>
@@ -246,7 +246,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
 
           <button
             onClick={handleClose}
-            className="w-7 h-7 rounded-full bg-theme-secondary hover:bg-fundo flex items-center justify-center transition-colors text-theme-tertiary hover:text-texto"
+            className="w-7 h-7 rounded-full bg-theme-secondary flex items-center justify-center transition-colors text-theme-tertiary"
           >
             <PiX className="w-4 h-4" />
             <NomeAcao acao="fechar" />
@@ -349,10 +349,10 @@ export const useAchievementDemo = () => {
         rarity: 'COMMON' as const,
         unlocked: true,
         color: {
-          from: 'bg-texto-fraco',
-          to: 'bg-texto-fraco',
-          border: 'border-linha-forte/30',
-          text: 'text-texto-suave',
+          from: 'from-slate-400',
+          to: 'to-slate-600',
+          border: 'border-slate-400/30',
+          text: 'text-slate-600',
         },
       },
       RARE: {
@@ -365,10 +365,10 @@ export const useAchievementDemo = () => {
         rarity: 'RARE' as const,
         unlocked: true,
         color: {
-          from: 'bg-aviso',
-          to: 'bg-aviso',
-          border: 'border-aviso/30',
-          text: 'text-aviso',
+          from: 'from-blue-400',
+          to: 'to-blue-600',
+          border: 'border-blue-400/30',
+          text: 'text-blue-600',
         },
       },
       EPIC: {
@@ -381,10 +381,10 @@ export const useAchievementDemo = () => {
         rarity: 'EPIC' as const,
         unlocked: true,
         color: {
-          from: 'fill-ouro',
-          to: 'fill-ouro',
-          border: 'border-ouro/30',
-          text: 'text-ouro-texto',
+          from: 'from-purple-400',
+          to: 'to-purple-600',
+          border: 'border-purple-400/30',
+          text: 'text-purple-600',
         },
       },
       LEGENDARY: {
@@ -397,10 +397,10 @@ export const useAchievementDemo = () => {
         rarity: 'LEGENDARY' as const,
         unlocked: true,
         color: {
-          from: 'bg-atencao',
-          to: 'bg-atencao',
-          border: 'border-atencao/30',
-          text: 'text-atencao',
+          from: 'from-amber-400',
+          to: 'to-amber-600',
+          border: 'border-amber-400/30',
+          text: 'text-amber-600',
         },
       },
     };
@@ -419,28 +419,28 @@ export const useBackendAchievements = () => {
     // Converter dados do backend para formato do toast
     const rarityColors = {
       COMMON: {
-        from: 'bg-texto-fraco',
-        to: 'bg-texto-fraco',
-        border: 'border-linha-forte/30',
-        text: 'text-texto-suave',
+        from: 'from-slate-400',
+        to: 'to-slate-600',
+        border: 'border-slate-400/30',
+        text: 'text-slate-600',
       },
       RARE: {
-        from: 'bg-aviso',
-        to: 'bg-aviso',
-        border: 'border-aviso/30',
-        text: 'text-aviso',
+        from: 'from-blue-400',
+        to: 'to-blue-600',
+        border: 'border-blue-400/30',
+        text: 'text-blue-600',
       },
       EPIC: {
-        from: 'fill-ouro',
-        to: 'fill-ouro',
-        border: 'border-ouro/30',
-        text: 'text-ouro-texto',
+        from: 'from-purple-400',
+        to: 'to-purple-600',
+        border: 'border-purple-400/30',
+        text: 'text-purple-600',
       },
       LEGENDARY: {
-        from: 'bg-atencao',
-        to: 'bg-atencao',
-        border: 'border-atencao/30',
-        text: 'text-atencao',
+        from: 'from-amber-400',
+        to: 'to-amber-600',
+        border: 'border-amber-400/30',
+        text: 'text-amber-600',
       },
     };
 

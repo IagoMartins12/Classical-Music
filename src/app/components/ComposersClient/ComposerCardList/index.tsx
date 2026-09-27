@@ -53,7 +53,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
           )}
 
           {composer.portraitUrl && !imageError ? (
-            <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-ouro/20 group-hover:border-ouro/50 transition-all duration-300">
+            <div className="relative w-full h-full rounded-full overflow-hidden border-2 transition-all duration-300">
               <Image
                 src={composer.portraitUrl}
                 alt={composer.name}
@@ -68,7 +68,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
               />
             </div>
           ) : (
-            <div className="w-full h-full fill-ouro rounded-full flex items-center justify-center border-2 border-ouro/20 group-hover:border-ouro/50 transition-all duration-300">
+            <div className="w-full h-full rounded-full flex items-center justify-center border-2 transition-all duration-300">
               <PiUser className="w-5 h-5 text-theme-inverse" />
             </div>
           )}
@@ -76,10 +76,10 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
 
         {/* Main info */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-base font-bold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-300 truncate">
+          <h3 className="text-base font-bold text-theme-primary classical-title transition-colors duration-300 truncate">
             <Link
               href={`/composer/${composer.id}`}
-              className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary rounded"
+              className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:ring-2 rounded"
             >
               {composer.name}
             </Link>
@@ -129,7 +129,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
             href={composer.wikipediaLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-2 py-1 bg-aviso/10 border border-aviso/20 text-aviso rounded-md text-xs font-medium hover:bg-aviso/20 hover:scale-105 transition-all duration-300 group/link"
+            className="inline-flex items-center px-2 py-1 border rounded-md text-xs font-medium hover:scale-105 transition-all duration-300 group/link"
             onClick={(e) => e.stopPropagation()}
           >
             Wikipedia
@@ -142,7 +142,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
             href={composer.permLinkImslp}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-2 py-1 bg-ok/10 border border-ok/20 text-ok rounded-md text-xs font-medium hover:bg-ok/20 hover:scale-105 transition-all duration-300 group/link"
+            className="inline-flex items-center px-2 py-1 border rounded-md text-xs font-medium hover:scale-105 transition-all duration-300 group/link"
             onClick={(e) => e.stopPropagation()}
           >
             IMSLP
@@ -174,20 +174,20 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
           as="div"
           className="hidden md:flex items-center space-x-2"
         >
-          <div className="w-1.5 h-1.5 bg-ouro rounded-full animate-pulse"></div>
+          <div className="w-1.5 h-1.5 rounded-full animate-pulse"></div>
           <span className="font-medium">
             {t('cardlist_jsx_span_children_0__ver_obras')}
           </span>
         </Text>
 
         {/* Arrow */}
-        <div className="w-8 h-8 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-ouro group-hover:bg-ouro/10 transition-all duration-300">
-          <PiCaretRight className="w-4 h-4 text-theme-primary group-hover:text-ouro-texto transition-all duration-300 transform group-hover:translate-x-0.5" />
+        <div className="w-8 h-8 border border-theme-primary rounded-full flex items-center justify-center transition-all duration-300">
+          <PiCaretRight className="w-4 h-4 text-theme-primary transition-all duration-300 transform group-hover:translate-x-0.5" />
         </div>
       </Inline>
 
       {/* Hover background effect */}
-      <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-lg pointer-events-none"></div>
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-lg pointer-events-none"></div>
     </div>
   );
 };

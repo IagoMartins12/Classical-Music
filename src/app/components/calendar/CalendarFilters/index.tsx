@@ -146,22 +146,22 @@ export default function CalendarFilters({
       {hasActiveFilters && (
         <div className="mt-4 flex flex-wrap gap-2">
           {selectedState && (
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-aviso/10 text-aviso">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
               Estado: {selectedState}
             </span>
           )}
           {selectedCity && (
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-ok/10 text-ok">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
               Cidade: {selectedCity}
             </span>
           )}
           {selectedVenue && (
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-ouro/10 text-ouro-texto">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-800">
               Local: {venues.find((v) => v.id === selectedVenue)?.name || 'N/A'}
             </span>
           )}
           {selectedType && (
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-atencao/10 text-atencao">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-orange-100 text-orange-800">
               Tipo:{' '}
               {EVENT_TYPES.find((t) => t.value === selectedType)?.label ||
                 'N/A'}

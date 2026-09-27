@@ -56,12 +56,12 @@ interface Props {
 }
 
 const epochColors = {
-  Medieval: 'fill-ouro',
-  Renascentista: 'bg-ok',
-  Barroco: 'fill-ouro',
-  Clássico: 'bg-aviso',
-  Romântico: 'bg-erro',
-  Moderno: 'bg-sup-2',
+  Medieval: '',
+  Renascentista: '',
+  Barroco: '',
+  Clássico: '',
+  Romântico: '',
+  Moderno: '',
 };
 
 const epochIcons = {
@@ -107,10 +107,10 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
             className={`inline-flex items-center px-12 py-4 rounded-2xl bg-gradient-to-r ${gradientClass} text-theme-inverse shadow-theme-glow border border-theme-primary backdrop-blur-md relative overflow-hidden group hover:scale-105 transition-all duration-500`}
           >
             {/* Background pattern */}
-            <div className="absolute inset-0 bg-texto transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
             <div className="relative z-10 flex items-center">
-              <div className="w-12 h-12 bg-texto/20 backdrop-blur-md rounded-xl flex items-center justify-center mr-4 group-hover:rotate-12 transition-transform duration-500">
+              <div className="w-12 h-12 backdrop-blur-md rounded-xl flex items-center justify-center mr-4 group-hover:rotate-12 transition-transform duration-500">
                 <IconComponent className="text-2xl text-theme-primary" />
               </div>
               <div>
@@ -131,23 +131,23 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
         {epoch.historicalData?.description && (
           <Card
             densidade="larga"
-            className="group hover:shadow-[var(--sombra-2)] transition-all duration-500 relative overflow-hidden"
+            className="group transition-all duration-500 relative overflow-hidden"
           >
             {/* Decorative element */}
-            <div className="absolute top-4 right-4 text-3xl text-ouro-texto/5">
+            <div className="absolute top-4 right-4 text-3xl">
               <PiMusicNotes />
             </div>
 
             <Stack className="relative z-10">
               <Inline gap={3}>
-                <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                   <PiBookOpen className="w-4 h-4 text-theme-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-theme-primary classical-title">
                   {t('epoch_jsx_h3_children_0__sobre_periodo')}
                 </h3>
               </Inline>
-              <p className="text-theme-secondary text-base sm:text-lg leading-relaxed classical-body">
+              <p className="text-theme-secondary sm:text-lg leading-relaxed classical-body">
                 {epoch.historicalData.description}
               </p>
             </Stack>
@@ -159,10 +159,10 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
           <div className="classical-card overflow-hidden group">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="w-full p-2 sm:p-6 text-left flex items-center justify-between hover:bg-ouro/10 transition-all duration-300 group/button"
+              className="w-full p-2 sm:p-6 text-left flex items-center justify-between transition-all duration-300 group/button"
             >
               <Inline gap={3}>
-                <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
                   <PiStar className="w-5 h-5 text-theme-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-theme-primary classical-title">
@@ -172,10 +172,8 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                 </h3>
               </Inline>
               <div
-                className={`w-8 h-8 bg-ouro/10 rounded-xl flex items-center justify-center transition-all duration-300 ${
-                  isExpanded
-                    ? 'rotate-180 bg-ouro/20'
-                    : 'group-hover/button:bg-ouro/10'
+                className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                  isExpanded ? 'rotate-180' : ''
                 }`}
               >
                 {isExpanded ? (
@@ -196,7 +194,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   {/* Características */}
                   <div className="space-y-4">
                     <Inline gap={3} className="mb-4">
-                      <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                         <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
@@ -207,11 +205,11 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                       {epoch.historicalData.characteristics.map((char, i) => (
                         <div
                           key={i}
-                          className="flex items-start space-x-3 p-3 bg-aviso/5 border border-aviso/20 rounded-xl hover:border-aviso/40 transition-all duration-300 group/item"
+                          className="flex items-start space-x-3 p-3 border rounded-xl transition-all duration-300 group/item"
                           style={{ animationDelay: `${i * 0.1}s` }}
                         >
-                          <div className="w-2 h-2 bg-aviso rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
-                          <span className="text-theme-secondary leading-relaxed group-hover/item:text-texto transition-colors duration-300">
+                          <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
+                          <span className="text-theme-secondary leading-relaxed transition-colors duration-300">
                             {char}
                           </span>
                         </div>
@@ -222,7 +220,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   {/* Desenvolvimentos */}
                   <div className="space-y-4">
                     <Inline gap={3} className="mb-4">
-                      <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                         <PiClock className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
@@ -233,11 +231,11 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                       {epoch.historicalData.keyDevelopments.map((dev, i) => (
                         <div
                           key={i}
-                          className="flex items-start space-x-3 p-3 bg-ok/5 border border-ok/20 rounded-xl hover:border-ok/40 transition-all duration-300 group/item"
+                          className="flex items-start space-x-3 p-3 border rounded-xl transition-all duration-300 group/item"
                           style={{ animationDelay: `${i * 0.1}s` }}
                         >
-                          <div className="w-2 h-2 bg-ok rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
-                          <span className="text-theme-secondary leading-relaxed group-hover/item:text-texto transition-colors duration-300">
+                          <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
+                          <span className="text-theme-secondary leading-relaxed transition-colors duration-300">
                             {dev}
                           </span>
                         </div>
@@ -248,7 +246,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   {/* Formas Musicais */}
                   <div className="space-y-4">
                     <Inline gap={3} className="mb-4">
-                      <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                         <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
@@ -259,7 +257,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                       {epoch.historicalData.musicalForms.map((form, i) => (
                         <span
                           key={i}
-                          className="px-4 py-2 bg-ouro/10 border border-ouro/30 text-ouro-texto rounded-full text-sm font-medium hover:scale-105 hover:shadow-[var(--sombra-2)] transition-all duration-300 cursor-default"
+                          className="px-4 py-2 border rounded-full text-sm font-medium hover:scale-105 transition-all duration-300 cursor-default"
                           style={{ animationDelay: `${i * 0.05}s` }}
                         >
                           {form}
@@ -271,7 +269,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   {/* Instrumentos */}
                   <div className="space-y-4">
                     <Inline gap={3} className="mb-4">
-                      <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                         <GiGrandPiano className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
@@ -284,7 +282,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                           papel="rotulo"
                           tom="ouro"
                           key={i}
-                          className="px-4 py-2 bg-ouro/10 border border-ouro/30 rounded-full font-medium hover:scale-105 hover:shadow-[var(--sombra-2)] transition-all duration-300 cursor-default"
+                          className="px-4 py-2 border rounded-full font-medium hover:scale-105 transition-all duration-300 cursor-default"
                           style={{ animationDelay: `${i * 0.05}s` }}
                         >
                           {instrument}
@@ -303,7 +301,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
       <div className="flex-1 w-full lg:max-w-md">
         <Card className="sticky top-6">
           <Inline gap={3} className="mb-6">
-            <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center">
               <PiUsers className="w-5 h-5 text-theme-primary" />
             </div>
             <div>
@@ -337,7 +335,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                 as="button"
                 gap={2}
                 onClick={() => setShowAllComposers(!showAllComposers)}
-                className="w-full p-4 border-2 border-dashed border-theme-primary text-theme-primary hover:border-ouro hover:text-ouro-texto hover:bg-ouro/5 transition-all duration-300 rounded-xl group justify-center"
+                className="w-full p-4 border-2 border-dashed border-theme-primary text-theme-primary transition-all duration-300 rounded-xl group justify-center"
               >
                 <PiUsers className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
                 <span className="font-medium">

@@ -199,7 +199,7 @@ export default function SendTestCampaignModal({
       <Stack gap={6}>
         {/* Header */}
         <div className="text-center">
-          <div className="w-16 h-16 bg-atencao rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             <PiPaperPlaneRight className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -237,9 +237,7 @@ export default function SendTestCampaignModal({
               <span className="text-theme-tertiary">Status:</span>
               <span
                 className={`px-2 py-1 rounded-full text-xs ${
-                  campaign.status === 'DRAFT'
-                    ? 'bg-atencao/10 text-atencao'
-                    : 'bg-aviso/10 text-aviso'
+                  campaign.status === 'DRAFT' ? '' : ''
                 }`}
               >
                 {campaign.status === 'DRAFT' ? 'Rascunho' : campaign.status}
@@ -268,8 +266,8 @@ export default function SendTestCampaignModal({
                 key={list.id}
                 className={`flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-colors ${
                   formData.selectedListIds.includes(list.id)
-                    ? 'border-ouro bg-ouro/10'
-                    : 'border-theme-secondary hover:border-linha'
+                    ? ''
+                    : 'border-theme-secondary'
                 }`}
               >
                 <Inline gap={3}>
@@ -277,7 +275,7 @@ export default function SendTestCampaignModal({
                     type="checkbox"
                     checked={formData.selectedListIds.includes(list.id)}
                     onChange={() => handleListSelection(list.id)}
-                    className="text-brand-primary"
+                    className="text-ouro-texto"
                   />
                   <div
                     className="w-3 h-3 rounded-full"
@@ -312,7 +310,7 @@ export default function SendTestCampaignModal({
           </div>
 
           {selectedLists.length > 0 && (
-            <div className="mt-3 p-3 bg-ouro/10 border border-ouro rounded-lg">
+            <div className="mt-3 p-3 border rounded-lg">
               <Text papel="rotulo" tom="ouro" as="div">
                 <strong>Selecionado:</strong> {selectedLists.length} lista(s) •{' '}
                 {totalEmails} email(s) únicos
@@ -383,9 +381,7 @@ export default function SendTestCampaignModal({
           <div className="grid grid-cols-2 gap-4">
             <label
               className={`cursor-pointer p-4 rounded-lg border-2 transition-colors ${
-                formData.sendMode === 'bulk'
-                  ? 'border-ouro bg-ouro/10'
-                  : 'border-theme-secondary hover:border-linha'
+                formData.sendMode === 'bulk' ? '' : 'border-theme-secondary'
               }`}
             >
               <input
@@ -413,8 +409,8 @@ export default function SendTestCampaignModal({
             <label
               className={`cursor-pointer p-4 rounded-lg border-2 transition-colors ${
                 formData.sendMode === 'individual'
-                  ? 'border-ouro bg-ouro/10'
-                  : 'border-theme-secondary hover:border-linha'
+                  ? ''
+                  : 'border-theme-secondary'
               }`}
             >
               <input
@@ -463,7 +459,7 @@ export default function SendTestCampaignModal({
 
   const renderSendingStep = () => (
     <div className="text-center py-12">
-      <div className="w-20 h-20 bg-atencao rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
+      <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
         <PiPaperPlaneRight className="w-10 h-10 text-white" />
       </div>
       <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
@@ -473,7 +469,7 @@ export default function SendTestCampaignModal({
         Processando envio da campanha &quot;{campaign.name}&quot;
       </p>
       <div className="w-32 h-1 bg-theme-secondary rounded-full mx-auto overflow-hidden">
-        <div className="h-full bg-atencao animate-pulse"></div>
+        <div className="h-full animate-pulse"></div>
       </div>
       <Text papel="rotulo" tom="fraco" as="p" className="mt-4">
         Modo: {formData.sendMode === 'bulk' ? 'Lote' : 'Individual'}
@@ -489,7 +485,7 @@ export default function SendTestCampaignModal({
       <div className="text-center">
         <div
           className={`w-20 h-20 bg-gradient-to-br ${
-            isSuccess ? 'bg-ok' : 'bg-atencao'
+            isSuccess ? '' : ''
           } rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow`}
         >
           {isSuccess ? (
@@ -507,23 +503,23 @@ export default function SendTestCampaignModal({
 
         {/* Results Grid */}
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-ok/10 border border-ok rounded-lg p-4">
-            <div className="text-2xl font-bold text-ok">
+          <div className="border rounded-lg p-4">
+            <div className="text-2xl font-bold">
               {sendResult?.results.successful}
             </div>
-            <div className="text-sm text-ok">Enviados</div>
+            <div className="text-sm">Enviados</div>
           </div>
-          <div className="bg-erro/10 border border-erro rounded-lg p-4">
-            <div className="text-2xl font-bold text-erro">
+          <div className="border rounded-lg p-4">
+            <div className="text-2xl font-bold">
               {sendResult?.results.failed}
             </div>
-            <div className="text-sm text-erro">Falhas</div>
+            <div className="text-sm">Falhas</div>
           </div>
-          <div className="bg-aviso/10 border border-aviso rounded-lg p-4">
-            <div className="text-2xl font-bold text-aviso">
+          <div className="border rounded-lg p-4">
+            <div className="text-2xl font-bold">
               {sendResult?.results.successRate}%
             </div>
-            <div className="text-sm text-aviso">Taxa</div>
+            <div className="text-sm">Taxa</div>
           </div>
         </div>
 
@@ -565,19 +561,16 @@ export default function SendTestCampaignModal({
 
         {/* Errors */}
         {sendResult?.results.errors && sendResult.results.errors.length > 0 && (
-          <Stack
-            gap={3}
-            className="bg-erro/10 border border-erro rounded-lg p-4 mb-6 text-left"
-          >
-            <h4 className="font-medium text-erro">Erros Encontrados</h4>
+          <Stack gap={3} className="border rounded-lg p-4 mb-6 text-left">
+            <h4 className="font-medium">Erros Encontrados</h4>
             <div className="space-y-1 text-sm max-h-32 overflow-y-auto">
               {sendResult.results.errors.map((error: string, index: number) => (
-                <div key={index} className="text-erro">
+                <div key={index} className="">
                   {error}
                 </div>
               ))}
               {sendResult.results.hasMoreErrors && (
-                <div className="text-erro font-medium">... e mais erros</div>
+                <div className="font-medium">... e mais erros</div>
               )}
             </div>
           </Stack>

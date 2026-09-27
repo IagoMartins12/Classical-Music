@@ -150,8 +150,8 @@ export function CategoryArticles({
                       onClick={() => handlePageChange(p)}
                       className={`px-4 py-2 rounded-lg font-medium transition-all ${
                         pagination.page === p
-                          ? 'bg-ouro text-sobre-ouro shadow-theme-glow'
-                          : 'bg-theme-elevated text-theme-secondary hover:bg-ouro/10'
+                          ? 'text-white shadow-theme-glow'
+                          : 'bg-theme-elevated text-theme-secondary'
                       }`}
                     >
                       {p}

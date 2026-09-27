@@ -227,17 +227,17 @@ const StudentHistoryClient = ({
     switch (action) {
       case 'ASSIGNMENT_SUBMISSION':
       case 'ASSIGNMENT_COMPLETED':
-        return 'bg-ok';
+        return 'from-green-400 to-green-600';
       case 'LESSON_FEEDBACK_GIVEN':
-        return 'bg-aviso';
+        return 'from-blue-400 to-blue-600';
       case 'LESSON_RESCHEDULE_REQUESTED':
-        return 'bg-atencao';
+        return 'from-orange-400 to-orange-600';
       case 'LESSON_ABSENCE_INFORMED':
-        return 'bg-erro';
+        return 'from-red-400 to-red-600';
       case 'STUDENT_PROFILE_UPDATED':
-        return 'fill-ouro';
+        return 'from-purple-400 to-purple-600';
       default:
-        return 'bg-texto-fraco';
+        return 'from-gray-400 to-gray-600';
     }
   };
 
@@ -245,17 +245,17 @@ const StudentHistoryClient = ({
     switch (action) {
       case 'ASSIGNMENT_SUBMISSION':
       case 'ASSIGNMENT_COMPLETED':
-        return 'border border-ok/40 bg-ok/10';
+        return 'border-l-4 border-l-green-500';
       case 'LESSON_FEEDBACK_GIVEN':
-        return 'border border-aviso/40 bg-aviso/10';
+        return 'border-l-4 border-l-blue-500';
       case 'LESSON_RESCHEDULE_REQUESTED':
-        return 'border border-atencao/40 bg-atencao/10';
+        return 'border-l-4 border-l-orange-500';
       case 'LESSON_ABSENCE_INFORMED':
-        return 'border border-erro/40 bg-erro/10';
+        return 'border-l-4 border-l-red-500';
       case 'STUDENT_PROFILE_UPDATED':
-        return 'border border-ouro/40 bg-ouro/10';
+        return 'border-l-4 border-l-purple-500';
       default:
-        return 'border border-linha';
+        return 'border-l-4 border-l-gray-300';
     }
   };
 
@@ -303,24 +303,24 @@ const StudentHistoryClient = ({
     return (
       <Stack
         gap={2}
-        className="mt-3 p-3 bg-aviso/10 border border-aviso/30 rounded-lg"
+        className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg"
       >
-        <h5 className="text-sm font-medium text-aviso flex items-center">
+        <h5 className="text-sm font-medium text-blue-700 flex items-center">
           <PiNotePencil className="w-4 h-4 mr-1" />
           {t('student_history_changes_title')}
         </h5>
         <Stack gap={2}>
           {changesList.slice(0, 3).map(([key, change]: [string, any]) => (
             <Stack gap={1} key={key} className="text-xs">
-              <div className="font-medium text-aviso">{key}:</div>
-              <div className="pl-2 border-l-2 border-aviso/30">
-                <div className="text-erro flex items-center">
+              <div className="font-medium text-blue-700">{key}:</div>
+              <div className="pl-2 border-l-2 border-blue-300">
+                <div className="text-red-600 flex items-center">
                   <span className="w-8 text-xs">
                     {t('student_history_changes_from')}
                   </span>
                   <span>{String(change.from)}</span>
                 </div>
-                <div className="text-ok flex items-center">
+                <div className="text-green-600 flex items-center">
                   <span className="w-8 text-xs">
                     {t('student_history_changes_to')}
                   </span>
@@ -330,7 +330,7 @@ const StudentHistoryClient = ({
             </Stack>
           ))}
           {changesList.length > 3 && (
-            <div className="text-xs text-aviso">
+            <div className="text-xs text-blue-600">
               {t('student_history_changes_additional', {
                 count: changesList.length - 3,
               })}
@@ -358,7 +358,7 @@ const StudentHistoryClient = ({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-aviso rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiPulse className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -384,7 +384,7 @@ const StudentHistoryClient = ({
                 hover="scale"
                 className="classical-card p-6 text-center"
               >
-                <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiPulse className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -399,7 +399,7 @@ const StudentHistoryClient = ({
                 hover="scale"
                 className="classical-card p-6 text-center"
               >
-                <div className="w-12 h-12 bg-ok rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiUploadSimple className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -414,7 +414,7 @@ const StudentHistoryClient = ({
                 hover="scale"
                 className="classical-card p-6 text-center"
               >
-                <div className="w-12 h-12 bg-aviso rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiCheckCircle className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -429,7 +429,7 @@ const StudentHistoryClient = ({
                 hover="scale"
                 className="classical-card p-6 text-center"
               >
-                <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiClock className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -460,7 +460,7 @@ const StudentHistoryClient = ({
                   as="button"
                   gap={2}
                   onClick={() => setShowFilters(!showFilters)}
-                  className="px-4 py-2 bg-theme-secondary hover:bg-sup-2 text-theme-primary rounded-lg transition-colors"
+                  className="px-4 py-2 bg-theme-secondary text-theme-primary rounded-lg transition-colors"
                 >
                   <PiFunnel className="w-4 h-4" />
                   <span>{t('student_history_filters_title')}</span>
@@ -635,7 +635,7 @@ const StudentHistoryClient = ({
                               {activity.changes && (
                                 <button
                                   onClick={() => toggleExpanded(activity.id)}
-                                  className="w-6 h-6 rounded-full bg-theme-secondary hover:bg-sup-2 text-theme-tertiary hover:text-texto transition-colors flex items-center justify-center"
+                                  className="w-6 h-6 rounded-full bg-theme-secondary text-theme-tertiary transition-colors flex items-center justify-center"
                                 >
                                   {expandedItems.has(activity.id) ? (
                                     <PiCaretUp className="w-3 h-3" />
@@ -648,7 +648,7 @@ const StudentHistoryClient = ({
                               {getEntityLink(activity) && (
                                 <Link
                                   href={getEntityLink(activity)!}
-                                  className="w-6 h-6 rounded-full bg-theme-secondary hover:bg-ouro/10 transition-colors flex items-center justify-center"
+                                  className="w-6 h-6 rounded-full bg-theme-secondary transition-colors flex items-center justify-center"
                                 >
                                   <PiCaretRight className="w-3 h-3 text-theme-tertiary" />
                                 </Link>
@@ -686,7 +686,7 @@ const StudentHistoryClient = ({
                             {activity.metadata && (
                               <div className="mt-2 flex flex-wrap gap-2">
                                 {activity.metadata.submissionType && (
-                                  <span className="px-2 py-1 bg-aviso/10 text-aviso rounded-full text-xs font-medium border border-aviso/30">
+                                  <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium border border-blue-200">
                                     {activity.metadata.submissionType ===
                                     'video'
                                       ? t('student_history_metadata_video')
@@ -697,7 +697,7 @@ const StudentHistoryClient = ({
                                   </span>
                                 )}
                                 {activity.metadata.hasMessage && (
-                                  <span className="px-2 py-1 bg-ok/10 text-ok rounded-full text-xs font-medium border border-ok/30">
+                                  <span className="px-2 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium border border-green-200">
                                     {t('student_history_metadata_with_message')}
                                   </span>
                                 )}
@@ -739,8 +739,8 @@ const StudentHistoryClient = ({
                     }}
                     className={`px-4 py-2 rounded-lg transition-colors ${
                       page === i + 1
-                        ? 'bg-ouro text-theme-primary'
-                        : 'bg-theme-secondary text-theme-tertiary hover:bg-sup-2'
+                        ? 'text-theme-primary'
+                        : 'bg-theme-secondary text-theme-tertiary'
                     }`}
                   >
                     {i + 1}

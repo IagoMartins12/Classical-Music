@@ -98,25 +98,25 @@ const Footer: React.FC = () => {
       icon: PiXLogo,
       href: 'https://x.com/Opus_Atlas',
       label: 'Twitter / X',
-      color: 'hover:text-aviso',
+      color: 'hover:text-sky-500',
     },
     {
       icon: PiInstagramLogo,
       href: 'https://www.instagram.com/opusatlas/',
       label: 'Instagram',
-      color: 'hover:text-ouro-texto',
+      color: 'hover:text-pink-500',
     },
     {
       icon: PiLinkedinLogo,
       href: 'https://www.linkedin.com/company/opus-atlas/about/',
       label: 'LinkedIn',
-      color: 'hover:text-aviso',
+      color: 'hover:text-blue-600',
     },
     {
       icon: PiTiktokLogo,
       href: 'https://www.tiktok.com/@opusatlas5',
       label: 'Tik tok',
-      color: 'hover:text-aviso',
+      color: 'hover:text-blue-600',
     },
   ];
 
@@ -162,7 +162,7 @@ const Footer: React.FC = () => {
     if (success) {
       return (
         <div className="space-y-3">
-          <Inline gap={2} className="text-ok">
+          <Inline gap={2} className="">
             <PiCheck className="w-4 h-4" />
             <span className="text-sm font-medium">
               {status === 'RESUBSCRIBED'
@@ -172,16 +172,14 @@ const Footer: React.FC = () => {
           </Inline>
 
           {status === 'PENDING' && (
-            <div className="bg-aviso/10 border border-aviso rounded-lg p-3">
-              <p className="text-aviso text-sm">
-                {t('footer_jsx_p_children_0__confirm')}
-              </p>
+            <div className="border rounded-lg p-3">
+              <p className="text-sm">{t('footer_jsx_p_children_0__confirm')}</p>
             </div>
           )}
 
           <button
             onClick={handleReset}
-            className="text-xs text-theme-tertiary hover:text-texto underline"
+            className="text-xs text-theme-tertiary underline"
           >
             {t('footer_jsx_button_children_0__email')}
           </button>
@@ -192,9 +190,9 @@ const Footer: React.FC = () => {
     if (error) {
       return (
         <Stack gap={3}>
-          <Inline gap={2} className="text-erro">
-            <PiWarningCircle className="w-4 h-4 mt-0.5 text-erro flex-shrink-0" />
-            <p className="text-sm text-erro mt-1">{error}</p>
+          <Inline gap={2} className="">
+            <PiWarningCircle className="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" />
+            <p className="text-sm text-red-500 mt-1">{error}</p>
           </Inline>
 
           {/* 🆕 OPÇÕES BASEADAS NO TIPO DE ERRO */}
@@ -203,7 +201,7 @@ const Footer: React.FC = () => {
               <button
                 onClick={handleResendConfirmation}
                 disabled={loading}
-                className="text-xs bg-atencao/10 text-atencao px-2 py-1 rounded hover:bg-opacity-30 transition-colors disabled:opacity-50"
+                className="text-xs px-2 py-1 rounded transition-colors disabled:opacity-50"
               >
                 <PiArrowsClockwise className="w-3 h-3 inline mr-1" />
                 {t('footer_jsx_button_children_2__send')}
@@ -212,7 +210,7 @@ const Footer: React.FC = () => {
 
             <button
               onClick={handleReset}
-              className="text-xs text-theme-tertiary hover:text-texto underline"
+              className="text-xs text-theme-tertiary underline"
             >
               {t('footer_jsx_button_children_0__tentar_novamente')}
             </button>
@@ -225,7 +223,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="  bg-fundo border-t border-theme-secondary">
+    <footer className="  border-t border-theme-secondary">
       <div className="">
         {/* Main Footer Content */}
         <div className="section-wrap py-16">
@@ -234,7 +232,7 @@ const Footer: React.FC = () => {
             <Stack gap={6} className="lg:col-span-1">
               <Link href="/" className="flex items-center group">
                 <div className="relative">
-                  <GiGrandPiano className="w-10 h-10 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
+                  <GiGrandPiano className="w-10 h-10 mr-3 text-ouro-texto icon-glow transition-all duration-300 group-hover:scale-110" />
                 </div>
                 <span className="text-2xl font-bold text-gradient-brand classical-title">
                   {t('footer_jsx_span_children_0__opus_atlas')}
@@ -253,15 +251,15 @@ const Footer: React.FC = () => {
               {/* Contact Info */}
               <Stack gap={3}>
                 <Inline gap={3} className="text-sm text-theme-tertiary">
-                  <PiEnvelopeSimple className="w-4 h-4 text-brand-primary" />
+                  <PiEnvelopeSimple className="w-4 h-4 text-ouro-texto" />
                   <span>opusatlas@gmail.com</span>
                 </Inline>
                 <Inline gap={3} className="text-sm text-theme-tertiary">
-                  <PiPhone className="w-4 h-4 text-brand-primary" />
+                  <PiPhone className="w-4 h-4 text-ouro-texto" />
                   <span>{t('footer_jsx_span_children_0__text')}</span>
                 </Inline>
                 <Inline gap={3} className="text-sm text-theme-tertiary">
-                  <PiMapPin className="w-4 h-4 text-brand-primary" />
+                  <PiMapPin className="w-4 h-4 text-ouro-texto" />
                   <span>
                     {t('footer_jsx_span_children_0__são_paulo_brasil')}
                   </span>
@@ -272,7 +270,7 @@ const Footer: React.FC = () => {
             {/* Quick Links */}
             <Stack gap={6}>
               <h3 className="text-lg font-semibold text-theme-primary flex items-center">
-                <PiBookOpen className="w-5 h-5 mr-2 text-brand-primary" />
+                <PiBookOpen className="w-5 h-5 mr-2 text-ouro-texto" />
                 {t('footer_jsx_h3_children_2__explorar')}
               </h3>
               <ul className="space-y-3">
@@ -281,7 +279,7 @@ const Footer: React.FC = () => {
                     <Link
                       href={href}
                       target="_blank"
-                      className="flex items-center space-x-2 text-sm text-theme-tertiary hover:text-ouro-texto transition-colors duration-300 group"
+                      className="flex items-center space-x-2 text-sm text-theme-tertiary transition-colors duration-300 group"
                     >
                       <Icon className="w-4 h-4 group-hover:scale-110 transition-transform" />
                       <span>{label}</span>
@@ -294,7 +292,7 @@ const Footer: React.FC = () => {
             {/* Support Links */}
             <Stack gap={6}>
               <h3 className="text-lg font-semibold text-theme-primary flex items-center">
-                <PiInfo className="w-5 h-5 mr-2 text-brand-primary" />
+                <PiInfo className="w-5 h-5 mr-2 text-ouro-texto" />
                 {t('footer_jsx_h3_children_2__suporte')}
               </h3>
               <ul className="space-y-3">
@@ -302,7 +300,7 @@ const Footer: React.FC = () => {
                   <li key={label}>
                     <Link
                       href={href}
-                      className="text-sm text-theme-tertiary hover:text-ouro-texto transition-colors duration-300"
+                      className="text-sm text-theme-tertiary transition-colors duration-300"
                     >
                       {label}
                     </Link>
@@ -314,7 +312,7 @@ const Footer: React.FC = () => {
             {/* Legal & Social */}
             <Stack gap={6}>
               <h3 className="text-lg font-semibold text-theme-primary flex items-center">
-                <PiShield className="w-5 h-5 mr-2 text-brand-primary" />
+                <PiShield className="w-5 h-5 mr-2 text-ouro-texto" />
                 {t('footer_jsx_h3_children_2__legal')}
               </h3>
               <ul className="space-y-3">
@@ -322,7 +320,7 @@ const Footer: React.FC = () => {
                   <li key={label}>
                     <Link
                       href={href}
-                      className="text-sm text-theme-tertiary hover:text-ouro-texto transition-colors duration-300"
+                      className="text-sm text-theme-tertiary transition-colors duration-300"
                     >
                       {label}
                     </Link>
@@ -355,11 +353,11 @@ const Footer: React.FC = () => {
         {/* 🆕 NEWSLETTER SECTION ATUALIZADA */}
         <div className="border-t border-theme-secondary" id="newsletter">
           <div className="section-wrap py-8">
-            <Card className="bg-ouro/5 border border-ouro/20">
+            <Card className="border">
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between space-y-6 lg:space-y-0 lg:space-x-8">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-theme-primary flex items-center mb-2">
-                    <PiHeart className="w-5 h-5 mr-2 text-brand-primary" />
+                    <PiHeart className="w-5 h-5 mr-2 text-ouro-texto" />
                     {t('footer_jsx_h3_children_2__music')}
                   </h3>
                   <Text papel="rotulo" tom="fraco" as="p" className="mb-4">
@@ -387,16 +385,14 @@ const Footer: React.FC = () => {
                         required
                         disabled={loading}
                         className={`px-4 py-2 bg-theme-tertiary border ${
-                          formErrors.email
-                            ? 'border-erro'
-                            : 'border-theme-secondary'
-                        } rounded-lg text-sm focus:outline-none focus:border-ouro transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-1 min-w-0`}
+                          formErrors.email ? '' : 'border-theme-secondary'
+                        } rounded-lg text-sm focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-1 min-w-0`}
                       />
                     </div>
 
                     {/* 🆕 ERROS DE VALIDAÇÃO */}
                     {(formErrors.email || formErrors.firstName) && (
-                      <div className="text-xs text-erro">
+                      <div className="text-xs">
                         {formErrors.email || formErrors.firstName}
                       </div>
                     )}
@@ -426,14 +422,14 @@ const Footer: React.FC = () => {
               </div>
 
               {/* Privacy note */}
-              <div className="mt-4 pt-4 border-t border-linha/50">
+              <div className="mt-4 pt-4 border-t">
                 <Text papel="legenda" tom="fraco" as="p">
                   {t('footer_jsx_p_children_0__email')}
                   <br />
                   {t('footer_jsx_p_children_2__inscrever_concorda_nossa')}{' '}
                   <Link
                     href="/privacy"
-                    className="text-brand-primary hover:underline"
+                    className="text-ouro-texto hover:underline"
                   >
                     {t('footer_jsx_link_children_0__política_privacidade')}
                   </Link>
@@ -463,7 +459,7 @@ const Footer: React.FC = () => {
               <Inline gap={6} className="text-sm text-theme-tertiary">
                 <span className="flex items-center">
                   {t('footer_jsx_span_children_0__feito')}
-                  <PiHeart className="w-4 h-4 mx-1 text-erro" />{' '}
+                  <PiHeart className="w-4 h-4 mx-1" />{' '}
                   {t('footer_jsx_span_children_3__music')}
                 </span>
               </Inline>

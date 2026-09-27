@@ -476,7 +476,7 @@ export function AudioAutoplay({
         {/* Play/Pause */}
         <button
           onClick={togglePlayPause}
-          className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-ouro text-theme-primary rounded-full hover:bg-ouro transition-colors"
+          className="flex-shrink-0 w-10 h-10 flex items-center justify-center text-theme-primary rounded-full transition-colors"
           title={status === 'playing' ? 'Pausar' : 'Tocar'}
         >
           {status === 'playing' ? (
@@ -499,12 +499,10 @@ export function AudioAutoplay({
                      [&::-webkit-slider-thumb]:w-4
                      [&::-webkit-slider-thumb]:h-4
                      [&::-webkit-slider-thumb]:rounded-full
-                     [&::-webkit-slider-thumb]:bg-brand-primary
                      [&::-webkit-slider-thumb]:cursor-pointer
                      [&::-moz-range-thumb]:w-4
                      [&::-moz-range-thumb]:h-4
                      [&::-moz-range-thumb]:rounded-full
-                     [&::-moz-range-thumb]:bg-brand-primary
                      [&::-moz-range-thumb]:border-0
                      [&::-moz-range-thumb]:cursor-pointer"
             style={{
@@ -525,13 +523,13 @@ export function AudioAutoplay({
         {/* Mute */}
         <button
           onClick={toggleMute}
-          className="flex-shrink-0 p-2 hover:bg-sup-1 rounded-full transition-colors"
+          className="flex-shrink-0 p-2 rounded-full transition-colors"
           title={status === 'muted' ? 'Ativar som' : 'Silenciar'}
         >
           {status === 'muted' ? (
             <PiSpeakerX className="w-5 h-5 text-theme-secondary" />
           ) : (
-            <PiSpeakerHigh className="w-5 h-5 text-brand-primary" />
+            <PiSpeakerHigh className="w-5 h-5 text-ouro-texto" />
           )}
         </button>
       </Inline>
@@ -543,7 +541,7 @@ export function AudioAutoplay({
       {/* BANNER DE AVISO */}
       {showBanner && (
         <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-aviso max-w-md w-full mx-4">
-          <div className="fill-ouro text-theme-primary p-4 rounded-lg shadow-2xl backdrop-blur-sm">
+          <div className="text-theme-primary p-4 rounded-lg shadow-2xl backdrop-blur-sm">
             <div className="flex items-start space-x-3">
               <div className="flex-shrink-0 mt-0.5">
                 <PiSpeakerHigh className="w-6 h-6" />
@@ -557,7 +555,7 @@ export function AudioAutoplay({
                 </p>
                 <button
                   onClick={activateAudio}
-                  className="w-full text-theme-primary text-brand-primary px-4 py-2 rounded-lg font-medium text-sm ansition-colors shadow-md"
+                  className="w-full text-theme-primary text-ouro-texto px-4 py-2 rounded-lg font-medium text-sm ansition-colors shadow-md"
                 >
                   🔊 Ativar Áudio
                 </button>
@@ -582,7 +580,7 @@ export function AudioAutoplay({
               <div className="flex justify-end items-center mb-2">
                 <button
                   onClick={() => setShowMobilePlayer(false)}
-                  className="text-theme-tertiary hover:text-texto transition-colors"
+                  className="text-theme-tertiary transition-colors"
                   aria-label="Recolher player"
                 >
                   <svg
@@ -607,11 +605,11 @@ export function AudioAutoplay({
               as="button"
               gap={2}
               onClick={() => setShowMobilePlayer(true)}
-              className="w-full classical-card-simple rounded-t-lg shadow-xl py-3 px-4 justify-center hover:bg-sup-1 transition-colors"
+              className="w-full classical-card-simple rounded-t-lg shadow-xl py-3 px-4 justify-center transition-colors"
               aria-label="Expandir player de áudio"
             >
               <svg
-                className="w-5 h-5 text-brand-primary animate-bounce"
+                className="w-5 h-5 text-ouro-texto animate-bounce"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -629,15 +627,15 @@ export function AudioAutoplay({
               {status === 'playing' && (
                 <div className="flex space-x-1">
                   <div
-                    className="w-1 h-3 bg-ouro rounded-full animate-pulse"
+                    className="w-1 h-3 rounded-full animate-pulse"
                     style={{ animationDelay: '0s' }}
                   />
                   <div
-                    className="w-1 h-3 bg-ouro rounded-full animate-pulse"
+                    className="w-1 h-3 rounded-full animate-pulse"
                     style={{ animationDelay: '0.2s' }}
                   />
                   <div
-                    className="w-1 h-3 bg-ouro rounded-full animate-pulse"
+                    className="w-1 h-3 rounded-full animate-pulse"
                     style={{ animationDelay: '0.4s' }}
                   />
                 </div>
@@ -655,7 +653,7 @@ export function AudioAutoplay({
               <div className="flex justify-end mb-2">
                 <button
                   onClick={() => setShowPlayer(false)}
-                  className="text-theme-tertiary hover:text-texto transition-colors"
+                  className="text-theme-tertiary transition-colors"
                 >
                   <PiX className="w-5 h-5" />
                   <NomeAcao acao="fechar" />
@@ -682,13 +680,13 @@ export function AudioAutoplay({
                   e.stopPropagation();
                   toggleMute();
                 }}
-                className="p-2 hover:bg-sup-1 rounded-full transition-colors"
+                className="p-2 rounded-full transition-colors"
                 title={status === 'muted' ? 'Ativar som' : 'Silenciar'}
               >
                 {status === 'muted' ? (
                   <PiSpeakerX className="w-5 h-5 text-theme-secondary" />
                 ) : (
-                  <PiSpeakerHigh className="w-5 h-5 text-brand-primary" />
+                  <PiSpeakerHigh className="w-5 h-5 text-ouro-texto" />
                 )}
               </button>
 
@@ -696,15 +694,15 @@ export function AudioAutoplay({
                 <Inline gap={2}>
                   <div className="flex space-x-1">
                     <div
-                      className="w-1 h-4 bg-ouro rounded-full animate-pulse"
+                      className="w-1 h-4 rounded-full animate-pulse"
                       style={{ animationDelay: '0s' }}
                     />
                     <div
-                      className="w-1 h-4 bg-ouro rounded-full animate-pulse"
+                      className="w-1 h-4 rounded-full animate-pulse"
                       style={{ animationDelay: '0.2s' }}
                     />
                     <div
-                      className="w-1 h-4 bg-ouro rounded-full animate-pulse"
+                      className="w-1 h-4 rounded-full animate-pulse"
                       style={{ animationDelay: '0.4s' }}
                     />
                   </div>

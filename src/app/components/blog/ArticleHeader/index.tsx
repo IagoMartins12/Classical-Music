@@ -59,7 +59,7 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
             href={`/autor/${
               article.author.username || article.author.firstName
             }`}
-            className="flex items-center space-x-3 hover:text-ouro-texto transition-colors"
+            className="flex items-center space-x-3 transition-colors"
           >
             {article.author.image ? (
               <Image
@@ -71,7 +71,7 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
               />
             ) : (
               <div className="w-12 h-12 rounded-full bg-theme-classical flex items-center justify-center">
-                <PiUser className="w-6 h-6 text-brand-primary" />
+                <PiUser className="w-6 h-6 text-ouro-texto" />
               </div>
             )}
             <div>
@@ -120,7 +120,7 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
               <Link
                 key={tag.tag.slug}
                 href={`/blog/tag/${tag.tag.slug}`}
-                className="px-3 py-1 rounded-full text-xs font-medium bg-theme-elevated hover:bg-sup-1 transition-all"
+                className="px-3 py-1 rounded-full text-xs font-medium bg-theme-elevated transition-all"
                 style={{
                   color: tag.tag.color || 'var(--text-secondary)',
                 }}

@@ -133,8 +133,8 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
         onClick={triggerImageUpload}
         className={`
         ${sizeClasses[size]} 
-        rounded-full overflow-hidden border border-theme-secondary 
-        ${!imagePreview && fallbackText ? 'fill-ouro' : 'bg-theme-secondary'}
+        rounded-full overflow-hidden border-4 border-theme-secondary 
+        ${!imagePreview && fallbackText ? '' : 'bg-theme-secondary'}
         relative cursor-pointer hover:opacity-90 transition-opacity
       `}
       >
@@ -160,7 +160,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
         )}
 
         {/* Upload Overlay Hint */}
-        <div className="absolute inset-0 bg-black hover:bg-opacity-20 flex items-center justify-center transition-all opacity-0 hover:opacity-100">
+        <div className="absolute inset-0 bg-black flex items-center justify-center transition-all opacity-0 hover:opacity-100">
           <PiPencilLine className="text-white text-lg" />
         </div>
       </div>
@@ -175,7 +175,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
           disabled={isUploading}
           className={`
             absolute -top-2 -right-2 ${removeSizes[size]}
-            bg-erro rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg disabled:opacity-50 disabled:cursor-not-allowed
+            rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg disabled:opacity-50 disabled:cursor-not-allowed
           `}
           title="Remover foto"
         >

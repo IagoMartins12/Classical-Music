@@ -37,7 +37,7 @@ export default function BackupDashboardCard() {
 
         <Link
           href="/admin/backup"
-          className="text-brand-primary text-sm hover:underline"
+          className="text-ouro-texto text-sm hover:underline"
         >
           Gerenciar
         </Link>
@@ -45,13 +45,13 @@ export default function BackupDashboardCard() {
 
       {impedimento ? (
         <Text papel="rotulo" tom="suave" as="p" className="flex gap-2">
-          <PiWarning className="w-4 h-4 text-atencao shrink-0 mt-0.5" />
+          <PiWarning className="w-4 h-4 shrink-0 mt-0.5" />
           {impedimento}
         </Text>
       ) : ultimo ? (
         <Stack gap={1}>
           <p className="text-theme-primary flex items-center gap-2">
-            <PiCheckCircle className="w-4 h-4 text-ok" />
+            <PiCheckCircle className="w-4 h-4" />
             <span className="font-medium">
               {desdeUltimo !== null && desdeUltimo < 24
                 ? `há ${desdeUltimo}h`
@@ -70,13 +70,13 @@ export default function BackupDashboardCard() {
         </Stack>
       ) : (
         <Text papel="rotulo" tom="suave" as="p" className="flex gap-2">
-          <PiWarning className="w-4 h-4 text-atencao shrink-0 mt-0.5" />
+          <PiWarning className="w-4 h-4 shrink-0 mt-0.5" />
           Nenhum backup verificado ainda.
         </Text>
       )}
 
       {ultimaFalha && (
-        <p className="text-erro text-xs mt-3 flex gap-1.5">
+        <p className="text-xs mt-3 flex gap-1.5">
           <PiX className="w-3.5 h-3.5 shrink-0 mt-0.5" />
           Última falha em{' '}
           {new Date(ultimaFalha.startedAt).toLocaleDateString('pt-BR')}

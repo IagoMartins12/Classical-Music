@@ -54,7 +54,7 @@ export default function EmailVerificationRequired({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiShield className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -74,8 +74,8 @@ export default function EmailVerificationRequired({
             className="classical-card p-8 mb-8 max-w-2xl mx-auto"
           >
             <div className="flex items-start space-x-4">
-              <div className="w-12 h-12 bg-aviso/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                <PiEnvelopeSimple className="w-6 h-6 text-aviso" />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                <PiEnvelopeSimple className="w-6 h-6" />
               </div>
               <div className="text-left flex-1">
                 <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
@@ -85,7 +85,7 @@ export default function EmailVerificationRequired({
                 </h3>
                 <Stack gap={3}>
                   <p className="text-theme-secondary">
-                    <strong className="text-brand-primary">
+                    <strong className="text-ouro-texto">
                       {t('user_email_label')}
                     </strong>{' '}
                     {userEmail}
@@ -102,12 +102,12 @@ export default function EmailVerificationRequired({
         {/* Email Status */}
         {emailSent && (
           <AnimatedItem direction="up" springType="bouncy">
-            <div className="bg-theme-elevated border-ok rounded-lg p-4 mb-6 max-w-2xl mx-auto">
+            <div className="bg-theme-elevated rounded-lg p-4 mb-6 max-w-2xl mx-auto">
               <Inline gap={3} className="justify-center">
-                <PiCheckCircle className="w-5 h-5 text-ok" />
-                <p className="text-ok font-medium">{t('email_sent_success')}</p>
+                <PiCheckCircle className="w-5 h-5" />
+                <p className="font-medium">{t('email_sent_success')}</p>
               </Inline>
-              <p className="text-ok text-sm text-center mt-2 opacity-80">
+              <p className="text-sm text-center mt-2 opacity-80">
                 {t('email_sent_instructions')}
               </p>
             </div>
@@ -165,8 +165,8 @@ export default function EmailVerificationRequired({
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard hover="lift" className="classical-card p-6">
               <Inline gap={3} className="mb-4">
-                <div className="w-10 h-10 bg-ok/20 rounded-xl flex items-center justify-center">
-                  <PiCheckCircle className="w-5 h-5 text-ok" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                  <PiCheckCircle className="w-5 h-5" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title">
                   {t('current_permissions_title')}
@@ -175,25 +175,25 @@ export default function EmailVerificationRequired({
 
               <Stack gap={2} className="text-left">
                 <Inline gap={2}>
-                  <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                  <div className="w-2 h-2 rounded-full"></div>
                   <Text papel="rotulo" tom="suave">
                     {t('current_permission_explore')}
                   </Text>
                 </Inline>
                 <Inline gap={2}>
-                  <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                  <div className="w-2 h-2 rounded-full"></div>
                   <Text papel="rotulo" tom="suave">
                     {t('current_permission_discover')}
                   </Text>
                 </Inline>
                 <Inline gap={2}>
-                  <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                  <div className="w-2 h-2 rounded-full"></div>
                   <Text papel="rotulo" tom="suave">
                     {t('current_permission_favorites')}
                   </Text>
                 </Inline>
                 <Inline gap={2}>
-                  <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                  <div className="w-2 h-2 rounded-full"></div>
                   <Text papel="rotulo" tom="suave">
                     {t('current_permission_profile')}
                   </Text>
@@ -206,8 +206,8 @@ export default function EmailVerificationRequired({
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard hover="lift" className="classical-card p-6">
               <Inline gap={3} className="mb-4">
-                <div className="w-10 h-10 bg-atencao/20 rounded-xl flex items-center justify-center">
-                  <PiShield className="w-5 h-5 text-atencao" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                  <PiShield className="w-5 h-5" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title">
                   {t('after_verification_title')}
@@ -216,25 +216,25 @@ export default function EmailVerificationRequired({
 
               <Stack gap={2} className="text-left">
                 <Inline gap={2}>
-                  <div className="w-2 h-2 bg-atencao rounded-full"></div>
+                  <div className="w-2 h-2 rounded-full"></div>
                   <Text papel="rotulo" tom="suave">
                     {t('after_verification_composers')}
                   </Text>
                 </Inline>
                 <Inline gap={2}>
-                  <div className="w-2 h-2 bg-atencao rounded-full"></div>
+                  <div className="w-2 h-2 rounded-full"></div>
                   <Text papel="rotulo" tom="suave">
                     {t('after_verification_scores')}
                   </Text>
                 </Inline>
                 <Inline gap={2}>
-                  <div className="w-2 h-2 bg-atencao rounded-full"></div>
+                  <div className="w-2 h-2 rounded-full"></div>
                   <Text papel="rotulo" tom="suave">
                     {t('after_verification_works')}
                   </Text>
                 </Inline>
                 <Inline gap={2}>
-                  <div className="w-2 h-2 bg-atencao rounded-full"></div>
+                  <div className="w-2 h-2 rounded-full"></div>
                   <Text papel="rotulo" tom="suave">
                     {t('after_verification_full_access')}
                   </Text>
@@ -251,8 +251,8 @@ export default function EmailVerificationRequired({
             className="classical-card p-6 max-w-3xl mx-auto"
           >
             <div className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-aviso/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                <PiWarning className="w-5 h-5 text-aviso" />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <PiWarning className="w-5 h-5" />
               </div>
               <div className="text-left flex-1">
                 <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
@@ -275,7 +275,7 @@ export default function EmailVerificationRequired({
             <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
               &quot;{t('quote_text')}&quot;
             </blockquote>
-            <cite className="text-brand-primary font-semibold">
+            <cite className="text-ouro-texto font-semibold">
               — {t('quote_author')}
             </cite>
           </Card>
@@ -283,12 +283,12 @@ export default function EmailVerificationRequired({
       </AnimatedContainer>
 
       {/* Decorative Elements */}
-      <div className="absolute top-4 left-4 w-12 h-12 bg-atencao/10 rounded-2xl flex items-center justify-center opacity-40">
-        <PiMusicNotes className="w-6 h-6 text-atencao" />
+      <div className="absolute top-4 left-4 w-12 h-12 rounded-2xl flex items-center justify-center opacity-40">
+        <PiMusicNotes className="w-6 h-6" />
       </div>
 
-      <div className="absolute bottom-4 right-4 w-16 h-16 bg-ouro/10 rounded-3xl flex items-center justify-center opacity-50">
-        <PiEnvelopeSimple className="w-8 h-8 text-brand-primary" />
+      <div className="absolute bottom-4 right-4 w-16 h-16 rounded-3xl flex items-center justify-center opacity-50">
+        <PiEnvelopeSimple className="w-8 h-8 text-ouro-texto" />
       </div>
     </PageContainer>
   );

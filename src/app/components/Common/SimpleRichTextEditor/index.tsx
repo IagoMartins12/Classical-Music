@@ -131,9 +131,7 @@ const SimpleRichTextEditor = forwardRef<
         className={`
         p-2 rounded-md border transition-all duration-200
         ${
-          isActive
-            ? 'bg-ouro text-sobre-ouro border-ouro'
-            : 'bg-sup-1 text-theme-tertiary border-theme-secondary hover:bg-ouro/10 hover:text-ouro-texto'
+          isActive ? 'text-white' : 'text-theme-tertiary border-theme-secondary'
         }
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
       `}
@@ -152,14 +150,14 @@ const SimpleRichTextEditor = forwardRef<
 
         <div className={`simple-rich-editor ${error ? 'error' : ''}`}>
           {/* Toolbar */}
-          <div className="toolbar bg-sup-1 border border-theme-secondary border-b-0 rounded-t-lg p-3 flex flex-wrap gap-2">
+          <div className="toolbar border border-theme-secondary border-b-0 rounded-t-lg p-3 flex flex-wrap gap-2">
             {/* Headings */}
             <div className="flex gap-1">
               <button
                 type="button"
                 onClick={() => insertHeading(1)}
                 disabled={disabled}
-                className="px-3 py-1 text-sm bg-sup-1 text-theme-tertiary border border-theme-secondary rounded hover:bg-ouro/10 hover:text-ouro-texto transition-all"
+                className="px-3 py-1 text-sm text-theme-tertiary border border-theme-secondary rounded transition-all"
               >
                 H1
               </button>
@@ -167,7 +165,7 @@ const SimpleRichTextEditor = forwardRef<
                 type="button"
                 onClick={() => insertHeading(2)}
                 disabled={disabled}
-                className="px-3 py-1 text-sm bg-sup-1 text-theme-tertiary border border-theme-secondary rounded hover:bg-ouro/10 hover:text-ouro-texto transition-all"
+                className="px-3 py-1 text-sm text-theme-tertiary border border-theme-secondary rounded transition-all"
               >
                 H2
               </button>
@@ -175,7 +173,7 @@ const SimpleRichTextEditor = forwardRef<
                 type="button"
                 onClick={() => insertHeading(3)}
                 disabled={disabled}
-                className="px-3 py-1 text-sm bg-sup-1 text-theme-tertiary border border-theme-secondary rounded hover:bg-ouro/10 hover:text-ouro-texto transition-all"
+                className="px-3 py-1 text-sm text-theme-tertiary border border-theme-secondary rounded transition-all"
               >
                 H3
               </button>
@@ -267,7 +265,7 @@ const SimpleRichTextEditor = forwardRef<
             onKeyUp={handleKeyUp}
             onMouseUp={updateButtonStates}
             className={`
-            editor-content border border-theme-secondary border-t-0 rounded-b-lg p-4 bg-fundo text-theme-primary focus:outline-none focus:ring-2 focus:ring-ouro focus:ring-inset
+            editor-content border border-theme-secondary border-t-0 rounded-b-lg p-4 text-theme-primary focus:outline-none focus:ring-2 focus:ring-inset
             ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-text'}
           `}
             style={{
@@ -280,7 +278,7 @@ const SimpleRichTextEditor = forwardRef<
           />
         </div>
 
-        {error && <p className="mt-1 text-sm text-erro">{error}</p>}
+        {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
 
         <style jsx>{`
           .editor-content:empty::before {

@@ -53,22 +53,22 @@ export default function ConfirmationModal({
 
   const colors = {
     danger: {
-      bg: 'bg-erro/10',
-      border: 'border-erro/20',
-      text: 'text-erro',
-      button: 'bg-erro hover:bg-erro',
+      bg: 'bg-red-500/10',
+      border: 'border-red-500/20',
+      text: 'text-red-500',
+      button: 'bg-red-500 hover:bg-red-600',
     },
     warning: {
-      bg: 'bg-atencao/10',
-      border: 'border-atencao/20',
-      text: 'text-atencao',
-      button: 'bg-atencao hover:bg-atencao',
+      bg: 'bg-amber-500/10',
+      border: 'border-amber-500/20',
+      text: 'text-amber-500',
+      button: 'bg-amber-500 hover:bg-amber-600',
     },
     info: {
-      bg: 'bg-aviso/10',
-      border: 'border-aviso/20',
-      text: 'text-aviso',
-      button: 'bg-aviso hover:bg-aviso',
+      bg: 'bg-blue-500/10',
+      border: 'border-blue-500/20',
+      text: 'text-blue-500',
+      button: 'bg-blue-500 hover:bg-blue-600',
     },
   };
 
@@ -109,12 +109,12 @@ export default function ConfirmationModal({
                 setError('');
               }}
               placeholder={placeholder || `Digite ${keyword}`}
-              className={error ? 'border-erro' : ''}
+              className={error ? 'border-red-500' : ''}
               autoFocus
               disabled={isLoading}
             />
             {error && (
-              <Inline as="p" gap={1} className="text-sm text-erro mt-2">
+              <Inline as="p" gap={1} className="text-sm text-red-500 mt-2">
                 <PiWarning className="w-4 h-4" />
                 <span>{error}</span>
               </Inline>

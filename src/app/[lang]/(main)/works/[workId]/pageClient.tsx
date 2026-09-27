@@ -364,13 +364,11 @@ export default function WorkDetailsClient({
 
   const getDifficultyColor = (level?: string) => {
     const colors = {
-      BEGINNER: 'bg-ok',
-      INTERMEDIATE: 'bg-aviso',
-      ADVANCED: 'bg-erro',
+      BEGINNER: '',
+      INTERMEDIATE: '',
+      ADVANCED: '',
     };
-    return level
-      ? colors[level as keyof typeof colors] || 'bg-fundo'
-      : 'bg-fundo';
+    return level ? colors[level as keyof typeof colors] || '' : '';
   };
 
   // ✅ Função para traduzir tonalidade
@@ -405,7 +403,7 @@ export default function WorkDetailsClient({
             <div className="bg-theme-elevated rounded-2xl p-4 md:p-6 mb-6">
               <div className="flex items-center justify-between">
                 <Inline gap={4}>
-                  <div className="w-12 h-12 hidden md:flex bg-aviso rounded-2xl items-center justify-center">
+                  <div className="w-12 h-12 hidden md:flex rounded-2xl items-center justify-center">
                     <PiTarget className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="flex flex-col gap-2">
@@ -415,7 +413,7 @@ export default function WorkDetailsClient({
                         ? t('selection_mode_quero_aprender')
                         : t('selection_mode_ja_aprendi')}
                     </h2>
-                    <p className="text-sm md:text-base text-theme-secondary">
+                    <p className="text-sm text-theme-secondary">
                       {tempSelectedWorkScore
                         ? `${t('selection_mode_partitura_selecionada')} ${
                             tempSelectedWorkScore.title
@@ -498,7 +496,7 @@ export default function WorkDetailsClient({
               <AnimatedCard hover="none" className="sticky top-6">
                 <div className="p-6">
                   <Inline gap={3} className="mb-4">
-                    <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                       <PiBookOpen className="w-4 h-4 text-theme-primary" />
                     </div>
                     <h3 className="text-lg font-semibold text-theme-primary">
@@ -538,7 +536,7 @@ export default function WorkDetailsClient({
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <div className="w-16 h-16 bg-sup-2/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         <PiMusicNotes className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h4 className="text-lg font-semibold text-theme-primary mb-2">
@@ -573,7 +571,7 @@ export default function WorkDetailsClient({
           >
             <Link
               href="/works"
-              className="hover:text-ouro-texto hidden md:block transition-colors duration-300 font-medium"
+              className="hidden md:block transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_obras')}
             </Link>
@@ -595,7 +593,7 @@ export default function WorkDetailsClient({
 
             <Link
               href={`/composer/${work.composer.id}`}
-              className="hover:text-ouro-texto transition-colors duration-300 font-medium"
+              className="transition-colors duration-300 font-medium"
             >
               {work.composer.fullName}
             </Link>
@@ -629,7 +627,7 @@ export default function WorkDetailsClient({
             {/* Animated Background Elements */}
             <div className="absolute inset-0 pointer-events-none">
               <div
-                className="absolute hidden sm:flex bottom-6 right-12 text-4xl text-ouro-texto/10 animate-float"
+                className="absolute hidden sm:flex bottom-6 right-12 text-4xl animate-float"
                 style={{ animationDelay: '1s' }}
               >
                 <PiMusicNotes />
@@ -671,7 +669,7 @@ export default function WorkDetailsClient({
                           <span>{t('work_details_por')}</span>
                           <Link
                             href={`/composer/${work.composer.id}`}
-                            className="text-brand-primary hover:text-ouro-texto font-semibold transition-colors duration-300 classical-subtitle"
+                            className="text-ouro-texto font-semibold transition-colors duration-300 classical-subtitle"
                           >
                             {work.composer.fullName}
                           </Link>
@@ -761,7 +759,7 @@ export default function WorkDetailsClient({
                     )}
 
                     {/* Learning Action Buttons */}
-                    <div className="flex flex-wrap gap-3 pt-4 border-t border-linha/50">
+                    <div className="flex flex-wrap gap-3 pt-4 border-t">
                       <LearningButtonWithModal
                         workId={work.id}
                         workTitle={work.title}
@@ -790,7 +788,7 @@ export default function WorkDetailsClient({
                     {/* Ano de Composição */}
                     {work.compositionYear && (
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -812,7 +810,7 @@ export default function WorkDetailsClient({
                     {/* Duração */}
                     {work.mediaDuration && (
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiClock className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -834,7 +832,7 @@ export default function WorkDetailsClient({
                     {/* ✅ Tom - COM TRADUÇÃO */}
                     {work.tone && (
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -856,7 +854,7 @@ export default function WorkDetailsClient({
                     {/* Instrumento */}
                     {work.instrument && (
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -878,7 +876,7 @@ export default function WorkDetailsClient({
                     {/* ✅ Época - COM TRADUÇÃO */}
                     {work.epoch && (
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-erro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiMapPin className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -890,7 +888,7 @@ export default function WorkDetailsClient({
                           >
                             {t('work_details_epoca_estilo')}
                           </Text>
-                          <p className="text-brand-primary font-semibold">
+                          <p className="text-ouro-texto font-semibold">
                             {getEpochLabel(work.epoch.name) || work.epoch.name}
                           </p>
                         </div>
@@ -907,7 +905,7 @@ export default function WorkDetailsClient({
                         gap={2}
                         className="text-lg font-semibold text-theme-primary classical-title"
                       >
-                        <PiStack className="w-5 h-5 text-ouro-texto" />
+                        <PiStack className="w-5 h-5" />
                         <span>{t('work_details_relacoes_colecao')}</span>
                       </Inline>
 
@@ -916,7 +914,7 @@ export default function WorkDetailsClient({
                         {work.parentWork && (
                           <div className="p-4 bg-theme-elevated rounded-xl">
                             <div className="flex items-start space-x-3">
-                              <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
+                              <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
                                 <PiArrowUp className="w-4 h-4 text-theme-primary" />
                               </div>
                               <div className="flex-1">
@@ -930,7 +928,7 @@ export default function WorkDetailsClient({
                                 </Text>
                                 <Link
                                   href={`/works/${work.parentWork.id}`}
-                                  className="text-ouro-texto hover:text-aviso font-semibold transition-colors duration-300 group flex items-center space-x-2"
+                                  className="font-semibold transition-colors duration-300 group flex items-center space-x-2"
                                 >
                                   <span>{work.parentWork.title}</span>
                                   <PiArrowSquareOut className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -953,7 +951,7 @@ export default function WorkDetailsClient({
                         {work.childWorks && work.childWorks.length > 0 && (
                           <div className="p-4 bg-theme-elevated rounded-xl">
                             <div className="flex items-start space-x-3">
-                              <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
+                              <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
                                 <PiArrowDown className="w-4 h-4 text-theme-primary" />
                               </div>
                               <div className="flex-1">
@@ -971,10 +969,10 @@ export default function WorkDetailsClient({
                                     <Link
                                       key={childWork.id}
                                       href={`/works/${childWork.id}`}
-                                      className="group flex items-center space-x-2 p-2 rounded-lg hover:bg-sup-elevada transition-colors duration-200"
+                                      className="group flex items-center space-x-2 p-2 rounded-lg transition-colors duration-200"
                                     >
-                                      <div className="w-6 h-6 bg-ok/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                                        <span className="text-xs font-bold text-ok">
+                                      <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <span className="text-xs font-bold">
                                           {index + 1}
                                         </span>
                                       </div>
@@ -983,7 +981,7 @@ export default function WorkDetailsClient({
                                           papel="rotulo"
                                           tom="forte"
                                           as="p"
-                                          className="font-medium truncate group-hover:text-ok transition-colors"
+                                          className="font-medium truncate transition-colors"
                                         >
                                           {childWork.title}
                                         </Text>
@@ -1020,7 +1018,7 @@ export default function WorkDetailsClient({
                         gap={2}
                         className="text-lg font-semibold text-theme-primary classical-title"
                       >
-                        <PiInfo className="w-5 h-5 text-aviso" />
+                        <PiInfo className="w-5 h-5" />
                         <span>{t('work_details_informacoes_adicionais')}</span>
                       </Inline>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -1056,7 +1054,7 @@ export default function WorkDetailsClient({
                           </Inline>
                         )}
                         {work.instrumentation && (
-                          <div className="md:col-span-2 p-3 bg-sup-elevada rounded-xl border border-theme-primary">
+                          <div className="md:col-span-2 p-3 rounded-xl border border-theme-primary">
                             <span className="font-medium text-theme-tertiary block mb-1">
                               {t('work_details_instrumentacao')}
                             </span>
@@ -1067,7 +1065,7 @@ export default function WorkDetailsClient({
                         )}
 
                         {work.moviment && (
-                          <div className="md:col-span-2 p-3 bg-sup-elevada rounded-xl border border-theme-primary">
+                          <div className="md:col-span-2 p-3 rounded-xl border border-theme-primary">
                             <span className="font-medium text-theme-tertiary block mb-1">
                               {t('work_details_movimentos')}
                             </span>
@@ -1090,7 +1088,7 @@ export default function WorkDetailsClient({
                           gap={2}
                           className="text-lg font-semibold text-theme-primary classical-title"
                         >
-                          <PiTag className="w-5 h-5 text-ok" />
+                          <PiTag className="w-5 h-5" />
                           <span>{t('work_details_categorias_generos')}</span>
                         </Inline>
                         <Stack>
@@ -1114,7 +1112,7 @@ export default function WorkDetailsClient({
                                       <Text
                                         papel="rotulo"
                                         tom="ouro"
-                                        className="px-4 py-2 cursor-pointer bg-gradient-to-r border border-ouro/30 rounded-full font-medium"
+                                        className="px-4 py-2 cursor-pointer bg-gradient-to-r border rounded-full font-medium"
                                         onClick={() =>
                                           navigateToUrl(
                                             `works?categoryNames=${categoryName}`
@@ -1149,7 +1147,7 @@ export default function WorkDetailsClient({
                                         springType="bouncy"
                                       >
                                         <span
-                                          className="capitalize cursor-pointer px-4 py-2 bg-ok/10 border border-ok/30 text-ok rounded-full text-sm font-medium hover:scale-105 hover:shadow-[var(--sombra-2)] transition-all duration-300"
+                                          className="capitalize cursor-pointer px-4 py-2 border rounded-full text-sm font-medium hover:scale-105 transition-all duration-300"
                                           onClick={() =>
                                             navigateToUrl(
                                               `works?workGenresArr=${workGenre}`
@@ -1175,7 +1173,7 @@ export default function WorkDetailsClient({
                   {work.videoUrl && (
                     <Card nivel={2}>
                       <Inline gap={3} className="mb-4">
-                        <div className="w-8 h-8 bg-erro rounded-xl flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                           <PiHeadphones className="w-4 h-4 text-theme-primary" />
                         </div>
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
@@ -1231,7 +1229,7 @@ export default function WorkDetailsClient({
                   {/* Links Externos */}
                   <Card nivel={2}>
                     <Inline gap={3} className="mb-4">
-                      <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                         <PiBookOpen className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
@@ -1269,7 +1267,7 @@ export default function WorkDetailsClient({
                   {/* ✅ Informações Técnicas - COM TRADUÇÕES */}
                   <Card nivel={2}>
                     <Inline gap={3} className="mb-4">
-                      <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                         <PiGear className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">

@@ -204,17 +204,17 @@ export const formatPeriodLabel = (period: string): string => {
 };
 
 export const getProgressColor = (percentage: number): string => {
-  if (percentage >= 80) return 'text-ok';
-  if (percentage >= 60) return 'text-aviso';
-  if (percentage >= 40) return 'text-atencao';
-  return 'text-erro';
+  if (percentage >= 80) return '';
+  if (percentage >= 60) return '';
+  if (percentage >= 40) return '';
+  return '';
 };
 
 export const getProgressBgColor = (percentage: number): string => {
-  if (percentage >= 80) return 'bg-ok/10 border-ok/30';
-  if (percentage >= 60) return 'bg-aviso/10 border-aviso/30';
-  if (percentage >= 40) return 'bg-atencao/10 border-atencao/30';
-  return 'bg-erro/10 border-erro/30';
+  if (percentage >= 80) return '';
+  if (percentage >= 60) return '';
+  if (percentage >= 40) return '';
+  return '';
 };
 
 export const getStreakEmoji = (streakDays: number): string => {

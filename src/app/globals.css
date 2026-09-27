@@ -24,13 +24,6 @@
   --color-atencao: var(--atencao);
   --color-aviso: var(--aviso);
 
-  /* Superfícies como cor chapada, para quem precisa de opacidade ou variante
-     (`hover:bg-sup-2`, `bg-sup-1/60`). O degradê fica em `.sup-*`/`.fundo-sup-*`. */
-  --color-sup-1: var(--sup-1-b);
-  --color-sup-2: var(--sup-2-b);
-  --color-sup-elevada: var(--sup-2-a);
-  --color-veu: var(--bg-overlay);
-
   --radius-controle: var(--r-controle);
   --radius-card: var(--r-card);
   --radius-folha: var(--r-folha);
@@ -761,18 +754,8 @@ body {
   display: inline-block;
 }
 
-.text-brand-primary {
-  /* Letra dourada usa o ouro de texto, não o de marca: o `#d4af37` dava
-     2,00:1 no creme. `--brand-primary` fica para fundo e borda. */
-  color: var(--ouro-texto);
-}
-
 .border-color-primary {
   border-color: var(--brand-primary);
-}
-
-.text-brand-secondary {
-  color: var(--brand-secondary);
 }
 
 /* Ícones com efeito de brilho */

@@ -203,7 +203,7 @@ const AudioPlayerComponent = (props: any) => {
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <div className="border rounded-lg classical-card-simple border-ouro/40 shadow-md overflow-hidden">
+      <div className="rounded-lg classical-card-simple border-l-4 shadow-md overflow-hidden">
         {/* Controles de Edição */}
         {showControls && (
           <Inline
@@ -212,7 +212,7 @@ const AudioPlayerComponent = (props: any) => {
           >
             <button
               onClick={handleDelete}
-              className="p-2 text-erro hover:bg-erro/10 rounded transition-colors"
+              className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
               title="Remover"
             >
               <PiTrash className="w-4 h-4" />
@@ -223,7 +223,7 @@ const AudioPlayerComponent = (props: any) => {
         <div className="p-6">
           {/* Header */}
           <Inline gap={3} className="mb-4">
-            <div className="w-14 h-14 fill-ouro rounded-lg flex items-center justify-center shadow-md">
+            <div className="w-14 h-14 rounded-lg flex items-center justify-center shadow-md">
               <PiMusicNotes className="w-7 h-7 text-white" />
             </div>
 
@@ -238,7 +238,7 @@ const AudioPlayerComponent = (props: any) => {
                       <Link
                         href={`/composer/${composerId}`}
                         target="_blank"
-                        className="text-ouro-texto hover:underline"
+                        className="hover:underline"
                       >
                         {composerName}
                       </Link>
@@ -255,7 +255,7 @@ const AudioPlayerComponent = (props: any) => {
                       <Link
                         href={`/works/${workId}`}
                         target="_blank"
-                        className="text-ouro-texto hover:underline"
+                        className="hover:underline"
                       >
                         {workTitle}
                       </Link>
@@ -278,7 +278,7 @@ const AudioPlayerComponent = (props: any) => {
                   e.preventDefault();
                   togglePlay(e);
                 }}
-                className="p-3 bg-ouro text-sobre-ouro rounded-full hover:opacity-90 transition-opacity shadow-md"
+                className="p-3 text-white rounded-full hover:opacity-90 transition-opacity shadow-md"
               >
                 {isPlaying ? (
                   <PiPause className="w-6 h-6" />

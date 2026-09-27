@@ -82,27 +82,21 @@ export default function RefreshIndicator({
         disabled={disabled || isRefreshing}
         className={`
           ${currentSize.button} 
-          rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group relative
-          ${
-            disabled || isRefreshing
-              ? 'opacity-50 cursor-not-allowed'
-              : 'hover:bg-ouro/10'
-          }
+          rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group relative
+          ${disabled || isRefreshing ? 'opacity-50 cursor-not-allowed' : ''}
         `}
         title={isRefreshing ? 'Atualizando...' : 'Atualizar dados'}
       >
         {/* Estado de erro */}
         {error && !isRefreshing ? (
-          <PiX className={`${currentSize.icon} text-erro`} />
+          <PiX className={`${currentSize.icon}`} />
         ) : showSuccess ? (
-          <PiCheck className={`${currentSize.icon} text-ok`} />
+          <PiCheck className={`${currentSize.icon}`} />
         ) : (
           <PiArrowsClockwise
             className={`
-              ${
-                currentSize.icon
-              } text-theme-tertiary group-hover:text-ouro-texto transition-all ${
-                isRefreshing ? 'animate-spin text-brand-primary' : ''
+              ${currentSize.icon} text-theme-tertiary transition-all ${
+                isRefreshing ? 'animate-spin text-ouro-texto' : ''
               }
             `}
           />
@@ -110,8 +104,8 @@ export default function RefreshIndicator({
 
         {/* Loading overlay */}
         {isRefreshing && (
-          <div className="absolute inset-0 bg-sup-elevada/80 rounded-lg flex items-center justify-center">
-            <div className="w-2 h-2 bg-ouro rounded-full animate-pulse"></div>
+          <div className="absolute inset-0 rounded-lg flex items-center justify-center">
+            <div className="w-2 h-2 rounded-full animate-pulse"></div>
           </div>
         )}
       </button>
@@ -125,9 +119,9 @@ export default function RefreshIndicator({
             {isRefreshing ? (
               'Atualizando...'
             ) : error ? (
-              <span className="text-erro">Erro ao atualizar</span>
+              <span className="">Erro ao atualizar</span>
             ) : showSuccess ? (
-              <span className="text-ok">Atualizado!</span>
+              <span className="">Atualizado!</span>
             ) : lastUpdated ? (
               `Atualizado ${formatRelativeTime(lastUpdated)}`
             ) : (
@@ -136,11 +130,7 @@ export default function RefreshIndicator({
           </span>
 
           {/* Error message */}
-          {error && (
-            <span className={`${currentSize.text} text-erro mt-1`}>
-              {error}
-            </span>
-          )}
+          {error && <span className={`${currentSize.text} mt-1`}>{error}</span>}
         </div>
       )}
     </div>
@@ -166,10 +156,8 @@ export function RefreshButton({
       onClick={onRefresh}
       disabled={disabled || isRefreshing}
       className={`
-        w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group ${
-          disabled || isRefreshing
-            ? 'opacity-50 cursor-not-allowed'
-            : 'hover:bg-ouro/10'
+        w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group ${
+          disabled || isRefreshing ? 'opacity-50 cursor-not-allowed' : ''
         }
         ${className}
       `}
@@ -182,12 +170,12 @@ export function RefreshButton({
       }
     >
       {error && !isRefreshing ? (
-        <PiX className="w-4 h-4 text-erro" />
+        <PiX className="w-4 h-4" />
       ) : (
         <PiArrowsClockwise
           className={`
-            w-4 h-4 text-theme-tertiary group-hover:text-ouro-texto transition-all ${
-              isRefreshing ? 'animate-spin text-brand-primary' : ''
+            w-4 h-4 text-theme-tertiary transition-all ${
+              isRefreshing ? 'animate-spin text-ouro-texto' : ''
             }
           `}
         />

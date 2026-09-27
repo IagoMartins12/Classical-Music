@@ -238,9 +238,9 @@ export default function CreateCampaignModal({
                   key={step.id}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-lg cursor-pointer transition-colors whitespace-nowrap ${
                     currentStep === step.id
-                      ? 'bg-ouro text-sobre-ouro'
+                      ? 'text-white'
                       : currentStep > step.id
-                        ? 'bg-ok text-white'
+                        ? 'bg-green-700 text-white'
                         : 'bg-theme-secondary text-theme-tertiary'
                   }`}
                   onClick={() => setCurrentStep(step.id)}
@@ -343,9 +343,7 @@ export default function CreateCampaignModal({
                         }))
                       }
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        form.useCustomTemplate
-                          ? 'bg-ouro'
-                          : 'bg-theme-secondary'
+                        form.useCustomTemplate ? '' : 'bg-theme-secondary'
                       }`}
                     >
                       <span
@@ -412,7 +410,7 @@ export default function CreateCampaignModal({
                                   {selectedTemplate.name}
                                 </h5>
                                 {selectedTemplate.isDefault && (
-                                  <span className="px-2 py-1 bg-atencao/10 text-atencao rounded-full text-xs flex items-center">
+                                  <span className="px-2 py-1 rounded-full text-xs flex items-center">
                                     <PiStar className="w-3 h-3 mr-1" />
                                     Padrão
                                   </span>
@@ -562,8 +560,8 @@ export default function CreateCampaignModal({
                 </div>
 
                 {selectedTemplate && (
-                  <div className="p-4 bg-aviso/10 border border-aviso/20 rounded-lg">
-                    <p className="text-sm text-aviso">
+                  <div className="p-4 border rounded-lg">
+                    <p className="text-sm">
                       <strong>💡 Configurações do Template:</strong> As
                       configurações acima sobrescreverão as configurações padrão
                       do template selecionado.
@@ -593,7 +591,7 @@ export default function CreateCampaignModal({
                             status: 'DRAFT',
                           }))
                         }
-                        className="text-brand-primary"
+                        className="text-ouro-texto"
                       />
                       <span>
                         Salvar como rascunho (enviar manualmente depois)
@@ -658,35 +656,30 @@ export default function CreateCampaignModal({
                     <Inline as="label" gap={3}>
                       <Checkbox
                         type="checkbox"
-                        className="rounded border-theme-primary text-brand-primary"
+                        className="rounded border-theme-primary text-ouro-texto"
                       />
                       <span>Apenas novos subscribers (últimos 30 dias)</span>
                     </Inline>
                     <Inline as="label" gap={3}>
                       <Checkbox
                         type="checkbox"
-                        className="rounded border-theme-primary text-brand-primary"
+                        className="rounded border-theme-primary text-ouro-texto"
                       />
                       <span>Subscribers com alto engajamento</span>
                     </Inline>
                     <Inline as="label" gap={3}>
                       <Checkbox
                         type="checkbox"
-                        className="rounded border-theme-primary text-brand-primary"
+                        className="rounded border-theme-primary text-ouro-texto"
                       />
                       <span>Específicos interesses musicais</span>
                     </Inline>
                   </Stack>
                 </div>
 
-                <Stack
-                  gap={2}
-                  className="p-4 bg-aviso/10 border border-aviso/20 rounded-lg"
-                >
-                  <h4 className="font-medium text-aviso">
-                    📊 Estimativa de Alcance
-                  </h4>
-                  <p className="text-sm text-aviso/80">
+                <Stack gap={2} className="p-4 border rounded-lg">
+                  <h4 className="font-medium">📊 Estimativa de Alcance</h4>
+                  <p className="text-sm">
                     Com as configurações atuais, esta campanha será enviada para
                     aproximadamente <strong>todos os subscribers ativos</strong>
                     .
@@ -764,7 +757,7 @@ export default function CreateCampaignModal({
               </h3>
               <button
                 onClick={() => setShowPreview(false)}
-                className="text-theme-tertiary hover:text-texto transition-colors"
+                className="text-theme-tertiary transition-colors"
               >
                 <PiX className="w-6 h-6" />
                 <NomeAcao acao="fechar" />

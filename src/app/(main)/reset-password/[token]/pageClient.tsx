@@ -131,24 +131,24 @@ export default function ResetPasswordPage() {
     if (minutesLeft > 30) {
       return {
         text: t('time_minutes').replace('{count}', minutesLeft.toString()),
-        color: 'text-ok',
+        color: '',
       };
     } else if (minutesLeft > 10) {
       return {
         text: t('time_minutes').replace('{count}', minutesLeft.toString()),
-        color: 'text-atencao',
+        color: '',
       };
     } else {
       return {
         text: t('time_minutes').replace('{count}', minutesLeft.toString()),
-        color: 'text-erro',
+        color: '',
       };
     }
   };
 
   const renderValidatingStep = () => (
     <div className="text-center">
-      <div className="w-20 h-20 fill-ouro rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
+      <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
         <PiSpinnerGap className="w-10 h-10 text-white animate-spin" />
       </div>
       <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -168,7 +168,7 @@ export default function ResetPasswordPage() {
     return (
       <>
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-erro rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             <PiLock className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-theme-primary classical-title mb-2">
@@ -214,7 +214,7 @@ export default function ResetPasswordPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Erro geral */}
           {error && (
-            <div className="p-3 rounded-lg bg-erro/10 border border-erro text-erro text-sm">
+            <div className="p-3 rounded-lg border text-sm">
               <div className="flex items-center">
                 <PiWarningCircle className="w-4 h-4 mr-2 flex-shrink-0" />
                 <span>{error}</span>
@@ -235,7 +235,7 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-theme-tertiary hover:text-texto"
+                  className="text-theme-tertiary"
                 >
                   {showPassword ? (
                     <PiEyeSlash className="w-4 h-4" />
@@ -268,21 +268,21 @@ export default function ResetPasswordPage() {
                   <div
                     className={`h-full rounded-full transition-all duration-300 ${
                       passwordStrength.score <= 2
-                        ? 'bg-erro'
+                        ? ''
                         : passwordStrength.score <= 3
-                          ? 'bg-atencao'
+                          ? ''
                           : passwordStrength.score <= 4
-                            ? 'bg-aviso'
-                            : 'bg-ok'
+                            ? ''
+                            : ''
                     }`}
                     style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
                   ></div>
                 </div>
                 {passwordStrength.errors.length > 0 && (
-                  <ul className="mt-2 text-xs text-erro space-y-1">
+                  <ul className="mt-2 text-xs space-y-1">
                     {passwordStrength.errors.map((error, index) => (
                       <li key={index} className="flex items-center">
-                        <span className="w-1 h-1 bg-erro rounded-full mr-2"></span>
+                        <span className="w-1 h-1 rounded-full mr-2"></span>
                         {error}
                       </li>
                     ))}
@@ -305,7 +305,7 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="text-theme-tertiary hover:text-texto"
+                  className="text-theme-tertiary"
                 >
                   {showConfirmPassword ? (
                     <PiEyeSlash className="w-4 h-4" />
@@ -327,14 +327,9 @@ export default function ResetPasswordPage() {
           </div>
 
           {/* Dicas de Segurança */}
-          <Stack
-            gap={2}
-            className="bg-aviso/10 border border-aviso rounded-lg p-4"
-          >
-            <h4 className="text-sm font-medium text-aviso">
-              {t('security_tips_title')}
-            </h4>
-            <ul className="text-xs text-aviso opacity-80 space-y-1">
+          <Stack gap={2} className="border rounded-lg p-4">
+            <h4 className="text-sm font-medium">{t('security_tips_title')}</h4>
+            <ul className="text-xs opacity-80 space-y-1">
               <li>{t('security_tip_1')}</li>
               <li>{t('security_tip_2')}</li>
               <li>{t('security_tip_3')}</li>
@@ -359,7 +354,7 @@ export default function ResetPasswordPage() {
         <div className="mt-6 text-center">
           <Link
             href="/"
-            className="text-sm text-theme-tertiary hover:text-ouro-texto transition-colors"
+            className="text-sm text-theme-tertiary transition-colors"
           >
             {t('back_to_login_link')}
           </Link>
@@ -370,7 +365,7 @@ export default function ResetPasswordPage() {
 
   const renderSuccessStep = () => (
     <div className="text-center">
-      <div className="w-20 h-20 bg-ok rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-bounce">
+      <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-bounce">
         <PiCheckCircle className="w-10 h-10 text-white" />
       </div>
       <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -380,11 +375,9 @@ export default function ResetPasswordPage() {
         {t('success_subtitle')}
       </p>
 
-      <Stack gap={2} className="bg-ok/10 border border-ok rounded-xl p-6 mb-8">
-        <h3 className="text-xl font-semibold text-ok">
-          {t('success_all_done')}
-        </h3>
-        <p className="text-ok opacity-80">{t('success_description')}</p>
+      <Stack gap={2} className="border rounded-xl p-6 mb-8">
+        <h3 className="text-xl font-semibold">{t('success_all_done')}</h3>
+        <p className="opacity-80">{t('success_description')}</p>
       </Stack>
 
       <div className="grid md:grid-cols-2 gap-4">
@@ -411,7 +404,7 @@ export default function ResetPasswordPage() {
 
   const renderErrorStep = () => (
     <div className="text-center">
-      <div className="w-20 h-20 bg-erro rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
+      <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
         <PiWarningCircle className="w-10 h-10 text-white" />
       </div>
       <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -421,17 +414,14 @@ export default function ResetPasswordPage() {
         {getErrorMessage(pageState.errorCode)}
       </p>
 
-      <Stack
-        gap={3}
-        className="bg-erro/10 border border-erro rounded-xl p-6 mb-8"
-      >
+      <Stack gap={3} className="border rounded-xl p-6 mb-8">
         <div className="flex items-center justify-center">
-          <PiWarningCircle className="w-5 h-5 text-erro mr-2" />
-          <span className="font-medium text-erro">
+          <PiWarningCircle className="w-5 h-5 mr-2" />
+          <span className="font-medium">
             {getErrorTitle(pageState.errorCode)}
           </span>
         </div>
-        <p className="text-erro opacity-80 text-sm">
+        <p className="opacity-80 text-sm">
           {getErrorDescription(pageState.errorCode)}
         </p>
       </Stack>
@@ -514,13 +504,13 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-fundo flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-10 -left-10 w-40 h-40 opacity-10 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-10 -right-10 w-60 h-60 opacity-10 rounded-full blur-3xl"></div>
-        <GiGrandPiano className="absolute top-20 right-20 w-12 h-12 text-brand-primary opacity-5 rotate-12" />
-        <GiGrandPiano className="absolute bottom-20 left-20 w-16 h-16 text-ouro-texto opacity-5 -rotate-12" />
+        <GiGrandPiano className="absolute top-20 right-20 w-12 h-12 text-ouro-texto opacity-5 rotate-12" />
+        <GiGrandPiano className="absolute bottom-20 left-20 w-16 h-16 opacity-5 -rotate-12" />
       </div>
 
       <div className="relative w-full max-w-2xl">
@@ -529,7 +519,7 @@ export default function ResetPasswordPage() {
           <div className="text-center mb-8">
             <Link href="/" className="inline-flex items-center group mb-6">
               <div className="relative">
-                <GiGrandPiano className="w-10 h-10 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
+                <GiGrandPiano className="w-10 h-10 mr-3 text-ouro-texto icon-glow transition-all duration-300 group-hover:scale-110" />
               </div>
               <span className="text-2xl font-bold text-gradient-brand classical-title">
                 Opus Atlas
@@ -544,10 +534,7 @@ export default function ResetPasswordPage() {
           <div className="mt-12 pt-8 border-t border-theme-secondary text-center">
             <Text papel="rotulo" tom="fraco" as="p">
               {t('need_help')}{' '}
-              <Link
-                href="/support"
-                className="text-brand-primary hover:underline"
-              >
+              <Link href="/support" className="text-ouro-texto hover:underline">
                 {t('contact_support')}
               </Link>
             </Text>

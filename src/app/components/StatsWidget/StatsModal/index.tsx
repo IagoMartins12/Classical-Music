@@ -61,19 +61,19 @@ export default function StatsModal({
   // Cores por categoria
   const categoryColors = {
     favorites: {
-      gradient: 'fill-ouro',
-      accent: 'text-brand-primary',
-      bg: 'bg-ouro/10',
+      gradient: '',
+      accent: 'text-ouro-texto',
+      bg: '',
     },
     learning: {
-      gradient: 'bg-ok',
-      accent: 'text-ok',
-      bg: 'bg-ok/10',
+      gradient: '',
+      accent: '',
+      bg: '',
     },
     annotations: {
-      gradient: 'fill-ouro',
-      accent: 'text-ouro-texto',
-      bg: 'bg-ouro/10',
+      gradient: '',
+      accent: '',
+      bg: '',
     },
   };
 
@@ -179,7 +179,7 @@ export default function StatsModal({
         <AnimatedCard
           hover="none"
           className={`
-            border h-full bg-theme-elevated 
+            h-full bg-theme-elevated border-t-4 border-l-4 border-r-4 
             ${
               colors.gradient
                 .replace('from-', 'border-')
@@ -193,7 +193,7 @@ export default function StatsModal({
           {/* Header */}
           <div className="flex-shrink-0 p-4 pb-2">
             {/* Drag Handle */}
-            <div className="w-12 h-1.5 bg-sup-2/30 rounded-full mx-auto mb-4" />
+            <div className="w-12 h-1.5 rounded-full mx-auto mb-4" />
 
             <div className="flex items-center justify-between">
               <Inline gap={3}>
@@ -214,7 +214,7 @@ export default function StatsModal({
                 {/* Action Buttons */}
                 <button
                   onClick={handleShare}
-                  className="w-10 h-10 bg-theme-secondary rounded-xl flex items-center justify-center hover:bg-fundo transition-colors"
+                  className="w-10 h-10 bg-theme-secondary rounded-xl flex items-center justify-center transition-colors"
                 >
                   <PiShareNetwork className="w-4 h-4 text-theme-tertiary" />
                   <NomeAcao acao="compartilhar" />
@@ -222,7 +222,7 @@ export default function StatsModal({
 
                 <button
                   onClick={() => setIsFullscreen(!isFullscreen)}
-                  className="w-10 h-10 bg-theme-secondary rounded-xl flex items-center justify-center hover:bg-fundo transition-colors"
+                  className="w-10 h-10 bg-theme-secondary rounded-xl flex items-center justify-center transition-colors"
                 >
                   {isFullscreen ? (
                     <PiArrowsIn className="w-4 h-4 text-theme-tertiary" />
@@ -233,9 +233,9 @@ export default function StatsModal({
 
                 <button
                   onClick={onClose}
-                  className="w-10 h-10 bg-theme-secondary rounded-xl flex items-center justify-center hover:bg-erro/20 transition-colors group"
+                  className="w-10 h-10 bg-theme-secondary rounded-xl flex items-center justify-center transition-colors group"
                 >
-                  <PiX className="w-4 h-4 text-theme-tertiary group-hover:text-erro" />
+                  <PiX className="w-4 h-4 text-theme-tertiary" />
                   <NomeAcao acao="fechar" />
                 </button>
               </Inline>
@@ -249,13 +249,13 @@ export default function StatsModal({
 
           {/* Footer Actions (visible only when not fullscreen) */}
           {!isFullscreen && (
-            <div className="flex-shrink-0 p-4 pt-2 border-t border-linha/20">
+            <div className="flex-shrink-0 p-4 pt-2 border-t">
               <div className="grid grid-cols-2 gap-3">
                 <Inline
                   as="button"
                   gap={2}
                   onClick={handleDownload}
-                  className="justify-center py-3 bg-theme-secondary rounded-xl hover:bg-fundo transition-colors"
+                  className="justify-center py-3 bg-theme-secondary rounded-xl transition-colors"
                 >
                   <PiDownloadSimple className="w-4 h-4 text-theme-tertiary" />
                   <Text papel="rotulo" tom="fraco">

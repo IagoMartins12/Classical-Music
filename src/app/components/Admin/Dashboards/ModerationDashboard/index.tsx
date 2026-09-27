@@ -181,13 +181,13 @@ export default function ModerationDashboard() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'text-atencao bg-atencao/10';
+        return '';
       case 'approved':
-        return 'text-ok bg-ok/10';
+        return '';
       case 'rejected':
-        return 'text-erro bg-erro/10';
+        return '';
       case 'flagged':
-        return 'text-ouro-texto bg-ouro/10';
+        return '';
       default:
         return 'text-theme-tertiary bg-theme-secondary';
     }
@@ -196,11 +196,11 @@ export default function ModerationDashboard() {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'urgent':
-        return 'text-erro';
+        return '';
       case 'high':
-        return 'text-atencao';
+        return '';
       case 'normal':
-        return 'text-aviso';
+        return '';
       case 'low':
         return 'text-theme-tertiary';
       default:
@@ -259,7 +259,7 @@ export default function ModerationDashboard() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiShield className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -423,14 +423,11 @@ export default function ModerationDashboard() {
               </h3>
             </div>
 
-            <div className="divide-y divide-linha">
+            <div className="divide-y">
               {filteredItems.map((item) => {
                 const TypeIcon = getTypeIcon(item.type);
                 return (
-                  <div
-                    key={item.id}
-                    className="p-6 hover:bg-sup-1/50 transition-colors"
-                  >
+                  <div key={item.id} className="p-6 transition-colors">
                     <div className="flex items-start space-x-4">
                       {/* Checkbox */}
                       <div className="pt-1">
@@ -446,12 +443,12 @@ export default function ModerationDashboard() {
                             }
                             setSelectedItems(newSelected);
                           }}
-                          className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-ouro focus:ring-2"
+                          className="w-4 h-4 text-ouro-texto bg-theme-secondary border-theme-primary rounded focus:ring-2"
                         />
                       </div>
 
                       {/* Type Icon */}
-                      <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
                         <TypeIcon className="w-5 h-5 text-theme-primary" />
                       </div>
 
@@ -494,8 +491,8 @@ export default function ModerationDashboard() {
 
                               {item.reportCount > 0 && (
                                 <Inline gap={1}>
-                                  <PiFlag className="w-3 h-3 text-erro" />
-                                  <span className="text-xs text-erro font-medium">
+                                  <PiFlag className="w-3 h-3" />
+                                  <span className="text-xs font-medium">
                                     {item.reportCount} reports
                                   </span>
                                 </Inline>
@@ -543,7 +540,7 @@ export default function ModerationDashboard() {
                                 {item.issues.map((issue, index) => (
                                   <span
                                     key={index}
-                                    className="px-2 py-1 bg-atencao/10 text-atencao text-xs rounded-lg"
+                                    className="px-2 py-1 text-xs rounded-lg"
                                   >
                                     {issue}
                                   </span>
@@ -575,7 +572,7 @@ export default function ModerationDashboard() {
                               size="sm"
                               leftIcon={<PiCheck />}
                               onClick={() => handleApprove(item.id)}
-                              className="text-ok hover:bg-ok/10"
+                              className=""
                             >
                               Aprovar
                             </Button>
@@ -584,7 +581,7 @@ export default function ModerationDashboard() {
                               size="sm"
                               leftIcon={<PiX />}
                               onClick={() => handleReject(item.id)}
-                              className="text-erro hover:bg-erro/10"
+                              className=""
                             >
                               Rejeitar
                             </Button>
@@ -628,7 +625,7 @@ export default function ModerationDashboard() {
               gap={2}
               className="text-xl font-bold text-theme-primary mb-6"
             >
-              <PiTarget className="w-5 h-5 text-ok" />
+              <PiTarget className="w-5 h-5" />
               <span>Top Moderadores</span>
             </Inline>
             <Stack>
@@ -642,7 +639,7 @@ export default function ModerationDashboard() {
                     papel="rotulo"
                     tom="forte"
                     as="div"
-                    className="w-8 h-8 bg-ok rounded-lg flex items-center justify-center font-bold"
+                    className="w-8 h-8 rounded-lg flex items-center justify-center font-bold"
                   >
                     {index + 1}
                   </Text>
@@ -667,7 +664,7 @@ export default function ModerationDashboard() {
               gap={2}
               className="text-xl font-bold text-theme-primary mb-6"
             >
-              <PiTrendUp className="w-5 h-5 text-aviso" />
+              <PiTrendUp className="w-5 h-5" />
               <span>Métricas de Qualidade</span>
             </Inline>
             <Stack>
@@ -676,7 +673,7 @@ export default function ModerationDashboard() {
                   <Text papel="rotulo" tom="forte" className="font-medium">
                     Taxa de Aprovação Geral
                   </Text>
-                  <span className="text-2xl font-bold text-ok">
+                  <span className="text-2xl font-bold">
                     {(
                       ((stats?.approved || 0) / (stats?.processed || 1)) *
                       100
@@ -686,7 +683,7 @@ export default function ModerationDashboard() {
                 </div>
                 <div className="w-full bg-theme-primary h-2 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-ok rounded-full"
+                    className="h-full rounded-full"
                     style={{
                       width: `${
                         ((stats?.approved || 0) / (stats?.processed || 1)) * 100
@@ -698,7 +695,7 @@ export default function ModerationDashboard() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-theme-secondary rounded-xl">
-                  <div className="text-lg font-bold text-aviso">
+                  <div className="text-lg font-bold">
                     {stats?.avgProcessingTime.toFixed(1)}h
                   </div>
                   <Text papel="legenda" tom="fraco" as="div">
@@ -706,9 +703,7 @@ export default function ModerationDashboard() {
                   </Text>
                 </div>
                 <div className="text-center p-3 bg-theme-secondary rounded-xl">
-                  <div className="text-lg font-bold text-ouro-texto">
-                    {stats?.pending || 0}
-                  </div>
+                  <div className="text-lg font-bold">{stats?.pending || 0}</div>
                   <Text papel="legenda" tom="fraco" as="div">
                     Na Fila
                   </Text>

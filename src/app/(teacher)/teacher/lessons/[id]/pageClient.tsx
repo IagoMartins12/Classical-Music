@@ -639,15 +639,15 @@ export default function TeacherLessonDetailsPageClient({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return 'bg-ok/10 border-ok/30 text-ok';
+        return '';
       case 'CANCELLED':
-        return 'bg-erro/10 border-erro/30 text-erro';
+        return '';
       case 'NO_SHOW':
-        return 'bg-atencao/10 border-atencao/30 text-atencao';
+        return '';
       case 'SCHEDULED':
-        return 'bg-aviso/10 border-aviso/30 text-aviso';
+        return '';
       default:
-        return 'bg-sup-1/10 border-linha/30 text-theme-secondary';
+        return 'text-theme-secondary';
     }
   };
 
@@ -676,9 +676,7 @@ export default function TeacherLessonDetailsPageClient({
       onClick={handleSaveWorks}
       disabled={loading.update || !hasUnsavedChanges}
       className={`btn-classical-secondary flex items-center space-x-1 text-sm transition-all ${
-        hasUnsavedChanges
-          ? 'bg-atencao/10 border-atencao/30 text-atencao hover:bg-atencao/20'
-          : ''
+        hasUnsavedChanges ? '' : ''
       }`}
     >
       {loading.update ? (
@@ -704,7 +702,7 @@ export default function TeacherLessonDetailsPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiBookOpen className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -744,7 +742,7 @@ export default function TeacherLessonDetailsPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center">
-            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-ouro-texto mx-auto mb-4" />
             <p className="text-theme-secondary">
               {t('loading_lesson_details')}
             </p>
@@ -770,7 +768,7 @@ export default function TeacherLessonDetailsPageClient({
               <Inline gap={4}>
                 <Link
                   href="/teacher/lessons"
-                  className="w-10 h-10 rounded-lg bg-theme-elevated hover:bg-ouro/10 transition-colors flex items-center justify-center"
+                  className="w-10 h-10 rounded-lg bg-theme-elevated transition-colors flex items-center justify-center"
                 >
                   <PiArrowLeft className="w-5 h-5 text-theme-tertiary" />
                 </Link>
@@ -799,7 +797,7 @@ export default function TeacherLessonDetailsPageClient({
                   as="button"
                   gap={2}
                   onClick={() => setShowDeleteModal(true)}
-                  className="btn-classical-secondary text-erro border-erro/30 hover:bg-erro/10"
+                  className="btn-classical-secondary"
                 >
                   <PiTrash className="w-4 h-4" />
                   <span>{t('btn_delete')}</span>
@@ -1005,7 +1003,7 @@ export default function TeacherLessonDetailsPageClient({
                         gap={2}
                         className="bg-theme-elevated rounded-lg p-4"
                       >
-                        <Inline gap={2} className="text-aviso">
+                        <Inline gap={2} className="">
                           <PiRepeat className="w-4 h-4" />
                           <span className="font-medium">
                             {t('recurring_lesson_title')}
@@ -1022,11 +1020,8 @@ export default function TeacherLessonDetailsPageClient({
 
                     {/* Warning if lesson was cancelled */}
                     {lesson.status === 'CANCELLED' && (
-                      <Stack
-                        gap={2}
-                        className="bg-erro/10 border border-erro/30 rounded-lg p-4"
-                      >
-                        <Inline gap={2} className="text-erro">
+                      <Stack gap={2} className="border rounded-lg p-4">
+                        <Inline gap={2} className="">
                           <PiWarning className="w-4 h-4" />
                           <span className="font-medium">
                             {t('cancelled_lesson_title')}
@@ -1076,8 +1071,8 @@ export default function TeacherLessonDetailsPageClient({
                           className="bg-theme-elevated border border-theme-secondary rounded-lg p-4"
                         >
                           <Inline gap={3}>
-                            <div className="w-8 h-8 bg-aviso/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                              <PiMusicNotes className="w-4 h-4 text-aviso" />
+                            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <PiMusicNotes className="w-4 h-4" />
                             </div>
                             <div className="flex-1 min-w-0">
                               <Inline gap={2}>
@@ -1087,7 +1082,7 @@ export default function TeacherLessonDetailsPageClient({
                                 <Text
                                   papel="legenda"
                                   tom="suave"
-                                  className="bg-sup-1/20 px-2 py-0.5 rounded"
+                                  className="px-2 py-0.5 rounded"
                                 >
                                   #{index + 1}
                                 </Text>
@@ -1097,7 +1092,7 @@ export default function TeacherLessonDetailsPageClient({
                               </Text>
                               {work.scoreId && (
                                 <Inline gap={2} className="mt-2">
-                                  <Inline gap={1} className="text-xs text-ok">
+                                  <Inline gap={1} className="text-xs">
                                     <PiCheck className="w-3 h-3" />
                                     <span>Partitura: {work.scoreTitle}</span>
                                   </Inline>
@@ -1188,9 +1183,9 @@ export default function TeacherLessonDetailsPageClient({
                         />
                         <button
                           onClick={() => removeArrayField('objectives', index)}
-                          className="w-8 h-8 rounded-lg bg-erro/10 hover:bg-erro/20 transition-colors flex items-center justify-center"
+                          className="w-8 h-8 rounded-lg transition-colors flex items-center justify-center"
                         >
-                          <PiTrash className="w-4 h-4 text-erro" />
+                          <PiTrash className="w-4 h-4" />
                           <NomeAcao acao="excluir" />
                         </button>
                       </Inline>
@@ -1223,9 +1218,9 @@ export default function TeacherLessonDetailsPageClient({
                             setNewObjective('');
                           }
                         }}
-                        className="w-8 h-8 rounded-lg bg-ouro/10 hover:bg-ouro/20 transition-colors flex items-center justify-center"
+                        className="w-8 h-8 rounded-lg transition-colors flex items-center justify-center"
                       >
-                        <PiPlus className="w-4 h-4 text-brand-primary" />
+                        <PiPlus className="w-4 h-4 text-ouro-texto" />
                         <NomeAcao acao="adicionar" />
                       </button>
                     </Inline>
@@ -1235,7 +1230,7 @@ export default function TeacherLessonDetailsPageClient({
                     {lesson.objectives.length > 0 ? (
                       lesson.objectives.map((objective, index) => (
                         <div key={index} className="flex items-start space-x-2">
-                          <div className="w-2 h-2 bg-ouro rounded-full mt-2"></div>
+                          <div className="w-2 h-2 rounded-full mt-2"></div>
                           <span className="text-theme-secondary">
                             {objective}
                           </span>
@@ -1288,7 +1283,7 @@ export default function TeacherLessonDetailsPageClient({
                           as="button"
                           gap={1}
                           onClick={() => addArrayField('topics')}
-                          className="text-brand-primary text-sm"
+                          className="text-ouro-texto text-sm"
                         >
                           <PiPlus className="w-3 h-3" />
                           <span>{t('btn_add')}</span>
@@ -1319,9 +1314,9 @@ export default function TeacherLessonDetailsPageClient({
                                 onClick={() =>
                                   removeArrayField('topics', index)
                                 }
-                                className="w-6 h-6 rounded bg-erro/10 hover:bg-erro/20 transition-colors flex items-center justify-center"
+                                className="w-6 h-6 rounded transition-colors flex items-center justify-center"
                               >
-                                <PiX className="w-3 h-3 text-erro" />
+                                <PiX className="w-3 h-3" />
                                 <NomeAcao acao="fechar" />
                               </button>
                             )}
@@ -1356,9 +1351,9 @@ export default function TeacherLessonDetailsPageClient({
                                 setNewTopic('');
                               }
                             }}
-                            className="w-6 h-6 rounded bg-brand-primary/10 hover:bg-brand-primary/20 transition-colors flex items-center justify-center"
+                            className="w-6 h-6 rounded transition-colors flex items-center justify-center"
                           >
-                            <PiPlus className="w-3 h-3 text-brand-primary" />
+                            <PiPlus className="w-3 h-3 text-ouro-texto" />
                           </button> */}
                         {/* </div> */}
                       </Stack>
@@ -1368,7 +1363,7 @@ export default function TeacherLessonDetailsPageClient({
                           lesson.topics.map((topic, index) => (
                             <span
                               key={index}
-                              className="px-3 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded-full text-sm"
+                              className="px-3 py-1 border rounded-full text-sm"
                             >
                               {topic}
                             </span>
@@ -1392,7 +1387,7 @@ export default function TeacherLessonDetailsPageClient({
                           as="button"
                           gap={1}
                           onClick={() => addArrayField('techniques')}
-                          className="text-brand-primary text-sm"
+                          className="text-ouro-texto text-sm"
                         >
                           <PiPlus className="w-3 h-3" />
                           <span>{t('btn_add')}</span>
@@ -1423,9 +1418,9 @@ export default function TeacherLessonDetailsPageClient({
                                 onClick={() =>
                                   removeArrayField('techniques', index)
                                 }
-                                className="w-6 h-6 rounded bg-erro/10 hover:bg-erro/20 transition-colors flex items-center justify-center"
+                                className="w-6 h-6 rounded transition-colors flex items-center justify-center"
                               >
-                                <PiX className="w-3 h-3 text-erro" />
+                                <PiX className="w-3 h-3" />
                                 <NomeAcao acao="fechar" />
                               </button>
                             )}
@@ -1460,9 +1455,9 @@ export default function TeacherLessonDetailsPageClient({
                                 setNewTechnique('');
                               }
                             }}
-                            className="w-6 h-6 rounded bg-brand-primary/10 hover:bg-brand-primary/20 transition-colors flex items-center justify-center"
+                            className="w-6 h-6 rounded transition-colors flex items-center justify-center"
                           >
-                            <PiPlus className="w-3 h-3 text-brand-primary" />
+                            <PiPlus className="w-3 h-3 text-ouro-texto" />
                           </button> */}
                         {/* </div> */}
                       </Stack>
@@ -1472,7 +1467,7 @@ export default function TeacherLessonDetailsPageClient({
                           lesson.techniques.map((technique, index) => (
                             <span
                               key={index}
-                              className="px-3 py-1 bg-ouro/10 border border-ouro/30 text-ouro-texto rounded-full text-sm"
+                              className="px-3 py-1 border rounded-full text-sm"
                             >
                               {technique}
                             </span>
@@ -1605,7 +1600,7 @@ export default function TeacherLessonDetailsPageClient({
                         <h3 className="font-medium text-theme-primary">
                           {t('private_notes_section')}
                         </h3>
-                        <div className="bg-atencao/5 border border-atencao/20 rounded-lg p-4">
+                        <div className="border rounded-lg p-4">
                           <p className="text-theme-secondary whitespace-pre-wrap">
                             {lesson.teacherNotes}
                           </p>
@@ -1618,7 +1613,7 @@ export default function TeacherLessonDetailsPageClient({
                         <h3 className="font-medium text-theme-primary">
                           {t('public_notes_section')}
                         </h3>
-                        <div className="bg-aviso/5 border border-aviso/20 rounded-lg p-4">
+                        <div className="border rounded-lg p-4">
                           <p className="text-theme-secondary whitespace-pre-wrap">
                             {lesson.publicNotes}
                           </p>
@@ -1631,7 +1626,7 @@ export default function TeacherLessonDetailsPageClient({
                         <h3 className="font-medium text-theme-primary">
                           {t('lesson_summary_section')}
                         </h3>
-                        <div className="bg-ok/5 border border-ok/20 rounded-lg p-4">
+                        <div className="border rounded-lg p-4">
                           <p className="text-theme-secondary whitespace-pre-wrap">
                             {lesson.lessonSummary}
                           </p>
@@ -1644,7 +1639,7 @@ export default function TeacherLessonDetailsPageClient({
                         <h3 className="font-medium text-theme-primary">
                           {t('homework_section')}
                         </h3>
-                        <div className="bg-ouro/5 border border-ouro/20 rounded-lg p-4">
+                        <div className="border rounded-lg p-4">
                           <p className="text-theme-secondary whitespace-pre-wrap">
                             {lesson.homework}
                           </p>
@@ -1687,7 +1682,7 @@ export default function TeacherLessonDetailsPageClient({
                       />
                     </div>
                   ) : (
-                    <div className="w-16 h-16 fill-ouro rounded-full flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full flex items-center justify-center">
                       <PiUser className="w-8 h-8 text-theme-primary" />
                     </div>
                   )}
@@ -1752,10 +1747,10 @@ export default function TeacherLessonDetailsPageClient({
                       <Inline
                         gap={3}
                         key={work.workId}
-                        className="p-3 bg-sup-elevada/50 rounded-lg"
+                        className="p-3 rounded-lg"
                       >
-                        <div className="w-8 h-8 bg-aviso/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <PiMusicNotes className="w-4 h-4 text-aviso" />
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <PiMusicNotes className="w-4 h-4" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <Text
@@ -1775,20 +1770,20 @@ export default function TeacherLessonDetailsPageClient({
                             {work.composerName}
                           </Text>
                           {work.scoreId && (
-                            <p className="text-xs text-ok">{t('with_score')}</p>
+                            <p className="text-xs">{t('with_score')}</p>
                           )}
                         </div>
                         <Text
                           papel="legenda"
                           tom="suave"
-                          className="bg-sup-1/20 px-2 py-1 rounded"
+                          className="px-2 py-1 rounded"
                         >
                           #{index + 1}
                         </Text>
                       </Inline>
                     ))}
 
-                    <div className="mt-3 p-3 bg-ouro/5 border border-ouro/20 rounded-lg">
+                    <div className="mt-3 p-3 border rounded-lg">
                       <Text papel="legenda" tom="suave" as="div">
                         <div className="flex justify-between">
                           <span>{t('total_pieces')}</span>
@@ -1832,7 +1827,7 @@ export default function TeacherLessonDetailsPageClient({
                       gap={2}
                       onClick={() => handleQuickAction('absent')}
                       disabled={loading.attendance}
-                      className="w-full px-4 py-2 bg-atencao/10 border border-atencao/30 text-atencao rounded-lg hover:bg-atencao/20 transition-colors justify-center"
+                      className="w-full px-4 py-2 border rounded-lg transition-colors justify-center"
                     >
                       <PiUserMinus className="w-4 h-4" />
                       <span>{t('mark_absent')}</span>
@@ -1843,7 +1838,7 @@ export default function TeacherLessonDetailsPageClient({
                       gap={2}
                       onClick={() => handleQuickAction('complete')}
                       disabled={loading.update}
-                      className="w-full px-4 py-2 bg-ok/10 border border-ok/30 text-ok rounded-lg hover:bg-ok/20 transition-colors justify-center"
+                      className="w-full px-4 py-2 border rounded-lg transition-colors justify-center"
                     >
                       <PiCheck className="w-4 h-4" />
                       <span>{t('complete_lesson')}</span>
@@ -1854,7 +1849,7 @@ export default function TeacherLessonDetailsPageClient({
                       gap={2}
                       onClick={() => handleQuickAction('cancel')}
                       disabled={loading.update}
-                      className="w-full px-4 py-2 bg-erro/10 border border-erro/30 text-erro rounded-lg hover:bg-erro/20 transition-colors justify-center"
+                      className="w-full px-4 py-2 border rounded-lg transition-colors justify-center"
                     >
                       <PiX className="w-4 h-4" />
                       <span>{t('cancel_lesson')}</span>
@@ -1874,20 +1869,18 @@ export default function TeacherLessonDetailsPageClient({
 
                   <div
                     className={`p-4 rounded-lg ${
-                      lesson.studentPresent
-                        ? 'bg-ok/10 border border-ok/30'
-                        : 'bg-erro/10 border border-erro/30'
+                      lesson.studentPresent ? 'border' : 'border'
                     }`}
                   >
                     <Inline gap={2} className="mb-2">
                       {lesson.studentPresent ? (
-                        <PiCheck className="w-5 h-5 text-ok" />
+                        <PiCheck className="w-5 h-5" />
                       ) : (
-                        <PiX className="w-5 h-5 text-erro" />
+                        <PiX className="w-5 h-5" />
                       )}
                       <span
                         className={`font-medium ${
-                          lesson.studentPresent ? 'text-ok' : 'text-erro'
+                          lesson.studentPresent ? '' : ''
                         }`}
                       >
                         {lesson.studentPresent ? t('present') : t('absent')}
@@ -1928,7 +1921,7 @@ export default function TeacherLessonDetailsPageClient({
                   <h2 className="text-lg font-bold text-theme-primary mb-4">
                     {t('student_feedback_title')}
                   </h2>
-                  <div className="bg-aviso/5 border border-aviso/20 rounded-lg p-4">
+                  <div className="border rounded-lg p-4">
                     <p className="text-theme-secondary whitespace-pre-wrap">
                       {lesson.studentFeedback}
                     </p>
@@ -1945,19 +1938,19 @@ export default function TeacherLessonDetailsPageClient({
                 </h3>
                 <Text papel="rotulo" tom="suave" as="div" className="space-y-3">
                   <div className="flex items-start space-x-2">
-                    <PiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiTarget className="w-4 h-4 text-ouro-texto mt-0.5 flex-shrink-0" />
                     <p>{t('tip_define_objectives')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <PiMusicNotes className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiMusicNotes className="w-4 h-4 text-ouro-texto mt-0.5 flex-shrink-0" />
                     <p>{t('tip_link_pieces')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <PiFloppyDisk className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiFloppyDisk className="w-4 h-4 text-ouro-texto mt-0.5 flex-shrink-0" />
                     <p>{t('tip_save_changes')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <PiCheck className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <PiCheck className="w-4 h-4 text-ouro-texto mt-0.5 flex-shrink-0" />
                     <p>{t('tip_scores_reports')}</p>
                   </div>
                 </Text>
@@ -1979,26 +1972,24 @@ export default function TeacherLessonDetailsPageClient({
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center ${
                   quickActionType === 'present'
-                    ? 'bg-ok/10'
+                    ? ''
                     : quickActionType === 'absent'
-                      ? 'bg-atencao/10'
+                      ? ''
                       : quickActionType === 'complete'
-                        ? 'bg-ok/10'
-                        : 'bg-erro/10'
+                        ? ''
+                        : ''
                 }`}
               >
                 {quickActionType === 'present' && (
-                  <PiUserCheck className="w-6 h-6 text-ok" />
+                  <PiUserCheck className="w-6 h-6" />
                 )}
                 {quickActionType === 'absent' && (
-                  <PiUserMinus className="w-6 h-6 text-atencao" />
+                  <PiUserMinus className="w-6 h-6" />
                 )}
                 {quickActionType === 'complete' && (
-                  <PiCheck className="w-6 h-6 text-ok" />
+                  <PiCheck className="w-6 h-6" />
                 )}
-                {quickActionType === 'cancel' && (
-                  <PiX className="w-6 h-6 text-erro" />
-                )}
+                {quickActionType === 'cancel' && <PiX className="w-6 h-6" />}
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
@@ -2026,13 +2017,11 @@ export default function TeacherLessonDetailsPageClient({
               </div>
             )}
 
-            <div className="bg-aviso/10 border border-aviso/30 rounded-lg p-4 mb-6">
+            <div className="border rounded-lg p-4 mb-6">
               <div className="flex items-start space-x-3">
-                <PiInfo className="w-5 h-5 text-aviso mt-0.5" />
+                <PiInfo className="w-5 h-5 mt-0.5" />
                 <Stack gap={1} className="text-sm">
-                  <p className="font-medium text-aviso">
-                    {t('confirmation_title')}
-                  </p>
+                  <p className="font-medium">{t('confirmation_title')}</p>
                   <p className="text-theme-secondary">
                     {quickActionType === 'present' &&
                       t('present_confirmation_text')}
@@ -2060,9 +2049,7 @@ export default function TeacherLessonDetailsPageClient({
                 onClick={executeQuickAction}
                 disabled={loadingQuickAction}
                 className={`btn-classical-primary flex items-center space-x-2 ${
-                  quickActionType === 'cancel'
-                    ? 'bg-erro border-erro hover:bg-erro/90'
-                    : ''
+                  quickActionType === 'cancel' ? '' : ''
                 }`}
               >
                 {loadingQuickAction ? (
@@ -2097,8 +2084,8 @@ export default function TeacherLessonDetailsPageClient({
         <Modal isOpen onClose={() => setShowDeleteModal(false)} maxWidth="2xl">
           <Stack gap={6} className="p-6">
             <Inline gap={3}>
-              <div className="w-12 h-12 bg-erro/10 rounded-full flex items-center justify-center">
-                <PiTrash className="w-6 h-6 text-erro" />
+              <div className="w-12 h-12 rounded-full flex items-center justify-center">
+                <PiTrash className="w-6 h-6" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
@@ -2148,11 +2135,11 @@ export default function TeacherLessonDetailsPageClient({
               )}
             </Stack>
 
-            <div className="bg-erro/10 border border-erro/30 rounded-lg p-4">
+            <div className="border rounded-lg p-4">
               <div className="flex items-start space-x-3">
-                <PiWarning className="w-5 h-5 text-erro mt-0.5" />
+                <PiWarning className="w-5 h-5 mt-0.5" />
                 <Stack gap={1} className="text-sm">
-                  <p className="font-medium text-erro">
+                  <p className="font-medium">
                     {t('irreversible_action_title')}
                   </p>
                   <p className="text-theme-secondary">
@@ -2184,7 +2171,7 @@ export default function TeacherLessonDetailsPageClient({
                 gap={2}
                 onClick={handleDeleteLesson}
                 disabled={loading.delete}
-                className="btn-classical-primary bg-erro border-erro hover:bg-erro/90"
+                className="btn-classical-primary"
               >
                 {loading.delete ? (
                   <PiArrowsClockwise className="w-4 h-4 animate-spin" />

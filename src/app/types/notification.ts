@@ -161,7 +161,6 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     showInToast: boolean;
     showInBrowser: boolean;
     icon: string;
-    color: string;
     defaultExpiry?: number;
   }
 > = {
@@ -171,42 +170,36 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     showInToast: true,
     showInBrowser: true,
     icon: '🔔',
-    color: 'erro',
   },
   LESSON_TOMORROW: {
     priority: 'MEDIUM',
     showInToast: true,
     showInBrowser: false,
     icon: '📅',
-    color: 'atencao',
   },
   ASSIGNMENT_DUE_SOON: {
     priority: 'HIGH',
     showInToast: true,
     showInBrowser: true,
     icon: '📝',
-    color: 'erro',
   },
   ASSIGNMENT_DUE_TOMORROW: {
     priority: 'MEDIUM',
     showInToast: true,
     showInBrowser: false,
     icon: '📋',
-    color: 'atencao',
   },
   ASSIGNMENT_OVERDUE: {
     priority: 'HIGH',
     showInToast: true,
     showInBrowser: false,
     icon: '🚨',
-    color: 'erro',
   },
   LESSON_STATUS_PENDING: {
     priority: 'HIGH',
     showInToast: true,
     showInBrowser: false,
     icon: '⏰',
-    color: 'erro',
   },
 
   // 🆕 PARA ESTUDANTES
@@ -215,49 +208,42 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     showInToast: true,
     showInBrowser: false,
     icon: '💬',
-    color: 'aviso',
   },
   LESSON_CANCELLED_BY_TEACHER: {
     priority: 'HIGH',
     showInToast: true,
     showInBrowser: true,
     icon: '❌',
-    color: 'erro',
   },
   LESSON_RESCHEDULED_BY_TEACHER: {
     priority: 'HIGH',
     showInToast: true,
     showInBrowser: true,
     icon: '📅',
-    color: 'atencao',
   },
   LESSON_MARKED_NO_SHOW: {
     priority: 'HIGH',
     showInToast: true,
     showInBrowser: false,
     icon: '⚠️',
-    color: 'erro',
   },
   NEW_ASSIGNMENT_CREATED: {
     priority: 'MEDIUM',
     showInToast: true,
     showInBrowser: false,
     icon: '📋',
-    color: 'aviso',
   },
   ASSIGNMENT_UPDATED_BY_TEACHER: {
     priority: 'MEDIUM',
     showInToast: true,
     showInBrowser: false,
     icon: '✏️',
-    color: 'atencao',
   },
   NEW_LESSON_SCHEDULED: {
     priority: 'MEDIUM',
     showInToast: true,
     showInBrowser: false,
     icon: '📅',
-    color: 'ok',
   },
 
   // 🆕 PARA PROFESSORES
@@ -266,35 +252,30 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     showInToast: true,
     showInBrowser: false,
     icon: '📤',
-    color: 'aviso',
   },
   STUDENT_COMPLETED_ASSIGNMENT: {
     priority: 'MEDIUM',
     showInToast: true,
     showInBrowser: false,
     icon: '✅',
-    color: 'ok',
   },
   STUDENT_GAVE_LESSON_FEEDBACK: {
     priority: 'LOW',
     showInToast: true,
     showInBrowser: false,
     icon: '💭',
-    color: 'aviso',
   },
   STUDENT_INFORMED_ABSENCE: {
     priority: 'MEDIUM',
     showInToast: true,
     showInBrowser: false,
     icon: '🏃',
-    color: 'atencao',
   },
   STUDENT_REQUESTED_RESCHEDULE: {
     priority: 'MEDIUM',
     showInToast: true,
     showInBrowser: false,
     icon: '🔄',
-    color: 'atencao',
   },
 
   // ANTIGAS (manter compatibilidade)
@@ -303,28 +284,24 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     showInToast: true,
     showInBrowser: false,
     icon: '❌',
-    color: 'atencao',
   },
   ASSIGNMENT_FEEDBACK_NEEDED: {
     priority: 'MEDIUM',
     showInToast: true,
     showInBrowser: false,
     icon: '💬',
-    color: 'atencao',
   },
   ASSIGNMENT_COMPLETED: {
     priority: 'LOW',
     showInToast: true,
     showInBrowser: false,
     icon: '✅',
-    color: 'ok',
   },
   STUDENT_INVITE_PENDING: {
     priority: 'MEDIUM',
     showInToast: true,
     showInBrowser: false,
     icon: '👥',
-    color: 'atencao',
     defaultExpiry: 7,
   },
   STUDENT_MULTIPLE_LATE: {
@@ -332,21 +309,18 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     showInToast: true,
     showInBrowser: false,
     icon: '⚠️',
-    color: 'atencao',
   },
   NEW_STUDENT_FEEDBACK: {
     priority: 'LOW',
     showInToast: true,
     showInBrowser: false,
     icon: '📢',
-    color: 'aviso',
   },
   WEEKLY_REPORT_AVAILABLE: {
     priority: 'LOW',
     showInToast: false,
     showInBrowser: false,
     icon: '📊',
-    color: 'aviso',
     defaultExpiry: 7,
   },
   PRACTICE_REMINDER: {
@@ -354,14 +328,12 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     showInToast: true,
     showInBrowser: false,
     icon: '🎵',
-    color: 'aviso',
   },
   SYSTEM_MAINTENANCE: {
     priority: 'MEDIUM',
     showInToast: true,
     showInBrowser: true,
     icon: '🔧',
-    color: 'atencao',
     defaultExpiry: 3,
   },
   GENERAL_ANNOUNCEMENT: {
@@ -369,7 +341,6 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     showInToast: false,
     showInBrowser: false,
     icon: '📢',
-    color: 'aviso',
     defaultExpiry: 14,
   },
   STUDENT_DECLINED_INVITE: {
@@ -377,28 +348,24 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     showInToast: true,
     showInBrowser: false,
     icon: '❌',
-    color: 'atencao',
   },
   STUDENT_ACCEPTED_INVITE: {
     priority: 'LOW',
     showInToast: true,
     showInBrowser: false,
     icon: '✅',
-    color: 'ok',
   },
   WELCOME_NEW_STUDENT: {
     priority: 'LOW',
     showInToast: true,
     showInBrowser: false,
     icon: '🎓',
-    color: 'aviso',
   },
   WELCOME_NEW_TEACHER: {
     priority: 'LOW',
     showInToast: true,
     showInBrowser: false,
     icon: '🎉',
-    color: 'aviso',
   },
 };
 

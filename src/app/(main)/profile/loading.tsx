@@ -25,7 +25,7 @@ const ProfileSkeleton: React.FC = () => {
               <div className="h-3 w-8 bg-theme-secondary rounded" />
             </div>
             <div className="w-full bg-theme-secondary rounded-full h-2">
-              <div className="bg-ouro h-2 rounded-full w-1/5" />
+              <div className="h-2 rounded-full w-1/5" />
             </div>
           </Stack>
         </Card>

@@ -113,23 +113,23 @@ export default function RecentActivity() {
   const getStatusColor = (status?: string) => {
     switch (status) {
       case 'success':
-        return 'text-ok bg-ok/10';
+        return '';
       case 'warning':
-        return 'text-atencao bg-atencao/10';
+        return '';
       case 'error':
-        return 'text-erro bg-erro/10';
+        return '';
       default:
-        return 'text-aviso bg-aviso/10';
+        return '';
     }
   };
 
   const getActivityColor = (type: string) => {
-    if (type === 'UPLOAD') return 'text-aviso';
-    if (type.includes('FAVORITE')) return 'text-erro';
-    if (type.includes('ANNOTATION')) return 'text-ouro-texto';
-    if (type.includes('LEARNED')) return 'text-ok';
-    if (type === 'REPORT_UPLOAD') return 'text-atencao';
-    return 'text-aviso';
+    if (type === 'UPLOAD') return '';
+    if (type.includes('FAVORITE')) return '';
+    if (type.includes('ANNOTATION')) return '';
+    if (type.includes('LEARNED')) return '';
+    if (type === 'REPORT_UPLOAD') return '';
+    return '';
   };
 
   const formatTimeAgo = (date: Date) => {
@@ -182,7 +182,7 @@ export default function RecentActivity() {
           gap={3}
           className="text-xl lg:text-2xl font-bold text-theme-primary"
         >
-          <PiPulse className="w-5 h-5 lg:w-6 lg:h-6 text-aviso" />
+          <PiPulse className="w-5 h-5 lg:w-6 lg:h-6" />
           <span>Atividade Recente</span>
         </Inline>
 
@@ -210,15 +210,15 @@ export default function RecentActivity() {
       </div>
 
       {error && (
-        <div className="mb-4 p-4 bg-erro/10 border border-erro/20 rounded-xl">
-          <p className="text-erro text-sm">{error}. Exibindo dados em cache.</p>
+        <div className="mb-4 p-4 border rounded-xl">
+          <p className="text-sm">{error}. Exibindo dados em cache.</p>
         </div>
       )}
 
       <div className="space-y-3 max-h-96 overflow-y-auto">
         {loading && activities.length === 0 ? (
           <div className="text-center py-8">
-            <div className="animate-spin w-8 h-8 border-2 border-aviso border-t-transparent rounded-full mx-auto mb-4"></div>
+            <div className="animate-spin w-8 h-8 border-2 border-t-transparent rounded-full mx-auto mb-4"></div>
             <p className="text-theme-secondary">Carregando atividades...</p>
           </div>
         ) : activities.length > 0 ? (
@@ -233,7 +233,7 @@ export default function RecentActivity() {
                 springType="gentle"
                 delay={index * 0.05}
               >
-                <div className="flex items-start space-x-3 lg:space-x-4 p-3 lg:p-4 bg-theme-secondary rounded-xl hover:bg-fundo/50 transition-all cursor-pointer group">
+                <div className="flex items-start space-x-3 lg:space-x-4 p-3 lg:p-4 bg-theme-secondary rounded-xl transition-all cursor-pointer group">
                   <div
                     className={`w-8 h-8 lg:w-10 lg:h-10 rounded-xl flex items-center justify-center bg-theme-primary ${getActivityColor(
                       activity.type
@@ -302,7 +302,7 @@ export default function RecentActivity() {
                             className="mt-2"
                           >
                             {activity.metadata.error && (
-                              <span className="text-erro">
+                              <span className="">
                                 Erro: {activity.metadata.error}
                               </span>
                             )}
@@ -339,7 +339,7 @@ export default function RecentActivity() {
                                       : '/admin';
                               router.push(`${path}/${activity.target?.id}`);
                             }}
-                            className="text-aviso hover:bg-aviso/10"
+                            className=""
                           />
                         )}
 
@@ -352,7 +352,7 @@ export default function RecentActivity() {
                               e.stopPropagation();
                               router.push('/moderation');
                             }}
-                            className="text-atencao hover:bg-atencao/10"
+                            className=""
                           />
                         )}
                       </Inline>

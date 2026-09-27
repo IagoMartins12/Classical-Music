@@ -151,11 +151,11 @@ export default function AdvancedReports() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'ready':
-        return 'text-ok bg-ok/10';
+        return '';
       case 'generating':
-        return 'text-aviso bg-aviso/10';
+        return '';
       case 'failed':
-        return 'text-erro bg-erro/10';
+        return '';
       default:
         return 'text-theme-tertiary bg-theme-secondary';
     }
@@ -182,7 +182,7 @@ export default function AdvancedReports() {
         'Estatísticas completas de usuários ativos, novos registros, tipos de usuário e principais contribuidores',
       category: 'users',
       icon: PiUsers,
-      color: 'text-aviso',
+      color: '',
       metrics: [
         'Total de usuários',
         'Usuários ativos (30d)',
@@ -199,7 +199,7 @@ export default function AdvancedReports() {
         'Performance detalhada de obras, compositores, partituras e épocas mais populares',
       category: 'content',
       icon: PiMusicNotes,
-      color: 'text-ok',
+      color: '',
       metrics: [
         'Total de obras',
         'Compositores por época',
@@ -216,7 +216,7 @@ export default function AdvancedReports() {
         'Análise profunda de interação dos usuários com sessões de estudo, anotações e metas',
       category: 'engagement',
       icon: PiPulse,
-      color: 'text-ouro-texto',
+      color: '',
       metrics: [
         'Sessões de estudo',
         'Anotações por categoria',
@@ -232,7 +232,7 @@ export default function AdvancedReports() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <PiWarning className="w-16 h-16 text-erro mx-auto mb-4" />
+          <PiWarning className="w-16 h-16 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Relatórios
           </h2>
@@ -375,11 +375,11 @@ export default function AdvancedReports() {
 
         {/* 🔄 AVISO PARA PDF */}
         {selectedFormat === 'pdf' && (
-          <div className="mb-6 p-4 bg-aviso/10 border border-aviso/20 rounded-lg">
+          <div className="mb-6 p-4 border rounded-lg">
             <div className="flex items-start space-x-3">
-              <PiInfo className="w-5 h-5 text-aviso mt-0.5" />
+              <PiInfo className="w-5 h-5 mt-0.5" />
               <Stack gap={1}>
-                <h4 className="font-medium text-aviso">Sobre relatórios PDF</h4>
+                <h4 className="font-medium">Sobre relatórios PDF</h4>
                 <Text papel="rotulo" tom="suave" as="p">
                   Os relatórios PDF são gerados como páginas HTML otimizadas
                   para impressão. Após o download, use{' '}
@@ -398,11 +398,11 @@ export default function AdvancedReports() {
             return (
               <div
                 key={type.id}
-                className="p-4 bg-theme-secondary rounded-xl border-2 border-transparent hover:border-linha/20 transition-all"
+                className="p-4 bg-theme-secondary rounded-xl border-2 border-transparent transition-all"
               >
                 <div className="flex items-start space-x-4">
                   <div
-                    className={`w-12 h-12 rounded-xl flex items-center justify-center bg-fundo/10 ${type.color}`}
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center ${type.color}`}
                   >
                     <type.icon className="w-6 h-6" />
                   </div>
@@ -421,7 +421,7 @@ export default function AdvancedReports() {
                           papel="legenda"
                           tom="suave"
                           key={index}
-                          className="px-2 py-1 bg-fundo/10 rounded font-medium"
+                          className="px-2 py-1 rounded font-medium"
                         >
                           {metric}
                         </Text>
@@ -430,7 +430,7 @@ export default function AdvancedReports() {
                         <Text
                           papel="legenda"
                           tom="suave"
-                          className="px-2 py-1 bg-fundo/10 rounded font-medium"
+                          className="px-2 py-1 rounded font-medium"
                         >
                           +{type.metrics.length - 3} mais
                         </Text>
@@ -510,7 +510,7 @@ export default function AdvancedReports() {
                       <h4 className="font-medium text-theme-primary">
                         {result.name}
                         {isPdf && (
-                          <span className="ml-2 text-xs text-aviso bg-aviso/10 px-2 py-1 rounded">
+                          <span className="ml-2 text-xs px-2 py-1 rounded">
                             HTML→PDF
                           </span>
                         )}
@@ -580,7 +580,7 @@ export default function AdvancedReports() {
                           <PiTrash />
                         )
                       }
-                      className="text-erro hover:bg-erro/10"
+                      className=""
                       onClick={() => handleDeleteReport(result.id)}
                       disabled={isDeleting}
                     >
@@ -590,8 +590,8 @@ export default function AdvancedReports() {
                 </div>
 
                 {result.error && (
-                  <div className="mt-3 p-3 bg-erro/10 border border-erro rounded-lg">
-                    <p className="text-sm text-erro">
+                  <div className="mt-3 p-3 border rounded-lg">
+                    <p className="text-sm">
                       <PiWarning className="inline w-4 h-4 mr-2" />
                       {result.error}
                     </p>
@@ -655,7 +655,7 @@ export default function AdvancedReports() {
                 <div
                   className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                     metric.available
-                      ? 'text-ok bg-ok/10'
+                      ? ''
                       : 'text-theme-tertiary bg-theme-secondary'
                   }`}
                 >
@@ -674,7 +674,7 @@ export default function AdvancedReports() {
               <span
                 className={`px-2 py-1 rounded-full text-xs font-medium ${
                   metric.available
-                    ? 'text-ok bg-ok/10'
+                    ? ''
                     : 'text-theme-tertiary bg-theme-secondary'
                 }`}
               >
@@ -693,7 +693,7 @@ export default function AdvancedReports() {
                   <Text papel="rotulo" tom="forte" className="font-medium">
                     Valor Atual:
                   </Text>
-                  <span className="text-lg font-bold text-aviso">
+                  <span className="text-lg font-bold">
                     {typeof metric.currentValue === 'number'
                       ? formatNumber(metric.currentValue)
                       : metric.currentValue}
@@ -722,7 +722,7 @@ export default function AdvancedReports() {
           </h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-aviso">
+              <div className="text-2xl font-bold">
                 {formatNumber(stats.totalUsers)}
               </div>
               <Text papel="rotulo" tom="suave" as="div">
@@ -730,7 +730,7 @@ export default function AdvancedReports() {
               </Text>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-ok">
+              <div className="text-2xl font-bold">
                 {formatNumber(stats.totalWorks)}
               </div>
               <Text papel="rotulo" tom="suave" as="div">
@@ -739,7 +739,7 @@ export default function AdvancedReports() {
             </div>
 
             <div className="text-center">
-              <div className="text-2xl font-bold text-atencao">
+              <div className="text-2xl font-bold">
                 {formatNumber(stats.totalAnnotations)}
               </div>
               <Text papel="rotulo" tom="suave" as="div">
@@ -769,7 +769,7 @@ export default function AdvancedReports() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-12">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-ok rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiFileText className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -807,8 +807,8 @@ export default function AdvancedReports() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all ${
                   activeTab === tab.id
-                    ? 'fill-ouro text-theme-primary shadow-lg'
-                    : 'text-theme-tertiary hover:text-texto hover:bg-sup-1'
+                    ? 'text-theme-primary shadow-lg'
+                    : 'text-theme-tertiary'
                 }`}
               >
                 <tab.icon className="w-4 h-4" />

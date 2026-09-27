@@ -128,7 +128,7 @@ const RecentActivities = ({
           if (metadata?.submissionType === 'video') {
             return <PiVideoCamera className="w-4 h-4" />;
           } else if (metadata?.submissionType === 'file') {
-            return <PiFile className="w-4 h-4 text-aviso" />;
+            return <PiFile className="w-4 h-4 text-blue-600" />;
           }
           return <PiUploadSimple className="w-4 h-4" />;
         case 'WELCOME_NEW_STUDENT':
@@ -248,7 +248,7 @@ const RecentActivities = ({
       <AnimatedCard className={`classical-card p-6 ${className}`}>
         <div className="flex items-center justify-between mb-4">
           <Inline gap={3}>
-            <div className="w-8 h-8 bg-erro rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center">
               <PiPulse className="w-4 h-4 text-theme-primary" />
             </div>
             <div>
@@ -262,9 +262,9 @@ const RecentActivities = ({
           </Inline>
           <button
             onClick={fetchRecentActivities}
-            className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-erro transition-all flex items-center justify-center group"
+            className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
           >
-            <PiArrowsClockwise className="w-4 h-4 text-theme-tertiary group-hover:text-erro transition-colors" />
+            <PiArrowsClockwise className="w-4 h-4 text-theme-tertiary transition-colors" />
             <NomeAcao acao="atualizar" />
           </button>
         </div>
@@ -275,7 +275,7 @@ const RecentActivities = ({
           </Text>
           <button
             onClick={fetchRecentActivities}
-            className="mt-2 text-sm text-aviso hover:text-ouro-texto transition-colors"
+            className="mt-2 text-sm transition-colors"
           >
             Tentar novamente
           </button>
@@ -288,7 +288,7 @@ const RecentActivities = ({
     <AnimatedCard className={`classical-card p-6 ${className}`}>
       <div className="flex items-center justify-between mb-4">
         <Inline gap={3}>
-          <div className="w-8 h-8 fill-ouro rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center">
             <PiPulse className="w-4 h-4 text-theme-primary" />
           </div>
           <div>
@@ -305,10 +305,10 @@ const RecentActivities = ({
           <button
             onClick={fetchRecentActivities}
             disabled={loading}
-            className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
+            className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
           >
             <PiArrowsClockwise
-              className={`w-4 h-4 text-theme-tertiary group-hover:text-ouro-texto transition-all ${
+              className={`w-4 h-4 text-theme-tertiary transition-all ${
                 loading ? 'animate-spin' : ''
               }`}
             />
@@ -318,7 +318,7 @@ const RecentActivities = ({
           {activities.length > 0 && (
             <Link
               href={`/${userType}/history`}
-              className="text-brand-primary hover:text-ouro-texto text-sm font-medium transition-colors flex items-center space-x-1"
+              className="text-ouro-texto text-sm font-medium transition-colors flex items-center space-x-1"
             >
               <span>Ver todas</span>
               <PiCaretRight className="w-4 h-4" />
@@ -372,7 +372,7 @@ const RecentActivities = ({
                           </Text>
                         </Inline>
 
-                        <h4 className="text-sm font-medium text-theme-primary line-clamp-1 group-hover:text-ouro-texto transition-colors">
+                        <h4 className="text-sm font-medium text-theme-primary line-clamp-1 transition-colors">
                           {activity.title}
                         </h4>
 
@@ -408,7 +408,7 @@ const RecentActivities = ({
                       {getEntityLink(activity) && (
                         <Link
                           href={getEntityLink(activity)!}
-                          className="w-6 h-6 rounded bg-theme-elevated hover:bg-ouro/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"
+                          className="w-6 h-6 rounded bg-theme-elevated transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"
                         >
                           <PiEye className="w-3 h-3 text-theme-tertiary" />
                         </Link>
@@ -427,7 +427,7 @@ const RecentActivities = ({
         <div className="mt-4 pt-4 border-t border-theme-secondary">
           <Link
             href={`/${userType}/history`}
-            className="block text-center text-brand-primary hover:text-ouro-texto text-sm font-medium transition-colors"
+            className="block text-center text-ouro-texto text-sm font-medium transition-colors"
           >
             Ver histórico completo de atividades
           </Link>

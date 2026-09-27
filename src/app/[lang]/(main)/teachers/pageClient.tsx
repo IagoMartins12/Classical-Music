@@ -165,7 +165,7 @@ export default function PublicTeachersPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -194,7 +194,7 @@ export default function PublicTeachersPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center">
-            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-ouro-texto mx-auto mb-4" />
             <p className="text-theme-secondary">Carregando professores...</p>
           </Card>
         </div>
@@ -214,7 +214,7 @@ export default function PublicTeachersPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiUsers className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -240,7 +240,7 @@ export default function PublicTeachersPageClient({
               hover="scale"
               className="classical-card p-6 text-center"
             >
-              <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                 <PiUsers className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -255,7 +255,7 @@ export default function PublicTeachersPageClient({
               hover="scale"
               className="classical-card p-6 text-center"
             >
-              <div className="w-12 h-12 bg-ok rounded-xl flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                 <PiCheckCircle className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -270,7 +270,7 @@ export default function PublicTeachersPageClient({
               hover="scale"
               className="classical-card p-6 text-center"
             >
-              <div className="w-12 h-12 bg-atencao rounded-xl flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                 <PiStar className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -285,7 +285,7 @@ export default function PublicTeachersPageClient({
               hover="scale"
               className="classical-card p-6 text-center"
             >
-              <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                 <PiMusicNotes className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -329,13 +329,13 @@ export default function PublicTeachersPageClient({
                 <button
                   onClick={() => setIsFiltersOpen(!isFiltersOpen)}
                   className={`btn-classical-secondary flex items-center space-x-2 ${
-                    hasActiveFilters ? 'bg-ouro/10 border-ouro/30' : ''
+                    hasActiveFilters ? '' : ''
                   }`}
                 >
                   <PiFunnel className="w-4 h-4" />
                   <span>Filtros</span>
                   {hasActiveFilters && (
-                    <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                    <div className="w-2 h-2 rounded-full"></div>
                   )}
                   <PiCaretDown
                     className={`w-4 h-4 transition-transform ${
@@ -456,7 +456,7 @@ export default function PublicTeachersPageClient({
                         updateFilters({ verified: e.target.checked })
                       }
                       disabled={isLoading}
-                      className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-ouro focus:ring-2"
+                      className="w-4 h-4 text-ouro-texto bg-theme-elevated border-theme-secondary rounded focus:ring-2"
                     />
                     <span className="text-theme-secondary">
                       Apenas perfis verificados
@@ -497,7 +497,7 @@ export default function PublicTeachersPageClient({
         {filteredTeachers.length === 0 ? (
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-16">
-              <div className="w-20 h-20 bg-sup-1 rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6">
                 <PiUsers className="w-10 h-10 text-theme-primary" />
               </div>
               <h3 className="text-xl font-bold text-theme-primary mb-2">
@@ -571,8 +571,8 @@ export default function PublicTeachersPageClient({
                       disabled={isLoading}
                       className={`px-4 py-2 rounded-lg font-medium transition-all ${
                         isActive
-                          ? 'bg-ouro text-theme-primary'
-                          : 'bg-theme-elevated text-theme-secondary hover:bg-ouro/10'
+                          ? 'text-theme-primary'
+                          : 'bg-theme-elevated text-theme-secondary'
                       }`}
                     >
                       {page}
@@ -598,9 +598,9 @@ export default function PublicTeachersPageClient({
 
       {/* Loading Overlay */}
       {isLoading && (
-        <div className="fixed inset-0 bg-veu backdrop-blur-sm z-dialogo flex items-center justify-center">
+        <div className="fixed inset-0 backdrop-blur-sm z-dialogo flex items-center justify-center">
           <Card densidade="larga" className="text-center">
-            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-ouro-texto mx-auto mb-4" />
             <p className="text-theme-secondary">Carregando professores...</p>
           </Card>
         </div>
@@ -640,7 +640,7 @@ function TeacherCard({
                 />
               </div>
             ) : (
-              <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center flex-shrink-0">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0">
                 <PiUser className="w-8 h-8 text-theme-primary" />
               </div>
             )}
@@ -651,7 +651,7 @@ function TeacherCard({
                   {teacher.name}
                 </h3>
                 {teacher.isVerified && (
-                  <div className="w-5 h-5 bg-ok rounded-full flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full flex items-center justify-center">
                     <PiCheckCircle className="w-3 h-3 text-theme-primary" />
                   </div>
                 )}
@@ -661,7 +661,7 @@ function TeacherCard({
               {teacher.averageRating && teacher.totalReviews > 0 && (
                 <Inline gap={2} className="mt-1">
                   <Inline gap={1}>
-                    <PiStar className="w-4 h-4 text-atencao" />
+                    <PiStar className="w-4 h-4" />
                     <Text papel="rotulo" tom="forte" className="font-medium">
                       {teacher.averageRating.toFixed(1)}
                     </Text>
@@ -722,7 +722,7 @@ function TeacherCard({
                     papel="legenda"
                     tom="ouro"
                     key={index}
-                    className="px-2 py-1 bg-ouro/10 rounded-full"
+                    className="px-2 py-1 rounded-full"
                   >
                     {specialty}
                   </Text>
@@ -758,7 +758,7 @@ function TeacherCard({
                   as="button"
                   gap={2}
                   onClick={() => onWhatsAppContact(teacher)}
-                  className="btn-classical-secondary flex-1 justify-center text-ok border-ok/30 hover:bg-ok/10"
+                  className="btn-classical-secondary flex-1 justify-center"
                 >
                   <PiChatCircle className="w-4 h-4" />
                   <span>WhatsApp</span>

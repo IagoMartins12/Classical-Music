@@ -264,7 +264,7 @@ export default function CoverCropper({
                   onClick={() => setShowGrid(!showGrid)}
                   className={`text-xs px-3 py-1 rounded-lg transition-colors ${
                     showGrid
-                      ? 'bg-ouro text-sobre-ouro'
+                      ? 'text-white'
                       : 'bg-theme-classical text-theme-secondary'
                   }`}
                 >
@@ -311,7 +311,7 @@ export default function CoverCropper({
                       <button
                         type="button"
                         onClick={handleZoomOut}
-                        className="p-2 bg-theme-classical hover:bg-ouro/10 rounded-lg transition-colors"
+                        className="p-2 bg-theme-classical rounded-lg transition-colors"
                         title="Diminuir zoom"
                       >
                         <PiMagnifyingGlassMinus className="w-4 h-4 text-theme-primary" />
@@ -319,7 +319,7 @@ export default function CoverCropper({
                       <button
                         type="button"
                         onClick={handleResetZoom}
-                        className="p-2 bg-theme-classical hover:bg-ouro/10 rounded-lg transition-colors"
+                        className="p-2 bg-theme-classical rounded-lg transition-colors"
                         title="Resetar"
                       >
                         <PiArrowsOut className="w-4 h-4 text-theme-primary" />
@@ -327,7 +327,7 @@ export default function CoverCropper({
                       <button
                         type="button"
                         onClick={handleZoomIn}
-                        className="p-2 bg-theme-classical hover:bg-ouro/10 rounded-lg transition-colors"
+                        className="p-2 bg-theme-classical rounded-lg transition-colors"
                         title="Aumentar zoom"
                       >
                         <PiMagnifyingGlassPlus className="w-4 h-4 text-theme-primary" />
@@ -356,7 +356,7 @@ export default function CoverCropper({
                     gap={2}
                     type="button"
                     onClick={handleRotate}
-                    className="px-4 py-2 bg-ouro text-sobre-ouro rounded-lg hover:bg-ouro transition-colors"
+                    className="px-4 py-2 text-white rounded-lg transition-colors"
                   >
                     <PiArrowClockwise className="w-4 h-4" />
                     <span>Girar 90°</span>
@@ -391,8 +391,8 @@ export default function CoverCropper({
                   onClick={() => setPreviewMode('desktop')}
                   className={`p-2 rounded-lg transition-colors ${
                     previewMode === 'desktop'
-                      ? 'bg-ouro text-sobre-ouro'
-                      : 'bg-theme-classical text-theme-secondary hover:bg-ouro/10'
+                      ? 'text-white'
+                      : 'bg-theme-classical text-theme-secondary'
                   }`}
                   title="Desktop"
                 >
@@ -403,8 +403,8 @@ export default function CoverCropper({
                   onClick={() => setPreviewMode('tablet')}
                   className={`p-2 rounded-lg transition-colors ${
                     previewMode === 'tablet'
-                      ? 'bg-ouro text-sobre-ouro'
-                      : 'bg-theme-classical text-theme-secondary hover:bg-ouro/10'
+                      ? 'text-white'
+                      : 'bg-theme-classical text-theme-secondary'
                   }`}
                   title="Tablet"
                 >
@@ -415,8 +415,8 @@ export default function CoverCropper({
                   onClick={() => setPreviewMode('mobile')}
                   className={`p-2 rounded-lg transition-colors ${
                     previewMode === 'mobile'
-                      ? 'bg-ouro text-sobre-ouro'
-                      : 'bg-theme-classical text-theme-secondary hover:bg-ouro/10'
+                      ? 'text-white'
+                      : 'bg-theme-classical text-theme-secondary'
                   }`}
                   title="Mobile"
                 >
@@ -469,8 +469,8 @@ export default function CoverCropper({
                 />
               </div>
 
-              <div className="mt-4 p-3 bg-aviso/10 dark:bg-aviso/20 rounded-lg">
-                <p className="text-xs text-aviso dark:text-aviso">
+              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <p className="text-xs text-blue-900 dark:text-blue-100">
                   ℹ️ A imagem será responsiva e se adaptará automaticamente a
                   diferentes tamanhos de tela.
                 </p>
@@ -499,11 +499,14 @@ export default function CoverCropper({
             </div>
 
             {/* Info adicional */}
-            <Stack gap={1} className="p-3 bg-ok/10 dark:bg-ok/20 rounded-lg">
-              <p className="text-xs text-ok dark:text-ok font-medium">
+            <Stack
+              gap={1}
+              className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg"
+            >
+              <p className="text-xs text-green-900 dark:text-green-100 font-medium">
                 ✨ Recursos Disponíveis:
               </p>
-              <ul className="text-xs text-ok dark:text-ok space-y-1">
+              <ul className="text-xs text-green-800 dark:text-green-200 space-y-1">
                 <li>• Zoom preciso (10% - 500%)</li>
                 <li>• Rotação em 90°</li>
                 <li>• Grid de composição</li>

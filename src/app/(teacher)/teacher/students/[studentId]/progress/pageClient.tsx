@@ -155,7 +155,7 @@ export default function TeacherProgressPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -203,7 +203,7 @@ export default function TeacherProgressPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center">
-            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-ouro-texto mx-auto mb-4" />
             <p className="text-theme-secondary">{t('loading_report')}</p>
           </Card>
         </div>
@@ -223,21 +223,21 @@ export default function TeacherProgressPageClient({
           >
             <Link
               href="/teacher"
-              className="hover:text-ouro-texto transition-colors duration-300 font-medium"
+              className="transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_dashboard')}
             </Link>
             <PiCaretRight className="w-4 h-4" />
             <Link
               href="/teacher/students"
-              className="hover:text-ouro-texto transition-colors duration-300 font-medium"
+              className="transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_students')}
             </Link>
             <PiCaretRight className="w-4 h-4" />
             <Link
               href={`/teacher/students/${studentId}`}
-              className="hover:text-ouro-texto transition-colors duration-300 font-medium"
+              className="transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_student_detail')}
             </Link>
@@ -254,14 +254,14 @@ export default function TeacherProgressPageClient({
             <Inline gap={4} className="mb-4 lg:mb-0">
               <Link
                 href={`/teacher/students/${studentId}`}
-                className="w-12 h-12 rounded-xl bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
+                className="w-12 h-12 rounded-xl bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
               >
-                <PiArrowLeft className="w-5 h-5 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
+                <PiArrowLeft className="w-5 h-5 text-theme-tertiary transition-colors" />
               </Link>
 
               <Inline gap={4}>
                 {reportData.studentInfo.image ? (
-                  <div className="w-14 h-14 rounded-full overflow-hidden border border-ouro/20">
+                  <div className="w-14 h-14 rounded-full overflow-hidden border-3">
                     <Image
                       src={reportData.studentInfo.image}
                       alt={reportData.studentInfo.name}
@@ -271,7 +271,7 @@ export default function TeacherProgressPageClient({
                     />
                   </div>
                 ) : (
-                  <div className="w-14 h-14 fill-ouro rounded-full flex items-center justify-center">
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center">
                     <PiUser className="w-7 h-7 text-theme-primary" />
                   </div>
                 )}
@@ -341,13 +341,10 @@ export default function TeacherProgressPageClient({
         {/* Success Message */}
         {shareSuccess && (
           <AnimatedItem direction="up" springType="gentle">
-            <Card
-              densidade="compacta"
-              className="border border-ok/40 mb-6 bg-ok/10"
-            >
+            <Card densidade="compacta" className="border-l-4 mb-6">
               <Inline gap={3}>
-                <PiCheckCircle className="w-5 h-5 text-ok" />
-                <span className="text-ok font-medium">{shareSuccess}</span>
+                <PiCheckCircle className="w-5 h-5" />
+                <span className="font-medium">{shareSuccess}</span>
               </Inline>
             </Card>
           </AnimatedItem>
@@ -357,7 +354,7 @@ export default function TeacherProgressPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
-              <PiChartBar className="w-6 h-6 mr-3 text-brand-primary" />
+              <PiChartBar className="w-6 h-6 mr-3 text-ouro-texto" />
               {t('overview_section')}
             </h2>
 
@@ -366,7 +363,7 @@ export default function TeacherProgressPageClient({
                 hover="scale"
                 className="classical-card p-6 text-center"
               >
-                <div className="w-12 h-12 bg-aviso rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiBookOpen className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -375,7 +372,7 @@ export default function TeacherProgressPageClient({
                 <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                   {t('total_lessons')}
                 </Text>
-                <div className="text-xs text-aviso">
+                <div className="text-xs">
                   {reportData.overview.completionRate}% {t('completion_rate')}
                 </div>
               </AnimatedCard>
@@ -384,7 +381,7 @@ export default function TeacherProgressPageClient({
                 hover="scale"
                 className="classical-card p-6 text-center"
               >
-                <div className="w-12 h-12 bg-ok rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiClock className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -393,7 +390,7 @@ export default function TeacherProgressPageClient({
                 <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                   {t('study_hours')}
                 </Text>
-                <div className="text-xs text-ok">
+                <div className="text-xs">
                   {reportData.overview.attendanceRate}% {t('attendance_rate')}
                 </div>
               </AnimatedCard>
@@ -402,7 +399,7 @@ export default function TeacherProgressPageClient({
                 hover="scale"
                 className="classical-card p-6 text-center"
               >
-                <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -411,7 +408,7 @@ export default function TeacherProgressPageClient({
                 <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                   {t('pieces_studied')}
                 </Text>
-                <div className="text-xs text-ouro-texto">
+                <div className="text-xs">
                   {reportData.overview.favoritePieces} {t('favorite_pieces')}
                 </div>
               </AnimatedCard>
@@ -420,7 +417,7 @@ export default function TeacherProgressPageClient({
                 hover="scale"
                 className="classical-card p-6 text-center"
               >
-                <div className="w-12 h-12 bg-atencao rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiMedal className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -429,7 +426,7 @@ export default function TeacherProgressPageClient({
                 <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                   {t('current_streak')}
                 </Text>
-                <div className="text-xs text-atencao">
+                <div className="text-xs">
                   Max: {reportData.overview.longestStreak}
                 </div>
               </AnimatedCard>
@@ -441,7 +438,7 @@ export default function TeacherProgressPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <Stack gap={6} className="mb-8">
             <h2 className="text-2xl font-bold text-theme-primary classical-title flex items-center">
-              <PiTrendUp className="w-6 h-6 mr-3 text-brand-primary" />
+              <PiTrendUp className="w-6 h-6 mr-3 text-ouro-texto" />
               {t('progress_evolution')}
             </h2>
 
@@ -474,7 +471,7 @@ export default function TeacherProgressPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <Stack gap={6} className="mb-8">
               <h2 className="text-2xl font-bold text-theme-primary classical-title flex items-center">
-                <PiHeart className="w-6 h-6 mr-3 text-brand-primary" />
+                <PiHeart className="w-6 h-6 mr-3 text-ouro-texto" />
                 {t('musical_preferences')}
               </h2>
 
@@ -549,7 +546,7 @@ export default function TeacherProgressPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <Stack gap={6} className="mb-8">
             <h2 className="text-2xl font-bold text-theme-primary classical-title flex items-center">
-              <PiTarget className="w-6 h-6 mr-3 text-brand-primary" />
+              <PiTarget className="w-6 h-6 mr-3 text-ouro-texto" />
               {t('pedagogical_insights')}
             </h2>
 
@@ -561,7 +558,7 @@ export default function TeacherProgressPageClient({
                 </h3>
                 <Stack>
                   <div>
-                    <span className="inline-block px-3 py-1 bg-ouro text-sobre-ouro rounded-full text-sm font-medium">
+                    <span className="inline-block px-3 py-1 text-white rounded-full text-sm font-medium">
                       {reportData.insights.learningStyle.primary}
                     </span>
                   </div>
@@ -571,10 +568,7 @@ export default function TeacherProgressPageClient({
                     </h4>
                     <div className="flex flex-wrap gap-1">
                       {reportData.insights.strongAreas.map((area, index) => (
-                        <span
-                          key={index}
-                          className="px-2 py-1 bg-ok/10 text-ok rounded text-sm"
-                        >
+                        <span key={index} className="px-2 py-1 rounded text-sm">
                           {area}
                         </span>
                       ))}
@@ -589,7 +583,7 @@ export default function TeacherProgressPageClient({
                         (area, index) => (
                           <span
                             key={index}
-                            className="px-2 py-1 bg-atencao/10 text-atencao rounded text-sm"
+                            className="px-2 py-1 rounded text-sm"
                           >
                             {area}
                           </span>
@@ -608,7 +602,7 @@ export default function TeacherProgressPageClient({
                 <Stack gap={3}>
                   {reportData.insights.recommendedFocus.map((focus, index) => (
                     <Inline gap={3} key={index}>
-                      <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                      <div className="w-2 h-2 rounded-full"></div>
                       <Text papel="rotulo" tom="forte">
                         {focus}
                       </Text>
@@ -625,7 +619,7 @@ export default function TeacherProgressPageClient({
                 <Stack gap={3}>
                   {reportData.insights.nextSteps.map((step, index) => (
                     <div key={index} className="flex items-start space-x-3">
-                      <div className="w-6 h-6 fill-ouro rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                         <span className="text-xs font-bold text-white">
                           {index + 1}
                         </span>
@@ -643,10 +637,7 @@ export default function TeacherProgressPageClient({
 
         {/* Report Metadata */}
         <AnimatedItem direction="up" springType="gentle">
-          <Card
-            densidade="compacta"
-            className="bg-sup-elevada/50 border border-linha/50"
-          >
+          <Card densidade="compacta" className="border">
             <Text
               papel="rotulo"
               tom="fraco"
@@ -665,10 +656,10 @@ export default function TeacherProgressPageClient({
                 <span
                   className={`px-2 py-1 rounded ${
                     reportData.reportMetadata.dataQuality === 'excellent'
-                      ? 'bg-ok/10 text-ok'
+                      ? ''
                       : reportData.reportMetadata.dataQuality === 'good'
-                        ? 'bg-aviso/10 text-aviso'
-                        : 'bg-atencao/10 text-atencao'
+                        ? ''
+                        : ''
                   }`}
                 >
                   Qualidade: {reportData.reportMetadata.dataQuality}

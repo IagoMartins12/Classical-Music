@@ -241,15 +241,15 @@ export default function StudentCalendarPageClient({
   const getEventStatusColor = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return 'border-ok text-ok';
+        return 'border-green-400 text-green-400';
       case 'CANCELLED':
-        return ' border-erro text-erro';
+        return ' border-red-400 text-red-400';
       case 'NO_SHOW':
-        return 'border-atencao/30 text-atencao';
+        return 'border-yellow-300 text-yellow-300';
       case 'RESCHEDULED':
-        return ' border-ouro/30 text-ouro-texto';
+        return ' border-purple-300 text-purple-300';
       default:
-        return ' border-aviso/30 text-aviso';
+        return ' border-blue-300 text-blue-300';
     }
   };
 
@@ -320,7 +320,7 @@ export default function StudentCalendarPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-lg">
-            <div className="w-20 h-20 fill-ouro rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiUserCheck className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-2xl font-bold text-theme-primary classical-title mb-4">
@@ -358,7 +358,7 @@ export default function StudentCalendarPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiCalendarBlank className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -410,7 +410,7 @@ export default function StudentCalendarPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiCalendarBlank className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -437,9 +437,9 @@ export default function StudentCalendarPageClient({
                         : navigateWeek('prev')
                     }
                     disabled={loading.refreshing}
-                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group disabled:opacity-50"
+                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group disabled:opacity-50"
                   >
-                    <PiCaretLeft className="w-5 h-5 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
+                    <PiCaretLeft className="w-5 h-5 text-theme-tertiary transition-colors" />
                     <NomeAcao acao="anterior" />
                   </button>
 
@@ -464,9 +464,9 @@ export default function StudentCalendarPageClient({
                         : navigateWeek('next')
                     }
                     disabled={loading.refreshing}
-                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group disabled:opacity-50"
+                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group disabled:opacity-50"
                   >
-                    <PiCaretRight className="w-5 h-5 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
+                    <PiCaretRight className="w-5 h-5 text-theme-tertiary transition-colors" />
                     <NomeAcao acao="proximo" />
                   </button>
                 </Inline>
@@ -490,7 +490,7 @@ export default function StudentCalendarPageClient({
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       viewMode === 'month'
                         ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-texto'
+                        : 'text-theme-tertiary'
                     }`}
                   >
                     {t('student_calendar_view_month')}
@@ -500,7 +500,7 @@ export default function StudentCalendarPageClient({
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       viewMode === 'week'
                         ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-texto'
+                        : 'text-theme-tertiary'
                     }`}
                   >
                     {t('student_calendar_view_week')}
@@ -510,7 +510,7 @@ export default function StudentCalendarPageClient({
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       viewMode === 'day'
                         ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-texto'
+                        : 'text-theme-tertiary'
                     }`}
                   >
                     {t('student_calendar_view_day')}
@@ -723,18 +723,14 @@ function MonthView({
           return (
             <div
               key={index}
-              className={`min-h-24 p-2 border border-linha/50 rounded-lg transition-all hover:border-ouro/30 ${
-                isToday
-                  ? 'bg-ouro/5 border-ouro/30'
-                  : isCurrentMonth
-                    ? 'bg-sup-elevada/50'
-                    : 'bg-sup-1/20 opacity-60'
+              className={`min-h-24 p-2 border rounded-lg transition-all ${
+                isToday ? '' : isCurrentMonth ? '' : 'opacity-60'
               }`}
             >
               <div
                 className={`text-sm font-medium mb-1 ${
                   isToday
-                    ? 'text-brand-primary'
+                    ? 'text-ouro-texto'
                     : isCurrentMonth
                       ? 'text-theme-primary'
                       : 'text-theme-tertiary'
@@ -805,18 +801,14 @@ function WeekView({
             className="rounded-lg bg-theme-secondary overflow-hidden"
           >
             <div
-              className={`text-center p-4 ${
-                isToday
-                  ? 'bg-ouro/10 border-b border-ouro/30'
-                  : 'bg-sup-1/50 border-b border-linha/30'
-              }`}
+              className={`text-center p-4 ${isToday ? 'border-b' : 'border-b'}`}
             >
               <Text papel="rotulo" tom="fraco" as="div">
                 {WEEKDAYS[index]}
               </Text>
               <div
                 className={`text-lg font-bold ${
-                  isToday ? 'text-brand-primary' : 'text-theme-primary'
+                  isToday ? 'text-ouro-texto' : 'text-theme-primary'
                 }`}
               >
                 {day.getDate()}
@@ -1071,7 +1063,7 @@ function StudentEventDetailsModal({
                         />
                       </div>
                     ) : (
-                      <div className="w-8 h-8 fill-ouro rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center">
                         <PiUser className="w-4 h-4 text-theme-primary" />
                       </div>
                     )}
@@ -1105,7 +1097,7 @@ function StudentEventDetailsModal({
                   {event.objectives.map((objective: any, index: number) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded-full text-sm"
+                      className="px-3 py-1 border rounded-full text-sm"
                     >
                       {objective}
                     </span>
@@ -1120,7 +1112,7 @@ function StudentEventDetailsModal({
                 <label className="text-sm font-medium text-theme-tertiary block">
                   {t('student_calendar_modal_teacher_notes')}
                 </label>
-                <div className="bg-sup-elevada rounded-lg border border-linha/20 p-4">
+                <div className="rounded-lg border p-4">
                   <div className="text-theme-primary whitespace-pre-wrap">
                     {event.publicNotes}
                   </div>
@@ -1134,7 +1126,7 @@ function StudentEventDetailsModal({
                 <label className="text-sm font-medium text-theme-tertiary block">
                   {t('student_calendar_modal_homework')}
                 </label>
-                <div className="bg-sup-elevada rounded-lg border border-linha/20 p-4">
+                <div className="rounded-lg border p-4">
                   <div className="text-theme-primary">{event.homework}</div>
                 </div>
               </Stack>
@@ -1146,7 +1138,7 @@ function StudentEventDetailsModal({
                 <label className="text-sm font-medium text-theme-tertiary block">
                   {t('student_calendar_modal_lesson_summary')}
                 </label>
-                <div className="bg-sup-elevada rounded-lg border border-linha/20 p-4">
+                <div className="rounded-lg border p-4">
                   <div className="text-theme-primary">
                     {event.details.lessonSummary}
                   </div>
@@ -1190,7 +1182,7 @@ function StudentEventDetailsModal({
                       (improvement: any, index: number) => (
                         <span
                           key={index}
-                          className="px-3 py-1 bg-ok/10 border border-ok/30 text-ok rounded-full text-sm"
+                          className="px-3 py-1 border rounded-full text-sm"
                         >
                           {improvement}
                         </span>
@@ -1218,7 +1210,7 @@ function StudentEventDetailsModal({
             <div className="flex items-center justify-between pt-6 border-t border-theme-secondary">
               <Link
                 href={`/student/lessons/${event.id}`}
-                className="text-brand-primary hover:text-ouro-texto text-sm font-medium transition-colors flex items-center space-x-1"
+                className="text-ouro-texto text-sm font-medium transition-colors flex items-center space-x-1"
               >
                 <PiEye className="w-4 h-4" />
                 <span>{t('student_calendar_modal_view_details')}</span>
@@ -1230,7 +1222,7 @@ function StudentEventDetailsModal({
                     as="button"
                     gap={1}
                     onClick={onAddFeedback}
-                    className="text-aviso hover:text-ouro-texto text-sm font-medium transition-colors"
+                    className="text-sm font-medium transition-colors"
                   >
                     <PiChatCenteredText className="w-4 h-4" />
                     <span>{t('student_calendar_modal_add_feedback')}</span>
@@ -1266,7 +1258,7 @@ function FeedbackModal({
   t,
 }: FeedbackModalProps) {
   return (
-    <div className="fixed inset-0 bg-veu backdrop-blur-sm z-dialogo flex items-center justify-center p-4">
+    <div className="fixed inset-0 backdrop-blur-sm z-dialogo flex items-center justify-center p-4">
       <AnimatedCard hover="none" className="classical-card w-full max-w-lg">
         <Stack gap={6} className="p-6">
           <div className="flex items-center justify-between">
@@ -1280,7 +1272,7 @@ function FeedbackModal({
             </div>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-ouro/10 transition-colors flex items-center justify-center"
+              className="w-8 h-8 rounded-lg bg-theme-elevated transition-colors flex items-center justify-center"
             >
               <PiX className="w-4 h-4 text-theme-tertiary" />
               <NomeAcao acao="fechar" />
@@ -1315,7 +1307,7 @@ function FeedbackModal({
               >
                 {loading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-linha/30 border-t-linha rounded-full animate-spin"></div>
+                    <div className="w-4 h-4 border-2 rounded-full animate-spin"></div>
                     <span>{t('student_calendar_feedback_modal_sending')}</span>
                   </>
                 ) : (

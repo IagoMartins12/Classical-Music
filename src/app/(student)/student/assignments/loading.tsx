@@ -39,23 +39,23 @@ export default function StudentAssignmentsLoading() {
 
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-16 left-16 text-5xl text-ouro-texto/10 animate-float">
+        <div className="absolute top-16 left-16 text-5xl animate-float">
           <PiClipboardText />
         </div>
         <div
-          className="absolute bottom-16 right-16 text-4xl text-ouro-texto/10 animate-float"
+          className="absolute bottom-16 right-16 text-4xl animate-float"
           style={{ animationDelay: '1s' }}
         >
           <PiTarget />
         </div>
         <div
-          className="absolute top-1/3 right-24 text-3xl text-ouro-texto/10 animate-float"
+          className="absolute top-1/3 right-24 text-3xl animate-float"
           style={{ animationDelay: '2s' }}
         >
           <GiGrandPiano />
         </div>
         <div
-          className="absolute bottom-1/3 left-24 text-3xl text-aviso/10 animate-float"
+          className="absolute bottom-1/3 left-24 text-3xl animate-float"
           style={{ animationDelay: '0.5s' }}
         >
           <PiMusicNotes />
@@ -66,14 +66,14 @@ export default function StudentAssignmentsLoading() {
         {/* Header Skeleton */}
         <div className="text-center mb-8 py-8 animate-pulse">
           <div className="flex items-center justify-center mb-6">
-            <div className="w-16 h-16 bg-ouro/20 rounded-3xl flex items-center justify-center shadow-theme-glow">
-              <div className="w-8 h-8 bg-texto/30 rounded-lg"></div>
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-8 h-8 rounded-lg"></div>
             </div>
           </div>
 
           <div className="space-y-4 mb-6">
-            <div className="h-12 bg-sup-elevada border border-theme-primary rounded-2xl mx-auto max-w-lg shadow-theme-medium"></div>
-            <div className="h-6 bg-sup-elevada border border-theme-secondary rounded-lg mx-auto max-w-2xl"></div>
+            <div className="h-12 border border-theme-primary rounded-2xl mx-auto max-w-lg shadow-theme-medium"></div>
+            <div className="h-6 border border-theme-secondary rounded-lg mx-auto max-w-2xl"></div>
           </div>
         </div>
 
@@ -81,22 +81,22 @@ export default function StudentAssignmentsLoading() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-8">
           {[
             {
-              icon: <PiClipboardText className="w-6 h-6 text-sobre-ouro/20" />,
+              icon: <PiClipboardText className="w-6 h-6" />,
             },
-            { icon: <PiClock className="w-6 h-6 text-sobre-ouro/20" /> },
+            { icon: <PiClock className="w-6 h-6" /> },
             {
-              icon: <PiTrendUp className="w-6 h-6 text-sobre-ouro/20" />,
+              icon: <PiTrendUp className="w-6 h-6" />,
             },
-            { icon: <PiCheck className="w-6 h-6 text-sobre-ouro/20" /> },
+            { icon: <PiCheck className="w-6 h-6" /> },
             {
-              icon: <PiWarning className="w-6 h-6 text-sobre-ouro/20" />,
+              icon: <PiWarning className="w-6 h-6" />,
             },
           ].map((item, index) => (
             <Card key={index} className="text-center animate-pulse">
-              <div className="w-12 h-12 bg-ouro/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                 {item.icon}
               </div>
-              <div className="h-6 bg-ouro/20 rounded mb-2"></div>
+              <div className="h-6 rounded mb-2"></div>
               <div className="h-3 bg-theme-elevated rounded"></div>
             </Card>
           ))}
@@ -107,9 +107,9 @@ export default function StudentAssignmentsLoading() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <div className="h-10 bg-sup-elevada border border-theme-secondary rounded-lg flex items-center">
-                <PiMagnifyingGlass className="ml-3 w-5 h-5 text-texto-fraco/30" />
-                <div className="h-4 bg-sup-2/20 rounded flex-1 mx-3"></div>
+              <div className="h-10 border border-theme-secondary rounded-lg flex items-center">
+                <PiMagnifyingGlass className="ml-3 w-5 h-5" />
+                <div className="h-4 rounded flex-1 mx-3"></div>
               </div>
             </div>
 
@@ -117,20 +117,20 @@ export default function StudentAssignmentsLoading() {
             <Inline gap={4}>
               <Inline
                 gap={2}
-                className="h-10 bg-sup-elevada border border-theme-secondary rounded-lg px-4"
+                className="h-10 border border-theme-secondary rounded-lg px-4"
               >
-                <PiFunnel className="w-4 h-4 text-texto-fraco/30" />
-                <div className="h-4 w-12 bg-sup-2/20 rounded"></div>
+                <PiFunnel className="w-4 h-4" />
+                <div className="h-4 w-12 rounded"></div>
               </Inline>
 
-              <div className="h-10 w-20 bg-sup-elevada border border-theme-secondary rounded-lg"></div>
+              <div className="h-10 w-20 border border-theme-secondary rounded-lg"></div>
 
               <Inline
                 gap={2}
-                className="h-10 bg-sup-elevada border border-theme-secondary rounded-lg px-4"
+                className="h-10 border border-theme-secondary rounded-lg px-4"
               >
-                <PiArrowsClockwise className="w-4 h-4 text-texto-fraco/30" />
-                <div className="h-4 w-16 bg-sup-2/20 rounded"></div>
+                <PiArrowsClockwise className="w-4 h-4" />
+                <div className="h-4 w-16 rounded"></div>
               </Inline>
             </Inline>
           </div>
@@ -138,23 +138,23 @@ export default function StudentAssignmentsLoading() {
           {/* Filters Panel */}
           <div className="mt-6 pt-6 border-t border-theme-secondary grid grid-cols-1 md:grid-cols-3 gap-4">
             <Stack gap={2}>
-              <div className="h-3 w-16 bg-sup-2/30 rounded"></div>
-              <div className="h-10 bg-sup-elevada border border-theme-secondary rounded-lg"></div>
+              <div className="h-3 w-16 rounded"></div>
+              <div className="h-10 border border-theme-secondary rounded-lg"></div>
             </Stack>
             <Stack gap={2}>
-              <div className="h-3 w-12 bg-sup-2/30 rounded"></div>
-              <div className="h-10 bg-sup-elevada border border-theme-secondary rounded-lg"></div>
+              <div className="h-3 w-12 rounded"></div>
+              <div className="h-10 border border-theme-secondary rounded-lg"></div>
             </Stack>
             <Stack gap={2}>
-              <div className="h-3 w-14 bg-sup-2/30 rounded"></div>
-              <div className="h-10 bg-sup-elevada border border-theme-secondary rounded-lg"></div>
+              <div className="h-3 w-14 rounded"></div>
+              <div className="h-10 border border-theme-secondary rounded-lg"></div>
             </Stack>
           </div>
         </Card>
 
         {/* Results Info Skeleton */}
         <div className="mb-6 animate-pulse">
-          <div className="h-4 w-48 bg-sup-1/30 rounded"></div>
+          <div className="h-4 w-48 rounded"></div>
         </div>
 
         {/* Assignments Grid Skeleton */}
@@ -166,8 +166,8 @@ export default function StudentAssignmentsLoading() {
 
         {/* Pagination Skeleton */}
         <Inline gap={4} className="justify-center mt-8 animate-pulse">
-          <div className="h-10 w-20 bg-sup-elevada border border-theme-secondary rounded-lg flex items-center justify-center">
-            <div className="h-4 w-12 bg-sup-2/20 rounded"></div>
+          <div className="h-10 w-20 border border-theme-secondary rounded-lg flex items-center justify-center">
+            <div className="h-4 w-12 rounded"></div>
           </div>
 
           <Inline gap={2}>
@@ -176,23 +176,23 @@ export default function StudentAssignmentsLoading() {
                 key={i}
                 className={`w-10 h-10 rounded-lg ${
                   i === 2
-                    ? 'bg-ouro/20 border border-ouro/30'
+                    ? 'border'
                     : 'bg-theme-elevated border border-theme-secondary'
                 }`}
               ></div>
             ))}
           </Inline>
 
-          <div className="h-10 w-20 bg-sup-elevada border border-theme-secondary rounded-lg flex items-center justify-center">
-            <div className="h-4 w-12 bg-sup-2/20 rounded"></div>
+          <div className="h-10 w-20 border border-theme-secondary rounded-lg flex items-center justify-center">
+            <div className="h-4 w-12 rounded"></div>
           </div>
         </Inline>
       </div>
 
       {/* Floating Particles */}
-      <div className="fixed top-20 left-4 w-2 h-2 bg-ouro/30 rounded-full animate-pulse"></div>
-      <div className="fixed top-40 right-8 w-1.5 h-1.5 bg-ouro/40 rounded-full animate-pulse"></div>
-      <div className="fixed bottom-32 left-8 w-1 h-1 bg-ouro/50 rounded-full animate-pulse"></div>
+      <div className="fixed top-20 left-4 w-2 h-2 rounded-full animate-pulse"></div>
+      <div className="fixed top-40 right-8 w-1.5 h-1.5 rounded-full animate-pulse"></div>
+      <div className="fixed bottom-32 left-8 w-1 h-1 rounded-full animate-pulse"></div>
     </div>
   );
 }
@@ -206,70 +206,70 @@ function AssignmentCardSkeleton({ delay = 0 }: { delay?: number }) {
     >
       {/* Status and Priority */}
       <div className="flex items-center justify-between mb-4">
-        <div className="h-6 w-20 bg-aviso/20 border border-aviso/30 rounded-full"></div>
+        <div className="h-6 w-20 border rounded-full"></div>
         <Inline gap={2}>
-          <PiTarget className="w-4 h-4 text-texto-fraco/30" />
-          <div className="w-5 h-5 bg-ouro/10 border border-ouro/30 rounded-full flex items-center justify-center">
-            <PiMusicNotes className="w-3 h-3 text-ouro-texto/30" />
+          <PiTarget className="w-4 h-4" />
+          <div className="w-5 h-5 border rounded-full flex items-center justify-center">
+            <PiMusicNotes className="w-3 h-3" />
           </div>
         </Inline>
       </div>
 
       {/* Assignment Info */}
-      <div className="h-5 bg-fundo/30 rounded w-full mb-2"></div>
-      <div className="h-4 bg-sup-1/30 rounded w-4/5 mb-4"></div>
+      <div className="h-5 rounded w-full mb-2"></div>
+      <div className="h-4 rounded w-4/5 mb-4"></div>
 
       {/* Meta Info */}
       <Stack gap={2} className="mb-4">
         <div className="flex items-center">
-          <PiTarget className="w-4 h-4 mr-2 text-texto-fraco/30" />
-          <div className="h-3 bg-sup-1/30 rounded w-32"></div>
+          <PiTarget className="w-4 h-4 mr-2" />
+          <div className="h-3 rounded w-32"></div>
         </div>
 
         <div className="flex items-center">
-          <PiClock className="w-4 h-4 mr-2 text-texto-fraco/30" />
-          <div className="h-3 bg-sup-1/30 rounded w-28"></div>
+          <PiClock className="w-4 h-4 mr-2" />
+          <div className="h-3 rounded w-28"></div>
         </div>
 
         <div className="flex items-center">
-          <PiClock className="w-4 h-4 mr-2 text-texto-fraco/30" />
-          <div className="h-3 bg-sup-1/30 rounded w-24"></div>
+          <PiClock className="w-4 h-4 mr-2" />
+          <div className="h-3 rounded w-24"></div>
         </div>
 
         <div className="flex items-center">
-          <PiMusicNotes className="w-4 h-4 mr-2 text-ouro-texto/30" />
-          <div className="h-3 bg-ouro/20 rounded w-40"></div>
+          <PiMusicNotes className="w-4 h-4 mr-2" />
+          <div className="h-3 rounded w-40"></div>
         </div>
       </Stack>
 
       {/* Progress Bar */}
       <Stack gap={1} className="mb-4">
         <div className="flex items-center justify-between">
-          <div className="h-3 bg-sup-2/30 rounded w-16"></div>
-          <div className="h-3 bg-fundo/30 rounded w-8"></div>
+          <div className="h-3 rounded w-16"></div>
+          <div className="h-3 rounded w-8"></div>
         </div>
-        <div className="w-full bg-sup-1/20 rounded-full h-2">
-          <div className="h-2 bg-aviso/30 rounded-full w-2/3"></div>
+        <div className="w-full rounded-full h-2">
+          <div className="h-2 bg-gradient-to-r from-blue-400/30 to-purple-400/30 rounded-full w-2/3"></div>
         </div>
       </Stack>
 
       {/* Goals Preview */}
       <Stack gap={1} className="mb-4">
-        <div className="h-3 bg-sup-2/30 rounded w-16"></div>
+        <div className="h-3 rounded w-16"></div>
         <div className="flex flex-wrap gap-1">
           {Array.from({ length: 2 }).map((_, i) => (
-            <div key={i} className="h-5 w-16 bg-aviso/10 rounded"></div>
+            <div key={i} className="h-5 w-16 rounded"></div>
           ))}
-          <div className="h-3 bg-sup-2/30 rounded w-8"></div>
+          <div className="h-3 rounded w-8"></div>
         </div>
       </Stack>
 
       {/* Action Button */}
       <div className="flex items-center justify-between">
-        <div className="h-3 bg-sup-2/30 rounded w-24"></div>
-        <Inline gap={2} className="h-4 w-20 bg-ouro/30 rounded">
-          <div className="w-3 h-3 bg-fundo/30 rounded ml-2"></div>
-          <div className="h-3 w-12 bg-fundo/30 rounded mr-2"></div>
+        <div className="h-3 rounded w-24"></div>
+        <Inline gap={2} className="h-4 w-20 rounded">
+          <div className="w-3 h-3 rounded ml-2"></div>
+          <div className="h-3 w-12 rounded mr-2"></div>
         </Inline>
       </div>
     </div>

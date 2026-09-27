@@ -60,12 +60,6 @@ export default function StudentCard({
   const isActive = relationship.isActive && !relationship.pausedAt;
   const isPaused = relationship.isActive && !!relationship.pausedAt;
 
-  const getStatusColor = () => {
-    if (isActive) return 'ok';
-    if (isPaused) return 'atencao';
-    return 'erro';
-  };
-
   const getStatusText = () => {
     if (isActive) return translations.statusActive;
     if (isPaused) return translations.statusPaused;
@@ -90,7 +84,7 @@ export default function StudentCard({
           {/* Avatar */}
           <div className="relative w-12 h-12 flex-shrink-0">
             {student.image ? (
-              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-ouro/20">
+              <div className="relative w-full h-full rounded-full overflow-hidden border-2">
                 <Image
                   src={student.image}
                   alt={student.name}
@@ -100,7 +94,7 @@ export default function StudentCard({
                 />
               </div>
             ) : (
-              <div className="w-full h-full fill-ouro rounded-full flex items-center justify-center border-2 border-ouro/20">
+              <div className="w-full h-full rounded-full flex items-center justify-center border-2">
                 <PiUser className="w-6 h-6 text-theme-primary" />
               </div>
             )}
@@ -132,7 +126,7 @@ export default function StudentCard({
           {/* Stats */}
           {/* <div className="flex items-center space-x-6 text-center">
             <div>
-              <div className="text-lg font-bold text-brand-primary">
+              <div className="text-lg font-bold text-ouro-texto">
                 {stats.totalLessons}
               </div>
               <div className="text-xs text-theme-tertiary">
@@ -140,7 +134,7 @@ export default function StudentCard({
               </div>
             </div>
             <div>
-              <div className="text-lg font-bold text-accent-green">
+              <div className="text-lg font-bold">
                 {stats.completionRate}%
               </div>
               <div className="text-xs text-theme-tertiary">
@@ -176,7 +170,7 @@ export default function StudentCard({
           {/* Status & Actions */}
           <Inline gap={3}>
             <span
-              className={`px-3 py-1 border rounded-full text-xs font-medium bg-${getStatusColor()}/10 border-${getStatusColor()}/30 text-${getStatusColor()}`}
+              className={`px-3 py-1 border rounded-full text-xs font-medium`}
             >
               {getStatusText()}
             </span>
@@ -186,9 +180,7 @@ export default function StudentCard({
                 onClick={handleToggleStatus}
                 disabled={isToggling}
                 className={`w-8 h-8 rounded-lg border transition-all flex items-center justify-center ${
-                  isPaused
-                    ? 'border-ok/30 hover:bg-ok/10 hover:border-ok text-ok'
-                    : 'border-atencao/30 hover:bg-atencao/10 hover:border-atencao text-atencao'
+                  isPaused ? '' : ''
                 }`}
                 title={isPaused ? translations.reactivate : translations.pause}
               >
@@ -203,10 +195,10 @@ export default function StudentCard({
 
               <Link
                 href={`/teacher/students/${student.id}`}
-                className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
+                className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
                 title={translations.viewDetails}
               >
-                <PiEye className="w-4 h-4 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
+                <PiEye className="w-4 h-4 text-theme-tertiary transition-colors" />
               </Link>
             </Inline>
           </Inline>
@@ -223,7 +215,7 @@ export default function StudentCard({
         <Inline gap={4}>
           <div className="relative w-16 h-16">
             {student.image ? (
-              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-ouro/20">
+              <div className="relative w-full h-full rounded-full overflow-hidden border-2">
                 <Image
                   src={student.image}
                   alt={student.name}
@@ -233,7 +225,7 @@ export default function StudentCard({
                 />
               </div>
             ) : (
-              <div className="w-full h-full fill-ouro rounded-full flex items-center justify-center border-2 border-ouro/20">
+              <div className="w-full h-full rounded-full flex items-center justify-center border-2">
                 <PiUser className="w-8 h-8 text-theme-primary" />
               </div>
             )}
@@ -263,9 +255,7 @@ export default function StudentCard({
         </Inline>
 
         {/* Status Badge */}
-        <span
-          className={`px-3 py-1 border rounded-full text-xs font-medium bg-${getStatusColor()}/10 border-${getStatusColor()}/30 text-${getStatusColor()}`}
-        >
+        <span className={`px-3 py-1 border rounded-full text-xs font-medium`}>
           {getStatusText()}
         </span>
       </div>
@@ -273,7 +263,7 @@ export default function StudentCard({
       {/* Stats Grid */}
       {/* <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="text-center p-3 bg-theme-elevated rounded-lg">
-          <div className="text-xl font-bold text-brand-primary mb-1">
+          <div className="text-xl font-bold text-ouro-texto mb-1">
             {stats.totalLessons}
           </div>
           <div className="text-sm text-theme-tertiary">
@@ -282,7 +272,7 @@ export default function StudentCard({
         </div>
 
         <div className="text-center p-3 bg-theme-elevated rounded-lg">
-          <div className="text-xl font-bold text-accent-green mb-1">
+          <div className="text-xl font-bold mb-1">
             {stats.completionRate}%
           </div>
           <div className="text-sm text-theme-tertiary">
@@ -293,7 +283,7 @@ export default function StudentCard({
 
       {/* Next Lesson */}
       {nextLesson && (
-        <div className="mb-4 p-3 bg-theme-elevated bg-ouro/10 rounded-lg">
+        <div className="mb-4 p-3 bg-theme-elevated rounded-lg">
           <div className="flex items-center justify-between">
             <Stack gap={1}>
               <Text papel="rotulo" tom="forte" as="div" className="font-medium">
@@ -304,7 +294,7 @@ export default function StudentCard({
                 {formatTime(nextLesson.scheduledAt)}
               </Text>
             </Stack>
-            <PiCalendarBlank className="w-4 h-4 text-brand-primary" />
+            <PiCalendarBlank className="w-4 h-4 text-ouro-texto" />
           </div>
         </div>
       )}
@@ -315,9 +305,7 @@ export default function StudentCard({
           onClick={handleToggleStatus}
           disabled={isToggling}
           className={`flex-1 btn-classical-secondary text-sm flex items-center justify-center space-x-2 ${
-            isPaused
-              ? 'hover:bg-ok/10 hover:border-ok/30 hover:text-ok'
-              : 'hover:bg-atencao/10 hover:border-atencao/30 hover:text-atencao'
+            isPaused ? '' : ''
           }`}
         >
           {isToggling ? (

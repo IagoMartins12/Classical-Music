@@ -46,7 +46,7 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
   }`.trim();
 
   return (
-    <article className="classical-card overflow-hidden group hover:shadow-[var(--sombra-2)] transition-all">
+    <article className="classical-card overflow-hidden group transition-all">
       <div className="flex flex-col md:flex-row">
         {/* Image */}
         <Link
@@ -94,7 +94,7 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
 
           {/* Title */}
           <Link href={`/blog/${article.slug}`} className="mb-3">
-            <h3 className="text-2xl font-bold text-theme-primary line-clamp-2 group-hover:text-ouro-texto transition-colors">
+            <h3 className="text-2xl font-bold text-theme-primary line-clamp-2 transition-colors">
               {article.title}
             </h3>
           </Link>
@@ -120,7 +120,7 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
                 />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-theme-classical flex items-center justify-center">
-                  <PiUser className="w-4 h-4 text-brand-primary" />
+                  <PiUser className="w-4 h-4 text-ouro-texto" />
                 </div>
               )}
               <Text papel="rotulo" tom="suave" className="font-medium">

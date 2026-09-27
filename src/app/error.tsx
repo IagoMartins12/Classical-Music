@@ -201,7 +201,7 @@ export default function Error({ error, reset }: ErrorProps) {
                     href={getHomeLink()}
                     className="inline-flex items-center group"
                   >
-                    <GiGrandPiano className="w-12 h-12 mr-4 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
+                    <GiGrandPiano className="w-12 h-12 mr-4 text-ouro-texto icon-glow transition-all duration-300 group-hover:scale-110" />
                     <div className="text-left">
                       <span className="text-2xl font-bold text-gradient-brand classical-title">
                         {t('error_jsx_span_children_0__opus_atlas')}
@@ -218,8 +218,8 @@ export default function Error({ error, reset }: ErrorProps) {
             {/* Error Icon */}
             <AnimatedItem direction="scale" springType="bouncy">
               <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto bg-erro/20 rounded-full flex items-center justify-center classical-card border-2 border-erro/30 shadow-theme-glow">
-                  <PiWarning className="w-16 h-16 text-erro" />
+                <div className="w-32 h-32 mx-auto rounded-full flex items-center justify-center classical-card border-2 shadow-theme-glow">
+                  <PiWarning className="w-16 h-16" />
                 </div>
               </div>
             </AnimatedItem>
@@ -276,8 +276,8 @@ export default function Error({ error, reset }: ErrorProps) {
               className="classical-card p-6 max-w-3xl mx-auto mb-8"
             >
               <Inline gap={3} className="mb-4">
-                <div className="w-10 h-10 bg-aviso/20 rounded-xl flex items-center justify-center">
-                  <PiMusicNotes className="w-5 h-5 text-aviso" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                  <PiMusicNotes className="w-5 h-5" />
                 </div>
                 <h2 className="text-xl font-bold text-theme-primary classical-title">
                   {t('error_jsx_h3_children_0__que_voce_pode_fazer')}
@@ -287,13 +287,13 @@ export default function Error({ error, reset }: ErrorProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                 <Stack gap={2}>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                    <div className="w-2 h-2 rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t('error_jsx_span_children_0__recarregar_pagina')}
                     </span>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                    <div className="w-2 h-2 rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t('error_jsx_span_children_0__verificar_conexao')}
                     </span>
@@ -301,13 +301,13 @@ export default function Error({ error, reset }: ErrorProps) {
                 </Stack>
                 <Stack gap={2}>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                    <div className="w-2 h-2 rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t('error_jsx_span_children_0__tentar_mais_tarde')}
                     </span>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                    <div className="w-2 h-2 rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t('error_jsx_span_children_0__voltar_pagina_anterior')}
                     </span>
@@ -322,7 +322,7 @@ export default function Error({ error, reset }: ErrorProps) {
                 <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
                   &quot;{t('error_jsx_blockquote_children_0__music')}&quot;
                 </blockquote>
-                <cite className="text-brand-primary font-semibold">
+                <cite className="text-ouro-texto font-semibold">
                   {t('error_jsx_cite_children_0__leonard_bernstein')}
                 </cite>
               </Card>
@@ -331,8 +331,8 @@ export default function Error({ error, reset }: ErrorProps) {
         </div>
 
         {/* Decorative Elements */}
-        <div className="absolute bottom-4 right-4 w-16 h-16 bg-ouro/10 rounded-3xl flex items-center justify-center opacity-50">
-          <PiMusicNotes className="w-8 h-8 text-brand-primary" />
+        <div className="absolute bottom-4 right-4 w-16 h-16 rounded-3xl flex items-center justify-center opacity-50">
+          <PiMusicNotes className="w-8 h-8 text-ouro-texto" />
         </div>
       </main>
     </>

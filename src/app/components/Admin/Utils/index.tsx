@@ -43,7 +43,7 @@ export const formatGrowthRate = (
   isPositive: boolean;
 } => {
   const isPositive = rate >= 0;
-  const color = isPositive ? 'text-ok' : 'text-erro';
+  const color = isPositive ? '' : '';
   const formatted = `${isPositive ? '+' : ''}${rate.toFixed(1)}%`;
 
   return { formatted, color, isPositive };
@@ -52,11 +52,11 @@ export const formatGrowthRate = (
 export const getQualityColor = (quality: string): string => {
   switch (quality) {
     case 'high':
-      return 'text-ok';
+      return '';
     case 'medium':
-      return 'text-atencao';
+      return '';
     case 'low':
-      return 'text-erro';
+      return '';
     default:
       return 'text-theme-tertiary';
   }

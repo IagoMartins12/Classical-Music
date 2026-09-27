@@ -239,7 +239,7 @@ export function CategoryList({
               <button
                 type="button"
                 onMouseDown={(e) => handleMouseDown(e, index)}
-                className="cursor-grab select-none p-1 rounded hover:bg-ouro/10"
+                className="cursor-grab select-none p-1 rounded"
                 title="Arrastar para reordenar"
               >
                 <PiArrowsOutCardinal className="w-5 h-5 text-theme-tertiary" />
@@ -283,7 +283,7 @@ export function CategoryList({
             </Inline>
             {/* Slug */}
             <div className="col-span-2">
-              <code className="text-xs bg-theme-elevated px-2 py-1 rounded text-brand-primary">
+              <code className="text-xs bg-theme-elevated px-2 py-1 rounded text-ouro-texto">
                 /{category.slug}
               </code>
             </div>
@@ -307,8 +307,8 @@ export function CategoryList({
                                 inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium transition-all
                                 ${
                                   category.isActive
-                                    ? 'bg-ok/10 text-ok hover:bg-ok/30'
-                                    : 'bg-linha-forte/20 text-texto-suave hover:bg-linha-forte/30'
+                                    ? 'bg-green-500/20 text-green-600 hover:bg-green-500/30'
+                                    : 'bg-gray-500/20 text-gray-600 hover:bg-gray-500/30'
                                 }
                               `}
               >
@@ -331,7 +331,7 @@ export function CategoryList({
               <Link
                 href={`/blog/category/${category.slug}`}
                 target="_blank"
-                className="p-2 rounded-lg hover:bg-ouro/10 text-theme-secondary hover:text-ouro-texto transition-all"
+                className="p-2 rounded-lg text-theme-secondary transition-all"
                 title="Ver categoria"
               >
                 {category.isActive ? (
@@ -344,7 +344,7 @@ export function CategoryList({
               {/* Edit */}
               <Link
                 href={`/blog/admin/categories/edit/${category.id}`}
-                className="p-2 rounded-lg hover:bg-ouro/10 text-theme-secondary hover:text-aviso transition-all"
+                className="p-2 rounded-lg text-theme-secondary hover:text-blue-500 transition-all"
                 title="Editar"
               >
                 <PiNotePencil className="w-4 h-4" />
@@ -353,7 +353,7 @@ export function CategoryList({
               {/* Delete */}
               <button
                 onClick={() => setDeleteModal(category.id)}
-                className="p-2 rounded-lg hover:bg-ouro/10 text-theme-secondary hover:text-erro transition-all"
+                className="p-2 rounded-lg text-theme-secondary hover:text-red-500 transition-all"
                 title="Deletar"
                 disabled={category._count.articles > 0}
               >
@@ -369,7 +369,7 @@ export function CategoryList({
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="bg-theme-secondary  classical-card  rounded-lg px-6 py-4 shadow-xl">
             <Inline gap={3}>
-              <div className="w-5 h-5 border-2 border-ouro border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"></div>
               <span className="text-theme-primary font-medium">
                 Atualizando ordem...
               </span>
@@ -382,8 +382,8 @@ export function CategoryList({
         <Modal isOpen onClose={() => setDeleteModal(null)}>
           <div className="rounded-2xl max-w-md w-full p-6">
             <div className="flex items-start space-x-4">
-              <div className="w-12 h-12 rounded-full bg-erro/20 flex items-center justify-center flex-shrink-0">
-                <PiWarningCircle className="w-6 h-6 text-erro" />
+              <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                <PiWarningCircle className="w-6 h-6 text-red-500" />
               </div>
 
               <div className="flex-1">
@@ -397,8 +397,8 @@ export function CategoryList({
 
                 {(categories.find((c) => c.id === deleteModal)?._count
                   .articles ?? 0) > 0 && (
-                  <div className="mb-4 p-3 bg-erro/10 border border-erro/20 rounded-lg">
-                    <p className="text-sm text-erro">
+                  <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                    <p className="text-sm text-red-600">
                       ⚠️ Esta categoria possui{' '}
                       {
                         categories.find((c) => c.id === deleteModal)?._count

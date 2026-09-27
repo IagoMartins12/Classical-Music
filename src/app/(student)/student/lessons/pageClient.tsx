@@ -313,31 +313,31 @@ export default function StudentLessonsPageClient({
     switch (status) {
       case 'COMPLETED':
         return {
-          color: 'border-ok text-ok',
+          color: 'border-green-400 text-green-400',
           label: t('status_completed'),
           icon: PiCheck,
         };
       case 'CANCELLED':
         return {
-          color: 'border-erro text-erro',
+          color: 'border-red-400 text-red-400',
           label: t('status_cancelled'),
           icon: PiX,
         };
       case 'NO_SHOW':
         return {
-          color: 'border-atencao/30 text-atencao',
+          color: 'border-yellow-300 text-yellow-300',
           label: t('status_no_show'),
           icon: PiX,
         };
       case 'RESCHEDULED':
         return {
-          color: 'border-ouro/30 text-ouro-texto',
+          color: 'border-purple-300 text-purple-300',
           label: t('status_rescheduled'),
           icon: PiClock,
         };
       default:
         return {
-          color: 'border-aviso/30 text-aviso',
+          color: 'border-blue-300 text-blue-300',
           label: t('status_scheduled'),
           icon: PiCalendarBlank,
         };
@@ -357,13 +357,13 @@ export default function StudentLessonsPageClient({
           key={lesson.id}
           hover="lift"
           className={`classical-card p-6 relative ${
-            isToday ? ' ring-atencao ring-2' : ''
-          } ${statusInfo.needsAttention ? 'ring-2 ring-erro' : ''}`}
+            isToday ? ' ring-yellow-400 ring-2' : ''
+          } ${statusInfo.needsAttention ? 'ring-2 ring-red-400' : ''}`}
           delay={index * 0.1}
         >
           {/* 🆕 INDICATIVO DE ATENÇÃO NECESSÁRIA */}
           {statusInfo.needsAttention && (
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-erro rounded-full flex items-center justify-center">
+            <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">
               <PiWarning className="w-3 h-3 text-white" />
             </div>
           )}
@@ -380,7 +380,7 @@ export default function StudentLessonsPageClient({
               <Text
                 papel="legenda"
                 tom="ouro"
-                className="px-2 py-1 bg-ouro/10 rounded-full font-medium"
+                className="px-2 py-1 rounded-full font-medium"
               >
                 {t('today')}
               </Text>
@@ -446,10 +446,7 @@ export default function StudentLessonsPageClient({
                 {lesson.objectives
                   .slice(0, 2)
                   .map((objective: any, idx: number) => (
-                    <span
-                      key={idx}
-                      className="px-2 py-1 bg-aviso/10 text-aviso text-xs rounded"
-                    >
+                    <span key={idx} className="px-2 py-1 text-xs rounded">
                       {objective}
                     </span>
                   ))}
@@ -466,12 +463,12 @@ export default function StudentLessonsPageClient({
           {lesson.status === 'COMPLETED' && (
             <div className="mb-4">
               {lesson.studentFeedback ? (
-                <div className="flex items-center text-sm text-ok">
+                <div className="flex items-center text-sm">
                   <PiChatCenteredText className="w-4 h-4 mr-2" />
                   {t('feedback_sent')}
                 </div>
               ) : (
-                <div className="flex items-center text-sm text-atencao">
+                <div className="flex items-center text-sm">
                   <PiChatCenteredText className="w-4 h-4 mr-2" />
                   {t('feedback_pending')}
                 </div>
@@ -482,7 +479,7 @@ export default function StudentLessonsPageClient({
           {/* 🆕 ALERTA PARA AULAS QUE PRECISAM DE ATENÇÃO */}
           {statusInfo.needsAttention && (
             <div className="mb-4">
-              <div className="flex items-center text-sm text-erro">
+              <div className="flex items-center text-sm text-red-600">
                 <PiWarning className="w-4 h-4 mr-2" />
                 {t('status_needs_update')}
               </div>
@@ -515,8 +512,8 @@ export default function StudentLessonsPageClient({
           key={lesson.id}
           hover="lift"
           className={`classical-card p-4 ${
-            isToday ? 'ring-2 ring-atencao' : ''
-          } ${statusInfo.needsAttention ? 'ring-2 ring-erro' : ''}`}
+            isToday ? 'ring-2 ring-yellow-400' : ''
+          } ${statusInfo.needsAttention ? 'ring-2 ring-red-600' : ''}`}
           delay={index * 0.05}
         >
           <div className="flex items-center justify-between">
@@ -526,22 +523,20 @@ export default function StudentLessonsPageClient({
                 <span
                   className={`w-3 h-3 rounded-full ${
                     lesson.status === 'COMPLETED'
-                      ? 'bg-ok'
+                      ? ''
                       : lesson.status === 'CANCELLED'
-                        ? 'bg-erro'
+                        ? ''
                         : lesson.status === 'NO_SHOW'
-                          ? 'bg-atencao'
-                          : 'bg-aviso'
+                          ? ''
+                          : ''
                   }`}
                 />
-                {statusInfo.needsAttention && (
-                  <PiWarning className="w-4 h-4 text-erro" />
-                )}
+                {statusInfo.needsAttention && <PiWarning className="w-4 h-4" />}
                 {isToday && (
                   <Text
                     papel="legenda"
                     tom="ouro"
-                    className="px-2 py-1 bg-ouro/10 rounded-full font-medium"
+                    className="px-2 py-1 rounded-full font-medium"
                   >
                     {t('today')}
                   </Text>
@@ -563,7 +558,7 @@ export default function StudentLessonsPageClient({
                   <span>{lesson.duration}min</span>
                   {lesson.location && <span>{lesson.location}</span>}
                   {statusInfo.needsAttention && (
-                    <span className="text-erro">{t('status_pending')}</span>
+                    <span className="">{t('status_pending')}</span>
                   )}
                 </Inline>
               </div>
@@ -580,9 +575,9 @@ export default function StudentLessonsPageClient({
             <Inline gap={2} className="ml-4">
               <Link
                 href={`/student/lessons/${lesson.id}`}
-                className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-ouro/10 transition-colors flex items-center justify-center group"
+                className="w-8 h-8 rounded-lg bg-theme-elevated transition-colors flex items-center justify-center group"
               >
-                <PiEye className="w-4 h-4 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
+                <PiEye className="w-4 h-4 text-theme-tertiary transition-colors" />
               </Link>
             </Inline>
           </div>
@@ -598,7 +593,7 @@ export default function StudentLessonsPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-aviso rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiUser className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -622,7 +617,7 @@ export default function StudentLessonsPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiCalendarBlank className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -666,7 +661,7 @@ export default function StudentLessonsPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiBookOpen className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -687,7 +682,7 @@ export default function StudentLessonsPageClient({
                 hover="scale"
                 className="classical-card p-6 text-center snap-start"
               >
-                <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiCalendarBlank className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -702,7 +697,7 @@ export default function StudentLessonsPageClient({
                 hover="scale"
                 className="classical-card p-6 text-center snap-start"
               >
-                <div className="w-12 h-12 bg-aviso rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiClock className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -717,7 +712,7 @@ export default function StudentLessonsPageClient({
                 hover="scale"
                 className="classical-card p-6 text-center snap-start"
               >
-                <div className="w-12 h-12 bg-ok rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiCheck className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -732,7 +727,7 @@ export default function StudentLessonsPageClient({
                 hover="scale"
                 className="classical-card p-6 text-center snap-start"
               >
-                <div className="w-12 h-12 bg-erro rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <PiX className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -768,7 +763,7 @@ export default function StudentLessonsPageClient({
                   size="lg"
                   onClick={() => setShowFilters(!showFilters)}
                   className={`btn-classical-secondary w-full sm:w-auto flex items-center space-x-2 ${
-                    showFilters ? 'bg-ouro/10 text-brand-primary' : ''
+                    showFilters ? 'text-ouro-texto' : ''
                   }`}
                   leftIcon={<PiFunnel className="w-4 h-4" />}
                 >
@@ -974,8 +969,8 @@ export default function StudentLessonsPageClient({
                           onClick={() => setCurrentPage(page)}
                           className={`w-10 h-10 rounded-lg font-medium transition-all ${
                             currentPage === page
-                              ? 'bg-ouro text-theme-primary'
-                              : 'text-theme-secondary hover:bg-sup-elevada'
+                              ? 'text-theme-primary'
+                              : 'text-theme-secondary'
                           }`}
                         >
                           {page}

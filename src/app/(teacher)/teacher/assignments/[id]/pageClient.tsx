@@ -57,9 +57,9 @@ const ASSIGNMENT_TYPES = {
 };
 
 const PRIORITY_COLORS = {
-  low: 'bg-ok/10 border-ok/30 text-ok',
-  medium: 'bg-atencao/10 border-atencao/30 text-atencao',
-  high: 'bg-erro/10 border-erro/30 text-erro',
+  low: '',
+  medium: '',
+  high: '',
 };
 
 const PRIORITY_LABELS = {
@@ -178,11 +178,10 @@ export default function AssignmentDetailsPageClient({
   const getStatusColor = (assignment: any) => {
     if (!assignment) return '';
 
-    if (assignment.isOverdue) return 'bg-erro/10 border-erro/30 text-erro';
-    if (assignment.isCompleted) return 'bg-ok/10 border-ok/30 text-ok';
-    if (assignment.status === 'IN_PROGRESS')
-      return 'bg-aviso/10 border-aviso/30 text-aviso';
-    return 'bg-atencao/10 border-atencao/30 text-atencao';
+    if (assignment.isOverdue) return '';
+    if (assignment.isCompleted) return '';
+    if (assignment.status === 'IN_PROGRESS') return '';
+    return '';
   };
 
   const getStatusText = (assignment: any) => {
@@ -200,7 +199,7 @@ export default function AssignmentDetailsPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -229,9 +228,9 @@ export default function AssignmentDetailsPageClient({
             <Inline gap={4}>
               <Link
                 href="/teacher/assignments"
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
               >
-                <PiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
+                <PiArrowLeft className="w-4 h-4 text-theme-tertiary transition-colors" />
               </Link>
               <div>
                 <div className="flex items-center gap-4 justify-center">
@@ -259,7 +258,7 @@ export default function AssignmentDetailsPageClient({
                 <Inline
                   as="span"
                   gap={1}
-                  className="px-3 py-2 rounded-full text-sm font-medium border bg-ouro/10 border-ouro/30 text-ouro-texto"
+                  className="px-3 py-2 rounded-full text-sm font-medium border"
                 >
                   <PiVideoCamera className="w-3 h-3" />
                   <span>{t('has_video')}</span>
@@ -338,9 +337,9 @@ export default function AssignmentDetailsPageClient({
                             <span
                               className={`text-sm ${
                                 assignment.isOverdue
-                                  ? 'text-erro'
+                                  ? ''
                                   : (assignment.daysUntilDue ?? 0 <= 1)
-                                    ? 'text-atencao'
+                                    ? ''
                                     : 'text-theme-tertiary'
                               }`}
                             >
@@ -404,7 +403,7 @@ export default function AssignmentDetailsPageClient({
                             key={index}
                             className="text-theme-primary"
                           >
-                            <PiTarget className="w-4 h-4 text-aviso" />
+                            <PiTarget className="w-4 h-4" />
                             <span>{goal}</span>
                           </Inline>
                         ))}
@@ -424,7 +423,7 @@ export default function AssignmentDetailsPageClient({
                             key={index}
                             className="text-theme-primary"
                           >
-                            <PiTarget className="w-4 h-4 text-ok" />
+                            <PiTarget className="w-4 h-4" />
                             <span>{goal}</span>
                           </Inline>
                         ))}
@@ -444,7 +443,7 @@ export default function AssignmentDetailsPageClient({
                             key={index}
                             className="text-theme-primary"
                           >
-                            <PiBookOpen className="w-4 h-4 text-ouro-texto" />
+                            <PiBookOpen className="w-4 h-4" />
                             <span>{exercise}</span>
                           </Inline>
                         ))}
@@ -499,8 +498,8 @@ export default function AssignmentDetailsPageClient({
                     <div className="p-4 bg-theme-elevated rounded-lg">
                       <div className="flex items-center justify-between">
                         <Inline gap={4}>
-                          <div className="w-12 h-12 bg-ouro/10 border border-ouro/30 rounded-lg flex items-center justify-center">
-                            <PiVideoCamera className="w-6 h-6 text-ouro-texto" />
+                          <div className="w-12 h-12 border rounded-lg flex items-center justify-center">
+                            <PiVideoCamera className="w-6 h-6" />
                           </div>
                           <Stack gap={1}>
                             <h4 className="font-medium text-theme-primary">
@@ -580,7 +579,7 @@ export default function AssignmentDetailsPageClient({
                       <label className="text-sm font-medium text-theme-tertiary block">
                         {t('student_comments')}
                       </label>
-                      <div className="p-4 bg-sup-1/10 rounded-lg bg-theme-elevated">
+                      <div className="p-4 rounded-lg bg-theme-elevated">
                         <div className="text-theme-primary whitespace-pre-wrap">
                           {assignment.studentNotes}
                         </div>
@@ -601,7 +600,7 @@ export default function AssignmentDetailsPageClient({
                               key={star}
                               className={`w-5 h-5 ${
                                 star <= assignment.studentRating!
-                                  ? 'text-atencao fill-current'
+                                  ? 'fill-current'
                                   : 'text-theme-tertiary'
                               }`}
                             />
@@ -610,7 +609,7 @@ export default function AssignmentDetailsPageClient({
                               key={star}
                               className={`w-5 h-5 ${
                                 star <= assignment.studentRating!
-                                  ? 'text-atencao fill-current'
+                                  ? 'fill-current'
                                   : 'text-theme-tertiary'
                               }`}
                             />
@@ -651,7 +650,7 @@ export default function AssignmentDetailsPageClient({
                                 key={key}
                                 className="bg-theme-elevated p-2 rounded-lg"
                               >
-                                <PiCheck className="w-4 h-4 text-ok" />
+                                <PiCheck className="w-4 h-4" />
                                 <Text papel="rotulo" tom="forte">
                                   {milestoneLabels[key] || key}
                                 </Text>
@@ -704,9 +703,7 @@ export default function AssignmentDetailsPageClient({
                     ) : (
                       <div
                         className={`p-4 rounded-lg bg-theme-elevated ${
-                          feedbackData.teacherFeedback
-                            ? 'bg-sup-1/10 border-linha/20'
-                            : 'bg-sup-1/5 border-linha/10'
+                          feedbackData.teacherFeedback ? '' : ''
                         }`}
                       >
                         <div className="text-theme-primary whitespace-pre-wrap">
@@ -740,7 +737,7 @@ export default function AssignmentDetailsPageClient({
                             <PiStarFill
                               className={`w-6 h-6 ${
                                 star <= feedbackData.teacherRating
-                                  ? 'text-atencao fill-current'
+                                  ? 'fill-current'
                                   : 'text-theme-tertiary'
                               }`}
                             />
@@ -748,7 +745,7 @@ export default function AssignmentDetailsPageClient({
                             <PiStar
                               className={`w-6 h-6 ${
                                 star <= feedbackData.teacherRating
-                                  ? 'text-atencao fill-current'
+                                  ? 'fill-current'
                                   : 'text-theme-tertiary'
                               }`}
                             />
@@ -823,7 +820,7 @@ export default function AssignmentDetailsPageClient({
                       />
                     </div>
                   ) : (
-                    <div className="w-12 h-12 fill-ouro rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center">
                       <PiUser className="w-6 h-6 text-theme-primary" />
                     </div>
                   )}
@@ -833,7 +830,7 @@ export default function AssignmentDetailsPageClient({
                     </div>
                     <Link
                       href={`/teacher/students/${assignment.student.id}`}
-                      className="text-sm text-brand-primary hover:text-ouro-texto"
+                      className="text-sm text-ouro-texto"
                     >
                       {t('view_student_profile')}
                     </Link>
@@ -875,7 +872,7 @@ export default function AssignmentDetailsPageClient({
                       <span className="text-theme-tertiary">
                         {t('video_uploaded')}
                       </span>
-                      <span className="text-ouro-texto">
+                      <span className="">
                         {formatDate(videoSubmission.uploadedAt)}
                       </span>
                     </div>
@@ -888,7 +885,7 @@ export default function AssignmentDetailsPageClient({
                       </span>
                       <Link
                         href={`/teacher/lessons/${assignment.lesson.id}`}
-                        className="block text-brand-primary hover:text-ouro-texto mt-1"
+                        className="block text-ouro-texto mt-1"
                       >
                         {assignment.lesson.title}
                       </Link>
@@ -919,7 +916,7 @@ export default function AssignmentDetailsPageClient({
                       as="button"
                       gap={2}
                       onClick={() => setShowVideoModal(true)}
-                      className="w-full btn-classical-secondary justify-center bg-ouro/10 border-ouro/30 text-ouro-texto hover:bg-ouro/20"
+                      className="w-full btn-classical-secondary justify-center"
                     >
                       <PiVideoCamera className="w-4 h-4" />
                       <span>{t('watch_video')}</span>
@@ -951,7 +948,7 @@ export default function AssignmentDetailsPageClient({
 
         {/* Error Display */}
         {error && (
-          <div className="fixed bottom-6 right-6 bg-erro/90 backdrop-blur-sm text-white p-4 rounded-lg shadow-lg max-w-md">
+          <div className="fixed bottom-6 right-6 backdrop-blur-sm text-white p-4 rounded-lg shadow-lg max-w-md">
             <Inline gap={3}>
               <PiWarningCircle className="w-5 h-5 text-white" />
               <div>
@@ -960,7 +957,7 @@ export default function AssignmentDetailsPageClient({
               </div>
               <button
                 onClick={clearError}
-                className="ml-auto text-white hover:text-texto-fraco"
+                className="ml-auto text-white hover:text-gray-200"
               >
                 <PiX className="w-4 h-4" />
                 <NomeAcao acao="fechar" />
@@ -971,7 +968,7 @@ export default function AssignmentDetailsPageClient({
 
         {/* Approve Modal */}
         {showApproveModal && (
-          <div className="fixed inset-0 bg-veu backdrop-blur-sm z-dialogo flex items-center justify-center p-4">
+          <div className="fixed inset-0 backdrop-blur-sm z-dialogo flex items-center justify-center p-4">
             <AnimatedCard
               hover="none"
               className="classical-card w-full max-w-md"
@@ -983,7 +980,7 @@ export default function AssignmentDetailsPageClient({
                   </h2>
                   <button
                     onClick={() => setShowApproveModal(false)}
-                    className="text-theme-tertiary hover:text-texto"
+                    className="text-theme-tertiary"
                   >
                     <PiX className="w-5 h-5" />
                     <NomeAcao acao="fechar" />
@@ -1008,7 +1005,7 @@ export default function AssignmentDetailsPageClient({
                     gap={2}
                     onClick={handleApproveAssignment}
                     disabled={loading.approve}
-                    className="btn-classical-primary bg-ok border-ok hover:bg-ok/90"
+                    className="btn-classical-primary"
                   >
                     {loading.approve ? (
                       <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -1060,7 +1057,7 @@ export default function AssignmentDetailsPageClient({
                     </Inline>
                     <button
                       onClick={() => setShowVideoModal(false)}
-                      className="text-theme-tertiary hover:text-texto"
+                      className="text-theme-tertiary"
                     >
                       <PiX className="w-5 h-5" />
                       <NomeAcao acao="fechar" />

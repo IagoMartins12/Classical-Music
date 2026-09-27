@@ -370,7 +370,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
             <Card nivel={2} densidade="compacta" key={instrument.id}>
               <div className="flex items-center justify-between">
                 <Inline gap={4}>
-                  <div className="w-10 h-10 fill-ouro rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center">
                     <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                   </div>
 
@@ -459,7 +459,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                 {isEditing && (
                   <button
                     onClick={() => handleRemoveInstrument(instrument.id)}
-                    className="p-2 text-theme-tertiary hover:text-erro transition-colors"
+                    className="p-2 text-theme-tertiary transition-colors"
                     title="Remover instrumento"
                   >
                     <PiTrash className="w-4 h-4" />

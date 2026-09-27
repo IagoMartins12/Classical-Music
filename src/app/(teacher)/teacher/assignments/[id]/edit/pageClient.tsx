@@ -308,7 +308,7 @@ export default function EditAssignmentPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -331,7 +331,7 @@ export default function EditAssignmentPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center">
-            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-ouro-texto mx-auto mb-4" />
             <p className="text-theme-secondary">{t('loading_assignment')}</p>
           </Card>
         </div>
@@ -350,9 +350,9 @@ export default function EditAssignmentPageClient({
             <Inline gap={4}>
               <Link
                 href="/teacher/assignments"
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
               >
-                <PiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
+                <PiArrowLeft className="w-4 h-4 text-theme-tertiary transition-colors" />
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-gradient-brand classical-title">
@@ -370,7 +370,7 @@ export default function EditAssignmentPageClient({
               gap={2}
               type="button"
               onClick={() => setShowDeleteConfirm(true)}
-              className="btn-classical-secondary text-erro border-erro/30 hover:bg-erro/10"
+              className="btn-classical-secondary"
             >
               <PiTrash className="w-4 h-4" />
               <span>{t('delete')}</span>
@@ -515,7 +515,7 @@ export default function EditAssignmentPageClient({
                         gap={1}
                         type="button"
                         onClick={() => addArrayField('practiceGoals')}
-                        className="text-brand-primary hover:text-ouro-texto text-sm"
+                        className="text-ouro-texto text-sm"
                       >
                         <PiPlus className="w-3 h-3" />
                         <span>{t('add')}</span>
@@ -545,7 +545,7 @@ export default function EditAssignmentPageClient({
                               onClick={() =>
                                 removeArrayField('practiceGoals', index)
                               }
-                              className="text-erro"
+                              className=""
                             >
                               <PiX className="w-4 h-4" />
                               <NomeAcao acao="fechar" />
@@ -587,7 +587,7 @@ export default function EditAssignmentPageClient({
                       gap={2}
                       type="button"
                       onClick={() => setShowAdvanced(!showAdvanced)}
-                      className="text-brand-primary hover:text-ouro-texto"
+                      className="text-ouro-texto"
                     >
                       <span>{t('advanced_options')}</span>
                       <div
@@ -612,10 +612,7 @@ export default function EditAssignmentPageClient({
                     </Inline>
 
                     {showAdvanced && (
-                      <Stack
-                        gap={6}
-                        className="p-4 bg-sup-1/5 shadow-lg rounded-lg"
-                      >
+                      <Stack gap={6} className="p-4 shadow-lg rounded-lg">
                         {/* Technical Goals */}
                         <Stack gap={2}>
                           <div className="flex items-center justify-between">
@@ -627,7 +624,7 @@ export default function EditAssignmentPageClient({
                               gap={1}
                               type="button"
                               onClick={() => addArrayField('technicalGoals')}
-                              className="text-brand-primary text-sm"
+                              className="text-ouro-texto text-sm"
                             >
                               <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
@@ -656,7 +653,7 @@ export default function EditAssignmentPageClient({
                                     onClick={() =>
                                       removeArrayField('technicalGoals', index)
                                     }
-                                    className="text-erro"
+                                    className=""
                                   >
                                     <PiX className="w-4 h-4" />
                                     <NomeAcao acao="fechar" />
@@ -678,7 +675,7 @@ export default function EditAssignmentPageClient({
                               gap={1}
                               type="button"
                               onClick={() => addArrayField('musicalGoals')}
-                              className="text-brand-primary text-sm"
+                              className="text-ouro-texto text-sm"
                             >
                               <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
@@ -707,7 +704,7 @@ export default function EditAssignmentPageClient({
                                     onClick={() =>
                                       removeArrayField('musicalGoals', index)
                                     }
-                                    className="text-erro"
+                                    className=""
                                   >
                                     <PiX className="w-4 h-4" />
                                     <NomeAcao acao="fechar" />
@@ -729,7 +726,7 @@ export default function EditAssignmentPageClient({
                               gap={1}
                               type="button"
                               onClick={() => addArrayField('exercises')}
-                              className="text-brand-primary text-sm"
+                              className="text-ouro-texto text-sm"
                             >
                               <PiPlus className="w-3 h-3" />
                               <span>{t('add')}</span>
@@ -758,7 +755,7 @@ export default function EditAssignmentPageClient({
                                     onClick={() =>
                                       removeArrayField('exercises', index)
                                     }
-                                    className="text-erro"
+                                    className=""
                                   >
                                     <PiX className="w-4 h-4" />
                                     <NomeAcao acao="fechar" />
@@ -774,19 +771,17 @@ export default function EditAssignmentPageClient({
 
                   {/* Error Display */}
                   {error && (
-                    <div className="bg-erro/10 border border-erro/30 rounded-lg p-4">
+                    <div className="border rounded-lg p-4">
                       <Inline gap={3}>
-                        <PiWarningCircle className="w-5 h-5 text-erro" />
+                        <PiWarningCircle className="w-5 h-5" />
                         <div>
-                          <p className="text-erro font-medium">
-                            {t('error_updating')}
-                          </p>
-                          <p className="text-erro/80 text-sm">{error}</p>
+                          <p className="font-medium">{t('error_updating')}</p>
+                          <p className="text-sm">{error}</p>
                         </div>
                         <button
                           type="button"
                           onClick={clearError}
-                          className="ml-auto text-erro"
+                          className="ml-auto"
                         >
                           <PiX className="w-4 h-4" />
                           <NomeAcao acao="fechar" />
@@ -856,7 +851,7 @@ export default function EditAssignmentPageClient({
                         />
                       </div>
                     ) : (
-                      <div className="w-12 h-12 fill-ouro rounded-full flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center">
                         <PiUser className="w-6 h-6 text-theme-primary" />
                       </div>
                     )}
@@ -870,7 +865,7 @@ export default function EditAssignmentPageClient({
                     </div>
                   </Inline>
 
-                  <div className="pt-4 border-t border-linha/20">
+                  <div className="pt-4 border-t">
                     <Stack gap={2} className="text-sm">
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">
@@ -879,10 +874,10 @@ export default function EditAssignmentPageClient({
                         <span
                           className={`font-medium ${
                             assignment.isCompleted
-                              ? 'text-ok'
+                              ? ''
                               : assignment.status === 'OVERDUE'
-                                ? 'text-erro'
-                                : 'text-aviso'
+                                ? ''
+                                : ''
                           }`}
                         >
                           {assignment.isCompleted
@@ -942,10 +937,10 @@ export default function EditAssignmentPageClient({
                       <Inline
                         gap={3}
                         key={work.workId}
-                        className="p-3 bg-sup-elevada/50 rounded-lg"
+                        className="p-3 rounded-lg"
                       >
-                        <div className="w-8 h-8 bg-aviso/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <PiMusicNotes className="w-4 h-4 text-aviso" />
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <PiMusicNotes className="w-4 h-4" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <Text
@@ -965,15 +960,13 @@ export default function EditAssignmentPageClient({
                             {t('composer')}: {work.composerName}
                           </Text>
                           {work.scoreId && (
-                            <p className="text-xs text-ok">
-                              {t('piece_with_score')}
-                            </p>
+                            <p className="text-xs">{t('piece_with_score')}</p>
                           )}
                         </div>
                         <Text
                           papel="legenda"
                           tom="suave"
-                          className="bg-sup-1/20 px-2 py-1 rounded"
+                          className="px-2 py-1 rounded"
                         >
                           #{index + 1}
                         </Text>
@@ -1040,7 +1033,7 @@ export default function EditAssignmentPageClient({
                     {assignment.workScores.map((score) => (
                       <div
                         key={score.id}
-                        className="text-sm p-2 bg-sup-1/10 rounded border"
+                        className="text-sm p-2 rounded border"
                       >
                         <div className="font-medium text-theme-primary">
                           {score.title}
@@ -1065,7 +1058,7 @@ export default function EditAssignmentPageClient({
               className="classical-card p-6 max-w-md w-full mx-4"
             >
               <div className="text-center">
-                <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
                   <PiTrash className="w-8 h-8 text-theme-primary" />
                 </div>
                 <h2 className="text-xl font-bold text-theme-primary mb-4">
@@ -1091,7 +1084,7 @@ export default function EditAssignmentPageClient({
                     gap={2}
                     onClick={handleDelete}
                     disabled={loading.deleteAssignment}
-                    className="btn-classical-primary bg-erro border-erro hover:bg-erro/90 flex-1 justify-center"
+                    className="btn-classical-primary flex-1 justify-center"
                   >
                     {loading.deleteAssignment ? (
                       <PiArrowsClockwise className="w-4 h-4 animate-spin" />

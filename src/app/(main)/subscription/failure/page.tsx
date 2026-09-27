@@ -14,7 +14,7 @@ export default function SubscriptionFailurePage() {
       <div className="max-w-2xl w-full">
         <div className="bg-theme-elevated rounded-2xl shadow-theme-large p-8 md:p-12 text-center">
           {/* Error Icon */}
-          <div className="w-24 h-24 bg-erro rounded-full flex items-center justify-center mx-auto mb-8">
+          <div className="w-24 h-24 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-8">
             <PiX className="w-12 h-12 text-white" />
           </div>
 
@@ -28,10 +28,10 @@ export default function SubscriptionFailurePage() {
           </p>
 
           {/* Info Box */}
-          <div className="bg-erro/10 border border-erro/30 rounded-xl p-6 mb-8 text-left">
+          <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6 mb-8 text-left">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-erro/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                <PiQuestion className="w-6 h-6 text-erro" />
+              <div className="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                <PiQuestion className="w-6 h-6 text-red-500" />
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-theme-primary mb-2">
@@ -39,19 +39,19 @@ export default function SubscriptionFailurePage() {
                 </h3>
                 <ul className="space-y-2 text-theme-secondary">
                   <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-erro rounded-full flex-shrink-0"></span>
+                    <span className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0"></span>
                     <span>Cartão sem saldo suficiente</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-erro rounded-full flex-shrink-0"></span>
+                    <span className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0"></span>
                     <span>Dados do cartão incorretos</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-erro rounded-full flex-shrink-0"></span>
+                    <span className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0"></span>
                     <span>Limite de compras atingido</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-erro rounded-full flex-shrink-0"></span>
+                    <span className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0"></span>
                     <span>Problema com a operadora do cartão</span>
                   </li>
                 </ul>

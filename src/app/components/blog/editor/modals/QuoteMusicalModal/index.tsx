@@ -174,7 +174,7 @@ export function QuoteMusicalModal({
         </div>
 
         {enableAudio && (
-          <div className="space-y-4 pl-6 border-l-2 border-ouro">
+          <div className="space-y-4 pl-6 border-l-2">
             {/* TABS */}
             <div className="flex ">
               <button
@@ -182,8 +182,8 @@ export function QuoteMusicalModal({
                 onClick={() => handleTabChange('upload')}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === 'upload'
-                    ? 'border-b-2 border-ouro text-brand-primary'
-                    : 'text-theme-tertiary hover:text-texto'
+                    ? 'border-b-2 text-ouro-texto'
+                    : 'text-theme-tertiary'
                 }`}
               >
                 📤 Fazer Upload
@@ -193,8 +193,8 @@ export function QuoteMusicalModal({
                 onClick={() => handleTabChange('youtube')}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === 'youtube'
-                    ? 'border-b-2 border-ouro text-brand-primary'
-                    : 'text-theme-tertiary hover:text-texto'
+                    ? 'border-b-2 text-ouro-texto'
+                    : 'text-theme-tertiary'
                 }`}
               >
                 🎥 Link do YouTube
@@ -207,7 +207,7 @@ export function QuoteMusicalModal({
                 <label className="block text-sm font-medium text-theme-primary">
                   Selecionar Arquivo de Áudio
                 </label>
-                <div className="border-2 border-dashed border-theme-secondary rounded-lg p-4 text-center hover:border-ouro transition-colors">
+                <div className="border-2 border-dashed border-theme-secondary rounded-lg p-4 text-center transition-colors">
                   <input
                     type="file"
                     id="audio-upload-quote"
@@ -219,12 +219,12 @@ export function QuoteMusicalModal({
 
                   {audioUrl && !uploading ? (
                     <div className="space-y-2">
-                      <p className="text-sm text-ok font-medium">
+                      <p className="text-sm text-green-700 font-medium">
                         ✓ Áudio carregado com sucesso
                       </p>
                       <label
                         htmlFor="audio-upload-quote"
-                        className="inline-block cursor-pointer text-sm text-brand-primary hover:text-ouro-texto underline"
+                        className="inline-block cursor-pointer text-sm text-ouro-texto underline"
                       >
                         Alterar áudio
                       </label>
@@ -260,8 +260,10 @@ export function QuoteMusicalModal({
                 />
 
                 {youtubeUrl && extractYouTubeId(youtubeUrl) && (
-                  <div className="p-3 bg-ok/10 border border-ok/30 rounded-lg">
-                    <p className="text-sm text-ok">✓ Link válido do YouTube</p>
+                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-sm text-green-800">
+                      ✓ Link válido do YouTube
+                    </p>
                   </div>
                 )}
               </>
@@ -295,8 +297,8 @@ export function QuoteMusicalModal({
               </Text>
             </div>
 
-            <div className="p-3 bg-aviso/10 border border-aviso/30 rounded-lg">
-              <p className="text-xs text-aviso">
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-xs text-blue-800">
                 💡 <strong>Dica:</strong> A música tocará automaticamente em
                 loop quando o leitor visualizar a citação. Apenas o áudio será
                 reproduzido.

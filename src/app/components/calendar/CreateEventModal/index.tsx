@@ -292,7 +292,7 @@ export default function CreateEventModal({
       {/* Header */}
       <div className="px-6 py-4 border-b border-theme-secondary">
         <Inline gap={3}>
-          <div className="w-10 h-10 rounded-xl fill-ouro flex items-center justify-center shadow-theme-glow">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-theme-glow">
             <PiCalendarBlank className="w-5 h-5 text-theme-primary" />
           </div>
           <div>
@@ -321,13 +321,13 @@ export default function CreateEventModal({
               setFormData((prev) => ({ ...prev, title: e.target.value }))
             }
             className={`w-full input-classical-2 ${
-              errors.title ? '!border-erro' : ''
+              errors.title ? '!border-red-400' : ''
             }`}
             placeholder="Ex: Concerto de Ano Novo"
             maxLength={200}
           />
           {errors.title && (
-            <p className="text-erro text-sm mt-1">{errors.title}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
           )}
         </div>
 
@@ -378,11 +378,11 @@ export default function CreateEventModal({
               setFormData((prev) => ({ ...prev, venueId: e.target.value }))
             }
             className={`w-full input-classical-2 ${
-              errors.venueId ? '!border-erro' : ''
+              errors.venueId ? '!border-red-400' : ''
             }`}
           />
           {errors.venueId && (
-            <p className="text-erro text-sm mt-1">{errors.venueId}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.venueId}</p>
           )}
         </div>
 
@@ -398,11 +398,11 @@ export default function CreateEventModal({
                 setFormData((prev) => ({ ...prev, startDate: e.target.value }))
               }
               className={`w-full input-classical-2 ${
-                errors.startDate ? '!border-erro' : ''
+                errors.startDate ? '!border-red-400' : ''
               }`}
             />
             {errors.startDate && (
-              <p className="text-erro text-sm mt-1">{errors.startDate}</p>
+              <p className="text-red-500 text-sm mt-1">{errors.startDate}</p>
             )}
           </div>
 
@@ -416,11 +416,11 @@ export default function CreateEventModal({
                 setFormData((prev) => ({ ...prev, startTime: e.target.value }))
               }
               className={`w-full input-classical-2 ${
-                errors.startTime ? '!border-erro' : ''
+                errors.startTime ? '!border-red-400' : ''
               }`}
             />
             {errors.startTime && (
-              <p className="text-erro text-sm mt-1">{errors.startTime}</p>
+              <p className="text-red-500 text-sm mt-1">{errors.startTime}</p>
             )}
           </div>
         </div>

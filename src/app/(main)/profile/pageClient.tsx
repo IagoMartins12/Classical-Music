@@ -161,8 +161,8 @@ export default function ProfilePageClient() {
                       w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200
                       ${
                         isActive
-                          ? 'bg-ouro text-brand-primary shadow-sm'
-                          : 'text-theme-secondary hover:text-texto hover:bg-sup-1 hover:bg-opacity-50'
+                          ? 'text-ouro-texto shadow-sm'
+                          : 'text-theme-secondary'
                       }
                     `}
                     >
@@ -182,7 +182,7 @@ export default function ProfilePageClient() {
                   gap={2}
                   onClick={goToPrevTab}
                   disabled={currentTabIndex === 0}
-                  className="px-3 py-2 text-sm text-theme-secondary hover:text-texto disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-2 text-sm text-theme-secondary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <PiCaretLeft className="w-4 h-4" />
                   <span>{t('profile_main_previous')}</span>
@@ -193,7 +193,7 @@ export default function ProfilePageClient() {
                   gap={2}
                   onClick={goToNextTab}
                   disabled={currentTabIndex === tabs.length - 1}
-                  className="px-3 py-2 text-sm text-theme-secondary hover:text-texto disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-2 text-sm text-theme-secondary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span>{t('profile_main_next')}</span>
                   <PiCaretRight className="w-4 h-4" />

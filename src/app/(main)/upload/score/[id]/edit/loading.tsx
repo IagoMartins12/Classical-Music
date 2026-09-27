@@ -64,7 +64,7 @@ export default function EditScoreLoading() {
               d="M9 5l7 7-7 7"
             />
           </svg>
-          <div className="h-4 w-32 bg-fundo/20 rounded"></div>
+          <div className="h-4 w-32 rounded"></div>
         </Inline>
 
         {/* Header Principal */}
@@ -78,24 +78,24 @@ export default function EditScoreLoading() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <Inline gap={3} className="mb-4">
-                        <div className="w-10 h-10 bg-ouro/20 rounded-xl flex items-center justify-center">
-                          <PiPencilLine className="w-5 h-5 text-texto/30" />
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                          <PiPencilLine className="w-5 h-5" />
                         </div>
                         <Stack gap={2}>
-                          <div className="h-10 w-56 bg-ouro/20 rounded"></div>
+                          <div className="h-10 w-56 rounded"></div>
                           <div className="h-5 w-40 bg-theme-elevated rounded"></div>
                         </Stack>
                       </Inline>
 
-                      <div className="h-12 bg-ouro/20 rounded mb-2"></div>
+                      <div className="h-12 rounded mb-2"></div>
 
                       <Inline gap={2} className="mt-3">
                         <div className="h-6 w-16 bg-theme-elevated rounded"></div>
-                        <div className="h-6 w-32 bg-ouro/20 rounded"></div>
+                        <div className="h-6 w-32 rounded"></div>
                       </Inline>
                       <Inline gap={2} className="mt-2">
                         <div className="h-5 w-8 bg-theme-elevated rounded"></div>
-                        <div className="h-5 w-28 bg-ouro/20 rounded"></div>
+                        <div className="h-5 w-28 rounded"></div>
                       </Inline>
                     </div>
 
@@ -103,18 +103,18 @@ export default function EditScoreLoading() {
                     <Inline gap={3} className="ml-4">
                       <Inline
                         gap={2}
-                        className="h-10 w-20 bg-ouro/20 rounded-lg justify-center"
+                        className="h-10 w-20 rounded-lg justify-center"
                       >
-                        <PiFloppyDisk className="w-4 h-4 text-texto/30" />
-                        <div className="w-8 h-4 bg-fundo/30 rounded"></div>
+                        <PiFloppyDisk className="w-4 h-4" />
+                        <div className="w-8 h-4 rounded"></div>
                       </Inline>
 
                       <Inline
                         gap={2}
-                        className="h-10 w-24 bg-erro/20 border border-erro/30 rounded-lg justify-center"
+                        className="h-10 w-24 border rounded-lg justify-center"
                       >
-                        <PiTrash className="w-4 h-4 text-erro/30" />
-                        <div className="w-12 h-4 bg-erro/30 rounded"></div>
+                        <PiTrash className="w-4 h-4" />
+                        <div className="w-12 h-4 rounded"></div>
                       </Inline>
                     </Inline>
                   </div>
@@ -123,10 +123,10 @@ export default function EditScoreLoading() {
                   <Inline gap={3}>
                     <Inline
                       gap={2}
-                      className="h-8 w-32 bg-aviso/20 rounded-full justify-center"
+                      className="h-8 w-32 rounded-full justify-center"
                     >
-                      <PiTag className="w-4 h-4 text-texto/30" />
-                      <div className="w-20 h-4 bg-fundo/30 rounded"></div>
+                      <PiTag className="w-4 h-4" />
+                      <div className="w-20 h-4 rounded"></div>
                     </Inline>
                   </Inline>
                 </Stack>
@@ -135,30 +135,28 @@ export default function EditScoreLoading() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {[
                     {
-                      icon: <PiStack className="w-4 h-4 text-texto/30" />,
-                      gradient: 'bg-aviso',
+                      icon: <PiStack className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiFile className="w-4 h-4 text-texto/30" />,
-                      gradient: 'bg-ok',
+                      icon: <PiFile className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: (
-                        <PiDownloadSimple className="w-4 h-4 text-texto/30" />
-                      ),
-                      gradient: 'fill-ouro',
+                      icon: <PiDownloadSimple className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiFileText className="w-4 h-4 text-texto/30" />,
-                      gradient: 'fill-ouro',
+                      icon: <PiFileText className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiTag className="w-4 h-4 text-texto/30" />,
-                      gradient: 'bg-ok',
+                      icon: <PiTag className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiUser className="w-4 h-4 text-texto/30" />,
-                      gradient: 'bg-erro',
+                      icon: <PiUser className="w-4 h-4" />,
+                      gradient: '',
                     },
                   ].map((item, index) => (
                     <div
@@ -172,7 +170,7 @@ export default function EditScoreLoading() {
                       </div>
                       <Stack gap={1}>
                         <div className="h-4 w-16 bg-theme-elevated rounded"></div>
-                        <div className="h-5 w-20 bg-fundo rounded"></div>
+                        <div className="h-5 w-20 rounded"></div>
                       </Stack>
                     </div>
                   ))}
@@ -185,21 +183,21 @@ export default function EditScoreLoading() {
                     gap={2}
                     className="text-lg font-semibold text-theme-primary classical-title"
                   >
-                    <PiFileText className="w-5 h-5 text-aviso/30" />
+                    <PiFileText className="w-5 h-5" />
                     <div className="h-5 w-48 bg-theme-elevated rounded"></div>
                   </Inline>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <Inline gap={2}>
                       <div className="h-4 w-16 bg-theme-elevated rounded"></div>
-                      <div className="h-4 w-20 bg-fundo/20 rounded"></div>
+                      <div className="h-4 w-20 rounded"></div>
                     </Inline>
                     <Inline gap={2}>
                       <div className="h-4 w-16 bg-theme-elevated rounded"></div>
-                      <div className="h-4 w-24 bg-fundo/20 rounded"></div>
+                      <div className="h-4 w-24 rounded"></div>
                     </Inline>
                     <Stack
                       gap={1}
-                      className="md:col-span-2 p-3 bg-sup-elevada rounded-xl border border-linha/20"
+                      className="md:col-span-2 p-3 rounded-xl border"
                     >
                       <div className="h-4 w-20 bg-theme-elevated rounded"></div>
                       <Stack gap={1}>
@@ -217,10 +215,10 @@ export default function EditScoreLoading() {
                     gap={2}
                     className="text-lg font-semibold text-theme-primary classical-title"
                   >
-                    <PiInfo className="w-5 h-5 text-ok/30" />
+                    <PiInfo className="w-5 h-5" />
                     <div className="h-5 w-16 bg-theme-elevated rounded"></div>
                   </Inline>
-                  <div className="p-4 bg-sup-elevada rounded-xl border border-linha/20">
+                  <div className="p-4 rounded-xl border">
                     <Stack gap={2}>
                       <div className="h-4 bg-theme-secondary rounded"></div>
                       <div className="h-4 bg-theme-secondary rounded w-5/6"></div>
@@ -236,15 +234,15 @@ export default function EditScoreLoading() {
                     gap={2}
                     className="text-lg font-semibold text-theme-primary classical-title"
                   >
-                    <PiArrowSquareOut className="w-5 h-5 text-aviso/30" />
+                    <PiArrowSquareOut className="w-5 h-5" />
                     <div className="h-5 w-16 bg-theme-elevated rounded"></div>
                   </Inline>
                   <Inline
                     gap={2}
-                    className="h-10 w-48 bg-ouro/20 rounded-lg justify-center"
+                    className="h-10 w-48 rounded-lg justify-center"
                   >
-                    <PiDownloadSimple className="w-4 h-4 text-texto/30" />
-                    <div className="w-32 h-4 bg-fundo/30 rounded"></div>
+                    <PiDownloadSimple className="w-4 h-4" />
+                    <div className="w-32 h-4 rounded"></div>
                   </Inline>
                 </Stack>
               </Stack>
@@ -254,15 +252,15 @@ export default function EditScoreLoading() {
                 {/* Thumbnail da Partitura */}
                 <Card nivel={2}>
                   <Inline gap={3} className="mb-4">
-                    <div className="w-8 h-8 bg-ouro/20 rounded-xl flex items-center justify-center">
-                      <PiImage className="w-4 h-4 text-texto/30" />
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center">
+                      <PiImage className="w-4 h-4" />
                     </div>
                     <div className="h-5 w-20 bg-theme-elevated rounded"></div>
                   </Inline>
 
                   <div className="text-center">
-                    <div className="w-full aspect-[3/4] mx-auto fundo-sup-1 border border-linha/20 rounded-xl flex items-center justify-center">
-                      <PiFile className="w-12 h-12 text-texto-fraco/30 opacity-50" />
+                    <div className="w-full aspect-[3/4] mx-auto border rounded-xl flex items-center justify-center">
+                      <PiFile className="w-12 h-12 opacity-50" />
                     </div>
                   </div>
                 </Card>
@@ -270,15 +268,15 @@ export default function EditScoreLoading() {
                 {/* Informações da Obra */}
                 <Card nivel={2}>
                   <Inline gap={3} className="mb-4">
-                    <div className="w-8 h-8 bg-ouro/20 rounded-xl flex items-center justify-center">
-                      <PiMusicNotes className="w-4 h-4 text-texto/30" />
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center">
+                      <PiMusicNotes className="w-4 h-4" />
                     </div>
                     <div className="h-5 w-12 bg-theme-elevated rounded"></div>
                   </Inline>
 
                   <Stack>
                     <Stack gap={2}>
-                      <div className="h-5 w-32 bg-ouro/20 rounded"></div>
+                      <div className="h-5 w-32 rounded"></div>
                       <div className="h-4 w-28 bg-theme-elevated rounded"></div>
                     </Stack>
                   </Stack>
@@ -287,23 +285,23 @@ export default function EditScoreLoading() {
                 {/* Detalhes Técnicos */}
                 <Card nivel={2}>
                   <Inline gap={3} className="mb-4">
-                    <div className="w-8 h-8 bg-ok/20 rounded-xl flex items-center justify-center">
-                      <PiInfo className="w-4 h-4 text-texto/30" />
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center">
+                      <PiInfo className="w-4 h-4" />
                     </div>
                     <div className="h-5 w-32 bg-theme-elevated rounded"></div>
                   </Inline>
                   <Stack gap={3} className="text-sm">
                     <div className="flex items-center justify-between">
                       <div className="h-4 w-16 bg-theme-elevated rounded"></div>
-                      <div className="h-4 w-8 bg-fundo/20 rounded"></div>
+                      <div className="h-4 w-8 rounded"></div>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="h-4 w-16 bg-theme-elevated rounded"></div>
-                      <div className="h-3 w-16 bg-fundo/20 rounded"></div>
+                      <div className="h-3 w-16 rounded"></div>
                     </div>
                     <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
                       <div className="h-4 w-24 bg-theme-elevated rounded"></div>
-                      <div className="h-3 w-16 bg-fundo/20 rounded"></div>
+                      <div className="h-3 w-16 rounded"></div>
                     </div>
                   </Stack>
                 </Card>

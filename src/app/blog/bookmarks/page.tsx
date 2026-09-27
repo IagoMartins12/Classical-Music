@@ -52,7 +52,7 @@ export default async function BookmarksPage() {
               direction="scale"
               className="flex items-center justify-center mb-6"
             >
-              <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-theme-glow">
                 <PiBookmarkSimple className="w-8 h-8 text-theme-primary" />
               </div>
             </AnimatedItem>

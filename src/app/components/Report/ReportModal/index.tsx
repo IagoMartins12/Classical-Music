@@ -142,8 +142,8 @@ export default function ReportModal({
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <Inline gap={3}>
-              <div className="w-10 h-10 bg-erro/20 rounded-xl flex items-center justify-center">
-                <PiFlag className="w-5 h-5 text-erro" />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                <PiFlag className="w-5 h-5" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
@@ -169,8 +169,8 @@ export default function ReportModal({
                     key={reason.value}
                     className={`flex items-start space-x-3 p-3 rounded-lg border cursor-pointer transition-all ${
                       selectedReason === reason.value
-                        ? 'border-erro bg-erro/5'
-                        : 'border-theme-secondary hover:border-linha hover:bg-sup-1'
+                        ? ''
+                        : 'border-theme-secondary'
                     }`}
                   >
                     <input
@@ -212,13 +212,11 @@ export default function ReportModal({
             </div>
 
             {/* Warning */}
-            <div className="p-4 bg-atencao/10 border border-atencao/30 rounded-lg">
+            <div className="p-4 border rounded-lg">
               <div className="flex items-start space-x-3">
-                <PiWarning className="w-5 h-5 text-atencao flex-shrink-0 mt-0.5" />
+                <PiWarning className="w-5 h-5 flex-shrink-0 mt-0.5" />
                 <Stack gap={1} className="text-sm">
-                  <p className="font-medium text-atencao">
-                    {t('report_modal_importante')}
-                  </p>
+                  <p className="font-medium">{t('report_modal_importante')}</p>
                   <p className="text-theme-secondary">
                     {t('report_modal_aviso')}
                   </p>

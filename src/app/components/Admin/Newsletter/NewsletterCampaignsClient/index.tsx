@@ -176,18 +176,18 @@ export default function NewsletterCampaignsClient() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'SENT':
-        return 'text-ok bg-ok/10';
+        return '';
       case 'SENDING':
-        return 'text-aviso bg-aviso/10';
+        return '';
       case 'SCHEDULED':
-        return 'text-ouro-texto bg-ouro/10';
+        return '';
       case 'DRAFT':
         return 'text-theme-tertiary bg-theme-secondary';
       case 'PAUSED':
-        return 'text-atencao bg-atencao/10';
+        return '';
       case 'CANCELLED':
       case 'FAILED':
-        return 'text-erro bg-erro/10';
+        return '';
       default:
         return 'text-theme-tertiary bg-theme-secondary';
     }
@@ -246,7 +246,7 @@ export default function NewsletterCampaignsClient() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
+                <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                   <PiPaperPlaneRight className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -272,8 +272,8 @@ export default function NewsletterCampaignsClient() {
                     {campaigns.length}
                   </p>
                 </Stack>
-                <div className="w-12 h-12 bg-aviso/20 rounded-xl flex items-center justify-center">
-                  <PiEnvelopeSimple className="w-6 h-6 text-aviso" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <PiEnvelopeSimple className="w-6 h-6" />
                 </div>
               </div>
             </AnimatedCard>
@@ -285,12 +285,12 @@ export default function NewsletterCampaignsClient() {
                   <Text papel="rotulo" tom="fraco" as="p">
                     Enviadas
                   </Text>
-                  <p className="text-3xl font-bold text-ok">
+                  <p className="text-3xl font-bold">
                     {campaigns.filter((c) => c.status === 'SENT').length}
                   </p>
                 </Stack>
-                <div className="w-12 h-12 bg-ok/20 rounded-xl flex items-center justify-center">
-                  <PiCheckCircle className="w-6 h-6 text-ok" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <PiCheckCircle className="w-6 h-6" />
                 </div>
               </div>
             </AnimatedCard>
@@ -302,12 +302,12 @@ export default function NewsletterCampaignsClient() {
                   <Text papel="rotulo" tom="fraco" as="p">
                     Agendadas
                   </Text>
-                  <p className="text-3xl font-bold text-ouro-texto">
+                  <p className="text-3xl font-bold">
                     {campaigns.filter((c) => c.status === 'SCHEDULED').length}
                   </p>
                 </Stack>
-                <div className="w-12 h-12 bg-ouro/20 rounded-xl flex items-center justify-center">
-                  <PiCalendarBlank className="w-6 h-6 text-ouro-texto" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <PiCalendarBlank className="w-6 h-6" />
                 </div>
               </div>
             </AnimatedCard>
@@ -319,7 +319,7 @@ export default function NewsletterCampaignsClient() {
                   <Text papel="rotulo" tom="fraco" as="p">
                     Prontas p/ Teste
                   </Text>
-                  <p className="text-3xl font-bold text-ouro-texto">
+                  <p className="text-3xl font-bold">
                     {
                       campaigns.filter(
                         (c) => c.status === 'DRAFT' || c.status === 'SCHEDULED'
@@ -327,8 +327,8 @@ export default function NewsletterCampaignsClient() {
                     }
                   </p>
                 </Stack>
-                <div className="w-12 h-12 bg-ouro/20 rounded-xl flex items-center justify-center">
-                  <PiFlask className="w-6 h-6 text-ouro-texto" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <PiFlask className="w-6 h-6" />
                 </div>
               </div>
             </AnimatedCard>
@@ -340,12 +340,12 @@ export default function NewsletterCampaignsClient() {
                   <Text papel="rotulo" tom="fraco" as="p">
                     Rascunhos
                   </Text>
-                  <p className="text-3xl font-bold text-atencao">
+                  <p className="text-3xl font-bold">
                     {campaigns.filter((c) => c.status === 'DRAFT').length}
                   </p>
                 </Stack>
-                <div className="w-12 h-12 bg-atencao/20 rounded-xl flex items-center justify-center">
-                  <PiNotePencil className="w-6 h-6 text-atencao" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <PiNotePencil className="w-6 h-6" />
                 </div>
               </div>
             </AnimatedCard>
@@ -365,7 +365,7 @@ export default function NewsletterCampaignsClient() {
                     onChange={(e) =>
                       handleFilterChange('search', e.target.value)
                     }
-                    className="w-full pl-10 pr-4 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary placeholder-texto-fraco focus:outline-none focus:ring-2 focus:ring-ouro"
+                    className="w-full pl-10 pr-4 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary focus:outline-none focus:ring-2"
                   />
                 </div>
 
@@ -445,7 +445,7 @@ export default function NewsletterCampaignsClient() {
                     return (
                       <tr
                         key={campaign.id}
-                        className="border-b border-theme-secondary hover:bg-sup-1/50"
+                        className="border-b border-theme-secondary"
                       >
                         <td className="py-3 px-2">
                           <div>
@@ -555,7 +555,7 @@ export default function NewsletterCampaignsClient() {
                                 leftIcon={<PiNotePencil />}
                                 onClick={() => handleEditCampaign(campaign)}
                                 title="Editar campanha"
-                                className="text-aviso hover:text-aviso"
+                                className=""
                               />
                             )}
 
@@ -568,7 +568,7 @@ export default function NewsletterCampaignsClient() {
                                 leftIcon={<PiFlask />}
                                 onClick={() => handleSendTest(campaign)}
                                 title="Enviar Teste"
-                                className="text-ouro-texto hover:text-ouro-texto"
+                                className=""
                               />
                             )}
 
@@ -590,7 +590,7 @@ export default function NewsletterCampaignsClient() {
                                     ? 'Retomar'
                                     : 'Pausar'
                                 }
-                                className="text-atencao hover:text-atencao"
+                                className=""
                               />
                             )}
 
@@ -603,7 +603,7 @@ export default function NewsletterCampaignsClient() {
                                 leftIcon={<PiPaperPlaneRight />}
                                 onClick={() => handleSendCampaign(campaign)}
                                 title="Enviar agora"
-                                className="text-ok hover:text-ok"
+                                className=""
                               />
                             )}
 
@@ -613,7 +613,7 @@ export default function NewsletterCampaignsClient() {
                               size="sm"
                               leftIcon={<PiTrash />}
                               onClick={() => handleDeleteCampaign(campaign)}
-                              className="text-erro hover:text-erro"
+                              className=""
                               title="Deletar"
                             />
                           </Inline>

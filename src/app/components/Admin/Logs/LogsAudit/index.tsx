@@ -105,26 +105,26 @@ export default function LogsAudit() {
   };
 
   const getActivityColor = (type: string) => {
-    if (type === 'UPLOAD') return 'text-aviso'; // 🆕
-    if (type.includes('FAVORITE')) return 'text-erro';
-    if (type.includes('LEARNED')) return 'text-ok';
-    if (type.includes('WANT_TO_LEARN')) return 'text-aviso';
-    if (type.includes('ANNOTATION')) return 'text-ouro-texto';
-    if (type.includes('REPORT')) return 'text-atencao';
-    if (type.includes('VIDEO')) return 'text-aviso';
-    return 'text-aviso';
+    if (type === 'UPLOAD') return ''; // 🆕
+    if (type.includes('FAVORITE')) return '';
+    if (type.includes('LEARNED')) return '';
+    if (type.includes('WANT_TO_LEARN')) return '';
+    if (type.includes('ANNOTATION')) return '';
+    if (type.includes('REPORT')) return '';
+    if (type.includes('VIDEO')) return '';
+    return '';
   };
 
   const getStatusColor = (status?: string) => {
     switch (status) {
       case 'success':
-        return 'text-ok bg-ok/10';
+        return '';
       case 'warning':
-        return 'text-atencao bg-atencao/10';
+        return '';
       case 'error':
-        return 'text-erro bg-erro/10';
+        return '';
       default:
-        return 'text-aviso bg-aviso/10';
+        return '';
     }
   };
 
@@ -176,7 +176,7 @@ export default function LogsAudit() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-aviso rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiPulse className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -190,7 +190,7 @@ export default function LogsAudit() {
             {/* Status Summary */}
             <Inline gap={8} className="justify-center mt-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-aviso">
+                <div className="text-2xl font-bold">
                   {formatNumber(activityPagination.total)}
                 </div>
                 <Text papel="rotulo" tom="fraco" as="div">
@@ -268,8 +268,8 @@ export default function LogsAudit() {
             {(activityFilters.search ||
               activityFilters.type ||
               activityFilters.period) && (
-              <div className="flex items-center justify-between p-3 mt-4 bg-aviso/10 border border-aviso rounded-lg">
-                <Inline gap={2} className="text-sm text-aviso">
+              <div className="flex items-center justify-between p-3 mt-4 border rounded-lg">
+                <Inline gap={2} className="text-sm">
                   <PiFunnel className="w-4 h-4" />
                   <span>
                     Filtros ativos:{' '}
@@ -335,7 +335,7 @@ export default function LogsAudit() {
                     return (
                       <div
                         key={activity.id}
-                        className="p-4 bg-theme-secondary rounded-xl hover:bg-fundo/50 transition-colors"
+                        className="p-4 bg-theme-secondary rounded-xl transition-colors"
                       >
                         <div className="flex items-start space-x-4">
                           <div

@@ -380,15 +380,15 @@ export default function PricingPage({ pricing }: PricingProps) {
     <PageContainer showBackground={true} className="classical-theme">
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-16">
-        <div className="absolute inset-0 bg-ouro/5"></div>
+        <div className="absolute inset-0"></div>
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative section-wrap">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 bg-ouro/20 border border-ouro/30 rounded-full mb-8">
-                  <PiTrophy className="w-5 h-5 text-brand-primary mr-2" />
-                  <span className="text-brand-primary font-medium">
+                <div className="inline-flex items-center px-6 py-3 border rounded-full mb-8">
+                  <PiTrophy className="w-5 h-5 text-ouro-texto mr-2" />
+                  <span className="text-ouro-texto font-medium">
                     Planos para Todos
                   </span>
                 </div>
@@ -414,7 +414,7 @@ export default function PricingPage({ pricing }: PricingProps) {
               {!subscriptionLoading && currentPlan && (
                 <AnimatedItem direction="up" springType="gentle">
                   <div className="inline-flex items-center bg-theme-elevated rounded-full px-6 py-3 shadow-theme-medium border border-theme-secondary mt-8">
-                    <PiCheck className="w-5 h-5 text-ok mr-2" />
+                    <PiCheck className="w-5 h-5 mr-2" />
                     <span className="text-theme-secondary">
                       Plano atual:{' '}
                       <strong className="text-theme-primary">
@@ -431,8 +431,8 @@ export default function PricingPage({ pricing }: PricingProps) {
                     onClick={() => setBillingPeriod('monthly')}
                     className={`px-8 py-3 rounded-full font-medium transition-all ${
                       billingPeriod === 'monthly'
-                        ? 'bg-theme-secondary text-brand-primary shadow-theme-medium'
-                        : 'text-theme-secondary hover:text-texto'
+                        ? 'bg-theme-secondary text-ouro-texto shadow-theme-medium'
+                        : 'text-theme-secondary'
                     }`}
                   >
                     Mensal
@@ -441,15 +441,15 @@ export default function PricingPage({ pricing }: PricingProps) {
                     onClick={() => setBillingPeriod('yearly')}
                     className={`px-8 py-3 rounded-full font-medium transition-all relative ${
                       billingPeriod === 'yearly'
-                        ? 'bg-theme-secondary text-brand-primary shadow-theme-medium'
-                        : 'text-theme-secondary hover:text-texto'
+                        ? 'bg-theme-secondary text-ouro-texto shadow-theme-medium'
+                        : 'text-theme-secondary'
                     }`}
                   >
                     Anual
                     <Text
                       papel="legenda"
                       tom="forte"
-                      className="absolute -top-2 -right-2 bg-ok px-2 py-1 rounded-full"
+                      className="absolute -top-2 -right-2 px-2 py-1 rounded-full"
                     >
                       -20%
                     </Text>
@@ -468,11 +468,9 @@ export default function PricingPage({ pricing }: PricingProps) {
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="section-wrap">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center px-4 py-2 bg-aviso/20 border border-aviso/30 rounded-full mb-6">
-                <PiBook className="w-4 h-4 text-aviso mr-2" />
-                <span className="text-aviso font-medium text-sm">
-                  Para Usuários
-                </span>
+              <div className="inline-flex items-center px-4 py-2 border rounded-full mb-6">
+                <PiBook className="w-4 h-4 mr-2" />
+                <span className="font-medium text-sm">Para Usuários</span>
               </div>
 
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
@@ -582,15 +580,13 @@ export default function PricingPage({ pricing }: PricingProps) {
       </section>
 
       {/* Seção de Planos para PROFESSORES */}
-      <section className="py-8 bg-sup-1">
+      <section className="py-8 bg-gradient-to-b from-transparent">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="section-wrap">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center px-4 py-2 bg-ouro/20 border border-ouro/30 rounded-full mb-6">
-                <PiChalkboardTeacher className="w-4 h-4 text-ouro-texto mr-2" />
-                <span className="text-ouro-texto font-medium text-sm">
-                  Para Professores
-                </span>
+              <div className="inline-flex items-center px-4 py-2 border rounded-full mb-6">
+                <PiChalkboardTeacher className="w-4 h-4 mr-2" />
+                <span className="font-medium text-sm">Para Professores</span>
               </div>
 
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
@@ -627,7 +623,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                     : undefined
                 }
                 icon={PiChalkboardTeacher}
-                iconColor="fill-ouro"
+                iconColor=""
                 trialDays={pricing.MENTOR?.trialDays ?? 30}
                 features={[
                   { text: 'Painel completo do professor', enabled: true },
@@ -746,18 +742,16 @@ export default function PricingPage({ pricing }: PricingProps) {
                   <th className="text-center p-6 text-theme-primary font-semibold">
                     Free
                   </th>
-                  <th className="text-center p-6 text-brand-primary font-semibold">
+                  <th className="text-center p-6 text-ouro-texto font-semibold">
                     Plus
                   </th>
+                  <th className="text-center p-6 font-semibold">Mentor</th>
                   <th className="text-center p-6 text-ouro-texto font-semibold">
-                    Mentor
-                  </th>
-                  <th className="text-center p-6 text-brand-primary font-semibold">
                     Maestro
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-linha">
+              <tbody className="divide-y">
                 {comparisonData.map((item, index) => (
                   <ComparisonRow
                     key={index}
@@ -797,15 +791,13 @@ export default function PricingPage({ pricing }: PricingProps) {
       </section>
 
       {/* Benefícios por Persona */}
-      <section className="py-8 bg-sup-1">
+      <section className="py-8 bg-gradient-to-b from-transparent">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="section-wrap">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center px-4 py-2 bg-aviso/20 border border-aviso/30 rounded-full mb-6">
-                <PiTarget className="w-4 h-4 text-aviso mr-2" />
-                <span className="text-aviso font-medium text-sm">
-                  Benefícios
-                </span>
+              <div className="inline-flex items-center px-4 py-2 border rounded-full mb-6">
+                <PiTarget className="w-4 h-4 mr-2" />
+                <span className="font-medium text-sm">Benefícios</span>
               </div>
 
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
@@ -908,7 +900,7 @@ export default function PricingPage({ pricing }: PricingProps) {
 
       {/* CTA Final */}
       <section className="py-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-ouro/10"></div>
+        <div className="absolute inset-0"></div>
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative section-wrap">
@@ -916,7 +908,7 @@ export default function PricingPage({ pricing }: PricingProps) {
               hover="lift"
               className="classical-card p-12 text-center max-w-4xl mx-auto"
             >
-              <div className="w-20 h-20 fill-ouro rounded-3xl flex items-center justify-center mx-auto mb-8">
+              <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8">
                 <PiMetronome className="w-10 h-10 text-theme-primary" />
               </div>
 
@@ -1015,7 +1007,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                           <Text
                             papel="legenda"
                             tom="forte"
-                            className="py-1 rounded-full bg-atencao font-semibold"
+                            className="py-1 rounded-full font-semibold"
                           >
                             {plan.highlight}
                           </Text>
@@ -1035,7 +1027,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                         key={index}
                         className="flex items-center gap-2 text-sm"
                       >
-                        <PiCheck className="text-ok w-4 h-4" />
+                        <PiCheck className="w-4 h-4" />
                         <span className="text-theme-secondary">{feature}</span>
                       </div>
                     ))}
@@ -1065,14 +1057,14 @@ export default function PricingPage({ pricing }: PricingProps) {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-theme-tertiary">Desconto</span>
-                          <span className="text-ok">
+                          <span className="">
                             - R$ {couponData.pricing.discount.toFixed(2)} (
                             {couponData.pricing.savingsPercentage}%)
                           </span>
                         </div>
-                        <div className="flex justify-between font-bold text-lg pt-2 border-t border-linha">
+                        <div className="flex justify-between font-bold text-lg pt-2 border-t">
                           <span>Total</span>
-                          <span className="text-brand-primary">
+                          <span className="text-ouro-texto">
                             R$ {couponData.pricing.finalPrice.toFixed(2)}
                           </span>
                         </div>
@@ -1128,7 +1120,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                   </div>
 
                   {couponData && (
-                    <div className="mt-2 flex items-center gap-2 text-sm text-ok">
+                    <div className="mt-2 flex items-center gap-2 text-sm">
                       <PiCheck className="w-4 h-4" />
                       <span>{couponData.message}</span>
                     </div>
@@ -1167,28 +1159,16 @@ export default function PricingPage({ pricing }: PricingProps) {
       )}
 
       {/* Floating Elements */}
-      <FloatingElement
-        className="top-16 left-16 text-6xl text-ouro-texto/5"
-        delay={0}
-      >
+      <FloatingElement className="top-16 left-16 text-6xl" delay={0}>
         <PiMusicNotes />
       </FloatingElement>
-      <FloatingElement
-        className="bottom-16 right-16 text-5xl text-ouro-texto/5"
-        delay={2}
-      >
+      <FloatingElement className="bottom-16 right-16 text-5xl" delay={2}>
         <GiGrandPiano />
       </FloatingElement>
-      <FloatingElement
-        className="top-1/3 right-24 text-4xl text-aviso/5"
-        delay={1}
-      >
+      <FloatingElement className="top-1/3 right-24 text-4xl" delay={1}>
         <PiScroll />
       </FloatingElement>
-      <FloatingElement
-        className="bottom-1/3 left-24 text-4xl text-ouro-texto/5"
-        delay={3}
-      >
+      <FloatingElement className="bottom-1/3 left-24 text-4xl" delay={3}>
         <PiMetronome />
       </FloatingElement>
     </PageContainer>
@@ -1243,7 +1223,7 @@ function PlanCard({
     <AnimatedCard
       hover="lift"
       className={`classical-card p-8 relative overflow-hidden ${
-        highlighted ? 'border-2 border-ouro' : ''
+        highlighted ? 'border-2' : ''
       }`}
     >
       {badge && (
@@ -1251,7 +1231,7 @@ function PlanCard({
           <Text
             papel="legenda"
             tom="forte"
-            className="inline-block bg-atencao px-3 py-1 rounded-full font-semibold"
+            className="inline-block px-3 py-1 rounded-full font-semibold"
           >
             {badge}
           </Text>
@@ -1265,7 +1245,7 @@ function PlanCard({
         <div
           className={`w-12 h-12 ${
             iconGradient
-              ? 'fill-ouro'
+              ? ''
               : iconColor
                 ? `bg-gradient-to-br ${iconColor}`
                 : 'bg-theme-secondary'
@@ -1295,12 +1275,12 @@ function PlanCard({
       </div>
 
       {isCurrentPlan ? (
-        <div className="w-full py-4 mb-8 bg-ok/10 text-ok font-medium rounded-lg flex items-center justify-center gap-2">
+        <div className="w-full py-4 mb-8 font-medium rounded-lg flex items-center justify-center gap-2">
           <PiCheck className="w-5 h-5" />
           <span>Plano Atual</span>
         </div>
       ) : !canUpgrade ? (
-        <div className="w-full py-4 mb-8 bg-sup-2/20 text-theme-tertiary font-medium rounded-lg flex items-center justify-center gap-2">
+        <div className="w-full py-4 mb-8 text-theme-tertiary font-medium rounded-lg flex items-center justify-center gap-2">
           <PiWarningCircle className="w-5 h-5" />
           <span>Plano Inferior</span>
         </div>
@@ -1365,11 +1345,7 @@ function Feature({ icon: Icon, text, disabled, accent }: FeatureProps) {
     >
       <Icon
         className={`w-5 h-5 flex-shrink-0 ${
-          accent
-            ? 'text-brand-primary'
-            : disabled
-              ? 'text-theme-tertiary'
-              : 'text-ok'
+          accent ? 'text-ouro-texto' : disabled ? 'text-theme-tertiary' : ''
         }`}
       />
       <span
@@ -1400,7 +1376,7 @@ function ComparisonRow({
 }: ComparisonRowProps) {
   const renderCell = (value: boolean | string) => {
     if (value === true) {
-      return <PiCheck className="w-6 h-6 text-ok mx-auto" />;
+      return <PiCheck className="w-6 h-6 mx-auto" />;
     }
     if (value === false) {
       return <PiX className="w-6 h-6 text-theme-tertiary mx-auto" />;
@@ -1413,7 +1389,7 @@ function ComparisonRow({
   };
 
   return (
-    <tr className="hover:bg-ouro/10 transition-colors">
+    <tr className="transition-colors">
       <td className="p-6 text-theme-secondary">{feature}</td>
       <td className="p-6 text-center">{renderCell(free)}</td>
       <td className="p-6 text-center">{renderCell(plus)}</td>
@@ -1442,12 +1418,12 @@ function BenefitCard({
     <AnimatedCard
       hover="lift"
       className={`classical-card p-6 text-center ${
-        highlighted ? 'border-2 border-ouro' : ''
+        highlighted ? 'border-2' : ''
       }`}
     >
       <div
         className={`w-14 h-14 ${
-          highlighted ? 'fill-ouro' : 'bg-theme-secondary'
+          highlighted ? '' : 'bg-theme-secondary'
         } rounded-xl flex items-center justify-center mx-auto mb-4`}
       >
         <Icon
@@ -1466,9 +1442,7 @@ function BenefitCard({
         {benefits.map((benefit, index) => (
           <Inline gap={2} key={index} className="justify-center">
             <PiCheck
-              className={`w-4 h-4 ${
-                highlighted ? 'text-brand-primary' : 'text-ok'
-              }`}
+              className={`w-4 h-4 ${highlighted ? 'text-ouro-texto' : ''}`}
             />
             <Text papel="rotulo" tom="suave">
               {benefit}
@@ -1492,7 +1466,7 @@ function FAQItem({ question, answer }: FAQItemProps) {
     <AnimatedCard hover="lift" className="classical-card overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-6 text-left flex items-center justify-between hover:bg-ouro/10 transition-colors"
+        className="w-full p-6 text-left flex items-center justify-between transition-colors"
       >
         <span className="font-semibold text-theme-primary classical-title">
           {question}
@@ -1536,7 +1510,7 @@ function ComparisonMobile({
   highlight?: boolean;
 }) {
   const render = () => {
-    if (value === true) return <PiCheck className="text-ok w-5 h-5" />;
+    if (value === true) return <PiCheck className="w-5 h-5" />;
     if (value === false) return <PiX className="text-theme-tertiary w-5 h-5" />;
     return <span className="text-theme-secondary font-medium">{value}</span>;
   };
@@ -1544,7 +1518,7 @@ function ComparisonMobile({
   return (
     <div
       className={`flex items-center justify-between p-2 rounded-lg ${
-        highlight ? 'bg-ouro/10' : 'bg-sup-1/10'
+        highlight ? '' : ''
       }`}
     >
       <Text papel="rotulo" tom="forte" className="font-medium">

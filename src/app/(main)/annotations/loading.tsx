@@ -34,22 +34,22 @@ export default function AnnotationsPageLoading() {
 
       {/* Floating musical notes - static */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-16 left-16 text-5xl text-ok/10">
+        <div className="absolute top-16 left-16 text-5xl">
           <PiChatCenteredText />
         </div>
-        <div className="absolute bottom-16 right-16 text-4xl text-aviso/10">
+        <div className="absolute bottom-16 right-16 text-4xl">
           <PiMusicNotes />
         </div>
-        <div className="absolute top-1/3 right-24 text-3xl text-ouro-texto/10">
+        <div className="absolute top-1/3 right-24 text-3xl">
           <PiTarget />
         </div>
-        <div className="absolute bottom-1/3 left-24 text-3xl text-ouro-texto/10">
+        <div className="absolute bottom-1/3 left-24 text-3xl">
           <PiBookOpen />
         </div>
-        <div className="absolute top-2/3 right-12 text-2xl text-erro/10">
+        <div className="absolute top-2/3 right-12 text-2xl">
           <PiMusicNotes />
         </div>
-        <div className="absolute bottom-2/3 left-12 text-2xl text-ouro-texto/10">
+        <div className="absolute bottom-2/3 left-12 text-2xl">
           <PiStack />
         </div>
       </div>
@@ -59,12 +59,12 @@ export default function AnnotationsPageLoading() {
         <div className="text-center mb-8 py-16">
           <div className="space-y-4 mb-6">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-ok rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiChatCenteredText className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
-            <div className="h-12 bg-sup-elevada border border-theme-primary rounded-2xl mx-auto max-w-2xl animate-pulse shadow-theme-medium"></div>
-            <div className="h-6 bg-sup-elevada border border-theme-secondary rounded-lg mx-auto max-w-xl animate-pulse"></div>
+            <div className="h-12 border border-theme-primary rounded-2xl mx-auto max-w-2xl animate-pulse shadow-theme-medium"></div>
+            <div className="h-6 border border-theme-secondary rounded-lg mx-auto max-w-xl animate-pulse"></div>
           </div>
         </div>
 
@@ -84,10 +84,10 @@ export default function AnnotationsPageLoading() {
               key={index}
               className="classical-card p-6 text-center animate-pulse"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center">
                 {item.icon}
               </div>
-              <div className="h-8 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2"></div>
+              <div className="h-8 rounded-lg mb-2"></div>
               <div className="h-4 bg-theme-elevated rounded"></div>
             </div>
           ))}
@@ -104,7 +104,7 @@ export default function AnnotationsPageLoading() {
                   <div
                     key={index}
                     className={`px-4 py-2 rounded-lg h-10 w-32 animate-pulse ${
-                      index === 0 ? 'bg-ouro/20' : 'bg-theme-elevated'
+                      index === 0 ? '' : 'bg-theme-elevated'
                     }`}
                   ></div>
                 ))}
@@ -114,26 +114,26 @@ export default function AnnotationsPageLoading() {
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search Skeleton */}
                 <div className="relative">
-                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-texto-fraco/50 w-4 h-4" />
-                  <div className="h-12 w-32 md:w-96 max-w-full bg-sup-elevada border border-theme-secondary rounded-lg pl-12 animate-pulse"></div>
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" />
+                  <div className="h-12 w-32 md:w-96 max-w-full border border-theme-secondary rounded-lg pl-12 animate-pulse"></div>
                 </div>
 
                 {/* Filter Button Skeleton */}
                 <Inline
                   gap={2}
-                  className="h-12 w-24 bg-sup-elevada border border-theme-secondary rounded-lg justify-center animate-pulse"
+                  className="h-12 w-24 border border-theme-secondary rounded-lg justify-center animate-pulse"
                 >
-                  <PiFunnel className="w-4 h-4 text-texto-fraco/30" />
-                  <div className="w-12 h-4 bg-sup-2/30 rounded"></div>
+                  <PiFunnel className="w-4 h-4" />
+                  <div className="w-12 h-4 rounded"></div>
                 </Inline>
 
                 {/* Create Button Skeleton */}
                 <Inline
                   gap={2}
-                  className="h-12 w-32 bg-ouro/20 border border-ouro/30 rounded-lg justify-center animate-pulse"
+                  className="h-12 w-32 border rounded-lg justify-center animate-pulse"
                 >
-                  <div className="w-4 h-4 bg-fundo/30 rounded"></div>
-                  <div className="w-20 h-4 bg-fundo/30 rounded"></div>
+                  <div className="w-4 h-4 rounded"></div>
+                  <div className="w-20 h-4 rounded"></div>
                 </Inline>
 
                 {/* View Mode Toggle Skeleton */}
@@ -143,10 +143,10 @@ export default function AnnotationsPageLoading() {
                   </Text>
                   <div className="bg-theme-secondary border border-theme-primary rounded-lg p-1 flex">
                     <div className="p-2 rounded bg-theme-elevated">
-                      <PiListBullets className="w-4 h-4 text-texto-fraco/50" />
+                      <PiListBullets className="w-4 h-4" />
                     </div>
-                    <div className="p-2 rounded bg-ouro/20">
-                      <PiSquaresFour className="w-4 h-4 text-ouro-texto/50" />
+                    <div className="p-2 rounded">
+                      <PiSquaresFour className="w-4 h-4" />
                     </div>
                   </div>
                 </Inline>
@@ -160,11 +160,11 @@ export default function AnnotationsPageLoading() {
           {/* Annotations List (2/3 da largura) */}
           <div className="lg:col-span-2">
             <Inline gap={3} className="mb-6">
-              <div className="w-10 h-10 bg-ok/20 rounded-xl flex items-center justify-center">
-                <PiChatCenteredText className="w-5 h-5 text-sobre-ouro/20" />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                <PiChatCenteredText className="w-5 h-5" />
               </div>
               <Stack gap={2}>
-                <div className="h-8 w-48 bg-fundo rounded animate-pulse"></div>
+                <div className="h-8 w-48 rounded animate-pulse"></div>
                 <div className="h-4 w-32 bg-theme-elevated rounded animate-pulse"></div>
               </Stack>
             </Inline>
@@ -183,7 +183,7 @@ export default function AnnotationsPageLoading() {
               {/* Stats Widget Skeleton */}
               <Card nivel={2} className="animate-pulse">
                 <Inline gap={2} className="mb-4">
-                  <div className="w-4 h-4 bg-sup-2/30 rounded"></div>
+                  <div className="w-4 h-4 rounded"></div>
                   <div className="h-4 w-32 bg-theme-elevated rounded"></div>
                 </Inline>
                 <Stack gap={3}>
@@ -191,16 +191,16 @@ export default function AnnotationsPageLoading() {
                     <Inline
                       gap={3}
                       key={index}
-                      className="p-3 bg-sup-elevada/50 border border-linha/20 rounded-xl"
+                      className="p-3 border rounded-xl"
                     >
-                      <div className="w-8 h-8 bg-aviso/20 rounded-lg"></div>
+                      <div className="w-8 h-8 rounded-lg"></div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
                           <div className="h-4 w-16 bg-theme-elevated rounded"></div>
                           <div className="h-4 w-12 bg-theme-elevated rounded"></div>
                         </div>
-                        <div className="w-full bg-theme-elevated border border-linha/20 rounded-full h-1.5">
-                          <div className="bg-aviso/20 h-1.5 rounded-full w-3/4"></div>
+                        <div className="w-full bg-theme-elevated border rounded-full h-1.5">
+                          <div className="h-1.5 rounded-full w-3/4"></div>
                         </div>
                       </div>
                     </Inline>
@@ -211,7 +211,7 @@ export default function AnnotationsPageLoading() {
               {/* Top Annotations Widget Skeleton */}
               <Card nivel={2} className="animate-pulse">
                 <Inline gap={2} className="mb-4">
-                  <div className="w-4 h-4 bg-sup-2/30 rounded"></div>
+                  <div className="w-4 h-4 rounded"></div>
                   <div className="h-4 w-40 bg-theme-elevated rounded"></div>
                 </Inline>
                 <Stack gap={3}>
@@ -219,9 +219,9 @@ export default function AnnotationsPageLoading() {
                     <Inline
                       gap={3}
                       key={index}
-                      className="p-3 bg-sup-elevada/50 border border-linha/20 rounded-xl"
+                      className="p-3 border rounded-xl"
                     >
-                      <div className="w-6 h-6 bg-ok/20 rounded-lg border"></div>
+                      <div className="w-6 h-6 rounded-lg border"></div>
                       <div className="flex-1">
                         <div className="h-4 w-24 bg-theme-elevated rounded mb-1"></div>
                         <div className="h-3 w-32 bg-theme-elevated rounded mb-1"></div>
@@ -238,7 +238,7 @@ export default function AnnotationsPageLoading() {
               {/* Tips Widget Skeleton */}
               <Card nivel={2} className="animate-pulse">
                 <Inline gap={2} className="mb-4">
-                  <div className="w-4 h-4 bg-sup-2/30 rounded"></div>
+                  <div className="w-4 h-4 rounded"></div>
                   <div className="h-4 w-24 bg-theme-elevated rounded"></div>
                 </Inline>
                 <Stack gap={3}>
@@ -256,10 +256,10 @@ export default function AnnotationsPageLoading() {
       </div>
 
       {/* Floating Particles */}
-      <div className="fixed top-20 left-4 w-2 h-2 bg-ok/30 rounded-full animate-pulse"></div>
-      <div className="fixed top-40 right-8 w-1.5 h-1.5 bg-aviso/40 rounded-full animate-pulse"></div>
-      <div className="fixed bottom-32 left-8 w-1 h-1 bg-ouro/50 rounded-full animate-pulse"></div>
-      <div className="fixed top-60 right-20 w-1.5 h-1.5 bg-ouro/30 rounded-full animate-pulse"></div>
+      <div className="fixed top-20 left-4 w-2 h-2 rounded-full animate-pulse"></div>
+      <div className="fixed top-40 right-8 w-1.5 h-1.5 rounded-full animate-pulse"></div>
+      <div className="fixed bottom-32 left-8 w-1 h-1 rounded-full animate-pulse"></div>
+      <div className="fixed top-60 right-20 w-1.5 h-1.5 rounded-full animate-pulse"></div>
     </div>
   );
 }
@@ -272,21 +272,21 @@ function AnnotationCardSkeleton() {
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1 space-y-2">
           <Inline gap={3}>
-            <div className="h-6 bg-fundo rounded w-3/4"></div>
-            <div className="w-5 h-5 bg-ok/20 rounded"></div>
+            <div className="h-6 rounded w-3/4"></div>
+            <div className="w-5 h-5 rounded"></div>
           </Inline>
           <Inline gap={2}>
-            <div className="h-4 bg-ouro/20 rounded w-1/3"></div>
+            <div className="h-4 rounded w-1/3"></div>
             <div className="h-4 bg-theme-elevated rounded w-1/4"></div>
           </Inline>
           <div className="h-3 bg-theme-elevated rounded w-1/4"></div>
         </div>
         <Inline gap={2} className="ml-4">
           <div className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center">
-            <PiPencilLine className="w-4 h-4 text-texto-fraco/30" />
+            <PiPencilLine className="w-4 h-4" />
           </div>
           <div className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center">
-            <PiTrash className="w-4 h-4 text-texto-fraco/30" />
+            <PiTrash className="w-4 h-4" />
           </div>
         </Inline>
       </div>
@@ -297,13 +297,7 @@ function AnnotationCardSkeleton() {
           <div
             key={index}
             className={`px-3 py-1 rounded-full text-xs border flex items-center space-x-1 ${
-              index === 0
-                ? 'bg-erro/10 border-erro/30'
-                : index === 1
-                  ? 'bg-aviso/10 border-aviso/30'
-                  : index === 2
-                    ? 'bg-fundo/10 border-linha/30'
-                    : 'bg-ok/10 border-ok/30'
+              index === 0 ? '' : index === 1 ? '' : index === 2 ? '' : ''
             }`}
           >
             <div className="w-3 h-3 bg-current/30 rounded"></div>
@@ -311,12 +305,9 @@ function AnnotationCardSkeleton() {
           </div>
         ))}
 
-        <Inline
-          gap={1}
-          className="px-3 py-1 rounded-full text-xs border bg-aviso/10 border-aviso/30"
-        >
-          <PiGlobe className="w-3 h-3 text-aviso/30" />
-          <div className="w-8 h-3 bg-aviso/30 rounded"></div>
+        <Inline gap={1} className="px-3 py-1 rounded-full text-xs border">
+          <PiGlobe className="w-3 h-3" />
+          <div className="w-8 h-3 rounded"></div>
         </Inline>
       </div>
 
@@ -332,7 +323,7 @@ function AnnotationCardSkeleton() {
         {Array.from({ length: 3 }).map((_, index) => (
           <div
             key={index}
-            className="px-2 py-1 bg-theme-elevated border border-linha/20 rounded-lg"
+            className="px-2 py-1 bg-theme-elevated border rounded-lg"
           >
             <div className="w-8 h-3 bg-theme-secondary rounded"></div>
           </div>
@@ -344,15 +335,15 @@ function AnnotationCardSkeleton() {
         {/* Stats */}
         <Inline gap={4}>
           <Inline gap={1}>
-            <PiThumbsUp className="w-4 h-4 text-texto-fraco/30" />
+            <PiThumbsUp className="w-4 h-4" />
             <div className="w-8 h-4 bg-theme-elevated rounded"></div>
           </Inline>
           <Inline gap={1}>
-            <PiEye className="w-4 h-4 text-texto-fraco/30" />
+            <PiEye className="w-4 h-4" />
             <div className="w-12 h-4 bg-theme-elevated rounded"></div>
           </Inline>
           <Inline gap={1}>
-            <div className="w-4 h-4 bg-sup-2/30 rounded"></div>
+            <div className="w-4 h-4 rounded"></div>
             <div className="w-16 h-4 bg-theme-elevated rounded"></div>
           </Inline>
         </Inline>
@@ -360,8 +351,8 @@ function AnnotationCardSkeleton() {
         {/* Actions */}
         <Inline gap={3}>
           <Inline gap={1}>
-            <div className="w-12 h-4 bg-ouro/20 rounded"></div>
-            <div className="w-3 h-3 bg-ouro/20 rounded"></div>
+            <div className="w-12 h-4 rounded"></div>
+            <div className="w-3 h-3 rounded"></div>
           </Inline>
         </Inline>
       </div>

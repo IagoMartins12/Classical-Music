@@ -286,7 +286,7 @@
 //         {showBackground && (
 //           <div className="absolute inset-0 pointer-events-none opacity-5">
 //             <motion.div
-//               className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl"
+//               className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"
 //               animate={{
 //                 scale: [1, 1.1, 1],
 //                 opacity: [0.3, 0.6, 0.3],
@@ -299,7 +299,7 @@
 //               key="bg-orb-1"
 //             />
 //             <motion.div
-//               className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl"
+//               className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"
 //               animate={{
 //                 scale: [1, 1.2, 1],
 //                 opacity: [0.2, 0.5, 0.2],
@@ -370,7 +370,7 @@
 // }
 
 // export const LoadingSpinner = React.memo<LoadingSpinnerProps>(
-//   ({ size = 'md', color = 'border-brand-primary', classname }) => {
+//   ({ size = 'md', color = '', classname }) => {
 //     const sizeClasses = {
 //       sm: 'w-4 h-4',
 //       md: 'w-8 h-8',

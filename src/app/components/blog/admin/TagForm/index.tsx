@@ -127,13 +127,13 @@ export function TagForm({ mode, tag }: TagFormProps) {
               value={formData.name}
               onChange={(e) => handleNameChange(e.target.value)}
               className={`input-classical w-full ${
-                errors.name ? 'border-erro' : ''
+                errors.name ? 'border-red-500' : ''
               }`}
               placeholder="Ex: beethoven, análise, técnica"
               maxLength={30}
             />
             {errors.name && (
-              <Inline as="p" gap={1} className="text-sm text-erro mt-1">
+              <Inline as="p" gap={1} className="text-sm text-red-500 mt-1">
                 <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.name}</span>
               </Inline>
@@ -159,14 +159,14 @@ export function TagForm({ mode, tag }: TagFormProps) {
                   setFormData((prev) => ({ ...prev, slug: e.target.value }))
                 }
                 className={`input-classical flex-1 ${
-                  errors.slug ? 'border-erro' : ''
+                  errors.slug ? 'border-red-500' : ''
                 }`}
                 placeholder="beethoven"
                 maxLength={60}
               />
             </Inline>
             {errors.slug && (
-              <Inline as="p" gap={1} className="text-sm text-erro mt-1">
+              <Inline as="p" gap={1} className="text-sm text-red-500 mt-1">
                 <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.slug}</span>
               </Inline>
@@ -220,7 +220,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
               />
             </Inline>
             {errors.color && (
-              <Inline as="p" gap={1} className="text-sm text-erro mt-1">
+              <Inline as="p" gap={1} className="text-sm text-red-500 mt-1">
                 <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.color}</span>
               </Inline>

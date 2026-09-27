@@ -36,23 +36,23 @@ export default function TeacherAssignmentsLoading() {
 
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-16 left-16 text-5xl text-ouro-texto/10 animate-float">
+        <div className="absolute top-16 left-16 text-5xl animate-float">
           <PiClipboardText />
         </div>
         <div
-          className="absolute bottom-16 right-16 text-4xl text-ouro-texto/10 animate-float"
+          className="absolute bottom-16 right-16 text-4xl animate-float"
           style={{ animationDelay: '1s' }}
         >
           <PiTarget />
         </div>
         <div
-          className="absolute top-1/3 right-24 text-3xl text-ouro-texto/10 animate-float"
+          className="absolute top-1/3 right-24 text-3xl animate-float"
           style={{ animationDelay: '2s' }}
         >
           <GiGrandPiano />
         </div>
         <div
-          className="absolute bottom-1/3 left-24 text-3xl text-aviso/10 animate-float"
+          className="absolute bottom-1/3 left-24 text-3xl animate-float"
           style={{ animationDelay: '0.5s' }}
         >
           <PiMusicNotes />
@@ -63,14 +63,14 @@ export default function TeacherAssignmentsLoading() {
         {/* Header Skeleton */}
         <div className="text-center mb-8 py-16">
           <div className="flex items-center justify-center mb-6">
-            <div className="w-16 h-16 bg-ouro/20 rounded-3xl flex items-center justify-center shadow-theme-glow animate-pulse">
-              <div className="w-8 h-8 bg-texto/30 rounded-lg"></div>
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow animate-pulse">
+              <div className="w-8 h-8 rounded-lg"></div>
             </div>
           </div>
 
           <div className="space-y-4 mb-6">
-            <div className="h-12 bg-sup-elevada border border-theme-primary rounded-2xl mx-auto max-w-lg animate-pulse shadow-theme-medium"></div>
-            <div className="h-6 bg-sup-elevada border border-theme-secondary rounded-lg mx-auto max-w-2xl animate-pulse"></div>
+            <div className="h-12 border border-theme-primary rounded-2xl mx-auto max-w-lg animate-pulse shadow-theme-medium"></div>
+            <div className="h-6 border border-theme-secondary rounded-lg mx-auto max-w-2xl animate-pulse"></div>
           </div>
         </div>
 
@@ -78,22 +78,22 @@ export default function TeacherAssignmentsLoading() {
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
           {[
             {
-              icon: <PiClipboardText className="w-6 h-6 text-sobre-ouro/20" />,
+              icon: <PiClipboardText className="w-6 h-6" />,
             },
-            { icon: <PiClock className="w-6 h-6 text-sobre-ouro/20" /> },
-            { icon: <PiBookOpen className="w-6 h-6 text-sobre-ouro/20" /> },
+            { icon: <PiClock className="w-6 h-6" /> },
+            { icon: <PiBookOpen className="w-6 h-6" /> },
             {
-              icon: <PiCheckCircle className="w-6 h-6 text-sobre-ouro/20" />,
+              icon: <PiCheckCircle className="w-6 h-6" />,
             },
             {
-              icon: <PiWarningCircle className="w-6 h-6 text-sobre-ouro/20" />,
+              icon: <PiWarningCircle className="w-6 h-6" />,
             },
           ].map((item, index) => (
             <Card key={index} className="text-center animate-pulse">
-              <div className="w-12 h-12 bg-ouro/20 border border-ouro/30 rounded-xl mx-auto mb-4 flex items-center justify-center">
+              <div className="w-12 h-12 border rounded-xl mx-auto mb-4 flex items-center justify-center">
                 {item.icon}
               </div>
-              <div className="h-8 bg-ouro/20 rounded-lg mb-2"></div>
+              <div className="h-8 rounded-lg mb-2"></div>
               <div className="h-4 bg-theme-elevated rounded"></div>
             </Card>
           ))}
@@ -105,17 +105,17 @@ export default function TeacherAssignmentsLoading() {
             {/* Search and Filters */}
             <div className="flex flex-col sm:flex-row gap-4 flex-1">
               <div className="relative flex-1 max-w-md">
-                <div className="h-10 bg-sup-elevada border border-theme-secondary rounded-lg"></div>
+                <div className="h-10 border border-theme-secondary rounded-lg"></div>
               </div>
-              <div className="h-10 w-48 bg-sup-elevada border border-theme-secondary rounded-lg"></div>
-              <div className="h-10 w-40 bg-sup-elevada border border-theme-secondary rounded-lg"></div>
-              <div className="h-10 w-40 bg-sup-elevada border border-theme-secondary rounded-lg"></div>
+              <div className="h-10 w-48 border border-theme-secondary rounded-lg"></div>
+              <div className="h-10 w-40 border border-theme-secondary rounded-lg"></div>
+              <div className="h-10 w-40 border border-theme-secondary rounded-lg"></div>
             </div>
 
             {/* Actions */}
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
-              <div className="h-10 w-32 bg-ouro/20 border border-ouro/30 rounded-lg"></div>
+              <div className="h-10 w-32 border rounded-lg"></div>
             </div>
           </div>
         </Card>
@@ -129,14 +129,14 @@ export default function TeacherAssignmentsLoading() {
 
         {/* Load More Skeleton */}
         <div className="text-center mt-8">
-          <div className="h-10 w-48 bg-sup-elevada border border-theme-secondary rounded-lg mx-auto animate-pulse"></div>
+          <div className="h-10 w-48 border border-theme-secondary rounded-lg mx-auto animate-pulse"></div>
         </div>
       </div>
 
       {/* Floating Particles */}
-      <div className="fixed top-20 left-4 w-2 h-2 bg-ouro/30 rounded-full animate-pulse"></div>
-      <div className="fixed top-40 right-8 w-1.5 h-1.5 bg-ouro/40 rounded-full animate-pulse"></div>
-      <div className="fixed bottom-32 left-8 w-1 h-1 bg-ouro/50 rounded-full animate-pulse"></div>
+      <div className="fixed top-20 left-4 w-2 h-2 rounded-full animate-pulse"></div>
+      <div className="fixed top-40 right-8 w-1.5 h-1.5 rounded-full animate-pulse"></div>
+      <div className="fixed bottom-32 left-8 w-1 h-1 rounded-full animate-pulse"></div>
     </div>
   );
 }
@@ -149,11 +149,11 @@ function AssignmentCardSkeleton() {
       <div className="flex items-start justify-between mb-4">
         <Inline gap={3} className="flex-1">
           {/* Student Avatar */}
-          <div className="w-12 h-12 bg-ouro/20 rounded-full"></div>
+          <div className="w-12 h-12 rounded-full"></div>
 
           {/* Title and student info */}
           <div className="flex-1">
-            <div className="h-5 bg-fundo rounded mb-2 w-3/4"></div>
+            <div className="h-5 rounded mb-2 w-3/4"></div>
             <Inline gap={4}>
               <div className="h-3 bg-theme-elevated rounded w-20"></div>
               <div className="h-3 bg-theme-elevated rounded w-16"></div>
@@ -164,8 +164,8 @@ function AssignmentCardSkeleton() {
 
         {/* Status badges */}
         <Inline gap={2}>
-          <div className="h-6 w-20 bg-aviso/20 border border-aviso/30 rounded-full"></div>
-          <div className="h-6 w-16 bg-ok/20 border border-ok/30 rounded-full"></div>
+          <div className="h-6 w-20 border rounded-full"></div>
+          <div className="h-6 w-16 border rounded-full"></div>
         </Inline>
       </div>
 
@@ -178,24 +178,24 @@ function AssignmentCardSkeleton() {
       {/* Progress bar */}
       <Stack gap={2} className="mb-4">
         <div className="flex items-center justify-between">
-          <div className="h-3 bg-sup-2/30 rounded w-16"></div>
-          <div className="h-3 bg-sup-2/30 rounded w-8"></div>
+          <div className="h-3 rounded w-16"></div>
+          <div className="h-3 rounded w-8"></div>
         </div>
         <div className="w-full bg-theme-secondary rounded-full h-2">
-          <div className="h-2 bg-ouro/30 rounded-full w-2/3"></div>
+          <div className="h-2 rounded-full w-2/3"></div>
         </div>
       </Stack>
 
       {/* Goals */}
       <div className="flex flex-wrap gap-2 mb-4">
-        <div className="h-6 w-20 bg-aviso/20 border border-aviso/30 rounded"></div>
-        <div className="h-6 w-24 bg-ok/20 border border-ok/30 rounded"></div>
-        <div className="h-6 w-16 bg-ouro/20 border border-ouro/30 rounded"></div>
+        <div className="h-6 w-20 border rounded"></div>
+        <div className="h-6 w-24 border rounded"></div>
+        <div className="h-6 w-16 border rounded"></div>
       </div>
 
       {/* Actions */}
       <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
-        <div className="h-3 bg-sup-2/30 rounded w-32"></div>
+        <div className="h-3 rounded w-32"></div>
         <Inline gap={2}>
           <div className="w-8 h-8 bg-theme-elevated rounded-lg"></div>
           <div className="w-8 h-8 bg-theme-elevated rounded-lg"></div>

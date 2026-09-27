@@ -73,7 +73,7 @@ export default function ProgressCharts({
               <h3 className="text-xl font-bold text-theme-primary">
                 {t('monthly_evolution')}
               </h3>
-              <PiChartBar className="w-6 h-6 text-brand-primary" />
+              <PiChartBar className="w-6 h-6 text-ouro-texto" />
             </div>
 
             <div className="h-80">
@@ -129,7 +129,7 @@ export default function ProgressCharts({
               <h3 className="text-xl font-bold text-theme-primary">
                 {t('assignment_types')}
               </h3>
-              <PiTarget className="w-6 h-6 text-brand-primary" />
+              <PiTarget className="w-6 h-6 text-ouro-texto" />
             </div>
 
             <div className="h-80">

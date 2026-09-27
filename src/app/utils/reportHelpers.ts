@@ -59,17 +59,17 @@ export const REPORT_REASONS = {
 export const VERIFICATION_STATUS = {
   pending: {
     label: 'Pendente',
-    color: 'text-atencao bg-atencao/10',
+    color: '',
     icon: '⏳',
   },
   verified: {
     label: 'Verificado',
-    color: 'text-aviso bg-aviso/10',
+    color: '',
     icon: '✅',
   },
   rejected: {
     label: 'Rejeitado',
-    color: 'text-erro bg-erro/10',
+    color: '',
     icon: '❌',
   },
 } as const;

@@ -187,7 +187,7 @@ export default function ConfirmTeacherInvitePage() {
       case 'loading':
         return (
           <div className="text-center">
-            <div className="w-20 h-20 fill-ouro rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
               <PiSpinnerGap className="w-10 h-10 text-theme-primary animate-spin" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -196,7 +196,7 @@ export default function ConfirmTeacherInvitePage() {
             <p className="text-theme-secondary text-lg">{state.message}</p>
             <div className="mt-8">
               <div className="w-32 h-1 bg-theme-secondary rounded-full mx-auto overflow-hidden">
-                <div className="h-full fill-ouro rounded-full animate-pulse"></div>
+                <div className="h-full rounded-full animate-pulse"></div>
               </div>
             </div>
           </div>
@@ -205,7 +205,7 @@ export default function ConfirmTeacherInvitePage() {
       case 'success':
         return (
           <div className="text-center">
-            <div className="w-20 h-20 bg-ok rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-bounce">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-bounce">
               <PiCheckCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -214,18 +214,18 @@ export default function ConfirmTeacherInvitePage() {
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
             {state.user && (
-              <div className="bg-ok/10 border border-ok rounded-xl p-6 mb-8">
+              <div className="border rounded-xl p-6 mb-8">
                 <div className="flex items-center justify-center mb-4">
-                  <div className="w-16 h-16 bg-aviso rounded-full flex items-center justify-center mr-4">
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center mr-4">
                     <PiMedal className="w-8 h-8 text-theme-primary" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-semibold text-ok">
+                    <h3 className="text-2xl font-semibold">
                       {t('pages_token_jsx_h3_children_0__bem_vindo_professor', {
                         firstName: state.user.firstName,
                       })}
                     </h3>
-                    <p className="text-ok opacity-80">
+                    <p className="opacity-80">
                       {t(
                         'pages_token_jsx_p_children_0__agora_professor_verificado'
                       )}
@@ -315,7 +315,7 @@ export default function ConfirmTeacherInvitePage() {
       case 'already-accepted':
         return (
           <div className="text-center">
-            <div className="w-20 h-20 bg-aviso rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
               <PiCheckCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -324,16 +324,13 @@ export default function ConfirmTeacherInvitePage() {
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
             {state.user && (
-              <Stack
-                gap={2}
-                className="bg-aviso/10 border border-aviso rounded-xl p-6 mb-8"
-              >
-                <h3 className="text-xl font-semibold text-aviso">
+              <Stack gap={2} className="border rounded-xl p-6 mb-8">
+                <h3 className="text-xl font-semibold">
                   {t('pages_token_jsx_h3_children_0__olá_professor', {
                     firstName: state.user.firstName,
                   })}
                 </h3>
-                <p className="text-aviso opacity-80">
+                <p className="opacity-80">
                   {t('pages_token_jsx_p_children_0__já_é_professor_verificado')}
                 </p>
               </Stack>
@@ -363,7 +360,7 @@ export default function ConfirmTeacherInvitePage() {
       case 'error':
         return (
           <div className="text-center">
-            <div className="w-20 h-20 bg-erro rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
               <PiWarningCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -371,17 +368,14 @@ export default function ConfirmTeacherInvitePage() {
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
-            <Stack
-              gap={3}
-              className="bg-erro/10 border border-erro rounded-xl p-6 mb-8"
-            >
+            <Stack gap={3} className="border rounded-xl p-6 mb-8">
               <div className="flex items-center justify-center">
-                <PiWarningCircle className="w-5 h-5 text-erro mr-2" />
-                <span className="font-medium text-erro">
+                <PiWarningCircle className="w-5 h-5 mr-2" />
+                <span className="font-medium">
                   {getErrorTitle(state.errorCode, t)}
                 </span>
               </div>
-              <p className="text-erro opacity-80 text-sm">
+              <p className="opacity-80 text-sm">
                 {getErrorDescription(state.errorCode, t)}
               </p>
             </Stack>
@@ -433,13 +427,13 @@ export default function ConfirmTeacherInvitePage() {
   };
 
   return (
-    <div className="min-h-screen bg-fundo flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-10 -left-10 w-40 h-40 opacity-10 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-10 -right-10 w-60 h-60 opacity-10 rounded-full blur-3xl"></div>
-        <GiGrandPiano className="absolute top-20 right-20 w-12 h-12 text-brand-primary opacity-5 rotate-12" />
-        <GiGrandPiano className="absolute bottom-20 left-20 w-16 h-16 text-ouro-texto opacity-5 -rotate-12" />
+        <GiGrandPiano className="absolute top-20 right-20 w-12 h-12 text-ouro-texto opacity-5 rotate-12" />
+        <GiGrandPiano className="absolute bottom-20 left-20 w-16 h-16 opacity-5 -rotate-12" />
       </div>
 
       <div className="relative w-full max-w-2xl">
@@ -448,7 +442,7 @@ export default function ConfirmTeacherInvitePage() {
           <div className="text-center mb-8">
             <Link href="/" className="inline-flex items-center group mb-6">
               <div className="relative">
-                <GiGrandPiano className="w-10 h-10 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
+                <GiGrandPiano className="w-10 h-10 mr-3 text-ouro-texto icon-glow transition-all duration-300 group-hover:scale-110" />
               </div>
               <span className="text-2xl font-bold text-gradient-brand classical-title">
                 {t('pages_token_jsx_h1_children_0__opus_atlas')}
@@ -466,10 +460,7 @@ export default function ConfirmTeacherInvitePage() {
           <div className="mt-12 pt-8 border-t border-theme-secondary text-center">
             <Text papel="rotulo" tom="fraco" as="p">
               {t('pages_token_jsx_p_children_0__precisa_ajuda')}{' '}
-              <Link
-                href="/support"
-                className="text-brand-primary hover:underline"
-              >
+              <Link href="/support" className="text-ouro-texto hover:underline">
                 {t('pages_token_jsx_link_children_0__entre_contato')}
               </Link>
             </Text>

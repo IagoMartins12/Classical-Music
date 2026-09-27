@@ -139,7 +139,7 @@ export default function UsersAnalytics() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <PiUsers className="w-16 h-16 text-erro mx-auto mb-4" />
+          <PiUsers className="w-16 h-16 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Dados
           </h2>
@@ -171,7 +171,7 @@ export default function UsersAnalytics() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-12">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-aviso rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiUsers className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -309,7 +309,7 @@ export default function UsersAnalytics() {
                 gap={2}
                 className="text-lg lg:text-xl font-bold text-theme-primary mb-6"
               >
-                <PiUploadSimple className="w-5 h-5 text-ok" />
+                <PiUploadSimple className="w-5 h-5" />
                 <span>Top Contribuidores</span>
               </Inline>
               <Stack>
@@ -318,14 +318,14 @@ export default function UsersAnalytics() {
                     <Inline
                       gap={3}
                       key={user.id}
-                      className="p-3 bg-theme-secondary rounded-xl hover:bg-fundo/50 transition-all cursor-pointer"
+                      className="p-3 bg-theme-secondary rounded-xl transition-all cursor-pointer"
                       onClick={() => handleUserNavigation(user.id)}
                     >
                       <Text
                         papel="rotulo"
                         tom="forte"
                         as="div"
-                        className="w-8 h-8 bg-ok rounded-lg flex items-center justify-center font-bold"
+                        className="w-8 h-8 rounded-lg flex items-center justify-center font-bold"
                       >
                         {index + 1}
                       </Text>
@@ -365,7 +365,7 @@ export default function UsersAnalytics() {
                 gap={2}
                 className="text-lg lg:text-xl font-bold text-theme-primary mb-6"
               >
-                <PiTarget className="w-5 h-5 text-aviso" />
+                <PiTarget className="w-5 h-5" />
                 <span>Tipos de Usuário</span>
               </Inline>
               <Stack>
@@ -385,7 +385,7 @@ export default function UsersAnalytics() {
                         <span className="font-medium text-theme-primary">
                           {typeName}
                         </span>
-                        <span className="text-sm font-bold text-aviso">
+                        <span className="text-sm font-bold">
                           {formatNumber(type.count)}
                         </span>
                       </div>
@@ -419,7 +419,7 @@ export default function UsersAnalytics() {
                 gap={2}
                 className="text-lg lg:text-xl font-bold text-theme-primary mb-6"
               >
-                <PiPulse className="w-5 h-5 text-atencao" />
+                <PiPulse className="w-5 h-5" />
                 <span>Métricas de Engajamento</span>
               </Inline>
               <Stack>
@@ -428,7 +428,7 @@ export default function UsersAnalytics() {
                     <Text papel="rotulo" tom="fraco">
                       Anotações/Usuário
                     </Text>
-                    <span className="font-bold text-aviso">
+                    <span className="font-bold">
                       {analytics.engagementMetrics.averageAnnotationsPerUser.toFixed(
                         1
                       )}
@@ -441,7 +441,7 @@ export default function UsersAnalytics() {
                     <Text papel="rotulo" tom="fraco">
                       Uploads/Usuário
                     </Text>
-                    <span className="font-bold text-ouro-texto">
+                    <span className="font-bold">
                       {analytics.engagementMetrics.averageUploadsPerUser.toFixed(
                         1
                       )}
@@ -454,7 +454,7 @@ export default function UsersAnalytics() {
                     <Text papel="rotulo" tom="fraco">
                       Taxa de Atividade
                     </Text>
-                    <span className="font-bold text-atencao">
+                    <span className="font-bold">
                       {analytics.activityRate?.toFixed(1) || 0}%
                     </span>
                   </div>
@@ -465,7 +465,7 @@ export default function UsersAnalytics() {
                     <Text papel="rotulo" tom="fraco">
                       Usuários com Uploads
                     </Text>
-                    <span className="font-bold text-ok">
+                    <span className="font-bold">
                       {analytics.contributorsPercentage?.toFixed(1) || 0}%
                     </span>
                   </div>
@@ -484,7 +484,7 @@ export default function UsersAnalytics() {
                 gap={2}
                 className="text-lg lg:text-xl font-bold text-theme-primary mb-6"
               >
-                <PiMedal className="w-5 h-5 text-ouro-texto" />
+                <PiMedal className="w-5 h-5" />
                 <span>Resumo de Atividade ({getPeriodLabel(period)})</span>
               </Inline>
 
@@ -493,7 +493,7 @@ export default function UsersAnalytics() {
                   gap={2}
                   className="text-center p-4 bg-theme-secondary rounded-xl"
                 >
-                  <div className="text-2xl font-bold text-ok">
+                  <div className="text-2xl font-bold">
                     {analytics.activeUsers.today}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
@@ -505,7 +505,7 @@ export default function UsersAnalytics() {
                   gap={2}
                   className="text-center p-4 bg-theme-secondary rounded-xl"
                 >
-                  <div className="text-2xl font-bold text-aviso">
+                  <div className="text-2xl font-bold">
                     {analytics.activeUsers.period}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
@@ -517,7 +517,7 @@ export default function UsersAnalytics() {
                   gap={2}
                   className="text-center p-4 bg-theme-secondary rounded-xl"
                 >
-                  <div className="text-2xl font-bold text-atencao">
+                  <div className="text-2xl font-bold">
                     {analytics.newUsers.period}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
@@ -529,7 +529,7 @@ export default function UsersAnalytics() {
                   gap={2}
                   className="text-center p-4 bg-theme-secondary rounded-xl"
                 >
-                  <div className="text-2xl font-bold text-ouro-texto">
+                  <div className="text-2xl font-bold">
                     {formatNumber(analytics.totalUsers)}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">

@@ -68,7 +68,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               w-5 h-5 rounded border-1 border-transparent  transition-all duration-200
               flex items-center justify-center
               ${bgCheckbox ? `${bgCheckbox} ` : 'bg-theme-tertiary'}
-              ${isChecked ? 'bg-ouro   ' : ''}
+              ${isChecked ? '' : ''}
             `}
           >
             <PiCheck
@@ -88,7 +88,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           )}
         </label>
 
-        {error && <p className="mt-1 text-sm text-erro">{error}</p>}
+        {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
       </div>
     );
   }

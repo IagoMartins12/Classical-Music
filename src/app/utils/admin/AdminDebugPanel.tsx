@@ -17,18 +17,18 @@ export const AdminDebugPanel: React.FC<AdminDebugPanelProps> = ({
 
   return (
     <div className="fixed bottom-4 right-4 max-w-md bg-black/90 text-white text-xs p-4 rounded-lg z-aviso max-h-96 overflow-y-auto">
-      <h4 className="font-bold mb-2 text-atencao">🔍 Admin Debug Panel</h4>
+      <h4 className="font-bold mb-2 text-yellow-400">🔍 Admin Debug Panel</h4>
 
       <div className="mb-2">
         <strong>Filters Applied:</strong>
-        <pre className="text-ok mt-1 text-xs">
+        <pre className="text-green-400 mt-1 text-xs">
           {JSON.stringify(filters, null, 2)}
         </pre>
       </div>
 
       <div className="mb-2">
         <strong>Stats Summary:</strong>
-        <div className="text-aviso">
+        <div className="text-blue-400">
           <div>Total: {stats?.total || 0}</div>
           <div>ByEpoch: {stats?.byEpoch?.length || 0} items</div>
           <div>ByInstrument: {stats?.byInstrument?.length || 0} items</div>
@@ -40,7 +40,7 @@ export const AdminDebugPanel: React.FC<AdminDebugPanelProps> = ({
         <div>
           <strong>Performance:</strong>
           {Object.entries(performance).map(([key, value]) => (
-            <div key={key} className="text-atencao">
+            <div key={key} className="text-orange-400">
               {key}: {value.toFixed(2)}ms
             </div>
           ))}
@@ -53,7 +53,7 @@ export const AdminDebugPanel: React.FC<AdminDebugPanelProps> = ({
           adminCache.clear();
           console.log('🗑️ Cache cleared');
         }}
-        className="mt-2 px-2 py-1 bg-erro text-white rounded text-xs hover:bg-erro"
+        className="mt-2 px-2 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700"
       >
         Log Full Data & Clear Cache
       </button>

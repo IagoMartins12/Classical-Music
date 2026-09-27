@@ -79,7 +79,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
         disabled={isTransitioning}
         className={`
           ${getVariantClasses()}
-          relative bg-theme-elevated border border-theme-primary rounded-xl hover:border-ouro hover:bg-ouro/10 active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed
+          relative bg-theme-elevated border border-theme-primary rounded-xl active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed
         `}
         aria-label={`Alternar para tema ${
           mode === 'dark' ? 'claro' : 'escuro'
@@ -87,7 +87,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
         title={`Trocar para tema ${mode === 'dark' ? 'claro' : 'escuro'}`}
       >
         {/* Background gradient effect */}
-        <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300" />
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300" />
 
         {/* Icon container */}
         <div className="relative flex items-center justify-center">
@@ -96,7 +96,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
             className={`
               ${getIconSize()}
               absolute
-              text-brand-secondary
+              text-ouro-texto
               transition-all duration-500
               ${
                 mode === 'light'
@@ -111,7 +111,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
             className={`
               ${getIconSize()}
               absolute
-              text-brand-primary
+              text-ouro-texto
               transition-all duration-500
               ${
                 mode === 'dark'
@@ -125,17 +125,17 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
         {/* Loading indicator */}
         {isTransitioning && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-4 h-4 border-2 border-ouro border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin" />
           </div>
         )}
 
         {/* 🆕 Indicador de sistema (apenas se showSystemIndicator = true) */}
         {showSystemIndicator && isSystemControlled && (
-          <div className="absolute -top-1 -left-1 w-2 h-2 bg-aviso rounded-full opacity-75 animate-pulse" />
+          <div className="absolute -top-1 -left-1 w-2 h-2 rounded-full opacity-75 animate-pulse" />
         )}
 
         {/* Subtle animation indicator */}
-        <div className="absolute -top-1 -right-1 w-2 h-2 bg-ok rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
+        <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
       </button>
     </div>
   );
@@ -152,7 +152,7 @@ export const ThemeSystemStatus: React.FC<{
       <div
         className={`flex items-center gap-2 text-xs text-theme-tertiary ${className}`}
       >
-        <div className="w-2 h-2 bg-ok rounded-full" />
+        <div className="w-2 h-2 rounded-full" />
         <span>Tema personalizado: {mode === 'dark' ? 'Escuro' : 'Claro'}</span>
       </div>
     );
@@ -162,7 +162,7 @@ export const ThemeSystemStatus: React.FC<{
     <div
       className={`flex items-center gap-2 text-xs text-theme-tertiary ${className}`}
     >
-      <div className="w-2 h-2 bg-aviso rounded-full animate-pulse" />
+      <div className="w-2 h-2 rounded-full animate-pulse" />
       <span>Seguindo sistema: {mode === 'dark' ? 'Escuro' : 'Claro'}</span>
     </div>
   );

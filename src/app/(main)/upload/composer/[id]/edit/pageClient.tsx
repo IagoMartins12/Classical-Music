@@ -186,7 +186,7 @@ const EditComposerClient = ({
           >
             <Link
               href="/upload"
-              className="hover:text-ouro-texto transition-colors duration-300 font-medium"
+              className="transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_uploads')}
             </Link>
@@ -205,7 +205,7 @@ const EditComposerClient = ({
             </svg>
             <Link
               href="/upload"
-              className="hover:text-ouro-texto transition-colors duration-300 font-medium"
+              className="transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_composers')}
             </Link>
@@ -247,7 +247,7 @@ const EditComposerClient = ({
                       <div className="flex flex-col sm:flex-row items-start justify-between">
                         <div className="flex-1">
                           <Inline gap={3} className="mb-4">
-                            <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                               <PiPencilLine className="w-5 h-5 text-theme-primary" />
                             </div>
                             <div>
@@ -309,7 +309,7 @@ const EditComposerClient = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Nome */}
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiUser className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -331,7 +331,7 @@ const EditComposerClient = ({
                       {composer.fullName &&
                         composer.fullName !== composer.name && (
                           <div className="flex items-start space-x-3 group">
-                            <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                            <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                               <PiUser className="w-4 h-4 text-theme-primary" />
                             </div>
                             <div>
@@ -353,7 +353,7 @@ const EditComposerClient = ({
                       {/* Nascimento */}
                       {composer.birthDate && (
                         <div className="flex items-start space-x-3 group">
-                          <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                             <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
@@ -375,7 +375,7 @@ const EditComposerClient = ({
                       {/* Falecimento */}
                       {composer.deathDate && (
                         <div className="flex items-start space-x-3 group">
-                          <div className="w-8 h-8 bg-erro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                             <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
@@ -396,7 +396,7 @@ const EditComposerClient = ({
 
                       {/* Época */}
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiMapPin className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -408,7 +408,7 @@ const EditComposerClient = ({
                           >
                             {t('composer_info_epoch')}
                           </Text>
-                          <p className="text-brand-primary font-semibold">
+                          <p className="text-ouro-texto font-semibold">
                             {composer.epoch.name}
                           </p>
                         </div>
@@ -416,7 +416,7 @@ const EditComposerClient = ({
 
                       {/* Papel Principal */}
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiUser className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -437,7 +437,7 @@ const EditComposerClient = ({
                       {/* Nacionalidade */}
                       {nationalityDisplay && (
                         <div className="flex items-start space-x-3 group">
-                          <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                             {nationalityDisplay.flag}
                           </div>
                           <div>
@@ -459,7 +459,7 @@ const EditComposerClient = ({
                       {/* Instrumentos */}
                       {composer.instruments && (
                         <div className="md:col-span-2 flex items-start space-x-3 group">
-                          <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                             <PiUser className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
@@ -489,7 +489,7 @@ const EditComposerClient = ({
                           gap={2}
                           className="text-lg font-semibold text-theme-primary classical-title"
                         >
-                          <PiArrowSquareOut className="w-5 h-5 text-aviso" />
+                          <PiArrowSquareOut className="w-5 h-5" />
                           <span>{t('composer_info_external_links')}</span>
                         </Inline>
                         <div className="flex flex-wrap gap-3">
@@ -570,10 +570,10 @@ const EditComposerClient = ({
                           priority
                           onError={() => setImageError(true)}
                         />
-                        <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
                       </div>
                     ) : (
-                      <div className="w-64 h-80 fundo-sup-1 border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
+                      <div className="w-64 h-80 border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <div className="text-center text-theme-tertiary">
                           <PiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
                           <p className="text-sm">{t('composer_no_image')}</p>
@@ -591,7 +591,7 @@ const EditComposerClient = ({
             <AnimatedCard hover="lift" className="classical-card p-8">
               <AnimatedItem direction="left" springType="smooth">
                 <Inline gap={3} className="mb-6">
-                  <div className="w-12 h-12 bg-ok rounded-2xl flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
                     <PiBookOpen className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="flex-1">
@@ -600,7 +600,7 @@ const EditComposerClient = ({
                     </h2>
                   </div>
                   <div className="relative group">
-                    <div className="w-8 h-8 bg-ouro/10 rounded-full flex items-center justify-center cursor-help">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center cursor-help">
                       <PiInfo className="w-4 h-4 text-theme-tertiary" />
                     </div>
                     <Text
@@ -610,7 +610,7 @@ const EditComposerClient = ({
                       className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-theme-medium"
                     >
                       Biografia cadastrada no sistema
-                      <div className="absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-sup-elevada"></div>
+                      <div className="absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent"></div>
                     </Text>
                   </div>
                 </Inline>

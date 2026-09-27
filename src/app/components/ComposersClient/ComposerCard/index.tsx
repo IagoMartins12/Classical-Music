@@ -57,7 +57,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
      * Eles sobem para `z-10` e continuam clicáveis por cima da área esticada.
      */
     <div className="group select-none h-full relative">
-      <div className="classical-card h-full overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-[var(--sombra-2)]">
+      <div className="classical-card h-full overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2">
         {/* Portrait Section */}
         <div className="relative p-6 pb-4">
           <div className="flex justify-center mb-4">
@@ -69,7 +69,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
 
               {/* Portrait image or fallback */}
               {composer.portraitUrl && !imageError ? (
-                <div className="relative w-full h-full rounded-full overflow-hidden border border-ouro/20 group-hover:border-ouro/50 transition-all duration-500">
+                <div className="relative w-full h-full rounded-full overflow-hidden border-3 transition-all duration-500">
                   <Image
                     src={composer.portraitUrl}
                     alt={composer.name}
@@ -88,7 +88,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
                 </div>
               ) : (
                 // Fallback avatar
-                <div className="w-full h-full fill-ouro rounded-full flex items-center justify-center border border-ouro/20 group-hover:border-ouro/50 transition-all duration-500 group-hover:scale-110">
+                <div className="w-full h-full rounded-full flex items-center justify-center border-3 transition-all duration-500 group-hover:scale-110">
                   <PiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
                 </div>
               )}
@@ -119,10 +119,10 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
           <div className="relative z-10 space-y-3">
             {/* Name */}
             <div className="text-center">
-              <h3 className="text-lg font-bold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-300 line-clamp-2">
+              <h3 className="text-lg font-bold text-theme-primary classical-title transition-colors duration-300 line-clamp-2">
                 <Link
                   href={`/composer/${composer.id}`}
-                  className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary rounded"
+                  className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:ring-2 rounded"
                 >
                   {composer.name}
                 </Link>
@@ -161,7 +161,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
                 <Text
                   papel="legenda"
                   tom="ouro"
-                  className="inline-flex items-center px-3 py-1 bg-ouro/10 border border-ouro/20 rounded-full font-medium hover:bg-ouro/20 transition-colors duration-300"
+                  className="inline-flex items-center px-3 py-1 border rounded-full font-medium transition-colors duration-300"
                 >
                   <PiMusicNotes className="w-3 h-3 mr-1" />
                   {translateEpochWithHook(composer.epochName, t)}
@@ -177,7 +177,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
                     href={composer.wikipediaLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-3 py-1 bg-aviso/10 border border-aviso/20 text-aviso rounded-full text-xs font-medium hover:bg-aviso/20 hover:scale-105 transition-all duration-300 group/link"
+                    className="inline-flex items-center px-3 py-1 border rounded-full text-xs font-medium hover:scale-105 transition-all duration-300 group/link"
                     onClick={(e) => e.stopPropagation()}
                   >
                     Wikipedia
@@ -189,7 +189,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
                     href={composer.permLinkImslp}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-3 py-1 bg-ok/10 border border-ok/20 text-ok rounded-full text-xs font-medium hover:bg-ok/20 hover:scale-105 transition-all duration-300 group/link"
+                    className="inline-flex items-center px-3 py-1 border rounded-full text-xs font-medium hover:scale-105 transition-all duration-300 group/link"
                     onClick={(e) => e.stopPropagation()}
                   >
                     IMSLP
@@ -202,7 +202,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
             {/* Action indicator */}
             <div className="flex items-center justify-center pt-4 border-t border-theme-secondary mt-4">
               <Inline gap={2} className="text-theme-tertiary text-xs">
-                <div className="w-2 h-2 bg-ouro rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 rounded-full animate-pulse"></div>
                 <span className="font-medium">
                   {t('card_jsx_span_children_0__explorar_obras')}
                 </span>
@@ -224,11 +224,11 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
           </div>
 
           {/* Hover glow effect */}
-          <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-b-2xl"></div>
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-b-2xl"></div>
         </div>
 
         {/* Floating mini indicator */}
-        <div className="absolute -top-1 -right-1 w-3 h-3 fill-ouro rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100"></div>
+        <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100"></div>
       </div>
     </div>
   );

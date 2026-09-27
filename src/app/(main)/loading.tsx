@@ -16,7 +16,7 @@ import { Stack, Inline } from '@/app/components/ui/Layout';
 
 export default function HomeLoading() {
   return (
-    <div className=" ">
+    <div className="">
       {/* Background Pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-5">
         <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl animate-pulse"></div>
@@ -36,23 +36,23 @@ export default function HomeLoading() {
 
       {/* Floating musical notes */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-16 left-16 text-5xl text-ouro-texto/10 animate-float">
+        <div className="absolute top-16 left-16 text-5xl animate-float">
           <PiMusicNotes />
         </div>
         <div
-          className="absolute bottom-16 right-16 text-4xl text-ouro-texto/10 animate-float"
+          className="absolute bottom-16 right-16 text-4xl animate-float"
           style={{ animationDelay: '1s' }}
         >
           <PiMusicNotes />
         </div>
         <div
-          className="absolute top-1/3 right-24 text-3xl text-ouro-texto/10 animate-float"
+          className="absolute top-1/3 right-24 text-3xl animate-float"
           style={{ animationDelay: '2s' }}
         >
           <GiGrandPiano />
         </div>
         <div
-          className="absolute bottom-1/3 left-24 text-3xl text-aviso/10 animate-float"
+          className="absolute bottom-1/3 left-24 text-3xl animate-float"
           style={{ animationDelay: '0.5s' }}
         >
           <PiUser />
@@ -67,18 +67,18 @@ export default function HomeLoading() {
             <div className="lg:col-span-2 relative rounded-2xl overflow-hidden">
               <div className="classical-card h-96 lg:h-[500px] relative group animate-shimmer">
                 {/* Image placeholder */}
-                <div className="absolute inset-0 bg-aviso/20"></div>
+                <div className="absolute inset-0"></div>
 
                 {/* Content overlay */}
                 <Stack className="absolute bottom-0 left-0 right-0 p-6">
-                  <div className="w-32 h-6 bg-aviso/20 rounded-full"></div>
-                  <div className="h-8 bg-texto rounded w-3/4"></div>
+                  <div className="w-32 h-6 rounded-full"></div>
+                  <div className="h-8 rounded w-3/4"></div>
                   <Stack gap={2}>
-                    <div className="h-4 bg-texto/15 rounded"></div>
-                    <div className="h-4 bg-texto/15 rounded w-5/6"></div>
-                    <div className="h-4 bg-texto/15 rounded w-4/6"></div>
+                    <div className="h-4 rounded"></div>
+                    <div className="h-4 rounded w-5/6"></div>
+                    <div className="h-4 rounded w-4/6"></div>
                   </Stack>
-                  <div className="h-10 w-48 bg-texto/20 rounded-full"></div>
+                  <div className="h-10 w-48 rounded-full"></div>
                 </Stack>
               </div>
             </div>
@@ -91,15 +91,15 @@ export default function HomeLoading() {
                   className="classical-card h-44 relative group animate-shimmer"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <div className="absolute inset-0 bg-ouro/20"></div>
+                  <div className="absolute inset-0"></div>
                   <Stack
                     gap={2}
                     className="absolute bottom-0 left-0 right-0 p-4"
                   >
-                    <div className="w-20 h-4 bg-ok/20 rounded-full"></div>
-                    <div className="h-5 bg-texto/20 rounded w-2/3"></div>
-                    <div className="h-3 bg-texto/15 rounded"></div>
-                    <div className="h-3 bg-texto/15 rounded w-3/4"></div>
+                    <div className="w-20 h-4 rounded-full"></div>
+                    <div className="h-5 rounded w-2/3"></div>
+                    <div className="h-3 rounded"></div>
+                    <div className="h-3 rounded w-3/4"></div>
                   </Stack>
                 </div>
               ))}
@@ -112,11 +112,11 @@ export default function HomeLoading() {
           {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <Inline gap={4}>
-              <div className="w-12 h-12 bg-ouro/20 rounded-xl flex items-center justify-center animate-shimmer">
-                <PiTrendUp className="w-6 h-6 text-ouro-texto/50" />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center animate-shimmer">
+                <PiTrendUp className="w-6 h-6" />
               </div>
               <Stack gap={2}>
-                <div className="h-8 w-64 bg-fundo rounded"></div>
+                <div className="h-8 w-64 rounded"></div>
                 <div className="h-4 w-80 bg-theme-elevated rounded"></div>
               </Stack>
             </Inline>
@@ -125,7 +125,7 @@ export default function HomeLoading() {
 
           {/* Carousel Skeleton */}
           <div className="relative overflow-hidden rounded-3xl py-8 px-2">
-            <div className="absolute inset-0 bg-sup-elevada rounded-3xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-transparent rounded-3xl"></div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-6">
               {Array.from({ length: 4 }).map((_, i) => (
                 <Stack
@@ -133,12 +133,12 @@ export default function HomeLoading() {
                   className="classical-card p-4 group animate-shimmer"
                   style={{ animationDelay: `${0.2 + i * 0.1}s` }}
                 >
-                  <div className="aspect-[4/5] bg-aviso/20 rounded-xl"></div>
+                  <div className="aspect-[4/5] rounded-xl"></div>
                   <Stack gap={3}>
-                    <div className="h-5 bg-fundo rounded"></div>
+                    <div className="h-5 rounded"></div>
                     <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
                     <div className="flex justify-center">
-                      <div className="h-5 w-20 bg-sup-2/20 rounded-full"></div>
+                      <div className="h-5 w-20 rounded-full"></div>
                     </div>
                   </Stack>
                 </Stack>
@@ -152,11 +152,11 @@ export default function HomeLoading() {
           <div className="classical-card p-8 lg:p-12 animate-shimmer">
             {/* Header */}
             <div className="flex items-center gap-3 mb-8">
-              <div className="w-12 h-12 fill-ouro rounded-2xl flex items-center justify-center">
-                <PiMusicNotes className="w-6 h-6 text-texto/50" />
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
+                <PiMusicNotes className="w-6 h-6" />
               </div>
               <Stack gap={2}>
-                <div className="h-6 w-48 bg-fundo rounded"></div>
+                <div className="h-6 w-48 rounded"></div>
                 <div className="h-4 w-56 bg-theme-elevated rounded"></div>
               </Stack>
             </div>
@@ -165,19 +165,19 @@ export default function HomeLoading() {
             <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
               {/* Portrait Section */}
               <div className="lg:col-span-1 flex flex-col items-center text-center">
-                <div className="w-48 h-48 lg:w-72 lg:h-72 bg-aviso/20 rounded-3xl mb-6"></div>
+                <div className="w-48 h-48 lg:w-72 lg:h-72 rounded-3xl mb-6"></div>
                 <div className="space-y-3 w-full">
-                  <div className="h-7 bg-fundo rounded w-3/4 mx-auto"></div>
+                  <div className="h-7 rounded w-3/4 mx-auto"></div>
                   <div className="h-5 bg-theme-elevated rounded w-1/2 mx-auto"></div>
-                  <div className="h-4 bg-sup-2/20 rounded w-2/3 mx-auto"></div>
-                  <div className="h-8 w-32 bg-sup-2/20 rounded-2xl mx-auto"></div>
+                  <div className="h-4 rounded w-2/3 mx-auto"></div>
+                  <div className="h-8 w-32 rounded-2xl mx-auto"></div>
                 </div>
               </div>
 
               {/* Content Section */}
               <Stack gap={6} className="lg:col-span-2">
                 <Stack gap={3}>
-                  <div className="h-5 w-24 bg-fundo/20 rounded"></div>
+                  <div className="h-5 w-24 rounded"></div>
                   <Stack gap={2}>
                     <div className="h-4 bg-theme-elevated rounded"></div>
                     <div className="h-4 bg-theme-elevated rounded w-5/6"></div>
@@ -202,11 +202,11 @@ export default function HomeLoading() {
         <div className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
           {/* Section Header */}
           <Inline gap={4} className="mb-8">
-            <div className="w-12 h-12 bg-ouro/20 rounded-xl flex items-center justify-center">
-              <PiClock className="w-6 h-6 text-ouro-texto/50" />
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+              <PiClock className="w-6 h-6" />
             </div>
             <Stack gap={2}>
-              <div className="h-8 w-48 bg-fundo rounded"></div>
+              <div className="h-8 w-48 rounded"></div>
               <div className="h-4 w-64 bg-theme-elevated rounded"></div>
             </Stack>
           </Inline>
@@ -219,8 +219,8 @@ export default function HomeLoading() {
                 className="text-center animate-shimmer"
                 style={{ animationDelay: `${0.4 + i * 0.1}s` }}
               >
-                <div className="w-40 h-40 mx-auto bg-ouro/20 rounded-full mb-4 border-2 border-linha/20"></div>
-                <div className="h-5 bg-fundo rounded mb-2 w-2/3 mx-auto"></div>
+                <div className="w-40 h-40 mx-auto rounded-full mb-4 border-2"></div>
+                <div className="h-5 rounded mb-2 w-2/3 mx-auto"></div>
                 <div className="h-3 bg-theme-elevated rounded w-1/2 mx-auto"></div>
               </div>
             ))}
@@ -231,11 +231,11 @@ export default function HomeLoading() {
         <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
           {/* Section Header */}
           <Inline gap={4} className="mb-8">
-            <div className="w-12 h-12 bg-atencao/20 rounded-xl flex items-center justify-center">
-              <PiMapTrifold className="w-6 h-6 text-atencao/50" />
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-xl flex items-center justify-center">
+              <PiMapTrifold className="w-6 h-6 text-orange-400/50" />
             </div>
             <Stack gap={2}>
-              <div className="h-8 w-56 bg-fundo rounded"></div>
+              <div className="h-8 w-56 rounded"></div>
               <div className="h-4 w-72 bg-theme-elevated rounded"></div>
             </Stack>
           </Inline>
@@ -243,7 +243,7 @@ export default function HomeLoading() {
           {/* Composers Grid */}
           <Stack className="mb-8">
             <div className="flex items-center gap-3">
-              <div className="h-5 w-48 bg-atencao/20 rounded"></div>
+              <div className="h-5 w-48 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded"></div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -252,9 +252,9 @@ export default function HomeLoading() {
                   className="classical-card p-4 animate-shimmer"
                   style={{ animationDelay: `${0.5 + i * 0.05}s` }}
                 >
-                  <div className="w-16 h-16 bg-atencao/20 rounded-full mx-auto mb-3"></div>
+                  <div className="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-full mx-auto mb-3"></div>
                   <div className="space-y-2">
-                    <div className="h-4 bg-fundo/20 rounded"></div>
+                    <div className="h-4 rounded"></div>
                     <div className="h-3 bg-theme-elevated rounded w-3/4 mx-auto"></div>
                   </div>
                 </div>
@@ -265,7 +265,7 @@ export default function HomeLoading() {
           {/* Works Grid */}
           <Stack>
             <div className="flex items-center gap-3">
-              <div className="h-5 w-40 bg-ouro/20 rounded"></div>
+              <div className="h-5 w-40 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded"></div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -274,11 +274,11 @@ export default function HomeLoading() {
                   className="classical-card p-4 animate-shimmer"
                   style={{ animationDelay: `${0.7 + i * 0.05}s` }}
                 >
-                  <div className="w-16 h-16 bg-ouro/20 rounded-full mx-auto mb-3 flex items-center justify-center">
-                    <PiMusicNotes className="w-6 h-6 text-ouro-texto/50" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full mx-auto mb-3 flex items-center justify-center">
+                    <PiMusicNotes className="w-6 h-6 text-purple-400/50" />
                   </div>
                   <div className="space-y-2">
-                    <div className="h-4 bg-fundo/20 rounded"></div>
+                    <div className="h-4 rounded"></div>
                     <div className="h-3 bg-theme-elevated rounded w-3/4 mx-auto"></div>
                   </div>
                 </div>
@@ -291,11 +291,11 @@ export default function HomeLoading() {
         <div className="animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
           {/* Section Header */}
           <Inline gap={4} className="mb-8">
-            <div className="w-12 h-12 bg-ok/20 rounded-xl flex items-center justify-center">
-              <PiPlus className="w-6 h-6 text-ok/50" />
+            <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl flex items-center justify-center">
+              <PiPlus className="w-6 h-6 text-green-400/50" />
             </div>
             <Stack gap={2}>
-              <div className="h-8 w-44 bg-fundo rounded"></div>
+              <div className="h-8 w-44 rounded"></div>
               <div className="h-4 w-64 bg-theme-elevated rounded"></div>
             </Stack>
           </Inline>
@@ -310,15 +310,15 @@ export default function HomeLoading() {
                 style={{ animationDelay: `${0.6 + i * 0.05}s` }}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-ok/20 rounded-xl"></div>
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl"></div>
                   <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-fundo/20 rounded"></div>
+                    <div className="h-4 rounded"></div>
                     <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
                   </div>
                 </div>
-                <div className="flex justify-between items-center pt-2 border-t border-linha/50">
-                  <div className="h-3 bg-ok/20 rounded w-24"></div>
-                  <div className="w-6 h-6 bg-sup-2/20 rounded-full"></div>
+                <div className="flex justify-between items-center pt-2 border-t">
+                  <div className="h-3 bg-green-400/20 rounded w-24"></div>
+                  <div className="w-6 h-6 rounded-full"></div>
                 </div>
               </Stack>
             ))}
@@ -329,11 +329,11 @@ export default function HomeLoading() {
         <div className="animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
           {/* Section Header */}
           <Inline gap={4} className="mb-8">
-            <div className="w-12 h-12 bg-aviso/20 rounded-xl flex items-center justify-center">
-              <PiBookOpen className="w-6 h-6 text-aviso/50" />
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+              <PiBookOpen className="w-6 h-6" />
             </div>
             <Stack gap={2}>
-              <div className="h-8 w-52 bg-fundo rounded"></div>
+              <div className="h-8 w-52 rounded"></div>
               <div className="h-4 w-80 bg-theme-elevated rounded"></div>
             </Stack>
           </Inline>
@@ -347,11 +347,11 @@ export default function HomeLoading() {
                 style={{ animationDelay: `${0.7 + i * 0.1}s` }}
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-aviso/20 rounded-2xl"></div>
+                  <div className="w-12 h-12 rounded-2xl"></div>
                   <div className="flex-1 space-y-3">
                     <div className="flex justify-between items-start">
-                      <div className="h-5 bg-fundo/20 rounded w-2/3"></div>
-                      <div className="h-5 w-16 bg-aviso/20 rounded-full"></div>
+                      <div className="h-5 rounded w-2/3"></div>
+                      <div className="h-5 w-16 rounded-full"></div>
                     </div>
                     <Stack gap={2}>
                       <div className="h-3 bg-theme-elevated rounded"></div>
@@ -369,11 +369,11 @@ export default function HomeLoading() {
         <div className="animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
           {/* Section Header */}
           <Inline gap={4} className="mb-8">
-            <div className="w-12 h-12 bg-ouro/20 rounded-xl flex items-center justify-center">
-              <PiMedal className="w-6 h-6 text-ouro-texto/50" />
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+              <PiMedal className="w-6 h-6" />
             </div>
             <Stack gap={2}>
-              <div className="h-8 w-60 bg-fundo rounded"></div>
+              <div className="h-8 w-60 rounded"></div>
               <div className="h-4 w-32 md:w-96 max-w-full bg-theme-elevated rounded"></div>
             </Stack>
           </Inline>
@@ -386,11 +386,11 @@ export default function HomeLoading() {
                 className="classical-card p-4 animate-shimmer"
                 style={{ animationDelay: `${0.8 + i * 0.05}s` }}
               >
-                <div className="aspect-square bg-ouro/20 rounded-xl"></div>
+                <div className="aspect-square rounded-xl"></div>
                 <Stack gap={2}>
-                  <div className="h-4 bg-fundo/20 rounded"></div>
+                  <div className="h-4 rounded"></div>
                   <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
-                  <div className="h-6 bg-sup-2/20 rounded-full"></div>
+                  <div className="h-6 rounded-full"></div>
                 </Stack>
               </Stack>
             ))}
@@ -399,13 +399,13 @@ export default function HomeLoading() {
       </Stack>
 
       {/* Floating Elements */}
-      <div className="fixed top-20 left-4 w-2 h-2 bg-ouro/30 rounded-full animate-pulse"></div>
+      <div className="fixed top-20 left-4 w-2 h-2 rounded-full animate-pulse"></div>
       <div
-        className="fixed top-40 right-8 w-1.5 h-1.5 bg-ouro/40 rounded-full animate-pulse"
+        className="fixed top-40 right-8 w-1.5 h-1.5 rounded-full animate-pulse"
         style={{ animationDelay: '1s' }}
       ></div>
       <div
-        className="fixed bottom-32 left-8 w-1 h-1 bg-ouro/50 rounded-full animate-pulse"
+        className="fixed bottom-32 left-8 w-1 h-1 rounded-full animate-pulse"
         style={{ animationDelay: '2s' }}
       ></div>
 

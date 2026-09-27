@@ -398,19 +398,6 @@ export const groupNotificationsByDate = (notifications: NotificationData[]) => {
   return groups;
 };
 
-export const getPriorityColor = (priority: NotificationPriority): string => {
-  switch (priority) {
-    case 'CRITICAL':
-    case 'HIGH':
-      return 'erro';
-    case 'MEDIUM':
-      return 'atencao';
-    case 'LOW':
-    default:
-      return 'aviso';
-  }
-};
-
 export const cleanupExpiredNotifications = (
   notifications: NotificationData[]
 ): NotificationData[] => {

@@ -700,7 +700,7 @@ const LearningModal = () => {
           <Inline gap={3}>
             <div
               className={`w-10 h-10 rounded-xl bg-gradient-to-br ${
-                config.color === 'blue' ? 'bg-aviso' : 'bg-ok'
+                config.color === 'blue' ? '' : ''
               } flex items-center justify-center shadow-theme-glow`}
             >
               <config.icon className="w-5 h-5 text-theme-primary" />
@@ -977,7 +977,7 @@ const LearningModal = () => {
                     onChange={(e) =>
                       updateLearnedForm({ wouldRecommend: e.target.checked })
                     }
-                    className="w-4 h-4 text-ok border-theme-secondary rounded focus:ring-ouro"
+                    className="w-4 h-4 border-theme-secondary rounded"
                   />
                   <label
                     htmlFor="wouldRecommend"
@@ -994,7 +994,7 @@ const LearningModal = () => {
                     onChange={(e) =>
                       updateLearnedForm({ publicPerformance: e.target.checked })
                     }
-                    className="w-4 h-4 text-ok border-theme-secondary rounded focus:ring-ouro"
+                    className="w-4 h-4 border-theme-secondary rounded"
                   />
                   <label
                     htmlFor="publicPerformance"
@@ -1019,10 +1019,10 @@ const LearningModal = () => {
 
           {/* NOVA SEÇÃO: Progresso de Aprendizado */}
           {availableMilestones.length > 0 && type === 'want-to-learn' && (
-            <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-sup-elevada">
+            <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <Inline gap={3}>
-                  <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                     <PiTarget className="w-4 h-4 text-theme-primary" />
                   </div>
                   <div>
@@ -1055,10 +1055,10 @@ const LearningModal = () => {
                   <div
                     className={`h-2 rounded-full transition-all ${
                       currentProgress >= 100
-                        ? 'bg-ok'
+                        ? 'bg-green-400'
                         : currentProgress >= 50
-                          ? 'bg-aviso'
-                          : 'bg-atencao'
+                          ? 'bg-blue-400'
+                          : 'bg-yellow-400'
                     }`}
                     style={{ width: `${currentProgress}%` }}
                   />
@@ -1069,10 +1069,10 @@ const LearningModal = () => {
 
           {/* ✅ NOVA SEÇÃO DE VÍDEO - LAYOUT MELHORADO */}
           {type === 'learned' && (
-            <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-sup-elevada">
+            <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <Inline gap={3}>
-                  <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                     <PiVideoCamera className="w-4 h-4 text-theme-primary" />
                   </div>
                   <div>
@@ -1107,10 +1107,7 @@ const LearningModal = () => {
                         </div>
                       </Inline>
                       {currentLearnedItem?.videoUrl && (
-                        <button
-                          onClick={handleDeleteVideo}
-                          className="text-erro hover:text-erro/80 text-sm"
-                        >
+                        <button onClick={handleDeleteVideo} className="text-sm">
                           <PiTrashSimple className="w-4 h-4" />
                           <NomeAcao acao="excluir" />
                         </button>
@@ -1138,7 +1135,7 @@ const LearningModal = () => {
                     />
                     <label
                       htmlFor="video-replace"
-                      className="text-sm text-theme-tertiary hover:text-ouro-texto cursor-pointer underline transition-colors duration-200"
+                      className="text-sm text-theme-tertiary cursor-pointer underline transition-colors duration-200"
                     >
                       {t('replace_video')}
                     </label>
@@ -1156,11 +1153,11 @@ const LearningModal = () => {
                   />
                   <label
                     htmlFor="video-upload"
-                    className="w-full border-2 border-dashed border-theme-secondary hover:border-ouro rounded-xl p-4 text-center transition-all duration-300 hover:bg-ouro/5 group cursor-pointer block"
+                    className="w-full border-2 border-dashed border-theme-secondary rounded-xl p-4 text-center transition-all duration-300 group cursor-pointer block"
                   >
                     <Stack gap={2} className="items-center">
-                      <div className="w-12 h-12 shadow-md border-ouro/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <PiPlus className="w-6 h-6 text-brand-primary" />
+                      <div className="w-12 h-12 shadow-md rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <PiPlus className="w-6 h-6 text-ouro-texto" />
                       </div>
                       <div>
                         <p className="font-semibold text-theme-primary">
@@ -1191,13 +1188,13 @@ const LearningModal = () => {
               {uploadError && (
                 <Inline
                   gap={2}
-                  className="mt-4 p-3 border border-erro rounded-lg"
+                  className="mt-4 p-3 border border-red-400 rounded-lg"
                 >
-                  <PiWarningCircle className="w-4 h-4 text-erro" />
-                  <span className="text-erro text-sm">{uploadError}</span>
+                  <PiWarningCircle className="w-4 h-4 text-red-400" />
+                  <span className="text-sm">{uploadError}</span>
                   <button
                     onClick={clearVideoError}
-                    className="ml-auto text-erro hover:text-erro/80"
+                    className="ml-auto text-red-400"
                   >
                     <PiX className="w-4 h-4" />
                     <NomeAcao acao="fechar" />
@@ -1208,10 +1205,10 @@ const LearningModal = () => {
           )}
 
           {/* Seção de Partitura */}
-          <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-sup-elevada">
+          <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
               <Inline gap={3}>
-                <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                   <PiFileText className="w-4 h-4 text-theme-primary" />
                 </div>
                 <div>
@@ -1231,7 +1228,7 @@ const LearningModal = () => {
               <div className="bg-theme-elevated rounded-xl p-4 border border-theme-primary">
                 <div className="flex items-center justify-between">
                   <Inline gap={3}>
-                    <div className="w-10 h-10 fill-ouro rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                       <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                     </div>
                     <div className="flex-1">
@@ -1259,7 +1256,7 @@ const LearningModal = () => {
                         href={selectedWorkScore.downloadUrl}
                         target="_blank"
                         title={t('download_button')}
-                        className="btn-classical-secondary-sm text-ouro-texto border-ouro/30 hover:bg-ouro/10"
+                        className="btn-classical-secondary-sm"
                       >
                         <PiDownloadSimple className="w-5 h-5 text-theme-primary" />
                       </Inline>
@@ -1281,7 +1278,7 @@ const LearningModal = () => {
                     <button
                       title={t('remove_button')}
                       onClick={handleRemoveScore}
-                      className="btn-classical-outline-sm text-erro border-erro hover:bg-erro hover:text-texto"
+                      className="btn-classical-outline-sm"
                     >
                       <PiX className="w-5 h-5 text-theme-primary" />
                     </button>
@@ -1293,10 +1290,10 @@ const LearningModal = () => {
                     selectedWorkScore.id && (
                     <div className="mt-3  rounded-lg">
                       <Inline gap={2}>
-                        <div className="w-4 h-4 bg-ok rounded-full flex items-center justify-center">
+                        <div className="w-4 h-4 rounded-full flex items-center justify-center">
                           <span className="text-xs">💡</span>
                         </div>
-                        <span className="text-xs md:text-sm text-ok font-medium">
+                        <span className="text-xs md:text-sm text-green-400 font-medium">
                           {t('score_suggestion')} &quot;
                           {type === 'want-to-learn'
                             ? t('already_learned')
@@ -1310,11 +1307,11 @@ const LearningModal = () => {
             ) : (
               <button
                 onClick={handleAddScore}
-                className="w-full border-2 border-dashed border-theme-secondary hover:border-ouro rounded-xl p-4 text-center transition-all duration-300 hover:bg-ouro/5 group"
+                className="w-full border-2 border-dashed border-theme-secondary rounded-xl p-4 text-center transition-all duration-300 group"
               >
                 <Stack gap={2} className="items-center">
-                  <div className="w-12 h-12 bg-ouro/20 border-2 border-ouro/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <PiPlus className="w-6 h-6 text-brand-primary" />
+                  <div className="w-12 h-12 border-2 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <PiPlus className="w-6 h-6 text-ouro-texto" />
                   </div>
                   <div>
                     <p className="font-semibold text-theme-primary">
@@ -1482,7 +1479,7 @@ const LearningModal = () => {
       >
         <div className="p-4 px-0 md:p-6">
           <Inline gap={3} className="mb-4">
-            <div className="w-12 h-12 bg-ok rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center">
               <PiArrowRight className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
@@ -1557,10 +1554,10 @@ const LearningModal = () => {
                     <div
                       className={`h-3 rounded-full transition-all ${
                         currentProgress >= 100
-                          ? 'bg-ok'
+                          ? 'bg-green-400'
                           : currentProgress >= 50
-                            ? 'bg-aviso'
-                            : 'bg-atencao'
+                            ? 'bg-blue-400'
+                            : 'bg-yellow-400'
                       }`}
                       style={{ width: `${currentProgress}%` }}
                     />
@@ -1587,13 +1584,13 @@ const LearningModal = () => {
                     className={`flex items-center space-x-3 p-4 rounded-xl transition-all cursor-pointer border-2 ${
                       isCompleted
                         ? 'border-color-primary '
-                        : 'border-theme-secondary hover:border-ouro/50 hover:bg-ouro/5'
+                        : 'border-theme-secondary'
                     }`}
                     onClick={() => handleMilestoneToggle(milestone.key)}
                   >
                     <div className={`flex-shrink-0 ${milestone.color}`}>
                       {isCompleted ? (
-                        <PiCheckCircle className="w-6 h-6 text-ok" />
+                        <PiCheckCircle className="w-6 h-6" />
                       ) : (
                         <Icon className="w-6 h-6" />
                       )}
@@ -1609,7 +1606,7 @@ const LearningModal = () => {
                     </div>
                     <div className="flex-shrink-0">
                       {isCompleted ? (
-                        <PiCheckCircle className="w-5 h-5 text-brand-primary" />
+                        <PiCheckCircle className="w-5 h-5 text-ouro-texto" />
                       ) : (
                         <PiCircle className="w-5 h-5 text-theme-tertiary" />
                       )}

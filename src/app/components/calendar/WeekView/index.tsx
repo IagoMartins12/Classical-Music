@@ -40,9 +40,7 @@ export default function WeekView({
             <div
               key={index}
               className={`text-center p-3 rounded-lg ${
-                isToday
-                  ? 'bg-ouro/10 border border-ouro/30'
-                  : 'bg-theme-elevated'
+                isToday ? 'border' : 'bg-theme-elevated'
               }`}
             >
               <Text papel="rotulo" tom="fraco" as="div">
@@ -50,7 +48,7 @@ export default function WeekView({
               </Text>
               <div
                 className={`text-lg font-bold ${
-                  isToday ? 'text-brand-primary' : 'text-theme-primary'
+                  isToday ? 'text-ouro-texto' : 'text-theme-primary'
                 }`}
               >
                 {day.getDate()}
@@ -93,16 +91,16 @@ export default function WeekView({
 }
 
 function getEventColor(type: string, isFree: boolean): string {
-  if (isFree) return 'bg-ok';
+  if (isFree) return '';
 
   const colors: Record<string, string> = {
-    OPERA: 'bg-ouro',
-    RECITAL: 'bg-ouro',
-    CHAMBER_MUSIC: 'bg-ok',
-    CHOIR: 'bg-atencao',
-    OPEN_REHEARSAL: 'bg-accent-gray',
-    CONCERT: 'bg-aviso',
+    OPERA: '',
+    RECITAL: '',
+    CHAMBER_MUSIC: '',
+    CHOIR: '',
+    OPEN_REHEARSAL: '',
+    CONCERT: '',
   };
 
-  return colors[type] || 'bg-aviso';
+  return colors[type] || '';
 }

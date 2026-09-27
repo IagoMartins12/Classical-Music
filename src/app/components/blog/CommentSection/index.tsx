@@ -127,8 +127,8 @@ const CommentItem = memo(
             !isReply ? 'pb-6 border-b border-theme-secondary' : ''
           }`}
         >
-          <div className="bg-sup-2 dark:bg-gray-800/50 p-4 rounded-lg border border-linha dark:border-linha-forte">
-            <Inline gap={2} className="text-texto-suave dark:text-texto-fraco">
+          <div className="bg-gray-100 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-300 dark:border-gray-700">
+            <Inline gap={2} className="text-gray-600 dark:text-gray-400">
               <PiWarning className="w-5 h-5" />
               <span className="text-sm font-medium">
                 {isRejected
@@ -164,7 +164,7 @@ const CommentItem = memo(
                 className={`${isReply ? 'w-8 h-8' : 'w-10 h-10'} rounded-full bg-theme-classical flex items-center justify-center`}
               >
                 <PiUser
-                  className={`${isReply ? 'w-4 h-4' : 'w-5 h-5'} text-brand-primary`}
+                  className={`${isReply ? 'w-4 h-4' : 'w-5 h-5'} text-ouro-texto`}
                 />
               </div>
             )}
@@ -174,8 +174,11 @@ const CommentItem = memo(
           <div className="flex-1">
             {/* Status Warning for Owner */}
             {isOwner && (isRejected || isSpam || isFlagged || isPending) && (
-              <div className="mb-3 p-2 bg-atencao/50 dark:bg-atencao/10 rounded-lg border border-atencao/30 dark:border-atencao">
-                <Inline gap={2} className="text-atencao dark:text-atencao">
+              <div className="mb-3 p-2 bg-yellow-50/50 dark:bg-yellow-900/10 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                <Inline
+                  gap={2}
+                  className="text-yellow-700 dark:text-yellow-400"
+                >
                   <PiInfo className="w-4 h-4" />
                   <span className="text-xs">
                     {isPending && 'Seu comentário está aguardando aprovação'}
@@ -246,7 +249,7 @@ const CommentItem = memo(
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => onLike(comment.id, !!comment.userLiked)}
-                  className="flex items-center gap-1 text-xs text-theme-tertiary hover:text-ouro-texto transition-colors"
+                  className="flex items-center gap-1 text-xs text-theme-tertiary transition-colors"
                 >
                   {comment.userLiked ? (
                     <PiThumbsUpFill className="w-3.5 h-3.5" />
@@ -259,7 +262,7 @@ const CommentItem = memo(
                 {session && (
                   <button
                     onClick={() => onReply(comment.id)}
-                    className="text-xs text-theme-tertiary hover:text-ouro-texto transition-colors"
+                    className="text-xs text-theme-tertiary transition-colors"
                   >
                     Responder
                   </button>
@@ -269,7 +272,7 @@ const CommentItem = memo(
                   <>
                     <button
                       onClick={() => onEdit(comment.id, comment.content)}
-                      className="text-xs text-theme-tertiary hover:text-ouro-texto transition-colors flex items-center gap-1"
+                      className="text-xs text-theme-tertiary transition-colors flex items-center gap-1"
                     >
                       <PiNotePencil className="w-3.5 h-3.5" />
 
@@ -277,7 +280,7 @@ const CommentItem = memo(
                     </button>
                     <button
                       onClick={() => onDelete(comment.id)}
-                      className="text-xs text-erro hover:text-erro transition-colors flex items-center gap-1"
+                      className="text-xs text-red-500 hover:text-red-600 transition-colors flex items-center gap-1"
                     >
                       <PiTrash className="w-3.5 h-3.5" />
                       <span className="hidden md:block">Deletar</span>
@@ -288,7 +291,7 @@ const CommentItem = memo(
                 {!isOwner && session && (
                   <button
                     onClick={() => onReport(comment.id)}
-                    className="text-xs text-theme-tertiary hover:text-erro transition-colors flex items-center gap-1"
+                    className="text-xs text-theme-tertiary hover:text-red-500 transition-colors flex items-center gap-1"
                   >
                     <PiFlag className="w-3.5 h-3.5" />
                     Denunciar
@@ -575,7 +578,7 @@ export function CommentSection({
       <section id="comments-section" className="scroll-mt-24">
         <div className="classical-card p-6 md:p-8">
           <h2 className="text-2xl font-bold text-theme-primary mb-6 flex items-center gap-2">
-            <PiChatCircle className="text-brand-primary" />
+            <PiChatCircle className="text-ouro-texto" />
             Comentários ({initialCount})
           </h2>
 
@@ -696,7 +699,7 @@ export function CommentSection({
                   value={reason}
                   checked={reportReason === reason}
                   onChange={(e) => setReportReason(e.target.value)}
-                  className="w-4 h-4 text-brand-primary"
+                  className="w-4 h-4 text-ouro-texto"
                 />
                 <Text papel="rotulo" tom="forte">
                   {reason}

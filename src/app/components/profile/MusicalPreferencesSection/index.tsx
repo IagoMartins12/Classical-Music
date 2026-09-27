@@ -272,7 +272,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <Inline gap={2} className="mb-3">
-            <PiClock className="w-4 h-4 text-brand-primary" />
+            <PiClock className="w-4 h-4 text-ouro-texto" />
             <label className="text-sm font-medium text-theme-secondary">
               {t('preferences_experience_level')}
             </label>
@@ -289,7 +289,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 
         <div>
           <Inline gap={2} className="mb-3">
-            <PiClock className="w-4 h-4 text-brand-primary" />
+            <PiClock className="w-4 h-4 text-ouro-texto" />
             <label className="text-sm font-medium text-theme-secondary">
               {t('preferences_practice_time')}
             </label>
@@ -308,7 +308,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       {/* Favorites */}
       <Stack gap={6} className="pt-6 border-t border-theme-secondary">
         <Inline gap={2}>
-          <PiHeart className="w-4 h-4 text-brand-primary" />
+          <PiHeart className="w-4 h-4 text-ouro-texto" />
           <h4 className="font-medium text-theme-primary">
             {t('preferences_favorites')}
           </h4>
@@ -369,12 +369,8 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 
       {/* Summary Card */}
       {formData.experienceLevel && formData.practiceTimePerWeek > 0 && (
-        <Card
-          nivel={2}
-          densidade="compacta"
-          className="bg-ouro/5 border border-ouro/30"
-        >
-          <h4 className="font-medium text-brand-primary mb-2">
+        <Card nivel={2} densidade="compacta" className="border">
+          <h4 className="font-medium text-ouro-texto mb-2">
             {t('preferences_profile_summary')}
           </h4>
           <Text papel="rotulo" tom="suave" as="div" className="space-y-1">

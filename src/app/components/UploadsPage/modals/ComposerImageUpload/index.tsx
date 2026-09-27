@@ -166,8 +166,8 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
           }}
           className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
             inputMode === 'upload'
-              ? 'bg-ouro text-sobre-ouro shadow-sm'
-              : 'text-theme-primary hover:bg-fundo hover:text-texto-suave'
+              ? 'text-white shadow-sm'
+              : 'text-theme-primary'
           }`}
         >
           <PiUploadSimple className="w-4 h-4" />
@@ -179,9 +179,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
             handleModeChange('url');
           }}
           className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
-            inputMode === 'url'
-              ? 'bg-ouro text-sobre-ouro shadow-sm'
-              : 'text-theme-primary hover:bg-fundo hover:text-texto-suave'
+            inputMode === 'url' ? 'text-white shadow-sm' : 'text-theme-primary'
           }`}
         >
           <PiLink className="w-4 h-4" />
@@ -194,8 +192,8 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
         <div
           className={`
             ${sizeClasses[size]} 
-            relative rounded-2xl overflow-hidden border-2 border-theme-secondary bg-sup-1 flex items-center justify-center transition-all duration-300
-            ${currentUploading ? 'opacity-50' : 'hover:border-ouro'}
+            relative rounded-2xl overflow-hidden border-2 border-theme-secondary bg-gradient-to-br flex items-center justify-center transition-all duration-300
+            ${currentUploading ? 'opacity-50' : ''}
           `}
         >
           {currentImage ? (
@@ -229,7 +227,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
           {currentImage && showRemove && !currentUploading && (
             <button
               onClick={handleRemove}
-              className="absolute -top-2 -right-2 w-6 h-6 bg-erro text-white rounded-full flex items-center justify-center hover:bg-erro transition-colors"
+              className="absolute -top-2 -right-2 w-6 h-6 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
               title="Remover imagem"
             >
               <PiX className="w-3 h-3" />
@@ -241,7 +239,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
         {inputMode === 'upload' && !currentUploading && (
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="absolute -bottom-2 -right-2 w-10 h-10 bg-ouro text-sobre-ouro rounded-full flex items-center justify-center hover:bg-ouro transition-colors shadow-lg"
+            className="absolute -bottom-2 -right-2 w-10 h-10 text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
             title="Fazer upload de imagem"
           >
             <PiCamera className="w-5 h-5" />
@@ -261,7 +259,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
               fileInputRef.current?.click();
             }}
             disabled={currentUploading}
-            className="px-6 py-3 bg-ouro text-sobre-ouro rounded-lg hover:bg-ouro transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <PiUploadSimple className="w-4 h-4" />
             <span>Selecionar Arquivo</span>
@@ -279,7 +277,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
               placeholder="https://exemplo.com/imagem.jpg"
-              className="flex-1 px-3 py-2 border border-theme-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-ouro focus:border-transparent"
+              className="flex-1 px-3 py-2 border border-theme-secondary rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
               onKeyPress={(e) => e.key === 'Enter' && handleUrlSubmit()}
             />
             <button
@@ -287,7 +285,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
                 e.preventDefault();
                 handleUrlSubmit();
               }}
-              className="px-4 py-2 bg-ouro text-sobre-ouro rounded-lg hover:bg-ouro transition-colors"
+              className="px-4 py-2 text-white rounded-lg transition-colors"
             >
               Aplicar
             </button>

@@ -112,11 +112,11 @@ export default function SystemPerformance() {
   const getHealthStatusColor = (status: string) => {
     switch (status) {
       case 'healthy':
-        return 'text-ok bg-ok/10 border-ok';
+        return '';
       case 'warning':
-        return 'text-atencao bg-atencao/10 border-atencao';
+        return '';
       case 'critical':
-        return 'text-erro bg-erro/10 border-erro';
+        return '';
       default:
         return 'text-theme-tertiary bg-theme-secondary border-theme-secondary';
     }
@@ -141,7 +141,7 @@ export default function SystemPerformance() {
       <PageContainer showBackground={true}>
         <AnimatedContainer delay={0.1}>
           <div className="text-center py-16">
-            <PiWarning className="w-16 h-16 text-erro mx-auto mb-6" />
+            <PiWarning className="w-16 h-16 mx-auto mb-6" />
             <h1 className="text-2xl font-bold text-theme-primary mb-4">
               Erro ao Carregar Métricas
             </h1>
@@ -170,7 +170,7 @@ export default function SystemPerformance() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-ok rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiHardDrives className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -200,7 +200,7 @@ export default function SystemPerformance() {
               </div>
 
               {!isConnected && (
-                <div className="ml-4 inline-flex items-center space-x-2 px-4 py-2 rounded-xl border border-erro bg-erro/10 text-erro">
+                <div className="ml-4 inline-flex items-center space-x-2 px-4 py-2 rounded-xl border">
                   <PiWarning className="w-4 h-4" />
                   <span className="font-medium">Desconectado</span>
                 </div>
@@ -230,7 +230,7 @@ export default function SystemPerformance() {
                   id="autoRefresh"
                   checked={autoRefresh}
                   onChange={(e) => setAutoRefresh(e.target.checked)}
-                  className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-ouro focus:ring-2"
+                  className="w-4 h-4 text-ouro-texto bg-theme-secondary border-theme-primary rounded focus:ring-2"
                 />
                 <label
                   htmlFor="autoRefresh"
@@ -419,9 +419,9 @@ export default function SystemPerformance() {
         {criticalAlerts.length > 0 && (
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-8">
-              <AnimatedCard className="border classical-card p-6 border-erro/40">
+              <AnimatedCard className="classical-card p-6 border-l-4">
                 <Inline gap={3} className="mb-4">
-                  <PiWarning className="w-6 h-6 text-erro" />
+                  <PiWarning className="w-6 h-6" />
                   <h3 className="text-xl font-bold text-theme-primary">
                     Alertas Críticos ({criticalAlerts.length})
                   </h3>
@@ -430,10 +430,10 @@ export default function SystemPerformance() {
                   {criticalAlerts.slice(0, 3).map((alert) => (
                     <div
                       key={alert.id}
-                      className="flex items-center justify-between p-3 bg-erro/10 rounded-lg"
+                      className="flex items-center justify-between p-3 rounded-lg"
                     >
                       <Inline gap={3}>
-                        <div className="w-2 h-2 bg-erro rounded-full animate-pulse" />
+                        <div className="w-2 h-2 rounded-full animate-pulse" />
                         <div>
                           <h4 className="font-medium text-theme-primary">
                             {alert.title}
@@ -463,7 +463,7 @@ export default function SystemPerformance() {
               gap={2}
               className="text-xl font-bold text-theme-primary mb-6"
             >
-              <PiHardDrives className="w-5 h-5 text-ok" />
+              <PiHardDrives className="w-5 h-5" />
               <span>Recursos do Servidor</span>
             </Inline>
 
@@ -474,7 +474,7 @@ export default function SystemPerformance() {
                     CPU Usage
                   </Text>
                   <Inline gap={2}>
-                    <span className="text-sm font-bold text-atencao">
+                    <span className="text-sm font-bold">
                       {metrics
                         ? formatPercentage(metrics.server.cpu.usage)
                         : 'N/A'}
@@ -503,7 +503,7 @@ export default function SystemPerformance() {
                   <Text papel="rotulo" tom="forte" className="font-medium">
                     Memory
                   </Text>
-                  <span className="text-sm font-bold text-aviso">
+                  <span className="text-sm font-bold">
                     {metrics
                       ? `${metrics.server.memory.used}GB / ${metrics.server.memory.total}GB`
                       : 'N/A'}
@@ -524,7 +524,7 @@ export default function SystemPerformance() {
                   <Text papel="rotulo" tom="forte" className="font-medium">
                     Disk Space
                   </Text>
-                  <span className="text-sm font-bold text-ok">
+                  <span className="text-sm font-bold">
                     {metrics
                       ? `${metrics.server.disk.used}GB / ${metrics.server.disk.total}GB`
                       : 'N/A'}
@@ -542,7 +542,7 @@ export default function SystemPerformance() {
 
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-theme-secondary">
                 <div className="text-center">
-                  <div className="text-lg font-bold text-ouro-texto">
+                  <div className="text-lg font-bold">
                     {metrics ? formatUptime(metrics.server.uptime) : 'N/A'}
                   </div>
                   <Text papel="legenda" tom="fraco" as="div">
@@ -550,7 +550,7 @@ export default function SystemPerformance() {
                   </Text>
                 </div>
                 <div className="text-center">
-                  <div className="text-lg font-bold text-aviso">
+                  <div className="text-lg font-bold">
                     {metrics?.server.processes || 0}
                   </div>
                   <Text papel="legenda" tom="fraco" as="div">
@@ -574,14 +574,14 @@ export default function SystemPerformance() {
               gap={2}
               className="text-xl font-bold text-theme-primary mb-6"
             >
-              <PiDatabase className="w-5 h-5 text-aviso" />
+              <PiDatabase className="w-5 h-5" />
               <span>Performance da Database</span>
             </Inline>
 
             <Stack>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center p-3 bg-theme-secondary rounded-xl">
-                  <div className="text-lg font-bold text-aviso">
+                  <div className="text-lg font-bold">
                     {metrics?.database.connections.active || 0}
                   </div>
                   <Text papel="legenda" tom="fraco" as="div">
@@ -589,7 +589,7 @@ export default function SystemPerformance() {
                   </Text>
                 </div>
                 <div className="text-center p-3 bg-theme-secondary rounded-xl">
-                  <div className="text-lg font-bold text-ok">
+                  <div className="text-lg font-bold">
                     {metrics?.database.queries.average.toFixed(1) || 0}ms
                   </div>
                   <Text papel="legenda" tom="fraco" as="div">
@@ -597,7 +597,7 @@ export default function SystemPerformance() {
                   </Text>
                 </div>
                 <div className="text-center p-3 bg-theme-secondary rounded-xl">
-                  <div className="text-lg font-bold text-atencao">
+                  <div className="text-lg font-bold">
                     {metrics?.database.queries.slow || 0}
                   </div>
                   <Text papel="legenda" tom="fraco" as="div">
@@ -636,7 +636,7 @@ export default function SystemPerformance() {
               <div className="pt-3 border-t border-theme-secondary">
                 <div className="grid grid-cols-3 gap-3 text-center">
                   <div>
-                    <div className="text-lg font-bold text-ok">
+                    <div className="text-lg font-bold">
                       {metrics?.database.performance.reads || 0}
                     </div>
                     <Text papel="legenda" tom="fraco" as="div">
@@ -644,7 +644,7 @@ export default function SystemPerformance() {
                     </Text>
                   </div>
                   <div>
-                    <div className="text-lg font-bold text-aviso">
+                    <div className="text-lg font-bold">
                       {metrics?.database.performance.writes || 0}
                     </div>
                     <Text papel="legenda" tom="fraco" as="div">
@@ -652,7 +652,7 @@ export default function SystemPerformance() {
                     </Text>
                   </div>
                   <div>
-                    <div className="text-lg font-bold text-erro">
+                    <div className="text-lg font-bold">
                       {metrics?.database.performance.locks || 0}
                     </div>
                     <Text papel="legenda" tom="fraco" as="div">
@@ -674,10 +674,10 @@ export default function SystemPerformance() {
               gap={2}
               className="text-xl font-bold text-theme-primary mb-6"
             >
-              <PiWarning className="w-5 h-5 text-erro" />
+              <PiWarning className="w-5 h-5" />
               <span>Alertas do Sistema</span>
               {activeAlerts.length > 0 && (
-                <span className="bg-erro text-white text-xs px-2 py-1 rounded-full">
+                <span className="text-white text-xs px-2 py-1 rounded-full">
                   {activeAlerts.length}
                 </span>
               )}
@@ -686,7 +686,7 @@ export default function SystemPerformance() {
             <div className="space-y-3">
               {activeAlerts.length === 0 ? (
                 <div className="text-center py-6">
-                  <PiCheckCircle className="w-8 h-8 text-ok mx-auto mb-2" />
+                  <PiCheckCircle className="w-8 h-8 mx-auto mb-2" />
                   <p className="text-theme-primary font-medium">
                     Nenhum alerta ativo
                   </p>
@@ -698,7 +698,7 @@ export default function SystemPerformance() {
                 activeAlerts.slice(0, 5).map((alert) => (
                   <div
                     key={alert.id}
-                    className={`border p-4 rounded-xl ${AlertUtils.getAlertColor(
+                    className={`p-4 border-l-4 rounded-xl ${AlertUtils.getAlertColor(
                       alert.type
                     )}`}
                   >
@@ -750,7 +750,7 @@ export default function SystemPerformance() {
               gap={2}
               className="text-xl font-bold text-theme-primary mb-6"
             >
-              <PiFileText className="w-5 h-5 text-aviso" />
+              <PiFileText className="w-5 h-5" />
               <span>Logs Recentes</span>
             </Inline>
 
@@ -772,11 +772,11 @@ export default function SystemPerformance() {
                       <div
                         className={`w-2 h-2 rounded-full mt-2 ${
                           log.level === 'error'
-                            ? 'bg-erro'
+                            ? ''
                             : log.level === 'warn'
-                              ? 'bg-atencao'
+                              ? ''
                               : log.level === 'info'
-                                ? 'bg-aviso'
+                                ? ''
                                 : 'bg-theme-tertiary'
                         }`}
                       />
@@ -801,10 +801,10 @@ export default function SystemPerformance() {
                         </Text>
                         {log.details && (
                           <details className="mt-2">
-                            <summary className="text-xs text-theme-tertiary cursor-pointer hover:text-texto">
+                            <summary className="text-xs text-theme-tertiary cursor-pointer">
                               Ver detalhes
                             </summary>
-                            <pre className="text-xs text-theme-tertiary mt-1 font-mono bg-fundo/5 p-2 rounded">
+                            <pre className="text-xs text-theme-tertiary mt-1 font-mono p-2 rounded">
                               {JSON.stringify(log.details, null, 2)}
                             </pre>
                           </details>
@@ -831,13 +831,13 @@ export default function SystemPerformance() {
               gap={2}
               className="text-xl font-bold text-theme-primary mb-6"
             >
-              <PiWifiHigh className="w-5 h-5 text-ouro-texto" />
+              <PiWifiHigh className="w-5 h-5" />
               <span>Rede</span>
             </Inline>
 
             <Stack>
               <div className="text-center p-3 bg-theme-secondary rounded-xl">
-                <div className="text-2xl font-bold text-ouro-texto">
+                <div className="text-2xl font-bold">
                   {metrics?.network.requests.current || 0}
                 </div>
                 <Text papel="rotulo" tom="fraco" as="div">
@@ -850,7 +850,7 @@ export default function SystemPerformance() {
                   <Text papel="rotulo" tom="forte">
                     Latência P50
                   </Text>
-                  <span className="font-medium text-ok">
+                  <span className="font-medium">
                     {metrics?.network.latency.p50 || 0}ms
                   </span>
                 </div>
@@ -858,7 +858,7 @@ export default function SystemPerformance() {
                   <Text papel="rotulo" tom="forte">
                     Latência P95
                   </Text>
-                  <span className="font-medium text-atencao">
+                  <span className="font-medium">
                     {metrics?.network.latency.p95 || 0}ms
                   </span>
                 </div>
@@ -866,7 +866,7 @@ export default function SystemPerformance() {
                   <Text papel="rotulo" tom="forte">
                     Error Rate
                   </Text>
-                  <span className="font-medium text-erro">
+                  <span className="font-medium">
                     {metrics?.network.errors.rate.toFixed(2) || 0}%
                   </span>
                 </div>
@@ -874,7 +874,7 @@ export default function SystemPerformance() {
                   <Text papel="rotulo" tom="forte">
                     Bandwidth
                   </Text>
-                  <span className="font-medium text-aviso">
+                  <span className="font-medium">
                     {metrics?.network.bandwidth.total.toFixed(1) || 0} Mbps
                   </span>
                 </div>
@@ -882,7 +882,7 @@ export default function SystemPerformance() {
                   <Text papel="rotulo" tom="forte">
                     Connections
                   </Text>
-                  <span className="font-medium text-ouro-texto">
+                  <span className="font-medium">
                     {metrics?.network.connections || 0}
                   </span>
                 </div>
@@ -897,13 +897,13 @@ export default function SystemPerformance() {
               gap={2}
               className="text-xl font-bold text-theme-primary mb-6"
             >
-              <PiLightning className="w-5 h-5 text-ok" />
+              <PiLightning className="w-5 h-5" />
               <span>Cache</span>
             </Inline>
 
             <Stack>
               <div className="text-center p-3 bg-theme-secondary rounded-xl">
-                <div className="text-2xl font-bold text-ok">
+                <div className="text-2xl font-bold">
                   {metrics?.cache.application.hitRate.toFixed(1) || 0}%
                 </div>
                 <Text papel="rotulo" tom="fraco" as="div">
@@ -918,7 +918,7 @@ export default function SystemPerformance() {
                       <Text papel="rotulo" tom="forte">
                         Redis Memory
                       </Text>
-                      <span className="font-medium text-aviso">
+                      <span className="font-medium">
                         {metrics.cache.redis.memory}MB
                       </span>
                     </div>
@@ -926,7 +926,7 @@ export default function SystemPerformance() {
                       <Text papel="rotulo" tom="forte">
                         Redis Hit Rate
                       </Text>
-                      <span className="font-medium text-ok">
+                      <span className="font-medium">
                         {metrics.cache.redis.ratio.toFixed(1)}%
                       </span>
                     </div>
@@ -936,7 +936,7 @@ export default function SystemPerformance() {
                   <Text papel="rotulo" tom="forte">
                     App Cache
                   </Text>
-                  <span className="font-medium text-ouro-texto">
+                  <span className="font-medium">
                     {metrics?.cache.application.size.toFixed(1) || 0}MB
                   </span>
                 </div>
@@ -944,7 +944,7 @@ export default function SystemPerformance() {
                   <Text papel="rotulo" tom="forte">
                     Entries
                   </Text>
-                  <span className="font-medium text-aviso">
+                  <span className="font-medium">
                     {metrics?.cache.application.entries.toLocaleString() || 0}
                   </span>
                 </div>
@@ -959,14 +959,14 @@ export default function SystemPerformance() {
               gap={2}
               className="text-xl font-bold text-theme-primary mb-6"
             >
-              <PiPulse className="w-5 h-5 text-atencao" />
+              <PiPulse className="w-5 h-5" />
               <span>Aplicação</span>
             </Inline>
 
             <Stack>
               <div className="grid grid-cols-2 gap-2">
                 <div className="text-center p-2 bg-theme-secondary rounded-lg">
-                  <div className="text-lg font-bold text-aviso">
+                  <div className="text-lg font-bold">
                     {metrics?.application.users.concurrent || 0}
                   </div>
                   <Text papel="legenda" tom="fraco" as="div">
@@ -980,7 +980,7 @@ export default function SystemPerformance() {
                   <Text papel="rotulo" tom="forte">
                     Uploads Hoje
                   </Text>
-                  <span className="font-medium text-ouro-texto">
+                  <span className="font-medium">
                     {metrics?.application.features.uploads || 0}
                   </span>
                 </div>
@@ -988,7 +988,7 @@ export default function SystemPerformance() {
                   <Text papel="rotulo" tom="forte">
                     Anotações
                   </Text>
-                  <span className="font-medium text-aviso">
+                  <span className="font-medium">
                     {metrics?.application.features.annotations || 0}
                   </span>
                 </div>
@@ -997,7 +997,7 @@ export default function SystemPerformance() {
                   <Text papel="rotulo" tom="forte">
                     Taxa de Erro
                   </Text>
-                  <span className="font-medium text-erro">
+                  <span className="font-medium">
                     {metrics?.application.errors.rate.toFixed(2) || 0}%
                   </span>
                 </div>
@@ -1005,7 +1005,7 @@ export default function SystemPerformance() {
                   <Text papel="rotulo" tom="forte">
                     Resp. Time
                   </Text>
-                  <span className="font-medium text-atencao">
+                  <span className="font-medium">
                     {metrics?.application.performance.avgResponseTime || 0}ms
                   </span>
                 </div>
@@ -1062,7 +1062,7 @@ export default function SystemPerformance() {
 
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-aviso">
+                  <div className="text-2xl font-bold">
                     {detailedStats.total || 0}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
@@ -1070,7 +1070,7 @@ export default function SystemPerformance() {
                   </Text>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-ok">
+                  <div className="text-2xl font-bold">
                     {detailedStats.avgDuration?.toFixed(0) || 0}ms
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
@@ -1078,7 +1078,7 @@ export default function SystemPerformance() {
                   </Text>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-erro">
+                  <div className="text-2xl font-bold">
                     {detailedStats.slowRequests || 0}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">

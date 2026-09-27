@@ -187,11 +187,7 @@ export function ModerationList({
                 href={`/blog/admin/moderation?filter=${filter.key}`}
                 className={`
                   flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap
-                  ${
-                    isActive
-                      ? ` text-brand-primary`
-                      : 'text-theme-secondary hover:bg-ouro/10'
-                  }
+                  ${isActive ? ` text-ouro-texto` : 'text-theme-secondary'}
                 `}
               >
                 <Icon className="w-4 h-4" />
@@ -236,11 +232,11 @@ export function ModerationList({
             return (
               <div
                 key={comment.id}
-                className="classical-card overflow-hidden hover:shadow-[var(--sombra-1)] transition-all relative"
+                className="classical-card overflow-hidden transition-all relative"
               >
                 {/* ✅ INDICADOR DE RESPOSTA */}
                 {isReply && (
-                  <div className="border bg-theme-tertiary px-4 py-2">
+                  <div className="bg-theme-tertiary border-l-4  px-4 py-2">
                     <Inline gap={2}>
                       <PiArrowBendUpLeft className="w-4 h-4" />
                       <span className="text-sm font-medium">
@@ -252,9 +248,9 @@ export function ModerationList({
 
                 {/* Flag Warning */}
                 {comment.isFlagged && (
-                  <div className="bg-atencao/10 border-b border-atencao/20 p-3">
+                  <div className="bg-yellow-500/10 border-b border-yellow-500/20 p-3">
                     <div className="flex items-start space-x-2">
-                      <PiWarning className="w-5 h-5 text-atencao flex-shrink-0 mt-0.5" />
+                      <PiWarning className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
                         <Text
                           papel="rotulo"
@@ -294,7 +290,7 @@ export function ModerationList({
                         />
                       ) : (
                         <div className="w-10 h-10 bg-theme-classical rounded-full flex items-center justify-center">
-                          <PiUser className="w-5 h-5 text-brand-primary" />
+                          <PiUser className="w-5 h-5 text-ouro-texto" />
                         </div>
                       )}
 
@@ -344,7 +340,7 @@ export function ModerationList({
                       <span
                         className={`
                         px-3 py-1 rounded-full text-xs font-medium
-                        bg-${statusBadge.color}-500/20 text-${statusBadge.color}-600
+                       -500/20-600
                       `}
                       >
                         {statusBadge.label}
@@ -359,7 +355,7 @@ export function ModerationList({
                   {comment.parent && (
                     <Stack
                       gap={1}
-                      className="border mb-3 p-3 bg-ouro/10 rounded-lg border-ouro/40"
+                      className="mb-3 p-3 bg-theme-elevated rounded-lg border-l-4"
                     >
                       <Text papel="legenda" tom="fraco" as="p">
                         Respondendo a{' '}
@@ -390,7 +386,7 @@ export function ModerationList({
                     <Link
                       href={`/${comment.article.slug}`}
                       target="_blank"
-                      className="text-brand-primary hover:underline flex items-center space-x-1"
+                      className="text-ouro-texto hover:underline flex items-center space-x-1"
                     >
                       <span className="line-clamp-1">
                         {comment.article.title}
@@ -466,8 +462,8 @@ export function ModerationList({
 
                 {/* Processing Overlay */}
                 {processing === comment.id && (
-                  <div className="absolute inset-0 bg-fundo/50 backdrop-blur-sm flex items-center justify-center">
-                    <div className="w-8 h-8 border-2 border-ouro border-t-transparent rounded-full animate-spin"></div>
+                  <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center">
+                    <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin"></div>
                   </div>
                 )}
               </div>

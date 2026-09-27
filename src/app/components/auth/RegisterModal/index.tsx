@@ -424,7 +424,7 @@ const RegisterModal: React.FC = () => {
     <>
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 bg-ok rounded-full flex items-center justify-center shadow-theme-glow animate-pulse">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-theme-glow animate-pulse">
             <PiCheckCircle className="w-8 h-8 text-white" />
           </div>
         </div>
@@ -442,14 +442,14 @@ const RegisterModal: React.FC = () => {
         {/* Status de login - não mostrar para usuários Google */}
         {!registerStep.userData?.isLoggedIn &&
           registerStep.userData?.registrationMethod !== 'google' && (
-            <div className="bg-atencao/10 border border-atencao rounded-lg p-4">
+            <div className="border rounded-lg p-4">
               <div className="flex items-start">
-                <PiWarning className="w-5 h-5 text-atencao mr-3 mt-0.5 flex-shrink-0" />
+                <PiWarning className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
                 <Stack gap={1}>
-                  <h4 className="font-medium text-atencao">
+                  <h4 className="font-medium">
                     {t('register_success_login_manual_title')}
                   </h4>
-                  <p className="text-sm text-atencao opacity-80">
+                  <p className="text-sm opacity-80">
                     {t('register_success_login_manual_text')}
                   </p>
                 </Stack>
@@ -459,17 +459,17 @@ const RegisterModal: React.FC = () => {
 
         {/* Informações específicas para Google vs Email */}
         {registerStep.userData?.registrationMethod === 'google' ? (
-          <div className="bg-aviso/10 border border-aviso rounded-lg p-4">
+          <div className="border rounded-lg p-4">
             <div className="flex items-start">
               <div>
-                <h4 className="font-medium text-aviso mb-1">
+                <h4 className="font-medium mb-1">
                   {t('register_success_google_verified_title')}
                 </h4>
-                <p className="text-sm text-aviso opacity-80 mb-2">
+                <p className="text-sm opacity-80 mb-2">
                   {t('register_success_google_verified_text')}{' '}
                   <strong>{registerStep.userData?.email}</strong>
                 </p>
-                <Stack gap={1} className="text-xs text-aviso opacity-70">
+                <Stack gap={1} className="text-xs opacity-70">
                   <p>{t('register_success_google_features')}</p>
                   <p>{t('register_success_google_immediate')}</p>
                   <p>{t('register_success_google_quick_login')}</p>
@@ -478,17 +478,17 @@ const RegisterModal: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-aviso/10 border border-aviso rounded-lg p-4">
+          <div className="border rounded-lg p-4">
             <div className="flex items-start">
               <div>
-                <h4 className="font-medium text-aviso mb-1">
+                <h4 className="font-medium mb-1">
                   {t('register_success_email_sent_title')}
                 </h4>
-                <p className="text-sm text-aviso opacity-80 mb-2">
+                <p className="text-sm opacity-80 mb-2">
                   {t('register_success_email_sent_text')}{' '}
                   <strong>{registerStep.userData?.email}</strong>
                 </p>
-                <Stack gap={1} className="text-xs text-aviso opacity-70">
+                <Stack gap={1} className="text-xs opacity-70">
                   <p>
                     • <strong>{t('register_success_email_normal_use')}</strong>
                   </p>
@@ -511,21 +511,21 @@ const RegisterModal: React.FC = () => {
           </h4>
           <ul className="text-sm text-theme-tertiary space-y-2">
             <li className="flex items-start">
-              <span className="text-brand-primary mr-2 font-medium">1.</span>
+              <span className="text-ouro-texto mr-2 font-medium">1.</span>
               {t('register_success_step_1')}
             </li>
             <li className="flex items-start">
-              <span className="text-brand-primary mr-2 font-medium">2.</span>
+              <span className="text-ouro-texto mr-2 font-medium">2.</span>
               {t('register_success_step_2')}
             </li>
             {registerStep.userData?.registrationMethod !== 'google' && (
               <li className="flex items-start">
-                <span className="text-brand-primary mr-2 font-medium">3.</span>
+                <span className="text-ouro-texto mr-2 font-medium">3.</span>
                 {t('register_success_step_3_credentials')}
               </li>
             )}
             <li className="flex items-start">
-              <span className="text-brand-primary mr-2 font-medium">
+              <span className="text-ouro-texto mr-2 font-medium">
                 {registerStep.userData?.registrationMethod === 'google'
                   ? '3.'
                   : '4.'}
@@ -592,7 +592,7 @@ const RegisterModal: React.FC = () => {
     <>
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 fill-ouro rounded-full flex items-center justify-center shadow-theme-glow">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-theme-glow">
             <GiGrandPiano className="w-8 h-8 text-theme-primary" />
           </div>
         </div>
@@ -604,9 +604,7 @@ const RegisterModal: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {errors.general && (
-          <div className="p-3 rounded-lg bg-erro/10 border border-erro text-erro text-sm">
-            {errors.general}
-          </div>
+          <div className="p-3 rounded-lg border text-sm">{errors.general}</div>
         )}
 
         <div className="grid grid-cols-1 gap-4">
@@ -716,7 +714,7 @@ const RegisterModal: React.FC = () => {
           {t('register_modal_login_text')}{' '}
           <button
             onClick={switchToLogin}
-            className="text-brand-primary hover:text-ouro-texto font-medium transition-colors"
+            className="text-ouro-texto font-medium transition-colors"
             disabled={isLoading || isGoogleLoading}
           >
             {t('register_modal_login_link')}

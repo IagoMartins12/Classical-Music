@@ -270,15 +270,15 @@ export default function ShareReportModal({
                     key={option.key}
                     className={`relative p-4 border rounded-lg cursor-pointer transition-all ${
                       isSelected
-                        ? 'border-ouro bg-ouro/10'
-                        : 'border-theme-secondary hover:border-linha bg-theme-elevated'
+                        ? ''
+                        : 'border-theme-secondary bg-theme-elevated'
                     }`}
                   >
                     <div className="flex items-start space-x-3">
                       <div
                         className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                           isSelected
-                            ? 'bg-ouro text-sobre-ouro'
+                            ? 'text-white'
                             : 'bg-theme-secondary text-theme-tertiary'
                         }`}
                       >
@@ -296,9 +296,7 @@ export default function ShareReportModal({
 
                       <div
                         className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                          isSelected
-                            ? 'bg-ouro border-ouro'
-                            : 'border-theme-secondary'
+                          isSelected ? '' : 'border-theme-secondary'
                         }`}
                       >
                         {isSelected && (
@@ -348,7 +346,7 @@ export default function ShareReportModal({
                   }
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-theme-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary"></div>
+                <div className="w-11 h-6 bg-theme-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
               </label>
             </div>
 
@@ -409,7 +407,7 @@ export default function ShareReportModal({
         </div>
 
         {selectedCount === 0 && (
-          <div className="text-center text-erro text-sm mt-2">
+          <div className="text-center text-sm mt-2">
             Selecione pelo menos uma seção para compartilhar
           </div>
         )}

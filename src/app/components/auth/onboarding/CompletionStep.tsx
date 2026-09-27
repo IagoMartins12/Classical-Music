@@ -65,7 +65,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
       {/* Success Icon */}
       <div className="mb-8">
         <div className="flex justify-center space-x-2 mb-6">
-          <div className="w-20 h-20 fill-ouro rounded-full bg-ok flex items-center justify-center">
+          <div className="w-20 h-20 rounded-full bg-green-400 flex items-center justify-center">
             <PiCheck className="w-10 h-10 text-white" />
           </div>
         </div>
@@ -88,8 +88,8 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {getPersonalizedFeatures().map((feature, index) => (
             <div key={index} className="flex items-start space-x-3">
-              <div className="w-5 h-5 bg-ok/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <PiCheck className="w-3 h-3 text-ok" />
+              <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <PiCheck className="w-3 h-3" />
               </div>
               <Text papel="rotulo" tom="suave">
                 {feature}
@@ -107,7 +107,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
           <Card nivel={2} densidade="compacta">
-            <PiMusicNotes className="w-8 h-8 text-aviso mx-auto mb-3" />
+            <PiMusicNotes className="w-8 h-8 mx-auto mb-3" />
             <h5 className="font-medium text-theme-primary mb-2">
               {t('completion_step_explore_title')}
             </h5>
@@ -117,7 +117,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
           </Card>
 
           <Card nivel={2} densidade="compacta">
-            <GiGrandPiano className="w-8 h-8 text-ouro-texto mx-auto mb-3" />
+            <GiGrandPiano className="w-8 h-8 mx-auto mb-3" />
             <h5 className="font-medium text-theme-primary mb-2">
               {t('completion_step_lists_title')}
             </h5>
@@ -127,7 +127,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
           </Card>
 
           <Card nivel={2} densidade="compacta">
-            <PiArrowRight className="w-8 h-8 text-ok mx-auto mb-3" />
+            <PiArrowRight className="w-8 h-8 mx-auto mb-3" />
             <h5 className="font-medium text-theme-primary mb-2">
               {t('completion_step_study_title')}
             </h5>

@@ -83,7 +83,7 @@ export default function AnnotationsStatsWidget({
         className={`classical-card p-6 ${className} mt-4`}
       >
         <div className="text-center">
-          <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <PiChatCenteredText className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl font-bold text-theme-primary mb-2">
@@ -139,7 +139,7 @@ export default function AnnotationsStatsWidget({
         {nextAchievements.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <Inline gap={3} className="mb-4">
-              <PiTarget className="w-5 h-5 text-ouro-texto" />
+              <PiTarget className="w-5 h-5" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_next_achievements')}
               </h4>
@@ -199,7 +199,7 @@ export default function AnnotationsStatsWidget({
         {smartCTAs.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <Inline gap={3} className="mb-4">
-              <PiLightning className="w-5 h-5 text-brand-primary" />
+              <PiLightning className="w-5 h-5 text-ouro-texto" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_continue_contributing')}
               </h4>
@@ -211,8 +211,8 @@ export default function AnnotationsStatsWidget({
                   href={cta.url}
                   className={`p-4 rounded-xl border-2 transition-all hover:scale-105 ${
                     cta.priority === 'high'
-                      ? 'fill-ouro text-sobre-ouro border-transparent'
-                      : 'bg-theme-elevated border-theme-primary hover:border-ouro'
+                      ? 'text-white border-transparent'
+                      : 'bg-theme-elevated border-theme-primary'
                   }`}
                 >
                   <div className="font-medium mb-1">{cta.title}</div>
@@ -227,9 +227,7 @@ export default function AnnotationsStatsWidget({
                   </div>
                   <div
                     className={`text-sm font-medium flex items-center space-x-1 ${
-                      cta.priority === 'high'
-                        ? 'text-white'
-                        : 'text-brand-primary'
+                      cta.priority === 'high' ? 'text-white' : 'text-ouro-texto'
                     }`}
                   >
                     <span>{cta.action}</span>
@@ -264,14 +262,14 @@ export default function AnnotationsStatsWidget({
         {/* Impact Stats */}
         <AnimatedCard hover="lift" className="classical-card p-6">
           <Inline gap={3} className="mb-4">
-            <PiUsers className="w-5 h-5 text-ok" />
+            <PiUsers className="w-5 h-5" />
             <h4 className="font-semibold text-theme-primary">
               {t('stats_widget_community_impact')}
             </h4>
           </Inline>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-ok">
+              <div className="text-2xl font-bold">
                 {stats.publicAnnotations}
               </div>
               <Text papel="rotulo" tom="suave" as="div">
@@ -279,7 +277,7 @@ export default function AnnotationsStatsWidget({
               </Text>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-aviso">
+              <div className="text-2xl font-bold">
                 {stats.verifiedAnnotations}
               </div>
               <Text papel="rotulo" tom="suave" as="div">
@@ -287,15 +285,13 @@ export default function AnnotationsStatsWidget({
               </Text>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-ouro-texto">
-                {stats.helpfulnessRate}%
-              </div>
+              <div className="text-2xl font-bold">{stats.helpfulnessRate}%</div>
               <Text papel="rotulo" tom="suave" as="div">
                 {t('stats_widget_helpful_rate')}
               </Text>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-atencao">
+              <div className="text-2xl font-bold text-amber-500">
                 {stats.highPerformingCount}
               </div>
               <Text papel="rotulo" tom="suave" as="div">

@@ -363,7 +363,7 @@ export function BlogHeader() {
             {/* Logo */}
             <Link href="/blog" className="flex items-center group">
               <div className="relative">
-                <GiGrandPiano className="w-8 h-8 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
+                <GiGrandPiano className="w-8 h-8 mr-3 text-ouro-texto icon-glow transition-all duration-300 group-hover:scale-110" />
               </div>
               <div className="">
                 <span className="text-xl font-bold text-gradient-brand gold-shine classical-title">
@@ -395,12 +395,8 @@ export function BlogHeader() {
                         href={href || '#'}
                         className={`
                           relative px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-1
-                          ${
-                            active
-                              ? 'text-brand-primary bg-ouro/10'
-                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
-                          }
-                          after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:fill-ouro after:transition-all after:duration-300 hover:after:w-full hover:after:left-0
+                          ${active ? 'text-ouro-texto' : 'text-theme-secondary'}
+                          after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:transition-all after:duration-300 hover:after:w-full hover:after:left-0
                           ${active ? 'after:w-full after:left-0' : ''}
                         `}
                       >
@@ -424,8 +420,8 @@ export function BlogHeader() {
                                   block p-3 rounded-lg transition-colors group
                                   ${
                                     pathname === item.href
-                                      ? 'bg-ouro/10 text-brand-primary'
-                                      : 'hover:bg-ouro/10'
+                                      ? 'text-ouro-texto'
+                                      : ''
                                   }
                                 `}
                                 onClick={() => setActiveSubmenu(null)}
@@ -435,8 +431,8 @@ export function BlogHeader() {
                                   font-medium transition-colors
                                   ${
                                     pathname === item.href
-                                      ? 'text-brand-primary'
-                                      : 'text-theme-primary group-hover:text-ouro-texto'
+                                      ? 'text-ouro-texto'
+                                      : 'text-theme-primary'
                                   }
                                 `}
                                 >
@@ -463,13 +459,9 @@ export function BlogHeader() {
                       href={href || '#'}
                       className={`
                         relative px-3 py-2 rounded-lg font-medium transition-all duration-300
-                        ${
-                          active
-                            ? 'text-brand-primary bg-ouro/10'
-                            : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
-                        }
+                        ${active ? 'text-ouro-texto' : 'text-theme-secondary'}
                         ${label === 'Opus Atlas' ? 'text-transparent' : ''}
-                        after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:fill-ouro after:transition-all after:duration-300 hover:after:w-full hover:after:left-0
+                        after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:transition-all after:duration-300 hover:after:w-full hover:after:left-0
                         ${active ? 'after:w-full after:left-0' : ''}
                       `}
                     >
@@ -489,10 +481,10 @@ export function BlogHeader() {
               {/* Search Button */}
               <button
                 onClick={() => setIsSearchModalOpen(true)}
-                className="w-11 h-10 p-1.5 rounded-xl bg-theme-elevated hover:bg-sup-1 transition-all group flex items-center justify-center"
+                className="w-11 h-10 p-1.5 rounded-xl bg-theme-elevated transition-all group flex items-center justify-center"
                 aria-label="Buscar (Ctrl+K)"
               >
-                <PiMagnifyingGlass className="w-4 h-4 text-theme-secondary group-hover:text-ouro-texto transition-colors" />
+                <PiMagnifyingGlass className="w-4 h-4 text-theme-secondary transition-colors" />
               </button>
 
               <ThemeToggle variant="navbar" className="hidden sm:block" />
@@ -504,7 +496,7 @@ export function BlogHeader() {
                     as="button"
                     gap={2}
                     onClick={toggleProfileMenu}
-                    className="p-2 rounded-lg hover:bg-ouro/10 transition-colors"
+                    className="p-2 rounded-lg transition-colors"
                   >
                     {user.image ? (
                       <Image
@@ -512,14 +504,14 @@ export function BlogHeader() {
                         width={32}
                         height={32}
                         alt={getUserDisplayName()}
-                        className="w-8 h-8 rounded-full object-cover border-2 border-ouro"
+                        className="w-8 h-8 rounded-full object-cover border-2"
                       />
                     ) : (
                       <Text
                         papel="rotulo"
                         tom="forte"
                         as="div"
-                        className="w-8 h-8 fill-ouro rounded-full flex items-center justify-center font-semibold"
+                        className="w-8 h-8 rounded-full flex items-center justify-center font-semibold"
                       >
                         {getUserInitials()}
                       </Text>
@@ -556,8 +548,8 @@ export function BlogHeader() {
                           flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                           ${
                             pathname === '/profile'
-                              ? 'text-brand-primary bg-ouro/10'
-                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                              ? 'text-ouro-texto'
+                              : 'text-theme-secondary'
                           }
                         `}
                         onClick={() => setIsProfileOpen(false)}
@@ -573,8 +565,8 @@ export function BlogHeader() {
                           flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                           ${
                             pathname === '/blog/liked'
-                              ? 'text-brand-primary bg-ouro/10'
-                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                              ? 'text-ouro-texto'
+                              : 'text-theme-secondary'
                           }
                         `}
                         onClick={() => setIsProfileOpen(false)}
@@ -590,8 +582,8 @@ export function BlogHeader() {
                           flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                           ${
                             pathname === '/blog/bookmarks'
-                              ? 'text-brand-primary bg-ouro/10'
-                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                              ? 'text-ouro-texto'
+                              : 'text-theme-secondary'
                           }
                         `}
                         onClick={() => setIsProfileOpen(false)}
@@ -610,8 +602,8 @@ export function BlogHeader() {
                               flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                               ${
                                 pathname === '/blog/admin/articles/create'
-                                  ? 'text-brand-primary bg-ouro/10'
-                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                                  ? 'text-ouro-texto'
+                                  : 'text-theme-secondary'
                               }
                             `}
                             onClick={() => setIsProfileOpen(false)}
@@ -626,8 +618,8 @@ export function BlogHeader() {
                               flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                               ${
                                 pathname === '/blog/admin/articles'
-                                  ? 'text-brand-primary bg-ouro/10'
-                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                                  ? 'text-ouro-texto'
+                                  : 'text-theme-secondary'
                               }
                             `}
                             onClick={() => setIsProfileOpen(false)}
@@ -642,8 +634,8 @@ export function BlogHeader() {
                               flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                               ${
                                 pathname === '/blog/admin/moderation'
-                                  ? 'text-brand-primary bg-ouro/10'
-                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                                  ? 'text-ouro-texto'
+                                  : 'text-theme-secondary'
                               }
                             `}
                             onClick={() => setIsProfileOpen(false)}
@@ -661,8 +653,8 @@ export function BlogHeader() {
                             flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                             ${
                               pathname === '/admin'
-                                ? 'text-brand-primary bg-ouro/10'
-                                : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                                ? 'text-ouro-texto'
+                                : 'text-theme-secondary'
                             }
                           `}
                           onClick={() => setIsProfileOpen(false)}
@@ -678,7 +670,7 @@ export function BlogHeader() {
                         as="button"
                         gap={2}
                         onClick={handleLogout}
-                        className="w-full px-3 py-2 text-sm text-theme-secondary hover:text-erro hover:bg-ouro/10 rounded-lg transition-all"
+                        className="w-full px-3 py-2 text-sm text-theme-secondary rounded-lg transition-all"
                       >
                         <PiSignOut className="w-4 h-4" />
                         <span>Sair</span>
@@ -707,7 +699,7 @@ export function BlogHeader() {
               <button
                 ref={mobileButtonRef}
                 onClick={handleMobileButtonClick}
-                className="lg:hidden p-2 text-theme-secondary hover:text-ouro-texto transition-colors"
+                className="lg:hidden p-2 text-theme-secondary transition-colors"
                 aria-label="Menu"
               >
                 {isMenuOpen ? (
@@ -747,8 +739,8 @@ export function BlogHeader() {
                               flex-1 block px-4 py-3 rounded-lg font-medium transition-all
                               ${
                                 active
-                                  ? 'text-brand-primary bg-ouro/10'
-                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                                  ? 'text-ouro-texto'
+                                  : 'text-theme-secondary'
                               }
                             `}
                               onClick={handleMobileNavClick}
@@ -758,7 +750,7 @@ export function BlogHeader() {
                             <button
                               onClick={() => goToSubmenuView(label, submenu)}
                               aria-label={`Abrir ${label}`}
-                              className="ml-2 p-2 text-theme-tertiary hover:text-ouro-texto transition-colors"
+                              className="ml-2 p-2 text-theme-tertiary transition-colors"
                             >
                               <PiCaretRight className="w-5 h-5" />
                             </button>
@@ -771,8 +763,8 @@ export function BlogHeader() {
                             ${label === 'Opus Atlas' ? 'text-transparent' : ''}
                             ${
                               active
-                                ? 'text-brand-primary bg-ouro/10'
-                                : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                                ? 'text-ouro-texto'
+                                : 'text-theme-secondary'
                             }
                           `}
                             onClick={handleMobileNavClick}
@@ -812,13 +804,13 @@ export function BlogHeader() {
                                   width={32}
                                   height={32}
                                   alt={getUserDisplayName()}
-                                  className="w-8 h-8 rounded-full object-cover border-2 border-ouro"
+                                  className="w-8 h-8 rounded-full object-cover border-2"
                                 />
                               ) : (
                                 <Text
                                   papel="rotulo"
                                   tom="forte"
-                                  className="w-8 h-8 fill-ouro rounded-full flex items-center justify-center font-semibold"
+                                  className="w-8 h-8 rounded-full flex items-center justify-center font-semibold"
                                 >
                                   {getUserInitials()}
                                 </Text>
@@ -852,7 +844,7 @@ export function BlogHeader() {
                         <li>
                           <Link
                             href="/login"
-                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10 transition-all"
+                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-theme-secondary transition-all"
                             onClick={handleMobileNavClick}
                           >
                             Fazer Login
@@ -861,7 +853,7 @@ export function BlogHeader() {
                         <li>
                           <Link
                             href="/register"
-                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-brand-primary bg-ouro/10 hover:bg-opacity-20 transition-all"
+                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-ouro-texto transition-all"
                             onClick={handleMobileNavClick}
                           >
                             Criar Conta
@@ -897,7 +889,7 @@ export function BlogHeader() {
                         <button
                           onClick={goBackToMain}
                           aria-label="Voltar ao menu"
-                          className="p-2 mr-2 text-theme-tertiary hover:text-ouro-texto transition-colors"
+                          className="p-2 mr-2 text-theme-tertiary transition-colors"
                         >
                           <PiCaretLeft className="w-5 h-5" />
                         </button>
@@ -906,20 +898,17 @@ export function BlogHeader() {
                         </h3>
                       </div>
 
-                      <Inline
-                        gap={3}
-                        className="px-4 py-3 bg-ouro/10 rounded-lg"
-                      >
+                      <Inline gap={3} className="px-4 py-3 rounded-lg">
                         {user.image ? (
                           <Image
                             src={user.image}
                             width={40}
                             height={40}
                             alt={getUserDisplayName()}
-                            className="w-10 h-10 rounded-full object-cover border-2 border-ouro"
+                            className="w-10 h-10 rounded-full object-cover border-2"
                           />
                         ) : (
-                          <div className="w-10 h-10 fill-ouro rounded-full flex items-center justify-center text-theme-primary font-semibold">
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-theme-primary font-semibold">
                             {getUserInitials()}
                           </div>
                         )}
@@ -941,8 +930,8 @@ export function BlogHeader() {
                             flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                             ${
                               pathname === '/profile'
-                                ? 'text-brand-primary bg-ouro/10'
-                                : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                                ? 'text-ouro-texto'
+                                : 'text-theme-secondary'
                             }
                           `}
                             onClick={handleMobileNavClick}
@@ -960,8 +949,8 @@ export function BlogHeader() {
                             flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                             ${
                               pathname === '/blog/liked'
-                                ? 'text-brand-primary bg-ouro/10'
-                                : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                                ? 'text-ouro-texto'
+                                : 'text-theme-secondary'
                             }
                           `}
                             onClick={handleMobileNavClick}
@@ -979,8 +968,8 @@ export function BlogHeader() {
                             flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                             ${
                               pathname === '/blog/bookmarks'
-                                ? 'text-brand-primary bg-ouro/10'
-                                : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                                ? 'text-ouro-texto'
+                                : 'text-theme-secondary'
                             }
                           `}
                             onClick={handleMobileNavClick}
@@ -1000,8 +989,8 @@ export function BlogHeader() {
                                 flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                                 ${
                                   pathname === '/blog/admin/articles/create'
-                                    ? 'text-brand-primary bg-ouro/10'
-                                    : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                                    ? 'text-ouro-texto'
+                                    : 'text-theme-secondary'
                                 }
                               `}
                                 onClick={handleMobileNavClick}
@@ -1018,8 +1007,8 @@ export function BlogHeader() {
                                 flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                                 ${
                                   pathname === '/blog/articles'
-                                    ? 'text-brand-primary bg-ouro/10'
-                                    : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                                    ? 'text-ouro-texto'
+                                    : 'text-theme-secondary'
                                 }
                               `}
                                 onClick={handleMobileNavClick}
@@ -1036,8 +1025,8 @@ export function BlogHeader() {
                                 flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                                 ${
                                   pathname === '/blog/admin/moderation'
-                                    ? 'text-brand-primary bg-ouro/10'
-                                    : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                                    ? 'text-ouro-texto'
+                                    : 'text-theme-secondary'
                                 }
                               `}
                                 onClick={handleMobileNavClick}
@@ -1054,7 +1043,7 @@ export function BlogHeader() {
                             as="button"
                             gap={3}
                             onClick={handleLogout}
-                            className="w-full px-4 py-3 text-erro hover:bg-ouro/10 rounded-lg transition-all"
+                            className="w-full px-4 py-3 rounded-lg transition-all"
                           >
                             <PiSignOut className="w-5 h-5" />
                             <span>Sair</span>
@@ -1077,7 +1066,7 @@ export function BlogHeader() {
                       <button
                         onClick={goBackToMain}
                         aria-label="Voltar ao menu"
-                        className="p-2 mr-2 text-theme-tertiary hover:text-ouro-texto transition-colors"
+                        className="p-2 mr-2 text-theme-tertiary transition-colors"
                       >
                         <PiCaretLeft className="w-5 h-5" />
                       </button>
@@ -1095,8 +1084,8 @@ export function BlogHeader() {
                             block px-4 py-3 rounded-lg transition-all
                             ${
                               pathname === item.href
-                                ? 'text-brand-primary bg-ouro/10'
-                                : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
+                                ? 'text-ouro-texto'
+                                : 'text-theme-secondary'
                             }
                           `}
                             onClick={handleMobileNavClick}

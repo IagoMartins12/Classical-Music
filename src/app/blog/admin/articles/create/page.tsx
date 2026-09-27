@@ -52,7 +52,7 @@ export default function CreateArticlePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ouro"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2"></div>
       </div>
     );
   }
@@ -64,7 +64,7 @@ export default function CreateArticlePage() {
         <div className="mb-8">
           <Link
             href="/blog/admin/articles"
-            className="inline-flex items-center text-sm text-theme-secondary hover:text-ouro-texto mb-4 transition-colors"
+            className="inline-flex items-center text-sm text-theme-secondary mb-4 transition-colors"
           >
             <PiArrowLeft className="w-4 h-4 mr-2" />
             Voltar para artigos

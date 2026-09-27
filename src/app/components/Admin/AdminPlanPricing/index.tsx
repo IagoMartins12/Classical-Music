@@ -50,10 +50,10 @@ const PLAN_ICONS = {
 };
 
 const PLAN_COLORS = {
-  FREE: 'bg-aviso',
-  PLUS: 'bg-aviso',
-  MENTOR: 'fill-ouro',
-  MAESTRO: 'bg-atencao',
+  FREE: 'from-blue-500 to-blue-600',
+  PLUS: 'from-blue-500 to-blue-600',
+  MENTOR: 'from-purple-500 to-purple-600',
+  MAESTRO: 'from-amber-500 to-amber-600',
 };
 
 export default function AdminPlanPricingPage() {
@@ -135,7 +135,7 @@ export default function AdminPlanPricingPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <PiArrowsClockwise className="w-8 h-8 animate-spin text-aviso" />
+        <PiArrowsClockwise className="w-8 h-8 animate-spin text-blue-500" />
       </div>
     );
   }
@@ -148,7 +148,7 @@ export default function AdminPlanPricingPage() {
       <AnimatedItem direction="up" springType="gentle">
         <div className="text-center mb-8 py-12">
           <div className="flex items-center justify-center mb-6">
-            <div className="w-16 h-16 bg-aviso rounded-3xl flex items-center justify-center shadow-theme-glow">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
               <PiCurrencyDollar className="w-8 h-8 text-theme-primary" />
             </div>
           </div>
@@ -166,8 +166,8 @@ export default function AdminPlanPricingPage() {
         <AnimatedItem direction="up" delay={100}>
           <div className="classical-card rounded-xl p-12 text-center">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-20 h-20 bg-aviso rounded-full flex items-center justify-center">
-                <PiDatabase className="w-10 h-10 text-aviso" />
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
+                <PiDatabase className="w-10 h-10 text-blue-500" />
               </div>
             </div>
             <h3 className="text-2xl font-bold mb-3">Nenhum plano encontrado</h3>
@@ -191,14 +191,14 @@ export default function AdminPlanPricingPage() {
             </Button>
 
             {/* Info sobre os planos que serão criados */}
-            <div className="mt-8 bg-aviso/10 border border-aviso/30 rounded-lg p-4 max-w-2xl mx-auto text-left">
+            <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto text-left">
               <div className="flex gap-3">
-                <PiInfo className="w-5 h-5 text-aviso flex-shrink-0 mt-0.5" />
-                <div className="text-sm text-aviso">
+                <PiInfo className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                <div className="text-sm text-blue-900">
                   <p className="font-semibold mb-2">
                     Os seguintes planos serão criados:
                   </p>
-                  <ul className="space-y-2 text-aviso">
+                  <ul className="space-y-2 text-blue-800">
                     <li>
                       <strong>PLUS:</strong> R$ 29/mês (7 dias de trial)
                     </li>
@@ -266,7 +266,7 @@ export default function AdminPlanPricingPage() {
                             monthlyPrice: parseFloat(e.target.value) || 0,
                           })
                         }
-                        className="w-full !px-4 py-2 border rounded-lg focus:ring-2 focus:ring-aviso"
+                        className="w-full !px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                         step="0.01"
                       />
                     ) : (
@@ -304,7 +304,7 @@ export default function AdminPlanPricingPage() {
                             step="1"
                           />
                         ) : (
-                          <span className="text-sm font-bold text-ok">
+                          <span className="text-sm font-bold text-green-600">
                             -{plan.quarterlyDiscount}%
                           </span>
                         )}
@@ -341,7 +341,7 @@ export default function AdminPlanPricingPage() {
                             step="1"
                           />
                         ) : (
-                          <span className="text-sm font-bold text-ok">
+                          <span className="text-sm font-bold text-green-600">
                             -{plan.biannualDiscount}%
                           </span>
                         )}
@@ -377,7 +377,7 @@ export default function AdminPlanPricingPage() {
                             step="1"
                           />
                         ) : (
-                          <span className="text-sm font-bold text-ok">
+                          <span className="text-sm font-bold text-green-600">
                             -{plan.yearlyDiscount}%
                           </span>
                         )}
@@ -407,7 +407,7 @@ export default function AdminPlanPricingPage() {
                             trialDays: parseInt(e.target.value) || 0,
                           })
                         }
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-aviso"
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                   )}
@@ -455,11 +455,11 @@ export default function AdminPlanPricingPage() {
 
       {/* Info Box */}
       {activePlans.length > 0 && (
-        <div className="bg-aviso/10 border border-aviso/30 rounded-xl p-4 flex gap-3">
-          <PiInfo className="w-5 h-5 text-aviso flex-shrink-0 mt-0.5" />
-          <Stack gap={1} className="text-sm text-aviso">
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex gap-3">
+          <PiInfo className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+          <Stack gap={1} className="text-sm text-blue-900">
             <p className="font-semibold">Como funciona:</p>
-            <ul className="list-disc list-inside space-y-1 text-aviso">
+            <ul className="list-disc list-inside space-y-1 text-blue-800">
               <li>
                 O <strong>preço mensal</strong> é a base de cálculo
               </li>

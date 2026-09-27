@@ -98,8 +98,8 @@ const ConfirmDeleteModal = ({
         className="relative bg-theme-primary rounded-xl shadow-xl max-w-md w-full p-6 border border-theme-secondary"
       >
         <Inline gap={3} className="mb-4">
-          <div className="w-12 h-12 bg-erro/10 rounded-xl flex items-center justify-center">
-            <PiWarning className="w-6 h-6 text-erro" />
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+            <PiWarning className="w-6 h-6" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-theme-primary">
@@ -123,7 +123,7 @@ const ConfirmDeleteModal = ({
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary hover:bg-sup-1 transition-colors disabled:opacity-50"
+            className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary transition-colors disabled:opacity-50"
           >
             {t('cancel_button')}
           </button>
@@ -132,7 +132,7 @@ const ConfirmDeleteModal = ({
             gap={2}
             onClick={onConfirm}
             disabled={isLoading}
-            className="px-4 py-2 bg-erro text-white rounded-lg hover:bg-erro transition-colors disabled:opacity-50"
+            className="px-4 py-2 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50"
           >
             {isLoading ? (
               <>
@@ -165,9 +165,9 @@ const getDifficultyLabel = (difficulty: DifficultyLevel, t: any) => {
 
 const getDifficultyColor = (difficulty?: DifficultyLevel) => {
   const colors = {
-    BEGINNER: 'text-ok border-ok/30 bg-ok/10',
-    INTERMEDIATE: 'text-aviso border-aviso/30 bg-aviso/10',
-    ADVANCED: 'text-erro border-erro/30 bg-erro/10',
+    BEGINNER: '',
+    INTERMEDIATE: '',
+    ADVANCED: '',
   };
   return difficulty
     ? colors[difficulty]
@@ -250,9 +250,7 @@ export const LearningCard = ({
   if (viewMode === 'list') {
     return (
       <>
-        <div
-          className={`classical-card p-6 group hover:shadow-[var(--sombra-2)] transition-all`}
-        >
+        <div className={`classical-card p-6 group transition-all`}>
           <Inline gap={6}>
             <div className="flex-1">
               <Inline gap={4}>
@@ -264,10 +262,10 @@ export const LearningCard = ({
                     {/* ✅ INDICADOR VISUAL DE PARTITURA VINCULADA */}
                     {hasSelectedScore && (
                       <div
-                        className="w-5 h-5 bg-ouro/20 border border-ouro/40 rounded-full flex items-center justify-center"
+                        className="w-5 h-5 border rounded-full flex items-center justify-center"
                         title={t('has_linked_score')}
                       >
-                        <PiFileText className="w-3 h-3 text-ouro-texto" />
+                        <PiFileText className="w-3 h-3" />
                       </div>
                     )}
                   </Inline>
@@ -308,9 +306,9 @@ export const LearningCard = ({
                             ? wantToLearnItem.priority
                             : learnedItem.mastery)
                             ? `fill-current ${
-                                isWantToLearn ? 'text-atencao' : 'text-ok'
+                                isWantToLearn ? 'text-yellow-400' : ''
                               }`
-                            : 'text-texto-fraco/30'
+                            : ''
                         }`}
                       />
                     ))}
@@ -340,7 +338,7 @@ export const LearningCard = ({
                           />
                         )}
                         {wantToLearnItem.context && (
-                          <span className="text-xs bg-aviso/10 px-2 py-1 rounded text-aviso">
+                          <span className="text-xs px-2 py-1 rounded">
                             {wantToLearnItem.context}
                           </span>
                         )}
@@ -349,13 +347,13 @@ export const LearningCard = ({
                       <>
                         {learnedItem.wouldRecommend && (
                           <PiUsers
-                            className="w-4 h-4 text-ok"
+                            className="w-4 h-4"
                             title={t('recommends')}
                           />
                         )}
                         {learnedItem.publicPerformance && (
                           <PiPlay
-                            className="w-4 h-4 text-aviso"
+                            className="w-4 h-4"
                             title={t('public_performance')}
                           />
                         )}
@@ -383,7 +381,7 @@ export const LearningCard = ({
                       <a
                         href={item.selectedWorkScore?.downloadUrl}
                         target="_blank"
-                        className="w-8 h-8 cursor-pointer bg-theme-secondary hover:bg-ouro/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-ouro-texto transition-all"
+                        className="w-8 h-8 cursor-pointer bg-theme-secondary rounded-lg flex items-center justify-center text-theme-tertiary transition-all"
                         title={`${t('download_score')} ${
                           item.selectedWorkScore?.title
                         }`}
@@ -395,14 +393,14 @@ export const LearningCard = ({
 
                   <button
                     onClick={onEdit}
-                    className="w-8 h-8 bg-theme-secondary hover:bg-ouro/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-ouro-texto transition-all"
+                    className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center text-theme-tertiary transition-all"
                     title={t('edit_button')}
                   >
                     <PiPencilLine className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setShowDeleteModal(true)}
-                    className="w-8 h-8 bg-theme-secondary hover:bg-erro/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-erro transition-all"
+                    className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center text-theme-tertiary transition-all"
                     title={t('remove_button')}
                   >
                     <PiX className="w-4 h-4" />
@@ -413,7 +411,7 @@ export const LearningCard = ({
                       className="w-6 h-6 flex items-center justify-center"
                       title={t('has_notes')}
                     >
-                      <PiBookOpen className="w-3 h-3 text-ouro-texto" />
+                      <PiBookOpen className="w-3 h-3" />
                     </div>
                   )}
                 </div>
@@ -436,14 +434,12 @@ export const LearningCard = ({
 
   return (
     <>
-      <div
-        className={`classical-card p-6 group hover:shadow-[var(--sombra-2)] transition-all`}
-      >
+      <div className={`classical-card p-6 group transition-all`}>
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <Inline gap={2} className="mb-2">
-              <h3 className="font-bold text-theme-primary group-hover:text-ouro-texto transition-colors classical-title">
+              <h3 className="font-bold text-theme-primary transition-colors classical-title">
                 {item.work?.title}
               </h3>
               {/* ✅ INDICADOR VISUAL DE PARTITURA VINCULADA */}
@@ -452,7 +448,7 @@ export const LearningCard = ({
                   className="w-6 h-6 b rounded-lg flex items-center justify-center"
                   title={t('has_linked_score')}
                 >
-                  <PiMusicNotes className="w-3 h-3 text-ouro-texto" />
+                  <PiMusicNotes className="w-3 h-3" />
                 </div>
               )}
             </Inline>
@@ -474,7 +470,7 @@ export const LearningCard = ({
                     e.stopPropagation();
                     handleScoreDownload(item, t);
                   }}
-                  className="w-8 h-8 bg-theme-secondary hover:bg-ouro/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-ouro-texto transition-all"
+                  className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center text-theme-tertiary transition-all"
                   title={`${t('download_score')} ${
                     item.selectedWorkScore?.title
                   }`}
@@ -486,14 +482,14 @@ export const LearningCard = ({
 
             <button
               onClick={onEdit}
-              className="w-8 h-8 bg-theme-secondary hover:bg-ouro/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-ouro-texto transition-all"
+              className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center text-theme-tertiary transition-all"
               title={t('edit_button')}
             >
               <PiPencilLine className="w-4 h-4" />
             </button>
             <button
               onClick={() => setShowDeleteModal(true)}
-              className="w-8 h-8 bg-theme-secondary hover:bg-erro/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-erro transition-all"
+              className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center text-theme-tertiary transition-all"
               title={t('remove_button')}
             >
               <PiX className="w-4 h-4" />
@@ -505,8 +501,8 @@ export const LearningCard = ({
         {hasSelectedScore && item.selectedWorkScore && (
           <div className="mb-4 p-3 classical-card-simple rounded-xl">
             <Inline gap={3}>
-              <div className="w-8 h-8 bg-ouro/20 rounded-lg flex items-center justify-center">
-                <PiFileText className="w-4 h-4 text-ouro-texto" />
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                <PiFileText className="w-4 h-4" />
               </div>
               <div className="flex-1">
                 <h4 className="text-sm font-semibold text-theme-primary">
@@ -550,13 +546,10 @@ export const LearningCard = ({
                 : learnedItem.mastery) ? (
                 <PiStarFill
                   key={i}
-                  className="w-4 h-4 transition-colors text-atencao"
+                  className="w-4 h-4 transition-colors text-yellow-400"
                 />
               ) : (
-                <PiStar
-                  key={i}
-                  className="w-4 h-4 transition-colors text-texto-fraco/30"
-                />
+                <PiStar key={i} className="w-4 h-4 transition-colors" />
               )
             )}
           </Inline>
@@ -610,10 +603,10 @@ export const LearningCard = ({
               {wantToLearnItem.motivation && (
                 <Stack
                   gap={1}
-                  className="border bg-aviso/10 rounded-lg p-3 border-aviso/40"
+                  className="bg-theme-secondary rounded-lg p-3 border-l-4"
                 >
                   <Inline gap={2}>
-                    <PiHeart className="w-4 h-4 text-aviso" />
+                    <PiHeart className="w-4 h-4" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('motivation_section')}
                     </Text>
@@ -627,10 +620,10 @@ export const LearningCard = ({
               {wantToLearnItem.notes && (
                 <Stack
                   gap={1}
-                  className="border bg-ouro/10 rounded-lg p-3 border-ouro/40"
+                  className="bg-theme-secondary rounded-lg p-3 border-l-4"
                 >
                   <Inline gap={2}>
-                    <PiBookOpen className="w-4 h-4 text-ouro-texto" />
+                    <PiBookOpen className="w-4 h-4" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('notes_section')}
                     </Text>
@@ -677,13 +670,13 @@ export const LearningCard = ({
 
               <Inline gap={4} className="text-sm">
                 {learnedItem.wouldRecommend && (
-                  <Inline as="span" gap={1} className="text-ok">
+                  <Inline as="span" gap={1} className="">
                     <PiUsers className="w-4 h-4" />
                     <span>{t('recommends')}</span>
                   </Inline>
                 )}
                 {learnedItem.publicPerformance && (
-                  <Inline as="span" gap={1} className="text-aviso">
+                  <Inline as="span" gap={1} className="">
                     <PiPlay className="w-4 h-4" />
                     <span>{t('public_performance')}</span>
                   </Inline>
@@ -693,10 +686,10 @@ export const LearningCard = ({
               {learnedItem.technicalChallenges && (
                 <Stack
                   gap={1}
-                  className="border bg-erro/10 rounded-lg p-3 border-erro/40"
+                  className="bg-theme-secondary rounded-lg p-3 border-l-4"
                 >
                   <Inline gap={2}>
-                    <PiTrendUp className="w-4 h-4 text-erro" />
+                    <PiTrendUp className="w-4 h-4" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('technical_challenges')}
                     </Text>
@@ -715,10 +708,10 @@ export const LearningCard = ({
               {learnedItem.musicalInsights && (
                 <Stack
                   gap={1}
-                  className="border bg-ok/10 rounded-lg p-3 border-ok/40"
+                  className="bg-theme-secondary rounded-lg p-3 border-l-4"
                 >
                   <Inline gap={2}>
-                    <PiMedal className="w-4 h-4 text-ok" />
+                    <PiMedal className="w-4 h-4" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('musical_insights')}
                     </Text>
@@ -737,10 +730,10 @@ export const LearningCard = ({
               {learnedItem.notes && (
                 <Stack
                   gap={1}
-                  className="border bg-ouro/10 rounded-lg p-3 border-ouro/40"
+                  className="bg-theme-secondary rounded-lg p-3 border-l-4"
                 >
                   <Inline gap={2}>
-                    <PiBookOpen className="w-4 h-4 text-ouro-texto" />
+                    <PiBookOpen className="w-4 h-4" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('notes_section')}
                     </Text>
@@ -770,7 +763,7 @@ export const LearningCard = ({
             <AnimatedItem hover="scale">
               <Link
                 href={`/works/${item.workId}`}
-                className="text-brand-primary hover:text-ouro-texto text-sm font-medium transition-colors"
+                className="text-ouro-texto text-sm font-medium transition-colors"
               >
                 {t('view_work')} →
               </Link>

@@ -20,7 +20,7 @@ export default function AuthCheck({ title }: AuthCheckProps) {
   return (
     <div className=" min-h-[70vh] flex items-center justify-center">
       <Card densidade="larga" className="text-center max-w-md">
-        <PiHeart className="w-16 h-16 text-brand-primary mx-auto mb-4" />
+        <PiHeart className="w-16 h-16 text-ouro-texto mx-auto mb-4" />
         <h1 className="text-2xl font-bold text-theme-primary mb-2">
           Acesso Necessário
         </h1>

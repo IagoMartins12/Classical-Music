@@ -30,19 +30,19 @@ export default function InstrumentsLoading() {
             <div className="text-center space-y-8">
               {/* Floating Icons Skeleton */}
               <Inline gap={6} className="justify-center mb-8">
-                <div className="w-16 h-16 bg-ouro/10 rounded-2xl animate-pulse"></div>
-                <div className="w-20 h-20 bg-ouro/10 rounded-2xl animate-pulse"></div>
-                <div className="w-16 h-16 bg-ouro/10 rounded-2xl animate-pulse"></div>
+                <div className="w-16 h-16 rounded-2xl animate-pulse"></div>
+                <div className="w-20 h-20 rounded-2xl animate-pulse"></div>
+                <div className="w-16 h-16 rounded-2xl animate-pulse"></div>
               </Inline>
 
               {/* Title Skeleton */}
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <div className="h-16 bg-ouro/10 rounded-2xl max-w-2xl mx-auto animate-shimmer"></div>
-                  <div className="h-12 bg-ouro/10 rounded-xl max-w-lg mx-auto animate-shimmer"></div>
+                  <div className="h-16 rounded-2xl max-w-2xl mx-auto animate-shimmer"></div>
+                  <div className="h-12 rounded-xl max-w-lg mx-auto animate-shimmer"></div>
                 </div>
-                <div className="h-6 bg-ouro/10 rounded-lg max-w-4xl mx-auto animate-shimmer"></div>
-                <div className="h-6 bg-ouro/10 rounded-lg max-w-3xl mx-auto animate-shimmer"></div>
+                <div className="h-6 rounded-lg max-w-4xl mx-auto animate-shimmer"></div>
+                <div className="h-6 rounded-lg max-w-3xl mx-auto animate-shimmer"></div>
               </div>
 
               {/* Stats Cards Skeleton */}
@@ -52,9 +52,9 @@ export default function InstrumentsLoading() {
                     key={i}
                     className="classical-card p-6 text-center animate-pulse"
                   >
-                    <div className="w-12 h-12 bg-interactive-hover rounded-xl mx-auto mb-4"></div>
-                    <div className="h-8 bg-interactive-hover rounded-lg mb-2 w-16 mx-auto"></div>
-                    <div className="h-4 bg-interactive-hover rounded w-24 mx-auto"></div>
+                    <div className="w-12 h-12 rounded-xl mx-auto mb-4"></div>
+                    <div className="h-8 rounded-lg mb-2 w-16 mx-auto"></div>
+                    <div className="h-4 rounded w-24 mx-auto"></div>
                   </div>
                 ))}
               </div> */}
@@ -71,35 +71,35 @@ export default function InstrumentsLoading() {
               className="classical-card relative overflow-hidden"
             >
               {/* Background decoration skeleton */}
-              <div className="absolute top-4 right-4 text-8xl text-ouro-texto/5">
-                <div className="w-16 h-16 bg-ouro/10 rounded-full animate-pulse"></div>
+              <div className="absolute top-4 right-4 text-8xl">
+                <div className="w-16 h-16 rounded-full animate-pulse"></div>
               </div>
 
               {/* Instrument Header Skeleton */}
               <div className="flex items-center justify-between p-8 relative z-10">
                 <Inline gap={6}>
                   {/* Icon skeleton */}
-                  <div className="w-20 h-20 bg-ouro/10 rounded-2xl animate-shimmer"></div>
+                  <div className="w-20 h-20 rounded-2xl animate-shimmer"></div>
 
                   {/* Text content skeleton */}
                   <div className="flex-1 space-y-3">
-                    <div className="h-10 bg-ouro/10 rounded-lg w-48 animate-shimmer"></div>
-                    <div className="h-5 bg-ouro/10 rounded w-64 animate-shimmer"></div>
-                    <div className="h-4 bg-ouro/10 rounded w-32 animate-shimmer"></div>
+                    <div className="h-10 rounded-lg w-48 animate-shimmer"></div>
+                    <div className="h-5 rounded w-64 animate-shimmer"></div>
+                    <div className="h-4 rounded w-32 animate-shimmer"></div>
                   </div>
                 </Inline>
 
                 {/* Stats skeleton */}
                 <Inline gap={6}>
                   <Stack gap={2} className="text-center">
-                    <div className="h-8 w-12 bg-ouro/10 rounded animate-shimmer"></div>
-                    <div className="h-3 w-8 bg-ouro/10 rounded animate-shimmer"></div>
+                    <div className="h-8 w-12 rounded animate-shimmer"></div>
+                    <div className="h-3 w-8 rounded animate-shimmer"></div>
                   </Stack>
                   {/* <div className="text-center space-y-2">
-                    <div className="h-8 w-12 bg-interactive-hover rounded animate-shimmer"></div>
-                    <div className="h-3 w-12 bg-interactive-hover rounded animate-shimmer"></div>
+                    <div className="h-8 w-12 rounded animate-shimmer"></div>
+                    <div className="h-3 w-12 rounded animate-shimmer"></div>
                   </div> */}
-                  <div className="w-8 h-8 bg-ouro/10 rounded-xl animate-pulse"></div>
+                  <div className="w-8 h-8 rounded-xl animate-pulse"></div>
                 </Inline>
               </div>
             </div>
@@ -108,17 +108,17 @@ export default function InstrumentsLoading() {
       </div>
 
       {/* Floating Elements */}
-      <div className="fixed top-20 left-4 w-2 h-2 bg-ouro/30 rounded-full animate-pulse z-20"></div>
+      <div className="fixed top-20 left-4 w-2 h-2 rounded-full animate-pulse z-20"></div>
       <div
-        className="fixed top-40 right-8 w-1.5 h-1.5 bg-ouro/40 rounded-full animate-pulse z-20"
+        className="fixed top-40 right-8 w-1.5 h-1.5 rounded-full animate-pulse z-20"
         style={{ animationDelay: '1s' }}
       ></div>
       <div
-        className="fixed bottom-32 left-8 w-1 h-1 bg-ouro/50 rounded-full animate-pulse z-20"
+        className="fixed bottom-32 left-8 w-1 h-1 rounded-full animate-pulse z-20"
         style={{ animationDelay: '2s' }}
       ></div>
       <div
-        className="fixed bottom-20 right-4 w-1.5 h-1.5 bg-aviso/30 rounded-full animate-pulse z-20"
+        className="fixed bottom-20 right-4 w-1.5 h-1.5 rounded-full animate-pulse z-20"
         style={{ animationDelay: '0.5s' }}
       ></div>
 
@@ -126,7 +126,7 @@ export default function InstrumentsLoading() {
       {/* <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-30">
         <div className="classical-card px-6 py-3">
           <div className="flex items-center space-x-3">
-            <div className="w-5 h-5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"></div>
             <span className="text-theme-secondary text-sm classical-caption">
               Carregando instrumentos ...
             </span>
@@ -201,7 +201,7 @@ import { Stack, Inline } from '@/app/components/ui/Layout';
 //       <div className="text-center">
 //         {/* Main Loading Animation */}
 //         <div className="relative mb-12 mx-auto w-fit animate-pulse">
-//           <div className="w-40 h-40 border border-amber-500/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+//           <div className="w-40 h-40 border-4 border-amber-500/20 rounded-full flex items-center justify-center backdrop-blur-sm">
 //             <div className="w-24 h-24 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full flex items-center justify-center animate-spin shadow-2xl">
 //               <PiMusicNotes className="w-12 h-12 text-gray-900" />
 //             </div>

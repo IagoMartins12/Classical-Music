@@ -628,7 +628,7 @@ interface LoadingSpinnerProps {
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = 'md',
-  color = 'border-ouro',
+  color = '',
   className = '',
 }) => {
   useEffect(() => {

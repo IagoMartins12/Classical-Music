@@ -123,7 +123,7 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
     <div className="mb-4">
       <button
         onClick={() => toggleSection(sectionKey)}
-        className="w-full flex items-center justify-between py-2 text-theme-primary font-medium hover:text-ouro-texto transition-colors"
+        className="w-full flex items-center justify-between py-2 text-theme-primary font-medium transition-colors"
       >
         <span>{title}</span>
         {expandedSections[sectionKey] ? (
@@ -155,11 +155,7 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
                 handleFilterChange('tipos', type.value, e.target.checked)
               }
             />
-            <Text
-              papel="rotulo"
-              tom="suave"
-              className="group-hover:text-texto transition-colors"
-            >
+            <Text papel="rotulo" tom="suave" className="transition-colors">
               {type.label}
             </Text>
           </Inline>
@@ -185,13 +181,9 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
                     e.target.checked
                   )
                 }
-                className="w-4 h-4 rounded border-linha text-brand-primary focus:ring-ouro"
+                className="w-4 h-4 rounded border-gray-300 text-ouro-texto"
               />
-              <Text
-                papel="rotulo"
-                tom="suave"
-                className="group-hover:text-texto transition-colors"
-              >
+              <Text papel="rotulo" tom="suave" className="transition-colors">
                 {category.icon} {category.name}
               </Text>
             </Inline>
@@ -214,12 +206,12 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
                 onChange={(e) =>
                   handleFilterChange('tags', tag.slug, e.target.checked)
                 }
-                className="w-4 h-4 rounded border-linha text-brand-primary focus:ring-ouro"
+                className="w-4 h-4 rounded border-gray-300 text-ouro-texto"
               />
               <Text
                 papel="rotulo"
                 tom="suave"
-                className="group-hover:text-texto transition-colors"
+                className="transition-colors"
                 style={{ color: tag.color || undefined }}
               >
                 #{tag.name}

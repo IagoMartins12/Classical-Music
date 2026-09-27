@@ -100,7 +100,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       disabled={disabled}
       className={`
         relative inline-flex h-6 w-11 items-center rounded-full transition-colors
-        ${checked ? 'bg-ouro' : 'bg-theme-secondary'}
+        ${checked ? '' : 'bg-theme-secondary'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
       `}
     >
@@ -144,7 +144,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
           <div className="flex items-center justify-between">
             <Inline gap={3}>
               {settings.profilePublic ? (
-                <PiEye className="w-5 h-5 text-brand-primary" />
+                <PiEye className="w-5 h-5 text-ouro-texto" />
               ) : (
                 <PiEyeSlash className="w-5 h-5 text-theme-tertiary" />
               )}
@@ -169,7 +169,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         <Card nivel={2} densidade="compacta">
           <div className="flex items-center justify-between">
             <Inline gap={3}>
-              <PiMapPin className="w-5 h-5 text-brand-primary" />
+              <PiMapPin className="w-5 h-5 text-ouro-texto" />
               <div>
                 <h4 className="font-medium text-theme-primary">
                   {t('privacy_show_location')}
@@ -198,7 +198,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         <Card nivel={2} densidade="compacta">
           <div className="flex items-center justify-between">
             <Inline gap={3}>
-              <PiEye className="w-5 h-5 text-brand-primary" />
+              <PiEye className="w-5 h-5 text-ouro-texto" />
               <div>
                 <h4 className="font-medium text-theme-primary">
                   {t('privacy_show_instruments')}
@@ -227,7 +227,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         <Card nivel={2} densidade="compacta">
           <div className="flex items-center justify-between">
             <Inline gap={3}>
-              <PiEye className="w-5 h-5 text-brand-primary" />
+              <PiEye className="w-5 h-5 text-ouro-texto" />
               <div>
                 <h4 className="font-medium text-theme-primary">
                   {t('privacy_show_activity')}
@@ -254,12 +254,8 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       </Stack>
 
       {/* Privacy Summary */}
-      <Card
-        nivel={2}
-        densidade="compacta"
-        className="bg-ouro/5 border border-ouro/30"
-      >
-        <h4 className="font-medium text-brand-primary mb-2">
+      <Card nivel={2} densidade="compacta" className="border">
+        <h4 className="font-medium text-ouro-texto mb-2">
           {t('privacy_summary')}
         </h4>
         <Text papel="rotulo" tom="suave" as="div" className="space-y-1">

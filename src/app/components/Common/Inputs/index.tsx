@@ -104,7 +104,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-theme-tertiary hover:text-ouro-texto transition-colors"
+                  className="text-theme-tertiary transition-colors"
                   tabIndex={-1}
                 >
                   {showPassword ? (

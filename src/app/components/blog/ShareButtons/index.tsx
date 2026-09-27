@@ -65,11 +65,11 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
               key={index}
               className="p-2 rounded-lg bg-theme-elevated opacity-50 animate-pulse"
             >
-              <div className="w-5 h-5 bg-sup-2/20 rounded" />
+              <div className="w-5 h-5 rounded" />
             </div>
           ))}
           <div className="p-2 rounded-lg bg-theme-elevated opacity-50 animate-pulse">
-            <div className="w-5 h-5 bg-sup-2/20 rounded" />
+            <div className="w-5 h-5 rounded" />
           </div>
         </div>
       </div>
@@ -142,7 +142,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded-lg bg-theme-elevated hover:bg-sup-1 transition-all group"
+            className="p-2 rounded-lg bg-theme-elevated transition-all group"
             title={`Compartilhar no ${link.name}`}
             style={
               {
@@ -151,7 +151,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
             }
           >
             <link.icon
-              className="w-5 h-5 text-theme-tertiary group-hover:text-ouro-texto transition-colors"
+              className="w-5 h-5 text-theme-tertiary transition-colors"
               style={
                 {
                   '--icon-color': link.color,
@@ -164,16 +164,16 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
         {/* Copy Link Button */}
         <button
           onClick={copyToClipboard}
-          className="p-2 rounded-lg bg-theme-elevated hover:bg-sup-1 transition-all group relative"
+          className="p-2 rounded-lg bg-theme-elevated transition-all group relative"
           title="Copiar link"
         >
           {copied ? (
-            <PiCheck className="w-5 h-5 text-ok" />
+            <PiCheck className="w-5 h-5 text-green-500" />
           ) : (
-            <PiLink className="w-5 h-5 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
+            <PiLink className="w-5 h-5 text-theme-tertiary transition-colors" />
           )}
           {copied && (
-            <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-ok text-white text-xs rounded whitespace-nowrap">
+            <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-green-500 text-white text-xs rounded whitespace-nowrap">
               Link copiado!
             </span>
           )}

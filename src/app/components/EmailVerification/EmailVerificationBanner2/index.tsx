@@ -87,20 +87,20 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
   // Set colors based on type
   switch (bannerType) {
     case 'warning':
-      bgColor = 'bg-atencao/10';
-      textColor = 'text-atencao';
-      borderColor = 'border-atencao/20';
+      bgColor = '';
+      textColor = '';
+      borderColor = '';
       break;
     case 'success':
-      bgColor = 'bg-ok/10';
-      textColor = 'text-ok';
-      borderColor = 'border-ok/20';
+      bgColor = '';
+      textColor = '';
+      borderColor = '';
       break;
     case 'info':
     default:
-      bgColor = 'bg-aviso/10';
-      textColor = 'text-aviso';
-      borderColor = 'border-aviso/20';
+      bgColor = '';
+      textColor = '';
+      borderColor = '';
       break;
   }
 
@@ -132,7 +132,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
                   onClick={handleResendVerification}
                   isLoading={isResending}
                   leftIcon={<PiArrowsClockwise />}
-                  className={`border-atencao text-atencao hover:bg-atencao hover:text-black`}
+                  className={`hover:text-black`}
                 >
                   {t('email_banner_resend')}
                 </Button>
@@ -145,7 +145,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={handleDismiss}
-                  className={`${textColor} hover:bg-ok/20`}
+                  className={`${textColor}`}
                 >
                   {t('email_banner_understood')}
                 </Button>
@@ -165,7 +165,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
 
       {/* Progress indicator for unverified email */}
       {bannerType === 'warning' && !isEmailVerified && (
-        <div className="mt-4 pt-3 border-t border-atencao/20">
+        <div className="mt-4 pt-3 border-t">
           <div className="flex items-center text-xs">
             <span className={`${textColor} opacity-75`}>
               {t('email_banner_email')} <strong>{user.email}</strong>

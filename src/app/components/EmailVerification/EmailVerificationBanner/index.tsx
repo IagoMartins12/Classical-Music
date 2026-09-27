@@ -37,14 +37,12 @@ export default function EmailVerificationBanner({
 
   return (
     <AnimatedItem direction="down" springType="gentle">
-      <div
-        className={`bg-atencao/10 border border-atencao/30 backdrop-blur-sm ${className}`}
-      >
+      <div className={`bg-gradient-to-r border backdrop-blur-sm ${className}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Inline gap={3}>
-              <div className="w-10 h-10 bg-atencao/20 rounded-xl flex items-center justify-center">
-                <PiEnvelopeSimple className="w-5 h-5 text-atencao" />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                <PiEnvelopeSimple className="w-5 h-5" />
               </div>
 
               <div className="flex-1">
@@ -54,8 +52,8 @@ export default function EmailVerificationBanner({
                   </h4>
                   {emailSent && (
                     <Inline gap={1}>
-                      <PiCheckCircle className="w-4 h-4 text-ok" />
-                      <span className="text-xs text-ok font-medium">
+                      <PiCheckCircle className="w-4 h-4" />
+                      <span className="text-xs font-medium">
                         Email enviado!
                       </span>
                     </Inline>
@@ -80,7 +78,7 @@ export default function EmailVerificationBanner({
                     className={`w-4 h-4 ${isSending ? 'animate-spin' : ''}`}
                   />
                 }
-                className="text-atencao hover:text-atencao hover:bg-atencao/10 border-atencao/30"
+                className=""
               >
                 {emailSent ? 'Reenviar' : 'Enviar Email'}
               </Button>
@@ -88,7 +86,7 @@ export default function EmailVerificationBanner({
               {dismissible && (
                 <button
                   onClick={() => setIsDismissed(true)}
-                  className="w-8 h-8 rounded-lg bg-sup-2/20 hover:bg-sup-2/30 flex items-center justify-center text-theme-tertiary hover:text-texto transition-colors"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-theme-tertiary transition-colors"
                   aria-label="Fechar aviso"
                 >
                   <PiX className="w-4 h-4" />

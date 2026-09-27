@@ -60,7 +60,7 @@ export default function EditComposerLoading() {
               d="M9 5l7 7-7 7"
             />
           </svg>
-          <div className="h-4 w-32 bg-fundo/20 rounded"></div>
+          <div className="h-4 w-32 rounded"></div>
         </Inline>
 
         {/* Header Principal */}
@@ -76,11 +76,11 @@ export default function EditComposerLoading() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <Inline gap={3} className="mb-4">
-                        <div className="w-10 h-10 bg-aviso/20 rounded-xl flex items-center justify-center">
-                          <PiPencilLine className="w-5 h-5 text-texto/30" />
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                          <PiPencilLine className="w-5 h-5" />
                         </div>
                         <Stack gap={2}>
-                          <div className="h-10 w-64 bg-ouro/20 rounded"></div>
+                          <div className="h-10 w-64 rounded"></div>
                           <div className="h-5 w-48 bg-theme-elevated rounded"></div>
                         </Stack>
                       </Inline>
@@ -90,18 +90,18 @@ export default function EditComposerLoading() {
                     <Inline gap={3} className="ml-4">
                       <Inline
                         gap={2}
-                        className="h-10 w-20 bg-ouro/20 rounded-lg justify-center"
+                        className="h-10 w-20 rounded-lg justify-center"
                       >
-                        <PiFloppyDisk className="w-4 h-4 text-texto/30" />
-                        <div className="w-8 h-4 bg-fundo/30 rounded"></div>
+                        <PiFloppyDisk className="w-4 h-4" />
+                        <div className="w-8 h-4 rounded"></div>
                       </Inline>
 
                       <Inline
                         gap={2}
-                        className="h-10 w-24 bg-erro/20 border border-erro/30 rounded-lg justify-center"
+                        className="h-10 w-24 border rounded-lg justify-center"
                       >
-                        <PiTrash className="w-4 h-4 text-erro/30" />
-                        <div className="w-12 h-4 bg-erro/30 rounded"></div>
+                        <PiTrash className="w-4 h-4" />
+                        <div className="w-12 h-4 rounded"></div>
                       </Inline>
                     </Inline>
                   </div>
@@ -111,32 +111,28 @@ export default function EditComposerLoading() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
                     {
-                      icon: <PiUser className="w-4 h-4 text-texto/30" />,
-                      gradient: 'fill-ouro',
+                      icon: <PiUser className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiUser className="w-4 h-4 text-texto/30" />,
-                      gradient: 'bg-ok',
+                      icon: <PiUser className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: (
-                        <PiCalendarBlank className="w-4 h-4 text-texto/30" />
-                      ),
-                      gradient: 'bg-ok',
+                      icon: <PiCalendarBlank className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: (
-                        <PiCalendarBlank className="w-4 h-4 text-texto/30" />
-                      ),
-                      gradient: 'bg-erro',
+                      icon: <PiCalendarBlank className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiMapPin className="w-4 h-4 text-texto/30" />,
-                      gradient: 'fill-ouro',
+                      icon: <PiMapPin className="w-4 h-4" />,
+                      gradient: '',
                     },
                     {
-                      icon: <PiUser className="w-4 h-4 text-texto/30" />,
-                      gradient: 'bg-aviso',
+                      icon: <PiUser className="w-4 h-4" />,
+                      gradient: '',
                     },
                   ].map((item, index) => (
                     <div
@@ -150,19 +146,19 @@ export default function EditComposerLoading() {
                       </div>
                       <Stack gap={1}>
                         <div className="h-4 w-20 bg-theme-elevated rounded"></div>
-                        <div className="h-5 w-32 bg-fundo rounded"></div>
+                        <div className="h-5 w-32 rounded"></div>
                       </Stack>
                     </div>
                   ))}
 
                   {/* Instrumentos - span full width */}
                   <div className="md:col-span-2 flex items-start space-x-3 group">
-                    <div className="w-8 h-8 bg-ouro/20 rounded-xl flex items-center justify-center mt-0.5">
-                      <PiUser className="w-4 h-4 text-texto/30" />
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5">
+                      <PiUser className="w-4 h-4" />
                     </div>
                     <Stack gap={1}>
                       <div className="h-4 w-24 bg-theme-elevated rounded"></div>
-                      <div className="h-5 w-48 bg-fundo rounded"></div>
+                      <div className="h-5 w-48 rounded"></div>
                     </Stack>
                   </div>
                 </div>
@@ -174,24 +170,24 @@ export default function EditComposerLoading() {
                     gap={2}
                     className="text-lg font-semibold text-theme-primary classical-title"
                   >
-                    <PiArrowSquareOut className="w-5 h-5 text-aviso/30" />
+                    <PiArrowSquareOut className="w-5 h-5" />
                     <div className="h-5 w-28 bg-theme-elevated rounded"></div>
                   </Inline>
                   <div className="flex flex-wrap gap-3">
                     <Inline
                       gap={2}
-                      className="h-10 w-24 bg-ouro/20 rounded-lg justify-center"
+                      className="h-10 w-24 rounded-lg justify-center"
                     >
-                      <PiArrowSquareOut className="w-4 h-4 text-texto/30" />
-                      <div className="w-12 h-4 bg-fundo/30 rounded"></div>
+                      <PiArrowSquareOut className="w-4 h-4" />
+                      <div className="w-12 h-4 rounded"></div>
                     </Inline>
 
                     <Inline
                       gap={2}
                       className="h-10 w-20 bg-theme-secondary rounded-lg justify-center"
                     >
-                      <PiBookOpen className="w-4 h-4 text-texto-fraco/30" />
-                      <div className="w-10 h-4 bg-sup-2/30 rounded"></div>
+                      <PiBookOpen className="w-4 h-4" />
+                      <div className="w-10 h-4 rounded"></div>
                     </Inline>
                   </div>
                 </Stack>
@@ -200,7 +196,7 @@ export default function EditComposerLoading() {
               {/* Imagem do Compositor */}
               <div className="flex justify-center order-1 md:order-2 lg:order-2 lg:justify-end">
                 <div className="relative group">
-                  <div className="w-64 h-80 fundo-sup-1 border border-linha/20 rounded-2xl flex items-center justify-center shadow-theme-glow">
+                  <div className="w-64 h-80 border rounded-2xl flex items-center justify-center shadow-theme-glow">
                     <div className="text-center text-theme-tertiary">
                       <PiUser className="w-16 h-16 mx-auto mb-4 opacity-30" />
                       <div className="h-4 w-32 bg-theme-elevated rounded mx-auto"></div>
@@ -215,15 +211,15 @@ export default function EditComposerLoading() {
         {/* Biografia */}
         <Card densidade="larga">
           <Inline gap={3} className="mb-6">
-            <div className="w-12 h-12 bg-ok/20 rounded-2xl flex items-center justify-center">
-              <PiBookOpen className="w-6 h-6 text-texto/30" />
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
+              <PiBookOpen className="w-6 h-6" />
             </div>
             <div className="flex-1 space-y-2">
-              <div className="h-8 w-24 bg-fundo rounded"></div>
+              <div className="h-8 w-24 rounded"></div>
             </div>
             <div className="relative group">
-              <div className="w-8 h-8 bg-ouro/10 rounded-full flex items-center justify-center">
-                <PiInfo className="w-4 h-4 text-texto-fraco/30" />
+              <div className="w-8 h-8 rounded-full flex items-center justify-center">
+                <PiInfo className="w-4 h-4" />
               </div>
             </div>
           </Inline>

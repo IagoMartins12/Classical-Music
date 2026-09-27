@@ -138,11 +138,11 @@ export function TranslationLoadingModal({
       <div className="p-8 relative overflow-hidden animate-fade-in-up">
         {/* Background pattern */}
         <div className="absolute inset-0 pointer-events-none opacity-5">
-          <div className="absolute top-4 right-4 text-6xl text-brand-primary animate-pulse">
+          <div className="absolute top-4 right-4 text-6xl text-ouro-texto animate-pulse">
             <GiGClef />
           </div>
           <div
-            className="absolute bottom-4 left-4 text-4xl text-ouro-texto animate-pulse"
+            className="absolute bottom-4 left-4 text-4xl animate-pulse"
             style={{ animationDelay: '1s' }}
           >
             <PiMusicNotes />
@@ -161,7 +161,7 @@ export function TranslationLoadingModal({
           <div className="mb-6 flex justify-center">
             <div className="relative">
               {/* Círculo externo rotativo */}
-              <div className="w-20 h-20 border-4 border-ouro/20 border-t-ouro rounded-full animate-spin" />
+              <div className="w-20 h-20 border-4 rounded-full animate-spin" />
 
               {/* Ícone central */}
               <div className="absolute inset-0 flex items-center justify-center">
@@ -172,13 +172,13 @@ export function TranslationLoadingModal({
 
               {/* Partículas musicais flutuantes */}
               <div
-                className="absolute -top-2 -right-2 w-4 h-4 text-ouro-texto animate-bounce"
+                className="absolute -top-2 -right-2 w-4 h-4 animate-bounce"
                 style={{ animationDelay: '0.2s' }}
               >
                 <PiMusicNotes />
               </div>
               <div
-                className="absolute -bottom-2 -left-2 w-3 h-3 text-aviso animate-bounce"
+                className="absolute -bottom-2 -left-2 w-3 h-3 animate-bounce"
                 style={{ animationDelay: '0.8s' }}
               >
                 <PiMusicNotes />
@@ -228,7 +228,7 @@ export function TranslationLoadingModal({
 
             <div className="w-full h-2 bg-theme-elevated rounded-full overflow-hidden">
               <div
-                className="h-full fill-ouro rounded-full transition-all duration-200 ease-out relative overflow-hidden"
+                className="h-full rounded-full transition-all duration-200 ease-out relative overflow-hidden"
                 style={{ width: `${progress}%` }}
               >
                 {/* Shimmer effect mais rápido */}
@@ -244,7 +244,7 @@ export function TranslationLoadingModal({
                 key={index}
                 className={`w-2 h-2 rounded-full transition-all duration-200 ${
                   index <= currentStep
-                    ? 'bg-ouro shadow-theme-glow'
+                    ? 'shadow-theme-glow'
                     : 'bg-theme-secondary'
                 }`}
               />
@@ -252,13 +252,13 @@ export function TranslationLoadingModal({
           </div>
 
           {/* Nota motivacional */}
-          <div className="border mt-6 p-4 bg-ouro/5 border-ouro/40 rounded-xl">
+          <div className="mt-6 p-4 border-l-4 rounded-xl">
             <Text papel="rotulo" tom="suave" as="p" className="italic">
               {currentLanguage === 'pt'
                 ? '"A música é a linguagem universal da humanidade."'
                 : '"Music is the universal language of mankind."'}
             </Text>
-            <cite className="text-xs text-brand-primary font-medium block mt-1">
+            <cite className="text-xs text-ouro-texto font-medium block mt-1">
               — Henry Wadsworth Longfellow
             </cite>
           </div>

@@ -56,7 +56,7 @@ export default function ContactPageClient() {
       title: t('contact_option_0_title'),
       description: t('contact_option_0_description'),
       action: t('contact_option_0_action'),
-      color: 'bg-aviso',
+      color: '',
       category: 'suporte',
     },
     {
@@ -64,7 +64,7 @@ export default function ContactPageClient() {
       title: t('contact_option_1_title'),
       description: t('contact_option_1_description'),
       action: t('contact_option_1_action'),
-      color: 'bg-erro',
+      color: '',
       category: 'bug',
     },
     {
@@ -72,7 +72,7 @@ export default function ContactPageClient() {
       title: t('contact_option_2_title'),
       description: t('contact_option_2_description'),
       action: t('contact_option_2_action'),
-      color: 'bg-ok',
+      color: '',
       category: 'moderacao',
     },
     {
@@ -80,7 +80,7 @@ export default function ContactPageClient() {
       title: t('contact_option_3_title'),
       description: t('contact_option_3_description'),
       action: t('contact_option_3_action'),
-      color: 'fill-ouro',
+      color: '',
       category: 'parceria',
     },
   ];
@@ -189,27 +189,25 @@ export default function ContactPageClient() {
   const getFormStatus = () => {
     if (loading) {
       return {
-        icon: (
-          <PiSpinnerGap className="w-5 h-5 animate-spin text-brand-primary" />
-        ),
+        icon: <PiSpinnerGap className="w-5 h-5 animate-spin text-ouro-texto" />,
         message: t('contact_form_status_loading'),
-        color: 'text-brand-primary',
+        color: 'text-ouro-texto',
       };
     }
 
     if (success) {
       return {
-        icon: <PiCheckCircle className="w-5 h-5 text-ok" />,
+        icon: <PiCheckCircle className="w-5 h-5" />,
         message: t('contact_form_status_success'),
-        color: 'text-ok',
+        color: '',
       };
     }
 
     if (error) {
       return {
-        icon: <PiWarningCircle className="w-5 h-5 text-erro" />,
+        icon: <PiWarningCircle className="w-5 h-5" />,
         message: error,
-        color: 'text-erro',
+        color: '',
       };
     }
 
@@ -229,14 +227,14 @@ export default function ContactPageClient() {
     <PageContainer showBackground={true} className="classical-theme">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16">
-        <div className="absolute inset-0 bg-ouro/5"></div>
+        <div className="absolute inset-0"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative section-wrap">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 bg-ouro/20 border border-ouro/30 rounded-full mb-8">
-                  <PiEnvelopeSimple className="w-5 h-5 text-brand-primary mr-2" />
-                  <span className="text-brand-primary font-medium">
+                <div className="inline-flex items-center px-6 py-3 border rounded-full mb-8">
+                  <PiEnvelopeSimple className="w-5 h-5 text-ouro-texto mr-2" />
+                  <span className="text-ouro-texto font-medium">
                     {t('contact_jsx_span_children_0__fale_conosco')}
                   </span>
                 </div>
@@ -282,9 +280,7 @@ export default function ContactPageClient() {
                   hover="lift"
                   clickable
                   className={`classical-card !p-6 cursor-pointer group transition-all duration-300 ${
-                    selectedCategory === option.category
-                      ? 'ring-2 ring-ouro bg-ouro/5'
-                      : ''
+                    selectedCategory === option.category ? 'ring-2' : ''
                   }`}
                   onClick={() => handleCategorySelect(option.category)}
                 >
@@ -305,8 +301,8 @@ export default function ContactPageClient() {
                   <div
                     className={`font-medium transition-colors ${
                       selectedCategory === option.category
-                        ? 'text-brand-primary'
-                        : 'text-theme-tertiary group-hover:text-ouro-texto'
+                        ? 'text-ouro-texto'
+                        : 'text-theme-tertiary'
                     }`}
                   >
                     {selectedCategory === option.category
@@ -334,11 +330,7 @@ export default function ContactPageClient() {
                 {formStatus && (
                   <div
                     className={`mb-6 p-4 rounded-lg border flex items-center space-x-3 ${
-                      success
-                        ? 'bg-ok/10 border-ok/20'
-                        : error
-                          ? 'bg-erro/10 border-erro/20'
-                          : 'bg-ouro/10 border-ouro/20'
+                      success ? '' : error ? '' : ''
                     }`}
                   >
                     {formStatus.icon}
@@ -493,7 +485,7 @@ export default function ContactPageClient() {
 
                   <Stack gap={6}>
                     <Inline gap={4}>
-                      <div className="w-12 h-12 bg-aviso rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center">
                         <PiEnvelopeSimple className="w-6 h-6 text-theme-primary" />
                       </div>
                       <div>
@@ -507,7 +499,7 @@ export default function ContactPageClient() {
                     </Inline>
 
                     <Inline gap={4}>
-                      <div className="w-12 h-12 bg-ok rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center">
                         <PiPhone className="w-6 h-6 text-theme-primary" />
                       </div>
                       <div>
@@ -521,7 +513,7 @@ export default function ContactPageClient() {
                     </Inline>
 
                     <Inline gap={4}>
-                      <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center">
                         <PiMapPin className="w-6 h-6 text-theme-primary" />
                       </div>
                       <div>
@@ -568,10 +560,10 @@ export default function ContactPageClient() {
                     </div>
                   </Stack>
 
-                  <div className="mt-6 p-4 bg-aviso/10 border border-aviso/20 rounded-lg">
+                  <div className="mt-6 p-4 border rounded-lg">
                     <Inline gap={3}>
-                      <PiClock className="w-5 h-5 text-aviso" />
-                      <span className="text-aviso font-medium">
+                      <PiClock className="w-5 h-5" />
+                      <span className="font-medium">
                         {t('contact_jsx_span_children_0__resposta_tempo')}
                       </span>
                     </Inline>
@@ -586,7 +578,7 @@ export default function ContactPageClient() {
                   <Stack>
                     <Link
                       href="/faq"
-                      className="flex items-center space-x-3 text-theme-secondary hover:text-ouro-texto transition-colors"
+                      className="flex items-center space-x-3 text-theme-secondary transition-colors"
                     >
                       <PiQuestion className="w-5 h-5" />
                       <span>
@@ -596,7 +588,7 @@ export default function ContactPageClient() {
 
                     <Link
                       href="/help"
-                      className="flex items-center space-x-3 text-theme-secondary hover:text-ouro-texto transition-colors"
+                      className="flex items-center space-x-3 text-theme-secondary transition-colors"
                     >
                       <PiChatCircle className="w-5 h-5" />
                       <span>
@@ -606,7 +598,7 @@ export default function ContactPageClient() {
 
                     <Link
                       href="/support"
-                      className="flex items-center space-x-3 text-theme-secondary hover:text-ouro-texto transition-colors"
+                      className="flex items-center space-x-3 text-theme-secondary transition-colors"
                     >
                       <PiUser className="w-5 h-5" />
                       <span>
@@ -622,22 +614,13 @@ export default function ContactPageClient() {
       </section>
 
       {/* Floating Elements */}
-      <FloatingElement
-        className="top-16 left-16 text-6xl text-ouro-texto/5"
-        delay={0}
-      >
+      <FloatingElement className="top-16 left-16 text-6xl" delay={0}>
         <PiMusicNotes />
       </FloatingElement>
-      <FloatingElement
-        className="bottom-16 right-16 text-5xl text-ouro-texto/5"
-        delay={2}
-      >
+      <FloatingElement className="bottom-16 right-16 text-5xl" delay={2}>
         <GiGrandPiano />
       </FloatingElement>
-      <FloatingElement
-        className="top-1/3 right-24 text-4xl text-aviso/5"
-        delay={1}
-      >
+      <FloatingElement className="top-1/3 right-24 text-4xl" delay={1}>
         <PiEnvelopeSimple />
       </FloatingElement>
     </PageContainer>

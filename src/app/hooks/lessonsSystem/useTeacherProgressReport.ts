@@ -312,20 +312,6 @@ export const getProgressTrend = (
   return 'stable';
 };
 
-export const getEngagementColor = (score: number): string => {
-  if (score >= 4) return 'ok';
-  if (score >= 3) return 'aviso';
-  if (score >= 2) return 'atencao';
-  return 'erro';
-};
-
-export const getAttendanceColor = (rate: number): string => {
-  if (rate >= 90) return 'ok';
-  if (rate >= 80) return 'aviso';
-  if (rate >= 70) return 'atencao';
-  return 'erro';
-};
-
 export const getDifficultyLabel = (level: string): string => {
   const labels: Record<string, string> = {
     BEGINNER: 'Iniciante',

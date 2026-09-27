@@ -24,7 +24,7 @@ export default function ComumnLoading() {
   return (
     <AnimatedItem
       direction="scale"
-      className="absolute inset-0 bg-veu backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl"
+      className="absolute inset-0 backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl"
     >
       <Card
         densidade="larga"

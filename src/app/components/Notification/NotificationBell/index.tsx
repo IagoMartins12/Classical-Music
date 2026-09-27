@@ -116,11 +116,11 @@ export default function NotificationBell({
 
   const getNotificationIcon = useCallback((type: string, priority: string) => {
     if (priority === 'HIGH' || priority === 'CRITICAL') {
-      return <PiWarning className="w-4 h-4 text-erro" />;
+      return <PiWarning className="w-4 h-4" />;
     } else if (priority === 'MEDIUM') {
-      return <PiClock className="w-4 h-4 text-atencao" />;
+      return <PiClock className="w-4 h-4" />;
     } else {
-      return <PiInfo className="w-4 h-4 text-aviso" />;
+      return <PiInfo className="w-4 h-4" />;
     }
   }, []);
 
@@ -128,11 +128,11 @@ export default function NotificationBell({
     switch (priority) {
       case 'HIGH':
       case 'CRITICAL':
-        return 'border-l-erro';
+        return '';
       case 'MEDIUM':
-        return 'border-l-atencao';
+        return '';
       default:
-        return 'border-l-aviso';
+        return '';
     }
   }, []);
 
@@ -166,10 +166,7 @@ export default function NotificationBell({
   // Memoize bell appearance to prevent unnecessary re-renders
   const bellAppearance = useMemo(
     () => ({
-      iconColor:
-        unreadCount > 0
-          ? 'text-brand-primary'
-          : 'text-theme-secondary group-hover:text-ouro-texto',
+      iconColor: unreadCount > 0 ? 'text-ouro-texto' : 'text-theme-secondary',
       badgeVisible: unreadCount > 0,
       badgeText: unreadCount > 99 ? '99+' : unreadCount.toString(),
     }),
@@ -181,7 +178,7 @@ export default function NotificationBell({
       {/* Bell Button */}
       <button
         onClick={handleBellClick}
-        className="relative p-2 rounded-lg hover:bg-ouro/10 transition-colors group"
+        className="relative p-2 rounded-lg transition-colors group"
         title="Notificações"
       >
         <PiBell
@@ -193,7 +190,7 @@ export default function NotificationBell({
           <Text
             papel="legenda"
             tom="forte"
-            className="absolute -top-1 -right-1 w-5 h-5 bg-erro font-bold rounded-full flex items-center justify-center animate-pulse"
+            className="absolute -top-1 -right-1 w-5 h-5 font-bold rounded-full flex items-center justify-center animate-pulse"
           >
             {bellAppearance.badgeText}
           </Text>
@@ -201,7 +198,7 @@ export default function NotificationBell({
 
         {/* Indicator de carregamento */}
         {isChecking && (
-          <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-aviso rounded-full animate-pulse"></div>
+          <div className="absolute -bottom-1 -right-1 w-2 h-2 rounded-full animate-pulse"></div>
         )}
       </button>
 
@@ -228,7 +225,7 @@ export default function NotificationBell({
                     as="button"
                     gap={1}
                     onClick={handleMarkAllAsRead}
-                    className="text-xs text-brand-primary hover:text-ouro-texto transition-colors"
+                    className="text-xs text-ouro-texto transition-colors"
                     title="Marcar todas como lidas"
                   >
                     <PiCheckCircle className="w-3 h-3" />
@@ -238,7 +235,7 @@ export default function NotificationBell({
 
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-1 rounded hover:bg-ouro/10 transition-colors"
+                  className="p-1 rounded transition-colors"
                 >
                   <PiX className="w-4 h-4 text-theme-tertiary" />
                   <NomeAcao acao="fechar" />
@@ -251,23 +248,19 @@ export default function NotificationBell({
           <div className="max-h-96 overflow-y-auto">
             {loading ? (
               <div className="p-8 text-center">
-                <div className="animate-spin w-6 h-6 border-2 border-ouro border-t-transparent rounded-full mx-auto"></div>
+                <div className="animate-spin w-6 h-6 border-2 border-t-transparent rounded-full mx-auto"></div>
                 <Text papel="rotulo" tom="fraco" as="p" className="mt-2">
                   Carregando...
                 </Text>
               </div>
             ) : recentNotifications.length > 0 ? (
-              <div className="divide-y divide-linha">
+              <div className="divide-y">
                 {recentNotifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className={`p-4 hover:bg-ouro/10 transition-colors border-color-primary ${getPriorityColor(
+                    className={`p-4 transition-colors border-color-primary ${getPriorityColor(
                       notification.priority
-                    )} ${
-                      notification.status === 'UNREAD'
-                        ? 'bg-sup-elevada/50'
-                        : ''
-                    }`}
+                    )} ${notification.status === 'UNREAD' ? '' : ''}`}
                   >
                     <div className="flex items-start space-x-3">
                       {/* Ícone */}
@@ -314,7 +307,7 @@ export default function NotificationBell({
                                       handleMarkAsRead(notification.id);
                                       setIsOpen(false);
                                     }}
-                                    className="text-xs text-brand-primary hover:text-ouro-texto transition-colors flex items-center space-x-1"
+                                    className="text-xs text-ouro-texto transition-colors flex items-center space-x-1"
                                   >
                                     <span>
                                       {notification.actionText || 'Ver'}
@@ -328,7 +321,7 @@ export default function NotificationBell({
                                     onClick={() =>
                                       handleMarkAsRead(notification.id)
                                     }
-                                    className="text-xs text-theme-tertiary hover:text-ok transition-colors"
+                                    className="text-xs text-theme-tertiary transition-colors"
                                     title="Marcar como lida"
                                   >
                                     <PiCheck className="w-3 h-3" />
@@ -357,7 +350,7 @@ export default function NotificationBell({
               <Link
                 href={`/${userRole}/notifications`}
                 onClick={() => setIsOpen(false)}
-                className="block text-center text-sm text-brand-primary hover:text-ouro-texto transition-colors"
+                className="block text-center text-sm text-ouro-texto transition-colors"
               >
                 Ver todas as notificações
               </Link>

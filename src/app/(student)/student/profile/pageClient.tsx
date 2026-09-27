@@ -410,7 +410,7 @@ export default function StudentProfilePageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -433,7 +433,7 @@ export default function StudentProfilePageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center">
-            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-ouro-texto mx-auto mb-4" />
             <p className="text-theme-secondary">{t('loading_profile')}</p>
           </Card>
         </div>
@@ -449,7 +449,7 @@ export default function StudentProfilePageClient({
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
               <div className="relative">
-                <div className="w-24 h-24 fill-ouro rounded-full flex items-center justify-center shadow-theme-glow">
+                <div className="w-24 h-24 rounded-full flex items-center justify-center shadow-theme-glow">
                   {profile.user.image ? (
                     <Image
                       src={profile.user.image}
@@ -462,7 +462,7 @@ export default function StudentProfilePageClient({
                     <PiUser className="w-12 h-12 text-theme-primary" />
                   )}
                 </div>
-                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-ok rounded-full flex items-center justify-center">
+                <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center">
                   <PiBookOpen className="w-4 h-4 text-theme-primary" />
                 </div>
               </div>
@@ -481,13 +481,13 @@ export default function StudentProfilePageClient({
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard
               hover="lift"
-              className="border classical-card p-4 mb-6 border-ok/40"
+              className="classical-card p-4 mb-6 border-l-4"
             >
               <Inline gap={3}>
-                <div className="w-8 h-8 bg-ok/10 rounded-full flex items-center justify-center">
-                  <PiCheck className="w-4 h-4 text-ok" />
+                <div className="w-8 h-8 rounded-full flex items-center justify-center">
+                  <PiCheck className="w-4 h-4" />
                 </div>
-                <div className="text-ok font-medium">{successMessage}</div>
+                <div className="font-medium">{successMessage}</div>
               </Inline>
             </AnimatedCard>
           </AnimatedItem>
@@ -498,19 +498,16 @@ export default function StudentProfilePageClient({
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard
               hover="lift"
-              className="border classical-card p-4 mb-6 border-erro/40"
+              className="classical-card p-4 mb-6 border-l-4"
             >
               <div className="flex items-center justify-between">
                 <Inline gap={3}>
-                  <div className="w-8 h-8 bg-erro/10 rounded-full flex items-center justify-center">
-                    <PiX className="w-4 h-4 text-erro" />
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center">
+                    <PiX className="w-4 h-4" />
                   </div>
-                  <div className="text-erro font-medium">{error}</div>
+                  <div className="font-medium">{error}</div>
                 </Inline>
-                <button
-                  onClick={clearError}
-                  className="text-erro hover:text-erro/70 transition-colors"
-                >
+                <button onClick={clearError} className="transition-colors">
                   <PiX className="w-4 h-4" />
                   <NomeAcao acao="fechar" />
                 </button>
@@ -526,7 +523,7 @@ export default function StudentProfilePageClient({
             <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 fill-ouro rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                     <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
@@ -607,17 +604,17 @@ export default function StudentProfilePageClient({
                     {phoneError &&
                       phoneValidation.showError &&
                       phoneValidation.error && (
-                        <div className="p-4 bg-erro/10 border border-erro/30 rounded-lg flex items-start space-x-3 mt-4">
-                          <PiWarningCircle className="w-5 h-5 text-erro flex-shrink-0 mt-0.5" />
+                        <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3 mt-4">
+                          <PiWarningCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                           <div>
-                            <h4 className="text-sm font-medium text-erro">
+                            <h4 className="text-sm font-medium text-red-800">
                               {t('invalid_phone_title')}
                             </h4>
-                            <p className="text-sm text-erro mt-1">
+                            <p className="text-sm text-red-700 mt-1">
                               {phoneValidation.error}
                             </p>
                             {phoneValidation.progressMessage && (
-                              <p className="text-xs text-erro mt-1">
+                              <p className="text-xs text-red-600 mt-1">
                                 {phoneValidation.progressMessage}
                               </p>
                             )}
@@ -629,7 +626,7 @@ export default function StudentProfilePageClient({
                   {/* Localização */}
                   <div>
                     <Inline gap={2} className="mb-4">
-                      <PiMapPin className="w-4 h-4 text-brand-primary" />
+                      <PiMapPin className="w-4 h-4 text-ouro-texto" />
                       <h4 className="font-medium text-theme-primary">
                         {t('location')}
                       </h4>
@@ -759,7 +756,7 @@ export default function StudentProfilePageClient({
             <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-aviso rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                     <PiBookOpen className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
@@ -1019,7 +1016,7 @@ export default function StudentProfilePageClient({
             <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 fill-ouro rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                     <PiHeart className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
@@ -1067,8 +1064,8 @@ export default function StudentProfilePageClient({
                             disabled={saving}
                             className={`p-2 rounded-lg border transition-all text-sm ${
                               isSelected
-                                ? 'bg-ouro/10 border-ouro/30 text-brand-primary'
-                                : 'bg-theme-elevated border-linha/30 text-theme-secondary hover:text-texto'
+                                ? 'text-ouro-texto'
+                                : 'bg-theme-elevated text-theme-secondary'
                             }`}
                           >
                             {genre}
@@ -1116,7 +1113,7 @@ export default function StudentProfilePageClient({
                           papel="rotulo"
                           tom="ouro"
                           key={genre}
-                          className="px-3 py-1 bg-ouro/10 border border-ouro/30 rounded-full text-center"
+                          className="px-3 py-1 border rounded-full text-center"
                         >
                           {genre}
                         </Text>
@@ -1150,7 +1147,7 @@ export default function StudentProfilePageClient({
             <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-ok rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                     <PiShield className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
@@ -1204,7 +1201,7 @@ export default function StudentProfilePageClient({
                   </div>
 
                   <Stack>
-                    <div className="flex items-center justify-between p-4 bg-sup-1/5 rounded-lg">
+                    <div className="flex items-center justify-between p-4 rounded-lg">
                       <div>
                         <div className="font-medium text-theme-primary">
                           {t('allow_public_progress')}
@@ -1223,7 +1220,7 @@ export default function StudentProfilePageClient({
                         disabled={saving}
                         className={`relative w-12 h-6 rounded-full transition-colors ${
                           privacyForm.allowPublicProgress
-                            ? 'bg-ouro'
+                            ? ''
                             : 'bg-theme-tertiary'
                         }`}
                       >
@@ -1237,7 +1234,7 @@ export default function StudentProfilePageClient({
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between p-4 bg-sup-1/5 rounded-lg">
+                    <div className="flex items-center justify-between p-4 rounded-lg">
                       <div>
                         <div className="font-medium text-theme-primary">
                           {t('share_progress_teachers')}
@@ -1256,7 +1253,7 @@ export default function StudentProfilePageClient({
                         disabled={saving}
                         className={`relative w-12 h-6 rounded-full transition-colors ${
                           privacyForm.allowProgressShare
-                            ? 'bg-ouro'
+                            ? ''
                             : 'bg-theme-tertiary'
                         }`}
                       >
@@ -1313,14 +1310,14 @@ export default function StudentProfilePageClient({
                   </div>
 
                   <Stack gap={3}>
-                    <div className="flex items-center justify-between p-3 bg-sup-1/5 rounded-lg">
+                    <div className="flex items-center justify-between p-3 rounded-lg">
                       <span className="text-theme-primary">
                         {t('public_progress')}
                       </span>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
                           profile?.allowPublicProgress
-                            ? 'bg-ok/10 text-ok'
+                            ? ''
                             : 'bg-theme-secondary text-theme-tertiary'
                         }`}
                       >
@@ -1330,14 +1327,14 @@ export default function StudentProfilePageClient({
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between p-3 bg-sup-1/5 rounded-lg">
+                    <div className="flex items-center justify-between p-3 rounded-lg">
                       <span className="text-theme-primary">
                         {t('share_with_teachers')}
                       </span>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
                           profile?.allowProgressShare
-                            ? 'bg-ok/10 text-ok'
+                            ? ''
                             : 'bg-theme-secondary text-theme-tertiary'
                         }`}
                       >
@@ -1357,7 +1354,7 @@ export default function StudentProfilePageClient({
             <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-atencao rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                     <PiChatCenteredText className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
@@ -1462,7 +1459,7 @@ export default function StudentProfilePageClient({
             <div className="p-2 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-atencao rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                     <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
@@ -1503,7 +1500,7 @@ export default function StudentProfilePageClient({
                       {studyData.wantToLearn.slice(0, 5).map((work) => (
                         <div
                           key={work.workId}
-                          className="p-3 bg-sup-1/10 rounded-lg border"
+                          className="p-3 rounded-lg border"
                         >
                           <Text
                             papel="rotulo"
@@ -1517,7 +1514,7 @@ export default function StudentProfilePageClient({
                             {work.composer}
                           </Text>
                           {work.difficulty && (
-                            <div className="text-xs text-aviso mt-1">
+                            <div className="text-xs mt-1">
                               {work.difficulty}
                             </div>
                           )}
@@ -1544,7 +1541,7 @@ export default function StudentProfilePageClient({
                       {studyData.learned.slice(0, 5).map((work) => (
                         <div
                           key={work.workId}
-                          className="p-3 bg-sup-1/10 rounded-lg border"
+                          className="p-3 rounded-lg border"
                         >
                           <Text
                             papel="rotulo"
@@ -1558,11 +1555,11 @@ export default function StudentProfilePageClient({
                             {work.composer}
                           </Text>
                           <div className="flex items-center justify-between mt-1">
-                            <div className="text-xs text-ok">
+                            <div className="text-xs">
                               {t('mastery')}: {work.mastery}/5
                             </div>
                             {work.wouldRecommend && (
-                              <div className="text-xs text-aviso">
+                              <div className="text-xs">
                                 ⭐ {t('recommends')}
                               </div>
                             )}
@@ -1593,7 +1590,7 @@ export default function StudentProfilePageClient({
                       {studyData.recentAnnotations.map((annotation) => (
                         <div
                           key={annotation.id}
-                          className="p-3 bg-sup-1/10 rounded-lg bg-theme-elevated"
+                          className="p-3 rounded-lg bg-theme-elevated"
                         >
                           <Text
                             papel="rotulo"
@@ -1625,7 +1622,7 @@ export default function StudentProfilePageClient({
                         <Inline
                           gap={3}
                           key={teacher.teacherId}
-                          className="p-3 bg-sup-1/10 rounded-lg"
+                          className="p-3 rounded-lg"
                         >
                           {teacher.teacherImage ? (
                             <div className="w-10 h-10 relative rounded-full overflow-hidden">
@@ -1638,7 +1635,7 @@ export default function StudentProfilePageClient({
                               />
                             </div>
                           ) : (
-                            <div className="w-10 h-10 fill-ouro rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-full flex items-center justify-center">
                               <PiUser className="w-5 h-5 text-theme-primary" />
                             </div>
                           )}

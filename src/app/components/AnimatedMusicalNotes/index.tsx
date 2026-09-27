@@ -82,23 +82,23 @@ const AnimatedMusicalNotes = () => {
 
       <div className="absolute inset-0 pointer-events-none hidden md:block">
         {/* Apenas 2 elementos animados - máxima eficiência */}
-        <div className="absolute top-16 left-16 text-4xl text-ouro-texto/15 float-slow">
+        <div className="absolute top-16 left-16 text-4xl float-slow">
           <PiMusicNotes />
         </div>
 
         <div
-          className="absolute bottom-16 right-16 text-3xl text-ouro-texto/15 float-medium"
+          className="absolute bottom-16 right-16 text-3xl float-medium"
           style={{ animationDelay: '2s' }}
         >
           <GiGrandPiano />
         </div>
 
         {/* Elementos estáticos - sem animação para economizar recursos */}
-        <div className="absolute top-1/3 right-24 text-2xl text-aviso/10">
+        <div className="absolute top-1/3 right-24 text-2xl">
           <PiMusicNotes />
         </div>
 
-        <div className="absolute bottom-1/4 left-24 text-2xl text-ouro-texto/10">
+        <div className="absolute bottom-1/4 left-24 text-2xl">
           <GiViolin />
         </div>
       </div>

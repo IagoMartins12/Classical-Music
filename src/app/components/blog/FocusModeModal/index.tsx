@@ -73,7 +73,7 @@ export function FocusModeModal({
         >
           <button
             onClick={() => changeFontSize(-2)}
-            className="p-1 hover:bg-sup-1 rounded-full transition-colors"
+            className="p-1 rounded-full transition-colors"
             title="Diminuir fonte"
           >
             <PiMinus className="w-4 h-4 text-theme-primary" />
@@ -87,7 +87,7 @@ export function FocusModeModal({
           </Text>
           <button
             onClick={() => changeFontSize(2)}
-            className="p-1 hover:bg-sup-1 rounded-full transition-colors"
+            className="p-1 rounded-full transition-colors"
             title="Aumentar fonte"
           >
             <PiPlus className="w-4 h-4 text-theme-primary" />
@@ -97,7 +97,7 @@ export function FocusModeModal({
         {/* Botão Fechar */}
         <button
           onClick={onClose}
-          className="p-3 bg-erro text-white rounded-full shadow-2xl hover:bg-erro transition-all"
+          className="p-3 bg-red-500 text-white rounded-full shadow-2xl hover:bg-red-600 transition-all"
           title="Fechar (ESC)"
         >
           <PiX className="w-5 h-5" />
@@ -188,7 +188,7 @@ function renderNode(node: any): React.ReactNode {
 
     case 'blockquote':
       return (
-        <blockquote className="border border-ouro/40 pl-6 py-4 mb-4 italic bg-ouro/10 rounded-lg">
+        <blockquote className="border-l-4 pl-6 py-4 mb-4 italic rounded-r-lg">
           {node.content?.map((child: any, i: number) => (
             <div key={i}>{renderNode(child)}</div>
           ))}
@@ -240,7 +240,7 @@ function renderText(node: any, key: number): React.ReactNode {
           text = (
             <code
               key={key}
-              className="px-1 py-0.5 bg-sup-2 dark:bg-gray-700 rounded text-sm font-mono"
+              className="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-sm font-mono"
             >
               {text}
             </code>
@@ -251,7 +251,7 @@ function renderText(node: any, key: number): React.ReactNode {
             <a
               key={key}
               href={mark.attrs?.href || '#'}
-              className="text-aviso underline hover:text-aviso"
+              className="text-blue-600 underline hover:text-blue-800"
               target="_blank"
               rel="noopener noreferrer"
             >

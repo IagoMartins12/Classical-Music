@@ -201,7 +201,7 @@ export default function StudentSharedReportPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -241,7 +241,7 @@ export default function StudentSharedReportPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center">
-            <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+            <PiArrowsClockwise className="w-8 h-8 animate-spin text-ouro-texto mx-auto mb-4" />
             <p className="text-theme-secondary">Carregando relatório...</p>
           </Card>
         </div>
@@ -260,9 +260,9 @@ export default function StudentSharedReportPageClient({
             <Inline gap={4} className="mb-4 lg:mb-0">
               <Link
                 href="/student/progress"
-                className="w-12 h-12 rounded-xl bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
+                className="w-12 h-12 rounded-xl bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
               >
-                <PiArrowLeft className="w-5 h-5 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
+                <PiArrowLeft className="w-5 h-5 text-theme-tertiary transition-colors" />
               </Link>
 
               <div>
@@ -299,7 +299,7 @@ export default function StudentSharedReportPageClient({
             <AnimatedCard hover="lift" className="classical-card p-6">
               <Inline gap={4} className="mb-4">
                 {reportData.teacher.image ? (
-                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-ouro/20">
+                  <div className="w-12 h-12 rounded-full overflow-hidden border-2">
                     <Image
                       src={reportData.teacher.image}
                       alt={reportData.teacher.name}
@@ -309,7 +309,7 @@ export default function StudentSharedReportPageClient({
                     />
                   </div>
                 ) : (
-                  <div className="w-12 h-12 fill-ouro rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center">
                     <PiUser className="w-6 h-6 text-theme-primary" />
                   </div>
                 )}
@@ -330,7 +330,7 @@ export default function StudentSharedReportPageClient({
                       papel="legenda"
                       tom="ouro"
                       key={index}
-                      className="px-2 py-1 bg-ouro/10 rounded-full"
+                      className="px-2 py-1 rounded-full"
                     >
                       {specialty}
                     </Text>
@@ -386,7 +386,7 @@ export default function StudentSharedReportPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard
               hover="lift"
-              className="border classical-card p-6 border-ouro/40 mb-8"
+              className="classical-card p-6 border-l-4 mb-8"
             >
               <h3 className="text-lg font-bold text-theme-primary mb-3 flex items-center">
                 <PiChatCenteredText className="w-5 h-5 mr-2" />
@@ -416,7 +416,7 @@ export default function StudentSharedReportPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
-                <PiChartBar className="w-6 h-6 mr-3 text-brand-primary" />
+                <PiChartBar className="w-6 h-6 mr-3 text-ouro-texto" />
                 Visão Geral
               </h2>
 
@@ -425,7 +425,7 @@ export default function StudentSharedReportPageClient({
                   hover="scale"
                   className="classical-card p-6 text-center"
                 >
-                  <div className="w-12 h-12 bg-aviso rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                     <PiBookOpen className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -434,7 +434,7 @@ export default function StudentSharedReportPageClient({
                   <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                     Aulas Concluídas
                   </Text>
-                  <div className="text-xs text-aviso">
+                  <div className="text-xs">
                     {progressData.overview.completionRate}% de conclusão
                   </div>
                 </AnimatedCard>
@@ -443,7 +443,7 @@ export default function StudentSharedReportPageClient({
                   hover="scale"
                   className="classical-card p-6 text-center"
                 >
-                  <div className="w-12 h-12 bg-ok rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                     <PiClock className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -452,7 +452,7 @@ export default function StudentSharedReportPageClient({
                   <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                     Horas de Estudo
                   </Text>
-                  <div className="text-xs text-ok">
+                  <div className="text-xs">
                     {progressData.overview.attendanceRate}% presença
                   </div>
                 </AnimatedCard>
@@ -461,7 +461,7 @@ export default function StudentSharedReportPageClient({
                   hover="scale"
                   className="classical-card p-6 text-center"
                 >
-                  <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                     <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -470,7 +470,7 @@ export default function StudentSharedReportPageClient({
                   <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                     Peças Estudadas
                   </Text>
-                  <div className="text-xs text-ouro-texto">
+                  <div className="text-xs">
                     {progressData.overview.favoritePieces} favoritadas
                   </div>
                 </AnimatedCard>
@@ -479,7 +479,7 @@ export default function StudentSharedReportPageClient({
                   hover="scale"
                   className="classical-card p-6 text-center"
                 >
-                  <div className="w-12 h-12 bg-atencao rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                     <PiMedal className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -488,7 +488,7 @@ export default function StudentSharedReportPageClient({
                   <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                     Sequência Atual
                   </Text>
-                  <div className="text-xs text-atencao">
+                  <div className="text-xs">
                     Máximo: {progressData.overview.longestStreak}
                   </div>
                 </AnimatedCard>
@@ -502,7 +502,7 @@ export default function StudentSharedReportPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <Stack gap={6} className="mb-8">
               <h2 className="text-2xl font-bold text-theme-primary classical-title flex items-center">
-                <PiTrendUp className="w-6 h-6 mr-3 text-brand-primary" />
+                <PiTrendUp className="w-6 h-6 mr-3 text-ouro-texto" />
                 Evolução do Progresso
               </h2>
 
@@ -536,7 +536,7 @@ export default function StudentSharedReportPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <Stack gap={6} className="mb-8">
               <h2 className="text-2xl font-bold text-theme-primary classical-title flex items-center">
-                <PiTarget className="w-6 h-6 mr-3 text-brand-primary" />
+                <PiTarget className="w-6 h-6 mr-3 text-ouro-texto" />
                 Avaliação de Habilidades
               </h2>
 
@@ -562,7 +562,7 @@ export default function StudentSharedReportPageClient({
                         (area: string, index: number) => (
                           <span
                             key={index}
-                            className="px-3 py-1 bg-ok/10 text-ok rounded-full text-sm font-medium"
+                            className="px-3 py-1 rounded-full text-sm font-medium"
                           >
                             {area}
                           </span>
@@ -580,7 +580,7 @@ export default function StudentSharedReportPageClient({
                         (area: string, index: number) => (
                           <span
                             key={index}
-                            className="px-3 py-1 bg-atencao/10 text-atencao rounded-full text-sm font-medium"
+                            className="px-3 py-1 rounded-full text-sm font-medium"
                           >
                             {area}
                           </span>
@@ -599,7 +599,7 @@ export default function StudentSharedReportPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard hover="lift" className="classical-card p-6 mb-8">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center">
-                <PiChatCenteredText className="w-6 h-6 mr-3 text-brand-primary" />
+                <PiChatCenteredText className="w-6 h-6 mr-3 text-ouro-texto" />
                 Comentários ({reportData.comments.length})
               </h3>
 
@@ -651,7 +651,7 @@ export default function StudentSharedReportPageClient({
                     className="p-4 bg-theme-elevated rounded-lg border border-theme-secondary"
                   >
                     <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 fill-ouro rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">
                         <PiUser className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div className="flex-1">
@@ -664,7 +664,7 @@ export default function StudentSharedReportPageClient({
                               <Text
                                 papel="legenda"
                                 tom="ouro"
-                                className="ml-2 px-2 py-0.5 bg-ouro/10 rounded"
+                                className="ml-2 px-2 py-0.5 rounded"
                               >
                                 {comment.section}
                               </Text>

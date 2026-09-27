@@ -222,7 +222,7 @@ export default function UsersList() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <PiUsers className="w-16 h-16 text-erro mx-auto mb-4" />
+          <PiUsers className="w-16 h-16 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Usuários
           </h2>
@@ -246,14 +246,14 @@ export default function UsersList() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8 md:py-12">
             <div className="flex items-center justify-center mb-4 md:mb-6">
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-aviso rounded-2xl md:rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl md:rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiUsers className="w-6 h-6 md:w-8 md:h-8 text-theme-primary" />
               </div>
             </div>
             <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold text-gradient-brand classical-title mb-2 md:mb-4">
               Lista de Usuários
               {activeFilterType && (
-                <span className="text-base md:text-lg lg:text-xl text-aviso block mt-2">
+                <span className="text-base md:text-lg lg:text-xl block mt-2">
                   {activeFilterType === 'contribuidores' && 'Contribuidores'}
                   {activeFilterType === 'anotadores' && 'Anotadores'}
                   {activeFilterType === 'ativos' && 'Usuários Ativos'}
@@ -278,12 +278,12 @@ export default function UsersList() {
                   placeholder="Buscar por nome ou email..."
                   value={searchTerm}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="w-full pl-10 pr-10 py-3 bg-theme-secondary border border-theme-primary rounded-xl focus:outline-none focus:ring-2 focus:ring-aviso text-theme-primary placeholder-texto-fraco"
+                  className="w-full pl-10 pr-10 py-3 bg-theme-secondary border border-theme-primary rounded-xl focus:outline-none focus:ring-2 text-theme-primary"
                 />
                 {searchTerm && (
                   <button
                     onClick={() => handleSearch('')}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-texto"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary"
                   >
                     <PiX className="w-5 h-5" />
                     <NomeAcao acao="fechar" />
@@ -512,14 +512,14 @@ export default function UsersList() {
               {(user) => (
                 <AnimatedCard
                   key={user.id}
-                  className="classical-card hover:shadow-[var(--sombra-2)] transition-all duration-300"
+                  className="classical-card transition-all duration-300"
                 >
                   <div className="p-3 md:p-4">
                     <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-0">
                       {/* Linha Superior: Avatar + Info Básica */}
                       <div className="flex items-start md:items-center space-x-3 md:space-x-4 flex-1 min-w-0">
                         {/* Avatar */}
-                        <div className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 bg-aviso rounded-full flex items-center justify-center text-theme-primary font-bold text-base md:text-lg">
+                        <div className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 rounded-full flex items-center justify-center text-theme-primary font-bold text-base md:text-lg">
                           {user.name?.charAt(0) || user.email?.charAt(0) || 'U'}
                         </div>
 
@@ -534,17 +534,17 @@ export default function UsersList() {
                             <div className="flex items-center gap-1.5 flex-wrap">
                               {/* Badge de Role */}
                               {user.role === 1 && (
-                                <span className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium bg-aviso/10 text-aviso flex items-center gap-1">
+                                <span className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium flex items-center gap-1">
                                   <PiMedal className="w-2.5 h-2.5 md:w-3 md:h-3" />
                                   Professor
                                   {user.teacherProfile?.isVerified && (
-                                    <span className="text-ok">✓</span>
+                                    <span className="">✓</span>
                                   )}
                                 </span>
                               )}
 
                               {user.role === 2 && (
-                                <span className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium bg-erro/10 text-erro flex items-center gap-1">
+                                <span className="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium flex items-center gap-1">
                                   <PiShield className="w-2.5 h-2.5 md:w-3 md:h-3" />
                                   Admin
                                 </span>
@@ -555,11 +555,11 @@ export default function UsersList() {
                                 <span
                                   className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium ${
                                     user.userType === 'TEACHER'
-                                      ? 'bg-ouro/10 text-ouro-texto'
+                                      ? ''
                                       : user.userType === 'PROFESSIONAL'
-                                        ? 'bg-ok/10 text-ok'
+                                        ? ''
                                         : user.userType === 'MUSIC_STUDENT'
-                                          ? 'bg-aviso/10 text-aviso'
+                                          ? ''
                                           : 'bg-theme-secondary text-theme-tertiary'
                                   }`}
                                 >
@@ -580,9 +580,9 @@ export default function UsersList() {
                                 <span
                                   className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium ${
                                     user.teacherProfile.status === 'ACTIVE'
-                                      ? 'bg-ok/10 text-ok'
+                                      ? ''
                                       : user.teacherProfile.status === 'PENDING'
-                                        ? 'bg-atencao/10 text-atencao'
+                                        ? ''
                                         : 'bg-theme-secondary text-theme-tertiary'
                                   }`}
                                 >
@@ -615,7 +615,7 @@ export default function UsersList() {
                               user.teacherProfile &&
                               user.teacherProfile.instruments &&
                               user.teacherProfile.instruments.length > 0 && (
-                                <span className="hidden sm:flex items-center gap-1 text-aviso">
+                                <span className="hidden sm:flex items-center gap-1">
                                   <PiMedal className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                                   {user.teacherProfile.instruments
                                     .slice(0, 2)
@@ -635,7 +635,7 @@ export default function UsersList() {
                         {/* Estatísticas */}
                         <div className="flex items-center gap-3 md:gap-6">
                           <div className="text-center">
-                            <div className="text-sm md:text-lg font-bold text-ok">
+                            <div className="text-sm md:text-lg font-bold">
                               {formatNumber(user.annotationsCount)}
                             </div>
                             <div className="text-[10px] md:text-xs text-theme-tertiary">
@@ -644,7 +644,7 @@ export default function UsersList() {
                           </div>
 
                           <div className="text-center">
-                            <div className="text-sm md:text-lg font-bold text-ouro-texto">
+                            <div className="text-sm md:text-lg font-bold">
                               {formatNumber(user.uploadsCount)}
                             </div>
                             <div className="text-[10px] md:text-xs text-theme-tertiary">

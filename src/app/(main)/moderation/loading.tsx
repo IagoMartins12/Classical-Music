@@ -35,40 +35,40 @@ export default function UploadsPageLoading() {
         {/* Header Skeleton */}
         <div className="text-center mb-8 py-16">
           <div className="flex items-center justify-center mb-6">
-            <div className="w-16 h-16 bg-ouro/20 rounded-3xl flex items-center justify-center shadow-theme-glow">
-              <PiUploadSimple className="w-8 h-8 text-texto/30" />
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <PiUploadSimple className="w-8 h-8" />
             </div>
           </div>
-          <div className="h-12 bg-sup-elevada border border-theme-primary rounded-2xl mx-auto max-w-md mb-4"></div>
-          <div className="h-6 bg-sup-elevada border border-theme-secondary rounded-lg mx-auto max-w-2xl"></div>
+          <div className="h-12 border border-theme-primary rounded-2xl mx-auto max-w-md mb-4"></div>
+          <div className="h-6 border border-theme-secondary rounded-lg mx-auto max-w-2xl"></div>
         </div>
 
         {/* Stats Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           {[
             {
-              icon: <PiDatabase className="w-5 h-5 text-texto/30" />,
-              gradient: 'fill-ouro',
+              icon: <PiDatabase className="w-5 h-5" />,
+              gradient: '',
             },
             {
-              icon: <PiUser className="w-5 h-5 text-texto/30" />,
-              gradient: 'fill-ouro',
+              icon: <PiUser className="w-5 h-5" />,
+              gradient: '',
             },
             {
-              icon: <PiMusicNotes className="w-5 h-5 text-texto/30" />,
-              gradient: 'bg-aviso',
+              icon: <PiMusicNotes className="w-5 h-5" />,
+              gradient: '',
             },
             {
-              icon: <PiFileText className="w-5 h-5 text-texto/30" />,
-              gradient: 'bg-ok',
+              icon: <PiFileText className="w-5 h-5" />,
+              gradient: '',
             },
             {
-              icon: <PiFile className="w-5 h-5 text-texto/30" />,
-              gradient: 'bg-atencao',
+              icon: <PiFile className="w-5 h-5" />,
+              gradient: '',
             },
             {
-              icon: <PiUploadSimple className="w-5 h-5 text-texto/30" />,
-              gradient: 'bg-erro',
+              icon: <PiUploadSimple className="w-5 h-5" />,
+              gradient: '',
             },
           ].map((item, index) => (
             <Card densidade="compacta" key={index} className="text-center">
@@ -77,7 +77,7 @@ export default function UploadsPageLoading() {
               >
                 {item.icon}
               </div>
-              <div className="h-8 bg-fundo rounded-lg mb-2"></div>
+              <div className="h-8 rounded-lg mb-2"></div>
               <div className="h-4 bg-theme-elevated rounded"></div>
             </Card>
           ))}
@@ -88,26 +88,23 @@ export default function UploadsPageLoading() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Create Buttons */}
             <div className="flex flex-wrap gap-2">
-              <Inline
-                gap={2}
-                className="h-10 w-36 bg-ouro/20 rounded-lg justify-center"
-              >
-                <PiPlus className="w-4 h-4 text-texto/30" />
-                <div className="w-20 h-4 bg-fundo/30 rounded"></div>
+              <Inline gap={2} className="h-10 w-36 rounded-lg justify-center">
+                <PiPlus className="w-4 h-4" />
+                <div className="w-20 h-4 rounded"></div>
               </Inline>
               <Inline
                 gap={2}
                 className="h-10 w-28 bg-theme-secondary rounded-lg justify-center"
               >
-                <PiPlus className="w-4 h-4 text-texto-fraco/30" />
-                <div className="w-16 h-4 bg-sup-2/30 rounded"></div>
+                <PiPlus className="w-4 h-4" />
+                <div className="w-16 h-4 rounded"></div>
               </Inline>
               <Inline
                 gap={2}
                 className="h-10 w-32 bg-theme-secondary rounded-lg justify-center"
               >
-                <PiPlus className="w-4 h-4 text-texto-fraco/30" />
-                <div className="w-20 h-4 bg-sup-2/30 rounded"></div>
+                <PiPlus className="w-4 h-4" />
+                <div className="w-20 h-4 rounded"></div>
               </Inline>
             </div>
 
@@ -115,8 +112,8 @@ export default function UploadsPageLoading() {
             <div className="flex flex-col sm:flex-row gap-3">
               {/* Search */}
               <div className="relative">
-                <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-texto-fraco/30 w-4 h-4" />
-                <div className="h-12 w-80 bg-sup-elevada border border-theme-secondary rounded-lg"></div>
+                <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" />
+                <div className="h-12 w-80 border border-theme-secondary rounded-lg"></div>
               </div>
 
               {/* Action Buttons */}
@@ -125,16 +122,16 @@ export default function UploadsPageLoading() {
                   gap={2}
                   className="h-12 w-24 bg-theme-secondary border border-theme-secondary rounded-lg justify-center"
                 >
-                  <PiFunnel className="w-4 h-4 text-texto-fraco/30" />
-                  <div className="w-12 h-4 bg-sup-2/30 rounded"></div>
+                  <PiFunnel className="w-4 h-4" />
+                  <div className="w-12 h-4 rounded"></div>
                 </Inline>
 
                 <div className="bg-theme-secondary border border-theme-primary rounded-lg p-1 flex">
                   <div className="p-2 rounded bg-theme-elevated">
-                    <PiListBullets className="w-4 h-4 text-texto-fraco/30" />
+                    <PiListBullets className="w-4 h-4" />
                   </div>
-                  <div className="p-2 rounded bg-ouro/20">
-                    <PiSquaresFour className="w-4 h-4 text-ouro-texto/30" />
+                  <div className="p-2 rounded">
+                    <PiSquaresFour className="w-4 h-4" />
                   </div>
                 </div>
               </Inline>
@@ -147,7 +144,7 @@ export default function UploadsPageLoading() {
               <div
                 key={index}
                 className={`px-4 py-2 rounded-lg h-10 min-w-[120px] ${
-                  index === 0 ? 'bg-ouro/20' : 'bg-sup-elevada/50'
+                  index === 0 ? '' : ''
                 }`}
               ></div>
             ))}
@@ -165,8 +162,8 @@ export default function UploadsPageLoading() {
               gap={1}
               className="h-8 w-20 bg-theme-secondary rounded justify-center"
             >
-              <PiGear className="w-4 h-4 text-texto-fraco/30" />
-              <div className="w-12 h-3 bg-sup-2/30 rounded"></div>
+              <PiGear className="w-4 h-4" />
+              <div className="w-12 h-3 rounded"></div>
             </Inline>
           </Inline>
         </div>
@@ -177,10 +174,10 @@ export default function UploadsPageLoading() {
           <Stack gap={6}>
             <Inline gap={3}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                <PiUser className="w-5 h-5 text-texto/30" />
+                <PiUser className="w-5 h-5" />
               </div>
               <Stack gap={2}>
-                <div className="h-8 w-48 bg-fundo rounded"></div>
+                <div className="h-8 w-48 rounded"></div>
                 <div className="h-4 w-32 bg-theme-elevated rounded"></div>
               </Stack>
             </Inline>
@@ -196,10 +193,10 @@ export default function UploadsPageLoading() {
           <Stack gap={6}>
             <Inline gap={3}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                <PiMusicNotes className="w-5 h-5 text-texto/30" />
+                <PiMusicNotes className="w-5 h-5" />
               </div>
               <Stack gap={2}>
-                <div className="h-8 w-32 bg-fundo rounded"></div>
+                <div className="h-8 w-32 rounded"></div>
                 <div className="h-4 w-28 bg-theme-elevated rounded"></div>
               </Stack>
             </Inline>
@@ -215,10 +212,10 @@ export default function UploadsPageLoading() {
           <Stack gap={6}>
             <Inline gap={3}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                <PiFileText className="w-5 h-5 text-texto/30" />
+                <PiFileText className="w-5 h-5" />
               </div>
               <Stack gap={2}>
-                <div className="h-8 w-40 bg-fundo rounded"></div>
+                <div className="h-8 w-40 rounded"></div>
                 <div className="h-4 w-36 bg-theme-elevated rounded"></div>
               </Stack>
             </Inline>
@@ -238,7 +235,7 @@ export default function UploadsPageLoading() {
               <div
                 key={i}
                 className={`w-10 h-10 rounded-lg ${
-                  i === 0 ? 'bg-ouro/20' : 'bg-theme-secondary'
+                  i === 0 ? '' : 'bg-theme-secondary'
                 }`}
               ></div>
             ))}
@@ -257,19 +254,19 @@ function ComposerCardSkeleton() {
       <div className="relative p-6 pb-4">
         <div className="flex justify-center mb-4">
           <div className="relative w-24 h-24 md:w-28 md:h-28">
-            <div className="w-full h-full bg-ouro/20 rounded-full border border-ouro/20 flex items-center justify-center">
-              <PiUser className="w-8 h-8 md:w-10 md:h-10 text-sobre-ouro/20" />
+            <div className="w-full h-full rounded-full border-3 flex items-center justify-center">
+              <PiUser className="w-8 h-8 md:w-10 md:h-10" />
             </div>
           </div>
         </div>
 
         {/* Floating action buttons */}
         <Stack gap={2} className="absolute top-4 right-4">
-          <div className="w-8 h-8 bg-sup-elevada/50 rounded-lg flex items-center justify-center">
-            <PiNotePencil className="w-4 h-4 text-texto-fraco/30" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+            <PiNotePencil className="w-4 h-4" />
           </div>
-          <div className="w-8 h-8 bg-sup-elevada/50 rounded-lg flex items-center justify-center">
-            <PiTrash className="w-4 h-4 text-texto-fraco/30" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+            <PiTrash className="w-4 h-4" />
           </div>
         </Stack>
       </div>
@@ -279,28 +276,28 @@ function ComposerCardSkeleton() {
         <div className="relative z-10 space-y-3">
           {/* Name */}
           <div className="text-center">
-            <div className="h-6 bg-fundo rounded mx-auto max-w-[80%]"></div>
+            <div className="h-6 rounded mx-auto max-w-[80%]"></div>
           </div>
 
           {/* Status badges */}
           <div className="flex justify-center space-x-2">
-            <div className="h-6 w-16 bg-aviso/10 border border-aviso/20 rounded-full"></div>
-            <div className="h-6 w-20 bg-ok/10 border border-ok/20 rounded-full"></div>
+            <div className="h-6 w-16 border rounded-full"></div>
+            <div className="h-6 w-20 border rounded-full"></div>
           </div>
 
           {/* Period info */}
           <div className="text-center">
-            <div className="h-6 w-24 bg-ouro/10 border border-ouro/20 rounded-full mx-auto"></div>
+            <div className="h-6 w-24 border rounded-full mx-auto"></div>
           </div>
 
           {/* External links */}
           <div className="flex justify-center space-x-2 pt-2">
             <Inline
               gap={1}
-              className="h-6 w-16 bg-ok/10 border border-ok/20 rounded-full justify-center"
+              className="h-6 w-16 border rounded-full justify-center"
             >
-              <div className="w-8 h-3 bg-ok/20 rounded"></div>
-              <PiArrowSquareOut className="w-2.5 h-2.5 text-ok/30" />
+              <div className="w-8 h-3 rounded"></div>
+              <PiArrowSquareOut className="w-2.5 h-2.5" />
             </Inline>
           </div>
 
@@ -321,22 +318,22 @@ function WorkCardSkeleton() {
       <div className="relative p-6 pb-4 border-b border-theme-secondary">
         {/* Floating action buttons */}
         <Stack gap={2} className="absolute top-4 right-4 z-50">
-          <div className="w-8 h-8 bg-sup-elevada/50 rounded-lg flex items-center justify-center">
-            <PiNotePencil className="w-4 h-4 text-texto-fraco/30" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+            <PiNotePencil className="w-4 h-4" />
           </div>
-          <div className="w-8 h-8 bg-sup-elevada/50 rounded-lg flex items-center justify-center">
-            <PiTrash className="w-4 h-4 text-texto-fraco/30" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+            <PiTrash className="w-4 h-4" />
           </div>
         </Stack>
 
         <div className="relative z-10">
           {/* Title */}
-          <div className="h-6 bg-fundo rounded mb-3 mr-16"></div>
+          <div className="h-6 rounded mb-3 mr-16"></div>
 
           {/* Composer */}
           <div className="flex items-center mb-4">
-            <div className="w-6 h-6 bg-aviso/20 rounded-full mr-2"></div>
-            <div className="h-4 w-32 bg-aviso/20 rounded"></div>
+            <div className="w-6 h-6 rounded-full mr-2"></div>
+            <div className="h-4 w-32 rounded"></div>
           </div>
         </div>
       </div>
@@ -346,27 +343,27 @@ function WorkCardSkeleton() {
         {/* Work Details */}
         <div className="space-y-3 mb-4 flex-1">
           <div className="flex items-center">
-            <PiMusicNotes className="w-4 h-4 text-ouro-texto/30 mr-2 flex-shrink-0" />
+            <PiMusicNotes className="w-4 h-4 mr-2 flex-shrink-0" />
             <div className="h-4 w-24 bg-theme-elevated rounded"></div>
           </div>
 
           <div className="flex items-center">
-            <PiMusicNotes className="w-4 h-4 text-ouro-texto/30 mr-2 flex-shrink-0" />
+            <PiMusicNotes className="w-4 h-4 mr-2 flex-shrink-0" />
             <div className="h-4 w-20 bg-theme-elevated rounded"></div>
           </div>
         </div>
 
         {/* Badges */}
         <div className="flex flex-wrap gap-2 mb-4">
-          <div className="h-6 w-16 bg-ouro/10 border border-ouro/30 rounded-full"></div>
-          <div className="h-6 w-14 bg-aviso/10 border border-aviso/30 rounded-full"></div>
+          <div className="h-6 w-16 border rounded-full"></div>
+          <div className="h-6 w-14 border rounded-full"></div>
         </div>
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
           <div className="h-3 w-28 bg-theme-elevated rounded"></div>
-          <Inline gap={1} className="h-4 w-12 bg-ok/20 rounded justify-center">
-            <PiArrowSquareOut className="w-3 h-3 text-ok/30" />
+          <Inline gap={1} className="h-4 w-12 rounded justify-center">
+            <PiArrowSquareOut className="w-3 h-3" />
           </Inline>
         </div>
       </div>
@@ -381,24 +378,24 @@ function ScoreCardSkeleton() {
       <div className="relative p-6 pb-4 border-b border-theme-secondary">
         {/* Floating action buttons */}
         <Stack gap={2} className="absolute top-4 right-4 z-50">
-          <div className="w-8 h-8 bg-sup-elevada/50 rounded-lg flex items-center justify-center">
-            <PiNotePencil className="w-4 h-4 text-texto-fraco/30" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+            <PiNotePencil className="w-4 h-4" />
           </div>
-          <div className="w-8 h-8 bg-sup-elevada/50 rounded-lg flex items-center justify-center">
-            <PiTrash className="w-4 h-4 text-texto-fraco/30" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+            <PiTrash className="w-4 h-4" />
           </div>
         </Stack>
 
         <div className="relative z-10">
           {/* Icon */}
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-ok/20 rounded-xl flex items-center justify-center">
-              <PiFileText className="w-8 h-8 text-texto/30" />
+            <div className="w-16 h-16 rounded-xl flex items-center justify-center">
+              <PiFileText className="w-8 h-8" />
             </div>
           </div>
 
           {/* Title */}
-          <div className="h-6 bg-fundo rounded mb-3 mx-4"></div>
+          <div className="h-6 rounded mb-3 mx-4"></div>
         </div>
       </div>
 
@@ -409,12 +406,12 @@ function ScoreCardSkeleton() {
           {/* Work info */}
           <Stack gap={2} className="text-center">
             <div className="flex items-center justify-center">
-              <PiMusicNotes className="w-4 h-4 text-aviso/30 mr-2" />
-              <div className="h-4 w-32 bg-aviso/20 rounded"></div>
+              <PiMusicNotes className="w-4 h-4 mr-2" />
+              <div className="h-4 w-32 rounded"></div>
             </div>
 
             <div className="flex items-center justify-center">
-              <PiUser className="w-4 h-4 text-texto-fraco/30 mr-2" />
+              <PiUser className="w-4 h-4 mr-2" />
               <div className="h-4 w-28 bg-theme-elevated rounded"></div>
             </div>
           </Stack>
@@ -429,25 +426,19 @@ function ScoreCardSkeleton() {
 
         {/* Badges */}
         <div className="flex flex-wrap justify-center gap-2 mb-4">
-          <div className="h-6 w-14 bg-aviso/10 border border-aviso/30 rounded-full"></div>
-          <div className="h-6 w-20 bg-ok/10 border border-ok/30 rounded-full"></div>
+          <div className="h-6 w-14 border rounded-full"></div>
+          <div className="h-6 w-20 border rounded-full"></div>
         </div>
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
           <div className="h-3 w-28 bg-theme-elevated rounded"></div>
           <Inline gap={2}>
-            <Inline
-              gap={1}
-              className="h-4 w-16 bg-ouro/20 rounded justify-center"
-            >
-              <div className="w-8 h-3 bg-ouro/30 rounded"></div>
+            <Inline gap={1} className="h-4 w-16 rounded justify-center">
+              <div className="w-8 h-3 rounded"></div>
             </Inline>
-            <Inline
-              gap={1}
-              className="h-4 w-12 bg-ok/20 rounded justify-center"
-            >
-              <PiArrowSquareOut className="w-3 h-3 text-ok/30" />
+            <Inline gap={1} className="h-4 w-12 rounded justify-center">
+              <PiArrowSquareOut className="w-3 h-3" />
             </Inline>
           </Inline>
         </div>

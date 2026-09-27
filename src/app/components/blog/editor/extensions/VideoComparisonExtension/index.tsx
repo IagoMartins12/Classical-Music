@@ -36,9 +36,9 @@ const VideoComparisonComponent = (props: any) => {
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <div className="border classical-card overflow-hidden border-erro/40">
+      <div className="classical-card overflow-hidden border-l-4">
         {/* Header */}
-        <div className="bg-erro text-white px-6 py-4">
+        <div className="text-white px-6 py-4">
           <div className="flex items-center justify-between">
             <Inline gap={3}>
               <PiColumns className="w-6 h-6" />
@@ -56,7 +56,7 @@ const VideoComparisonComponent = (props: any) => {
             {showControls && (
               <button
                 onClick={handleDelete}
-                className="p-2 bg-white/20 rounded-lg hover:bg-erro transition-colors"
+                className="p-2 bg-white/20 rounded-lg hover:bg-red-700 transition-colors"
                 title="Remover"
               >
                 <PiTrash className="w-4 h-4" />
@@ -82,7 +82,7 @@ const VideoComparisonComponent = (props: any) => {
                   {video1.description}
                 </Text>
               </div>
-              <PiPlay className="w-5 h-5 text-erro" />
+              <PiPlay className="w-5 h-5" />
             </div>
 
             <div className="aspect-video rounded-lg overflow-hidden shadow-theme-medium">
@@ -108,7 +108,7 @@ const VideoComparisonComponent = (props: any) => {
                   {video2.description}
                 </Text>
               </div>
-              <PiPlay className="w-5 h-5 text-erro" />
+              <PiPlay className="w-5 h-5" />
             </div>
 
             <div className="aspect-video rounded-lg overflow-hidden shadow-theme-medium">

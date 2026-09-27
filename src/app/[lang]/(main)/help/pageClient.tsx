@@ -57,11 +57,11 @@ interface Guide {
 const getDifficultyColor = (difficulty: string): string => {
   switch (difficulty) {
     case 'beginner':
-      return 'text-ok';
+      return '';
     case 'intermediate':
-      return 'text-atencao';
+      return '';
     case 'advanced':
-      return 'text-erro';
+      return '';
     default:
       return 'text-theme-secondary';
   }
@@ -135,11 +135,11 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
     <div className="classical-card overflow-hidden">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full p-4 md:p-6 text-left focus:outline-none hover:bg-sup-elevada/50 transition-colors cursor-pointer"
+        className="w-full p-4 md:p-6 text-left focus:outline-none transition-colors cursor-pointer"
       >
         <div className="flex items-center justify-between">
           <Inline gap={4}>
-            <div className="w-12 h-12 bg-aviso rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
               <IconComponent className="w-6 h-6 text-theme-primary" />
             </div>
             <div className="flex-grow">
@@ -161,9 +161,9 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
                   className="block md:hidden font-medium"
                 >
                   {isExpanded ? (
-                    <PiArrowRight className="w-5 h-5 text-brand-primary rotate-90 transition-transform duration-300" />
+                    <PiArrowRight className="w-5 h-5 text-ouro-texto rotate-90 transition-transform duration-300" />
                   ) : (
-                    <PiArrowRight className="w-5 h-5 text-brand-primary transition-transform duration-300" />
+                    <PiArrowRight className="w-5 h-5 text-ouro-texto transition-transform duration-300" />
                   )}
                 </Text>
               </Inline>
@@ -199,9 +199,9 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
           <div className="flex-shrink-0 ml-4 hidden md:flex">
             <Stack gap={1} className="items-center">
               {isExpanded ? (
-                <PiArrowRight className="w-5 h-5 text-brand-primary rotate-90 transition-transform duration-300" />
+                <PiArrowRight className="w-5 h-5 text-ouro-texto rotate-90 transition-transform duration-300" />
               ) : (
-                <PiArrowRight className="w-5 h-5 text-brand-primary transition-transform duration-300" />
+                <PiArrowRight className="w-5 h-5 text-ouro-texto transition-transform duration-300" />
               )}
               <Text papel="legenda" tom="fraco">
                 {isExpanded ? t('help_guide_close') : t('help_guide_open')}
@@ -212,9 +212,9 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
       </button>
 
       {isExpanded && (
-        <div className="px-6 pb-6 border-t border-linha/20">
+        <div className="px-6 pb-6 border-t">
           <div className="pt-4">
-            <div className="border-ouro/20 pl-4">
+            <div className="pl-4">
               <div className="prose prose-sm max-w-none text-theme-secondary classical-body">
                 {guide.content.split('\n').map((line, index) => {
                   if (line.trim() === '') return <br key={index} />;
@@ -299,10 +299,10 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
               </div>
 
               {/* Botão para fechar */}
-              <div className="mt-6 pt-4 border-t border-linha/10">
+              <div className="mt-6 pt-4 border-t">
                 <button
                   onClick={() => setIsExpanded(false)}
-                  className="text-brand-primary hover:text-ouro-texto/80 text-sm font-medium transition-colors"
+                  className="text-ouro-texto text-sm font-medium transition-colors"
                 >
                   {t('help_guide_close_guide')}
                 </button>
@@ -326,7 +326,7 @@ export default function HelpPage(): JSX.Element {
       title: t('help_category_0_title'),
       description: t('help_category_0_description'),
       icon: PiPlay,
-      color: 'bg-ok',
+      color: 'from-green-500 to-blue-500',
       guides: [
         {
           id: 'create-account',
@@ -362,7 +362,7 @@ export default function HelpPage(): JSX.Element {
       title: t('help_category_1_title'),
       description: t('help_category_1_description'),
       icon: PiMagnifyingGlass,
-      color: 'bg-aviso',
+      color: 'from-blue-500 to-purple-500',
       guides: [
         {
           id: 'search-composers',
@@ -389,7 +389,7 @@ export default function HelpPage(): JSX.Element {
       title: t('help_category_2_title'),
       description: t('help_category_2_description'),
       icon: PiUserCheck,
-      color: 'fill-ouro',
+      color: 'from-purple-500 to-pink-500',
       guides: [
         {
           id: 'student-access',
@@ -416,7 +416,7 @@ export default function HelpPage(): JSX.Element {
       title: t('help_category_3_title'),
       description: t('help_category_3_description'),
       icon: PiUploadSimple,
-      color: 'bg-atencao',
+      color: 'from-orange-500 to-red-500',
       guides: [
         {
           id: 'upload-composer',
@@ -443,7 +443,7 @@ export default function HelpPage(): JSX.Element {
       title: t('help_category_4_title'),
       description: t('help_category_4_description'),
       icon: PiHeart,
-      color: 'fill-ouro',
+      color: 'from-pink-500 to-red-500',
       guides: [
         {
           id: 'favorite-composers',
@@ -470,7 +470,7 @@ export default function HelpPage(): JSX.Element {
       title: t('help_category_5_title'),
       description: t('help_category_5_description'),
       icon: PiTarget,
-      color: 'bg-ok',
+      color: 'from-green-500 to-teal-500',
       guides: [
         {
           id: 'want-to-learn',
@@ -497,7 +497,7 @@ export default function HelpPage(): JSX.Element {
       title: t('help_category_6_title'),
       description: t('help_category_6_description'),
       icon: PiBookOpen,
-      color: 'bg-aviso',
+      color: 'from-indigo-500 to-purple-500',
       guides: [
         {
           id: 'annotation-basics',
@@ -524,7 +524,7 @@ export default function HelpPage(): JSX.Element {
       title: t('help_category_7_title'),
       description: t('help_category_7_description'),
       icon: PiEnvelopeSimple,
-      color: 'bg-ok',
+      color: 'from-teal-500 to-green-500',
       guides: [
         {
           id: 'newsletter-subscription',
@@ -542,7 +542,7 @@ export default function HelpPage(): JSX.Element {
       title: t('help_category_8_title'),
       description: t('help_category_8_description'),
       icon: PiFlag,
-      color: 'bg-erro',
+      color: 'from-red-500 to-pink-500',
       guides: [
         {
           id: 'report-content',
@@ -587,9 +587,7 @@ export default function HelpPage(): JSX.Element {
                     <div
                       key={category.id}
                       className={`classical-card p-6 group flex flex-col items-center justify-center cursor-pointer transition-all ${
-                        selectedCategory === category.id
-                          ? 'ring-2 ring-ouro'
-                          : ''
+                        selectedCategory === category.id ? 'ring-2' : ''
                       }`}
                       onClick={() => setSelectedCategory(category.id)}
                     >
@@ -607,7 +605,7 @@ export default function HelpPage(): JSX.Element {
                         {category.description}
                       </p>
 
-                      <div className="text-brand-primary font-medium flex items-center">
+                      <div className="text-ouro-texto font-medium flex items-center">
                         <span>
                           {category.guides.length}{' '}
                           {t('help_jsx_span_children_0__guias')}
@@ -635,7 +633,7 @@ export default function HelpPage(): JSX.Element {
               <div className="text-center">
                 <button
                   onClick={() => setSelectedCategory(null)}
-                  className="inline-flex items-center text-brand-primary hover:text-ouro-texto/80 mb-4 transition-colors"
+                  className="inline-flex items-center text-ouro-texto mb-4 transition-colors"
                 >
                   <PiArrowRight className="w-4 h-4 mr-2 rotate-180" />
                   {t('help_jsx_button_children_0__voltar')}
@@ -669,14 +667,14 @@ export default function HelpPage(): JSX.Element {
     <PageContainer showBackground={true} className="classical-theme">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16">
-        <div className="absolute inset-0 bg-ouro/5"></div>
+        <div className="absolute inset-0"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 bg-ouro/20 border border-ouro/30 rounded-full mb-8">
-                  <PiQuestion className="w-5 h-5 text-brand-primary mr-2" />
-                  <span className="text-brand-primary font-medium">
+                <div className="inline-flex items-center px-6 py-3 border rounded-full mb-8">
+                  <PiQuestion className="w-5 h-5 text-ouro-texto mr-2" />
+                  <span className="text-ouro-texto font-medium">
                     {t('help_jsx_span_children_0__tutoriais_guias')}
                   </span>
                 </div>
@@ -715,9 +713,9 @@ export default function HelpPage(): JSX.Element {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <Link
                       href="/faq"
-                      className="flex items-center justify-center space-x-3 p-4 bg-aviso/10 border border-aviso/20 rounded-lg hover:border-aviso/40 transition-all"
+                      className="flex items-center justify-center space-x-3 p-4 border rounded-lg transition-all"
                     >
-                      <PiQuestion className="w-5 h-5 text-aviso" />
+                      <PiQuestion className="w-5 h-5" />
                       <span className="text-theme-primary font-medium">
                         {t('help_jsx_link_children_0__perguntas_frequentes')}
                       </span>
@@ -725,9 +723,9 @@ export default function HelpPage(): JSX.Element {
 
                     <Link
                       href="/contact"
-                      className="flex items-center justify-center space-x-3 p-4 bg-ok/10 border border-ok/20 rounded-lg hover:border-ok/40 transition-all"
+                      className="flex items-center justify-center space-x-3 p-4 border rounded-lg transition-all"
                     >
-                      <PiChatCircle className="w-5 h-5 text-ok" />
+                      <PiChatCircle className="w-5 h-5" />
                       <span className="text-theme-primary font-medium">
                         {t('help_jsx_link_children_0__fale_conosco')}
                       </span>
@@ -735,9 +733,9 @@ export default function HelpPage(): JSX.Element {
 
                     <Link
                       href="/support"
-                      className="flex items-center justify-center space-x-3 p-4 bg-erro/10 border border-erro/20 rounded-lg hover:border-erro/40 transition-all"
+                      className="flex items-center justify-center space-x-3 p-4 border rounded-lg transition-all"
                     >
-                      <PiUser className="w-5 h-5 text-erro" />
+                      <PiUser className="w-5 h-5" />
                       <span className="text-theme-primary font-medium">
                         {t('help_jsx_link_children_0__suporte_técnico')}
                       </span>
@@ -755,7 +753,7 @@ export default function HelpPage(): JSX.Element {
 
       {/* Contact Section */}
       <section className="py-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-ouro/10"></div>
+        <div className="absolute inset-0"></div>
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative">
@@ -763,7 +761,7 @@ export default function HelpPage(): JSX.Element {
               hover="lift"
               className="classical-card p-12 text-center max-w-4xl mx-auto"
             >
-              <div className="w-20 h-20 fill-ouro rounded-3xl flex items-center justify-center mx-auto mb-8">
+              <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8">
                 <PiChatCircle className="w-10 h-10 text-theme-primary" />
               </div>
 
@@ -800,28 +798,16 @@ export default function HelpPage(): JSX.Element {
       </section>
 
       {/* Floating Elements */}
-      <FloatingElement
-        className="top-16 left-16 text-6xl text-ouro-texto/5"
-        delay={0}
-      >
+      <FloatingElement className="top-16 left-16 text-6xl" delay={0}>
         <PiMusicNotes />
       </FloatingElement>
-      <FloatingElement
-        className="bottom-16 right-16 text-5xl text-ouro-texto/5"
-        delay={2}
-      >
+      <FloatingElement className="bottom-16 right-16 text-5xl" delay={2}>
         <GiGrandPiano />
       </FloatingElement>
-      <FloatingElement
-        className="top-1/3 right-24 text-4xl text-aviso/5"
-        delay={1}
-      >
+      <FloatingElement className="top-1/3 right-24 text-4xl" delay={1}>
         <PiBook />
       </FloatingElement>
-      <FloatingElement
-        className="bottom-1/3 left-24 text-4xl text-ouro-texto/5"
-        delay={3}
-      >
+      <FloatingElement className="bottom-1/3 left-24 text-4xl" delay={3}>
         <PiScroll />
       </FloatingElement>
     </PageContainer>

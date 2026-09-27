@@ -202,14 +202,14 @@ export default function CopyrightPage() {
     <PageContainer showBackground={true} className="classical-theme">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16">
-        <div className="absolute inset-0 bg-ouro/5"></div>
+        <div className="absolute inset-0"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative  ">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 bg-ouro/20 border border-ouro/30 rounded-full mb-8">
-                  <PiShield className="w-5 h-5 text-brand-primary mr-2" />
-                  <span className="text-brand-primary font-medium">
+                <div className="inline-flex items-center px-6 py-3 border rounded-full mb-8">
+                  <PiShield className="w-5 h-5 text-ouro-texto mr-2" />
+                  <span className="text-ouro-texto font-medium">
                     {t('copyright_jsx_span_children_0__proteção_legal')}
                   </span>
                 </div>
@@ -252,7 +252,7 @@ export default function CopyrightPage() {
             <div className="max-w-4xl mx-auto">
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className=" flex flex-col md:flex-row items-start space-x-4">
-                  <div className="w-16 h-16 bg-aviso rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0">
                     <PiScales className="w-8 h-8 text-theme-primary" />
                   </div>
                   <Stack>
@@ -300,7 +300,7 @@ export default function CopyrightPage() {
                         </Text>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-medium text-ok">
+                        <div className="text-sm font-medium">
                           {example.status}
                         </div>
                         <Text papel="legenda" tom="fraco" as="div">
@@ -330,7 +330,7 @@ export default function CopyrightPage() {
                 >
                   <div className="classical-card !p-8 md:p-8">
                     <div className="flex flex-col md:flex-row items-start space-x-6">
-                      <div className="w-14 h-14 bg-aviso rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0">
                         <section.icon className="w-7 h-7 text-theme-primary" />
                       </div>
 
@@ -380,7 +380,7 @@ export default function CopyrightPage() {
                       key={index}
                       className=" flex flex-col md:flex-row items-start space-x-4"
                     >
-                      <div className="w-8 h-8 fill-ouro rounded-full flex items-center justify-center text-sobre-ouro font-bold text-sm flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                         {step.step}
                       </div>
                       <Stack gap={2}>
@@ -407,7 +407,7 @@ export default function CopyrightPage() {
             <div className="max-w-4xl mx-auto">
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className=" flex flex-col md:flex-row items-start space-x-4">
-                  <div className="w-12 h-12 bg-atencao rounded-xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
                     <PiWarningCircle className="w-6 h-6 text-theme-primary" />
                   </div>
                   <Stack>
@@ -416,7 +416,7 @@ export default function CopyrightPage() {
                     </h3>
                     <ul className="space-y-3 text-theme-secondary">
                       <li className="flex items-start space-x-2">
-                        <PiCheck className="w-4 h-4 text-ok mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'copyright_jsx_span_children_0__sempre_verifique_direitos'
@@ -424,7 +424,7 @@ export default function CopyrightPage() {
                         </span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <PiCheck className="w-4 h-4 text-ok mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'copyright_jsx_span_children_0__não_assumimos_responsabilidade'
@@ -432,7 +432,7 @@ export default function CopyrightPage() {
                         </span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <PiCheck className="w-4 h-4 text-ok mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'copyright_jsx_span_children_0__removemos_conteúdo_imediatamente'
@@ -440,7 +440,7 @@ export default function CopyrightPage() {
                         </span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <PiCheck className="w-4 h-4 text-ok mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'copyright_jsx_span_children_0__cooperamos_integralmente_detentores'
@@ -458,7 +458,7 @@ export default function CopyrightPage() {
 
       {/* Contact Section */}
       <section className="py-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-ouro/10"></div>
+        <div className="absolute inset-0"></div>
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative  ">
@@ -467,7 +467,7 @@ export default function CopyrightPage() {
                 hover="lift"
                 className="classical-card p-12 text-center"
               >
-                <div className="w-20 h-20 fill-ouro rounded-3xl flex items-center justify-center mx-auto mb-8">
+                <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8">
                   <PiEnvelopeSimple className="w-10 h-10 text-theme-primary" />
                 </div>
 
@@ -483,13 +483,13 @@ export default function CopyrightPage() {
 
                 <Stack className="mb-12">
                   <Inline gap={3} className="justify-center">
-                    <PiEnvelopeSimple className="w-5 h-5 text-brand-primary" />
+                    <PiEnvelopeSimple className="w-5 h-5 text-ouro-texto" />
                     <span className="text-theme-primary font-medium">
                       opusatlas@gmail.com
                     </span>
                   </Inline>
                   <Inline gap={3} className="justify-center">
-                    <PiFlag className="w-5 h-5 text-brand-primary" />
+                    <PiFlag className="w-5 h-5 text-ouro-texto" />
                     <span className="text-theme-primary font-medium">
                       {t(
                         'copyright_jsx_span_children_0__sistema_reports_plataforma'
@@ -544,28 +544,16 @@ export default function CopyrightPage() {
       </section>
 
       {/* Floating Elements */}
-      <FloatingElement
-        className="top-16 left-16 text-6xl text-ouro-texto/5"
-        delay={0}
-      >
+      <FloatingElement className="top-16 left-16 text-6xl" delay={0}>
         <PiMusicNotes />
       </FloatingElement>
-      <FloatingElement
-        className="bottom-16 right-16 text-5xl text-ouro-texto/5"
-        delay={2}
-      >
+      <FloatingElement className="bottom-16 right-16 text-5xl" delay={2}>
         <GiGrandPiano />
       </FloatingElement>
-      <FloatingElement
-        className="top-1/3 right-24 text-4xl text-aviso/5"
-        delay={1}
-      >
+      <FloatingElement className="top-1/3 right-24 text-4xl" delay={1}>
         <PiScales />
       </FloatingElement>
-      <FloatingElement
-        className="bottom-1/3 left-24 text-4xl text-ouro-texto/5"
-        delay={3}
-      >
+      <FloatingElement className="bottom-1/3 left-24 text-4xl" delay={3}>
         <PiScroll />
       </FloatingElement>
     </PageContainer>

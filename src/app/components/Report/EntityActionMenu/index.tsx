@@ -54,7 +54,7 @@ export default function EntityActionMenu({
       <div className="relative">
         <button
           onClick={() => setShowMenu(!showMenu)}
-          className="p-2 rounded-lg text-theme-tertiary hover:text-texto hover:bg-sup-1 transition-all"
+          className="p-2 rounded-lg text-theme-tertiary transition-all"
           title="Mais ações"
         >
           <PiDotsThree className="w-5 h-5" />
@@ -79,7 +79,7 @@ export default function EntityActionMenu({
                       onView();
                       setShowMenu(false);
                     }}
-                    className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-sup-1 transition-colors"
+                    className="w-full px-4 py-2 text-left text-sm text-theme-primary transition-colors"
                   >
                     <PiEye className="w-4 h-4" />
                     <span>Visualizar</span>
@@ -94,7 +94,7 @@ export default function EntityActionMenu({
                       onEdit();
                       setShowMenu(false);
                     }}
-                    className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-sup-1 transition-colors"
+                    className="w-full px-4 py-2 text-left text-sm text-theme-primary transition-colors"
                   >
                     <PiNotePencil className="w-4 h-4" />
                     <span>Editar</span>
@@ -110,7 +110,7 @@ export default function EntityActionMenu({
                       setShowVerificationModal(true);
                       setShowMenu(false);
                     }}
-                    className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-sup-1 transition-colors"
+                    className="w-full px-4 py-2 text-left text-sm text-theme-primary transition-colors"
                   >
                     <PiShield className="w-4 h-4" />
                     <span>
@@ -129,7 +129,7 @@ export default function EntityActionMenu({
                     entityName={entityName}
                     variant="ghost"
                     size="sm"
-                    className="w-full justify-start text-erro hover:bg-erro/10"
+                    className="w-full justify-start"
                   />
                 </div>
 
@@ -143,7 +143,7 @@ export default function EntityActionMenu({
                         onDelete();
                         setShowMenu(false);
                       }}
-                      className="w-full px-4 py-2 text-left text-sm text-erro hover:bg-erro/10 transition-colors"
+                      className="w-full px-4 py-2 text-left text-sm transition-colors"
                     >
                       <PiTrash className="w-4 h-4" />
                       <span>Deletar</span>

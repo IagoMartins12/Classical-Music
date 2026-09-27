@@ -162,10 +162,7 @@ const QuoteMusicalComponent = (props: any) => {
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <Card
-        densidade="larga"
-        className="border relative border-ouro/40 bg-ouro/10"
-      >
+      <Card densidade="larga" className="relative border-l-4">
         {/* Controles de Edição */}
         {showControls && (
           <Inline
@@ -175,7 +172,7 @@ const QuoteMusicalComponent = (props: any) => {
             <button
               type="button"
               onClick={handleDelete}
-              className="p-2 text-erro hover:bg-erro/10 rounded transition-colors"
+              className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
               title="Remover"
             >
               <PiTrash className="w-4 h-4" />
@@ -192,7 +189,7 @@ const QuoteMusicalComponent = (props: any) => {
             &quot;{quote}&quot;
           </p>
           <footer className="flex items-center justify-between flex-wrap gap-4">
-            <cite className="text-lg font-semibold text-brand-primary not-italic">
+            <cite className="text-lg font-semibold text-ouro-texto not-italic">
               — {author}
             </cite>
 
@@ -207,7 +204,7 @@ const QuoteMusicalComponent = (props: any) => {
                     e.preventDefault();
                     setShowPlayer(!showPlayer);
                   }}
-                  className="text-sm text-ouro-texto hover:text-ouro-texto transition-colors"
+                  className="text-sm transition-colors"
                 >
                   <PiMusicNotes className="w-5 h-5" />
                   <span>{showPlayer ? 'Ocultar' : 'Mostrar'} controles</span>
@@ -231,7 +228,7 @@ const QuoteMusicalComponent = (props: any) => {
                 e.stopPropagation();
                 togglePlay();
               }}
-              className="p-2 bg-ouro text-sobre-ouro rounded-full hover:opacity-90 transition-opacity"
+              className="p-2 text-white rounded-full hover:opacity-90 transition-opacity"
             >
               {isPlaying ? (
                 <PiPause className="w-5 h-5" />

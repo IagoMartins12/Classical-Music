@@ -149,7 +149,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                 <div className="flex-1 flex flex-col gap-4">
                   <div className="flex items-center flex-col sm:flex-row space-x-3 mb-2">
                     {isNotMusicStudent ? (
-                      <span className=" py-1 text-end bg-ouro text-theme-primary classical-subtitle rounded-full">
+                      <span className=" py-1 text-end text-theme-primary classical-subtitle rounded-full">
                         {t('instruments_step_instrument_label')}{' '}
                         <Text
                           papel="rotulo"
@@ -163,7 +163,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                       <></>
                     )}
                     {instrument.isPrimary && !isNotMusicStudent ? (
-                      <span className=" py-1 text-end bg-ouro text-theme-primary classical-subtitle rounded-full">
+                      <span className=" py-1 text-end text-theme-primary classical-subtitle rounded-full">
                         {t('instruments_step_main_instrument_label')}{' '}
                         <Text
                           papel="rotulo"
@@ -176,7 +176,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                     ) : (
                       <>
                         {!isNotMusicStudent && (
-                          <span className=" py-1 text-end bg-ouro text-theme-primary classical-subtitle rounded-full">
+                          <span className=" py-1 text-end text-theme-primary classical-subtitle rounded-full">
                             {t('instruments_step_instrument_label')}{' '}
                             <Text
                               papel="rotulo"
@@ -224,7 +224,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
 
                 <button
                   onClick={() => removeInstrument(instrument.id)}
-                  className="p-2 text-theme-tertiary hover:text-erro transition-colors"
+                  className="p-2 text-theme-tertiary transition-colors"
                 >
                   <PiX className="w-4 h-4" />
                   <NomeAcao acao="fechar" />
@@ -247,7 +247,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
               ${
                 isInstrumentSelected(instrument.id)
                   ? 'opacity-50 cursor-not-allowed'
-                  : 'hover:scale-105 hover:border-ouro'
+                  : 'hover:scale-105'
               }
             `}
           >
@@ -256,7 +256,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                 {instrument.displayName}
               </Text>
               {!isInstrumentSelected(instrument.id) && (
-                <PiPlus className="w-4 h-4 text-brand-primary" />
+                <PiPlus className="w-4 h-4 text-ouro-texto" />
               )}
             </div>
             {instrument.category && (

@@ -81,8 +81,8 @@ export default function MusicalPiecesSection({
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-3 flex-1">
-                  <div className="w-10 h-10 bg-aviso/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <PiMusicNotes className="w-5 h-5 text-aviso" />
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <PiMusicNotes className="w-5 h-5" />
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -94,7 +94,7 @@ export default function MusicalPiecesSection({
                         <Text
                           papel="legenda"
                           tom="suave"
-                          className="bg-sup-1/20 px-2 py-0.5 rounded"
+                          className="px-2 py-0.5 rounded"
                         >
                           #{index + 1}
                         </Text>
@@ -106,7 +106,7 @@ export default function MusicalPiecesSection({
                       href={`/composer/${workScore.composer
                         .replace(/\s+/g, '-')
                         .toLowerCase()}`}
-                      className="text-sm text-aviso hover:text-aviso/80 font-medium inline-flex items-center space-x-1 mb-2"
+                      className="text-sm font-medium inline-flex items-center space-x-1 mb-2"
                     >
                       <span>{workScore.composer}</span>
                       <PiArrowSquareOut className="w-3 h-3" />
@@ -117,7 +117,7 @@ export default function MusicalPiecesSection({
                       <div>
                         <Link
                           href={`/works/${workScore.id}`}
-                          className="text-sm text-ouro-texto hover:text-ouro-texto/80 inline-flex items-center space-x-1"
+                          className="text-sm inline-flex items-center space-x-1"
                         >
                           <PiBookOpen className="w-3 h-3" />
                           <span>Ver obra completa</span>
@@ -154,7 +154,7 @@ export default function MusicalPiecesSection({
                       href={workScore.downloadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-classical-secondary text-sm bg-ok/10 border-ok/30 text-ok hover:bg-ok/20"
+                      className="btn-classical-secondary text-sm"
                     >
                       <PiDownloadSimple className="w-4 h-4" />
                       <span>Download</span>

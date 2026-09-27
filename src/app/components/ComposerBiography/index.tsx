@@ -62,7 +62,7 @@ export default function ComposerBiography({
           {[...Array(6)].map((_, index) => (
             <div
               key={index}
-              className="h-4 bg-sup-elevada rounded-full animate-shimmer"
+              className="h-4 rounded-full animate-shimmer"
               style={{
                 width: `${Math.random() * 30 + 70}%`,
                 animationDelay: `${index * 0.1}s`,
@@ -73,14 +73,14 @@ export default function ComposerBiography({
 
         {/* Indicadores de progresso */}
         {/* <div className="flex items-center justify-center space-x-6 pt-4">
-          <div className="flex items-center space-x-2 text-accent-green">
-            <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 rounded-full animate-pulse"></div>
             <span className="text-xs">
               {language === 'pt' ? t('loading') : 'Generating biography...'}
             </span>
           </div>
           {language === 'en' && (
-            <div className="flex items-center space-x-2 text-accent-blue">
+            <div className="flex items-center space-x-2">
               <FiGlobe className="w-3 h-3 animate-spin" />
               <span className="text-xs">Translating...</span>
             </div>
@@ -95,15 +95,13 @@ export default function ComposerBiography({
     return (
       <div className="rounded-2xl p-6 flex justify-center">
         <div className="flex flex-col gap-4 justify-center items-center space-x-4">
-          <div className="w-10 h-10 bg-erro/20 border border-erro/40 rounded-xl flex items-center justify-center flex-shrink-0">
-            <PiWarningCircle className="w-5 h-5 text-erro" />
+          <div className="w-10 h-10 border rounded-xl flex items-center justify-center flex-shrink-0">
+            <PiWarningCircle className="w-5 h-5" />
           </div>
           <div className="flex-1 items-center justify-center">
             <Inline gap={2} className="mb-2">
-              <PiX className="w-4 h-4 text-erro" />
-              <p className="text-erro font-semibold">
-                {t('error_generating_bio')}
-              </p>
+              <PiX className="w-4 h-4" />
+              <p className="font-semibold">{t('error_generating_bio')}</p>
             </Inline>
 
             <div className="flex justify-center mt-4 gap-2">
@@ -127,16 +125,16 @@ export default function ComposerBiography({
     <div className="max-w-none relative">
       {/* ✅ Badge de informações sobre a biografia com refresh manual */}
       {/* {(metadata?.isGenerated || metadata?.isTranslated) && (
-        <div className="flex items-center justify-between mb-6 p-3 bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-xl">
+        <div className="flex items-center justify-between mb-6 p-3 border rounded-xl">
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-accent-green/20 border border-accent-green/40 rounded-lg flex items-center justify-center">
+            <div className="w-6 h-6 border rounded-lg flex items-center justify-center">
               {metadata?.isTranslated ? (
-                <FiGlobe className="w-3 h-3 text-accent-green" />
+                <FiGlobe className="w-3 h-3" />
               ) : (
-                <FiZap className="w-3 h-3 text-accent-green" />
+                <FiZap className="w-3 h-3" />
               )}
             </div>
-            <span className="text-accent-green text-sm font-medium">
+            <span className="text-sm font-medium">
               {metadata?.isTranslated
                 ? `Biography translated to ${
                     language === 'pt' ? 'Portuguese' : 'English'
@@ -149,13 +147,13 @@ export default function ComposerBiography({
           <button
             onClick={handleManualRefresh}
             disabled={isGenerating}
-            className="ml-2 p-1 rounded-md hover:bg-accent-green/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="ml-2 p-1 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title="Refresh biography"
           >
             <PiArrowsClockwise
-              className={`w-3 h-3 text-accent-green ${
-                isGenerating ? 'animate-spin' : 'hover:rotate-180'
-              } transition-transform duration-500`}
+              className={`w-3 h-3 ${
+ isGenerating ?'animate-spin':'hover:rotate-180'
+ } transition-transform duration-500`}
             />
           </button>
         </div>
@@ -163,27 +161,27 @@ export default function ComposerBiography({
 
       {/* Warning se houver fallback */}
       {warning && (
-        <div className="mb-6 p-3 bg-atencao/10 border border-atencao/30 rounded-xl">
+        <div className="mb-6 p-3 border rounded-xl">
           <Inline gap={2}>
-            <PiWarningCircle className="w-4 h-4 text-atencao" />
-            <span className="text-atencao text-sm font-medium">{warning}</span>
+            <PiWarningCircle className="w-4 h-4" />
+            <span className="text-sm font-medium">{warning}</span>
           </Inline>
         </div>
       )}
 
       {/* ✅ Mostrar erro como warning se tiver biografia para fallback */}
       {error && displayBio && (
-        <div className="mb-6 p-3 bg-atencao/10 border border-atencao/30 rounded-xl">
+        <div className="mb-6 p-3 border rounded-xl">
           <div className="flex items-center justify-between">
             <Inline gap={2}>
-              <PiWarningCircle className="w-4 h-4 text-atencao" />
-              <span className="text-atencao text-sm font-medium">
+              <PiWarningCircle className="w-4 h-4" />
+              <span className="text-sm font-medium">
                 Translation error - showing previous version
               </span>
             </Inline>
             <button
               onClick={handleRetry}
-              className="text-xs px-2 py-1 bg-atencao/10 text-atencao rounded hover:bg-atencao/30 transition-colors"
+              className="text-xs px-2 py-1 rounded transition-colors"
             >
               Try again
             </button>
@@ -210,16 +208,16 @@ export default function ComposerBiography({
         </Text>
 
         {/* Gradient fade no final */}
-        <div className="absolute bottom-0 left-0 right-0 h-8 bg-fundo pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t to-transparent pointer-events-none"></div>
       </div>
 
       {/* Linha decorativa */}
       <div className="mt-6 pt-6 border-t border-theme-secondary">
         <Inline gap={2} className="justify-center text-theme-tertiary">
-          <div className="w-1 h-1 bg-ouro rounded-full animate-pulse"></div>
+          <div className="w-1 h-1 rounded-full animate-pulse"></div>
           <PiMusicNotes className="w-4 h-4" />
           <div
-            className="w-1 h-1 bg-ouro rounded-full animate-pulse"
+            className="w-1 h-1 rounded-full animate-pulse"
             style={{ animationDelay: '0.5s' }}
           ></div>
         </Inline>

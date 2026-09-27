@@ -23,19 +23,19 @@ export default function ReportStatus({
       case 'pending':
         return {
           icon: <PiClock className="w-3 h-3" />,
-          color: 'text-atencao bg-atencao/10 border-atencao/30',
+          color: '',
           label: 'Pendente',
         };
       case 'approved':
         return {
           icon: <PiCheck className="w-3 h-3" />,
-          color: 'text-ok bg-ok/10 border-ok/30',
+          color: '',
           label: 'Aprovado',
         };
       case 'rejected':
         return {
           icon: <PiX className="w-3 h-3" />,
-          color: 'text-erro bg-erro/10 border-erro/30',
+          color: '',
           label: 'Rejeitado',
         };
       default:

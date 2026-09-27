@@ -191,11 +191,11 @@ export default function TeacherNotificationsPageClient({
     if (type.includes('STUDENT')) return <PiUser className="w-5 h-5" />;
 
     if (priority === 'HIGH' || priority === 'CRITICAL') {
-      return <PiWarning className="w-5 h-5 text-erro" />;
+      return <PiWarning className="w-5 h-5" />;
     } else if (priority === 'MEDIUM') {
-      return <PiClock className="w-5 h-5 text-atencao" />;
+      return <PiClock className="w-5 h-5" />;
     } else {
-      return <PiInfo className="w-5 h-5 text-aviso" />;
+      return <PiInfo className="w-5 h-5" />;
     }
   };
 
@@ -203,11 +203,11 @@ export default function TeacherNotificationsPageClient({
     switch (priority) {
       case 'HIGH':
       case 'CRITICAL':
-        return 'border-l-erro bg-erro/5';
+        return 'bg-gradient-to-r to-transparent';
       case 'MEDIUM':
-        return 'border-l-atencao bg-atencao/5';
+        return 'bg-gradient-to-r to-transparent';
       default:
-        return 'border-l-aviso bg-aviso/5';
+        return 'bg-gradient-to-r to-transparent';
     }
   };
 
@@ -244,7 +244,7 @@ export default function TeacherNotificationsPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <PiWarning className="w-16 h-16 text-erro mx-auto mb-4" />
+            <PiWarning className="w-16 h-16 mx-auto mb-4" />
             <h1 className="text-xl font-bold text-theme-primary mb-2">
               {t('error_loading')}
             </h1>
@@ -269,7 +269,7 @@ export default function TeacherNotificationsPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiBell className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -289,7 +289,7 @@ export default function TeacherNotificationsPageClient({
               hover="scale"
               className="classical-card p-6 text-center"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                 <PiBell className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -304,7 +304,7 @@ export default function TeacherNotificationsPageClient({
               hover="scale"
               className="classical-card p-6 text-center"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                 <PiCalendarBlank className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -321,7 +321,7 @@ export default function TeacherNotificationsPageClient({
               hover="scale"
               className="classical-card p-6 text-center"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                 <PiFileText className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -338,7 +338,7 @@ export default function TeacherNotificationsPageClient({
               hover="scale"
               className="classical-card p-6 text-center"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                 <PiUser className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -373,8 +373,8 @@ export default function TeacherNotificationsPageClient({
                     onClick={() => setFilter(filterType)}
                     className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
                       filter === filterType
-                        ? 'bg-ouro text-theme-primary border border-ouro'
-                        : 'bg-theme-elevated text-theme-secondary hover:bg-ouro/10 border border-theme-secondary'
+                        ? 'text-theme-primary border'
+                        : 'bg-theme-elevated text-theme-secondary border border-theme-secondary'
                     }`}
                   >
                     {getFilterIcon(filterType)}
@@ -423,7 +423,7 @@ export default function TeacherNotificationsPageClient({
           <div className="space-y-4">
             {loading && notifications.length === 0 ? (
               <div className="text-center py-12">
-                <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+                <PiArrowsClockwise className="w-8 h-8 animate-spin text-ouro-texto mx-auto mb-4" />
                 <p className="text-theme-secondary">{t('loading')}</p>
               </div>
             ) : filteredNotifications.length === 0 ? (
@@ -456,13 +456,9 @@ export default function TeacherNotificationsPageClient({
                   <AnimatedCard
                     key={notification.id}
                     hover="lift"
-                    className={`border classical-card ${getPriorityColor(
+                    className={`classical-card border-l-4 ${getPriorityColor(
                       notification.priority
-                    )} ${
-                      notification.status === 'UNREAD'
-                        ? 'ring-1 ring-ouro/20'
-                        : ''
-                    }`}
+                    )} ${notification.status === 'UNREAD' ? 'ring-1' : ''}`}
                   >
                     <div className="p-6">
                       <div className="flex items-start space-x-4">
@@ -503,10 +499,10 @@ export default function TeacherNotificationsPageClient({
                                   className={`px-2 py-1 rounded-full text-xs ${
                                     notification.priority === 'HIGH' ||
                                     notification.priority === 'CRITICAL'
-                                      ? 'bg-erro/10 text-erro'
+                                      ? ''
                                       : notification.priority === 'MEDIUM'
-                                        ? 'bg-atencao/10 text-atencao'
-                                        : 'bg-aviso/10 text-aviso'
+                                        ? ''
+                                        : ''
                                   }`}
                                 >
                                   {getPriorityLabel(notification.priority)}
@@ -532,10 +528,10 @@ export default function TeacherNotificationsPageClient({
                               {notification.status === 'UNREAD' && (
                                 <button
                                   onClick={() => markAsRead(notification.id)}
-                                  className="p-2 rounded-lg hover:bg-ouro/10 transition-colors"
+                                  className="p-2 rounded-lg transition-colors"
                                   title={t('mark_as_read')}
                                 >
-                                  <PiCheck className="w-4 h-4 text-theme-tertiary hover:text-ok" />
+                                  <PiCheck className="w-4 h-4 text-theme-tertiary" />
                                 </button>
                               )}
                             </Inline>

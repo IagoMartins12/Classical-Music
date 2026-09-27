@@ -280,11 +280,11 @@ export function useAdminLogs() {
 
   const getLevelColor = (level: LogLevel) => {
     const colors = {
-      [LogLevel.ERROR]: 'text-erro border-erro bg-erro/10',
-      [LogLevel.WARN]: 'text-atencao border-atencao bg-atencao/10',
-      [LogLevel.INFO]: 'text-aviso border-aviso bg-aviso/10',
-      [LogLevel.DEBUG]: 'text-ouro-texto border-ouro bg-ouro/10',
-      [LogLevel.TRACE]: 'text-theme-tertiary border-linha bg-theme-secondary',
+      [LogLevel.ERROR]: '',
+      [LogLevel.WARN]: '',
+      [LogLevel.INFO]: '',
+      [LogLevel.DEBUG]: '',
+      [LogLevel.TRACE]: 'text-theme-tertiary bg-theme-secondary',
     };
     return colors[level] || colors[LogLevel.INFO];
   };

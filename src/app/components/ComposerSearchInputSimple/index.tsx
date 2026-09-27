@@ -263,7 +263,7 @@ export default function ComposerSearchInputSimple({
         {(selectedComposer || searchTerm) && (
           <button
             onClick={handleClear}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-texto transition-colors z-10"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary transition-colors z-10"
             disabled={isDisabled}
           >
             <PiX className="w-4 h-4" />
@@ -286,8 +286,8 @@ export default function ComposerSearchInputSimple({
           }}
         >
           {showPopularLabel && (
-            <div className="flex items-center gap-2 px-4 py-3 bg-sup-1/10 border-b border-theme-secondary">
-              <PiTrendUp className="w-4 h-4 text-brand-primary" />
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-theme-secondary">
+              <PiTrendUp className="w-4 h-4 text-ouro-texto" />
               <Text papel="rotulo" tom="suave" className="font-medium">
                 {t('composer_search_jsx_popular_label')}
               </Text>
@@ -297,7 +297,7 @@ export default function ComposerSearchInputSimple({
           {isLoading && (
             <div className="flex items-center justify-center py-8">
               <Inline gap={2} className="text-theme-secondary">
-                <div className="w-4 h-4 border-2 border-ouro border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></div>
                 <span className="text-sm">
                   {t('composer_search_jsx_loading')}
                 </span>
@@ -312,10 +312,10 @@ export default function ComposerSearchInputSimple({
                   key={composer.id}
                   onClick={() => handleComposerSelect(composer)}
                   className={`
-                    w-full text-left px-4 py-3 hover:bg-ouro/10 transition-colors duration-200 border-b last:border-b-0 border-theme-secondary
+                    w-full text-left px-4 py-3 transition-colors duration-200 border-b last:border-b-0 border-theme-secondary
                     ${
                       selectedComposer === composer.id
-                        ? 'bg-ouro/10 text-brand-primary font-medium'
+                        ? 'text-ouro-texto font-medium'
                         : ''
                     }
                     ${index === 0 && !showPopularLabel ? 'border-t-0' : ''}
@@ -360,7 +360,7 @@ export default function ComposerSearchInputSimple({
                         <Text
                           papel="legenda"
                           tom="suave"
-                          className="inline-flex items-center px-2 py-1 rounded-full bg-sup-1/20"
+                          className="inline-flex items-center px-2 py-1 rounded-full"
                         >
                           {composer.worksCount}{' '}
                           {composer.worksCount === 1

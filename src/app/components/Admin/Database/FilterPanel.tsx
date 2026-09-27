@@ -250,7 +250,7 @@ export default function FilterPanel({
                 variant="ghost"
                 size="sm"
                 onClick={onClearFilters}
-                className="text-erro hover:bg-erro/10"
+                className=""
               >
                 Limpar Todos
               </Button>
@@ -277,7 +277,7 @@ export default function FilterPanel({
                   </div>
                   <button
                     onClick={() => onRemoveFilter(field)}
-                    className="p-2 hover:bg-erro/10 text-erro rounded transition-colors"
+                    className="p-2 rounded transition-colors"
                   >
                     <PiTrash className="w-4 h-4" />
                     <NomeAcao acao="excluir" />

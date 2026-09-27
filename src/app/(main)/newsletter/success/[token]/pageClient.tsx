@@ -40,7 +40,7 @@ export default function NewsletterSuccessContent() {
     switch (type) {
       case 'confirmed':
         return {
-          icon: <PiCheckCircle className="w-16 h-16 text-ok" />,
+          icon: <PiCheckCircle className="w-16 h-16" />,
           title: t('success_confirmed_title'),
           subtitle: t('success_confirmed_subtitle'),
           message: t('success_confirmed_message'),
@@ -50,7 +50,7 @@ export default function NewsletterSuccessContent() {
 
       case 'subscribed':
         return {
-          icon: <PiEnvelopeSimple className="w-16 h-16 text-aviso" />,
+          icon: <PiEnvelopeSimple className="w-16 h-16" />,
           title: t('success_subscribed_title'),
           subtitle: t('success_subscribed_subtitle'),
           message: t('success_subscribed_message'),
@@ -61,7 +61,7 @@ export default function NewsletterSuccessContent() {
 
       case 'already_unsubscribed':
         return {
-          icon: <PiEnvelopeSimple className="w-16 h-16 text-atencao" />,
+          icon: <PiEnvelopeSimple className="w-16 h-16" />,
           title: t('success_already_unsubscribed_title'),
           subtitle: t('success_already_unsubscribed_subtitle'),
           message: t('success_already_unsubscribed_message'),
@@ -71,7 +71,7 @@ export default function NewsletterSuccessContent() {
 
       default:
         return {
-          icon: <PiCheckCircle className="w-16 h-16 text-ok" />,
+          icon: <PiCheckCircle className="w-16 h-16" />,
           title: t('success_default_title'),
           subtitle: t('success_default_subtitle'),
           message: t('success_default_message'),
@@ -101,7 +101,7 @@ export default function NewsletterSuccessContent() {
             <div className="max-w-3xl mx-auto text-center">
               {/* Icon */}
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center justify-center w-24 h-24 bg-ouro/10 rounded-full mb-8">
+                <div className="inline-flex items-center justify-center w-24 h-24 rounded-full mb-8">
                   {content.icon}
                 </div>
               </AnimatedItem>
@@ -115,7 +115,7 @@ export default function NewsletterSuccessContent() {
 
               {/* Subtitle */}
               <AnimatedItem direction="up" springType="gentle">
-                <p className="text-xl lg:text-2xl text-brand-primary font-medium mb-6">
+                <p className="text-xl lg:text-2xl text-ouro-texto font-medium mb-6">
                   {content.subtitle}
                 </p>
               </AnimatedItem>
@@ -144,7 +144,7 @@ export default function NewsletterSuccessContent() {
                         onClick={() => {
                           /* Implementar reenvio */
                         }}
-                        className="text-brand-primary hover:text-ouro-texto font-medium"
+                        className="text-ouro-texto font-medium"
                       >
                         {t('success_subscribed_resend')}
                       </button>
@@ -159,9 +159,9 @@ export default function NewsletterSuccessContent() {
                   <div className="grid md:grid-cols-3 gap-6">
                     <Link
                       href="/composers"
-                      className="group classical-card p-6 hover:bg-sup-1 transition-all"
+                      className="group classical-card p-6 transition-all"
                     >
-                      <PiMusicNotes className="w-8 h-8 text-brand-primary mb-3 mx-auto group-hover:scale-110 transition-transform" />
+                      <PiMusicNotes className="w-8 h-8 text-ouro-texto mb-3 mx-auto group-hover:scale-110 transition-transform" />
                       <h3 className="font-semibold text-theme-primary mb-2">
                         {t('success_explore_composers_title')}
                       </h3>
@@ -172,9 +172,9 @@ export default function NewsletterSuccessContent() {
 
                     <Link
                       href="/works"
-                      className="group classical-card p-6 hover:bg-sup-1 transition-all"
+                      className="group classical-card p-6 transition-all"
                     >
-                      <GiGrandPiano className="w-8 h-8 text-ouro-texto mb-3 mx-auto group-hover:scale-110 transition-transform" />
+                      <GiGrandPiano className="w-8 h-8 mb-3 mx-auto group-hover:scale-110 transition-transform" />
                       <h3 className="font-semibold text-theme-primary mb-2">
                         {t('success_works_title')}
                       </h3>
@@ -185,9 +185,9 @@ export default function NewsletterSuccessContent() {
 
                     <Link
                       href="/"
-                      className="group classical-card p-6 hover:bg-sup-1 transition-all"
+                      className="group classical-card p-6 transition-all"
                     >
-                      <PiHouse className="w-8 h-8 text-aviso mb-3 mx-auto group-hover:scale-110 transition-transform" />
+                      <PiHouse className="w-8 h-8 mb-3 mx-auto group-hover:scale-110 transition-transform" />
                       <h3 className="font-semibold text-theme-primary mb-2">
                         {t('success_home_title')}
                       </h3>
@@ -204,16 +204,10 @@ export default function NewsletterSuccessContent() {
       </section>
 
       {/* Floating Elements */}
-      <FloatingElement
-        className="top-20 left-20 text-6xl text-ouro-texto/5"
-        delay={0}
-      >
+      <FloatingElement className="top-20 left-20 text-6xl" delay={0}>
         <PiMusicNotes />
       </FloatingElement>
-      <FloatingElement
-        className="bottom-20 right-20 text-5xl text-ok/5"
-        delay={2}
-      >
+      <FloatingElement className="bottom-20 right-20 text-5xl" delay={2}>
         <PiHeart />
       </FloatingElement>
     </PageContainer>

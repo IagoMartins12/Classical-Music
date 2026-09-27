@@ -42,7 +42,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
           ev.preventDefault();
           goToWorkPage(work.id);
         }}
-        className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-[var(--sombra-2)]"
+        className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
       >
         {/* Header Section */}
         <div className="relative p-2 md:p-6 pb-0 md:pb-4 border-b border-theme-secondary">
@@ -66,11 +66,8 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
 
           <div className="relative z-10">
             {/* Title */}
-            <h3 className="text-lg flex items-center gap-2 font-bold text-theme-primary classical-title mb-3 line-clamp-2 group-hover:text-ouro-texto transition-colors duration-300 leading-tight">
-              <Link
-                href={`/works/${work.id}`}
-                className="hover:text-ouro-texto transition-colors"
-              >
+            <h3 className="text-lg flex items-center gap-2 font-bold text-theme-primary classical-title mb-3 line-clamp-2 transition-colors duration-300 leading-tight">
+              <Link href={`/works/${work.id}`} className="transition-colors">
                 {work.title}
               </Link>
               <VerificationBadge verified={work.isVerified} variant="icon" />
@@ -88,12 +85,12 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
 
             {/* Composer */}
             <div className="flex items-center mb-4">
-              <div className="w-6 h-6 bg-aviso rounded-full flex items-center justify-center mr-2">
+              <div className="w-6 h-6 rounded-full flex items-center justify-center mr-2">
                 <PiUser className="w-3 h-3 text-theme-primary" />
               </div>
               <Link
                 href={`/composer/${work.composer.id}`}
-                className="text-sm text-aviso hover:text-ouro-texto transition-colors font-medium"
+                className="text-sm transition-colors font-medium"
                 onClick={(e) => e.stopPropagation()}
               >
                 {work.composer.fullName}
@@ -109,7 +106,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {/* Instrument */}
             {work.instrument?.name && (
               <div className="flex items-center">
-                <PiMusicNotes className="w-4 h-4 text-brand-primary mr-2 flex-shrink-0" />
+                <PiMusicNotes className="w-4 h-4 text-ouro-texto mr-2 flex-shrink-0" />
                 <Text papel="rotulo" tom="suave">
                   {work.instrument.name}
                 </Text>
@@ -119,7 +116,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {/* Composition Year */}
             {work.compositionYear && (
               <div className="flex items-center">
-                <PiCalendarBlank className="w-4 h-4 text-ok mr-2 flex-shrink-0" />
+                <PiCalendarBlank className="w-4 h-4 mr-2 flex-shrink-0" />
                 <Text papel="rotulo" tom="suave">
                   {work.compositionYear}
                 </Text>
@@ -129,7 +126,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {/* Duration */}
             {work.mediaDuration && (
               <div className="flex items-center">
-                <PiClock className="w-4 h-4 text-ouro-texto mr-2 flex-shrink-0" />
+                <PiClock className="w-4 h-4 mr-2 flex-shrink-0" />
                 <Text papel="rotulo" tom="suave">
                   {formatDuration(work.mediaDuration)}
                 </Text>
@@ -139,7 +136,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {/* Tone/Key */}
             {work.tone && (
               <div className="flex items-center">
-                <PiMusicNotes className="w-4 h-4 text-brand-secondary mr-2 flex-shrink-0" />
+                <PiMusicNotes className="w-4 h-4 text-ouro-texto mr-2 flex-shrink-0" />
                 <Text papel="rotulo" tom="suave">
                   {t('card_jsx_span_key_label')} {work.tone}
                 </Text>
@@ -153,7 +150,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
               <Text
                 papel="legenda"
                 tom="ouro"
-                className="inline-flex items-center px-2 py-1 bg-ouro/10 border border-ouro/30 rounded-full font-medium"
+                className="inline-flex items-center px-2 py-1 border rounded-full font-medium"
               >
                 <PiClock className="w-2.5 h-2.5 mr-1" />
                 {work.epoch.name}
@@ -189,7 +186,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {/* Secondary Actions */}
             <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
               <Inline gap={2} className="text-theme-tertiary text-xs">
-                <div className="w-1.5 h-1.5 bg-ouro rounded-full animate-pulse"></div>
+                <div className="w-1.5 h-1.5 rounded-full animate-pulse"></div>
                 <span className="font-medium">
                   {t('card_jsx_span_full_details')}
                 </span>
@@ -203,11 +200,11 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
                     e.stopPropagation();
                     // Quick preview functionality
                   }}
-                  className="w-6 h-6 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-ouro group-hover:bg-ouro/10 transition-all duration-300 hover:scale-110"
+                  className="w-6 h-6 border border-theme-primary rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
                   title={t('card_jsx_button_quick_preview')}
                 >
                   <svg
-                    className="w-3 h-3 text-theme-primary group-hover:text-ouro-texto transition-colors"
+                    className="w-3 h-3 text-theme-primary transition-colors"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -231,11 +228,11 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
           </Stack>
 
           {/* Hover glow effect */}
-          <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
         </div>
 
         {/* Floating mini indicator */}
-        <div className="absolute -top-1 -right-1 w-3 h-3 fill-ouro rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100"></div>
+        <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100"></div>
       </div>
     </div>
   );

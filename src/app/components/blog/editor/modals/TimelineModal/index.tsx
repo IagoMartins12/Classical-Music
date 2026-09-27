@@ -133,7 +133,7 @@ export function TimelineModal({
         <Card
           nivel={2}
           densidade="compacta"
-          className="bg-aviso/10 dark:bg-aviso/20"
+          className="bg-blue-50 dark:bg-blue-900/20"
         >
           <h4 className="text-sm font-semibold text-theme-primary mb-3">
             Vincular Compositor (opcional)
@@ -227,14 +227,14 @@ export function TimelineModal({
                     <button
                       type="button"
                       onClick={() => updateEvent(index, 'image', '')}
-                      className="absolute top-2 right-2 p-2 bg-erro text-white rounded-full hover:bg-erro transition-colors shadow-theme-medium"
+                      className="absolute top-2 right-2 p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors shadow-theme-medium"
                     >
                       <PiTrash className="w-4 h-4" />
                       <NomeAcao acao="excluir" />
                     </button>
                   </div>
                 ) : (
-                  <div className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center hover:border-ouro transition-colors">
+                  <div className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center transition-colors">
                     <input
                       type="file"
                       id={`event-image-${index}`}

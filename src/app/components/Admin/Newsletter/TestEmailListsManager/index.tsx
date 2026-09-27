@@ -182,7 +182,7 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
     >
       <Stack gap={6}>
         <div className="text-center">
-          <div className="w-16 h-16 bg-aviso rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             {isEditing ? (
               <PiPencilSimple className="w-8 h-8 text-white" />
             ) : (
@@ -237,12 +237,10 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
               rows={8}
               disabled={loading}
               className={`w-full px-4 py-3 bg-theme-tertiary border ${
-                errors.emails ? 'border-erro' : 'border-theme-secondary'
-              } rounded-lg text-theme-primary placeholder-texto-fraco focus:outline-none focus:border-ouro transition-colors resize-none font-mono text-sm`}
+                errors.emails ? '' : 'border-theme-secondary'
+              } rounded-lg text-theme-primary focus:outline-none transition-colors resize-none font-mono text-sm`}
             />
-            {errors.emails && (
-              <p className="text-erro text-sm mt-1">{errors.emails}</p>
-            )}
+            {errors.emails && <p className="text-sm mt-1">{errors.emails}</p>}
             {formData.emails.trim() && (
               <Text papel="rotulo" tom="fraco" as="p" className="mt-1">
                 {
@@ -291,7 +289,7 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
                   }
                   disabled={loading}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    formData.isActive ? 'bg-ok' : 'bg-theme-secondary'
+                    formData.isActive ? '' : 'bg-theme-secondary'
                   }`}
                 >
                   <span
@@ -423,7 +421,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
     return (
       <>
         <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-atencao rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             <PiPaperPlaneRight className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -540,9 +538,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
             <div className="grid grid-cols-2 gap-4">
               <label
                 className={`cursor-pointer p-4 rounded-lg border-2 transition-colors ${
-                  formData.sendMode === 'bulk'
-                    ? 'border-ouro bg-ouro/10'
-                    : 'border-theme-secondary'
+                  formData.sendMode === 'bulk' ? '' : 'border-theme-secondary'
                 }`}
               >
                 <input
@@ -570,7 +566,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
               <label
                 className={`cursor-pointer p-4 rounded-lg border-2 transition-colors ${
                   formData.sendMode === 'individual'
-                    ? 'border-ouro bg-ouro/10'
+                    ? ''
                     : 'border-theme-secondary'
                 }`}
               >
@@ -627,7 +623,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
 
   const renderSendingStep = () => (
     <div className="text-center py-8">
-      <div className="w-20 h-20 bg-atencao rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
+      <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
         <PiPaperPlaneRight className="w-10 h-10 text-white animate-pulse" />
       </div>
       <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
@@ -637,7 +633,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
         Processando envio para as listas selecionadas
       </p>
       <div className="w-32 h-1 bg-theme-secondary rounded-full mx-auto overflow-hidden">
-        <div className="h-full bg-atencao animate-pulse"></div>
+        <div className="h-full animate-pulse"></div>
       </div>
     </div>
   );
@@ -646,9 +642,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
     <div className="text-center">
       <div
         className={`w-20 h-20 bg-gradient-to-br ${
-          result?.results.successful === result?.results.total
-            ? 'bg-ok'
-            : 'bg-atencao'
+          result?.results.successful === result?.results.total ? '' : ''
         } rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow`}
       >
         {result?.results.successful === result?.results.total ? (
@@ -668,23 +662,21 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
 
       {result && (
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-ok/10 border border-ok rounded-lg p-4">
-            <div className="text-2xl font-bold text-ok">
+          <div className="border rounded-lg p-4">
+            <div className="text-2xl font-bold">
               {result.results.successful}
             </div>
-            <div className="text-sm text-ok">Enviados</div>
+            <div className="text-sm">Enviados</div>
           </div>
-          <div className="bg-erro/10 border border-erro rounded-lg p-4">
-            <div className="text-2xl font-bold text-erro">
-              {result.results.failed}
-            </div>
-            <div className="text-sm text-erro">Falhas</div>
+          <div className="border rounded-lg p-4">
+            <div className="text-2xl font-bold">{result.results.failed}</div>
+            <div className="text-sm">Falhas</div>
           </div>
-          <div className="bg-aviso/10 border border-aviso rounded-lg p-4">
-            <div className="text-2xl font-bold text-aviso">
+          <div className="border rounded-lg p-4">
+            <div className="text-2xl font-bold">
               {result.results.successRate}%
             </div>
-            <div className="text-sm text-aviso">Taxa</div>
+            <div className="text-sm">Taxa</div>
           </div>
         </div>
       )}
@@ -809,7 +801,7 @@ export default function TestEmailListsManager() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <PiWarningCircle className="w-16 h-16 text-erro mx-auto mb-4" />
+          <PiWarningCircle className="w-16 h-16 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar
           </h2>
@@ -834,7 +826,7 @@ export default function TestEmailListsManager() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
+                <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                   <PiEnvelopeSimple className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -860,7 +852,7 @@ export default function TestEmailListsManager() {
                       {stats.total}
                     </p>
                   </Stack>
-                  <PiEnvelopeSimple className="w-8 h-8 text-aviso" />
+                  <PiEnvelopeSimple className="w-8 h-8" />
                 </div>
               </AnimatedCard>
 
@@ -870,9 +862,9 @@ export default function TestEmailListsManager() {
                     <Text papel="rotulo" tom="fraco" as="p">
                       Listas Ativas
                     </Text>
-                    <p className="text-3xl font-bold text-ok">{stats.active}</p>
+                    <p className="text-3xl font-bold">{stats.active}</p>
                   </Stack>
-                  <PiCheckCircle className="w-8 h-8 text-ok" />
+                  <PiCheckCircle className="w-8 h-8" />
                 </div>
               </AnimatedCard>
 
@@ -882,11 +874,9 @@ export default function TestEmailListsManager() {
                     <Text papel="rotulo" tom="fraco" as="p">
                       Total de Emails
                     </Text>
-                    <p className="text-3xl font-bold text-ouro-texto">
-                      {stats.totalEmails}
-                    </p>
+                    <p className="text-3xl font-bold">{stats.totalEmails}</p>
                   </Stack>
-                  <PiUsers className="w-8 h-8 text-ouro-texto" />
+                  <PiUsers className="w-8 h-8" />
                 </div>
               </AnimatedCard>
 
@@ -896,11 +886,9 @@ export default function TestEmailListsManager() {
                     <Text papel="rotulo" tom="fraco" as="p">
                       Usos Totais
                     </Text>
-                    <p className="text-3xl font-bold text-atencao">
-                      {stats.totalUses}
-                    </p>
+                    <p className="text-3xl font-bold">{stats.totalUses}</p>
                   </Stack>
-                  <PiPaperPlaneRight className="w-8 h-8 text-atencao" />
+                  <PiPaperPlaneRight className="w-8 h-8" />
                 </div>
               </AnimatedCard>
             </SequentialGrid>
@@ -996,7 +984,7 @@ export default function TestEmailListsManager() {
                   {selectedLists.length > 0 && (
                     <button
                       onClick={clearSelection}
-                      className="text-sm text-brand-primary hover:underline"
+                      className="text-sm text-ouro-texto hover:underline"
                     >
                       Limpar seleção
                     </button>
@@ -1041,7 +1029,7 @@ export default function TestEmailListsManager() {
                             <div
                               className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                                 list.isActive
-                                  ? 'bg-ok/10 text-ok'
+                                  ? ''
                                   : 'bg-theme-secondary text-theme-tertiary'
                               }`}
                             >

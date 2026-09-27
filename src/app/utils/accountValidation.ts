@@ -349,9 +349,9 @@ export const USER_TYPE_OPTIONS: UserTypeInfo[] = [
 ];
 
 export const PASSWORD_STRENGTH_COLORS = {
-  weak: 'text-erro',
-  medium: 'text-atencao',
-  strong: 'text-ok',
+  weak: '',
+  medium: '',
+  strong: '',
 };
 
 export const PASSWORD_STRENGTH_LABELS = {

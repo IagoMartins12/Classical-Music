@@ -46,23 +46,23 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
   };
 
   return (
-    <div className="bg-erro/20 rounded-xl border border-erro/30 overflow-hidden">
+    <div className="bg-gradient-to-r from-red-900/20 to-red-800/20 rounded-xl border border-red-700/30 overflow-hidden">
       {/* Header */}
-      <div className="p-4 border-b border-erro/30">
+      <div className="p-4 border-b border-red-700/30">
         <div className="flex items-start space-x-3">
-          <div className="w-10 h-10 bg-erro rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
             <PiYoutubeLogo className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-white font-semibold text-sm">{workTitle}</h3>
-            <p className="text-texto-fraco text-xs">{composer}</p>
+            <p className="text-gray-400 text-xs">{composer}</p>
           </div>
           <a
             href={video.videoUrl}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${t('youtube_abrir_no_youtube')}: ${workTitle}`}
-            className="text-erro hover:text-erro transition-colors"
+            className="text-red-400 hover:text-red-300 transition-colors"
           >
             <PiArrowSquareOut className="w-4 h-4" />
           </a>
@@ -85,13 +85,13 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <PiYoutubeLogo className="w-16 h-16 text-erro" />
+                  <PiYoutubeLogo className="w-16 h-16 text-red-600" />
                 </div>
               )}
 
               {/* Overlay com botão play */}
-              <div className="absolute inset-0 bg-black flex items-center justify-center group-hover:bg-opacity-30 transition-all">
-                <div className="w-16 h-16 bg-erro hover:bg-erro rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform">
+              <div className="absolute inset-0 bg-black flex items-center justify-center transition-all">
+                <div className="w-16 h-16 bg-red-600 hover:bg-red-700 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform">
                   <PiPlay className="w-8 h-8 text-white ml-1" />
                 </div>
               </div>
@@ -120,7 +120,7 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
           </h4>
         </div>
 
-        <div className="flex items-center justify-between text-xs text-texto-fraco">
+        <div className="flex items-center justify-between text-xs text-gray-400">
           <Inline gap={1}>
             <PiUser className="w-3 h-3" />
             <span className="truncate">{video.channel}</span>
@@ -137,7 +137,7 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
             as="button"
             gap={2}
             onClick={showPlayer}
-            className="w-full bg-erro hover:bg-erro text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors justify-center"
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors justify-center"
           >
             <PiPlay className="w-4 h-4" />
             <span>{t('youtube_button_span')}</span>

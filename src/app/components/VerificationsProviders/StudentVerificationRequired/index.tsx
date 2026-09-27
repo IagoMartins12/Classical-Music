@@ -53,8 +53,8 @@ export default function StudentVerificationRequired({
             {/* Main Icon */}
             <AnimatedItem direction="scale" springType="bouncy">
               <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto bg-atencao/20 rounded-full flex items-center justify-center classical-card border-2 border-atencao/30 shadow-theme-glow">
-                  <PiClock className="w-16 h-16 text-atencao" />
+                <div className="w-32 h-32 mx-auto rounded-full flex items-center justify-center classical-card border-2 shadow-theme-glow">
+                  <PiClock className="w-16 h-16" />
                 </div>
               </div>
             </AnimatedItem>
@@ -79,8 +79,8 @@ export default function StudentVerificationRequired({
               className="classical-card p-8 mb-8 max-w-2xl mx-auto"
             >
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-atencao/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <PiEnvelopeSimple className="w-6 h-6 text-atencao" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <PiEnvelopeSimple className="w-6 h-6" />
                 </div>
                 <div className="text-left flex-1">
                   <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
@@ -88,7 +88,7 @@ export default function StudentVerificationRequired({
                   </h3>
                   <Stack gap={3}>
                     <p className="text-theme-secondary">
-                      <strong className="text-brand-primary">Seu Email:</strong>{' '}
+                      <strong className="text-ouro-texto">Seu Email:</strong>{' '}
                       {userEmail}
                     </p>
                     <Text papel="rotulo" tom="suave" as="p">
@@ -161,8 +161,8 @@ export default function StudentVerificationRequired({
               {/* Current Status */}
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <Inline gap={3} className="mb-4">
-                  <div className="w-10 h-10 bg-atencao/20 rounded-xl flex items-center justify-center">
-                    <PiClock className="w-5 h-5 text-atencao" />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                    <PiClock className="w-5 h-5" />
                   </div>
                   <h3 className="text-xl font-bold text-theme-primary classical-title">
                     Status Atual
@@ -171,13 +171,13 @@ export default function StudentVerificationRequired({
 
                 <Stack gap={3} className="text-left">
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-ok rounded-full"></div>
+                    <div className="w-2 h-2 rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
                       Você foi adicionado pelo professor
                     </Text>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-atencao rounded-full"></div>
+                    <div className="w-2 h-2 rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
                       Aguardando aprovação do convite
                     </Text>
@@ -200,8 +200,8 @@ export default function StudentVerificationRequired({
               {/* After approval */}
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <Inline gap={3} className="mb-4">
-                  <div className="w-10 h-10 bg-ok/20 rounded-xl flex items-center justify-center">
-                    <PiUserCheck className="w-5 h-5 text-ok" />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                    <PiUserCheck className="w-5 h-5" />
                   </div>
                   <h3 className="text-xl font-bold text-theme-primary classical-title">
                     Após a Aprovação
@@ -210,25 +210,25 @@ export default function StudentVerificationRequired({
 
                 <Stack gap={2} className="text-left">
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-ok rounded-full"></div>
+                    <div className="w-2 h-2 rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
                       Visualizar cronograma de aulas
                     </Text>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-ok rounded-full"></div>
+                    <div className="w-2 h-2 rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
                       Acompanhar seu progresso musical
                     </Text>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-ok rounded-full"></div>
+                    <div className="w-2 h-2 rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
                       Receber tarefas e feedbacks
                     </Text>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-ok rounded-full"></div>
+                    <div className="w-2 h-2 rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
                       Acesso completo à plataforma
                     </Text>
@@ -243,8 +243,8 @@ export default function StudentVerificationRequired({
               className="classical-card p-6 max-w-3xl mx-auto mb-8"
             >
               <Inline gap={3} className="mb-6">
-                <div className="w-10 h-10 bg-aviso/20 rounded-xl flex items-center justify-center">
-                  <PiCaretRight className="w-5 h-5 text-aviso" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                  <PiCaretRight className="w-5 h-5" />
                 </div>
                 <h3 className="text-lg font-bold text-theme-primary classical-title">
                   Como Funciona o Processo
@@ -252,8 +252,8 @@ export default function StudentVerificationRequired({
               </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-sup-elevada rounded-lg border border-ok/20">
-                  <div className="w-8 h-8 bg-ok rounded-full flex items-center justify-center mx-auto mb-2">
+                <div className="text-center p-4 rounded-lg border">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-white text-sm font-bold">1</span>
                   </div>
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
@@ -264,8 +264,8 @@ export default function StudentVerificationRequired({
                   </Text>
                 </div>
 
-                <div className="text-center p-4 bg-sup-elevada rounded-lg border border-atencao/20">
-                  <div className="w-8 h-8 bg-atencao rounded-full flex items-center justify-center mx-auto mb-2">
+                <div className="text-center p-4 rounded-lg border">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-white text-sm font-bold">2</span>
                   </div>
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
@@ -276,7 +276,7 @@ export default function StudentVerificationRequired({
                   </Text>
                 </div>
 
-                <div className="text-center p-4 bg-sup-elevada rounded-lg border border-linha/20">
+                <div className="text-center p-4 rounded-lg border">
                   <div className="w-8 h-8 bg-theme-tertiary rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-white text-sm font-bold">3</span>
                   </div>
@@ -288,8 +288,8 @@ export default function StudentVerificationRequired({
                   </Text>
                 </div>
 
-                <div className="text-center p-4 bg-sup-elevada rounded-lg border border-aviso/20">
-                  <div className="w-8 h-8 bg-aviso rounded-full flex items-center justify-center mx-auto mb-2">
+                <div className="text-center p-4 rounded-lg border">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-white text-sm font-bold">4</span>
                   </div>
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
@@ -308,8 +308,8 @@ export default function StudentVerificationRequired({
               className="classical-card p-6 max-w-3xl mx-auto mb-8"
             >
               <Inline gap={3} className="mb-6">
-                <div className="w-10 h-10 bg-ok/20 rounded-xl flex items-center justify-center">
-                  <PiUserCheck className="w-5 h-5 text-ok" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                  <PiUserCheck className="w-5 h-5" />
                 </div>
                 <h3 className="text-lg font-bold text-theme-primary classical-title">
                   O que você pode fazer enquanto aguarda
@@ -323,25 +323,25 @@ export default function StudentVerificationRequired({
                   </h4>
                   <Stack gap={2}>
                     <Inline gap={2}>
-                      <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                      <div className="w-2 h-2 rounded-full"></div>
                       <Text papel="rotulo" tom="suave">
                         Explorar compositores e obras
                       </Text>
                     </Inline>
                     <Inline gap={2}>
-                      <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                      <div className="w-2 h-2 rounded-full"></div>
                       <Text papel="rotulo" tom="suave">
                         Descobrir partituras gratuitas
                       </Text>
                     </Inline>
                     <Inline gap={2}>
-                      <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                      <div className="w-2 h-2 rounded-full"></div>
                       <Text papel="rotulo" tom="suave">
                         Criar sua lista de favoritos
                       </Text>
                     </Inline>
                     <Inline gap={2}>
-                      <div className="w-2 h-2 bg-ouro rounded-full"></div>
+                      <div className="w-2 h-2 rounded-full"></div>
                       <Text papel="rotulo" tom="suave">
                         Personalizar seu perfil
                       </Text>
@@ -355,25 +355,25 @@ export default function StudentVerificationRequired({
                   </h4>
                   <Stack gap={2}>
                     <Inline gap={2}>
-                      <div className="w-2 h-2 bg-atencao rounded-full"></div>
+                      <div className="w-2 h-2 rounded-full"></div>
                       <Text papel="rotulo" tom="suave">
                         Entre em contato com seu professor
                       </Text>
                     </Inline>
                     <Inline gap={2}>
-                      <div className="w-2 h-2 bg-atencao rounded-full"></div>
+                      <div className="w-2 h-2 rounded-full"></div>
                       <Text papel="rotulo" tom="suave">
                         Confirme que ele tem seu email correto
                       </Text>
                     </Inline>
                     <Inline gap={2}>
-                      <div className="w-2 h-2 bg-atencao rounded-full"></div>
+                      <div className="w-2 h-2 rounded-full"></div>
                       <Text papel="rotulo" tom="suave">
                         Peça para ele aprovar seu convite
                       </Text>
                     </Inline>
                     <Inline gap={2}>
-                      <div className="w-2 h-2 bg-atencao rounded-full"></div>
+                      <div className="w-2 h-2 rounded-full"></div>
                       <Text papel="rotulo" tom="suave">
                         Aguarde a notificação de aprovação
                       </Text>
@@ -389,8 +389,8 @@ export default function StudentVerificationRequired({
               className="classical-card p-6 max-w-3xl mx-auto"
             >
               <div className="flex items-start space-x-4">
-                <div className="w-10 h-10 bg-ouro/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <PiWarning className="w-5 h-5 text-ouro-texto" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <PiWarning className="w-5 h-5" />
                 </div>
                 <div className="text-left flex-1">
                   <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
@@ -410,7 +410,7 @@ export default function StudentVerificationRequired({
                   <div className="mt-4">
                     <Link
                       href="/contact"
-                      className="inline-flex items-center space-x-2 text-brand-primary hover:text-ouro-texto transition-colors font-medium"
+                      className="inline-flex items-center space-x-2 text-ouro-texto transition-colors font-medium"
                     >
                       <PiChatCircle className="w-4 h-4" />
                       <span>Entrar em contato com suporte</span>
@@ -429,7 +429,7 @@ export default function StudentVerificationRequired({
                   conhecimento que nos ensina sobre nós mesmos e sobre o
                   mundo.&quot;
                 </blockquote>
-                <cite className="text-brand-primary font-semibold">
+                <cite className="text-ouro-texto font-semibold">
                   — Daniel Barenboim
                 </cite>
               </Card>
@@ -438,12 +438,12 @@ export default function StudentVerificationRequired({
         </div>
 
         {/* Decorative Elements */}
-        <div className="absolute top-4 left-4 w-12 h-12 bg-atencao/10 rounded-2xl flex items-center justify-center opacity-40">
-          <PiMusicNotes className="w-6 h-6 text-atencao" />
+        <div className="absolute top-4 left-4 w-12 h-12 rounded-2xl flex items-center justify-center opacity-40">
+          <PiMusicNotes className="w-6 h-6" />
         </div>
 
-        <div className="absolute bottom-4 right-4 w-16 h-16 bg-ouro/10 rounded-3xl flex items-center justify-center opacity-50">
-          <PiClock className="w-8 h-8 text-brand-primary" />
+        <div className="absolute bottom-4 right-4 w-16 h-16 rounded-3xl flex items-center justify-center opacity-50">
+          <PiClock className="w-8 h-8 text-ouro-texto" />
         </div>
       </div>
       <Toaster

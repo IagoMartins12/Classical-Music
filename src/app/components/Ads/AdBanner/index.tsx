@@ -39,7 +39,7 @@ export default function AdBanner({
   };
 
   return (
-    <div className={`relative bg-aviso ${className}`}>
+    <div className={`relative bg-gradient-to-r ${className}`}>
       {/* Dismiss Button */}
       <button
         onClick={handleDismiss}

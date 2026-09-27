@@ -107,8 +107,8 @@ export function ImageModal({
             onClick={() => handleTabChange('upload')}
             className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === 'upload'
-                ? 'border-b-2 border-ouro text-brand-primary'
-                : 'text-theme-tertiary hover:text-texto'
+                ? 'border-b-2 text-ouro-texto'
+                : 'text-theme-tertiary'
             }`}
           >
             📤 Fazer Upload
@@ -118,8 +118,8 @@ export function ImageModal({
             onClick={() => handleTabChange('link')}
             className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === 'link'
-                ? 'border-b-2 border-ouro text-brand-primary'
-                : 'text-theme-tertiary hover:text-texto'
+                ? 'border-b-2 text-ouro-texto'
+                : 'text-theme-tertiary'
             }`}
           >
             🔗 Link Externo
@@ -133,7 +133,7 @@ export function ImageModal({
               <label className="block text-sm font-medium text-theme-primary">
                 Selecionar Arquivo
               </label>
-              <div className="border-2 border-dashed border-theme-secondary rounded-lg p-4 text-center hover:border-ouro transition-colors">
+              <div className="border-2 border-dashed border-theme-secondary rounded-lg p-4 text-center transition-colors">
                 <input
                   type="file"
                   id="image-upload"
@@ -153,7 +153,7 @@ export function ImageModal({
                     />
                     <label
                       htmlFor="image-upload"
-                      className="inline-block cursor-pointer text-sm text-brand-primary hover:text-ouro-texto underline"
+                      className="inline-block cursor-pointer text-sm text-ouro-texto underline"
                     >
                       Alterar imagem
                     </label>
@@ -191,7 +191,7 @@ export function ImageModal({
                 <label className="block text-sm font-medium text-theme-primary">
                   Preview
                 </label>
-                <div className="border-2 border-theme-secondary rounded-lg p-4 text-center bg-sup-2">
+                <div className="border-2 border-theme-secondary rounded-lg p-4 text-center bg-gray-50">
                   {!imageError ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -201,7 +201,7 @@ export function ImageModal({
                       onError={() => setImageError(true)}
                     />
                   ) : (
-                    <p className="text-sm text-erro">
+                    <p className="text-sm text-red-500">
                       ❌ Não foi possível carregar a imagem
                     </p>
                   )}

@@ -229,7 +229,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
                 {showCloseButton && (
                   <button
                     onClick={handleClose}
-                    className="p-2 text-theme-tertiary hover:text-ouro-texto hover:bg-ouro/10 rounded-lg transition-all"
+                    className="p-2 text-theme-tertiary rounded-lg transition-all"
                     aria-label="Fechar modal"
                   >
                     <PiX className="w-5 h-5" />

@@ -38,7 +38,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           confirmLabel: t('unsaved_changes_confirm'),
           cancelLabel: t('unsaved_changes_cancel'),
           icon: (
-            <div className="w-12 h-12 bg-atencao rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center">
               <PiWarning className="w-6 h-6 text-white" />
             </div>
           ),
@@ -57,7 +57,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           confirmLabel: t('ongoing_process_confirm'),
           cancelLabel: t('ongoing_process_cancel'),
           icon: (
-            <div className="w-12 h-12 bg-erro rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center">
               <PiX className="w-6 h-6 text-white" />
             </div>
           ),
@@ -71,7 +71,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           confirmLabel: t('danger_confirm'),
           cancelLabel: t('danger_cancel'),
           icon: (
-            <div className="w-12 h-12 bg-erro rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center">
               <PiTrash className="w-6 h-6 text-white" />
             </div>
           ),
@@ -86,7 +86,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           confirmLabel: t('custom_confirm'),
           cancelLabel: t('custom_cancel'),
           icon: (
-            <div className="w-12 h-12 fill-ouro rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center">
               <PiWarning className="w-6 h-6 text-white" />
             </div>
           ),
@@ -123,16 +123,14 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
         {/* Informações adicionais para processo em andamento */}
         {config?.type === 'ongoing-process' && (
-          <div className="bg-erro/10 border border-erro/20 rounded-lg p-4 mb-6">
+          <div className="border rounded-lg p-4 mb-6">
             <div className="flex items-start space-x-3">
-              <div className="w-5 h-5 bg-erro rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                 <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
               </div>
               <Stack gap={1}>
-                <h4 className="font-medium text-erro">
-                  {t('process_active_title')}
-                </h4>
-                <p className="text-sm text-erro/80">
+                <h4 className="font-medium">{t('process_active_title')}</h4>
+                <p className="text-sm">
                   {config?.processName ? (
                     <>
                       {t('process_active_description').replace(
@@ -151,32 +149,24 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
         {/* Informações adicionais para alterações não salvas */}
         {config?.type === 'unsaved-changes' && (
-          <div className="bg-atencao/10 border border-atencao/20 rounded-lg p-4 mb-6">
+          <div className="border rounded-lg p-4 mb-6">
             <div className="flex items-start space-x-3">
-              <PiFloppyDisk className="w-5 h-5 text-atencao flex-shrink-0 mt-0.5" />
+              <PiFloppyDisk className="w-5 h-5 flex-shrink-0 mt-0.5" />
               <Stack gap={1}>
-                <h4 className="font-medium text-atencao">
-                  {t('changes_detected_title')}
-                </h4>
-                <p className="text-sm text-atencao/80">
-                  {t('changes_detected_description')}
-                </p>
+                <h4 className="font-medium">{t('changes_detected_title')}</h4>
+                <p className="text-sm">{t('changes_detected_description')}</p>
               </Stack>
             </div>
           </div>
         )}
 
         {config?.type === 'general-no-verification' && (
-          <div className="bg-atencao/10 border border-atencao/20 rounded-lg p-4 mb-6">
+          <div className="border rounded-lg p-4 mb-6">
             <div className="flex items-start space-x-3">
-              <PiFloppyDisk className="w-5 h-5 text-atencao flex-shrink-0 mt-0.5" />
+              <PiFloppyDisk className="w-5 h-5 flex-shrink-0 mt-0.5" />
               <Stack gap={1}>
-                <h4 className="font-medium text-atencao">
-                  {t('possible_changes_title')}
-                </h4>
-                <p className="text-sm text-atencao/80">
-                  {t('possible_changes_description')}
-                </p>
+                <h4 className="font-medium">{t('possible_changes_title')}</h4>
+                <p className="text-sm">{t('possible_changes_description')}</p>
               </Stack>
             </div>
           </div>
@@ -201,9 +191,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             isLoading={isLoading}
             className={`min-w-[140px] ${
               finalConfig.confirmVariant === 'danger'
-                ? 'bg-erro text-white border-erro shadow-lg'
+                ? 'text-white shadow-lg'
                 : finalConfig.confirmVariant === 'warning'
-                  ? 'bg-atencao text-white border-atencao shadow-lg'
+                  ? 'text-white shadow-lg'
                   : ''
             }`}
           >

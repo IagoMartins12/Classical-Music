@@ -48,7 +48,7 @@ const ComposerCardComponent = (props: any) => {
         >
           <button
             onClick={handleDelete}
-            className="p-2 text-erro hover:bg-erro/10 rounded transition-colors"
+            className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
             title="Remover"
           >
             <PiTrash className="w-4 h-4" />
@@ -58,7 +58,7 @@ const ComposerCardComponent = (props: any) => {
 
       {/* Card do Compositor */}
       <div
-        className={`border classical-card rounded-lg border-ouro/40 shadow-md p-6 ${
+        className={`classical-card rounded-lg border-l-4 shadow-md p-6 ${
           layout === 'horizontal' ? 'flex items-start space-x-6' : ''
         }`}
       >
@@ -101,7 +101,7 @@ const ComposerCardComponent = (props: any) => {
           {/* Época */}
           {composerEpoch && (
             <p
-              className={`text-sm text-ouro-texto font-medium mb-2 ${layout === 'vertical' ? 'text-center' : ''}`}
+              className={`text-sm font-medium mb-2 ${layout === 'vertical' ? 'text-center' : ''}`}
             >
               📜 Época: {composerEpoch}
             </p>
@@ -145,7 +145,7 @@ const ComposerCardComponent = (props: any) => {
               href={`/composer/${composerId}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 bg-ouro text-sobre-ouro text-sm rounded-lg hover:opacity-90 transition-opacity shadow-sm inline-flex items-center"
+              className="px-4 py-2 text-white text-sm rounded-lg hover:opacity-90 transition-opacity shadow-sm inline-flex items-center"
             >
               Ver no Opus Atlas →
             </Link>
@@ -155,7 +155,7 @@ const ComposerCardComponent = (props: any) => {
                 href={`/composer/${composerId}#works`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-sup-2 text-texto-suave text-sm rounded-lg hover:bg-linha-forte transition-colors inline-flex items-center"
+                className="px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300 transition-colors inline-flex items-center"
               >
                 Ver Obras
               </Link>
@@ -167,7 +167,7 @@ const ComposerCardComponent = (props: any) => {
                 href={composerWikipediaLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-aviso/10 text-aviso text-sm rounded-lg hover:bg-aviso/10 transition-colors inline-flex items-center"
+                className="px-4 py-2 bg-blue-100 text-blue-700 text-sm rounded-lg hover:bg-blue-200 transition-colors inline-flex items-center"
               >
                 Wikipedia
               </Link>

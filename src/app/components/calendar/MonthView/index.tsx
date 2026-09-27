@@ -49,19 +49,15 @@ export default function MonthView({
           return (
             <div
               key={index}
-              className={`min-h-24 p-2 border rounded-lg transition-all hover:border-ouro/30 ${
-                isToday
-                  ? 'bg-ouro/5 border-ouro/30'
-                  : isCurrentMonth
-                    ? 'bg-sup-elevada/50 border-linha/50'
-                    : 'bg-sup-1/20 border-linha/50 opacity-60'
+              className={`min-h-24 p-2 border rounded-lg transition-all ${
+                isToday ? '' : isCurrentMonth ? '' : 'opacity-60'
               }`}
             >
               {/* Day number */}
               <div
                 className={`text-sm font-medium mb-1 ${
                   isToday
-                    ? 'text-brand-primary'
+                    ? 'text-ouro-texto'
                     : isCurrentMonth
                       ? 'text-theme-primary'
                       : 'text-theme-tertiary'
@@ -92,7 +88,7 @@ export default function MonthView({
                 {hasMoreThan2Events && (
                   <button
                     onClick={() => onDayClick(day, events)} // ✅ ABRIR MODAL
-                    className="w-full text-left p-1 rounded text-xs font-medium bg-ouro/10 hover:bg-ouro/30 transition-all text-brand-primary"
+                    className="w-full text-left p-1 rounded text-xs font-medium transition-all text-ouro-texto"
                   >
                     +{events.length - 2} mais evento
                     {events.length - 2 !== 1 ? 's' : ''}
@@ -108,16 +104,16 @@ export default function MonthView({
 }
 
 function getEventColor(type: string, isFree: boolean): string {
-  if (isFree) return 'bg-ok';
+  if (isFree) return '';
 
   const colors: Record<string, string> = {
-    OPERA: 'bg-ouro',
-    RECITAL: 'bg-ouro',
-    CHAMBER_MUSIC: 'bg-ok',
-    CHOIR: 'bg-atencao',
-    OPEN_REHEARSAL: 'bg-accent-gray',
-    CONCERT: 'bg-aviso',
+    OPERA: '',
+    RECITAL: '',
+    CHAMBER_MUSIC: '',
+    CHOIR: '',
+    OPEN_REHEARSAL: '',
+    CONCERT: '',
   };
 
-  return colors[type] || 'bg-aviso';
+  return colors[type] || '';
 }

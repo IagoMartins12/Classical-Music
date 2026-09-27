@@ -68,12 +68,12 @@ const ScoreCard = ({
     <>
       <div
         className={`
-          cursor-pointer transition-all flex flex-col-reverse duration-300 hover:shadow-[var(--sombra-2)] group relative overflow-hidden
+          cursor-pointer transition-all flex flex-col-reverse duration-300 group relative overflow-hidden
           ${
             isSelected ||
             (isInSelectionMode && selectedWorkScore?.sourceId === score.id)
-              ? 'classical-card !p-0 border-ouro bg-ouro/5 shadow-theme-glow'
-              : 'classical-card-simple hover:border-linha hover:bg-ouro/10'
+              ? 'classical-card !p-0 shadow-theme-glow'
+              : 'classical-card-simple'
           }
           ${shouldShowThumbnail ? '' : 'mb-0 border-b-0 rounded-b-none'}
          
@@ -101,7 +101,7 @@ const ScoreCard = ({
                 });
               }}
             >
-              <div className="relative w-full h-full rounded-xl overflow-hidden border-2 border-theme-primary shadow-theme-medium group-hover/thumbnail:shadow-[var(--sombra-2)] transition-all duration-300 group-hover/thumbnail:scale-105">
+              <div className="relative w-full h-full rounded-xl overflow-hidden border-2 border-theme-primary shadow-theme-medium transition-all duration-300 group-hover/thumbnail:scale-105">
                 <Image
                   src={score.thumbnailUrl}
                   alt={`Preview de ${score.title}`}
@@ -113,7 +113,7 @@ const ScoreCard = ({
 
                 {/* Overlay com ícone de zoom */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumbnail:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <div className="w-8 h-8 bg-texto rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center">
                     <svg
                       className="w-4 h-4 text-theme-primary"
                       fill="none"
@@ -137,7 +137,7 @@ const ScoreCard = ({
           <div className="flex-1 min-w-0">
             <div className="flex items-center md:items-start justify-between gap-4 mb-2">
               <div className="flex-1">
-                <h4 className="font-semibold text-theme-primary text-base leading-tight classical-title mb-2 group-hover:text-ouro-texto transition-colors duration-300">
+                <h4 className="font-semibold text-theme-primary text-base leading-tight classical-title mb-2 transition-colors duration-300">
                   {score.title}
                 </h4>
               </div>
@@ -166,11 +166,11 @@ const ScoreCard = ({
                     href={score.downloadUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 fill-ouro text-theme-primary px-0 md:px-4 py-2 rounded-xl text-sm font-medium hover:scale-105 hover:shadow-[var(--sombra-2)] transition-all duration-300 group/download"
+                    className="flex items-center gap-2 text-theme-primary px-0 md:px-4 py-2 rounded-xl text-sm font-medium hover:scale-105 transition-all duration-300 group/download"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <PiDownloadSimple className="w-3  hidden md:block h-3 group-hover/download:animate-bounce" />
-                    <span className="text-xs md:text-base">Download</span>
+                    <span className="text-xs">Download</span>
                     <div className="">
                       <svg
                         className="w-3 h-3 transition-transform group-hover/download:translate-x-0.5"
@@ -195,8 +195,8 @@ const ScoreCard = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
               {score.fileSize && (
                 <div className="flex items-center gap-2 text-theme-secondary">
-                  <div className="w-5 h-5 bg-aviso/20 border border-aviso/30 rounded-lg flex items-center justify-center">
-                    <PiFileText className="w-3 h-3 text-aviso" />
+                  <div className="w-5 h-5 border rounded-lg flex items-center justify-center">
+                    <PiFileText className="w-3 h-3" />
                   </div>
                   <span>
                     {score.fileSize}
@@ -208,8 +208,8 @@ const ScoreCard = ({
 
               {shouldShowThumbnail && score.uploader && (
                 <div className="flex items-center gap-2 text-theme-secondary">
-                  <div className="w-5 h-5 bg-ok/20 border border-ok/30 rounded-lg flex items-center justify-center">
-                    <PiUser className="w-3 h-3 text-ok" />
+                  <div className="w-5 h-5 border rounded-lg flex items-center justify-center">
+                    <PiUser className="w-3 h-3" />
                   </div>
                   <span>
                     {score.uploader}
@@ -220,7 +220,7 @@ const ScoreCard = ({
 
               {shouldShowThumbnail && score.uploadDate && (
                 <div className="flex items-center gap-2 text-theme-secondary">
-                  <div className="w-5 h-5 bg-ouro/20 border border-ouro/30 rounded-lg flex items-center justify-center">
+                  <div className="w-5 h-5 border rounded-lg flex items-center justify-center">
                     <PiClock className="w-3 h-3 text-theme-primary" />
                   </div>
                   <span>{score.uploadDate}</span>
@@ -275,11 +275,11 @@ const ScoreCard = ({
         </div>
 
         {/* Hover glow effect */}
-        <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl pointer-events-none"></div>
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl pointer-events-none"></div>
 
         {/* Efeito especial para a mais favoritada */}
         {isMostFavorited && (
-          <div className="absolute inset-0 bg-ouro/5 rounded-xl pointer-events-none"></div>
+          <div className="absolute inset-0 rounded-xl pointer-events-none"></div>
         )}
       </div>
 

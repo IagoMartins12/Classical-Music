@@ -97,14 +97,14 @@ export function SearchResults({
         <div className="lg:col-span-1">
           <Card className="sticky top-24">
             <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
-              <PiFunnel className="text-brand-primary" />
+              <PiFunnel className="text-ouro-texto" />
               Filtros
             </h3>
             <SearchFilters currentParams={currentParams} />
             {hasFilters && (
               <Link
                 href="/blog/search"
-                className="mt-4 block text-center text-sm text-brand-primary hover:text-ouro-texto"
+                className="mt-4 block text-center text-sm text-ouro-texto"
               >
                 Limpar filtros
               </Link>
@@ -137,14 +137,14 @@ export function SearchResults({
       <div className="lg:col-span-1">
         <Card className="sticky top-24">
           <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
-            <PiFunnel className="text-brand-primary" />
+            <PiFunnel className="text-ouro-texto" />
             Filtros
           </h3>
           <SearchFilters currentParams={currentParams} />
           {hasFilters && (
             <Link
               href="/blog/search"
-              className="mt-4 block text-center text-sm text-brand-primary hover:text-ouro-texto"
+              className="mt-4 block text-center text-sm text-ouro-texto"
             >
               Limpar filtros
             </Link>

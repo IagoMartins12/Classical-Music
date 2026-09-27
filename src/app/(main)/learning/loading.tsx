@@ -28,16 +28,16 @@ export default function LearningPageLoading() {
 
       {/* Floating musical notes - static */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-16 left-16 text-5xl text-ouro-texto/10">
+        <div className="absolute top-16 left-16 text-5xl">
           <PiBookOpen />
         </div>
-        <div className="absolute bottom-16 right-16 text-4xl text-ouro-texto/10">
+        <div className="absolute bottom-16 right-16 text-4xl">
           <PiTarget />
         </div>
-        <div className="absolute top-1/3 right-24 text-3xl text-ouro-texto/10">
+        <div className="absolute top-1/3 right-24 text-3xl">
           <GiGrandPiano />
         </div>
-        <div className="absolute bottom-1/3 left-24 text-3xl text-aviso/10">
+        <div className="absolute bottom-1/3 left-24 text-3xl">
           <PiCheckCircle />
         </div>
       </div>
@@ -47,12 +47,12 @@ export default function LearningPageLoading() {
         <div className="text-center mb-8 py-16">
           <div className="space-y-4 mb-6">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiTarget className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
-            <div className="h-12 bg-sup-elevada border border-theme-primary rounded-2xl mx-auto max-w-2xl animate-pulse shadow-theme-medium"></div>
-            <div className="h-6 bg-sup-elevada border border-theme-secondary rounded-lg mx-auto max-w-xl animate-pulse"></div>
+            <div className="h-12 border border-theme-primary rounded-2xl mx-auto max-w-2xl animate-pulse shadow-theme-medium"></div>
+            <div className="h-6 border border-theme-secondary rounded-lg mx-auto max-w-xl animate-pulse"></div>
           </div>
         </div>
 
@@ -69,10 +69,10 @@ export default function LearningPageLoading() {
               key={index}
               className="classical-card p-6 text-center animate-pulse"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center">
                 {item.icon}
               </div>
-              <div className="h-8 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2"></div>
+              <div className="h-8 rounded-lg mb-2"></div>
               <div className="h-4 bg-theme-elevated rounded"></div>
             </div>
           ))}
@@ -89,7 +89,7 @@ export default function LearningPageLoading() {
                   <div
                     key={index}
                     className={`px-4 py-2 rounded-lg h-10 w-40 animate-pulse ${
-                      index === 0 ? 'bg-ouro/20' : 'bg-theme-elevated'
+                      index === 0 ? '' : 'bg-theme-elevated'
                     }`}
                   ></div>
                 ))}
@@ -99,17 +99,17 @@ export default function LearningPageLoading() {
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search Skeleton */}
                 <div className="relative">
-                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-texto-fraco/50 w-4 h-4" />
-                  <div className="h-12 w-32 md:w-96 max-w-full bg-sup-elevada border border-theme-secondary rounded-lg pl-12 animate-pulse"></div>
+                  <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" />
+                  <div className="h-12 w-32 md:w-96 max-w-full border border-theme-secondary rounded-lg pl-12 animate-pulse"></div>
                 </div>
 
                 {/* Filter Button Skeleton */}
                 <Inline
                   gap={2}
-                  className="h-12 w-24 bg-sup-elevada border border-theme-secondary rounded-lg justify-center animate-pulse"
+                  className="h-12 w-24 border border-theme-secondary rounded-lg justify-center animate-pulse"
                 >
-                  <PiFunnel className="w-4 h-4 text-texto-fraco/30" />
-                  <div className="w-12 h-4 bg-sup-2/30 rounded"></div>
+                  <PiFunnel className="w-4 h-4" />
+                  <div className="w-12 h-4 rounded"></div>
                 </Inline>
 
                 {/* View Mode Toggle Skeleton */}
@@ -119,10 +119,10 @@ export default function LearningPageLoading() {
                   </Text>
                   <div className="bg-theme-secondary border border-theme-primary rounded-lg p-1 flex">
                     <div className="p-2 rounded bg-theme-elevated">
-                      <PiListBullets className="w-4 h-4 text-texto-fraco/50" />
+                      <PiListBullets className="w-4 h-4" />
                     </div>
-                    <div className="p-2 rounded bg-ouro/20">
-                      <PiSquaresFour className="w-4 h-4 text-ouro-texto/50" />
+                    <div className="p-2 rounded">
+                      <PiSquaresFour className="w-4 h-4" />
                     </div>
                   </div>
                 </Inline>
@@ -134,11 +134,11 @@ export default function LearningPageLoading() {
         {/* Want to Learn Section Skeleton */}
         <div>
           <Inline gap={3} className="mb-6">
-            <div className="w-10 h-10 bg-aviso/20 rounded-xl flex items-center justify-center">
-              <PiTarget className="w-5 h-5 text-sobre-ouro/20" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+              <PiTarget className="w-5 h-5" />
             </div>
             <Stack gap={2}>
-              <div className="h-8 w-48 bg-fundo rounded animate-pulse"></div>
+              <div className="h-8 w-48 rounded animate-pulse"></div>
               <div className="h-4 w-32 bg-theme-elevated rounded animate-pulse"></div>
             </Stack>
           </Inline>
@@ -154,11 +154,11 @@ export default function LearningPageLoading() {
         {/* Learned Section Skeleton */}
         <div>
           <Inline gap={3} className="mb-6">
-            <div className="w-10 h-10 bg-ok/20 rounded-xl flex items-center justify-center">
-              <PiCheckCircle className="w-5 h-5 text-sobre-ouro/20" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+              <PiCheckCircle className="w-5 h-5" />
             </div>
             <Stack gap={2}>
-              <div className="h-8 w-32 bg-fundo rounded animate-pulse"></div>
+              <div className="h-8 w-32 rounded animate-pulse"></div>
               <div className="h-4 w-28 bg-theme-elevated rounded animate-pulse"></div>
             </Stack>
           </Inline>
@@ -173,9 +173,9 @@ export default function LearningPageLoading() {
       </div>
 
       {/* Floating Particles */}
-      <div className="fixed top-20 left-4 w-2 h-2 bg-ouro/30 rounded-full animate-pulse"></div>
-      <div className="fixed top-40 right-8 w-1.5 h-1.5 bg-ouro/40 rounded-full animate-pulse"></div>
-      <div className="fixed bottom-32 left-8 w-1 h-1 bg-ouro/50 rounded-full animate-pulse"></div>
+      <div className="fixed top-20 left-4 w-2 h-2 rounded-full animate-pulse"></div>
+      <div className="fixed top-40 right-8 w-1.5 h-1.5 rounded-full animate-pulse"></div>
+      <div className="fixed bottom-32 left-8 w-1 h-1 rounded-full animate-pulse"></div>
     </div>
   );
 }
@@ -187,7 +187,7 @@ function LearningCardSkeleton() {
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1 space-y-2">
-          <div className="h-6 bg-fundo rounded w-3/4"></div>
+          <div className="h-6 rounded w-3/4"></div>
           <div className="h-4 bg-theme-elevated rounded w-1/2"></div>
           <div className="h-3 bg-theme-elevated rounded w-1/3"></div>
         </div>
@@ -204,7 +204,7 @@ function LearningCardSkeleton() {
           {Array.from({ length: 5 }).map((_, starIndex) => (
             <div
               key={starIndex}
-              className="w-4 h-4 bg-atencao/20 rounded"
+              className="w-4 h-4 bg-yellow-400/20 rounded"
             ></div>
           ))}
         </Inline>
@@ -213,21 +213,18 @@ function LearningCardSkeleton() {
       {/* Details */}
       <Stack gap={3}>
         <Inline gap={2}>
-          <div className="w-4 h-4 bg-sup-2/30 rounded"></div>
-          <div className="h-6 w-20 bg-aviso/20 border border-aviso/30 rounded-full"></div>
+          <div className="w-4 h-4 rounded"></div>
+          <div className="h-6 w-20 border rounded-full"></div>
         </Inline>
 
         <Inline gap={2}>
-          <div className="w-4 h-4 bg-sup-2/30 rounded"></div>
+          <div className="w-4 h-4 rounded"></div>
           <div className="h-4 w-24 bg-theme-elevated rounded"></div>
         </Inline>
 
-        <Stack
-          gap={2}
-          className="border bg-aviso/10 rounded-lg p-3 border-aviso/30"
-        >
+        <Stack gap={2} className="bg-theme-secondary rounded-lg p-3 border-l-4">
           <Inline gap={2}>
-            <div className="w-4 h-4 bg-aviso/30 rounded"></div>
+            <div className="w-4 h-4 rounded"></div>
             <div className="h-4 w-16 bg-theme-elevated rounded"></div>
           </Inline>
           <Stack gap={2}>
@@ -240,7 +237,7 @@ function LearningCardSkeleton() {
       {/* Footer */}
       <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-between">
         <div className="h-3 w-24 bg-theme-elevated rounded"></div>
-        <div className="h-4 w-20 bg-ouro/20 rounded"></div>
+        <div className="h-4 w-20 rounded"></div>
       </div>
     </Card>
   );

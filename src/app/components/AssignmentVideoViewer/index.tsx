@@ -278,10 +278,10 @@ export default function AssignmentVideoViewer({
                     <span
                       className={`px-2 py-1 rounded text-xs font-medium ${
                         assignment.status === 'COMPLETED'
-                          ? 'bg-ok/10 text-ok'
+                          ? 'bg-green-100 text-green-800'
                           : assignment.status === 'IN_PROGRESS'
-                            ? 'bg-atencao/10 text-atencao'
-                            : 'bg-erro/10 text-erro'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-red-100 text-red-800'
                       }`}
                     >
                       {assignment.status === 'COMPLETED' && 'Concluída'}

@@ -344,7 +344,7 @@ export default function EditAdModal({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
           <Inline gap={3}>
-            <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center">
               <PiNotePencil className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -359,9 +359,9 @@ export default function EditAdModal({
         </div>
 
         {/* Info sobre mídia */}
-        <div className="border p-4 bg-aviso/10 border-aviso/40 mx-6 mt-4 rounded">
+        <div className="p-4 border-l-4 mx-6 mt-4 rounded">
           <div className="flex items-start space-x-3">
-            <PiInfo className="w-5 h-5 text-aviso mt-0.5" />
+            <PiInfo className="w-5 h-5 mt-0.5" />
             <div>
               <h4 className="font-medium text-theme-primary">Sobre a mídia</h4>
               <Text papel="rotulo" tom="suave" as="p" className="mt-1">
@@ -383,11 +383,11 @@ export default function EditAdModal({
 
         {/* Conflict Warning */}
         {conflictInfo && (
-          <div className="border p-4 bg-erro/10 border-erro/40 mx-6 mt-4 rounded">
+          <div className="p-4 border-l-4 mx-6 mt-4 rounded">
             <div className="flex items-start space-x-3">
-              <PiTarget className="w-5 h-5 text-erro mt-0.5" />
+              <PiTarget className="w-5 h-5 mt-0.5" />
               <div>
-                <h4 className="font-medium text-erro">Conflito Detectado</h4>
+                <h4 className="font-medium">Conflito Detectado</h4>
                 <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                   {conflictInfo}
                 </Text>
@@ -400,13 +400,13 @@ export default function EditAdModal({
         <Stack gap={6} as="form" onSubmit={handleSubmit} className="p-6">
           {/* Performance Atual */}
           {ad?.totalImpressions !== undefined && (
-            <Stack gap={3} className="p-4 bg-sup-1/50 rounded-lg">
+            <Stack gap={3} className="p-4 rounded-lg">
               <h4 className="font-medium text-theme-primary">
                 Performance Atual
               </h4>
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
-                  <div className="text-lg font-bold text-aviso">
+                  <div className="text-lg font-bold">
                     {ad.totalImpressions?.toLocaleString() || 0}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
@@ -414,7 +414,7 @@ export default function EditAdModal({
                   </Text>
                 </div>
                 <div>
-                  <div className="text-lg font-bold text-ok">
+                  <div className="text-lg font-bold">
                     {ad.totalClicks?.toLocaleString() || 0}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
@@ -422,7 +422,7 @@ export default function EditAdModal({
                   </Text>
                 </div>
                 <div>
-                  <div className="text-lg font-bold text-ouro-texto">
+                  <div className="text-lg font-bold">
                     {ad.ctr?.toFixed(2) || 0}%
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
@@ -454,11 +454,9 @@ export default function EditAdModal({
                   onChange={(e) => handleInputChange('title', e.target.value)}
                   placeholder="Título do anúncio"
                   maxLength={100}
-                  className={errors.title ? 'border-erro' : ''}
+                  className={errors.title ? '' : ''}
                 />
-                {errors.title && (
-                  <p className="text-erro text-sm mt-1">{errors.title}</p>
-                )}
+                {errors.title && <p className="text-sm mt-1">{errors.title}</p>}
               </div>
 
               <div>
@@ -472,12 +470,10 @@ export default function EditAdModal({
                   }
                   placeholder="Nome do anunciante"
                   maxLength={100}
-                  className={errors.advertiserName ? 'border-erro' : ''}
+                  className={errors.advertiserName ? '' : ''}
                 />
                 {errors.advertiserName && (
-                  <p className="text-erro text-sm mt-1">
-                    {errors.advertiserName}
-                  </p>
+                  <p className="text-sm mt-1">{errors.advertiserName}</p>
                 )}
               </div>
 
@@ -580,7 +576,7 @@ export default function EditAdModal({
                       handleInputChange('instrumentId', e.target.value)
                     }
                     className={`input-classical-2 w-full ${
-                      errors.instrumentId ? 'border-erro' : ''
+                      errors.instrumentId ? '' : ''
                     }`}
                   >
                     <option value="">Selecione um instrumento</option>
@@ -591,9 +587,7 @@ export default function EditAdModal({
                     ))}
                   </select>
                   {errors.instrumentId && (
-                    <p className="text-erro text-sm mt-1">
-                      {errors.instrumentId}
-                    </p>
+                    <p className="text-sm mt-1">{errors.instrumentId}</p>
                   )}
                 </div>
               )}
@@ -641,7 +635,7 @@ export default function EditAdModal({
                       ? '5511999999999'
                       : 'https://exemplo.com'
                   }
-                  className={errors.targetUrl ? 'border-erro' : ''}
+                  className={errors.targetUrl ? '' : ''}
                 />
                 {formData.linkType === 'whatsapp' && (
                   <Text papel="legenda" tom="fraco" as="p" className="mt-1">
@@ -649,7 +643,7 @@ export default function EditAdModal({
                   </Text>
                 )}
                 {errors.targetUrl && (
-                  <p className="text-erro text-sm mt-1">{errors.targetUrl}</p>
+                  <p className="text-sm mt-1">{errors.targetUrl}</p>
                 )}
               </div>
 

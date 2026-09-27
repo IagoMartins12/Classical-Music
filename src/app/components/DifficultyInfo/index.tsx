@@ -18,7 +18,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
     <AnimatedCard hover="none" className="classical-card p-6 mb-8">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
-          <div className="w-12 h-12 bg-aviso rounded-2xl flex items-center justify-center mr-4">
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center mr-4">
             <PiInfo className="w-6 h-6 text-theme-primary" />
           </div>
           <div>
@@ -32,7 +32,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
         </div>
         <button
           onClick={onClose}
-          className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg flex items-center justify-center hover:border-ouro hover:bg-ouro/10 transition-all duration-300"
+          className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg flex items-center justify-center transition-all duration-300"
         >
           <PiX className="w-4 h-4 text-theme-secondary" />
           <NomeAcao acao="fechar" />
@@ -44,8 +44,8 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
         <AnimatedItem direction="left">
           <Stack className="bg-theme-elevated rounded-xl p-6 border border-theme-secondary">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-ouro/20 rounded-lg flex items-center justify-center mr-3">
-                <PiMedal className="w-5 h-5 text-brand-primary" />
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center mr-3">
+                <PiMedal className="w-5 h-5 text-ouro-texto" />
               </div>
               <div>
                 <h4 className="text-lg font-bold text-theme-primary">
@@ -72,7 +72,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
                     <Text
                       papel="legenda"
                       tom="ouro"
-                      className="inline-flex items-center justify-center w-6 h-6 bg-ouro/10 border border-ouro/30 rounded font-bold"
+                      className="inline-flex items-center justify-center w-6 h-6 border rounded font-bold"
                     >
                       {level}
                     </Text>
@@ -97,8 +97,8 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
         <AnimatedItem direction="right">
           <Stack className="bg-theme-elevated rounded-xl p-6 border border-theme-secondary">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-ouro/20 rounded-lg flex items-center justify-center mr-3">
-                <PiGraduationCap className="w-5 h-5 text-ouro-texto" />
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center mr-3">
+                <PiGraduationCap className="w-5 h-5" />
               </div>
               <div>
                 <h4 className="text-lg font-bold text-theme-primary">
@@ -122,7 +122,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
                 .slice(0, 6)
                 .map(([level, description]) => (
                   <div key={level} className="flex items-start space-x-3">
-                    <span className="inline-flex items-center justify-center min-w-[2rem] h-6 bg-ouro/10 border border-ouro/30 text-ouro-texto rounded text-xs font-bold px-1">
+                    <span className="inline-flex items-center justify-center min-w-[2rem] h-6 border rounded text-xs font-bold px-1">
                       {level}
                     </span>
                     <Text
@@ -145,11 +145,11 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
 
       {/* Explicação sobre a base IMSLP */}
       <AnimatedItem direction="up" delay={0.2}>
-        <div className="mt-6 p-4 bg-ouro/5 border border-ouro/20 rounded-xl">
+        <div className="mt-6 p-4 border rounded-xl">
           <div className="flex items-start space-x-3">
-            <PiInfo className="w-5 h-5 text-brand-primary mt-0.5 flex-shrink-0" />
+            <PiInfo className="w-5 h-5 text-ouro-texto mt-0.5 flex-shrink-0" />
             <Stack gap={2}>
-              <h5 className="text-sm font-semibold text-brand-primary">
+              <h5 className="text-sm font-semibold text-ouro-texto">
                 Nossa Base de Dados
               </h5>
               <Text

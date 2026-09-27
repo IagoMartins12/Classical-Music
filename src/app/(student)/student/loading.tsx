@@ -39,23 +39,23 @@ export default function StudentDashboardLoading() {
 
       {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-16 left-16 text-5xl text-ouro-texto/10 animate-float">
+        <div className="absolute top-16 left-16 text-5xl animate-float">
           <PiUser />
         </div>
         <div
-          className="absolute bottom-16 right-16 text-4xl text-ouro-texto/10 animate-float"
+          className="absolute bottom-16 right-16 text-4xl animate-float"
           style={{ animationDelay: '1s' }}
         >
           <PiMusicNotes />
         </div>
         <div
-          className="absolute top-1/3 right-24 text-3xl text-ouro-texto/10 animate-float"
+          className="absolute top-1/3 right-24 text-3xl animate-float"
           style={{ animationDelay: '2s' }}
         >
           <GiGrandPiano />
         </div>
         <div
-          className="absolute bottom-1/3 left-24 text-3xl text-aviso/10 animate-float"
+          className="absolute bottom-1/3 left-24 text-3xl animate-float"
           style={{ animationDelay: '0.5s' }}
         >
           <PiMusicNotes />
@@ -66,36 +66,36 @@ export default function StudentDashboardLoading() {
         {/* Header Skeleton */}
         <div className="text-center mb-8 py-8 animate-pulse">
           <div className="flex items-center justify-center mb-6">
-            <div className="w-16 h-16 bg-ouro/20 rounded-3xl flex items-center justify-center shadow-theme-glow">
-              <div className="w-8 h-8 bg-texto/30 rounded-lg"></div>
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-8 h-8 rounded-lg"></div>
             </div>
           </div>
 
           <div className="space-y-4 mb-6">
-            <div className="h-12 bg-sup-elevada border border-theme-primary rounded-2xl mx-auto max-w-lg shadow-theme-medium"></div>
-            <div className="h-6 bg-sup-elevada border border-theme-secondary rounded-lg mx-auto max-w-2xl"></div>
+            <div className="h-12 border border-theme-primary rounded-2xl mx-auto max-w-lg shadow-theme-medium"></div>
+            <div className="h-6 border border-theme-secondary rounded-lg mx-auto max-w-2xl"></div>
           </div>
         </div>
 
         {/* Stats Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {[
-            { icon: <PiBookOpen className="w-6 h-6 text-sobre-ouro/20" /> },
+            { icon: <PiBookOpen className="w-6 h-6" /> },
             {
-              icon: <PiCalendarBlank className="w-6 h-6 text-sobre-ouro/20" />,
+              icon: <PiCalendarBlank className="w-6 h-6" />,
             },
-            { icon: <PiClock className="w-6 h-6 text-sobre-ouro/20" /> },
+            { icon: <PiClock className="w-6 h-6" /> },
             {
-              icon: <PiTrendUp className="w-6 h-6 text-sobre-ouro/20" />,
+              icon: <PiTrendUp className="w-6 h-6" />,
             },
           ].map((item, index) => (
             <Card key={index} className="text-center animate-pulse">
-              <div className="w-12 h-12 bg-ouro/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                 {item.icon}
               </div>
-              <div className="h-6 bg-ouro/20 rounded mb-2"></div>
+              <div className="h-6 rounded mb-2"></div>
               <div className="h-3 bg-theme-elevated rounded mb-1"></div>
-              <div className="h-3 bg-ok/20 rounded w-3/4 mx-auto"></div>
+              <div className="h-3 rounded w-3/4 mx-auto"></div>
             </Card>
           ))}
         </div>
@@ -108,12 +108,12 @@ export default function StudentDashboardLoading() {
             <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-ok/20 rounded-xl flex items-center justify-center">
-                    <PiTarget className="w-5 h-5 text-sobre-ouro/20" />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                    <PiTarget className="w-5 h-5" />
                   </div>
                   <Stack gap={1}>
-                    <div className="h-5 bg-fundo/30 rounded w-32"></div>
-                    <div className="h-3 bg-sup-2/30 rounded w-48"></div>
+                    <div className="h-5 rounded w-32"></div>
+                    <div className="h-3 rounded w-48"></div>
                   </Stack>
                 </Inline>
                 <div className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
@@ -123,10 +123,10 @@ export default function StudentDashboardLoading() {
                 {Array.from({ length: 3 }).map((_, i) => (
                   <Card nivel={2} densidade="compacta" key={i}>
                     <Inline gap={3}>
-                      <div className="w-8 h-8 bg-aviso/20 rounded-lg"></div>
+                      <div className="w-8 h-8 rounded-lg"></div>
                       <Stack gap={1}>
-                        <div className="h-4 bg-fundo/30 rounded w-24"></div>
-                        <div className="h-3 bg-sup-2/30 rounded w-32"></div>
+                        <div className="h-4 rounded w-24"></div>
+                        <div className="h-3 rounded w-32"></div>
                       </Stack>
                     </Inline>
                   </Card>
@@ -138,15 +138,15 @@ export default function StudentDashboardLoading() {
             <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-ok/20 rounded-xl flex items-center justify-center">
-                    <PiClock className="w-5 h-5 text-sobre-ouro/20" />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                    <PiClock className="w-5 h-5" />
                   </div>
                   <Stack gap={1}>
-                    <div className="h-5 bg-fundo/30 rounded w-32"></div>
-                    <div className="h-3 bg-sup-2/30 rounded w-56"></div>
+                    <div className="h-5 rounded w-32"></div>
+                    <div className="h-3 rounded w-56"></div>
                   </Stack>
                 </Inline>
-                <div className="h-4 w-20 bg-ouro/30 rounded"></div>
+                <div className="h-4 w-20 rounded"></div>
               </div>
 
               <Stack>
@@ -154,16 +154,16 @@ export default function StudentDashboardLoading() {
                   <Card nivel={2} densidade="compacta" key={index}>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
-                        <div className="h-4 bg-fundo/30 rounded w-48 mb-1"></div>
+                        <div className="h-4 rounded w-48 mb-1"></div>
                         <Inline gap={4} className="mb-2">
-                          <div className="h-3 bg-sup-2/30 rounded w-24"></div>
-                          <div className="h-3 bg-sup-2/30 rounded w-16"></div>
-                          <div className="h-3 bg-sup-2/30 rounded w-20"></div>
+                          <div className="h-3 rounded w-24"></div>
+                          <div className="h-3 rounded w-16"></div>
+                          <div className="h-3 rounded w-20"></div>
                         </Inline>
                       </div>
 
                       <Inline gap={2}>
-                        <div className="h-6 w-20 bg-ok/20 border border-ok/30 rounded-full"></div>
+                        <div className="h-6 w-20 border rounded-full"></div>
                         <div className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
                       </Inline>
                     </div>
@@ -171,7 +171,7 @@ export default function StudentDashboardLoading() {
                     {/* Lesson Details */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 pt-3 border-t border-theme-secondary">
                       <Stack gap={1}>
-                        <div className="h-3 bg-sup-2/30 rounded w-32"></div>
+                        <div className="h-3 rounded w-32"></div>
                         <div className="flex flex-wrap gap-1">
                           {Array.from({ length: 3 }).map((_, i) => (
                             <div
@@ -183,25 +183,19 @@ export default function StudentDashboardLoading() {
                       </Stack>
 
                       <Stack gap={1}>
-                        <div className="h-3 bg-sup-2/30 rounded w-20"></div>
+                        <div className="h-3 rounded w-20"></div>
                         <div className="flex flex-wrap gap-1">
                           {Array.from({ length: 2 }).map((_, i) => (
-                            <div
-                              key={i}
-                              className="h-5 w-20 bg-ok/10 rounded"
-                            ></div>
+                            <div key={i} className="h-5 w-20 rounded"></div>
                           ))}
                         </div>
                       </Stack>
                     </div>
 
                     {/* Homework */}
-                    <Stack
-                      gap={1}
-                      className="mt-3 p-3 bg-sup-elevada rounded-lg border border-linha/20"
-                    >
-                      <div className="h-3 bg-sup-2/30 rounded w-24"></div>
-                      <div className="h-3 bg-fundo/30 rounded w-full"></div>
+                    <Stack gap={1} className="mt-3 p-3 rounded-lg border">
+                      <div className="h-3 rounded w-24"></div>
+                      <div className="h-3 rounded w-full"></div>
                     </Stack>
                   </Card>
                 ))}
@@ -212,29 +206,29 @@ export default function StudentDashboardLoading() {
             <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-ouro/20 rounded-xl flex items-center justify-center">
-                    <PiMusicNotes className="w-5 h-5 text-sobre-ouro/20" />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                    <PiMusicNotes className="w-5 h-5" />
                   </div>
                   <Stack gap={1}>
-                    <div className="h-5 bg-fundo/30 rounded w-28"></div>
-                    <div className="h-3 bg-sup-2/30 rounded w-56"></div>
+                    <div className="h-5 rounded w-28"></div>
+                    <div className="h-3 rounded w-56"></div>
                   </Stack>
                 </Inline>
-                <div className="h-4 w-24 bg-ouro/30 rounded"></div>
+                <div className="h-4 w-24 rounded"></div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Current Works */}
                 <Stack gap={3}>
-                  <div className="h-4 bg-fundo/30 rounded w-40 flex items-center">
-                    <PiBookOpen className="w-4 h-4 text-aviso/30 mr-2" />
+                  <div className="h-4 rounded w-40 flex items-center">
+                    <PiBookOpen className="w-4 h-4 mr-2" />
                   </div>
                   <Stack gap={2}>
                     {Array.from({ length: 4 }).map((_, i) => (
                       <Stack gap={1} key={i} className="classical-card-2 p-3">
-                        <div className="h-4 bg-fundo/30 rounded w-32"></div>
-                        <div className="h-3 bg-sup-2/30 rounded w-24"></div>
-                        <div className="h-3 bg-aviso/20 rounded w-28"></div>
+                        <div className="h-4 rounded w-32"></div>
+                        <div className="h-3 rounded w-24"></div>
+                        <div className="h-3 rounded w-28"></div>
                       </Stack>
                     ))}
                   </Stack>
@@ -242,20 +236,20 @@ export default function StudentDashboardLoading() {
 
                 {/* Learned Works */}
                 <Stack gap={3}>
-                  <div className="h-4 bg-fundo/30 rounded w-32 flex items-center">
-                    <PiCheckCircle className="w-4 h-4 text-ok/30 mr-2" />
+                  <div className="h-4 rounded w-32 flex items-center">
+                    <PiCheckCircle className="w-4 h-4 mr-2" />
                   </div>
                   <Stack gap={2}>
                     {Array.from({ length: 4 }).map((_, i) => (
                       <div key={i} className="classical-card-2 p-3">
                         <div className="flex items-center justify-between">
                           <div className="flex-1">
-                            <div className="h-4 bg-fundo/30 rounded w-28 mb-1"></div>
-                            <div className="h-3 bg-sup-2/30 rounded w-20"></div>
+                            <div className="h-4 rounded w-28 mb-1"></div>
+                            <div className="h-3 rounded w-20"></div>
                           </div>
                           <Inline gap={1}>
-                            <div className="h-3 bg-ok/20 rounded w-8"></div>
-                            <PiHeart className="w-3 h-3 text-erro/30" />
+                            <div className="h-3 rounded w-8"></div>
+                            <PiHeart className="w-3 h-3" />
                           </Inline>
                         </div>
                       </div>
@@ -271,12 +265,12 @@ export default function StudentDashboardLoading() {
             {/* Today's Schedule Skeleton */}
             <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
-                <div className="w-8 h-8 bg-aviso/20 rounded-lg flex items-center justify-center">
-                  <PiCalendarBlank className="w-4 h-4 text-sobre-ouro/20" />
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                  <PiCalendarBlank className="w-4 h-4" />
                 </div>
                 <Stack gap={1}>
-                  <div className="h-4 bg-fundo/30 rounded w-16"></div>
-                  <div className="h-3 bg-sup-2/30 rounded w-24"></div>
+                  <div className="h-4 rounded w-16"></div>
+                  <div className="h-3 rounded w-24"></div>
                 </Stack>
               </Inline>
 
@@ -284,11 +278,11 @@ export default function StudentDashboardLoading() {
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="classical-card-2 p-3">
                     <Inline gap={3}>
-                      <div className="w-2 h-12 bg-ouro/30 rounded-full"></div>
+                      <div className="w-2 h-12 rounded-full"></div>
                       <div className="flex-1">
-                        <div className="h-4 bg-fundo/30 rounded w-16 mb-1"></div>
-                        <div className="h-3 bg-sup-2/30 rounded w-20 mb-1"></div>
-                        <div className="h-3 bg-aviso/20 rounded w-12"></div>
+                        <div className="h-4 rounded w-16 mb-1"></div>
+                        <div className="h-3 rounded w-20 mb-1"></div>
+                        <div className="h-3 rounded w-12"></div>
                       </div>
                       <div className="w-6 h-6 bg-theme-elevated rounded"></div>
                     </Inline>
@@ -300,12 +294,12 @@ export default function StudentDashboardLoading() {
             {/* Upcoming Lessons Skeleton */}
             <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
-                <div className="w-8 h-8 bg-ok/20 rounded-lg flex items-center justify-center">
-                  <PiClock className="w-4 h-4 text-sobre-ouro/20" />
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                  <PiClock className="w-4 h-4" />
                 </div>
                 <Stack gap={1}>
-                  <div className="h-4 bg-fundo/30 rounded w-28"></div>
-                  <div className="h-3 bg-sup-2/30 rounded w-20"></div>
+                  <div className="h-4 rounded w-28"></div>
+                  <div className="h-3 rounded w-20"></div>
                 </Stack>
               </Inline>
 
@@ -316,10 +310,10 @@ export default function StudentDashboardLoading() {
                     className="flex items-center justify-between py-2 border-b border-theme-secondary last:border-0"
                   >
                     <Stack gap={1}>
-                      <div className="h-4 bg-fundo/30 rounded w-24"></div>
-                      <div className="h-3 bg-sup-2/30 rounded w-32"></div>
+                      <div className="h-4 rounded w-24"></div>
+                      <div className="h-3 rounded w-32"></div>
                     </Stack>
-                    <div className="h-3 bg-aviso/20 rounded w-12"></div>
+                    <div className="h-3 rounded w-12"></div>
                   </div>
                 ))}
               </Stack>
@@ -328,12 +322,12 @@ export default function StudentDashboardLoading() {
             {/* Teachers Skeleton */}
             <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
-                <div className="w-8 h-8 bg-ouro/20 rounded-lg flex items-center justify-center">
-                  <PiUserCheck className="w-4 h-4 text-sobre-ouro/20" />
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                  <PiUserCheck className="w-4 h-4" />
                 </div>
                 <Stack gap={1}>
-                  <div className="h-4 bg-fundo/30 rounded w-32"></div>
-                  <div className="h-3 bg-sup-2/30 rounded w-40"></div>
+                  <div className="h-4 rounded w-32"></div>
+                  <div className="h-3 rounded w-40"></div>
                 </Stack>
               </Inline>
 
@@ -342,13 +336,13 @@ export default function StudentDashboardLoading() {
                   <div key={i} className="classical-card-2 p-3">
                     <Inline gap={3}>
                       {/* Avatar */}
-                      <div className="w-10 h-10 bg-ouro/20 border border-ouro/30 rounded-full"></div>
+                      <div className="w-10 h-10 border rounded-full"></div>
 
                       {/* Info */}
                       <div className="flex-1">
-                        <div className="h-4 bg-fundo/30 rounded w-24 mb-1"></div>
-                        <div className="h-3 bg-sup-2/30 rounded w-32 mb-1"></div>
-                        <div className="h-3 bg-aviso/20 rounded w-20"></div>
+                        <div className="h-4 rounded w-24 mb-1"></div>
+                        <div className="h-3 rounded w-32 mb-1"></div>
+                        <div className="h-3 rounded w-20"></div>
                       </div>
                     </Inline>
                   </div>
@@ -360,9 +354,9 @@ export default function StudentDashboardLoading() {
       </div>
 
       {/* Floating Particles */}
-      <div className="fixed top-20 left-4 w-2 h-2 bg-ouro/30 rounded-full animate-pulse"></div>
-      <div className="fixed top-40 right-8 w-1.5 h-1.5 bg-ouro/40 rounded-full animate-pulse"></div>
-      <div className="fixed bottom-32 left-8 w-1 h-1 bg-ouro/50 rounded-full animate-pulse"></div>
+      <div className="fixed top-20 left-4 w-2 h-2 rounded-full animate-pulse"></div>
+      <div className="fixed top-40 right-8 w-1.5 h-1.5 rounded-full animate-pulse"></div>
+      <div className="fixed bottom-32 left-8 w-1 h-1 rounded-full animate-pulse"></div>
     </div>
   );
 }

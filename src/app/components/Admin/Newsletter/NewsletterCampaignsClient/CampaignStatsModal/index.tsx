@@ -135,7 +135,6 @@ export function CampaignStatsModal({
       description: 'Campanha foi criada no sistema',
       timestamp: campaign.createdAt,
       icon: PiEnvelopeSimple,
-      color: 'aviso',
     });
 
     // Evento de agendamento (se aplicável)
@@ -149,7 +148,6 @@ export function CampaignStatsModal({
         ).toLocaleDateString('pt-BR')}`,
         timestamp: campaign.scheduledAt,
         icon: PiClock,
-        color: 'atencao',
       });
     }
 
@@ -162,7 +160,6 @@ export function CampaignStatsModal({
         description: `Enviada para ${stats.sent} subscribers`,
         timestamp: campaign.sentAt,
         icon: PiUsers,
-        color: 'ok',
       });
 
       // Simular eventos de engajamento baseados na data de envio
@@ -178,7 +175,6 @@ export function CampaignStatsModal({
           description: 'Primeiro subscriber abriu o email',
           timestamp: firstOpenDate.toISOString(),
           icon: PiPulse,
-          color: 'ouro',
         });
       }
 
@@ -192,7 +188,6 @@ export function CampaignStatsModal({
           description: 'Primeiro subscriber clicou em um link',
           timestamp: firstClickDate.toISOString(),
           icon: PiTrendUp,
-          color: 'ok',
         });
       }
 
@@ -207,7 +202,6 @@ export function CampaignStatsModal({
           description: 'Atingiu 50% de taxa de abertura',
           timestamp: milestoneDate.toISOString(),
           icon: PiChartBar,
-          color: 'ok',
         });
       }
     }
@@ -253,11 +247,11 @@ export function CampaignStatsModal({
             <span
               className={`px-3 py-1 rounded-full text-xs font-medium ${
                 campaign.status === 'SENT'
-                  ? 'text-ok bg-ok/10'
+                  ? ''
                   : campaign.status === 'SENDING'
-                    ? 'text-aviso bg-aviso/10'
+                    ? ''
                     : campaign.status === 'SCHEDULED'
-                      ? 'text-ouro-texto bg-ouro/10'
+                      ? ''
                       : 'text-theme-tertiary bg-theme-secondary'
               }`}
             >
@@ -280,9 +274,7 @@ export function CampaignStatsModal({
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                  activeTab === tab.id
-                    ? 'bg-ouro text-sobre-ouro'
-                    : 'text-theme-tertiary hover:text-texto hover:bg-sup-1'
+                  activeTab === tab.id ? 'text-white' : 'text-theme-tertiary'
                 }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -296,7 +288,7 @@ export function CampaignStatsModal({
         <div className="p-6 overflow-y-auto max-h-[70vh]">
           {loading && (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ouro"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2"></div>
               <span className="ml-2 text-theme-secondary">Carregando...</span>
             </div>
           )}
@@ -347,7 +339,7 @@ export function CampaignStatsModal({
                     <Inline gap={2}>
                       <div className="w-32 bg-theme-primary rounded-full h-2">
                         <div
-                          className="bg-aviso h-2 rounded-full"
+                          className="h-2 rounded-full"
                           style={{ width: `${Math.min(rates.openRate, 100)}%` }}
                         />
                       </div>
@@ -355,9 +347,7 @@ export function CampaignStatsModal({
                         {rates.openRate.toFixed(1)}%
                       </span>
                       <span
-                        className={`text-xs ${
-                          rates.openRate > 20 ? 'text-ok' : 'text-erro'
-                        }`}
+                        className={`text-xs ${rates.openRate > 20 ? '' : ''}`}
                       >
                         (média: 20%)
                       </span>
@@ -370,7 +360,7 @@ export function CampaignStatsModal({
                     <Inline gap={2}>
                       <div className="w-32 bg-theme-primary rounded-full h-2">
                         <div
-                          className="bg-ouro h-2 rounded-full"
+                          className="h-2 rounded-full"
                           style={{
                             width: `${Math.min(rates.clickRate * 10, 100)}%`,
                           }}
@@ -380,9 +370,7 @@ export function CampaignStatsModal({
                         {rates.clickRate.toFixed(1)}%
                       </span>
                       <span
-                        className={`text-xs ${
-                          rates.clickRate > 2.5 ? 'text-ok' : 'text-erro'
-                        }`}
+                        className={`text-xs ${rates.clickRate > 2.5 ? '' : ''}`}
                       >
                         (média: 2.5%)
                       </span>
@@ -447,26 +435,22 @@ export function CampaignStatsModal({
                 </h3>
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-erro">
-                      {stats.bounced}
-                    </div>
-                    <div className="text-sm text-erro">
+                    <div className="text-2xl font-bold">{stats.bounced}</div>
+                    <div className="text-sm">
                       Bounces ({rates.bounceRate.toFixed(1)}%)
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-atencao">
+                    <div className="text-2xl font-bold">
                       {stats.unsubscribed}
                     </div>
-                    <div className="text-sm text-atencao">
+                    <div className="text-sm">
                       Descadastros ({rates.unsubscribeRate.toFixed(1)}%)
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-ok">
-                      {stats.delivered}
-                    </div>
-                    <div className="text-sm text-ok">
+                    <div className="text-2xl font-bold">{stats.delivered}</div>
+                    <div className="text-sm">
                       Entregues ({rates.deliveryRate.toFixed(1)}%)
                     </div>
                   </div>
@@ -505,7 +489,7 @@ export function CampaignStatsModal({
               {/* Métricas de Engajamento */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-theme-secondary p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-aviso">
+                  <div className="text-2xl font-bold">
                     {(
                       (stats.opened / Math.max(stats.delivered, 1)) *
                       100
@@ -516,9 +500,7 @@ export function CampaignStatsModal({
                     Taxa de Abertura
                   </Text>
                   <div
-                    className={`text-xs mt-1 ${
-                      rates.openRate > 20 ? 'text-ok' : 'text-erro'
-                    }`}
+                    className={`text-xs mt-1 ${rates.openRate > 20 ? '' : ''}`}
                   >
                     {rates.openRate > 20
                       ? '↗ Acima da média'
@@ -527,7 +509,7 @@ export function CampaignStatsModal({
                 </div>
 
                 <div className="bg-theme-secondary p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-ouro-texto">
+                  <div className="text-2xl font-bold">
                     {(
                       (stats.clicked / Math.max(stats.opened, 1)) *
                       100
@@ -539,7 +521,7 @@ export function CampaignStatsModal({
                   </Text>
                   <div
                     className={`text-xs mt-1 ${
-                      rates.clickRate > 2.5 ? 'text-ok' : 'text-erro'
+                      rates.clickRate > 2.5 ? '' : ''
                     }`}
                   >
                     {rates.clickRate > 2.5
@@ -549,7 +531,7 @@ export function CampaignStatsModal({
                 </div>
 
                 <div className="bg-theme-secondary p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-ok">
+                  <div className="text-2xl font-bold">
                     {stats.opened > 0
                       ? Math.round(
                           (stats.clicked / stats.opened) * stats.delivered
@@ -565,7 +547,7 @@ export function CampaignStatsModal({
                 </div>
 
                 <div className="bg-theme-secondary p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-atencao">
+                  <div className="text-2xl font-bold">
                     {stats.opened > 0
                       ? ((stats.clicked / stats.opened) * 100).toFixed(1)
                       : 0}
@@ -590,7 +572,7 @@ export function CampaignStatsModal({
                     <div className="flex items-center">
                       <PiTrendUp
                         className={`w-4 h-4 mr-2 ${
-                          rates.openRate > 20 ? 'text-ok' : 'text-atencao'
+                          rates.openRate > 20 ? '' : ''
                         }`}
                       />
                       <span className="text-theme-primary">
@@ -607,7 +589,7 @@ export function CampaignStatsModal({
                     <div className="flex items-center">
                       <PiPulse
                         className={`w-4 h-4 mr-2 ${
-                          rates.clickRate > 2.5 ? 'text-ok' : 'text-atencao'
+                          rates.clickRate > 2.5 ? '' : ''
                         }`}
                       />
                       <span className="text-theme-primary">
@@ -624,7 +606,7 @@ export function CampaignStatsModal({
                     <div className="flex items-center">
                       <PiUsers
                         className={`w-4 h-4 mr-2 ${
-                          rates.unsubscribeRate < 1 ? 'text-ok' : 'text-atencao'
+                          rates.unsubscribeRate < 1 ? '' : ''
                         }`}
                       />
                       <span className="text-theme-primary">
@@ -658,7 +640,7 @@ export function CampaignStatsModal({
                       <div key={event.id} className="relative flex items-start">
                         {/* Ícone do evento */}
                         <div
-                          className={`relative z-10 flex items-center justify-center w-8 h-8 rounded-full bg-${event.color} shadow-lg`}
+                          className={`relative z-10 flex items-center justify-center w-8 h-8 rounded-full shadow-lg`}
                         >
                           <event.icon className="w-4 h-4 text-white" />
                         </div>
@@ -695,7 +677,7 @@ export function CampaignStatsModal({
                             )}
 
                             {event.type === 'MILESTONE_OPENS' && (
-                              <div className="mt-2 text-xs text-ok">
+                              <div className="mt-2 text-xs">
                                 🎯 Meta atingida em{' '}
                                 {campaign.sentAt
                                   ? Math.round(

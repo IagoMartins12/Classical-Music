@@ -241,9 +241,9 @@ const ProfileStep: React.FC = () => {
         <Card
           nivel={2}
           densidade="compacta"
-          className="max-w-lg mx-auto bg-ouro/5 border border-ouro/20"
+          className="max-w-lg mx-auto border"
         >
-          <h4 className="text-sm font-medium text-brand-primary mb-2">
+          <h4 className="text-sm font-medium text-ouro-texto mb-2">
             {t('profile_step_privacy_title')}
           </h4>
           <ul className="text-xs text-theme-secondary space-y-1">

@@ -53,35 +53,35 @@ const CATEGORY_TABS = [
     label: 'Capas',
     icon: PiImage,
     description: 'Imagens de capa dos artigos',
-    color: 'text-aviso',
+    color: 'text-blue-500',
   },
   {
     value: 'content' as const,
     label: 'Conteúdo',
     icon: PiFileText,
     description: 'Imagens e vídeos do conteúdo',
-    color: 'text-ok',
+    color: 'text-green-500',
   },
   {
     value: 'audio' as const,
     label: 'Áudios',
     icon: PiMusicNotes,
     description: 'Áudios de fundo dos artigos',
-    color: 'text-ouro-texto',
+    color: 'text-purple-500',
   },
   {
     value: 'gallery' as const,
     label: 'Galeria',
     icon: PiImage,
     description: 'Mídia da galeria do artigo',
-    color: 'text-ouro-texto',
+    color: 'text-pink-500',
   },
   {
     value: 'temp' as const,
     label: 'Temporários',
     icon: PiClock,
     description: 'Arquivos temporários não vinculados',
-    color: 'text-atencao',
+    color: 'text-yellow-500',
   },
 ];
 
@@ -150,7 +150,7 @@ export default function BlogMediaGalleryClient() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <PiWarning className="w-16 h-16 text-erro mx-auto mb-4" />
+          <PiWarning className="w-16 h-16 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Galeria
           </h2>
@@ -179,7 +179,7 @@ export default function BlogMediaGalleryClient() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8 lg:py-12">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
+                <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                   <PiImage className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -207,7 +207,7 @@ export default function BlogMediaGalleryClient() {
                       className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all text-sm ${
                         isActive
                           ? 'bg-theme-tertiary text-theme-primary shadow-lg'
-                          : 'text-theme-secondary hover:bg-fundo hover:text-texto'
+                          : 'text-theme-secondary'
                       }`}
                       onClick={() => setActiveTab(tab.value)}
                       disabled={isLoading}
@@ -220,7 +220,7 @@ export default function BlogMediaGalleryClient() {
                         <span
                           className={`text-xs px-1.5 py-0.5 rounded-full ${
                             isActive
-                              ? 'bg-ouro text-sobre-ouro'
+                              ? 'text-white'
                               : 'bg-theme-tertiary text-theme-primary'
                           }`}
                         >
@@ -419,15 +419,15 @@ export default function BlogMediaGalleryClient() {
                           key={file.url}
                           className={`relative group rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
                             isSelected
-                              ? 'border-ouro shadow-theme-glow'
-                              : 'border-theme-secondary hover:border-linha'
+                              ? 'shadow-theme-glow'
+                              : 'border-theme-secondary'
                           }`}
                           onClick={() => toggleFileSelection(file.url)}
                         >
                           {/* Checkbox */}
                           <div className="absolute top-2 left-2 z-10">
                             {isSelected ? (
-                              <PiCheckSquare className="w-5 h-5 text-brand-primary bg-white rounded shadow-md" />
+                              <PiCheckSquare className="w-5 h-5 text-ouro-texto bg-white rounded shadow-md" />
                             ) : (
                               <PiSquare className="w-5 h-5 text-white bg-black/50 rounded opacity-0 group-hover:opacity-100 transition-opacity" />
                             )}
@@ -466,7 +466,7 @@ export default function BlogMediaGalleryClient() {
                               </Text>
                               <Inline gap={1}>
                                 {file.isTemporary && (
-                                  <span className="text-xs px-1.5 py-0.5 rounded bg-atencao/10 text-atencao">
+                                  <span className="text-xs px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800">
                                     Temp
                                   </span>
                                 )}
@@ -474,13 +474,13 @@ export default function BlogMediaGalleryClient() {
                                   <Inline
                                     as="span"
                                     gap={1}
-                                    className="text-xs px-1.5 py-0.5 rounded bg-ok/10 text-ok"
+                                    className="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-800"
                                   >
                                     <PiCheck className="w-3 h-3" />
                                     <span>{file.usageCount}</span>
                                   </Inline>
                                 ) : (
-                                  <span className="text-xs px-1.5 py-0.5 rounded bg-erro/10 text-erro">
+                                  <span className="text-xs px-1.5 py-0.5 rounded bg-red-100 text-red-800">
                                     Não usado
                                   </span>
                                 )}
@@ -570,7 +570,7 @@ export default function BlogMediaGalleryClient() {
                 </div>
                 <button
                   onClick={() => setShowUsageDetails(null)}
-                  className="p-2 hover:bg-sup-1 rounded-lg transition-colors"
+                  className="p-2 rounded-lg transition-colors"
                 >
                   <PiX className="w-5 h-5 text-theme-tertiary" />
                   <NomeAcao acao="fechar" />
@@ -580,7 +580,7 @@ export default function BlogMediaGalleryClient() {
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div className="text-center p-4 bg-theme-secondary rounded-lg">
-                  <p className="text-2xl font-bold text-brand-primary">
+                  <p className="text-2xl font-bold text-ouro-texto">
                     {showUsageDetails.usageCount}
                   </p>
                   <Text papel="legenda" tom="fraco" as="p" className="mt-1">
@@ -588,7 +588,7 @@ export default function BlogMediaGalleryClient() {
                   </Text>
                 </div>
                 <div className="text-center p-4 bg-theme-secondary rounded-lg">
-                  <p className="text-2xl font-bold text-ok">
+                  <p className="text-2xl font-bold text-green-600">
                     {showUsageDetails.formattedSize}
                   </p>
                   <Text papel="legenda" tom="fraco" as="p" className="mt-1">
@@ -596,7 +596,7 @@ export default function BlogMediaGalleryClient() {
                   </Text>
                 </div>
                 <div className="text-center p-4 bg-theme-secondary rounded-lg">
-                  <p className="text-2xl font-bold text-ouro-texto">
+                  <p className="text-2xl font-bold text-purple-600">
                     {showUsageDetails.type}
                   </p>
                   <Text papel="legenda" tom="fraco" as="p" className="mt-1">
@@ -615,7 +615,7 @@ export default function BlogMediaGalleryClient() {
                 {showUsageDetails.usedIn.map((usage, index) => (
                   <div
                     key={`${usage.articleId}-${index}`}
-                    className="p-4 bg-theme-secondary rounded-lg hover:bg-fundo transition-colors"
+                    className="p-4 bg-theme-secondary rounded-lg transition-colors"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -626,7 +626,7 @@ export default function BlogMediaGalleryClient() {
                           <Text
                             papel="legenda"
                             tom="ouro"
-                            className="px-2 py-1 rounded bg-ouro/10"
+                            className="px-2 py-1 rounded"
                           >
                             {getUsageTypeLabel(usage.usageType)}
                           </Text>
@@ -639,10 +639,10 @@ export default function BlogMediaGalleryClient() {
                         href={`/blog/${usage.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-2 hover:bg-sup-2 rounded-lg transition-colors"
+                        className="p-2 rounded-lg transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <PiArrowSquareOut className="w-4 h-4 text-brand-primary" />
+                        <PiArrowSquareOut className="w-4 h-4 text-ouro-texto" />
                       </a>
                     </div>
                   </div>

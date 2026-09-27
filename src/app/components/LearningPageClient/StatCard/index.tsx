@@ -18,10 +18,10 @@ export const StatCard = ({
   color = 'brand',
 }: StatCardProps) => {
   const colorClasses = {
-    brand: 'fill-ouro',
-    blue: 'bg-aviso',
-    green: 'bg-ok',
-    purple: 'fill-ouro',
+    brand: '',
+    blue: '',
+    green: '',
+    purple: '',
   };
 
   return (

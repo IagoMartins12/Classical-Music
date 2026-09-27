@@ -314,12 +314,8 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
           className={`
             input-classical w-full transition-all duration-200
             ${leftIcon ? 'pl-11' : 'pl-4'} pr-12
-            ${
-              disabled
-                ? 'cursor-not-allowed opacity-50'
-                : 'cursor-pointer hover:border-ouro'
-            }
-            ${isOpen ? 'border-ouro' : ''}
+            ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
+            ${isOpen ? '' : ''}
             ${
               selectedOption
                 ? 'text-theme-primary font-medium'
@@ -338,9 +334,9 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
             <button
               type="button"
               onClick={handleClear}
-              className="p-1 hover:bg-sup-1 hover:bg-opacity-30 rounded-full transition-colors"
+              className="p-1 rounded-full transition-colors"
             >
-              <PiX className="w-3 h-3 text-theme-tertiary hover:text-texto" />
+              <PiX className="w-3 h-3 text-theme-tertiary" />
               <NomeAcao acao="fechar" />
             </button>
           )}
@@ -359,7 +355,7 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
           style={{ zIndex: 'var(--z-menu)' }}
         >
           {headerLabel && (
-            <div className="flex items-center gap-2 px-4 py-3 bg-sup-1/10 border-b border-theme-secondary">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-theme-secondary">
               {headerIcon}
               <Text papel="rotulo" tom="suave" className="font-medium">
                 {headerLabel}
@@ -373,7 +369,7 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder={searchPlaceholder}
-              className="w-full px-3 py-2 text-sm bg-theme-secondary border border-theme-secondary rounded-md focus:outline-none focus:border-ouro transition-colors"
+              className="w-full px-3 py-2 text-sm bg-theme-secondary border border-theme-secondary rounded-md focus:outline-none transition-colors"
               autoFocus
             />
           </div>
@@ -381,7 +377,7 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
           {isLoading && (
             <div className="flex items-center justify-center py-8">
               <Inline gap={2} className="text-theme-secondary">
-                <div className="w-4 h-4 border-2 border-ouro border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></div>
                 <span className="text-sm">Carregando opções...</span>
               </Inline>
             </div>
@@ -396,10 +392,10 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
                     type="button"
                     onClick={() => handleSelect(option.value)}
                     className={`
-                      w-full text-left px-4 py-3 hover:bg-ouro/10 transition-colors duration-200 border-b last:border-b-0 border-theme-secondary
+                      w-full text-left px-4 py-3 transition-colors duration-200 border-b last:border-b-0 border-theme-secondary
                       ${
                         value === option.value
-                          ? 'bg-ouro/10 text-brand-primary font-medium'
+                          ? 'text-ouro-texto font-medium'
                           : 'text-theme-primary'
                       }
                     `}
@@ -759,7 +755,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
           }
           onClear={value.country ? handleClearCountry : undefined}
           headerLabel="Países Disponíveis"
-          headerIcon={<PiTrendUp className="w-4 h-4 text-brand-primary" />}
+          headerIcon={<PiTrendUp className="w-4 h-4 text-ouro-texto" />}
           emptyMessage="Nenhum país encontrado"
           isLoading={isLoading || isLoadingAllCountries}
           onSearchWithNoResults={handleSearchWithNoResults}
@@ -788,7 +784,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
           headerLabel={
             value.country ? `Estados de ${value.country.name}` : 'Estados'
           }
-          headerIcon={<PiMapTrifold className="w-4 h-4 text-brand-primary" />}
+          headerIcon={<PiMapTrifold className="w-4 h-4 text-ouro-texto" />}
           emptyMessage={
             value.country
               ? 'Nenhum estado encontrado'
@@ -827,7 +823,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
           headerLabel={
             value.state ? `Cidades de ${value.state.name}` : 'Cidades'
           }
-          headerIcon={<PiHouse className="w-4 h-4 text-brand-primary" />}
+          headerIcon={<PiHouse className="w-4 h-4 text-ouro-texto" />}
           emptyMessage={
             value.state
               ? 'Nenhuma cidade encontrada'
@@ -844,7 +840,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
 
       {/* Feedback de erro */}
       {hasError && (
-        <div className="text-xs text-erro mt-2">
+        <div className="text-xs text-red-500 mt-2">
           Erro ao carregar dados. Usando dados básicos.
         </div>
       )}

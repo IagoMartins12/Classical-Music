@@ -255,7 +255,7 @@ const ModerationClient = ({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiShield className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -284,12 +284,12 @@ const ModerationClient = ({
                   className={`px-6 py-3 rounded-lg text-sm font-medium transition-all capitalize ${
                     status === statusOption
                       ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                      : 'text-theme-tertiary hover:text-texto'
+                      : 'text-theme-tertiary'
                   }`}
                 >
                   {t(`moderation_status_${statusOption}`)}
                   {statusOption === 'pending' && (
-                    <span className="ml-2 px-2 py-1 bg-erro text-white text-xs rounded-full">
+                    <span className="ml-2 px-2 py-1 text-white text-xs rounded-full">
                       {moderations.length}
                     </span>
                   )}
@@ -370,7 +370,7 @@ const ModerationClient = ({
                     animationFillMode: 'backwards',
                   }}
                 >
-                  <AnimatedCard className="classical-card p-6 hover:shadow-[var(--sombra-2)] transition-all">
+                  <AnimatedCard className="classical-card p-6 transition-all">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start space-x-4 flex-1">
                         {/* Checkbox para seleção múltipla */}
@@ -389,7 +389,7 @@ const ModerationClient = ({
                           </div>
                         )}
 
-                        <div className="w-12 h-12 bg-erro rounded-xl flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center">
                           {getEntityIcon(moderation.entityType)}
                         </div>
 
@@ -565,8 +565,8 @@ const ModerationClient = ({
                     }}
                     className={`px-4 py-2 rounded-lg ${
                       page === i + 1
-                        ? 'bg-ouro text-theme-primary'
-                        : 'bg-theme-secondary text-theme-tertiary hover:bg-sup-2'
+                        ? 'text-theme-primary'
+                        : 'bg-theme-secondary text-theme-tertiary'
                     }`}
                   >
                     {i + 1}
@@ -587,12 +587,12 @@ const ModerationClient = ({
 
       {/* Delete Confirmation Modal */}
       {showModal && selectedModeration && (
-        <div className="fixed inset-0 z-dialogo flex items-center justify-center p-4 bg-veu backdrop-blur-sm">
+        <div className="fixed inset-0 z-dialogo flex items-center justify-center p-4 backdrop-blur-sm">
           <AnimatedItem direction="scale" springType="bouncy">
             <Card className="max-w-md w-full">
               <div className="text-center">
-                <div className="w-16 h-16 bg-erro/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <PiWarning className="w-8 h-8 text-erro" />
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <PiWarning className="w-8 h-8" />
                 </div>
 
                 <h3 className="text-xl font-bold text-theme-primary mb-2">

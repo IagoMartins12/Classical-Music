@@ -128,9 +128,9 @@ export default function UserEditModal({
       case 0:
         return 'text-theme-tertiary border-theme-primary';
       case 1:
-        return 'text-aviso border-aviso';
+        return '';
       case 2:
-        return 'text-erro border-erro';
+        return '';
       default:
         return 'text-theme-tertiary border-theme-primary';
     }
@@ -156,12 +156,12 @@ export default function UserEditModal({
       isOpen={isOpen}
       maxWidth="4xl"
       onClose={onClose}
-      className="bg-fundo border border-theme-primary rounded-2xl w-full overflow-hidden"
+      className="border border-theme-primary rounded-2xl w-full overflow-hidden"
     >
       {/* Header */}
       <div className="flex items-center justify-between p-6 border-b border-theme-primary">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-aviso rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center">
             <PiGear className="w-5 h-5 text-theme-primary" />
           </div>
           <div>
@@ -176,12 +176,12 @@ export default function UserEditModal({
       {/* Content */}
       <div className="p-6 overflow-y-auto ">
         {error && (
-          <div className="mb-6 p-4 bg-erro/10 border border-erro/20 rounded-lg">
-            <div className="flex items-center gap-2 text-erro">
+          <div className="mb-6 p-4 border rounded-lg">
+            <div className="flex items-center gap-2">
               <PiWarning className="w-5 h-5" />
               <span className="font-medium">Erro</span>
             </div>
-            <p className="text-erro mt-1">{error}</p>
+            <p className="mt-1">{error}</p>
           </div>
         )}
 
@@ -189,7 +189,7 @@ export default function UserEditModal({
           {/* Role do Usuário */}
           <AnimatedCard className="classical-card p-4">
             <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-              <PiShield className="w-5 h-5 text-aviso" />
+              <PiShield className="w-5 h-5" />
               Role do Sistema
             </h3>
 
@@ -202,7 +202,7 @@ export default function UserEditModal({
                     className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all ${
                       editData.role === option.value
                         ? `${getRoleColor(option.value)} bg-theme-secondary`
-                        : 'border-theme-primary hover:border-linha'
+                        : 'border-theme-primary'
                     }`}
                   >
                     <input
@@ -218,12 +218,9 @@ export default function UserEditModal({
 
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        editData.role === option.value
-                          ? getRoleColor(option.value).includes('erro')
-                            ? 'bg-erro/20'
-                            : getRoleColor(option.value).includes('aviso')
-                              ? 'bg-aviso/20'
-                              : 'bg-theme-secondary'
+                        editData.role === option.value &&
+                        (option.value === 1 || option.value === 2)
+                          ? ''
                           : 'bg-theme-secondary'
                       }`}
                     >
@@ -252,8 +249,8 @@ export default function UserEditModal({
 
           {/* Resumo das Alterações */}
           {hasChanges && (
-            <AnimatedCard className="classical-card p-4 border-aviso">
-              <h3 className="text-lg font-bold text-aviso mb-3 flex items-center gap-2">
+            <AnimatedCard className="classical-card p-4">
+              <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
                 <PiGear className="w-5 h-5" />
                 Alterações Pendentes
               </h3>
@@ -262,7 +259,7 @@ export default function UserEditModal({
                 {editData.role !== (user.role || 0) && (
                   <div className="flex justify-between">
                     <span className="text-theme-tertiary">Role:</span>
-                    <span className="text-aviso font-medium">
+                    <span className="font-medium">
                       {ROLE_OPTIONS.find((r) => r.value === user.role)?.label} →{' '}
                       {
                         ROLE_OPTIONS.find((r) => r.value === editData.role)
@@ -275,7 +272,7 @@ export default function UserEditModal({
                 {editData.userType !== (user.userType || 'CASUAL_USER') && (
                   <div className="flex justify-between">
                     <span className="text-theme-tertiary">Tipo:</span>
-                    <span className="text-aviso font-medium">
+                    <span className="font-medium">
                       {
                         USER_TYPE_OPTIONS.find((t) => t.value === user.userType)
                           ?.label
@@ -294,7 +291,7 @@ export default function UserEditModal({
                   (user.experienceLevel || 'BEGINNER') && (
                   <div className="flex justify-between">
                     <span className="text-theme-tertiary">Experiência:</span>
-                    <span className="text-aviso font-medium">
+                    <span className="font-medium">
                       {
                         EXPERIENCE_OPTIONS.find(
                           (e) => e.value === user.experienceLevel

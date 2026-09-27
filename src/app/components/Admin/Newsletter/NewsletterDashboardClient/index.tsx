@@ -55,14 +55,14 @@ export default function NewsletterDashboardClient() {
       description: 'Criar campanha de email',
       icon: PiPlus,
       href: '/admin/newsletter/campaigns',
-      color: 'fill-ouro',
+      color: '',
     },
     {
       title: 'Gerenciar Subscribers',
       description: 'Ver e gerenciar inscritos',
       icon: PiUsers,
       href: '/admin/newsletter/subscribers',
-      color: 'bg-aviso',
+      color: '',
       badge: stats?.activeSubscribers || 0,
     },
     {
@@ -70,21 +70,21 @@ export default function NewsletterDashboardClient() {
       description: 'Criar e editar templates',
       icon: PiFileText,
       href: '/admin/newsletter/templates',
-      color: 'bg-ok',
+      color: '',
     },
     {
       title: 'Campanhas',
       description: 'Ver campanhas enviadas',
       icon: PiPaperPlaneRight,
       href: '/admin/newsletter/campaigns',
-      color: 'fill-ouro',
+      color: '',
     },
     {
       title: 'Analytics',
       description: 'Relatórios detalhados',
       icon: PiChartBar,
       href: '/admin/newsletter/analytics',
-      color: 'bg-atencao',
+      color: '',
     },
   ];
 
@@ -100,7 +100,7 @@ export default function NewsletterDashboardClient() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <PiWarningCircle className="w-16 h-16 text-erro mx-auto mb-4" />
+          <PiWarningCircle className="w-16 h-16 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Dashboard
           </h2>
@@ -129,7 +129,7 @@ export default function NewsletterDashboardClient() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-16 h-16 bg-aviso rounded-3xl flex items-center justify-center shadow-theme-glow">
+                <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                   <PiEnvelopeSimple className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -180,14 +180,14 @@ export default function NewsletterDashboardClient() {
                       {stats.totalSubscribers.toLocaleString()}
                     </p>
                     <div className="flex items-center mt-2">
-                      <div className="w-2 h-2 bg-ok rounded-full mr-2"></div>
+                      <div className="w-2 h-2 rounded-full mr-2"></div>
                       <Text papel="legenda" tom="fraco">
                         {stats.newSubscribersLast30Days} novos (30d)
                       </Text>
                     </div>
                   </div>
-                  <div className="w-12 h-12 bg-aviso/20 rounded-xl flex items-center justify-center">
-                    <PiUsers className="w-6 h-6 text-aviso" />
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                    <PiUsers className="w-6 h-6" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -198,18 +198,18 @@ export default function NewsletterDashboardClient() {
                     <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Subscribers Ativos
                     </Text>
-                    <p className="text-3xl font-bold text-ok">
+                    <p className="text-3xl font-bold">
                       {stats.activeSubscribers.toLocaleString()}
                     </p>
                     <div className="flex items-center mt-2">
-                      <div className="w-2 h-2 bg-atencao rounded-full mr-2"></div>
+                      <div className="w-2 h-2 rounded-full mr-2"></div>
                       <Text papel="legenda" tom="fraco">
                         {stats.pendingSubscribers} pendentes
                       </Text>
                     </div>
                   </div>
-                  <div className="w-12 h-12 bg-ok/20 rounded-xl flex items-center justify-center">
-                    <PiCheckCircle className="w-6 h-6 text-ok" />
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                    <PiCheckCircle className="w-6 h-6" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -220,18 +220,16 @@ export default function NewsletterDashboardClient() {
                     <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Taxa de Abertura
                     </Text>
-                    <p className="text-3xl font-bold text-ouro-texto">
+                    <p className="text-3xl font-bold">
                       {(stats.avgOpenRate * 100).toFixed(1)}%
                     </p>
                     <div className="flex items-center mt-2">
-                      <PiTrendUp className="w-3 h-3 text-ok mr-1" />
-                      <span className="text-xs text-ok">
-                        +2.3% vs mês anterior
-                      </span>
+                      <PiTrendUp className="w-3 h-3 mr-1" />
+                      <span className="text-xs">+2.3% vs mês anterior</span>
                     </div>
                   </div>
-                  <div className="w-12 h-12 bg-ouro/20 rounded-xl flex items-center justify-center">
-                    <PiEye className="w-6 h-6 text-ouro-texto" />
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                    <PiEye className="w-6 h-6" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -242,18 +240,18 @@ export default function NewsletterDashboardClient() {
                     <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Taxa de Clique
                     </Text>
-                    <p className="text-3xl font-bold text-atencao">
+                    <p className="text-3xl font-bold">
                       {(stats.avgClickRate * 100).toFixed(1)}%
                     </p>
                     <div className="flex items-center mt-2">
-                      <PiCursor className="w-3 h-3 text-atencao mr-1" />
+                      <PiCursor className="w-3 h-3 mr-1" />
                       <Text papel="legenda" tom="fraco">
                         CTR médio
                       </Text>
                     </div>
                   </div>
-                  <div className="w-12 h-12 bg-atencao/20 rounded-xl flex items-center justify-center">
-                    <PiCursor className="w-6 h-6 text-atencao" />
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                    <PiCursor className="w-6 h-6" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -284,7 +282,7 @@ export default function NewsletterDashboardClient() {
                             <Text
                               papel="legenda"
                               tom="ouro"
-                              className="px-2 py-1 bg-ouro/10 font-medium rounded-full"
+                              className="px-2 py-1 font-medium rounded-full"
                             >
                               {action.badge}
                             </Text>
@@ -292,7 +290,7 @@ export default function NewsletterDashboardClient() {
                         </div>
 
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-theme-primary mb-2 group-hover:text-ouro-texto transition-colors">
+                          <h3 className="text-lg font-semibold text-theme-primary mb-2 transition-colors">
                             {action.title}
                           </h3>
                           <Text papel="rotulo" tom="suave" as="p">
@@ -304,7 +302,7 @@ export default function NewsletterDashboardClient() {
                           <Text
                             papel="rotulo"
                             tom="ouro"
-                            className="font-medium group-hover:text-ouro-texto transition-colors"
+                            className="font-medium transition-colors"
                           >
                             Acessar →
                           </Text>
@@ -327,7 +325,7 @@ export default function NewsletterDashboardClient() {
                 </h3>
                 <Link
                   href="/admin/newsletter/subscribers"
-                  className="text-brand-primary hover:text-ouro-texto font-medium text-sm"
+                  className="text-ouro-texto font-medium text-sm"
                 >
                   Ver todos →
                 </Link>
@@ -344,7 +342,7 @@ export default function NewsletterDashboardClient() {
                         className="flex items-center justify-between p-3 bg-theme-secondary rounded-lg"
                       >
                         <Inline gap={3}>
-                          <div className="w-8 h-8 bg-aviso rounded-full flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full flex items-center justify-center">
                             <span className="text-xs font-bold text-white">
                               {subscriber.firstName?.charAt(0) ||
                                 subscriber.email?.charAt(0)?.toUpperCase()}
@@ -367,9 +365,7 @@ export default function NewsletterDashboardClient() {
                         <div className="text-right">
                           <div
                             className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                              subscriber.status === 'ACTIVE'
-                                ? 'bg-ok/10 text-ok'
-                                : 'bg-atencao/10 text-atencao'
+                              subscriber.status === 'ACTIVE' ? '' : ''
                             }`}
                           >
                             {subscriber.status === 'ACTIVE'
@@ -408,7 +404,7 @@ export default function NewsletterDashboardClient() {
                 </h3>
                 <Link
                   href="/admin/newsletter/campaigns"
-                  className="text-brand-primary hover:text-ouro-texto font-medium text-sm"
+                  className="text-ouro-texto font-medium text-sm"
                 >
                   Ver todas →
                 </Link>
@@ -443,11 +439,11 @@ export default function NewsletterDashboardClient() {
                         <div className="flex items-center justify-between">
                           <Inline gap={4} className="text-xs">
                             <span className="flex items-center">
-                              <PiEye className="w-3 h-3 mr-1 text-ouro-texto" />
+                              <PiEye className="w-3 h-3 mr-1" />
                               {(campaign.openRate * 100).toFixed(1)}%
                             </span>
                             <span className="flex items-center">
-                              <PiCursor className="w-3 h-3 mr-1 text-atencao" />
+                              <PiCursor className="w-3 h-3 mr-1" />
                               {(campaign.clickRate * 100).toFixed(1)}%
                             </span>
                           </Inline>
@@ -466,7 +462,7 @@ export default function NewsletterDashboardClient() {
                   </p>
                   <Link
                     href="/admin/newsletter/campaigns/create"
-                    className="inline-flex items-center space-x-2 mt-4 text-brand-primary hover:text-ouro-texto font-medium text-sm"
+                    className="inline-flex items-center space-x-2 mt-4 text-ouro-texto font-medium text-sm"
                   >
                     <PiPlus className="w-4 h-4" />
                     <span>Criar primeira campanha</span>

@@ -201,7 +201,7 @@ export default function RecordEditorModal({
           <Inline
             as="span"
             gap={1}
-            className="px-2 py-0.5 bg-erro/10 text-erro text-xs rounded-full"
+            className="px-2 py-0.5 bg-red-500/20 text-red-500 text-xs rounded-full"
           >
             <PiLock className="w-3 h-3" />
             <span>Sensível</span>
@@ -211,14 +211,14 @@ export default function RecordEditorModal({
           <Inline
             as="span"
             gap={1}
-            className="px-2 py-0.5 bg-atencao/10 text-atencao text-xs rounded-full"
+            className="px-2 py-0.5 bg-orange-500/20 text-orange-500 text-xs rounded-full"
           >
             <PiWarning className="w-3 h-3" />
             <span>Exige confirmação</span>
           </Inline>
         )}
         {field.isUnique && (
-          <span className="px-2 py-0.5 bg-aviso/10 text-aviso text-xs rounded-full">
+          <span className="px-2 py-0.5 bg-blue-500/20 text-blue-500 text-xs rounded-full">
             Único
           </span>
         )}
@@ -229,7 +229,7 @@ export default function RecordEditorModal({
       <div key={field.name} className="space-y-2">
         <label className="block text-sm font-medium text-theme-primary">
           {field.name}
-          {field.isRequired && <span className="text-erro ml-1">*</span>}
+          {field.isRequired && <span className="ml-1">*</span>}
         </label>
 
         {renderBadges()}
@@ -259,7 +259,7 @@ export default function RecordEditorModal({
                 label: v,
               })),
             ]}
-            className={error ? 'border-erro' : ''}
+            className={error ? '' : ''}
           />
         )}
 
@@ -270,7 +270,7 @@ export default function RecordEditorModal({
             step={field.type === 'Float' ? '0.01' : '1'}
             value={value || ''}
             onChange={(e) => handleChange(e.target.value)}
-            className={error ? 'border-erro' : ''}
+            className={error ? '' : ''}
           />
         )}
 
@@ -284,7 +284,7 @@ export default function RecordEditorModal({
                 e.target.value ? new Date(e.target.value).toISOString() : null
               )
             }
-            className={error ? 'border-erro' : ''}
+            className={error ? '' : ''}
           />
         )}
 
@@ -301,7 +301,7 @@ export default function RecordEditorModal({
               )
             }
             placeholder="Separar por vírgulas"
-            className={error ? 'border-erro' : ''}
+            className={error ? '' : ''}
           />
         )}
 
@@ -311,7 +311,7 @@ export default function RecordEditorModal({
             type={fieldInfo.isSensitive ? 'password' : 'text'}
             value={value || ''}
             onChange={(e) => handleChange(e.target.value)}
-            className={error ? 'border-erro' : ''}
+            className={error ? '' : ''}
           />
         )}
 
@@ -322,12 +322,12 @@ export default function RecordEditorModal({
             value={value || ''}
             onChange={(e) => handleChange(e.target.value)}
             placeholder={`ID de ${field.relationTo}`}
-            className={error ? 'border-erro' : ''}
+            className={error ? '' : ''}
           />
         )}
 
         {error && (
-          <Inline gap={2} className="text-erro text-sm">
+          <Inline gap={2} className="text-sm">
             <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>
           </Inline>
@@ -364,7 +364,7 @@ export default function RecordEditorModal({
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-sup-1 rounded-lg transition-colors"
+                className="p-2 rounded-lg transition-colors"
               >
                 <PiX className="w-5 h-5 text-theme-tertiary" />
                 <NomeAcao acao="fechar" />
@@ -388,7 +388,7 @@ export default function RecordEditorModal({
           <div className="p-6 border-t border-theme-primary flex items-center justify-between">
             <Text papel="rotulo" tom="fraco" as="div">
               {Object.keys(errors).length > 0 && (
-                <Inline as="span" gap={2} className="text-erro">
+                <Inline as="span" gap={2} className="">
                   <PiWarningCircle />
                   <span>
                     {Object.keys(errors).length} erro(s) encontrado(s)

@@ -52,8 +52,8 @@ export default function EditButton({
                     ${sizeClasses[size]}
                     ${
                       variant === 'minimal'
-                        ? 'bg-transparent border-2 border-theme-primary text-theme-primary hover:bg-fundo hover:text-texto'
-                        : 'bg-ouro/10 border border-theme-primary text-theme-primary hover:bg-ouro/20 hover:border-ouro hover:text-ouro-texto'
+                        ? 'bg-transparent border-2 border-theme-primary text-theme-primary'
+                        : 'border border-theme-primary text-theme-primary'
                     }
                     rounded-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group
                   `}

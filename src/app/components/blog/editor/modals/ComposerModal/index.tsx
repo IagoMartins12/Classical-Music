@@ -225,7 +225,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
 
                 {/* Preview do Card */}
                 <div
-                  className={`border rounded-lg border-ouro/40 shadow-md p-4 bg-ouro/10 ${
+                  className={`rounded-lg border-l-4 shadow-md p-4 ${
                     layout === 'horizontal' ? 'flex items-start space-x-4' : ''
                   }`}
                 >
@@ -272,7 +272,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
 
                     {/* Época */}
                     {showEpoch && composerData.epochName && (
-                      <p className="text-sm text-ouro-texto font-medium mb-2">
+                      <p className="text-sm font-medium mb-2">
                         📜 {composerData.epochName}
                       </p>
                     )}
@@ -304,7 +304,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
                     <Inline gap={2} className="mt-3">
                       <button
                         type="button"
-                        className="px-3 py-1 bg-ouro text-sobre-ouro text-sm rounded hover:opacity-90 transition-opacity"
+                        className="px-3 py-1 text-white text-sm rounded hover:opacity-90 transition-opacity"
                       >
                         Ver no Opus →
                       </button>
@@ -312,7 +312,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
                       {showWorksButton && (
                         <button
                           type="button"
-                          className="px-3 py-1 bg-sup-2 text-texto-suave text-sm rounded hover:bg-linha-forte transition-colors"
+                          className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300 transition-colors"
                         >
                           Ver Obras
                         </button>
@@ -324,7 +324,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
                           href={composerData.wikipediaLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 py-1 bg-aviso/10 text-aviso text-sm rounded hover:bg-aviso/10 transition-colors"
+                          className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded hover:bg-blue-200 transition-colors"
                         >
                           Wikipedia
                         </a>

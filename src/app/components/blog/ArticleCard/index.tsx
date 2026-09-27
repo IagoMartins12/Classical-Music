@@ -40,7 +40,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
   }`.trim();
 
   return (
-    <article className="classical-card overflow-hidden group h-full flex flex-col hover:shadow-[var(--sombra-2)] transition-all">
+    <article className="classical-card overflow-hidden group h-full flex flex-col transition-all">
       {/* Image */}
       <Link
         href={`/blog/${article.slug}`}
@@ -85,7 +85,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
         {/* Title */}
         <Link href={`/blog/${article.slug}`}>
-          <h3 className="text-xl font-bold text-theme-primary mb-2 line-clamp-2 group-hover:text-ouro-texto transition-colors">
+          <h3 className="text-xl font-bold text-theme-primary mb-2 line-clamp-2 transition-colors">
             {article.title}
           </h3>
         </Link>
@@ -116,7 +116,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
               />
             ) : (
               <div className="w-6 h-6 rounded-full bg-theme-classical flex items-center justify-center">
-                <PiUser className="w-3 h-3 text-brand-primary" />
+                <PiUser className="w-3 h-3 text-ouro-texto" />
               </div>
             )}
             <Text papel="legenda" tom="fraco">

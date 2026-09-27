@@ -175,14 +175,14 @@ export default function PrivacyPage() {
     <PageContainer showBackground={true}>
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16">
-        <div className="absolute inset-0 bg-ouro/5"></div>
+        <div className="absolute inset-0"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative ">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 bg-ouro/20 border border-ouro/30 rounded-full mb-8">
-                  <PiShield className="w-5 h-5 text-brand-primary mr-2" />
-                  <span className="text-brand-primary font-medium">
+                <div className="inline-flex items-center px-6 py-3 border rounded-full mb-8">
+                  <PiShield className="w-5 h-5 text-ouro-texto mr-2" />
+                  <span className="text-ouro-texto font-medium">
                     {t('privacy_jsx_span_children_0__proteção_dados')}
                   </span>
                 </div>
@@ -225,7 +225,7 @@ export default function PrivacyPage() {
             <div className="max-w-4xl mx-auto">
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className="flex items-start flex-col md:flex-row space-x-4">
-                  <div className="w-16 h-16 bg-ok rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0">
                     <PiShield className="w-8 h-8 text-theme-primary" />
                   </div>
                   <Stack>
@@ -267,7 +267,7 @@ export default function PrivacyPage() {
                     className="classical-card p-6"
                   >
                     <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-aviso rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
                         <dataType.icon className="w-6 h-6 text-theme-primary" />
                       </div>
                       <div>
@@ -312,7 +312,7 @@ export default function PrivacyPage() {
                 >
                   <div className="classical-card !p-8 md:p-8">
                     <div className="flex items-start flex-col md:flex-row space-x-6">
-                      <div className="w-14 h-14 bg-ok rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0">
                         <section.icon className="w-7 h-7 text-theme-primary" />
                       </div>
 
@@ -348,7 +348,7 @@ export default function PrivacyPage() {
             <div className="max-w-4xl mx-auto">
               <AnimatedCard hover="lift" className="classical-card !p-8">
                 <div className="flex items-start flex-col md:flex-row space-x-4">
-                  <div className="w-12 h-12 bg-ok rounded-xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
                     <PiCheck className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div>
@@ -360,13 +360,13 @@ export default function PrivacyPage() {
                     </p>
                     <Stack gap={3}>
                       <Inline gap={3}>
-                        <PiEnvelopeSimple className="w-4 h-4 text-brand-primary" />
+                        <PiEnvelopeSimple className="w-4 h-4 text-ouro-texto" />
                         <span className="text-theme-secondary">
                           privacidade@opusatlas.com
                         </span>
                       </Inline>
                       <Inline gap={3}>
-                        <PiGear className="w-4 h-4 text-brand-primary" />
+                        <PiGear className="w-4 h-4 text-ouro-texto" />
                         <span className="text-theme-secondary">
                           {t('privacy_jsx_span_children_0__profile')}
                         </span>
@@ -382,7 +382,7 @@ export default function PrivacyPage() {
 
       {/* Contact Section */}
       <section className="py-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-ouro/10"></div>
+        <div className="absolute inset-0"></div>
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative ">
@@ -391,7 +391,7 @@ export default function PrivacyPage() {
                 hover="lift"
                 className="classical-card p-12 text-center"
               >
-                <div className="w-20 h-20 fill-ouro rounded-3xl flex items-center justify-center mx-auto mb-8">
+                <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8">
                   <PiEnvelopeSimple className="w-10 h-10 text-theme-primary" />
                 </div>
 
@@ -447,28 +447,16 @@ export default function PrivacyPage() {
       </section>
 
       {/* Floating Elements */}
-      <FloatingElement
-        className="top-16 left-16 text-6xl text-ouro-texto/5"
-        delay={0}
-      >
+      <FloatingElement className="top-16 left-16 text-6xl" delay={0}>
         <PiMusicNotes />
       </FloatingElement>
-      <FloatingElement
-        className="bottom-16 right-16 text-5xl text-ouro-texto/5"
-        delay={2}
-      >
+      <FloatingElement className="bottom-16 right-16 text-5xl" delay={2}>
         <GiGrandPiano />
       </FloatingElement>
-      <FloatingElement
-        className="top-1/3 right-24 text-4xl text-aviso/5"
-        delay={1}
-      >
+      <FloatingElement className="top-1/3 right-24 text-4xl" delay={1}>
         <PiShield />
       </FloatingElement>
-      <FloatingElement
-        className="bottom-1/3 left-24 text-4xl text-ouro-texto/5"
-        delay={3}
-      >
+      <FloatingElement className="bottom-1/3 left-24 text-4xl" delay={3}>
         <PiScroll />
       </FloatingElement>
     </PageContainer>

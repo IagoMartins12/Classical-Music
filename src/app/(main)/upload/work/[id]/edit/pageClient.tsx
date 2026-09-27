@@ -79,13 +79,11 @@ const EditWorkClient = ({
 
   const getDifficultyColor = (level?: string) => {
     const colors = {
-      BEGINNER: 'bg-ok',
-      INTERMEDIATE: 'bg-aviso',
-      ADVANCED: 'bg-erro',
+      BEGINNER: '',
+      INTERMEDIATE: '',
+      ADVANCED: '',
     };
-    return level
-      ? colors[level as keyof typeof colors] || 'bg-fundo'
-      : 'bg-fundo';
+    return level ? colors[level as keyof typeof colors] || '' : '';
   };
 
   const handleDelete = async () => {
@@ -132,7 +130,7 @@ const EditWorkClient = ({
           >
             <Link
               href="/upload"
-              className="hover:text-ouro-texto transition-colors duration-300 font-medium"
+              className="transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_uploads')}
             </Link>
@@ -151,7 +149,7 @@ const EditWorkClient = ({
             </svg>
             <Link
               href="/upload"
-              className="hover:text-ouro-texto transition-colors duration-300 font-medium"
+              className="transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_works')}
             </Link>
@@ -193,7 +191,7 @@ const EditWorkClient = ({
                     <div className="flex flex-col sm:flex-row items-start justify-between">
                       <div className="flex-1">
                         <Inline gap={3} className="mb-4">
-                          <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                             <PiPencilLine className="w-5 h-5 text-theme-primary" />
                           </div>
                           <div>
@@ -221,7 +219,7 @@ const EditWorkClient = ({
                           <span>{t('score_info_by_composer')}</span>
                           <Link
                             href={`/composer/${work.composer.id}`}
-                            className="text-brand-primary hover:text-ouro-texto font-semibold transition-colors duration-300 classical-subtitle"
+                            className="text-ouro-texto font-semibold transition-colors duration-300 classical-subtitle"
                           >
                             {work.composer.fullName || work.composer.name}
                           </Link>
@@ -301,7 +299,7 @@ const EditWorkClient = ({
                     {/* Ano de Composição */}
                     {work.compositionYear && (
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -323,7 +321,7 @@ const EditWorkClient = ({
                     {/* Duração */}
                     {work.mediaDuration && (
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiClock className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -345,7 +343,7 @@ const EditWorkClient = ({
                     {/* Tom */}
                     {work.tone && (
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -367,7 +365,7 @@ const EditWorkClient = ({
                     {/* Tempo Marking */}
                     {work.tempoMarking && (
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiMetronome className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -388,7 +386,7 @@ const EditWorkClient = ({
 
                     {/* Instrumento */}
                     <div className="flex items-start space-x-3 group">
-                      <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                         <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
@@ -408,7 +406,7 @@ const EditWorkClient = ({
 
                     {/* Época */}
                     <div className="flex items-start space-x-3 group">
-                      <div className="w-8 h-8 bg-erro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                         <PiMapPin className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
@@ -420,7 +418,7 @@ const EditWorkClient = ({
                         >
                           {t('work_info_epoch')}
                         </Text>
-                        <p className="text-brand-primary font-semibold">
+                        <p className="text-ouro-texto font-semibold">
                           {work.epoch.name}
                         </p>
                       </div>
@@ -428,7 +426,7 @@ const EditWorkClient = ({
 
                     {/* Tipo de Obra */}
                     <div className="flex items-start space-x-3 group">
-                      <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                         <PiStack className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
@@ -458,7 +456,7 @@ const EditWorkClient = ({
                         gap={2}
                         className="text-lg font-semibold text-theme-primary classical-title"
                       >
-                        <PiBookOpen className="w-5 h-5 text-aviso" />
+                        <PiBookOpen className="w-5 h-5" />
                         <span>{t('work_info_additional_info')}</span>
                       </Inline>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -493,7 +491,7 @@ const EditWorkClient = ({
                           </Inline>
                         )}
                         {work.instrumentation && (
-                          <div className="md:col-span-2 p-3 bg-sup-elevada rounded-xl border border-theme-primary">
+                          <div className="md:col-span-2 p-3 rounded-xl border border-theme-primary">
                             <span className="font-medium text-theme-tertiary block mb-1">
                               {t('work_info_instrumentation')}:
                             </span>
@@ -515,7 +513,7 @@ const EditWorkClient = ({
                         gap={2}
                         className="text-lg font-semibold text-theme-primary classical-title"
                       >
-                        <PiTag className="w-5 h-5 text-ok" />
+                        <PiTag className="w-5 h-5" />
                         <span>{t('work_info_categories_genres')}</span>
                       </Inline>
                       <Stack>
@@ -535,7 +533,7 @@ const EditWorkClient = ({
                                     papel="rotulo"
                                     tom="ouro"
                                     key={index}
-                                    className="px-4 py-2 bg-gradient-to-r border border-ouro/30 rounded-full font-medium"
+                                    className="px-4 py-2 bg-gradient-to-r border rounded-full font-medium"
                                   >
                                     {categoryName}
                                   </Text>
@@ -559,7 +557,7 @@ const EditWorkClient = ({
                                 (workGenre: string, index: number) => (
                                   <span
                                     key={index}
-                                    className="capitalize px-4 py-2 bg-ok/10 border border-ok/30 text-ok rounded-full text-sm font-medium"
+                                    className="capitalize px-4 py-2 border rounded-full text-sm font-medium"
                                   >
                                     {workGenre}
                                   </span>
@@ -580,7 +578,7 @@ const EditWorkClient = ({
                         gap={2}
                         className="text-lg font-semibold text-theme-primary classical-title mb-4"
                       >
-                        <PiArrowSquareOut className="w-5 h-5 text-aviso" />
+                        <PiArrowSquareOut className="w-5 h-5" />
                         <span>{t('work_info_external_link')}</span>
                       </Inline>
                       <Inline
@@ -616,7 +614,7 @@ const EditWorkClient = ({
                   {/* Foto do Compositor */}
                   <Card nivel={2}>
                     <Inline gap={3} className="mb-4">
-                      <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                         <PiUser className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
@@ -637,7 +635,7 @@ const EditWorkClient = ({
                           />
                         </div>
                       ) : (
-                        <div className="w-32 h-40 mx-auto fundo-sup-1 border border-theme-primary rounded-xl flex items-center justify-center">
+                        <div className="w-32 h-40 mx-auto border border-theme-primary rounded-xl flex items-center justify-center">
                           <PiUser className="w-8 h-8 text-theme-tertiary opacity-50" />
                         </div>
                       )}
@@ -645,7 +643,7 @@ const EditWorkClient = ({
                       <div>
                         <Link
                           href={`/composer/${work.composer.id}`}
-                          className="text-brand-primary hover:text-ouro-texto font-semibold transition-colors duration-300 block"
+                          className="text-ouro-texto font-semibold transition-colors duration-300 block"
                         >
                           {work.composer.fullName || work.composer.name}
                         </Link>
@@ -664,7 +662,7 @@ const EditWorkClient = ({
                   {/* Detalhes Técnicos */}
                   <Card nivel={2}>
                     <Inline gap={3} className="mb-4">
-                      <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                         <PiBookOpen className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">

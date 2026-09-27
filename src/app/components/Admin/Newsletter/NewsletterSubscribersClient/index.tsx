@@ -200,10 +200,9 @@ export default function NewsletterSubscribersClient() {
 
   const getEngagementLevel = (subscriber: any) => {
     const score = subscriber.avgEngagementScore || 0;
-    if (score >= 75) return { label: 'Alto', color: 'text-ok bg-ok/10' };
-    if (score >= 50)
-      return { label: 'Médio', color: 'text-atencao bg-atencao/10' };
-    if (score >= 25) return { label: 'Baixo', color: 'text-erro bg-erro/10' };
+    if (score >= 75) return { label: 'Alto', color: '' };
+    if (score >= 50) return { label: 'Médio', color: '' };
+    if (score >= 25) return { label: 'Baixo', color: '' };
     return { label: 'Nenhum', color: 'text-theme-tertiary bg-theme-secondary' };
   };
 
@@ -227,7 +226,7 @@ export default function NewsletterSubscribersClient() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-16 h-16 bg-aviso rounded-3xl flex items-center justify-center shadow-theme-glow">
+                <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                   <PiUsers className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -252,8 +251,8 @@ export default function NewsletterSubscribersClient() {
                     {formatSubscriberCount(pagination?.total || 0)}
                   </p>
                 </Stack>
-                <div className="w-12 h-12 bg-aviso/20 rounded-xl flex items-center justify-center">
-                  <PiUsers className="w-6 h-6 text-aviso" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <PiUsers className="w-6 h-6" />
                 </div>
               </div>
             </AnimatedCard>
@@ -264,12 +263,12 @@ export default function NewsletterSubscribersClient() {
                   <Text papel="rotulo" tom="fraco" as="p">
                     Ativos
                   </Text>
-                  <p className="text-3xl font-bold text-ok">
+                  <p className="text-3xl font-bold">
                     {subscribers.filter((s) => s.status === 'ACTIVE').length}
                   </p>
                 </Stack>
-                <div className="w-12 h-12 bg-ok/20 rounded-xl flex items-center justify-center">
-                  <PiCheckCircle className="w-6 h-6 text-ok" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <PiCheckCircle className="w-6 h-6" />
                 </div>
               </div>
             </AnimatedCard>
@@ -280,12 +279,12 @@ export default function NewsletterSubscribersClient() {
                   <Text papel="rotulo" tom="fraco" as="p">
                     Pendentes
                   </Text>
-                  <p className="text-3xl font-bold text-atencao">
+                  <p className="text-3xl font-bold">
                     {subscribers.filter((s) => s.status === 'PENDING').length}
                   </p>
                 </Stack>
-                <div className="w-12 h-12 bg-atencao/20 rounded-xl flex items-center justify-center">
-                  <PiClock className="w-6 h-6 text-atencao" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <PiClock className="w-6 h-6" />
                 </div>
               </div>
             </AnimatedCard>
@@ -296,15 +295,15 @@ export default function NewsletterSubscribersClient() {
                   <Text papel="rotulo" tom="fraco" as="p">
                     Cancelados
                   </Text>
-                  <p className="text-3xl font-bold text-erro">
+                  <p className="text-3xl font-bold">
                     {
                       subscribers.filter((s) => s.status === 'UNSUBSCRIBED')
                         .length
                     }
                   </p>
                 </Stack>
-                <div className="w-12 h-12 bg-erro/20 rounded-xl flex items-center justify-center">
-                  <PiXCircle className="w-6 h-6 text-erro" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <PiXCircle className="w-6 h-6" />
                 </div>
               </div>
             </AnimatedCard>
@@ -324,7 +323,7 @@ export default function NewsletterSubscribersClient() {
                     onChange={(e) =>
                       handleFilterChange('search', e.target.value)
                     }
-                    className="w-full pl-10 pr-4 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary placeholder-texto-fraco focus:outline-none focus:ring-2 focus:ring-ouro"
+                    className="w-full pl-10 pr-4 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary focus:outline-none focus:ring-2"
                   />
                 </div>
 
@@ -343,9 +342,7 @@ export default function NewsletterSubscribersClient() {
                     size="sm"
                     leftIcon={<PiFunnel />}
                     onClick={() => setShowFilters(!showFilters)}
-                    className={
-                      showFilters ? 'bg-ouro/10 text-brand-primary' : ''
-                    }
+                    className={showFilters ? 'text-ouro-texto' : ''}
                   >
                     Filtros
                   </Button>
@@ -426,7 +423,7 @@ export default function NewsletterSubscribersClient() {
 
             {/* Bulk Actions */}
             {selectedSubscribers.length > 0 && (
-              <div className="flex items-center gap-2 p-3 bg-ouro/10 border border-ouro rounded-lg mb-4">
+              <div className="flex items-center gap-2 p-3 border rounded-lg mb-4">
                 <Text papel="rotulo" tom="forte" className="font-medium">
                   {selectedSubscribers.length} selecionado(s)
                 </Text>
@@ -452,7 +449,7 @@ export default function NewsletterSubscribersClient() {
                     size="sm"
                     leftIcon={<PiTrash />}
                     onClick={() => handleBulkAction('delete')}
-                    className="text-erro hover:text-erro"
+                    className=""
                   >
                     Deletar
                   </Button>
@@ -513,7 +510,7 @@ export default function NewsletterSubscribersClient() {
                     return (
                       <tr
                         key={subscriber.id}
-                        className="border-b border-theme-secondary hover:bg-sup-1/50"
+                        className="border-b border-theme-secondary"
                       >
                         <td className="py-3 px-2">
                           <Checkbox
@@ -551,7 +548,7 @@ export default function NewsletterSubscribersClient() {
                                 <Text
                                   papel="legenda"
                                   tom="ouro"
-                                  className="px-2 py-1 bg-ouro/10 rounded-full"
+                                  className="px-2 py-1 rounded-full"
                                 >
                                   Usuário
                                 </Text>
@@ -630,7 +627,7 @@ export default function NewsletterSubscribersClient() {
                               leftIcon={<PiPaperPlaneRight />}
                               onClick={() => handleSendEmail(subscriber)}
                               title="Enviar email"
-                              className="text-aviso hover:text-aviso"
+                              className=""
                             />
                             <Button
                               variant="ghost"
@@ -642,7 +639,7 @@ export default function NewsletterSubscribersClient() {
                                   'UNSUBSCRIBED'
                                 )
                               }
-                              className="text-erro hover:text-erro"
+                              className=""
                               title="Deletar"
                             />
                           </Inline>

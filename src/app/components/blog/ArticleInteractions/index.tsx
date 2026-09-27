@@ -124,7 +124,7 @@ export function ArticleInteractions({
             <button
               onClick={handleLike}
               className={`flex flex-col items-center space-y-1 ${
-                isLiked ? 'text-erro' : 'text-theme-secondary'
+                isLiked ? 'text-red-500' : 'text-theme-secondary'
               }`}
             >
               {isLiked ? (
@@ -142,7 +142,7 @@ export function ArticleInteractions({
             <button
               onClick={handleSave}
               className={`flex flex-col items-center space-y-1 ${
-                isSaved ? 'text-brand-primary' : 'text-theme-secondary'
+                isSaved ? 'text-ouro-texto' : 'text-theme-secondary'
               }`}
             >
               {isSaved ? (
@@ -190,8 +190,8 @@ export function ArticleInteractions({
             disabled={loading}
             className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
               isLiked
-                ? 'bg-erro/10 text-erro dark:bg-erro/30'
-                : 'bg-theme-elevated hover:bg-sup-1 text-theme-secondary'
+                ? 'bg-red-100 text-red-600 dark:bg-red-900/30'
+                : 'bg-theme-elevated text-theme-secondary'
             }`}
           >
             {isLiked ? (
@@ -208,8 +208,8 @@ export function ArticleInteractions({
             disabled={loading}
             className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
               isSaved
-                ? 'bg-ouro/10 text-brand-primary'
-                : 'bg-theme-elevated hover:bg-sup-1 text-theme-secondary'
+                ? 'text-ouro-texto'
+                : 'bg-theme-elevated text-theme-secondary'
             }`}
           >
             {isSaved ? (
@@ -223,7 +223,7 @@ export function ArticleInteractions({
           {/* Comment Button */}
           <button
             onClick={scrollToComments}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-sup-1 text-theme-secondary transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-theme-elevated text-theme-secondary transition-all"
           >
             <PiChatCircle className="w-5 h-5" />
             <span className="font-medium inline">Comentar</span>
@@ -233,7 +233,7 @@ export function ArticleInteractions({
         {/* Share Button */}
         <button
           onClick={() => onOpenShareModal?.()}
-          className=" hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-sup-1 text-theme-secondary transition-all"
+          className=" hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-theme-elevated text-theme-secondary transition-all"
         >
           <PiShareNetwork className="w-5 h-5" />
           <span className="font-medium hidden sm:inline">Compartilhar</span>
@@ -243,7 +243,7 @@ export function ArticleInteractions({
       {!session && (
         <div className="mt-4 pt-4 border-t border-theme-secondary">
           <Text papel="rotulo" tom="fraco" as="p" className="text-center">
-            <Link href="/login" className="text-brand-primary hover:underline">
+            <Link href="/login" className="text-ouro-texto hover:underline">
               Faça login
             </Link>{' '}
             para curtir, comentar e salvar artigos

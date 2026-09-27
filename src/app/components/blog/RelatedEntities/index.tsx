@@ -49,7 +49,7 @@ export async function RelatedEntities({
   return (
     <Stack gap={8}>
       <h2 className="text-2xl font-bold text-theme-primary flex items-center gap-2">
-        <PiMusicNotes className="text-brand-primary" />
+        <PiMusicNotes className="text-ouro-texto" />
         Vinculações
       </h2>
 
@@ -58,7 +58,7 @@ export async function RelatedEntities({
         {composers.length > 0 && (
           <Card>
             <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
-              <PiUser className="text-brand-primary" />
+              <PiUser className="text-ouro-texto" />
               Compositores Mencionados
             </h3>
             <Stack gap={3}>
@@ -66,9 +66,9 @@ export async function RelatedEntities({
                 <Link
                   key={composer.id}
                   href={`/composer/${composer.id}`}
-                  className="block p-3 rounded-lg bg-theme-elevated hover:bg-sup-1 transition-all group"
+                  className="block p-3 rounded-lg bg-theme-elevated transition-all group"
                 >
-                  <div className="font-medium text-theme-primary group-hover:text-ouro-texto transition-colors">
+                  <div className="font-medium text-theme-primary transition-colors">
                     {composer.name}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
@@ -84,7 +84,7 @@ export async function RelatedEntities({
         {works.length > 0 && (
           <Card>
             <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
-              <PiMusicNotes className="text-brand-primary" />
+              <PiMusicNotes className="text-ouro-texto" />
               Obras Mencionadas
             </h3>
             <Stack gap={3}>
@@ -92,9 +92,9 @@ export async function RelatedEntities({
                 <Link
                   key={work.id}
                   href={`/works/${work.id}`}
-                  className="block p-3 rounded-lg bg-theme-elevated hover:bg-sup-1 transition-all group"
+                  className="block p-3 rounded-lg bg-theme-elevated transition-all group"
                 >
-                  <div className="font-medium text-theme-primary group-hover:text-ouro-texto transition-colors line-clamp-1">
+                  <div className="font-medium text-theme-primary transition-colors line-clamp-1">
                     {work.title}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
@@ -110,7 +110,7 @@ export async function RelatedEntities({
         {scores.length > 0 && (
           <Card>
             <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
-              <PiFileText className="text-brand-primary" />
+              <PiFileText className="text-ouro-texto" />
               Partituras Relacionadas
             </h3>
             <Stack gap={3}>
@@ -118,9 +118,9 @@ export async function RelatedEntities({
                 <Link
                   key={score.id}
                   href={`/scores/${score.id}`}
-                  className="block p-3 rounded-lg bg-theme-elevated hover:bg-sup-1 transition-all group"
+                  className="block p-3 rounded-lg bg-theme-elevated transition-all group"
                 >
-                  <div className="font-medium text-theme-primary group-hover:text-ouro-texto transition-colors line-clamp-1">
+                  <div className="font-medium text-theme-primary transition-colors line-clamp-1">
                     {score.title}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">

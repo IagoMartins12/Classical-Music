@@ -35,21 +35,21 @@ export default function ReportPriorityBadge({
       case 'urgent':
         return {
           icon: <PiWarning className="w-3 h-3" />,
-          color: 'text-erro bg-erro/10 border-erro/30',
+          color: '',
           label: 'Urgente',
           pulse: true,
         };
       case 'high':
         return {
           icon: <PiWarning className="w-3 h-3" />,
-          color: 'text-atencao bg-atencao/10 border-atencao/30',
+          color: '',
           label: 'Alta',
           pulse: false,
         };
       case 'low':
         return {
           icon: <PiFlag className="w-3 h-3" />,
-          color: 'text-aviso bg-aviso/10 border-aviso/30',
+          color: '',
           label: 'Baixa',
           pulse: false,
         };

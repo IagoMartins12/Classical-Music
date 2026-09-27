@@ -33,7 +33,7 @@ export default function ComposerArticlesSection({
       <AnimatedItem direction="left" springType="smooth">
         <div className="flex items-center justify-between mb-6">
           <Inline gap={3}>
-            <div className="w-12 h-12 fill-ouro rounded-2xl flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
               <PiBookOpen className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
@@ -64,7 +64,7 @@ export default function ComposerArticlesSection({
             delay={index * 0.1}
           >
             <Link href={`/blog/${article.slug}`}>
-              <div className="group h-full fundo-sup-1 border border-theme-primary rounded-xl overflow-hidden hover:shadow-[var(--sombra-2)] transition-all duration-300 hover:-translate-y-1">
+              <div className="group h-full border border-theme-primary rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1">
                 {/* Cover Image */}
                 {article.coverImage ? (
                   <div className="relative w-full h-48 overflow-hidden">
@@ -75,17 +75,17 @@ export default function ComposerArticlesSection({
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-fundo opacity-60"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t via-transparent to-transparent opacity-60"></div>
                   </div>
                 ) : (
-                  <div className="w-full h-48 bg-ouro/20 flex items-center justify-center">
+                  <div className="w-full h-48 flex items-center justify-center">
                     <PiBookOpen className="w-12 h-12 text-theme-tertiary opacity-50" />
                   </div>
                 )}
 
                 {/* Content */}
                 <Stack gap={3} className="p-5">
-                  <h3 className="text-lg font-bold text-theme-primary line-clamp-2 group-hover:text-ouro-texto transition-colors duration-300">
+                  <h3 className="text-lg font-bold text-theme-primary line-clamp-2 transition-colors duration-300">
                     {article.title}
                   </h3>
 
@@ -115,7 +115,7 @@ export default function ComposerArticlesSection({
                       )}
                     </Inline>
 
-                    <PiArrowRight className="w-4 h-4 text-brand-primary group-hover:translate-x-1 transition-transform duration-300" />
+                    <PiArrowRight className="w-4 h-4 text-ouro-texto group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
                 </Stack>
               </div>

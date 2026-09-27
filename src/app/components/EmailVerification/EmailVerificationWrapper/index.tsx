@@ -40,8 +40,8 @@ export default function EmailVerifiedWrapper({
     case 'inline-message':
       return (
         <div className={`classical-card p-8 text-center ${className}`}>
-          <div className="w-16 h-16 bg-atencao/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <PiEnvelopeSimple className="w-8 h-8 text-atencao" />
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+            <PiEnvelopeSimple className="w-8 h-8" />
           </div>
           <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
             Email não verificado
@@ -65,9 +65,9 @@ export default function EmailVerifiedWrapper({
       return (
         <div className={`relative ${className}`}>
           {/* Overlay que desabilita o conteúdo */}
-          <div className="absolute inset-0 bg-veu backdrop-blur-sm rounded-lg z-10 flex items-center justify-center">
+          <div className="absolute inset-0 backdrop-blur-sm rounded-lg z-10 flex items-center justify-center">
             <Card className="text-center max-w-sm">
-              <PiEnvelopeSimple className="w-8 h-8 text-atencao mx-auto mb-3" />
+              <PiEnvelopeSimple className="w-8 h-8 mx-auto mb-3" />
               <h4 className="font-semibold text-theme-primary mb-2">
                 Email não verificado
               </h4>

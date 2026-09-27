@@ -73,7 +73,7 @@ export function BlogFooter() {
           {/* Brand Column */}
           <Stack>
             <Inline gap={3}>
-              <PiMusicNotes className="w-8 h-8 text-brand-primary" />
+              <PiMusicNotes className="w-8 h-8 text-ouro-texto" />
               <div>
                 <h3 className="text-xl font-bold text-gradient-brand">
                   Opus Atlas
@@ -94,10 +94,10 @@ export function BlogFooter() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-theme-elevated hover:bg-sup-1 transition-all group"
+                  className="p-2 rounded-lg bg-theme-elevated transition-all group"
                   aria-label={social.label}
                 >
-                  <social.icon className="w-5 h-5 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
+                  <social.icon className="w-5 h-5 text-theme-tertiary transition-colors" />
                 </Link>
               ))}
             </Inline>
@@ -114,7 +114,7 @@ export function BlogFooter() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-theme-secondary hover:text-ouro-texto transition-colors"
+                      className="text-sm text-theme-secondary transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -162,22 +162,13 @@ export function BlogFooter() {
           >
             <p>© {currentYear} Opus Atlas. Todos os direitos reservados.</p>
             <div className="flex items-center gap-6">
-              <Link
-                href="/privacy"
-                className="hover:text-ouro-texto transition-colors"
-              >
+              <Link href="/privacy" className="transition-colors">
                 Privacidade
               </Link>
-              <Link
-                href="/terms"
-                className="hover:text-ouro-texto transition-colors"
-              >
+              <Link href="/terms" className="transition-colors">
                 Termos
               </Link>
-              <Link
-                href="/sitemap"
-                className="hover:text-ouro-texto transition-colors"
-              >
+              <Link href="/sitemap" className="transition-colors">
                 Mapa do Site
               </Link>
             </div>

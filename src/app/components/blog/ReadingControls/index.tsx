@@ -67,16 +67,16 @@ export function ReadingControls({
   //   <button
   //     onClick={onClick}
   //     className={`group relative p-3 rounded-lg transition-all ${
-  //       active
-  //         ? 'bg-theme-classical text-brand-primary'
-  //         : 'bg-theme-elevated hover:bg-theme-classical text-theme-secondary hover:text-brand-primary'
-  //     }`}
+  // active
+  // ?'bg-theme-classical text-ouro-texto'
+  // :'bg-theme-elevated hover:bg-theme-classical text-theme-secondary'
+  // }`}
   //     title={label}
   //     aria-label={label}
   //   >
   //     <Icon className="w-5 h-5" />
   //     {badge && (
-  //       <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-brand-primary text-white text-xs rounded-full">
+  //       <span className="absolute -top-1 -right-1 px-1.5 py-0.5 text-white text-xs rounded-full">
   //         {badge}
   //       </span>
   //     )}
@@ -136,14 +136,14 @@ export function ReadingControls({
           <div className="flex items-center justify-center flex-col gap-4">
             <button
               onClick={() => handleFontSizeChange(-2)}
-              className="flex-1 w-14 py-2 bg-theme-elevated hover:bg-sup-1 rounded-lg text-xs font-medium transition-all"
+              className="flex-1 w-14 py-2 bg-theme-elevated rounded-lg text-xs font-medium transition-all"
               disabled={fontSize <= 14}
             >
               A-
             </button>
             <button
               onClick={() => handleFontSizeChange(2)}
-              className="flex-1 w-14 py-2 bg-theme-elevated hover:bg-sup-1 rounded-lg text-xs font-medium transition-all"
+              className="flex-1 w-14 py-2 bg-theme-elevated rounded-lg text-xs font-medium transition-all"
               disabled={fontSize >= 24}
             >
               A+

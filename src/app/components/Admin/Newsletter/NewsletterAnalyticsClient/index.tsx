@@ -31,7 +31,6 @@ interface MetricCard {
   change?: number;
   changeType?: 'increase' | 'decrease' | 'neutral';
   icon: any;
-  color: string;
 }
 
 export default function NewsletterAnalyticsClient() {
@@ -84,7 +83,6 @@ export default function NewsletterAnalyticsClient() {
                 ? 'decrease'
                 : 'neutral',
           icon: PiUsers,
-          color: 'aviso',
         },
         {
           title: 'Emails Enviados',
@@ -93,7 +91,6 @@ export default function NewsletterAnalyticsClient() {
           changeType:
             analytics.campaigns.sentGrowth > 0 ? 'increase' : 'neutral',
           icon: PiEnvelopeSimple,
-          color: 'ok',
         },
         {
           title: 'Taxa de Abertura',
@@ -106,7 +103,6 @@ export default function NewsletterAnalyticsClient() {
                 ? 'decrease'
                 : 'neutral',
           icon: PiEye,
-          color: 'ouro',
         },
         {
           title: 'Taxa de Cliques',
@@ -119,7 +115,6 @@ export default function NewsletterAnalyticsClient() {
                 ? 'decrease'
                 : 'neutral',
           icon: PiCursor,
-          color: 'atencao',
         },
       ]
     : [];
@@ -136,7 +131,7 @@ export default function NewsletterAnalyticsClient() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-16 h-16 bg-ok rounded-3xl flex items-center justify-center shadow-theme-glow">
+                <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                   <PiTrendUp className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -210,9 +205,9 @@ export default function NewsletterAnalyticsClient() {
                       <div
                         className={`flex items-center space-x-1 mt-1 text-sm ${
                           metric.changeType === 'increase'
-                            ? 'text-ok'
+                            ? ''
                             : metric.changeType === 'decrease'
-                              ? 'text-erro'
+                              ? ''
                               : 'text-theme-tertiary'
                         }`}
                       >
@@ -227,9 +222,9 @@ export default function NewsletterAnalyticsClient() {
                     )}
                   </div>
                   <div
-                    className={`w-12 h-12 bg-${metric.color}/20 rounded-xl flex items-center justify-center`}
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center`}
                   >
-                    <metric.icon className={`w-6 h-6 text-${metric.color}`} />
+                    <metric.icon className={`w-6 h-6`} />
                   </div>
                 </div>
               </AnimatedCard>
@@ -246,8 +241,8 @@ export default function NewsletterAnalyticsClient() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center space-x-2 px-4 py-3 border-b-2 transition-colors ${
                     activeTab === tab.id
-                      ? 'border-ouro text-brand-primary'
-                      : 'border-transparent text-theme-tertiary hover:text-texto'
+                      ? 'text-ouro-texto'
+                      : 'border-transparent text-theme-tertiary'
                   }`}
                 >
                   <tab.icon className="w-4 h-4" />
@@ -289,7 +284,7 @@ export default function NewsletterAnalyticsClient() {
                         {analytics.topCampaigns.map((campaign: any) => (
                           <tr
                             key={campaign.id}
-                            className="border-b border-theme-secondary hover:bg-sup-1/50"
+                            className="border-b border-theme-secondary"
                           >
                             <td className="py-3 px-2">
                               <div>
@@ -305,7 +300,7 @@ export default function NewsletterAnalyticsClient() {
                               {campaign.emailsSent?.toLocaleString() || 0}
                             </td>
                             <td className="py-3 px-2">
-                              <span className="text-aviso font-medium">
+                              <span className="font-medium">
                                 {(
                                   (campaign.emailsOpened /
                                     campaign.emailsSent) *
@@ -315,7 +310,7 @@ export default function NewsletterAnalyticsClient() {
                               </span>
                             </td>
                             <td className="py-3 px-2">
-                              <span className="text-ouro-texto font-medium">
+                              <span className="font-medium">
                                 {(
                                   (campaign.emailsClicked /
                                     campaign.emailsOpened) *
@@ -406,7 +401,7 @@ export default function NewsletterAnalyticsClient() {
                         <span className="text-theme-tertiary">
                           Taxa de Entrega
                         </span>
-                        <span className="text-ok font-medium">
+                        <span className="font-medium">
                           {analytics.engagement.avgDeliveryRate.toFixed(1)}%
                         </span>
                       </div>
@@ -414,7 +409,7 @@ export default function NewsletterAnalyticsClient() {
                         <span className="text-theme-tertiary">
                           Taxa de Abertura
                         </span>
-                        <span className="text-aviso font-medium">
+                        <span className="font-medium">
                           {analytics.engagement.avgOpenRate.toFixed(1)}%
                         </span>
                       </div>
@@ -422,7 +417,7 @@ export default function NewsletterAnalyticsClient() {
                         <span className="text-theme-tertiary">
                           Taxa de Cliques
                         </span>
-                        <span className="text-ouro-texto font-medium">
+                        <span className="font-medium">
                           {analytics.engagement.avgClickRate.toFixed(1)}%
                         </span>
                       </div>
@@ -430,7 +425,7 @@ export default function NewsletterAnalyticsClient() {
                         <span className="text-theme-tertiary">
                           Taxa de Bounce
                         </span>
-                        <span className="text-erro font-medium">
+                        <span className="font-medium">
                           {analytics.engagement.avgBounceRate.toFixed(1)}%
                         </span>
                       </div>
@@ -454,19 +449,19 @@ export default function NewsletterAnalyticsClient() {
                     <Stack gap={3}>
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">Ativos</span>
-                        <span className="text-ok font-medium">
+                        <span className="font-medium">
                           {analytics.subscribers.active.toLocaleString()}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">Pendentes</span>
-                        <span className="text-atencao font-medium">
+                        <span className="font-medium">
                           {analytics.subscribers.pending.toLocaleString()}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">Cancelados</span>
-                        <span className="text-erro font-medium">
+                        <span className="font-medium">
                           {analytics.subscribers.unsubscribed.toLocaleString()}
                         </span>
                       </div>
@@ -482,7 +477,7 @@ export default function NewsletterAnalyticsClient() {
                         <span className="text-theme-tertiary">
                           Novos (7 dias)
                         </span>
-                        <span className="text-ok font-medium">
+                        <span className="font-medium">
                           +{analytics.subscribers.newLast7Days}
                         </span>
                       </div>
@@ -490,7 +485,7 @@ export default function NewsletterAnalyticsClient() {
                         <span className="text-theme-tertiary">
                           Novos (30 dias)
                         </span>
-                        <span className="text-aviso font-medium">
+                        <span className="font-medium">
                           +{analytics.subscribers.newLast30Days}
                         </span>
                       </div>
@@ -515,7 +510,7 @@ export default function NewsletterAnalyticsClient() {
                         <span className="text-theme-tertiary">
                           Alto Engajamento
                         </span>
-                        <span className="text-ok font-medium">
+                        <span className="font-medium">
                           {analytics.subscribers.highEngagement}
                         </span>
                       </div>
@@ -523,7 +518,7 @@ export default function NewsletterAnalyticsClient() {
                         <span className="text-theme-tertiary">
                           Médio Engajamento
                         </span>
-                        <span className="text-atencao font-medium">
+                        <span className="font-medium">
                           {analytics.subscribers.mediumEngagement}
                         </span>
                       </div>
@@ -531,7 +526,7 @@ export default function NewsletterAnalyticsClient() {
                         <span className="text-theme-tertiary">
                           Baixo Engajamento
                         </span>
-                        <span className="text-erro font-medium">
+                        <span className="font-medium">
                           {analytics.subscribers.lowEngagement}
                         </span>
                       </div>

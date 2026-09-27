@@ -48,11 +48,11 @@ import { Text } from '@/app/components/ui/Text';
 const getSeverityColor = (severity: string) => {
   switch (severity) {
     case 'critical':
-      return 'text-erro bg-erro/10 border-erro';
+      return '';
     case 'warning':
-      return 'text-atencao bg-atencao/10 border-atencao';
+      return '';
     case 'info':
-      return 'text-aviso bg-aviso/10 border-aviso';
+      return '';
     default:
       return 'text-theme-tertiary bg-theme-secondary border-theme-secondary';
   }
@@ -61,13 +61,13 @@ const getSeverityColor = (severity: string) => {
 const getImpactColor = (impact: string) => {
   switch (impact) {
     case 'critical':
-      return 'text-ouro-texto bg-ouro/10';
+      return '';
     case 'high':
-      return 'text-erro bg-erro/10';
+      return '';
     case 'medium':
-      return 'text-atencao bg-atencao/10';
+      return '';
     case 'low':
-      return 'text-ok bg-ok/10';
+      return '';
     default:
       return 'text-theme-tertiary bg-theme-secondary';
   }
@@ -87,9 +87,9 @@ const getTrendIcon = (trend: string) => {
 const getTrendColor = (trend: string) => {
   switch (trend) {
     case 'up':
-      return 'text-ok';
+      return '';
     case 'down':
-      return 'text-erro';
+      return '';
     default:
       return 'text-theme-tertiary';
   }
@@ -163,7 +163,7 @@ export default function AdvancedInsightsAnalytics() {
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-[50vh]">
           <AnimatedCard className="classical-card p-8 text-center max-w-md">
-            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-4">
               <PiWarning className="w-8 h-8 text-theme-primary" />
             </div>
             <h3 className="text-xl font-bold text-theme-primary mb-2">
@@ -214,7 +214,7 @@ export default function AdvancedInsightsAnalytics() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiBrain className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -231,10 +231,10 @@ export default function AdvancedInsightsAnalytics() {
                 <div
                   className={`text-4xl font-bold mb-2 ${
                     insights.summary.healthScore >= 80
-                      ? 'text-ok'
+                      ? ''
                       : insights.summary.healthScore >= 60
-                        ? 'text-atencao'
-                        : 'text-erro'
+                        ? ''
+                        : ''
                   }`}
                 >
                   {insights.summary.healthScore}/100
@@ -246,10 +246,10 @@ export default function AdvancedInsightsAnalytics() {
                   <div
                     className={`h-full rounded-full transition-all duration-1000 ${
                       insights.summary.healthScore >= 80
-                        ? 'bg-ok'
+                        ? ''
                         : insights.summary.healthScore >= 60
-                          ? 'bg-atencao'
-                          : 'bg-erro'
+                          ? ''
+                          : ''
                     }`}
                     style={{ width: `${insights.summary.healthScore}%` }}
                   />
@@ -260,9 +260,9 @@ export default function AdvancedInsightsAnalytics() {
                 <div
                   className={`text-lg font-bold mb-2 ${
                     insights.summary.trendDirection === 'positive'
-                      ? 'text-ok'
+                      ? ''
                       : insights.summary.trendDirection === 'negative'
-                        ? 'text-erro'
+                        ? ''
                         : 'text-theme-tertiary'
                   }`}
                 >
@@ -278,9 +278,7 @@ export default function AdvancedInsightsAnalytics() {
               </div>
 
               <Stack gap={2} className="text-center">
-                <div className="text-lg font-bold text-ouro-texto">
-                  v{version}
-                </div>
+                <div className="text-lg font-bold">v{version}</div>
                 <Text papel="rotulo" tom="fraco" as="div">
                   AI Engine
                 </Text>
@@ -309,9 +307,9 @@ export default function AdvancedInsightsAnalytics() {
         {insights.anomalies.filter((a) => a.severity === 'critical').length >
           0 && (
           <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard className="border classical-card p-6 mb-8 border-erro/40">
+            <AnimatedCard className="classical-card p-6 mb-8 border-l-4">
               <Inline gap={3} className="mb-4">
-                <PiWarning className="w-6 h-6 text-erro" />
+                <PiWarning className="w-6 h-6" />
                 <h3 className="text-xl font-bold text-theme-primary">
                   ⚠️ Alertas Críticos Detectados
                 </h3>
@@ -324,9 +322,9 @@ export default function AdvancedInsightsAnalytics() {
                     <Stack
                       gap={2}
                       key={index}
-                      className="p-4 bg-erro/5 rounded-xl border border-erro/20"
+                      className="p-4 rounded-xl border"
                     >
-                      <h4 className="font-bold text-erro">{anomaly.metric}</h4>
+                      <h4 className="font-bold">{anomaly.metric}</h4>
                       <Text papel="rotulo" tom="suave" as="p">
                         Valor: {formatNumber(anomaly.value)} (desvio:{' '}
                         {anomaly.deviation.toFixed(1)}%)
@@ -345,7 +343,7 @@ export default function AdvancedInsightsAnalytics() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
             <AnimatedCard className="classical-card p-6 text-center">
-              <PiUsers className="w-8 h-8 text-aviso mx-auto mb-3" />
+              <PiUsers className="w-8 h-8 mx-auto mb-3" />
               <div className="text-2xl font-bold text-theme-primary">
                 {insights.riskAssessment.churnRiskUsers.length}
               </div>
@@ -355,7 +353,7 @@ export default function AdvancedInsightsAnalytics() {
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
-              <PiTrendUp className="w-8 h-8 text-ok mx-auto mb-3" />
+              <PiTrendUp className="w-8 h-8 mx-auto mb-3" />
               <div className="text-2xl font-bold text-theme-primary">
                 {
                   insights.growthOpportunities.filter(
@@ -369,7 +367,7 @@ export default function AdvancedInsightsAnalytics() {
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
-              <PiFlag className="w-8 h-8 text-atencao mx-auto mb-3" />
+              <PiFlag className="w-8 h-8 mx-auto mb-3" />
               <div className="text-2xl font-bold text-theme-primary">
                 {insights.anomalies.length}
               </div>
@@ -379,7 +377,7 @@ export default function AdvancedInsightsAnalytics() {
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
-              <PiMedal className="w-8 h-8 text-ouro-texto mx-auto mb-3" />
+              <PiMedal className="w-8 h-8 mx-auto mb-3" />
               <div className="text-2xl font-bold text-theme-primary">
                 {insights.educationalEngagement.learningProgressions.length}
               </div>
@@ -571,7 +569,7 @@ export default function AdvancedInsightsAnalytics() {
                 gap={2}
                 className="text-xl font-bold text-theme-primary mb-6"
               >
-                <PiClock className="w-5 h-5 text-ouro-texto" />
+                <PiClock className="w-5 h-5" />
                 <span>🎯 Próximas Ações Prioritárias</span>
               </Inline>
 
@@ -586,12 +584,12 @@ export default function AdvancedInsightsAnalytics() {
                   .map((item, index: number) => (
                     <div
                       key={index}
-                      className={`border p-4 rounded-xl ${
+                      className={`p-4 rounded-xl border-l-4 ${
                         item.priority === 'high'
-                          ? 'bg-erro/10 border-erro'
+                          ? ''
                           : item.priority === 'medium'
-                            ? 'bg-atencao/10 border-atencao'
-                            : 'bg-ok/10 border-ok'
+                            ? ''
+                            : ''
                       }`}
                     >
                       <div className="flex items-start justify-between">
@@ -600,10 +598,10 @@ export default function AdvancedInsightsAnalytics() {
                             <span
                               className={`px-2 py-1 rounded-full text-xs font-medium ${
                                 item.priority === 'high'
-                                  ? 'bg-erro text-white'
+                                  ? 'text-white'
                                   : item.priority === 'medium'
-                                    ? 'bg-atencao text-white'
-                                    : 'bg-ok text-white'
+                                    ? 'text-white'
+                                    : 'text-white'
                               }`}
                             >
                               {item.priority === 'high'
@@ -647,7 +645,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
           gap={2}
           className="text-2xl font-bold text-theme-primary mb-6"
         >
-          <PiEye className="w-6 h-6 text-aviso" />
+          <PiEye className="w-6 h-6" />
           <span>📊 Visão Geral Executiva</span>
         </Inline>
       </AnimatedItem>
@@ -660,7 +658,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
             gap={2}
             className="text-lg font-bold text-theme-primary mb-4"
           >
-            <PiBrain className="w-5 h-5 text-ouro-texto" />
+            <PiBrain className="w-5 h-5" />
             <span>🔍 Principais Descobertas da IA</span>
           </Inline>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -674,7 +672,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
                     papel="legenda"
                     tom="forte"
                     as="div"
-                    className="w-8 h-8 bg-aviso rounded-full flex items-center justify-center font-bold flex-shrink-0 mt-1"
+                    className="w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0 mt-1"
                   >
                     {index + 1}
                   </Text>
@@ -694,7 +692,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
         <AnimatedCard className="classical-card p-6">
           <div className="flex items-center justify-between mb-4">
             <Inline as="h3" gap={2} className="font-bold text-theme-primary">
-              <PiMedal className="w-5 h-5 text-ok" />
+              <PiMedal className="w-5 h-5" />
               <span>📚 Performance Educacional</span>
             </Inline>
             <Button
@@ -714,7 +712,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               <Text papel="rotulo" tom="suave">
                 Taxa de Progressão
               </Text>
-              <span className="font-bold text-ok">
+              <span className="font-bold">
                 {insights.educationalEngagement.learningProgressions.length > 0
                   ? `${Math.round(
                       insights.educationalEngagement.learningProgressions.reduce(
@@ -731,7 +729,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               <Text papel="rotulo" tom="suave">
                 Qualidade Anotações
               </Text>
-              <span className="font-bold text-aviso">
+              <span className="font-bold">
                 {insights.educationalEngagement.annotationQualityMetrics.avgHelpfulnessScore.toFixed(
                   1
                 )}
@@ -742,7 +740,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               <Text papel="rotulo" tom="suave">
                 Top Contribuidores
               </Text>
-              <span className="font-bold text-ouro-texto">
+              <span className="font-bold">
                 {
                   insights.educationalEngagement.annotationQualityMetrics
                     .topContributors.length
@@ -756,7 +754,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
         <AnimatedCard className="classical-card p-6">
           <div className="flex items-center justify-between mb-4">
             <Inline as="h3" gap={2} className="font-bold text-theme-primary">
-              <PiShield className="w-5 h-5 text-atencao" />
+              <PiShield className="w-5 h-5" />
               <span>⚠️ Monitoramento de Riscos</span>
             </Inline>
             <Button
@@ -779,10 +777,10 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               <span
                 className={`font-bold ${
                   insights.riskAssessment.churnRiskUsers.length > 10
-                    ? 'text-erro'
+                    ? ''
                     : insights.riskAssessment.churnRiskUsers.length > 5
-                      ? 'text-atencao'
-                      : 'text-ok'
+                      ? ''
+                      : ''
                 }`}
               >
                 {insights.riskAssessment.churnRiskUsers.length}
@@ -792,7 +790,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               <Text papel="rotulo" tom="suave">
                 Riscos de Conteúdo
               </Text>
-              <span className="font-bold text-atencao">
+              <span className="font-bold">
                 {insights.riskAssessment.contentRisks.length}
               </span>
             </div>
@@ -805,8 +803,8 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
                   insights.riskAssessment.systemHealthIndicators.every(
                     (i: any) => i.status === 'healthy'
                   )
-                    ? 'text-ok'
-                    : 'text-atencao'
+                    ? ''
+                    : ''
                 }`}
               >
                 {
@@ -824,7 +822,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
         <AnimatedCard className="classical-card p-6">
           <div className="flex items-center justify-between mb-4">
             <Inline as="h3" gap={2} className="font-bold text-theme-primary">
-              <PiTrendUp className="w-5 h-5 text-ouro-texto" />
+              <PiTrendUp className="w-5 h-5" />
               <span>🚀 Potencial de Crescimento</span>
             </Inline>
             <Button
@@ -844,7 +842,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               <Text papel="rotulo" tom="suave">
                 Alto Impacto
               </Text>
-              <span className="font-bold text-ouro-texto">
+              <span className="font-bold">
                 {
                   insights.growthOpportunities.filter(
                     (o: any) => o.impact === 'high' || o.impact === 'critical'
@@ -856,7 +854,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               <Text papel="rotulo" tom="suave">
                 Rápida Implementação
               </Text>
-              <span className="font-bold text-ok">
+              <span className="font-bold">
                 {
                   insights.growthOpportunities.filter(
                     (o: any) => o.effort === 'low'
@@ -868,7 +866,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               <Text papel="rotulo" tom="suave">
                 ROI Potencial
               </Text>
-              <span className="font-bold text-aviso">Alto</span>
+              <span className="font-bold">Alto</span>
             </div>
           </Stack>
         </AnimatedCard>
@@ -881,7 +879,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
           gap={2}
           className="text-lg font-bold text-theme-primary mb-4"
         >
-          <PiCpu className="w-5 h-5 text-aviso" />
+          <PiCpu className="w-5 h-5" />
           <span>⚡ Status do Sistema em Tempo Real</span>
         </Inline>
 
@@ -896,10 +894,10 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
                   <span
                     className={`w-3 h-3 rounded-full ${
                       indicator.status === 'healthy'
-                        ? 'bg-ok'
+                        ? ''
                         : indicator.status === 'warning'
-                          ? 'bg-atencao'
-                          : 'bg-erro'
+                          ? ''
+                          : ''
                     }`}
                   />
                 </div>
@@ -933,7 +931,7 @@ function PredictionsSection({
             gap={2}
             className="text-2xl font-bold text-theme-primary"
           >
-            <PiTarget className="w-6 h-6 text-ouro-texto" />
+            <PiTarget className="w-6 h-6" />
             <span>🔮 Previsões Inteligentes</span>
           </Inline>
           <Button
@@ -991,13 +989,13 @@ function PredictionsSection({
                     <Text papel="legenda" tom="fraco">
                       Confiança da IA
                     </Text>
-                    <span className="text-xs font-medium text-aviso">
+                    <span className="text-xs font-medium">
                       {prediction.confidence.toFixed(1)}%
                     </span>
                   </div>
                   <div className="w-full bg-theme-secondary h-3 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-aviso rounded-full transition-all duration-1000"
+                      className="h-full bg-blue-400 rounded-full transition-all duration-1000"
                       style={{ width: `${prediction.confidence}%` }}
                     />
                   </div>
@@ -1016,7 +1014,7 @@ function PredictionsSection({
                           key={i}
                           className="text-xs text-theme-secondary"
                         >
-                          <div className="w-1.5 h-1.5 bg-aviso rounded-full"></div>
+                          <div className="w-1.5 h-1.5 rounded-full"></div>
                           <span>{factor}</span>
                         </Inline>
                       ))}
@@ -1037,7 +1035,7 @@ function PredictionsSection({
                           (point: any, i: number) => (
                             <div
                               key={i}
-                              className="bg-aviso/30 rounded-sm flex-1"
+                              className="rounded-sm flex-1"
                               style={{
                                 height: `${
                                   (point.value /
@@ -1079,7 +1077,7 @@ function EducationalEngagementSection({
             gap={2}
             className="text-2xl font-bold text-theme-primary"
           >
-            <PiMedal className="w-6 h-6 text-ok" />
+            <PiMedal className="w-6 h-6" />
             <span>📚 Engajamento Educacional</span>
           </Inline>
           <Button
@@ -1105,7 +1103,7 @@ function EducationalEngagementSection({
           gap={2}
           className="text-lg font-bold text-theme-primary mb-4"
         >
-          <PiTarget className="w-5 h-5 text-aviso" />
+          <PiTarget className="w-5 h-5" />
           <span>🎯 Progressões de Aprendizado</span>
         </Inline>
 
@@ -1122,7 +1120,7 @@ function EducationalEngagementSection({
                     {progression.pathway}
                   </h4>
                   <Inline gap={3}>
-                    <span className="text-sm font-medium text-ok">
+                    <span className="text-sm font-medium">
                       {progression.successRate}% sucesso
                     </span>
                     <Text papel="rotulo" tom="fraco">
@@ -1133,7 +1131,7 @@ function EducationalEngagementSection({
 
                 <div className="w-full bg-theme-primary h-2 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-ok rounded-full transition-all duration-1000"
+                    className="h-full rounded-full transition-all duration-1000"
                     style={{ width: `${progression.successRate}%` }}
                   />
                 </div>
@@ -1146,7 +1144,7 @@ function EducationalEngagementSection({
                     <ul className="space-y-1">
                       {progression.dropoffPoints.map(
                         (point: string, i: number) => (
-                          <Inline as="li" gap={1} key={i} className="text-erro">
+                          <Inline as="li" gap={1} key={i} className="">
                             <span>•</span>
                             <span>{point}</span>
                           </Inline>
@@ -1159,7 +1157,7 @@ function EducationalEngagementSection({
                     <ul className="space-y-1">
                       {progression.recommendations.map(
                         (rec: string, i: number) => (
-                          <Inline as="li" gap={1} key={i} className="text-ok">
+                          <Inline as="li" gap={1} key={i} className="">
                             <span>•</span>
                             <span>{rec}</span>
                           </Inline>
@@ -1181,7 +1179,7 @@ function EducationalEngagementSection({
           gap={2}
           className="text-lg font-bold text-theme-primary mb-4"
         >
-          <PiMapPin className="w-5 h-5 text-ouro-texto" />
+          <PiMapPin className="w-5 h-5" />
           <span>🗺️ Padrões de Descoberta Musical</span>
         </Inline>
 
@@ -1204,10 +1202,7 @@ function EducationalEngagementSection({
                     <div className="flex flex-wrap gap-1 mt-1">
                       {pattern.gatewayComposers.map(
                         (composer: string, i: number) => (
-                          <span
-                            key={i}
-                            className="px-2 py-1 bg-aviso/10 text-aviso rounded text-xs"
-                          >
+                          <span key={i} className="px-2 py-1 rounded text-xs">
                             {composer}
                           </span>
                         )
@@ -1218,9 +1213,7 @@ function EducationalEngagementSection({
                     <span className="text-theme-tertiary">
                       Taxa de conversão:
                     </span>
-                    <span className="font-bold text-ok">
-                      {pattern.conversionRate}%
-                    </span>
+                    <span className="font-bold">{pattern.conversionRate}%</span>
                   </div>
                 </Stack>
               </Stack>
@@ -1238,7 +1231,7 @@ function EducationalEngagementSection({
             gap={2}
             className="text-lg font-bold text-theme-primary mb-4"
           >
-            <PiHeart className="w-5 h-5 text-erro" />
+            <PiHeart className="w-5 h-5" />
             <span>⭐ Qualidade das Anotações</span>
           </Inline>
 
@@ -1247,7 +1240,7 @@ function EducationalEngagementSection({
               gap={1}
               className="text-center p-4 bg-theme-secondary rounded-xl"
             >
-              <div className="text-3xl font-bold text-aviso">
+              <div className="text-3xl font-bold">
                 {educational.annotationQualityMetrics.avgHelpfulnessScore.toFixed(
                   1
                 )}
@@ -1274,7 +1267,7 @@ function EducationalEngagementSection({
                         {contributor.username}
                       </Text>
                       <Inline gap={2}>
-                        <span className="text-sm font-bold text-ok">
+                        <span className="text-sm font-bold">
                           {contributor.qualityScore}%
                         </span>
                         <Text papel="legenda" tom="fraco">
@@ -1295,14 +1288,14 @@ function EducationalEngagementSection({
             gap={2}
             className="text-lg font-bold text-theme-primary mb-4"
           >
-            <PiClock className="w-5 h-5 text-atencao" />
+            <PiClock className="w-5 h-5" />
             <span>⏰ Padrões de Estudo</span>
           </Inline>
 
           <Stack>
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-3 bg-theme-secondary rounded-xl">
-                <div className="text-xl font-bold text-ouro-texto">
+                <div className="text-xl font-bold">
                   {educational.studySessionAnalysis.optimalSessionLength}min
                 </div>
                 <Text papel="legenda" tom="fraco" as="div">
@@ -1310,7 +1303,7 @@ function EducationalEngagementSection({
                 </Text>
               </div>
               <div className="text-center p-3 bg-theme-secondary rounded-xl">
-                <div className="text-lg font-bold text-ok">
+                <div className="text-lg font-bold">
                   {educational.studySessionAnalysis.peakStudyTimes[0] || 'N/A'}
                 </div>
                 <Text papel="legenda" tom="fraco" as="div">
@@ -1334,7 +1327,7 @@ function EducationalEngagementSection({
                     <Inline gap={2}>
                       <div className="w-16 h-2 bg-theme-secondary rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-aviso rounded-full"
+                          className="h-full rounded-full"
                           style={{ width: `${percentage}%` }}
                         />
                       </div>
@@ -1357,7 +1350,7 @@ function EducationalEngagementSection({
                 ).map(([season, intensity]: [string, any]) => (
                   <div key={season} className="flex justify-between">
                     <span className="text-theme-secondary">{season}</span>
-                    <span className="font-medium text-aviso">{intensity}%</span>
+                    <span className="font-medium">{intensity}%</span>
                   </div>
                 ))}
               </div>
@@ -1384,7 +1377,7 @@ function UserJourneySection({
             gap={2}
             className="text-2xl font-bold text-theme-primary"
           >
-            <PiMapPin className="w-6 h-6 text-aviso" />
+            <PiMapPin className="w-6 h-6" />
             <span>🗺️ Jornadas de Usuário</span>
           </Inline>
           <Button
@@ -1410,7 +1403,7 @@ function UserJourneySection({
           gap={2}
           className="text-lg font-bold text-theme-primary mb-4"
         >
-          <PiUsers className="w-5 h-5 text-ok" />
+          <PiUsers className="w-5 h-5" />
           <span>👥 Jornadas Típicas por Perfil</span>
         </Inline>
 
@@ -1429,10 +1422,10 @@ function UserJourneySection({
                       <div
                         className={`w-16 h-16 rounded-full flex items-center justify-center text-xs font-bold ${
                           stage.completionRate >= 70
-                            ? 'bg-ok text-white'
+                            ? 'text-white'
                             : stage.completionRate >= 40
-                              ? 'bg-atencao text-white'
-                              : 'bg-erro text-white'
+                              ? 'text-white'
+                              : 'text-white'
                         }`}
                       >
                         {stage.completionRate}%
@@ -1462,7 +1455,7 @@ function UserJourneySection({
                   <p className="text-theme-tertiary">✅ Fatores de Sucesso:</p>
                   <ul className="space-y-1">
                     {journey.successFactors.map((factor: string, i: number) => (
-                      <Inline as="li" gap={1} key={i} className="text-ok">
+                      <Inline as="li" gap={1} key={i} className="">
                         <span>•</span>
                         <span>{factor}</span>
                       </Inline>
@@ -1473,7 +1466,7 @@ function UserJourneySection({
                   <p className="text-theme-tertiary">💡 Recomendações:</p>
                   <ul className="space-y-1">
                     {journey.recommendations.map((rec: string, i: number) => (
-                      <Inline as="li" gap={1} key={i} className="text-aviso">
+                      <Inline as="li" gap={1} key={i} className="">
                         <span>•</span>
                         <span>{rec}</span>
                       </Inline>
@@ -1493,7 +1486,7 @@ function UserJourneySection({
           gap={2}
           className="text-lg font-bold text-theme-primary mb-4"
         >
-          <PiFunnel className="w-5 h-5 text-ouro-texto" />
+          <PiFunnel className="w-5 h-5" />
           <span>🔄 Funis de Conversão</span>
         </Inline>
 
@@ -1518,10 +1511,10 @@ function UserJourneySection({
                   <span
                     className={`text-lg font-bold ${
                       funnel.conversionRate >= 50
-                        ? 'text-ok'
+                        ? ''
                         : funnel.conversionRate >= 25
-                          ? 'text-atencao'
-                          : 'text-erro'
+                          ? ''
+                          : ''
                     }`}
                   >
                     {funnel.conversionRate}%
@@ -1536,10 +1529,10 @@ function UserJourneySection({
                 <div
                   className={`h-full rounded-full transition-all duration-1000 ${
                     funnel.conversionRate >= 50
-                      ? 'bg-ok'
+                      ? 'bg-green-300'
                       : funnel.conversionRate >= 25
-                        ? 'bg-atencao'
-                        : 'bg-erro'
+                        ? 'bg-amber-400'
+                        : 'bg-red-400'
                   }`}
                   style={{ width: `${funnel.conversionRate}%` }}
                 />
@@ -1552,10 +1545,7 @@ function UserJourneySection({
                 <div className="flex flex-wrap gap-1">
                   {funnel.improvementOpportunities.map(
                     (opportunity: string, i: number) => (
-                      <span
-                        key={i}
-                        className="px-2 py-1 bg-aviso/10 text-aviso rounded text-xs"
-                      >
+                      <span key={i} className="px-2 py-1 rounded text-xs">
                         {opportunity}
                       </span>
                     )
@@ -1574,7 +1564,7 @@ function UserJourneySection({
           gap={2}
           className="text-lg font-bold text-theme-primary mb-4"
         >
-          <PiChartPie className="w-5 h-5 text-atencao" />
+          <PiChartPie className="w-5 h-5" />
           <span>🎯 Segmentação de Usuários</span>
         </Inline>
 
@@ -1589,7 +1579,7 @@ function UserJourneySection({
                 <h4 className="font-bold text-theme-primary capitalize">
                   {segment.segment}
                 </h4>
-                <span className="text-sm font-bold text-aviso">
+                <span className="text-sm font-bold">
                   {formatNumber(segment.size)} usuários
                 </span>
               </div>
@@ -1615,13 +1605,11 @@ function UserJourneySection({
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="text-center p-2 bg-theme-primary rounded">
-                    <div className="font-bold text-ok">
-                      {segment.engagementLevel}%
-                    </div>
+                    <div className="font-bold">{segment.engagementLevel}%</div>
                     <div className="text-theme-tertiary">Engajamento</div>
                   </div>
                   <div className="text-center p-2 bg-theme-primary rounded">
-                    <div className="font-bold text-ouro-texto">
+                    <div className="font-bold">
                       {segment.revenueContribution}%
                     </div>
                     <div className="text-theme-tertiary">Receita</div>
@@ -1632,7 +1620,7 @@ function UserJourneySection({
                   <Text papel="legenda" tom="fraco" as="p">
                     Potencial de crescimento:
                   </Text>
-                  <p className="text-xs font-medium text-aviso">
+                  <p className="text-xs font-medium">
                     {segment.growthPotential}
                   </p>
                 </div>
@@ -1661,7 +1649,7 @@ function RiskAssessmentSection({
             gap={2}
             className="text-2xl font-bold text-theme-primary"
           >
-            <PiShield className="w-6 h-6 text-erro" />
+            <PiShield className="w-6 h-6" />
             <span>⚠️ Avaliação de Riscos</span>
           </Inline>
           <Button
@@ -1687,13 +1675,13 @@ function RiskAssessmentSection({
           gap={2}
           className="text-lg font-bold text-theme-primary mb-4"
         >
-          <PiUsers className="w-5 h-5 text-erro" />
+          <PiUsers className="w-5 h-5" />
           <span>🚨 Usuários em Alto Risco de Churn</span>
         </Inline>
 
         {riskAssessment.churnRiskUsers.length === 0 ? (
           <div className="text-center py-8">
-            <PiCheckCircle className="w-12 h-12 text-ok mx-auto mb-4" />
+            <PiCheckCircle className="w-12 h-12 mx-auto mb-4" />
             <p className="text-theme-secondary">
               Nenhum usuário em alto risco detectado!
             </p>
@@ -1706,7 +1694,7 @@ function RiskAssessmentSection({
                 <Stack
                   gap={3}
                   key={index}
-                  className="border p-4 bg-erro/10 rounded-xl border-erro/40"
+                  className="p-4 bg-theme-secondary rounded-xl border-l-4"
                 >
                   <div className="flex items-start justify-between">
                     <div>
@@ -1721,9 +1709,7 @@ function RiskAssessmentSection({
                       </Text>
                     </div>
                     <div className="text-center">
-                      <div className="text-xl font-bold text-erro">
-                        {user.riskScore}%
-                      </div>
+                      <div className="text-xl font-bold">{user.riskScore}%</div>
                       <Text papel="legenda" tom="fraco" as="div">
                         Risco
                       </Text>
@@ -1737,7 +1723,7 @@ function RiskAssessmentSection({
                       </p>
                       <ul className="space-y-1">
                         {user.riskFactors.map((factor: string, i: number) => (
-                          <Inline as="li" gap={1} key={i} className="text-erro">
+                          <Inline as="li" gap={1} key={i} className="">
                             <span>•</span>
                             <span>{factor}</span>
                           </Inline>
@@ -1749,7 +1735,7 @@ function RiskAssessmentSection({
                       <ul className="space-y-1">
                         {user.suggestedActions.map(
                           (action: string, i: number) => (
-                            <Inline as="li" gap={1} key={i} className="text-ok">
+                            <Inline as="li" gap={1} key={i} className="">
                               <span>•</span>
                               <span>{action}</span>
                             </Inline>
@@ -1771,7 +1757,7 @@ function RiskAssessmentSection({
           gap={2}
           className="text-lg font-bold text-theme-primary mb-4"
         >
-          <PiPulse className="w-5 h-5 text-aviso" />
+          <PiPulse className="w-5 h-5" />
           <span>💚 Indicadores de Saúde do Sistema</span>
         </Inline>
 
@@ -1790,10 +1776,10 @@ function RiskAssessmentSection({
                   <span
                     className={`w-4 h-4 rounded-full ${
                       indicator.status === 'healthy'
-                        ? 'bg-ok'
+                        ? ''
                         : indicator.status === 'warning'
-                          ? 'bg-atencao'
-                          : 'bg-erro'
+                          ? ''
+                          : ''
                     }`}
                   />
                 </div>
@@ -1802,10 +1788,10 @@ function RiskAssessmentSection({
                   <div
                     className={`text-2xl font-bold ${
                       indicator.status === 'healthy'
-                        ? 'text-ok'
+                        ? ''
                         : indicator.status === 'warning'
-                          ? 'text-atencao'
-                          : 'text-erro'
+                          ? ''
+                          : ''
                     }`}
                   >
                     {formatNumber(indicator.currentValue)}
@@ -1820,9 +1806,9 @@ function RiskAssessmentSection({
                   <span
                     className={`${
                       indicator.trend === 'improving'
-                        ? 'text-ok'
+                        ? ''
                         : indicator.trend === 'declining'
-                          ? 'text-erro'
+                          ? ''
                           : 'text-theme-tertiary'
                     }`}
                   >
@@ -1876,7 +1862,7 @@ function GrowthOpportunitiesSection({
             gap={2}
             className="text-2xl font-bold text-theme-primary"
           >
-            <PiTrendUp className="w-6 h-6 text-ouro-texto" />
+            <PiTrendUp className="w-6 h-6" />
             <span>🚀 Oportunidades de Crescimento</span>
           </Inline>
           <Button
@@ -1937,12 +1923,7 @@ function GrowthOpportunitiesSection({
                 <ul className="space-y-1">
                   {opportunity.expectedResults.map(
                     (result: string, i: number) => (
-                      <Inline
-                        as="li"
-                        gap={1}
-                        key={i}
-                        className="text-sm text-ok"
-                      >
+                      <Inline as="li" gap={1} key={i} className="text-sm">
                         <span>•</span>
                         <span>{result}</span>
                       </Inline>
@@ -1980,10 +1961,10 @@ function GrowthOpportunitiesSection({
                   <span
                     className={`font-medium ${
                       opportunity.effort === 'low'
-                        ? 'text-ok'
+                        ? ''
                         : opportunity.effort === 'medium'
-                          ? 'text-atencao'
-                          : 'text-erro'
+                          ? ''
+                          : ''
                     }`}
                   >
                     {opportunity.effort === 'low'
@@ -2016,7 +1997,7 @@ function MonetizationSection({
             gap={2}
             className="text-2xl font-bold text-theme-primary"
           >
-            <PiCurrencyDollar className="w-6 h-6 text-ok" />
+            <PiCurrencyDollar className="w-6 h-6" />
             <span>💰 Insights de Monetização</span>
           </Inline>
           <Button
@@ -2038,7 +2019,7 @@ function MonetizationSection({
       {/* Ad Performance Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <AnimatedCard className="classical-card p-6 text-center">
-          <PiChartBar className="w-8 h-8 text-aviso mx-auto mb-3" />
+          <PiChartBar className="w-8 h-8 mx-auto mb-3" />
           <div className="text-2xl font-bold text-theme-primary">
             {monetization.adPerformance.overallCTR.toFixed(2)}%
           </div>
@@ -2048,7 +2029,7 @@ function MonetizationSection({
         </AnimatedCard>
 
         <AnimatedCard className="classical-card p-6 text-center">
-          <PiCurrencyDollar className="w-8 h-8 text-ok mx-auto mb-3" />
+          <PiCurrencyDollar className="w-8 h-8 mx-auto mb-3" />
           <div className="text-2xl font-bold text-theme-primary">
             ${monetization.adPerformance.revenuePerUser.toFixed(2)}
           </div>
@@ -2058,7 +2039,7 @@ function MonetizationSection({
         </AnimatedCard>
 
         <AnimatedCard className="classical-card p-6 text-center">
-          <PiTrendUp className="w-8 h-8 text-ouro-texto mx-auto mb-3" />
+          <PiTrendUp className="w-8 h-8 mx-auto mb-3" />
           <div className="text-2xl font-bold text-theme-primary">
             {monetization.adPerformance.topPerformingAds.length}
           </div>
@@ -2075,7 +2056,7 @@ function MonetizationSection({
           gap={2}
           className="text-lg font-bold text-theme-primary mb-4"
         >
-          <PiUsers className="w-5 h-5 text-aviso" />
+          <PiUsers className="w-5 h-5" />
           <span>👥 Segmentação por Valor do Usuário</span>
         </Inline>
 
@@ -2100,21 +2081,21 @@ function MonetizationSection({
                   </div>
                   <div className="flex justify-between">
                     <span className="text-theme-tertiary">Receita Média:</span>
-                    <span className="font-medium text-ok">
+                    <span className="font-medium">
                       ${segment.avgRevenue.toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-theme-tertiary">Engajamento:</span>
-                    <span className="font-medium text-aviso">
+                    <span className="font-medium">
                       {segment.engagementScore}%
                     </span>
                   </div>
-                  <div className="pt-2 border-t border-linha">
+                  <div className="pt-2 border-t">
                     <Text papel="legenda" tom="fraco" as="p">
                       Potencial de crescimento:
                     </Text>
-                    <p className="text-xs font-medium text-ouro-texto">
+                    <p className="text-xs font-medium">
                       {segment.growthPotential}
                     </p>
                   </div>
@@ -2132,7 +2113,7 @@ function MonetizationSection({
           gap={2}
           className="text-lg font-bold text-theme-primary mb-4"
         >
-          <PiLightning className="w-5 h-5 text-atencao" />
+          <PiLightning className="w-5 h-5" />
           <span>⚡ Oportunidades de Monetização</span>
         </Inline>
 
@@ -2151,21 +2132,19 @@ function MonetizationSection({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                   <Stack gap={1}>
                     <p className="text-theme-tertiary">💰 Receita Estimada:</p>
-                    <p className="font-medium text-ok">
+                    <p className="font-medium">
                       {opportunity.estimatedRevenue}
                     </p>
                   </Stack>
                   <Stack gap={1}>
                     <p className="text-theme-tertiary">💸 Investimento:</p>
-                    <p className="font-medium text-atencao">
+                    <p className="font-medium">
                       {opportunity.requiredInvestment}
                     </p>
                   </Stack>
                   <Stack gap={1}>
                     <p className="text-theme-tertiary">📊 Viabilidade:</p>
-                    <p className="font-medium text-aviso">
-                      {opportunity.feasibility}
-                    </p>
+                    <p className="font-medium">{opportunity.feasibility}</p>
                   </Stack>
                 </div>
               </Stack>
@@ -2192,7 +2171,7 @@ function BehaviorPatternsSection({
             gap={2}
             className="text-2xl font-bold text-theme-primary"
           >
-            <PiBrain className="w-6 h-6 text-ouro-texto" />
+            <PiBrain className="w-6 h-6" />
             <span>🧠 Padrões de Comportamento</span>
           </Inline>
           <Button
@@ -2254,7 +2233,7 @@ function BehaviorPatternsSection({
               </div>
 
               <div className="text-right ml-6">
-                <div className="text-3xl font-bold text-aviso mb-1">
+                <div className="text-3xl font-bold mb-1">
                   {pattern.prevalence.toFixed(1)}%
                 </div>
                 <Text papel="rotulo" tom="fraco" as="div">
@@ -2286,7 +2265,7 @@ function ContentPerformanceSection({
             gap={2}
             className="text-2xl font-bold text-theme-primary"
           >
-            <PiChartBar className="w-6 h-6 text-aviso" />
+            <PiChartBar className="w-6 h-6" />
             <span>📊 Performance de Conteúdo</span>
           </Inline>
           <Button
@@ -2314,7 +2293,7 @@ function ContentPerformanceSection({
             gap={2}
             className="text-lg font-bold text-theme-primary mb-4"
           >
-            <PiMedal className="w-5 h-5 text-ok" />
+            <PiMedal className="w-5 h-5" />
             <span>🏆 Top Performers</span>
           </Inline>
           <Stack gap={3}>
@@ -2327,7 +2306,7 @@ function ContentPerformanceSection({
                       papel="legenda"
                       tom="forte"
                       as="div"
-                      className="w-8 h-8 bg-ok rounded-lg flex items-center justify-center font-bold"
+                      className="w-8 h-8 rounded-lg flex items-center justify-center font-bold"
                     >
                       {index + 1}
                     </Text>
@@ -2373,7 +2352,7 @@ function ContentPerformanceSection({
             gap={2}
             className="text-lg font-bold text-theme-primary mb-4"
           >
-            <PiTrendDown className="w-5 h-5 text-atencao" />
+            <PiTrendDown className="w-5 h-5" />
             <span>📈 Oportunidades de Melhoria</span>
           </Inline>
           <Stack>
@@ -2390,7 +2369,7 @@ function ContentPerformanceSection({
                     </Text>
                     <Stack gap={1}>
                       {item.issues.map((issue: string, i: number) => (
-                        <Inline gap={1} key={i} className="text-xs text-erro">
+                        <Inline gap={1} key={i} className="text-xs">
                           <span>•</span>
                           <span>{issue}</span>
                         </Inline>
@@ -2404,7 +2383,7 @@ function ContentPerformanceSection({
                     </Text>
                     <Stack gap={1}>
                       {item.suggestions.map((suggestion: string, i: number) => (
-                        <Inline gap={1} key={i} className="text-xs text-ok">
+                        <Inline gap={1} key={i} className="text-xs">
                           <span>•</span>
                           <span>{suggestion}</span>
                         </Inline>
@@ -2412,7 +2391,7 @@ function ContentPerformanceSection({
                     </Stack>
                   </Stack>
 
-                  <div className="p-2 bg-aviso/10 rounded text-xs text-aviso">
+                  <div className="p-2 rounded text-xs">
                     <strong>📊 Impacto esperado:</strong> {item.potentialImpact}
                   </div>
                 </div>
@@ -2429,7 +2408,7 @@ function ContentPerformanceSection({
           gap={2}
           className="text-lg font-bold text-theme-primary mb-4"
         >
-          <PiLightning className="w-5 h-5 text-ouro-texto" />
+          <PiLightning className="w-5 h-5" />
           <span>🎯 Recomendações de Otimização</span>
         </Inline>
         <Stack gap={3}>
@@ -2444,7 +2423,7 @@ function ContentPerformanceSection({
                   papel="rotulo"
                   tom="forte"
                   as="div"
-                  className="w-10 h-10 bg-aviso rounded-lg flex items-center justify-center font-bold"
+                  className="w-10 h-10 rounded-lg flex items-center justify-center font-bold"
                 >
                   {rec.priority}
                 </Text>
@@ -2458,10 +2437,10 @@ function ContentPerformanceSection({
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${
                       rec.effort === 'high'
-                        ? 'bg-erro/10 text-erro'
+                        ? ''
                         : rec.effort === 'medium'
-                          ? 'bg-atencao/10 text-atencao'
-                          : 'bg-ok/10 text-ok'
+                          ? ''
+                          : ''
                     }`}
                   >
                     Esforço:{' '}
@@ -2490,7 +2469,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
             gap={2}
             className="text-2xl font-bold text-theme-primary"
           >
-            <PiWarning className="w-6 h-6 text-erro" />
+            <PiWarning className="w-6 h-6" />
             <span>🔍 Detecção de Anomalias</span>
           </Inline>
           <Button
@@ -2511,7 +2490,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
 
       {anomalies.length === 0 ? (
         <AnimatedCard className="classical-card p-8 text-center">
-          <PiCheckCircle className="w-16 h-16 text-ok mx-auto mb-4" />
+          <PiCheckCircle className="w-16 h-16 mx-auto mb-4" />
           <h3 className="text-lg font-bold text-theme-primary mb-2">
             ✅ Sistema Operando Normalmente
           </h3>
@@ -2533,7 +2512,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
             return (
               <AnimatedCard
                 key={index}
-                className={`border classical-card p-6 ${getSeverityColor(
+                className={`classical-card p-6 border-l-4 ${getSeverityColor(
                   anomaly.severity
                 )}`}
               >
@@ -2571,7 +2550,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                         </Text>
                       </div>
                       <div className="text-center p-3 bg-theme-secondary rounded-xl">
-                        <div className="text-lg font-bold text-aviso">
+                        <div className="text-lg font-bold">
                           {formatNumber(anomaly.expectedRange.min)}-
                           {formatNumber(anomaly.expectedRange.max)}
                         </div>
@@ -2580,7 +2559,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                         </Text>
                       </div>
                       <div className="text-center p-3 bg-theme-secondary rounded-xl">
-                        <div className="text-lg font-bold text-atencao">
+                        <div className="text-lg font-bold">
                           {anomaly.deviation.toFixed(1)}%
                         </div>
                         <Text papel="legenda" tom="fraco" as="div">
@@ -2591,10 +2570,10 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                         <div
                           className={`text-lg font-bold ${
                             anomaly.severity === 'critical'
-                              ? 'text-erro'
+                              ? ''
                               : anomaly.severity === 'warning'
-                                ? 'text-atencao'
-                                : 'text-aviso'
+                                ? ''
+                                : ''
                           }`}
                         >
                           {anomaly.severity === 'critical'
@@ -2621,7 +2600,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                               key={i}
                               className="text-sm text-theme-primary"
                             >
-                              <div className="w-2 h-2 bg-aviso rounded-full"></div>
+                              <div className="w-2 h-2 rounded-full"></div>
                               <span>{cause}</span>
                             </Inline>
                           )
@@ -2630,8 +2609,8 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                     </Stack>
 
                     {anomaly.affectedUsers && (
-                      <div className="mt-3 p-3 bg-atencao/10 rounded-lg">
-                        <p className="text-sm text-atencao">
+                      <div className="mt-3 p-3 rounded-lg">
+                        <p className="text-sm">
                           <strong>👥 Impacto:</strong>{' '}
                           {formatNumber(anomaly.affectedUsers)} usuários podem
                           ter sido afetados

@@ -129,7 +129,7 @@ export default function FieldSelector({
         <Inline
           as="span"
           gap={1}
-          className="px-2 py-0.5 bg-erro/10 text-erro text-xs rounded-full"
+          className="px-2 py-0.5 bg-red-500/20 text-red-500 text-xs rounded-full"
         >
           <PiLock className="w-3 h-3" />
           <span>Sensível</span>
@@ -142,7 +142,7 @@ export default function FieldSelector({
         <Inline
           as="span"
           gap={1}
-          className="px-2 py-0.5 bg-atencao/10 text-atencao text-xs rounded-full"
+          className="px-2 py-0.5 bg-amber-500/20 text-amber-500 text-xs rounded-full"
         >
           <PiWarning className="w-3 h-3" />
           <span>Somente leitura</span>
@@ -152,7 +152,7 @@ export default function FieldSelector({
 
     if ((field as any).requiresConfirmation) {
       return (
-        <span className="px-2 py-0.5 bg-atencao/10 text-atencao text-xs rounded-full">
+        <span className="px-2 py-0.5 bg-orange-500/20 text-orange-500 text-xs rounded-full">
           Exige confirmação
         </span>
       );
@@ -160,7 +160,7 @@ export default function FieldSelector({
 
     if (field.kind === 'object') {
       return (
-        <span className="px-2 py-0.5 bg-ouro/10 text-ouro-texto text-xs rounded-full">
+        <span className="px-2 py-0.5 bg-purple-500/20 text-purple-500 text-xs rounded-full">
           Relação
         </span>
       );
@@ -189,7 +189,7 @@ export default function FieldSelector({
         {/* Header com estatísticas */}
         <div className="grid grid-cols-4 gap-4">
           <Card densidade="compacta">
-            <div className="text-2xl font-bold text-brand-primary">
+            <div className="text-2xl font-bold text-ouro-texto">
               {stats.total}
             </div>
             <Text papel="rotulo" tom="fraco" as="div">
@@ -197,13 +197,15 @@ export default function FieldSelector({
             </Text>
           </Card>
           <Card densidade="compacta">
-            <div className="text-2xl font-bold text-ok">{stats.selected}</div>
+            <div className="text-2xl font-bold text-green-500">
+              {stats.selected}
+            </div>
             <Text papel="rotulo" tom="fraco" as="div">
               Selecionados
             </Text>
           </Card>
           <Card densidade="compacta">
-            <div className="text-2xl font-bold text-erro">
+            <div className="text-2xl font-bold text-red-500">
               {stats.sensitive}
             </div>
             <Text papel="rotulo" tom="fraco" as="div">
@@ -211,7 +213,7 @@ export default function FieldSelector({
             </Text>
           </Card>
           <Card densidade="compacta">
-            <div className="text-2xl font-bold text-atencao">
+            <div className="text-2xl font-bold text-amber-500">
               {stats.readonly}
             </div>
             <Text papel="rotulo" tom="fraco" as="div">
@@ -241,8 +243,8 @@ export default function FieldSelector({
                 onClick={() => setFilterType('all')}
                 className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                   filterType === 'all'
-                    ? 'bg-ouro text-sobre-ouro'
-                    : 'bg-theme-secondary text-theme-tertiary hover:text-texto'
+                    ? 'text-white'
+                    : 'bg-theme-secondary text-theme-tertiary'
                 }`}
               >
                 Todos
@@ -251,8 +253,8 @@ export default function FieldSelector({
                 onClick={() => setFilterType('editable')}
                 className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                   filterType === 'editable'
-                    ? 'bg-ouro text-sobre-ouro'
-                    : 'bg-theme-secondary text-theme-tertiary hover:text-texto'
+                    ? 'text-white'
+                    : 'bg-theme-secondary text-theme-tertiary'
                 }`}
               >
                 Editáveis
@@ -261,8 +263,8 @@ export default function FieldSelector({
                 onClick={() => setFilterType('readonly')}
                 className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                   filterType === 'readonly'
-                    ? 'bg-ouro text-sobre-ouro'
-                    : 'bg-theme-secondary text-theme-tertiary hover:text-texto'
+                    ? 'text-white'
+                    : 'bg-theme-secondary text-theme-tertiary'
                 }`}
               >
                 Somente leitura
@@ -271,8 +273,8 @@ export default function FieldSelector({
                 onClick={() => setFilterType('relations')}
                 className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                   filterType === 'relations'
-                    ? 'bg-ouro text-sobre-ouro'
-                    : 'bg-theme-secondary text-theme-tertiary hover:text-texto'
+                    ? 'text-white'
+                    : 'bg-theme-secondary text-theme-tertiary'
                 }`}
               >
                 Relações
@@ -313,9 +315,7 @@ export default function FieldSelector({
                   <div
                     key={field}
                     className={`p-3 rounded-lg border transition-all cursor-pointer ${
-                      isSelected
-                        ? 'border-ouro bg-ouro/5'
-                        : 'border-theme-primary hover:border-ouro/50'
+                      isSelected ? '' : 'border-theme-primary'
                     }`}
                     onClick={() => onToggleField(field)}
                   >
@@ -349,7 +349,7 @@ export default function FieldSelector({
                         </div>
                       </Inline>
                       {isSelected && (
-                        <PiCheck className="w-5 h-5 text-brand-primary" />
+                        <PiCheck className="w-5 h-5 text-ouro-texto" />
                       )}
                     </div>
                   </div>

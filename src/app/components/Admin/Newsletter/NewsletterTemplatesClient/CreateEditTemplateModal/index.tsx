@@ -271,9 +271,9 @@ export default function CreateEditTemplateModal({
                   key={step.id}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
                     currentStep === step.id
-                      ? 'bg-ouro text-sobre-ouro'
+                      ? 'text-white'
                       : currentStep > step.id
-                        ? 'bg-ok text-white'
+                        ? 'bg-green-700 text-white'
                         : 'bg-theme-secondary text-theme-tertiary'
                   }`}
                   onClick={() => setCurrentStep(step.id)}
@@ -370,9 +370,7 @@ export default function CreateEditTemplateModal({
                     rows={12}
                   />
                   {errors.htmlContent && (
-                    <p className="text-erro text-sm mt-1">
-                      {errors.htmlContent}
-                    </p>
+                    <p className="text-sm mt-1">{errors.htmlContent}</p>
                   )}
                 </div>
 
@@ -391,18 +389,15 @@ export default function CreateEditTemplateModal({
 
                 {/* Variáveis detectadas */}
                 {form.variables.length > 0 && (
-                  <Stack
-                    gap={2}
-                    className="p-4 bg-aviso/10 border border-aviso/20 rounded-lg"
-                  >
-                    <h4 className="font-medium text-aviso">
+                  <Stack gap={2} className="p-4 border rounded-lg">
+                    <h4 className="font-medium">
                       🔧 Variáveis detectadas ({form.variables.length})
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {form.variables.map((variable) => (
                         <span
                           key={variable}
-                          className="px-2 py-1 bg-aviso text-white text-xs rounded-full font-mono"
+                          className="px-2 py-1 text-white text-xs rounded-full font-mono"
                         >
                           {`{{${variable}}}`}
                         </span>
@@ -482,7 +477,7 @@ export default function CreateEditTemplateModal({
                         handleInputChange('isActive', !form.isActive)
                       }
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        form.isActive ? 'bg-ok' : 'bg-theme-secondary'
+                        form.isActive ? '' : 'bg-theme-secondary'
                       }`}
                     >
                       <span
@@ -508,7 +503,7 @@ export default function CreateEditTemplateModal({
                         handleInputChange('isDefault', !form.isDefault)
                       }
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        form.isDefault ? 'bg-atencao' : 'bg-theme-secondary'
+                        form.isDefault ? '' : 'bg-theme-secondary'
                       }`}
                     >
                       <span
@@ -521,10 +516,10 @@ export default function CreateEditTemplateModal({
                 </Stack>
 
                 {errors.submit && (
-                  <div className="p-4 bg-erro/10 border border-erro/20 rounded-lg">
+                  <div className="p-4 border rounded-lg">
                     <div className="flex items-center">
-                      <PiWarningCircle className="w-5 h-5 text-erro mr-2" />
-                      <span className="text-erro">{errors.submit}</span>
+                      <PiWarningCircle className="w-5 h-5 mr-2" />
+                      <span className="">{errors.submit}</span>
                     </div>
                   </div>
                 )}
@@ -605,7 +600,7 @@ export default function CreateEditTemplateModal({
               </h3>
               <button
                 onClick={() => setShowPreview(false)}
-                className="text-theme-tertiary hover:text-texto transition-colors"
+                className="text-theme-tertiary transition-colors"
               >
                 <PiX className="w-6 h-6" />
                 <NomeAcao acao="fechar" />

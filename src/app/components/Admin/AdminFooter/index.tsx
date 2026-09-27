@@ -83,11 +83,11 @@ export default function AdminFooter() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'good':
-        return 'text-ok';
+        return '';
       case 'warning':
-        return 'text-atencao';
+        return '';
       case 'error':
-        return 'text-erro';
+        return '';
       default:
         return 'text-theme-tertiary';
     }
@@ -96,11 +96,11 @@ export default function AdminFooter() {
   const getStatusBg = (status: string) => {
     switch (status) {
       case 'good':
-        return 'bg-ok/20';
+        return '';
       case 'warning':
-        return 'bg-atencao/20';
+        return '';
       case 'error':
-        return 'bg-erro/20';
+        return '';
       default:
         return 'bg-theme-secondary';
     }
@@ -173,7 +173,7 @@ export default function AdminFooter() {
               {/* System Status Indicator */}
               <Inline gap={2}>
                 <Inline gap={1}>
-                  <div className="w-2 h-2 bg-ok rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 rounded-full animate-pulse"></div>
                   <Text papel="rotulo" tom="suave">
                     Sistema Operacional
                   </Text>
@@ -196,13 +196,13 @@ export default function AdminFooter() {
 
             {/* Quick Links */}
             <Inline gap={4}>
-              <button className="text-xs text-theme-tertiary hover:text-texto transition-colors">
+              <button className="text-xs text-theme-tertiary transition-colors">
                 Documentação
               </button>
-              <button className="text-xs text-theme-tertiary hover:text-texto transition-colors">
+              <button className="text-xs text-theme-tertiary transition-colors">
                 Suporte
               </button>
-              <button className="text-xs text-theme-tertiary hover:text-texto transition-colors">
+              <button className="text-xs text-theme-tertiary transition-colors">
                 Changelog
               </button>
             </Inline>

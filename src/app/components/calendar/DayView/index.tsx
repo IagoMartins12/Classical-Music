@@ -57,7 +57,7 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
             <button
               key={event.id}
               onClick={() => onEventClick(event)}
-              className={`border w-full text-left p-6 rounded-lg transition-all hover:scale-105 bg-theme-elevated hover:bg-ouro/10 ${getEventBorderColor(event.type, event.isFree)}`}
+              className={`w-full text-left p-6 rounded-lg transition-all hover:scale-105 border-l-4 bg-theme-elevated ${getEventBorderColor(event.type, event.isFree)}`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -110,9 +110,7 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
                   <div className="flex items-center gap-2 mt-3">
                     <span
                       className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
-                        event.isFree
-                          ? 'bg-ok/10 border border-ok/30 text-ok'
-                          : 'bg-aviso/10 border border-aviso/30 text-aviso'
+                        event.isFree ? 'border' : 'border'
                       }`}
                     >
                       {event.isFree ? '🎫 Gratuito' : '🎫 Ingresso'}
@@ -132,18 +130,18 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
 }
 
 function getEventBorderColor(type: string, isFree: boolean): string {
-  if (isFree) return 'border-ok';
+  if (isFree) return '';
 
   const colors: Record<string, string> = {
-    OPERA: 'border-ouro',
-    RECITAL: 'border-ouro',
-    CHAMBER_MUSIC: 'border-ok',
-    CHOIR: 'border-atencao',
-    OPEN_REHEARSAL: 'border-accent-gray',
-    CONCERT: 'border-aviso',
+    OPERA: '',
+    RECITAL: '',
+    CHAMBER_MUSIC: '',
+    CHOIR: '',
+    OPEN_REHEARSAL: '',
+    CONCERT: '',
   };
 
-  return colors[type] || 'border-aviso';
+  return colors[type] || '';
 }
 
 function getEventTypeLabel(type: string): string {

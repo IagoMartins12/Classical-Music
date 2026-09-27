@@ -254,7 +254,7 @@ export default function AdminCouponsPageClient() {
   if (status === 'loading' || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <PiSpinnerGap className="w-8 h-8 animate-spin text-brand-primary" />
+        <PiSpinnerGap className="w-8 h-8 animate-spin text-ouro-texto" />
       </div>
     );
   }
@@ -266,7 +266,7 @@ export default function AdminCouponsPageClient() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8 md:py-12">
             <div className="flex items-center justify-center mb-4 md:mb-6">
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-aviso rounded-2xl md:rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl md:rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiPercent className="w-6 h-6 md:w-8 md:h-8 text-theme-primary" />
               </div>
             </div>
@@ -290,7 +290,7 @@ export default function AdminCouponsPageClient() {
                 placeholder="Buscar cupons..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-10 py-3 bg-theme-secondary border border-theme-primary rounded-xl focus:outline-none focus:ring-2 focus:ring-aviso text-theme-primary placeholder-texto-fraco"
+                className="w-full pl-10 pr-10 py-3 bg-theme-secondary border border-theme-primary rounded-xl focus:outline-none focus:ring-2 text-theme-primary"
               />
             </div>
 
@@ -308,8 +308,8 @@ export default function AdminCouponsPageClient() {
               onClick={() => setFilterStatus('all')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 filterStatus === 'all'
-                  ? 'bg-ouro text-sobre-ouro'
-                  : 'bg-theme-secondary text-theme-secondary hover:bg-ouro/10'
+                  ? 'text-white'
+                  : 'bg-theme-secondary text-theme-secondary'
               }`}
             >
               Todos
@@ -318,8 +318,8 @@ export default function AdminCouponsPageClient() {
               onClick={() => setFilterStatus('active')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 filterStatus === 'active'
-                  ? 'bg-ouro text-sobre-ouro'
-                  : 'bg-theme-secondary text-theme-secondary hover:bg-ouro/10'
+                  ? 'text-white'
+                  : 'bg-theme-secondary text-theme-secondary'
               }`}
             >
               Ativos
@@ -328,8 +328,8 @@ export default function AdminCouponsPageClient() {
               onClick={() => setFilterStatus('inactive')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 filterStatus === 'inactive'
-                  ? 'bg-ouro text-sobre-ouro'
-                  : 'bg-theme-secondary text-theme-secondary hover:bg-ouro/10'
+                  ? 'text-white'
+                  : 'bg-theme-secondary text-theme-secondary'
               }`}
             >
               Inativos
@@ -495,8 +495,8 @@ export default function AdminCouponsPageClient() {
                       }}
                       className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                         formData.applicablePlans.includes(plan)
-                          ? 'bg-ouro text-sobre-ouro'
-                          : 'bg-theme-tertiary text-theme-secondary hover:bg-ouro/10'
+                          ? 'text-white'
+                          : 'bg-theme-tertiary text-theme-secondary'
                       }`}
                     >
                       {plan}
@@ -586,7 +586,7 @@ export default function AdminCouponsPageClient() {
                   onChange={(e) =>
                     setFormData({ ...formData, isActive: e.target.checked })
                   }
-                  className="w-5 h-5 rounded border-linha text-brand-primary focus:ring-ouro focus:ring-offset-0"
+                  className="w-5 h-5 rounded text-ouro-texto focus:ring-offset-0"
                 />
                 <label
                   htmlFor="isActive"
@@ -643,9 +643,7 @@ function CouponCard({
   return (
     <div
       className={`classical-card rounded-xl shadow-theme-medium p-6 border-2 ${
-        coupon.isActive && !isExpired && !isMaxUsed
-          ? 'border-ok'
-          : 'border-linha'
+        coupon.isActive && !isExpired && !isMaxUsed ? '' : ''
       }`}
     >
       {/* Header */}
@@ -657,7 +655,7 @@ function CouponCard({
             </h3>
             <button
               onClick={onCopyCode}
-              className="text-theme-tertiary hover:text-ouro-texto transition-colors"
+              className="text-theme-tertiary transition-colors"
               title="Copiar código"
             >
               <PiCopy className="w-4 h-4" />
@@ -674,8 +672,8 @@ function CouponCard({
         <div
           className={`px-3 py-1 rounded-full text-xs font-semibold ${
             coupon.isActive && !isExpired && !isMaxUsed
-              ? 'bg-ok/10 text-ok'
-              : 'bg-sup-2/20 text-theme-tertiary'
+              ? ''
+              : 'text-theme-tertiary'
           }`}
         >
           {isExpired
@@ -692,22 +690,22 @@ function CouponCard({
       <div className="flex items-center gap-2 mb-4">
         {coupon.type === 'PERCENTAGE' ? (
           <>
-            <PiPercent className="w-5 h-5 text-brand-primary" />
-            <span className="text-2xl font-bold text-brand-primary">
+            <PiPercent className="w-5 h-5 text-ouro-texto" />
+            <span className="text-2xl font-bold text-ouro-texto">
               {coupon.discountValue}%
             </span>
           </>
         ) : coupon.type === 'FIXED' ? (
           <>
-            <PiCurrencyDollar className="w-5 h-5 text-brand-primary" />
-            <span className="text-2xl font-bold text-brand-primary">
+            <PiCurrencyDollar className="w-5 h-5 text-ouro-texto" />
+            <span className="text-2xl font-bold text-ouro-texto">
               R$ {coupon.discountValue.toFixed(2)}
             </span>
           </>
         ) : (
           <>
-            <PiCalendarBlank className="w-5 h-5 text-brand-primary" />
-            <span className="text-2xl font-bold text-brand-primary">
+            <PiCalendarBlank className="w-5 h-5 text-ouro-texto" />
+            <span className="text-2xl font-bold text-ouro-texto">
               +{coupon.extraTrialDays} dias
             </span>
           </>
@@ -743,7 +741,7 @@ function CouponCard({
         <div className="mb-4">
           <div className="w-full bg-theme-secondary rounded-full h-2 overflow-hidden">
             <div
-              className="bg-ouro h-full transition-all"
+              className="h-full transition-all"
               style={{ width: `${Math.min(usagePercent, 100)}%` }}
             />
           </div>
@@ -775,12 +773,12 @@ function CouponCard({
       <div className="flex items-center gap-2 pt-4 border-t border-theme-secondary">
         <button
           onClick={onToggle}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary text-theme-secondary hover:bg-ouro/10 transition-colors text-sm font-medium"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary text-theme-secondary transition-colors text-sm font-medium"
           title={coupon.isActive ? 'Desativar' : 'Ativar'}
         >
           {coupon.isActive ? (
             <>
-              <PiToggleRight className="w-4 h-4 text-ok" />
+              <PiToggleRight className="w-4 h-4" />
               <span>Ativo</span>
             </>
           ) : (
@@ -793,7 +791,7 @@ function CouponCard({
 
         <button
           onClick={onEdit}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary text-brand-primary hover:bg-ouro/10 transition-colors text-sm font-medium"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary text-ouro-texto transition-colors text-sm font-medium"
         >
           <PiPencilSimple className="w-4 h-4" />
           <span>Editar</span>
@@ -801,7 +799,7 @@ function CouponCard({
 
         <button
           onClick={onDelete}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary text-erro hover:bg-erro/10 transition-colors text-sm font-medium ml-auto"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary text-red-500 hover:bg-red-500/10 transition-colors text-sm font-medium ml-auto"
         >
           <PiTrash className="w-4 h-4" />
           <NomeAcao acao="excluir" />

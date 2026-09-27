@@ -138,7 +138,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
       <div className="section-wrap !pt-0 pb-8">
         <Card densidade="larga">
           <div className="flex items-center gap-4 mb-6">
-            <PiMagnifyingGlass className="w-8 h-8 text-brand-primary" />
+            <PiMagnifyingGlass className="w-8 h-8 text-ouro-texto" />
             <div className="flex-1">
               <h1 className="text-3xl md:text-4xl font-bold text-theme-primary">
                 {query ? `Resultados para "${query}"` : 'Buscar Artigos'}
@@ -171,7 +171,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
                       {suggestions.relatedTags.map((tag: TagSuggestion) => (
                         <span
                           key={tag.id}
-                          className="px-3 py-1 rounded-full text-sm bg-theme-elevated hover:bg-sup-1 transition-all"
+                          className="px-3 py-1 rounded-full text-sm bg-theme-elevated transition-all"
                           style={{ color: tag.color || undefined }}
                         >
                           #{tag.name}
@@ -192,7 +192,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
                           <Link
                             key={category.id}
                             href={`/blog/category/${category.slug}`}
-                            className="px-3 py-1 rounded-full text-sm bg-theme-elevated hover:bg-sup-1 transition-all"
+                            className="px-3 py-1 rounded-full text-sm bg-theme-elevated transition-all"
                             style={{ color: category.color || undefined }}
                           >
                             {category.icon} {category.name}

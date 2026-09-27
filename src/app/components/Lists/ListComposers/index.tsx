@@ -97,7 +97,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
             >
               {isLoading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-texto border-t-transparent rounded-full animate-spin mr-2 inline-block"></div>
+                  <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin mr-2 inline-block"></div>
                   {t('loading')}
                 </>
               ) : (
@@ -119,7 +119,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
             {/* Completion message */}
             <Card className="max-w-md mx-auto">
               <div className="flex items-center justify-center mb-4">
-                <div className="w-12 h-12 bg-ok rounded-full flex items-center justify-center shadow-theme-glow">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center shadow-theme-glow">
                   <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>

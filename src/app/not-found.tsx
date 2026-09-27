@@ -134,7 +134,7 @@ export default function NotFound() {
                           href={getHomeLink()}
                           className="inline-flex items-center group"
                         >
-                          <GiGrandPiano className="w-12 h-12 mr-4 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
+                          <GiGrandPiano className="w-12 h-12 mr-4 text-ouro-texto icon-glow transition-all duration-300 group-hover:scale-110" />
                           <div className="text-left">
                             <span className="text-2xl font-bold text-gradient-brand classical-title">
                               {t('not_found_jsx_span_children_0__opus_atlas')}
@@ -189,10 +189,10 @@ export default function NotFound() {
                           className="classical-card p-6"
                         >
                           <Link href={suggestion.href} className="block group">
-                            <div className="w-16 h-16 bg-ouro/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                              <suggestion.icon className="w-8 h-8 text-brand-primary" />
+                            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                              <suggestion.icon className="w-8 h-8 text-ouro-texto" />
                             </div>
-                            <h2 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-ouro-texto transition-colors">
+                            <h2 className="text-xl font-bold text-theme-primary mb-2 classical-title transition-colors">
                               {suggestion.title}
                             </h2>
                             <Text
@@ -232,7 +232,7 @@ export default function NotFound() {
                           {t('not_found_jsx_blockquote_children_0__music')}
                           &quot;
                         </blockquote>
-                        <cite className="text-brand-primary font-semibold">
+                        <cite className="text-ouro-texto font-semibold">
                           {t(
                             'not_found_jsx_cite_children_0__henry_wadsworth_longfellow'
                           )}
@@ -243,12 +243,12 @@ export default function NotFound() {
                 </div>
 
                 {/* Decorative Elements */}
-                <div className="absolute top-4 left-4 w-12 h-12 bg-ouro/10 rounded-2xl flex items-center justify-center opacity-40">
-                  <PiMusicNotes className="w-6 h-6 text-ouro-texto" />
+                <div className="absolute top-4 left-4 w-12 h-12 rounded-2xl flex items-center justify-center opacity-40">
+                  <PiMusicNotes className="w-6 h-6" />
                 </div>
 
-                <div className="absolute bottom-4 right-4 w-16 h-16 bg-ouro/10 rounded-3xl flex items-center justify-center opacity-50">
-                  <PiMusicNotes className="w-8 h-8 text-brand-primary" />
+                <div className="absolute bottom-4 right-4 w-16 h-16 rounded-3xl flex items-center justify-center opacity-50">
+                  <PiMusicNotes className="w-8 h-8 text-ouro-texto" />
                 </div>
               </div>
               {/* Mobile Overlay */}
@@ -445,7 +445,7 @@ export default function NotFound() {
                       href={getHomeLink()}
                       className="inline-flex items-center group"
                     >
-                      <GiGrandPiano className="w-12 h-12 mr-4 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
+                      <GiGrandPiano className="w-12 h-12 mr-4 text-ouro-texto icon-glow transition-all duration-300 group-hover:scale-110" />
                       <div className="text-left">
                         <span className="text-2xl font-bold text-gradient-brand classical-title">
                           {t('not_found_jsx_span_children_0__opus_atlas')}
@@ -497,10 +497,10 @@ export default function NotFound() {
                       className="classical-card p-6"
                     >
                       <Link href={suggestion.href} className="block group">
-                        <div className="w-16 h-16 bg-ouro/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                          <suggestion.icon className="w-8 h-8 text-brand-primary" />
+                        <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                          <suggestion.icon className="w-8 h-8 text-ouro-texto" />
                         </div>
-                        <h2 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-ouro-texto transition-colors">
+                        <h2 className="text-xl font-bold text-theme-primary mb-2 classical-title transition-colors">
                           {suggestion.title}
                         </h2>
                         <Text
@@ -553,7 +553,7 @@ export default function NotFound() {
                       &quot;{t('not_found_jsx_blockquote_children_0__music')}
                       &quot;
                     </blockquote>
-                    <cite className="text-brand-primary font-semibold">
+                    <cite className="text-ouro-texto font-semibold">
                       {t(
                         'not_found_jsx_cite_children_0__henry_wadsworth_longfellow'
                       )}
@@ -564,12 +564,12 @@ export default function NotFound() {
             </div>
 
             {/* Decorative Elements */}
-            <div className="absolute top-4 left-4 w-12 h-12 bg-ouro/10 rounded-2xl flex items-center justify-center opacity-40">
-              <PiMusicNotes className="w-6 h-6 text-ouro-texto" />
+            <div className="absolute top-4 left-4 w-12 h-12 rounded-2xl flex items-center justify-center opacity-40">
+              <PiMusicNotes className="w-6 h-6" />
             </div>
 
-            <div className="absolute bottom-4 right-4 w-16 h-16 bg-ouro/10 rounded-3xl flex items-center justify-center opacity-50">
-              <PiMusicNotes className="w-8 h-8 text-brand-primary" />
+            <div className="absolute bottom-4 right-4 w-16 h-16 rounded-3xl flex items-center justify-center opacity-50">
+              <PiMusicNotes className="w-8 h-8 text-ouro-texto" />
             </div>
           </main>
           <Footer />

@@ -85,7 +85,7 @@ export default async function ArticlesPage() {
           {publishedCount > 12 && (
             <Link
               href="/blog/search?ordenar=recente"
-              className="flex items-center gap-2 text-brand-primary hover:text-ouro-texto transition-colors font-medium"
+              className="flex items-center gap-2 text-ouro-texto transition-colors font-medium"
             >
               <span>Ver todos</span>
               <PiArrowRight className="w-5 h-5" />
@@ -107,7 +107,7 @@ export default async function ArticlesPage() {
           {publishedCount > 12 && (
             <Link
               href="/blog/search?ordenar=popular"
-              className="flex items-center gap-2 text-brand-primary hover:text-ouro-texto transition-colors font-medium"
+              className="flex items-center gap-2 text-ouro-texto transition-colors font-medium"
             >
               <span>Ver todos</span>
               <PiArrowRight className="w-5 h-5" />
@@ -132,7 +132,7 @@ export default async function ArticlesPage() {
             {category._count.articles > 12 && (
               <Link
                 href={`/blog/category/${category.slug}`}
-                className="flex items-center gap-2 text-brand-primary hover:text-ouro-texto transition-colors font-medium"
+                className="flex items-center gap-2 text-ouro-texto transition-colors font-medium"
               >
                 <span>Ver todos</span>
                 <PiArrowRight className="w-5 h-5" />

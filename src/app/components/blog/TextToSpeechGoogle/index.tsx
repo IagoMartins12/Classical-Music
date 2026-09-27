@@ -257,7 +257,7 @@ export function TextToSpeechGoogle({
     <Card className="my-8">
       {/* HEADER */}
       <Inline gap={3} className="mb-4">
-        <div className="p-3 fill-ouro rounded-lg shadow-theme-medium">
+        <div className="p-3 rounded-lg shadow-theme-medium">
           <PiSpeakerHigh className="w-6 h-6 text-white" />
         </div>
         <div>

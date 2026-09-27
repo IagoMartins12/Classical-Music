@@ -65,7 +65,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       <AnimatedCard className="classical-card p-4">
         <div className="flex items-center justify-between mb-2">
-          <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center">
             <PiTrendUp className="w-5 h-5 text-theme-primary" />
           </div>
           <Text papel="legenda" tom="fraco">
@@ -79,15 +79,13 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
           Uploads realizados
         </Text>
         {stats.monthlyGrowth && (
-          <div className="text-xs text-ok mt-1">
-            +{stats.monthlyGrowth}% este mês
-          </div>
+          <div className="text-xs mt-1">+{stats.monthlyGrowth}% este mês</div>
         )}
       </AnimatedCard>
 
       <AnimatedCard className="classical-card p-4">
         <div className="flex items-center justify-between mb-2">
-          <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center">
             <PiUser className="w-5 h-5 text-theme-primary" />
           </div>
           <Text papel="legenda" tom="fraco">
@@ -101,7 +99,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
           Criados
         </Text>
         {stats.averageComposerQuality && (
-          <div className="text-xs text-aviso mt-1">
+          <div className="text-xs mt-1">
             {stats.averageComposerQuality.toFixed(1)}% qualidade média
           </div>
         )}
@@ -109,7 +107,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
 
       <AnimatedCard className="classical-card p-4">
         <div className="flex items-center justify-between mb-2">
-          <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center">
             <PiMusicNotes className="w-5 h-5 text-theme-primary" />
           </div>
           <Text papel="legenda" tom="fraco">
@@ -123,15 +121,13 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
           Adicionadas
         </Text>
         {stats.popularWorkCount && (
-          <div className="text-xs text-ok mt-1">
-            {stats.popularWorkCount} populares
-          </div>
+          <div className="text-xs mt-1">{stats.popularWorkCount} populares</div>
         )}
       </AnimatedCard>
 
       <AnimatedCard className="classical-card p-4">
         <div className="flex items-center justify-between mb-2">
-          <div className="w-10 h-10 bg-ok rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center">
             <PiFile className="w-5 h-5 text-theme-primary" />
           </div>
           <Text papel="legenda" tom="fraco">
@@ -155,7 +151,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
         <>
           <AnimatedCard className="classical-card p-4">
             <div className="flex items-center justify-between mb-2">
-              <div className="w-10 h-10 bg-atencao rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                 <PiUsers className="w-5 h-5 text-theme-primary" />
               </div>
               <Text papel="legenda" tom="fraco">
@@ -169,7 +165,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
               Ativos
             </Text>
             {stats.newUsersThisMonth && (
-              <div className="text-xs text-ok mt-1">
+              <div className="text-xs mt-1">
                 +{stats.newUsersThisMonth} este mês
               </div>
             )}
@@ -177,7 +173,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
 
           <AnimatedCard className="classical-card p-4">
             <div className="flex items-center justify-between mb-2">
-              <div className="w-10 h-10 bg-erro rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                 <PiPulse className="w-5 h-5 text-theme-primary" />
               </div>
               <Text papel="legenda" tom="fraco">
@@ -191,7 +187,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
               Hoje
             </Text>
             {stats.weeklyGrowth && (
-              <div className="text-xs text-ok mt-1">
+              <div className="text-xs mt-1">
                 +{stats.weeklyGrowth}% esta semana
               </div>
             )}
@@ -199,7 +195,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
 
           <AnimatedCard className="classical-card p-4">
             <div className="flex items-center justify-between mb-2">
-              <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                 <PiMedal className="w-5 h-5 text-theme-primary" />
               </div>
               <Text papel="legenda" tom="fraco">
@@ -213,7 +209,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
               Média geral
             </Text>
             {stats.highQualityCount && (
-              <div className="text-xs text-ok mt-1">
+              <div className="text-xs mt-1">
                 {stats.highQualityCount} alta qualidade
               </div>
             )}
@@ -221,7 +217,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
 
           <AnimatedCard className="classical-card p-4">
             <div className="flex items-center justify-between mb-2">
-              <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                 <PiCalendarBlank className="w-5 h-5 text-theme-primary" />
               </div>
               <Text papel="legenda" tom="fraco">
@@ -235,7 +231,7 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
               Para moderar
             </Text>
             {stats.urgentModerations && (
-              <div className="text-xs text-erro mt-1">
+              <div className="text-xs mt-1">
                 {stats.urgentModerations} urgentes
               </div>
             )}

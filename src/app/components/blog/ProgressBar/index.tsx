@@ -86,7 +86,7 @@ export function ProgressBar() {
           </svg>
           {/* Percentage text */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-2xl font-bold text-brand-primary">
+            <span className="text-2xl font-bold text-ouro-texto">
               {Math.round(progress)}%
             </span>
           </div>

@@ -49,7 +49,7 @@ export default function VerificationBadge({
   if (variant === 'badge') {
     return (
       <div
-        className={`inline-flex items-center space-x-1 px-2 py-1 bg-aviso/10 text-aviso rounded-full border border-aviso/30 ${className}`}
+        className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full border ${className}`}
       >
         <PiSealCheck className={`${iconSizeClasses[size]}`} />
         <span className="text-xs font-medium">
@@ -66,9 +66,7 @@ export default function VerificationBadge({
         : t('verification_badge_peca_verificada');
 
     return (
-      <div
-        className={`inline-flex items-center space-x-1 text-aviso ${className}`}
-      >
+      <div className={`inline-flex items-center space-x-1 ${className}`}>
         <PiSealCheck className={`${iconSizeClasses[size]}`} />
         <span className="hidden md:block md:text-sm font-medium">
           {verifiedText}

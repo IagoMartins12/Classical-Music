@@ -179,7 +179,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
                   ${
                     data.favoriteEpochId === epoch.id
                       ? 'border-theme-accent  shadow-theme-glow'
-                      : '!hover:border-brand-primary hover:scale-105'
+                      : 'hover:scale-105'
                   }
                 `}
               >
@@ -224,7 +224,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
                   />
                 )}
                 <div>
-                  <p className="font-medium text-brand-primary">
+                  <p className="font-medium text-ouro-texto">
                     {selectedComposer.fullName}
                   </p>
                   {selectedComposer.epochName && (
@@ -235,7 +235,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
                 </div>
                 <button
                   onClick={() => updateData({ favoriteComposerId: undefined })}
-                  className="ml-auto text-theme-tertiary hover:text-erro"
+                  className="ml-auto text-theme-tertiary"
                 >
                   ✕
                 </button>
@@ -248,7 +248,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
               <button
                 key={composer.id}
                 onClick={() => updateData({ favoriteComposerId: composer.id })}
-                className="classical-card-2 p-3 text-left transition-all duration-200 hover:border-ouro hover:scale-105"
+                className="classical-card-2 p-3 text-left transition-all duration-200 hover:scale-105"
               >
                 <Inline gap={3}>
                   {composer.portraitUrl && (

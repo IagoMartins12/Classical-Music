@@ -150,7 +150,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
   const renderBlockquote = (node: any): HTMLElement => {
     const blockquote = document.createElement('blockquote');
     blockquote.className =
-      'border border-ouro/40 pl-6 py-4 mb-4 italic text-theme-secondary bg-ouro/10 rounded-lg';
+      'border-l-4 pl-6 py-4 mb-4 italic text-theme-secondary bg-theme-elevated rounded-r-lg';
     if (node.content) {
       node.content.forEach((child: any) => {
         const element = renderNode(child);
@@ -234,7 +234,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     wrapper.className = 'composer-card my-6';
 
     const card = document.createElement('div');
-    card.className = `border classical-card rounded-lg border-ouro/40 shadow-md p-6 ${
+    card.className = `classical-card rounded-lg border-l-4 shadow-md p-6 ${
       layout === 'horizontal' ? 'flex items-start space-x-6' : ''
     }`;
 
@@ -271,7 +271,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
 
     if (composerEpoch) {
       const epoch = document.createElement('p');
-      epoch.className = `text-sm text-ouro-texto font-medium mb-2 ${layout === 'vertical' ? 'text-center' : ''}`;
+      epoch.className = `text-sm font-medium mb-2 ${layout === 'vertical' ? 'text-center' : ''}`;
       epoch.textContent = `📜 Época: ${composerEpoch}`;
       content.appendChild(epoch);
     }
@@ -305,7 +305,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     mainBtn.target = '_blank';
     mainBtn.rel = 'noopener noreferrer';
     mainBtn.className =
-      'px-4 py-2 bg-ouro text-sobre-ouro text-sm rounded-lg hover:opacity-90 transition-opacity shadow-sm inline-flex items-center';
+      'px-4 py-2 text-white text-sm rounded-lg hover:opacity-90 transition-opacity shadow-sm inline-flex items-center';
     mainBtn.textContent = 'Ver no Opus Atlas →';
     buttonsDiv.appendChild(mainBtn);
 
@@ -315,7 +315,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
       worksBtn.target = '_blank';
       worksBtn.rel = 'noopener noreferrer';
       worksBtn.className =
-        'px-4 py-2 bg-sup-2 text-texto-suave text-sm rounded-lg hover:bg-linha-forte transition-colors inline-flex items-center';
+        'px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300 transition-colors inline-flex items-center';
       worksBtn.textContent = 'Ver Obras';
       buttonsDiv.appendChild(worksBtn);
     }
@@ -334,13 +334,13 @@ export function ArticleContent({ content }: ArticleContentProps) {
     wrapper.className = 'work-card my-6';
 
     const card = document.createElement('div');
-    card.className = 'border classical-card p-6 border-ouro/40';
+    card.className = 'classical-card p-6 border-l-4';
 
     const flexDiv = document.createElement('div');
     flexDiv.className = 'flex items-start space-x-4';
 
     const iconDiv = document.createElement('div');
-    iconDiv.className = 'p-3 bg-ouro rounded-lg shadow-theme-medium';
+    iconDiv.className = 'p-3 rounded-lg shadow-theme-medium';
     iconDiv.innerHTML =
       '<svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>';
     flexDiv.appendChild(iconDiv);
@@ -366,7 +366,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     viewBtn.target = '_blank';
     viewBtn.rel = 'noopener noreferrer';
     viewBtn.className =
-      'inline-flex items-center px-4 py-2 bg-ouro text-sobre-ouro rounded-lg hover:opacity-90 transition-opacity shadow-theme-small';
+      'inline-flex items-center px-4 py-2 text-white rounded-lg hover:opacity-90 transition-opacity shadow-theme-small';
     viewBtn.textContent = 'Ver Obra →';
     buttonsDiv.appendChild(viewBtn);
 
@@ -375,7 +375,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     scoresBtn.target = '_blank';
     scoresBtn.rel = 'noopener noreferrer';
     scoresBtn.className =
-      'inline-flex items-center px-4 py-2 bg-theme-elevated border border-ouro text-ouro-texto rounded-lg hover:bg-ouro/10 transition-colors';
+      'inline-flex items-center px-4 py-2 bg-theme-elevated border rounded-lg transition-colors';
     scoresBtn.textContent = 'Ver Partituras';
     buttonsDiv.appendChild(scoresBtn);
 
@@ -402,10 +402,10 @@ export function ArticleContent({ content }: ArticleContentProps) {
     wrapper.className = 'score-viewer my-6';
 
     const card = document.createElement('div');
-    card.className = 'border classical-card overflow-hidden border-ok/40';
+    card.className = 'classical-card overflow-hidden border-l-4';
 
     const header = document.createElement('div');
-    header.className = 'bg-ok text-white px-6 py-4';
+    header.className = 'text-white px-6 py-4';
     header.innerHTML = `
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
@@ -447,7 +447,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     footer.innerHTML = `
       <div class="flex items-center justify-between text-sm">
         <span class="text-theme-secondary">Página ${pageNumber}</span>
-        <a href="/works/${workId}#scores" target="_blank" rel="noopener noreferrer" class="text-accent-green hover:text-brand-primary font-medium transition-colors">
+        <a href="/works/${workId}#scores" target="_blank" rel="noopener noreferrer" class="font-medium transition-colors">
           Ver partitura completa no Opus Atlas →
         </a>
       </div>
@@ -476,7 +476,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
 
     const card = document.createElement('div');
     card.className =
-      'border rounded-lg classical-card-simple border-ouro/40 shadow-md overflow-hidden';
+      'rounded-lg classical-card-simple border-l-4 shadow-md overflow-hidden';
 
     const content = document.createElement('div');
     content.className = 'p-6';
@@ -485,7 +485,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     const header = document.createElement('div');
     header.className = 'flex items-center space-x-3 mb-4';
     header.innerHTML = `
-      <div class="w-14 h-14 bg-gradient-to-br from-accent-purple to-brand-primary rounded-lg flex items-center justify-center shadow-md">
+      <div class="w-14 h-14 bg-gradient-to-br rounded-lg flex items-center justify-center shadow-md">
         <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
         </svg>
@@ -496,7 +496,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
           ${
             composerName
               ? `
-            ${composerId ? `<a href="/composer/${composerId}" target="_blank" class="text-accent-purple hover:underline">${composerName}</a>` : `<span>${composerName}</span>`}
+            ${composerId ? `<a href="/composer/${composerId}" target="_blank" class="hover:underline">${composerName}</a>` : `<span>${composerName}</span>`}
           `
               : ''
           }
@@ -504,7 +504,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
             workTitle
               ? `
             <span class="text-theme-tertiary">•</span>
-            ${workId ? `<a href="/works/${workId}" target="_blank" class="text-accent-purple hover:underline">${workTitle}</a>` : `<span>${workTitle}</span>`}
+            ${workId ? `<a href="/works/${workId}" target="_blank" class="hover:underline">${workTitle}</a>` : `<span>${workTitle}</span>`}
           `
               : ''
           }
@@ -523,7 +523,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     // Play/Pause Button
     const playBtn = document.createElement('button');
     playBtn.className =
-      'audio-play-btn p-3 bg-ouro text-sobre-ouro rounded-full hover:opacity-90 transition-opacity shadow-md';
+      'audio-play-btn p-3 text-white rounded-full hover:opacity-90 transition-opacity shadow-md';
     playBtn.innerHTML =
       '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
     controlsDiv.appendChild(playBtn);
@@ -830,9 +830,9 @@ export function ArticleContent({ content }: ArticleContentProps) {
     if (composerName) {
       const header = document.createElement('div');
       header.className =
-        'border mb-6 flex items-center space-x-3 p-4 bg-ouro/10 rounded-lg border-ouro/40';
+        'mb-6 flex items-center space-x-3 p-4 rounded-lg border-l-4';
       header.innerHTML = `
-        <svg class="w-5 h-5 text-brand-primary" fill="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 text-ouro-texto" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
         </svg>
         <div>
@@ -859,7 +859,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
 
       const icon = document.createElement('div');
       icon.className =
-        'relative z-10 flex items-center justify-center w-16 h-16 rounded-full bg-ouro border-4 border-sup-elevada shadow-theme-medium';
+        'relative z-10 flex items-center justify-center w-16 h-16 rounded-full border-4 shadow-theme-medium';
       icon.innerHTML =
         '<svg class="w-6 h-6 text-theme-primary" fill="currentColor" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>';
       item.appendChild(icon);
@@ -870,7 +870,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
       const eventCard = document.createElement('div');
       eventCard.className = 'classical-card p-6';
       eventCard.innerHTML = `
-        <div class="text-sm font-semibold text-brand-primary mb-1">${event.date}</div>
+        <div class="text-sm font-semibold text-ouro-texto mb-1">${event.date}</div>
         <h4 class="text-lg font-bold text-theme-primary mb-2">${event.title}</h4>
         ${event.description ? `<p class="text-theme-secondary">${event.description}</p>` : ''}
         ${event.image ? `<img src="${event.image}" alt="${event.title}" class="mt-4 rounded-lg w-full shadow-theme-small" />` : ''}
@@ -910,10 +910,10 @@ export function ArticleContent({ content }: ArticleContentProps) {
     wrapper.className = 'video-comparison my-8';
 
     const card = document.createElement('div');
-    card.className = 'border classical-card overflow-hidden border-erro/40';
+    card.className = 'classical-card overflow-hidden border-l-4';
 
     const header = document.createElement('div');
-    header.className = 'bg-erro text-white px-6 py-4';
+    header.className = 'text-white px-6 py-4';
     header.innerHTML = `
       <div class="flex items-center space-x-3">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -940,7 +940,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
           <h5 class="font-semibold text-theme-primary">${video1.title}</h5>
           <p class="text-sm text-theme-secondary">${video1.description}</p>
         </div>
-        <svg class="w-5 h-5 text-accent-red" fill="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z"/>
         </svg>
       </div>
@@ -961,7 +961,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
           <h5 class="font-semibold text-theme-primary">${video2.title}</h5>
           <p class="text-sm text-theme-secondary">${video2.description}</p>
         </div>
-        <svg class="w-5 h-5 text-accent-red" fill="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z"/>
         </svg>
       </div>
@@ -987,7 +987,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     wrapper.className = 'quote-musical my-8';
 
     const card = document.createElement('div');
-    card.className = 'border relative classical-card p-8 border-ouro/40';
+    card.className = 'relative classical-card p-8 border-l-4';
 
     card.innerHTML = `
       <svg class="absolute top-4 right-4 w-12 h-12 text-theme-tertiary opacity-20" fill="currentColor" viewBox="0 0 24 24">
@@ -996,11 +996,11 @@ export function ArticleContent({ content }: ArticleContentProps) {
       <blockquote class="relative z-10">
         <p class="text-2xl font-serif italic text-theme-primary mb-4">"${quote}"</p>
         <footer class="flex items-center justify-between flex-wrap gap-4">
-          <cite class="text-lg font-semibold text-brand-primary not-italic">— ${author}</cite>
+          <cite class="text-lg font-semibold text-ouro-texto not-italic">— ${author}</cite>
           ${
             backgroundAudioUrl
               ? `
-            <div class="flex items-center space-x-2 text-sm text-accent-purple">
+            <div class="flex items-center space-x-2 text-sm">
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
               </svg>
@@ -1046,7 +1046,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
           case 'link':
             const a = document.createElement('a');
             a.href = mark.attrs?.href || '#';
-            a.className = 'text-aviso underline hover:text-aviso';
+            a.className = 'text-blue-600 underline hover:text-blue-800';
             a.target = '_blank';
             a.rel = 'noopener noreferrer';
             a.appendChild(text);

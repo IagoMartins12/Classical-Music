@@ -24,7 +24,7 @@ export default function QuickReportButton({
     <>
       <button
         onClick={() => setShowModal(true)}
-        className={`p-2 rounded-lg text-theme-tertiary hover:text-erro hover:bg-erro/10 transition-all ${className}`}
+        className={`p-2 rounded-lg text-theme-tertiary transition-all ${className}`}
         title="Reportar"
       >
         <PiFlag className="w-4 h-4" />

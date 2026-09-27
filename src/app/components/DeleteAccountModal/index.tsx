@@ -121,54 +121,54 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
       icon: PiUser,
       label: t('delete_modal_composers'),
       count: cascadeInfo?.composersCount || 0,
-      color: 'fill-ouro',
+      color: '',
       samples: cascadeInfo?.sampleComposers,
     },
     {
       icon: PiMusicNotes,
       label: t('delete_modal_works'),
       count: cascadeInfo?.worksCount || 0,
-      color: 'bg-aviso',
+      color: '',
       samples: cascadeInfo?.sampleWorks,
     },
     {
       icon: PiFileText,
       label: t('delete_modal_scores'),
       count: cascadeInfo?.scoresCount || 0,
-      color: 'bg-ok',
+      color: '',
     },
     {
       icon: PiPencilLine,
       label: t('delete_modal_annotations'),
       count: cascadeInfo?.annotationsCount || 0,
-      color: 'bg-atencao',
+      color: '',
       samples: cascadeInfo?.sampleAnnotations,
     },
     {
       icon: PiHeart,
       label: t('delete_modal_favorites'),
       count: cascadeInfo?.favoritesCount || 0,
-      color: 'bg-erro',
+      color: '',
     },
 
     {
       icon: PiMusicNotes,
       label: t('delete_modal_instruments'),
       count: cascadeInfo?.instrumentsCount || 0,
-      color: 'bg-aviso',
+      color: '',
     },
 
     {
       icon: PiBookOpen,
       label: t('delete_modal_learned_works'),
       count: cascadeInfo?.learnedWorksCount || 0,
-      color: 'bg-ok',
+      color: '',
     },
     {
       icon: PiBookBookmark,
       label: t('delete_modal_want_to_learn'),
       count: cascadeInfo?.wantToLearnCount || 0,
-      color: 'bg-ok',
+      color: '',
     },
   ];
 
@@ -193,10 +193,10 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
           } overflow-y-auto border border-theme-secondary`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-theme-secondary bg-erro/5">
+        <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
           <Inline gap={3}>
-            <div className="w-12 h-12 bg-erro/10 rounded-xl flex items-center justify-center">
-              <PiWarning className="w-6 h-6 text-erro" />
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+              <PiWarning className="w-6 h-6" />
             </div>
             <div>
               <h3 className="text-xl font-bold text-theme-primary">
@@ -211,7 +211,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
           <button
             onClick={handleClose}
             disabled={isLoading}
-            className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-sup-2 text-theme-tertiary hover:text-texto transition-colors flex items-center justify-center disabled:opacity-50"
+            className="w-8 h-8 rounded-lg bg-theme-secondary text-theme-tertiary transition-colors flex items-center justify-center disabled:opacity-50"
           >
             <PiX className="w-4 h-4" />
             <NomeAcao acao="fechar" />
@@ -224,8 +224,8 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
           {currentStep === 'warning' && (
             <Stack gap={6}>
               <div className="text-center">
-                <div className="w-16 h-16 bg-erro/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <PiWarning className="w-8 h-8 text-erro" />
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <PiWarning className="w-8 h-8 text-red-500" />
                 </div>
                 <h4 className="text-lg font-semibold text-theme-primary mb-2">
                   {t('delete_modal_sure')}
@@ -235,15 +235,12 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 </p>
               </div>
 
-              <Stack
-                gap={2}
-                className="bg-erro/10 border border-erro rounded-lg p-4"
-              >
-                <h5 className="font-medium text-erro flex items-center">
+              <Stack gap={2} className="border border-red-400 rounded-lg p-4">
+                <h5 className="font-medium flex items-center">
                   <PiInfo className="w-4 h-4 mr-2" />
                   {t('delete_modal_what_happens')}
                 </h5>
-                <ul className="text-sm text-erro opacity-90 space-y-1">
+                <ul className="text-sm opacity-90 space-y-1">
                   <li>{t('delete_modal_data_removed')}</li>
                   <li>{t('delete_modal_uploads_deleted')}</li>
                   <li>{t('delete_modal_annotations_lost')}</li>
@@ -294,7 +291,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               {isCascadeLoading ? (
                 <div className="flex items-center justify-center py-12">
                   <div className="text-center">
-                    <PiSpinnerGap className="w-8 h-8 text-brand-primary animate-spin mx-auto mb-4" />
+                    <PiSpinnerGap className="w-8 h-8 text-ouro-texto animate-spin mx-auto mb-4" />
                     <p className="text-theme-secondary">
                       {t('delete_modal_analyzing')}
                     </p>
@@ -305,14 +302,12 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   {/* Summary */}
                   <Stack
                     gap={1}
-                    className="bg-atencao/10 border border-erro rounded-lg p-4 text-center"
+                    className="border border-red-400 rounded-lg p-4 text-center"
                   >
-                    <h5 className="font-bold text-atencao text-lg">
+                    <h5 className="font-bold text-lg">
                       {cascadeInfo.totalItems}
                     </h5>
-                    <p className="text-atencao text-sm">
-                      {t('delete_modal_total_items')}
-                    </p>
+                    <p className="text-sm">{t('delete_modal_total_items')}</p>
                   </Stack>
 
                   {/* Data Grid */}
@@ -324,7 +319,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                         return (
                           <div
                             key={index}
-                            className="bg-theme-secondary rounded-lg p-3 text-center hover:bg-sup-2 transition-colors"
+                            className="bg-theme-secondary rounded-lg p-3 text-center transition-colors"
                           >
                             <div
                               className={`w-8 h-8 bg-gradient-to-br ${item.color} rounded-lg flex items-center justify-center mx-auto mb-2`}
@@ -363,7 +358,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                               key={composer.id}
                               className="text-sm"
                             >
-                              <PiUser className="w-3 h-3 text-ouro-texto flex-shrink-0" />
+                              <PiUser className="w-3 h-3 flex-shrink-0" />
                               <span className="text-theme-primary">
                                 {composer.name}
                                 {composer.epochName && (
@@ -377,7 +372,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                           ))}
                         {cascadeInfo.sampleWorks.slice(0, 3).map((work) => (
                           <Inline gap={2} key={work.id} className="text-sm">
-                            <PiMusicNotes className="w-3 h-3 text-aviso flex-shrink-0" />
+                            <PiMusicNotes className="w-3 h-3 flex-shrink-0" />
                             <span className="text-theme-primary">
                               {work.title}
                               <span className="text-theme-tertiary">
@@ -395,7 +390,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                               key={annotation.id}
                               className="text-sm"
                             >
-                              <PiPencilLine className="w-3 h-3 text-ok flex-shrink-0" />
+                              <PiPencilLine className="w-3 h-3 flex-shrink-0" />
                               <span className="text-theme-primary">
                                 {annotation.title}
                                 <span className="text-theme-tertiary">
@@ -412,8 +407,8 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   {/* Additional Info */}
                   <div className="bg-theme-elevated rounded-lg p-4">
                     <div className="flex items-start space-x-2">
-                      <PiEnvelopeSimple className="w-4 h-4 text-aviso mt-0.5 flex-shrink-0" />
-                      <Stack gap={1} className="text-sm text-aviso">
+                      <PiEnvelopeSimple className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                      <Stack gap={1} className="text-sm">
                         <p className="font-medium">
                           {t('delete_modal_goodbye_email_info')}
                         </p>
@@ -439,8 +434,8 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
           {currentStep === 'confirm' && (
             <Stack gap={6}>
               <div className="text-center">
-                <div className="w-16 h-16 bg-erro/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <PiTrash className="w-8 h-8 text-erro" />
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <PiTrash className="w-8 h-8" />
                 </div>
                 <h4 className="text-lg font-semibold text-theme-primary mb-2">
                   {t('delete_modal_final_confirmation')}
@@ -450,11 +445,11 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 </p>
               </div>
 
-              <Stack gap={2} className="border border-erro rounded-lg p-4">
-                <h5 className="font-medium text-erro">
+              <Stack gap={2} className="border border-red-400 rounded-lg p-4">
+                <h5 className="font-medium">
                   {t('delete_modal_permanent_warning')}
                 </h5>
-                <p className="text-sm text-erro opacity-90">
+                <p className="text-sm opacity-90">
                   {t('delete_modal_immediate_removal')}
                 </p>
               </Stack>
@@ -469,7 +464,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   autoFocus
                 />
                 {confirmText && !typedConfirmation && (
-                  <p className="text-xs text-erro mt-1">
+                  <p className="text-xs mt-1">
                     {t('delete_modal_type_exactly')}
                   </p>
                 )}
@@ -500,7 +495,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="flex flex-col-reverse md:flex-row gap-4 items-center justify-between p-6 border-t border-theme-secondary bg-sup-1/30">
+        <div className="flex flex-col-reverse md:flex-row gap-4 items-center justify-between p-6 border-t border-theme-secondary">
           <Inline gap={2}>
             {/* Step indicator */}
             <div className="flex space-x-2">
@@ -509,10 +504,10 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   key={step}
                   className={`w-2 h-2 rounded-full transition-colors ${
                     step === currentStep
-                      ? 'bg-erro'
+                      ? 'bg-red-400'
                       : index <
                           ['warning', 'cascade', 'confirm'].indexOf(currentStep)
-                        ? 'bg-ok'
+                        ? 'bg-green-400'
                         : 'bg-theme-tertiary'
                   }`}
                 />
@@ -568,7 +563,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 size="sm"
                 onClick={handleNextStep}
                 disabled={isCascadeLoading}
-                className="bg-erro hover:bg-erro border-erro"
+                className="hover:bg-red-600"
               >
                 {currentStep === 'warning'
                   ? t('delete_modal_continue')

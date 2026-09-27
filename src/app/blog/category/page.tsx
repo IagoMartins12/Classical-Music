@@ -26,7 +26,7 @@ export default async function CategoriesPage() {
       {/* Header */}
       <div className="section-wrap relative !py-16 text-center">
         <div className="flex items-center justify-center mb-6">
-          <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow">
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-theme-glow">
             <PiSquaresFour className="w-8 h-8 text-white" />
           </div>
         </div>
@@ -55,7 +55,7 @@ export default async function CategoriesPage() {
               <Link
                 key={category.id}
                 href={`/blog/category/${category.slug}`}
-                className="classical-card overflow-hidden group hover:shadow-[var(--sombra-2)] transition-all"
+                className="classical-card overflow-hidden group transition-all"
               >
                 {/* Image Header */}
                 <div className="relative h-48 overflow-hidden">
@@ -105,7 +105,7 @@ export default async function CategoriesPage() {
 
                 {/* Content */}
                 <div className="p-6">
-                  <h3 className="text-2xl font-bold text-theme-primary mb-2 group-hover:text-ouro-texto transition-colors">
+                  <h3 className="text-2xl font-bold text-theme-primary mb-2 transition-colors">
                     {category.name}
                   </h3>
 
@@ -121,7 +121,7 @@ export default async function CategoriesPage() {
                   )}
 
                   {/* CTA */}
-                  <div className="flex items-center text-brand-primary font-medium group-hover:translate-x-2 transition-transform">
+                  <div className="flex items-center text-ouro-texto font-medium group-hover:translate-x-2 transition-transform">
                     <span className="mr-2">Explorar</span>
                     <PiArrowRight className="w-5 h-5" />
                   </div>

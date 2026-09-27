@@ -58,67 +58,67 @@ const FactCard = ({
   const getFactStyle = (type: string) => {
     const styles = {
       Medieval: {
-        gradient: 'bg-aviso/20',
-        border: 'border-aviso/30',
-        accent: 'text-aviso',
-        bg: 'bg-aviso/10',
+        gradient: 'from-blue-600/20 to-cyan-500/20',
+        border: 'border-blue-500/30',
+        accent: 'text-blue-400',
+        bg: 'bg-blue-500/10',
       },
       Renascimento: {
-        gradient: 'bg-ouro/20',
-        border: 'border-ouro/30',
-        accent: 'text-ouro-texto',
-        bg: 'bg-ouro/10',
+        gradient: 'from-pink-600/20 to-rose-500/20',
+        border: 'border-pink-500/30',
+        accent: 'text-pink-400',
+        bg: 'bg-pink-500/10',
       },
       Barroco: {
-        gradient: 'bg-ouro/20',
-        border: 'border-ouro/30',
-        accent: 'text-ouro-texto',
-        bg: 'bg-ouro/10',
+        gradient: 'from-purple-600/20 to-violet-500/20',
+        border: 'border-purple-500/30',
+        accent: 'text-purple-400',
+        bg: 'bg-purple-500/10',
       },
       Clássico: {
-        gradient: 'bg-ok/20',
-        border: 'border-ok/30',
-        accent: 'text-ok',
-        bg: 'bg-ok/10',
+        gradient: 'from-emerald-600/20 to-green-500/20',
+        border: 'border-emerald-500/30',
+        accent: 'text-emerald-400',
+        bg: 'bg-emerald-500/10',
       },
       Romântico: {
-        gradient: 'bg-atencao/20',
-        border: 'border-atencao/30',
-        accent: 'text-atencao',
-        bg: 'bg-atencao/10',
+        gradient: 'from-amber-600/20 to-yellow-500/20',
+        border: 'border-amber-500/30',
+        accent: 'text-amber-400',
+        bg: 'bg-amber-500/10',
       },
       Impressionismo: {
-        gradient: 'bg-atencao/20',
-        border: 'border-atencao/30',
-        accent: 'text-atencao',
-        bg: 'bg-atencao/10',
+        gradient: 'from-orange-600/20 to-red-500/20',
+        border: 'border-orange-500/30',
+        accent: 'text-orange-400',
+        bg: 'bg-orange-500/10',
       },
       Moderno: {
-        gradient: 'bg-aviso/20',
-        border: 'border-aviso/30',
-        accent: 'text-aviso',
-        bg: 'bg-aviso/10',
+        gradient: 'from-indigo-600/20 to-purple-500/20',
+        border: 'border-indigo-500/30',
+        accent: 'text-indigo-400',
+        bg: 'bg-indigo-500/10',
       },
       Teoria: {
-        gradient: 'bg-aviso/20',
-        border: 'border-aviso/30',
-        accent: 'text-aviso',
-        bg: 'bg-aviso/10',
+        gradient: 'from-cyan-600/20 to-sky-500/20',
+        border: 'border-cyan-500/30',
+        accent: 'text-cyan-400',
+        bg: 'bg-cyan-500/10',
       },
       Futuro: {
-        gradient: 'bg-texto-fraco/20',
-        border: 'border-linha-forte/30',
-        accent: 'text-texto-fraco',
-        bg: 'bg-linha-forte/10',
+        gradient: 'from-gray-600/20 to-slate-500/20',
+        border: 'border-gray-500/30',
+        accent: 'text-gray-400',
+        bg: 'bg-gray-500/10',
       },
     };
 
     return (
       styles[type as keyof typeof styles] || {
-        gradient: 'bg-ouro/20',
-        border: 'border-ouro/30',
-        accent: 'text-brand-primary',
-        bg: 'bg-ouro/10',
+        gradient: '',
+        border: '',
+        accent: 'text-ouro-texto',
+        bg: '',
       }
     );
   };
@@ -273,17 +273,17 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
     return (
       <section className="section-wrap relative !mb-8">
         <Stack className="animate-pulse">
-          <div className="h-8 bg-sup-2 rounded"></div>
+          <div className="h-8 bg-gray-200 rounded"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[...Array(4)].map((_, i) => (
               <Card nivel={2} key={i}>
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-sup-2"></div>
+                  <div className="w-12 h-12 rounded-2xl bg-gray-200"></div>
                   <div className="flex-1">
-                    <div className="h-4 bg-sup-2 rounded mb-2"></div>
-                    <div className="h-3 bg-sup-2 rounded mb-3 w-3/4"></div>
-                    <div className="h-3 bg-sup-2 rounded mb-2"></div>
-                    <div className="h-3 bg-sup-2 rounded w-1/2"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded mb-3 w-3/4"></div>
+                    <div className="h-3 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
                   </div>
                 </div>
               </Card>
@@ -375,10 +375,10 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
 
       {/* Floating fact bubbles decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-20 w-24 h-24 bg-aviso/10 rounded-full blur-2xl animate-pulse"></div>
-        <div className="absolute bottom-20 left-20 w-32 h-32 bg-aviso/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-20 right-20 w-24 h-24 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-2xl animate-pulse"></div>
+        <div className="absolute bottom-20 left-20 w-32 h-32 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl"></div>
         <div
-          className="absolute top-1/2 left-1/4 w-16 h-16 rounded-full blur-2xl animate-pulse"
+          className="absolute top-1/2 left-1/4 w-16 h-16 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-2xl animate-pulse"
           style={{ animationDelay: '1s' }}
         ></div>
       </div>

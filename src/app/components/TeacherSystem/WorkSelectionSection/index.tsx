@@ -294,7 +294,7 @@ export default function WorkSelectionSection({
         {/* Header */}
         <div className="flex items-center justify-between">
           <Inline gap={3}>
-            <div className="w-10 h-10 bg-ok rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center">
               <PiMusicNotes className="w-5 h-5 text-theme-primary" />
             </div>
             <div>
@@ -311,9 +311,7 @@ export default function WorkSelectionSection({
           <div className="text-right">
             <div
               className={`text-lg font-bold ${
-                selectedWorks.length >= maxWorks
-                  ? 'text-erro'
-                  : 'text-theme-primary'
+                selectedWorks.length >= maxWorks ? '' : 'text-theme-primary'
               }`}
             >
               {selectedWorks.length}/{maxWorks}
@@ -350,8 +348,8 @@ export default function WorkSelectionSection({
                   <div className="bg-theme-elevated border border-theme-secondary rounded-lg p-4">
                     <div className="flex items-center flex-col sm:flex-row gap-4 sm:gap-0 justify-between">
                       <Inline gap={3} className="flex-1 min-w-0 w-full">
-                        <div className="w-8 h-8 bg-aviso/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <PiMusicNotes className="w-4 h-4 text-aviso" />
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <PiMusicNotes className="w-4 h-4" />
                         </div>
 
                         <div className="flex-1 min-w-0">
@@ -362,7 +360,7 @@ export default function WorkSelectionSection({
                             <Text
                               papel="legenda"
                               tom="suave"
-                              className="bg-sup-1/20 px-2 py-0.5 rounded"
+                              className="px-2 py-0.5 rounded"
                             >
                               #{index + 1}
                             </Text>
@@ -379,7 +377,7 @@ export default function WorkSelectionSection({
                           {/* Informações da partitura */}
                           {work.scoreId ? (
                             <Inline gap={2} className="mt-2">
-                              <Inline gap={1} className="text-xs text-ok">
+                              <Inline gap={1} className="text-xs">
                                 <PiCheck className="w-3 h-3" />
                                 <span>Partitura: {work.scoreTitle}</span>
                               </Inline>
@@ -408,8 +406,8 @@ export default function WorkSelectionSection({
                           disabled={disabled}
                           className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
                             work.scoreId
-                              ? 'bg-ok/10 border-ok/30 text-ok hover:bg-ok/20'
-                              : 'bg-theme-elevated border-theme-secondary text-theme-secondary hover:border-linha hover:text-texto'
+                              ? ''
+                              : 'bg-theme-elevated border-theme-secondary text-theme-secondary'
                           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                           {work.scoreId
@@ -422,11 +420,11 @@ export default function WorkSelectionSection({
                           type="button"
                           onClick={() => handleRemoveWork(index)}
                           disabled={disabled}
-                          className={`w-8 h-8 rounded-lg bg-erro/10 hover:bg-erro/20 transition-colors flex items-center justify-center ${
+                          className={`w-8 h-8 rounded-lg transition-colors flex items-center justify-center ${
                             disabled ? 'opacity-50 cursor-not-allowed' : ''
                           }`}
                         >
-                          <PiTrash className="w-3 h-3 text-erro" />
+                          <PiTrash className="w-3 h-3" />
                           <NomeAcao acao="excluir" />
                         </button>
                       </Inline>
@@ -449,8 +447,8 @@ export default function WorkSelectionSection({
                 disabled={!canAddWork || disabled}
                 className={`w-full p-4 border-2 border-dashed rounded-lg transition-colors flex items-center justify-center space-x-2 ${
                   canAddWork && !disabled
-                    ? 'border-theme-secondary hover:border-ouro text-theme-secondary hover:text-ouro-texto bg-theme-elevated hover:bg-ouro/5'
-                    : 'border-linha/50 text-theme-tertiary cursor-not-allowed opacity-50'
+                    ? 'border-theme-secondary text-theme-secondary bg-theme-elevated'
+                    : 'text-theme-tertiary cursor-not-allowed opacity-50'
                 }`}
               >
                 <PiPlus className="w-4 h-4" />
@@ -461,22 +459,22 @@ export default function WorkSelectionSection({
                 </span>
               </button>
             ) : (
-              <Stack className="bg-ouro/5 border border-color-primary rounded-lg p-4">
+              <Stack className="border border-color-primary rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <Inline
                     as="h4"
                     gap={2}
                     className="text-sm font-medium text-theme-primary"
                   >
-                    <PiPlus className="w-4 h-4 text-brand-primary" />
+                    <PiPlus className="w-4 h-4 text-ouro-texto" />
                     <span>Adicionar Nova Peça</span>
                   </Inline>
                   <button
                     type="button"
                     onClick={resetAddForm}
-                    className="w-6 h-6 rounded-full bg-theme-elevated border border-theme-secondary hover:border-erro transition-colors flex items-center justify-center"
+                    className="w-6 h-6 rounded-full bg-theme-elevated border border-theme-secondary transition-colors flex items-center justify-center"
                   >
-                    <PiX className="w-3 h-3 text-theme-tertiary hover:text-erro" />
+                    <PiX className="w-3 h-3 text-theme-tertiary" />
                     <NomeAcao acao="fechar" />
                   </button>
                 </div>
@@ -488,7 +486,7 @@ export default function WorkSelectionSection({
                       <PiUser className="w-4 h-4" />
                       <span>Compositor</span>
                       {hasWorkSelected && (
-                        <span className="text-xs text-aviso">
+                        <span className="text-xs">
                           (Selecionado automaticamente)
                         </span>
                       )}
@@ -552,7 +550,7 @@ export default function WorkSelectionSection({
                 <div className="flex flex-col sm:flex-row gap-4 items-center justify-between pt-2">
                   <Text papel="legenda" tom="fraco" as="div">
                     {hasComposerSelected && hasWorkSelected ? (
-                      <Inline as="span" gap={1} className="text-ok">
+                      <Inline as="span" gap={1} className="">
                         <PiCheck className="w-3 h-3" />
                         <span>Pronto para adicionar</span>
                       </Inline>
@@ -598,13 +596,11 @@ export default function WorkSelectionSection({
 
         {/* Informação sobre limite */}
         {selectedWorks.length >= maxWorks && (
-          <div className="bg-atencao/10 border border-atencao/30 rounded-lg p-3">
+          <div className="border rounded-lg p-3">
             <div className="flex items-start space-x-3">
-              <PiInfo className="w-5 h-5 text-atencao mt-0.5 flex-shrink-0" />
+              <PiInfo className="w-5 h-5 mt-0.5 flex-shrink-0" />
               <Stack gap={1} className="text-sm">
-                <p className="font-medium text-atencao">
-                  Limite de peças atingido
-                </p>
+                <p className="font-medium">Limite de peças atingido</p>
                 <p className="text-theme-secondary">
                   Você pode vincular no máximo {maxWorks} peças por aula. Para
                   adicionar uma nova peça, remova uma das existentes primeiro.
@@ -616,7 +612,7 @@ export default function WorkSelectionSection({
 
         {/* Dicas de uso */}
         {selectedWorks.length === 0 && !isAddingWork && (
-          <div className="bg-sup-1/10 rounded-lg p-4">
+          <div className="rounded-lg p-4">
             <div className="flex items-start space-x-3">
               <PiInfo className="w-5 h-5 text-theme-tertiary mt-0.5 hidden sm:flex" />
               <Text papel="rotulo" tom="suave" as="div">

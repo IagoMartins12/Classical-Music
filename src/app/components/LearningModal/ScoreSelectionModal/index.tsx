@@ -110,35 +110,35 @@ const ScoreSelectionModal = ({
       label: t('scores_tab'),
       type: 'scores' as const,
       icon: PiMusicNotes,
-      gradient: 'fill-ouro',
+      gradient: '',
     },
     {
       id: 'parts',
       label: t('parts_tab'),
       type: 'parts' as const,
       icon: PiFileText,
-      gradient: 'bg-aviso',
+      gradient: '',
     },
     {
       id: 'arrangements',
       label: t('arrangements_tab'),
       type: 'arrangements' as const,
       icon: PiMusicNotes,
-      gradient: 'bg-ok',
+      gradient: '',
     },
     {
       id: 'uploads',
       label: t('uploads_tab'),
       type: 'uploads' as const,
       icon: PiUploadSimple,
-      gradient: 'fill-ouro',
+      gradient: '',
     },
     {
       id: 'others',
       label: t('others_tab'),
       type: 'others' as const,
       icon: PiFileText,
-      gradient: 'bg-erro',
+      gradient: '',
     },
   ];
 
@@ -500,19 +500,19 @@ const ScoreSelectionModal = ({
       setPr
     >
       {/* Header */}
-      <div className="border-b border-theme-secondary bg-fundo">
+      <div className="border-b border-theme-secondary">
         <div className="p-2 md:p-6">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <Inline gap={4}>
               <button
                 onClick={onClose}
-                className="w-10 h-10 bg-theme-elevated border border-theme-primary hover:border-ouro rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-ouro/10"
+                className="w-10 h-10 bg-theme-elevated border border-theme-primary rounded-xl flex items-center justify-center transition-all duration-300"
               >
                 <PiArrowLeft className="w-5 h-5 text-theme-primary" />
                 <NomeAcao acao="voltar" />
               </button>
 
-              <div className="w-12 h-12 fill-ouro rounded-2xl flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
                 <PiMusicNotes className="w-6 h-6 text-theme-primary" />
               </div>
 
@@ -532,7 +532,7 @@ const ScoreSelectionModal = ({
 
             {/* Status e botão de confirmação */}
             <Inline gap={3}>
-              <div className="bg-sup-elevada/50 border border-ouro/30 rounded-xl px-4 py-2">
+              <div className="border rounded-xl px-4 py-2">
                 <Inline gap={2} className="text-sm">
                   <span className="text-theme-secondary text-center font-medium">
                     {selectedScore
@@ -589,8 +589,8 @@ const ScoreSelectionModal = ({
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center gap-3 px-6 py-4 cursor-pointer text-sm font-medium  transition-all duration-300 whitespace-nowrap flex-shrink-0 animate-fade-in-up relative ${
                       isActive
-                        ? 'border-0 md:border-b-2 border-ouro text-brand-primary bg-ouro/10'
-                        : 'border-b-2 border-transparent text-theme-tertiary hover:text-texto hover:border-linha hover:bg-ouro/10'
+                        ? 'border-0 md:border-b-2 text-ouro-texto bg-gradient-to-t to-transparent'
+                        : 'border-b-2 border-transparent text-theme-tertiary'
                     }`}
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
@@ -610,7 +610,7 @@ const ScoreSelectionModal = ({
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
                           isActive
-                            ? 'bg-ouro/10 text-brand-primary border border-ouro/30'
+                            ? 'text-ouro-texto border'
                             : 'bg-theme-elevated text-theme-tertiary border border-theme-secondary'
                         }`}
                       >
@@ -620,15 +620,15 @@ const ScoreSelectionModal = ({
                       {/* Indicador de progresso */}
                       {tabStat.hasMore ? (
                         <Inline gap={1}>
-                          <div className="w-1 h-1 bg-aviso rounded-full animate-pulse"></div>
+                          <div className="w-1 h-1 rounded-full animate-pulse"></div>
                           {isActive && (
-                            <span className="text-xs text-aviso font-medium">
+                            <span className="text-xs font-medium">
                               +{tabStat.remaining}
                             </span>
                           )}
                         </Inline>
                       ) : (
-                        <div className="w-1 h-1 bg-ok rounded-full"></div>
+                        <div className="w-1 h-1 rounded-full"></div>
                       )}
                     </Inline>
                   </button>
@@ -738,14 +738,14 @@ const ScoreSelectionModal = ({
                           gap={2}
                           className="text-lg font-semibold text-theme-primary"
                         >
-                          <PiBookOpen className="w-5 h-5 text-aviso" />
+                          <PiBookOpen className="w-5 h-5" />
                           <span>{t('score_preview')}</span>
                         </Inline>
                         <button
                           onClick={() => setSelectedScore(null)}
-                          className="w-8 h-8 bg-theme-primary border border-theme-secondary hover:border-erro rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-erro/10"
+                          className="w-8 h-8 bg-theme-primary border border-theme-secondary rounded-lg flex items-center justify-center transition-all duration-300"
                         >
-                          <PiX className="w-4 h-4 text-theme-primary hover:text-erro" />
+                          <PiX className="w-4 h-4 text-theme-primary" />
                           <NomeAcao acao="fechar" />
                         </button>
                       </div>
@@ -768,14 +768,14 @@ const ScoreSelectionModal = ({
                   gap={2}
                   className="text-lg font-semibold text-theme-primary"
                 >
-                  <PiBookOpen className="w-5 h-5 text-aviso" />
+                  <PiBookOpen className="w-5 h-5" />
                   <span>{t('score_preview')}</span>
                 </Inline>
                 <button
                   onClick={() => setSelectedScore(null)}
-                  className="w-8 h-8 bg-theme-primary border border-theme-secondary hover:border-erro rounded-lg flex items-center justify-center transition-all duration-300 hover:bg-erro/10"
+                  className="w-8 h-8 bg-theme-primary border border-theme-secondary rounded-lg flex items-center justify-center transition-all duration-300"
                 >
-                  <PiX className="w-4 h-4 text-theme-primary hover:text-erro" />
+                  <PiX className="w-4 h-4 text-theme-primary" />
                   <NomeAcao acao="fechar" />
                 </button>
               </div>
@@ -833,7 +833,7 @@ function LoadingState() {
   return (
     <div className="flex items-center justify-center py-12">
       <Inline gap={3}>
-        <div className="w-8 h-8 border-4 border-ouro/30 border-t-ouro rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 rounded-full animate-spin"></div>
         <span className="text-theme-primary font-medium">
           {t('loading_scores')}
         </span>
@@ -852,10 +852,10 @@ function ErrorState({
   const { t } = useTranslation({ sections: ['pages/learning'] });
 
   return (
-    <div className="bg-erro/10 border border-erro/30 rounded-2xl p-6">
+    <div className="border rounded-2xl p-6">
       <div className="text-center">
-        <PiWarningCircle className="w-12 h-12 text-erro mx-auto mb-4" />
-        <p className="text-erro font-medium mb-4">{error}</p>
+        <PiWarningCircle className="w-12 h-12 mx-auto mb-4" />
+        <p className="font-medium mb-4">{error}</p>
         {onRefetch && (
           <Inline
             as="button"
@@ -877,7 +877,7 @@ function EmptyState() {
 
   return (
     <div className="text-center py-12">
-      <div className="w-16 h-16 bg-sup-2/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+      <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
         <PiBookOpen className="w-8 h-8 text-theme-tertiary" />
       </div>
       <h3 className="text-lg font-semibold text-theme-primary mb-2">

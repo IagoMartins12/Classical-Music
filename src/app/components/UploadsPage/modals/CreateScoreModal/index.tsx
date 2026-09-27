@@ -673,7 +673,7 @@ const CreateScoreModal = ({
           {/* Header */}
           <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
             <Inline gap={3}>
-              <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                 <PiFile className="w-5 h-5 text-theme-primary" />
               </div>
               <div>
@@ -714,15 +714,15 @@ const CreateScoreModal = ({
                         onClick={() => selectUploadMode('url')}
                         className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                           uploadMode === 'url'
-                            ? 'border-ouro bg-ouro/10 text-brand-primary'
-                            : 'border-theme-secondary bg-theme-elevated hover:border-linha text-theme-secondary'
+                            ? 'text-ouro-texto'
+                            : 'border-theme-secondary bg-theme-elevated text-theme-secondary'
                         }`}
                       >
                         <Inline gap={3}>
                           <div
                             className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                               uploadMode === 'url'
-                                ? 'bg-ouro text-theme-primary'
+                                ? 'text-theme-primary'
                                 : 'bg-theme-secondary text-theme-tertiary'
                             }`}
                           >
@@ -745,15 +745,15 @@ const CreateScoreModal = ({
                         onClick={() => selectUploadMode('file')}
                         className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                           uploadMode === 'file'
-                            ? 'border-ouro bg-ouro/10 text-brand-primary'
-                            : 'border-theme-secondary bg-theme-elevated hover:border-linha text-theme-secondary'
+                            ? 'text-ouro-texto'
+                            : 'border-theme-secondary bg-theme-elevated text-theme-secondary'
                         }`}
                       >
                         <Inline gap={3}>
                           <div
                             className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                               uploadMode === 'file'
-                                ? 'bg-ouro text-theme-primary'
+                                ? 'text-theme-primary'
                                 : 'bg-theme-secondary text-theme-tertiary'
                             }`}
                           >
@@ -772,10 +772,10 @@ const CreateScoreModal = ({
                     </div>
 
                     {errors.uploadMode && (
-                      <div className="mt-2 p-3 bg-erro/10 border border-erro/30 rounded-lg">
+                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                         <Inline gap={2}>
-                          <PiWarningCircle className="w-4 h-4 text-erro" />
-                          <span className="text-sm font-medium text-erro">
+                          <PiWarningCircle className="w-4 h-4 text-red-600" />
+                          <span className="text-sm font-medium text-red-800">
                             {errors.uploadMode}
                           </span>
                         </Inline>
@@ -799,9 +799,9 @@ const CreateScoreModal = ({
 
                   <div className="space-y-4">
                     <div
-                      className={`border-2 border-dashed rounded-lg p-8 text-center hover:border-ouro transition-colors cursor-pointer ${
+                      className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
                         errors.downloadUrl
-                          ? 'border-erro'
+                          ? 'border-red-500'
                           : 'border-theme-secondary'
                       }`}
                       onClick={() =>
@@ -823,7 +823,7 @@ const CreateScoreModal = ({
 
                       {uploadingFile ? (
                         <Inline gap={2} className="justify-center">
-                          <PiSpinnerGap className="w-6 h-6 animate-spin text-brand-primary" />
+                          <PiSpinnerGap className="w-6 h-6 animate-spin text-ouro-texto" />
                           <span className="text-theme-secondary">
                             Enviando arquivo...
                           </span>
@@ -832,9 +832,9 @@ const CreateScoreModal = ({
                         <div className="space-y-4">
                           <Inline gap={2} className="justify-center">
                             {selectedFile.type.startsWith('image/') ? (
-                              <PiImage className="w-6 h-6 text-ok" />
+                              <PiImage className="w-6 h-6" />
                             ) : (
-                              <PiFile className="w-6 h-6 text-ok" />
+                              <PiFile className="w-6 h-6" />
                             )}
                             <span className="text-theme-primary font-medium">
                               {selectedFile.name}
@@ -848,7 +848,7 @@ const CreateScoreModal = ({
                             <div className="mt-4 text-center">
                               <Inline
                                 gap={2}
-                                className="justify-center text-sm text-brand-primary"
+                                className="justify-center text-sm text-ouro-texto"
                               >
                                 <PiSpinnerGap className="w-4 h-4 animate-spin" />
                                 <span>
@@ -872,7 +872,7 @@ const CreateScoreModal = ({
 
                           {generatedThumbnail && thumbnailGenerated && (
                             <div className="mt-4 text-center">
-                              <div className="w-24 h-32 mx-auto rounded border border-linha/30 overflow-hidden shadow-theme-small">
+                              <div className="w-24 h-32 mx-auto rounded border overflow-hidden shadow-theme-small">
                                 <Image
                                   src={generatedThumbnail}
                                   alt="Preview do arquivo"
@@ -888,7 +888,7 @@ const CreateScoreModal = ({
                             <Stack gap={2} className="mt-4 text-center">
                               <Inline
                                 gap={2}
-                                className="justify-center text-sm text-atencao"
+                                className="justify-center text-sm text-amber-600"
                               >
                                 <PiWarningCircle className="w-4 h-4" />
                                 <span>Preview não disponível</span>
@@ -926,10 +926,10 @@ const CreateScoreModal = ({
                     </div>
 
                     {errors.downloadUrl && uploadMode === 'file' && (
-                      <div className="mt-2 p-3 bg-erro/10 border border-erro/30 rounded-lg">
+                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                         <Inline gap={2}>
-                          <PiWarningCircle className="w-4 h-4 text-erro" />
-                          <span className="text-sm font-medium text-erro">
+                          <PiWarningCircle className="w-4 h-4 text-red-600" />
+                          <span className="text-sm font-medium text-red-800">
                             {errors.downloadUrl}
                           </span>
                         </Inline>
@@ -945,7 +945,7 @@ const CreateScoreModal = ({
                           setSelectedFile(null);
                           resetUploadMode();
                         }}
-                        className="mx-auto text-sm text-theme-tertiary hover:text-erro transition-colors"
+                        className="mx-auto text-sm text-theme-tertiary transition-colors"
                       >
                         <PiX className="w-4 h-4" />
                         <span>Remover arquivo</span>
@@ -978,24 +978,24 @@ const CreateScoreModal = ({
                   />
 
                   {validatingFile && (
-                    <Inline gap={2} className="mt-2 text-sm text-brand-primary">
+                    <Inline gap={2} className="mt-2 text-sm text-ouro-texto">
                       <PiSpinnerGap className="w-4 h-4 animate-spin" />
                       <span>Validando arquivo...</span>
                     </Inline>
                   )}
 
                   {fileValidation.isValid && (
-                    <Inline gap={2} className="mt-2 text-sm text-ok">
+                    <Inline gap={2} className="mt-2 text-sm">
                       <PiCheck className="w-4 h-4" />
                       <span>Arquivo válido encontrado</span>
                     </Inline>
                   )}
 
                   {fileValidation.error && (
-                    <div className="mt-2 p-3 bg-erro/10 border border-erro/30 rounded-lg">
+                    <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                       <Inline gap={2}>
-                        <PiWarningCircle className="w-4 h-4 text-erro" />
-                        <span className="text-sm font-medium text-erro">
+                        <PiWarningCircle className="w-4 h-4 text-red-600" />
+                        <span className="text-sm font-medium text-red-800">
                           {fileValidation.error}
                         </span>
                       </Inline>
@@ -1022,7 +1022,7 @@ const CreateScoreModal = ({
                         <PiFunnel className="w-4 h-4" />
                         <span>{t('modal_score_work_filter_composer')}</span>
                         {shouldDisableComposerFilter && (
-                          <span className="text-xs text-aviso">
+                          <span className="text-xs">
                             {t('modal_score_work_filter_auto_selected')}
                           </span>
                         )}
@@ -1058,8 +1058,8 @@ const CreateScoreModal = ({
                       <div className="w-full p-3 border rounded-lg bg-theme-elevated border-theme-secondary opacity-50 cursor-not-allowed">
                         <div className="flex items-center justify-between">
                           <Inline gap={3}>
-                            <div className="w-8 h-8 bg-aviso/20 rounded-lg flex items-center justify-center">
-                              <PiCheck className="w-4 h-4 text-aviso" />
+                            <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                              <PiCheck className="w-4 h-4" />
                             </div>
                             <div>
                               <Text
@@ -1104,7 +1104,7 @@ const CreateScoreModal = ({
                   </div>
 
                   {!editingScore && !loadingUserWorks && (
-                    <div className="bg-sup-1/10 rounded-lg p-3">
+                    <div className="rounded-lg p-3">
                       <div className="flex items-start space-x-2">
                         <PiInfo className="w-4 h-4 text-theme-tertiary mt-0.5" />
                         <Text papel="legenda" tom="fraco" as="div">
@@ -1264,7 +1264,7 @@ const CreateScoreModal = ({
                         gap={2}
                         className="text-sm font-semibold text-theme-primary mb-3"
                       >
-                        <PiTarget className="w-4 h-4 text-ok" />
+                        <PiTarget className="w-4 h-4" />
                         <span>
                           {t('modal_score_grouping_suggestions_title')}
                         </span>
@@ -1313,7 +1313,7 @@ const CreateScoreModal = ({
                     </div>
                   </Stack>
 
-                  <div className="p-4 bg-sup-1/10 rounded-lg">
+                  <div className="p-4 rounded-lg">
                     <Inline
                       as="h4"
                       gap={2}

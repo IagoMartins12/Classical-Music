@@ -80,8 +80,8 @@ export default function UnsubscribePage() {
             <div className="section-wrap">
               <div className="max-w-2xl mx-auto text-center">
                 <AnimatedItem direction="scale" springType="bouncy">
-                  <div className="inline-flex items-center justify-center w-20 h-20 bg-ok/10 rounded-full mb-8">
-                    <PiCheck className="w-10 h-10 text-ok" />
+                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-8">
+                    <PiCheck className="w-10 h-10" />
                   </div>
                 </AnimatedItem>
 
@@ -119,8 +119,8 @@ export default function UnsubscribePage() {
               {/* Header */}
               <div className="text-center mb-12">
                 <AnimatedItem direction="scale" springType="bouncy">
-                  <div className="inline-flex items-center justify-center w-20 h-20 bg-erro/10 rounded-full mb-6">
-                    <PiX className="w-10 h-10 text-erro" />
+                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6">
+                    <PiX className="w-10 h-10" />
                   </div>
                 </AnimatedItem>
 
@@ -177,7 +177,7 @@ export default function UnsubscribePage() {
 
                       <button
                         onClick={() => router.push('/')}
-                        className="w-full text-theme-secondary hover:text-ouro-texto transition-colors"
+                        className="w-full text-theme-secondary transition-colors"
                       >
                         {t('unsubscribe_keep_button')}
                       </button>
@@ -209,7 +209,7 @@ export default function UnsubscribePage() {
                             as="label"
                             gap={3}
                             key={reasonOption.id}
-                            className="p-3 rounded-lg border border-theme-secondary cursor-pointer hover:bg-sup-1 transition-colors"
+                            className="p-3 rounded-lg border border-theme-secondary cursor-pointer transition-colors"
                           >
                             <Input
                               type="radio"
@@ -217,7 +217,7 @@ export default function UnsubscribePage() {
                               value={reasonOption.id}
                               checked={reason === reasonOption.id}
                               onChange={(e) => setReason(e.target.value)}
-                              className="text-brand-primary focus:ring-ouro"
+                              className="text-ouro-texto"
                             />
                             <span className="text-theme-primary">
                               {reasonOption.label}
@@ -255,7 +255,7 @@ export default function UnsubscribePage() {
 
                       <button
                         onClick={() => setStep('confirm')}
-                        className="w-full text-theme-secondary hover:text-ouro-texto transition-colors"
+                        className="w-full text-theme-secondary transition-colors"
                       >
                         {t('unsubscribe_back_button')}
                       </button>

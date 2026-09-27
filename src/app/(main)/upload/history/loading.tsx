@@ -30,12 +30,12 @@ export default function HistoryLoading() {
         {/* Header Skeleton */}
         <div className="text-center mb-8 py-16">
           <div className="flex items-center justify-center mb-6">
-            <div className="w-16 h-16 bg-aviso/20 rounded-3xl flex items-center justify-center shadow-theme-glow">
-              <PiClock className="w-8 h-8 text-texto/30" />
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <PiClock className="w-8 h-8" />
             </div>
           </div>
-          <div className="h-12 bg-sup-elevada border border-theme-primary rounded-2xl mx-auto max-w-md mb-4"></div>
-          <div className="h-6 bg-sup-elevada border border-theme-secondary rounded-lg mx-auto max-w-2xl"></div>
+          <div className="h-12 border border-theme-primary rounded-2xl mx-auto max-w-md mb-4"></div>
+          <div className="h-6 border border-theme-secondary rounded-lg mx-auto max-w-2xl"></div>
         </div>
 
         {/* Filters Skeleton */}
@@ -51,9 +51,9 @@ export default function HistoryLoading() {
                 gap={2}
                 className="h-10 w-24 bg-theme-secondary rounded-lg justify-center"
               >
-                <PiFunnel className="w-4 h-4 text-texto-fraco/30" />
-                <div className="w-12 h-4 bg-sup-2/30 rounded"></div>
-                <PiCaretDown className="w-4 h-4 text-texto-fraco/30" />
+                <PiFunnel className="w-4 h-4" />
+                <div className="w-12 h-4 rounded"></div>
+                <PiCaretDown className="w-4 h-4" />
               </Inline>
             </div>
 
@@ -71,7 +71,7 @@ export default function HistoryLoading() {
             </div>
 
             <div className="flex items-center space-x-3 pt-4">
-              <div className="h-10 w-32 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg"></div>
+              <div className="h-10 w-32 rounded-lg"></div>
               <div className="h-10 w-20 bg-theme-secondary rounded-lg"></div>
             </div> */}
           </Stack>
@@ -81,7 +81,7 @@ export default function HistoryLoading() {
         <Stack gap={6}>
           <div className="relative">
             {/* Timeline Line */}
-            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-sup-1/50"></div>
+            <div className="absolute left-6 top-0 bottom-0 w-0.5"></div>
 
             {Array.from({ length: 5 }).map((_, index) => (
               <HistoryRecordSkeleton key={index} index={index} />
@@ -96,7 +96,7 @@ export default function HistoryLoading() {
               <div
                 key={i}
                 className={`w-10 h-10 rounded-lg ${
-                  i === 0 ? 'bg-ouro/20' : 'bg-theme-secondary'
+                  i === 0 ? '' : 'bg-theme-secondary'
                 }`}
               ></div>
             ))}
@@ -111,19 +111,19 @@ export default function HistoryLoading() {
 function HistoryRecordSkeleton({ index }: { index: number }) {
   const actionTypes = [
     {
-      icon: <PiPlus className="w-5 h-5 text-texto/30" />,
-      gradient: 'bg-ok',
-      borderColor: 'border-l-ok',
+      icon: <PiPlus className="w-5 h-5" />,
+      gradient: 'from-green-400 to-green-600',
+      borderColor: 'border-l-green-500',
     },
     {
-      icon: <PiNotePencil className="w-5 h-5 text-texto/30" />,
-      gradient: 'bg-aviso',
-      borderColor: 'border-l-aviso',
+      icon: <PiNotePencil className="w-5 h-5" />,
+      gradient: 'from-blue-400 to-blue-600',
+      borderColor: 'border-l-blue-500',
     },
     {
-      icon: <PiTrash className="w-5 h-5 text-texto/30" />,
-      gradient: 'bg-erro',
-      borderColor: 'border-l-erro',
+      icon: <PiTrash className="w-5 h-5" />,
+      gradient: 'from-red-400 to-red-600',
+      borderColor: 'border-l-red-500',
     },
   ];
 
@@ -141,22 +141,22 @@ function HistoryRecordSkeleton({ index }: { index: number }) {
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div
-          className={`border classical-card-2 p-4 ${actionType.borderColor}/20`}
+          className={`classical-card-2 p-4 border-l-4 ${actionType.borderColor}/20`}
         >
           <div className="flex items-start justify-between mb-3">
             <Inline gap={2}>
               <div className="h-4 w-32 bg-theme-elevated rounded"></div>
-              <div className="h-6 w-16 bg-aviso/10 border border-aviso/20 rounded-full"></div>
+              <div className="h-6 w-16 border rounded-full"></div>
             </Inline>
 
             <Inline gap={2}>
               <Inline gap={2} className="text-xs">
-                <PiCalendarBlank className="w-3 h-3 text-texto-fraco/30" />
+                <PiCalendarBlank className="w-3 h-3" />
                 <div className="h-3 w-16 bg-theme-elevated rounded"></div>
               </Inline>
 
-              <div className="w-6 h-6 rounded-full bg-sup-1/50 flex items-center justify-center">
-                <PiEye className="w-3 h-3 text-texto-fraco/30" />
+              <div className="w-6 h-6 rounded-full flex items-center justify-center">
+                <PiEye className="w-3 h-3" />
               </div>
             </Inline>
           </div>
@@ -170,23 +170,23 @@ function HistoryRecordSkeleton({ index }: { index: number }) {
           {/* Changes Summary */}
           <Stack
             gap={2}
-            className="mt-3 p-3 bg-aviso/10 border border-aviso/20 rounded-lg"
+            className="mt-3 p-3 bg-blue-50/10 border border-blue-200/20 rounded-lg"
           >
             <div className="flex items-center">
-              <PiNotePencil className="w-4 h-4 text-texto/30 mr-1" />
-              <div className="h-4 w-20 bg-aviso/20 rounded"></div>
+              <PiNotePencil className="w-4 h-4 mr-1" />
+              <div className="h-4 w-20 bg-blue-700/20 rounded"></div>
             </div>
             <Stack gap={2}>
               <div className="space-y-1">
-                <div className="h-3 w-24 bg-aviso/20 rounded mb-1"></div>
-                <div className="pl-2 border-l-2 border-aviso/30">
+                <div className="h-3 w-24 bg-blue-700/20 rounded mb-1"></div>
+                <div className="pl-2 border-l-2 border-blue-300/30">
                   <div className="flex items-center">
-                    <div className="w-8 h-3 bg-erro/20 rounded mr-2"></div>
-                    <div className="h-3 w-16 bg-erro/20 rounded"></div>
+                    <div className="w-8 h-3 bg-red-600/20 rounded mr-2"></div>
+                    <div className="h-3 w-16 bg-red-600/20 rounded"></div>
                   </div>
                   <div className="flex items-center">
-                    <div className="w-8 h-3 bg-ok/20 rounded mr-2"></div>
-                    <div className="h-3 w-20 bg-ok/20 rounded"></div>
+                    <div className="w-8 h-3 bg-green-600/20 rounded mr-2"></div>
+                    <div className="h-3 w-20 bg-green-600/20 rounded"></div>
                   </div>
                 </div>
               </div>
@@ -198,12 +198,12 @@ function HistoryRecordSkeleton({ index }: { index: number }) {
             <div className="mt-3 pt-3 border-t border-theme-secondary">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                 <Inline gap={2}>
-                  <PiMapPin className="w-3 h-3 text-texto-fraco/30" />
+                  <PiMapPin className="w-3 h-3" />
                   <div className="h-3 w-24 bg-theme-elevated rounded"></div>
                 </Inline>
 
                 <Inline gap={2}>
-                  <PiMonitor className="w-3 h-3 text-texto-fraco/30" />
+                  <PiMonitor className="w-3 h-3" />
                   <div className="h-3 w-32 bg-theme-elevated rounded"></div>
                 </Inline>
               </div>

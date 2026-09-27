@@ -56,14 +56,16 @@ export default async function ArticlePreviewPage({ params }: PageProps) {
   return (
     <div className="min-h-screen relative">
       {/* ⚠️ BANNER DE PREVIEW */}
-      <div className="border sticky top-0 z-barra bg-atencao border-atencao/40 shadow-lg">
+      <div className="sticky top-0 z-barra bg-yellow-500 border-b-4 border-yellow-600 shadow-lg">
         <div className="section-wrap">
           <div className="py-4 flex items-center justify-between">
             <Inline gap={3}>
-              <PiWarningCircle className="w-6 h-6 text-atencao" />
+              <PiWarningCircle className="w-6 h-6 text-yellow-900" />
               <div>
-                <p className="text-sm font-bold text-atencao">MODO PREVIEW</p>
-                <p className="text-xs text-atencao">
+                <p className="text-sm font-bold text-yellow-900">
+                  MODO PREVIEW
+                </p>
+                <p className="text-xs text-yellow-800">
                   Esta é uma visualização. O artigo ainda não está publicado.
                 </p>
               </div>
@@ -72,7 +74,7 @@ export default async function ArticlePreviewPage({ params }: PageProps) {
             <Inline gap={3}>
               <Link
                 href={`/blog/admin/articles/${article.id}/edit`}
-                className="px-4 py-2 bg-white text-atencao rounded-lg font-medium hover:bg-atencao/10 transition-all flex items-center space-x-2"
+                className="px-4 py-2 bg-white text-yellow-900 rounded-lg font-medium hover:bg-yellow-50 transition-all flex items-center space-x-2"
               >
                 <PiNotePencil className="w-4 h-4" />
                 <span>Editar</span>

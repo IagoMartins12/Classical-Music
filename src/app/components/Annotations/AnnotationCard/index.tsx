@@ -78,52 +78,52 @@ export default function AnnotationCard({
     TECHNIQUE: {
       label: t('category_technique'),
       icon: PiTarget,
-      color: 'bg-erro',
-      bgColor: 'bg-erro/10 border-erro/30 text-erro',
+      color: '',
+      bgColor: '',
     },
     INTERPRETATION: {
       label: t('category_interpretation'),
       icon: PiMusicNotes,
-      color: 'bg-aviso',
-      bgColor: 'bg-aviso/10 border-aviso/30 text-aviso',
+      color: '',
+      bgColor: '',
     },
     PRACTICE_TIP: {
       label: t('category_practice_tip'),
       icon: PiBookOpen,
-      color: 'bg-ok',
-      bgColor: 'bg-ok/10 border-ok/30 text-ok',
+      color: '',
+      bgColor: '',
     },
     THEORY: {
       label: t('category_theory'),
       icon: PiStack,
-      color: 'fill-ouro',
-      bgColor: 'bg-ouro/10 border-ouro/30 text-ouro-texto',
+      color: '',
+      bgColor: '',
     },
     PERFORMANCE: {
       label: t('category_performance'),
       icon: PiMusicNotes,
-      color: 'fill-ouro',
-      bgColor: 'bg-ouro/10 border-ouro/30 text-brand-primary',
+      color: '',
+      bgColor: 'text-ouro-texto',
     },
     HISTORICAL: {
       label: t('category_historical'),
       icon: PiMedal,
-      color: 'fill-ouro',
-      bgColor: 'bg-ouro/10 border-ouro/30 text-ouro-texto',
+      color: '',
+      bgColor: '',
     },
     GENERAL: {
       label: t('category_general'),
       icon: PiChatCenteredText,
-      color: 'bg-fundo',
-      bgColor: 'bg-fundo/10 border-linha/30 text-theme-primary',
+      color: '',
+      bgColor: 'text-theme-primary',
     },
   };
 
   const DIFFICULTY_COLORS = {
-    BEGINNER: 'bg-ok/10 border-ok/30 text-ok',
-    INTERMEDIATE: 'bg-aviso/10 border-aviso/30 text-aviso',
-    ADVANCED: 'bg-erro/10 border-erro/30 text-erro',
-    ALL_LEVELS: 'bg-fundo/10 border-linha/30 text-theme-primary',
+    BEGINNER: '',
+    INTERMEDIATE: '',
+    ADVANCED: '',
+    ALL_LEVELS: 'text-theme-primary',
   };
 
   const DIFFICULTY_LABELS = {
@@ -244,12 +244,9 @@ export default function AnnotationCard({
       >
         {/* Loading overlay para updates */}
         {isUpdating && (
-          <div className="absolute inset-0 bg-fundo/5 backdrop-blur-sm z-20 flex items-center justify-center">
-            <Inline
-              gap={3}
-              className="bg-sup-elevada/90 rounded-xl px-4 py-2 border border-linha/30"
-            >
-              <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
+          <div className="absolute inset-0 backdrop-blur-sm z-20 flex items-center justify-center">
+            <Inline gap={3} className="rounded-xl px-4 py-2 border">
+              <PiSpinnerGap className="w-4 h-4 animate-spin text-ouro-texto" />
               <Text papel="rotulo" tom="forte" className="font-medium">
                 {isOptimistic
                   ? t('annotation_card_saving')
@@ -276,10 +273,10 @@ export default function AnnotationCard({
                       annotation.user.username ||
                       t('annotation_card_anonymous_user')
                     }
-                    className="w-10 h-10 rounded-xl object-cover border-2 border-linha/20"
+                    className="w-10 h-10 rounded-xl object-cover border-2"
                   />
                 ) : (
-                  <div className="w-10 h-10 bg-fundo rounded-xl flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                     <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
                 )}
@@ -292,7 +289,7 @@ export default function AnnotationCard({
                     {annotation.title}
                   </h3>
                   {annotation.isVerified && (
-                    <Inline gap={1} className="text-ok">
+                    <Inline gap={1} className="">
                       <PiSealCheck className="w-4 h-4" />
                       <span className="text-xs font-medium">
                         {t('annotation_card_verified')}
@@ -301,7 +298,7 @@ export default function AnnotationCard({
                   )}
                   {/* Indicador de anotação otimística */}
                   {isOptimistic && (
-                    <Inline gap={1} className="text-aviso">
+                    <Inline gap={1} className="">
                       <PiSpinnerGap className="w-3 h-3 animate-spin" />
                       <span className="text-xs font-medium">
                         {t('annotation_card_saving')}
@@ -347,7 +344,7 @@ export default function AnnotationCard({
                 <button
                   onClick={() => setShowActions(!showActions)}
                   disabled={isUpdating}
-                  className={`w-8 h-8 rounded-lg bg-theme-elevated border border-linha/30 flex items-center justify-center text-theme-tertiary hover:text-texto hover:border-ouro/50 transition-all  ${
+                  className={`w-8 h-8 rounded-lg bg-theme-elevated border flex items-center justify-center text-theme-tertiary transition-all  ${
                     isUpdating ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -356,7 +353,7 @@ export default function AnnotationCard({
                 </button>
 
                 {showActions && !isUpdating && (
-                  <div className="absolute right-0 top-9 bg-theme-elevated border border-linha/30 rounded-xl shadow-theme-glow z-10 py-2 min-w-[120px]">
+                  <div className="absolute right-0 top-9 bg-theme-elevated border rounded-xl shadow-theme-glow z-10 py-2 min-w-[120px]">
                     <Inline
                       as="button"
                       gap={2}
@@ -364,7 +361,7 @@ export default function AnnotationCard({
                         setShowEditModal(true);
                         setShowActions(false);
                       }}
-                      className="w-full cursor-pointer px-4 py-2 text-left text-sm text-theme-primary hover:bg-ouro/10 transition-colors"
+                      className="w-full cursor-pointer px-4 py-2 text-left text-sm text-theme-primary transition-colors"
                     >
                       <PiPencilLine className="w-3 h-3" />
                       <span>{t('annotation_card_edit')}</span>
@@ -376,7 +373,7 @@ export default function AnnotationCard({
                         setShowDeleteModal(true);
                         setShowActions(false);
                       }}
-                      className="w-full cursor-pointer px-4 py-2 text-left text-sm text-erro hover:bg-erro/10 transition-colors"
+                      className="w-full cursor-pointer px-4 py-2 text-left text-sm transition-colors"
                     >
                       <PiTrash className="w-3 h-3" />
                       <span>{t('annotation_card_delete')}</span>
@@ -409,7 +406,7 @@ export default function AnnotationCard({
               <Inline
                 as="span"
                 gap={1}
-                className="px-3 py-1 rounded-full text-xs font-medium border bg-erro/10 border-erro text-erro"
+                className="px-3 py-1 rounded-full text-xs font-medium border border-red-400"
               >
                 <PiEye className="w-3 h-3" />
                 <span>{t('annotation_card_private_annotation')}</span>
@@ -420,7 +417,7 @@ export default function AnnotationCard({
               <Inline
                 as="span"
                 gap={1}
-                className="px-3 py-1 rounded-full text-xs font-medium border bg-fundo/10 border-linha/30 text-theme-primary"
+                className="px-3 py-1 rounded-full text-xs font-medium border text-theme-primary"
               >
                 <PiMapPin className="w-3 h-3" />
                 <span>{measureInfo}</span>
@@ -428,7 +425,7 @@ export default function AnnotationCard({
             )}
 
             {annotation.hand && (
-              <span className="px-3 py-1 rounded-full text-xs font-medium border bg-aviso/10 border-aviso/30 text-aviso">
+              <span className="px-3 py-1 rounded-full text-xs font-medium border">
                 {getHandLabel(annotation.hand)}
               </span>
             )}
@@ -437,7 +434,7 @@ export default function AnnotationCard({
               <Text
                 papel="legenda"
                 tom="forte"
-                className="px-3 py-1 rounded-full font-medium border bg-fundo/10 border-linha/30"
+                className="px-3 py-1 rounded-full font-medium border"
               >
                 {t('user_annotation_card_page')} {annotation.pageNumber}
               </Text>
@@ -446,7 +443,7 @@ export default function AnnotationCard({
 
           {/* Work info (for user profile pages) */}
           {showWorkInfo && annotation.work && (
-            <div className="mb-4 p-3 bg-sup-elevada/50 border border-linha/20 rounded-xl">
+            <div className="mb-4 p-3 border rounded-xl">
               <Inline gap={2} className="text-sm">
                 <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                 <span className="font-medium text-theme-primary">
@@ -468,7 +465,7 @@ export default function AnnotationCard({
             {shouldTruncate && (
               <button
                 onClick={() => setShowMore(!showMore)}
-                className="mt-2 text-sm text-brand-primary hover:text-ouro-texto font-medium transition-colors"
+                className="mt-2 text-sm text-ouro-texto font-medium transition-colors"
               >
                 {showMore
                   ? t('annotation_card_see_less')
@@ -485,7 +482,7 @@ export default function AnnotationCard({
                   papel="legenda"
                   tom="suave"
                   key={index}
-                  className="px-2 py-1 bg-theme-elevated border border-linha/20 rounded-lg"
+                  className="px-2 py-1 bg-theme-elevated border rounded-lg"
                 >
                   #{tag}
                 </Text>
@@ -503,21 +500,21 @@ export default function AnnotationCard({
                   disabled={isVoting}
                   className={`flex items-center space-x-2 border-transparent  px-3 py-2 rounded-xl transition-all text-sm font-medium ${
                     annotation.userVote === true
-                      ? 'bg-ok/10 border border-ok/30 text-ok'
-                      : 'text-theme-tertiary hover:text-ok hover:bg-ok/5 border border-transparent hover:border-ok/20'
+                      ? 'border'
+                      : 'text-theme-tertiary border border-transparent'
                   } ${isVoting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <PiThumbsUp
                     className={`w-4 h-4 ${
                       annotation.userVote === true
-                        ? 'text-aviso'
+                        ? 'text-blue-600'
                         : 'text-theme-primary'
                     }`}
                   />
                   <span
                     className={`${
                       annotation.userVote === true
-                        ? 'text-aviso'
+                        ? 'text-blue-400'
                         : 'text-theme-primary'
                     }`}
                   >
@@ -529,22 +526,20 @@ export default function AnnotationCard({
                   onClick={() => handleVote(false)}
                   disabled={isVoting}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-xl transition-all text-sm font-medium ${
-                    annotation.userVote === false
-                      ? 'text-erro'
-                      : 'text-theme-tertiary hover:text-erro hover:bg-erro/5 hover:border-erro/20'
+                    annotation.userVote === false ? '' : 'text-theme-tertiary'
                   } ${isVoting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <PiThumbsDown
                     className={`w-4 h-4 ${
                       annotation.userVote === false
-                        ? 'text-erro'
+                        ? 'text-red-600'
                         : 'text-theme-primary'
                     }`}
                   />
                   <span
                     className={`${
                       annotation.userVote === false
-                        ? 'text-erro'
+                        ? 'text-red-400'
                         : 'text-theme-primary'
                     }`}
                   >

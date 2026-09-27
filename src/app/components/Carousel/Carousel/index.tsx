@@ -87,7 +87,7 @@ const Carousel: React.FC<ModernCarouselProps> = ({
         {/* Container principal com tema */}
         <div className="relative overflow-hidden rounded-3xl py-8 px-2">
           {/* Background gradient usando tema */}
-          <div className="absolute inset-0 bg-sup-elevada rounded-3xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-transparent rounded-3xl"></div>
 
           <div className="relative">
             {/* Controles de navegação - escondidos no mobile */}
@@ -140,7 +140,7 @@ const Carousel: React.FC<ModernCarouselProps> = ({
         {/* {!isMobile && items.length > itemsPerView && (
           <div className="flex justify-center mt-6">
             <div className="flex items-center space-x-2 bg-theme-elevated/80 backdrop-blur-md border border-theme-primary rounded-full px-4 py-2 shadow-theme-sm">
-              <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 rounded-full animate-pulse"></div>
               <span className="text-sm font-medium text-theme-secondary">
                 {currentIndex + 1} -{' '}
                 {Math.min(currentIndex + responsiveItemsPerView, items.length)}{' '}
@@ -159,10 +159,10 @@ const Carousel: React.FC<ModernCarouselProps> = ({
                   key={index}
                   onClick={() => goToSlide(index)}
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    index === currentIndex
-                      ? 'bg-brand-primary w-6'
-                      : 'bg-theme-tertiary/50 hover:bg-theme-secondary'
-                  }`}
+ index === currentIndex
+ ?'w-6'
+ :'bg-theme-tertiary/50 hover:bg-theme-secondary'
+ }`}
                 />
               ))}
             </div>

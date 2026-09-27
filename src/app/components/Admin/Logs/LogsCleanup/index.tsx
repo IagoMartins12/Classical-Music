@@ -185,7 +185,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
       {/* Limpeza Automática */}
       <AnimatedCard className="classical-card p-6">
         <div className="flex items-start space-x-4">
-          <div className="w-12 h-12 bg-atencao rounded-xl flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center">
             <PiClock className="w-6 h-6 text-theme-primary" />
           </div>
 
@@ -304,8 +304,8 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                   key={date}
                   className={`flex items-center justify-between p-3 rounded-lg border transition-colors cursor-pointer ${
                     selectedDates.has(date)
-                      ? 'bg-aviso/10 border-aviso'
-                      : 'bg-theme-secondary border-theme-secondary hover:bg-fundo/50'
+                      ? ''
+                      : 'bg-theme-secondary border-theme-secondary'
                   }`}
                   onClick={() => toggleDateSelection(date)}
                 >
@@ -314,7 +314,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                       type="checkbox"
                       checked={selectedDates.has(date)}
                       onChange={() => toggleDateSelection(date)}
-                      className="w-4 h-4 text-aviso rounded focus:ring-aviso"
+                      className="w-4 h-4 rounded"
                     />
                     <div>
                       <p className="font-medium text-theme-primary">
@@ -346,9 +346,9 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
 
           {/* Ações para Seleção */}
           {selectedDates.size > 0 && (
-            <div className="flex items-center justify-between p-4 bg-aviso/10 border border-aviso rounded-xl">
+            <div className="flex items-center justify-between p-4 border rounded-xl">
               <div>
-                <p className="font-medium text-aviso">
+                <p className="font-medium">
                   {selectedDates.size} arquivo(s) selecionado(s)
                 </p>
                 <Text papel="rotulo" tom="fraco" as="p">
@@ -380,7 +380,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                   leftIcon={<PiTrash />}
                   onClick={() => setShowConfirmDialog(true)}
                   disabled={!!actionLoading}
-                  className="bg-erro hover:bg-erro/80"
+                  className=""
                 >
                   Deletar Selecionados
                 </Button>
@@ -395,7 +395,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-dialogo">
           <AnimatedCard className="classical-card p-6 max-w-md mx-4">
             <div className="text-center">
-              <div className="w-16 h-16 bg-erro rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <PiWarning className="w-8 h-8 text-theme-primary" />
               </div>
 
@@ -407,7 +407,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                 Tem certeza que deseja deletar{' '}
                 <strong>{selectedDates.size}</strong> arquivo(s) de log?
                 <br />
-                <span className="text-erro text-sm mt-2 block">
+                <span className="text-sm mt-2 block">
                   Esta ação não pode ser desfeita!
                 </span>
               </p>
@@ -433,7 +433,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                   }
                   onClick={handleDeleteSelected}
                   disabled={!!actionLoading}
-                  className="flex-1 bg-erro hover:bg-erro/80"
+                  className="flex-1"
                 >
                   {actionLoading === 'delete' ? 'Deletando...' : 'Deletar'}
                 </Button>

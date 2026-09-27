@@ -41,15 +41,15 @@ interface ConfirmDeleteUploadModalProps {
 const TYPE_CONFIG = {
   composer: {
     icon: PiUser,
-    color: 'fill-ouro',
+    color: '',
   },
   work: {
     icon: PiMusicNotes,
-    color: 'bg-aviso',
+    color: '',
   },
   score: {
     icon: PiFileText,
-    color: 'bg-ok',
+    color: '',
   },
 };
 
@@ -140,8 +140,8 @@ export default function ConfirmDeleteUploadModal({
         className="relative bg-theme-primary rounded-xl shadow-xl max-w-lg w-full p-6 border border-theme-secondary overflow-y-auto"
       >
         <Inline gap={3} className="mb-4">
-          <div className="w-12 h-12 bg-erro/10 rounded-xl flex items-center justify-center relative">
-            <PiWarning className="w-6 h-6 text-erro" />
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center relative">
+            <PiWarning className="w-6 h-6" />
             {/* Ícone do tipo no canto */}
             <div
               className={`absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br ${typeConfig.color} rounded-full flex items-center justify-center`}
@@ -170,12 +170,9 @@ export default function ConfirmDeleteUploadModal({
 
           {/* Loading cascade info */}
           {loadingCascadeInfo ? (
-            <Inline
-              gap={2}
-              className="p-3 bg-aviso/10 rounded-lg border border-aviso/20"
-            >
-              <PiSpinnerGap className="w-4 h-4 text-aviso animate-spin" />
-              <span className="text-sm text-aviso">
+            <Inline gap={2} className="p-3 rounded-lg border">
+              <PiSpinnerGap className="w-4 h-4 animate-spin" />
+              <span className="text-sm">
                 {t('delete_modal_checking_related')}
               </span>
             </Inline>
@@ -183,14 +180,11 @@ export default function ConfirmDeleteUploadModal({
 
           {/* Cascade information */}
           {!loadingCascadeInfo && hasCascadeItems ? (
-            <Stack
-              gap={3}
-              className="p-4 bg-atencao/10 rounded-lg border border-atencao/20"
-            >
+            <Stack gap={3} className="p-4 rounded-lg border">
               <div className="flex items-start space-x-2">
-                <PiInfo className="w-4 h-4 text-atencao mt-0.5 flex-shrink-0" />
+                <PiInfo className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <div>
-                  <div className="text-sm font-medium text-atencao mb-1">
+                  <div className="text-sm font-medium mb-1">
                     {t('delete_modal_cascade_warning')}
                   </div>
                   <Text papel="legenda" tom="suave" as="p" className="mb-3">
@@ -210,10 +204,7 @@ export default function ConfirmDeleteUploadModal({
                         count: cascadeInfo.works.length,
                       })}
                     </p>
-                    <Stack
-                      gap={1}
-                      className="overflow-y-auto bg-sup-1/30 rounded p-2"
-                    >
+                    <Stack gap={1} className="overflow-y-auto rounded p-2">
                       {cascadeInfo.works.slice(0, 4).map((work) => (
                         <Text
                           papel="legenda"
@@ -224,7 +215,7 @@ export default function ConfirmDeleteUploadModal({
                         >
                           <span>• {work.title}</span>
                           {work.scoresCount > 0 ? (
-                            <span className="text-atencao">
+                            <span className="">
                               {work.scoresCount}{' '}
                               {getScoreText(work.scoresCount)}
                             </span>
@@ -252,7 +243,7 @@ export default function ConfirmDeleteUploadModal({
                         count: cascadeInfo.scores.length,
                       })}
                     </p>
-                    <div className="space-y-1 max-h-24 overflow-y-auto bg-sup-1/30 rounded p-2">
+                    <div className="space-y-1 max-h-24 overflow-y-auto rounded p-2">
                       {cascadeInfo.scores.slice(0, 4).map((score) => (
                         <Text
                           papel="legenda"
@@ -283,7 +274,7 @@ export default function ConfirmDeleteUploadModal({
                         count: cascadeInfo.childWorks.length,
                       })}
                     </p>
-                    <div className="space-y-1 max-h-20 overflow-y-auto bg-sup-1/30 rounded p-2">
+                    <div className="space-y-1 max-h-20 overflow-y-auto rounded p-2">
                       {cascadeInfo.childWorks.slice(0, 3).map((childWork) => (
                         <Text
                           papel="legenda"
@@ -294,7 +285,7 @@ export default function ConfirmDeleteUploadModal({
                         >
                           <span>• {childWork.title}</span>
                           {childWork.scoresCount > 0 ? (
-                            <span className="text-atencao">
+                            <span className="">
                               {childWork.scoresCount}{' '}
                               {getScoreText(childWork.scoresCount)}
                             </span>
@@ -308,8 +299,8 @@ export default function ConfirmDeleteUploadModal({
                 {/* Total geral */}
                 {cascadeInfo?.totalScores !== undefined &&
                 cascadeInfo.totalScores >= 0 ? (
-                  <div className="pt-2 border-t border-atencao/20">
-                    <p className="text-xs font-medium text-atencao">
+                  <div className="pt-2 border-t">
+                    <p className="text-xs font-medium">
                       {cascadeInfo.totalWorks && cascadeInfo.totalWorks > 0
                         ? t('delete_modal_total_summary_with_works', {
                             scores: cascadeInfo.totalScores,
@@ -329,10 +320,10 @@ export default function ConfirmDeleteUploadModal({
           {!loadingCascadeInfo &&
           !hasCascadeItems &&
           (itemType === 'composer' || itemType === 'work') ? (
-            <div className="p-3 bg-ok/10 rounded-lg border border-ok/20">
+            <div className="p-3 rounded-lg border">
               <Inline gap={2}>
-                <PiInfo className="w-4 h-4 text-ok" />
-                <span className="text-sm text-ok">
+                <PiInfo className="w-4 h-4" />
+                <span className="text-sm">
                   {t('delete_modal_no_related_items')}
                 </span>
               </Inline>
@@ -341,10 +332,10 @@ export default function ConfirmDeleteUploadModal({
 
           {/* Warning for score */}
           {itemType === 'score' ? (
-            <div className="bg-erro/5 border border-erro/20 rounded-lg p-3">
+            <div className="border rounded-lg p-3">
               <div className="flex items-start space-x-2">
-                <PiWarning className="w-4 h-4 text-erro mt-0.5 flex-shrink-0" />
-                <div className="text-sm text-erro">
+                <PiWarning className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <div className="text-sm">
                   <p className="font-medium">
                     {t('delete_modal_score_warning_title')}
                   </p>
@@ -361,7 +352,7 @@ export default function ConfirmDeleteUploadModal({
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary hover:bg-sup-1 transition-colors disabled:opacity-50"
+            className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary transition-colors disabled:opacity-50"
           >
             {t('delete_modal_cancel')}
           </button>

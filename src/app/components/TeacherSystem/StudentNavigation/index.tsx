@@ -203,14 +203,14 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
   return (
     <>
       {/* Top Navigation Bar */}
-      <nav className="sticky top-0 z-barra bg-sup-elevada/80 backdrop-blur-xl border-b border-theme-secondary">
+      <nav className="sticky top-0 z-barra backdrop-blur-xl border-b border-theme-secondary">
         <div className="section-wrap py-3">
           <div className="flex items-center justify-between">
             {/* Logo and Brand */}
             <Inline gap={4}>
               <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="lg:hidden p-2 rounded-lg hover:bg-ouro/10 transition-colors"
+                className="lg:hidden p-2 rounded-lg transition-colors"
               >
                 {isSidebarOpen ? (
                   <PiX className="w-5 h-5 text-theme-secondary" />
@@ -221,7 +221,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
               <Link href="/student" className="flex items-center group">
                 <div className="relative">
-                  <PiMusicNotes className="w-8 h-8 mr-3 text-ok icon-glow transition-all duration-300 group-hover:scale-110" />
+                  <PiMusicNotes className="w-8 h-8 mr-3 icon-glow transition-all duration-300 group-hover:scale-110" />
                 </div>
                 <div className="hidden sm:block">
                   <span className="text-xl gold-shine font-bold text-gradient-brand classical-title">
@@ -257,8 +257,8 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                           relative px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2
                           ${
                             item.active
-                              ? 'text-brand-primary'
-                              : 'text-theme-secondary hover:text-ok hover:bg-ouro/10'
+                              ? 'text-ouro-texto'
+                              : 'text-theme-secondary'
                           }
                         `}
                       >
@@ -279,17 +279,17 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                               <Link
                                 key={subItem.label}
                                 href={subItem.href}
-                                className="block p-3 rounded-lg hover:bg-ouro/10 transition-colors group"
+                                className="block p-3 rounded-lg transition-colors group"
                                 onClick={() => setActiveSubmenu(null)}
                               >
                                 <Inline gap={3}>
                                   {subItem.icon && (
-                                    <div className="w-8 h-8 bg-ok/10 rounded-lg flex items-center justify-center">
-                                      <subItem.icon className="w-4 h-4 text-ok" />
+                                    <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                                      <subItem.icon className="w-4 h-4" />
                                     </div>
                                   )}
                                   <div className="flex-1">
-                                    <div className="font-medium text-theme-primary group-hover:text-ok transition-colors">
+                                    <div className="font-medium text-theme-primary transition-colors">
                                       {subItem.label}
                                     </div>
                                     {subItem.description && (
@@ -304,7 +304,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                                     )}
                                   </div>
                                   {subItem.badge && (
-                                    <span className="px-2 py-1 bg-aviso/10 text-aviso text-xs rounded-full">
+                                    <span className="px-2 py-1 text-xs rounded-full">
                                       {subItem.badge}
                                     </span>
                                   )}
@@ -322,15 +322,15 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                         relative px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2
                         ${
                           item.active
-                            ? 'text-brand-primary'
-                            : 'text-theme-secondary hover:text-ok hover:bg-ouro/10'
+                            ? 'text-ouro-texto'
+                            : 'text-theme-secondary'
                         }
                       `}
                     >
                       <item.icon className="w-4 h-4" />
                       <span>{item.label}</span>
                       {item.badge && (
-                        <span className="px-2 py-1 bg-aviso/10 text-aviso text-xs rounded-full">
+                        <span className="px-2 py-1 text-xs rounded-full">
                           {item.badge}
                         </span>
                       )}
@@ -353,7 +353,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                   as="button"
                   gap={2}
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="p-2 rounded-lg hover:bg-ouro/10 transition-colors group"
+                  className="p-2 rounded-lg transition-colors group"
                 >
                   {user.image ? (
                     <Image
@@ -361,14 +361,14 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       width={32}
                       height={32}
                       alt={getUserDisplayName()}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-ok/20 group-hover:border-ok/50 transition-all"
+                      className="w-8 h-8 rounded-full object-cover border-2 transition-all"
                     />
                   ) : (
                     <Text
                       papel="rotulo"
                       tom="forte"
                       as="div"
-                      className="w-8 h-8 bg-ok rounded-full flex items-center justify-center font-semibold border-2 border-ok/20 group-hover:border-ok/50 transition-all"
+                      className="w-8 h-8 rounded-full flex items-center justify-center font-semibold border-2 transition-all"
                     >
                       {getUserInitials()}
                     </Text>
@@ -384,9 +384,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       {getUserDisplayName()}
                     </Text>
                     {!user.onboardingCompleted && (
-                      <p className="text-xs text-atencao">
-                        {t('profile_complete_prompt')}
-                      </p>
+                      <p className="text-xs">{t('profile_complete_prompt')}</p>
                     )}
                   </div>
 
@@ -405,14 +403,14 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                         {user.email}
                       </Text>
                       <div className="flex items-center mt-1">
-                        <span className="px-2 py-1 bg-ok/10 text-ok text-xs rounded-full">
+                        <span className="px-2 py-1 text-xs rounded-full">
                           {t('profile_role_student')}
                         </span>
                       </div>
                       {!user.onboardingCompleted && (
                         <button
                           onClick={open}
-                          className="mt-2 w-full text-left px-2 py-1 bg-atencao/10 text-atencao text-xs rounded-lg hover:bg-atencao/20 transition-colors"
+                          className="mt-2 w-full text-left px-2 py-1 text-xs rounded-lg transition-colors"
                         >
                           {t('profile_complete_action')}
                         </button>
@@ -422,7 +420,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                     {/* Menu Items */}
                     <Link
                       href="/student/profile"
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-ok hover:bg-ouro/10 rounded-lg transition-all"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <PiUser className="w-4 h-4" />
@@ -431,7 +429,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
                     <Link
                       href="/student/notifications"
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-ok hover:bg-ouro/10 rounded-lg transition-all"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <PiBell className="w-4 h-4" />
@@ -440,7 +438,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
                     <Link
                       href="/student/history"
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-ok hover:bg-ouro/10 rounded-lg transition-all"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <PiPulse className="w-4 h-4" />
@@ -449,7 +447,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
                     <Link
                       href="/learning"
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-ok hover:bg-ouro/10 rounded-lg transition-all"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <PiBookOpen className="w-4 h-4" />
@@ -458,7 +456,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
                     <Link
                       href="/annotations"
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-ok hover:bg-ouro/10 rounded-lg transition-all"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <PiFile className="w-4 h-4" />
@@ -467,7 +465,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
                     <Link
                       href="/"
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-ok hover:bg-ouro/10 rounded-lg transition-all"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <PiHouse className="w-4 h-4" />
@@ -480,7 +478,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       as="button"
                       gap={2}
                       onClick={handleLogout}
-                      className="w-full px-3 py-2 text-sm text-erro hover:bg-erro/10 rounded-lg transition-all"
+                      className="w-full px-3 py-2 text-sm rounded-lg transition-all"
                     >
                       <PiSignOut className="w-4 h-4" />
                       <span>{t('profile_menu_logout')}</span>
@@ -508,7 +506,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
               {/* Header */}
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center">
-                  <PiMusicNotes className="w-8 h-8 mr-3 text-ok" />
+                  <PiMusicNotes className="w-8 h-8 mr-3" />
                   <div>
                     <span className="text-lg gold-shine font-bold text-gradient-brand">
                       {t('brand_name')}
@@ -520,7 +518,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                 </div>
                 <button
                   onClick={closeSidebar}
-                  className="p-2 rounded-lg hover:bg-ouro/10 transition-colors"
+                  className="p-2 rounded-lg transition-colors"
                 >
                   <PiX className="w-5 h-5 text-theme-secondary" />
                   <NomeAcao acao="fechar" />
@@ -541,11 +539,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                           }
                           className={`
                             w-full flex items-center justify-between px-3 py-2 rounded-lg font-medium transition-all duration-300
-                            ${
-                              item.active
-                                ? 'text-ok bg-ok/10 border border-ok/20'
-                                : 'text-theme-secondary hover:text-ok hover:bg-ouro/10'
-                            }
+                            ${item.active ? 'border' : 'text-theme-secondary'}
                           `}
                         >
                           <Inline gap={3}>
@@ -566,7 +560,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                               <Link
                                 key={subItem.label}
                                 href={subItem.href}
-                                className="block px-3 py-2 text-sm text-theme-tertiary hover:text-ok hover:bg-ouro/10 rounded-lg transition-colors"
+                                className="block px-3 py-2 text-sm text-theme-tertiary rounded-lg transition-colors"
                                 onClick={closeSidebar}
                               >
                                 <Inline gap={2}>
@@ -585,18 +579,14 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                         href={item.href || '#'}
                         className={`
                           flex items-center space-x-3 px-3 py-2 rounded-lg font-medium transition-all duration-300
-                          ${
-                            item.active
-                              ? 'text-ok bg-ok/10 border border-ok/20'
-                              : 'text-theme-secondary hover:text-ok hover:bg-ouro/10'
-                          }
+                          ${item.active ? 'border' : 'text-theme-secondary'}
                         `}
                         onClick={closeSidebar}
                       >
                         <item.icon className="w-4 h-4" />
                         <span>{item.label}</span>
                         {item.badge && (
-                          <span className="px-2 py-1 bg-aviso/10 text-aviso text-xs rounded-full ml-auto">
+                          <span className="px-2 py-1 text-xs rounded-full ml-auto">
                             {item.badge}
                           </span>
                         )}
@@ -610,7 +600,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
               <div className="mt-8 pt-6 border-t border-theme-secondary space-y-2">
                 <Link
                   href="/explore"
-                  className="flex items-center space-x-3 px-3 py-2 bg-ok/10 text-ok rounded-lg font-medium"
+                  className="flex items-center space-x-3 px-3 py-2 rounded-lg font-medium"
                   onClick={closeSidebar}
                 >
                   <PiMusicNotes className="w-4 h-4" />
